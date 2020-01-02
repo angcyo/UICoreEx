@@ -2,7 +2,7 @@
 <resources>
 
     <!--DslButton按钮样式-->
-    <style name="DefaultButtonStyle" parent="LibMainTextStyle">
+    <style name="LibButtonStyle" parent="LibBodyTextStyle">
         <item name="android:textColor">@color/lib_white</item>
         <item name="android:gravity">center</item>
         <item name="button_enable_ripple">true</item>
@@ -13,6 +13,13 @@
         <item name="button_gradient_start_color">@color/colorPrimaryDark</item>
         <item name="button_gradient_end_color">@color/colorPrimary</item>
         <item name="button_radius">@dimen/lib_radius_normal</item>
+    </style>
+
+    <style name="DefaultButtonStyle" parent="LibButtonStyle">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingTop">1dp</item>
+        <item name="android:paddingBottom">1dp</item>
     </style>
 
 </resources>
