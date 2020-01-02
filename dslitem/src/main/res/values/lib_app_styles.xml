@@ -57,9 +57,18 @@
         <item name="android:textColor">@color/text_general_color</item>
     </style>
 
-    <style name="LibSubTextStyle" parent="LibMainTextStyle">
-        <item name="android:textSize">@dimen/text_body_size</item>
-        <item name="android:textColor">@color/text_sub_color</item>
+    <style name="LibTitleTextStyle" parent="LibMainTextStyle">
+        <item name="android:textSize">@dimen/text_sub_size</item>
     </style>
+
+    <style name="LibBodyTextStyle" parent="LibMainTextStyle">
+        <item name="android:textSize">@dimen/text_body_size</item>
+        <item name="android:textColor">@color/text_general_color</item>
+    </style>
+
+    <style name="LibSubTextStyle" parent="LibBodyTextStyle">
+        <item name="android:textSize">@dimen/text_assist_size</item>
+    </style>
+
 
 </resources>

@@ -10,13 +10,12 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_view"
-        style="@style/LibMainTextStyle"
+        style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:paddingLeft="@dimen/lib_padding_left"
         android:paddingRight="@dimen/lib_padding_left"
-        android:textSize="@dimen/text_body_size"
         tools:text="关于我们" />
 
     <FrameLayout
