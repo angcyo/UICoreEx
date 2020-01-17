@@ -18,7 +18,7 @@ fun Fragment.of(factory: ViewModelProvider.Factory? = null) =
     ViewModelProviders.of(this, factory)
 
 /**获取[Fragment]所在[FragmentActivity]中包含的[ViewModelProvider]*/
-fun Fragment.ofShare(factory: ViewModelProvider.Factory? = null) =
+fun Fragment.ofa(factory: ViewModelProvider.Factory? = null) =
     ViewModelProviders.of(this.requireActivity(), factory)
 
 /**单独获取[FragmentActivity]对应的[ViewModelProvider]*/
@@ -26,21 +26,11 @@ fun FragmentActivity.of(factory: ViewModelProvider.Factory? = null) =
     ViewModelProviders.of(this, factory)
 
 /**获取[ViewModelStore]中的[ViewModel], 默认的[key]是[DEFAULT_KEY + ":" + modelClass.getCanonicalName()]*/
-inline fun <reified VM : ViewModel> Fragment.viewModel(factory: ViewModelProvider.Factory? = null) =
-    of(factory).get(VM::class.java)
-
-inline fun <reified VM : ViewModel> Fragment.viewModelShare(factory: ViewModelProvider.Factory? = null) =
-    ofShare(factory).get(VM::class.java)
-
-inline fun <reified VM : ViewModel> FragmentActivity.viewModel(factory: ViewModelProvider.Factory? = null) =
-    of(factory).get(VM::class.java)
-
-/**缩短的方法名*/
 inline fun <reified VM : ViewModel> Fragment.vm(factory: ViewModelProvider.Factory? = null) =
-    viewModel<VM>(factory)
+    of(factory).get(VM::class.java)
 
-inline fun <reified VM : ViewModel> Fragment.vmShare(factory: ViewModelProvider.Factory? = null) =
-    viewModelShare<VM>(factory)
+inline fun <reified VM : ViewModel> Fragment.vma(factory: ViewModelProvider.Factory? = null) =
+    ofa(factory).get(VM::class.java)
 
 inline fun <reified VM : ViewModel> FragmentActivity.vm(factory: ViewModelProvider.Factory? = null) =
-    viewModel<VM>(factory)
+    of(factory).get(VM::class.java)
