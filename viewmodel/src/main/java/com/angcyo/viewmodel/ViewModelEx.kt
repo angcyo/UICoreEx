@@ -1,10 +1,12 @@
 package com.angcyo.viewmodel
 
+import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelStore
 
 /**
  *
@@ -34,3 +36,21 @@ inline fun <reified VM : ViewModel> Fragment.vma(factory: ViewModelProvider.Fact
 
 inline fun <reified VM : ViewModel> FragmentActivity.vm(factory: ViewModelProvider.Factory? = null) =
     of(factory).get(VM::class.java)
+
+//自定义[ViewModelStore]
+
+/**[activity] [factory] 参数二选一*/
+fun ViewModelStore.of(
+    activity: Activity? = null,
+    factory: ViewModelProvider.Factory? = null
+): ViewModelProvider {
+    return ViewModelProvider(
+        this,
+        factory ?: ViewModelProvider.AndroidViewModelFactory.getInstance(activity!!.application)
+    )
+}
+
+inline fun <reified VM : ViewModel> ViewModelStore.vm(
+    activity: Activity? = null,
+    factory: ViewModelProvider.Factory? = null
+) = of(activity, factory).get(VM::class.java)
