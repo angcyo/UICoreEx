@@ -1,0 +1,15 @@
+apply from: allGradle.libBase
+
+android {
+    defaultConfig {
+        minSdkVersion 14
+    }
+}
+
+dependencies {
+    implementation project(allModule.fragment)
+    implementation project(allModule.viewmodel)
+    implementation project(allModule.glide)
+    implementation project(allModule.github)
+    implementation project(allModule.transition)
+}
