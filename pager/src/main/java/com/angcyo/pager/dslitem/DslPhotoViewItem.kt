@@ -31,6 +31,21 @@ open class DslPhotoViewItem : DslAdapterItem() {
             loadImage(imageUrl) {
                 checkGifType = true
                 originalSize = true
+
+                val loadingView = itemHolder.view(R.id.lib_loading_view)
+                itemHolder.visible(loadingView)
+                onLoadSucceed = { _, _ ->
+                    itemHolder.view(R.id.lib_loading_view)?.run {
+                        animate().alpha(0f)
+                            .setDuration(300)
+                            .withEndAction {
+                                loadingView?.alpha = 1f
+                                itemHolder.gone(loadingView)
+                            }
+                            .start()
+                    }
+                    false
+                }
             }
         }
     }
