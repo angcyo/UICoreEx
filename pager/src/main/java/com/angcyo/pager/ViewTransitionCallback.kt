@@ -1,11 +1,13 @@
 package com.angcyo.pager
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import androidx.transition.*
 import com.angcyo.transition.ColorTransition
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.setWidthHeight
 
 /**
  *
@@ -19,8 +21,24 @@ open class ViewTransitionCallback {
     /**根布局, 通常也是背景动画视图*/
     var sceneRoot: ViewGroup? = null
 
+    var backgroundStartColor: Int = Color.TRANSPARENT
+
+    var backgroundEndColor: Int = Color.BLACK
+
+    var transitionShowFromRect: Rect? = null
+    var transitionShowToRect: Rect = Rect(0, 0, 0 - 1, -1)
+
+    var transitionHideFromRect: Rect? = null
+    var transitionHideToRect: Rect? = null
+
+    /**背景过渡视图*/
     open fun backgroundTransitionView(viewHolder: DslViewHolder): View {
         return sceneRoot ?: viewHolder.itemView
+    }
+
+    /**转场动画视图*/
+    open fun transitionTargetView(viewHolder: DslViewHolder): View? {
+        return null
     }
 
     //<editor-fold desc="show过渡">
@@ -28,12 +46,28 @@ open class ViewTransitionCallback {
     /**界面显示时, 动画开始的值设置*/
     open fun onCaptureShowStartValues(viewHolder: DslViewHolder) {
         //背景颜色动画
-        backgroundTransitionView(viewHolder).setBackgroundColor(Color.TRANSPARENT)
+        backgroundTransitionView(viewHolder).setBackgroundColor(backgroundStartColor)
+
+        transitionTargetView(viewHolder)?.apply {
+            transitionShowFromRect?.let {
+                translationX = it.left.toFloat()
+                translationY = it.top.toFloat()
+
+                setWidthHeight(it.width(), it.height())
+            }
+        }
     }
 
     /**界面显示时, 动画结束后的值设置*/
     open fun onCaptureShowEndValues(viewHolder: DslViewHolder) {
-        backgroundTransitionView(viewHolder).setBackgroundColor(Color.BLACK)
+        backgroundTransitionView(viewHolder).setBackgroundColor(backgroundEndColor)
+
+        transitionTargetView(viewHolder)?.apply {
+            translationX = transitionShowToRect.left.toFloat()
+            translationY = transitionShowToRect.top.toFloat()
+
+            setWidthHeight(transitionShowToRect.width(), transitionShowToRect.height())
+        }
     }
 
     /**开始show的转场动画, 返回true, 拦截过渡*/
@@ -66,12 +100,30 @@ open class ViewTransitionCallback {
 
     /**界面关闭, 动画开始时的值(通过可以不设置此处)*/
     open fun onCaptureHideStartValues(viewHolder: DslViewHolder) {
-        backgroundTransitionView(viewHolder).setBackgroundColor(Color.BLACK)
+        //backgroundTransitionView(viewHolder).setBackgroundColor(backgroundEndColor)
+        //就是用当前设置的背景颜色
+        transitionTargetView(viewHolder)?.apply {
+            transitionHideFromRect?.let {
+                translationX = it.left.toFloat()
+                translationY = it.top.toFloat()
+
+                setWidthHeight(it.width(), it.height())
+            }
+        }
     }
 
     /**界面关闭, 动画需要结束的值*/
     open fun onCaptureHideEndValues(viewHolder: DslViewHolder) {
-        backgroundTransitionView(viewHolder).setBackgroundColor(Color.TRANSPARENT)
+        backgroundTransitionView(viewHolder).setBackgroundColor(backgroundStartColor)
+
+        transitionTargetView(viewHolder)?.apply {
+            transitionHideToRect?.let {
+                translationX = it.left.toFloat()
+                translationY = it.top.toFloat()
+
+                setWidthHeight(it.width(), it.height())
+            }
+        }
     }
 
     /**开始hide的转场动画, 返回true, 拦截过渡*/

@@ -11,7 +11,6 @@ import com.angcyo.dsladapter.getViewRect
 import com.angcyo.loader.LoaderMedia
 import com.angcyo.transition.ColorTransition
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.setWidthHeight
 
 /**
  *
@@ -67,6 +66,10 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
 
     //<editor-fold desc="内部处理方法">
 
+    override fun transitionTargetView(viewHolder: DslViewHolder): View? {
+        return viewHolder.transitionView()
+    }
+
     /**获取转场动画作用的View*/
     fun DslViewHolder.transitionView(): View? {
         var result: View? = null
@@ -109,48 +112,50 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
     val _tempRect = Rect()
 
     override fun onCaptureShowStartValues(viewHolder: DslViewHolder) {
-        super.onCaptureShowStartValues(viewHolder)
-
         onGetFromView(_primaryPosition)?.apply {
             getViewRect(_tempRect)
-
+            transitionShowFromRect = _tempRect
             val fromView = this
 
-            viewHolder.transitionView()?.apply {
-                translationX = _tempRect.left.toFloat()
-                translationY = _tempRect.top.toFloat()
-
-                setWidthHeight(_tempRect.width(), _tempRect.height())
-
+            transitionTargetView(viewHolder)?.apply {
                 //图片控件赋值
                 if (this is ImageView && fromView is ImageView) {
                     scaleType = fromView.scaleType
                 }
             }
         }
+
+        super.onCaptureShowStartValues(viewHolder)
     }
 
     override fun onCaptureShowEndValues(viewHolder: DslViewHolder) {
         super.onCaptureShowEndValues(viewHolder)
 
-        viewHolder.transitionView()?.apply {
-            translationX = 0f
-            translationY = 0f
-
+        transitionTargetView(viewHolder)?.apply {
             if (this is ImageView) {
                 scaleType = ImageView.ScaleType.FIT_CENTER
             }
-
-            setWidthHeight(-1, -1)
         }
     }
 
     override fun onCaptureHideStartValues(viewHolder: DslViewHolder) {
-        //super.onCaptureHideStartValues(viewHolder)
+        super.onCaptureHideStartValues(viewHolder)
     }
 
     override fun onCaptureHideEndValues(viewHolder: DslViewHolder) {
-        onCaptureShowStartValues(viewHolder)
+        onGetFromView(_primaryPosition)?.apply {
+            getViewRect(_tempRect)
+            transitionHideToRect = _tempRect
+            val fromView = this
+
+            transitionTargetView(viewHolder)?.apply {
+                //图片控件赋值
+                if (this is ImageView && fromView is ImageView) {
+                    scaleType = fromView.scaleType
+                }
+            }
+        }
+        super.onCaptureHideEndValues(viewHolder)
     }
 
     //</editor-fold desc="内部处理方法">
