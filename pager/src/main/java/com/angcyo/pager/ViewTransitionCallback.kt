@@ -26,7 +26,7 @@ open class ViewTransitionCallback {
     var backgroundEndColor: Int = Color.BLACK
 
     var transitionShowFromRect: Rect? = null
-    var transitionShowToRect: Rect = Rect(0, 0, 0 - 1, -1)
+    var transitionShowToRect: Rect? = null
 
     var transitionHideFromRect: Rect? = null
     var transitionHideToRect: Rect? = null
@@ -63,10 +63,13 @@ open class ViewTransitionCallback {
         backgroundTransitionView(viewHolder).setBackgroundColor(backgroundEndColor)
 
         transitionTargetView(viewHolder)?.apply {
-            translationX = transitionShowToRect.left.toFloat()
-            translationY = transitionShowToRect.top.toFloat()
+            translationX = (transitionShowToRect?.left ?: 0).toFloat()
+            translationY = (transitionShowToRect?.top ?: 0).toFloat()
 
-            setWidthHeight(transitionShowToRect.width(), transitionShowToRect.height())
+            setWidthHeight(
+                transitionShowToRect?.width() ?: -1,
+                transitionShowToRect?.height() ?: -1
+            )
         }
     }
 

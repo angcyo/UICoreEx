@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
 import android.view.ViewGroup
+import com.angcyo.base.interceptTouchEvent
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.set
 import com.angcyo.loader.loadPath
@@ -96,7 +97,6 @@ open class PagerTransitionFragment : ViewTransitionFragment() {
 
 
         _vh._vp(R.id.lib_view_pager)?.apply {
-            _vh.v<TextIndicator>(R.id.lib_text_indicator)?.setupViewPager(this)
 
             val items = mutableListOf<DslAdapterItem>()
 
@@ -104,6 +104,14 @@ open class PagerTransitionFragment : ViewTransitionFragment() {
                 items.add(DslPhotoViewItem().apply {
                     itemData = it
                     imageUrl = it.loadPath()
+
+                    //占位图提供
+                    placeholderDrawableProvider = pagerTransitionCallback
+
+                    //点击图片关闭界面
+                    onItemClick = {
+                        backTransition()
+                    }
                 })
             }
 
@@ -113,6 +121,9 @@ open class PagerTransitionFragment : ViewTransitionFragment() {
 
             //在后面添加事件, 那么第一次就不会触发[onPageSelected]
             addOnPageChangeListener(pagerTransitionCallback)
+
+            //文本指示器
+            _vh.v<TextIndicator>(R.id.lib_text_indicator)?.setupViewPager(this)
         }
     }
 
@@ -141,6 +152,10 @@ open class PagerTransitionFragment : ViewTransitionFragment() {
     override fun onTransitionHideStart() {
         super.onTransitionHideStart()
         hideOtherView()
+    }
+
+    override fun onTransitionHideEnd() {
+        super.onTransitionHideEnd()
     }
 
     //</editor-fold desc="其他元素控制">

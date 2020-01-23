@@ -1,7 +1,10 @@
 package com.angcyo.github
 
 import android.content.Context
+import android.graphics.Matrix
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.MotionEvent
 import com.github.chrisbanes.photoview.PhotoView
 
 /**
@@ -19,4 +22,16 @@ class RPhotoView : PhotoView {
         attr,
         defStyle
     )
+
+    override fun setImageDrawable(drawable: Drawable?) {
+        super.setImageDrawable(drawable)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun getImageMatrix(): Matrix {
+        return super.getImageMatrix()
+    }
 }

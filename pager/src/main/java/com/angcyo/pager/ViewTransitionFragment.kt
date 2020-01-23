@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.transition.TransitionSet
 import com.angcyo.base.dslFHelper
+import com.angcyo.base.interceptTouchEvent
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.transition.DslTransition
 import com.angcyo.widget.DslViewHolder
@@ -48,7 +49,10 @@ abstract class ViewTransitionFragment : AbsLifecycleFragment() {
 
     /**显示过渡动画结束*/
     open fun onTransitionShowEnd() {
+        transitionCallback.transitionShowFromRect = null
+        transitionCallback.transitionShowToRect = null
 
+        activity?.interceptTouchEvent(false)
     }
 
     open fun onTransitionHideStart() {
@@ -57,6 +61,10 @@ abstract class ViewTransitionFragment : AbsLifecycleFragment() {
 
     /**隐藏过渡动画结束*/
     open fun onTransitionHideEnd() {
+        transitionCallback.transitionHideFromRect = null
+        transitionCallback.transitionHideToRect = null
+        activity?.interceptTouchEvent(false)
+        
         //真正移除界面
         dslFHelper {
             noAnim()
@@ -74,6 +82,7 @@ abstract class ViewTransitionFragment : AbsLifecycleFragment() {
 
     /**转场动画显示界面*/
     open fun startTransition(start: Boolean) {
+        activity?.interceptTouchEvent(true)
         dslTransition.apply {
             sceneRoot = _vh.itemView as? ViewGroup
 

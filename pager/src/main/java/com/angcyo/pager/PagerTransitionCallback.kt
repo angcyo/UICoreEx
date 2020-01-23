@@ -1,14 +1,19 @@
 package com.angcyo.pager
 
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import androidx.viewpager.widget.ViewPager
+import com.angcyo.drawable.copyDrawable
 import com.angcyo.dsladapter.getViewRect
 import com.angcyo.loader.LoaderMedia
+import com.angcyo.loader.loadPath
+import com.angcyo.pager.dslitem.IPlaceholderDrawableProvider
 import com.angcyo.transition.ColorTransition
 import com.angcyo.widget.DslViewHolder
 
@@ -19,7 +24,14 @@ import com.angcyo.widget.DslViewHolder
  * @date 2020/01/22
  */
 
-open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageChangeListener {
+open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageChangeListener,
+    IPlaceholderDrawableProvider {
+
+    /**单个[View]时使用.*/
+    var fromView: View? = null
+
+    /**在[RecyclerView]中启动*/
+    var fromRecyclerView: RecyclerView? = null
 
     /**需要显示的媒体数据*/
     val loaderMedia = mutableListOf<LoaderMedia>()
@@ -30,19 +42,13 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
             _primaryPosition = value
         }
 
-    /**单个[ImageView]时使用.*/
-    var fromImageView: ImageView? = null
-
-    /**在[RecyclerView]中启动*/
-    var fromRecyclerView: RecyclerView? = null
-
     /**获取联动目标的[View]*/
     var onGetFromView: (position: Int) -> View? = { position ->
         if (fromRecyclerView != null) {
             (fromRecyclerView?.findViewHolderForAdapterPosition(position)
-                    as? DslViewHolder)?.transitionView() ?: fromImageView
+                    as? DslViewHolder)?.transitionView() ?: fromView
         } else {
-            fromImageView
+            fromView
         }
     }
 
@@ -55,6 +61,21 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
     @IdRes
     var transitionViewIds = mutableListOf(R.id.lib_image_view)
 
+    /**根据[loadUrl]获取占位图*/
+    var onGetPlaceholderDrawable: (loadUrl: String?) -> Drawable? = { loadUrl ->
+        var result: Drawable? = null
+        loaderMedia.forEachIndexed { index, loaderMedia ->
+            if (loaderMedia.loadPath() == loadUrl) {
+                onGetFromView(index)?.apply {
+                    if (this is ImageView && this.drawable !is ColorDrawable) {
+                        result = this.drawable?.copyDrawable()
+                    }
+                }
+            }
+        }
+        result
+    }
+
     //<editor-fold desc="操作方法">
 
     /**追加媒体*/
@@ -65,6 +86,10 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
     //</editor-fold desc="操作方法">
 
     //<editor-fold desc="内部处理方法">
+
+    override fun getPlaceholderDrawable(loadUrl: String?): Drawable? {
+        return onGetPlaceholderDrawable(loadUrl)
+    }
 
     override fun transitionTargetView(viewHolder: DslViewHolder): View? {
         return viewHolder.transitionView()
@@ -112,16 +137,20 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
     val _tempRect = Rect()
 
     override fun onCaptureShowStartValues(viewHolder: DslViewHolder) {
-        onGetFromView(_primaryPosition)?.apply {
-            getViewRect(_tempRect)
-            transitionShowFromRect = _tempRect
-            val fromView = this
 
-            transitionTargetView(viewHolder)?.apply {
-                //图片控件赋值
-                if (this is ImageView && fromView is ImageView) {
-                    scaleType = fromView.scaleType
-                }
+        val fromView = onGetFromView(_primaryPosition)
+
+        if (transitionShowFromRect == null) {
+            fromView?.apply {
+                getViewRect(_tempRect)
+                transitionShowFromRect = _tempRect
+            }
+        }
+
+        transitionTargetView(viewHolder)?.apply {
+            //图片控件赋值
+            if (this is ImageView && fromView is ImageView) {
+                scaleType = fromView.scaleType
             }
         }
 
@@ -143,18 +172,22 @@ open class PagerTransitionCallback : ViewTransitionCallback(), ViewPager.OnPageC
     }
 
     override fun onCaptureHideEndValues(viewHolder: DslViewHolder) {
-        onGetFromView(_primaryPosition)?.apply {
-            getViewRect(_tempRect)
-            transitionHideToRect = _tempRect
-            val fromView = this
+        val toView = onGetFromView(_primaryPosition)
 
-            transitionTargetView(viewHolder)?.apply {
-                //图片控件赋值
-                if (this is ImageView && fromView is ImageView) {
-                    scaleType = fromView.scaleType
-                }
+        if (transitionHideToRect == null) {
+            toView?.apply {
+                getViewRect(_tempRect)
+                transitionHideToRect = _tempRect
             }
         }
+
+        transitionTargetView(viewHolder)?.apply {
+            //图片控件赋值
+            if (this is ImageView && toView is ImageView) {
+                scaleType = toView.scaleType
+            }
+        }
+
         super.onCaptureHideEndValues(viewHolder)
     }
 
