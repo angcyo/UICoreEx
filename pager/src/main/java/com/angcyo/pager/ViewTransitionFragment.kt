@@ -1,11 +1,13 @@
 package com.angcyo.pager
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import androidx.transition.TransitionSet
 import com.angcyo.base.dslFHelper
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.transition.DslTransition
+import com.angcyo.widget.DslViewHolder
 
 /**
  *
@@ -14,7 +16,7 @@ import com.angcyo.transition.DslTransition
  * @date 2020/01/22
  */
 
-open class ViewTransitionFragment : AbsLifecycleFragment() {
+abstract class ViewTransitionFragment : AbsLifecycleFragment() {
 
     /**过渡回调*/
     var transitionCallback: ViewTransitionCallback = ViewTransitionCallback()
@@ -22,50 +24,34 @@ open class ViewTransitionFragment : AbsLifecycleFragment() {
     /**过渡执行协调*/
     val dslTransition = DslTransition()
 
-    init {
-        fragmentLayoutId = R.layout.lib_pager_transition_fragment
-    }
-
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
-        //防止事件穿透
-        _vh.itemView.isClickable = true
+        initTransitionLayout()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dslTransition.apply {
-            sceneRoot = _vh.itemView as? ViewGroup
+    }
 
-            //Capture
-            onCaptureStartValues = {
-                transitionCallback.onCaptureShowStartValues(_vh)
-            }
-
-            //Capture
-            onCaptureEndValues = {
-                transitionCallback.onCaptureShowEndValues(_vh)
-            }
-
-            //anim
-            onSetTransition = {
-                transitionCallback.onSetShowTransitionSet(_vh, TransitionSet())
-            }
-
-            onTransitionEnd = {
-                onTransitionShowEnd()
-            }
-
-            //transition
-            if (!transitionCallback.onStartShowTransition(this@ViewTransitionFragment, _vh)) {
-                //不拦截, 执行默认的过渡动画
-                transition()
-            }
+    open fun initTransitionLayout() {
+        //防止事件穿透
+        _vh.itemView.isClickable = true
+        _vh.itemView.visibility = View.INVISIBLE
+        _vh.post {
+            startTransition(true)
         }
+    }
+
+    open fun onTransitionShowStart() {
+        _vh.itemView.visibility = View.VISIBLE
     }
 
     /**显示过渡动画结束*/
     open fun onTransitionShowEnd() {
+
+    }
+
+    open fun onTransitionHideStart() {
 
     }
 
@@ -86,32 +72,81 @@ open class ViewTransitionFragment : AbsLifecycleFragment() {
         return false
     }
 
+    /**转场动画显示界面*/
+    open fun startTransition(start: Boolean) {
+        dslTransition.apply {
+            sceneRoot = _vh.itemView as? ViewGroup
+
+            transitionCallback.sceneRoot = sceneRoot
+
+            _configTransition(start, _vh)
+        }
+    }
+
     /**转场动画关闭界面*/
     open fun backTransition() {
+        startTransition(false)
+    }
+
+    open fun _configTransition(start: Boolean, vh: DslViewHolder) {
         dslTransition.apply {
+
             //Capture
             onCaptureStartValues = {
-                transitionCallback.onCaptureHideStartValues(_vh)
+                if (start) {
+                    transitionCallback.onCaptureShowStartValues(vh)
+                } else {
+                    transitionCallback.onCaptureHideStartValues(vh)
+                }
             }
 
             //Capture
             onCaptureEndValues = {
-                transitionCallback.onCaptureHideEndValues(_vh)
+                if (start) {
+                    transitionCallback.onCaptureShowEndValues(vh)
+                } else {
+                    transitionCallback.onCaptureHideEndValues(vh)
+                }
             }
 
             //anim
             onSetTransition = {
-                transitionCallback.onSetHideTransitionSet(_vh, TransitionSet())
+                if (start) {
+                    transitionCallback.onSetShowTransitionSet(vh, TransitionSet())
+                } else {
+                    transitionCallback.onSetHideTransitionSet(vh, TransitionSet())
+                }
+            }
+
+            //callback
+            onTransitionStart = {
+                if (start) {
+                    onTransitionShowStart()
+                } else {
+                    onTransitionHideStart()
+                }
             }
 
             onTransitionEnd = {
-                onTransitionHideEnd()
+                if (start) {
+                    onTransitionShowEnd()
+                } else {
+                    onTransitionHideEnd()
+                }
+                sceneRoot = null
             }
 
             //transition
-            if (!transitionCallback.onStartHideTransition(this@ViewTransitionFragment, _vh)) {
-                //不拦截, 执行默认的过渡动画
-                transition()
+            if (start) {
+                if (!transitionCallback.onStartShowTransition(this@ViewTransitionFragment, vh)) {
+                    //不拦截, 执行默认的过渡动画
+                    transition()
+                }
+            } else {
+                if (!transitionCallback.onStartHideTransition(this@ViewTransitionFragment, vh)) {
+                    //不拦截, 执行默认的过渡动画
+                    transition()
+                }
             }
         }
     }

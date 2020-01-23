@@ -1,6 +1,5 @@
 package com.angcyo.pager
 
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.angcyo.base.dslFHelper
 
@@ -11,13 +10,13 @@ import com.angcyo.base.dslFHelper
  * @date 2020/01/16
  */
 
-/**[Fragment]中*/
-fun Fragment.dslPager(imageView: ImageView?, url: String?) {
+/**[Fragment]中, 快速启动[Pager]大图视频浏览界面*/
+fun Fragment.dslPager(action: PagerTransitionCallback.() -> Unit) {
     dslFHelper {
         noAnim()
-        show(ViewTransitionFragment().apply {
-            transitionCallback = object : ViewTransitionCallback() {
-
+        show(PagerTransitionFragment().apply {
+            transitionCallback = PagerTransitionCallback().apply {
+                action()
             }
         })
     }

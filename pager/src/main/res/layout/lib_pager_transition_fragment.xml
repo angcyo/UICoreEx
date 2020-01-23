@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/photo_image_view"
+    <com.angcyo.widget.pager.DslViewPager
+        android:id="@+id/lib_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -1,7 +1,9 @@
 package com.angcyo.pager
 
 import android.graphics.Color
-import androidx.transition.TransitionSet
+import android.view.View
+import android.view.ViewGroup
+import androidx.transition.*
 import com.angcyo.transition.ColorTransition
 import com.angcyo.widget.DslViewHolder
 
@@ -14,17 +16,24 @@ import com.angcyo.widget.DslViewHolder
 
 open class ViewTransitionCallback {
 
+    /**根布局, 通常也是背景动画视图*/
+    var sceneRoot: ViewGroup? = null
+
+    open fun backgroundTransitionView(viewHolder: DslViewHolder): View {
+        return sceneRoot ?: viewHolder.itemView
+    }
+
     //<editor-fold desc="show过渡">
 
     /**界面显示时, 动画开始的值设置*/
     open fun onCaptureShowStartValues(viewHolder: DslViewHolder) {
         //背景颜色动画
-        viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT)
+        backgroundTransitionView(viewHolder).setBackgroundColor(Color.TRANSPARENT)
     }
 
     /**界面显示时, 动画结束后的值设置*/
     open fun onCaptureShowEndValues(viewHolder: DslViewHolder) {
-        viewHolder.itemView.setBackgroundColor(Color.BLACK)
+        backgroundTransitionView(viewHolder).setBackgroundColor(Color.BLACK)
     }
 
     /**开始show的转场动画, 返回true, 拦截过渡*/
@@ -40,13 +49,13 @@ open class ViewTransitionCallback {
         transitionSet: TransitionSet
     ): TransitionSet {
         transitionSet.apply {
-            addTransition(ColorTransition().addTarget(viewHolder.itemView))
-//            addTransition(Fade(Fade.OUT))
-//            addTransition(ChangeBounds())
-//            addTransition(ChangeTransform())
-//            addTransition(ChangeClipBounds())
-//            addTransition(ChangeImageTransform())
-//            addTransition(Fade(Fade.IN))
+            addTransition(ColorTransition().addTarget(backgroundTransitionView(viewHolder)))
+            addTransition(Fade(Fade.OUT))
+            addTransition(ChangeBounds())
+            addTransition(ChangeTransform())
+            addTransition(ChangeClipBounds())
+            addTransition(ChangeImageTransform())
+            addTransition(Fade(Fade.IN))
         }
         return transitionSet
     }
@@ -57,12 +66,12 @@ open class ViewTransitionCallback {
 
     /**界面关闭, 动画开始时的值(通过可以不设置此处)*/
     open fun onCaptureHideStartValues(viewHolder: DslViewHolder) {
-        viewHolder.itemView.setBackgroundColor(Color.BLACK)
+        backgroundTransitionView(viewHolder).setBackgroundColor(Color.BLACK)
     }
 
     /**界面关闭, 动画需要结束的值*/
     open fun onCaptureHideEndValues(viewHolder: DslViewHolder) {
-        viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT)
+        backgroundTransitionView(viewHolder).setBackgroundColor(Color.TRANSPARENT)
     }
 
     /**开始hide的转场动画, 返回true, 拦截过渡*/
