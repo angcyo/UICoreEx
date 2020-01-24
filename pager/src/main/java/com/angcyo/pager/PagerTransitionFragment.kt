@@ -5,10 +5,9 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
 import android.view.ViewGroup
-import com.angcyo.base.interceptTouchEvent
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.set
-import com.angcyo.loader.loadPath
+import com.angcyo.library.loader.loadPath
 import com.angcyo.pager.dslitem.DslPhotoViewItem
 import com.angcyo.tablayout.evaluateColor
 import com.angcyo.widget._vp

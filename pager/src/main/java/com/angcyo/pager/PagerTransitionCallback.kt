@@ -11,8 +11,8 @@ import androidx.transition.*
 import androidx.viewpager.widget.ViewPager
 import com.angcyo.drawable.copyDrawable
 import com.angcyo.dsladapter.getViewRect
-import com.angcyo.loader.LoaderMedia
-import com.angcyo.loader.loadPath
+import com.angcyo.library.loader.LoaderMedia
+import com.angcyo.library.loader.loadPath
 import com.angcyo.pager.dslitem.IPlaceholderDrawableProvider
 import com.angcyo.transition.ColorTransition
 import com.angcyo.widget.DslViewHolder

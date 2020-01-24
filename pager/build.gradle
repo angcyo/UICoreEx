@@ -12,5 +12,4 @@ dependencies {
     implementation project(allModule.glide)
     implementation project(allModule.github)
     implementation project(allModule.transition)
-    implementation project(allModule.loader)
 }
