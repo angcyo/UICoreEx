@@ -1,13 +1,16 @@
 package com.angcyo.item
 
+import android.os.StatFs
 import com.angcyo.activity.copy
 import com.angcyo.core.component.toast
 import com.angcyo.core.utils.Device
 import com.angcyo.drawable.getColor
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.getMobileIP
 import com.angcyo.library.ex.getWifiIP
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.span.DslSpan
 import com.angcyo.widget.span.span
 
@@ -34,6 +37,7 @@ class DslLastDeviceInfoItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem)
 
+        //设备信息
         itemHolder.tv(R.id.lib_text_view)?.text = span {
             append(getWifiIP()).append("|").append(getMobileIP())
             appendln()
@@ -47,6 +51,24 @@ class DslLastDeviceInfoItem : DslAdapterItem() {
             itemData = this
 
             onConfigDeviceInfo(this)
+        }
+
+        //SD空间信息
+        val statFs = StatFs(
+            itemHolder.content.getExternalFilesDir("")?.absolutePath
+                ?: itemHolder.content.filesDir.absolutePath
+        )
+        val usedBytes = statFs.totalBytes - statFs.availableBytes
+        val progress = (usedBytes * 1f / statFs.totalBytes * 100).toInt()
+        itemHolder.v<DslProgressBar>(R.id.lib_progress_bar)
+            ?.setProgress(progress)
+        itemHolder.tv(R.id.lib_tip_view)?.text = span {
+            append(usedBytes.fileSizeString())
+            append("/")
+            append(statFs.totalBytes.fileSizeString())
+            append(" ")
+            append("$progress")
+            append("%")
         }
 
         itemHolder.clickItem {

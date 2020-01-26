@@ -50,6 +50,7 @@ fun ViewModelStore.of(
     )
 }
 
+/**自定义[ViewModelStore]获取[ViewModel]*/
 inline fun <reified VM : ViewModel> ViewModelStore.vm(
     activity: Activity? = null,
     factory: ViewModelProvider.Factory? = null
