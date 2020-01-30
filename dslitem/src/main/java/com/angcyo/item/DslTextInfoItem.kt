@@ -1,7 +1,7 @@
 package com.angcyo.item
 
 import androidx.annotation.DrawableRes
-import com.angcyo.drawable.color
+import com.angcyo.library.ex.color
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.widget.DslViewHolder

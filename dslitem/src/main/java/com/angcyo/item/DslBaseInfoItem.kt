@@ -5,7 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import com.angcyo.drawable.color
+import com.angcyo.library.ex.color
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.widget.DslViewHolder

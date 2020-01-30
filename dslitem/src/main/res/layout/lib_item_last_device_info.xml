@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/lib_white"
             android:textSize="9dp"
             tools:text="20G/128G" />
     </FrameLayout>

@@ -2,13 +2,13 @@ package com.angcyo.item
 
 import android.os.StatFs
 import com.angcyo.activity.copy
-import com.angcyo.core.component.toast
 import com.angcyo.core.utils.Device
-import com.angcyo.drawable.getColor
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.fileSizeString
+import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.getMobileIP
 import com.angcyo.library.ex.getWifiIP
+import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.span.DslSpan
