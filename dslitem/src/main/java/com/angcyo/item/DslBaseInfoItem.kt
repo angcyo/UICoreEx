@@ -5,8 +5,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import com.angcyo.library.ex.color
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex.color
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.getDrawable
@@ -48,7 +48,7 @@ open class DslBaseInfoItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem)
 
-        (itemHolder.itemView as? RLinearLayout)?.bDrawable = itemBackgroundDrawable
+        (itemHolder.itemView as? RLinearLayout)?.layoutDelegate?.bDrawable = itemBackgroundDrawable
 
         //文本信息
         itemHolder.tv(R.id.text_view)?.apply {

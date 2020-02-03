@@ -1,11 +1,5 @@
 apply from: allGradle.libBase
 
-android {
-    defaultConfig {
-        minSdkVersion 14
-    }
-}
-
 dependencies {
     //https://github.com/material-components/material-components-android
     //https://mvnrepository.com/artifact/com.google.android.material/material
