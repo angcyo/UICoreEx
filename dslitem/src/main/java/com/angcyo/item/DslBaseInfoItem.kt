@@ -22,9 +22,6 @@ import com.angcyo.widget.layout.RLinearLayout
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 open class DslBaseInfoItem : DslAdapterItem() {
-    init {
-        itemLayoutId = R.layout.dsl_info_item
-    }
 
     /**背景*/
     var itemBackgroundDrawable: Drawable? = ColorDrawable(Color.WHITE)
@@ -41,17 +38,22 @@ open class DslBaseInfoItem : DslAdapterItem() {
     @LayoutRes
     var itemExtendLayoutId: Int = undefined_res
 
+    init {
+        itemLayoutId = R.layout.dsl_info_item
+    }
+
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
-        adapterItem: DslAdapterItem
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
     ) {
-        super.onItemBind(itemHolder, itemPosition, adapterItem)
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         (itemHolder.itemView as? RLinearLayout)?.layoutDelegate?.bDrawable = itemBackgroundDrawable
 
         //文本信息
-        itemHolder.tv(R.id.text_view)?.apply {
+        itemHolder.tv(R.id.lib_text_view)?.apply {
             text = itemInfoText
 
             if (itemInfoIconColor == undefined_res) {

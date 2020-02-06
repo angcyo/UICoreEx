@@ -1,10 +1,11 @@
 package com.angcyo.item
 
 import androidx.annotation.DrawableRes
-import com.angcyo.library.ex.color
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex.color
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget._tv
 import com.angcyo.widget.base.getDrawable
 import com.angcyo.widget.base.setRightIco
 
@@ -16,12 +17,6 @@ import com.angcyo.widget.base.setRightIco
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 open class DslTextInfoItem : DslBaseInfoItem() {
-    init {
-        itemExtendLayoutId = R.layout.dsl_extent_text_item
-    }
-
-    /**显示未读小红点*/
-    var itemShowNoRead: Boolean = false
 
     /**描述文本*/
     var itemDarkText: CharSequence? = null
@@ -30,18 +25,23 @@ open class DslTextInfoItem : DslBaseInfoItem() {
     var itemDarkIcon: Int = undefined_res
     var itemDarkIconColor: Int = undefined_res
 
-    /**未读数*/
+    /**未读数,空字符串会绘制成小圆点 */
     var itemNoReadNumString: String? = null
+
+    init {
+        itemExtendLayoutId = R.layout.dsl_extent_text_item
+    }
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
-        adapterItem: DslAdapterItem
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
     ) {
-        super.onItemBind(itemHolder, itemPosition, adapterItem)
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         //文本
-        itemHolder.tv(R.id.sub_text_view)?.apply {
+        itemHolder._tv(R.id.lib_dark_text_view)?.apply {
             text = itemDarkText
 
             if (itemDarkIconColor == undefined_res) {
@@ -49,20 +49,8 @@ open class DslTextInfoItem : DslBaseInfoItem() {
             } else {
                 setRightIco(getDrawable(itemDarkIcon).color(itemDarkIconColor))
             }
-//
-//            setShowNoRead(itemShowNoRead)
+
+            dslBadeDrawable.badgeText = itemNoReadNumString
         }
-//
-//        //未读数
-//        itemHolder.v<RDrawNoReadNumView>(R.id.read_num_view)?.apply {
-//            marginLayoutParams {
-//                rightMargin = if (itemDarkIcon > 0) {
-//                    40 * dpi
-//                } else {
-//                    16 * dpi
-//                }
-//            }
-//            getDrawReadNum().readNumString = itemNoReadNumString
-//        }
     }
 }

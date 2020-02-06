@@ -1,10 +1,10 @@
 package com.angcyo.item
 
 import android.os.StatFs
-import com.angcyo.core.utils.Device
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
+import com.angcyo.library.utils.Device
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.span.DslSpan
@@ -29,9 +29,10 @@ class DslLastDeviceInfoItem : DslAdapterItem() {
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
-        adapterItem: DslAdapterItem
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
     ) {
-        super.onItemBind(itemHolder, itemPosition, adapterItem)
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         //设备信息
         itemHolder.tv(R.id.lib_text_view)?.text = span {
