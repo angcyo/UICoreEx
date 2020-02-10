@@ -1,0 +1,29 @@
+apply from: allGradle.libBase
+
+//https://docs.agora.io/cn/Interactive%20Broadcast/start_live_android?platform=Android
+
+android {
+    defaultConfig {
+        //声网SDK要求
+        minSdkVersion 16
+    }
+}
+
+dependencies {
+    implementation project(allModule.core)
+
+    //https://jcenter.bintray.com/io/agora/
+
+    /*https://docs.agora.io/cn/Video/android_video?platform=Android*/
+    /*https://jcenter.bintray.com/io/agora/rtc/full-sdk/*/
+    //≈9.5mb
+    api 'io.agora.rtc:full-sdk:2.9.2'
+
+    //https://jcenter.bintray.com/io/agora/rtm/rtm-sdk/
+    //≈2.5mb
+    api 'io.agora.rtm:rtm-sdk:1.2.2'
+
+    //https://jcenter.bintray.com/io/agora/authentication/
+    //≈23kb , android中无法使用
+    //api 'io.agora:authentication:1.6.0'
+}

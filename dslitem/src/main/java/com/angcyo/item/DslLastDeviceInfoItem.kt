@@ -66,6 +66,13 @@ class DslLastDeviceInfoItem : DslAdapterItem() {
             append(" ")
             append("$progress")
             append("%")
+
+            //内存信息
+            append(" (")
+            append(Device.getAvailableMemory().fileSizeString())
+            append(" /")
+            append(Device.getTotalMemory().fileSizeString())
+            append(")")
         }
 
         itemHolder.clickItem {

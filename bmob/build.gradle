@@ -1,0 +1,30 @@
+apply from: allGradle.libBase
+
+android {
+    //useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.http)
+    implementation project(allModule.viewmodel)
+    implementation project(allModule.dialog)
+
+    //https://github.com/bmob
+    //https://github.com/bmob/bmob-android-sdk
+    //maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
+    //≈2.69 MB
+    api('cn.bmob.android:bmob-sdk:3.7.4') {
+        transitive = false
+        exclude group: 'com.google.code.gson'
+        exclude group: 'io.reactivex.rxjava2'
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+//        exclude module: 'gson'
+//        exclude module: 'rxjava'
+//        exclude module: 'okio'
+    }
+
+    //如果需要兼容Android6.0系统，请添加以下两项：
+    //implementation 'cn.bmob.android:http-legacy:1.0'
+}
