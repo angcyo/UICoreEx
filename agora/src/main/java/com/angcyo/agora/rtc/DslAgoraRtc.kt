@@ -107,6 +107,7 @@ object DslAgoraRtc {
     /**
      * 加入频道, 如果是[CHANNEL_PROFILE_LIVE_BROADCASTING]直播模式,
      * 主播在加入频道之前需要设置角色[setClientRole(CLIENT_ROLE_BROADCASTER)]
+     * 通道名, 不能包含中文.
      * */
     fun joinChannel(
         userId: Int,

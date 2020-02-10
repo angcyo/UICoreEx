@@ -99,6 +99,8 @@ object DslAgoraRtm {
      * 创建通道
      * 每个客户端实例最多只能同时加入 20 个频道。
      * https://docs.agora.io/cn/Real-time-Messaging/messaging_android?platform=Android#频道消息
+     *
+     * 通道名, 不能包含中文.
      *  */
     fun createAndJoinChannel(
         channelName: String,
