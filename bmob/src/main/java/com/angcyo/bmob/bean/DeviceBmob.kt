@@ -35,9 +35,10 @@ data class DeviceBmob(
                 this.userId = userId
                 psuedoID = Device.getUniquePsuedoID()
                 deviceModel = buildString {
-                    append(Build.MODEL)//Nexus 5X
-                    append("/")
+                    //OnePlus/ONEPLUS A6000/jenkins/qcom/ONEPLUS A6000_22_191215
                     append(Build.MANUFACTURER)//LGE
+                    append("/")
+                    append(Build.MODEL)//Nexus 5X
                     append("/")
                     append(Build.USER)//android-build
                     append("/")
