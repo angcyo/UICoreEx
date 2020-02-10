@@ -40,7 +40,10 @@ class EngineEventDispatch : IRtcEngineEventHandlerEx() {
         }
     }
 
-    /**发生警告回调。*/
+    /**
+     * 发生警告回调。
+     * https://docs.agora.io/cn/Interactive%20Broadcast/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_warn_code.html
+     * */
     override fun onWarning(warn: Int) {
         super.onWarning(warn)
         L.w("声网警告:", warn)
@@ -216,7 +219,7 @@ class EngineEventDispatch : IRtcEngineEventHandlerEx() {
      * */
     override fun onLocalVideoStats(stats: LocalVideoStats) {
         super.onLocalVideoStats(stats)
-        L.d(buildString {
+        L.v(buildString {
             append("${stats.sentBitrate}Kbps ")
             append("${stats.encoderOutputFrameRate}fps ")
             append("send:${stats.sentFrameRate}fps ")
@@ -286,7 +289,7 @@ class EngineEventDispatch : IRtcEngineEventHandlerEx() {
      * */
     override fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int) {
         super.onNetworkQuality(uid, txQuality, rxQuality)
-        L.v("网络质量:uid:$uid ${txQuality.txQualityStr()} ${rxQuality.rxQualityStr()}")
+        L.v("网络质量:uid:$uid 上行:${txQuality.txQualityStr()} 下行:${rxQuality.rxQualityStr()}")
         listeners.forEach {
             it.onNetworkQuality(uid, txQuality, rxQuality)
         }
