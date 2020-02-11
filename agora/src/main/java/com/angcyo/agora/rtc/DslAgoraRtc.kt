@@ -123,7 +123,7 @@ object DslAgoraRtc {
         _rtcEngine?.apply {
             //Android Q 手机上直播无声音
             val opensl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) "false" else "true"
-            setParameters("{\"che.audio.opensl\":${opensl}")
+            setParameters("{\"che.audio.opensl\":${opensl}}")
 
             //val uid = registerLocalUserAccount(appId, userAccount)
 
