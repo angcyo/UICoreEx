@@ -1,6 +1,7 @@
 package com.angcyo.agora.rtc
 
 import android.content.Context
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import com.angcyo.agora.Agora
@@ -120,6 +121,10 @@ object DslAgoraRtc {
 
         //相同appId的相同channelName的用户, 就会进行通讯.
         _rtcEngine?.apply {
+            //Android Q 手机上直播无声音
+            val opensl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) "false" else "true"
+            setParameters("{\"che.audio.opensl\":${opensl}")
+
             //val uid = registerLocalUserAccount(appId, userAccount)
 
             /*
@@ -129,6 +134,7 @@ object DslAgoraRtc {
             由于 Java 不支持无符号整数，uid 被当成 32 位有符号整数处理，
             对于过大的整数，Java 会表示为负数，如有需要可以用 (uid&0xffffffffL)
             转换成 64 位整数*/
+
             joinChannel(token, channelName, optionalInfo, userId)
         }
 
