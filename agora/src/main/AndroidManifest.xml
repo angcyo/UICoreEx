@@ -14,7 +14,8 @@
     <!--如果你使用的是 Android 10.0 及以上设备，还需要添加如下权限：-->
     <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
 
-    <application android:requestLegacyExternalStorage="false">
+    <!--android:requestLegacyExternalStorage="false"-->
+    <application>
 
     </application>
 </manifest>
