@@ -33,7 +33,7 @@ data class DeviceBmob(
             val bmob = DeviceBmob()
             bmob.apply {
                 this.userId = userId
-                psuedoID = Device.getUniquePsuedoID()
+                psuedoID = Device.deviceId
                 deviceModel = buildString {
                     //OnePlus/ONEPLUS A6000/jenkins/qcom/ONEPLUS A6000_22_191215
                     append(Build.MANUFACTURER)//LGE
