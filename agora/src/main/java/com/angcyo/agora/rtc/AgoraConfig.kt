@@ -21,7 +21,7 @@ data class AgoraConfig(
     var appId: String? = "960644f3218845e5aef0ab9166256473",
 
     //本地日志文件
-    var logFilePath: String? = FileUtils.appExternalFolder(
+    var logFilePath: String? = FileUtils.appRootExternalFolderFile(
         folder = "agora",
         name = "agora" + fileName("yyyy-MM-dd", ".log")
     )?.absolutePath,
