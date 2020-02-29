@@ -10,7 +10,8 @@ android {
 }
 
 dependencies {
-    implementation project(allModule.core)
+    implementation 'androidx.core:core:1.2.0'
+    implementation project(allModule.library)
 
     //https://jcenter.bintray.com/io/agora/
 

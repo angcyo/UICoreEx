@@ -12,6 +12,4 @@ object Agora {
     var appId: String = ""
 
     var context: Context? = null
-
-
 }
