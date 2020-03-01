@@ -1,0 +1,14 @@
+apply from: allGradle.libBase
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    defaultConfig {
+        minSdkVersion 15
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation project(allModule.library)
+    implementation project(allModule.core)
+}
