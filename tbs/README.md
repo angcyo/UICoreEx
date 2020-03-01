@@ -16,3 +16,7 @@ https://x5.tencent.com/tbs/technical.html#/detail/sdk/1/34cf1488-7dc2-41ca-a77f-
 TBS 5.0正式发布
 纯咨询的问题可以加入官群：434421502 ，（腾讯浏览服务前端开发），在群里 @438204121或私聊
 https://x5.tencent.com/tbs/history.html#/detail/24
+
+腾讯说不需要加混淆, 但实际上必须加混淆规则.
+否则会崩溃.
+http://res.imtt.qq.com/TES/proguard.zip
