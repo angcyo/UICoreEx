@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     defaultConfig {
-        minSdkVersion 15
+        //minSdkVersion 15
     }
 }
 

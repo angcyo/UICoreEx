@@ -98,8 +98,9 @@ open class TbsWebFragment : BaseTitleFragment() {
                             if (fragmentTitle.isNullOrEmpty()) {
                                 fragmentTitle = "加载中..."
                             }
-                            checkCloseView()
                         }
+
+                        checkCloseView()
 
                         if (progress >= 80) {
                             _vh.gone(R.id.lib_arc_loading_view)
