@@ -2,18 +2,17 @@ package com.angcyo.tbs
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.core.content.FileProvider
 import com.angcyo.DslAHelper
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.L
+import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
 import com.angcyo.tbs.core.TbsWebActivity
 import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
-import com.tencent.smtt.sdk.CookieManager
-import com.tencent.smtt.sdk.CookieSyncManager
-import com.tencent.smtt.sdk.QbSdk
-import com.tencent.smtt.sdk.WebView
+import com.tencent.smtt.sdk.*
 import com.tencent.tbs.reader.TbsFileInterfaceImpl
 import org.json.JSONException
 import org.json.JSONObject
@@ -70,6 +69,21 @@ class DslTbs {
                     })
                 }
             }
+        }
+
+        /**判断当前Tbs播放器是否已经可以使用。*/
+        fun canUseTbsPlayer(context: Context = app()): Boolean {
+            return TbsVideo.canUseTbsPlayer(context)
+        }
+
+        /**
+         * 直接调用播放接口，传入视频流的url
+         * extraData对象是根据定制需要传入约定的信息，没有需要可以传如null
+         * extraData可以传入key: "screenMode", 值: 102, 来控制默认的播放UI
+         * 类似: extraData.putInt("screenMode", 102); 来实现默认全屏+控制栏等UI
+         * */
+        fun openVideo(context: Context = app(), videoUrl: String, extraData: Bundle? = null) {
+            TbsVideo.openVideo(context, videoUrl, extraData)
         }
 
         /**获取tbs崩溃日志*/
@@ -141,8 +155,11 @@ class DslTbs {
 }
 
 /**打开url, 文件, 媒体, 等...*/
-fun DslAHelper.open(config: TbsWebConfig.() -> Unit) {
-    start(Intent(context, TbsWebActivity::class.java).apply {
+fun DslAHelper.open(
+    cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
+    config: TbsWebConfig.() -> Unit
+) {
+    start(Intent(context, cls).apply {
         putExtra(TbsWebFragment.KEY_CONFIG, TbsWebConfig().apply {
             config()
         })
