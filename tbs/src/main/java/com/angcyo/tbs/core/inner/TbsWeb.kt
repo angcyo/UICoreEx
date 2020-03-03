@@ -1,5 +1,7 @@
 package com.angcyo.tbs.core.inner
 
+import android.net.Uri
+import com.angcyo.library.ex.patternList
 import com.tencent.smtt.sdk.CookieSyncManager
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
@@ -46,5 +48,79 @@ object TbsWeb {
 
         CookieSyncManager.createInstance(webView.context)
         CookieSyncManager.getInstance().sync()
+    }
+
+    /**
+     * attachment;filename="百度手机助手(360手机助手).apk"
+     * attachment;filename="baidusearch_AndroidPhone_1021446w.apk"
+     */
+    fun getFileName(url: String, attachment: String?): String? {
+        var name: String? = null
+        name = getFileNameFromAttachment(attachment)
+        if (!name.isNullOrBlank()) {
+            return name.trim('"')
+        }
+
+        name = getFileNameFromAttachment(url)
+        if (!name.isNullOrBlank()) {
+            return name.trim('"')
+        }
+
+        //最后一步, 截取url后面的文件名
+        url.split("?").getOrNull(0)?.run {
+            val indexOf = lastIndexOf("/")
+            if (indexOf != -1) {
+                name = this.substring(indexOf + 1, this.length)
+            }
+        }
+        return name?.trim('"')
+    }
+
+    fun getFileNameFromAttachment(attachment: String?): String? {
+        var name: String? = null
+        attachment?.run {
+            if (isNotEmpty()) {
+                val decode = Uri.decode(this)
+
+                //正则匹配filename
+                decode.patternList("filename=\"(.*)\"").firstOrNull()?.run {
+                    name = this.split("filename=").getOrNull(1)
+
+                    if (!name.isNullOrBlank()) {
+                        return name
+                    }
+                }
+
+                //正则匹配name
+                decode.patternList("name=\"(.*)\"").firstOrNull()?.run {
+                    name = this.split("name=").getOrNull(1)
+
+                    if (!name.isNullOrBlank()) {
+                        return name
+                    }
+                }
+
+                //uri查询
+                Uri.parse(decode).run {
+                    //filename
+                    getQueryParameter("filename")?.run {
+                        name = this
+
+                        if (!name.isNullOrBlank()) {
+                            return name
+                        }
+                    }
+                    //name
+                    getQueryParameter("name")?.run {
+                        name = this
+
+                        if (!name.isNullOrBlank()) {
+                            return name
+                        }
+                    }
+                }
+            }
+        }
+        return name
     }
 }

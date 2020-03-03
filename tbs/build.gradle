@@ -12,4 +12,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation project(allModule.library)
     implementation project(allModule.core)
+    implementation project(allModule.download)
 }

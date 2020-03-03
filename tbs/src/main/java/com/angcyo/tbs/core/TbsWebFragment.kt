@@ -2,19 +2,25 @@ package com.angcyo.tbs.core
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.angcyo.base.dslFHelper
 import com.angcyo.core.fragment.BaseTitleFragment
-import com.angcyo.library.L
-import com.angcyo.library.ex.colorFilter
-import com.angcyo.library.ex.isHttpScheme
+import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog.dslDialog
+import com.angcyo.download.download
+import com.angcyo.download.downloadNotify
+import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
+import com.angcyo.tablayout.screenWidth
 import com.angcyo.tbs.R
+import com.angcyo.tbs.core.inner.TbsWeb
 import com.angcyo.tbs.core.inner.TbsWebView
 import com.angcyo.widget.bar
 import com.angcyo.widget.base.find
 import com.angcyo.widget.base.getDrawable
 import com.angcyo.widget.base.setSingleLineMode
+import com.angcyo.widget.base.setWidth
 import com.angcyo.widget.span.span
 
 /**
@@ -62,7 +68,8 @@ open class TbsWebFragment : BaseTitleFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _vh.tv(R.id.lib_title_text_view)?.run {
-            setSingleLineMode(maxLength = 15)
+            setWidth(width = screenWidth - 160 * dpi)
+            setSingleLineMode()
         }
 
         //有些网页, 无法回退. 添加强制关闭按钮
@@ -81,40 +88,84 @@ open class TbsWebFragment : BaseTitleFragment() {
             if (uri.isHttpScheme()) {
                 //打开网页
                 val url = uri.toString()
-
-                _vh.group(R.id.tbs_wrap_layout)?.addView(TbsWebView(fContext()).apply {
-                    id = R.id.tbs_web_view
-
-                    onReceivedTitle = {
-                        fragmentTitle = it
-                    }
-
-                    onProgressChanged = { url, progress ->
-                        L.d("$url $progress")
-                        _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
-                        //加载框
-
-                        if (progress == 0) {
-                            if (fragmentTitle.isNullOrEmpty()) {
-                                fragmentTitle = "加载中..."
-                            }
-                        }
-
-                        checkCloseView()
-
-                        if (progress >= 80) {
-                            _vh.gone(R.id.lib_arc_loading_view)
-                        }
-                    }
-
-                    loadUrl(url)
-                }, -1, -1)
+                _vh.group(R.id.tbs_wrap_layout)?.run {
+                    attachTbsWebView(this, url)
+                }
             } else {
                 //其他类型
-
             }
         }
     }
+
+    //<editor-fold desc="根据不同的类型, 填充不同的布局">
+
+    open fun attachTbsWebView(parent: ViewGroup, url: String) {
+        parent.addView(TbsWebView(fContext()).apply {
+            id = R.id.tbs_web_view
+
+            //标题
+            onReceivedTitle = {
+                fragmentTitle = it
+            }
+
+            //进度
+            onProgressChanged = { url, progress ->
+                // L.d("$url $progress")
+                _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
+                //加载框
+
+                if (progress == 0) {
+                    if (fragmentTitle.isNullOrEmpty()) {
+                        fragmentTitle = "加载中..."
+                    }
+                }
+
+                checkCloseView()
+
+                if (progress >= 80) {
+                    _vh.gone(R.id.lib_arc_loading_view)
+                }
+            }
+
+            //下载
+            onDownloadListener = { url, userAgent, contentDisposition, mime, length ->
+                fContext().dslDialog {
+                    configBottomDialog()
+                    dialogLayoutId = R.layout.dialog_tbs_file_download
+                    onInitListener = { dialog, dialogViewHolder ->
+                        val fileName = TbsWeb.getFileName(url, contentDisposition)
+                        dialogViewHolder.tv(R.id.target_url_view)?.text = url
+                        dialogViewHolder.tv(R.id.file_name_view)?.text = fileName
+                        dialogViewHolder.tv(R.id.file_size_view)?.text =
+                            if (length > 0) length.fileSizeString() else "未知大小"
+                        dialogViewHolder.tv(R.id.file_type_view)?.text = mime
+
+                        dialogViewHolder.longClick(R.id.target_url_view) {
+                            url.copy()
+                            toastQQ("下载地址已复制")
+                        }
+
+                        dialogViewHolder.click(R.id.download_button) {
+                            dialog.dismiss()
+                            url.downloadNotify()
+                            url.download {
+                                onConfigTask = {
+                                    it.setFilename(fileName)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //打开其他应用
+
+            loadUrl(url)
+        }, -1, -1)
+    }
+
+
+    //</editor-fold desc="根据不同的类型, 填充不同的布局">
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)
