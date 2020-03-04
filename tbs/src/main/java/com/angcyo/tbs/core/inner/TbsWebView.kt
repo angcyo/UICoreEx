@@ -1,6 +1,7 @@
 package com.angcyo.tbs.core.inner
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
@@ -39,8 +40,8 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     var onReceivedTitle: (title: String?) -> Unit = {}
 
     /**打开应用回调*/
-    var onOpenAppListener: (activityInfo: ActivityInfo, appBean: AppBean) -> Unit =
-        { activityInfo, appBean -> L.d("打开应用:${appBean.appName} ${activityInfo.name}") }
+    var onOpenAppListener: (url: String, activityInfo: ActivityInfo, appBean: AppBean) -> Unit =
+        { url, activityInfo, appBean -> L.d("打开应用:${appBean.appName} ${activityInfo.name}") }
 
     /**下载文件回调*/
     var onDownloadListener: (
@@ -67,7 +68,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
-            L.d("${webView.originalUrl} ${webView.url} ${webView.title} $url")
+            L.d("url:$url o:${webView.originalUrl} u:${webView.url} title:${webView.title} ")
             _loadUrl = url
             return onShouldOverrideUrlLoading(this, webView, url)
         }
@@ -140,11 +141,12 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
                 //查询是否是app intent
                 dslIntentQuery {
                     queryData = Uri.parse(url)
+                    queryCategory = listOf(Intent.CATEGORY_BROWSABLE)
                 }.apply {
                     if (isNotEmpty()) {
                         //找到了
                         first().activityInfo.run {
-                            onOpenAppListener(this, packageName.appBean())
+                            onOpenAppListener(url, this, packageName.appBean())
                         }
                     }
                 }

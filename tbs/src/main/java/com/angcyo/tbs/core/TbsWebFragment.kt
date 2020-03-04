@@ -1,9 +1,11 @@
 package com.angcyo.tbs.core
 
+import android.content.ComponentName
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.dialog.configBottomDialog
@@ -159,6 +161,33 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             //打开其他应用
+            onOpenAppListener = { url, activityInfo, appBean ->
+                fContext().dslDialog {
+                    configBottomDialog()
+                    dialogLayoutId = R.layout.dialog_tbs_open_app
+                    onInitListener = { dialog, dialogViewHolder ->
+                        dialogViewHolder.tv(R.id.lib_text_view)?.text = appBean.appName
+                        dialogViewHolder.tv(R.id.lib_sub_text_view)?.text = url
+                        dialogViewHolder.img(R.id.lib_image_view)?.setImageDrawable(appBean.appIcon)
+                        dialogViewHolder.click(R.id.lib_reject_button) {
+                            dialog.dismiss()
+                        }
+                        dialogViewHolder.click(R.id.lib_open_button) {
+                            dialog.dismiss()
+                            dslAHelper {
+                                start(
+                                    url.urlIntent(
+                                        ComponentName(
+                                            activityInfo.packageName,
+                                            activityInfo.name
+                                        )
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
 
             loadUrl(url)
         }, -1, -1)

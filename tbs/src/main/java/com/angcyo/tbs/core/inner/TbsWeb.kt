@@ -76,6 +76,10 @@ object TbsWeb {
         return name?.trim('"')
     }
 
+    /**
+     * attachment; filename=YYB.998886.4c1b4029188a9b5f2ad007e997da02d4.1004112.apk
+     * attachment;filename="baidusearch_AndroidPhone_1021446w.apk"
+     * */
     fun getFileNameFromAttachment(attachment: String?): String? {
         var name: String? = null
         attachment?.run {
@@ -90,9 +94,23 @@ object TbsWeb {
                         return name
                     }
                 }
+                decode.patternList("filename=(.*)").firstOrNull()?.run {
+                    name = this.split("filename=").getOrNull(1)
+
+                    if (!name.isNullOrBlank()) {
+                        return name
+                    }
+                }
 
                 //正则匹配name
                 decode.patternList("name=\"(.*)\"").firstOrNull()?.run {
+                    name = this.split("name=").getOrNull(1)
+
+                    if (!name.isNullOrBlank()) {
+                        return name
+                    }
+                }
+                decode.patternList("name=(.*)").firstOrNull()?.run {
                     name = this.split("name=").getOrNull(1)
 
                     if (!name.isNullOrBlank()) {
