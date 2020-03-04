@@ -15,6 +15,7 @@ import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
 import com.tencent.smtt.export.external.interfaces.IX5WebViewBase
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.sdk.ValueCallback
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
@@ -60,11 +61,18 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             )
         }
 
+    /**选择文件回调, 选择文件后请务必[onReceiveValue]方法*/
+    var onFileChooseListener: (param: FileChooserParam) -> Unit = {}
+
     //</editor-fold desc="回调">
 
     //<editor-fold desc="WebViewClient">
 
     var _loadUrl: String? = null
+
+    //上传文件需要的回调
+    var _filePathCallback: ValueCallback<Uri?>? = null
+    var _filePathCallbacks: ValueCallback<Array<Uri?>>? = null
 
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
@@ -108,6 +116,47 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             //L.d("${webView.originalUrl} ${webView.url} $progress")
             onProgressChanged(webView.url, progress)
         }
+
+        //<editor-fold desc="WebChromeClient文件选择">
+
+        // For Android 3.0+
+        fun openFileChooser(uploadMsg: ValueCallback<Uri?>, acceptType: String?) {
+            L.i("openFileChooser 1 $acceptType")
+            _filePathCallback = uploadMsg
+            openFileChooseProcess(FileChooserParam(acceptType))
+        }
+
+        // For Android < 3.0
+        fun openFileChooser(uploadMsg: ValueCallback<Uri?>) {
+            L.i("openFileChooser 2")
+            _filePathCallback = uploadMsg
+            openFileChooseProcess()
+        }
+
+        // For Android  > 4.1.1
+        override fun openFileChooser(
+            uploadMsg: ValueCallback<Uri?>,
+            acceptType: String?,
+            capture: String?
+        ) {
+            L.i("openFileChooser 3 $acceptType $capture")
+            _filePathCallback = uploadMsg
+            openFileChooseProcess(FileChooserParam(acceptType))
+        }
+
+        // For Android  >= 5.0
+        override fun onShowFileChooser(
+            webView: WebView,
+            filePathCallback: ValueCallback<Array<Uri?>>,
+            fileChooserParams: FileChooserParams
+        ): Boolean {
+            L.i("openFileChooser 4:$filePathCallback ${fileChooserParams.acceptTypes}")
+            _filePathCallbacks = filePathCallback
+            openFileChooseProcess(FileChooserParam(fileChooserParams.acceptTypes?.firstOrNull()))
+            return true
+        }
+
+        //<editor-fold desc="WebChromeClient文件选择">
     }
 
     //</editor-fold desc="WebChromeClient">
@@ -125,6 +174,25 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         //下载
         setDownloadListener { url, userAgent, contentDisposition, mime, length ->
             onDownloadListener(url, userAgent, contentDisposition, mime, length)
+        }
+    }
+
+    //<editor-fold desc="初始化相关">
+
+    /**去掉[OVER_SCROLL]效果*/
+    fun resetOverScrollMode() {
+        view.overScrollMode = View.OVER_SCROLL_NEVER
+        val f: Any? = getMember(WebView::class.java, "f")
+        val g: Any? = getMember(WebView::class.java, "g")
+        if (f is IX5WebViewBase) {
+            try {
+                f.view.overScrollMode = View.OVER_SCROLL_NEVER
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        if (g is View) {
+            g.overScrollMode = View.OVER_SCROLL_NEVER
         }
     }
 
@@ -156,20 +224,26 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         return true
     }
 
-    /**去掉[OVER_SCROLL]效果*/
-    fun resetOverScrollMode() {
-        view.overScrollMode = View.OVER_SCROLL_NEVER
-        val f: Any? = getMember(WebView::class.java, "f")
-        val g: Any? = getMember(WebView::class.java, "g")
-        if (f is IX5WebViewBase) {
-            try {
-                f.view.overScrollMode = View.OVER_SCROLL_NEVER
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        if (g is View) {
-            g.overScrollMode = View.OVER_SCROLL_NEVER
-        }
+    //</editor-fold desc="初始化相关">
+
+    //<editor-fold desc="文件选择">
+
+    open fun openFileChooseProcess(param: FileChooserParam = FileChooserParam()) {
+        //val i = Intent(Intent.ACTION_GET_CONTENT)
+        //i.addCategory(Intent.CATEGORY_OPENABLE)
+        //i.type = "*/*"
+        //startActivityForResult(Intent.createChooser(i, "test"), 0)
+        onFileChooseListener(param)
     }
+
+    /**选择文件后, 调用此方法, 通知给web*/
+    fun onReceiveValue(files: Array<Uri?>?) {
+        _filePathCallback?.onReceiveValue(files?.firstOrNull())
+        _filePathCallbacks?.onReceiveValue(files)
+        _filePathCallback = null
+        _filePathCallbacks = null
+    }
+
+    //</editor-fold desc="文件选择">
+
 }

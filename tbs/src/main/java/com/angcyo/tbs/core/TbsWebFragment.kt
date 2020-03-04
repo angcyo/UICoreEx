@@ -87,9 +87,11 @@ open class TbsWebFragment : BaseTitleFragment() {
         if (uri == null) {
             toastQQ("数据异常")
         } else {
-            if (uri.isHttpScheme()) {
+            val url = uri.toString()
+            if (uri.isHttpScheme() ||
+                (!uri.isFileScheme() && url.mimeType() == "text/html")
+            ) {
                 //打开网页
-                val url = uri.toString()
                 _vh.group(R.id.tbs_wrap_layout)?.run {
                     attachTbsWebView(this, url)
                 }
@@ -198,6 +200,11 @@ open class TbsWebFragment : BaseTitleFragment() {
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _vh.v<TbsWebView>(R.id.tbs_web_view)?.destroy()
     }
 
     override fun onBackPressed(): Boolean {
