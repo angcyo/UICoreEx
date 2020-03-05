@@ -136,7 +136,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 fContext().dslDialog {
                     configBottomDialog()
                     dialogLayoutId = R.layout.dialog_tbs_file_download
-                    onInitListener = { dialog, dialogViewHolder ->
+                    onDialogInitListener = { dialog, dialogViewHolder ->
                         val fileName = TbsWeb.getFileName(url, contentDisposition)
                         dialogViewHolder.tv(R.id.target_url_view)?.text = url
                         dialogViewHolder.tv(R.id.file_name_view)?.text = fileName
@@ -167,7 +167,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 fContext().dslDialog {
                     configBottomDialog()
                     dialogLayoutId = R.layout.dialog_tbs_open_app
-                    onInitListener = { dialog, dialogViewHolder ->
+                    onDialogInitListener = { dialog, dialogViewHolder ->
                         dialogViewHolder.tv(R.id.lib_text_view)?.text = appBean.appName
                         dialogViewHolder.tv(R.id.lib_sub_text_view)?.text = url
                         dialogViewHolder.img(R.id.lib_image_view)?.setImageDrawable(appBean.appIcon)
