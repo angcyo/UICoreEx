@@ -12,6 +12,7 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog.dslDialog
 import com.angcyo.download.download
 import com.angcyo.download.downloadNotify
+import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.tablayout.screenWidth
@@ -85,9 +86,12 @@ open class TbsWebFragment : BaseTitleFragment() {
         val uri = webConfig.uri
 
         if (uri == null) {
-            toastQQ("数据异常")
+            toastQQ("数据异常", R.drawable.lib_ic_error)
         } else {
             val url = uri.toString()
+
+            L.d("TBS:$uri $url")
+
             if (uri.isHttpScheme() ||
                 (!uri.isFileScheme() && url.mimeType() == "text/html")
             ) {
