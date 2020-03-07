@@ -15,6 +15,7 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog.dslDialog
 import com.angcyo.download.download
 import com.angcyo.download.downloadNotify
+import com.angcyo.image.dslitem.DslSubSamplingImageItem
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
@@ -282,9 +283,9 @@ open class TbsWebFragment : BaseTitleFragment() {
     var _dslVideoHolder: DslViewHolder? = null
     var _dslVideoItem: DslTextureVideoItem? = null
 
+    /**加载视频*/
     open fun attachVideoView(parent: ViewGroup, uri: Uri) {
         parent.setBackgroundColor(Color.BLACK)
-
         hideLoadingView()
 
         val dslVideoItem = DslTextureVideoItem().apply {
@@ -304,8 +305,28 @@ open class TbsWebFragment : BaseTitleFragment() {
         _dslVideoHolder = parent.appendDslItem(dslVideoItem)
     }
 
-    open fun attachImageView(parent: ViewGroup, uri: Uri) {
+    var _dslSubSamplingItem: DslSubSamplingImageItem? = null
 
+    /**加载大图*/
+    open fun attachImageView(parent: ViewGroup, uri: Uri) {
+        parent.setBackgroundColor(Color.BLACK)
+        hideLoadingView()
+
+        val dslSubSamplingItem = DslSubSamplingImageItem().apply {
+            _dslSubSamplingItem = this
+
+            itemData = uri
+            itemLoadUri = uri
+
+            onItemDownloadStart = { itemHolder, task ->
+                showLoadingView("下载中...")
+            }
+
+            onItemDownloadFinish = { itemHolder, task, cause, error ->
+                hideLoadingView()
+            }
+        }
+        _dslVideoHolder = parent.appendDslItem(dslSubSamplingItem)
     }
 
     //</editor-fold desc="根据不同的类型, 填充不同的布局">
@@ -319,6 +340,7 @@ open class TbsWebFragment : BaseTitleFragment() {
     override fun onFragmentHide() {
         super.onFragmentHide()
         _dslVideoItem?.itemViewDetachedToWindow?.invoke(_dslVideoHolder!!, 0)
+        _dslSubSamplingItem?.itemViewDetachedToWindow?.invoke(_dslVideoHolder!!, 0)
     }
 
     override fun onDestroy() {
@@ -326,6 +348,7 @@ open class TbsWebFragment : BaseTitleFragment() {
         _tbsWebView?.destroy()
         _tbsReaderView?.onStop()
         _dslVideoItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
+        _dslSubSamplingItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
     }
 
     override fun onBackPressed(): Boolean {
