@@ -1,6 +1,8 @@
 package com.angcyo.tbs.core
 
 import android.content.ComponentName
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +17,19 @@ import com.angcyo.download.downloadNotify
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
+import com.angcyo.media.dslitem.DslTextureVideoItem
 import com.angcyo.tablayout.screenWidth
+import com.angcyo.tbs.DslTbs
 import com.angcyo.tbs.R
 import com.angcyo.tbs.core.inner.TbsWeb
 import com.angcyo.tbs.core.inner.TbsWebView
+import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.bar
-import com.angcyo.widget.base.find
-import com.angcyo.widget.base.getDrawable
-import com.angcyo.widget.base.setSingleLineMode
-import com.angcyo.widget.base.setWidth
+import com.angcyo.widget.base.*
 import com.angcyo.widget.span.span
+import com.tencent.tbs.reader.ITbsReader
+import com.tencent.tbs.reader.TbsFileInterfaceImpl
+import com.tencent.tbs.reader.TbsReaderView
 
 /**
  * file:///android_asset/webpage/fileChooser.html
@@ -83,33 +88,57 @@ open class TbsWebFragment : BaseTitleFragment() {
             close()
         }
 
+        val wrapLayout = _vh.group(R.id.tbs_wrap_layout)
         val uri = webConfig.uri
 
         if (uri == null) {
             toastQQ("数据异常", R.drawable.lib_ic_error)
+        } else if (wrapLayout == null) {
+            toastQQ("布局异常", R.drawable.lib_ic_error)
         } else {
             val url = uri.toString()
 
-            L.d("TBS:$uri $url")
+            if (uri.isHttpScheme()) {
+                L.d("TBS 打开网页:$url")
 
-            if (uri.isHttpScheme() ||
-                (!uri.isFileScheme() && url.mimeType() == "text/html")
-            ) {
                 //打开网页
-                _vh.group(R.id.tbs_wrap_layout)?.run {
-                    attachTbsWebView(this, url)
+                attachTbsWebView(wrapLayout, url)
+            } else if (uri.isFileScheme()) {
+                val path = uri.path!!
+                val mimeType = path.mimeType()
+                L.d("TBS 打开文件:$uri $path $mimeType")
+
+                val fileExt = path.ext()
+
+                fragmentTitle = path.file().name
+
+                when {
+                    //如果tbs支持打开文件, 一般是文档格式
+                    DslTbs.canOpenFileTbs(fileExt) -> attachTbsReaderView(wrapLayout, path)
+                    mimeType.isVideoMimeType() -> attachVideoView(wrapLayout, uri)
+                    mimeType.isImageMimeType() -> attachImageView(wrapLayout, uri)
+
+                    else -> showLoadingView("无法打开\n$uri")
                 }
             } else {
                 //其他类型
+                showLoadingView("无法打开\n$uri")
             }
         }
     }
 
     //<editor-fold desc="根据不同的类型, 填充不同的布局">
 
+    var _tbsWebView: TbsWebView? = null
+
+    /**追加[TbsWebView], 用于打开网页*/
     open fun attachTbsWebView(parent: ViewGroup, url: String) {
-        parent.addView(TbsWebView(fContext()).apply {
+        val webView = TbsWebView(fContext())
+        webView.apply {
+
             id = R.id.tbs_web_view
+
+            _tbsWebView = this
 
             //标题
             onReceivedTitle = {
@@ -131,7 +160,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 checkCloseView()
 
                 if (progress >= 80) {
-                    _vh.gone(R.id.lib_arc_loading_view)
+                    hideLoadingView()
                 }
             }
 
@@ -196,23 +225,101 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             loadUrl(url)
-        }, -1, -1)
+        }
+
+        parent.addView(webView, -1, -1)
     }
 
+    var _tbsReaderView: TbsReaderView? = null
+
+    /**追加[TbsReaderView], 用于打开文档格式*/
+    open fun attachTbsReaderView(parent: ViewGroup, path: String) {
+        val extName = path.ext()
+
+        val readerView =
+            TbsReaderView(fContext(), TbsReaderView.ReaderCallback { actionType, args, result ->
+                hideLoadingView()
+
+                L.d("Tbs type:$actionType args:$args result:$result")
+
+                if (ITbsReader.OPEN_FILEREADER_PLUGIN_SUCCESS == actionType) {
+                    L.w("Tbs plugin success")
+                } else if (ITbsReader.OPEN_FILEREADER_PLUGIN_FAILED == actionType) {
+                    L.w("Tbs plugin failed")
+                }
+            })
+
+        readerView.apply {
+            _tbsReaderView = this
+
+            val param = Bundle()
+            param.putString("fileExt", extName)
+            param.putString("filePath", path)
+
+            //默认不设置，是全屏dialog显示文件内容,
+            //param.putInt("windowType",2);
+            //设置windowType = 2，进入view显示文件内容, 文件内容会挂到设置的layout上。
+            param.putInt("windowType", TbsFileInterfaceImpl.FILE_READER_WINDOW_TYPE_DEFAULT)
+
+            if (preOpen(extName, false)) {
+                openFile(param)
+            }
+        }
+
+        parent.addView(readerView, -1, -1)
+    }
+
+    var _dslVideoHolder: DslViewHolder? = null
+    var _dslVideoItem: DslTextureVideoItem? = null
+
+    open fun attachVideoView(parent: ViewGroup, uri: Uri) {
+        parent.setBackgroundColor(Color.BLACK)
+
+        hideLoadingView()
+
+        val dslVideoItem = DslTextureVideoItem().apply {
+            _dslVideoItem = this
+
+            itemData = uri
+            itemVideoUri = uri
+
+            onItemDownloadStart = { itemHolder, task ->
+                showLoadingView("下载中...")
+            }
+
+            onItemDownloadFinish = { itemHolder, task, cause, error ->
+                hideLoadingView()
+            }
+        }
+        _dslVideoHolder = parent.appendDslItem(dslVideoItem)
+    }
+
+    open fun attachImageView(parent: ViewGroup, uri: Uri) {
+
+    }
 
     //</editor-fold desc="根据不同的类型, 填充不同的布局">
+
+    //<editor-fold desc="生命周期操作">
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)
     }
 
+    override fun onFragmentHide() {
+        super.onFragmentHide()
+        _dslVideoItem?.itemViewDetachedToWindow?.invoke(_dslVideoHolder!!, 0)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        _vh.v<TbsWebView>(R.id.tbs_web_view)?.destroy()
+        _tbsWebView?.destroy()
+        _tbsReaderView?.onStop()
+        _dslVideoItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
     }
 
     override fun onBackPressed(): Boolean {
-        val webView = _vh.v<TbsWebView>(R.id.tbs_web_view)
+        val webView = _tbsWebView
         if (webView != null && webView.canGoBack()) {
             webView.goBack()
             checkCloseView()
@@ -221,9 +328,13 @@ open class TbsWebFragment : BaseTitleFragment() {
         return true
     }
 
+    //</editor-fold desc="生命周期操作">
+
+    //<editor-fold desc="其他操作">
+
     /**动态判断是否要显示强制关闭按钮*/
     open fun checkCloseView() {
-        val webView = _vh.v<TbsWebView>(R.id.tbs_web_view)
+        val webView = _tbsWebView
         if (webView?.canGoBack() == true) {
             leftControl()?.run {
                 visible(R.id.lib_close_view)
@@ -240,4 +351,18 @@ open class TbsWebFragment : BaseTitleFragment() {
             remove(this@TbsWebFragment)
         }
     }
+
+    fun showLoadingView(tip: CharSequence? = null) {
+        _vh.visible(R.id.lib_arc_loading_view)
+        _vh.visible(R.id.lib_tip_view, tip != null)
+        _vh.tv(R.id.lib_tip_view)?.text = tip
+    }
+
+    fun hideLoadingView() {
+        _vh.gone(R.id.lib_arc_loading_view)
+        _vh.gone(R.id.lib_tip_view)
+    }
+
+    //</editor-fold desc="其他操作">
+
 }

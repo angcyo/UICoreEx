@@ -14,6 +14,7 @@ import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
 import com.tencent.smtt.sdk.*
 import com.tencent.tbs.reader.TbsFileInterfaceImpl
+import com.tencent.tbs.reader.TbsReaderView
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -124,7 +125,8 @@ class DslTbs {
 
         /**是否支持打开文件TBS, 多数为文档格式*/
         fun canOpenFileTbs(fileExt: String): Boolean {
-            return TbsFileInterfaceImpl.canOpenFile(fileExt.toLowerCase())
+            return TbsFileInterfaceImpl.canOpenFile(fileExt.toLowerCase()) &&
+                    TbsReaderView.isSupportExt(app(), fileExt)
         }
 
         /** 清除Cookie */

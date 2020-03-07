@@ -13,4 +13,6 @@ dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core)
     implementation project(allModule.download)
+    implementation project(allModule.media)
+    implementation project(allModule.image)
 }
