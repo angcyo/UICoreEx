@@ -236,6 +236,10 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         onFileChooseListener(param)
     }
 
+    fun onFileChooseResult(files: Array<Uri?>?) {
+        onReceiveValue(files)
+    }
+
     /**选择文件后, 调用此方法, 通知给web*/
     fun onReceiveValue(files: Array<Uri?>?) {
         _filePathCallback?.onReceiveValue(files?.firstOrNull())

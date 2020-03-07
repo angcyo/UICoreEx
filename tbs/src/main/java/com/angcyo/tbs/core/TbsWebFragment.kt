@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
+import com.angcyo.core.component.fileSelector
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog.dslDialog
@@ -97,18 +98,16 @@ open class TbsWebFragment : BaseTitleFragment() {
             toastQQ("布局异常", R.drawable.lib_ic_error)
         } else {
             val url = uri.toString()
+            val path = uri.path
+            val mimeType = path.mimeType()
 
-            if (uri.isHttpScheme()) {
-                L.d("TBS 打开网页:$url")
+            L.d("TBS:$uri $path $mimeType")
 
+            if (uri.isHttpScheme() || mimeType.isHttpMimeType()) {
                 //打开网页
                 attachTbsWebView(wrapLayout, url)
             } else if (uri.isFileScheme()) {
-                val path = uri.path!!
-                val mimeType = path.mimeType()
-                L.d("TBS 打开文件:$uri $path $mimeType")
-
-                val fileExt = path.ext()
+                val fileExt = path!!.ext()
 
                 fragmentTitle = path.file().name
 
@@ -220,6 +219,17 @@ open class TbsWebFragment : BaseTitleFragment() {
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            //选择文件
+            onFileChooseListener = {
+                dslFHelper {
+                    fileSelector {
+                        it?.run {
+                            onFileChooseResult(arrayOf(fileUri))
+                        } ?: onFileChooseResult(null)
                     }
                 }
             }
