@@ -246,7 +246,17 @@ open class TbsWebFragment : BaseTitleFragment() {
     /**追加[TbsReaderView], 用于打开文档格式*/
     open fun attachTbsReaderView(parent: ViewGroup, path: String) {
         val extName = path.ext()
+        val param = Bundle()
+        param.putString("fileExt", extName)
+        param.putString("filePath", path)
 
+        //默认不设置，是全屏dialog显示文件内容,
+        //param.putInt("windowType",2);
+        //设置windowType = 2，进入view显示文件内容, 文件内容会挂到设置的layout上。
+        //FILE_READER_WINDOW_TYPE_DEFAULT 全屏样式, 自己的标题栏会无法显示.
+        param.putInt("windowType", TbsFileInterfaceImpl.FILE_READER_WINDOW_TYPE_DEFAULT)
+
+        //老接口方式, 没有默认的标题栏
         val readerView =
             TbsReaderView(fContext(), TbsReaderView.ReaderCallback { actionType, args, result ->
                 hideLoadingView()
@@ -262,22 +272,26 @@ open class TbsWebFragment : BaseTitleFragment() {
 
         readerView.apply {
             _tbsReaderView = this
-
-            val param = Bundle()
-            param.putString("fileExt", extName)
-            param.putString("filePath", path)
-
-            //默认不设置，是全屏dialog显示文件内容,
-            //param.putInt("windowType",2);
-            //设置windowType = 2，进入view显示文件内容, 文件内容会挂到设置的layout上。
-            param.putInt("windowType", TbsFileInterfaceImpl.FILE_READER_WINDOW_TYPE_DEFAULT)
-
             if (preOpen(extName, false)) {
                 openFile(param)
             }
         }
 
         parent.addView(readerView, -1, -1)
+
+//        //新接口方式, 都会带有默认的标题栏
+//        TbsFileInterfaceImpl.getInstance()
+//            .openFileReader(fContext(), param, { actionType, args, result ->
+//                hideLoadingView()
+//
+//                L.d("Tbs type:$actionType args:$args result:$result")
+//
+//                if (ITbsReader.OPEN_FILEREADER_PLUGIN_SUCCESS == actionType) {
+//                    L.w("Tbs plugin success")
+//                } else if (ITbsReader.OPEN_FILEREADER_PLUGIN_FAILED == actionType) {
+//                    L.w("Tbs plugin failed")
+//                }
+//            }, parent as FrameLayout)
     }
 
     var _dslVideoHolder: DslViewHolder? = null
@@ -349,6 +363,8 @@ open class TbsWebFragment : BaseTitleFragment() {
         _tbsReaderView?.onStop()
         _dslVideoItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
         _dslSubSamplingItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
+
+        TbsFileInterfaceImpl.getInstance().closeFileReader()
     }
 
     override fun onBackPressed(): Boolean {

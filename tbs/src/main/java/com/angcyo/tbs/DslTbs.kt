@@ -125,8 +125,8 @@ class DslTbs {
 
         /**是否支持打开文件TBS, 多数为文档格式*/
         fun canOpenFileTbs(fileExt: String): Boolean {
-            return TbsFileInterfaceImpl.canOpenFile(fileExt.toLowerCase()) &&
-                    TbsReaderView.isSupportExt(app(), fileExt)
+            return TbsFileInterfaceImpl.canOpenFile(fileExt.toLowerCase())/* &&
+                    TbsReaderView.isSupportExt(app(), fileExt)*/
         }
 
         /** 清除Cookie */
