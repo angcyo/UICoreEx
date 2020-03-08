@@ -13,15 +13,17 @@
             android:configChanges="orientation|keyboardHidden|screenSize|fontScale|smallestScreenSize|density|screenLayout"
             android:launchMode="standard"
             android:rotationAnimation="seamless"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name="com.tencent.smtt.sdk.VideoActivity"
+            android:name=".core.TbsVideoActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation|keyboardHidden|screenSize|fontScale|smallestScreenSize|density|screenLayout"
             android:exported="false"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="fullSensor"
+            android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="com.tencent.smtt.tbs.video.PLAY" />
                 <category android:name="android.intent.category.DEFAULT" />

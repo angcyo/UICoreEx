@@ -98,31 +98,39 @@ open class TbsWebFragment : BaseTitleFragment() {
         } else if (wrapLayout == null) {
             toastQQ("布局异常", R.drawable.lib_ic_error)
         } else {
-            val url = uri.toString()
-            val path = uri.path
-            val mimeType = path.mimeType()
+            val loadUrl = uri.loadUrl()
+            val mimeType = loadUrl.mimeType()
 
-            L.d("TBS:$uri $path $mimeType")
+            L.d("TBS:$uri $loadUrl $mimeType")
 
-            if (uri.isHttpScheme() || mimeType.isHttpMimeType()) {
+            if (mimeType.isVideoMimeType()) {
+                if (DslTbs.canUseTbsPlayer()) {
+                    DslTbs.openVideo(fContext(), loadUrl!!)
+                    dslFHelper {
+                        finishActivityOnLastFragmentRemove = true
+                        finishToActivity = null
+                        remove(this@TbsWebFragment)
+                    }
+                } else {
+                    attachVideoView(wrapLayout, uri)
+                }
+            } else if (uri.isHttpScheme() || mimeType.isHttpMimeType()) {
                 //打开网页
-                attachTbsWebView(wrapLayout, url)
+                attachTbsWebView(wrapLayout, loadUrl!!)
             } else if (uri.isFileScheme()) {
-                val fileExt = path!!.ext()
-
-                fragmentTitle = path.file().name
+                val fileExt = loadUrl!!.ext()
+                fragmentTitle = loadUrl.file().name
 
                 when {
                     //如果tbs支持打开文件, 一般是文档格式
-                    DslTbs.canOpenFileTbs(fileExt) -> attachTbsReaderView(wrapLayout, path)
-                    mimeType.isVideoMimeType() -> attachVideoView(wrapLayout, uri)
+                    DslTbs.canOpenFileTbs(fileExt) -> attachTbsReaderView(wrapLayout, loadUrl)
                     mimeType.isImageMimeType() -> attachImageView(wrapLayout, uri)
 
-                    else -> showLoadingView("无法打开\n$uri")
+                    else -> showLoadingView("无法打开文件\n$uri")
                 }
             } else {
                 //其他类型
-                showLoadingView("无法打开\n$uri")
+                showLoadingView("不支持的类型\n$uri")
             }
         }
     }
