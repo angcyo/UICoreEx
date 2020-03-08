@@ -302,3 +302,5 @@
 
 -keep class **JNI* {*;}
 
+# 腾讯的坑逼文档, 说不需要混淆规则, 事实证明真的是操蛋.
+-keep class com.tencent.**{*;}
