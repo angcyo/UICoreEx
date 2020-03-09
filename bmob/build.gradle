@@ -2,6 +2,7 @@ apply from: allGradle.libBase
 
 android {
     //useLibrary 'org.apache.http.legacy'
+    //implementation 'org.apache.httpcomponents:httpclient:4.5.11'
 }
 
 dependencies {
