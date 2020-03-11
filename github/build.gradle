@@ -1,5 +1,10 @@
 apply from: allGradle.libBase
 
 dependencies {
+    implementation project(allModule.dialog)
+    implementation project(allModule.widget)
 
+    //https://github.com/Bigkoo/Android-PickerView
+    //https://jcenter.bintray.com/com/contrarywind/wheelview/
+    api 'com.contrarywind:wheelview:4.1.0'
 }
