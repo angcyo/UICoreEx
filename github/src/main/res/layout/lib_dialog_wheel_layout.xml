@@ -25,11 +25,9 @@
 
         <com.contrarywind.view.WheelView
             android:id="@+id/lib_wheel_view"
+            style="@style/LibWheelStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:wheelview_textColorCenter="@color/text_general_color"
-            app:wheelview_textColorOut="@color/text_sub_color"
-            app:wheelview_textSize="@dimen/wheel_text_size" />
+            android:layout_height="match_parent" />
     </com.angcyo.widget.layout.RFrameLayout>
 
 </LinearLayout>

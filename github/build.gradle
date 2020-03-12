@@ -7,5 +7,6 @@ dependencies {
     //https://github.com/Bigkoo/Android-PickerView
     //https://jcenter.bintray.com/com/contrarywind/wheelview/
     //api 'com.contrarywind:wheelview:4.1.0'
-    api 'com.github.WaytoIns.Android-PickerView:wheelview:4.1.0_fix'
+    api 'com.github.WaytoIns.Android-PickerView:wheelview:4.1.0_fix4'
+    api 'com.github.WaytoIns.Android-PickerView:pickerview:4.1.0_fix4'
 }
