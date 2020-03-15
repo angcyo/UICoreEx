@@ -1,0 +1,12 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.coroutine)
+    implementation project(allModule.http)
+
+    //https://github.com/jhy/jsoup
+    //https://jsoup.org/download
+    //https://jcenter.bintray.com/org/jsoup/jsoup/
+    api 'org.jsoup:jsoup:1.13.1'
+}
