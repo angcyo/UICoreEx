@@ -2,6 +2,7 @@ package com.angcyo.tbs
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.FileProvider
 import com.angcyo.DslAHelper
@@ -9,12 +10,13 @@ import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
+import com.angcyo.library.ex.file
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.tbs.core.TbsWebActivity
 import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
 import com.tencent.smtt.sdk.*
 import com.tencent.tbs.reader.TbsFileInterfaceImpl
-import com.tencent.tbs.reader.TbsReaderView
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -158,11 +160,21 @@ class DslTbs {
 
 /**打开url, 文件, 媒体, 等...*/
 fun DslAHelper.open(
+    url: String? = null,
     cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
-    config: TbsWebConfig.() -> Unit
+    config: TbsWebConfig.() -> Unit = {}
 ) {
     start(Intent(context, cls).apply {
         putExtra(TbsWebFragment.KEY_CONFIG, TbsWebConfig().apply {
+            try {
+                uri = if (url.isFileExist()) {
+                    Uri.fromFile(url!!.file())
+                } else {
+                    Uri.parse(url)
+                }
+            } catch (e: Exception) {
+                L.w(e)
+            }
             config()
         })
     })
