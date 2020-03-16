@@ -43,6 +43,31 @@ class DslTbs {
             val appContext = context.applicationContext
 
             ThreadExecutor.execute {
+                QbSdk.initBuglyAsync(true)
+                QbSdk.setDownloadWithoutWifi(true)
+                QbSdk.setNeedInitX5FirstTime(true)
+                //QbSdk.setTbsLogClient()
+
+                QbSdk.setTbsListener(object : TbsListener {
+                    override fun onInstallFinish(var1: Int) {
+                        L.d("onInstallFinish $var1".apply {
+                            writeTo()
+                        })
+                    }
+
+                    override fun onDownloadFinish(var1: Int) {
+                        L.d("onDownloadFinish $var1".apply {
+                            writeTo()
+                        })
+                    }
+
+                    override fun onDownloadProgress(progress: Int) {
+                        L.d("onDownloadProgress $progress".apply {
+                            writeTo()
+                        })
+                    }
+                })
+
                 //浏览器服务
                 QbSdk.initX5Environment(appContext, object : QbSdk.PreInitCallback {
                     override fun onCoreInitFinished() {
@@ -61,6 +86,7 @@ class DslTbs {
                 })
 
                 //QbSdk.forceSysWebView()
+
 
                 //文档服务
                 TbsFileInterfaceImpl.initEngine(appContext)
