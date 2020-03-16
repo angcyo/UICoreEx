@@ -140,3 +140,10 @@ fun dslJsoup(action: DslJsoup.() -> Unit): DslJsoup {
         doIt()
     }
 }
+
+fun dslJsoup(url: String?, onReady: suspend (Document) -> Unit): DslJsoup {
+    return dslJsoup {
+        this.url = url
+        onDocumentReady = onReady
+    }
+}
