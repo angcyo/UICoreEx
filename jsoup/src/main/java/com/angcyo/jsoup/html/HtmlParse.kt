@@ -7,7 +7,11 @@ import com.angcyo.jsoup.html.css.AttrSelect.Companion.ATTR_KEY_HTML
 import com.angcyo.jsoup.html.css.AttrSelect.Companion.ATTR_KEY_OUT_HTML
 import com.angcyo.jsoup.html.css.AttrSelect.Companion.ATTR_KEY_OUT_VALUE
 import com.angcyo.jsoup.html.css.AttrSelect.Companion.ATTR_KEY_TEXT
+import com.angcyo.jsoup.html.css.AttrSelect.Companion.ATTR_TYPE_URL
 import com.angcyo.jsoup.html.css.HtmlElementSelect
+import com.angcyo.jsoup.html.dom.HtmlCategory
+import com.angcyo.jsoup.html.dom.HtmlDom
+import com.angcyo.jsoup.html.dom.HtmlElement
 import com.angcyo.jsoup.toAbsUrl
 import com.angcyo.library.L
 import com.angcyo.library.ex.patternList
@@ -34,7 +38,6 @@ fun HtmlDom.parse(
                 onParseEnd(document, -1)
             } else {
                 htmlCategoryList?.forEachIndexed { index, htmlCategory ->
-                    htmlCategory.htmlUrl = htmlUrl
                     document.parse(htmlCategory)
                     onParseEnd(document, index)
                 }
@@ -46,6 +49,7 @@ fun HtmlDom.parse(
 
 /**开始解析结构*/
 fun HtmlCategory.parse(
+    htmlUrl: String? = null,
     config: DslJsoup.() -> Unit = {},
     /**解析结束, 协程线程回调*/
     onParseEnd: suspend (Document) -> Unit
@@ -92,23 +96,24 @@ fun Element.parseAttr(attrSelect: AttrSelect?): String? {
 
         //获取属性
         val attrString = targetElement?.run {
+            val attr = attrKey?.toLowerCase()
             when {
                 attrKey.isNullOrBlank() -> null
-                attrKey!!.toLowerCase() == ATTR_KEY_TEXT -> text()
-                attrKey!!.toLowerCase() == ATTR_KEY_HTML -> html()
-                attrKey!!.toLowerCase() == ATTR_KEY_OUT_HTML -> outerHtml()
-                attrKey!!.toLowerCase() == ATTR_KEY_OUT_VALUE -> `val`()
+                attr == ATTR_KEY_TEXT -> text()
+                attr == ATTR_KEY_HTML -> html()
+                attr == ATTR_KEY_OUT_HTML -> outerHtml()
+                attr == ATTR_KEY_OUT_VALUE -> `val`()
                 else -> attr(attrKey)
             }
         }
 
         //属性正则过滤
         val patternString = attrString?.run {
-            if (attrPattern.isNullOrEmpty()) {
+            if (attrPatternList.isNullOrEmpty()) {
                 this
             } else {
                 var get: String? = null
-                attrPattern?.forEach {
+                attrPatternList?.forEach {
                     if (get.isNullOrBlank()) {
                         get = attrString.patternList(it).firstOrNull()
                     }
@@ -118,7 +123,7 @@ fun Element.parseAttr(attrSelect: AttrSelect?): String? {
         }
 
         //url修正, 加上base uri
-        if (attrIsUrl) {
+        if (attrType == ATTR_TYPE_URL) {
             patternString?.toAbsUrl(baseUri())
         } else {
             patternString

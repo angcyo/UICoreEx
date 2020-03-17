@@ -14,9 +14,9 @@ data class AttrSelect(
     /**需要读取的属性key, 支持[CSS_SPILT], 有几个特殊属性.*/
     var attrKey: String? = null,
     /**获取到属性后, 进行的正则取值, 取到后终止*/
-    var attrPattern: List<String>? = null,
-    /**是否是url属性, 如果是, 会进行[absUrl]操作*/
-    var attrIsUrl: Boolean = false
+    var attrPatternList: List<String>? = null,
+    /**属性类型, 是否是url属性, 如果是, 会进行[absUrl]操作*/
+    var attrType: Int = ATTR_TYPE_NORMAL
 ) {
     companion object {
         //多个取值key, 分割符. 取到后终止
@@ -34,5 +34,10 @@ data class AttrSelect(
 
         /**[org.jsoup.nodes.Element.val]*/
         const val ATTR_KEY_OUT_VALUE = "value" //val()方法返回值
+
+        //属性类型
+
+        const val ATTR_TYPE_NORMAL = 0 //正常
+        const val ATTR_TYPE_URL = 1//属性url类型
     }
 }

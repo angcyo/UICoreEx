@@ -1,4 +1,4 @@
-package com.angcyo.jsoup.html
+package com.angcyo.jsoup.html.dom
 
 /**
  * 要获取的html选择结构Bean

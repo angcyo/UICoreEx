@@ -1,4 +1,4 @@
-package com.angcyo.jsoup.html
+package com.angcyo.jsoup.html.dom
 
 import com.angcyo.jsoup.html.css.HtmlElementSelect
 
@@ -10,9 +10,6 @@ import com.angcyo.jsoup.html.css.HtmlElementSelect
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 data class HtmlCategory(
-    /**目标网页*/
-    var htmlUrl: String? = null,
-
     /**分类的名称*/
     var categoryName: String? = null,
 
