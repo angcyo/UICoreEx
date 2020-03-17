@@ -3,7 +3,7 @@ package com.angcyo.jsoup.html
 import com.angcyo.jsoup.html.css.HtmlElementSelect
 
 /**
- * 获取一组元素
+ * 获取一组元素, 同一分类下的所有子元素
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/03/16

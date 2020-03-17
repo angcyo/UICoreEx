@@ -22,6 +22,28 @@ import org.jsoup.nodes.Element
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 
+fun HtmlDom.parse(
+    config: DslJsoup.() -> Unit = {},
+    /**解析结束, 协程线程回调*/
+    onParseEnd: suspend (document: Document, index: Int) -> Unit
+) {
+    dslJsoup {
+        url = htmlUrl
+        onDocumentReady = { document ->
+            if (htmlCategoryList.isNullOrEmpty()) {
+                onParseEnd(document, -1)
+            } else {
+                htmlCategoryList?.forEachIndexed { index, htmlCategory ->
+                    htmlCategory.htmlUrl = htmlUrl
+                    document.parse(htmlCategory)
+                    onParseEnd(document, index)
+                }
+            }
+        }
+        config()
+    }
+}
+
 /**开始解析结构*/
 fun HtmlCategory.parse(
     config: DslJsoup.() -> Unit = {},
