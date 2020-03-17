@@ -9,4 +9,9 @@ dependencies {
     //api 'com.contrarywind:wheelview:4.1.0'
     api 'com.github.WaytoIns.Android-PickerView:wheelview:4.1.0_fix4'
     api 'com.github.WaytoIns.Android-PickerView:pickerview:4.1.0_fix4'
+
+    //https://jcenter.bintray.com/rouchuan/viewpagerlayoutmanager/viewpagerlayoutmanager/
+    //https://github.com/leochuan/ViewPagerLayoutManager
+    //api 'rouchuan.viewpagerlayoutmanager:viewpagerlayoutmanager:2.0.22'
+    api 'com.github.angcyo:ViewPagerLayoutManager:2.0.22.1'
 }
