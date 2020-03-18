@@ -56,7 +56,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 text = span {
                     drawable {
                         backgroundDrawable =
-                            getDrawable(com.angcyo.core.R.drawable.lib_back)
+                            loadDrawable(com.angcyo.core.R.drawable.lib_back)
                                 .colorFilter(fragmentConfig.titleItemIconColor)
                     }
                 }
