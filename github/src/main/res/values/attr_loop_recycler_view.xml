@@ -10,5 +10,7 @@
             <enum name="left" value="1" />
             <enum name="right" value="2" />
         </attr>
+        <!--滚动每个item需要的时间-->
+        <attr name="r_loop_duration" format="integer" />
     </declare-styleable>
 </resources>

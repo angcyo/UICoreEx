@@ -18,8 +18,10 @@ import com.leochuan.AutoPlaySnapHelper
 open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null) :
     DslRecyclerView(context, attributeSet) {
 
+    /**是否自动开始循环滚动*/
     var autoStartLoop: Boolean = true
 
+    /**循环滚动助手*/
     var loopSnapHelper: LoopSnapHelper =
         LoopSnapHelper(AutoPlaySnapHelper.TIME_INTERVAL, AutoPlaySnapHelper.RIGHT)
 
@@ -27,7 +29,7 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
         val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.LoopRecyclerView)
         val timeInterval = typedArray.getInt(
             R.styleable.LoopRecyclerView_r_loop_interval,
-            AutoPlaySnapHelper.TIME_INTERVAL
+            3000
         )
         val direction =
             typedArray.getInt(
@@ -36,6 +38,12 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
             )
         autoStartLoop =
             typedArray.getBoolean(R.styleable.LoopRecyclerView_r_auto_start, autoStartLoop)
+
+        loopSnapHelper.loopDuration = typedArray.getInt(
+            R.styleable.LoopRecyclerView_r_loop_duration,
+            loopSnapHelper.loopDuration
+        )
+
         typedArray.recycle()
 
         loopSnapHelper.setTimeInterval(timeInterval)
