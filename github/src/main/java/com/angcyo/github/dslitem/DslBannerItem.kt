@@ -4,9 +4,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.R
-import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.pager.DrawableIndicator
 import com.angcyo.widget.recycler.clearItemDecoration
 import com.angcyo.widget.recycler.initDsl
 import com.leochuan.ScaleLayoutManager
@@ -44,23 +44,34 @@ open class DslBannerItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
+        val drawableIndicator: DrawableIndicator? = itemHolder.v(R.id.lib_drawable_indicator)
+
+        //page切换监听
         itemBannerLayoutManager.setOnPageChangeListener(object :
             ViewPagerLayoutManager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
-                L.v(state)
+                //L.v(state)
             }
 
             override fun onPageSelected(position: Int) {
-                L.v(position)
+                //L.v(position), 相当页面滑动也会通知.
                 _itemPagePosition = position
+                drawableIndicator?.animatorToIndex(position)
             }
         })
 
+        //列表
         itemHolder.rv(R.id.lib_recycler_view)?.apply {
             clearItemDecoration()
             initDsl()
             layoutManager = itemBannerLayoutManager
             adapter = itemBannerAdapter
+
+            drawableIndicator?.indicatorCount = itemBannerAdapter.itemCount
+
+            itemBannerAdapter.onDispatchUpdatesOnce {
+                drawableIndicator?.indicatorCount = it.itemCount
+            }
 
             if (_itemPagePosition in 0 until itemBannerAdapter.itemCount) {
                 scrollToPosition(_itemPagePosition)

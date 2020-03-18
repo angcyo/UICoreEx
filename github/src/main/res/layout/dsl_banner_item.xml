@@ -19,4 +19,11 @@
         app:r_loop_interval="3000"
         tools:layoutManager="com.leochuan.ScaleLayoutManager" />
 
+    <com.angcyo.widget.pager.DrawableIndicator
+        android:id="@+id/lib_drawable_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:padding="@dimen/lib_xhdpi" />
+
 </com.angcyo.widget.layout.RFrameLayout>
