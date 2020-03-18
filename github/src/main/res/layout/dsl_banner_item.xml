@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:r_layout_height="0.3sh">
+
+    <com.angcyo.github.widget.recycler.LoopRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbarSize="0dp"
+        app:r_auto_start="true"
+        app:r_layout_manager="@null"
+        app:r_loop_interval="3000"
+        tools:layoutManager="com.leochuan.ScaleLayoutManager" />
+
+</com.angcyo.widget.layout.RFrameLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoopRecyclerView">
+        <!--自动开始滚动-->
+        <attr name="r_auto_start" format="boolean" />
+        <!--自动循环播放间隔时长, 毫秒-->
+        <attr name="r_loop_interval" format="integer" />
+        <!--自动循环播放的方向-->
+        <attr name="r_loop_direction" format="enum">
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>
