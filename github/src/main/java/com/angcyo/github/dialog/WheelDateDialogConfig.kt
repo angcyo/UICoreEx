@@ -1,8 +1,10 @@
-package com.angcyo.dialog
+package com.angcyo.github.dialog
 
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
+import com.angcyo.dialog.BaseDialogConfig
+import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.library.L
 import com.angcyo.library.ex._dimen

@@ -1,7 +1,9 @@
-package com.angcyo.dialog
+package com.angcyo.github.dialog
 
 import android.app.Dialog
 import android.content.Context
+import com.angcyo.dialog.BaseDialogConfig
+import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.github.widget.wheel.ArrayWheelAdapter
 import com.angcyo.library.L
