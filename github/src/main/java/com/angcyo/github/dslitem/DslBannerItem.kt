@@ -24,6 +24,7 @@ open class DslBannerItem : DslAdapterItem() {
     var itemBannerAdapter: DslAdapter = DslAdapter()
 
     var itemBannerLayoutManager: ViewPagerLayoutManager = ScaleLayoutManager(app(), 0).apply {
+        recycleChildrenOnDetach = true
         isFullItem = true
         minScale = 1f
         maxScale = 1f

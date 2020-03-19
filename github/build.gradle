@@ -13,5 +13,5 @@ dependencies {
     //https://jcenter.bintray.com/rouchuan/viewpagerlayoutmanager/viewpagerlayoutmanager/
     //https://github.com/leochuan/ViewPagerLayoutManager
     //api 'rouchuan.viewpagerlayoutmanager:viewpagerlayoutmanager:2.0.22'
-    api 'com.github.angcyo:ViewPagerLayoutManager:2.0.28.3'
+    api 'com.github.angcyo:ViewPagerLayoutManager:2.1.1'
 }
