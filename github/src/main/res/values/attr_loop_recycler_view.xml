@@ -12,5 +12,7 @@
         </attr>
         <!--滚动每个item需要的时间-->
         <attr name="r_loop_duration" format="integer" />
+        <!--滑动的时候, 是否是一个一个滑动-->
+        <attr name="r_snap_by_one" format="boolean" />
     </declare-styleable>
 </resources>

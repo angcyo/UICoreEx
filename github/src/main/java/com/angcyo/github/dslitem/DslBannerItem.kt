@@ -24,9 +24,12 @@ open class DslBannerItem : DslAdapterItem() {
     var itemBannerAdapter: DslAdapter = DslAdapter()
 
     var itemBannerLayoutManager: ViewPagerLayoutManager = ScaleLayoutManager(app(), 0).apply {
+        isFullItem = true
         minScale = 1f
+        maxScale = 1f
         maxAlpha = 1f
         minAlpha = 1f
+        itemSpace = 0
     }
 
     //记录当前滚动的页码

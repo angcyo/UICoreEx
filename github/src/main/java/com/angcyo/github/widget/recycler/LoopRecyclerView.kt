@@ -25,6 +25,9 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
     var loopSnapHelper: LoopSnapHelper =
         LoopSnapHelper(AutoPlaySnapHelper.TIME_INTERVAL, AutoPlaySnapHelper.RIGHT)
 
+    /**一个一个滑动*/
+    var snapByOne: Boolean = true
+
     init {
         val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.LoopRecyclerView)
         val timeInterval = typedArray.getInt(
@@ -39,6 +42,8 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
         autoStartLoop =
             typedArray.getBoolean(R.styleable.LoopRecyclerView_r_auto_start, autoStartLoop)
 
+        snapByOne = typedArray.getBoolean(R.styleable.LoopRecyclerView_r_snap_by_one, snapByOne)
+
         loopSnapHelper.loopDuration = typedArray.getInt(
             R.styleable.LoopRecyclerView_r_loop_duration,
             loopSnapHelper.loopDuration
@@ -48,6 +53,7 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
 
         loopSnapHelper.setTimeInterval(timeInterval)
         loopSnapHelper.setDirection(direction)
+        loopSnapHelper.snapScrollOne = snapByOne
     }
 
     override fun onAttachedToWindow() {
