@@ -85,4 +85,11 @@ class LoopSnapHelper(val interval: Int, direction: Int) :
         super.start()
         restoreInterval()
     }
+
+    fun detachFromRecyclerView() {
+        if (mRecyclerView != null) {
+            destroyCallbacks()
+        }
+        mRecyclerView = null
+    }
 }

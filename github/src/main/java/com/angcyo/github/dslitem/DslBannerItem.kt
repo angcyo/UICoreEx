@@ -1,14 +1,11 @@
 package com.angcyo.github.dslitem
 
-import androidx.recyclerview.widget.RecyclerView
-import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.R
 import com.angcyo.library.app
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.dslitem.DslNestedRecyclerItem
 import com.angcyo.widget.pager.DrawableIndicator
-import com.angcyo.widget.recycler.clearItemDecoration
-import com.angcyo.widget.recycler.initDsl
 import com.leochuan.ScaleLayoutManager
 import com.leochuan.ViewPagerLayoutManager
 
@@ -19,26 +16,24 @@ import com.leochuan.ViewPagerLayoutManager
  * @date 2020/03/18
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-open class DslBannerItem : DslAdapterItem() {
-
-    var itemBannerAdapter: DslAdapter = DslAdapter()
-
-    var itemBannerLayoutManager: ViewPagerLayoutManager = ScaleLayoutManager(app(), 0).apply {
-        recycleChildrenOnDetach = true
-        isFullItem = true
-        minScale = 1f
-        maxScale = 1f
-        maxAlpha = 1f
-        minAlpha = 1f
-        itemSpace = 0
-    }
-
-    //记录当前滚动的页码
-    var _itemPagePosition = RecyclerView.NO_POSITION
+open class DslBannerItem : DslNestedRecyclerItem() {
 
     init {
         itemLayoutId = R.layout.dsl_banner_item
+
+        itemNestedLayoutManager = ScaleLayoutManager(app(), 0).apply {
+            recycleChildrenOnDetach = true
+            isFullItem = true
+            minScale = 1f
+            maxScale = 1f
+            maxAlpha = 1f
+            minAlpha = 1f
+            itemSpace = 0
+        }
     }
+
+    val pagerLayoutManager: ViewPagerLayoutManager?
+        get() = itemNestedLayoutManager as? ViewPagerLayoutManager
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
@@ -51,7 +46,7 @@ open class DslBannerItem : DslAdapterItem() {
         val drawableIndicator: DrawableIndicator? = itemHolder.v(R.id.lib_drawable_indicator)
 
         //page切换监听
-        itemBannerLayoutManager.setOnPageChangeListener(object :
+        pagerLayoutManager?.setOnPageChangeListener(object :
             ViewPagerLayoutManager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 //L.v(state)
@@ -59,28 +54,21 @@ open class DslBannerItem : DslAdapterItem() {
 
             override fun onPageSelected(position: Int) {
                 //L.v(position), 相当页面滑动也会通知.
-                _itemPagePosition = position
+                _scrollPositionConfig?.adapterPosition = position
                 drawableIndicator?.animatorToIndex(position)
             }
         })
 
         //列表
-        itemHolder.rv(R.id.lib_recycler_view)?.apply {
-            clearItemDecoration()
-            initDsl()
-            layoutManager = itemBannerLayoutManager
-            adapter = itemBannerAdapter
+        itemHolder.rv(R.id.lib_nested_recycler_view)?.apply {
+            drawableIndicator?.indicatorCount = itemNestedAdapter.itemCount
 
-            drawableIndicator?.indicatorCount = itemBannerAdapter.itemCount
-
-            itemBannerAdapter.onDispatchUpdatesOnce {
+            itemNestedAdapter.onDispatchUpdatesOnce {
                 drawableIndicator?.indicatorCount = it.itemCount
             }
 
-            if (_itemPagePosition in 0 until itemBannerAdapter.itemCount) {
-                scrollToPosition(_itemPagePosition)
-            } else {
-                _itemPagePosition = RecyclerView.NO_POSITION
+            if (itemKeepScrollPosition) {
+                _scrollPositionConfig?.run { scrollToPosition(adapterPosition) }
             }
         }
     }

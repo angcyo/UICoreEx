@@ -8,7 +8,7 @@
     app:r_layout_height="0.3sh">
 
     <com.angcyo.github.widget.recycler.LoopRecyclerView
-        android:id="@+id/lib_recycler_view"
+        android:id="@+id/lib_nested_recycler_view"
         style="@style/LibInnerRecyclerViewStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
