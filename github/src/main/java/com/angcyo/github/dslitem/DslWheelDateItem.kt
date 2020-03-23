@@ -42,6 +42,7 @@ class DslWheelDateItem : DslBaseLabelItem() {
 
     var itemDateTypeArray = booleanArrayOf(true, true, true, false, false, false)
 
+    /**快速type设置*/
     var itemDateType = TYPE_DATE
         set(value) {
             field = value
