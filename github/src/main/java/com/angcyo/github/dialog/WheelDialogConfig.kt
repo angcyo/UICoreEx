@@ -21,7 +21,7 @@ import com.contrarywind.view.WheelView
 open class WheelDialogConfig : BaseDialogConfig() {
 
     /**数据集合*/
-    val wheelItems = mutableListOf<Any>()
+    var wheelItems = mutableListOf<Any>()
 
     /**是否无限循环*/
     var wheelCyclic = false
