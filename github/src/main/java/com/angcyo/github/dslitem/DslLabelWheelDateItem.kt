@@ -21,7 +21,7 @@ import java.util.*
  * @date 2020/03/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-class DslWheelDateItem : DslBaseLabelItem() {
+class DslLabelWheelDateItem : DslBaseLabelItem() {
 
     companion object {
         //选择 年月日 时分秒
