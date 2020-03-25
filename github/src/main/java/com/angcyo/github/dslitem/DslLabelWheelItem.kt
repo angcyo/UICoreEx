@@ -6,6 +6,7 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
+import com.angcyo.item.TextStyleConfig
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
@@ -16,13 +17,16 @@ import com.angcyo.widget.DslViewHolder
  * @date 2020/03/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-class DslLabelWheelItem : DslBaseLabelItem() {
+open class DslLabelWheelItem : DslBaseLabelItem() {
 
     /**数据集合*/
     var itemWheelList = mutableListOf<Any>()
 
     /**设置选中项, -1不设置*/
     var itemSelectedIndex = -1
+
+    /**统一样式配置*/
+    var itemTextStyle = TextStyleConfig()
 
     /**选中回调*/
     var itemWheelSelector: (dialog: Dialog, index: Int, item: Any) -> Boolean =
@@ -76,8 +80,15 @@ class DslLabelWheelItem : DslBaseLabelItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-        itemHolder.tv(R.id.lib_text_view)?.text = itemWheelList.getOrNull(itemSelectedIndex)?.run {
-            itemWheelToText(this)
+        itemHolder.tv(R.id.lib_text_view)?.apply {
+            itemTextStyle.updateStyle(this)
+            text = itemWheelList.getOrNull(itemSelectedIndex)?.run {
+                itemWheelToText(this)
+            }
         }
+    }
+
+    open fun configTextStyle(action: TextStyleConfig.() -> Unit) {
+        itemTextStyle.action()
     }
 }
