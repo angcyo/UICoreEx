@@ -8,6 +8,7 @@ import com.angcyo.game.core.UpdateParams
 import com.angcyo.game.spirit.BaseSpirit
 import com.angcyo.game.spirit.BaseSpirit.Companion.SPIRIT_STATUS_PAUSE_DRAW
 import com.angcyo.game.spirit.BaseSpirit.Companion.SPIRIT_STATUS_PAUSE_UPDATE
+import com.angcyo.library.L
 import com.angcyo.library.ex.have
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -72,13 +73,17 @@ abstract class BaseLayer {
     open fun draw(canvas: Canvas, drawParams: DrawParams) {
         val iterator = spiritList.iterator()
         while (iterator.hasNext()) {
-            iterator.next()?.also { spirit ->
-                if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_DRAW)) {
-                    if (spirit.spiritParams.spiritDrawFirstTime < 0) {
-                        spirit.spiritParams.spiritDrawFirstTime = GameRenderEngine.engineTime()
+            try {
+                iterator.next()?.also { spirit ->
+                    if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_DRAW)) {
+                        if (spirit.spiritParams.spiritDrawFirstTime < 0) {
+                            spirit.spiritParams.spiritDrawFirstTime = GameRenderEngine.engineTime()
+                        }
+                        spirit.draw(canvas, drawParams)
                     }
-                    spirit.draw(canvas, drawParams)
                 }
+            } catch (e: Exception) {
+                L.w(e)
             }
         }
     }
@@ -86,10 +91,14 @@ abstract class BaseLayer {
     open fun update(updateParams: UpdateParams) {
         val iterator = spiritList.iterator()
         while (iterator.hasNext()) {
-            iterator.next()?.also { spirit ->
-                if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_UPDATE)) {
-                    spirit.update(updateParams)
+            try {
+                iterator.next()?.also { spirit ->
+                    if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_UPDATE)) {
+                        spirit.update(updateParams)
+                    }
                 }
+            } catch (e: Exception) {
+                L.w(e)
             }
         }
     }
