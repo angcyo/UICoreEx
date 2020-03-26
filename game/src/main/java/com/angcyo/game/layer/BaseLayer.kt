@@ -71,16 +71,13 @@ abstract class BaseLayer {
     }
 
     open fun draw(canvas: Canvas, drawParams: DrawParams) {
-        val iterator = spiritList.iterator()
-        while (iterator.hasNext()) {
+        spiritList.forEach { spirit ->
             try {
-                iterator.next()?.also { spirit ->
-                    if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_DRAW)) {
-                        if (spirit.spiritParams.spiritDrawFirstTime < 0) {
-                            spirit.spiritParams.spiritDrawFirstTime = GameRenderEngine.engineTime()
-                        }
-                        spirit.draw(canvas, drawParams)
+                if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_DRAW)) {
+                    if (spirit.spiritParams.spiritDrawFirstTime < 0) {
+                        spirit.spiritParams.spiritDrawFirstTime = GameRenderEngine.engineTime()
                     }
+                    spirit.draw(canvas, drawParams)
                 }
             } catch (e: Exception) {
                 L.w(e)
@@ -89,13 +86,10 @@ abstract class BaseLayer {
     }
 
     open fun update(updateParams: UpdateParams) {
-        val iterator = spiritList.iterator()
-        while (iterator.hasNext()) {
+        spiritList.forEach { spirit ->
             try {
-                iterator.next()?.also { spirit ->
-                    if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_UPDATE)) {
-                        spirit.update(updateParams)
-                    }
+                if (!spirit.spiritStatus.have(SPIRIT_STATUS_PAUSE_UPDATE)) {
+                    spirit.update(updateParams)
                 }
             } catch (e: Exception) {
                 L.w(e)

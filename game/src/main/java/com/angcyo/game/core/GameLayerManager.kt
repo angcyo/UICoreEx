@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import com.angcyo.game.layer.BaseLayer
 import com.angcyo.game.layer.BaseLayer.Companion.LAYER_STATUS_PAUSE_DRAW
 import com.angcyo.game.layer.BaseLayer.Companion.LAYER_STATUS_PAUSE_UPDATE
+import com.angcyo.library.L
 import com.angcyo.library.ex.have
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -46,37 +47,45 @@ class GameLayerManager(val engine: GameRenderEngine) {
 
     /**引擎绘制回调*/
     fun draw(canvas: Canvas) {
-        if (_drawParams == null) {
-            _drawParams = DrawParams(GameRenderEngine.engineTime())
-        }
-        _drawParams?.drawCurrentTime = GameRenderEngine.engineTime()
+        try {
+            if (_drawParams == null) {
+                _drawParams = DrawParams(GameRenderEngine.engineTime())
+            }
+            _drawParams?.drawCurrentTime = GameRenderEngine.engineTime()
 
-        val iterator = layerList.iterator()
-        while (iterator.hasNext()) {
-            iterator.next()?.also { layer ->
-                if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_DRAW)) {
-                    layer.draw(canvas, _drawParams!!)
+            val iterator = layerList.iterator()
+            while (iterator.hasNext()) {
+                iterator.next()?.also { layer ->
+                    if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_DRAW)) {
+                        layer.draw(canvas, _drawParams!!)
+                    }
                 }
             }
+            _drawParams?.drawPrevTime = _drawParams!!.drawCurrentTime
+        } catch (e: Exception) {
+            L.w(e)
         }
-        _drawParams?.drawPrevTime = _drawParams!!.drawCurrentTime
     }
 
     /**引擎计算回调*/
     fun update() {
-        if (_updateParams == null) {
-            _updateParams = UpdateParams(GameRenderEngine.engineTime())
-        }
-        _updateParams?.updateCurrentTime = GameRenderEngine.engineTime()
+        try {
+            if (_updateParams == null) {
+                _updateParams = UpdateParams(GameRenderEngine.engineTime())
+            }
+            _updateParams?.updateCurrentTime = GameRenderEngine.engineTime()
 
-        val iterator = layerList.iterator()
-        while (iterator.hasNext()) {
-            iterator.next()?.also { layer ->
-                if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_UPDATE)) {
-                    layer.update(_updateParams!!)
+            val iterator = layerList.iterator()
+            while (iterator.hasNext()) {
+                iterator.next()?.also { layer ->
+                    if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_UPDATE)) {
+                        layer.update(_updateParams!!)
+                    }
                 }
             }
+            _updateParams?.updatePrevTime = _updateParams!!.updateCurrentTime
+        } catch (e: Exception) {
+            L.w(e)
         }
-        _updateParams?.updatePrevTime = _updateParams!!.updateCurrentTime
     }
 }
