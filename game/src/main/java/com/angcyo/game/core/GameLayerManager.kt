@@ -52,13 +52,13 @@ class GameLayerManager(val engine: GameRenderEngine) {
                 _drawParams = DrawParams(GameRenderEngine.engineTime())
             }
             _drawParams?.drawCurrentTime = GameRenderEngine.engineTime()
-
-            val iterator = layerList.iterator()
-            while (iterator.hasNext()) {
-                iterator.next()?.also { layer ->
+            layerList.forEach { layer ->
+                try {
                     if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_DRAW)) {
                         layer.draw(canvas, _drawParams!!)
                     }
+                } catch (e: Exception) {
+                    L.w(e)
                 }
             }
             _drawParams?.drawPrevTime = _drawParams!!.drawCurrentTime
@@ -74,13 +74,13 @@ class GameLayerManager(val engine: GameRenderEngine) {
                 _updateParams = UpdateParams(GameRenderEngine.engineTime())
             }
             _updateParams?.updateCurrentTime = GameRenderEngine.engineTime()
-
-            val iterator = layerList.iterator()
-            while (iterator.hasNext()) {
-                iterator.next()?.also { layer ->
+            layerList.forEach { layer ->
+                try {
                     if (!layer.layerStatus.have(LAYER_STATUS_PAUSE_UPDATE)) {
                         layer.update(_updateParams!!)
                     }
+                } catch (e: Exception) {
+                    L.w(e)
                 }
             }
             _updateParams?.updatePrevTime = _updateParams!!.updateCurrentTime
