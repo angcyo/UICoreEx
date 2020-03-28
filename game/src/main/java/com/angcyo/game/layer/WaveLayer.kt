@@ -1,6 +1,7 @@
 package com.angcyo.game.layer
 
 import com.angcyo.game.core.UpdateParams
+import com.angcyo.game.spirit.BaseSpirit
 import com.angcyo.game.spirit.WaveSpirit
 
 /**
@@ -17,11 +18,19 @@ open class WaveLayer : BaseLayer() {
 
     var _waveLastAddTime: Long = 0
 
+    /**创建精灵*/
+    var createSpirit: () -> BaseSpirit = {
+        WaveSpirit()
+    }
+
     override fun update(updateParams: UpdateParams) {
         super.update(updateParams)
-        if (updateParams.updateCurrentTime - _waveLastAddTime >= waveInterval) {
-            addSpirit(WaveSpirit())
-            _waveLastAddTime = updateParams.updateCurrentTime
+
+        if (!isPauseDraw()) {
+            if (updateParams.updateCurrentTime - _waveLastAddTime >= waveInterval) {
+                addSpirit(createSpirit())
+                _waveLastAddTime = updateParams.updateCurrentTime
+            }
         }
     }
 }

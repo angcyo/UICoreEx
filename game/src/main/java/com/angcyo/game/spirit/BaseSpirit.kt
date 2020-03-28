@@ -51,7 +51,7 @@ abstract class BaseSpirit {
         _layer = layer
     }
 
-    open fun detachToLayer(layer: BaseLayer) {
+    open fun detachFromLayer(layer: BaseLayer) {
         _layer = null
     }
 

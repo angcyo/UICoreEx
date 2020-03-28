@@ -66,7 +66,7 @@ open class WaveSpirit : BaseSpirit() {
     override fun update(updateParams: UpdateParams) {
 
         val rectF = _layer!!.layerRectF
-        val maxRadius = min(rectF.width(), rectF.height()) / 2 - waveRadiusStart
+        val maxRadius = min(rectF.width(), rectF.height()) / 2
 
         if (_waveDrawRadius > maxRadius) {
             _layer?.removeSpirit(this)

@@ -34,15 +34,21 @@ class GameLayerManager(val engine: GameRenderEngine) {
 
     fun addLayer(layer: BaseLayer) {
         layerList.add(layer)
+        layer.attachToGameLayerManager(this)
         layer.onLayerUpdate(engine._engineParams.engineWidth, engine._engineParams.engineHeight)
     }
 
     fun removeLayer(layer: BaseLayer) {
         layerList.remove(layer)
+        layer.detachFromGameLayerManager(this)
     }
 
     fun clearLayer() {
+        val list = ArrayList(layerList)
         layerList.clear()
+        list.forEach { layer ->
+            layer.detachFromGameLayerManager(this)
+        }
     }
 
     /**引擎绘制回调*/

@@ -3,6 +3,7 @@ package com.angcyo.game.layer
 import android.graphics.Canvas
 import android.graphics.RectF
 import com.angcyo.game.core.DrawParams
+import com.angcyo.game.core.GameLayerManager
 import com.angcyo.game.core.GameRenderEngine
 import com.angcyo.game.core.UpdateParams
 import com.angcyo.game.spirit.BaseSpirit
@@ -35,12 +36,21 @@ abstract class BaseLayer {
 
     /**层的状态*/
     var layerStatus: Int = LAYER_STATUS_NORMAL
+        set(value) {
+            val old = field
+            field = value
+            if (old != value) {
+                onLayerStateChange(old, value)
+            }
+        }
 
     /**精灵列表*/
     val spiritList = CopyOnWriteArrayList<BaseSpirit>()
 
     /**[layer]在游戏引擎中的矩形坐标*/
     val layerRectF = RectF()
+
+    var _layerManager: GameLayerManager? = null
 
     /**添加精灵*/
     fun addSpirit(spirit: BaseSpirit) {
@@ -51,18 +61,25 @@ abstract class BaseLayer {
     /**移除精灵*/
     fun removeSpirit(spirit: BaseSpirit) {
         spiritList.remove(spirit)
-        spirit.detachToLayer(this)
+        spirit.detachFromLayer(this)
     }
 
     /**清空精灵*/
     fun clearSpirit() {
-        val iterator = spiritList.iterator()
-        while (iterator.hasNext()) {
-            iterator.next()?.also { spirit ->
-                spirit.detachToLayer(this)
-            }
-        }
+        val list = ArrayList(spiritList)
         spiritList.clear()
+        list.forEach { spirit ->
+            spirit.detachFromLayer(this)
+        }
+    }
+
+    open fun attachToGameLayerManager(layerManager: GameLayerManager) {
+        _layerManager = layerManager
+    }
+
+    open fun detachFromGameLayerManager(layerManager: GameLayerManager) {
+        _layerManager = null
+        clearSpirit()
     }
 
     /**尺寸更新*/
@@ -96,4 +113,12 @@ abstract class BaseLayer {
             }
         }
     }
+
+    open fun onLayerStateChange(from: Int, to: Int) {
+
+    }
+
+    open fun isPauseDraw() = layerStatus.have(LAYER_STATUS_PAUSE_DRAW)
+
+    open fun isPauseUpdate() = layerStatus.have(LAYER_STATUS_PAUSE_UPDATE)
 }
