@@ -6,9 +6,11 @@ import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.undefined_color
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.Chart.PAINT_INFO
-import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend.*
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -32,6 +34,9 @@ abstract class BaseChartConfig {
     /**是否激活手势*/
     var chartTouchEnabled: Boolean = true
     var chartDrawMarkers: Boolean = true
+
+    /**绘制边框[BarLineChartBase]*/
+    var chartDrawBorders: Boolean = false
 
     /**[BarLineChartBase]*/
     var chartDragXEnabled: Boolean = true
@@ -63,24 +68,59 @@ abstract class BaseChartConfig {
     /**[BarLineChartBase]*/
     var chartDrawGridBackground: Boolean = false
 
+    /**触摸拖动时, 高亮[BarLineChartBase]*/
+    var lineHighlightPerDragEnabled: Boolean = true
+
+    /**...[BarLineChartBase]*/
+    var lineHighLightPerTapEnabled: Boolean = true
+
+    /**[BarLineChartBase] [BarChart]*/
+    var chartMaxVisibleCount = 100
+
+    /**[BarChart]*/
+    var barDrawBarShadow = false
+
+    /**Value绘制在Bar上[BarChart]*/
+    var barDrawValueAboveBar = true
+
     open fun configBase(chart: Chart<*>) {
         chart.apply {
             isLogEnabled = chartEnableLog
             setTouchEnabled(chartTouchEnabled)
 
+            //setExtraOffsets()
+
             //marker
             setDrawMarkers(chartDrawMarkers)
 
-            if (this is LineChart) {
-                setDrawGridBackground(chartDrawGridBackground)
+            if (this is BarLineChartBase<*>) {
+                val lineChart = this
 
-                isDragXEnabled = chartDragXEnabled
-                isDragYEnabled = chartDragYEnabled
+                lineChart.apply {
+                    //setViewPortOffsets()
+                    setDrawGridBackground(chartDrawGridBackground)
 
-                isScaleXEnabled = chartScaleXEnabled
-                isScaleYEnabled = chartScaleYEnabled
+                    isDragXEnabled = chartDragXEnabled
+                    isDragYEnabled = chartDragYEnabled
 
-                setPinchZoom(chartPinchZoomEnabled)
+                    isScaleXEnabled = chartScaleXEnabled
+                    isScaleYEnabled = chartScaleYEnabled
+
+                    setPinchZoom(chartPinchZoomEnabled)
+
+                    setDrawBorders(chartDrawBorders)
+                    //setBorderColor()
+                    //setBorderWidth()
+
+                    isHighlightPerDragEnabled = lineHighlightPerDragEnabled
+                    isHighlightPerTapEnabled = lineHighLightPerTapEnabled
+                    setMaxVisibleValueCount(chartMaxVisibleCount)
+                }
+            }
+
+            if (this is BarChart) {
+                setDrawBarShadow(barDrawBarShadow)
+                setDrawValueAboveBar(barDrawValueAboveBar)
             }
 
             //listener
@@ -155,7 +195,7 @@ abstract class BaseChartConfig {
 
         }
 
-        if (chart is LineChart) {
+        if (chart is BarLineChartBase<*>) {
             chart.axisLeft.apply {
                 isEnabled = chartLeftAxisEnable
                 setPosition(chartLeftAxisPosition)
@@ -209,6 +249,31 @@ abstract class BaseChartConfig {
 
     //</editor-fold desc="Description配置">
 
+    //<editor-fold desc="Legend图例配置">
+
+    var chartLegendEnable = true
+
+    /**图例的样式*/
+    var chartLegendForm = LegendForm.SQUARE
+
+    var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
+    var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
+    var chartLegendOrientation = LegendOrientation.HORIZONTAL
+    var chartLegendDrawInside = false
+
+    open fun configLegend(chart: Chart<*>) {
+        chart.legend?.apply {
+            isEnabled = chartLegendEnable
+            form = chartLegendForm
+            verticalAlignment = chartLegendVerticalAlignment
+            horizontalAlignment = chartLegendHorizontalAlignment
+            orientation = chartLegendOrientation
+            setDrawInside(chartLegendDrawInside)
+        }
+    }
+
+    //</editor-fold desc="Legend图例配置">
+
     //<editor-fold desc="NoData配置">
 
     var chartNoDataText: String = "暂无数据"
@@ -245,6 +310,7 @@ abstract class BaseChartConfig {
         configNoData(chart)
         configDescription(chart)
         configAxis(chart)
+        configLegend(chart)
 
         //刷新界面
         chart.postInvalidateOnAnimation()

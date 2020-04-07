@@ -3,6 +3,7 @@ package com.angcyo.chart
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import com.angcyo.library.L
+import com.angcyo.library.ex._color
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
@@ -18,9 +19,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
  * @date 2020/04/07
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class LineChartConfig : BaseChartConfig() {
+open class LineChartConfig : BaseChartConfig() {
 
-    val lineDataList = mutableListOf<LineDataSet>()
+    val dataSetList = mutableListOf<LineDataSet>()
 
     private var lastEntryList = mutableListOf<Entry>()
 
@@ -29,8 +30,11 @@ class LineChartConfig : BaseChartConfig() {
 
     /**触摸时, 是否高亮*/
     var lineHighlightEnabled: Boolean = false
+
+
     var lineHighlightColor = Color.rgb(255, 187, 115)
     var lineDataSetColor = Color.rgb(255, 187, 115)
+    var lineValueTextColor = _color(R.color.text_general_color)
 
     /**激活绘制圆*/
     var lineDrawCircleEnable: Boolean = true
@@ -62,6 +66,8 @@ class LineChartConfig : BaseChartConfig() {
             //高亮使用蚂蚁线
             //enableDashedHighlightLine()
 
+            valueTextColor = lineValueTextColor
+
             highLightColor = lineHighlightColor
             color = lineDataSetColor
             //setFillFormatter { dataSet, dataProvider ->  }
@@ -84,7 +90,7 @@ class LineChartConfig : BaseChartConfig() {
             isVisible = lineVisible
 
             action()
-            lineDataList.add(this)
+            dataSetList.add(this)
         }
     }
 
@@ -152,10 +158,10 @@ class LineChartConfig : BaseChartConfig() {
                 addLineDataSet()
             }
 
-            if (lineDataList.isEmpty()) {
+            if (dataSetList.isEmpty()) {
                 chart.data = null
             } else {
-                chart.data = LineData(lineDataList as List<ILineDataSet>)
+                chart.data = LineData(dataSetList as List<ILineDataSet>)
             }
         }
     }
