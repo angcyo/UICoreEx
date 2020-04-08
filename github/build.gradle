@@ -16,5 +16,5 @@ dependencies {
 
     //https://github.com/yhaolpz/FloatWindow
     //https://github.com/XHGInc/FloatWindow
-    api 'com.github.XHGInc:FloatWindow:1.0.9.2'
+    api 'com.github.XHGInc:FloatWindow:1.0.9.3'
 }
