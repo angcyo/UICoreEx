@@ -14,7 +14,7 @@ import java.text.DecimalFormat
  */
 open class DigitsSuffixFormatter(
     val digits: Int = 1 /*小数点后几位*/,
-    val suffix: String = "" /*额外的后缀*/
+    var suffix: String = "" /*额外的后缀*/
 ) : ValueFormatter() {
 
     val decimalFormat: DecimalFormat

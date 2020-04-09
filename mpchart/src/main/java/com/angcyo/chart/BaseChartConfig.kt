@@ -2,23 +2,21 @@ package com.angcyo.chart
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.undefined_color
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.BarLineChartBase
-import com.github.mikephil.charting.charts.Chart
+import com.github.mikephil.charting.charts.*
 import com.github.mikephil.charting.charts.Chart.PAINT_INFO
 import com.github.mikephil.charting.components.IMarker
 import com.github.mikephil.charting.components.Legend.*
+import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BaseDataSet
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineRadarDataSet
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IDataSet
@@ -31,13 +29,50 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
  * @date 2020/04/07
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>> {
+abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryType>> {
+
+    companion object {
+        /**默认文本大小dp*/
+        val DEFAULT_TEXT_SIZE = 8f
+
+        /**默认文本颜色*/
+        val DEFAULT_TEXT_COLOR = _color(R.color.text_general_color)
+    }
 
     //<editor-fold desc="数据">
 
-    val dataSetList = mutableListOf<DataSet>()
+    val dataSetList = mutableListOf<DataSetType>()
 
-    protected var lastEntryList = mutableListOf<EntryType>()
+    protected var entryList = mutableListOf<EntryType>()
+
+    /**添加数据集合,[DataSet]包含[Entry]*/
+    abstract fun addDataSet(label: String? = null, action: DataSetType.() -> Unit = {})
+
+    /**添加数据点*/
+    abstract fun addEntry(action: EntryType.() -> Unit)
+
+    /**最终设置图表数据*/
+    abstract fun onSetChartData(chart: Chart<*>, dataSetList: List<DataSetType>)
+
+    /**添加数据集合,[DataSet]包含[Entry]*/
+    open fun addDataSet(dataSet: DataSetType) {
+        dataSetList.add(dataSet)
+        entryList = mutableListOf()
+    }
+
+    /**添加数据点*/
+    open fun addEntry(entry: EntryType) {
+        entryList.add(entry)
+    }
+
+    open fun addEntry(x: Float = 0f, y: Float = 0f, icon: Drawable? = null, data: Any? = null) {
+        addEntry {
+            this.x = x
+            this.y = y
+            this.icon = icon
+            this.data = data
+        }
+    }
 
     //</editor-fold desc="数据">
 
@@ -55,6 +90,11 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
 
     /**绘制边框[BarLineChartBase]*/
     var chartDrawBorders: Boolean = false
+
+    var chartExtraOffsetLeft = 0f
+    var chartExtraOffsetTop = 0f
+    var chartExtraOffsetRight = 0f
+    var chartExtraOffsetBottom = 0f
 
     /**[BarLineChartBase]*/
     var chartDragXEnabled: Boolean = true
@@ -90,7 +130,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     var lineHighlightPerDragEnabled: Boolean = true
 
     /**...[BarLineChartBase]*/
-    var lineHighLightPerTapEnabled: Boolean = true
+    var chartHighLightPerTapEnabled: Boolean = true
 
     /**[BarLineChartBase] [BarChart]*/
     var chartMaxVisibleCount = 100
@@ -107,6 +147,44 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     /**[BarChart], 整个Bar高亮, 还是部分高亮*/
     var barHighlightFullEnabled = false
 
+    /**[PieChart], 使用百分比显示Value*/
+    var pieUsePercentValues = true
+    var pieCenterTextColor = DEFAULT_TEXT_COLOR
+    var pieCenterText: CharSequence? = null
+    var pieDrawCenterText = true
+
+    /**dp*/
+    var pieCenterTextSize = 12f
+    var pieCenterTextOffsetX = 0f
+    var pieCenterTextOffsetY = 0f
+
+    /**绘制Hole*/
+    var pieDrawHoleEnable = true
+
+    /**默认切片是扇形, 可以通过此开关绘制成圆形*/
+    var pieDrawRoundedSlices = false
+
+    /**切片绘制在hole下*/
+    var pieDrawSlicesUnderHole = false
+    var pieHoleColor = Color.WHITE
+    var pieHoleRadius = 58f
+
+    /**Hole外透明圆圈*/
+    var pieTransparentCircleColor = Color.WHITE
+    var pieTransparentCircleAlpha = 110
+    var pieTransparentCircleRadius = 61f
+
+    /**图表当前旋转的角度*/
+    var pieRotationAngle = 270f
+
+    /**饼状图是否可以收拾旋转*/
+    var pieRotationEnable = true
+
+    /**饼状图绘制Value时, 可以在Value下面绘制Entry的Label*/
+    var pieEntryLabelColor = DEFAULT_TEXT_COLOR
+    var pieEntryLabelTextSize = DEFAULT_TEXT_SIZE
+    var pieDrawEntryLabels = true
+
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
         L.i("entry:$entry highlight:$highlight")
@@ -122,7 +200,16 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
             isLogEnabled = chartEnableLog
             setTouchEnabled(chartTouchEnabled)
 
-            //setExtraOffsets()
+            isHighlightPerTapEnabled = chartHighLightPerTapEnabled
+
+            setExtraOffsets(
+                chartExtraOffsetLeft,
+                chartExtraOffsetTop,
+                chartExtraOffsetRight,
+                chartExtraOffsetBottom
+            )
+
+            //dragDecelerationFrictionCoef
 
             //marker
             setDrawMarkers(chartDrawMarkers)
@@ -148,7 +235,6 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                     //setBorderWidth()
 
                     isHighlightPerDragEnabled = lineHighlightPerDragEnabled
-                    isHighlightPerTapEnabled = lineHighLightPerTapEnabled
                     setMaxVisibleValueCount(chartMaxVisibleCount)
                 }
             }
@@ -159,6 +245,33 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                 setFitBars(barFitBars)
 
                 isHighlightFullBarEnabled = barHighlightFullEnabled
+            }
+
+            if (this is PieChart) {
+                setUsePercentValues(pieUsePercentValues)
+                setCenterTextSize(pieCenterTextSize)
+                setCenterTextColor(pieCenterTextColor)
+                centerText = pieCenterText
+                setCenterTextOffset(pieCenterTextOffsetX, pieCenterTextOffsetY)
+
+                setDrawCenterText(pieDrawCenterText)
+                isDrawHoleEnabled = pieDrawHoleEnable
+                setHoleColor(pieHoleColor)
+                holeRadius = pieHoleRadius
+                setDrawRoundedSlices(pieDrawRoundedSlices)
+                setDrawSlicesUnderHole(pieDrawSlicesUnderHole)
+
+                setTransparentCircleColor(pieTransparentCircleColor)
+                transparentCircleRadius = pieTransparentCircleRadius
+                setTransparentCircleAlpha(pieTransparentCircleAlpha)
+
+                rotationAngle = pieRotationAngle
+                isRotationEnabled = pieRotationEnable
+
+                setEntryLabelColor(pieEntryLabelColor)
+                setEntryLabelTextSize(pieEntryLabelTextSize)
+                setDrawEntryLabels(pieDrawEntryLabels)
+                //setEntryLabelTypeface()
             }
 
             //listener
@@ -175,6 +288,179 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     }
 
     //</editor-fold desc="基础配置">
+
+    //<editor-fold desc="Description配置">
+
+    /**右下角说明信息*/
+
+    var chartDesText: String? = null
+    var chartDesEnabled: Boolean = false
+    var chartDesTextColor: Int = DEFAULT_TEXT_COLOR
+    var chartDesTextAlign = Paint.Align.RIGHT
+
+    open fun configDescription(chart: Chart<*>) {
+        chart.description.apply {
+            text = chartDesText
+            isEnabled = chartDesEnabled
+            textColor = chartDesTextColor
+            textAlign = chartDesTextAlign
+            //setPosition()
+            //xOffset
+            //yOffset
+        }
+    }
+
+    //</editor-fold desc="Description配置">
+
+    //<editor-fold desc="Legend图例配置">
+
+    var chartLegendEnable = true
+
+    /**图例的样式*/
+    var chartLegendForm = LegendForm.SQUARE
+
+    /**图例shape的大小*/
+    var chartLegendFormSize = 8f
+
+    var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
+    var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
+    var chartLegendOrientation = LegendOrientation.HORIZONTAL
+    var chartLegendDirection = LegendDirection.LEFT_TO_RIGHT
+    var chartLegendDrawInside = false
+
+    /**图例之间的空隙*/
+    var chartLegendXEntrySpace = 6f
+    var chartLegendYEntrySpace = 0f
+
+    /**图例文本大小[6-24]dp*/
+    var chartLegendTextSize = 10f
+
+    /**图例文本颜色*/
+    var chartLegendTextColor = DEFAULT_TEXT_COLOR
+
+    /**图例偏移, dp*/
+    var chartLegendOffsetX = 5f
+    var chartLegendOffsetY = 3f
+
+    open fun configLegend(chart: Chart<*>) {
+        chart.legend?.apply {
+            isEnabled = chartLegendEnable
+            form = chartLegendForm
+            formSize = chartLegendFormSize
+            horizontalAlignment = chartLegendHorizontalAlignment
+            verticalAlignment = chartLegendVerticalAlignment
+            orientation = chartLegendOrientation
+            direction = chartLegendDirection
+            setDrawInside(chartLegendDrawInside)
+
+            xEntrySpace = chartLegendXEntrySpace
+            yEntrySpace = chartLegendYEntrySpace
+            textSize = chartLegendTextSize
+            textColor = chartLegendTextColor
+
+            xOffset = chartLegendOffsetX
+            yOffset = chartLegendOffsetY
+        }
+    }
+
+    //</editor-fold desc="Legend图例配置">
+
+    //<editor-fold desc="DataSet配置">
+
+    /**Value文本大小*/
+    var chartValueTextSize = DEFAULT_TEXT_SIZE
+
+    var chartValueTextColor = DEFAULT_TEXT_COLOR
+
+    /**数据集是否可见*/
+    var chartDataSetVisible = true
+
+    /**线上绘制值*/
+    var chartDrawValues: Boolean = false
+
+    var chartDrawIcons: Boolean = true
+
+    /**宽度, 不同类型的图表, 宽度自行初始化宽度*/
+    var chartDataSetWidth = 0.85f
+
+    /**触摸时, 是否高亮*/
+    var chartHighlightEnabled: Boolean = false
+
+    /**点击后, 高亮线的颜色*/
+    var chartHighlightColor = Color.rgb(255, 187, 115)
+
+    /**数据集的颜色*/
+    var chartDataSetColor = Color.rgb(255, 187, 115)
+
+    /**数据集的颜色集合, 循环从里面去颜色绘制*/
+    var chartDataSetColors = listOf<Int>()
+
+    /**[0-20]dp, 饼状 切片之间的间隙*/
+    var pieSliceSpace = 3f
+
+    /**选中之后, 切片需要额外偏移的距离. dp*/
+    var pieSelectionShift = 5f
+
+    fun configDataSet(dataSet: DataSetType, action: DataSetType.() -> Unit = {}) {
+        dataSet.apply {
+            isVisible = chartDataSetVisible
+            isHighlightEnabled = chartHighlightEnabled
+
+            setDrawIcons(chartDrawIcons)
+            setDrawValues(chartDrawValues)
+
+            valueTextColor = chartValueTextColor
+            valueTextSize = chartValueTextSize
+
+            // customize legend entry
+            formLineWidth
+            formLineDashEffect
+            formSize
+
+            if (dataSet is BaseDataSet<*>) {
+                if (chartDataSetColors.isEmpty()) {
+                    dataSet.color = chartDataSetColor
+                } else {
+                    dataSet.colors = chartDataSetColors
+                }
+            }
+
+            if (dataSet is LineRadarDataSet<*>) {
+                dataSet.lineWidth = chartDataSetWidth
+                dataSet.highLightColor = chartHighlightColor
+            }
+
+            if (dataSet is BarDataSet) {
+                dataSet.barBorderWidth = 0f
+            }
+
+            if (dataSet is PieDataSet) {
+                dataSet.sliceSpace = pieSliceSpace
+                //dataSet.iconsOffset =
+                dataSet.selectionShift = pieSelectionShift
+            }
+
+            action()
+        }
+    }
+
+    //</editor-fold desc="DataSet配置">
+
+    //<editor-fold desc="NoData配置">
+
+    var chartNoDataText: String = "暂无数据"
+    var chartNoDataTextColor: Int = _color(R.color.colorAccent)
+
+    open fun configNoData(chart: Chart<*>) {
+        chart.setNoDataText(chartNoDataText)
+        if (chartNoDataTextColor == undefined_color) {
+            chartNoDataTextColor = chart.getPaint(PAINT_INFO).color
+        }
+        chart.setNoDataTextColor(chartNoDataTextColor)
+        //chart.setNoDataTextTypeface(tf)
+    }
+
+    //</editor-fold desc="NoData配置">
 
     //<editor-fold desc="Axis配置">
 
@@ -194,9 +480,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     var chartLeftAxisGridLineColor = Color.GRAY
     var chartRightAxisGridLineColor = Color.GRAY
 
-    var chartXAxisLabelTextColor = _color(R.color.text_general_color)
-    var chartLeftAxisLabelTextColor = _color(R.color.text_general_color)
-    var chartRightAxisLabelTextColor = _color(R.color.text_general_color)
+    var chartXAxisLabelTextColor = DEFAULT_TEXT_COLOR
+    var chartLeftAxisLabelTextColor = DEFAULT_TEXT_COLOR
+    var chartRightAxisLabelTextColor = DEFAULT_TEXT_COLOR
 
     /**[6-24]dp*/
     var chartXAxisLabelTextSize = 10f
@@ -258,35 +544,37 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     open fun configAxis(chart: Chart<*>) {
 
         //X 轴
-        chart.xAxis?.apply {
-            isEnabled = chartXAxisEnable
-            //enableGridDashedLine()
-            position = chartXAxisPosition
-            valueFormatter = chartXAxisValueFormatter
-            axisLineColor = chartXAxisLineColor
-            setDrawLabels(chartXAxisDrawLabels)
-            //setDrawLimitLinesBehindData()
-            setDrawGridLines(chartXAxisDrawGridLines)
-            gridColor = chartXAxisGridLineColor
-            textColor = chartXAxisLabelTextColor
-            textSize = chartXAxisLabelTextSize
-            labelRotationAngle = chartXAxisLabelRotationAngle
+        if (chart !is PieChart) {
+            chart.xAxis?.apply {
+                isEnabled = chartXAxisEnable
+                //enableGridDashedLine()
+                position = chartXAxisPosition
+                valueFormatter = chartXAxisValueFormatter
+                axisLineColor = chartXAxisLineColor
+                setDrawLabels(chartXAxisDrawLabels)
+                //setDrawLimitLinesBehindData()
+                setDrawGridLines(chartXAxisDrawGridLines)
+                gridColor = chartXAxisGridLineColor
+                textColor = chartXAxisLabelTextColor
+                textSize = chartXAxisLabelTextSize
+                labelRotationAngle = chartXAxisLabelRotationAngle
 
-            if (chartXAxisMinimum.isNaN()) {
-                resetAxisMinimum()
-            } else {
-                axisMinimum = chartXAxisMinimum
-            }
-            if (chartXAxisMaximum.isNaN()) {
-                resetAxisMaximum()
-            } else {
-                axisMaximum = chartXAxisMaximum
-            }
+                if (chartXAxisMinimum.isNaN()) {
+                    resetAxisMinimum()
+                } else {
+                    axisMinimum = chartXAxisMinimum
+                }
+                if (chartXAxisMaximum.isNaN()) {
+                    resetAxisMaximum()
+                } else {
+                    axisMaximum = chartXAxisMaximum
+                }
 
-            if (!chartXAxisGranularity.isNaN()) {
-                granularity = chartXAxisGranularity
+                if (!chartXAxisGranularity.isNaN()) {
+                    granularity = chartXAxisGranularity
+                }
+                setCenterAxisLabels(chartXAxisCenterLabels)
             }
-            setCenterAxisLabels(chartXAxisCenterLabels)
         }
 
         if (chart is BarLineChartBase<*>) {
@@ -360,174 +648,39 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
 
     //</editor-fold desc="Axis配置">
 
-    //<editor-fold desc="Description配置">
+    //<editor-fold desc="Limit限制线">
 
-    /**右下角说明信息*/
+    var chartLimitTextColor = DEFAULT_TEXT_COLOR
+    var chartLimitLineColor = Color.rgb(237, 91, 91)
+    var chartLimitLineWidth = chartDataSetWidth
+    var chartLimitLabelPosition = LimitLabelPosition.RIGHT_TOP
 
-    var chartDesText: String? = null
-    var chartDesEnabled: Boolean = false
-    var chartDesTextColor: Int = _color(R.color.text_general_color)
-    var chartDesTextAlign = Paint.Align.RIGHT
+    private val limitList = mutableListOf<LimitLine>()
 
-    open fun configDescription(chart: Chart<*>) {
-        chart.description.apply {
-            text = chartDesText
-            isEnabled = chartDesEnabled
-            textColor = chartDesTextColor
-            textAlign = chartDesTextAlign
-            //setPosition()
-            //xOffset
-            //yOffset
-        }
-    }
-
-    //</editor-fold desc="Description配置">
-
-    //<editor-fold desc="Legend图例配置">
-
-    var chartLegendEnable = true
-
-    /**图例的样式*/
-    var chartLegendForm = LegendForm.SQUARE
-
-    /**图例shape的大小*/
-    var chartLegendFormSize = 8f
-
-    var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
-    var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
-    var chartLegendOrientation = LegendOrientation.HORIZONTAL
-    var chartLegendDirection = LegendDirection.LEFT_TO_RIGHT
-    var chartLegendDrawInside = false
-
-    /**图例之间的空隙*/
-    var chartLegendXEntrySpace = 6f
-    var chartLegendYEntrySpace = 0f
-
-    /**图例文本大小[6-24]dp*/
-    var chartLegendTextSize = 10f
-
-    /**图例文本颜色*/
-    var chartLegendTextColor = _color(R.color.text_general_color)
-
-    /**图例偏移, dp*/
-    var chartLegendOffsetX = 5f
-    var chartLegendOffsetY = 3f
-
-    open fun configLegend(chart: Chart<*>) {
-        chart.legend?.apply {
-            isEnabled = chartLegendEnable
-            form = chartLegendForm
-            formSize = chartLegendFormSize
-            horizontalAlignment = chartLegendHorizontalAlignment
-            verticalAlignment = chartLegendVerticalAlignment
-            orientation = chartLegendOrientation
-            direction = chartLegendDirection
-            setDrawInside(chartLegendDrawInside)
-
-            xEntrySpace = chartLegendXEntrySpace
-            yEntrySpace = chartLegendYEntrySpace
-            textSize = chartLegendTextSize
-            textColor = chartLegendTextColor
-
-            xOffset = chartLegendOffsetX
-            yOffset = chartLegendOffsetY
-        }
-    }
-
-    //</editor-fold desc="Legend图例配置">
-
-    //<editor-fold desc="DataSet配置">
-
-    /**Value文本大小*/
-    var chartValueTextSize = 7f
-
-    var chartValueTextColor = _color(R.color.text_general_color)
-
-    /**数据集是否可见*/
-    var chartDataSetVisible = true
-
-    /**线上绘制值*/
-    var chartDrawValues: Boolean = false
-
-    var chartDrawIcons: Boolean = true
-
-    /**宽度, 不同类型的图表, 宽度自行初始化宽度*/
-    var chartDataSetWidth = 0.85f
-
-    /**触摸时, 是否高亮*/
-    var chartHighlightEnabled: Boolean = false
-
-    /**点击后, 高亮线的颜色*/
-    var chartHighlightColor = Color.rgb(255, 187, 115)
-
-    /**数据集的颜色*/
-    var chartDataSetColor = Color.rgb(255, 187, 115)
-
-    /**数据集的颜色集合, 循环从里面去颜色绘制*/
-    var chartDataSetColors = listOf<Int>()
-
-    fun configDataSet(dataSet: DataSet, action: DataSet.() -> Unit = {}) {
-        dataSet.apply {
-            isVisible = chartDataSetVisible
-            isHighlightEnabled = chartHighlightEnabled
-
-            setDrawIcons(chartDrawIcons)
-            setDrawValues(chartDrawValues)
-
-            valueTextColor = chartValueTextColor
-            valueTextSize = chartValueTextSize
-
-            // customize legend entry
-            formLineWidth
-            formLineDashEffect
-            formSize
-
-            if (dataSet is BaseDataSet<*>) {
-                if (chartDataSetColors.isEmpty()) {
-                    dataSet.color = chartDataSetColor
-                } else {
-                    dataSet.colors = chartDataSetColors
-                }
-            }
-
-            if (dataSet is LineRadarDataSet<*>) {
-                dataSet.lineWidth = chartDataSetWidth
-                dataSet.highLightColor = chartHighlightColor
-            }
-
-            if (dataSet is BarDataSet) {
-                dataSet.barBorderWidth = 0f
-            }
-
+    fun addLimitLine(limit: Float, label: String? = null, action: LimitLine.() -> Unit = {}) {
+        limitList.add(LimitLine(limit, label).apply {
+            textColor = chartLimitTextColor
+            lineColor = chartLimitLineColor
+            isEnabled = true
+            //label
+            lineWidth = chartLimitLineWidth
+            labelPosition = chartLimitLabelPosition
             action()
+        })
+    }
+
+    fun configLimit(chart: LineChart) {
+        var yAxis = chart.axisLeft
+        if (!yAxis.isEnabled) {
+            yAxis = chart.axisRight
+        }
+
+        if (yAxis.isEnabled) {
+            limitList.forEach { yAxis.addLimitLine(it) }
         }
     }
 
-    //</editor-fold desc="DataSet配置">
-
-    //<editor-fold desc="NoData配置">
-
-    var chartNoDataText: String = "暂无数据"
-    var chartNoDataTextColor: Int = _color(R.color.colorAccent)
-
-    open fun configNoData(chart: Chart<*>) {
-        chart.setNoDataText(chartNoDataText)
-        if (chartNoDataTextColor == undefined_color) {
-            chartNoDataTextColor = chart.getPaint(PAINT_INFO).color
-        }
-        chart.setNoDataTextColor(chartNoDataTextColor)
-        //chart.setNoDataTextTypeface(tf)
-    }
-
-    //</editor-fold desc="NoData配置">
-
-//    //<editor-fold desc="功能配置">
-//
-//    open fun configDescription(chart: Chart<*>) {
-//
-//    }
-//
-//    //</editor-fold desc="功能配置">
+    //</editor-fold desc="Limit限制线">
 
     //<editor-fold desc="执行">
 
@@ -545,6 +698,16 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
         configDescription(chart)
         configAxis(chart)
         configLegend(chart)
+
+        if (entryList.isNotEmpty()) {
+            addDataSet()
+        }
+
+        if (dataSetList.isEmpty()) {
+            chart.data = null
+        } else {
+            onSetChartData(chart, dataSetList)
+        }
 
         //刷新界面
         if (chartAnimateDurationX > 0 && chartAnimateDurationY > 0) {

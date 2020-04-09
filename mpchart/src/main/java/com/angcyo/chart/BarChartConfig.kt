@@ -1,6 +1,5 @@
 package com.angcyo.chart
 
-import android.graphics.drawable.Drawable
 import com.angcyo.library.L
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
@@ -8,10 +7,9 @@ import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
 /**
- * [BarChart]配置项
+ * [BarChart]柱状图表配置
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/04/07
@@ -22,36 +20,18 @@ open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
     //<editor-fold desc="Entry数据">
 
     /**添加一根Bar, 统一对每个DataSet设置样式, 需要单独配置, 请单独覆盖*/
-    fun addBarDataSet(
-        entryList: List<BarEntry>,
-        label: String? = null,
-        action: BarDataSet.() -> Unit = {}
-    ) {
+    override fun addDataSet(label: String?, action: BarDataSet.() -> Unit) {
+        if (entryList.isEmpty()) {
+            L.w("Entry为空, 请检查是否先调用了[addEntry].")
+        }
         BarDataSet(entryList, label).apply {
             configDataSet(this, action)
-            dataSetList.add(this)
+            addDataSet(this)
         }
     }
 
-    fun addBarDataSet(label: String? = null, action: BarDataSet.() -> Unit = {}) {
-        if (lastEntryList.isEmpty()) {
-            L.w("Entry为空, 请检查是否先调用了[addBarEntry].")
-        }
-        addBarDataSet(lastEntryList, label, action)
-        lastEntryList = mutableListOf()
-    }
-
-    fun addBarEntry(action: BarEntry.() -> Unit) {
-        lastEntryList.add(BarEntry(0f, 0f).apply(action))
-    }
-
-    fun addBarEntry(x: Float = 0f, y: Float = 0f, icon: Drawable? = null, data: Any? = null) {
-        addBarEntry {
-            this.x = x
-            this.y = y
-            this.icon = icon
-            this.data = data
-        }
+    override fun addEntry(action: BarEntry.() -> Unit) {
+        entryList.add(BarEntry(0f, 0f).apply(action))
     }
 
     //</editor-fold desc="Entry数据">
@@ -70,35 +50,21 @@ open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
     /**每一组内, Bar之间的间隙. 1个单位宽度的倍数*/
     var barGroupBarSpace: Float = 0.1f
 
-    override fun doIt(chart: Chart<*>) {
-        super.doIt(chart)
+    override fun onSetChartData(chart: Chart<*>, dataSetList: List<BarDataSet>) {
+        chart.data = BarData(dataSetList).apply {
+            /*[barWidth] 可以理解为, chartDataSetWidth * 1个单位值 */
+            barWidth = chartDataSetWidth
 
-        if (chart is BarChart) {
-            //configLimit(chart)
-
-            if (lastEntryList.isNotEmpty()) {
-                addBarDataSet()
+            if (!barGroupFromX.isNaN()) {
+                groupBars(barGroupFromX, barGroupSpace, barGroupBarSpace)
             }
 
-            if (dataSetList.isEmpty()) {
-                chart.data = null
-            } else {
-                chart.data = BarData(dataSetList as List<IBarDataSet>).apply {
-                    /*[barWidth] 可以理解为, chartDataSetWidth * 1个单位值 */
-                    barWidth = chartDataSetWidth
-
-                    if (!barGroupFromX.isNaN()) {
-                        groupBars(barGroupFromX, barGroupSpace, barGroupBarSpace)
-                    }
-
-                    barDataConfig(this)
-                }
-            }
+            barDataConfig(this)
         }
     }
 }
 
-fun dslBarChart(chart: Chart<*>?, action: BarChartConfig.() -> Unit = {}): Chart<*>? {
+fun dslBarChart(chart: Chart<*>?, action: BarChartConfig.() -> Unit = {}): BarChart? {
     chart?.apply {
         BarChartConfig().also {
             if (chart is HorizontalBarChart) {
@@ -113,5 +79,5 @@ fun dslBarChart(chart: Chart<*>?, action: BarChartConfig.() -> Unit = {}): Chart
             it.doIt(chart)
         }
     }
-    return chart
+    return chart as? BarChart?
 }
