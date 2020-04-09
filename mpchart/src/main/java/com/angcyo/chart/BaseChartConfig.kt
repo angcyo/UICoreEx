@@ -6,6 +6,7 @@ import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.undefined_color
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.Chart
@@ -97,11 +98,14 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     /**[BarChart], 是否绘制 顶部/底部 不在Value区域的部分*/
     var barDrawBarShadow = false
 
-    /**Value绘制在Bar上[BarChart]*/
+    /**Value绘制在Bar顶部挨着的上面[BarChart], 关闭之后将在Bar顶部inside绘制*/
     var barDrawValueAboveBar = true
 
     /**[BarChart],x轴左右预留Bar的一半宽度空隙*/
     var barFitBars = false
+
+    /**[BarChart], 整个Bar高亮, 还是部分高亮*/
+    var barHighlightFullEnabled = false
 
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
@@ -153,6 +157,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                 setDrawBarShadow(barDrawBarShadow)
                 setDrawValueAboveBar(barDrawValueAboveBar)
                 setFitBars(barFitBars)
+
+                isHighlightFullBarEnabled = barHighlightFullEnabled
             }
 
             //listener
@@ -234,6 +240,21 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     var chartLeftAxisCenterLabels = false
     var chartRightAxisCenterLabels = false
 
+    var chartLeftZeroLineColor = Color.GRAY
+
+    /**dp*/
+    var chartLeftZeroLineWidth = 1f
+    var chartLeftDrawZeroLine = false
+
+    var chartRightZeroLineColor = Color.GRAY
+    var chartRightZeroLineWidth = 1f
+    var chartRightDrawZeroLine = false
+
+    /**手势放大缩小时的粒度*/
+    var chartXAxisGranularity = Float.NaN
+    var chartLeftAxisGranularity = Float.NaN
+    var chartRightAxisGranularity = Float.NaN
+
     open fun configAxis(chart: Chart<*>) {
 
         //X 轴
@@ -262,8 +283,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                 axisMaximum = chartXAxisMaximum
             }
 
-            //granularity =
-            //isGranularityEnabled =
+            if (!chartXAxisGranularity.isNaN()) {
+                granularity = chartXAxisGranularity
+            }
             setCenterAxisLabels(chartXAxisCenterLabels)
         }
 
@@ -294,6 +316,13 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                 //spaceMin =
                 //spaceTop =
                 //spaceBottom =
+                if (!chartLeftAxisGranularity.isNaN()) {
+                    granularity = chartLeftAxisGranularity
+                }
+
+                zeroLineColor = chartLeftZeroLineColor
+                zeroLineWidth = chartLeftZeroLineWidth
+                setDrawZeroLine(chartLeftDrawZeroLine)
             }
             //Right 轴
             chart.axisRight.apply {
@@ -317,7 +346,14 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
                     axisMaximum = chartRightAxisMaximum
                 }
 
+                if (!chartRightAxisGranularity.isNaN()) {
+                    granularity = chartRightAxisGranularity
+                }
                 setCenterAxisLabels(chartRightAxisCenterLabels)
+
+                zeroLineColor = chartRightZeroLineColor
+                zeroLineWidth = chartRightZeroLineWidth
+                setDrawZeroLine(chartRightDrawZeroLine)
             }
         }
     }
@@ -360,6 +396,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
     var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
     var chartLegendOrientation = LegendOrientation.HORIZONTAL
+    var chartLegendDirection = LegendDirection.LEFT_TO_RIGHT
     var chartLegendDrawInside = false
 
     /**图例之间的空隙*/
@@ -373,17 +410,18 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
     var chartLegendTextColor = _color(R.color.text_general_color)
 
     /**图例偏移, dp*/
-    var chartLegendOffsetX = 2f
-    var chartLegendOffsetY = 2f
+    var chartLegendOffsetX = 5f
+    var chartLegendOffsetY = 3f
 
     open fun configLegend(chart: Chart<*>) {
         chart.legend?.apply {
             isEnabled = chartLegendEnable
             form = chartLegendForm
             formSize = chartLegendFormSize
-            verticalAlignment = chartLegendVerticalAlignment
             horizontalAlignment = chartLegendHorizontalAlignment
+            verticalAlignment = chartLegendVerticalAlignment
             orientation = chartLegendOrientation
+            direction = chartLegendDirection
             setDrawInside(chartLegendDrawInside)
 
             xEntrySpace = chartLegendXEntrySpace
@@ -493,7 +531,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
 
     //<editor-fold desc="执行">
 
+    /**动画时长*/
+    var chartAnimateDurationX = 0
+    var chartAnimateDurationY = 0
+    var chartAnimateEasingX = Easing.Linear
+    var chartAnimateEasingY = Easing.Linear
+
     open fun doIt(chart: Chart<*>) {
+        //chart.clear() //need?
+
         configBase(chart)
         configNoData(chart)
         configDescription(chart)
@@ -501,7 +547,20 @@ abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>>
         configLegend(chart)
 
         //刷新界面
-        chart.postInvalidateOnAnimation()
+        if (chartAnimateDurationX > 0 && chartAnimateDurationY > 0) {
+            chart.animateXY(
+                chartAnimateDurationX,
+                chartAnimateDurationY,
+                chartAnimateEasingX,
+                chartAnimateEasingY
+            )
+        } else if (chartAnimateDurationX > 0) {
+            chart.animateX(chartAnimateDurationX, chartAnimateEasingX)
+        } else if (chartAnimateDurationY > 0) {
+            chart.animateY(chartAnimateDurationY, chartAnimateEasingY)
+        } else {
+            chart.postInvalidateOnAnimation()
+        }
     }
 
     //</editor-fold desc="执行">

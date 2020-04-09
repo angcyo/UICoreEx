@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import com.angcyo.library.L
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
+import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -100,6 +101,14 @@ open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
 fun dslBarChart(chart: Chart<*>?, action: BarChartConfig.() -> Unit = {}): Chart<*>? {
     chart?.apply {
         BarChartConfig().also {
+            if (chart is HorizontalBarChart) {
+                it.chartXAxisEnable = true
+                it.chartLeftAxisEnable = false
+                it.chartRightAxisEnable = true
+                it.chartXAxisDrawGridLines = false
+                it.chartLeftAxisDrawGridLines = false
+                it.chartRightAxisDrawGridLines = false
+            }
             it.action()
             it.doIt(chart)
         }
