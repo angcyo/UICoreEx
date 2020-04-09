@@ -1,15 +1,12 @@
 package com.angcyo.chart
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import com.angcyo.library.L
-import com.angcyo.library.ex._color
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
 /**
@@ -19,81 +16,18 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
  * @date 2020/04/07
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class BarChartConfig : BaseChartConfig() {
-
-    val dataSetList = mutableListOf<BarDataSet>()
-
-    private var lastEntryList = mutableListOf<BarEntry>()
-
-    /**线上绘制值*/
-    var barDrawValues: Boolean = false
-
-    /**触摸时, 是否高亮*/
-    var barHighlightEnabled: Boolean = false
-
-    /**触摸拖动时, 高亮*/
-    var barHighlightPerDragEnabled: Boolean = true
-
-    /**...*/
-    var barHighLightPerTapEnabled: Boolean = true
-    var barHighlightColor = Color.rgb(255, 187, 115)
-    var barDataSetColor = Color.rgb(255, 187, 115)
-    var barValueTextColor = _color(R.color.text_general_color)
-
-    /**激活绘制圆*/
-    var barDrawCircleEnable: Boolean = true
-
-    /**圆内的hole*/
-    var barDrawCircleHole: Boolean = true
-    var barDrawIcons: Boolean = true
-
-    /**填充绘制*/
-    var barDrawFilled: Boolean = false
-
-    /**线的显示样式*/
-    var barMode = LineDataSet.Mode.LINEAR
-
-    /**数据集是否可见*/
-    var barVisible = true
+open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
 
     //<editor-fold desc="Entry数据">
 
-    /**添加一根线*/
+    /**添加一根Bar, 统一对每个DataSet设置样式, 需要单独配置, 请单独覆盖*/
     fun addBarDataSet(
         entryList: List<BarEntry>,
         label: String? = null,
         action: BarDataSet.() -> Unit = {}
     ) {
         BarDataSet(entryList, label).apply {
-            setDrawIcons(barDrawIcons)
-            isHighlightEnabled = barHighlightEnabled
-            //高亮使用蚂蚁线
-            //enableDashedHighlightLine()
-
-            valueTextColor = barValueTextColor
-
-            highLightColor = barHighlightColor
-            color = barDataSetColor
-            //setFillFormatter { dataSet, dataProvider ->  }
-//            setDrawCircleHole(barDrawCircleHole)
-//            setDrawValues(barDrawValues)
-//            setDrawCircles(barDrawCircleEnable)
-//
-//            setDrawFilled(barDrawFilled)
-//            fillAlpha
-//            fillColor
-//            fillDrawable
-//
-//            mode = barMode
-
-            // customize legend entry
-            formLineWidth
-            formLineDashEffect
-            formSize
-
-            isVisible = barVisible
-
-            action()
+            configDataSet(this, action)
             dataSetList.add(this)
         }
     }
@@ -120,6 +54,21 @@ open class BarChartConfig : BaseChartConfig() {
     }
 
     //</editor-fold desc="Entry数据">
+
+    var barDataConfig: (BarData) -> Unit = {
+        it.barWidth
+        //it.groupBars()
+    }
+
+    /**开启分组[groupBars], 受[dataSet]size的影响*/
+    var barGroupFromX: Float = Float.NaN
+
+    /**每一组, 之间的间隙. 1个单位宽度的倍数*/
+    var barGroupSpace: Float = 0.5f
+
+    /**每一组内, Bar之间的间隙. 1个单位宽度的倍数*/
+    var barGroupBarSpace: Float = 0.1f
+
     override fun doIt(chart: Chart<*>) {
         super.doIt(chart)
 
@@ -133,7 +82,16 @@ open class BarChartConfig : BaseChartConfig() {
             if (dataSetList.isEmpty()) {
                 chart.data = null
             } else {
-                chart.data = BarData(dataSetList as List<IBarDataSet>)
+                chart.data = BarData(dataSetList as List<IBarDataSet>).apply {
+                    /*[barWidth] 可以理解为, chartDataSetWidth * 1个单位值 */
+                    barWidth = chartDataSetWidth
+
+                    if (!barGroupFromX.isNaN()) {
+                        groupBars(barGroupFromX, barGroupSpace, barGroupBarSpace)
+                    }
+
+                    barDataConfig(this)
+                }
             }
         }
     }

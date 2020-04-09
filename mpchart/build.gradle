@@ -9,5 +9,5 @@ dependencies {
     //https://jitpack.io/com/github/PhilJay/MPAndroidChart/3.1.0-alpha/
 
     //https://javadoc.jitpack.io/com/github/PhilJay/MPAndroidChart/v3.1.0-alpha/javadoc/
-    api 'com.github.PhilJay:MPAndroidChart:3.1.0'
+    api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

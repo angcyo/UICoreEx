@@ -3,7 +3,7 @@ package com.angcyo.game.spirit
 import android.graphics.Canvas
 import com.angcyo.game.core.DrawParams
 import com.angcyo.game.core.UpdateParams
-import com.angcyo.library.ex.randomColor
+import com.angcyo.library.ex.randomColorIn
 
 /**
  * 绘制颜色的精灵
@@ -23,7 +23,7 @@ open class ColorSpirit : BaseSpirit() {
     }
 
     open fun getSpiritColor(): Int {
-        return randomColor()
+        return randomColorIn()
     }
 
     override fun update(updateParams: UpdateParams) {

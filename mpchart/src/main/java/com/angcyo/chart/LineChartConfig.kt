@@ -1,9 +1,7 @@
 package com.angcyo.chart
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import com.angcyo.library.L
-import com.angcyo.library.ex._color
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
@@ -19,28 +17,13 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
  * @date 2020/04/07
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class LineChartConfig : BaseChartConfig() {
-
-    val dataSetList = mutableListOf<LineDataSet>()
-
-    private var lastEntryList = mutableListOf<Entry>()
-
-    /**线上绘制值*/
-    var lineDrawValues: Boolean = false
-
-    /**触摸时, 是否高亮*/
-    var lineHighlightEnabled: Boolean = false
-
-    var lineHighlightColor = Color.rgb(255, 187, 115)
-    var lineDataSetColor = Color.rgb(255, 187, 115)
-    var lineValueTextColor = _color(R.color.text_general_color)
+open class LineChartConfig : BaseChartConfig<Entry, LineDataSet>() {
 
     /**激活绘制圆*/
     var lineDrawCircleEnable: Boolean = true
 
     /**圆内的hole*/
     var lineDrawCircleHole: Boolean = true
-    var lineDrawIcons: Boolean = true
 
     /**填充绘制*/
     var lineDrawFilled: Boolean = false
@@ -48,11 +31,10 @@ open class LineChartConfig : BaseChartConfig() {
     /**线的显示样式*/
     var lineMode = LineDataSet.Mode.LINEAR
 
-    /**数据集是否可见*/
-    var lineVisible = true
-
-    /**线的宽度, 0-10f dp*/
-    var lineWidth = 1f
+    init {
+        /**线的宽度, 0-10f dp*/
+        //chartDataSetWidth = 1f
+    }
 
     //<editor-fold desc="Entry数据">
 
@@ -63,18 +45,12 @@ open class LineChartConfig : BaseChartConfig() {
         action: LineDataSet.() -> Unit = {}
     ) {
         LineDataSet(entryList, label).apply {
-            setDrawIcons(lineDrawIcons)
-            isHighlightEnabled = lineHighlightEnabled
+            configDataSet(this, action)
+
             //高亮使用蚂蚁线
             //enableDashedHighlightLine()
-
-            valueTextColor = lineValueTextColor
-
-            highLightColor = lineHighlightColor
-            color = lineDataSetColor
             //setFillFormatter { dataSet, dataProvider ->  }
             setDrawCircleHole(lineDrawCircleHole)
-            setDrawValues(lineDrawValues)
             setDrawCircles(lineDrawCircleEnable)
 
             setDrawFilled(lineDrawFilled)
@@ -84,16 +60,6 @@ open class LineChartConfig : BaseChartConfig() {
 
             mode = lineMode
 
-            // customize legend entry
-            formLineWidth
-            formLineDashEffect
-            formSize
-
-            isVisible = lineVisible
-
-            lineWidth = this@LineChartConfig.lineWidth
-
-            action()
             dataSetList.add(this)
         }
     }
@@ -133,7 +99,7 @@ open class LineChartConfig : BaseChartConfig() {
             //lineColor
             //isEnabled
             //label
-            lineWidth = this@LineChartConfig.lineWidth
+            lineWidth = chartDataSetWidth
             //labelPosition
             action()
         })
@@ -152,6 +118,8 @@ open class LineChartConfig : BaseChartConfig() {
 
     //</editor-fold desc="Limit限制线">
 
+    var lineDataConfig: (LineData) -> Unit = {}
+
     override fun doIt(chart: Chart<*>) {
         super.doIt(chart)
 
@@ -165,7 +133,7 @@ open class LineChartConfig : BaseChartConfig() {
             if (dataSetList.isEmpty()) {
                 chart.data = null
             } else {
-                chart.data = LineData(dataSetList as List<ILineDataSet>)
+                chart.data = LineData(dataSetList as List<ILineDataSet>).apply(lineDataConfig)
             }
         }
     }

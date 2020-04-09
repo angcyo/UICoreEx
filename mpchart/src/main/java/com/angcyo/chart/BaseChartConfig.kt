@@ -10,12 +10,17 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.Chart.PAINT_INFO
+import com.github.mikephil.charting.components.IMarker
 import com.github.mikephil.charting.components.Legend.*
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BaseDataSet
 import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineRadarDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.interfaces.datasets.IDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 
 /**
@@ -25,15 +30,27 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
  * @date 2020/04/07
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-abstract class BaseChartConfig {
+abstract class BaseChartConfig<EntryType : Entry, DataSet : IDataSet<EntryType>> {
+
+    //<editor-fold desc="数据">
+
+    val dataSetList = mutableListOf<DataSet>()
+
+    protected var lastEntryList = mutableListOf<EntryType>()
+
+    //</editor-fold desc="数据">
 
     //<editor-fold desc="基础配置">
 
+    /**Log开关*/
     var chartEnableLog: Boolean = isDebugType()
 
     /**是否激活手势*/
     var chartTouchEnabled: Boolean = true
     var chartDrawMarkers: Boolean = true
+
+    /**高亮时, 显示的marker*/
+    var chartMarker: IMarker? = null
 
     /**绘制边框[BarLineChartBase]*/
     var chartDrawBorders: Boolean = false
@@ -77,11 +94,24 @@ abstract class BaseChartConfig {
     /**[BarLineChartBase] [BarChart]*/
     var chartMaxVisibleCount = 100
 
-    /**[BarChart]*/
+    /**[BarChart], 是否绘制 顶部/底部 不在Value区域的部分*/
     var barDrawBarShadow = false
 
     /**Value绘制在Bar上[BarChart]*/
     var barDrawValueAboveBar = true
+
+    /**[BarChart],x轴左右预留Bar的一半宽度空隙*/
+    var barFitBars = false
+
+    /**选中Value回调*/
+    var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
+        L.i("entry:$entry highlight:$highlight")
+    }
+
+    /**未选中Value回调*/
+    var chartNothingSelected: () -> Unit = {
+        L.i("未选择!")
+    }
 
     open fun configBase(chart: Chart<*>) {
         chart.apply {
@@ -92,6 +122,7 @@ abstract class BaseChartConfig {
 
             //marker
             setDrawMarkers(chartDrawMarkers)
+            marker = chartMarker
 
             if (this is BarLineChartBase<*>) {
                 val lineChart = this
@@ -121,16 +152,17 @@ abstract class BaseChartConfig {
             if (this is BarChart) {
                 setDrawBarShadow(barDrawBarShadow)
                 setDrawValueAboveBar(barDrawValueAboveBar)
+                setFitBars(barFitBars)
             }
 
             //listener
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
-                    L.i("未选择!")
+                    chartNothingSelected()
                 }
 
                 override fun onValueSelected(entry: Entry, highlight: Highlight) {
-                    L.i("entry:$entry highlight:$highlight")
+                    chartValueSelected(entry, highlight)
                 }
             })
         }
@@ -160,6 +192,11 @@ abstract class BaseChartConfig {
     var chartLeftAxisLabelTextColor = _color(R.color.text_general_color)
     var chartRightAxisLabelTextColor = _color(R.color.text_general_color)
 
+    /**[6-24]dp*/
+    var chartXAxisLabelTextSize = 10f
+    var chartLeftAxisLabelTextSize = 10f
+    var chartRightAxisLabelTextSize = 10f
+
     /**格式化值*/
     var chartXAxisValueFormatter: ValueFormatter? = null
     var chartLeftAxisValueFormatter: ValueFormatter? = null
@@ -180,7 +217,26 @@ abstract class BaseChartConfig {
     var chartLeftAxisPosition = YAxis.YAxisLabelPosition.OUTSIDE_CHART
     var chartRightAxisPosition = YAxis.YAxisLabelPosition.OUTSIDE_CHART
 
+    /**X轴 Label旋转的角度*/
+    var chartXAxisLabelRotationAngle = 0f
+
+    var chartXAxisMinimum = Float.NaN
+    var chartXAxisMaximum = Float.NaN
+
+    var chartLeftAxisMinimum = Float.NaN
+    var chartLeftAxisMaximum = Float.NaN
+
+    var chartRightAxisMinimum = Float.NaN
+    var chartRightAxisMaximum = Float.NaN
+
+    /**居中标签, 分组Bar中效果明显*/
+    var chartXAxisCenterLabels = false
+    var chartLeftAxisCenterLabels = false
+    var chartRightAxisCenterLabels = false
+
     open fun configAxis(chart: Chart<*>) {
+
+        //X 轴
         chart.xAxis?.apply {
             isEnabled = chartXAxisEnable
             //enableGridDashedLine()
@@ -192,10 +248,27 @@ abstract class BaseChartConfig {
             setDrawGridLines(chartXAxisDrawGridLines)
             gridColor = chartXAxisGridLineColor
             textColor = chartXAxisLabelTextColor
+            textSize = chartXAxisLabelTextSize
+            labelRotationAngle = chartXAxisLabelRotationAngle
 
+            if (chartXAxisMinimum.isNaN()) {
+                resetAxisMinimum()
+            } else {
+                axisMinimum = chartXAxisMinimum
+            }
+            if (chartXAxisMaximum.isNaN()) {
+                resetAxisMaximum()
+            } else {
+                axisMaximum = chartXAxisMaximum
+            }
+
+            //granularity =
+            //isGranularityEnabled =
+            setCenterAxisLabels(chartXAxisCenterLabels)
         }
 
         if (chart is BarLineChartBase<*>) {
+            //Left 轴
             chart.axisLeft.apply {
                 isEnabled = chartLeftAxisEnable
                 setPosition(chartLeftAxisPosition)
@@ -205,10 +278,24 @@ abstract class BaseChartConfig {
                 setDrawGridLines(chartLeftAxisDrawGridLines)
                 gridColor = chartLeftAxisGridLineColor
                 textColor = chartLeftAxisLabelTextColor
-                axisMaximum
-                axisMinimum
-                textSize
+                textSize = chartLeftAxisLabelTextSize
+                if (chartLeftAxisMinimum.isNaN()) {
+                    resetAxisMinimum()
+                } else {
+                    axisMinimum = chartLeftAxisMinimum
+                }
+                if (chartLeftAxisMaximum.isNaN()) {
+                    resetAxisMaximum()
+                } else {
+                    axisMaximum = chartLeftAxisMaximum
+                }
+
+                setCenterAxisLabels(chartLeftAxisCenterLabels)
+                //spaceMin =
+                //spaceTop =
+                //spaceBottom =
             }
+            //Right 轴
             chart.axisRight.apply {
                 isEnabled = chartRightAxisEnable
                 setPosition(chartRightAxisPosition)
@@ -218,8 +305,19 @@ abstract class BaseChartConfig {
                 setDrawGridLines(chartRightAxisDrawGridLines)
                 gridColor = chartRightAxisGridLineColor
                 textColor = chartRightAxisLabelTextColor
-                axisMaximum
-                axisMinimum
+                textSize = chartRightAxisLabelTextSize
+                if (chartRightAxisMinimum.isNaN()) {
+                    resetAxisMinimum()
+                } else {
+                    axisMinimum = chartRightAxisMinimum
+                }
+                if (chartRightAxisMaximum.isNaN()) {
+                    resetAxisMaximum()
+                } else {
+                    axisMaximum = chartRightAxisMaximum
+                }
+
+                setCenterAxisLabels(chartRightAxisCenterLabels)
             }
         }
     }
@@ -256,23 +354,118 @@ abstract class BaseChartConfig {
     /**图例的样式*/
     var chartLegendForm = LegendForm.SQUARE
 
+    /**图例shape的大小*/
+    var chartLegendFormSize = 8f
+
     var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
     var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
     var chartLegendOrientation = LegendOrientation.HORIZONTAL
     var chartLegendDrawInside = false
 
+    /**图例之间的空隙*/
+    var chartLegendXEntrySpace = 6f
+    var chartLegendYEntrySpace = 0f
+
+    /**图例文本大小[6-24]dp*/
+    var chartLegendTextSize = 10f
+
+    /**图例文本颜色*/
+    var chartLegendTextColor = _color(R.color.text_general_color)
+
+    /**图例偏移, dp*/
+    var chartLegendOffsetX = 2f
+    var chartLegendOffsetY = 2f
+
     open fun configLegend(chart: Chart<*>) {
         chart.legend?.apply {
             isEnabled = chartLegendEnable
             form = chartLegendForm
+            formSize = chartLegendFormSize
             verticalAlignment = chartLegendVerticalAlignment
             horizontalAlignment = chartLegendHorizontalAlignment
             orientation = chartLegendOrientation
             setDrawInside(chartLegendDrawInside)
+
+            xEntrySpace = chartLegendXEntrySpace
+            yEntrySpace = chartLegendYEntrySpace
+            textSize = chartLegendTextSize
+            textColor = chartLegendTextColor
+
+            xOffset = chartLegendOffsetX
+            yOffset = chartLegendOffsetY
         }
     }
 
     //</editor-fold desc="Legend图例配置">
+
+    //<editor-fold desc="DataSet配置">
+
+    /**Value文本大小*/
+    var chartValueTextSize = 7f
+
+    var chartValueTextColor = _color(R.color.text_general_color)
+
+    /**数据集是否可见*/
+    var chartDataSetVisible = true
+
+    /**线上绘制值*/
+    var chartDrawValues: Boolean = false
+
+    var chartDrawIcons: Boolean = true
+
+    /**宽度, 不同类型的图表, 宽度自行初始化宽度*/
+    var chartDataSetWidth = 0.85f
+
+    /**触摸时, 是否高亮*/
+    var chartHighlightEnabled: Boolean = false
+
+    /**点击后, 高亮线的颜色*/
+    var chartHighlightColor = Color.rgb(255, 187, 115)
+
+    /**数据集的颜色*/
+    var chartDataSetColor = Color.rgb(255, 187, 115)
+
+    /**数据集的颜色集合, 循环从里面去颜色绘制*/
+    var chartDataSetColors = listOf<Int>()
+
+    fun configDataSet(dataSet: DataSet, action: DataSet.() -> Unit = {}) {
+        dataSet.apply {
+            isVisible = chartDataSetVisible
+            isHighlightEnabled = chartHighlightEnabled
+
+            setDrawIcons(chartDrawIcons)
+            setDrawValues(chartDrawValues)
+
+            valueTextColor = chartValueTextColor
+            valueTextSize = chartValueTextSize
+
+            // customize legend entry
+            formLineWidth
+            formLineDashEffect
+            formSize
+
+            if (dataSet is BaseDataSet<*>) {
+                if (chartDataSetColors.isEmpty()) {
+                    dataSet.color = chartDataSetColor
+                } else {
+                    dataSet.colors = chartDataSetColors
+                }
+            }
+
+            if (dataSet is LineRadarDataSet<*>) {
+                dataSet.lineWidth = chartDataSetWidth
+                dataSet.highLightColor = chartHighlightColor
+            }
+
+            if (dataSet is BarDataSet) {
+                dataSet.barBorderWidth = 0f
+            }
+
+            action()
+        }
+    }
+
+    //</editor-fold desc="DataSet配置">
 
     //<editor-fold desc="NoData配置">
 
@@ -297,11 +490,6 @@ abstract class BaseChartConfig {
 //    }
 //
 //    //</editor-fold desc="功能配置">
-
-    //<editor-fold desc="Entry数据">
-
-
-    //</editor-fold desc="Entry数据">
 
     //<editor-fold desc="执行">
 
