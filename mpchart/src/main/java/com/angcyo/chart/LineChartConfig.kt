@@ -31,7 +31,6 @@ open class LineChartConfig : BaseChartConfig() {
     /**触摸时, 是否高亮*/
     var lineHighlightEnabled: Boolean = false
 
-
     var lineHighlightColor = Color.rgb(255, 187, 115)
     var lineDataSetColor = Color.rgb(255, 187, 115)
     var lineValueTextColor = _color(R.color.text_general_color)
@@ -51,6 +50,9 @@ open class LineChartConfig : BaseChartConfig() {
 
     /**数据集是否可见*/
     var lineVisible = true
+
+    /**线的宽度, 0-10f dp*/
+    var lineWidth = 1f
 
     //<editor-fold desc="Entry数据">
 
@@ -88,6 +90,8 @@ open class LineChartConfig : BaseChartConfig() {
             formSize
 
             isVisible = lineVisible
+
+            lineWidth = this@LineChartConfig.lineWidth
 
             action()
             dataSetList.add(this)
@@ -129,7 +133,7 @@ open class LineChartConfig : BaseChartConfig() {
             //lineColor
             //isEnabled
             //label
-            //lineWidth
+            lineWidth = this@LineChartConfig.lineWidth
             //labelPosition
             action()
         })
