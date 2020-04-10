@@ -25,7 +25,8 @@ open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         BarDataSet(entryList, label).apply {
-            configDataSet(this, action)
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

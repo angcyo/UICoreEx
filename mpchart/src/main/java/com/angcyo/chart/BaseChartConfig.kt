@@ -22,6 +22,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.Utils
 
 /**
@@ -220,6 +221,12 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**dp 网的颜色*/
     var radarWebColorInner = Color.LTGRAY
 
+    /**设置可见Entry的数量, 配置[moveViewToX], 可以实现 实时波形图*/
+    var chartVisibleXRangeMinimum = Float.NaN
+    var chartVisibleXRangeMaximum = Float.NaN
+    var chartVisibleYRangeMaximum = Float.NaN
+    var chartVisibleYRangeMinimum = Float.NaN
+
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
         L.i("entry:$entry highlight:$highlight")
@@ -273,6 +280,33 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
                     isHighlightPerDragEnabled = lineHighlightPerDragEnabled
                     setMaxVisibleValueCount(chartMaxVisibleCount)
+
+                    if (!chartVisibleXRangeMinimum.isNaN()) {
+                        setVisibleXRangeMinimum(chartVisibleXRangeMinimum)
+                    }
+                    if (!chartVisibleXRangeMaximum.isNaN()) {
+                        setVisibleXRangeMaximum(chartVisibleXRangeMaximum)
+                    }
+                    if (!chartVisibleYRangeMinimum.isNaN()) {
+                        setVisibleYRangeMinimum(
+                            chartVisibleYRangeMinimum,
+                            YAxis.AxisDependency.LEFT
+                        )
+                        setVisibleYRangeMinimum(
+                            chartVisibleYRangeMinimum,
+                            YAxis.AxisDependency.RIGHT
+                        )
+                    }
+                    if (!chartVisibleYRangeMaximum.isNaN()) {
+                        setVisibleYRangeMaximum(
+                            chartVisibleYRangeMaximum,
+                            YAxis.AxisDependency.LEFT
+                        )
+                        setVisibleYRangeMaximum(
+                            chartVisibleYRangeMaximum,
+                            YAxis.AxisDependency.RIGHT
+                        )
+                    }
                 }
             }
 
@@ -281,6 +315,12 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 setDrawValueAboveBar(barDrawValueAboveBar)
                 setFitBars(barFitBars)
 
+                isHighlightFullBarEnabled = barHighlightFullEnabled
+            }
+
+            if (this is CombinedChart) {
+                setDrawValueAboveBar(barDrawValueAboveBar)
+                setDrawBarShadow(barDrawBarShadow)
                 isHighlightFullBarEnabled = barHighlightFullEnabled
             }
 
@@ -494,7 +534,71 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**[dp] 高亮时, 气泡周围绘制边框的宽度 [chartHighlightColor]*/
     var bubbleHighlightCircleWidth = 1.5f
 
-    fun configDataSet(dataSet: DataSetType, action: DataSetType.() -> Unit = {}) {
+    /**激活绘制圆*/
+    var lineDrawCircleEnable: Boolean = true
+
+    /**圆内的hole*/
+    var lineDrawCircleHole: Boolean = true
+
+    /**线的显示样式*/
+    var lineMode = LineDataSet.Mode.LINEAR
+
+    /**Part1 相当于圆心, 偏移的距离*/
+    var pieValueLinePart1OffsetPercentage = pieTransparentCircleRadius + 20f
+
+    /**Part1 长度占比*/
+    var pieValueLinePart1Length = 0.2f
+
+    /**Part2 长度占比*/
+    var pieValueLinePart2Length = 0.5f
+
+    /**设置 outside 时, 会绘制在饼状图的外面, 并用线连接*/
+    var pieValuePositionX = PieDataSet.ValuePosition.INSIDE_SLICE
+
+    /**当Y值, outside 时, 会绘制线*/
+    var pieValuePositionY = PieDataSet.ValuePosition.INSIDE_SLICE
+
+    /**线的颜色*/
+    var pieValueLineColor = DEFAULT_TEXT_COLOR
+
+    /**px, 线的宽度*/
+    var pieValueLineWidth = 1f
+
+    /**绘制填充*/
+    var chartDrawFilled = false
+
+    /**填充颜色*/
+    var chartFillColor = Color.rgb(140, 234, 255)
+    var chartFillAlpha = 25
+    var chartFillDrawable: Drawable? = null
+
+    /**高亮时, 绘制圆.需要先激活[chartHighlightEnabled]*/
+    var radarDrawHighlightCircleEnabled = true
+
+    /**蜡烛 底线的颜色*/
+    var candleShadowColor = Color.DKGRAY
+
+    /**dp*/
+    var candleShadowWidth = 1f
+
+    /**open-close>0时, 使用此颜色绘制*/
+    var candleDecreasingColor = Color.RED
+    var candleDecreasingPaintStyle = Paint.Style.FILL
+
+    /**open-close<0时, 使用此颜色绘制*/
+    var candleIncreasingColor = Color.rgb(122, 242, 84)
+    var candleIncreasingPaintStyle = Paint.Style.STROKE
+
+    /**open-close=0时, 使用此颜色绘制*/
+    var candleNeutralColor = Color.BLUE
+
+    /**散列图形 形状*/
+    var scatterShape: ScatterChart.ScatterShape = ScatterChart.ScatterShape.CIRCLE
+    var scatterShapeHoleColor = ColorTemplate.COLOR_NONE
+    var scatterShapeHoleRadius = 0f
+    var scatterShapeSize = 25f
+
+    fun configDataSet(dataSet: IDataSet<*>) {
         dataSet.apply {
             isVisible = chartDataSetVisible
             isHighlightEnabled = chartHighlightEnabled
@@ -524,12 +628,28 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
             if (dataSet is LineRadarDataSet<*>) {
                 dataSet.lineWidth = chartDataSetWidth
+
                 dataSet.highLightColor = chartHighlightColor
+
+                dataSet.setDrawFilled(chartDrawFilled)
+                dataSet.fillAlpha = chartFillAlpha
+                dataSet.fillColor = chartFillColor
+                dataSet.fillDrawable = chartFillDrawable
             }
 
             if (dataSet is LineScatterCandleRadarDataSet<*>) {
                 dataSet.setDrawVerticalHighlightIndicator(chartDrawVerticalHighlightIndicator)
                 dataSet.setDrawHorizontalHighlightIndicator(chartDrawHorizontalHighlightIndicator)
+            }
+
+            if (dataSet is LineDataSet) {
+                //高亮使用蚂蚁线
+                //enableDashedHighlightLine()
+                //setFillFormatter { dataSet, dataProvider ->  }
+                dataSet.setDrawCircleHole(lineDrawCircleHole)
+                dataSet.setDrawCircles(lineDrawCircleEnable)
+
+                dataSet.mode = lineMode
             }
 
             if (dataSet is BarDataSet) {
@@ -540,13 +660,42 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 dataSet.sliceSpace = pieSliceSpace
                 //dataSet.iconsOffset =
                 dataSet.selectionShift = pieSelectionShift
+
+                dataSet.isValueLineVariableLength = true
+                dataSet.valueLinePart1OffsetPercentage = pieValueLinePart1OffsetPercentage
+                dataSet.valueLinePart1Length = pieValueLinePart1Length
+                dataSet.valueLinePart2Length = pieValueLinePart2Length
+                dataSet.xValuePosition = pieValuePositionX
+                dataSet.yValuePosition = pieValuePositionY
+                dataSet.valueLineColor = pieValueLineColor
+                dataSet.valueLineWidth = pieValueLineWidth
             }
 
             if (dataSet is BubbleDataSet) {
                 dataSet.highlightCircleWidth = bubbleHighlightCircleWidth
             }
 
-            action()
+            if (dataSet is CandleDataSet) {
+                dataSet.shadowColor = candleShadowColor
+                dataSet.shadowWidth = candleShadowWidth
+                dataSet.decreasingColor = candleDecreasingColor
+                dataSet.decreasingPaintStyle = candleDecreasingPaintStyle
+                dataSet.increasingColor = candleIncreasingColor
+                dataSet.increasingPaintStyle = candleIncreasingPaintStyle
+                dataSet.neutralColor = candleNeutralColor
+            }
+
+            if (dataSet is RadarDataSet) {
+                dataSet.isDrawHighlightCircleEnabled = radarDrawHighlightCircleEnabled
+            }
+
+            if (dataSet is ScatterDataSet) {
+                dataSet.setScatterShape(scatterShape)
+                dataSet.scatterShapeHoleColor = this@BaseChartConfig.scatterShapeHoleColor
+                dataSet.scatterShapeHoleRadius = this@BaseChartConfig.scatterShapeHoleRadius
+                dataSet.scatterShapeSize = this@BaseChartConfig.scatterShapeSize
+            }
+
         }
     }
 
@@ -647,6 +796,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var chartLeftAxisGranularity = Float.NaN
     var chartRightAxisGranularity = Float.NaN
 
+    /**[dp]*/
+    var chartXAxisOffsetX = 2f
+    var chartLeftAxisOffsetX = 2f
+    var chartRightAxisOffsetX = 2f
+    var chartXAxisOffsetY = 2f
+    var chartLeftAxisOffsetY = 2f
+    var chartRightAxisOffsetY = 2f
+
+
     open fun configAxis(chart: Chart<*>) {
 
         //X 轴
@@ -664,6 +822,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 textColor = chartXAxisLabelTextColor
                 textSize = chartXAxisLabelTextSize
                 labelRotationAngle = chartXAxisLabelRotationAngle
+
+                xOffset = chartXAxisOffsetX
+                yOffset = chartXAxisOffsetY
 
                 if (chartXAxisMinimum.isNaN()) {
                     resetAxisMinimum()
@@ -719,6 +880,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 zeroLineColor = chartRightZeroLineColor
                 zeroLineWidth = chartRightZeroLineWidth
                 setDrawZeroLine(chartRightDrawZeroLine)
+
+                xOffset = chartRightAxisOffsetX
+                yOffset = chartRightAxisOffsetY
             }
         }
 
@@ -759,6 +923,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             zeroLineColor = chartLeftZeroLineColor
             zeroLineWidth = chartLeftZeroLineWidth
             setDrawZeroLine(chartLeftDrawZeroLine)
+
+            xOffset = chartLeftAxisOffsetX
+            yOffset = chartLeftAxisOffsetY
         }
     }
 
@@ -839,6 +1006,10 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             chart.animateY(chartAnimateDurationY, chartAnimateEasingY)
         } else {
             chart.postInvalidateOnAnimation()
+        }
+
+        if (chart is BarLineChartBase<*>) {
+            //chart.moveViewToX()
         }
     }
 

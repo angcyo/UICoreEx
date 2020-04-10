@@ -26,8 +26,8 @@ open class BubbleChartConfig : BaseChartConfig<BubbleEntry, BubbleDataSet>() {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         BubbleDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

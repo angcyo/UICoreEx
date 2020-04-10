@@ -6,7 +6,6 @@ import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.ScatterData
 import com.github.mikephil.charting.data.ScatterDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 
 /**
  * 分散/散列 图表配置
@@ -17,24 +16,13 @@ import com.github.mikephil.charting.utils.ColorTemplate
  */
 open class ScatterChartConfig : BaseChartConfig<Entry, ScatterDataSet>() {
 
-    /**散列图形 形状*/
-    var scatterShape: ScatterChart.ScatterShape = ScatterChart.ScatterShape.CIRCLE
-    var scatterShapeHoleColor = ColorTemplate.COLOR_NONE
-    var scatterShapeHoleRadius = 0f
-    var scatterShapeSize = 25f
-
     override fun addDataSet(label: String?, action: ScatterDataSet.() -> Unit) {
         if (entryList.isEmpty()) {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         ScatterDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
-            setScatterShape(scatterShape)
-            scatterShapeHoleColor = this@ScatterChartConfig.scatterShapeHoleColor
-            scatterShapeHoleRadius = this@ScatterChartConfig.scatterShapeHoleRadius
-            scatterShapeSize = this@ScatterChartConfig.scatterShapeSize
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

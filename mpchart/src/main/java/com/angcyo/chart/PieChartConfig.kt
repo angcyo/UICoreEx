@@ -26,46 +26,14 @@ open class PieChartConfig : BaseChartConfig<PieEntry, PieDataSet>() {
         pieEntryLabelColor = Color.WHITE
     }
 
-    /**Part1 相当于圆心, 偏移的距离*/
-    var pieValueLinePart1OffsetPercentage = pieTransparentCircleRadius + 20f
-
-    /**Part1 长度占比*/
-    var pieValueLinePart1Length = 0.2f
-
-    /**Part2 长度占比*/
-    var pieValueLinePart2Length = 0.5f
-
-    /**设置 outside 时, 会绘制在饼状图的外面, 并用线连接*/
-    var pieValuePositionX = PieDataSet.ValuePosition.INSIDE_SLICE
-
-    /**当Y值, outside 时, 会绘制线*/
-    var pieValuePositionY = PieDataSet.ValuePosition.INSIDE_SLICE
-
-    /**线的颜色*/
-    var pieValueLineColor = DEFAULT_TEXT_COLOR
-
-    /**px, 线的宽度*/
-    var pieValueLineWidth = 1f
-
     /**饼状图只允许有一个[IPieDataSet], 过得的无效*/
     override fun addDataSet(label: String?, action: PieDataSet.() -> Unit) {
         if (entryList.isEmpty()) {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         PieDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
-            isValueLineVariableLength = true
-            valueLinePart1OffsetPercentage = pieValueLinePart1OffsetPercentage
-            valueLinePart1Length = pieValueLinePart1Length
-            valueLinePart2Length = pieValueLinePart2Length
-
-            xValuePosition = pieValuePositionX
-            yValuePosition = pieValuePositionY
-
-            valueLineColor = pieValueLineColor
-            valueLineWidth = pieValueLineWidth
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

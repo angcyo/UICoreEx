@@ -1,6 +1,5 @@
 package com.angcyo.chart
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import com.angcyo.library.L
 import com.github.mikephil.charting.charts.Chart
@@ -29,30 +28,14 @@ open class RadarChartConfig : BaseChartConfig<RadarEntry, RadarDataSet>() {
         chartDrawHorizontalHighlightIndicator = false
     }
 
-    /**绘制填充*/
-    var radarDrawFill = false
-
-    /**填充颜色*/
-    var radarFillColor = Color.rgb(140, 234, 255)
-    var radarFillAlpha = 25
-
-    /**高亮时, 绘制圆.需要先激活[chartHighlightEnabled]*/
-    var radarDrawHighlightCircleEnabled = true
 
     override fun addDataSet(label: String?, action: RadarDataSet.() -> Unit) {
         if (entryList.isEmpty()) {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         RadarDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
-            fillColor = radarFillColor
-            fillAlpha = radarFillAlpha
-            setDrawFilled(radarDrawFill)
-            lineWidth = chartDataSetWidth
-
-            isDrawHighlightCircleEnabled = radarDrawHighlightCircleEnabled
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

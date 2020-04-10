@@ -1,7 +1,5 @@
 package com.angcyo.chart
 
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import com.angcyo.library.L
 import com.github.mikephil.charting.charts.CandleStickChart
@@ -19,41 +17,13 @@ import com.github.mikephil.charting.data.CandleEntry
  */
 open class CandleStickChartConfig : BaseChartConfig<CandleEntry, CandleDataSet>() {
 
-    /**蜡烛 底线的颜色*/
-    var candleShadowColor = Color.DKGRAY
-
-    /**dp*/
-    var candleShadowWidth = 1f
-
-    /**open-close>0时, 使用此颜色绘制*/
-    var candleDecreasingColor = Color.RED
-    var candleDecreasingPaintStyle = Paint.Style.FILL
-
-    /**open-close<0时, 使用此颜色绘制*/
-    var candleIncreasingColor = Color.rgb(122, 242, 84)
-    var candleIncreasingPaintStyle = Paint.Style.STROKE
-
-    /**open-close=0时, 使用此颜色绘制*/
-    var candleNeutralColor = Color.BLUE
-
     override fun addDataSet(label: String?, action: CandleDataSet.() -> Unit) {
         if (entryList.isEmpty()) {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         CandleDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
-            shadowColor = candleShadowColor
-            shadowWidth = candleShadowWidth
-
-            decreasingColor = candleDecreasingColor
-            decreasingPaintStyle = candleDecreasingPaintStyle
-
-            increasingColor = candleIncreasingColor
-            increasingPaintStyle = candleIncreasingPaintStyle
-
-            neutralColor = candleNeutralColor
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }

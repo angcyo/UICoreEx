@@ -16,17 +16,6 @@ import com.github.mikephil.charting.data.LineDataSet
  */
 open class LineChartConfig : BaseChartConfig<Entry, LineDataSet>() {
 
-    /**激活绘制圆*/
-    var lineDrawCircleEnable: Boolean = true
-
-    /**圆内的hole*/
-    var lineDrawCircleHole: Boolean = true
-
-    /**填充绘制*/
-    var lineDrawFilled: Boolean = false
-
-    /**线的显示样式*/
-    var lineMode = LineDataSet.Mode.LINEAR
 
     init {
         /**线的宽度, 0-10f dp*/
@@ -41,21 +30,8 @@ open class LineChartConfig : BaseChartConfig<Entry, LineDataSet>() {
             L.w("Entry为空, 请检查是否先调用了[addEntry].")
         }
         LineDataSet(entryList, label).apply {
-            configDataSet(this, action)
-
-            //高亮使用蚂蚁线
-            //enableDashedHighlightLine()
-            //setFillFormatter { dataSet, dataProvider ->  }
-            setDrawCircleHole(lineDrawCircleHole)
-            setDrawCircles(lineDrawCircleEnable)
-
-            setDrawFilled(lineDrawFilled)
-            fillAlpha
-            fillColor
-            fillDrawable
-
-            mode = lineMode
-
+            configDataSet(this)
+            action()
             addDataSet(this)
         }
     }
