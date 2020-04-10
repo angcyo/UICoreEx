@@ -14,6 +14,7 @@ dependencies {
     //api 'rouchuan.viewpagerlayoutmanager:viewpagerlayoutmanager:2.0.22'
     api 'com.github.angcyo:ViewPagerLayoutManager:2.1.2'
 
+    //https://jitpack.io/com/github/XHGInc/FloatWindow
     //https://github.com/yhaolpz/FloatWindow
     //https://github.com/XHGInc/FloatWindow
     api 'com.github.XHGInc:FloatWindow:1.0.9.3'

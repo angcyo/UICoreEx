@@ -3,6 +3,7 @@ package com.angcyo.chart
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import com.angcyo.chart.formatter.PercentFormatter
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.isDebugType
@@ -21,6 +22,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.utils.Utils
 
 /**
  * [Chart] 公共配置
@@ -148,20 +150,31 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var barHighlightFullEnabled = false
 
     /**[PieChart], 使用百分比显示Value*/
-    var pieUsePercentValues = true
+    var pieUsePercentValues = false
+        set(value) {
+            field = value
+            chartValueFormatter = if (value) {
+                PercentFormatter()
+            } else {
+                Utils.getDefaultValueFormatter()
+            }
+        }
+
     var pieCenterTextColor = DEFAULT_TEXT_COLOR
     var pieCenterText: CharSequence? = null
     var pieDrawCenterText = true
 
     /**dp*/
     var pieCenterTextSize = 12f
+
+    /**dp*/
     var pieCenterTextOffsetX = 0f
     var pieCenterTextOffsetY = 0f
 
     /**绘制Hole*/
     var pieDrawHoleEnable = true
 
-    /**默认切片是扇形, 可以通过此开关绘制成圆形*/
+    /**默认切片是扇形, 可以通过此开关绘制成圆形. 圆形效果在点击时没有高凸效果.*/
     var pieDrawRoundedSlices = false
 
     /**切片绘制在hole下*/
@@ -174,7 +187,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var pieTransparentCircleAlpha = 110
     var pieTransparentCircleRadius = 61f
 
-    /**图表当前旋转的角度*/
+    /**图表当前旋转的角度, 0°是3点钟方向*/
     var pieRotationAngle = 270f
 
     /**饼状图是否可以收拾旋转*/
@@ -184,6 +197,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var pieEntryLabelColor = DEFAULT_TEXT_COLOR
     var pieEntryLabelTextSize = DEFAULT_TEXT_SIZE
     var pieDrawEntryLabels = true
+
+    /**饼状图圆最大的角度 [90-360]*/
+    var pieMaxAngle = 360f
 
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
@@ -272,6 +288,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 setEntryLabelTextSize(pieEntryLabelTextSize)
                 setDrawEntryLabels(pieDrawEntryLabels)
                 //setEntryLabelTypeface()
+
+                maxAngle = pieMaxAngle
             }
 
             //listener
@@ -401,6 +419,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**选中之后, 切片需要额外偏移的距离. dp*/
     var pieSelectionShift = 5f
 
+    /**[DataSet]的Formatter*/
+    var chartValueFormatter: ValueFormatter? = Utils.getDefaultValueFormatter()
+
     fun configDataSet(dataSet: DataSetType, action: DataSetType.() -> Unit = {}) {
         dataSet.apply {
             isVisible = chartDataSetVisible
@@ -411,6 +432,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
             valueTextColor = chartValueTextColor
             valueTextSize = chartValueTextSize
+
+            valueFormatter = chartValueFormatter
 
             // customize legend entry
             formLineWidth
