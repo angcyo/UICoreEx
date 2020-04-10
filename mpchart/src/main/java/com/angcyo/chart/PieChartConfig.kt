@@ -82,7 +82,6 @@ open class PieChartConfig : BaseChartConfig<PieEntry, PieDataSet>() {
         action: PieEntry.() -> Unit
     ) {
         addEntry {
-            this.x = 0f
             this.y = value
             this.icon = icon
             this.data = data

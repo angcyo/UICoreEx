@@ -128,6 +128,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**[BarLineChartBase]*/
     var chartDrawGridBackground: Boolean = false
 
+    /**dp*/
+    var chartMaxHighlightDistance = 500f
+
     /**触摸拖动时, 高亮[BarLineChartBase]*/
     var lineHighlightPerDragEnabled: Boolean = true
 
@@ -201,6 +204,22 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**饼状图圆最大的角度 [90-360]*/
     var pieMaxAngle = 360f
 
+    /**dp 直线的宽度*/
+    var radarWebLineWidth = 1f
+    var radarWebSkipLineCount = 0
+
+    /**直线的颜色*/
+    var radarWebColor = Color.LTGRAY
+
+    /**0-255*/
+    var radarWebAlpha = 150
+
+    /**dp 网的宽度*/
+    var radarWebLineWidthInner = 1f
+
+    /**dp 网的颜色*/
+    var radarWebColorInner = Color.LTGRAY
+
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
         L.i("entry:$entry highlight:$highlight")
@@ -224,6 +243,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 chartExtraOffsetRight,
                 chartExtraOffsetBottom
             )
+
+            maxHighlightDistance = chartMaxHighlightDistance
 
             //dragDecelerationFrictionCoef
 
@@ -292,6 +313,24 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 maxAngle = pieMaxAngle
             }
 
+            if (this is ScatterChart) {
+                //this
+            }
+
+            if (this is BubbleChart) {
+                //
+            }
+
+            if (this is RadarChart) {
+                webLineWidth = radarWebLineWidth
+                skipWebLineCount = radarWebSkipLineCount
+                webColor = radarWebColor
+                webAlpha = radarWebAlpha
+
+                webLineWidthInner = radarWebLineWidthInner
+                webColorInner = radarWebColorInner
+            }
+
             //listener
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onNothingSelected() {
@@ -312,9 +351,22 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**右下角说明信息*/
 
     var chartDesText: String? = null
+        set(value) {
+            field = value
+            chartDesEnabled = !value.isNullOrEmpty()
+        }
+
     var chartDesEnabled: Boolean = false
     var chartDesTextColor: Int = DEFAULT_TEXT_COLOR
     var chartDesTextAlign = Paint.Align.RIGHT
+
+    /**px 当设置了[Position]时, [Offset]将不起作用*/
+    var chartDesPositionX = Float.NaN
+    var chartDesPositionY = Float.NaN
+
+    /**dp*/
+    var chartDesPositionXOffset = 2f
+    var chartDesPositionYOffset = 2f
 
     open fun configDescription(chart: Chart<*>) {
         chart.description.apply {
@@ -322,9 +374,17 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             isEnabled = chartDesEnabled
             textColor = chartDesTextColor
             textAlign = chartDesTextAlign
-            //setPosition()
-            //xOffset
-            //yOffset
+            if (chartDesPositionX.isNaN() && chartDesPositionY.isNaN()) {
+                //default
+            } else if (!chartDesPositionX.isNaN() && !chartDesPositionY.isNaN()) {
+                setPosition(chartDesPositionX, chartDesPositionY)
+            } else if (chartDesPositionX.isNaN()) {
+                setPosition(0f, chartDesPositionY)
+            } else if (chartDesPositionY.isNaN()) {
+                setPosition(chartDesPositionX, 0f)
+            }
+            xOffset = chartDesPositionXOffset
+            yOffset = chartDesPositionYOffset
         }
     }
 
@@ -401,7 +461,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**宽度, 不同类型的图表, 宽度自行初始化宽度*/
     var chartDataSetWidth = 0.85f
 
-    /**触摸时, 是否高亮*/
+    /**触摸时, 是否高亮. 横竖十字架线*/
     var chartHighlightEnabled: Boolean = false
 
     /**点击后, 高亮线的颜色*/
@@ -413,6 +473,12 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**数据集的颜色集合, 循环从里面去颜色绘制*/
     var chartDataSetColors = listOf<Int>()
 
+    /**高亮时, 是否绘制纵向的指示线*/
+    var chartDrawVerticalHighlightIndicator = true
+
+    /**高亮时, 是否绘制横向的指示线*/
+    var chartDrawHorizontalHighlightIndicator = true
+
     /**[0-20]dp, 饼状 切片之间的间隙*/
     var pieSliceSpace = 3f
 
@@ -421,6 +487,12 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     /**[DataSet]的Formatter*/
     var chartValueFormatter: ValueFormatter? = Utils.getDefaultValueFormatter()
+
+    /**[DataSet]依赖left or right 轴*/
+    var chartAxisDependency = YAxis.AxisDependency.LEFT
+
+    /**[dp] 高亮时, 气泡周围绘制边框的宽度 [chartHighlightColor]*/
+    var bubbleHighlightCircleWidth = 1.5f
 
     fun configDataSet(dataSet: DataSetType, action: DataSetType.() -> Unit = {}) {
         dataSet.apply {
@@ -440,17 +512,24 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             formLineDashEffect
             formSize
 
+            axisDependency = chartAxisDependency
+
             if (dataSet is BaseDataSet<*>) {
                 if (chartDataSetColors.isEmpty()) {
                     dataSet.color = chartDataSetColor
                 } else {
-                    dataSet.colors = chartDataSetColors
+                    dataSet.colors = ArrayList(chartDataSetColors)
                 }
             }
 
             if (dataSet is LineRadarDataSet<*>) {
                 dataSet.lineWidth = chartDataSetWidth
                 dataSet.highLightColor = chartHighlightColor
+            }
+
+            if (dataSet is LineScatterCandleRadarDataSet<*>) {
+                dataSet.setDrawVerticalHighlightIndicator(chartDrawVerticalHighlightIndicator)
+                dataSet.setDrawHorizontalHighlightIndicator(chartDrawHorizontalHighlightIndicator)
             }
 
             if (dataSet is BarDataSet) {
@@ -461,6 +540,10 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 dataSet.sliceSpace = pieSliceSpace
                 //dataSet.iconsOffset =
                 dataSet.selectionShift = pieSelectionShift
+            }
+
+            if (dataSet is BubbleDataSet) {
+                dataSet.highlightCircleWidth = bubbleHighlightCircleWidth
             }
 
             action()
@@ -600,41 +683,12 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             }
         }
 
+        var targetYAxis: YAxis? = null
+
         if (chart is BarLineChartBase<*>) {
             //Left 轴
-            chart.axisLeft.apply {
-                isEnabled = chartLeftAxisEnable
-                setPosition(chartLeftAxisPosition)
-                valueFormatter = chartLeftAxisValueFormatter
-                axisLineColor = chartLeftAxisLineColor
-                setDrawLabels(chartLeftAxisDrawLabels)
-                setDrawGridLines(chartLeftAxisDrawGridLines)
-                gridColor = chartLeftAxisGridLineColor
-                textColor = chartLeftAxisLabelTextColor
-                textSize = chartLeftAxisLabelTextSize
-                if (chartLeftAxisMinimum.isNaN()) {
-                    resetAxisMinimum()
-                } else {
-                    axisMinimum = chartLeftAxisMinimum
-                }
-                if (chartLeftAxisMaximum.isNaN()) {
-                    resetAxisMaximum()
-                } else {
-                    axisMaximum = chartLeftAxisMaximum
-                }
+            targetYAxis = chart.axisLeft
 
-                setCenterAxisLabels(chartLeftAxisCenterLabels)
-                //spaceMin =
-                //spaceTop =
-                //spaceBottom =
-                if (!chartLeftAxisGranularity.isNaN()) {
-                    granularity = chartLeftAxisGranularity
-                }
-
-                zeroLineColor = chartLeftZeroLineColor
-                zeroLineWidth = chartLeftZeroLineWidth
-                setDrawZeroLine(chartLeftDrawZeroLine)
-            }
             //Right 轴
             chart.axisRight.apply {
                 isEnabled = chartRightAxisEnable
@@ -666,6 +720,45 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 zeroLineWidth = chartRightZeroLineWidth
                 setDrawZeroLine(chartRightDrawZeroLine)
             }
+        }
+
+        //Y轴, 使用 Left轴 的配置
+        if (chart is RadarChart) {
+            targetYAxis = chart.yAxis
+        }
+
+        targetYAxis?.apply {
+            isEnabled = chartLeftAxisEnable
+            setPosition(chartLeftAxisPosition)
+            valueFormatter = chartLeftAxisValueFormatter
+            axisLineColor = chartLeftAxisLineColor
+            setDrawLabels(chartLeftAxisDrawLabels)
+            setDrawGridLines(chartLeftAxisDrawGridLines)
+            gridColor = chartLeftAxisGridLineColor
+            textColor = chartLeftAxisLabelTextColor
+            textSize = chartLeftAxisLabelTextSize
+            if (chartLeftAxisMinimum.isNaN()) {
+                resetAxisMinimum()
+            } else {
+                axisMinimum = chartLeftAxisMinimum
+            }
+            if (chartLeftAxisMaximum.isNaN()) {
+                resetAxisMaximum()
+            } else {
+                axisMaximum = chartLeftAxisMaximum
+            }
+
+            setCenterAxisLabels(chartLeftAxisCenterLabels)
+            //spaceMin =
+            //spaceTop =
+            //spaceBottom =
+            if (!chartLeftAxisGranularity.isNaN()) {
+                granularity = chartLeftAxisGranularity
+            }
+
+            zeroLineColor = chartLeftZeroLineColor
+            zeroLineWidth = chartLeftZeroLineWidth
+            setDrawZeroLine(chartLeftDrawZeroLine)
         }
     }
 
