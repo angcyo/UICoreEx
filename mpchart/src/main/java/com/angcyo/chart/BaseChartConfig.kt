@@ -135,6 +135,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**触摸拖动时, 高亮[BarLineChartBase]*/
     var lineHighlightPerDragEnabled: Boolean = true
 
+    /**自动将线缩放到最小值 最大值范围内*/
+    var lineAutoScaleMinMaxEnabled: Boolean = false
+
     /**...[BarLineChartBase]*/
     var chartHighLightPerTapEnabled: Boolean = true
 
@@ -277,6 +280,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                     setDrawBorders(chartDrawBorders)
                     //setBorderColor()
                     //setBorderWidth()
+
+                    isAutoScaleMinMaxEnabled = lineAutoScaleMinMaxEnabled
 
                     isHighlightPerDragEnabled = lineHighlightPerDragEnabled
                     setMaxVisibleValueCount(chartMaxVisibleCount)
@@ -534,7 +539,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**[dp] 高亮时, 气泡周围绘制边框的宽度 [chartHighlightColor]*/
     var bubbleHighlightCircleWidth = 1.5f
 
-    /**激活绘制圆*/
+    /**激活绘制圆, 线上的圆圈*/
     var lineDrawCircleEnable: Boolean = true
 
     /**圆内的hole*/
