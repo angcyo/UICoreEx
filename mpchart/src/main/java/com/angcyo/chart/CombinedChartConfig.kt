@@ -177,7 +177,13 @@ open class CombinedChartConfig : BaseChartConfig<CombinedEntry, CombinedDataSet>
     }
 
     @Deprecated("不能使用此方法")
-    override fun addEntry(x: Float, y: Float, icon: Drawable?, data: Any?) {
+    override fun addEntry(
+        x: Float,
+        y: Float,
+        icon: Drawable?,
+        data: Any?,
+        action: CombinedEntry.() -> Unit
+    ) {
         //super.addEntry(x, y, icon, data)
     }
 

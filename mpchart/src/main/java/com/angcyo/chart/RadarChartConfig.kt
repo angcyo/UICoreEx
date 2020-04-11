@@ -44,10 +44,6 @@ open class RadarChartConfig : BaseChartConfig<RadarEntry, RadarDataSet>() {
         entryList.add(RadarEntry(0f).apply(action))
     }
 
-    override fun addEntry(x: Float, y: Float, icon: Drawable?, data: Any?) {
-        super.addEntry(x, y, icon, data)
-    }
-
     fun addEntry(
         value: Float = 0f,
         icon: Drawable? = null,

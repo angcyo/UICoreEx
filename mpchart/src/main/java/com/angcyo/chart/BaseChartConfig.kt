@@ -68,12 +68,19 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
         entryList.add(entry)
     }
 
-    open fun addEntry(x: Float = 0f, y: Float = 0f, icon: Drawable? = null, data: Any? = null) {
+    open fun addEntry(
+        x: Float = 0f,
+        y: Float = 0f,
+        icon: Drawable? = null,
+        data: Any? = null,
+        action: EntryType.() -> Unit = {}
+    ) {
         addEntry {
             this.x = x
             this.y = y
             this.icon = icon
             this.data = data
+            action()
         }
     }
 
@@ -113,7 +120,20 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     /**[BarLineChartBase]*/
     var chartScaleXEnabled: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                chartDragXEnabled = true
+            }
+        }
+
     var chartScaleYEnabled: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                chartDragYEnabled = true
+            }
+        }
 
     /**[BarLineChartBase]*/
     var chartScaleEnabled: Boolean = false
@@ -228,11 +248,19 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**dp 网的颜色*/
     var radarWebColorInner = Color.LTGRAY
 
-    /**设置可见Entry的数量, 配置[moveViewToX], 可以实现 实时波形图*/
+    /**设置可见Entry的数量, 配置[moveViewToX], 可以实现 实时波形图,
+     * 此属性设置之前请先设置[axisMinimum] [axisMaximum]*/
     var chartVisibleXRangeMinimum = Float.NaN
     var chartVisibleXRangeMaximum = Float.NaN
     var chartVisibleYRangeMaximum = Float.NaN
     var chartVisibleYRangeMinimum = Float.NaN
+
+    /**设置X轴方向上, 缩放的最小级别. 参考手势缩放
+     * [chartVisibleXRangeMaximum]也会修改此属性对应的效果*/
+    var chartScaleMinimumX = 1f
+
+    /**设置Y轴方向上, 缩放的最小级别*/
+    var chartScaleMinimumY = 1f
 
     /**选中Value回调*/
     var chartValueSelected: (entry: Entry, highlight: Highlight) -> Unit = { entry, highlight ->
@@ -289,6 +317,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
                     isHighlightPerDragEnabled = lineHighlightPerDragEnabled
                     setMaxVisibleValueCount(chartMaxVisibleCount)
+
+                    setScaleMinima(chartScaleMinimumX, chartScaleMinimumY)
 
                     if (!chartVisibleXRangeMinimum.isNaN()) {
                         setVisibleXRangeMinimum(chartVisibleXRangeMinimum)
@@ -782,6 +812,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**X轴 Label旋转的角度*/
     var chartXAxisLabelRotationAngle = 0f
 
+    /**X轴的取值范围, [min-max]. 默认自动计算*/
     var chartXAxisMinimum = Float.NaN
     var chartXAxisMaximum = Float.NaN
 
@@ -1072,11 +1103,11 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     open fun doIt(chart: Chart<*>) {
         //chart.clear() //need?
 
-        configBase(chart)
         configNoData(chart)
         configDescription(chart)
-        configAxis(chart)
         configLegend(chart)
+        configAxis(chart)
+        configBase(chart)
 
         if (entryList.isNotEmpty()) {
             addDataSet()
