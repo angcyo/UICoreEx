@@ -3,6 +3,7 @@ package com.angcyo.chart
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.view.Gravity
 import com.angcyo.chart.formatter.PercentFormatter
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
@@ -437,7 +438,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     var chartDesEnabled: Boolean = false
     var chartDesTextColor: Int = DEFAULT_TEXT_COLOR
-    var chartDesTextAlign = Paint.Align.RIGHT
+    var chartDesTextAlign = Paint.Align.LEFT
 
     /**px 当设置了[Position]时, [Offset]将不起作用*/
     var chartDesPositionX = Float.NaN
@@ -445,7 +446,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     /**dp*/
     var chartDesPositionXOffset = 2f
+
     var chartDesPositionYOffset = 2f
+    var chartDesPositionGravity = Gravity.RIGHT or Gravity.BOTTOM
 
     open fun configDescription(chart: Chart<*>) {
         chart.description.apply {
@@ -464,6 +467,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             }
             xOffset = chartDesPositionXOffset
             yOffset = chartDesPositionYOffset
+
+            gravity = chartDesPositionGravity
         }
     }
 
