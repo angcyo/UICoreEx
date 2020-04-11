@@ -100,11 +100,11 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var chartExtraOffsetBottom = 0f
 
     /**[BarLineChartBase]*/
-    var chartDragXEnabled: Boolean = true
-    var chartDragYEnabled: Boolean = true
+    var chartDragXEnabled: Boolean = false
+    var chartDragYEnabled: Boolean = false
 
     /**[BarLineChartBase]*/
-    var chartDragEnabled: Boolean = true
+    var chartDragEnabled: Boolean = false
         set(value) {
             field = value
             chartDragXEnabled = value
@@ -112,11 +112,11 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
         }
 
     /**[BarLineChartBase]*/
-    var chartScaleXEnabled: Boolean = true
-    var chartScaleYEnabled: Boolean = true
+    var chartScaleXEnabled: Boolean = false
+    var chartScaleYEnabled: Boolean = false
 
     /**[BarLineChartBase]*/
-    var chartScaleEnabled: Boolean = true
+    var chartScaleEnabled: Boolean = false
         set(value) {
             field = value
             chartScaleXEnabled = value
@@ -141,7 +141,11 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**...[BarLineChartBase]*/
     var chartHighLightPerTapEnabled: Boolean = true
 
-    /**[BarLineChartBase] [BarChart]*/
+    /**[BarLineChartBase] [BarChart] [LineChart] [ScatterChart] [BubbleChart] [CombinedChart] [CandleStickChart]
+     *  当[entry]总数小于[chartMaxVisibleCount]时, 才绘制Value[chartDrawValues] / icon
+     *
+     *  [com.github.mikephil.charting.renderer.DataRenderer.isDrawingValuesAllowed]
+     * */
     var chartMaxVisibleCount = 100
 
     /**[BarChart], 是否绘制 顶部/底部 不在Value区域的部分*/
@@ -548,6 +552,10 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**线的显示样式*/
     var lineMode = LineDataSet.Mode.LINEAR
 
+    var barBorderWidth = 0f
+    var barBorderColor = Color.BLACK
+    var barShadowColor = Color.rgb(215, 215, 215)
+
     /**Part1 相当于圆心, 偏移的距离*/
     var pieValueLinePart1OffsetPercentage = pieTransparentCircleRadius + 20f
 
@@ -658,7 +666,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             }
 
             if (dataSet is BarDataSet) {
-                dataSet.barBorderWidth = 0f
+                dataSet.barBorderWidth = this@BaseChartConfig.barBorderWidth
+                dataSet.barBorderColor = this@BaseChartConfig.barBorderColor
+                dataSet.barShadowColor = this@BaseChartConfig.barShadowColor
             }
 
             if (dataSet is PieDataSet) {
@@ -781,7 +791,9 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var chartRightAxisMinimum = Float.NaN
     var chartRightAxisMaximum = Float.NaN
 
-    /**居中标签, 分组Bar中效果明显*/
+    /**将Label绘制在轴的居中位置, 分组Bar中效果明显.
+     * 居中位置绘制Label,默认Label会偏向外边
+     * */
     var chartXAxisCenterLabels = false
     var chartLeftAxisCenterLabels = false
     var chartRightAxisCenterLabels = false
@@ -809,6 +821,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     var chartLeftAxisOffsetY = 2f
     var chartRightAxisOffsetY = 2f
 
+    /**轴上需要绘制Label的数量[2-25]*/
+    var chartXAxisLabelCount = 6
+    var chartLeftAxisLabelCount = 6
+    var chartRightAxisLabelCount = 6
+
+    /**强制指定Label的数量, 而不是均匀分布*/
+    var chartXAxisForceLabels = false
+    var chartLeftAxisForceLabels = false
+    var chartRightAxisForceLabels = false
 
     open fun configAxis(chart: Chart<*>) {
 
@@ -846,6 +867,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                     granularity = chartXAxisGranularity
                 }
                 setCenterAxisLabels(chartXAxisCenterLabels)
+
+                setDrawLimitLinesBehindData(chartXAxisDrawLimitLineBehindData)
+                setDrawGridLinesBehindData(chartXAxisDrawGridLinesBehindData)
+
+                xLimitList.forEach {
+                    addLimitLine(it)
+                }
+
+                setLabelCount(chartXAxisLabelCount, chartXAxisForceLabels)
             }
         }
 
@@ -888,6 +918,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
                 xOffset = chartRightAxisOffsetX
                 yOffset = chartRightAxisOffsetY
+
+                setDrawLimitLinesBehindData(chartRightAxisDrawLimitLineBehindData)
+                setDrawGridLinesBehindData(chartRightAxisDrawGridLinesBehindData)
+
+                rightLimitList.forEach {
+                    addLimitLine(it)
+                }
+
+                setLabelCount(chartRightAxisLabelCount, chartRightAxisForceLabels)
             }
         }
 
@@ -931,6 +970,15 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
             xOffset = chartLeftAxisOffsetX
             yOffset = chartLeftAxisOffsetY
+
+            setDrawLimitLinesBehindData(chartLeftAxisDrawLimitLineBehindData)
+            setDrawGridLinesBehindData(chartLeftAxisDrawGridLinesBehindData)
+
+            leftLimitList.forEach {
+                addLimitLine(it)
+            }
+
+            setLabelCount(chartLeftAxisLabelCount, chartLeftAxisForceLabels)
         }
     }
 
@@ -938,34 +986,77 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     //<editor-fold desc="Limit限制线">
 
-    var chartLimitTextColor = DEFAULT_TEXT_COLOR
-    var chartLimitLineColor = Color.rgb(237, 91, 91)
-    var chartLimitLineWidth = chartDataSetWidth
-    var chartLimitLabelPosition = LimitLabelPosition.RIGHT_TOP
+    var chartXAxisLimitTextColor = DEFAULT_TEXT_COLOR
+    var chartXAxisLimitLineColor = Color.rgb(237, 91, 91)
+    var chartXAxisLimitLineWidth = chartDataSetWidth
+    var chartXAxisLimitLabelPosition = LimitLabelPosition.RIGHT_TOP
 
-    private val limitList = mutableListOf<LimitLine>()
+    var chartLeftAxisLimitTextColor = DEFAULT_TEXT_COLOR
+    var chartLeftAxisLimitLineColor = Color.rgb(237, 91, 91)
+    var chartLeftAxisLimitLineWidth = chartDataSetWidth
+    var chartLeftAxisLimitLabelPosition = LimitLabelPosition.RIGHT_TOP
 
-    fun addLimitLine(limit: Float, label: String? = null, action: LimitLine.() -> Unit = {}) {
-        limitList.add(LimitLine(limit, label).apply {
-            textColor = chartLimitTextColor
-            lineColor = chartLimitLineColor
+    var chartRightAxisLimitTextColor = DEFAULT_TEXT_COLOR
+    var chartRightAxisLimitLineColor = Color.rgb(237, 91, 91)
+    var chartRightAxisLimitLineWidth = chartDataSetWidth
+    var chartRightAxisLimitLabelPosition = LimitLabelPosition.RIGHT_TOP
+
+    /**网格线绘制在data的下面*/
+    var chartXAxisDrawGridLinesBehindData = true
+    var chartLeftAxisDrawGridLinesBehindData = true
+    var chartRightAxisDrawGridLinesBehindData = true
+
+    /**Limit线绘制在data的下面*/
+    var chartXAxisDrawLimitLineBehindData = false
+    var chartLeftAxisDrawLimitLineBehindData = false
+    var chartRightAxisDrawLimitLineBehindData = false
+
+    private val xLimitList = mutableListOf<LimitLine>()
+    private val leftLimitList = mutableListOf<LimitLine>()
+    private val rightLimitList = mutableListOf<LimitLine>()
+
+    fun addXAxisLimitLine(limit: Float, label: String? = null, action: LimitLine.() -> Unit = {}) {
+        xLimitList.add(LimitLine(limit, label).apply {
+            textColor = chartXAxisLimitTextColor
+            lineColor = chartXAxisLimitLineColor
             isEnabled = true
             //label
-            lineWidth = chartLimitLineWidth
-            labelPosition = chartLimitLabelPosition
+            lineWidth = chartXAxisLimitLineWidth
+            labelPosition = chartXAxisLimitLabelPosition
             action()
         })
     }
 
-    fun configLimit(chart: LineChart) {
-        var yAxis = chart.axisLeft
-        if (!yAxis.isEnabled) {
-            yAxis = chart.axisRight
-        }
+    fun addLeftAxisLimitLine(
+        limit: Float,
+        label: String? = null,
+        action: LimitLine.() -> Unit = {}
+    ) {
+        leftLimitList.add(LimitLine(limit, label).apply {
+            textColor = chartLeftAxisLimitTextColor
+            lineColor = chartLeftAxisLimitLineColor
+            isEnabled = true
+            //label
+            lineWidth = chartLeftAxisLimitLineWidth
+            labelPosition = chartLeftAxisLimitLabelPosition
+            action()
+        })
+    }
 
-        if (yAxis.isEnabled) {
-            limitList.forEach { yAxis.addLimitLine(it) }
-        }
+    fun addRightAxisLimitLine(
+        limit: Float,
+        label: String? = null,
+        action: LimitLine.() -> Unit = {}
+    ) {
+        rightLimitList.add(LimitLine(limit, label).apply {
+            textColor = chartRightAxisLimitTextColor
+            lineColor = chartRightAxisLimitLineColor
+            isEnabled = true
+            //label
+            lineWidth = chartRightAxisLimitLineWidth
+            labelPosition = chartRightAxisLimitLabelPosition
+            action()
+        })
     }
 
     //</editor-fold desc="Limit限制线">

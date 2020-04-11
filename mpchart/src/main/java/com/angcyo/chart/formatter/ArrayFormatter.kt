@@ -12,7 +12,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 open class ArrayFormatter(val values: List<String>) : ValueFormatter() {
 
     override fun getFormattedValue(value: Float): String {
-        return values[(value.toInt() % values.size)]
+        return values.getOrNull(value.toInt() % values.size) ?: ""
     }
 
     override fun getPieLabel(value: Float, pieEntry: PieEntry?): String {

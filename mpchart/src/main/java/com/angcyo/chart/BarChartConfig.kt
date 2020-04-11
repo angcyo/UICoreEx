@@ -17,6 +17,11 @@ import com.github.mikephil.charting.data.BarEntry
  */
 open class BarChartConfig : BaseChartConfig<BarEntry, BarDataSet>() {
 
+    init {
+        chartHighlightEnabled = true
+        barHighlightFullEnabled = true
+    }
+
     //<editor-fold desc="Entry数据">
 
     /**添加一根Bar, 统一对每个DataSet设置样式, 需要单独配置, 请单独覆盖*/
