@@ -29,17 +29,20 @@ import org.jsoup.nodes.Element
 fun HtmlDom.parse(
     config: DslJsoup.() -> Unit = {},
     /**解析结束, 协程线程回调*/
-    onParseEnd: suspend (document: Document, index: Int) -> Unit
+    onParseEnd: suspend (document: Document, index: Int, count: Int) -> Unit
 ) {
     dslJsoup {
+        //开始解析的目标网址
         url = htmlUrl
         onDocumentReady = { document ->
-            if (htmlCategoryList.isNullOrEmpty()) {
-                onParseEnd(document, -1)
+            //需要解析网站的分类数据, 分类内包含各个需要的元素获取方式
+            val categoryList = htmlCategoryList
+            if (categoryList.isNullOrEmpty()) {
+                onParseEnd(document, -1, 0)
             } else {
-                htmlCategoryList?.forEachIndexed { index, htmlCategory ->
+                categoryList.forEachIndexed { index, htmlCategory ->
                     document.parse(htmlCategory)
-                    onParseEnd(document, index)
+                    onParseEnd(document, index, categoryList.size)
                 }
             }
         }
