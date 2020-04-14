@@ -79,9 +79,9 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
         super.setLayoutManager(layout)
 
         if (!isInEditMode) {
-            loopSnapHelper?.detachFromRecyclerView()
+            loopSnapHelper.detachFromRecyclerView()
             //如果在super的构造方法里面调用了setLayoutManager, 此时[loopSnapHelper]还未初始化, 就会报空指针
-            loopSnapHelper?.attachToRecyclerView(this) //会自动开启无线循环
+            loopSnapHelper.attachToRecyclerView(this) //会自动开启无线循环
             _startInner()
         }
     }
