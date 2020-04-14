@@ -185,7 +185,7 @@ class DslBox {
         /**获取BoxStore*/
         fun getBoxStore(packageName: String): BoxStore {
             return boxStoreMap.get(packageName)
-                ?: throw NullPointerException("未初始化[ObjectBox], $packageName")
+                ?: throw NullPointerException("$packageName 未初始化[ObjectBox].")
         }
 
         fun <T> getBox(packageName: String, entityClass: Class<T>): Box<T> {
