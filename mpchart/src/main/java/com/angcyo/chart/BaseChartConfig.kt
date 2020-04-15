@@ -47,7 +47,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     val dataSetList = mutableListOf<DataSetType>()
 
-    protected var entryList = mutableListOf<EntryType>()
+    var entryList = mutableListOf<EntryType>()
 
     /**添加数据集合,[DataSet]包含[Entry]*/
     abstract fun addDataSet(label: String? = null, action: DataSetType.() -> Unit = {})
@@ -102,6 +102,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**绘制边框[BarLineChartBase]*/
     var chartDrawBorders: Boolean = false
 
+    /**表格整体偏移. dp*/
     var chartExtraOffsetLeft = 0f
     var chartExtraOffsetTop = 0f
     var chartExtraOffsetRight = 0f
@@ -249,7 +250,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
     /**dp 网的颜色*/
     var radarWebColorInner = Color.LTGRAY
 
-    /**设置可见Entry的数量, 配置[moveViewToX], 可以实现 实时波形图,
+    /**设置可见Entry的数量, 配置[moveViewToX], 可以实现 实时波形图, 电波图, 脑波图.
      * 此属性设置之前请先设置[axisMinimum] [axisMaximum]*/
     var chartVisibleXRangeMinimum = Float.NaN
     var chartVisibleXRangeMaximum = Float.NaN
