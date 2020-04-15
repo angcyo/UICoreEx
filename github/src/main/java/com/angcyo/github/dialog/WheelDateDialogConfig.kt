@@ -15,13 +15,13 @@ import com.contrarywind.view.WheelView
 import java.util.*
 
 /**
- *
+ * 日期时间选择对话框配置
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/03/12
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-class WheelDateDialogConfig : BaseDialogConfig() {
+open class WheelDateDialogConfig : BaseDialogConfig() {
 
     //time picker 年月日 时分秒
     var dateType = booleanArrayOf(true, true, true, false, false, false)//显示类型，默认显示： 年月日

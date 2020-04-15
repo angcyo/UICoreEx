@@ -11,7 +11,7 @@ import com.angcyo.widget.DslViewHolder
 import com.contrarywind.view.WheelView
 
 /**
- *
+ * 3D滚轮选择对话框配置
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/03/11
