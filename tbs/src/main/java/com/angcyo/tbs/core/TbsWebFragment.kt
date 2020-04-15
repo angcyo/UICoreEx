@@ -316,11 +316,13 @@ open class TbsWebFragment : BaseTitleFragment() {
             itemData = uri
             itemVideoUri = uri
 
-            onItemDownloadStart = { itemHolder, task ->
+            itemDownloadStart = { itemHolder, task ->
+                onDownloadStart(itemHolder, task)
                 showLoadingView("下载中...")
             }
 
-            onItemDownloadFinish = { itemHolder, task, cause, error ->
+            itemDownloadFinish = { itemHolder, task, cause, error ->
+                onDownloadFinish(itemHolder, task, cause, error)
                 hideLoadingView()
             }
         }
@@ -340,11 +342,13 @@ open class TbsWebFragment : BaseTitleFragment() {
             itemData = uri
             itemLoadUri = uri
 
-            onItemDownloadStart = { itemHolder, task ->
+            itemDownloadStart = { itemHolder, task ->
+                onDownloadStart(itemHolder, task)
                 showLoadingView("下载中...")
             }
 
-            onItemDownloadFinish = { itemHolder, task, cause, error ->
+            itemDownloadFinish = { itemHolder, task, cause, error ->
+                onDownloadFinish(itemHolder, task, cause, error)
                 hideLoadingView()
             }
         }
