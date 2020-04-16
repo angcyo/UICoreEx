@@ -1,5 +1,6 @@
 package com.angcyo.github.dslitem
 
+import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.R
 import com.angcyo.library.app
@@ -35,13 +36,14 @@ open class DslBannerItem : DslNestedRecyclerItem() {
     val pagerLayoutManager: ViewPagerLayoutManager?
         get() = itemNestedLayoutManager as? ViewPagerLayoutManager
 
-    override fun onItemBind(
+    override fun onBindRecyclerView(
+        recyclerView: RecyclerView,
         itemHolder: DslViewHolder,
         itemPosition: Int,
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        super.onBindRecyclerView(recyclerView, itemHolder, itemPosition, adapterItem, payloads)
 
         val drawableIndicator: DrawableIndicator? = itemHolder.v(R.id.lib_drawable_indicator)
 
@@ -60,7 +62,7 @@ open class DslBannerItem : DslNestedRecyclerItem() {
         })
 
         //列表
-        itemHolder.rv(R.id.lib_nested_recycler_view)?.apply {
+        recyclerView.apply {
             drawableIndicator?.indicatorCount = itemNestedAdapter.itemCount
 
             itemNestedAdapter.onDispatchUpdatesOnce {
