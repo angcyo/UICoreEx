@@ -6,6 +6,14 @@ android {
             java.srcDirs += 'src/objectbox/java'
         }
     }
+//需要在APP工程配置[2.5.1]后支持.需要放在apply plugin: 'com.android.application'后
+//    defaultConfig {
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                arguments = ["objectbox.incremental": "true"]
+//            }
+//        }
+//    }
 }
 
 dependencies {
