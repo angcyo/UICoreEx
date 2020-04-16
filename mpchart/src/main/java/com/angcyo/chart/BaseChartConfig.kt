@@ -908,6 +908,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 setDrawLimitLinesBehindData(chartXAxisDrawLimitLineBehindData)
                 setDrawGridLinesBehindData(chartXAxisDrawGridLinesBehindData)
 
+                removeAllLimitLines()
                 xLimitList.forEach {
                     addLimitLine(it)
                 }
@@ -959,6 +960,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
                 setDrawLimitLinesBehindData(chartRightAxisDrawLimitLineBehindData)
                 setDrawGridLinesBehindData(chartRightAxisDrawGridLinesBehindData)
 
+                removeAllLimitLines()
                 rightLimitList.forEach {
                     addLimitLine(it)
                 }
@@ -1011,6 +1013,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
             setDrawLimitLinesBehindData(chartLeftAxisDrawLimitLineBehindData)
             setDrawGridLinesBehindData(chartLeftAxisDrawGridLinesBehindData)
 
+            removeAllLimitLines()
             leftLimitList.forEach {
                 addLimitLine(it)
             }
