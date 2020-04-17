@@ -52,9 +52,9 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
 
                 wheelItems = itemWheelList
 
-                onWheelItemToString = itemWheelToText
+                wheelItemToStringAction = itemWheelToText
 
-                onWheelItemSelector = { dialog, index, item ->
+                wheelItemSelectorAction = { dialog, index, item ->
                     if (itemWheelSelector(dialog, index, item)) {
                         //拦截了
                         true

@@ -64,14 +64,14 @@ open class WheelDateDialogConfig : BaseDialogConfig() {
     var lineSpacingMultiplier = 1.6f // 条目间距倍数 默认1.6
 
     /**点击确定后回调*/
-    var onDateSelectListener: (dialog: Dialog, date: Date) -> Boolean = { _, _ ->
+    var dateSelectAction: (dialog: Dialog, date: Date) -> Boolean = { _, _ ->
         false
     }
 
     /**
      * 滚动的时候回调
      * */
-    var onDateChangedListener: (dialog: Dialog, date: Date) -> Unit = { _, _ ->
+    var dateChangedAction: (dialog: Dialog, date: Date) -> Unit = { _, _ ->
 
     }
 
@@ -84,7 +84,7 @@ open class WheelDateDialogConfig : BaseDialogConfig() {
             _wheelTime?.apply {
                 try {
                     val date = dateFormat.parse(time)
-                    if (date != null && onDateSelectListener.invoke(dialog, date)) {
+                    if (date != null && dateSelectAction.invoke(dialog, date)) {
 
                     } else {
                         dialog.dismiss()
@@ -113,7 +113,7 @@ open class WheelDateDialogConfig : BaseDialogConfig() {
             setSelectChangeCallback {
                 try {
                     val date = dateFormat.parse(time)
-                    onDateChangedListener(dialog, date!!)
+                    dateChangedAction(dialog, date!!)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

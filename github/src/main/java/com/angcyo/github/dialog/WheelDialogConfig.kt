@@ -30,14 +30,14 @@ open class WheelDialogConfig : BaseDialogConfig() {
     var wheelSelectedIndex = -1
 
     /**选中回调*/
-    var onWheelItemSelector: (dialog: Dialog, index: Int, item: Any) -> Boolean =
+    var wheelItemSelectorAction: (dialog: Dialog, index: Int, item: Any) -> Boolean =
         { dialog, index, item ->
-            L.i("选中->$index:${onWheelItemToString(item)}")
+            L.i("选中->$index:${wheelItemToStringAction(item)}")
             false
         }
 
     /**上屏显示转换回调*/
-    var onWheelItemToString: (item: Any) -> CharSequence = {
+    var wheelItemToStringAction: (item: Any) -> CharSequence = {
         if (it is CharSequence) {
             it
         } else {
@@ -53,7 +53,7 @@ open class WheelDialogConfig : BaseDialogConfig() {
 
         positiveButtonListener = { dialog, _ ->
             if (_selectedIndex in 0 until wheelItems.size &&
-                onWheelItemSelector.invoke(dialog, _selectedIndex, wheelItems[_selectedIndex])
+                wheelItemSelectorAction.invoke(dialog, _selectedIndex, wheelItems[_selectedIndex])
             ) {
             } else {
                 dialog.dismiss()
@@ -70,7 +70,7 @@ open class WheelDialogConfig : BaseDialogConfig() {
             val stringList = mutableListOf<CharSequence>()
 
             for (item in wheelItems) {
-                stringList.add(onWheelItemToString.invoke(item))
+                stringList.add(wheelItemToStringAction.invoke(item))
             }
 
             setOnItemSelectedListener {

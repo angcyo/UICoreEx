@@ -103,7 +103,7 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
                     dateEndDate = itemDateEndTime.toTime(itemPattern).toCalendar(itemPattern)
                 }
 
-                onDateSelectListener = { dialog, date ->
+                dateSelectAction = { dialog, date ->
                     if (itemDateSelectListener(dialog, date)) {
                         //拦截了
                         true

@@ -62,7 +62,7 @@ open class CalendarDialogConfig : BaseDialogConfig() {
      * 返回 true, 则不会自动 调用 dismiss
      * @param calendarList 一天一天的集合
      * */
-    var onCalendarResult: (dialog: Dialog, calendarList: List<Calendar>) -> Boolean =
+    var dialogResult: (dialog: Dialog, calendarList: List<Calendar>) -> Boolean =
         { _, _ ->
             false
         }
@@ -71,7 +71,7 @@ open class CalendarDialogConfig : BaseDialogConfig() {
         dialogLayoutId = R.layout.lib_dialog_calendar_layout
 
         positiveButtonListener = { dialog, _ ->
-            if (onCalendarResult.invoke(dialog, calendarList)) {
+            if (dialogResult.invoke(dialog, calendarList)) {
 
             } else {
                 dialog.dismiss()
