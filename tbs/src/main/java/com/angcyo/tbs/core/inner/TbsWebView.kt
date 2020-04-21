@@ -13,6 +13,8 @@ import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage
+import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient
 import com.tencent.smtt.export.external.interfaces.IX5WebViewBase
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.ValueCallback
@@ -105,7 +107,10 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     //<editor-fold desc="WebChromeClient">
 
     val chromeClient: WebChromeClient = object : WebChromeClient() {
-        override fun onReceivedTitle(webView: WebView, title: String?) {
+
+        //<editor-fold desc="基础回调">
+
+        override fun onReceivedTitle(webView: WebView, title: String) {
             super.onReceivedTitle(webView, title)
             L.d("${webView.originalUrl} ${webView.url} $title")
             this@TbsWebView.onReceivedTitle(title)
@@ -116,6 +121,41 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             //L.d("${webView.originalUrl} ${webView.url} $progress")
             onProgressChanged(webView.url, progress)
         }
+
+        //</editor-fold desc="基础回调">
+
+        //<editor-fold desc="全屏播放视频">
+        var viewCallback: IX5WebChromeClient.CustomViewCallback? = null
+
+        override fun onShowCustomView(
+            view: View,
+            viewCallback: IX5WebChromeClient.CustomViewCallback
+        ) {
+            super.onShowCustomView(view, viewCallback)
+            // 此处的 view 就是全屏的视频播放界面，需要把它添加到我们的界面上
+            this.viewCallback = viewCallback
+
+            L.i(view, " ", viewCallback)
+        }
+
+        override fun onShowCustomView(
+            view: View,
+            requestedOrientation: Int,
+            viewCallback: IX5WebChromeClient.CustomViewCallback
+        ) {
+            super.onShowCustomView(view, requestedOrientation, viewCallback)
+            onShowCustomView(view, viewCallback)
+        }
+
+        override fun onHideCustomView() {
+            super.onHideCustomView()
+            // 退出全屏播放，我们要把之前添加到界面上的视频播放界面移除
+            viewCallback?.onCustomViewHidden()
+
+            L.i(viewCallback)
+        }
+
+        //</editor-fold desc="全屏播放视频">
 
         //<editor-fold desc="WebChromeClient文件选择">
 
@@ -157,6 +197,15 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         }
 
         //<editor-fold desc="WebChromeClient文件选择">
+
+        //<editor-fold desc="其他">
+
+        override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+            L.d("${consoleMessage.sourceId()}#${consoleMessage.lineNumber()}:${consoleMessage.message()}")
+            return super.onConsoleMessage(consoleMessage)
+        }
+
+        //</editor-fold desc="其他">
     }
 
     //</editor-fold desc="WebChromeClient">

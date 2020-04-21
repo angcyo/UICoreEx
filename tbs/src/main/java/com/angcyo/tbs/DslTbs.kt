@@ -92,10 +92,14 @@ class DslTbs {
                 TbsFileInterfaceImpl.initEngine(appContext)
                 TbsFileInterfaceImpl.setProviderSetting(FileProvider::class.java.name)
 
-                QbSdk.getMiniQBVersion(appContext).apply {
-                    L.i("MiniQBVersion:$this".apply {
-                        writeTo()
-                    })
+                try {
+                    QbSdk.getMiniQBVersion(appContext).apply {
+                        L.i("MiniQBVersion:$this".apply {
+                            writeTo()
+                        })
+                    }
+                } catch (e: Exception) {
+                    L.e(e)
                 }
             }
         }
