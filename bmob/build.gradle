@@ -15,7 +15,7 @@ dependencies {
     //https://github.com/bmob/bmob-android-sdk
     //maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
     //≈2.69 MB
-    api('cn.bmob.android:bmob-sdk:3.7.4') {
+    api('cn.bmob.android:bmob-sdk:3.7.8') {
         //transitive = false
         exclude group: 'com.google.code.gson'
         exclude group: 'io.reactivex.rxjava2'
