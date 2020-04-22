@@ -79,7 +79,6 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
             L.d("url:$url o:${webView.originalUrl} u:${webView.url} title:${webView.title} ")
-            _loadUrl = url
             return onShouldOverrideUrlLoading(this, webView, url)
         }
 
@@ -271,6 +270,16 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         }
 
         return true
+    }
+
+    override fun loadUrl(url: String?) {
+        _loadUrl = url
+        super.loadUrl(url)
+    }
+
+    override fun loadUrl(url: String?, map: MutableMap<String, String>?) {
+        _loadUrl = url
+        super.loadUrl(url, map)
     }
 
     //</editor-fold desc="初始化相关">

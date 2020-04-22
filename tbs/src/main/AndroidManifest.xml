@@ -11,6 +11,7 @@
         <activity
             android:name=".core.TbsWebActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|fontScale|smallestScreenSize|density|screenLayout"
+            android:hardwareAccelerated="true"
             android:launchMode="standard"
             android:rotationAnimation="seamless"
             android:screenOrientation="fullSensor"

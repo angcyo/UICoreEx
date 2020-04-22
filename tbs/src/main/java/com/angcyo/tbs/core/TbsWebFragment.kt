@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
@@ -15,14 +16,18 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog.dslDialog
 import com.angcyo.download.download
 import com.angcyo.download.downloadNotify
+import com.angcyo.dsladapter.renderItemList
 import com.angcyo.image.dslitem.DslSubSamplingImageItem
 import com.angcyo.library.L
+import com.angcyo.library.component.DslIntent
+import com.angcyo.library.component.dslIntentShare
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.media.dslitem.DslTextureVideoItem
 import com.angcyo.tablayout.screenWidth
 import com.angcyo.tbs.DslTbs
 import com.angcyo.tbs.R
+import com.angcyo.tbs.core.dslitem.DslBaseWebMenuItem
 import com.angcyo.tbs.core.inner.TbsWeb
 import com.angcyo.tbs.core.inner.TbsWebView
 import com.angcyo.widget.DslViewHolder
@@ -69,9 +74,15 @@ open class TbsWebFragment : BaseTitleFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.getParcelable<TbsWebConfig>(TbsWebFragment.KEY_CONFIG)?.run {
+        arguments?.getParcelable<TbsWebConfig>(KEY_CONFIG)?.run {
             webConfig = this
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        //开启硬件加速
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,14 +91,6 @@ open class TbsWebFragment : BaseTitleFragment() {
         _vh.tv(R.id.lib_title_text_view)?.run {
             setWidth(width = screenWidth - 160 * dpi)
             setSingleLineMode()
-        }
-
-        //有些网页, 无法回退. 添加强制关闭按钮
-        appendLeftItem(ico = R.drawable.tbs_ic_close, action = {
-            id = R.id.lib_close_view
-            visibility = View.GONE
-        }) {
-            close()
         }
 
         val wrapLayout = _vh.group(R.id.tbs_wrap_layout)
@@ -116,6 +119,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 }
             } else if (uri.isHttpScheme() || mimeType.isHttpMimeType()) {
                 //打开网页
+                loadTbsWebTitleLayout()
                 attachTbsWebView(wrapLayout, loadUrl!!)
             } else if (uri.isFileScheme()) {
                 val fileExt = loadUrl!!.ext()
@@ -136,6 +140,65 @@ open class TbsWebFragment : BaseTitleFragment() {
     }
 
     //<editor-fold desc="根据不同的类型, 填充不同的布局">
+
+    /**加载网页类型的标题栏*/
+    open fun loadTbsWebTitleLayout() {
+        //有些网页, 无法回退. 添加强制关闭按钮
+        appendLeftItem(ico = R.drawable.tbs_ic_close, action = {
+            id = R.id.lib_close_view
+            visibility = View.GONE
+            marginParams {
+                leftMargin = -6 * dpi
+            }
+        }) {
+            close()
+        }
+
+        //更多
+        appendRightItem(ico = R.drawable.tbs_ic_more) {
+            fContext().tbsWebMenuDialog {
+                val url = _tbsWebView?._loadUrl
+                webHost = url?.toUri()?.host
+                line1Items = renderItemList {
+                    DslBaseWebMenuItem()() {
+                        menuText = "刷新"
+                        menuIcon = R.drawable.tbs_ic_refresh
+                        itemClick = {
+                            _dialog?.dismiss()
+                            _tbsWebView?.loadUrl(url)
+                        }
+                    }
+                    DslBaseWebMenuItem()() {
+                        menuText = "复制链接"
+                        menuIcon = R.drawable.tbs_ic_copy
+                        itemClick = {
+                            _dialog?.dismiss()
+                            url?.copy()
+                        }
+                    }
+                    DslBaseWebMenuItem()() {
+                        menuText = "分享"
+                        menuIcon = R.drawable.tbs_ic_share
+                        itemClick = {
+                            _dialog?.dismiss()
+                            dslIntentShare {
+                                shareTitle = _tbsWebView?.title
+                                shareText = url
+                            }
+                        }
+                    }
+                    DslBaseWebMenuItem()() {
+                        menuText = "浏览器打开"
+                        menuIcon = R.drawable.tbs_ic_browser
+                        itemClick = {
+                            _dialog?.dismiss()
+                            DslIntent.openUrl(fContext(), url)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     var _tbsWebView: TbsWebView? = null
 
@@ -361,10 +424,12 @@ open class TbsWebFragment : BaseTitleFragment() {
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)
+        _tbsWebView?.resumeTimers()
     }
 
     override fun onFragmentHide() {
         super.onFragmentHide()
+        _tbsWebView?.pauseTimers()
         _dslVideoItem?.itemViewDetachedToWindow?.invoke(_dslVideoHolder!!, 0)
         _dslSubSamplingItem?.itemViewDetachedToWindow?.invoke(_dslVideoHolder!!, 0)
     }
