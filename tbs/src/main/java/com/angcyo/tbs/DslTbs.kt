@@ -197,10 +197,12 @@ fun DslAHelper.open(
     start(Intent(context, cls).apply {
         putExtra(TbsWebFragment.KEY_CONFIG, TbsWebConfig().apply {
             try {
-                uri = if (url.isFileExist()) {
-                    Uri.fromFile(url!!.file())
-                } else {
-                    Uri.parse(url)
+                if (!url.isNullOrEmpty()) {
+                    uri = if (url.isFileExist()) {
+                        Uri.fromFile(url.file())
+                    } else {
+                        Uri.parse(url)
+                    }
                 }
             } catch (e: Exception) {
                 L.w(e)

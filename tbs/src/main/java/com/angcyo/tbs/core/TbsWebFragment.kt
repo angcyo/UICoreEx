@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
+import com.angcyo.behavior.HideTitleBarBehavior
 import com.angcyo.core.component.fileSelector
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.dialog.configBottomDialog
@@ -69,6 +71,14 @@ open class TbsWebFragment : BaseTitleFragment() {
         }
     }
 
+    override fun onCreateBehavior(child: View): CoordinatorLayout.Behavior<*>? {
+        return if (child.id == R.id.lib_title_wrap_layout) {
+            HideTitleBarBehavior(fContext())
+        } else {
+            super.onCreateBehavior(child)
+        }
+    }
+
     var webConfig = TbsWebConfig()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +112,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             toastQQ("布局异常", R.drawable.lib_ic_error)
         } else {
             val loadUrl = uri.loadUrl()
-            val mimeType = loadUrl.mimeType()
+            val mimeType = loadUrl.mimeType() ?: webConfig.mimeType
 
             L.d("TBS:$uri $loadUrl $mimeType")
 
@@ -132,6 +142,8 @@ open class TbsWebFragment : BaseTitleFragment() {
 
                     else -> showLoadingView("无法打开文件\n$uri")
                 }
+            } else if (mimeType.isTextMimeType()) {
+                attachTextView(wrapLayout, uri)
             } else {
                 //其他类型
                 showLoadingView("不支持的类型\n$uri")
@@ -416,6 +428,14 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
         }
         _dslVideoHolder = parent.appendDslItem(dslSubSamplingItem)
+    }
+
+    /**加载文本*/
+    open fun attachTextView(parent: ViewGroup, uri: Uri) {
+        hideLoadingView()
+        parent.inflate(R.layout.tbs_text_layout).apply {
+            find<TextView>(R.id.lib_text_view)?.text = uri.toString()
+        }
     }
 
     //</editor-fold desc="根据不同的类型, 填充不同的布局">

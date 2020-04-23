@@ -26,7 +26,7 @@ object TbsWeb {
         webSetting.displayZoomControls = false//放大控件
         webSetting.useWideViewPort = true
         webSetting.loadWithOverviewMode = true //this
-        webSetting.setSupportMultipleWindows(true)//this
+        webSetting.setSupportMultipleWindows(false)//this
         // webSetting.setLoadWithOverviewMode(true);
         webSetting.setAppCacheEnabled(true)//this
         webSetting.databaseEnabled = true;//this

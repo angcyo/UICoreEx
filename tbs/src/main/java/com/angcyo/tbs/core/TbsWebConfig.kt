@@ -15,5 +15,6 @@ import kotlinx.android.parcel.Parcelize
 data class TbsWebConfig(
     /*需要打开的网页, 或者本地文件路径, 也可以通过Intent.setData()设置*/
     var uri: Uri? = null,
+    var mimeType: String? = null, /*当无法从uri中获取mimeType时, 使用此mimeType*/
     var targetClass: Class<out TbsWebFragment> = TbsWebFragment::class.java
 ) : Parcelable
