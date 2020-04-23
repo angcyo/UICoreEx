@@ -95,8 +95,10 @@ open class TbsWebFragment : BaseTitleFragment() {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    //<editor-fold desc="根据不同的类型, 填充不同的布局">
+
+    override fun onCreateViewAfter(savedInstanceState: Bundle?) {
+        super.onCreateViewAfter(savedInstanceState)
 
         _vh.tv(R.id.lib_title_text_view)?.run {
             setWidth(width = screenWidth - 160 * dpi)
@@ -119,10 +121,8 @@ open class TbsWebFragment : BaseTitleFragment() {
             if (mimeType.isVideoMimeType()) {
                 if (DslTbs.canUseTbsPlayer()) {
                     DslTbs.openVideo(fContext(), loadUrl!!)
-                    dslFHelper {
-                        finishActivityOnLastFragmentRemove = true
-                        finishToActivity = null
-                        remove(this@TbsWebFragment)
+                    dslAHelper {
+                        finish()
                     }
                 } else {
                     attachVideoView(wrapLayout, uri)
@@ -150,8 +150,6 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
         }
     }
-
-    //<editor-fold desc="根据不同的类型, 填充不同的布局">
 
     /**加载网页类型的标题栏*/
     open fun loadTbsWebTitleLayout() {
@@ -216,6 +214,13 @@ open class TbsWebFragment : BaseTitleFragment() {
 
     /**追加[TbsWebView], 用于打开网页*/
     open fun attachTbsWebView(parent: ViewGroup, url: String) {
+        //host提示
+        if (_vh.view(R.id.lib_host_tip_view) == null) {
+            rootControl().group(R.id.lib_coordinator_wrap_layout)?.apply {
+                addView(inflate(R.layout.tbs_host_tip_layout, false), 0)
+            }
+        }
+
         val webView = TbsWebView(fContext())
         webView.apply {
 
@@ -226,6 +231,8 @@ open class TbsWebFragment : BaseTitleFragment() {
             //标题
             onReceivedTitle = {
                 fragmentTitle = it
+
+                updateHost(_tbsWebView?._loadUrl)
             }
 
             //进度
@@ -322,6 +329,21 @@ open class TbsWebFragment : BaseTitleFragment() {
         }
 
         parent.addView(webView, -1, -1)
+    }
+
+    fun updateHost(url: String?) {
+        val host = url?.toUri()?.host
+
+        _vh.tv(R.id.lib_host_tip_view)?.text = span {
+            if (!host.isNullOrEmpty()) {
+                append("网页由 $host 提供")
+
+                if (DslTbs.isX5Core) {
+                    appendln()
+                    append("腾讯x5内核支持")
+                }
+            }
+        }
     }
 
     var _tbsReaderView: TbsReaderView? = null

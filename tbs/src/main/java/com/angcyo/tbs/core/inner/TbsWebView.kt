@@ -6,21 +6,23 @@ import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.NestedScrollingChild3
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.ViewCompat
 import com.angcyo.library.L
 import com.angcyo.library.component.appBean
 import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
+import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient
 import com.tencent.smtt.export.external.interfaces.IX5WebViewBase
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
-import com.tencent.smtt.sdk.ValueCallback
-import com.tencent.smtt.sdk.WebChromeClient
-import com.tencent.smtt.sdk.WebView
-import com.tencent.smtt.sdk.WebViewClient
+import com.tencent.smtt.sdk.*
 
 
 /**
@@ -30,7 +32,7 @@ import com.tencent.smtt.sdk.WebViewClient
  * @date 2020/03/01
  */
 open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
-    WebView(context, attributeSet) {
+    WebView(context, attributeSet), NestedScrollingChild3 {
 
     //<editor-fold desc="回调">
 
@@ -209,6 +211,13 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     //</editor-fold desc="WebChromeClient">
 
+    val childHelper: NestedScrollingChildHelper by lazy {
+        NestedScrollingChildHelper(this)
+    }
+
+    val scrollOffset = IntArray(2)
+    val scrollConsumed = IntArray(2)
+
     init {
         webViewClient = webClient
         webChromeClient = chromeClient
@@ -223,6 +232,15 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         setDownloadListener { url, userAgent, contentDisposition, mime, length ->
             onDownloadListener(url, userAgent, contentDisposition, mime, length)
         }
+
+        //touch事件
+        val webViewEventHandler = TbsWebViewEventHandler()
+        webViewClientExtension = webViewEventHandler
+        setWebViewCallbackClient(webViewEventHandler)
+
+        isNestedScrollingEnabled = true
+
+        //setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     //<editor-fold desc="初始化相关">
@@ -308,4 +326,314 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     //</editor-fold desc="文件选择">
 
+    //<editor-fold desc="内嵌滚动支持">
+
+    var nestedYOffset = 0
+
+    fun tbs_dispatchTouchEvent(event: MotionEvent, view: View): Boolean {
+        //L.i("touch ... 1")
+        //_handleTouchEvent(event, view)
+        return super_dispatchTouchEvent(event)
+    }
+
+    fun tbs_onInterceptTouchEvent(event: MotionEvent, view: View): Boolean {
+        //L.i("touch ... 2")
+        _handleTouchEvent(event, view)
+        return super_onInterceptTouchEvent(event)
+    }
+
+    fun tbs_onTouchEvent(event: MotionEvent, view: View): Boolean {
+        //L.i("touch ... 3")
+
+        val actionMasked: Int = event.getActionMasked()
+
+        if (actionMasked == MotionEvent.ACTION_DOWN) {
+            nestedYOffset = 0
+        }
+
+        //offsetLocation 这一点很重要, 否则下层计算dx, dy时, 会有偏差
+        val vtev = MotionEvent.obtain(event)
+        vtev.offsetLocation(0f, nestedYOffset.toFloat())
+
+        _handleTouchEvent(vtev, view)
+        super_onTouchEvent(vtev)
+
+        vtev.recycle()
+        return true
+    }
+
+
+    fun _handleTouchEvent(event: MotionEvent, view: View) {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> startNestedScroll(
+                ViewCompat.SCROLL_AXIS_VERTICAL,
+                ViewCompat.TYPE_TOUCH
+            )
+            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                parent?.requestDisallowInterceptTouchEvent(false)
+                stopNestedScroll(ViewCompat.TYPE_TOUCH)
+            }
+        }
+    }
+
+    //原本需要滚动的距离, 用于计算内嵌滚动消耗量和未消耗量
+    var _targetScrollDx = 0
+    var _targetScrollDy = 0
+    var _oldScrollX = 0
+    var _oldScrollY = 0
+
+    /**[WebView] */
+    fun tbs_overScrollBy(
+        deltaX: Int, deltaY: Int,  /*本次滚动多少距离*/
+        scrollX: Int, scrollY: Int,  /*总共滚动了多少距离*/
+        scrollRangeX: Int, scrollRangeY: Int,  /*滚动的范围*/
+        maxOverScrollX: Int, maxOverScrollY: Int,  /**/
+        isTouchEvent: Boolean, view: View
+    ): Boolean {
+        parent?.requestDisallowInterceptTouchEvent(true)
+
+        _targetScrollDx = deltaX
+        _targetScrollDy = deltaY
+        _oldScrollX = scrollX
+        _oldScrollY = scrollY
+        scrollConsumed.fill(0)
+        dispatchNestedPreScroll(deltaX, deltaY, scrollConsumed, scrollOffset, ViewCompat.TYPE_TOUCH)
+        val dY = deltaY - scrollConsumed[1]
+        _targetScrollDy = dY
+
+        nestedYOffset += scrollOffset[1]
+
+//        L.d(
+//            "deltaX:$deltaX deltaY:$deltaY dY:$dY ${scrollConsumed[1]} " +
+//                    "scrollX:$scrollX scrollY:$scrollY " +
+//                    "scrollRangeX:$scrollRangeX scrollRangeY:$scrollRangeY " +
+//                    "maxX:$maxOverScrollX maxY:$maxOverScrollY " +
+//                    "isTouchEvent:$isTouchEvent"
+//        )
+        super_overScrollBy(
+            deltaX, dY,
+            scrollX, scrollY,
+            scrollRangeX, scrollRangeY,
+            maxOverScrollX, maxOverScrollY,
+            isTouchEvent
+        )
+        //L.e("滚动:$deltaY 消耗:${scrollConsumed[1]} 实际滚动:$dY")
+        return true
+    }
+
+    fun tbs_onOverScrolled(
+        scrollX: Int,
+        scrollY: Int,
+        clampedX: Boolean,
+        clampedY: Boolean,
+        view: View
+    ) {
+        //L.w("scrollX:$scrollX scrollY:$scrollY clampedX:$clampedX clampedY:$clampedY ")
+        //super_onOverScrolled(scrollX, if(scrollY>0) 1 else if(scrollY<0) -1 else 0, clampedX, clampedY)
+        super_onOverScrolled(scrollX, scrollY, clampedX, clampedY)
+
+        val scrolledDeltaY: Int = scrollY - _oldScrollY
+        val unconsumedY: Int = _targetScrollDy - scrolledDeltaY
+
+        //L.e("滚动:$scrolledDeltaY 未消耗:${unconsumedY}")
+
+        dispatchNestedScroll(
+            0, scrolledDeltaY,
+            0, unconsumedY,
+            scrollOffset, ViewCompat.TYPE_TOUCH, scrollConsumed
+        )
+        nestedYOffset += scrollOffset[1]
+    }
+
+    fun tbs_onScrollChanged(left: Int, top: Int, oldLeft: Int, oldTop: Int, view: View) {
+//        L.i(
+//            "left:$left top:$top oldLeft:$oldLeft oldTop:$oldTop " +
+//                    "scrollOffset:${scrollOffset[0]},${scrollOffset[1]} scrollConsumed:${scrollConsumed[0]},${scrollConsumed[1]}"
+//        )
+        super_onScrollChanged(left, top, oldLeft, oldTop)
+    }
+
+    fun tbs_computeScroll(view: View) {
+        super_computeScroll()
+    }
+
+    override fun setNestedScrollingEnabled(enabled: Boolean) {
+        childHelper.isNestedScrollingEnabled = enabled
+    }
+
+    override fun isNestedScrollingEnabled(): Boolean {
+        return childHelper.isNestedScrollingEnabled
+    }
+
+    override fun startNestedScroll(axes: Int): Boolean {
+        return childHelper.startNestedScroll(axes)
+    }
+
+    override fun startNestedScroll(axes: Int, type: Int): Boolean {
+        return childHelper.startNestedScroll(axes, type)
+    }
+
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?,
+        type: Int
+    ): Boolean {
+        return childHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
+    }
+
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?
+    ): Boolean {
+        return childHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow)
+    }
+
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int,
+        consumed: IntArray
+    ) {
+        childHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow,
+            type,
+            consumed
+        )
+    }
+
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?
+    ): Boolean {
+        return childHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow
+        )
+    }
+
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int
+    ): Boolean {
+        return childHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow,
+            type
+        )
+    }
+
+    override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float): Boolean {
+        return childHelper.dispatchNestedPreFling(velocityX, velocityY)
+    }
+
+    override fun dispatchNestedFling(
+        velocityX: Float,
+        velocityY: Float,
+        consumed: Boolean
+    ): Boolean {
+        return childHelper.dispatchNestedFling(velocityX, velocityY, consumed)
+    }
+
+    override fun stopNestedScroll() {
+        childHelper.stopNestedScroll()
+    }
+
+    override fun stopNestedScroll(type: Int) {
+        childHelper.stopNestedScroll(type)
+    }
+
+    override fun hasNestedScrollingParent(): Boolean {
+        return childHelper.hasNestedScrollingParent()
+    }
+
+    override fun hasNestedScrollingParent(type: Int): Boolean {
+        return childHelper.hasNestedScrollingParent(type)
+    }
+
+    //</editor-fold desc="内嵌滚动支持">
+
+    //<editor-fold desc="WebViewCallbackClient">
+
+    inner class TbsWebViewEventHandler : ProxyWebViewClientExtension(), WebViewCallbackClient {
+        override fun invalidate() {
+            ViewCompat.postInvalidateOnAnimation(this@TbsWebView)
+        }
+
+        override fun onTouchEvent(event: MotionEvent, view: View): Boolean {
+            return tbs_onTouchEvent(event, view)
+        }
+
+        override fun overScrollBy(
+            deltaX: Int, deltaY: Int,  /*本次滚动多少距离*/
+            scrollX: Int, scrollY: Int,  /*总共滚动了多少距离*/
+            scrollRangeX: Int, scrollRangeY: Int,  /*滚动的范围*/
+            maxOverScrollX: Int, maxOverScrollY: Int,  /**/
+            isTouchEvent: Boolean, view: View
+        ): Boolean {
+            return tbs_overScrollBy(
+                deltaX,
+                deltaY,
+                scrollX,
+                scrollY,
+                scrollRangeX,
+                scrollRangeY,
+                maxOverScrollX,
+                maxOverScrollY,
+                isTouchEvent,
+                view
+            )
+        }
+
+        override fun computeScroll(view: View) {
+            tbs_computeScroll(view)
+        }
+
+        override fun dispatchTouchEvent(event: MotionEvent, view: View): Boolean {
+            return tbs_dispatchTouchEvent(event, view)
+        }
+
+        override fun onInterceptTouchEvent(event: MotionEvent, view: View): Boolean {
+            return tbs_onInterceptTouchEvent(event, view)
+        }
+
+        override fun onOverScrolled(
+            scrollX: Int,
+            scrollY: Int,
+            clampedX: Boolean,
+            clampedY: Boolean,
+            view: View
+        ) {
+            tbs_onOverScrolled(scrollX, scrollY, clampedX, clampedY, view)
+        }
+
+        override fun onScrollChanged(left: Int, top: Int, oldLeft: Int, oldTop: Int, view: View) {
+            tbs_onScrollChanged(left, top, oldLeft, oldTop, view)
+        }
+    }
+
+    //</editor-fold desc="WebViewCallbackClient">
 }
