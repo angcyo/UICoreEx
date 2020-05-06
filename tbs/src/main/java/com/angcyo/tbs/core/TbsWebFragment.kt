@@ -22,6 +22,7 @@ import com.angcyo.dsladapter.renderItemList
 import com.angcyo.image.dslitem.DslSubSamplingImageItem
 import com.angcyo.library.L
 import com.angcyo.library.component.DslIntent
+import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.dslIntentShare
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
@@ -340,6 +341,10 @@ open class TbsWebFragment : BaseTitleFragment() {
 
                 if (DslTbs.isX5Core) {
                     appendln()
+                    drawable {
+                        backgroundDrawable =
+                            _drawable(DslNotify.DEFAULT_NOTIFY_ICON)?.setBounds(18 * dpi, 18 * dpi)
+                    }
                     append("腾讯x5内核支持")
                 }
             }
