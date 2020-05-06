@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import com.angcyo.library.L
 import com.angcyo.library.component.appBean
 import com.angcyo.library.component.dslIntentQuery
+import com.angcyo.library.ex.decode
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
@@ -37,19 +38,19 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     //<editor-fold desc="回调">
 
     /**网页加载进度回调*/
-    var onProgressChanged: (url: String?, progress: Int) -> Unit = { _, _ ->
+    var progressChangedAction: (url: String?, progress: Int) -> Unit = { _, _ ->
 
     }
 
     /**标题接收回调*/
-    var onReceivedTitle: (title: String?) -> Unit = {}
+    var receivedTitleAction: (title: String?) -> Unit = {}
 
     /**打开应用回调*/
-    var onOpenAppListener: (url: String, activityInfo: ActivityInfo, appBean: AppBean) -> Unit =
+    var openAppAction: (url: String, activityInfo: ActivityInfo, appBean: AppBean) -> Unit =
         { url, activityInfo, appBean -> L.d("打开应用:${appBean.appName} ${activityInfo.name}") }
 
     /**下载文件回调*/
-    var onDownloadListener: (
+    var downloadAction: (
         url: String /*下载地址*/,
         userAgent: String,
         contentDisposition: String,
@@ -66,7 +67,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         }
 
     /**选择文件回调, 选择文件后请务必[onReceiveValue]方法*/
-    var onFileChooseListener: (param: FileChooserParam) -> Unit = {}
+    var fileChooseAction: (param: FileChooserParam) -> Unit = {}
 
     //</editor-fold desc="回调">
 
@@ -80,7 +81,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
-            L.d("url:$url o:${webView.originalUrl} u:${webView.url} title:${webView.title} ")
+            L.d("加载:${url?.decode()}\no:${webView.originalUrl.decode()}\nu:${webView.url.decode()}\ntitle:${webView.title} ")
             return onShouldOverrideUrlLoading(this, webView, url)
         }
 
@@ -88,18 +89,18 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             webView: WebView,
             requeset: WebResourceRequest?
         ): Boolean {
-            L.d("${webView.title} $requeset")
+            L.d("${webView.title} q:$requeset")
             return super.shouldOverrideUrlLoading(webView, requeset)
         }
 
         override fun onPageStarted(webView: WebView, url: String?, bitmap: Bitmap?) {
             super.onPageStarted(webView, url, bitmap)
-            onProgressChanged(url, 0)
+            progressChangedAction(url, 0)
         }
 
         override fun onPageFinished(webView: WebView, url: String?) {
             super.onPageFinished(webView, url)
-            onProgressChanged(url, 100)
+            progressChangedAction(url, 100)
         }
     }
 
@@ -114,13 +115,13 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         override fun onReceivedTitle(webView: WebView, title: String) {
             super.onReceivedTitle(webView, title)
             L.d("${webView.originalUrl} ${webView.url} $title")
-            this@TbsWebView.onReceivedTitle(title)
+            this@TbsWebView.receivedTitleAction(title)
         }
 
         override fun onProgressChanged(webView: WebView, progress: Int) {
             super.onProgressChanged(webView, progress)
             //L.d("${webView.originalUrl} ${webView.url} $progress")
-            onProgressChanged(webView.url, progress)
+            progressChangedAction(webView.url, progress)
         }
 
         //</editor-fold desc="基础回调">
@@ -230,7 +231,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
         //下载
         setDownloadListener { url, userAgent, contentDisposition, mime, length ->
-            onDownloadListener(url, userAgent, contentDisposition, mime, length)
+            downloadAction(url.decode(), userAgent, contentDisposition, mime, length)
         }
 
         //touch事件
@@ -280,7 +281,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
                     if (isNotEmpty()) {
                         //找到了
                         first().activityInfo.run {
-                            onOpenAppListener(url, this, packageName.appBean())
+                            openAppAction(url.decode(), this, packageName.appBean())
                         }
                     }
                 }
@@ -309,7 +310,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         //i.addCategory(Intent.CATEGORY_OPENABLE)
         //i.type = "*/*"
         //startActivityForResult(Intent.createChooser(i, "test"), 0)
-        onFileChooseListener(param)
+        fileChooseAction(param)
     }
 
     fun onFileChooseResult(files: Array<Uri?>?) {

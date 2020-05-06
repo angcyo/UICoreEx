@@ -229,14 +229,14 @@ open class TbsWebFragment : BaseTitleFragment() {
             _tbsWebView = this
 
             //标题
-            onReceivedTitle = {
+            receivedTitleAction = {
                 fragmentTitle = it
 
                 updateHost(_tbsWebView?._loadUrl)
             }
 
             //进度
-            onProgressChanged = { url, progress ->
+            progressChangedAction = { url, progress ->
                 // L.d("$url $progress")
                 _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
                 //加载框
@@ -255,7 +255,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             //下载
-            onDownloadListener = { url, userAgent, contentDisposition, mime, length ->
+            downloadAction = { url, userAgent, contentDisposition, mime, length ->
                 fContext().dslDialog {
                     configBottomDialog()
                     dialogLayoutId = R.layout.dialog_tbs_file_download
@@ -286,7 +286,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             //打开其他应用
-            onOpenAppListener = { url, activityInfo, appBean ->
+            openAppAction = { url, activityInfo, appBean ->
                 fContext().dslDialog {
                     configBottomDialog()
                     dialogLayoutId = R.layout.dialog_tbs_open_app
@@ -315,7 +315,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             //选择文件
-            onFileChooseListener = {
+            fileChooseAction = {
                 dslFHelper {
                     fileSelector {
                         it?.run {
