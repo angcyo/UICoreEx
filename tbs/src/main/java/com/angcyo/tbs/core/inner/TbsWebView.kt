@@ -81,7 +81,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
-            L.d("加载:${url?.decode()}\no:${webView.originalUrl.decode()}\nu:${webView.url.decode()}\ntitle:${webView.title} ")
+            L.d("加载:${url?.decode()}\no:${webView.originalUrl?.decode()}\nu:${webView.url?.decode()}\ntitle:${webView.title} ")
             return onShouldOverrideUrlLoading(this, webView, url)
         }
 
