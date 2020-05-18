@@ -1,0 +1,9 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+
+    //https://github.com/rabbitmq/rabbitmq-java-client/
+    //≈630kb
+    api 'com.rabbitmq:amqp-client:4.12.0'
+}
