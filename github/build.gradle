@@ -2,6 +2,7 @@ apply from: allGradle.libBase
 
 dependencies {
     implementation project(allModule.dslitem)
+    implementation project(allModule.library)
 
     //https://github.com/Bigkoo/Android-PickerView
     //https://jcenter.bintray.com/com/contrarywind/wheelview/
@@ -23,4 +24,7 @@ dependencies {
     //api 'com.haibin:calendarview:3.6.7'
     //https://github.com/angcyo/CalendarView
     api 'com.github.angcyo:CalendarView:3.6.7.7'
+
+    //https://github.com/scwang90/MultiWaveHeader
+    api 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
 }
