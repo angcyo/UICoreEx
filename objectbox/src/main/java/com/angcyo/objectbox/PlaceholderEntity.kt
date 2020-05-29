@@ -23,4 +23,6 @@ data class PlaceholderEntity(
     /**[io.objectbox.annotation.NameInDb]*/
     /**[io.objectbox.annotation.Uid]*/
     /**[io.objectbox.annotation.Index]*/
+    /**[io.objectbox.relation.ToOne]*/
+    /**[io.objectbox.relation.ToMany]*/
 )
