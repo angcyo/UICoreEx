@@ -102,6 +102,8 @@ class DslBox {
                         e.saveTo(errorFile.absolutePath)
                     }
 
+                    L.w("数据库初始化失败:$dbDirectory 即将重试. ${e.message}")
+
                     //换个数据库名字, 重新初始化
                     init(context, packageName, dbName, debug)
                 }
