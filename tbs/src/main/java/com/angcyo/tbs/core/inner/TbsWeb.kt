@@ -24,7 +24,7 @@ object TbsWeb {
         webSetting.setSupportZoom(true)//支持放大
         webSetting.builtInZoomControls = true//放大控制
         webSetting.displayZoomControls = false//放大控件
-        webSetting.useWideViewPort = true
+        webSetting.useWideViewPort = true //自适应窗口
         webSetting.loadWithOverviewMode = true //this
         webSetting.setSupportMultipleWindows(false)//this
         // webSetting.setLoadWithOverviewMode(true);
