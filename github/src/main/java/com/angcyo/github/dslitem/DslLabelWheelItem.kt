@@ -1,6 +1,8 @@
 package com.angcyo.github.dslitem
 
 import android.app.Dialog
+import android.content.Context
+import android.view.View
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
@@ -43,32 +45,15 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
 
     }
 
+    /**点击item之前拦截处理, 返回true拦截默认处理*/
+    var itemClickBefore: (clickView: View) -> Boolean = { false }
+
     init {
         itemLayoutId = R.layout.dsl_wheel_item
 
         itemClick = {
-            it.context.wheelDialog {
-                dialogTitle = itemLabelText
-
-                wheelItems = itemWheelList
-
-                wheelItemToStringAction = itemWheelToText
-
-                wheelItemSelectorAction = { dialog, index, item ->
-                    if (itemWheelSelector(dialog, index, item)) {
-                        //拦截了
-                        true
-                    } else {
-                        val old = itemSelectedIndex
-                        itemSelectedIndex = index
-                        itemChanging = old != index
-                        false
-                    }
-                }
-
-                wheelSelectedIndex = itemSelectedIndex
-
-                itemConfigDialog(this)
+            if (!itemClickBefore(it)) {
+                showWheelDialog(it.context)
             }
         }
     }
@@ -85,6 +70,33 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
             text = itemWheelList.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
             }
+        }
+    }
+
+    /**显示dialog*/
+    open fun showWheelDialog(context: Context) {
+        context.wheelDialog {
+            dialogTitle = itemLabelText
+
+            wheelItems = itemWheelList
+
+            wheelItemToStringAction = itemWheelToText
+
+            wheelItemSelectorAction = { dialog, index, item ->
+                if (itemWheelSelector(dialog, index, item)) {
+                    //拦截了
+                    true
+                } else {
+                    val old = itemSelectedIndex
+                    itemSelectedIndex = index
+                    itemChanging = old != index
+                    false
+                }
+            }
+
+            wheelSelectedIndex = itemSelectedIndex
+
+            itemConfigDialog(this)
         }
     }
 
