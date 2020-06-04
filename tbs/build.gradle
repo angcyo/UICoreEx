@@ -16,5 +16,5 @@ dependencies {
     implementation project(allModule.media)
     implementation project(allModule.image)
 
-    implementation 'com.tencent.tbs.tbssdk:sdk:43903'
+    api 'com.tencent.tbs.tbssdk:sdk:43903'
 }
