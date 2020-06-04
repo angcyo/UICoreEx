@@ -24,5 +24,7 @@ data class PlaceholderEntity(
     /**[io.objectbox.annotation.Uid]*/
     /**[io.objectbox.annotation.Index]*/
     /**[io.objectbox.relation.ToOne]*/
+
+    /**[io.objectbox.annotation.Backlink]*/
     /**[io.objectbox.relation.ToMany]*/
 )
