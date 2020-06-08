@@ -52,7 +52,7 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
         itemLayoutId = R.layout.dsl_wheel_item
 
         itemClick = {
-            if (!itemClickBefore(it)) {
+            if (itemEnable && !itemClickBefore(it)) {
                 showWheelDialog(it.context)
             }
         }

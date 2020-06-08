@@ -90,32 +90,34 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
         itemLayoutId = R.layout.dsl_wheel_date_item
 
         itemClick = {
-            it.context.wheelDateDialog {
-                dialogTitle = itemLabelText
+            if (itemEnable) {
+                it.context.wheelDateDialog {
+                    dialogTitle = itemLabelText
 
-                dateType = itemDateTypeArray
+                    dateType = itemDateTypeArray
 
-                if (itemDateStartTime > 0) {
-                    dateStartDate =
-                        itemDateStartTime.toTime(itemPattern).toCalendar(itemPattern)
-                }
-                if (itemDateEndTime > 0) {
-                    dateEndDate = itemDateEndTime.toTime(itemPattern).toCalendar(itemPattern)
-                }
-
-                dateSelectAction = { dialog, date ->
-                    if (itemDateSelectListener(dialog, date)) {
-                        //拦截了
-                        true
-                    } else {
-                        val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
-                        itemWheelText = dateFormat.format(date)
-                        itemChanging = true
-                        false
+                    if (itemDateStartTime > 0) {
+                        dateStartDate =
+                            itemDateStartTime.toTime(itemPattern).toCalendar(itemPattern)
                     }
-                }
+                    if (itemDateEndTime > 0) {
+                        dateEndDate = itemDateEndTime.toTime(itemPattern).toCalendar(itemPattern)
+                    }
 
-                itemConfigDialog(this)
+                    dateSelectAction = { dialog, date ->
+                        if (itemDateSelectListener(dialog, date)) {
+                            //拦截了
+                            true
+                        } else {
+                            val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
+                            itemWheelText = dateFormat.format(date)
+                            itemChanging = true
+                            false
+                        }
+                    }
+
+                    itemConfigDialog(this)
+                }
             }
         }
     }
