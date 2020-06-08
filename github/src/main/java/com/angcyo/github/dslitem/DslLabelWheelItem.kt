@@ -71,6 +71,7 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
                 itemWheelToText(this)
             }
         }
+        itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
     }
 
     /**显示dialog*/

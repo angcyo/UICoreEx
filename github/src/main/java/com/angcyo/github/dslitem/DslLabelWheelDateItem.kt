@@ -130,5 +130,6 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(R.id.lib_text_view)?.text = itemWheelText
+        itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
     }
 }
