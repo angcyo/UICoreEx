@@ -8,7 +8,7 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
-import com.angcyo.item.TextStyleConfig
+import com.angcyo.item.style.TextStyleConfig
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
