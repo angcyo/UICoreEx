@@ -106,14 +106,24 @@ class DslAmap {
         if (locationMoveFirst) {
 
             map.myLocation?.let {
+                //L.w(it)
                 map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
             }
 
             var listener: AMap.OnMyLocationChangeListener? = null
             listener = onMyLocationChange(map) {
-                map.removeOnMyLocationChangeListener(listener)
-                if (locationMoveFirst) {
-                    map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
+                if (it.errorCode == 0) {
+                    //定位成功
+                    //latitude=0.0#longitude=0.0#province=#city=#district=#cityCode=#adCode=#address=#country=#road=
+                    //#poiName=#street=#streetNum=#aoiName=#poiid=#floor=
+                    //#errorCode=12#errorInfo=缺少定位权限
+                    //请到 http://lbs.amap.com/api/android-location-sdk/guide/utilities/errorcode/ 查看错误码说明,错误详细信息:定位权限被禁用,请授予应用定位权限#1201
+                    //#locationDetail=定位权限被禁用,请授予应用定位权限#1201#locationType=0
+                    //L.e(it)
+                    map.removeOnMyLocationChangeListener(listener)
+                    if (locationMoveFirst) {
+                        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
+                    }
                 }
             }
         }
