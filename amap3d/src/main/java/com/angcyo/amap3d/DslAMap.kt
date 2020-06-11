@@ -250,6 +250,9 @@ class DslAMap {
     /**激活双指缩放手势*/
     var enableZoomGestures: Boolean = true
 
+    /**激活以中心点进行手势操作*/
+    var enableGestureScaleByMapCenter: Boolean = false
+
     /**
      * [AMapOptions.LOGO_POSITION_BOTTOM_CENTER]
      * [AMapOptions.LOGO_MARGIN_RIGHT]
@@ -272,6 +275,8 @@ class DslAMap {
             isZoomControlsEnabled = showZoomControl
 
             zoomPosition = zoomControlPosition
+
+            isGestureScaleByMapCenter = enableGestureScaleByMapCenter
 
             if (enableAllGestures) {
                 //激活手势
@@ -298,6 +303,7 @@ class DslAMap {
         map.showBuildings(showBuildings)
         map.showMapText(showMapText)
         map.isTrafficEnabled = showTraffic
+        //map.myTrafficStyle
 
         //移动到有室内地图的地方,放大级别才可以看见
         //map.moveTo(LatLng(39.91095, 116.37296), 20f)
@@ -476,4 +482,9 @@ fun AMap.moveTo(
     animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/
 ) {
     moveTo(CameraUpdateFactory.newLatLngZoom(latLng, zoom), animDuration)
+}
+
+/**限制地图显示范围，地图旋转手势将会失效。*/
+fun AMap.boundsLimit(bounds: LatLngBounds) {
+    setMapStatusLimits(bounds)
 }

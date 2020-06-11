@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.amap.api.maps.MapsInitializer
 import com.amap.api.maps.offlinemap.OfflineMapActivity
-import com.amap.api.maps.offlinemap.OfflineMapManager
 import com.angcyo.library.ex.havePermission
 import com.angcyo.library.utils.FileUtils
 
