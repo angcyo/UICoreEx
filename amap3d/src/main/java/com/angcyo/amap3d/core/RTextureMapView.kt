@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.amap.api.maps.TextureMapView
 import com.angcyo.amap3d.AmapHelper
-import com.angcyo.amap3d.DslAmap
+import com.angcyo.amap3d.DslAMap
 import com.angcyo.library.L
 
 /**
@@ -26,7 +26,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
 
     //<editor-fold desc="样式配置">
 
-    val dslAmap = DslAmap().apply {
+    val dslAmap = DslAMap().apply {
         //do thing
     }
 

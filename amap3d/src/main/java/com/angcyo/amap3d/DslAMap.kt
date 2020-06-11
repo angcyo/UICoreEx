@@ -21,7 +21,7 @@ import java.util.*
  * @date 2020/06/11
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class DslAmap {
+class DslAMap {
 
     //<editor-fold desc="定位蓝点相关">
 
@@ -187,7 +187,7 @@ class DslAmap {
     }
 
     /**切换地图图层
-     * [AMap.MAP_TYPE_NORMAL] 矢量地图模式
+     * [AMap.MAP_TYPE_NORMAL] 矢量地图模式,白昼地图（即普通地图）
      * [AMap.MAP_TYPE_SATELLITE] 卫星地图模式
      * [AMap.MAP_TYPE_NIGHT] 夜景地图模式
      * [AMap.MAP_TYPE_NAVI] 导航地图模式
@@ -217,7 +217,7 @@ class DslAmap {
     var showMyLocationButton: Boolean = true
 
     /**显示指南针*/
-    var showCompass: Boolean = true
+    var showCompass: Boolean = false
 
     /**显示比例尺控件*/
     var showScaleControl: Boolean = true
@@ -231,6 +231,9 @@ class DslAmap {
      * [AMapOptions.LOGO_POSITION_BOTTOM_RIGHT]
      * */
     var zoomControlPosition: Int = AMapOptions.LOGO_POSITION_BOTTOM_RIGHT
+
+    /**显示实时路况*/
+    var showTraffic: Boolean = false
 
     /**激活所有手势*/
     var enableAllGestures: Boolean = true
@@ -281,7 +284,7 @@ class DslAmap {
                 setAllGesturesEnabled(enableAllGestures)
             }
 
-            logoPosition = this@DslAmap.logoPosition
+            logoPosition = this@DslAMap.logoPosition
 
             if (logoBottomMargin != undefined_size) {
                 setLogoBottomMargin(logoBottomMargin)
@@ -294,6 +297,8 @@ class DslAmap {
         map.showIndoorMap(showIndoorMap)
         map.showBuildings(showBuildings)
         map.showMapText(showMapText)
+        map.isTrafficEnabled = showTraffic
+
         //移动到有室内地图的地方,放大级别才可以看见
         //map.moveTo(LatLng(39.91095, 116.37296), 20f)
     }
@@ -434,15 +439,15 @@ class DslAmap {
 }
 
 /**DSL*/
-fun TextureMapView.dslAmap(action: DslAmap.() -> Unit) {
-    val dslAmap = DslAmap()
-    dslAmap.action()
+fun TextureMapView.dslAMap(action: DslAMap.() -> Unit) {
+    val dslAMap = DslAMap()
+    dslAMap.action()
 }
 
 /**DSL*/
-fun MapView.dslAmap(action: DslAmap.() -> Unit) {
-    val dslAmap = DslAmap()
-    dslAmap.action()
+fun MapView.dslAMap(action: DslAMap.() -> Unit) {
+    val dslAMap = DslAMap()
+    dslAMap.action()
 }
 
 

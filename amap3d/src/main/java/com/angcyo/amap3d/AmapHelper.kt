@@ -3,11 +3,15 @@ package com.angcyo.amap3d
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.amap.api.maps.MapsInitializer
+import com.amap.api.maps.offlinemap.OfflineMapActivity
+import com.amap.api.maps.offlinemap.OfflineMapManager
 import com.angcyo.library.ex.havePermission
 import com.angcyo.library.utils.FileUtils
+
 
 /**
  *
@@ -62,6 +66,7 @@ object AmapHelper {
         }
     }
 
+    /**https://lbs.amap.com/api/android-sdk/guide/create-map/offline-map*/
     fun initOffline() {
         /*
          * 设置离线地图存储目录，在下载离线地图或初始化地图设置;
@@ -73,5 +78,23 @@ object AmapHelper {
         //需要在地图onCreate之前调用
         MapsInitializer.sdcardDir =
             FileUtils.appRootExternalFolder(folder = "amap_offline")?.absolutePath
+
+//        //构造OfflineMapManager对象
+//        val amapManager: OfflineMapManager = OfflineMapManager(this, this);
+//        //按照citycode下载
+//        amapManager.downloadByCityCode(citycode)
+//        //按照cityname下载
+//        amapManager.downloadByCityName(cityname)
+
+        //amapManager.pause()
+        //amapManager.stop()
+
+        //amapManager.remove(city);
+    }
+
+    /**启动离线地图下载组件*/
+    fun startOfflineMap(context: Context) {
+        //在Activity页面调用start Activity 启动离线地图组件
+        context.startActivity(Intent(context, OfflineMapActivity::class.java))
     }
 }

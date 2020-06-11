@@ -32,6 +32,11 @@
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
+
+        <!--https://lbs.amap.com/api/android-sdk/guide/create-map/offline-map-->
+        <activity
+            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
