@@ -26,7 +26,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
 
     //<editor-fold desc="样式配置">
 
-    val dslAmap = DslAMap().apply {
+    val dslAMap = DslAMap().apply {
         //do thing
     }
 
@@ -48,11 +48,11 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                     when (event) {
                         Lifecycle.Event.ON_CREATE -> {
                             onCreate(savedInstanceState)
-                            dslAmap.doLocationStyle(map)
-                                dslAmap.doUI(map)
-                            dslAmap.onMapLoadedListener(map) {
+                            dslAMap.apply {
+                                doLocationStyle(map)
+                                doUI(map)
+                                loadStyleFromAssets(map, context.assets)
                             }
-                            dslAmap.onMyLocationChange(map)
                         }
                         Lifecycle.Event.ON_RESUME -> onResume()
                         Lifecycle.Event.ON_PAUSE -> onPause()

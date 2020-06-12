@@ -1,13 +1,11 @@
 package com.angcyo.amap3d
 
 import android.content.res.AssetManager
+import android.view.MotionEvent
 import com.amap.api.maps.*
 import com.amap.api.maps.model.*
 import com.angcyo.library.L
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex.alpha
-import com.angcyo.library.ex.dp
-import com.angcyo.library.ex.undefined_size
+import com.angcyo.library.ex.*
 import com.autonavi.amap.mapcore.Inner_3dMap_location
 import java.util.*
 
@@ -76,7 +74,7 @@ class DslAMap {
     var locationFillColor: Int =
         _color(R.color.colorPrimary).alpha(16)  //locationStyle.radiusFillColor
 
-    /**执行定位样式配置*/
+    /**执行定位样式配置, [myLocationType] 支持动态修改, 实时生效*/
     fun doLocationStyle(map: AMap) {
         //初始化定位蓝点样式类locationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
         //连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
@@ -111,7 +109,7 @@ class DslAMap {
             }
 
             var listener: AMap.OnMyLocationChangeListener? = null
-            listener = onMyLocationChange(map) {
+            listener = map.onMyLocationChange {
                 if (it.errorCode == 0) {
                     //定位成功
                     //latitude=0.0#longitude=0.0#province=#city=#district=#cityCode=#adCode=#address=#country=#road=
@@ -135,7 +133,7 @@ class DslAMap {
 
     var customStyleOptions: CustomMapStyleOptions? = null
 
-    /**从assets中加载高德地图style*/
+    /**从assets中加载高德地图style, [onCreate]之后执行*/
     fun loadStyleFromAssets(
         map: AMap,
         assetManager: AssetManager,
@@ -311,134 +309,11 @@ class DslAMap {
 
     //</editor-fold desc="UI相关">
 
-    //<editor-fold desc="事件回调相关">
-
-    /**地图定位改变后的回调, 如果使用的是持续定位方式, 则会持续回调.
-     * [ON_PAUSE] 之后地图依旧会回调定位信息*/
-    fun onMyLocationChange(
-        map: AMap,
-        action: (location: Inner_3dMap_location) -> Unit = {}
-    ): AMap.OnMyLocationChangeListener {
-        //从location对象中获取经纬度信息，地址描述信息，建议拿到位置之后调用逆地理编码接口获取（获取地址描述数据章节有介绍）
-        val listener = AMap.OnMyLocationChangeListener {
-            //Inner_3dMap_location
-            //latitude=22.568021#longitude=114.066152
-            //#province=广东省#city=深圳市#district=福田区#cityCode=0755#adCode=440304
-            //#address=广东省深圳市福田区梅林路17号靠近彩梅立交#country=中国#road=梅林路
-            //#poiName=#street=#streetNum=#aoiName=#poiid=#floor=#errorCode=0#errorInfo=success
-            //#locationDetail=#id:YaDhoZ2U5M2diZjMzZjVlaDk3MmhoZzFjMTIyMzY3LFhCNFZYTnE5NktZREFPSnhyNGVuc3JCVg==
-            //#csid:d83314dc0ed646398530b72d732e55a1#locationType=2
-            //L.e(it)
-            //L.w(map.cameraPosition)
-            //L.w(map.myLocation)
-            action(it as Inner_3dMap_location)
-        }
-        map.addOnMyLocationChangeListener(listener)
-        return listener
-    }
-
-    /**地图加载回调*/
-    fun onMapLoadedListener(
-        map: AMap,
-        action: () -> Unit = {}
-    ): AMap.OnMapLoadedListener {
-        val listener = AMap.OnMapLoadedListener {
-            L.e("AMapLoaded...")
-            action()
-        }
-        map.setOnMapLoadedListener(listener)
-        return listener
-    }
-
-    //</editor-fold desc="事件回调相关">
-
-    //<editor-fold desc="绘制相关">
-
-    /**添加标记[Marker]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/MarkerOptions.html
-     * */
-    fun addMarker(map: AMap, action: MarkerOptions.() -> Unit): Marker {
-        val options = MarkerOptions()
-        options.action()
-        val marker = map.addMarker(options)
-        marker.isVisible = true
-        return marker
-    }
-
-    /**在地图上添一组图片标记（marker）对象，并设置是否改变地图状态以至于所有的marker对象都在当前地图可视区域范围内显示。*/
-    fun addMarkers(
-        map: AMap,
-        options: ArrayList<MarkerOptions>,
-        moveToCenter: Boolean = true
-    ): MutableList<Marker> {
-        val marker = map.addMarkers(options, moveToCenter)
-        return marker
-    }
-
-    /**添加折线[Polyline]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/PolylineOptions.html
-     * */
-    fun addPolyline(map: AMap, action: PolylineOptions.() -> Unit): Polyline {
-        val options = PolylineOptions()
-        options.action()
-        val polyline = map.addPolyline(options)
-        polyline.isVisible = true
-        return polyline
-    }
-
-    /**添加弧形[Arc]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Arc.html
-     * */
-    fun addArc(map: AMap, action: ArcOptions.() -> Unit): Arc {
-        val options = ArcOptions()
-        options.action()
-        val arc = map.addArc(options)
-        arc.isVisible = true
-        return arc
-    }
-
-    /**添加圆[Circle]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Circle.html
-     * */
-    fun addCircle(map: AMap, action: CircleOptions.() -> Unit): Circle {
-        val options = CircleOptions()
-        options.action()
-        val circle = map.addCircle(options)
-        circle.isVisible = true
-        return circle
-    }
-
-    /**添加多边形[Polygon]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Polygon.html
-     * */
-    fun addPolygon(map: AMap, action: PolygonOptions.() -> Unit): Polygon {
-        val options = PolygonOptions()
-        options.action()
-        val polygon = map.addPolygon(options)
-        polygon.isVisible = true
-        return polygon
-    }
-
-    /**添加文本标记[Text]
-     * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Text.html
-     * */
-    fun addText(map: AMap, action: TextOptions.() -> Unit): Text {
-        val options = TextOptions()
-        options.action()
-        val text = map.addText(options)
-        text.isVisible = true
-        return text
-    }
-
-    //</editor-fold desc="绘制相关">
-
     //<editor-fold desc="操作相关">
 
     /**移动至当前位置*/
     fun moveToLocation(map: AMap, animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/) {
-        map.myLocation?.let {
-            map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration)
-        }
+        map.moveToLocation(map, animDuration, locationMoveZoom)
     }
 
     //</editor-fold desc="操作相关">
@@ -456,6 +331,18 @@ fun MapView.dslAMap(action: DslAMap.() -> Unit) {
     dslAMap.action()
 }
 
+//<editor-fold desc="Move方法">
+
+/**移动至当前位置*/
+fun AMap.moveToLocation(
+    map: AMap,
+    animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/,
+    locationMoveZoom: Float = cameraPosition.zoom
+) {
+    map.myLocation?.let {
+        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration)
+    }
+}
 
 fun AMap.moveTo(update: CameraUpdate, animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/) {
     if (animDuration > 0) {
@@ -484,7 +371,292 @@ fun AMap.moveTo(
     moveTo(CameraUpdateFactory.newLatLngZoom(latLng, zoom), animDuration)
 }
 
+/**移动地图至包含所有指定的点位*/
+fun AMap.moveInclude(bounds: LatLngBounds, padding: Int = 50 * dpi, animDuration: Long = 250) {
+    moveTo(CameraUpdateFactory.newLatLngBounds(bounds, padding), animDuration)
+}
+
+fun AMap.moveInclude(vararg latLng: LatLng, padding: Int = 50 * dpi, animDuration: Long = 250) {
+    // 设置所有maker显示在当前可视区域地图中
+    val bounds = LatLngBounds.Builder().run {
+        latLng.forEach {
+            include(it)
+        }
+        build()
+    }
+    moveInclude(bounds, padding, animDuration)
+}
+
+//</editor-fold desc="Move方法">
+
+//<editor-fold desc="操作方法">
+
 /**限制地图显示范围，地图旋转手势将会失效。*/
 fun AMap.boundsLimit(bounds: LatLngBounds) {
     setMapStatusLimits(bounds)
 }
+
+//scalePerPixel  //每像素代表多少米
+
+/**判断目标位置[target], 是否在地图可视范围内
+ * 西南坐标 - 东北坐标
+ * */
+fun AMap.isInVisibleRegion(target: LatLng): Boolean {
+    return projection?.visibleRegion?.run {
+        latLngBounds.contains(target)
+    } ?: false
+}
+
+/**屏幕中心点的经纬度坐标。*/
+fun AMap.getMapCenterPosition(): LatLng = cameraPosition.target
+
+//</editor-fold desc="操作方法">
+
+//<editor-fold desc="事件回调相关">
+
+/**地图定位改变后的回调, 如果使用的是持续定位方式, 则会持续回调.
+ * [ON_PAUSE] 之后地图依旧会回调定位信息*/
+fun AMap.onMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {}): AMap.OnMyLocationChangeListener {
+    //从location对象中获取经纬度信息，地址描述信息，建议拿到位置之后调用逆地理编码接口获取（获取地址描述数据章节有介绍）
+    val listener = AMap.OnMyLocationChangeListener {
+        //Inner_3dMap_location
+        //latitude=22.568021#longitude=114.066152
+        //#province=广东省#city=深圳市#district=福田区#cityCode=0755#adCode=440304
+        //#address=广东省深圳市福田区梅林路17号靠近彩梅立交#country=中国#road=梅林路
+        //#poiName=#street=#streetNum=#aoiName=#poiid=#floor=#errorCode=0#errorInfo=success
+        //#locationDetail=#id:YaDhoZ2U5M2diZjMzZjVlaDk3MmhoZzFjMTIyMzY3LFhCNFZYTnE5NktZREFPSnhyNGVuc3JCVg==
+        //#csid:d83314dc0ed646398530b72d732e55a1#locationType=2
+        //L.e(it)
+        //L.w(cameraPosition)
+        //L.w(map.myLocation)
+        action(it as Inner_3dMap_location)
+    }
+    addOnMyLocationChangeListener(listener)
+    return listener
+}
+
+/**地图加载回调*/
+fun AMap.onMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener {
+    val listener = AMap.OnMapLoadedListener {
+        L.e("AMapLoaded...")
+        action()
+    }
+    setOnMapLoadedListener(listener)
+    return listener
+}
+
+/**地图点击事件
+ * [latitude] 纬度
+ * [longitude] 经度
+ * */
+fun AMap.onMapClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapClickListener {
+    val listener = AMap.OnMapClickListener {
+        action(it)
+    }
+    setOnMapClickListener(listener)
+    return listener
+}
+
+/**地图长按事件
+ * [latitude] 纬度
+ * [longitude] 经度
+ * */
+fun AMap.onMapLongClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapLongClickListener {
+    val listener = AMap.OnMapLongClickListener {
+        action(it)
+    }
+    setOnMapLongClickListener(listener)
+    return listener
+}
+
+/**地图Camera改变事件
+ * [CameraPosition] 包含了倾斜角度, 缩放系数, 方向角度(从正北向逆时针方向计算，从0 度到360 度。), LatLng位置
+ * */
+fun AMap.onCameraChangeListener(
+    change: (CameraPosition) -> Unit = {},
+    finish: (CameraPosition) -> Unit = {}
+): AMap.OnCameraChangeListener {
+    val listener = object : AMap.OnCameraChangeListener {
+        override fun onCameraChangeFinish(position: CameraPosition) {
+            finish(position)
+        }
+
+        override fun onCameraChange(position: CameraPosition) {
+            change(position)
+        }
+    }
+    setOnCameraChangeListener(listener)
+    return listener
+}
+
+fun AMap.onMapTouchListener(action: (MotionEvent) -> Unit = {}): AMap.OnMapTouchListener {
+    val listener = AMap.OnMapTouchListener {
+        action(it)
+    }
+    setOnMapTouchListener(listener)
+    return listener
+}
+
+/**地图上[Poi]的点击事件
+ * 点击地图Poi点时，该兴趣点的描述信息 Poi 是指底图上的一个自带Poi点。
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Poi.html
+ * */
+fun AMap.onPOIClickListener(action: (Poi) -> Unit = {}): AMap.OnPOIClickListener {
+    val listener = AMap.OnPOIClickListener {
+        action(it)
+    }
+    setOnPOIClickListener(listener)
+    return listener
+}
+
+/**
+ * true 返回true表示该点击事件已被处理，不再往下传递（如底图点击不会被触发），返回false则继续往下传递。
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Marker.html
+ * */
+fun AMap.onMarkerClickListener(action: (Marker) -> Boolean = { false }): AMap.OnMarkerClickListener {
+    val listener = AMap.OnMarkerClickListener {
+        action(it)
+    }
+    setOnMarkerClickListener(listener)
+    return listener
+}
+
+/**长按[Marker]可以进行拖拽*/
+fun AMap.onMarkerDragListener(
+    start: (Marker) -> Unit = { },
+    move: (Marker) -> Unit = { },
+    end: (Marker) -> Unit = { }
+): AMap.OnMarkerDragListener {
+    val listener = object : AMap.OnMarkerDragListener {
+        override fun onMarkerDragEnd(marker: Marker) {
+            end(marker)
+        }
+
+        override fun onMarkerDragStart(marker: Marker) {
+            start(marker)
+        }
+
+        override fun onMarkerDrag(marker: Marker) {
+            move(marker)
+        }
+    }
+    setOnMarkerDragListener(listener)
+    return listener
+}
+
+fun AMap.onInfoWindowClickListener(action: (Marker) -> Boolean = { false }): AMap.OnInfoWindowClickListener {
+    val listener = AMap.OnInfoWindowClickListener {
+        action(it)
+    }
+    setOnInfoWindowClickListener(listener)
+    return listener
+}
+
+//</editor-fold desc="事件回调相关">
+
+//<editor-fold desc="绘制相关">
+
+/**添加标记[Marker]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/MarkerOptions.html
+ * */
+fun AMap.addMarker(action: MarkerOptions.() -> Unit): Marker {
+    val options = MarkerOptions()
+    options.action()
+    val marker = addMarker(options)
+    marker.isVisible = true
+    return marker
+}
+
+/**添加一个屏幕位置的[Marker]*/
+fun AMap.addScreenMarker(x: Int, y: Int, action: MarkerOptions.() -> Unit): Marker {
+    val options = MarkerOptions()
+    //设置Marker覆盖物的锚点比例。锚点是marker 图标接触地图平面的点。图标的左顶点为（0,0）点，右底点为（1,1）点。
+    options.anchor(0.5f, 0.5f)
+    options.action()
+    val marker = addMarker(options)
+    marker.isVisible = true
+    marker.setPositionByPixels(x, y)
+    return marker
+}
+
+/**添加一个屏幕中心的[Marker]*/
+fun AMap.addScreenCenterMarker(action: MarkerOptions.() -> Unit): Marker {
+    val centerPoint = projection.toScreenLocation(cameraPosition.target)
+    return addScreenMarker(centerPoint.x, centerPoint.y, action)
+}
+
+/**在地图上添一组图片标记（marker）对象，并设置是否改变地图状态以至于所有的marker对象都在当前地图可视区域范围内显示。*/
+fun AMap.addMarkers(
+    options: ArrayList<MarkerOptions>,
+    moveToCenter: Boolean = true
+): MutableList<Marker> {
+    val marker = addMarkers(options, moveToCenter)
+    return marker
+}
+
+/**添加折线[Polyline]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/PolylineOptions.html
+ * */
+fun AMap.addPolyline(action: PolylineOptions.() -> Unit): Polyline {
+    val options = PolylineOptions()
+    options.action()
+    val polyline = addPolyline(options)
+    polyline.isVisible = true
+    return polyline
+}
+
+/**添加弧形[Arc]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Arc.html
+ * */
+fun AMap.addArc(action: ArcOptions.() -> Unit): Arc {
+    val options = ArcOptions()
+    options.action()
+    val arc = addArc(options)
+    arc.isVisible = true
+    return arc
+}
+
+/**添加圆[Circle]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Circle.html
+ * */
+fun AMap.addCircle(action: CircleOptions.() -> Unit): Circle {
+    val options = CircleOptions()
+    options.action()
+    val circle = addCircle(options)
+    circle.isVisible = true
+    return circle
+}
+
+/**添加多边形[Polygon]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Polygon.html
+ * */
+fun AMap.addPolygon(action: PolygonOptions.() -> Unit): Polygon {
+    val options = PolygonOptions()
+    options.action()
+    val polygon = addPolygon(options)
+    polygon.isVisible = true
+    return polygon
+}
+
+/**添加文本标记[Text]
+ * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Text.html
+ * */
+fun AMap.addText(action: TextOptions.() -> Unit): Text {
+    val options = TextOptions()
+    options.action()
+    val text = addText(options)
+    text.isVisible = true
+    return text
+}
+
+/**https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/NavigateArrowOptions.html
+ * */
+fun AMap.addNavigateArrow(action: NavigateArrowOptions.() -> Unit): NavigateArrow {
+    val options = NavigateArrowOptions()
+    options.action()
+    val navigateArrow = addNavigateArrow(options)
+    navigateArrow.isVisible = true
+    return navigateArrow
+}
+
+//</editor-fold desc="绘制相关">

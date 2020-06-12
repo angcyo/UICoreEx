@@ -6,7 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.ActivityCompat
+import com.amap.api.maps.AMapException
+import com.amap.api.maps.AMapUtils
 import com.amap.api.maps.MapsInitializer
+import com.amap.api.maps.model.LatLng
+import com.amap.api.maps.model.NaviPara
 import com.amap.api.maps.offlinemap.OfflineMapActivity
 import com.angcyo.library.ex.havePermission
 import com.angcyo.library.utils.FileUtils
@@ -50,18 +54,24 @@ object AmapHelper {
         permissions(backLocation)
     )
 
-    /**仅请求定位权限
+    /**如果已经有权限, 则返回. 否则请求定位权限
      * [backLocation] 是否需要后台定位权限*/
     fun requestPermissions(
         context: Context,
         backLocation: Boolean = false,
         requestCode: Int = 909
-    ) {
-        if (context is Activity) {
-            ActivityCompat.requestPermissions(
-                context,
-                permissions(backLocation).toTypedArray(), requestCode
-            )
+    ): Boolean {
+        return if (havePermissions(context, backLocation)) {
+            true
+        } else {
+            if (context is Activity) {
+                ActivityCompat.requestPermissions(
+                    context,
+                    permissions(backLocation).toTypedArray(),
+                    requestCode
+                )
+            }
+            false
         }
     }
 
@@ -95,5 +105,22 @@ object AmapHelper {
     fun startOfflineMap(context: Context) {
         //在Activity页面调用start Activity 启动离线地图组件
         context.startActivity(Intent(context, OfflineMapActivity::class.java))
+    }
+
+    /**调用外部导航到指定位置*/
+    fun navTo(context: Context, target: LatLng) {
+        // 构造导航参数
+        val naviPara = NaviPara()
+        // 设置终点位置
+        naviPara.targetPoint = target
+        // 设置导航策略，这里是避免拥堵
+        naviPara.naviStyle = AMapUtils.DRIVING_AVOID_CONGESTION
+        try {
+            // 调起高德地图导航
+            AMapUtils.openAMapNavi(naviPara, context)
+        } catch (e: AMapException) {
+            // 如果没安装会进入异常，调起下载页面
+            AMapUtils.getLatestAMapApp(context)
+        }
     }
 }
