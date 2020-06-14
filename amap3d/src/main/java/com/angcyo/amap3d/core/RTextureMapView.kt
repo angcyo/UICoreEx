@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.amap.api.maps.TextureMapView
 import com.angcyo.amap3d.AMapHelper
 import com.angcyo.amap3d.DslAMap
+import com.angcyo.amap3d.DslMarker
 import com.angcyo.library.L
 
 /**
@@ -26,8 +27,14 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
 
     //<editor-fold desc="样式配置">
 
-    val dslAMap = DslAMap().apply {
-        //do thing
+    /**包含默认的样式配置*/
+    val dslAMap: DslAMap = DslAMap().apply {
+        //do something
+    }
+
+    /**提供[Marker]的常规操作*/
+    val dslMarker: DslMarker = DslMarker().apply {
+        //do something
     }
 
     //</editor-fold desc="样式配置">
@@ -47,7 +54,9 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                     //L.e("改变:$source ->$event")
                     when (event) {
                         Lifecycle.Event.ON_CREATE -> {
+                            //地图初始化
                             onCreate(savedInstanceState)
+                            dslMarker.init(map)
                             dslAMap.apply {
                                 doLocationStyle(map)
                                 doUI(map)

@@ -328,15 +328,17 @@ class DslAMap {
 }
 
 /**DSL*/
-fun TextureMapView.dslAMap(action: DslAMap.() -> Unit) {
+fun TextureMapView.dslAMap(action: DslAMap.() -> Unit): DslAMap {
     val dslAMap = DslAMap()
     dslAMap.action()
+    return dslAMap
 }
 
 /**DSL*/
-fun MapView.dslAMap(action: DslAMap.() -> Unit) {
+fun MapView.dslAMap(action: DslAMap.() -> Unit): DslAMap {
     val dslAMap = DslAMap()
     dslAMap.action()
+    return dslAMap
 }
 
 //<editor-fold desc="Move方法">
