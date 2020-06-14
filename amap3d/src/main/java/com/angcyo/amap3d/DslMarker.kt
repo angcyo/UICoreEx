@@ -38,8 +38,7 @@ class DslMarker : AMap.InfoWindowAdapter {
         )
 
         val ALT_HEATMAP_GRADIENT_START_POINTS = floatArrayOf(
-            0.0f,
-            0.10f, 0.20f, 0.60f, 1.0f
+            0.0f, 0.10f, 0.20f, 0.60f, 1.0f
         )
     }
 
