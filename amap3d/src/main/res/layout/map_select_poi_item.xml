@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/lib_hdpi"
+    android:paddingBottom="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:textColor="@color/lib_text_body_to_theme_color_selector"
+        android:textSize="@dimen/text_sub_size"
+        app:layout_constraintBottom_toTopOf="@id/lib_sub_text_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="民治大道" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_sub_text_view"
+        style="@style/LibSubTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/lib_text_sub_to_theme_color_selector"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@id/lib_text_view"
+        app:layout_constraintRight_toLeftOf="@id/lib_select_view"
+        app:layout_constraintTop_toBottomOf="@id/lib_text_view"
+        tools:text="广东省深圳市福田区梅林路17号靠近彩梅立交广东省深圳市福田区梅林路17号靠近彩梅立交广东省深圳市福田区梅林路17号靠近彩梅立交" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_select_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/lib_xhdpi"
+        android:paddingRight="@dimen/lib_xhdpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_selector"
+        app:tint="@color/colorPrimary" />
+</androidx.constraintlayout.widget.ConstraintLayout>

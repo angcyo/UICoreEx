@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_coordinator_wrap_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--内容布局包裹-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lib_content_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_behavior="com.angcyo.behavior.refresh.RefreshContentBehavior">
+
+        <com.angcyo.amap3d.core.RTextureMapView
+            android:id="@+id/lib_map_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/lib_recycler_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="0.6" />
+
+        <com.angcyo.widget.recycler.DslRecyclerView
+            android:id="@+id/lib_recycler_view"
+            style="@style/LibRecyclerViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lib_map_view"
+            app:layout_constraintVertical_weight="0.4"
+            app:r_layout_manager="V" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--覆盖在内容上面的布局包裹, 不跟随内容滑动-->
+    <FrameLayout
+        android:id="@+id/lib_content_overlay_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent20"
+        android:visibility="gone"
+        app:layout_anchor="@id/lib_title_wrap_layout"
+        app:layout_anchorGravity="bottom"
+        app:layout_behavior="com.angcyo.behavior.placeholder.TitleBarBelowBehavior">
+
+        <com.angcyo.widget.layout.DslSoftInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:r_handler_mode="MODE_CONTENT_HEIGHT">
+
+            <com.angcyo.widget.recycler.DslRecyclerView
+                android:id="@+id/tips_recycler_view"
+                style="@style/LibRecyclerViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/lib_white"
+                android:visibility="gone"
+                app:r_layout_manager="V" />
+
+        </com.angcyo.widget.layout.DslSoftInputLayout>
+    </FrameLayout>
+
+    <!--标题栏放在后面, 可以保证显示在内容之上-->
+    <FrameLayout
+        android:id="@+id/lib_title_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.angcyo.behavior.placeholder.TitleBarPlaceholderBehavior">
+
+        <!--常规标题-->
+        <com.angcyo.widget.layout.TitleWrapLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_height">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/lib_title_text_view"
+                style="@style/LibMainTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                tools:text="标题栏文本" />
+
+            <LinearLayout
+                android:id="@+id/lib_left_wrap_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/lib_right_wrap_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/lib_search_view"
+                    style="@style/LibItemStyle"
+                    android:background="@drawable/lib_bg2_selector"
+                    app:srcCompat="@drawable/map_icon_search" />
+
+                <com.angcyo.widget.DslButton
+                    android:id="@+id/lib_send_view"
+                    style="@style/DefaultButtonMinStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_xhdpi"
+                    android:layout_marginRight="@dimen/lib_xhdpi"
+                    android:text="发送" />
+
+            </LinearLayout>
+
+        </com.angcyo.widget.layout.TitleWrapLayout>
+
+        <!--搜索标题布局-->
+        <com.angcyo.widget.layout.TitleWrapLayout
+            android:id="@+id/search_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_height"
+            android:background="@color/lib_white"
+            android:clickable="true"
+            android:visibility="gone"
+            tools:background="@color/info">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.angcyo.widget.edit.DslEditText
+                    android:id="@+id/lib_edit_view"
+                    style="@style/LibEditSearchStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/lib_xhdpi"
+                    android:layout_marginTop="@dimen/lib_ldpi"
+                    android:layout_marginBottom="@dimen/lib_ldpi"
+                    android:layout_weight="1"
+                    android:background="@drawable/map_search_bg_shape"
+                    android:drawableLeft="@drawable/map_icon_search" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/lib_cancel_view"
+                    style="@style/LibBodyTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_hdpi"
+                    android:paddingLeft="@dimen/lib_hdpi"
+                    android:paddingRight="@dimen/lib_xhdpi"
+                    android:text="取消"
+                    android:textColor="@color/colorPrimary" />
+
+            </LinearLayout>
+
+        </com.angcyo.widget.layout.TitleWrapLayout>
+    </FrameLayout>
+
+</com.angcyo.widget.layout.RCoordinatorLayout>

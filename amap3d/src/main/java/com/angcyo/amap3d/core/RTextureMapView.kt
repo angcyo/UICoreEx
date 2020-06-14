@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.amap.api.maps.TextureMapView
-import com.angcyo.amap3d.AmapHelper
+import com.angcyo.amap3d.AMapHelper
 import com.angcyo.amap3d.DslAMap
 import com.angcyo.library.L
 
@@ -37,7 +37,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
     /**绑定[LifecycleOwner]的生命周期*/
     fun bindLifecycle(owner: LifecycleOwner, savedInstanceState: Bundle?) {
         //请求权限
-        AmapHelper.requestPermissions(context, true)
+        AMapHelper.requestPermissions(context, true)
 
         if (owner.lifecycle.currentState != Lifecycle.State.CREATED) {
             L.w("错误的生命周期绑定时机!")

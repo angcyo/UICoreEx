@@ -4,6 +4,10 @@ import android.content.res.AssetManager
 import android.view.MotionEvent
 import com.amap.api.maps.*
 import com.amap.api.maps.model.*
+import com.amap.api.services.core.AMapException.CODE_AMAP_SUCCESS
+import com.amap.api.services.core.LatLonPoint
+import com.amap.api.services.core.PoiItem
+import com.angcyo.amap3d.core.MapLocation
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.autonavi.amap.mapcore.Inner_3dMap_location
@@ -313,7 +317,7 @@ class DslAMap {
 
     /**移动至当前位置*/
     fun moveToLocation(map: AMap, animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/) {
-        map.moveToLocation(map, animDuration, locationMoveZoom)
+        map.moveToLocation(animDuration, locationMoveZoom)
     }
 
     //</editor-fold desc="操作相关">
@@ -333,14 +337,23 @@ fun MapView.dslAMap(action: DslAMap.() -> Unit) {
 
 //<editor-fold desc="Move方法">
 
+/**放大*/
+fun AMap.zoomIn(animDuration: Long = 250) {
+    moveTo(CameraUpdateFactory.zoomIn(), animDuration)
+}
+
+/**缩小*/
+fun AMap.zoomOut(animDuration: Long = 250) {
+    moveTo(CameraUpdateFactory.zoomOut(), animDuration)
+}
+
 /**移动至当前位置*/
 fun AMap.moveToLocation(
-    map: AMap,
     animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/,
     locationMoveZoom: Float = cameraPosition.zoom
 ) {
-    map.myLocation?.let {
-        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration)
+    myLocation?.let {
+        moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration)
     }
 }
 
@@ -407,8 +420,40 @@ fun AMap.isInVisibleRegion(target: LatLng): Boolean {
     } ?: false
 }
 
+/**判断[target], 是否在[bounds]内*/
+fun LatLng.isInBounds(bounds: List<LatLng>): Boolean {
+    val latLngBounds = LatLngBounds.Builder().run {
+        bounds.forEach {
+            include(it)
+        }
+        build()
+    }
+    return latLngBounds.contains(this)
+}
+
+/**返回两点间的距离，单位米。*/
+fun LatLng.distance(endLatLng: LatLng): Float = AMapUtils.calculateLineDistance(this, endLatLng)
+
+fun LatLng.toLatLonPoint(): LatLonPoint = LatLonPoint(latitude, longitude)
+
+fun LatLonPoint.toLatLon(): LatLng = LatLng(latitude, longitude)
+
 /**屏幕中心点的经纬度坐标。*/
 fun AMap.getMapCenterPosition(): LatLng = cameraPosition.target
+
+/**搞得搜索包内的搜索API调用成功的返回码*/
+fun Int.isSearchSuccess() = this == CODE_AMAP_SUCCESS
+
+/**获取[PoiItem]对应的详细地址信息*/
+fun PoiItem.getAddress() = "${provinceName.orString(
+    ""
+)}${cityName.orString(
+    ""
+)}${adName.orString(
+    ""
+)}${businessArea.orString(
+    ""
+)}${snippet.orString("")}"
 
 //</editor-fold desc="操作方法">
 
@@ -429,6 +474,13 @@ fun AMap.onMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {
         //L.e(it)
         //L.w(cameraPosition)
         //L.w(map.myLocation)
+
+        if (it is Inner_3dMap_location) {
+            if (it.errorCode == 0) {
+                AMapHelper.lastMapLocation = MapLocation.from(it)
+            }
+        }
+
         action(it as Inner_3dMap_location)
     }
     addOnMyLocationChangeListener(listener)
@@ -438,7 +490,7 @@ fun AMap.onMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {
 /**地图加载回调*/
 fun AMap.onMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener {
     val listener = AMap.OnMapLoadedListener {
-        L.e("AMapLoaded...")
+        L.w("AMapLoaded...")
         action()
     }
     setOnMapLoadedListener(listener)

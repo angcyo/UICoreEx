@@ -3,7 +3,9 @@ package com.angcyo.amap3d
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.amap.api.maps.AMap
+import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.Marker
+import com.amap.api.maps.model.animation.AlphaAnimation
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.ScaleAnimation
 import com.amap.api.maps.model.animation.TranslateAnimation
@@ -37,12 +39,15 @@ class DslMarker : AMap.InfoWindowAdapter {
         map.setInfoWindowAdapter(this)
     }
 
+    /**此方法不能修改整个 InfoWindow 的背景和边框，无论自定义的样式是什么样，SDK 都会在最外层添加一个默认的边框。*/
     override fun getInfoContents(marker: Marker): View? {
         return null
     }
 
+    /**如果此方法返回的 View 没有设置 InfoWindow 背景图，SDK 会默认添加一个背景图。*/
     override fun getInfoWindow(marker: Marker): View? {
-        return getInfoContents(marker)
+        //do something
+        return null
     }
 
     //</editor-fold desc="初始化">
@@ -52,6 +57,12 @@ class DslMarker : AMap.InfoWindowAdapter {
 //<editor-fold desc="Marker动画">
 
 //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/animation/ScaleAnimation.html
+
+fun Marker.cancelAnim() {
+    val animation = AlphaAnimation(1f, 1f)
+    setAnimation(animation)
+    startAnimation()
+}
 
 fun Marker.anim(animation: Animation, action: Animation.() -> Unit = {}) {
     //缩放动画保持最后一帧
@@ -104,5 +115,14 @@ fun Marker.jump(map: AMap, offsetY: Int = 100 * dpi, action: TranslateAnimation.
 }
 
 //</editor-fold desc="Marker动画">
+
+
+//<editor-fold desc="Marker图标">
+
+fun markerIcon(res: Int) = BitmapDescriptorFactory.fromResource(res)
+
+fun markerIcon(view: View) = BitmapDescriptorFactory.fromView(view)
+
+//</editor-fold desc="Marker图标">
 
 
