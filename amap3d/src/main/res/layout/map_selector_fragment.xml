@@ -47,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent20"
+        android:clickable="true"
         android:visibility="gone"
         app:layout_anchor="@id/lib_title_wrap_layout"
         app:layout_anchorGravity="bottom"

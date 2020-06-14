@@ -179,7 +179,7 @@ class AMapSelectorFragment : BaseDslFragment() {
         }
 
         _vh.view(R.id.lib_edit_view)?.apply {
-            postDelayed(160L) {
+            postDelayed(60L) {
                 showSoftInput()
             }
         }
