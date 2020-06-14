@@ -26,6 +26,7 @@ import com.angcyo.amap3d.*
 import com.angcyo.amap3d.core.MapLocation
 import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.amap3d.core.latLng
+import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.amap3d.dslitem.DslSelectPoiItem
 import com.angcyo.base.back
 import com.angcyo.base.onFragmentResult
@@ -73,6 +74,8 @@ class AMapSelectorFragment : BaseDslFragment() {
             bindLifecycle(this@AMapSelectorFragment, savedInstanceState)
 
             map?.apply {
+                bindControlLayout(_vh)
+
                 onMapLoadedListener {
                     centerMarker = addScreenCenterMarker {
                         icon(markerIcon(R.drawable.map_location_point))
@@ -104,7 +107,7 @@ class AMapSelectorFragment : BaseDslFragment() {
             }
             onImeAction {
                 //重新获取焦点
-                postDelayed(160L) {
+                postDelayed(60L) {
                     _vh.focus<View>(R.id.lib_edit_view)
                 }
             }
@@ -154,13 +157,26 @@ class AMapSelectorFragment : BaseDslFragment() {
             hideSoftInput()
             setInputText()
         }
-        _vh.gone(R.id.search_wrap_layout)
+
+        _vh.view(R.id.search_wrap_layout)?.apply {
+            doAnimate {
+                animate().translationY(-mH().toFloat()).setDuration(300)
+                    .withEndAction { _vh.gone(R.id.search_wrap_layout) }.start()
+            }
+        }
         _vh.gone(R.id.lib_content_overlay_wrap_layout)
     }
 
     fun _showToSearch() {
         _vh.visible(R.id.search_wrap_layout)
         _vh.visible(R.id.lib_content_overlay_wrap_layout)
+
+        _vh.view(R.id.search_wrap_layout)?.apply {
+            doAnimate {
+                translationY = -mH().toFloat()
+                animate().translationY(0f).setDuration(300).start()
+            }
+        }
 
         _vh.view(R.id.lib_edit_view)?.apply {
             postDelayed(160L) {
@@ -227,7 +243,8 @@ class AMapSelectorFragment : BaseDslFragment() {
             field = value
             _vh.enable(R.id.lib_send_view, value != null)
             value?.apply {
-                map?.moveTo(LatLng(latitude, longitude))
+                map?.moveTo(toLatLng())
+                //map?.moveInclude(toLatLng(), map!!.myLocation.toLatLng())
             }
         }
 

@@ -1,5 +1,6 @@
 package com.angcyo.amap3d.core
 
+import android.location.Location
 import com.amap.api.maps.model.LatLng
 import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
@@ -128,3 +129,13 @@ data class MapLocation(
 fun MapLocation.latLng() = LatLng(latitude, longitude)
 
 fun MapLocation.latLngPoint() = LatLonPoint(latitude, longitude)
+
+fun MapLocation.toLatLng() = latLng()
+
+fun MapLocation.toLatLngPoint() = latLngPoint()
+
+fun Inner_3dMap_location.toLatLng() = LatLng(latitude, longitude)
+
+fun Location.toLatLng() = LatLng(latitude, longitude)
+
+

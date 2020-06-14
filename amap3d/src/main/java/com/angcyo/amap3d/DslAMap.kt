@@ -8,6 +8,7 @@ import com.amap.api.services.core.AMapException.CODE_AMAP_SUCCESS
 import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
 import com.angcyo.amap3d.core.MapLocation
+import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.autonavi.amap.mapcore.Inner_3dMap_location
@@ -108,7 +109,8 @@ class DslAMap {
         if (locationMoveFirst) {
 
             map.myLocation?.let {
-                //L.w(it)
+                val latLng = it.toLatLng()
+                L.w("move to first 1:$latLng $locationMoveZoom")
                 map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
             }
 
@@ -124,7 +126,9 @@ class DslAMap {
                     //L.e(it)
                     map.removeOnMyLocationChangeListener(listener)
                     if (locationMoveFirst) {
-                        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
+                        val latLng = it.toLatLng()
+                        L.w("move to first 2:$latLng $locationMoveZoom")
+                        map.moveTo(latLng, locationMoveZoom)
                     }
                 }
             }
@@ -216,16 +220,16 @@ class DslAMap {
     var showMapText: Boolean = true
 
     /**显示定位按钮*/
-    var showMyLocationButton: Boolean = true
+    var showMyLocationButton: Boolean = false
 
     /**显示指南针*/
     var showCompass: Boolean = false
 
     /**显示比例尺控件*/
-    var showScaleControl: Boolean = true
+    var showScaleControl: Boolean = false
 
     /**显示放大缩小控件*/
-    var showZoomControl: Boolean = true
+    var showZoomControl: Boolean = false
 
     /**
      * 放大缩小控件位置
@@ -493,7 +497,7 @@ fun AMap.onMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener 
         L.w("AMapLoaded...")
         action()
     }
-    setOnMapLoadedListener(listener)
+    addOnMapLoadedListener(listener)
     return listener
 }
 
@@ -505,7 +509,7 @@ fun AMap.onMapClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapClickListe
     val listener = AMap.OnMapClickListener {
         action(it)
     }
-    setOnMapClickListener(listener)
+    addOnMapClickListener(listener)
     return listener
 }
 
@@ -517,7 +521,7 @@ fun AMap.onMapLongClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapLongCl
     val listener = AMap.OnMapLongClickListener {
         action(it)
     }
-    setOnMapLongClickListener(listener)
+    addOnMapLongClickListener(listener)
     return listener
 }
 
@@ -537,7 +541,7 @@ fun AMap.onCameraChangeListener(
             change(position)
         }
     }
-    setOnCameraChangeListener(listener)
+    addOnCameraChangeListener(listener)
     return listener
 }
 
@@ -545,7 +549,7 @@ fun AMap.onMapTouchListener(action: (MotionEvent) -> Unit = {}): AMap.OnMapTouch
     val listener = AMap.OnMapTouchListener {
         action(it)
     }
-    setOnMapTouchListener(listener)
+    addOnMapTouchListener(listener)
     return listener
 }
 
@@ -557,7 +561,7 @@ fun AMap.onPOIClickListener(action: (Poi) -> Unit = {}): AMap.OnPOIClickListener
     val listener = AMap.OnPOIClickListener {
         action(it)
     }
-    setOnPOIClickListener(listener)
+    addOnPOIClickListener(listener)
     return listener
 }
 
@@ -569,7 +573,7 @@ fun AMap.onMarkerClickListener(action: (Marker) -> Boolean = { false }): AMap.On
     val listener = AMap.OnMarkerClickListener {
         action(it)
     }
-    setOnMarkerClickListener(listener)
+    addOnMarkerClickListener(listener)
     return listener
 }
 
@@ -592,7 +596,7 @@ fun AMap.onMarkerDragListener(
             move(marker)
         }
     }
-    setOnMarkerDragListener(listener)
+    addOnMarkerDragListener(listener)
     return listener
 }
 
@@ -600,7 +604,7 @@ fun AMap.onInfoWindowClickListener(action: (Marker) -> Boolean = { false }): AMa
     val listener = AMap.OnInfoWindowClickListener {
         action(it)
     }
-    setOnInfoWindowClickListener(listener)
+    addOnInfoWindowClickListener(listener)
     return listener
 }
 

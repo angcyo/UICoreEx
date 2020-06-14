@@ -13,13 +13,21 @@
         android:layout_height="match_parent"
         tools:layout_behavior="com.angcyo.behavior.refresh.RefreshContentBehavior">
 
-        <com.angcyo.amap3d.core.RTextureMapView
-            android:id="@+id/lib_map_view"
+        <FrameLayout
+            android:id="@+id/map_wrap_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/lib_recycler_view"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="0.6" />
+            app:layout_constraintVertical_weight="0.6">
+
+            <com.angcyo.amap3d.core.RTextureMapView
+                android:id="@+id/lib_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/map_control_layout" />
+        </FrameLayout>
 
         <com.angcyo.widget.recycler.DslRecyclerView
             android:id="@+id/lib_recycler_view"
@@ -27,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lib_map_view"
+            app:layout_constraintTop_toBottomOf="@id/map_wrap_layout"
             app:layout_constraintVertical_weight="0.4"
             app:r_layout_manager="V" />
 
