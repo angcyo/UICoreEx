@@ -2,12 +2,31 @@
 <resources>
 
     <color name="map_icon_color">@color/text_general_color</color>
+    <dimen name="map_icon_size">40dp</dimen>
+    <!--type图标自带阴影, 会有额外的大小开销-->
+    <dimen name="map_type_icon_size">46dp</dimen>
 
     <style name="MapControlIconStyle">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">35dp</item>
-        <item name="android:padding">@dimen/lib_hdpi</item>
+        <item name="android:layout_width">@dimen/map_icon_size</item>
+        <item name="android:layout_height">@dimen/map_icon_size</item>
+        <item name="android:paddingLeft">@dimen/lib_hdpi</item>
+        <item name="android:paddingRight">@dimen/lib_hdpi</item>
+        <item name="android:paddingTop">@dimen/lib_hdpi</item>
+        <item name="android:paddingBottom">@dimen/lib_hdpi</item>
         <item name="android:background">@drawable/map_control_icon_bg_selector</item>
         <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="MapControlTypeStyle" parent="MapControlIconStyle">
+        <item name="android:layout_width">@dimen/map_type_icon_size</item>
+        <item name="android:layout_height">@dimen/map_type_icon_size</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:textSize">9dp</item>
+        <item name="android:textColor">@color/map_icon_color</item>
+        <item name="android:gravity">bottom|center_horizontal</item>
+        <item name="android:background">@drawable/map_type_selector</item>
     </style>
 </resources>

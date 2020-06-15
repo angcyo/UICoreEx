@@ -1,10 +1,14 @@
 package com.angcyo.amap3d
 
 import android.content.res.ColorStateList
+import android.view.View
+import android.widget.TextView
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
+import com.amap.api.maps.model.CustomMapStyleOptions
 import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.postDelay
 
 /**
  *
@@ -15,7 +19,42 @@ import com.angcyo.widget.DslViewHolder
  */
 
 /**绑定控制按钮事件, 定位/放大/缩小*/
-fun AMap.bindControlLayout(vh: DslViewHolder) {
+fun AMap.bindControlLayout(
+    vh: DslViewHolder,
+    customMapStyleOptions: CustomMapStyleOptions? = null
+) {
+    //卫星图/矢量图(普通地图) 切换
+    fun View.typeText() {
+        if (this is TextView) {
+            text = if (this.isSelected) {
+                "矢量图"
+            } else {
+                "影像图"
+            }
+        }
+    }
+    vh.view(R.id.map_type_view)?.typeText()
+    vh.throttleClick(R.id.map_type_view) {
+        if (it.isSelected) {
+            //已经是卫星图
+            mapType = AMap.MAP_TYPE_NORMAL
+            customMapStyleOptions?.apply {
+                isEnable = true
+                setCustomMapStyle(this)
+                it.postDelay(160) {
+                    setCustomMapStyle(this)
+                }
+            }
+        } else {
+            mapType = AMap.MAP_TYPE_SATELLITE
+            customMapStyleOptions?.apply {
+                isEnable = false
+                setCustomMapStyle(this)
+            }
+        }
+        it.isSelected = !it.isSelected
+        vh.view(R.id.map_type_view)?.typeText()
+    }
     //缩小
     vh.click(R.id.map_zoom_out_view) {
         moveTo(CameraUpdateFactory.zoomOut())
