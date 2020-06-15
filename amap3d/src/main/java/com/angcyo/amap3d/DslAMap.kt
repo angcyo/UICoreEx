@@ -395,6 +395,17 @@ fun AMap.moveInclude(bounds: LatLngBounds, padding: Int = 50 * dpi, animDuration
     moveTo(CameraUpdateFactory.newLatLngBounds(bounds, padding), animDuration)
 }
 
+fun AMap.moveInclude(latLngList: List<LatLng>, padding: Int = 50 * dpi, animDuration: Long = 250) {
+    // 设置所有maker显示在当前可视区域地图中
+    val bounds = LatLngBounds.Builder().run {
+        latLngList.forEach {
+            include(it)
+        }
+        build()
+    }
+    moveInclude(bounds, padding, animDuration)
+}
+
 fun AMap.moveInclude(vararg latLng: LatLng, padding: Int = 50 * dpi, animDuration: Long = 250) {
     // 设置所有maker显示在当前可视区域地图中
     val bounds = LatLngBounds.Builder().run {

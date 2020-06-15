@@ -26,9 +26,11 @@ import kotlin.math.sqrt
 class DslMarker : AMap.InfoWindowAdapter {
 
     companion object {
+        //默认动画配置项
         const val DEFAULT_MARKER_ANIM_DURATION = 360L
         val DEFAULT_MARKER_ANIM_INTERPOLATOR = LinearInterpolator()
 
+        //热力图颜色分布
         val ALT_HEATMAP_GRADIENT_COLORS = intArrayOf(
             Color.argb(0, 0, 255, 255),
             Color.argb(255 / 3 * 2, 0, 255, 0),
@@ -37,6 +39,7 @@ class DslMarker : AMap.InfoWindowAdapter {
             Color.rgb(255, 0, 0)
         )
 
+        //颜色分布比例
         val ALT_HEATMAP_GRADIENT_START_POINTS = floatArrayOf(
             0.0f, 0.10f, 0.20f, 0.60f, 1.0f
         )
@@ -44,11 +47,26 @@ class DslMarker : AMap.InfoWindowAdapter {
 
     //<editor-fold desc="配置属性">
 
-    /**自动进入热力图模式, 当缩放级别小于等于此值时. 将所有[Marker]隐藏, 并展示热力图.推荐使用15f*/
+    /**自动进入热力图模式, 当缩放级别小于等于此值时.
+     * 将所有[Marker]隐藏, 并展示热力图.推荐使用15f
+     *
+     * 设置一个超小值, 可以关闭此特性
+     * */
     var toHeatMapZoom: Float = 15f
 
     /**热力图颜色渐变配置*/
     var heatGradient = Gradient(ALT_HEATMAP_GRADIENT_COLORS, ALT_HEATMAP_GRADIENT_START_POINTS)
+
+    /**配置[Marker]选中后的样式, 如果为null, 将关闭[Marker]选择切换回调*/
+    var markerSelectOptions: MarkerOptions? = null
+
+    /**[Marker]选中切换回调, 需要配置[markerSelectOptions].*/
+    var markerSelectAction: (Marker?) -> Unit = {
+        L.i("[Marker] 选中切换:$it ${it?.`object`}")
+    }
+
+    /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectOptions], 已达到不同的显示效果*/
+    var markerSelectBeforeAction: (Marker) -> Unit = {}
 
     //</editor-fold desc="配置属性">
 
@@ -77,6 +95,22 @@ class DslMarker : AMap.InfoWindowAdapter {
                 }
             }
         })
+
+        map.onMarkerClickListener {
+            if (isEnableSelect) {
+                selectMarker(it)
+                true
+            } else {
+                false
+            }
+
+        }
+
+        map.onMapClickListener {
+            if (isEnableSelect) {
+                selectMarker(null)
+            }
+        }
     }
 
     fun _checkInit(action: AMap.() -> Unit) {
@@ -112,8 +146,16 @@ class DslMarker : AMap.InfoWindowAdapter {
      * http://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/HeatmapTileProvider.Builder.html
      * */
     fun changeToHeat() {
-        hideAllMarker()
+        //取消之前的选中[Marker]
+        selectMarker(null)
+
         removeHeatOverlay()
+        hideAllMarker()
+
+        if (_allMarker.isEmpty()) {
+            return
+        }
+
         _checkInit {
 
             // 第一步： 生成热力点坐标列表
@@ -172,6 +214,71 @@ class DslMarker : AMap.InfoWindowAdapter {
 
     //</editor-fold desc="热力图操作">
 
+    //<editor-fold desc="选择切换">
+
+    /**是否激活了选择切换*/
+    val isEnableSelect: Boolean get() = markerSelectOptions != null
+
+    /// 记录当前选中的[Marker]
+    var currentSelectedMarker: Marker? = null
+
+    /// 选中效果的实现, 采用隐藏真实的选中[Marker], 在当前位置使用一个替补的[Marker]显示.
+    /// 此[Marker]不受[_allMarker]管理
+    var currentSelectedShowMarker: Marker? = null
+
+    /**选中指定的[Marker], 或者取消当前选中*/
+    fun selectMarker(marker: Marker?) {
+        if (marker != null &&
+            (currentSelectedShowMarker == marker || currentSelectedMarker == marker)
+        ) {
+            //点击是当前替补的Marker
+            return
+        }
+
+        //之前是否有选中的[Marker]
+        val haveSelectedMarker = currentSelectedShowMarker != null
+
+        //切换选中的[Marker]
+        currentSelectedShowMarker?.apply {
+            //移除替补[Marker]
+            remove()
+            currentSelectedShowMarker = null
+        }
+
+        currentSelectedMarker?.apply {
+            //显示真身
+            isVisible = true
+        }
+
+        marker?.apply {
+            //将要选中[Marker]
+            markerSelectBeforeAction(marker)
+
+            _checkInit {
+                //隐藏真身
+                currentSelectedMarker = marker
+                currentSelectedMarker?.isVisible = false
+
+                //显示替身
+                markerSelectOptions?.let {
+                    it.position(marker.position)
+                    currentSelectedShowMarker = addMarker(it)
+                }
+            }
+        }
+
+        //选中/取消 操作结束
+        if (marker == null) {
+            if (haveSelectedMarker) {
+                markerSelectAction(marker)
+            }
+        } else {
+            markerSelectAction(marker)
+        }
+    }
+
+    //</editor-fold desc="选择切换">
+
     //<editor-fold desc="操作方法">
 
     /**添加一个[Marker]并管理*/
@@ -183,14 +290,27 @@ class DslMarker : AMap.InfoWindowAdapter {
     ) {
         _checkInit {
             addMarker {
-                anchor(0.5f, 0.5f)
+                anchor(0.5f, 0.5f) //将图标的中心位置放置在点上
                 icon(icon)
                 position(latLng)
+                draggable(false) //不可拖拽
+                isFlat = false //贴地, 3D视角时效果明显
                 action()
             }.apply {
                 `object` = data
                 _allMarker.add(this)
             }
+        }
+    }
+
+    /**移动地图, 使其在一屏内显示所有[Marker]*/
+    fun moveToShowAllMarker(padding: Int = 50 * dpi) {
+        _checkInit {
+            val latLngList = mutableListOf<LatLng>()
+            _allMarker.forEach {
+                latLngList.add(it.position)
+            }
+            moveInclude(latLngList, padding)
         }
     }
 
@@ -203,6 +323,12 @@ fun AMap.dslMarker(action: DslMarker.() -> Unit): DslMarker {
     dslMarker.init(this)
     dslMarker.action()
     return dslMarker
+}
+
+fun markerOptions(action: MarkerOptions.() -> Unit): MarkerOptions {
+    val options = MarkerOptions()
+    options.action()
+    return options
 }
 
 //<editor-fold desc="Marker动画">
@@ -268,6 +394,12 @@ fun Marker.jump(map: AMap, offsetY: Int = 100 * dpi, action: TranslateAnimation.
 //</editor-fold desc="Marker动画">
 
 //<editor-fold desc="Marker图标">
+
+/**设置动图图标*/
+fun MarkerOptions.icons(iconList: List<BitmapDescriptor>, period: Int) {
+    icons(ArrayList(iconList))
+    period(period)
+}
 
 fun markerIcon(res: Int) = BitmapDescriptorFactory.fromResource(res)
 
