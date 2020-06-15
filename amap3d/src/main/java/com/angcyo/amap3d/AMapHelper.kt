@@ -24,6 +24,7 @@ import com.angcyo.amap3d.core.MapLocation
 import com.angcyo.library.ex.havePermission
 import com.angcyo.library.model.Page
 import com.angcyo.library.utils.FileUtils
+import java.util.concurrent.CopyOnWriteArraySet
 
 
 /**
@@ -33,10 +34,24 @@ import com.angcyo.library.utils.FileUtils
  * @date 2020/06/11
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
+
+typealias LocationObserver = (MapLocation) -> Unit
+
 object AMapHelper {
 
     /**记录地图定位改变后的最后一次数据*/
     var lastMapLocation: MapLocation? = null
+        set(value) {
+            field = value
+            value?.apply {
+                locationObserveList.forEach {
+                    it.invoke(this)
+                }
+            }
+        }
+
+    /**定理位置改变监听, 由高德地图驱动.*/
+    val locationObserveList = CopyOnWriteArraySet<LocationObserver>()
 
     //如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
     const val BACK_LOCATION_PERMISSION = "android.permission.ACCESS_BACKGROUND_LOCATION"
@@ -51,6 +66,11 @@ object AMapHelper {
         Manifest.permission.ACCESS_FINE_LOCATION,
         BACK_LOCATION_PERMISSION
     )
+
+    /**观察地理位置变化*/
+    fun observeLocation(observer: LocationObserver) {
+        locationObserveList.add(observer)
+    }
 
     //需要的权限列表
     fun permissions(backLocation: Boolean = false): List<String> {

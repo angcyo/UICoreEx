@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
+import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.postDelay
@@ -17,6 +18,10 @@ import com.angcyo.widget.base.postDelay
  * @date 2020/06/14
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
+
+fun RTextureMapView.bindControlLayout(vh: DslViewHolder) {
+    map.bindControlLayout(vh, dslAMap.customStyleOptions)
+}
 
 /**绑定控制按钮事件, 定位/放大/缩小*/
 fun AMap.bindControlLayout(

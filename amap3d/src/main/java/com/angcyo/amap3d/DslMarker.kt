@@ -13,6 +13,7 @@ import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_DURATION
 import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_INTERPOLATOR
 import com.angcyo.library.L
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.isListEmpty
 import kotlin.math.sqrt
 
 /**
@@ -32,10 +33,10 @@ class DslMarker : AMap.InfoWindowAdapter {
 
         //热力图颜色分布
         val ALT_HEATMAP_GRADIENT_COLORS = intArrayOf(
-            Color.argb(0, 0, 255, 255),
-            Color.argb(255 / 3 * 2, 0, 255, 0),
-            Color.rgb(125, 191, 0),
-            Color.rgb(185, 71, 0),
+            Color.argb(0, 0, 0, 255),
+            Color.argb(50, 0, 0, 255),
+            Color.argb(153, 0, 255, 0),
+            Color.argb(204, 255, 255, 0),
             Color.rgb(255, 0, 0)
         )
 
@@ -58,15 +59,15 @@ class DslMarker : AMap.InfoWindowAdapter {
     var heatGradient = Gradient(ALT_HEATMAP_GRADIENT_COLORS, ALT_HEATMAP_GRADIENT_START_POINTS)
 
     /**配置[Marker]选中后的样式, 如果为null, 将关闭[Marker]选择切换回调*/
-    var markerSelectOptions: MarkerOptions? = null
+    var markerSelectedOptions: MarkerOptions? = null
 
-    /**[Marker]选中切换回调, 需要配置[markerSelectOptions].*/
-    var markerSelectAction: (Marker?) -> Unit = {
+    /**[Marker]选中切换回调, 需要配置[markerSelectedOptions].*/
+    var markerSelectedAction: (Marker?) -> Unit = {
         L.i("[Marker] 选中切换:$it ${it?.`object`}")
     }
 
-    /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectOptions], 已达到不同的显示效果*/
-    var markerSelectBeforeAction: (Marker) -> Unit = {}
+    /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectedOptions], 已达到不同的显示效果*/
+    var markerSelectedBeforeAction: (Marker) -> Unit = {}
 
     //</editor-fold desc="配置属性">
 
@@ -159,10 +160,7 @@ class DslMarker : AMap.InfoWindowAdapter {
         _checkInit {
 
             // 第一步： 生成热力点坐标列表
-            val latLngList = mutableListOf<LatLng>()
-            _allMarker.forEach {
-                latLngList.add(it.position)
-            }
+            val latLngList = getAllMarkerLatLng()
 
             // 第二步： 构建热力图 TileProvider
             val builder = HeatmapTileProvider.Builder().apply {
@@ -217,7 +215,7 @@ class DslMarker : AMap.InfoWindowAdapter {
     //<editor-fold desc="选择切换">
 
     /**是否激活了选择切换*/
-    val isEnableSelect: Boolean get() = markerSelectOptions != null
+    val isEnableSelect: Boolean get() = markerSelectedOptions != null
 
     /// 记录当前选中的[Marker]
     var currentSelectedMarker: Marker? = null
@@ -248,11 +246,12 @@ class DslMarker : AMap.InfoWindowAdapter {
         currentSelectedMarker?.apply {
             //显示真身
             isVisible = true
+            currentSelectedMarker = null
         }
 
         marker?.apply {
             //将要选中[Marker]
-            markerSelectBeforeAction(marker)
+            markerSelectedBeforeAction(marker)
 
             _checkInit {
                 //隐藏真身
@@ -260,7 +259,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 currentSelectedMarker?.isVisible = false
 
                 //显示替身
-                markerSelectOptions?.let {
+                markerSelectedOptions?.let {
                     it.position(marker.position)
                     currentSelectedShowMarker = addMarker(it)
                 }
@@ -270,10 +269,10 @@ class DslMarker : AMap.InfoWindowAdapter {
         //选中/取消 操作结束
         if (marker == null) {
             if (haveSelectedMarker) {
-                markerSelectAction(marker)
+                markerSelectedAction(marker)
             }
         } else {
-            markerSelectAction(marker)
+            markerSelectedAction(marker)
         }
     }
 
@@ -303,14 +302,87 @@ class DslMarker : AMap.InfoWindowAdapter {
         }
     }
 
+    /**通过位置, 移除一个[Marker]*/
+    fun removeMarker(latLng: LatLng) {
+        findMarker(latLng)?.apply {
+            isVisible = false
+            remove()
+            `object` = null
+            _allMarker.remove(this)
+        }
+    }
+
+    /**优先使用相同位置的[Marker]*/
+    fun resetMarker(
+        latLng: LatLng,
+        data: Any? = null,
+        icon: BitmapDescriptor? = null,
+        action: MarkerOptions.() -> Unit = {}
+    ) {
+        _checkInit {
+            val marker = findMarker(latLng)
+
+            if (marker == null) {
+                addMarker {
+                    icon(icon)
+                    position(latLng)
+                    action()
+                }.apply {
+                    `object` = data
+                    _allMarker.add(this)
+                }
+            } else {
+                markerOptions {
+                    icon(icon)
+                    position(latLng)
+                    action()
+
+                    marker.`object` = data
+                    marker.reset(this)
+                }
+            }
+        }
+    }
+
+    fun resetMarker(
+        latLngList: List<LatLng>?,
+        dataList: List<Any?>? = null,
+        icon: BitmapDescriptor? = null,
+        action: MarkerOptions.(data: Any?, index: Int) -> Unit = { _, _ -> }
+    ) {
+        val existLatLngList = ArrayList(getAllMarkerLatLng())
+        latLngList?.forEachIndexed { index, latLng ->
+            existLatLngList.remove(latLng)
+            val data = dataList?.getOrNull(index)
+            resetMarker(latLng, data, icon) {
+                action(data, index)
+            }
+        }
+
+        //剩下的LatLng, 就是需要移除的
+        existLatLngList.forEach {
+            removeMarker(it)
+        }
+    }
+
+    /**获取已经存在的所有[Marker]对应的[LatLng]集合*/
+    fun getAllMarkerLatLng(): List<LatLng> {
+        val result = mutableListOf<LatLng>()
+        _allMarker.forEach {
+            result.add(it.position)
+        }
+        return result
+    }
+
+    /**查找指定位置是否有[Marker]*/
+    fun findMarker(latLng: LatLng): Marker? {
+        return _allMarker.find { it.position == latLng }
+    }
+
     /**移动地图, 使其在一屏内显示所有[Marker]*/
     fun moveToShowAllMarker(padding: Int = 50 * dpi) {
         _checkInit {
-            val latLngList = mutableListOf<LatLng>()
-            _allMarker.forEach {
-                latLngList.add(it.position)
-            }
-            moveInclude(latLngList, padding)
+            moveInclude(getAllMarkerLatLng(), padding)
         }
     }
 
@@ -327,8 +399,33 @@ fun AMap.dslMarker(action: DslMarker.() -> Unit): DslMarker {
 
 fun markerOptions(action: MarkerOptions.() -> Unit): MarkerOptions {
     val options = MarkerOptions()
+    options.apply {
+        anchor(0.5f, 0.5f) //将图标的中心位置放置在点上
+        draggable(false) //不可拖拽
+        isFlat = false //贴地, 3D视角时效果明显
+        action()
+    }
     options.action()
     return options
+}
+
+fun Marker.reset(options: MarkerOptions) {
+    alpha = options.alpha
+    setAnchor(options.anchorU, options.anchorV)
+    isDraggable = options.isDraggable
+    if (options.icons.isListEmpty()) {
+        setIcon(options.icon)
+    } else {
+        icons = options.icons
+    }
+    period = options.period
+    position = options.position
+    rotateAngle = options.rotateAngle
+    snippet = options.snippet
+    title = options.title
+    zIndex = options.zIndex
+    isFlat = options.isFlat
+    isVisible = options.isVisible
 }
 
 //<editor-fold desc="Marker动画">

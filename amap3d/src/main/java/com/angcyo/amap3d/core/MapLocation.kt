@@ -1,6 +1,8 @@
 package com.angcyo.amap3d.core
 
 import android.location.Location
+import android.location.LocationManager
+import com.amap.api.location.AMapLocation
 import com.amap.api.maps.model.LatLng
 import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
@@ -50,6 +52,21 @@ data class MapLocation(
     var longitude: Double = 0.0
 ) {
     companion object {
+
+        fun from(
+            latitude: Double,
+            longitude: Double,
+            address: String? = null,
+            poiName: String? = null
+        ): MapLocation {
+            return MapLocation(
+                latitude = latitude,
+                longitude = longitude,
+                address = address,
+                poiName = poiName
+            )
+        }
+
         fun from(location: Inner_3dMap_location): MapLocation {
             return MapLocation().apply {
                 province = location.province
@@ -137,5 +154,19 @@ fun MapLocation.toLatLngPoint() = latLngPoint()
 fun Inner_3dMap_location.toLatLng() = LatLng(latitude, longitude)
 
 fun Location.toLatLng() = LatLng(latitude, longitude)
+
+fun MapLocation.toAMapLocation(): AMapLocation = AMapLocation(LocationManager.GPS_PROVIDER).also {
+    it.latitude = latitude
+    it.longitude = longitude
+    it.address = address
+    it.adCode = adCode
+    it.city = city
+    it.aoiName = poiName
+    it.district = district
+    it.country = country
+    it.province = province
+    it.street = street
+    it.cityCode = cityCode
+}
 
 

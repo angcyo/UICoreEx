@@ -629,8 +629,7 @@ fun AMap.onInfoWindowClickListener(action: (Marker) -> Boolean = { false }): AMa
  * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/MarkerOptions.html
  * */
 fun AMap.addMarker(action: MarkerOptions.() -> Unit): Marker {
-    val options = MarkerOptions()
-    options.action()
+    val options = markerOptions(action)
     val marker = addMarker(options)
     marker.isVisible = true
     return marker
