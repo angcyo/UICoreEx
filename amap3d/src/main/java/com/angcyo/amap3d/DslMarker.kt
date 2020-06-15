@@ -67,7 +67,9 @@ class DslMarker : AMap.InfoWindowAdapter {
     }
 
     /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectedOptions], 已达到不同的显示效果*/
-    var markerSelectedBeforeAction: (Marker) -> Unit = {}
+    var markerSelectedBeforeAction: (Marker) -> Unit = {
+        map?.moveTo(it.position)
+    }
 
     //</editor-fold desc="配置属性">
 
@@ -380,9 +382,14 @@ class DslMarker : AMap.InfoWindowAdapter {
     }
 
     /**移动地图, 使其在一屏内显示所有[Marker]*/
-    fun moveToShowAllMarker(padding: Int = 50 * dpi) {
+    fun moveToShowAllMarker(vararg latLng: LatLng?, padding: Int = 50 * dpi) {
         _checkInit {
-            moveInclude(getAllMarkerLatLng(), padding)
+            val list = mutableListOf<LatLng>()
+            list.addAll(getAllMarkerLatLng())
+
+            latLng.forEach { it?.apply { list.add(it) } }
+
+            moveInclude(list, padding)
         }
     }
 

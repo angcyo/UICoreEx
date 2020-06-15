@@ -472,6 +472,10 @@ fun PoiItem.getAddress() = "${provinceName.orString(
     ""
 )}${snippet.orString("")}"
 
+fun TextureMapView.myLatLng() = map.myLocation?.toLatLng()
+
+fun MapView.myLatLng() = map.myLocation?.toLatLng()
+
 //</editor-fold desc="操作方法">
 
 //<editor-fold desc="事件回调相关">
