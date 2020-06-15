@@ -296,6 +296,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 position(latLng)
                 draggable(false) //不可拖拽
                 isFlat = false //贴地, 3D视角时效果明显
+                visible(!isHeatOverlay)
                 action()
             }.apply {
                 `object` = data
@@ -328,6 +329,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 addMarker {
                     icon(icon)
                     position(latLng)
+                    visible(!isHeatOverlay)
                     action()
                 }.apply {
                     `object` = data
@@ -337,6 +339,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 markerOptions {
                     icon(icon)
                     position(latLng)
+                    visible(!isHeatOverlay)
                     action()
 
                     marker.`object` = data
