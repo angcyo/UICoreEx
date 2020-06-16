@@ -22,7 +22,8 @@ import com.angcyo.widget.base.postDelay
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 
-/**[RTextureMapView]统一初始化入口*/
+/**[RTextureMapView]统一初始化入口
+ * 注意:地图控件的id必须是[R.id.lib_map_view]*/
 fun DslViewHolder.initMapView(
     owner: LifecycleOwner,
     savedInstanceState: Bundle?,
