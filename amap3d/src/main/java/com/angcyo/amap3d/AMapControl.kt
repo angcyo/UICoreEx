@@ -1,11 +1,14 @@
 package com.angcyo.amap3d
 
 import android.content.res.ColorStateList
+import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
+import com.amap.api.services.core.ServiceSettings
 import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
@@ -19,8 +22,35 @@ import com.angcyo.widget.base.postDelay
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 
+/**[RTextureMapView]统一初始化入口*/
+fun DslViewHolder.initMapView(
+    owner: LifecycleOwner,
+    savedInstanceState: Bundle?,
+    action: RTextureMapView.() -> Unit
+) {
+
+    //地图语言
+    ServiceSettings.getInstance().language = ServiceSettings.CHINESE
+
+    v<RTextureMapView>(R.id.lib_map_view)?.apply {
+        //地图生命周期
+        bindLifecycle(owner, savedInstanceState)
+
+        //地图覆盖的控制按钮
+        bindControlLayout(this@initMapView)
+
+        //out
+        action()
+    }
+}
+
+/**[RTextureMapView]数据保存*/
+fun DslViewHolder.saveMapInstanceState(outState: Bundle) {
+    v<RTextureMapView>(R.id.lib_map_view)?.saveInstanceState(outState)
+}
+
 fun RTextureMapView.bindControlLayout(vh: DslViewHolder) {
-    map.bindControlLayout(vh, dslAMap.customStyleOptions)
+    map?.bindControlLayout(vh, dslAMap.customStyleOptions)
 }
 
 /**绑定控制按钮事件, 定位/放大/缩小*/

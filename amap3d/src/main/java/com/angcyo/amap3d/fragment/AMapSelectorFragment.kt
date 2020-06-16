@@ -11,7 +11,6 @@ import com.amap.api.maps.model.animation.Animation
 import com.amap.api.services.core.AMapException
 import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
-import com.amap.api.services.core.ServiceSettings
 import com.amap.api.services.geocoder.GeocodeResult
 import com.amap.api.services.geocoder.GeocodeSearch
 import com.amap.api.services.geocoder.RegeocodeQuery
@@ -67,15 +66,9 @@ class AMapSelectorFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        ServiceSettings.getInstance().language = ServiceSettings.CHINESE
-
-        //地图事件监听
-        _vh.v<RTextureMapView>(R.id.lib_map_view)?.apply {
-            bindLifecycle(this@AMapSelectorFragment, savedInstanceState)
-
+        _vh.initMapView(this, savedInstanceState) {
             map?.apply {
-                bindControlLayout(_vh)
-
+                //地图事件监听
                 onMapLoadedListener {
                     centerMarker = addScreenCenterMarker {
                         icon(markerIcon(R.drawable.map_location_point))

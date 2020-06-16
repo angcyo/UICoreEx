@@ -1,11 +1,9 @@
 package com.angcyo.amap3d.fragment
 
 import android.os.Bundle
-import com.amap.api.services.core.ServiceSettings
 import com.angcyo.DslFHelper
 import com.angcyo.amap3d.*
 import com.angcyo.amap3d.core.MapLocation
-import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.amap3d.core.latLng
 import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.base.back
@@ -46,15 +44,9 @@ class AMapDetailFragment : BaseTitleFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        ServiceSettings.getInstance().language = ServiceSettings.CHINESE
-
-        //地图事件监听
-        _vh.v<RTextureMapView>(R.id.lib_map_view)?.apply {
-            bindLifecycle(this@AMapDetailFragment, savedInstanceState)
-
+        _vh.initMapView(this, savedInstanceState) {
             map?.apply {
-                bindControlLayout(_vh)
-
+                //地图事件监听
                 onMapLoadedListener {
                     targetMapLocation?.let {
                         val targetLatLng = it.latLng()
