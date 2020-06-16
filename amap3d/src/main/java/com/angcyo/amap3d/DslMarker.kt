@@ -11,6 +11,7 @@ import com.amap.api.maps.model.animation.ScaleAnimation
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_DURATION
 import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_INTERPOLATOR
+import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.library.L
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isListEmpty
@@ -55,20 +56,27 @@ class DslMarker : AMap.InfoWindowAdapter {
      * */
     var toHeatMapZoom: Float = 15f
 
+    /**点击地图时, 需要放大地图到zoom*/
+    var touchMoveMapZoom: Float = 17f
+
     /**热力图颜色渐变配置*/
     var heatGradient = Gradient(ALT_HEATMAP_GRADIENT_COLORS, ALT_HEATMAP_GRADIENT_START_POINTS)
 
     /**配置[Marker]选中后的样式, 如果为null, 将关闭[Marker]选择切换回调*/
     var markerSelectedOptions: MarkerOptions? = null
 
-    /**[Marker]选中切换回调, 需要配置[markerSelectedOptions].*/
+    /**[Marker]选中切换回调, 需要配置[markerSelectedOptions].
+     * */
     var markerSelectedAction: (Marker?) -> Unit = {
-        L.i("[Marker] 选中切换:$it ${it?.`object`}")
+        L.i("[Marker] 选中切换:${it?.id} ${it?.`object`}")
     }
 
-    /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectedOptions], 已达到不同的显示效果*/
-    var markerSelectedBeforeAction: (Marker) -> Unit = {
+    /**将要选中[Marker]回调, 此方法可以实现针对不同的[Marker], 更改不同的[markerSelectedOptions], 已达到不同的显示效果
+     * 返回true, 拦截默认操作
+     */
+    var markerSelectedBeforeAction: (Marker) -> Boolean = {
         map?.moveTo(it.position)
+        false
     }
 
     //</editor-fold desc="配置属性">
@@ -112,6 +120,10 @@ class DslMarker : AMap.InfoWindowAdapter {
         map.onMapClickListener {
             if (isEnableSelect) {
                 selectMarker(null)
+            }
+            if (isHeatOverlay) {
+                //热力图状态下, 点击地图. 移动到最近的一个Marker
+                map.moveTo(findLatelyLatLng(it), touchMoveMapZoom)
             }
         }
     }
@@ -228,11 +240,17 @@ class DslMarker : AMap.InfoWindowAdapter {
 
     /**选中指定的[Marker], 或者取消当前选中*/
     fun selectMarker(marker: Marker?) {
-        if (marker != null &&
-            (currentSelectedShowMarker == marker || currentSelectedMarker == marker)
-        ) {
-            //点击是当前替补的Marker
-            return
+
+        if (marker != null) {
+            //需要选中[Marker]
+            if (currentSelectedShowMarker == marker || currentSelectedMarker == marker) {
+                //目标是替身或者已经选中的[Marker]
+                return
+            }
+            if (!_allMarker.contains(marker)) {
+                //目标并不属于管理范围
+                return
+            }
         }
 
         //之前是否有选中的[Marker]
@@ -251,9 +269,12 @@ class DslMarker : AMap.InfoWindowAdapter {
             currentSelectedMarker = null
         }
 
+        //是否被拦截了
+        var intercept = false
+
         marker?.apply {
             //将要选中[Marker]
-            markerSelectedBeforeAction(marker)
+            intercept = markerSelectedBeforeAction(marker)
 
             _checkInit {
                 //隐藏真身
@@ -266,6 +287,10 @@ class DslMarker : AMap.InfoWindowAdapter {
                     currentSelectedShowMarker = addMarker(it)
                 }
             }
+        }
+
+        if (intercept) {
+            return
         }
 
         //选中/取消 操作结束
@@ -384,6 +409,23 @@ class DslMarker : AMap.InfoWindowAdapter {
         return _allMarker.find { it.position == latLng }
     }
 
+    /**查找指定位置附近[500米]的[Marker]对应的理想位置*/
+    fun findLatelyLatLng(latLng: LatLng): LatLng {
+        var result: LatLng? = null
+        var minDistance: Float = Float.MAX_VALUE
+
+        _allMarker.forEach {
+            val distance = latLng.distance(it.position)
+            //L.i("附近距离:$distance ${map?.scalePerPixel}")
+            if (distance < 100 * (map?.scalePerPixel ?: 1f) && distance < minDistance) {
+                result = it.position
+                minDistance = distance
+            }
+        }
+
+        return result ?: latLng
+    }
+
     /**移动地图, 使其在一屏内显示所有[Marker]*/
     fun moveToShowAllMarker(vararg latLng: LatLng?, padding: Int = 50 * dpi) {
         _checkInit {
@@ -393,6 +435,16 @@ class DslMarker : AMap.InfoWindowAdapter {
             latLng.forEach { it?.apply { list.add(it) } }
 
             moveInclude(list, padding)
+        }
+    }
+
+    fun moveToShowAllMarker(includeMyLocation: Boolean = false, padding: Int = 50 * dpi) {
+        if (includeMyLocation) {
+            _checkInit {
+                moveToShowAllMarker(myLocation?.toLatLng(), padding = padding)
+            }
+        } else {
+            moveToShowAllMarker(padding = padding)
         }
     }
 
