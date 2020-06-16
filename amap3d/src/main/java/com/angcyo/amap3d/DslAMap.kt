@@ -451,6 +451,21 @@ fun LatLng.isInBounds(bounds: List<LatLng>): Boolean {
 /**返回两点间的距离，单位米。*/
 fun LatLng.distance(endLatLng: LatLng): Float = AMapUtils.calculateLineDistance(this, endLatLng)
 
+
+/** 在经度/纬度 方向偏移指定的距离 (米)
+ * latitude 纬度, 决定上下距离
+ * longitude 经度, 决定左右距离
+ * [latitudeDistance] 上下偏移的距离 (米)
+ * [longitudeDistance] 左右偏移的距离 (米)
+ *
+ * https://blog.csdn.net/u012539364/java/article/details/74059679
+ * */
+fun LatLng.offsetDistance(latitudeDistance: Float = 0f, longitudeDistance: Float = 0f): LatLng =
+    LatLng(
+        latitude + latitudeDistance * 0.000008983152841195214,
+        longitude + longitudeDistance * 0.000009405717451407729
+    )
+
 fun LatLng.toLatLonPoint(): LatLonPoint = LatLonPoint(latitude, longitude)
 
 fun LatLonPoint.toLatLon(): LatLng = LatLng(latitude, longitude)
@@ -472,9 +487,11 @@ fun PoiItem.getAddress() = "${provinceName.orString(
     ""
 )}${snippet.orString("")}"
 
-fun TextureMapView.myLatLng() = map.myLocation?.toLatLng()
+fun AMap.myLatLng() = myLocation?.toLatLng()
 
-fun MapView.myLatLng() = map.myLocation?.toLatLng()
+fun TextureMapView.myLatLng() = map.myLatLng()
+
+fun MapView.myLatLng() = map.myLatLng()
 
 //</editor-fold desc="操作方法">
 
@@ -722,6 +739,9 @@ fun AMap.addText(action: TextOptions.() -> Unit): Text {
 }
 
 /**https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/NavigateArrowOptions.html
+ *
+ * 绘制导向箭头, 一头有个三角形, 一头是平角
+ * https://www.jianshu.com/p/c577cc2c166b
  * */
 fun AMap.addNavigateArrow(action: NavigateArrowOptions.() -> Unit): NavigateArrow {
     val options = NavigateArrowOptions()
