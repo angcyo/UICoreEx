@@ -1,0 +1,32 @@
+apply from: allGradle.libBase
+
+//// 讯飞appid: 5cc2c404  https://console.xfyun.cn/app/myapp
+//def appid = project.hasProperty("xf_appid") ? project.ext.amap_key : '5cc2c404'
+//
+//if (project.hasProperty("xf_appid")) {
+//    println("讯飞APPID:$appid")
+//} else {
+//    println("未配置讯飞APPID,将使用默认配置!")
+//}
+//
+//android {
+//    defaultConfig {
+////        manifestPlaceholders = [
+////                XF_APPID: appid
+////        ]
+//
+//        resValue "string", "xf_appid", '"' + appid + '"'
+//    }
+//}
+
+
+//腾讯TTS
+//1251235618
+//SecretId: AKIDWVomMV0edaGbFT5dSowGvGpmjC49pBCb
+//SecretKey: 0WbCzyN1ICYiFkSZ9Kv890GY1BPqUbsV
+
+dependencies {
+    //依赖aar
+    //implementation(name: 'libqcloudtts_1.3.1_release', ext: 'aar')
+    api fileTree(dir: 'libs', include: ['*.aar'])
+}
