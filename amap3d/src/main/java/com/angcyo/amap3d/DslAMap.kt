@@ -26,6 +26,10 @@ import java.util.*
  */
 class DslAMap {
 
+    companion object {
+        const val DEFAULT_LOCATION_ZOOM = 17f
+    }
+
     //<editor-fold desc="定位蓝点相关">
 
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/MyLocationStyle.html
@@ -51,7 +55,7 @@ class DslAMap {
     var locationMoveFirst = true
 
     /**回到中心位置时, 需要使用的zoom*/
-    var locationMoveZoom = 17f
+    var locationMoveZoom = DEFAULT_LOCATION_ZOOM
 
     /**设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
      * 如果传小于1000的任何值将按照1000计算。该方法只会作用在会执行连续定位的工作模式上。*/

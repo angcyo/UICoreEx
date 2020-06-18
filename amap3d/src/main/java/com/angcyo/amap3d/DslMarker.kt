@@ -9,6 +9,7 @@ import com.amap.api.maps.model.animation.AlphaAnimation
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.ScaleAnimation
 import com.amap.api.maps.model.animation.TranslateAnimation
+import com.angcyo.amap3d.DslAMap.Companion.DEFAULT_LOCATION_ZOOM
 import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_DURATION
 import com.angcyo.amap3d.DslMarker.Companion.DEFAULT_MARKER_ANIM_INTERPOLATOR
 import com.angcyo.amap3d.core.toLatLng
@@ -57,7 +58,7 @@ class DslMarker : AMap.InfoWindowAdapter {
     var toHeatMapZoom: Float = 15f
 
     /**点击地图时, 需要放大地图到zoom*/
-    var touchMoveMapZoom: Float = 17f
+    var touchMoveMapZoom: Float = DEFAULT_LOCATION_ZOOM
 
     /**热力图颜色渐变配置*/
     var heatGradient = Gradient(ALT_HEATMAP_GRADIENT_COLORS, ALT_HEATMAP_GRADIENT_START_POINTS)

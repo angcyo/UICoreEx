@@ -9,6 +9,7 @@ import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
 import com.amap.api.services.core.ServiceSettings
+import com.angcyo.amap3d.DslAMap.Companion.DEFAULT_LOCATION_ZOOM
 import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
@@ -101,7 +102,8 @@ fun AMap.bindControlLayout(
     }
     //我的位置
     vh.click(R.id.map_location_view) {
-        moveToLocation()
+        //放大倍数至17
+        moveToLocation(locationMoveZoom = DEFAULT_LOCATION_ZOOM)
     }
     //禁用和启用控制按钮
     onCameraChangeListener {
