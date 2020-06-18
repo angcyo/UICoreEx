@@ -1,6 +1,6 @@
 package com.angcyo.mqtt
 
-import android.util.Log
+import com.angcyo.library.L
 
 /**
  *
@@ -12,10 +12,10 @@ import android.util.Log
 
 open class MqttLog {
     open fun i(data: String?) {
-        Log.i("mqtt", data ?: "null")
+        L.i("mqtt ", data ?: "null")
     }
 
     open fun e(data: String?) {
-        Log.e("mqtt", data ?: "null")
+        L.e("mqtt ", data ?: "null")
     }
 }

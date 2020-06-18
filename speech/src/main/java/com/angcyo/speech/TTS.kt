@@ -3,7 +3,7 @@ package com.angcyo.speech
 import android.content.Context
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.util.Log
+import com.angcyo.library.L
 import com.tencent.qcloudtts.LongTextTTS.LongTextTtsController
 import com.tencent.qcloudtts.callback.QCloudPlayerCallback
 import com.tencent.qcloudtts.callback.TtsExceptionHandler
@@ -22,7 +22,7 @@ import com.tencent.qcloudtts.exception.TtsNotInitializedException
 
 object TTS {
 
-    const val TAG = "TTS"
+    const val TAG = "TTS "
 
     var isInitSuccess = false
 
@@ -30,9 +30,9 @@ object TTS {
     private var listener: OnAudioFocusChangeListener? = null
 
     private val ttsExceptionHandler = TtsExceptionHandler { e ->
-        Log.e(TAG, "tts onRequestException :" + e.message)
         //网络出错的时候
         longTextTtsController?.pause()
+        L.e(TAG, "tts onRequestException:${e.message}:$e")
     }
 
     /**初始化入口*/
@@ -121,44 +121,41 @@ object TTS {
                     object : QCloudPlayerCallback {
                         //播放开始
                         override fun onTTSPlayStart() {
-                            Log.d(TAG, "onPlayStart")
+                            L.d(TAG, "onPlayStart")
                         }
 
                         //音频缓冲中
                         override fun onTTSPlayWait() {
-                            Log.d(TAG, "onPlayWait")
+                            L.d(TAG, "onPlayWait")
                         }
 
                         //缓冲完成，继续播放
                         override fun onTTSPlayResume() {
-                            Log.d(TAG, "onPlayResume")
+                            L.d(TAG, "onPlayResume")
                         }
 
                         //连续播放下一句
                         override fun onTTSPlayNext() {
-                            Log.d(TAG, "onPlayNext")
+                            L.d(TAG, "onPlayNext")
                         }
 
                         //播放中止
                         override fun onTTSPlayStop() {
-                            Log.d(TAG, "onPlayStop")
+                            L.d(TAG, "onPlayStop")
                         }
 
                         //播放结束
                         override fun onTTSPlayEnd() {
-                            Log.d(TAG, "onPlayEnd")
+                            L.d(TAG, "onPlayEnd")
                         }
 
                         //当前播放的字符,当前播放的字符在所在的句子中的下标.
-                        override fun onTTSPlayProgress(
-                            currentWord: String,
-                            currentIndex: Int
-                        ) {
-                            Log.d(TAG, "onTTSPlayProgress$currentWord$currentIndex")
+                        override fun onTTSPlayProgress(currentWord: String, currentIndex: Int) {
+                            L.d(TAG, "onTTSPlayProgress:$currentWord:$currentIndex")
                         }
                     })
             } catch (e: TtsNotInitializedException) {
-                Log.e(TAG, "TtsNotInitializedException e:" + e.message)
+                L.e(TAG, "TtsNotInitializedException e:" + e.message)
             }
         }
     }

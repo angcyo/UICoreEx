@@ -28,5 +28,7 @@ apply from: allGradle.libBase
 dependencies {
     //依赖aar
     //implementation(name: 'libqcloudtts_1.3.1_release', ext: 'aar')
+    implementation project(allModule.library)
+
     api fileTree(dir: 'libs', include: ['*.aar'])
 }
