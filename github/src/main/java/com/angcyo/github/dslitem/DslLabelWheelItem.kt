@@ -105,3 +105,28 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
         itemTextStyle.action()
     }
 }
+
+/**快速获取对应Item的值*/
+fun DslAdapterItem.itemWheelValue(): Any? {
+    return if (this is DslLabelWheelItem) {
+        itemWheelList.getOrNull(itemSelectedIndex)
+    } else {
+        null
+    }
+}
+
+fun <T> DslAdapterItem.itemWheelBean(): T? {
+    return if (this is DslLabelWheelItem) {
+        itemWheelList.getOrNull(itemSelectedIndex) as T?
+    } else {
+        null
+    }
+}
+
+inline fun <reified DATA> DslAdapterItem.itemWheelData(): DATA? {
+    return if (this is DslLabelWheelItem) {
+        itemWheelList.getOrNull(itemSelectedIndex) as DATA?
+    } else {
+        null
+    }
+}
