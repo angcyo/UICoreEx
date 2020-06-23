@@ -4,9 +4,9 @@ apply from: allGradle.libBase
 def key = project.hasProperty("amap_key") ? project.ext.amap_key : '30ad6ef0cd0c238fabe6d62fca35d4bc'
 
 if (project.hasProperty("amap_key")) {
-    println("高德key:$key")
+    println("高德key[amap_key]:$key")
 } else {
-    println("未配置高德key,将使用默认配置!")
+    println("未配置高德key, 请在[gradle.properties]中配置[amap_key]. 将使用默认配置!")
 }
 
 android {
