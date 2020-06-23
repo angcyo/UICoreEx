@@ -47,6 +47,7 @@ class JPushReceiver : JPushMessageReceiver() {
     override fun onRegister(context: Context?, registrationId: String) {
         super.onRegister(context, registrationId)
         L.i("[onRegister] $registrationId")
+        vmCore<JPushModel>().registrationIdData.postValue(registrationId)
     }
 
     /**是否连接到极光后台*/
@@ -83,9 +84,14 @@ class JPushReceiver : JPushMessageReceiver() {
         L.i("[onCommandResult] $cmdMessage")
     }
 
+    /*http://docs.jiguang.cn/jpush/client/Android/android_api/#_77*/
+
+    /**标签操作返回回调*/
     override fun onTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onTagOperatorResult(context, jPushMessage)
         L.i("[onTagOperatorResult] $jPushMessage")
+
+        vmCore<JPushModel>().tagMessageData.postValue(jPushMessage)
     }
 
     override fun onCheckTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
@@ -93,14 +99,20 @@ class JPushReceiver : JPushMessageReceiver() {
         L.i("[onCheckTagOperatorResult] $jPushMessage")
     }
 
+    /**别名操作返回回调*/
     override fun onAliasOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onAliasOperatorResult(context, jPushMessage)
         L.i("[onAliasOperatorResult] $jPushMessage")
+
+        vmCore<JPushModel>().aliasMessageData.postValue(jPushMessage)
     }
 
+    /**手机号码设置操作返回回调*/
     override fun onMobileNumberOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onMobileNumberOperatorResult(context, jPushMessage)
         L.i("[onMobileNumberOperatorResult] $jPushMessage")
+
+        vmCore<JPushModel>().mobileMessageData.postValue(jPushMessage)
     }
 
     override fun onNotificationSettingsCheck(context: Context?, isOn: Boolean, source: Int) {
