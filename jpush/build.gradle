@@ -1,0 +1,12 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.core)
+
+    api 'cn.jiguang.sdk:jpush:3.6.6'  // 此处以JPush 3.6.6 版本为例。
+    api 'cn.jiguang.sdk:jcore:2.3.8'  // 此处以JCore 2.3.8 版本为例。
+}
+
+//需要在app工程也是用这个脚本
+apply from: allGradle.jpush
