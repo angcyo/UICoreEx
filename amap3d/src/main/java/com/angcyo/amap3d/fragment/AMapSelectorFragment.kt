@@ -32,6 +32,8 @@ import com.angcyo.base.onFragmentResult
 import com.angcyo.base.setFragmentResult
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.data.loadDataEnd
+import com.angcyo.dsladapter.data.loadDataEndIndex
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.dpi
