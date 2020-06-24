@@ -12,6 +12,13 @@ import com.yhao.floatwindow.*
 
 /**
  * 浮窗
+ * https://jitpack.io/com/github/XHGInc/FloatWindow
+ * https://github.com/yhaolpz/FloatWindow
+ * https://github.com/XHGInc/FloatWindow
+ *
+ * 其它库
+ * https://github.com/princekin-f/EasyFloat
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/04/08
