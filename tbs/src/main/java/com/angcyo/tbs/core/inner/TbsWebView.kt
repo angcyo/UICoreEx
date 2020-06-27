@@ -281,7 +281,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
                     if (isNotEmpty()) {
                         //找到了
                         first().activityInfo.run {
-                            openAppAction(url.decode(), this, packageName.appBean())
+                            openAppAction(url.decode(), this, packageName.appBean()!!)
                         }
                     }
                 }
