@@ -21,8 +21,11 @@ class JPushModel : ViewModel() {
     /**通知消息监听*/
     val notificationMessageData: MutableLiveData<NotificationMessage> = MutableLiveData()
 
-    /**注册id*/
+    /**设备注册id成功*/
     val registrationIdData: MutableLiveData<String> = MutableLiveData()
+
+    /**服务器连接状态*/
+    val connectedData: MutableLiveData<Boolean> = MutableLiveData()
 
     /**别名操作数据监听*/
     val aliasMessageData: MutableLiveData<JPushMessage> = MutableLiveData()

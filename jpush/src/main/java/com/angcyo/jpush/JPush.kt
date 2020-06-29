@@ -53,6 +53,9 @@ object JPush {
         JPushInterface.setMobileNumber(context, sequence, mobileNumber)
     }
 
+    /**有效的别名、标签组成：字母（区分大小写）、数字、下划线、汉字、特殊字符( 2.1.6 支持)@!#$&*+=.|
+     * https://docs.jiguang.cn/jpush/client/Android/android_api/#_153
+     * */
     fun setTags(
         context: Context,
         sequence: Int,

@@ -54,6 +54,7 @@ class JPushReceiver : JPushMessageReceiver() {
     override fun onConnected(context: Context?, isConnected: Boolean) {
         super.onConnected(context, isConnected)
         L.i("[onConnected] $isConnected")
+        vmCore<JPushModel>().connectedData.postValue(isConnected)
     }
 
     override fun onMultiActionClicked(context: Context, intent: Intent) {
@@ -120,3 +121,8 @@ class JPushReceiver : JPushMessageReceiver() {
         L.i("[onNotificationSettingsCheck] isOn:$isOn,source:$source")
     }
 }
+
+/**消息是否成功
+ * 错误码:https://docs.jiguang.cn/jpush/client/Android/android_api/#_153
+ * */
+fun JPushMessage.isSucceed() = errorCode == 0
