@@ -7,7 +7,7 @@ import cn.jpush.android.api.JPushMessage
 import cn.jpush.android.api.NotificationMessage
 
 /**
- *
+ * 所有消息, 如果仅需要使用一次, 那么在监听到数据后, 需要手动清理. 否则回收缓存.
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/06/23
