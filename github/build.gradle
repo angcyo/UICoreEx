@@ -27,4 +27,11 @@ dependencies {
 
     //https://github.com/scwang90/MultiWaveHeader
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
+
+    //https://mvnrepository.com/artifact/androidx.palette
+    //api 'androidx.palette:palette:1.0.0'
+    api 'androidx.palette:palette-ktx:1.0.0'
+
+    //https://github.com/duanhong169/ColorPicker
+    api 'com.github.duanhong169:colorpicker:1.1.6'
 }
