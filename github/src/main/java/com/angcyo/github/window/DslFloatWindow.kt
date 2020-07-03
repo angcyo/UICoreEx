@@ -2,12 +2,15 @@ package com.angcyo.github.window
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.angcyo.library.L
 import com.angcyo.library._screenHeight
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.dslViewHolder
+import com.angcyo.widget.base.setDslViewHolder
 import com.yhao.floatwindow.*
 
 /**
@@ -113,11 +116,11 @@ class DslFloatWindow {
 
     var floatPermissionListener: PermissionListener = object : PermissionListener {
         override fun onSuccess() {
-            L.d("Float Window ...")
+            L.i("Float Window Permission Success!")
         }
 
         override fun onFail() {
-            L.d("Float Window ...")
+            L.w("Float Window Permission Fail!")
         }
     }
 
@@ -134,19 +137,31 @@ class DslFloatWindow {
     var floatSlideLeftMargin = 0
     var floatSlideRightMargin = 0
 
+    /**构建window配置回调*/
+    var configFloatWindow: (FloatWindow.B) -> Unit = {}
+
     fun doIt(context: Context): IFloatWindow {
-        if (floatLayoutId == undefined_res) {
-            throw IllegalStateException("请设置[floatLayoutId]")
-        }
 
         val window = get(floatTag)
         if (window != null) {
             L.i("已经存在相同Tag的浮窗.")
+
+            window.view?.apply {
+                initFloatLayout(dslViewHolder())
+            }
+
             return window
         }
 
-        val view = LayoutInflater.from(context).inflate(floatLayoutId, FrameLayout(context), false)
+        if (floatLayoutId == undefined_res) {
+            throw IllegalStateException("请设置[floatLayoutId]")
+        }
+
+        val view: View =
+            LayoutInflater.from(context).inflate(floatLayoutId, FrameLayout(context), false)
+
         val holder = DslViewHolder(view)
+        view.setDslViewHolder(holder)
 
         initFloatLayout(holder)
 
@@ -154,11 +169,11 @@ class DslFloatWindow {
             .with(context.applicationContext)
             .setTag(floatTag)
             .setView(view)
-            .setWidth(floatWidth)                               //设置控件宽高
+            .setWidth(floatWidth)                            //设置控件宽高
             .setHeight(floatHeight)
-            .setX(floatOffsetX)                                   //设置控件初始位置
+            .setX(floatOffsetX)                              //设置控件初始位置
             .setY(floatOffsetY)
-            .setDesktopShow(floatDesktopShow)                        //桌面显示
+            .setDesktopShow(floatDesktopShow)                //桌面显示
             .setViewStateListener(floatViewStateListener)    //监听悬浮控件状态改变
             .setPermissionListener(floatPermissionListener)  //监听权限申请结果
             .setMoveType(floatMoveType, floatSlideLeftMargin, floatSlideRightMargin)
@@ -166,6 +181,7 @@ class DslFloatWindow {
             //.setFilter() //设置在哪些界面上要显示
             .apply {
                 //slide
+                configFloatWindow(this)
             }
             .build()
 
