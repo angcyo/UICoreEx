@@ -142,9 +142,9 @@ class DslFloatWindow {
 
     fun doIt(context: Context): IFloatWindow {
 
-        val window = get(floatTag)
+        val window: IFloatWindow? = get(floatTag)
         if (window != null) {
-            L.i("已经存在相同Tag的浮窗.")
+            //L.d("已经存在相同Tag的浮窗.")
 
             window.view?.apply {
                 initFloatLayout(dslViewHolder())
