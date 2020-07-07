@@ -1,0 +1,21 @@
+def library = "com.android.library"
+
+// 签名别名:app 默认:30ad6ef0cd0c238fabe6d62fca35d4bc
+def key = project.hasProperty("amap_key") ? project.ext.amap_key : '30ad6ef0cd0c238fabe6d62fca35d4bc'
+
+if (project.plugins.hasPlugin(library)) {
+    //只在lib中输出log
+    if (project.hasProperty("amap_key")) {
+        println("高德key[amap_key]:$key")
+    } else {
+        println("未配置高德key, 请在[gradle.properties]中配置[amap_key]. 将使用默认配置!")
+    }
+}
+
+android {
+    defaultConfig {
+        manifestPlaceholders = [
+                AMAP_KEY: key
+        ]
+    }
+}
