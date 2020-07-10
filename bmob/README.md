@@ -14,4 +14,40 @@ bmob 数据存储
 ```kotlin
 //Bmob的maven仓库地址--必填
 maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
+
+//官方
+maven {url 'https://dl.bintray.com/chaozhouzhang/maven' }
+```
+
+# 版本列表
+
+https://dl.bintray.com/chaozhouzhang/maven/cn/bmob/android/
+
+# 快速入门
+
+http://doc.bmob.cn/data/android/index.html
+
+http://docs.bmob.cn/android/faststart/index.html?menukey=fast_start&key=start_android
+
+# 使用方式
+
+```groovy
+//可以需要
+android {
+    useLibrary 'org.apache.http.legacy'
+}
+
+//依赖
+dependencies {
+    implementation 'cn.bmob.android:bmob-sdk:3.7.8'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.8"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.1'
+    implementation 'com.squareup.okio:okio:2.2.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+}
+```
+
+```kotlin
+com.angcyo.bmob.DslBmob.initBmob(context, appId)
 ```

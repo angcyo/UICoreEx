@@ -17,8 +17,9 @@ import com.angcyo.library.utils.Device
  */
 
 data class DeviceBmob(
-    var userId: Long? = null,
+    var userId: String? = null,
     var psuedoID: String? = null,
+    var androidId: String? = null,
     var deviceModel: String? = null,
     var cpu: String? = null,
     var memorySize: String? = null,
@@ -26,13 +27,16 @@ data class DeviceBmob(
     var ip: String? = null,
     var buildString: String? = null,
     var screenInfo: String? = null,
-    var proxy: String? = null
+    var proxy: String? = null,
+    var other: String? = null
 ) : BmobObject() {
     companion object {
-        fun get(userId: Long? = null): DeviceBmob {
+        fun get(userId: String? = null, other: String? = null): DeviceBmob {
             val bmob = DeviceBmob()
             bmob.apply {
                 this.userId = userId
+                this.androidId = Device.androidId
+                this.other = other
                 psuedoID = Device.deviceId
                 deviceModel = buildString {
                     //OnePlus/ONEPLUS A6000/jenkins/qcom/ONEPLUS A6000_22_191215

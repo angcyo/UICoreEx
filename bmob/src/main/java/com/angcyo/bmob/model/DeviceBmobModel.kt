@@ -19,7 +19,7 @@ import io.reactivex.disposables.Disposable
 open class DeviceBmobModel : ViewModel() {
 
     /**更新或者创建数据*/
-    fun updateOrCreate(userId: Long? = null): Disposable {
+    fun updateOrCreate(userId: String? = null): Disposable {
         val bmob = DeviceBmob.get(userId)
         val query = BmobQuery<DeviceBmob>()
         query.addWhereEqualTo("psuedoID", bmob.psuedoID)
