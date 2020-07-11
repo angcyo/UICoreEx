@@ -4,8 +4,8 @@ import cn.bmob.v3.BmobBatch
 import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
-import cn.bmob.v3.exception.BmobException
 import com.angcyo.http.rx.BaseObserver
+import com.angcyo.http.rx.observableToMain
 import com.angcyo.library.ex.elseNull
 import io.reactivex.disposables.Disposable
 
@@ -21,17 +21,21 @@ import io.reactivex.disposables.Disposable
 /**保存bmob对象*/
 fun BmobObject.save(action: BaseObserver<String>.() -> Unit = {}): Disposable {
     val observer = BaseObserver<String>().apply(action)
-    saveObservable().subscribe(observer)
+    saveObservable()
+        .compose(observableToMain())
+        .subscribe(observer)
     return observer
 }
 
 /**更新指定[objectId]的对象, 似乎不会触发[onComplete]回调*/
 fun BmobObject.update(
     objectId: String,
-    action: BaseObserver<BmobException>.() -> Unit = {}
+    action: BaseObserver<Exception>.() -> Unit = {}
 ): Disposable {
-    val observer = BaseObserver<BmobException>().apply(action)
-    updateObservable(objectId).subscribe(observer)
+    val observer = BaseObserver<Exception>().apply(action)
+    updateObservable(objectId)
+        .compose(observableToMain())
+        .subscribe(observer)
     return observer
 }
 
@@ -67,7 +71,9 @@ inline fun <reified T : BmobObject> T.updateOrSave(
             }
         }
     }
-    query.findObjectsObservable(T::class.java).subscribe(queryObserver)
+    query.findObjectsObservable(T::class.java)
+        .compose(observableToMain())
+        .subscribe(queryObserver)
     return queryObserver
 }
 
@@ -78,7 +84,9 @@ inline fun <reified T : BmobObject> bmobQuery(
 ): Disposable {
     val query = BmobQuery<T>().apply(queryAction)
     val observer = BaseObserver<List<T>>().apply(action)
-    query.findObjectsObservable(T::class.java).subscribe(observer)
+    query.findObjectsObservable(T::class.java)
+        .compose(observableToMain())
+        .subscribe(observer)
     return observer
 }
 
@@ -94,14 +102,18 @@ inline fun <reified T : BmobObject> bmobDelete(
             data?.let {
                 val bmobBatch = BmobBatch()
                 bmobBatch.deleteBatch(it)
-                bmobBatch.doBatchObservable().subscribe(observer)//似乎不会触发[onComplete]回调
+                bmobBatch.doBatchObservable()
+                    .compose(observableToMain())
+                    .subscribe(observer)//似乎不会触发[onComplete]回调
             }
             error?.let {
                 observer.onError(it)
             }
         }
     }
-    query.findObjectsObservable(T::class.java).subscribe(queryObserver)
+    query.findObjectsObservable(T::class.java)
+        .compose(observableToMain())
+        .subscribe(queryObserver)
     return queryObserver
 }
 
@@ -114,7 +126,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 // * @return 返回数据 objectId
 // * */
 //private fun BmobObject.save(
-//    onResult: (objectId: String?, error: BmobException?) -> Unit = { objectId, error ->
+//    onResult: (objectId: String?, error: Exception?) -> Unit = { objectId, error ->
 //        L.d(objectId, error)
 //    }
 //): Disposable {
@@ -124,7 +136,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 ///**更新[objectId]对应的数据*/
 //private fun BmobObject.update(
 //    objectId: String,
-//    onResult: (error: BmobException?) -> Unit = { error ->
+//    onResult: (error: Exception?) -> Unit = { error ->
 //        L.d(error)
 //    }
 //): Disposable {
@@ -133,7 +145,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 //
 //private fun BmobObject.delete(
 //    objectId: String,
-//    onResult: (error: BmobException?) -> Unit = { error ->
+//    onResult: (error: Exception?) -> Unit = { error ->
 //        L.d(error)
 //    }
 //): Disposable {
@@ -146,7 +158,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 // * */
 //private fun <Data> bmobQuery(
 //    config: BmobQuery<Data>.() -> Unit = {},
-//    onResult: (results: List<Data>?, error: BmobException?) -> Unit = { results, error ->
+//    onResult: (results: List<Data>?, error: Exception?) -> Unit = { results, error ->
 //        L.d(results, error)
 //    }
 //): Disposable {
@@ -158,7 +170,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 ///**查询[objectId]对应的数据*/
 //private fun <Data> query(
 //    objectId: String,
-//    onResult: (obj: Data?, error: BmobException?) -> Unit = { obj, error ->
+//    onResult: (obj: Data?, error: Exception?) -> Unit = { obj, error ->
 //        L.d(obj, error)
 //    }
 //) {
@@ -176,7 +188,7 @@ inline fun <reified T : BmobObject> bmobDelete(
 // */
 //private fun bmobBatch(
 //    action: BmobBatch.() -> Unit = {},
-//    onResult: (results: List<BatchResult>?, error: BmobException?) -> Unit = { results, error ->
+//    onResult: (results: List<BatchResult>?, error: Exception?) -> Unit = { results, error ->
 //        L.d(results, error)
 //    }
 //) {
