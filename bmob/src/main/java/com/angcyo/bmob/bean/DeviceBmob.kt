@@ -18,8 +18,8 @@ import com.angcyo.library.utils.Device
 
 data class DeviceBmob(
     var userId: String? = null,
-    var psuedoID: String? = null,
-    var androidId: String? = null,
+    var psuedoID: String? = Device.deviceId,
+    var androidId: String? = Device.androidId,
     var deviceModel: String? = null,
     var cpu: String? = null,
     var memorySize: String? = null,
@@ -35,9 +35,7 @@ data class DeviceBmob(
             val bmob = DeviceBmob()
             bmob.apply {
                 this.userId = userId
-                this.androidId = Device.androidId
                 this.other = other
-                psuedoID = Device.deviceId
                 deviceModel = buildString {
                     //OnePlus/ONEPLUS A6000/jenkins/qcom/ONEPLUS A6000_22_191215
                     append(Build.MANUFACTURER)//LGE
