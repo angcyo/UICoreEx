@@ -6,8 +6,8 @@ import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
 import com.angcyo.http.rx.BaseObserver
 import com.angcyo.http.rx.observableToMain
-import com.angcyo.library.ex.elseNull
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  *
@@ -42,36 +42,23 @@ fun BmobObject.update(
 /**如果已存在, 则更新. 否则新增*/
 inline fun <reified T : BmobObject> T.updateOrSave(
     queryAction: BmobQuery<T>.() -> Unit,
-    noinline result: (String?, Throwable?) -> Unit = { _, _ -> }
+    noinline action: BaseObserver<String?>.() -> Unit = {}
 ): Disposable {
     val bmob = this
     val query = BmobQuery<T>().apply(queryAction)
-    val queryObserver = BaseObserver<List<T>>().apply {
-        onObserverEnd = { data, _ ->
-            data?.firstOrNull()?.let {
-                bmob.update(it.objectId) {
-                    onObserverEnd = { _, error ->
-                        if (error == null) {
-                            result(it.objectId, error)
-                        } else {
-                            result(null, error)
-                        }
-                    }
-                }
-            }.elseNull {
-                bmob.save {
-                    onObserverEnd = { data, error ->
-                        if (error == null) {
-                            result(data, error)
-                        } else {
-                            result(null, error)
-                        }
-                    }
-                }
+    val queryObserver = BaseObserver<String?>().apply(action)
+    query.findObjectsObservable(T::class.java)
+        .observeOn(Schedulers.io())
+        .map { list ->
+            val first = list.firstOrNull()
+            if (first == null) {
+                //save
+                bmob.saveSync()
+            } else {
+                bmob.updateSync(first.objectId)
+                first.objectId
             }
         }
-    }
-    query.findObjectsObservable(T::class.java)
         .compose(observableToMain())
         .subscribe(queryObserver)
     return queryObserver
@@ -97,24 +84,16 @@ inline fun <reified T : BmobObject> bmobDelete(
 ): Disposable {
     val query = BmobQuery<T>().apply(queryAction)
     val observer = BaseObserver<List<BatchResult>>().apply(action)
-    val queryObserver = BaseObserver<List<T>>().apply {
-        onObserverEnd = { data, error ->
-            data?.let {
-                val bmobBatch = BmobBatch()
-                bmobBatch.deleteBatch(it)
-                bmobBatch.doBatchObservable()
-                    .compose(observableToMain())
-                    .subscribe(observer)//似乎不会触发[onComplete]回调
-            }
-            error?.let {
-                observer.onError(it)
-            }
-        }
-    }
     query.findObjectsObservable(T::class.java)
+        .observeOn(Schedulers.io())
+        .flatMap { list ->
+            val bmobBatch = BmobBatch()
+            bmobBatch.deleteBatch(list as List<BmobObject>?)
+            bmobBatch.doBatchObservable()
+        }
         .compose(observableToMain())
-        .subscribe(queryObserver)
-    return queryObserver
+        .subscribe(observer)
+    return observer
 }
 
 //</editor-fold desc="bmob 3.7.9 版本二次封装">
