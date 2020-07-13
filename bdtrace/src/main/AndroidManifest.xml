@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.angcyo.baidu.trace">
+
+    <application>
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="${BAIDU_AK}" />
+
+        <service
+            android:name="com.baidu.trace.LBSTraceService"
+            android:enabled="true"
+            android:process=":bdtrace" />
+    </application>
+
+</manifest>
