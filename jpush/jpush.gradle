@@ -17,16 +17,15 @@ childProjects.each {
     }
 }
 
-// 推送包名com.angcyo.uicore.demo key:c54156fb84dc0f559a7a97ac
-def key = project.hasProperty("jpush_key") ? project.ext.jpush_key : 'c54156fb84dc0f559a7a97ac'
+if (!project.hasProperty("jpush_key")) {
+    throw new IllegalStateException("请在[gradle.properties]中配置[jpush_key].")
+}
+
+def key = project.ext.jpush_key
 
 if (project.plugins.hasPlugin(library)) {
     //只在lib中输出log
-    if (project.hasProperty("jpush_key")) {
-        println("极光key[jpush_key]:$key")
-    } else {
-        println("未配置极光key, 请在[gradle.properties]中配置[jpush_key]. 将使用默认配置!")
-    }
+    println("极光key[jpush_key]:$key")
 }
 
 android {
