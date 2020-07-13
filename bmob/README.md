@@ -1,7 +1,7 @@
 # bmob
 2020-02-07
 
-bmob 数据存储
+bmob 数据存储. **不需要绑定应用包名**
 
 [https://www.bmob.cn/](https://www.bmob.cn/)
 

@@ -1,6 +1,8 @@
 # amap3d
 2020-6-11
 
+高德3D地图 **需要绑定应用包名**
+
 # Android Studio 配置工程
 
 https://lbs.amap.com/api/android-sdk/guide/create-project/android-studio-create-project

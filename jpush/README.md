@@ -1,7 +1,7 @@
 # jpush
 2020-6-23
 
-极光推送
+极光推送 **需要绑定应用包名**
 
 # Android SDK 集成指南
 https://docs.jiguang.cn/jpush/client/Android/android_guide/

@@ -1,7 +1,9 @@
 # speech
 2020-6-17
 
-腾讯TTS
+腾讯TTS **不需要绑定应用包名**
+
+接口调用方式
 
 https://cloud.tencent.com/product/tts/getting-started
 
