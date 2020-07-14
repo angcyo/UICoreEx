@@ -33,6 +33,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!--首次初始化冷启动优化 https://x5.tencent.com/docs/access.html-->
+        <service
+            android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
+            android:label="tbs dexopt"
+            android:process=":dexopt" />
     </application>
 
 </manifest>

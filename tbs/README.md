@@ -1,5 +1,17 @@
 # tbs
-2020-03-01
+
+## 2020-7-14
+
+### 快速接入
+
+https://x5.tencent.com/docs/access.html
+
+### 平台适配
+
+Android版本： Android 4.0-Android 10.0
+CPU架构：armeabi、armeabi-v7a、arm64-v8a
+
+## 2020-03-01
 
 腾讯tbs浏览器服务
 

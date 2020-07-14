@@ -12,9 +12,11 @@ import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.ex.mimeType
 import com.angcyo.tbs.core.TbsWebActivity
 import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
+import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.*
 import com.tencent.tbs.reader.TbsFileInterfaceImpl
 import org.json.JSONException
@@ -43,6 +45,14 @@ class DslTbs {
             val appContext = context.applicationContext
 
             ThreadExecutor.execute {
+
+                //首次初始化冷启动优化 https://x5.tencent.com/docs/access.html
+                // 在调用TBS初始化、创建WebView之前进行如下配置
+                val map = hashMapOf<String, Any>()
+                map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
+                map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
+                QbSdk.initTbsSettings(map)
+
                 QbSdk.initBuglyAsync(true)
                 QbSdk.setDownloadWithoutWifi(true)
                 QbSdk.setNeedInitX5FirstTime(true)
@@ -184,6 +194,30 @@ class DslTbs {
             cookieManager.setAcceptCookie(true)
             cookieManager.setCookie(url, cookie) //cookies是在HttpClient中获得的cookie
             CookieSyncManager.getInstance().sync()
+        }
+
+        /**
+         * 一次性删除所有缓存
+         *  https://x5.tencent.com/docs/webview.html
+         * */
+        fun clearAllWebViewCache(context: Context, isClearCookie: Boolean = false) {
+            //清除cookie
+            QbSdk.clearAllWebViewCache(context, isClearCookie)
+
+           ////清除cookie
+           //CookieManager.getInstance().removeAllCookies(null);
+           ////清除storage相关缓存
+           //WebStorage.getInstance().deleteAllData();;
+           ////清除用户密码信息
+           //WebViewDatabase.getInstance(Context context).clearUsernamePassword();
+           ////清除httpauth信息
+           //WebViewDatabase.getInstance(Context context).clearHttpAuthUsernamePassword();
+           ////清除表单数据
+           //WebViewDatabase.getInstance(Context context).clearFormData();
+           ////清除页面icon图标信息
+           //WebIconDatabase.getInstance().removeAllIcons();
+           ////删除地理位置授权，也可以删除某个域名的授权（参考接口类）
+           //GeolocationPermissions.getInstance().clearAll();
         }
     }
 }

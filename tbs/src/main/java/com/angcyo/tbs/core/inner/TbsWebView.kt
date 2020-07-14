@@ -19,10 +19,7 @@ import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
 import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension
-import com.tencent.smtt.export.external.interfaces.ConsoleMessage
-import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient
-import com.tencent.smtt.export.external.interfaces.IX5WebViewBase
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.*
 
 
@@ -201,6 +198,35 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         //<editor-fold desc="WebChromeClient文件选择">
 
         //<editor-fold desc="其他">
+
+        override fun onGeolocationPermissionsShowPrompt(
+            origin: String?,
+            callback: GeolocationPermissionsCallback?
+        ) {
+            //可以关闭定位功能，内核默认是开启的
+            //mWebView.getSettings().setGeolocationEnabled(false);
+
+            //在此可以弹窗提示用户
+            //处理后需要回调
+            //参数的意义见上面的接口说明
+            super.onGeolocationPermissionsShowPrompt(origin, callback)
+            L.i("$origin")
+        }
+
+        override fun onPermissionRequest(permissionRequest: PermissionRequest?) {
+            super.onPermissionRequest(permissionRequest)
+            L.i(permissionRequest)
+        }
+
+        override fun onPermissionRequestCanceled(permissionRequest: PermissionRequest?) {
+            super.onPermissionRequestCanceled(permissionRequest)
+            L.i(permissionRequest)
+        }
+
+        override fun onGeolocationPermissionsHidePrompt() {
+            super.onGeolocationPermissionsHidePrompt()
+            L.i()
+        }
 
         override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
             L.d("${consoleMessage.sourceId()}#${consoleMessage.lineNumber()}:${consoleMessage.message()}")
