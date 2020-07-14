@@ -133,7 +133,20 @@ class DslBaiduTrace {
     //http://mapopen-pub-yingyan.cdn.bcebos.com/androidsdk/doc/v3.1.7/index.html
     var traceListener: OnTraceListener? = object : OnTraceListener {
 
-        // 开启服务回调
+        /**
+         * 开启服务回调接口
+         * @param errorNo 状态码
+         * @param message 消息
+         * <p>
+         * <pre>0：成功 </pre>
+         * <pre>10000：请求发送失败</pre>
+         * <pre>10001：服务开启失败</pre>
+         * <pre>10002：参数错误</pre>
+         * <pre>10003：网络连接失败</pre>
+         * <pre>10004：网络未开启</pre>
+         * <pre>10005：服务正在开启</pre>
+         * <pre>10006：服务已开启</pre>
+         */
         override fun onStartTraceCallback(status: Int, message: String?) {
             L.i(status, "->", message)
             isTraceStart = status == 0
@@ -143,7 +156,17 @@ class DslBaiduTrace {
             }
         }
 
-        // 停止服务回调
+        /**
+         * 停止服务回调接口
+         * @param errorNo 状态码
+         * @param message 消息
+         * <p>
+         * <pre>0：成功</pre>
+         * <pre>11000：请求发送失败</pre>
+         * <pre>11001：服务停止失败</pre>
+         * <pre>11002：服务未开启</pre>
+         * <pre>11003：服务正在停止</pre>
+         */
         override fun onStopTraceCallback(status: Int, message: String?) {
             L.i(status, "->", message)
             if (status == 0) {
@@ -151,13 +174,31 @@ class DslBaiduTrace {
             }
         }
 
-        // 开启采集回调
+        /**
+         * 开启采集回调接口
+         * @param errorNo 状态码
+         * @param message 消息
+         * <p>
+         * <pre>0：成功</pre>
+         * <pre>12000：请求发送失败</pre>
+         * <pre>12001：采集开启失败</pre>
+         * <pre>12002：服务未开启</pre>
+         */
         override fun onStartGatherCallback(status: Int, message: String?) {
             L.i(status, "->", message)
             isGatherStart = status == 0
         }
 
-        // 停止采集回调
+        /**
+         * 停止采集回调接口
+         * @param errorNo 状态码
+         * @param message 消息
+         * <p>
+         * <pre>0：成功</pre>
+         * <pre>13000：请求发送失败</pre>
+         * <pre>13001：采集停止失败</pre>
+         * <pre>13002：服务未开启</pre>
+         */
         override fun onStopGatherCallback(status: Int, message: String?) {
             L.i(status, "->", message)
             if (status == 0) {
@@ -165,6 +206,14 @@ class DslBaiduTrace {
             }
         }
 
+        /**
+         * 绑定服务回调接口
+         * @param errorNo  状态码
+         * @param message 消息
+         * <p>
+         * <pre>0：成功 </pre>
+         * <pre>1：失败</pre>
+         */
         override fun onBindServiceCallback(status: Int, message: String?) {
             L.i(status, "->", message)
         }
@@ -173,7 +222,19 @@ class DslBaiduTrace {
             L.i(status, "->", message)
         }
 
-        // 推送回调
+        /**
+         * 推送消息回调接口
+         *
+         * @param messageType 状态码
+         * @param pushMessage 消息
+         * <p>
+         * <pre>0x01：配置下发</pre>
+         * <pre>0x02：语音消息</pre>
+         * <pre>0x03：服务端围栏报警消息</pre>
+         * <pre>0x04：本地围栏报警消息</pre>
+         * <pre>0x05~0x40：系统预留</pre>
+         * <pre>0x41~0xFF：开发者自定义</pre>
+         */
         override fun onPushCallback(messageNo: Byte, message: PushMessage?) {
             L.i(messageNo, "->", message)
         }
