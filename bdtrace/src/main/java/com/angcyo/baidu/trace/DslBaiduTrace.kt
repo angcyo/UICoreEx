@@ -3,14 +3,13 @@ package com.angcyo.baidu.trace
 import android.content.Context
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.component.isNetworkAvailable
 import com.baidu.trace.LBSTraceClient
 import com.baidu.trace.Trace
-import com.baidu.trace.api.entity.EntityListRequest
-import com.baidu.trace.api.entity.EntityListResponse
-import com.baidu.trace.api.entity.FilterCondition
-import com.baidu.trace.api.entity.OnEntityListener
+import com.baidu.trace.api.entity.*
 import com.baidu.trace.api.track.HistoryTrackRequest
 import com.baidu.trace.api.track.HistoryTrackResponse
+import com.baidu.trace.api.track.LatestPointRequest
 import com.baidu.trace.api.track.OnTrackListener
 import com.baidu.trace.model.OnCustomAttributeListener
 import com.baidu.trace.model.OnTraceListener
@@ -313,6 +312,30 @@ class DslBaiduTrace {
         traceClient.queryEntityList(request, entityListener)
     }
 
-    //</editor-fold desc="查询轨迹">
+    /**获取当前位置*/
+    fun getCurrentLocation(
+        tag: Int,
+        processOption: ProcessOption? = null, //纠偏选项
+        entityListener: OnEntityListener,
+        trackListener: OnTrackListener
+    ) {
 
+        if (!_checkConfig()) {
+            return
+        }
+
+        val traceClient = _traceClient ?: LBSTraceClient(app())
+
+        // 网络连接正常，开启服务及采集，则查询纠偏后实时位置；否则进行实时定位
+        if (isNetworkAvailable()) {
+            val request = LatestPointRequest(tag, serviceId, entityName)
+            request.processOption = processOption
+            traceClient.queryLatestPoint(request, trackListener)
+        } else {
+            val locRequest = LocRequest(serviceId)
+            traceClient.queryRealTimeLoc(locRequest, entityListener)
+        }
+    }
+
+    //</editor-fold desc="查询轨迹">
 }
