@@ -18,4 +18,6 @@ dependencies {
 
     //https://jcenter.bintray.com/com/tencent/tbs/tbssdk/sdk/
     api 'com.tencent.tbs.tbssdk:sdk:43903'
+
+    api 'com.gitee.angcyo.aar:TbsFileSdk:TbsFileSdk_20200305_173219'
 }
