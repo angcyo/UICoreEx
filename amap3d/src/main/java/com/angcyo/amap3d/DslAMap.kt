@@ -136,6 +136,17 @@ class DslAMap {
                     }
                 }
             }
+
+            var loadedListener: AMap.OnMapLoadedListener? = null
+            loadedListener = map.onMapLoadedListener {
+                map.removeOnMapLoadedListener(loadedListener)
+                if (locationMoveFirst) {
+                    AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
+                        L.w("move to first 3:$latLng $locationMoveZoom")
+                        map.moveTo(latLng, locationMoveZoom)
+                    }
+                }
+            }
         }
     }
 
