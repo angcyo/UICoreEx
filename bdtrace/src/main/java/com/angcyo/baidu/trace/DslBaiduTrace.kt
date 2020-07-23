@@ -123,6 +123,9 @@ class DslBaiduTrace {
         return true
     }
 
+    /**开启服务后, 是否自动开启采集*/
+    var autoTraceStart: Boolean = false
+
     //轨迹服务是否开始了
     var isTraceStart: Boolean = false
 
@@ -150,7 +153,7 @@ class DslBaiduTrace {
         override fun onStartTraceCallback(status: Int, message: String?) {
             L.i(status, "->", message)
             isTraceStart = status == 0
-            if (status == 0) {
+            if (autoTraceStart && status == 0) {
                 // 开启采集
                 _traceClient?.startGather(this)
             }
