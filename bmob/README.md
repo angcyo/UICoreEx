@@ -51,3 +51,11 @@ dependencies {
 ```kotlin
 com.angcyo.bmob.DslBmob.initBmob(context, appId)
 ```
+
+# API安全码
+
+如果bmob开启了`API安全码`, 那么只能`js`使用.
+
+`js`可以通过`Rest Api`方式访问. 这样`Android`端不用变化.
+
+或者`Android`端也使用`Rest Api`方式访问.
