@@ -54,6 +54,8 @@ com.angcyo.bmob.DslBmob.initBmob(context, appId)
 
 # API安全码
 
+关闭只使用安全码登录, 可以`js` `Android`个端sdk访问.
+
 如果bmob开启了`API安全码`, 那么只能`js`使用.
 
 `js`可以通过`Rest Api`方式访问. 这样`Android`端不用变化.
