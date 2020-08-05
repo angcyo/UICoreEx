@@ -49,6 +49,9 @@ inline fun <reified T : BmobObject> T.updateOrSave(
     val queryObserver = BaseObserver<String?>().apply(action)
     query.findObjectsObservable(T::class.java)
         .observeOn(Schedulers.io())
+        .onErrorReturn {
+            emptyList<T>()
+        }
         .map { list ->
             val first = list.firstOrNull()
             if (first == null) {
@@ -73,6 +76,9 @@ inline fun <reified T : BmobObject> bmobQuery(
     val observer = BaseObserver<List<T>>().apply(action)
     query.findObjectsObservable(T::class.java)
         .compose(observableToMain())
+        .onErrorReturn {
+            emptyList<T>()
+        }
         .subscribe(observer)
     return observer
 }
@@ -86,6 +92,9 @@ inline fun <reified T : BmobObject> bmobDelete(
     val observer = BaseObserver<List<BatchResult>>().apply(action)
     query.findObjectsObservable(T::class.java)
         .observeOn(Schedulers.io())
+        .onErrorReturn {
+            emptyList<T>()
+        }
         .flatMap { list ->
             val bmobBatch = BmobBatch()
             bmobBatch.deleteBatch(list as List<BmobObject>?)
