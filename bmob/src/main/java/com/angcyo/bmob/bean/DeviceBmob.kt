@@ -28,7 +28,8 @@ data class DeviceBmob(
     var buildString: String? = null,
     var screenInfo: String? = null,
     var proxy: String? = null,
-    var other: String? = null
+    var other: String? = null,
+    var packageName: String? = app().packageName
 ) : BmobObject() {
     companion object {
         fun get(userId: String? = null, other: String? = null): DeviceBmob {
