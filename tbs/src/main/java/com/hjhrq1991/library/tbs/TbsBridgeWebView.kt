@@ -219,6 +219,17 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
         }
     }
 
+    fun registerHandler(
+        handlerName: String,
+        handler: (data: String?, function: CallBackFunction?) -> Unit
+    ) {
+        registerHandler(handlerName, object : BridgeHandler {
+            override fun handler(data: String?, function: CallBackFunction?) {
+                handler.invoke(data, function)
+            }
+        })
+    }
+
     /**
      * call javascript registered handler
      *

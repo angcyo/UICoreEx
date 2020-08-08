@@ -63,9 +63,9 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
     }
 
     override fun onPageStarted(
-        view: WebView,
-        url: String,
-        favicon: Bitmap
+        view: WebView?,
+        url: String?,
+        favicon: Bitmap?
     ) {
         super.onPageStarted(view, url, favicon)
         //modify：hjhrq1991，web为渲染即跳转导致系统未调用onPageStarted就调用onPageFinished方法引起的js桥初始化失败
@@ -74,7 +74,10 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
         bridgeWebViewClientListener?.onPageStarted(view, url, favicon)
     }
 
-    override fun onPageFinished(view: WebView, url: String) {
+    override fun onPageFinished(view: WebView?, url: String?) {
+        if (view == null || url == null) {
+            return
+        }
         //modify：hjhrq1991，web为渲染即跳转导致系统未调用onPageStarted就调用onPageFinished方法引起的js桥初始化失败
         if (!url.contains("about:blank") && !isRedirected) {
             webViewLoadLocalJs(
@@ -94,10 +97,10 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
     }
 
     override fun onReceivedError(
-        view: WebView,
+        view: WebView?,
         errorCode: Int,
-        description: String,
-        failingUrl: String
+        description: String?,
+        failingUrl: String?
     ) {
         bridgeWebViewClientListener?.onReceivedError(view, errorCode, description, failingUrl)
     }
@@ -120,15 +123,15 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
         }
     }
 
-    override fun shouldInterceptRequest(webView: WebView, s: String): WebResourceResponse {
+    override fun shouldInterceptRequest(webView: WebView?, s: String?): WebResourceResponse? {
         return bridgeWebViewClientListener?.shouldInterceptRequest(webView, s)
             ?: super.shouldInterceptRequest(webView, s)
     }
 
     override fun shouldInterceptRequest(
-        webView: WebView,
-        webResourceRequest: WebResourceRequest
-    ): WebResourceResponse {
+        webView: WebView?,
+        webResourceRequest: WebResourceRequest?
+    ): WebResourceResponse? {
         return if (bridgeWebViewClientListener != null) {
             bridgeWebViewClientListener!!.shouldInterceptRequest(webView, webResourceRequest)
         } else {
@@ -137,10 +140,10 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
     }
 
     override fun shouldInterceptRequest(
-        webView: WebView,
-        webResourceRequest: WebResourceRequest,
-        bundle: Bundle
-    ): WebResourceResponse {
+        webView: WebView?,
+        webResourceRequest: WebResourceRequest?,
+        bundle: Bundle?
+    ): WebResourceResponse? {
         return if (bridgeWebViewClientListener != null) {
             bridgeWebViewClientListener!!.shouldInterceptRequest(
                 webView,
@@ -152,7 +155,7 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
         }
     }
 
-    override fun doUpdateVisitedHistory(webView: WebView, s: String, b: Boolean) {
+    override fun doUpdateVisitedHistory(webView: WebView?, s: String?, b: Boolean) {
         if (bridgeWebViewClientListener != null) {
             bridgeWebViewClientListener!!.doUpdateVisitedHistory(webView, s, b)
         }
@@ -164,10 +167,10 @@ class BridgeWebViewClient(val webView: TbsBridgeWebView) : WebViewClient() {
     }
 
     override fun onReceivedHttpAuthRequest(
-        webView: WebView,
-        httpAuthHandler: HttpAuthHandler,
-        s: String,
-        s1: String
+        webView: WebView?,
+        httpAuthHandler: HttpAuthHandler?,
+        s: String?,
+        s1: String?
     ) {
         bridgeWebViewClientListener?.onReceivedHttpAuthRequest(
             webView,
