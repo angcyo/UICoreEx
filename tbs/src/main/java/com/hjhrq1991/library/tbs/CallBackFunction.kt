@@ -1,4 +1,4 @@
-package com.github.lzyzsd.jsbridge
+package com.hjhrq1991.library.tbs
 
 interface CallBackFunction {
     fun onCallBack(data: String?)

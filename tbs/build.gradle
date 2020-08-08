@@ -21,4 +21,10 @@ dependencies {
     api 'com.tencent.tbs.tbssdk:sdk:43903'
 
     api 'com.gitee.angcyo.aar:TbsFileSdk:TbsFileSdk_20200305_173219'
+
+    //https://github.com/lzyzsd/JsBridge
+    //api 'com.github.lzyzsd:jsbridge:1.0.4'
+    
+    //https://github.com/hjhrq1991/JsBridge
+    //api 'com.hjhrq1991.library:jsbridge:1.1.0'
 }

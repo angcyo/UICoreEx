@@ -102,7 +102,7 @@ open class TbsWebFragment : BaseTitleFragment() {
         super.onCreateViewAfter(savedInstanceState)
 
         _vh.tv(R.id.lib_title_text_view)?.run {
-            setWidth(width = screenWidth - 160 * dpi)
+            setWidth(width = screenWidth - 180 * dpi)
             setSingleLineMode()
         }
 
