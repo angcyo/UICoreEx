@@ -18,6 +18,7 @@ import com.angcyo.library.ex.decode
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
+import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.*
@@ -30,7 +31,7 @@ import com.tencent.smtt.sdk.*
  * @date 2020/03/01
  */
 open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
-    WebView(context, attributeSet), NestedScrollingChild3 {
+    BridgeWebView(context, attributeSet), NestedScrollingChild3 {
 
     //<editor-fold desc="回调">
 
