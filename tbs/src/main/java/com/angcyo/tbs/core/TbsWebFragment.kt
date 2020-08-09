@@ -50,6 +50,8 @@ import com.tencent.tbs.reader.TbsReaderView
 open class TbsWebFragment : BaseTitleFragment() {
     companion object {
         const val KEY_CONFIG = "key_config"
+
+        const val LOADING_TITLE = "加载中..."
     }
 
     init {
@@ -64,7 +66,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 text = span {
                     drawable {
                         backgroundDrawable =
-                            loadDrawable(com.angcyo.core.R.drawable.lib_back)
+                            loadDrawable(R.drawable.lib_back)
                                 .colorFilter(fragmentConfig.titleItemIconColor)
                     }
                 }
@@ -87,6 +89,9 @@ open class TbsWebFragment : BaseTitleFragment() {
 
         arguments?.getParcelable<TbsWebConfig>(KEY_CONFIG)?.run {
             webConfig = this
+            if (title != null) {
+                fragmentTitle = title
+            }
         }
     }
 
@@ -165,45 +170,47 @@ open class TbsWebFragment : BaseTitleFragment() {
             close()
         }
 
-        //更多
-        appendRightItem(ico = R.drawable.tbs_ic_more) {
-            fContext().tbsWebMenuDialog {
-                val url = _tbsWebView?._loadUrl
-                webHost = url?.toUri()?.host
-                line1Items = renderItemList {
-                    DslBaseWebMenuItem()() {
-                        menuText = "刷新"
-                        menuIcon = R.drawable.tbs_ic_refresh
-                        itemClick = {
-                            _dialog?.dismiss()
-                            _tbsWebView?.loadUrl(url)
-                        }
-                    }
-                    DslBaseWebMenuItem()() {
-                        menuText = "复制链接"
-                        menuIcon = R.drawable.tbs_ic_copy
-                        itemClick = {
-                            _dialog?.dismiss()
-                            url?.copy()
-                        }
-                    }
-                    DslBaseWebMenuItem()() {
-                        menuText = "分享"
-                        menuIcon = R.drawable.tbs_ic_share
-                        itemClick = {
-                            _dialog?.dismiss()
-                            dslIntentShare {
-                                shareTitle = _tbsWebView?.title
-                                shareText = url
+        if (webConfig.showRightMenu) {
+            //更多
+            appendRightItem(ico = R.drawable.tbs_ic_more) {
+                fContext().tbsWebMenuDialog {
+                    val url = _tbsWebView?._loadUrl
+                    webHost = url?.toUri()?.host
+                    line1Items = renderItemList {
+                        DslBaseWebMenuItem()() {
+                            menuText = "刷新"
+                            menuIcon = R.drawable.tbs_ic_refresh
+                            itemClick = {
+                                _dialog?.dismiss()
+                                _tbsWebView?.loadUrl(url)
                             }
                         }
-                    }
-                    DslBaseWebMenuItem()() {
-                        menuText = "浏览器打开"
-                        menuIcon = R.drawable.tbs_ic_browser
-                        itemClick = {
-                            _dialog?.dismiss()
-                            DslIntent.openUrl(fContext(), url)
+                        DslBaseWebMenuItem()() {
+                            menuText = "复制链接"
+                            menuIcon = R.drawable.tbs_ic_copy
+                            itemClick = {
+                                _dialog?.dismiss()
+                                url?.copy()
+                            }
+                        }
+                        DslBaseWebMenuItem()() {
+                            menuText = "分享"
+                            menuIcon = R.drawable.tbs_ic_share
+                            itemClick = {
+                                _dialog?.dismiss()
+                                dslIntentShare {
+                                    shareTitle = _tbsWebView?.title
+                                    shareText = url
+                                }
+                            }
+                        }
+                        DslBaseWebMenuItem()() {
+                            menuText = "浏览器打开"
+                            menuIcon = R.drawable.tbs_ic_browser
+                            itemClick = {
+                                _dialog?.dismiss()
+                                DslIntent.openUrl(fContext(), url)
+                            }
                         }
                     }
                 }
@@ -229,14 +236,16 @@ open class TbsWebFragment : BaseTitleFragment() {
 
             _tbsWebView = this
 
-            //标题
+            //标题回调
             receivedTitleAction = {
-                fragmentTitle = it
+                if (webConfig.title.isNullOrEmpty()) {
+                    fragmentTitle = it
+                }
 
                 updateHost(_tbsWebView?.originalUrl)
             }
 
-            //进度
+            //进度回调
             progressChangedAction = { url, progress ->
                 // L.d("$url $progress")
                 _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
@@ -244,7 +253,11 @@ open class TbsWebFragment : BaseTitleFragment() {
 
                 if (progress == 0) {
                     if (fragmentTitle.isNullOrEmpty()) {
-                        fragmentTitle = "加载中..."
+                        fragmentTitle = LOADING_TITLE
+                    }
+                } else if (progress == 100) {
+                    if (webView.receivedTitle.isNullOrEmpty()) {
+                        receivedTitleAction(webView.title)
                     }
                 }
 
@@ -255,7 +268,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 }
             }
 
-            //下载
+            //下载回调
             downloadAction = { url, userAgent, contentDisposition, mime, length ->
                 fContext().dslDialog {
                     configBottomDialog()
@@ -286,7 +299,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 }
             }
 
-            //打开其他应用
+            //打开其他应用回调
             openAppAction = { url, activityInfo, appBean ->
                 fContext().dslDialog {
                     configBottomDialog()
@@ -315,7 +328,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 }
             }
 
-            //选择文件
+            //选择文件回调
             fileChooseAction = {
                 dslFHelper {
                     fileSelector {
@@ -326,6 +339,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 }
             }
 
+            //加载url
             loadUrl(url)
         }
 

@@ -43,6 +43,9 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     /**标题接收回调*/
     var receivedTitleAction: (title: String?) -> Unit = {}
 
+    /**接收到的标题*/
+    var receivedTitle: String? = null
+
     /**打开应用回调*/
     var openAppAction: (url: String, activityInfo: ActivityInfo, appBean: AppBean) -> Unit =
         { url, activityInfo, appBean -> L.d("打开应用:${appBean.appName} ${activityInfo.name}") }
@@ -110,16 +113,17 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
         //<editor-fold desc="基础回调">
 
-        override fun onReceivedTitle(webView: WebView, title: String) {
+        override fun onReceivedTitle(webView: WebView?, title: String?) {
             super.onReceivedTitle(webView, title)
-            L.d("${webView.originalUrl} ${webView.url} $title")
+            receivedTitle = title
+            L.d("${webView?.originalUrl} ${webView?.url} $title")
             this@TbsWebView.receivedTitleAction(title)
         }
 
-        override fun onProgressChanged(webView: WebView, progress: Int) {
+        override fun onProgressChanged(webView: WebView?, progress: Int) {
             super.onProgressChanged(webView, progress)
             //L.d("${webView.originalUrl} ${webView.url} $progress")
-            progressChangedAction(webView.url, progress)
+            progressChangedAction(webView?.url, progress)
         }
 
         //</editor-fold desc="基础回调">
