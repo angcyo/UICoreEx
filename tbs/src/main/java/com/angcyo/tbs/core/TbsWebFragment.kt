@@ -233,7 +233,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             receivedTitleAction = {
                 fragmentTitle = it
 
-                updateHost(_tbsWebView?._loadUrl)
+                updateHost(_tbsWebView?.originalUrl)
             }
 
             //进度
