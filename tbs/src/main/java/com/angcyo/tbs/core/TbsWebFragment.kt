@@ -25,8 +25,12 @@ import com.angcyo.library.component.DslIntent
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.dslIntentShare
 import com.angcyo.library.ex.*
+import com.angcyo.library.model.loadUri
 import com.angcyo.library.toastQQ
+import com.angcyo.loader.singleImage
+import com.angcyo.loader.singleVideo
 import com.angcyo.media.dslitem.DslTextureVideoItem
+import com.angcyo.picker.dslPicker
 import com.angcyo.tablayout.screenWidth
 import com.angcyo.tbs.DslTbs
 import com.angcyo.tbs.R
@@ -105,7 +109,10 @@ open class TbsWebFragment : BaseTitleFragment() {
 
     override fun onCreateViewAfter(savedInstanceState: Bundle?) {
         super.onCreateViewAfter(savedInstanceState)
+        initTbsWebLayout()
+    }
 
+    open fun initTbsWebLayout() {
         _vh.tv(R.id.lib_title_text_view)?.run {
             setWidth(width = screenWidth - 180 * dpi)
             setSingleLineMode()
@@ -221,7 +228,7 @@ open class TbsWebFragment : BaseTitleFragment() {
     var _tbsWebView: TbsWebView? = null
 
     /**追加[TbsWebView], 用于打开网页*/
-    open fun attachTbsWebView(parent: ViewGroup, url: String) {
+    open fun attachTbsWebView(parent: ViewGroup?, url: String?) {
         //host提示
         if (_vh.view(R.id.lib_host_tip_view) == null) {
             rootControl().group(R.id.lib_coordinator_wrap_layout)?.apply {
@@ -330,11 +337,39 @@ open class TbsWebFragment : BaseTitleFragment() {
 
             //选择文件回调
             fileChooseAction = {
-                dslFHelper {
-                    fileSelector {
-                        it?.run {
-                            onFileChooseResult(arrayOf(fileUri))
-                        } ?: onFileChooseResult(null)
+
+                when {
+                    it.mimeType.isNullOrEmpty() -> {
+                        //选择文件
+                        dslFHelper {
+                            fileSelector {
+                                it?.run {
+                                    onFileChooseResult(arrayOf(fileUri))
+                                } ?: onFileChooseResult(null)
+                            }
+                        }
+                    }
+                    it.mimeType.isImageMimeType() -> {
+                        //image
+                        dslPicker({
+                            singleImage()
+                            maxSelectorLimit = it.multiLimit
+                        }) {
+                            it?.let {
+                                onFileChooseResultList(it.mapTo(ArrayList()) { it.loadUri() })
+                            } ?: onFileChooseResult(null)
+                        }
+                    }
+                    it.mimeType.isVideoMimeType() -> {
+                        //video
+                        dslPicker({
+                            singleVideo()
+                            maxSelectorLimit = it.multiLimit
+                        }) {
+                            it?.let {
+                                onFileChooseResultList(it.mapTo(ArrayList()) { it.loadUri() })
+                            } ?: onFileChooseResult(null)
+                        }
                     }
                 }
             }
@@ -343,7 +378,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             loadUrl(url)
         }
 
-        parent.addView(webView, -1, -1)
+        parent?.addView(webView, -1, -1)
     }
 
     fun updateHost(url: String?) {

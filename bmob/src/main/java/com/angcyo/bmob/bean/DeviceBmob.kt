@@ -32,6 +32,8 @@ data class DeviceBmob(
     var packageName: String? = app().packageName
 ) : BmobObject() {
     companion object {
+
+        /**快速获取一个对象*/
         fun get(userId: String? = null, other: String? = null): DeviceBmob {
             val bmob = DeviceBmob()
             bmob.apply {

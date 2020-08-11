@@ -16,6 +16,7 @@ dependencies {
     implementation project(allModule.media)
     implementation project(allModule.image)
     implementation project(allModule.http)
+    implementation project(allModule.picker)
 
     //https://jcenter.bintray.com/com/tencent/tbs/tbssdk/sdk/
     api 'com.tencent.tbs.tbssdk:sdk:43939'
