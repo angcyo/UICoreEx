@@ -185,12 +185,12 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
                                             }
                                         }
                                 }
-                                var handler: BridgeHandler?
-                                handler = if (!TextUtils.isEmpty(m.handlerName)) {
-                                    messageHandlers[m.handlerName]
-                                } else {
-                                    defaultHandler
-                                }
+                                val handler: BridgeHandler? =
+                                    if (!TextUtils.isEmpty(m.handlerName)) {
+                                        messageHandlers[m.handlerName]
+                                    } else {
+                                        defaultHandler
+                                    }
                                 handler?.handler(m.data, responseFunction)
                             }
                         }
@@ -548,5 +548,16 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
     fun setCustom(customJs: String?) {
         BridgeConfig.customJs =
             if (!TextUtils.isEmpty(customJs)) customJs!! else BridgeConfig.defaultJs
+    }
+
+    /**
+     * [function] 用于发送 response
+     * */
+    fun defaultHandle(handler: (data: String?, function: CallBackFunction?) -> Unit) {
+        defaultHandler = object : BridgeHandler {
+            override fun handler(data: String?, function: CallBackFunction?) {
+                handler(data, function)
+            }
+        }
     }
 }
