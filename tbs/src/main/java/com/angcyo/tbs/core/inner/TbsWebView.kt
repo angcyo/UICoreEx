@@ -165,14 +165,14 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
         // For Android 3.0+
         fun openFileChooser(uploadMsg: ValueCallback<Uri?>, acceptType: String?) {
-            L.i("openFileChooser 1 $acceptType")
+            L.i("openFileChooser 1:$acceptType")
             _filePathCallback = uploadMsg
             openFileChooseProcess(FileChooserParam(1, acceptType))
         }
 
         // For Android < 3.0
         fun openFileChooser(uploadMsg: ValueCallback<Uri?>) {
-            L.i("openFileChooser 2")
+            L.i("openFileChooser 2:")
             _filePathCallback = uploadMsg
             openFileChooseProcess()
         }
@@ -183,7 +183,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             acceptType: String?,
             capture: String?
         ) {
-            L.i("openFileChooser 3 $acceptType $capture")
+            L.i("openFileChooser 3:$acceptType $capture")
             _filePathCallback = uploadMsg
             openFileChooseProcess(FileChooserParam(1, acceptType))
         }
@@ -194,7 +194,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             filePathCallback: ValueCallback<Array<Uri?>>,
             fileChooserParams: FileChooserParams
         ): Boolean {
-            L.i("openFileChooser 4:$filePathCallback ${fileChooserParams.acceptTypes}")
+            L.i("openFileChooser 4:$filePathCallback ", fileChooserParams.acceptTypes)
             _filePathCallbacks = filePathCallback
             openFileChooseProcess(FileChooserParam(1, fileChooserParams.acceptTypes?.firstOrNull()))
             return true
