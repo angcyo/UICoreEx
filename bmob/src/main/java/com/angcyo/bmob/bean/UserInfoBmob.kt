@@ -2,6 +2,7 @@ package com.angcyo.bmob.bean
 
 import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobUser
+import com.angcyo.library.app
 import com.angcyo.library.utils.Device
 
 /**
@@ -21,6 +22,8 @@ data class UserInfoBmob(
     var password: String? = null,
     var psuedoID: String? = Device.deviceId,
     var androidId: String? = Device.androidId,
+    var packageName: String? = app().packageName,
+    var appInfo: String? = null,
     var json: String? = null
 ) : BmobObject() /*: BmobUser()*/ //不能继承BmobUser, update 操作是失败
 
