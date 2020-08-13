@@ -21,7 +21,8 @@ dependencies {
     //https://jcenter.bintray.com/com/tencent/tbs/tbssdk/sdk/
     api 'com.tencent.tbs.tbssdk:sdk:43939'
 
-    api 'com.gitee.angcyo.aar:TbsFileSdk:TbsFileSdk_20200305_173219'
+    //https://gitee.com/angcyo/aar
+    //api 'com.gitee.angcyo.aar:TbsFileSdk:TbsFileSdk_20200305_173219'
 
     //https://github.com/lzyzsd/JsBridge
     //api 'com.github.lzyzsd:jsbridge:1.0.4'

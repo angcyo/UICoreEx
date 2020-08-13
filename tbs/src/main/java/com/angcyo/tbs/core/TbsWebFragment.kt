@@ -41,9 +41,8 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.bar
 import com.angcyo.widget.base.*
 import com.angcyo.widget.span.span
-import com.tencent.tbs.reader.ITbsReader
-import com.tencent.tbs.reader.TbsFileInterfaceImpl
-import com.tencent.tbs.reader.TbsReaderView
+import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.TbsReaderView
 
 /**
  * file:///android_asset/webpage/fileChooser.html
@@ -148,11 +147,22 @@ open class TbsWebFragment : BaseTitleFragment() {
                 val fileExt = loadUrl!!.ext()
                 fragmentTitle = loadUrl.file().name
 
+                val readerView =
+                    TbsReaderView(
+                        fContext(),
+                        TbsReaderView.ReaderCallback { actionType, args, result ->
+                            hideLoadingView()
+                            L.d("Tbs type:$actionType args:$args result:$result")
+                        })
+
                 when {
                     //如果tbs支持打开文件, 一般是文档格式
-                    DslTbs.canOpenFileTbs(fileExt) -> attachTbsReaderView(wrapLayout, loadUrl)
+                    DslTbs.canOpenFileTbs(readerView, fileExt) -> attachTbsReaderView(
+                        readerView,
+                        wrapLayout,
+                        loadUrl
+                    )
                     mimeType.isImageMimeType() -> attachImageView(wrapLayout, uri)
-
                     else -> showLoadingView("无法打开文件\n$uri")
                 }
             } else if (mimeType.isTextMimeType()) {
@@ -403,31 +413,19 @@ open class TbsWebFragment : BaseTitleFragment() {
     var _tbsReaderView: TbsReaderView? = null
 
     /**追加[TbsReaderView], 用于打开文档格式*/
-    open fun attachTbsReaderView(parent: ViewGroup, path: String) {
+    open fun attachTbsReaderView(readerView: TbsReaderView, parent: ViewGroup, path: String) {
         val extName = path.ext()
         val param = Bundle()
-        param.putString("fileExt", extName)
-        param.putString("filePath", path)
+
+        //param.putString("fileExt", extName)
+        param.putString(TbsReaderView.KEY_FILE_PATH, path)
+        param.putString(TbsReaderView.KEY_TEMP_PATH, context.externalCacheDir?.absolutePath)
 
         //默认不设置，是全屏dialog显示文件内容,
         //param.putInt("windowType",2);
         //设置windowType = 2，进入view显示文件内容, 文件内容会挂到设置的layout上。
         //FILE_READER_WINDOW_TYPE_DEFAULT 全屏样式, 自己的标题栏会无法显示.
-        param.putInt("windowType", TbsFileInterfaceImpl.FILE_READER_WINDOW_TYPE_DEFAULT)
-
-        //老接口方式, 没有默认的标题栏
-        val readerView =
-            TbsReaderView(fContext(), TbsReaderView.ReaderCallback { actionType, args, result ->
-                hideLoadingView()
-
-                L.d("Tbs type:$actionType args:$args result:$result")
-
-                if (ITbsReader.OPEN_FILEREADER_PLUGIN_SUCCESS == actionType) {
-                    L.w("Tbs plugin success")
-                } else if (ITbsReader.OPEN_FILEREADER_PLUGIN_FAILED == actionType) {
-                    L.w("Tbs plugin failed")
-                }
-            })
+        //param.putInt("windowType", TbsFileInterfaceImpl.FILE_READER_WINDOW_TYPE_DEFAULT)
 
         readerView.apply {
             _tbsReaderView = this
@@ -537,7 +535,9 @@ open class TbsWebFragment : BaseTitleFragment() {
         _dslVideoItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
         _dslSubSamplingItem?.itemViewRecycled?.invoke(_dslVideoHolder!!, 0)
 
-        TbsFileInterfaceImpl.getInstance().closeFileReader()
+        //TbsFileInterfaceImpl.getInstance().closeFileReader()
+        QbSdk.closeFileReader(fContext())
+        QbSdk.clear(fContext())
     }
 
     override fun onBackPressed(): Boolean {

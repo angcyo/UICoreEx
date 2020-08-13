@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.core.content.FileProvider
 import com.angcyo.DslAHelper
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.L
@@ -12,13 +11,11 @@ import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.isFileExist
-import com.angcyo.library.ex.mimeType
 import com.angcyo.tbs.core.TbsWebActivity
 import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.*
-import com.tencent.tbs.reader.TbsFileInterfaceImpl
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -99,8 +96,8 @@ class DslTbs {
 
 
                 //文档服务
-                TbsFileInterfaceImpl.initEngine(appContext)
-                TbsFileInterfaceImpl.setProviderSetting(FileProvider::class.java.name)
+                //TbsFileInterfaceImpl.initEngine(appContext)
+                //TbsFileInterfaceImpl.setProviderSetting(FileProvider::class.java.name)
 
                 try {
                     QbSdk.getMiniQBVersion(appContext).apply {
@@ -112,6 +109,10 @@ class DslTbs {
                     L.e(e)
                 }
             }
+        }
+
+        fun tbsLogReport(context: Context, enable: Boolean) {
+            TbsLogReport.getInstance(context).shouldUploadEventReport = enable
         }
 
         /**判断当前Tbs播放器是否已经可以使用。*/
@@ -166,8 +167,8 @@ class DslTbs {
         }
 
         /**是否支持打开文件TBS, 多数为文档格式*/
-        fun canOpenFileTbs(fileExt: String): Boolean {
-            return TbsFileInterfaceImpl.canOpenFile(fileExt.toLowerCase())/* &&
+        fun canOpenFileTbs(tbsReaderView: TbsReaderView, fileExt: String): Boolean {
+            return tbsReaderView.preOpen(fileExt.toLowerCase(), false)/* &&
                     TbsReaderView.isSupportExt(app(), fileExt)*/
         }
 
@@ -204,20 +205,20 @@ class DslTbs {
             //清除cookie
             QbSdk.clearAllWebViewCache(context, isClearCookie)
 
-           ////清除cookie
-           //CookieManager.getInstance().removeAllCookies(null);
-           ////清除storage相关缓存
-           //WebStorage.getInstance().deleteAllData();;
-           ////清除用户密码信息
-           //WebViewDatabase.getInstance(Context context).clearUsernamePassword();
-           ////清除httpauth信息
-           //WebViewDatabase.getInstance(Context context).clearHttpAuthUsernamePassword();
-           ////清除表单数据
-           //WebViewDatabase.getInstance(Context context).clearFormData();
-           ////清除页面icon图标信息
-           //WebIconDatabase.getInstance().removeAllIcons();
-           ////删除地理位置授权，也可以删除某个域名的授权（参考接口类）
-           //GeolocationPermissions.getInstance().clearAll();
+            ////清除cookie
+            //CookieManager.getInstance().removeAllCookies(null);
+            ////清除storage相关缓存
+            //WebStorage.getInstance().deleteAllData();;
+            ////清除用户密码信息
+            //WebViewDatabase.getInstance(Context context).clearUsernamePassword();
+            ////清除httpauth信息
+            //WebViewDatabase.getInstance(Context context).clearHttpAuthUsernamePassword();
+            ////清除表单数据
+            //WebViewDatabase.getInstance(Context context).clearFormData();
+            ////清除页面icon图标信息
+            //WebIconDatabase.getInstance().removeAllIcons();
+            ////删除地理位置授权，也可以删除某个域名的授权（参考接口类）
+            //GeolocationPermissions.getInstance().clearAll();
         }
     }
 }
