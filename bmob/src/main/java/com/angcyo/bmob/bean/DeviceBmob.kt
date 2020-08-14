@@ -7,6 +7,7 @@ import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.getMobileIP
 import com.angcyo.library.ex.getWifiIP
+import com.angcyo.library.utils.CpuUtils
 import com.angcyo.library.utils.Device
 
 /**
@@ -40,8 +41,14 @@ data class DeviceBmob(
                 this.userId = userId
                 this.other = other
                 deviceModel = buildString {
+                    append("${Build.VERSION.SDK_INT} ")
+
                     //OnePlus/ONEPLUS A6000/jenkins/qcom/ONEPLUS A6000_22_191215
                     append(Build.MANUFACTURER)//LGE
+                    append("/")
+                    append(Build.BRAND)
+                    append("/")
+                    append(Build.PRODUCT)
                     append("/")
                     append(Build.MODEL)//Nexus 5X
                     append("/")
@@ -51,7 +58,11 @@ data class DeviceBmob(
                     append("/")
                     append(Build.DISPLAY)//N2G48C
                 }
-                cpu = Build.SUPPORTED_ABIS.connect("/").toString()
+
+                cpu = Build.SUPPORTED_ABIS.connect("/")
+                if (CpuUtils.isCpu64) {
+                    cpu = "$cpu[64]"
+                }
 
                 ip = buildString {
                     append(getWifiIP()).append("|").append(getMobileIP())
