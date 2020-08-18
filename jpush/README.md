@@ -1,6 +1,10 @@
 # jpush
 2020-6-23
 
+```kotlin
+JPush.init(content)
+```
+
 极光推送 **需要绑定应用包名**
 
 # Android SDK 集成指南

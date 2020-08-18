@@ -2,6 +2,10 @@
 
 ## 2020-7-14
 
+```kotlin
+DslTbs.init(content)
+```
+
 ### 快速接入
 
 https://x5.tencent.com/docs/access.html

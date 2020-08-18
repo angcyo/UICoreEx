@@ -1,6 +1,11 @@
 # ObjectBox
 2020-4-14
 
+```kotlin
+DslBox.default_package_name = BuildConfig.APPLICATION_ID
+DslBox.init(content, debug)
+```
+
 https://objectbox.io/
 
 https://objectbox.io/dev-get-started/

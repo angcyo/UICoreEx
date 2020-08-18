@@ -1,6 +1,10 @@
 # speech
 2020-6-17
 
+```kotlin
+ TTS.init(content,1251235xxx, "AKIDWVomMV0edaGbFT5dSowGvGpmjxxxx", "0WbCzyN1ICYiFkSZ9Kv890GY1Bxxxx" )
+```
+
 腾讯TTS **不需要绑定应用包名**
 
 接口调用方式
