@@ -58,6 +58,8 @@ open class TbsWebFragment : BaseTitleFragment() {
         const val KEY_CONFIG = "key_config"
 
         const val LOADING_TITLE = "加载中..."
+
+        const val DEBUG_TBS_URL = "https://debugtbs.qq.com"
     }
 
     init {
@@ -232,6 +234,17 @@ open class TbsWebFragment : BaseTitleFragment() {
                                 DslIntent.openUrl(fContext(), url)
                             }
                         }
+
+                        if (isDebug()) {
+                            DslBaseWebMenuItem()() {
+                                menuText = "X5内核测试"
+                                menuIcon = R.drawable.tbs_ic_x5
+                                itemClick = {
+                                    _dialog?.dismiss()
+                                    _tbsWebView?.loadUrl(DEBUG_TBS_URL)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -268,7 +281,9 @@ open class TbsWebFragment : BaseTitleFragment() {
             //进度回调
             progressChangedAction = { url, progress ->
                 // L.d("$url $progress")
-                _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
+                if (webConfig.showLoading) {
+                    _vh.bar(R.id.lib_progress_bar)?.setProgress(progress)
+                }
                 //加载框
 
                 if (progress == 0) {
@@ -578,8 +593,10 @@ open class TbsWebFragment : BaseTitleFragment() {
     }
 
     fun showLoadingView(tip: CharSequence? = null) {
-        _vh.visible(R.id.lib_arc_loading_view)
-        _vh.visible(R.id.lib_tip_view, tip != null)
+        if (webConfig.showLoading) {
+            _vh.visible(R.id.lib_arc_loading_view)
+            _vh.visible(R.id.lib_tip_view, tip != null)
+        }
         _vh.tv(R.id.lib_tip_view)?.text = tip
     }
 
