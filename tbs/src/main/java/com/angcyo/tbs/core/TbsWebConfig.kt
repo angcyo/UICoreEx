@@ -20,5 +20,7 @@ data class TbsWebConfig(
     /**指定界面的标题*/
     var title: CharSequence? = null,
     /**是否需要显示右边的菜单*/
-    var showRightMenu: Boolean = true
+    var showRightMenu: Boolean = true,
+    /**是否需要loading提示, 包括顶部和中间*/
+    var showLoading: Boolean = true
 ) : Parcelable
