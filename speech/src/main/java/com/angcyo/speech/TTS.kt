@@ -35,6 +35,8 @@ object TTS {
         L.e(TAG, "tts onRequestException:${e.message}:$e")
     }
 
+    private var applicationContext: Context? = null
+
     /**初始化入口*/
     fun init(
         context: Context,
@@ -43,6 +45,8 @@ object TTS {
         secretKey: String,
         debug: Boolean = BuildConfig.DEBUG
     ) {
+
+        applicationContext = context.applicationContext
 
         if (isInitSuccess) {
             return
@@ -57,16 +61,10 @@ object TTS {
          */
 
         //注意：这里只是示例，请根据用户实际申请的 SecretId 和 SecretKey 进行后续操作！
-        longTextTtsController!!.init(context.applicationContext, appId, secretId, secretKey)
+        longTextTtsController!!.init(applicationContext, appId, secretId, secretKey)
 
         initParams()
 
-        requestAudioFocus(context.applicationContext)
-
-        isInitSuccess = true
-    }
-
-    private fun requestAudioFocus(context: Context) {
         //初始化audio mananger
         listener = OnAudioFocusChangeListener { focusChange ->
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
@@ -81,13 +79,17 @@ object TTS {
             }
         }
 
+        isInitSuccess = true
+    }
+
+    private fun requestAudioFocus(context: Context? = applicationContext) {
         //设置listener
-        val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+        val am = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
         am?.requestAudioFocus(listener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
     }
 
-    private fun abandonAudioFocus(context: Context) {
-        val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+    private fun abandonAudioFocus(context: Context? = applicationContext) {
+        val am = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
         am?.abandonAudioFocus(listener)
     }
 
@@ -116,6 +118,7 @@ object TTS {
     /**开始播放文本转成的语音*/
     fun startSpeaking(text: String?) {
         if (isInitSuccess && !text.isNullOrEmpty()) {
+            requestAudioFocus()
             try {
                 longTextTtsController?.startTts(text, ttsExceptionHandler,
                     object : QCloudPlayerCallback {
@@ -147,6 +150,7 @@ object TTS {
                         //播放结束
                         override fun onTTSPlayEnd() {
                             L.d(TAG, "onPlayEnd")
+                            abandonAudioFocus()
                         }
 
                         //当前播放的字符,当前播放的字符在所在的句子中的下标.
@@ -156,6 +160,7 @@ object TTS {
                     })
             } catch (e: TtsNotInitializedException) {
                 L.e(TAG, "TtsNotInitializedException e:" + e.message)
+                abandonAudioFocus()
             }
         }
     }
