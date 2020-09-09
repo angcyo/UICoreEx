@@ -5,7 +5,9 @@ import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
 import com.angcyo.http.rx.BaseObserver
+import com.angcyo.http.rx.observableToAuto
 import com.angcyo.http.rx.observableToMain
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
@@ -45,40 +47,55 @@ inline fun <reified T : BmobObject> T.updateOrSave(
     noinline action: BaseObserver<String?>.() -> Unit = {}
 ): Disposable {
     val bmob = this
+
     val query = BmobQuery<T>().apply(queryAction)
     val queryObserver = BaseObserver<String?>().apply(action)
-    query.findObjectsObservable(T::class.java)
-        .observeOn(Schedulers.io())
-        .onErrorReturn {
-            emptyList<T>()
-        }
-        .map { list ->
-            val first = list.firstOrNull()
-            if (first == null) {
-                //save
+    Observable.create<String?> { emitter ->
+        try {
+            val resultList = query.findObjectsSync(T::class.java)
+            //L.e("查询返回值↓")
+            //L.e(resultList)
+            val objectId: String? = if (resultList.isNullOrEmpty()) {
+                //L.e("保存对象↑")
                 bmob.saveSync()
             } else {
-                bmob.updateSync(first.objectId)
-                first.objectId
+                val objectId = resultList.first().objectId
+                //L.e("更新对象↑ $objectId")
+                bmob.updateSync(objectId)
             }
+            //L.e("操作对象Id->$objectId")
+            emitter.onNext(objectId ?: "")
+            emitter.onComplete()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emitter.onError(e)
         }
-        .compose(observableToMain())
+    }.observeOn(Schedulers.io())
+        .compose(observableToAuto())
         .subscribe(queryObserver)
+
     return queryObserver
 }
 
 /**查询bmob对象*/
 inline fun <reified T : BmobObject> bmobQuery(
     queryAction: BmobQuery<T>.() -> Unit = {},
-    action: BaseObserver<List<T>>.() -> Unit
+    action: BaseObserver<List<T>?>.() -> Unit
 ): Disposable {
     val query = BmobQuery<T>().apply(queryAction)
-    val observer = BaseObserver<List<T>>().apply(action)
-    query.findObjectsObservable(T::class.java)
-        .compose(observableToMain())
-        .onErrorReturn {
-            emptyList<T>()
+    val observer = BaseObserver<List<T>?>().apply(action)
+    Observable.create<List<T>?> { emitter ->
+        try {
+            val resultList = query.findObjectsSync(T::class.java)
+            //L.e("查询返回值↓")
+            //L.e(resultList)
+            emitter.onNext(resultList)
+            emitter.onComplete()
+        } catch (e: Exception) {
+            emitter.onError(e)
         }
+    }.observeOn(Schedulers.io())
+        .compose(observableToAuto())
         .subscribe(observer)
     return observer
 }
