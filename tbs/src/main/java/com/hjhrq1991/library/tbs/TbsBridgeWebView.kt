@@ -148,24 +148,24 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
                             e.printStackTrace()
                             return
                         }
-                        if (list.isEmpty()) {
+                        if (list.isNullOrEmpty()) {
                             return
                         }
                         for (i in list.indices) {
-                            val m: Message = list[i]
-                            val responseId = m.responseId
+                            val m: Message? = list[i]
+                            val responseId = m?.responseId
                             // 是否是response
                             if (!TextUtils.isEmpty(responseId)) {
                                 val function =
                                     responseCallbacks[responseId]
-                                val responseData = m.responseData
+                                val responseData = m?.responseData
                                 function!!.onCallBack(responseData)
                                 responseCallbacks.remove(responseId)
                             } else {
                                 var responseFunction: CallBackFunction? =
                                     null
                                 // if had callbackId
-                                val callbackId = m.callbackId
+                                val callbackId = m?.callbackId
                                 if (!TextUtils.isEmpty(callbackId)) {
                                     responseFunction =
                                         object : CallBackFunction {
@@ -186,12 +186,12 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
                                         }
                                 }
                                 val handler: BridgeHandler? =
-                                    if (!TextUtils.isEmpty(m.handlerName)) {
-                                        messageHandlers[m.handlerName]
+                                    if (!TextUtils.isEmpty(m?.handlerName)) {
+                                        messageHandlers[m?.handlerName]
                                     } else {
                                         defaultHandler
                                     }
-                                handler?.handler(m.data, responseFunction)
+                                handler?.handler(m?.data, responseFunction)
                             }
                         }
                     }
