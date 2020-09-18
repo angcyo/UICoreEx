@@ -20,9 +20,18 @@ import io.reactivex.schedulers.Schedulers
 
 //<editor-fold desc="bmob 3.7.9 版本二次封装">
 
+class BmobObserver<T> : BaseObserver<T>() {
+    init {
+        /**Bmob官方库中, 不会触发[onComplete]回调, 这里主动触发一次*/
+        onNext = {
+            onEnd()
+        }
+    }
+}
+
 /**保存bmob对象*/
 fun BmobObject.save(action: BaseObserver<String>.() -> Unit = {}): Disposable {
-    val observer = BaseObserver<String>().apply(action)
+    val observer = BmobObserver<String>().apply(action)
     saveObservable()
         .compose(observableToMain())
         .subscribe(observer)
