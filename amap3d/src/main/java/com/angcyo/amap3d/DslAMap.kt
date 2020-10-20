@@ -13,6 +13,7 @@ import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.autonavi.amap.mapcore.Inner_3dMap_location
 import java.util.*
+import com.angcyo.library.component._delay
 
 
 /**
@@ -139,12 +140,14 @@ class DslAMap {
 
             var loadedListener: AMap.OnMapLoadedListener? = null
             loadedListener = map.onMapLoadedListener {
-                map.removeOnMapLoadedListener(loadedListener)
                 if (locationMoveFirst) {
                     AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
                         L.w("move to first 3:$latLng $locationMoveZoom")
                         map.moveTo(latLng, locationMoveZoom)
                     }
+                }
+                _delay(16) {
+                    map.removeOnMapLoadedListener(loadedListener)
                 }
             }
         }
