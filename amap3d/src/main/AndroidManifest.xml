@@ -21,7 +21,6 @@
     <!--声明后台定位权限-->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
      
-
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!-- 用于加快GPS首次定位，可选权限，非必须-->
