@@ -8,19 +8,19 @@ dependencies {
     // https://jcenter.bintray.com/com/amap/api/
 
     //3D 地图 https://jcenter.bintray.com/com/amap/api/3dmap/
-    api 'com.amap.api:3dmap:7.4.0'
+    api 'com.amap.api:3dmap:7.7.0'
 
     //搜索 https://jcenter.bintray.com/com/amap/api/search/
-    api 'com.amap.api:search:7.3.0'
+    api 'com.amap.api:search:7.7.0'
 
     //定位 https://jcenter.bintray.com/com/amap/api/location/
-    api 'com.amap.api:location:4.9.0'
+    api 'com.amap.api:location:5.2.0'
 
     //2D 地图 https://jcenter.bintray.com/com/amap/api/map2d/
     //api 'com.amap.api:map2d:6.0.0'
 
     //导航(会包含3D地图) https://jcenter.bintray.com/com/amap/api/navi-3dmap/
-    //api 'com.amap.api:navi-3dmap:7.4.0_3dmap7.4.0'
+    //api 'com.amap.api:navi-3dmap:7.7.1_3dmap7.7.0'
 }
 
 //需要在app工程也是用这个脚本
