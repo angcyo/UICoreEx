@@ -47,6 +47,7 @@ import com.tencent.smtt.sdk.TbsReaderView
 /**
  * file:///android_asset/webpage/fileChooser.html
  *
+ * TBS内核调试界面
  * https://debugtbs.qq.com/
  *
  * Email:angcyo@126.com
