@@ -56,7 +56,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                         Lifecycle.Event.ON_CREATE -> {
                             //地图初始化
                             onCreate(savedInstanceState)
-                            dslMarker.init(map)
+                            dslMarker.init(context, map)
                             dslAMap.apply {
                                 doLocationStyle(map)
                                 doUI(map)

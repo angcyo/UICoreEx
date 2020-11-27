@@ -29,12 +29,12 @@ fun DslViewHolder.initMapView(
     owner: LifecycleOwner,
     savedInstanceState: Bundle?,
     action: RTextureMapView.() -> Unit
-) {
+): RTextureMapView? {
 
     //地图语言
     ServiceSettings.getInstance().language = ServiceSettings.CHINESE
 
-    v<RTextureMapView>(R.id.lib_map_view)?.apply {
+    return v<RTextureMapView>(R.id.lib_map_view)?.apply {
         //out
         action()
 

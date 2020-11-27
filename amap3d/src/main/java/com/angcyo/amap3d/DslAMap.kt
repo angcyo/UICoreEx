@@ -1,6 +1,7 @@
 package com.angcyo.amap3d
 
 import android.content.res.AssetManager
+import android.graphics.Bitmap
 import android.view.MotionEvent
 import com.amap.api.maps.*
 import com.amap.api.maps.model.*
@@ -56,6 +57,8 @@ class DslAMap {
     /**当定位类型[locationType]没有将视角移动到地图中心点时, 是否在首次定位回调后. 移动到地图中心*/
     var locationMoveFirst = true
 
+    var _locationMoveFirstEnd = false
+
     /**回到中心位置时, 需要使用的zoom*/
     var locationMoveZoom = DEFAULT_LOCATION_ZOOM
 
@@ -84,6 +87,8 @@ class DslAMap {
     /**设置定位蓝点精度圆圈的填充颜色的方法。*/
     var locationFillColor: Int =
         _color(R.color.colorPrimary).alpha(16)  //locationStyle.radiusFillColor
+
+    var _locationChangeListener: AMap.OnMyLocationChangeListener? = null
 
     /**执行定位样式配置, [myLocationType] 支持动态修改, 实时生效*/
     fun doLocationStyle(map: AMap) {
@@ -117,39 +122,42 @@ class DslAMap {
             map.myLocation?.let {
                 val latLng = it.toLatLng()
                 L.w("move to first 1:$latLng $locationMoveZoom")
+                _locationMoveFirstEnd = true
                 map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
-            }
-
-            var listener: AMap.OnMyLocationChangeListener? = null
-            listener = map.onMyLocationChange {
-                if (it.errorCode == 0) {
-                    //定位成功
-                    //latitude=0.0#longitude=0.0#province=#city=#district=#cityCode=#adCode=#address=#country=#road=
-                    //#poiName=#street=#streetNum=#aoiName=#poiid=#floor=
-                    //#errorCode=12#errorInfo=缺少定位权限
-                    //请到 http://lbs.amap.com/api/android-location-sdk/guide/utilities/errorcode/ 查看错误码说明,错误详细信息:定位权限被禁用,请授予应用定位权限#1201
-                    //#locationDetail=定位权限被禁用,请授予应用定位权限#1201#locationType=0
-                    //L.e(it)
-                    map.removeOnMyLocationChangeListener(listener)
-                    if (locationMoveFirst) {
-                        val latLng = it.toLatLng()
-                        L.w("move to first 2:$latLng $locationMoveZoom")
-                        map.moveTo(latLng, locationMoveZoom)
-                    }
-                }
             }
 
             var loadedListener: AMap.OnMapLoadedListener? = null
             loadedListener = map.onMapLoadedListener {
                 L.w("doLocationStyle AMapLoaded...")
-                if (locationMoveFirst) {
+                if (locationMoveFirst && !_locationMoveFirstEnd) {
                     AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
                         L.w("move to first 3:$latLng $locationMoveZoom")
+                        _locationMoveFirstEnd = true
                         map.moveTo(latLng, locationMoveZoom)
                     }
                 }
                 _delay(16) {
                     map.removeOnMapLoadedListener(loadedListener)
+                }
+            }
+        }
+
+        //监听位置改变
+        _locationChangeListener = map.onMyLocationChange {
+            if (it.errorCode == 0) {
+                //定位成功
+                //latitude=0.0#longitude=0.0#province=#city=#district=#cityCode=#adCode=#address=#country=#road=
+                //#poiName=#street=#streetNum=#aoiName=#poiid=#floor=
+                //#errorCode=12#errorInfo=缺少定位权限
+                //请到 http://lbs.amap.com/api/android-location-sdk/guide/utilities/errorcode/ 查看错误码说明,错误详细信息:定位权限被禁用,请授予应用定位权限#1201
+                //#locationDetail=定位权限被禁用,请授予应用定位权限#1201#locationType=0
+                //L.e(it)
+                //map.removeOnMyLocationChangeListener(_locationChangeListener)
+                if (locationMoveFirst && !_locationMoveFirstEnd) {
+                    val latLng = it.toLatLng()
+                    L.w("move to first 2:$latLng $locationMoveZoom")
+                    _locationMoveFirstEnd = true
+                    map.moveTo(latLng, locationMoveZoom)
                 }
             }
         }
@@ -754,8 +762,8 @@ fun AMap.addMarkers(
     options: ArrayList<MarkerOptions>,
     moveToCenter: Boolean = true
 ): MutableList<Marker> {
-    val marker = addMarkers(options, moveToCenter)
-    return marker
+    val markers = addMarkers(options, moveToCenter)
+    return markers
 }
 
 /**添加折线[Polyline]
@@ -827,3 +835,30 @@ fun AMap.addNavigateArrow(action: NavigateArrowOptions.() -> Unit): NavigateArro
 }
 
 //</editor-fold desc="绘制相关">
+
+//<editor-fold desc="其他操作">
+
+
+/**https://lbs.amap.com/api/android-sdk/guide/interaction-with-map/map-screenshot
+ *
+ * 地图截屏
+ * */
+fun AMap.screenShot(action: (Bitmap?) -> Unit) {
+    getMapScreenShot(object : AMap.OnMapScreenShotListener {
+        override fun onMapScreenShot(bitmap: Bitmap?) {
+
+        }
+
+        override fun onMapScreenShot(bitmap: Bitmap?, status: Int) {
+            if (status != 0) {
+                L.w("地图渲染完成，截屏无网格")
+            } else {
+                L.w("地图未渲染完成，截屏有网格")
+            }
+            action(bitmap)
+        }
+    })
+
+}
+
+//</editor-fold desc="其他操作">

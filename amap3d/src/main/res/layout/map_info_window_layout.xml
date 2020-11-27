@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.angcyo.widget.text.DslTextView
+        android:id="@+id/lib_title_view"
+        style="@style/LibMainTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="标题" />
+
+    <com.angcyo.widget.text.DslTextView
+        android:id="@+id/lib_des_view"
+        style="@style/LibSubTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="2dp"
+        tools:text="描述" />
+
+</LinearLayout>

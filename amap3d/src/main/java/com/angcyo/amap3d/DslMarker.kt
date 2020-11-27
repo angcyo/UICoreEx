@@ -1,8 +1,12 @@
 package com.angcyo.amap3d
 
+import android.content.Context
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.FrameLayout
+import android.widget.TextView
 import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
 import com.amap.api.maps.model.animation.AlphaAnimation
@@ -16,6 +20,7 @@ import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.library.L
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isListEmpty
+import com.angcyo.widget.base.find
 import kotlin.math.sqrt
 
 /**
@@ -89,8 +94,11 @@ class DslMarker : AMap.InfoWindowAdapter {
     //管理所有Marker
     var _allMarker: MutableList<Marker> = mutableListOf()
 
-    fun init(map: AMap) {
+    lateinit var _context: Context
+
+    fun init(context: Context, map: AMap) {
         this.map = map
+        this._context = context
 
         map.setInfoWindowAdapter(this)
 
@@ -139,13 +147,30 @@ class DslMarker : AMap.InfoWindowAdapter {
 
     /**此方法不能修改整个 InfoWindow 的背景和边框，无论自定义的样式是什么样，SDK 都会在最外层添加一个默认的边框。*/
     override fun getInfoContents(marker: Marker): View? {
+        //do something
+        L.i("getInfoContents $marker")
         return null
     }
+
+    var _infoWindow: View? = null
 
     /**如果此方法返回的 View 没有设置 InfoWindow 背景图，SDK 会默认添加一个背景图。*/
     override fun getInfoWindow(marker: Marker): View? {
         //do something
-        return null
+        L.i("getInfoWindow title:${marker.title} snippet:${marker.snippet}")
+        if (_infoWindow == null) {
+            val context = _context
+            _infoWindow = LayoutInflater.from(context).inflate(
+                R.layout.map_info_window_layout,
+                FrameLayout(context),
+                false
+            )
+        }
+        _infoWindow?.apply {
+            find<TextView>(R.id.lib_title_view)?.text = marker.title
+            find<TextView>(R.id.lib_des_view)?.text = marker.snippet
+        }
+        return _infoWindow
     }
 
     //</editor-fold desc="初始化">
@@ -314,9 +339,10 @@ class DslMarker : AMap.InfoWindowAdapter {
         data: Any? = null,
         icon: BitmapDescriptor? = null,
         action: MarkerOptions.() -> Unit = {}
-    ) {
+    ): Marker? {
+        var result: Marker? = null
         _checkInit {
-            addMarker {
+            result = addMarker {
                 anchor(0.5f, 0.5f) //将图标的中心位置放置在点上
                 icon(icon)
                 position(latLng)
@@ -329,6 +355,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 _allMarker.add(this)
             }
         }
+        return result
     }
 
     /**通过位置, 移除一个[Marker]*/
@@ -445,7 +472,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 moveToShowAllMarker(myLocation?.toLatLng(), padding = padding)
             }
         } else {
-            moveToShowAllMarker(padding = padding)
+            moveToShowAllMarker(null, padding = padding)
         }
     }
 
@@ -453,9 +480,9 @@ class DslMarker : AMap.InfoWindowAdapter {
 
 }
 
-fun AMap.dslMarker(action: DslMarker.() -> Unit): DslMarker {
+fun AMap.dslMarker(context: Context, action: DslMarker.() -> Unit): DslMarker {
     val dslMarker = DslMarker()
-    dslMarker.init(this)
+    dslMarker.init(context, this)
     dslMarker.action()
     return dslMarker
 }
@@ -559,6 +586,14 @@ fun Marker.jump(map: AMap, offsetY: Int = 100 * dpi, action: TranslateAnimation.
 fun MarkerOptions.icons(iconList: List<BitmapDescriptor>, period: Int) {
     icons(ArrayList(iconList))
     period(period)
+}
+
+fun MarkerOptions.icon(view: View) {
+    icon(markerIcon(view))
+}
+
+fun MarkerOptions.icon(res: Int) {
+    icon(markerIcon(res))
 }
 
 fun markerIcon(res: Int) = BitmapDescriptorFactory.fromResource(res)
