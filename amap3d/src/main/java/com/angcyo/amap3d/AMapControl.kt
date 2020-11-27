@@ -35,14 +35,14 @@ fun DslViewHolder.initMapView(
     ServiceSettings.getInstance().language = ServiceSettings.CHINESE
 
     v<RTextureMapView>(R.id.lib_map_view)?.apply {
+        //out
+        action()
+
         //地图生命周期
         bindLifecycle(owner, savedInstanceState)
 
         //地图覆盖的控制按钮
         bindControlLayout(this@initMapView)
-
-        //out
-        action()
     }
 }
 

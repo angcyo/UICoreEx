@@ -10,10 +10,10 @@ import com.amap.api.services.core.PoiItem
 import com.angcyo.amap3d.core.MapLocation
 import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.library.L
+import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.autonavi.amap.mapcore.Inner_3dMap_location
 import java.util.*
-import com.angcyo.library.component._delay
 
 
 /**
@@ -50,7 +50,8 @@ class DslAMap {
      * [MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER] 连续定位、蓝点不会移动到地图中心点，并且蓝点会跟随设备移动。
      * [MyLocationStyle.LOCATION_TYPE_MAP_ROTATE_NO_CENTER] 连续定位、蓝点不会移动到地图中心点，地图依照设备方向旋转，并且蓝点会跟随设备移动。
      */
-    var locationType: Int = MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER
+    var locationType: Int =
+        MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER //LOCATION_TYPE_FOLLOW_NO_CENTER
 
     /**当定位类型[locationType]没有将视角移动到地图中心点时, 是否在首次定位回调后. 移动到地图中心*/
     var locationMoveFirst = true
@@ -140,6 +141,7 @@ class DslAMap {
 
             var loadedListener: AMap.OnMapLoadedListener? = null
             loadedListener = map.onMapLoadedListener {
+                L.w("doLocationStyle AMapLoaded...")
                 if (locationMoveFirst) {
                     AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
                         L.w("move to first 3:$latLng $locationMoveZoom")
@@ -495,15 +497,23 @@ fun AMap.getMapCenterPosition(): LatLng = cameraPosition.target
 fun Int.isSearchSuccess() = this == CODE_AMAP_SUCCESS
 
 /**获取[PoiItem]对应的详细地址信息*/
-fun PoiItem.getAddress() = "${provinceName.orString(
-    ""
-)}${cityName.orString(
-    ""
-)}${adName.orString(
-    ""
-)}${businessArea.orString(
-    ""
-)}${snippet.orString("")}"
+fun PoiItem.getAddress() = "${
+    provinceName.orString(
+        ""
+    )
+}${
+    cityName.orString(
+        ""
+    )
+}${
+    adName.orString(
+        ""
+    )
+}${
+    businessArea.orString(
+        ""
+    )
+}${snippet.orString("")}"
 
 fun AMap.myLatLng() = myLocation?.toLatLng()
 
@@ -543,14 +553,21 @@ fun AMap.onMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {
     return listener
 }
 
+fun AMap.addMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {}): AMap.OnMyLocationChangeListener {
+    return onMyLocationChange(action)
+}
+
 /**地图加载回调*/
 fun AMap.onMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener {
     val listener = AMap.OnMapLoadedListener {
-        L.w("AMapLoaded...")
         action()
     }
     addOnMapLoadedListener(listener)
     return listener
+}
+
+fun AMap.addMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener {
+    return onMapLoadedListener(action)
 }
 
 /**地图点击事件
@@ -565,6 +582,10 @@ fun AMap.onMapClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapClickListe
     return listener
 }
 
+fun AMap.addMapClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapClickListener {
+    return onMapClickListener(action)
+}
+
 /**地图长按事件
  * [latitude] 纬度
  * [longitude] 经度
@@ -575,6 +596,10 @@ fun AMap.onMapLongClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapLongCl
     }
     addOnMapLongClickListener(listener)
     return listener
+}
+
+fun AMap.addMapLongClickListener(action: (LatLng) -> Unit = {}): AMap.OnMapLongClickListener {
+    return onMapLongClickListener(action)
 }
 
 /**地图Camera改变事件
@@ -597,12 +622,23 @@ fun AMap.onCameraChangeListener(
     return listener
 }
 
+fun AMap.addCameraChangeListener(
+    change: (CameraPosition) -> Unit = {},
+    finish: (CameraPosition) -> Unit = {}
+): AMap.OnCameraChangeListener {
+    return onCameraChangeListener(change, finish)
+}
+
 fun AMap.onMapTouchListener(action: (MotionEvent) -> Unit = {}): AMap.OnMapTouchListener {
     val listener = AMap.OnMapTouchListener {
         action(it)
     }
     addOnMapTouchListener(listener)
     return listener
+}
+
+fun AMap.addMapTouchListener(action: (MotionEvent) -> Unit = {}): AMap.OnMapTouchListener {
+    return onMapTouchListener(action)
 }
 
 /**地图上[Poi]的点击事件
@@ -617,6 +653,11 @@ fun AMap.onPOIClickListener(action: (Poi) -> Unit = {}): AMap.OnPOIClickListener
     return listener
 }
 
+fun AMap.addPOIClickListener(action: (Poi) -> Unit = {}): AMap.OnPOIClickListener {
+    return onPOIClickListener(action)
+}
+
+
 /**
  * true 返回true表示该点击事件已被处理，不再往下传递（如底图点击不会被触发），返回false则继续往下传递。
  * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Marker.html
@@ -627,6 +668,10 @@ fun AMap.onMarkerClickListener(action: (Marker) -> Boolean = { false }): AMap.On
     }
     addOnMarkerClickListener(listener)
     return listener
+}
+
+fun AMap.addMarkerClickListener(action: (Marker) -> Boolean = { false }): AMap.OnMarkerClickListener {
+    return addMarkerClickListener(action)
 }
 
 /**长按[Marker]可以进行拖拽*/
@@ -652,12 +697,24 @@ fun AMap.onMarkerDragListener(
     return listener
 }
 
+fun AMap.addMarkerDragListener(
+    start: (Marker) -> Unit = { },
+    move: (Marker) -> Unit = { },
+    end: (Marker) -> Unit = { }
+): AMap.OnMarkerDragListener {
+    return addMarkerDragListener(start, move, end)
+}
+
 fun AMap.onInfoWindowClickListener(action: (Marker) -> Boolean = { false }): AMap.OnInfoWindowClickListener {
     val listener = AMap.OnInfoWindowClickListener {
         action(it)
     }
     addOnInfoWindowClickListener(listener)
     return listener
+}
+
+fun AMap.addInfoWindowClickListener(action: (Marker) -> Boolean = { false }): AMap.OnInfoWindowClickListener {
+    return onInfoWindowClickListener(action)
 }
 
 //</editor-fold desc="事件回调相关">
