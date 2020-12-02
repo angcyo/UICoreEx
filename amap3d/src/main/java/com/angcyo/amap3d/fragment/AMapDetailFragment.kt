@@ -1,9 +1,11 @@
 package com.angcyo.amap3d.fragment
 
 import android.os.Bundle
+import com.amap.api.maps.AMap
 import com.angcyo.DslFHelper
 import com.angcyo.amap3d.*
 import com.angcyo.amap3d.core.MapLocation
+import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.amap3d.core.latLng
 import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.base.back
@@ -26,6 +28,10 @@ class AMapDetailFragment : BaseTitleFragment() {
 
     var targetMapLocation: MapLocation? = null
 
+    val mapView: RTextureMapView? get() = _vh.v<RTextureMapView>(R.id.lib_map_view)
+
+    val map: AMap? get() = mapView?.map
+
     init {
         contentLayoutId = R.layout.map_detail_fragment
         fragmentTitle = "位置详情"
@@ -39,6 +45,11 @@ class AMapDetailFragment : BaseTitleFragment() {
             toast("数据异常!")
             back()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mapView?.onDestroyR()
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {

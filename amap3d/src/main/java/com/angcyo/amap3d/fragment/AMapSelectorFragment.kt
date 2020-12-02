@@ -57,12 +57,19 @@ class AMapSelectorFragment : BaseDslFragment() {
     //地图中间显示位置指针的marker
     var centerMarker: Marker? = null
 
-    val map: AMap? get() = _vh.v<RTextureMapView>(R.id.lib_map_view)?.map
+    val mapView: RTextureMapView? get() = _vh.v<RTextureMapView>(R.id.lib_map_view)
+
+    val map: AMap? get() = mapView?.map
 
     init {
         fragmentTitle = "选择位置"
         fragmentLayoutId = R.layout.map_selector_fragment
         page.firstPageIndex = 0
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mapView?.onDestroyR()
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {

@@ -55,7 +55,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                     when (event) {
                         Lifecycle.Event.ON_CREATE -> {
                             //地图初始化
-                            onCreate(savedInstanceState)
+                            onCreateR(savedInstanceState)
                             dslMarker.init(context, map)
                             dslAMap.apply {
                                 doLocationStyle(map)
@@ -65,12 +65,29 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                         }
                         Lifecycle.Event.ON_RESUME -> onResume()
                         Lifecycle.Event.ON_PAUSE -> onPause()
-                        Lifecycle.Event.ON_DESTROY -> onDestroy()
+                        //OnDestroy 方法需要在OnDestroyView中调用
+                        Lifecycle.Event.ON_DESTROY -> {
+                            if (!_isDestory) {
+                                onDestroyR()
+                            }
+                        }
                         else -> Unit
                     }
                 }
             })
         }
+    }
+
+    var _isDestory = false
+
+    fun onCreateR(savedInstanceState: Bundle?) {
+        _isDestory = false
+        onCreate(savedInstanceState)
+    }
+
+    fun onDestroyR() {
+        _isDestory = true
+        onDestroy()
     }
 
     //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
