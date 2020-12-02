@@ -167,25 +167,31 @@ class DslMarker : AMap.InfoWindowAdapter {
         return null
     }
 
+    val isEnableInfoWindow: Boolean = false
+
     var _infoWindow: View? = null
 
     /**如果此方法返回的 View 没有设置 InfoWindow 背景图，SDK 会默认添加一个背景图。*/
     override fun getInfoWindow(marker: Marker): View? {
         //do something
         L.i("getInfoWindow title:${marker.title} snippet:${marker.snippet}")
-        if (_infoWindow == null) {
-            val context = _context
-            _infoWindow = LayoutInflater.from(context).inflate(
-                R.layout.map_info_window_layout,
-                FrameLayout(context),
-                false
-            )
+        if (isEnableInfoWindow) {
+            if (_infoWindow == null) {
+                val context = _context
+                _infoWindow = LayoutInflater.from(context).inflate(
+                    R.layout.map_info_window_layout,
+                    FrameLayout(context),
+                    false
+                )
+            }
+            _infoWindow?.apply {
+                find<TextView>(R.id.lib_title_view)?.text = marker.title
+                find<TextView>(R.id.lib_des_view)?.text = marker.snippet
+            }
+            return _infoWindow
+        } else {
+            return null
         }
-        _infoWindow?.apply {
-            find<TextView>(R.id.lib_title_view)?.text = marker.title
-            find<TextView>(R.id.lib_des_view)?.text = marker.snippet
-        }
-        return _infoWindow
     }
 
     //</editor-fold desc="初始化">
