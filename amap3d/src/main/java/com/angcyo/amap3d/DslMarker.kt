@@ -71,6 +71,10 @@ class DslMarker : AMap.InfoWindowAdapter {
     /**配置[Marker]选中后的样式, 如果为null, 将关闭[Marker]选择切换回调*/
     var markerSelectedOptions: MarkerOptions? = null
 
+    var markerSelectedOptionsAction: (Marker) -> MarkerOptions? = {
+        markerSelectedOptions
+    }
+
     /**[Marker]选中切换回调, 需要配置[markerSelectedOptions].
      * */
     var markerSelectedAction: (Marker?) -> Unit = {
@@ -103,36 +107,47 @@ class DslMarker : AMap.InfoWindowAdapter {
         map.setInfoWindowAdapter(this)
 
         map.onCameraChangeListener(change = {
-            if (it.zoom <= toHeatMapZoom) {
-                //进入热力图模式
-                if (!isHeatOverlay) {
-                    changeToHeat()
-                }
-            } else {
-                //显示所有的[Marker]
-                if (isHeatOverlay) {
-                    changeToMarker()
-                }
-            }
+            handlerCameraChange(it)
         })
 
         map.onMarkerClickListener {
-            if (isEnableSelect) {
-                selectMarker(it)
-                true
-            } else {
-                false
-            }
-
+            handlerMarkerClick(it)
         }
 
         map.onMapClickListener {
-            if (isEnableSelect) {
-                selectMarker(null)
+            handlerMapClick(it)
+        }
+    }
+
+    fun handlerMapClick(it: LatLng) {
+        if (isEnableSelect) {
+            selectMarker(null)
+        }
+        if (isHeatOverlay) {
+            //热力图状态下, 点击地图. 移动到最近的一个Marker
+            map?.moveTo(findLatelyLatLng(it), touchMoveMapZoom)
+        }
+    }
+
+    fun handlerMarkerClick(it: Marker): Boolean {
+        return if (isEnableSelect) {
+            selectMarker(it)
+            true
+        } else {
+            false
+        }
+    }
+
+    fun handlerCameraChange(it: CameraPosition) {
+        if (it.zoom <= toHeatMapZoom) {
+            //进入热力图模式
+            if (!isHeatOverlay) {
+                changeToHeat()
             }
+        } else {
+            //显示所有的[Marker]
             if (isHeatOverlay) {
-                //热力图状态下, 点击地图. 移动到最近的一个Marker
-                map.moveTo(findLatelyLatLng(it), touchMoveMapZoom)
+                changeToMarker()
             }
         }
     }
@@ -250,6 +265,15 @@ class DslMarker : AMap.InfoWindowAdapter {
         }
     }
 
+    /**清空所有Marker*/
+    fun clearAllMarker() {
+        selectMarker(null)
+        _allMarker.forEach {
+            it.remove()
+        }
+        _allMarker.clear()
+    }
+
     //</editor-fold desc="热力图操作">
 
     //<editor-fold desc="选择切换">
@@ -308,7 +332,7 @@ class DslMarker : AMap.InfoWindowAdapter {
                 currentSelectedMarker?.isVisible = false
 
                 //显示替身
-                markerSelectedOptions?.let {
+                markerSelectedOptionsAction(this@apply)?.let {
                     it.position(marker.position)
                     currentSelectedShowMarker = addMarker(it)
                 }
@@ -369,9 +393,9 @@ class DslMarker : AMap.InfoWindowAdapter {
     }
 
     /**优先使用相同位置的[Marker]*/
-    fun resetMarker(
+    fun <T> resetMarker(
         latLng: LatLng,
-        data: Any? = null,
+        data: T? = null,
         icon: BitmapDescriptor? = null,
         action: MarkerOptions.() -> Unit = {}
     ) {
@@ -402,11 +426,11 @@ class DslMarker : AMap.InfoWindowAdapter {
         }
     }
 
-    fun resetMarker(
+    fun <T> resetMarker(
         latLngList: List<LatLng>?,
-        dataList: List<Any?>? = null,
+        dataList: List<T?>? = null,
         icon: BitmapDescriptor? = null,
-        action: MarkerOptions.(data: Any?, index: Int) -> Unit = { _, _ -> }
+        action: MarkerOptions.(data: T?, index: Int) -> Unit = { _, _ -> }
     ) {
         val existLatLngList = ArrayList(getAllMarkerLatLng())
         latLngList?.forEachIndexed { index, latLng ->
@@ -414,6 +438,27 @@ class DslMarker : AMap.InfoWindowAdapter {
             val data = dataList?.getOrNull(index)
             resetMarker(latLng, data, icon) {
                 action(data, index)
+            }
+        }
+
+        //剩下的LatLng, 就是需要移除的
+        existLatLngList.forEach {
+            removeMarker(it)
+        }
+    }
+
+    fun <T> resetMarker(
+        latLngList: List<LatLng>?,
+        dataList: List<T?>? = null,
+        iconAction: (LatLng, T?) -> BitmapDescriptor?,
+        action: MarkerOptions.(LatLng, data: T?, index: Int) -> Unit = { _, _, _ -> }
+    ) {
+        val existLatLngList = ArrayList(getAllMarkerLatLng())
+        latLngList?.forEachIndexed { index, latLng ->
+            existLatLngList.remove(latLng)
+            val data = dataList?.getOrNull(index)
+            resetMarker(latLng, data, iconAction(latLng, data)) {
+                action(latLng, data, index)
             }
         }
 
@@ -596,7 +641,7 @@ fun MarkerOptions.icon(res: Int) {
     icon(markerIcon(res))
 }
 
-fun markerIcon(res: Int) = BitmapDescriptorFactory.fromResource(res)
+fun markerIcon(resId: Int) = BitmapDescriptorFactory.fromResource(resId)
 
 fun markerIcon(view: View) = BitmapDescriptorFactory.fromView(view)
 
