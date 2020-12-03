@@ -34,4 +34,10 @@ dependencies {
 
     //https://github.com/duanhong169/ColorPicker
     api 'com.github.duanhong169:colorpicker:1.1.6'
+
+    //https://github.com/BelooS/ChipsLayoutManager
+    //api 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
+
+    //https://github.com/google/flexbox-layout
+    //api 'com.google.android:flexbox:2.0.1'
 }

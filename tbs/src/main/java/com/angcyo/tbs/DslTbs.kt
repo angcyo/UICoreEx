@@ -106,7 +106,7 @@ class DslTbs {
                         })
                     }
                 } catch (e: Exception) {
-                    L.e(e)
+                    L.w(e)
                 }
             }
         }
