@@ -52,9 +52,18 @@ https://lbs.amap.com/api/javascript-api/guide/transform/convertfrom/
 
 请在[gradle.properties]中配置[baidu_ak].
 
-2. 初始化
+2. 配置相关参数
 ```kotlin
-com.angcyo.baidu.trace.DslBaiduTrace.initTrace
+com.angcyo.baidu.trace.DslBaiduTrace
+#serviceId
+#entityName
+```
+
+3. 开始轨迹/结束轨迹服务
+
+```
+com.angcyo.baidu.trace.DslBaiduTrace.startTrace
+com.angcyo.baidu.trace.DslBaiduTrace.ststopTracertTrace
 ```
 
 
