@@ -3,6 +3,8 @@ package com.angcyo.baidu.trace
 import android.content.Context
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.component.DslNotify
+import com.angcyo.library.component.dslBuildNotify
 import com.angcyo.library.component.isNetworkAvailable
 import com.baidu.trace.LBSTraceClient
 import com.baidu.trace.Trace
@@ -34,6 +36,13 @@ class DslBaiduTrace {
 
     // 设备标识
     var entityName: String? = null
+        set(value) {
+            if (!field.isNullOrEmpty() && field != value) {
+                //停止之前的轨迹
+                stopTrace()
+            }
+            field = value
+        }
 
     // 是否需要对象存储服务，默认为：false，关闭对象存储服务。
     // 注：鹰眼 Android SDK v3.0以上版本支持随轨迹上传图像等对象数据，
@@ -57,10 +66,11 @@ class DslBaiduTrace {
     /**
      * 开启轨迹服务
      * http://lbsyun.baidu.com/index.php?title=android-yingyan/guide/hellotrace*/
-    fun startTrace(context: Context) {
+    fun startTrace(context: Context = app()) {
         if (_traceClient == null) {
 
             if (!_checkConfig()) {
+                L.e("轨迹配置失败, 请检查!")
                 return
             }
 
@@ -81,7 +91,12 @@ class DslBaiduTrace {
             // 开启服务
             _traceClient?.startTrace(_trace, traceListener)
         } else {
-            L.w("已有轨迹服务开启")
+            if (isTraceStart) {
+                L.w("已有轨迹服务开启")
+            } else {
+                // 开启服务
+                _traceClient?.startTrace(_trace, traceListener)
+            }
         }
     }
 
@@ -106,6 +121,19 @@ class DslBaiduTrace {
     fun stopGather() {
         // 停止采集
         _traceClient?.stopGather(traceListener)
+    }
+
+    /**通知栏保活*/
+    fun showNotify(init: DslNotify.() -> Unit = {}) {
+        val trace = _trace
+        if (trace == null) {
+            L.w("请先初始化")
+        } else {
+            trace.notification = dslBuildNotify {
+                channelName = "BaiduTrace"
+                init()
+            }
+        }
     }
 
     //</editor-fold desc="操作项">
@@ -218,7 +246,7 @@ class DslBaiduTrace {
          * <pre>1：失败</pre>
          */
         override fun onBindServiceCallback(status: Int, message: String?) {
-            L.i(status, "->", message)
+            L.i(status, "->", message, " $serviceId $entityName")
         }
 
         override fun onInitBOSCallback(status: Int, message: String?) {
@@ -246,13 +274,13 @@ class DslBaiduTrace {
     //自定义属性回调
     //http://mapopen-pub-yingyan.cdn.bcebos.com/androidsdk/doc/v3.1.7/index.html
     var customAttributeListener: OnCustomAttributeListener? = object : OnCustomAttributeListener {
-        override fun onTrackAttributeCallback(): MutableMap<String, String> {
-            return hashMapOf()
+        override fun onTrackAttributeCallback(): MutableMap<String, String>? {
+            return null
         }
 
         //locTime - 回调时定位点的时间戳（毫秒）
-        override fun onTrackAttributeCallback(locTime: Long): MutableMap<String, String> {
-            return hashMapOf()
+        override fun onTrackAttributeCallback(locTime: Long): MutableMap<String, String>? {
+            return hashMapOf("locTime" to "$locTime")
         }
     }
 

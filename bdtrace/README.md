@@ -65,6 +65,11 @@ com.angcyo.baidu.trace.DslBaiduTrace
 com.angcyo.baidu.trace.DslBaiduTrace.startTrace
 com.angcyo.baidu.trace.DslBaiduTrace.ststopTracertTrace
 ```
+4. 开始采集/结束采集
 
+```
+com.angcyo.baidu.trace.DslBaiduTrace.startGather
+com.angcyo.baidu.trace.DslBaiduTrace.stopGather
+```
 
   
