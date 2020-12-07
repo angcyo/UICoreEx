@@ -1,10 +1,14 @@
 package com.angcyo.jpush
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cn.jpush.android.api.CustomMessage
 import cn.jpush.android.api.JPushMessage
 import cn.jpush.android.api.NotificationMessage
+import com.angcyo.core.vmApp
+import com.angcyo.viewmodel.observe
+import com.angcyo.viewmodel.observeOnce
 
 /**
  * 所有消息, 如果仅需要使用一次, 那么在监听到数据后, 需要手动清理. 否则回收缓存.
@@ -35,4 +39,23 @@ class JPushModel : ViewModel() {
 
     /**手机号码操作数据监听*/
     val mobileMessageData: MutableLiveData<JPushMessage> = MutableLiveData()
+}
+
+/**延迟到JPush连接成功之后回调*/
+fun LifecycleOwner.onJPushConnected(action: () -> Unit) {
+    vmApp<JPushModel>().connectedData.observeOnce(this) {
+        if (it == true) {
+            action()
+        }
+    }
+}
+
+/**监听JPush的自定义消息
+ * [autoClear] 自动移除消息*/
+fun LifecycleOwner.onJPushCustomMessage(autoClear: Boolean = true, action: (String) -> Unit) {
+    vmApp<JPushModel>().customMessageData.observe(this, autoClear) {
+        if (it != null) {
+            action(it.message)
+        }
+    }
 }

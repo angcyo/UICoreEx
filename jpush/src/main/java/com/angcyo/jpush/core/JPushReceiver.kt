@@ -2,6 +2,7 @@ package com.angcyo.jpush.core
 
 import android.content.Context
 import android.content.Intent
+import cn.jiguang.api.JCoreInterface
 import cn.jpush.android.api.*
 import cn.jpush.android.service.JPushMessageReceiver
 import com.angcyo.core.vmCore
@@ -17,14 +18,22 @@ import com.angcyo.library.L
  */
 class JPushReceiver : JPushMessageReceiver() {
 
-    /**收到了自定义消息*/
+    /**收到了自定义消息
+     * ```
+     * CustomMessage{messageId='58546898952892463', extra='', message='test1', contentType='', title='', senderId='ce1dbcc87fb0ae51c3bfa8e7', appId='com.wayto.plugin.rjappraise'}
+     * ```
+     * */
     override fun onMessage(context: Context?, customMessage: CustomMessage?) {
         super.onMessage(context, customMessage)
         L.i("[onMessage] $customMessage")
         vmCore<JPushModel>().customMessageData.postValue(customMessage)
     }
 
-    /**收到了极光后台推送过来的消息, 会自动显示通知栏*/
+    /**收到了极光后台推送过来的消息, 会自动显示通知栏
+     * ```
+     * NotificationMessage{notificationId=516686706, msgId='20266307272951157', appkey='ce1dbcc87fb0ae51c3bfa8e7', notificationContent='test2', notificationAlertType=7, notificationTitle='test1', notificationSmallIcon='', notificationLargeIcon='', notificationExtras='{}', notificationStyle=0, notificationBuilderId=0, notificationBigText='', notificationBigPicPath='', notificationInbox='', notificationPriority=0, notificationCategory='', developerArg0='', platform=0, notificationChannelId='', displayForeground='', notificationType=0', inAppMsgType=1', inAppMsgShowType=2', inAppMsgShowPos=0', inAppMsgTitle=, inAppMsgContentBody=}
+     * ```
+     * */
     override fun onNotifyMessageArrived(context: Context?, message: NotificationMessage) {
         super.onNotifyMessageArrived(context, message)
         L.i("[onNotifyMessageArrived] $message")
@@ -53,7 +62,7 @@ class JPushReceiver : JPushMessageReceiver() {
     /**是否连接到极光后台*/
     override fun onConnected(context: Context?, isConnected: Boolean) {
         super.onConnected(context, isConnected)
-        L.i("[onConnected] $isConnected")
+        L.i("[onConnected] $isConnected ${JCoreInterface.getRegistrationID(context)}")
         vmCore<JPushModel>().connectedData.postValue(isConnected)
     }
 
@@ -90,20 +99,20 @@ class JPushReceiver : JPushMessageReceiver() {
     /**标签操作返回回调*/
     override fun onTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onTagOperatorResult(context, jPushMessage)
-        L.i("[onTagOperatorResult] $jPushMessage")
+        L.i("[onTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
 
         vmCore<JPushModel>().tagMessageData.postValue(jPushMessage)
     }
 
     override fun onCheckTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onCheckTagOperatorResult(context, jPushMessage)
-        L.i("[onCheckTagOperatorResult] $jPushMessage")
+        L.i("[onCheckTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
     }
 
     /**别名操作返回回调*/
     override fun onAliasOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onAliasOperatorResult(context, jPushMessage)
-        L.i("[onAliasOperatorResult] $jPushMessage")
+        L.i("[onAliasOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
 
         vmCore<JPushModel>().aliasMessageData.postValue(jPushMessage)
     }
@@ -111,7 +120,7 @@ class JPushReceiver : JPushMessageReceiver() {
     /**手机号码设置操作返回回调*/
     override fun onMobileNumberOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onMobileNumberOperatorResult(context, jPushMessage)
-        L.i("[onMobileNumberOperatorResult] $jPushMessage")
+        L.i("[onMobileNumberOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
 
         vmCore<JPushModel>().mobileMessageData.postValue(jPushMessage)
     }
@@ -125,4 +134,4 @@ class JPushReceiver : JPushMessageReceiver() {
 /**消息是否成功
  * 错误码:https://docs.jiguang.cn/jpush/client/Android/android_api/#_153
  * */
-fun JPushMessage.isSucceed() = errorCode == 0
+fun JPushMessage?.isSucceed() = this?.errorCode == 0

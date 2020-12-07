@@ -1,12 +1,16 @@
 package com.angcyo.baidu.trace
 
+import android.Manifest
 import android.content.Context
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.dslBuildNotify
 import com.angcyo.library.component.isNetworkAvailable
+import com.angcyo.library.ex.havePermissions
 import com.angcyo.library.getAppName
+import com.angcyo.library.utils.Device
+import com.angcyo.library.utils.getIMEI
 import com.baidu.trace.LBSTraceClient
 import com.baidu.trace.Trace
 import com.baidu.trace.api.entity.*
@@ -292,7 +296,13 @@ class DslBaiduTrace {
 
         //locTime - 回调时定位点的时间戳（毫秒）
         override fun onTrackAttributeCallback(locTime: Long): MutableMap<String, String>? {
-            return hashMapOf("locTime" to "$locTime")
+            val result = hashMapOf<String, String>()
+            result["deviceId"] = Device.deviceId
+            result["androidId"] = Device.androidId
+            if (app().havePermissions(Manifest.permission.READ_PHONE_STATE)) {
+                result["imei"] = app().getIMEI(log = false) ?: ""
+            }
+            return result
         }
     }
 
