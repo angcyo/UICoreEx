@@ -6,6 +6,7 @@ import com.angcyo.library.app
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.dslBuildNotify
 import com.angcyo.library.component.isNetworkAvailable
+import com.angcyo.library.getAppName
 import com.baidu.trace.LBSTraceClient
 import com.baidu.trace.Trace
 import com.baidu.trace.api.entity.*
@@ -31,10 +32,16 @@ class DslBaiduTrace {
 
     //<editor-fold desc="配置项">
 
-    // 轨迹服务ID
+    /**
+     * 轨迹服务ID
+     *
+     * http://lbsyun.baidu.com/trace/admin/service
+     * */
     var serviceId: Long = -1
 
-    // 设备标识
+    /**
+     * 设备标识
+     * */
     var entityName: String? = null
         set(value) {
             if (!field.isNullOrEmpty() && field != value) {
@@ -55,10 +62,19 @@ class DslBaiduTrace {
     // 打包回传周期(单位:秒) 2~300秒。
     var packInterval = 10
 
+    /**通知栏保活*/
+    var showNotify: Boolean = false
+
+    /**通知栏配置*/
+    var configNotify: DslNotify.() -> Unit = {
+
+    }
+
     //</editor-fold desc="配置项">
 
     //轨迹服务客户端
     var _traceClient: LBSTraceClient? = null
+
     var _trace: Trace? = null
 
     //<editor-fold desc="操作项">
@@ -76,6 +92,15 @@ class DslBaiduTrace {
 
             // 初始化轨迹服务
             _trace = Trace(serviceId, entityName, isNeedObjectStorage)
+
+            if (showNotify) {
+                _trace?.notification = dslBuildNotify {
+                    channelName = "BaiduTrace"
+                    notifyTitle = getAppName()
+                    notifyText = "轨迹服务正在运行..."
+                    configNotify()
+                }
+            }
 
             // 初始化轨迹服务客户端
             _traceClient = LBSTraceClient(context).apply {
@@ -121,19 +146,6 @@ class DslBaiduTrace {
     fun stopGather() {
         // 停止采集
         _traceClient?.stopGather(traceListener)
-    }
-
-    /**通知栏保活*/
-    fun showNotify(init: DslNotify.() -> Unit = {}) {
-        val trace = _trace
-        if (trace == null) {
-            L.w("请先初始化")
-        } else {
-            trace.notification = dslBuildNotify {
-                channelName = "BaiduTrace"
-                init()
-            }
-        }
     }
 
     //</editor-fold desc="操作项">

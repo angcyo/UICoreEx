@@ -55,9 +55,13 @@ https://lbs.amap.com/api/javascript-api/guide/transform/convertfrom/
 2. 配置相关参数
 ```kotlin
 com.angcyo.baidu.trace.DslBaiduTrace
-#serviceId
+#serviceId  
 #entityName
 ```
+
+serviceId申请地址 
+
+http://lbsyun.baidu.com/trace/admin/service
 
 3. 开始轨迹/结束轨迹服务
 
