@@ -7,6 +7,8 @@ import com.angcyo.library.app
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.component.dslBuildNotify
 import com.angcyo.library.component.isNetworkAvailable
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.generateInt
 import com.angcyo.library.ex.havePermissions
 import com.angcyo.library.getAppName
 import com.angcyo.library.utils.Device
@@ -44,7 +46,7 @@ class DslBaiduTrace {
     var serviceId: Long = -1
 
     /**
-     * 设备标识
+     * 设备标识, 不能包含空格等其他符号
      * */
     var entityName: String? = null
         set(value) {
@@ -152,6 +154,28 @@ class DslBaiduTrace {
         _traceClient?.stopGather(traceListener)
     }
 
+    /**
+     * 更新[Entity]信息, 比如entity属性字段
+     * @return 返回请求的tag*/
+    fun updateEntity(config: UpdateEntityRequest.() -> Unit): Int {
+        val tag = generateInt()
+        if (_checkConfig()) {
+            _traceClient?.let {
+                it.updateEntity(
+                    UpdateEntityRequest(tag, serviceId, entityName).apply(config),
+                    object : OnEntityListener() {
+                        override fun onUpdateEntityCallback(response: UpdateEntityResponse?) {
+                            L.i(response)
+                        }
+                    }
+                )
+            }.elseNull {
+                L.e("请先调用[startTrace]")
+            }
+        }
+        return tag
+    }
+
     //</editor-fold desc="操作项">
 
     fun _checkConfig(): Boolean {
@@ -195,7 +219,7 @@ class DslBaiduTrace {
          * <pre>10006：服务已开启</pre>
          */
         override fun onStartTraceCallback(status: Int, message: String?) {
-            L.i(status, "->", message)
+            L.i(status, "->", message, " startGather:$autoTraceStart $entityName")
             isTraceStart = status == 0
             if (autoTraceStart && status == 0) {
                 // 开启采集
@@ -290,11 +314,16 @@ class DslBaiduTrace {
     //自定义属性回调
     //http://mapopen-pub-yingyan.cdn.bcebos.com/androidsdk/doc/v3.1.7/index.html
     var customAttributeListener: OnCustomAttributeListener? = object : OnCustomAttributeListener {
+
+        /**此方法测试未通过*/
         override fun onTrackAttributeCallback(): MutableMap<String, String>? {
             return null
         }
 
-        //locTime - 回调时定位点的时间戳（毫秒）
+        /**
+         * locTime - 回调时定位点的时间戳（毫秒）
+         * 更新track属性字段, 更新entity属性字段请使用[updateEntity]
+         * */
         override fun onTrackAttributeCallback(locTime: Long): MutableMap<String, String>? {
             val result = hashMapOf<String, String>()
             result["deviceId"] = Device.deviceId
