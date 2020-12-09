@@ -311,6 +311,8 @@ class DslBaiduTrace {
         }
     }
 
+    var customAttributeAction: () -> Map<String, String> = { emptyMap() }
+
     //自定义属性回调
     //http://mapopen-pub-yingyan.cdn.bcebos.com/androidsdk/doc/v3.1.7/index.html
     var customAttributeListener: OnCustomAttributeListener? = object : OnCustomAttributeListener {
@@ -331,6 +333,7 @@ class DslBaiduTrace {
             if (app().havePermissions(Manifest.permission.READ_PHONE_STATE)) {
                 result["imei"] = app().getIMEI(log = false) ?: ""
             }
+            result.putAll(customAttributeAction())
             return result
         }
     }
