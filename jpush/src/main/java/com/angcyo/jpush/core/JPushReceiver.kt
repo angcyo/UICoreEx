@@ -5,6 +5,7 @@ import android.content.Intent
 import cn.jiguang.api.JCoreInterface
 import cn.jpush.android.api.*
 import cn.jpush.android.service.JPushMessageReceiver
+import com.angcyo.core.component.file.DslFileHelper
 import com.angcyo.core.vmCore
 import com.angcyo.jpush.JPushModel
 import com.angcyo.library.L
@@ -25,7 +26,9 @@ class JPushReceiver : JPushMessageReceiver() {
      * */
     override fun onMessage(context: Context?, customMessage: CustomMessage?) {
         super.onMessage(context, customMessage)
-        L.i("[onMessage] $customMessage")
+        L.i("[onMessage] $customMessage".apply {
+            DslFileHelper.push(data = this)
+        })
         vmCore<JPushModel>().customMessageData.postValue(customMessage)
     }
 
@@ -36,7 +39,9 @@ class JPushReceiver : JPushMessageReceiver() {
      * */
     override fun onNotifyMessageArrived(context: Context?, message: NotificationMessage) {
         super.onNotifyMessageArrived(context, message)
-        L.i("[onNotifyMessageArrived] $message")
+        L.i("[onNotifyMessageArrived] $message".apply {
+            DslFileHelper.push(data = this)
+        })
         vmCore<JPushModel>().notificationMessageData.postValue(message)
     }
 
@@ -55,14 +60,18 @@ class JPushReceiver : JPushMessageReceiver() {
     /**设备注册成功*/
     override fun onRegister(context: Context?, registrationId: String) {
         super.onRegister(context, registrationId)
-        L.i("[onRegister] $registrationId")
+        L.i("[onRegister] $registrationId".apply {
+            DslFileHelper.push(data = this)
+        })
         vmCore<JPushModel>().registrationIdData.postValue(registrationId)
     }
 
     /**是否连接到极光后台*/
     override fun onConnected(context: Context?, isConnected: Boolean) {
         super.onConnected(context, isConnected)
-        L.i("[onConnected] $isConnected ${JCoreInterface.getRegistrationID(context)}")
+        L.i("[onConnected] $isConnected ${JCoreInterface.getRegistrationID(context)}".apply {
+            DslFileHelper.push(data = this)
+        })
         vmCore<JPushModel>().connectedData.postValue(isConnected)
     }
 
@@ -91,7 +100,9 @@ class JPushReceiver : JPushMessageReceiver() {
 
     override fun onCommandResult(context: Context?, cmdMessage: CmdMessage) {
         super.onCommandResult(context, cmdMessage)
-        L.i("[onCommandResult] $cmdMessage")
+        L.i("[onCommandResult] $cmdMessage".apply {
+            DslFileHelper.push(data = this)
+        })
     }
 
     /*http://docs.jiguang.cn/jpush/client/Android/android_api/#_77*/
@@ -99,20 +110,26 @@ class JPushReceiver : JPushMessageReceiver() {
     /**标签操作返回回调*/
     override fun onTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onTagOperatorResult(context, jPushMessage)
-        L.i("[onTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
+        L.i("[onTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage".apply {
+            DslFileHelper.push(data = this)
+        })
 
         vmCore<JPushModel>().tagMessageData.postValue(jPushMessage)
     }
 
     override fun onCheckTagOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onCheckTagOperatorResult(context, jPushMessage)
-        L.i("[onCheckTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
+        L.i("[onCheckTagOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage".apply {
+            DslFileHelper.push(data = this)
+        })
     }
 
     /**别名操作返回回调*/
     override fun onAliasOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onAliasOperatorResult(context, jPushMessage)
-        L.i("[onAliasOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
+        L.i("[onAliasOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage".apply {
+            DslFileHelper.push(data = this)
+        })
 
         vmCore<JPushModel>().aliasMessageData.postValue(jPushMessage)
     }
@@ -120,14 +137,18 @@ class JPushReceiver : JPushMessageReceiver() {
     /**手机号码设置操作返回回调*/
     override fun onMobileNumberOperatorResult(context: Context?, jPushMessage: JPushMessage?) {
         super.onMobileNumberOperatorResult(context, jPushMessage)
-        L.i("[onMobileNumberOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage")
+        L.i("[onMobileNumberOperatorResult] ${jPushMessage.isSucceed()} $jPushMessage".apply {
+            DslFileHelper.push(data = this)
+        })
 
         vmCore<JPushModel>().mobileMessageData.postValue(jPushMessage)
     }
 
     override fun onNotificationSettingsCheck(context: Context?, isOn: Boolean, source: Int) {
         super.onNotificationSettingsCheck(context, isOn, source)
-        L.i("[onNotificationSettingsCheck] isOn:$isOn,source:$source")
+        L.i("[onNotificationSettingsCheck] isOn:$isOn,source:$source".apply {
+            DslFileHelper.push(data = this)
+        })
     }
 }
 
