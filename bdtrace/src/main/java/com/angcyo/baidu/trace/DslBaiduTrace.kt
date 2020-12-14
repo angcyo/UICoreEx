@@ -66,7 +66,7 @@ class DslBaiduTrace {
     var gatherInterval = 5
 
     // 打包回传周期(单位:秒) 2~300秒。
-    var packInterval = 10
+    var packInterval = 30
 
     /**通知栏保活*/
     var showNotify: Boolean = false
