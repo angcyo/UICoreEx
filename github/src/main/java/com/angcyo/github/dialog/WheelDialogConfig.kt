@@ -21,7 +21,7 @@ import com.contrarywind.view.WheelView
 open class WheelDialogConfig : BaseDialogConfig() {
 
     /**数据集合*/
-    var wheelItems = mutableListOf<Any>()
+    var wheelItems: MutableList<Any>? = null
 
     /**是否无限循环*/
     var wheelCyclic = false
@@ -52,8 +52,8 @@ open class WheelDialogConfig : BaseDialogConfig() {
         dialogLayoutId = R.layout.lib_dialog_wheel_layout
 
         positiveButtonListener = { dialog, _ ->
-            if (_selectedIndex in 0 until wheelItems.size &&
-                wheelItemSelectorAction.invoke(dialog, _selectedIndex, wheelItems[_selectedIndex])
+            if (_selectedIndex in 0 until (wheelItems?.size ?: 0) &&
+                wheelItemSelectorAction.invoke(dialog, _selectedIndex, wheelItems!![_selectedIndex])
             ) {
             } else {
                 dialog.dismiss()
@@ -64,12 +64,12 @@ open class WheelDialogConfig : BaseDialogConfig() {
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
 
-        dialogViewHolder.enable(R.id.positive_button, wheelItems.isNotEmpty())
+        dialogViewHolder.enable(R.id.positive_button, !wheelItems.isNullOrEmpty())
 
         dialogViewHolder.v<WheelView>(R.id.lib_wheel_view)?.apply {
             val stringList = mutableListOf<CharSequence>()
 
-            for (item in wheelItems) {
+            for (item in wheelItems ?: emptyList()) {
                 stringList.add(wheelItemToStringAction.invoke(item))
             }
 
@@ -83,18 +83,24 @@ open class WheelDialogConfig : BaseDialogConfig() {
             setCyclic(wheelCyclic)
 
             //wheel 在没有滑动的时候, 是不会触发[SelectedListener]的
-            currentItem = if (wheelSelectedIndex in 0 until wheelItems.size) {
+            currentItem = if (wheelSelectedIndex in 0 until (wheelItems?.size ?: 0)) {
                 wheelSelectedIndex
             } else {
                 0
             }
             _selectedIndex = currentItem
         }
+
+        //空数据提示
+        dialogViewHolder.visible(R.id.lib_empty_view, wheelItems.isNullOrEmpty())
     }
 
     /**添加Item*/
     fun addDialogItem(any: Any) {
-        wheelItems.add(any)
+        if (wheelItems == null) {
+            wheelItems = mutableListOf()
+        }
+        wheelItems?.add(any)
     }
 }
 

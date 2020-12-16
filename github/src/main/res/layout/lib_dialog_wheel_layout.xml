@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_white_top_round_bg_shape"
@@ -27,7 +28,20 @@
             android:id="@+id/lib_wheel_view"
             style="@style/LibWheelStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:visibility="visible" />
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/lib_empty_view"
+            style="@style/LibMainTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/lib_hdpi"
+            android:text="暂无数据"
+            android:textColor="@color/text_sub_color"
+            android:visibility="gone" />
     </com.angcyo.widget.layout.RFrameLayout>
 
 </LinearLayout>

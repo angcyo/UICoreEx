@@ -22,7 +22,7 @@ import com.angcyo.widget.DslViewHolder
 open class DslLabelWheelItem : DslBaseLabelItem() {
 
     /**数据集合*/
-    var itemWheelList = mutableListOf<Any>()
+    var itemWheelList: List<Any>? = null
 
     /**设置选中项, -1不设置*/
     var itemSelectedIndex = -1
@@ -67,7 +67,7 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(R.id.lib_text_view)?.apply {
             itemTextStyle.updateStyle(this)
-            text = itemWheelList.getOrNull(itemSelectedIndex)?.run {
+            text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
             }
         }
@@ -79,7 +79,7 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
         context.wheelDialog {
             dialogTitle = itemLabelText
 
-            wheelItems = itemWheelList
+            wheelItems = itemWheelList?.toMutableList()
 
             wheelItemToStringAction = itemWheelToText
 
@@ -109,7 +109,7 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
 /**快速获取对应Item的值*/
 fun DslAdapterItem.itemWheelValue(): Any? {
     return if (this is DslLabelWheelItem) {
-        itemWheelList.getOrNull(itemSelectedIndex)
+        itemWheelList?.getOrNull(itemSelectedIndex)
     } else {
         null
     }
@@ -117,7 +117,7 @@ fun DslAdapterItem.itemWheelValue(): Any? {
 
 fun <T> DslAdapterItem.itemWheelBean(): T? {
     return if (this is DslLabelWheelItem) {
-        itemWheelList.getOrNull(itemSelectedIndex) as T?
+        itemWheelList?.getOrNull(itemSelectedIndex) as T?
     } else {
         null
     }
@@ -125,7 +125,7 @@ fun <T> DslAdapterItem.itemWheelBean(): T? {
 
 inline fun <reified DATA> DslAdapterItem.itemWheelData(): DATA? {
     return if (this is DslLabelWheelItem) {
-        itemWheelList.getOrNull(itemSelectedIndex) as DATA?
+        itemWheelList?.getOrNull(itemSelectedIndex) as DATA?
     } else {
         null
     }
