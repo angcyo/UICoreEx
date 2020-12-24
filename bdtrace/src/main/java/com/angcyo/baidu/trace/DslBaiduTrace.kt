@@ -166,7 +166,7 @@ class DslBaiduTrace {
                     UpdateEntityRequest(tag, serviceId, entityName).apply(config),
                     object : OnEntityListener() {
                         override fun onUpdateEntityCallback(response: UpdateEntityResponse?) {
-                            L.i(response)
+                            L.i("$serviceId $entityName $response")
                         }
                     }
                 )
