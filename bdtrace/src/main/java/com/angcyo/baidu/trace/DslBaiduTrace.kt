@@ -134,6 +134,7 @@ class DslBaiduTrace {
     /**停止轨迹服务*/
     fun stopTrace() {
         // 停止服务
+        stopGather()
         _traceClient?.stopTrace(_trace, traceListener)
         _traceClient = null
     }
@@ -223,7 +224,7 @@ class DslBaiduTrace {
             isTraceStart = status == 0
             if (autoTraceStart && status == 0) {
                 // 开启采集
-                _traceClient?.startGather(this)
+                startGather()
             }
         }
 
