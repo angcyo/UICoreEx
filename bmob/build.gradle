@@ -28,4 +28,7 @@ dependencies {
 
     //如果需要兼容Android6.0系统，请添加以下两项：
     //implementation 'cn.bmob.android:http-legacy:1.0'
+
+    //https://dl.bintray.com/chaozhouzhang/maven/cn/bmob/android/bmob-sdk/
+    //maven {url 'https://dl.bintray.com/chaozhouzhang/maven' }
 }
