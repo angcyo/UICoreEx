@@ -15,6 +15,8 @@ import io.reactivex.disposables.Disposables
  *
  * 由于Bmob Sdk设计的, 所有二次封装的Listener都会崩溃, 所以封装只能用于参考, 不能用于实际操作.
  *
+ * 错误码
+ * http://doc.bmob.cn/other/error_code/#androidsdk
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/02/07

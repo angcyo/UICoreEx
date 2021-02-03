@@ -24,7 +24,7 @@ class DslBmobQuery<T> : BmobQuery<T>() {
 
     var updateAction: ((ex: BmobException?) -> Unit)? = null
 
-    var saveAction: ((data: T?, ex: BmobException?) -> Unit)? = null
+    var saveAction: ((objectId: String?, ex: BmobException?) -> Unit)? = null
 }
 
 //<editor-fold desc="查询相关">
@@ -122,9 +122,45 @@ fun <T : BmobObject> bmobSave(bmobObj: T, config: DslBmobQuery<T>.() -> Unit) {
     bmobObj.save(object : SaveListener<String>() {
 
         override fun done(objectId: String?, ex: BmobException?) {
-            query.saveAction?.invoke(bmobObj, ex)
+            query.saveAction?.invoke(objectId, ex)
         }
     })
 }
+
+/**更新或者保存一行数据
+ * [updateAction] 回调*/
+inline fun <reified T : BmobObject> bmobUpdateOrSave(
+    bmobObj: T,
+    config: DslBmobQuery<T>.() -> Unit
+) {
+    val query = DslBmobQuery<T>()
+    query.config()
+
+    bmobGets<T> {
+        config()
+        getsAction = { dataList, ex ->
+            if (dataList.isNullOrEmpty() || ex?.errorCode == 101) {
+                //查询的 对象或Class 不存在 或者 登录接口的用户名或密码不正确
+                //没找到, 保存对象
+                bmobSave(bmobObj) {
+                    saveAction = { objectId, ex ->
+                        query.updateAction?.invoke(ex)
+                    }
+                }
+            } else if (ex == null) {
+                //找到了, 更新对象
+                bmobObj.objectId = dataList.firstOrNull()?.objectId
+                bmobUpdate(bmobObj) {
+                    updateAction = { ex ->
+                        query.updateAction?.invoke(ex)
+                    }
+                }
+            } else {
+                query.updateAction?.invoke(ex)
+            }
+        }
+    }
+}
+
 
 //</editor-fold desc="保存相关">

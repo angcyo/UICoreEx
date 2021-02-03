@@ -13,6 +13,8 @@ import java.io.File
 /**
  * Bmob的异步回调, 都在子线程处理. 请注意更新UI操作.
  *
+ * http://doc.bmob.cn/other/error_code/#restapi
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/01/19
