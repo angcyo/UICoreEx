@@ -14,6 +14,7 @@ dependencies {
     //https://github.com/bmob
     //https://github.com/bmob/bmob-android-sdk
     //maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
+    //https://dl.bintray.com/chaozhouzhang/maven/cn/bmob/android/bmob-sdk/
     //≈2.69 MB
     api('cn.bmob.android:bmob-sdk:3.7.9') {
         //transitive = false

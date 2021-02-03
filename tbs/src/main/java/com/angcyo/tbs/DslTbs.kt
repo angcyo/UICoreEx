@@ -246,3 +246,12 @@ fun DslAHelper.open(
         })
     })
 }
+
+fun dslTbsOpen(
+    context: Context = app(),
+    url: String? = null,
+    cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
+    config: TbsWebConfig.() -> Unit = {}
+) {
+    DslAHelper(context).open(url, cls, config)
+}
