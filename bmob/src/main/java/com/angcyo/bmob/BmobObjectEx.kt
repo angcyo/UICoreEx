@@ -50,13 +50,13 @@ fun BmobObject.update(
     return observer
 }
 
-/**如果已存在, 则更新. 否则新增*/
+/**如果已存在, 则更新. 否则新增
+ * [com.angcyo.bmob.api.DslBmobQuery.bmobUpdateOrSave]*/
 inline fun <reified T : BmobObject> T.updateOrSave(
     queryAction: BmobQuery<T>.() -> Unit,
     noinline action: BaseObserver<String?>.() -> Unit = {}
 ): Disposable {
     val bmob = this
-
     val query = BmobQuery<T>().apply(queryAction)
     val queryObserver = BaseObserver<String?>().apply(action)
     Observable.create<String?> { emitter ->
