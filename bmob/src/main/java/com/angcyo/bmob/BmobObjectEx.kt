@@ -5,14 +5,13 @@ import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
 import com.angcyo.http.rx.BaseObserver
-import com.angcyo.http.rx.observableToAuto
-import com.angcyo.http.rx.observableToMain
+import com.angcyo.http.rx.observableToBack
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 /**
- *
+ * 2021-02-04 所有Bmob回调都在子线程回调, 防止[BmobException]带来的主线程崩溃
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/02/07
@@ -33,7 +32,7 @@ class BmobObserver<T> : BaseObserver<T>() {
 fun BmobObject.save(action: BaseObserver<String>.() -> Unit = {}): Disposable {
     val observer = BmobObserver<String>().apply(action)
     saveObservable()
-        .compose(observableToMain())
+        .compose(observableToBack())
         .subscribe(observer)
     return observer
 }
@@ -45,7 +44,7 @@ fun BmobObject.update(
 ): Disposable {
     val observer = BaseObserver<Exception>().apply(action)
     updateObservable(objectId)
-        .compose(observableToMain())
+        .compose(observableToBack())
         .subscribe(observer)
     return observer
 }
@@ -80,7 +79,7 @@ inline fun <reified T : BmobObject> T.updateOrSave(
             emitter.onError(e)
         }
     }.observeOn(Schedulers.io())
-        .compose(observableToAuto())
+        .compose(observableToBack())
         .subscribe(queryObserver)
 
     return queryObserver
@@ -104,7 +103,7 @@ inline fun <reified T : BmobObject> bmobQuery(
             emitter.onError(e)
         }
     }.observeOn(Schedulers.io())
-        .compose(observableToAuto())
+        .compose(observableToBack())
         .subscribe(observer)
     return observer
 }
@@ -126,7 +125,7 @@ inline fun <reified T : BmobObject> bmobDelete(
             bmobBatch.deleteBatch(list as List<BmobObject>?)
             bmobBatch.doBatchObservable()
         }
-        .compose(observableToMain())
+        .compose(observableToBack())
         .subscribe(observer)
     return observer
 }
