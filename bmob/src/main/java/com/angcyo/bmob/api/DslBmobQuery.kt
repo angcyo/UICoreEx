@@ -25,6 +25,22 @@ class DslBmobQuery<T> : BmobQuery<T>() {
     var updateAction: ((ex: BmobException?) -> Unit)? = null
 
     var saveAction: ((objectId: String?, ex: BmobException?) -> Unit)? = null
+
+    //http://doc.bmob.cn/data/android/develop_doc/#_24
+
+    /**升序*/
+    fun asc(field: String) {
+        order(field)
+    }
+
+    /**降序*/
+    fun desc(field: String) {
+        val _field = StringBuilder()
+        field.split(",").forEach {
+            _field.append("-$it,")
+        }
+        order(_field.toString())
+    }
 }
 
 //<editor-fold desc="查询相关">
