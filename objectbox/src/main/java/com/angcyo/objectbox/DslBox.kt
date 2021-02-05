@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
+import com.angcyo.library.app
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.getWifiIP
 import com.angcyo.library.ex.isDebug
@@ -36,7 +37,7 @@ class DslBox {
         var default_package_name: String? = null
 
         fun init(
-            context: Context,
+            context: Context = app(),
             packageName: String? = default_package_name,
             dbName: String? = null,
             debug: Boolean = isDebug()

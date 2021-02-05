@@ -1,0 +1,19 @@
+
+dependencies {
+    //数据库浏览 https://docs.objectbox.io/data-browser
+    // 如果使用了浏览服务, 则在每个使用`apply plugin: 'io.objectbox'`的地方, 都需要用下面的3条语句
+    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+    pretestImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
+
+    //本地测试 https://docs.objectbox.io/android/android-local-unit-tests
+//    // Required -- JUnit 4 framework
+//    testImplementation 'junit:junit:4.12'
+//    // Optional -- manually add native ObjectBox library to override auto-detection
+//    testImplementation "io.objectbox:objectbox-linux:$objectboxVersion"
+//    testImplementation "io.objectbox:objectbox-macos:$objectboxVersion"
+//    testImplementation "io.objectbox:objectbox-windows:$objectboxVersion"
+}
+
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox' // Apply last.

@@ -19,6 +19,8 @@ android {
 dependencies {
     implementation project(allModule.library)
 
+    //https://jcenter.bintray.com/io/objectbox
+
     //https://docs.objectbox.io/getting-started
     //https://github.com/objectbox/objectbox-java
     //api "io.objectbox:objectbox-rxjava:$objectboxVersion"
@@ -26,7 +28,7 @@ dependencies {
     //kotlin 支持
     api "io.objectbox:objectbox-kotlin:$objectboxVersion"
 
-    //数据库浏览 https://docs.objectbox.io/data-browser
+    /*//数据库浏览 https://docs.objectbox.io/data-browser
     // 如果使用了浏览服务, 则在每个使用`apply plugin: 'io.objectbox'`的地方, 都需要用下面的3条语句
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
     pretestImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
@@ -38,8 +40,12 @@ dependencies {
 //    // Optional -- manually add native ObjectBox library to override auto-detection
 //    testImplementation "io.objectbox:objectbox-linux:$objectboxVersion"
 //    testImplementation "io.objectbox:objectbox-macos:$objectboxVersion"
-//    testImplementation "io.objectbox:objectbox-windows:$objectboxVersion"
+//    testImplementation "io.objectbox:objectbox-windows:$objectboxVersion"*/
 }
 
+/*
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.objectbox' // Apply last.
+apply plugin: 'io.objectbox' // Apply last.*/
+
+apply from: allGradle.objectbox
+
