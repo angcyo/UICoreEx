@@ -4,10 +4,12 @@ import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.*
+import com.angcyo.library.ex.safe
 import io.reactivex.disposables.Disposable
 
 
 /**
+ * http://doc.bmob.cn/data/android/develop_doc/#4
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/01/19
@@ -43,6 +45,7 @@ class DslBmobQuery<T> : BmobQuery<T>() {
         field.split(",").forEach {
             _field.append("-$it,")
         }
+        _field.safe(',')
         order(_field.toString())
     }
 }
