@@ -1,10 +1,16 @@
 package com.angcyo.bmob.api
 
+import cn.bmob.v3.BmobBatch
 import cn.bmob.v3.BmobObject
 import cn.bmob.v3.BmobQuery
+import cn.bmob.v3.datatype.BatchResult
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.*
+import com.angcyo.http.rx.doBack
 import com.angcyo.library.ex.safe
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.sync
+import com.angcyo.library.model.Page
 import io.reactivex.disposables.Disposable
 
 
@@ -28,6 +34,8 @@ class DslBmobQuery<T> : BmobQuery<T>() {
     var updateAction: ((ex: BmobException?) -> Unit)? = null
 
     var saveAction: ((objectId: String?, ex: BmobException?) -> Unit)? = null
+
+    var batchAction: ((results: List<BatchResult>?, ex: BmobException?) -> Unit)? = null
 
     /**更新已存在的数据*/
     var existBmobAction: ((existBmobObj: T) -> Unit)? = null
@@ -74,8 +82,15 @@ inline fun <reified T : BmobObject> bmobGet(
     return bmobQuery(objectId, config)
 }
 
-inline fun <reified T : BmobObject> bmobQueryList(config: DslBmobQuery<T>.() -> Unit): Disposable {
+inline fun <reified T : BmobObject> bmobQueryList(
+    page: Page? = null,
+    config: DslBmobQuery<T>.() -> Unit
+): Disposable {
     val query = DslBmobQuery<T>()
+    page?.let {
+        query.setLimit(it.requestPageSize)
+        query.setSkip((it.requestPageIndex - 1) * it.requestPageSize)
+    }
     query.config()
     return query.findObjects(object : FindListener<T>() {
 
@@ -85,8 +100,62 @@ inline fun <reified T : BmobObject> bmobQueryList(config: DslBmobQuery<T>.() -> 
     })
 }
 
-inline fun <reified T : BmobObject> bmobGets(config: DslBmobQuery<T>.() -> Unit): Disposable {
-    return bmobQueryList(config)
+/**拉表中的所有数据*/
+inline fun <reified T : BmobObject> bmobQueryAll(config: DslBmobQuery<T>.() -> Unit) {
+    val query = DslBmobQuery<T>()
+    query.config()
+    val result = mutableListOf<T>()
+    val page = Page()
+
+    doBack {
+        while (true) {
+            val syncResult = sync<Throwable> { countDownLatch, atomicReference ->
+                bmobQueryList<T>(page) {
+                    getsAction = { dataList, ex ->
+                        dataList?.let {
+                            result.addAll(it)
+                            if (it.size() < page.requestPageSize) {
+                                //请求结束了
+                                atomicReference.set(InterruptedException("finsih"))
+                            }
+                        }
+                        ex?.let {
+                            query.getsAction?.invoke(result, it)
+                            atomicReference.set(it)
+                        }
+                        countDownLatch.countDown()
+                    }
+                }
+            }
+            //是否继续
+            if (syncResult == null) {
+                //继续
+                page.pageLoadEnd()
+                page.pageLoadMore()
+            } else {
+                if (syncResult is InterruptedException) {
+                    //完成
+                    query.getsAction?.invoke(result, null)
+                } else {
+                    //异常
+                }
+                break
+            }
+        }
+    }
+}
+
+inline fun <reified T : BmobObject> bmobGets(
+    page: Page? = null,
+    config: DslBmobQuery<T>.() -> Unit
+): Disposable {
+    return bmobQueryList(page, config)
+}
+
+inline fun <reified T : BmobObject> bmobGetAll(
+    config: DslBmobQuery<T>.() -> Unit
+) {
+    bmobQueryAll<T>(config)
 }
 
 /**查询数量*/
@@ -193,5 +262,77 @@ inline fun <reified T : BmobObject> bmobUpdateOrSave(
     }
 }
 
-
 //</editor-fold desc="保存相关">
+
+//<editor-fold desc="批量操作">
+
+/**http://doc.bmob.cn/data/android/develop_doc/#161*/
+fun <T : BmobObject> bmobBatchSave(list: List<T>, config: DslBmobQuery<T>.() -> Unit): Disposable {
+    val query = DslBmobQuery<T>()
+    query.config()
+
+    return BmobBatch().insertBatch(list).doBatch(object : QueryListListener<BatchResult>() {
+        override fun done(results: List<BatchResult>?, ex: BmobException?) {
+            query.batchAction?.invoke(results, ex)
+            /*for (i in 0 until results.size()) {
+                val result: BatchResult = results!![i]
+                val error = result.error
+                if (error == null) {
+                    //第几个成功
+                } else {
+                    //第几个失败
+                }
+            }*/
+        }
+    })
+}
+
+/**需要对象有objectId*/
+fun <T : BmobObject> bmobBatchUpdate(
+    list: List<T>,
+    config: DslBmobQuery<T>.() -> Unit
+): Disposable {
+    val query = DslBmobQuery<T>()
+    query.config()
+
+    return BmobBatch().updateBatch(list).doBatch(object : QueryListListener<BatchResult>() {
+        override fun done(results: List<BatchResult>?, ex: BmobException?) {
+            query.batchAction?.invoke(results, ex)
+        }
+    })
+}
+
+/**需要对象有objectId*/
+fun <T : BmobObject> bmobBatchDelete(
+    list: List<T>,
+    config: DslBmobQuery<T>.() -> Unit
+): Disposable {
+    val query = DslBmobQuery<T>()
+    query.config()
+
+    return BmobBatch().deleteBatch(list).doBatch(object : QueryListListener<BatchResult>() {
+        override fun done(results: List<BatchResult>?, ex: BmobException?) {
+            query.batchAction?.invoke(results, ex)
+        }
+    })
+}
+
+/**混合批量*/
+fun bmobBatch(
+    config: BmobBatch.() -> Unit,
+    end: (results: List<BatchResult>?, ex: BmobException?) -> Unit
+): Disposable {
+    val bmobBatch = BmobBatch().apply(config)
+
+    //bmobBatch.insertBatch()
+    //bmobBatch.updateBatch()
+    //bmobBatch.deleteBatch()
+
+    return bmobBatch.doBatch(object : QueryListListener<BatchResult>() {
+        override fun done(results: List<BatchResult>?, ex: BmobException?) {
+            end.invoke(results, ex)
+        }
+    })
+}
+
+//</editor-fold desc="批量操作">
