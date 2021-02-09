@@ -6,6 +6,7 @@ import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
 import com.angcyo.http.rx.BaseObserver
 import com.angcyo.http.rx.observableToBack
+import com.angcyo.library.model.Page
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -217,3 +218,9 @@ inline fun <reified T : BmobObject> bmobDelete(
 //}
 
 //</editor-fold desc="低版本的bmob很难进行二次封装">
+
+/**快速设置请求数据参数*/
+fun BmobQuery<*>.page(page: Page) {
+    setLimit(page.requestPageSize)
+    setSkip((page.requestPageIndex - 1) * page.requestPageSize)
+}

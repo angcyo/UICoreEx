@@ -6,12 +6,15 @@ import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.datatype.BatchResult
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.*
+import com.angcyo.http.rx.addRxErrorHandleOnce
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.removeRxErrorHandleOnce
 import com.angcyo.library.ex.safe
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.sync
 import com.angcyo.library.model.Page
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 
 
 /**
@@ -92,9 +95,17 @@ inline fun <reified T : BmobObject> bmobQueryList(
         query.setSkip((it.requestPageIndex - 1) * it.requestPageSize)
     }
     query.config()
+
+    //消费rx异常
+    val consumer = Consumer<Throwable> { t ->
+        query.getsAction?.invoke(null, BmobException(t.message))
+    }
+    consumer.addRxErrorHandleOnce()
+
     return query.findObjects(object : FindListener<T>() {
 
         override fun done(list: MutableList<T>?, ex: BmobException?) {
+            consumer.removeRxErrorHandleOnce()
             query.getsAction?.invoke(list, ex)
         }
     })
