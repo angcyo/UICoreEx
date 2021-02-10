@@ -156,6 +156,17 @@ inline fun <reified T : BmobObject> bmobQueryAll(config: DslBmobQuery<T>.() -> U
     }
 }
 
+/**
+ * http://doc.bmob.cn/data/android/develop_doc/#_16
+ * 比较查询
+ * 方法	功能
+ * addWhereEqualTo	等于
+ * addWhereNotEqualTo	不等于
+ * addWhereLessThan	小于
+ * addWhereLessThanOrEqualTo	小于等于
+ * addWhereGreaterThan	大于
+ * addWhereGreaterThanOrEqualTo	大于等于
+ * */
 inline fun <reified T : BmobObject> bmobGets(
     page: Page? = null,
     config: DslBmobQuery<T>.() -> Unit
@@ -243,9 +254,10 @@ inline fun <reified T : BmobObject> bmobUpdateOrSave(
     query.config()
 
     return bmobGets<T> {
+        setLimit(1)
         config()
         getsAction = { dataList, ex ->
-            if (dataList.isNullOrEmpty() || ex?.errorCode == 101) {
+            if (ex != null && (dataList.isNullOrEmpty() || ex.errorCode == 101)) {
                 //查询的 对象或Class 不存在 或者 登录接口的用户名或密码不正确
                 //没找到, 保存对象
                 bmobSave(bmobObj) {
@@ -253,7 +265,7 @@ inline fun <reified T : BmobObject> bmobUpdateOrSave(
                         query.updateAction?.invoke(ex)
                     }
                 }
-            } else if (ex == null) {
+            } else if (ex == null && !dataList.isNullOrEmpty()) {
                 //找到了, 更新对象
                 val existBmobObj = dataList.first()
                 bmobObj.objectId = existBmobObj.objectId
