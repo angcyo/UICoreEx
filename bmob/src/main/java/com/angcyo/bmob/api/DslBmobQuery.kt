@@ -262,6 +262,9 @@ inline fun <reified T : BmobObject> bmobUpdateOrSave(
                 //没找到, 保存对象
                 bmobSave(bmobObj) {
                     saveAction = { objectId, ex ->
+                        objectId?.let {
+                            bmobObj.objectId = it
+                        }
                         query.updateAction?.invoke(ex)
                     }
                 }
