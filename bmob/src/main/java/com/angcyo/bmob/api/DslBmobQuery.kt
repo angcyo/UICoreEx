@@ -257,7 +257,7 @@ inline fun <reified T : BmobObject> bmobUpdateOrSave(
         setLimit(1)
         config()
         getsAction = { dataList, ex ->
-            if (ex != null && (dataList.isNullOrEmpty() || ex.errorCode == 101)) {
+            if ((ex == null && dataList.isNullOrEmpty()) || ex?.errorCode == 101) {
                 //查询的 对象或Class 不存在 或者 登录接口的用户名或密码不正确
                 //没找到, 保存对象
                 bmobSave(bmobObj) {
