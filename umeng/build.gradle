@@ -7,7 +7,7 @@ dependencies {
     // 友盟统计SDK
     //https://github.com/umeng/MultiFunctionAndroidMavenDemo-master/blob/master/app/build.gradle
     api 'com.umeng.umsdk:common:9.3.6' // (必选)版本号
-    api 'com.umeng.umsdk:asms:1.2.1' // asms包依赖(必选)
+    api 'com.umeng.umsdk:asms:1.2.0' // asms包依赖(必选)
 
     //implementation 'com.umeng.umsdk:apm:1.1.1' // apm包依赖
 }
