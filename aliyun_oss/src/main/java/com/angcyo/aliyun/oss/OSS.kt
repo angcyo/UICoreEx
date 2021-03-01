@@ -53,7 +53,13 @@ class OSS {
     }
 
     /**
-     * OSS endpoint, check out:http://help.aliyun.com/document_detail/oss/user_guide/endpoint_region.html
+     * OSS endpoint, check out:
+     *
+     * http://help.aliyun.com/document_detail/oss/user_guide/endpoint_region.html
+     *
+     * //访问域名和数据中心
+     * https://help.aliyun.com/document_detail/31837.htm
+     *
      */
     var endpoint: String = "oss-cn-shenzhen.aliyuncs.com"
 
@@ -74,6 +80,11 @@ class OSS {
     /**
      * 移动端是不安全环境，不建议直接使用阿里云主账号ak，sk的方式。建议使用STS方式。具体参
      * https://help.aliyun.com/document_detail/31920.html
+     *
+     * https://ram.console.aliyun.com
+     *
+     * 创建用户获取 aki aks
+     * https://ram.console.aliyun.com/users/angcyo
      * */
     fun init(
         context: Context,
