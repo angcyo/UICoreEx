@@ -9,6 +9,7 @@ import com.angcyo.dsladapter.find
 import com.angcyo.item.DslBottomButtonItem
 import com.angcyo.library.ex.getCanUsedState
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
 
 /**
@@ -40,6 +41,12 @@ open class AccSettingFragment : AccAppDslFragment() {
                 itemClick = {
                     fetchSetting()
                 }
+                if (isDebugType()) {
+                    itemLongClick = {
+                        toMain()
+                        true
+                    }
+                }
             }
         }
     }
@@ -63,6 +70,10 @@ open class AccSettingFragment : AccAppDslFragment() {
     }
 
     open fun fetchSetting() {
+
+    }
+
+    open fun toMain() {
 
     }
 
