@@ -1,0 +1,48 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.angcyo.acc2.app">
+
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
+    <!--<application
+        android:name=".Acc2App"
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/logo_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        &lt;!&ndash;<activity
+            android:name=".Acc2MainActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|smallestScreenSize"
+            android:launchMode="singleTop"
+            android:resizeableActivity="true"
+            android:rotationAnimation="rotate"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>&ndash;&gt;
+
+        &lt;!&ndash;主工程配置&ndash;&gt;
+        &lt;!&ndash;<service
+            android:name="com.angcyo.acc.market.AppAccessibilityService2"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/lib_accessibility_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/lib_accessibility_service_config" />
+        </service>&ndash;&gt;
+
+    </application>-->
+
+</manifest>

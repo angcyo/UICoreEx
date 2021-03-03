@@ -1,0 +1,21 @@
+apply from: allGradle.libBase
+
+dependencies {
+    api project(allModule.core)
+    api project(allModule.acc2)
+    api project(allModule.dslitem)
+    //版本更新
+    api project(allModule.download)
+    //api project(allModule.github)
+    //api project(allModule.objectbox)
+    //api project(allModule.transition)
+    //api project(allModule.bmob)
+    //api project(allModule.tbs)
+    //api project(allModule.picker)
+    //api project(allModule.qrcode)
+    //api project(allModule.umeng_apm)
+
+    //api project(allModule.aliyun_oss)
+
+    //api 'com.qiniu:qiniu-java-sdk:7.2.29'
+}

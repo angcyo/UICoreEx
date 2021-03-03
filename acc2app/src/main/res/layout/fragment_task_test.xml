@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView style="@style/AppTaskCardStyle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/lib_hdpi"
+            android:paddingBottom="@dimen/lib_xhdpi">
+
+            <com.angcyo.widget.layout.DslFlowLayout
+                android:id="@+id/task_app_tip_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/lib_sdpi"
+                android:paddingTop="@dimen/lib_sdpi"
+                app:r_flow_item_horizontal_space="@dimen/lib_ldpi"
+                app:r_flow_item_vertical_space="@dimen/lib_ldpi">
+
+                <com.angcyo.widget.text.DslTextView
+                    android:id="@+id/get_text_tip_view"
+                    style="@style/AppBodyTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tip_text_size"
+                    tools:text="angcyo" />
+
+            </com.angcyo.widget.layout.DslFlowLayout>
+
+            <com.angcyo.widget.layout.DslFlowLayout
+                android:id="@+id/task_control_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/lib_sdpi"
+                android:paddingTop="@dimen/lib_sdpi"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/task_app_tip_view"
+                app:r_flow_item_horizontal_space="@dimen/lib_ldpi"
+                app:r_flow_item_vertical_space="@dimen/lib_ldpi">
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/on_line_checkbox"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/lib_hdpi"
+                    android:enabled="true"
+                    android:text="在线数据" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/mini_checkbox"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/lib_hdpi"
+                    android:enabled="true"
+                    android:text="小屏浮窗" />
+
+                <com.angcyo.widget.DslButton
+                    android:id="@+id/share_app_button"
+                    style="@style/DefaultButtonMinStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingTop="@dimen/lib_sdpi"
+                    android:paddingBottom="@dimen/lib_sdpi"
+                    android:text="分享APK" />
+
+                <com.angcyo.widget.DslButton
+                    android:id="@+id/add_check_button"
+                    style="@style/DefaultButtonMinStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingTop="@dimen/lib_sdpi"
+                    android:paddingBottom="@dimen/lib_sdpi"
+                    android:text="提交Check" />
+
+                <com.angcyo.widget.DslButton
+                    android:id="@+id/test_button"
+                    style="@style/DefaultButtonMinStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingTop="@dimen/lib_sdpi"
+                    android:paddingBottom="@dimen/lib_sdpi"
+                    android:text="Test" />
+
+            </com.angcyo.widget.layout.DslFlowLayout>
+
+            <com.angcyo.widget.text.DslTextView
+                android:id="@+id/copy_tip_view"
+                style="@style/AppBodyTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/lib_xhdpi"
+                android:paddingRight="@dimen/lib_xhdpi"
+                android:textColor="@color/app_text_sub_color"
+                android:textSize="@dimen/tip_text_size"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/task_control_layout"
+                tools:text="angcyo"
+                tools:visibility="visible" />
+
+            <com.angcyo.widget.layout.DslFlowLayout
+                android:id="@+id/flow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/copy_tip_view">
+
+                <TextView
+                    style="@style/AppBodyTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_dpi"
+                    android:text="公共:" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/info_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="获取帐号" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/word_copy_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="Clip口令" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/skip_word_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="跳过口令" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/url_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="使用url" />
+
+            </com.angcyo.widget.layout.DslFlowLayout>
+
+            <com.angcyo.widget.layout.DslFlowLayout
+                android:id="@+id/flow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flow1">
+
+                <TextView
+                    style="@style/AppBodyTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_dpi"
+                    android:text="视频:" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/like_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="点赞" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/comment_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="评论" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/attention_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="关注" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/user_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="个人主页" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/collect_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="收藏" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/copy_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="复制链接" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/word_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="微信分享" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/all_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="所有" />
+
+            </com.angcyo.widget.layout.DslFlowLayout>
+
+            <com.angcyo.widget.layout.DslFlowLayout
+                android:id="@+id/flow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flow2">
+
+                <TextView
+                    style="@style/AppBodyTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_dpi"
+                    android:text="直播:" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/live_attention_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="关注" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/live_like_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="点赞" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/live_comment_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="评论" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/live_shop_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="购物" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/live_all_box"
+                    style="@style/AppTaskTestCheckBoxStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/lib_line"
+                    android:enabled="true"
+                    android:text="所有" />
+
+            </com.angcyo.widget.layout.DslFlowLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:r_layout_manager="V" />
+
+</LinearLayout>

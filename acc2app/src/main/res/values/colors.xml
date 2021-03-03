@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_color">#161823</color>
+    <color name="colorPrimaryDim">#A8A8AA</color>
+
+    <color name="dy_text_color_white">#DEDEDF</color>
+    <color name="dy_text_color_dark">#7C7D84</color>
+
+    <color name="app_text_general_color">@color/dy_text_color_white</color>
+    <color name="app_text_sub_color">@color/dy_text_color_dark</color>
+</resources>

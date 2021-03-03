@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--内容布局包裹-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.angcyo.behavior.linkage.LinkageHeaderBehavior"
+        app:layout_enable_bottom_over_scroll="true"
+        app:layout_enable_top_over_scroll="true">
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/top_text_view"
+            style="@style/LibSubTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/status_bar_height"
+            android:lineSpacingExtra="4dp"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/lib_accessibility_description" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/start_tip_view"
+            style="@style/AppBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/lib_bg_selector"
+            android:enabled="true"
+            android:paddingLeft="@dimen/lib_hdpi"
+            android:text="如何开启权限?"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@id/top_text_view" />
+
+        <com.angcyo.widget.layout.RFrameLayout
+            android:id="@+id/start_wrap_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/start_button_oval_selector"
+            android:elevation="@dimen/lib_elevation"
+            android:padding="@dimen/lib_xxxhdpi"
+            app:layout_constraintBottom_toTopOf="@id/other_tip_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_text_view"
+            app:r_dimension_ratio="1:1"
+            app:r_min_height="200dp"
+            app:r_min_width="200dp">
+
+            <com.angcyo.widget.text.DslTextView
+                android:id="@+id/text_view"
+                style="@style/LibMainTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/dy_text_color_white"
+                tools:text="@string/lib_accessibility_description" />
+
+        </com.angcyo.widget.layout.RFrameLayout>
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/other_tip_view"
+            style="@style/AppBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:lineSpacingExtra="0dp"
+            android:padding="@dimen/lib_hdpi"
+            android:textColor="@color/app_text_sub_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/lib_tip_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Windows 10@10.0"
+            tools:visibility="visible" />
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/lib_tip_view"
+            style="@style/LibSubTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Windows 10@10.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
+</com.angcyo.widget.layout.RCoordinatorLayout>
