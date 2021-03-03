@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app.ui
 
 import android.os.Bundle
-import com.angcyo.acc2.app.Acc2AppDslFragment
+import com.angcyo.acc2.app.AccAppDslFragment
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.component.Acc
 import com.angcyo.acc2.app.component.AccWindow
@@ -37,7 +37,7 @@ import com.angcyo.widget.span.span
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-class TaskTestFragment : Acc2AppDslFragment() {
+class AccTaskTestFragment : AccAppDslFragment() {
 
     companion object {
         //剪切板中的文本

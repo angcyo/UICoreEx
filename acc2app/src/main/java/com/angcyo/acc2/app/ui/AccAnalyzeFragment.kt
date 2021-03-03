@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app.ui
 
 import android.os.Bundle
-import com.angcyo.acc2.app.Acc2AppDslFragment
+import com.angcyo.acc2.app.AccAppDslFragment
 import com.angcyo.acc2.app.dslitem.AppAnalyzeItem
 
 /**
@@ -11,7 +11,7 @@ import com.angcyo.acc2.app.dslitem.AppAnalyzeItem
  * @date 2020/07/30
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class Acc2AnalyzeFragment : Acc2AppDslFragment() {
+class AccAnalyzeFragment : AccAppDslFragment() {
     init {
         fragmentTitle = "应用分析"
     }

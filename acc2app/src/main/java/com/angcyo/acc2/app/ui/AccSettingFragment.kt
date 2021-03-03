@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app.ui
 
 import android.os.Bundle
-import com.angcyo.acc2.app.Acc2AppDslFragment
+import com.angcyo.acc2.app.AccAppDslFragment
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.http.UserHelper.exit
@@ -19,7 +19,7 @@ import com.angcyo.library.toastQQ
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-open class Acc2SettingFragment : Acc2AppDslFragment() {
+open class AccSettingFragment : AccAppDslFragment() {
 
     init {
         titleLayoutId = R.layout.lib_empty_item

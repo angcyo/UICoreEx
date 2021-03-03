@@ -16,6 +16,7 @@ import com.angcyo.http.base.listType
 import com.angcyo.http.interceptor.LogInterceptor
 import com.angcyo.http.rx.observer
 import com.angcyo.http.toBean
+import com.angcyo.library.L
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isHttpScheme
 import com.angcyo.library.ex.nowTime
@@ -32,19 +33,26 @@ import java.lang.reflect.Type
 object Gitee {
 
     //无/结尾
-    const val BASE = "https://gitee.com/angcyo/json/raw/master/accmarket"
+    var BASE = ""
 
-    fun init() {
-        fetch(!isDebugType())
+    fun init(online: Boolean = !isDebugType()) {
+        fetch(online)
     }
 
     fun fetch(online: Boolean = true) {
-        fetchMemoryConfig()
-        fetchFunctionList(online)
-        fetchAllCheck(online)
-        fetchAllAction(online)
-        fetchAllBackAction(online)
-        fetchAllTask(online)
+        if (online && BASE.isEmpty()) {
+            L.e("请先配置[BASE]地址.")
+            return
+        }
+        fetchMemoryConfig(online) { data, error ->
+            if (error == null) {
+                fetchFunctionList(online)
+                fetchAllCheck(online)
+                fetchAllAction(online)
+                fetchAllBackAction(online)
+                fetchAllTask(online)
+            }
+        }
     }
 
     //<editor-fold desc="base">
@@ -110,10 +118,11 @@ object Gitee {
     /**获取所有[CheckBean]*/
     fun fetchAllCheck(online: Boolean) {
         val result = mutableListOf<CheckBean>()
-        val list = app().memoryConfigBean.file?.check ?: mutableListOf(
-            "check_common",
-            "check_dy"
-        )
+        val list = app().memoryConfigBean.file?.check ?: mutableListOf("check_common")
+        if (list.isNullOrEmpty()) {
+            L.e("请先配置[check]json文件")
+            return
+        }
         if (online) {
             list.forEach {
                 getCheck(it) { list, error ->
@@ -137,6 +146,10 @@ object Gitee {
     fun fetchAllAction(online: Boolean) {
         val result = mutableListOf<ActionBean>()
         val list = app().memoryConfigBean.file?.action ?: mutableListOf("all_actions")
+        if (list.isNullOrEmpty()) {
+            L.e("请先配置[action]json文件")
+            return
+        }
         if (online) {
             list.forEach {
                 getAction(it) { list, error ->
@@ -160,6 +173,10 @@ object Gitee {
     fun fetchAllBackAction(online: Boolean) {
         val result = mutableListOf<ActionBean>()
         val list = app().memoryConfigBean.file?.backAction ?: mutableListOf("back_actions")
+        if (list.isNullOrEmpty()) {
+            L.e("请先配置[backAction]json文件")
+            return
+        }
         if (online) {
             list.forEach {
                 getAction(it) { list, error ->
@@ -182,7 +199,11 @@ object Gitee {
     /**获取所有[TaskBean]*/
     fun fetchAllTask(online: Boolean) {
         val result = mutableListOf<TaskBean>()
-        val list = app().memoryConfigBean.file?.task ?: mutableListOf("all_dy_mkt_task")
+        val list = app().memoryConfigBean.file?.task
+        if (list.isNullOrEmpty()) {
+            L.e("请先配置[task]json文件")
+            return
+        }
         if (online) {
             list.forEach {
                 getTask(it) { data, error ->
@@ -212,21 +233,33 @@ object Gitee {
 
     //<editor-fold desc="fetch">
 
-    fun fetchMemoryConfig(end: (data: MemoryConfigBean?, error: Throwable?) -> Unit = { _, _ -> }) {
-        get(app().memoryConfigBean.file?.memoryConfig ?: "memory_config") { data, error ->
-            data?.toBean(MemoryConfigBean::class.java)?.let {
-                app().memoryConfigBean = it
-                end(it, error)
+    fun fetchMemoryConfig(
+        online: Boolean = isDebugType(),
+        end: (data: MemoryConfigBean?, error: Throwable?) -> Unit = { _, _ -> }
+    ) {
+        val json = app().memoryConfigBean.file?.memoryConfig ?: "memory_config"
+
+        if (online) {
+            get(json) { data, error ->
+                data?.toBean(MemoryConfigBean::class.java)?.let {
+                    app().memoryConfigBean = it
+                    end(it, error)
+                }
+                error?.let {
+                    end(null, it)
+                }
             }
-            error?.let {
-                end(null, it)
+        } else {
+            assets<MemoryConfigBean>(json, MemoryConfigBean::class.java) {
+                app().memoryConfigBean = it
+                end(it, null)
             }
         }
     }
 
     /**功能列表*/
     fun fetchFunctionList(
-        online: Boolean,
+        online: Boolean = isDebugType(),
         end: (list: List<FunctionBean>?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
         val result = mutableListOf<FunctionBean>()

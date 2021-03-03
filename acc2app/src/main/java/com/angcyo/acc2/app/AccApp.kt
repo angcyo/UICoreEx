@@ -22,7 +22,7 @@ import com.angcyo.widget.span.span
  * @date 2020/07/04
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-open class Acc2App : CoreApplication() {
+open class AccApp : CoreApplication() {
 
     companion object {
 
@@ -79,7 +79,7 @@ open class Acc2App : CoreApplication() {
     var memoryConfigBean = MemoryConfigBean()
 }
 
-fun app() = com.angcyo.library.app() as Acc2App
+fun app() = com.angcyo.library.app() as AccApp
 
 fun String.isMyDevice() = this == Device.androidId
 

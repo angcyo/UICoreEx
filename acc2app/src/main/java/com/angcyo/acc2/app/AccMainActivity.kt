@@ -19,7 +19,7 @@ import com.angcyo.library.ex.isDebug
  * @date 2020/07/04
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-open class Acc2MainActivity : BaseCoreAppCompatActivity() {
+open class AccMainActivity : BaseCoreAppCompatActivity() {
 
     val volumeObserver = object : IObserver {
         override fun onChange(type: Int, from: Int, value: Int) {

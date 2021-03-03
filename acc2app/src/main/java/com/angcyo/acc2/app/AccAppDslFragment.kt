@@ -10,7 +10,7 @@ import com.angcyo.core.fragment.BaseDslFragment
  * @date 2020/07/27
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class Acc2AppDslFragment : BaseDslFragment() {
+open class AccAppDslFragment : BaseDslFragment() {
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)

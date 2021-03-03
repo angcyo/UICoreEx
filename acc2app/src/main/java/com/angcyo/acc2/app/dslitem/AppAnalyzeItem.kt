@@ -3,7 +3,7 @@ package com.angcyo.acc2.app.dslitem
 import android.content.Context
 import android.view.Gravity
 import android.widget.TextView
-import com.angcyo.acc2.app.Acc2App
+import com.angcyo.acc2.app.AccApp
 import com.angcyo.acc2.app.AppAccLog
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.app
@@ -140,7 +140,7 @@ class AppAnalyzeItem : DslAdapterItem() {
         return span {
             appendLine(HttpConfigDialog.appBaseUrl)
             Device.buildString(this)
-            appendLine("appAndroidId:${Acc2App.appAndroidId}")
+            appendLine("appAndroidId:${AccApp.appAndroidId}")
             appendLine("androidId:${Device.androidId}")
 
             appendln()

@@ -3,7 +3,7 @@ package com.angcyo.acc2.app.ui
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import com.angcyo.acc2.app.Acc2App
+import com.angcyo.acc2.app.AccApp
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.component.AccOpenTip
 import com.angcyo.acc2.app.versionTipName
@@ -23,7 +23,7 @@ import com.angcyo.widget.span.span
  * @date 2020/07/04
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-class Acc2PermissionFragment : BaseTitleFragment() {
+class AccPermissionFragment : BaseTitleFragment() {
 
     init {
         fragmentLayoutId = R.layout.fragment_start
@@ -75,10 +75,10 @@ class Acc2PermissionFragment : BaseTitleFragment() {
 
         if (isDebug()) {
             _vh.longClick(R.id.start_wrap_layout) {
-                Acc2App.jumpPermission = true
+                AccApp.jumpPermission = true
                 dslFHelper {
-                    remove(this@Acc2PermissionFragment)
-                    restore(Acc2SettingFragment::class.java)
+                    remove(this@AccPermissionFragment)
+                    restore(AccSettingFragment::class.java)
                 }
             }
         }

@@ -9,7 +9,7 @@ import com.angcyo.acc2.core.AccCoreService
  * @date 2020/07/26
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-open class Acc2AccessibilityService : AccCoreService() {
+open class AccAccessibilityService : AccCoreService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
