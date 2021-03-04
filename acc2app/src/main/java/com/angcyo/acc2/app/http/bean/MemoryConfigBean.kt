@@ -10,6 +10,12 @@ data class MemoryConfigBean(
     /**是否要检查app开了代理无法使用*/
     var checkApp: Boolean = true,
 
+    /**指定状态, 才kill*/
+    var checkState: List<Int>? = null,
+
+    /**[checkApp]忽略白名单*/
+    var checkIgnoreAndroidId: List<String>? = null,
+
     /**技术支持qq*/
     var qq: String? = null,
 

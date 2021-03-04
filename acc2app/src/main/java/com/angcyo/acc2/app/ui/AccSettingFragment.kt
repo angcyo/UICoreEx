@@ -11,6 +11,7 @@ import com.angcyo.library.ex.getCanUsedState
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.Device
 
 /**
  *
@@ -88,15 +89,33 @@ open class AccSettingFragment : AccAppDslFragment() {
     }
 
     fun checkApp() {
-        if (app().memoryConfigBean.checkApp) {
+        val memoryConfigBean = app().memoryConfigBean
+        if (memoryConfigBean.checkApp) {
             val state = getCanUsedState()
             if (state > 0) {
-                toastQQ("此设备无法使用[$state]")
-                //kill
-                if (!isDebug()) {
-                    exit()
+
+                if (memoryConfigBean.checkState != null) {
+                    if (memoryConfigBean.checkState!!.contains(state)) {
+                        killApp(state)
+                    }
+                } else {
+                    killApp(state)
                 }
             }
+        }
+    }
+
+    fun killApp(state: Int) {
+
+        if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {
+            //设备被忽略
+            return
+        }
+
+        toastQQ("此设备无法使用[$state]")
+        //kill
+        if (!isDebug()) {
+            exit()
         }
     }
 }
