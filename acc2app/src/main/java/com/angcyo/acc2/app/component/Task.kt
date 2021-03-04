@@ -60,8 +60,8 @@ object Task {
         //controlListenerList.add(OperateControlListener(this))
         controlListenerList.add(object : ControlListener() {
 
-            override fun onControlStart(taskBean: TaskBean) {
-                super.onControlStart(taskBean)
+            override fun onControlStart(control: AccControl, taskBean: TaskBean) {
+                super.onControlStart(control, taskBean)
                 doMain {
                     vmApp<TaskModel>().taskData.value = taskBean
                     if (taskBean.fullscreen) {
