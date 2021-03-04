@@ -88,12 +88,14 @@ open class AccSettingFragment : AccAppDslFragment() {
     }
 
     fun checkApp() {
-        if (!isDebug() && app().memoryConfigBean.checkApp) {
+        if (app().memoryConfigBean.checkApp) {
             val state = getCanUsedState()
             if (state > 0) {
                 toastQQ("此设备无法使用[$state]")
                 //kill
-                exit()
+                if (!isDebug()) {
+                    exit()
+                }
             }
         }
     }
