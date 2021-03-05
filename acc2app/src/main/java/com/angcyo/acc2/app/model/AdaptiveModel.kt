@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.Message
 import com.angcyo.acc2.app.http.bean.*
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -218,6 +219,9 @@ class AdaptiveModel : LifecycleViewModel() {
         loadAdaptiveVersion()
         //loadAppSetting(true)
         loadAppList()
+
+        //拉取消息列表
+        Message.fetchMessage()
     }
 }
 

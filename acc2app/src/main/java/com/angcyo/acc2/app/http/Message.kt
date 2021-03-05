@@ -2,14 +2,13 @@ package com.angcyo.acc2.app.http
 
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.http.bean.MessageBean
+import com.angcyo.acc2.app.model.GiteeModel
+import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.http.base.toJson
 import com.angcyo.http.toBean
-import com.angcyo.library.ex.have
-import com.angcyo.library.ex.hawkGet
-import com.angcyo.library.ex.hawkPut
-import com.angcyo.library.ex.openUrl
+import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.toastQQ
 
@@ -32,9 +31,21 @@ object Message {
     }
 
     /**获取消息*/
-    fun fetchMessage() {
-        Gitee.get("message") { data, error ->
-            data?.toBean<List<MessageBean>>(listType(MessageBean::class.java))?.let {
+    fun fetchMessage(online: Boolean = !isDebugType()) {
+        val json = app().memoryConfigBean.file?.message ?: "message"
+
+        if (online) {
+            Gitee.get(json) { data, error ->
+                data?.toBean<List<MessageBean>>(listType(MessageBean::class.java))?.let {
+                    for (bean in it) {
+                        if (parseMessage(bean)) {
+                            break
+                        }
+                    }
+                }
+            }
+        } else {
+            Gitee.assets<List<MessageBean>>(json, listType(MessageBean::class.java)) {
                 for (bean in it) {
                     if (parseMessage(bean)) {
                         break
@@ -50,49 +61,29 @@ object Message {
             return false
         }
 
+        vmApp<GiteeModel>().messageData.postValue(bean)
+
         when (bean.type) {
             MessageBean.TYPE_NOTIFY -> {
                 saveReadMessage(bean)
-                toastQQ(bean.title)
+                toastQQ(bean.message)
             }
             MessageBean.TYPE_KILL_APP -> {
                 saveReadMessage(bean)
                 UserHelper.exit()
             }
             MessageBean.TYPE_UPDATE_CHECK -> {
-                /*TaskManager.updateCheckByGitee {
-                    if (it) {
-                        saveReadMessage(bean)
-                    }
-                }*/
+                Gitee.fetchAllCheck(true)
+                saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_ACTION -> {
-                /*TaskManager.updateActionByGitee {
-                    if (it) {
-                        saveReadMessage(bean)
-                    }
-                }*/
+                Gitee.fetchAllAction(true)
+                Gitee.fetchAllBackAction(true)
+                saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_TASK -> {
-                /*TaskManager.updateTaskByGitee {
-                    if (it) {
-                        saveReadMessage(bean)
-                    }
-                }*/
-            }
-            MessageBean.TYPE_UPDATE_INDUSTRY -> {
-                /*IndustryHelper.updateIndustryByGitee {
-                    if (it) {
-                        saveReadMessage(bean)
-                    }
-                }*/
-            }
-            MessageBean.TYPE_UPDATE_AREA -> {
-                /* IndustryHelper.updateAreaByGitee {
-                     if (it) {
-                         saveReadMessage(bean)
-                     }
-                 }*/
+                Gitee.fetchAllTask(true)
+                saveReadMessage(bean)
             }
             MessageBean.TYPE_OPEN_URL -> {
                 if (!bean.url.isNullOrEmpty()) {
@@ -102,12 +93,12 @@ object Message {
                 }
             }
             MessageBean.TYPE_UPDATE_MEMORY_CONFIG -> {
-                saveReadMessage(bean)
                 Gitee.fetchMemoryConfig()
+                saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_USER -> {
-                saveReadMessage(bean)
                 UserHelper.updateUserInfo { user, ex -> }
+                saveReadMessage(bean)
             }
         }
 

@@ -1,6 +1,7 @@
 package com.angcyo.acc2.app.model
 
 import com.angcyo.acc2.app.http.bean.FunctionBean
+import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.CheckBean
 import com.angcyo.acc2.bean.TaskBean
@@ -10,6 +11,7 @@ import com.angcyo.http.base.toJson
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.isMain
 import com.angcyo.viewmodel.vmData
+import com.angcyo.viewmodel.vmDataNull
 
 /**
  *
@@ -31,6 +33,9 @@ class GiteeModel : LifecycleViewModel() {
 
     /**所有在线任务*/
     val allTaskData = vmData(listOf<TaskBean>())
+
+    /**新消息提醒*/
+    val messageData = vmDataNull<MessageBean>(null)
 
     /**获取指定类型的任务[TaskBean]*/
     fun findTask(type: String?): TaskBean? {

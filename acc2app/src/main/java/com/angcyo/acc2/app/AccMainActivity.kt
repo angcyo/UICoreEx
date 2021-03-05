@@ -4,13 +4,17 @@ import android.os.Bundle
 import com.angcyo.acc2.app.component.AccWindow
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.http.Message
+import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.app.model.AdaptiveModel
+import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.core.activity.BaseCoreAppCompatActivity
 import com.angcyo.core.component.IObserver
 import com.angcyo.core.component.VolumeObserver
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.normalIosDialog
 import com.angcyo.download.version.versionUpdate
 import com.angcyo.library.ex.isDebug
+import com.angcyo.viewmodel.observe
 
 /**
  *
@@ -53,12 +57,24 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
             removeAll()
             restore(SettingFragment::class.java)
         }*/
+
+        vmApp<GiteeModel>().messageData.observe(this) { bean ->
+            if (bean != null) {
+                when (bean.type) {
+                    MessageBean.TYPE_DIALOG -> {
+                        Message.saveReadMessage(bean)
+                        normalIosDialog {
+                            dialogTitle = bean.title
+                            dialogMessage = bean.message
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onPostResume() {
         super.onPostResume()
-
-        Message.fetchMessage()
         //load
         vmApp<AdaptiveModel>().updateOnResume()
         Gitee.fetchVersion { data, error ->
