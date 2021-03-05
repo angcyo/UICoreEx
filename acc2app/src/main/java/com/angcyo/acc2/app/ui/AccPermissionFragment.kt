@@ -9,6 +9,7 @@ import com.angcyo.acc2.app.component.AccOpenTip
 import com.angcyo.acc2.app.versionTipName
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.base.dslFHelper
+import com.angcyo.core.fragment.BaseFragment
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.core.toAppPermissionsDetail
 import com.angcyo.library.ex.*
@@ -24,6 +25,11 @@ import com.angcyo.widget.span.span
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class AccPermissionFragment : BaseTitleFragment() {
+
+    companion object {
+        /**需要启动的目标界面*/
+        var TARGET_CLASS: Class<out BaseFragment>? = null
+    }
 
     init {
         fragmentLayoutId = R.layout.fragment_start
@@ -78,7 +84,7 @@ class AccPermissionFragment : BaseTitleFragment() {
                 AccApp.jumpPermission = true
                 dslFHelper {
                     remove(this@AccPermissionFragment)
-                    restore(AccSettingFragment::class.java)
+                    restore(TARGET_CLASS!!)
                 }
             }
         }

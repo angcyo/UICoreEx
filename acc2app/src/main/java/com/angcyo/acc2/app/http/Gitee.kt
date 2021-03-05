@@ -40,9 +40,8 @@ object Gitee {
     }
 
     fun fetch(online: Boolean = true) {
-        if (online && BASE.isEmpty()) {
-            L.e("请先配置[BASE]地址.")
-            return
+        if (BASE.isEmpty()) {
+            throw IllegalArgumentException("请先配置[BASE]地址.")
         }
         fetchMemoryConfig(online) { data, error ->
             if (error == null) {
@@ -234,7 +233,7 @@ object Gitee {
     //<editor-fold desc="fetch">
 
     fun fetchMemoryConfig(
-        online: Boolean = isDebugType(),
+        online: Boolean = !isDebugType(),
         end: (data: MemoryConfigBean?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
         val json = app().memoryConfigBean.file?.memoryConfig ?: "memory_config"
@@ -259,7 +258,7 @@ object Gitee {
 
     /**功能列表*/
     fun fetchFunctionList(
-        online: Boolean = isDebugType(),
+        online: Boolean = !isDebugType(),
         end: (list: List<FunctionBean>?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
         val result = mutableListOf<FunctionBean>()
