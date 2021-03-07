@@ -45,6 +45,9 @@ data class MemoryConfigBean(
     /**显示节点提示框*/
     var showNodeTip: Boolean = true,
 
+    /**是否要显示分享日志按钮*/
+    var showShareLog: Boolean = false,
+
     //</editor-fold desc="功能配置">
 
     //<editor-fold desc="其他配置">

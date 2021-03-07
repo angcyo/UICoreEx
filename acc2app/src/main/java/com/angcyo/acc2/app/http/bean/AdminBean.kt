@@ -19,6 +19,7 @@ data class AdminBean(
     var data: List<String>? = null,
     //设备码
     var devices: List<String>? = null,
+    var debugDevices: List<String>? = null,
     var superDevices: List<String>? = null,
     var selfDevices: List<String>? = null,
 )
