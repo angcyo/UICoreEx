@@ -74,7 +74,10 @@ data class MemoryConfigBean(
     var vindicate: String? = null,
 
     /**对应文件的文件名*/
-    var file: FileConfigBean? = null
+    var file: FileConfigBean? = null,
+
+    /**推广提示语*/
+    var promoteDes: String? = null,
 
     //</editor-fold desc="其他配置">
 )
