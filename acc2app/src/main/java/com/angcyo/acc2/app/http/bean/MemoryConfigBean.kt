@@ -61,6 +61,9 @@ data class MemoryConfigBean(
     /**帮助页*/
     var helpUrl: String? = null,
 
+    /**提现帮助页*/
+    var promoteHelpUrl: String? = null,
+
     /**轮询间隔时长, 秒*/
     var pollTime: Long = 10,
 

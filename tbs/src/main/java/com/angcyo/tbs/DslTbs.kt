@@ -223,7 +223,8 @@ class DslTbs {
     }
 }
 
-/**打开url, 文件, 媒体, 等...*/
+/**打开url, 文件, 媒体, 等...
+ * about:blank */
 fun DslAHelper.open(
     url: String? = null,
     cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
