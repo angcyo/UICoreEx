@@ -109,8 +109,8 @@ object Gitee {
 
     fun getTask(json: String, end: (data: TaskBean?, error: Throwable?) -> Unit) {
         get(json) { data, error ->
-            val list = data?.toBean<TaskBean>(TaskBean::class.java)
-            end(list, error)
+            val bean = data?.toBean<TaskBean>(TaskBean::class.java)
+            end(bean, error)
         }
     }
 

@@ -5,6 +5,7 @@ import com.angcyo.acc2.action.FullscreenAction
 import com.angcyo.acc2.action.HideWindowAction
 import com.angcyo.acc2.action.NotTouchableAction
 import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.app.model.TaskModel
 import com.angcyo.acc2.bean.ActionBean
@@ -108,16 +109,27 @@ object Task {
 
     fun start(
         taskBean: TaskBean?,
-        enableActionString: String? = null,
+        enableActionString: String,
         disableActionString: String? = null,
         randomEnableActionString: String? = null,
     ) {
         start(
             taskBean,
-            enableActionString?.toActionIdList(),
+            enableActionString.toActionIdList(),
             disableActionString?.toActionIdList(),
             randomEnableActionString?.toActionIdList()
         )
+    }
+
+    /**根据指定的url, 启动任务*/
+    fun start(taskUrl: String, startAction: (TaskBean?, Throwable?) -> Unit) {
+        Gitee.getTask(taskUrl) { data, error ->
+            val task = data?.init()
+            startAction(task, error)
+            task?.let {
+                start(it)
+            }
+        }
     }
 
     /**启动任务[taskBean]
