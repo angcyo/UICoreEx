@@ -45,6 +45,8 @@ class HttpPageBean<T> : HttpBean<PageBean<T>>()
 
 /**
  * HttpBean<Bean>
+ *
+ * HttpBean<Boolean> beanType(Any::class.java)
  * */
 fun beanType(typeClass: Class<*>): Type = type(HttpBean::class.java, typeClass)
 
