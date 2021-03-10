@@ -68,7 +68,10 @@ data class MemoryConfigBean(
     var pollTime: Long = 10,
 
     /**首次登录赠送时长(天)*/
-    var giveServiceTime: Int = 1,
+    var giveServiceTime: Int = 3,
+
+    /**填写推广码, 赠送时长 天*/
+    var promoteGiveServiceTime: Int = 3,
 
     /**签到赠送时长(分钟)*/
     var signGiveServiceTime: Int = 30,
