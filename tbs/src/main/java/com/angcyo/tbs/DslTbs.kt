@@ -254,5 +254,8 @@ fun dslTbsOpen(
     cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
     config: TbsWebConfig.() -> Unit = {}
 ) {
-    DslAHelper(context).open(url, cls, config)
+    DslAHelper(context).apply {
+        open(url, cls, config)
+        doIt()
+    }
 }

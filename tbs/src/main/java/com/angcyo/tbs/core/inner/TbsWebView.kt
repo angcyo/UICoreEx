@@ -15,6 +15,7 @@ import com.angcyo.library.L
 import com.angcyo.library.component.appBean
 import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.ex.decode
+import com.angcyo.library.ex.encode
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.model.AppBean
 import com.angcyo.library.utils.getMember
@@ -60,10 +61,12 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     ) -> Unit =
         { url, userAgent, contentDisposition, mime, length ->
             L.d(
-                "下载:${TbsWeb.getFileName(
-                    url,
-                    contentDisposition
-                )} ${length.fileSizeString()}\n$url $mime\n$userAgent $contentDisposition "
+                "下载:${
+                    TbsWeb.getFileName(
+                        url,
+                        contentDisposition
+                    )
+                } ${length.fileSizeString()}\n$url $mime\n$userAgent $contentDisposition "
             )
         }
 
@@ -337,6 +340,35 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             _loadUrl = url
         }
         super.loadUrl(url, map)
+    }
+
+    /**https://x5.tencent.com/docs/tbsapi.html*/
+    override fun loadData(data: String?, mimeType: String?, encoding: String?) {
+        super.loadData(data, mimeType, encoding)
+    }
+
+    open fun loadData2(data: String?, mimeType: String = "text/html", encoding: String = "utf-8") {
+        loadData(data?.encode(encoding), mimeType, encoding)
+    }
+
+    override fun loadDataWithBaseURL(
+        baseUrl: String?,
+        data: String?,
+        mimeType: String?,
+        encoding: String?,
+        historyUrl: String?
+    ) {
+        super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl)
+    }
+
+    open fun loadDataWithBaseURL2(
+        data: String?,
+        mimeType: String = "text/html",
+        encoding: String = "utf-8",
+        baseUrl: String? = null,
+        historyUrl: String? = null
+    ) {
+        loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl)
     }
 
     //</editor-fold desc="初始化相关">

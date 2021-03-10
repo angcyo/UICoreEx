@@ -125,9 +125,13 @@ open class TbsWebFragment : BaseTitleFragment() {
 
         val wrapLayout = _vh.group(R.id.tbs_wrap_layout)
         val uri = webConfig.uri
+        val data = webConfig.data
 
-        if (uri == null) {
-            toastQQ("数据异常", R.drawable.lib_ic_error)
+        if (data != null) {
+            //加载数据
+            attachTbsWebView(wrapLayout, null, data)
+        } else if (uri == null) {
+            toastQQ("Uri异常", R.drawable.lib_ic_error)
         } else if (wrapLayout == null) {
             toastQQ("布局异常", R.drawable.lib_ic_error)
         } else {
@@ -153,13 +157,10 @@ open class TbsWebFragment : BaseTitleFragment() {
                 val fileExt = loadUrl!!.ext()
                 fragmentTitle = loadUrl.file()!!.name
 
-                val readerView =
-                    TbsReaderView(
-                        fContext(),
-                        TbsReaderView.ReaderCallback { actionType, args, result ->
-                            hideLoadingView()
-                            L.d("Tbs type:$actionType args:$args result:$result")
-                        })
+                val readerView = TbsReaderView(fContext()) { actionType, args, result ->
+                    hideLoadingView()
+                    L.d("Tbs type:$actionType args:$args result:$result")
+                }
 
                 when {
                     //如果tbs支持打开文件, 一般是文档格式
@@ -255,7 +256,7 @@ open class TbsWebFragment : BaseTitleFragment() {
     var _tbsWebView: TbsWebView? = null
 
     /**追加[TbsWebView], 用于打开网页*/
-    open fun attachTbsWebView(parent: ViewGroup?, url: String?) {
+    open fun attachTbsWebView(parent: ViewGroup?, url: String?, data: String? = null) {
         //host提示
         if (_vh.view(R.id.lib_host_tip_view) == null) {
             rootControl().group(R.id.lib_coordinator_wrap_layout)?.apply {
@@ -404,7 +405,11 @@ open class TbsWebFragment : BaseTitleFragment() {
             }
 
             //加载url
-            loadUrl(url)
+            if (data.isNullOrEmpty()) {
+                loadUrl(url)
+            } else {
+                loadDataWithBaseURL2(data)
+            }
         }
 
         parent?.addView(webView, -1, -1)

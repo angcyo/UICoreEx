@@ -13,8 +13,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class TbsWebConfig(
-    /*需要打开的网页, 或者本地文件路径, 也可以通过Intent.setData()设置*/
+    /**需要打开的网页, 或者本地文件路径, 也可以通过Intent.setData()设置*/
     var uri: Uri? = null,
+    /**需要直接加载的数据
+     * [com.angcyo.tbs.core.inner.TbsWebView.loadDataWithBaseURL2]*/
+    var data: String? = null,
     var mimeType: String? = null, /*当无法从uri中获取mimeType时, 使用此mimeType*/
     var targetClass: Class<out TbsWebFragment> = TbsWebFragment::class.java,
     /**指定界面的标题*/
