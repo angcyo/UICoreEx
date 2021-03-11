@@ -29,7 +29,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享catch日志"
                 itemClick = {
-                    AppAccLog.logCatchPath()?.file()?.shareFile(it.context)
+                    AppAccLog.logCatchPath()?.file()?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }
@@ -38,7 +38,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享acc日志"
                 itemClick = {
-                    AppAccLog.logPath()?.file()?.shareFile(it.context)
+                    AppAccLog.logPath()?.file()?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }
@@ -47,7 +47,8 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享http日志"
                 itemClick = {
-                    Constant.HTTP_FOLDER_NAME.logFilePath()?.file()?.shareFile(it.context)
+                    Constant.HTTP_FOLDER_NAME.logFilePath()?.file()
+                        ?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }
@@ -56,7 +57,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享log日志"
                 itemClick = {
-                    L.DEFAULT_FILE_PRINT_PATH?.file()?.shareFile(it.context)
+                    L.DEFAULT_FILE_PRINT_PATH?.file()?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }
