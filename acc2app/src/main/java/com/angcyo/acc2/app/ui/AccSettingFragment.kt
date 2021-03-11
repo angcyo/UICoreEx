@@ -88,7 +88,7 @@ open class AccSettingFragment : AccAppDslFragment() {
         }
     }
 
-    fun checkApp() {
+    open fun checkApp() {
         val memoryConfigBean = app().memoryConfigBean
         if (memoryConfigBean.checkApp) {
             val state = getCanUsedState()
@@ -105,7 +105,7 @@ open class AccSettingFragment : AccAppDslFragment() {
         }
     }
 
-    fun killApp(state: Int) {
+    open fun killApp(state: Int) {
 
         if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {
             //设备被忽略

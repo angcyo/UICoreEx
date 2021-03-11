@@ -81,7 +81,7 @@ object UserHelper {
     fun exit() {
         logout()
         thread {
-            sleep(3_000) {
+            sleep(1_000) {
                 killCurrentProcess()
             }
         }
