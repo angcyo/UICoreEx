@@ -1,5 +1,6 @@
 package com.angcyo.acc2.app
 
+import android.graphics.Color
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.angcyo.acc2.app.component.AccTouchTipLayer
 import com.angcyo.acc2.app.component.AccWindow
@@ -7,8 +8,10 @@ import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.AccPrint
 import com.angcyo.acc2.parse.toRect
+import com.angcyo.core.R
 import com.angcyo.core.component.file.DslFileHelper
 import com.angcyo.http.rx.doMain
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex.des
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.wrapLog
@@ -53,7 +56,10 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
             } else {
                 actionBean.summary ?: actionBean.title
             }
-            AccWindow.showProgress(accControl?.accSchedule?.indexTip(), title, time)
+            AccWindow.showProgress(accControl?.accSchedule?.indexTip(), title, time) {
+                textColor =
+                    if (accControl?.accSchedule?._isLeaveWindow == true) _color(R.color.warning) else Color.WHITE
+            }
         }
     }
 
