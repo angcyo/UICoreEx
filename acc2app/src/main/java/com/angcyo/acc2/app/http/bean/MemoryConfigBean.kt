@@ -48,6 +48,9 @@ data class MemoryConfigBean(
     /**是否要显示分享日志按钮*/
     var showShareLog: Boolean = false,
 
+    /**未适配时, 是否允许运行*/
+    var allowNoAdapterRun: Boolean = false,
+
     //</editor-fold desc="功能配置">
 
     //<editor-fold desc="其他配置">
