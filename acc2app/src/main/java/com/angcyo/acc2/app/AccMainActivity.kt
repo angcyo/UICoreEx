@@ -73,16 +73,19 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        //load
-        vmApp<AdaptiveModel>().updateOnResume()
+    override fun onStart() {
+        super.onStart()
         Gitee.fetchVersion { data, error ->
             data.let {
                 versionUpdate(it)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //load
+        vmApp<AdaptiveModel>().updateOnResume()
     }
 
     override fun onDestroy() {
