@@ -91,5 +91,8 @@ data class MemoryConfigBean(
     /**邀请绑定现示语*/
     var inviteDes: String? = null,
 
+    /**[com.angcyo.acc2.parse.AccParse.defTimeRandomFactor]*/
+    var defTimeRandomFactor: Long? = null
+
     //</editor-fold desc="其他配置">
 )

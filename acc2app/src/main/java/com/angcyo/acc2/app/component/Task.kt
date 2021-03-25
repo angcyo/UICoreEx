@@ -1,6 +1,7 @@
 package com.angcyo.acc2.app.component
 
 import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.bean.ActionBean
@@ -9,7 +10,6 @@ import com.angcyo.acc2.control.AccControl
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.L
-import com.angcyo.library.app
 import com.angcyo.library.ex.readAssets
 
 /**
@@ -22,6 +22,12 @@ import com.angcyo.library.ex.readAssets
 object Task {
 
     val control = AccControl().apply {
+
+        //随机因子
+        app().memoryConfigBean.defTimeRandomFactor?.let {
+            accSchedule.accParse.defTimeRandomFactor = it
+        }
+
         //日志
         accPrint = AppAccLog(this)
 
