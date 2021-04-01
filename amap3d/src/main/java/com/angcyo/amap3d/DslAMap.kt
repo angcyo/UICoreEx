@@ -419,7 +419,7 @@ fun AMap.moveTo(
 }
 
 /**移动地图至包含所有指定的点位*/
-fun AMap.moveInclude(bounds: LatLngBounds, padding: Int = 50 * dpi, animDuration: Long = 250) {
+fun AMap.moveInclude(bounds: LatLngBounds?, padding: Int = 50 * dpi, animDuration: Long = 250) {
     moveTo(CameraUpdateFactory.newLatLngBounds(bounds, padding), animDuration)
 }
 
