@@ -18,6 +18,8 @@ import io.objectbox.BoxStoreBuilder
 import io.objectbox.DebugFlags
 import io.objectbox.android.AndroidObjectBrowser
 import io.objectbox.exception.DbException
+import io.objectbox.kotlin.query
+import io.objectbox.query.QueryBuilder
 import java.io.File
 
 
@@ -216,6 +218,22 @@ fun <T> boxOf(
     val box = getBox(packageName, entityClass)
     box.action()
     return box
+}
+
+fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit): List<T> {
+    return query(block).find()
+}
+
+fun <T> Box<T>.findFirst(block: QueryBuilder<T>.() -> Unit): T? {
+    return query(block).findFirst()
+}
+
+fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit): List<T> {
+    return findAll(block).apply { this@removeAll.remove(this) }
+}
+
+fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit): T? {
+    return findFirst(block)?.apply { this@removeFirst.remove(this) }
 }
 
 /**保存实体,
