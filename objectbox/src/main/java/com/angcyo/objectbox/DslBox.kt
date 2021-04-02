@@ -237,7 +237,8 @@ fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit): T? {
 }
 
 /**保存实体,
- * id不为0时, 就是更新*/
+ * id不为0时, 就是更新
+ * 返回Entity的id*/
 inline fun <reified T> T.saveEntity(): Long {
     return boxOf(T::class.java).put(this)
 }
