@@ -57,6 +57,9 @@ class DslAMap {
     /**当定位类型[locationType]没有将视角移动到地图中心点时, 是否在首次定位回调后. 移动到地图中心*/
     var locationMoveFirst = true
 
+    /**首次定位移动延迟*/
+    var firstMoveDelay = 16L
+
     var _locationMoveFirstEnd = false
 
     /**回到中心位置时, 需要使用的zoom*/
@@ -88,6 +91,10 @@ class DslAMap {
     var locationFillColor: Int =
         _color(R.color.colorPrimary).alpha(16)  //locationStyle.radiusFillColor
 
+    /**地图是否加载*/
+    var _isMapLoaded: Boolean = false
+
+    /**监听保存最后一次的位置*/
     var _locationChangeListener: AMap.OnMyLocationChangeListener? = null
 
     /**执行定位样式配置, [myLocationType] 支持动态修改, 实时生效*/
@@ -118,26 +125,30 @@ class DslAMap {
         map.isMyLocationEnabled = locationEnable
 
         if (locationMoveFirst) {
+            var loadedListener: AMap.OnMapLoadedListener? = null
+            loadedListener = map.onMapLoadedListener {
+                _isMapLoaded = true
+                L.w("doLocationStyle AMapLoaded...")
+                if (_isMapLoaded && locationMoveFirst && !_locationMoveFirstEnd) {
+                    AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
+                        _delay(firstMoveDelay) {
+                            L.w("move to first by map loaded:$latLng $locationMoveZoom")
+                            map.moveTo(latLng, locationMoveZoom)
+                            _locationMoveFirstEnd = true
+                            map.removeOnMapLoadedListener(loadedListener)
+                        }
+                    }
+                }
+            }
 
             map.myLocation?.let {
                 val latLng = it.toLatLng()
-                L.w("move to first 1:$latLng $locationMoveZoom")
-                _locationMoveFirstEnd = true
-                map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
-            }
-
-            var loadedListener: AMap.OnMapLoadedListener? = null
-            loadedListener = map.onMapLoadedListener {
-                L.w("doLocationStyle AMapLoaded...")
-                if (locationMoveFirst && !_locationMoveFirstEnd) {
-                    AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
-                        L.w("move to first 3:$latLng $locationMoveZoom")
+                if (_isMapLoaded) {
+                    _delay(firstMoveDelay) {
+                        L.w("move to first by cache:$latLng $locationMoveZoom")
                         _locationMoveFirstEnd = true
-                        map.moveTo(latLng, locationMoveZoom)
+                        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
                     }
-                }
-                _delay(16) {
-                    map.removeOnMapLoadedListener(loadedListener)
                 }
             }
         }
@@ -153,11 +164,13 @@ class DslAMap {
                 //#locationDetail=定位权限被禁用,请授予应用定位权限#1201#locationType=0
                 //L.e(it)
                 //map.removeOnMyLocationChangeListener(_locationChangeListener)
-                if (locationMoveFirst && !_locationMoveFirstEnd) {
+                if (_isMapLoaded && locationMoveFirst && !_locationMoveFirstEnd) {
                     val latLng = it.toLatLng()
-                    L.w("move to first 2:$latLng $locationMoveZoom")
-                    _locationMoveFirstEnd = true
-                    map.moveTo(latLng, locationMoveZoom)
+                    _delay(firstMoveDelay) {
+                        L.w("move to first by location changed:$latLng $locationMoveZoom")
+                        map.moveTo(latLng, locationMoveZoom)
+                        _locationMoveFirstEnd = true
+                    }
                 }
             }
         }
@@ -395,11 +408,11 @@ fun AMap.moveTo(update: CameraUpdate, animDuration: Long = 250 /*动画耗时250
     if (animDuration > 0) {
         animateCamera(update, animDuration, object : AMap.CancelableCallback {
             override fun onFinish() {
-                L.d("AMap Camera Finish!")
+                L.d("AMap Camera Finish! $animDuration $update")
             }
 
             override fun onCancel() {
-                L.d("AMap Camera Cancel!")
+                L.d("AMap Camera Cancel! $update")
             }
         })
     } else {

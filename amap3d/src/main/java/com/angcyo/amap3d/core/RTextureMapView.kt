@@ -67,6 +67,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                         Lifecycle.Event.ON_PAUSE -> onPause()
                         //OnDestroy 方法需要在OnDestroyView中调用
                         Lifecycle.Event.ON_DESTROY -> {
+                            dslAMap._isMapLoaded = false
                             if (!_isDestory) {
                                 onDestroyR()
                             }
