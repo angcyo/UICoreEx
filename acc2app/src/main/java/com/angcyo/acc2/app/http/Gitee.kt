@@ -122,12 +122,19 @@ object Gitee {
             L.e("请先配置[check]json文件")
             return
         }
+        val giteeModel = vmApp<GiteeModel>()
+
+        //保存一份Asset check
+        if (giteeModel.allAssetCheckData.value.isNullOrEmpty() && !giteeModel.allCheckData.value.isNullOrEmpty()) {
+            giteeModel.allAssetCheckData.value = giteeModel.allCheckData.value
+        }
+
         if (online) {
             list.forEach {
                 getCheck(it) { list, error ->
                     list?.let {
                         result.addAll(it)
-                        vmApp<GiteeModel>().allCheckData.value = result
+                        giteeModel.allCheckData.value = result
                     }
                 }
             }
@@ -135,7 +142,7 @@ object Gitee {
             list.forEach {
                 assets<List<CheckBean>>(it, listType(CheckBean::class.java)) {
                     result.addAll(it)
-                    vmApp<GiteeModel>().allCheckData.value = result
+                    giteeModel.allCheckData.value = result
                 }
             }
         }

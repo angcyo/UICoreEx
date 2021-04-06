@@ -30,6 +30,7 @@ class GiteeModel : LifecycleViewModel() {
     val allBackActionData = vmData(listOf<ActionBean>())
 
     val allCheckData = vmData(listOf<CheckBean>())
+    val allAssetCheckData = vmData(listOf<CheckBean>())
 
     /**所有在线任务*/
     val allTaskData = vmData(listOf<TaskBean>())
@@ -50,7 +51,15 @@ class GiteeModel : LifecycleViewModel() {
 
     /**获取[CheckBean]*/
     fun findCheck(checkId: Long): CheckBean? {
+        //1
         for (check in allCheckData.value ?: emptyList()) {
+            if (check.checkId == checkId) {
+                //深拷贝
+                return check.toJson().fromJson()
+            }
+        }
+        //2
+        for (check in allAssetCheckData.value ?: emptyList()) {
             if (check.checkId == checkId) {
                 //深拷贝
                 return check.toJson().fromJson()
