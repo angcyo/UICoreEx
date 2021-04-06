@@ -29,11 +29,14 @@ import com.angcyo.library.utils.logFilePath
 class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
 
     companion object {
+
         var accLogFolderName = "acc"
         var accLogFileName = "acc.log"
 
+        /**catch的日志文件路径*/
         fun logCatchPath() = accLogFolderName.logFilePath()
 
+        /**acc的日志文件路径*/
         fun logPath() = FileUtils.appRootExternalFolderFile(
             app(),
             accLogFolderName,

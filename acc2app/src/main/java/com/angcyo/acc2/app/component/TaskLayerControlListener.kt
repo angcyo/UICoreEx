@@ -81,7 +81,7 @@ class TaskLayerControlListener : ControlListener() {
         control: AccControl,
         taskBean: TaskBean,
         state: Int,
-        reason: String
+        reason: String?
     ) {
         super.onControlEnd(control, taskBean, state, reason)
         doMain {

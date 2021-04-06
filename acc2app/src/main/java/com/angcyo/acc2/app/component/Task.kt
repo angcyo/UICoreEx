@@ -94,6 +94,11 @@ object Task {
     fun readAssetsTask(name: String): TaskBean? {
         return app().readAssets(name.jsonName())?.fromJson(TaskBean::class.java)
     }
+
+    /**停止任务*/
+    fun stop(reason: String? = null) {
+        control.stop(reason ?: "主动停止")
+    }
 }
 
 fun String.jsonName() = if (endsWith(".json")) this else "$this.json"

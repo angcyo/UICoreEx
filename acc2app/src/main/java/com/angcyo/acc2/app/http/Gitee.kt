@@ -39,7 +39,7 @@ object Gitee {
         fetch(online)
     }
 
-    fun fetch(online: Boolean = true) {
+    fun fetch(online: Boolean = !isDebugType()) {
         if (BASE.isEmpty()) {
             throw IllegalArgumentException("请先配置[BASE]地址.")
         }

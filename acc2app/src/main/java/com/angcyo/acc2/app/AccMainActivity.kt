@@ -8,12 +8,9 @@ import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.app.model.AdaptiveModel
 import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.core.activity.BaseCoreAppCompatActivity
-import com.angcyo.core.component.IObserver
-import com.angcyo.core.component.VolumeObserver
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.normalIosDialog
 import com.angcyo.download.version.versionUpdate
-import com.angcyo.library.ex.isDebug
 import com.angcyo.viewmodel.observe
 
 /**
@@ -25,23 +22,12 @@ import com.angcyo.viewmodel.observe
  */
 open class AccMainActivity : BaseCoreAppCompatActivity() {
 
-    val volumeObserver = object : IObserver {
-        override fun onChange(type: Int, from: Int, value: Int) {
-            if (isDebug()) {
-                //AccessibilityWindow.onCatchAction?.invoke()
-            }
-        }
-    }
-
     init {
         doubleBackTime = 1_000
     }
 
     override fun onCreateAfter(savedInstanceState: Bundle?) {
         super.onCreateAfter(savedInstanceState)
-
-        VolumeObserver.init(this)
-        VolumeObserver.observe(volumeObserver)
 
         /*dslFHelper {
             if (Acc2App.haveAllPermission(this@Acc2MainActivity)) {
@@ -91,6 +77,5 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AccWindow.hide()
-        VolumeObserver.removeObserve(volumeObserver)
     }
 }

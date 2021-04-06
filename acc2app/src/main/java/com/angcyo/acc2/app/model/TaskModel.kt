@@ -14,7 +14,7 @@ import com.angcyo.viewmodel.vmDataNull
  * @date 2021/02/07
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-class TaskModel : LifecycleViewModel() {
+open class TaskModel : LifecycleViewModel() {
 
     companion object {
         /**放在首位的任务id*/
