@@ -8,6 +8,7 @@ import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.toJson
+import com.angcyo.library.L
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.isMain
 import com.angcyo.viewmodel.vmData
@@ -46,6 +47,7 @@ class GiteeModel : LifecycleViewModel() {
                 return task
             }
         }
+        L.w("未找到任务类型:$type")
         return null
     }
 
@@ -65,6 +67,7 @@ class GiteeModel : LifecycleViewModel() {
                 return check.toJson().fromJson()
             }
         }
+        L.w("未找到CheckId:$checkId")
         return null
     }
 

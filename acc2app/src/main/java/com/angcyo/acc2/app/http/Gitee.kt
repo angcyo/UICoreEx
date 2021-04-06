@@ -22,6 +22,7 @@ import com.angcyo.library.ex.isHttpScheme
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.readAssets
 import com.google.gson.JsonElement
+import io.reactivex.disposables.Disposable
 import retrofit2.Response
 import java.lang.reflect.Type
 
@@ -57,8 +58,11 @@ object Gitee {
     //<editor-fold desc="base">
 
     /**从gitee获取数据*/
-    fun get(json: String, end: (data: Response<JsonElement>?, error: Throwable?) -> Unit) {
-        com.angcyo.http.get {
+    fun get(
+        json: String,
+        end: (data: Response<JsonElement>?, error: Throwable?) -> Unit
+    ): Disposable {
+        return com.angcyo.http.get {
             url = if (json.isHttpScheme()) {
                 json
             } else {
