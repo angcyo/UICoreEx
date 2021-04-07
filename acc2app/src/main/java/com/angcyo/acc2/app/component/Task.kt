@@ -31,7 +31,11 @@ object Task {
         //日志
         accPrint = AppAccLog(this)
 
+        //浮窗控制支持
         TaskLayerControlListener.install(this)
+
+        //表单请求支持
+        controlListenerList.add(FormControlListener())
     }
 
     fun start(
