@@ -2,9 +2,7 @@ package com.angcyo.acc2.app.model
 
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.http.bean.MessageBean
-import com.angcyo.acc2.bean.ActionBean
-import com.angcyo.acc2.bean.CheckBean
-import com.angcyo.acc2.bean.TaskBean
+import com.angcyo.acc2.bean.*
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.toJson
@@ -92,11 +90,15 @@ class GiteeModel : LifecycleViewModel() {
         before = before?.init()
         after = after?.init()
 
+        //回退列表
         allBackActionData.value?.init()?.let { allBackActionList ->
             backActionList = (backActionList?.toMutableList() ?: mutableListOf()).apply {
                 addAll(allBackActionList)
             }
         }
+
+        //init
+        initConfig()
 
         return this
     }

@@ -83,11 +83,11 @@ object Task {
                 if (enableActionList?.contains(it.actionId) == true) {
                     it.enable = true
                 }
-                if (disableActionList?.contains(it.actionId) == true) {
-                    it.enable = false
-                }
                 if (randomEnableActionList?.contains(it.actionId) == true) {
                     it.randomEnable = true
+                }
+                if (disableActionList?.contains(it.actionId) == true) {
+                    it.enable = false
                 }
             }
         }
