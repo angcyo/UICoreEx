@@ -92,7 +92,19 @@ data class MemoryConfigBean(
     var inviteDes: String? = null,
 
     /**[com.angcyo.acc2.parse.AccParse.defTimeRandomFactor]*/
-    var defTimeRandomFactor: Long? = null
+    var defTimeRandomFactor: Long? = null,
+
+    /**需要选中主业务的数量*/
+    var mainAppCount: Int = 1,
+
+    var maxTextLength: Int? = null,
+    var maxTextLines: Int? = null,
+
+    var errorTip: String? = null,
+
+    var requestTaskDelay: Long? = null,
+    var requestTaskDelayScreenOff: Long? = null,
+    var requestTaskDelayOnError: Long? = null,
 
     //</editor-fold desc="其他配置">
 )

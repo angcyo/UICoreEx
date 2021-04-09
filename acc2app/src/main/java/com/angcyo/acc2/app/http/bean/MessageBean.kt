@@ -28,6 +28,12 @@ data class MessageBean(
 
     //<editor-fold desc="消息目标">
 
+    //指定需要接收的包名
+    var packageNames: String? = null,
+
+    //忽略消息的包名
+    var ignorePackageNames: String? = null,
+
     //指定需要接收消息的用户
     var userNames: String? = null,
 
