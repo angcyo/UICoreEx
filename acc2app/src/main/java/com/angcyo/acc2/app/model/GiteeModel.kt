@@ -119,6 +119,10 @@ class GiteeModel : LifecycleViewModel() {
         }
         result.after = result.after?.init()
         result.before = result.before?.init()
+        if (result.actionId == -1L) {
+            //如果未指定[actionId]
+            result.actionId = result.hashCode().toLong()
+        }
         return result
     }
 
