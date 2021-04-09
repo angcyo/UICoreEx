@@ -55,6 +55,9 @@ data class MemoryConfigBean(
 
     //<editor-fold desc="其他配置">
 
+    /**拉取gitee数据的时间间隔, 秒*/
+    var fetchInterval: Long = 10,
+
     /**技术支持qq*/
     var qq: String? = null,
 

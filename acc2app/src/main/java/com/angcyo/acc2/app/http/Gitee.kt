@@ -36,6 +36,8 @@ object Gitee {
     //无/结尾
     var BASE = ""
 
+    var _last_fetch_time = 0L
+
     fun init(online: Boolean = !isDebugType()) {
         fetch(online)
     }
@@ -46,11 +48,23 @@ object Gitee {
         }
         fetchMemoryConfig(online) { data, error ->
             if (error == null) {
-                fetchFunctionList(online)
-                fetchAllCheck(online)
-                fetchAllAction(online)
-                fetchAllBackAction(online)
-                fetchAllTask(online)
+                var pass = false
+                val nowTime = nowTime()
+                if (online) {
+                    if (nowTime - _last_fetch_time >= app().memoryConfigBean.fetchInterval * 1000) {
+                        //需要拉取数据
+                    } else {
+                        pass = true
+                    }
+                }
+                if (!pass) {
+                    fetchFunctionList(online)
+                    fetchAllCheck(online)
+                    fetchAllAction(online)
+                    fetchAllBackAction(online)
+                    fetchAllTask(online)
+                }
+                _last_fetch_time = nowTime
             }
         }
     }
