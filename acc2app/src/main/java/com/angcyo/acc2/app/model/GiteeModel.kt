@@ -106,7 +106,9 @@ class GiteeModel : LifecycleViewModel() {
     fun List<ActionBean>.init(): List<ActionBean> {
         val result = mutableListOf<ActionBean>()
         forEach {
-            result.add(it.init())
+            if (!it.hide) {
+                result.add(it.init())
+            }
         }
         return result
     }
