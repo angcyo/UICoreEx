@@ -8,6 +8,7 @@ import com.angcyo.acc2.app.model.TaskModel
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.ControlListener
+import com.angcyo.acc2.control.isControlStart
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.app
@@ -73,7 +74,13 @@ class TaskLayerControlListener : ControlListener() {
         super.onControlStateChanged(control, oldState, newState)
         doMain {
             vmApp<TaskModel>().taskStateData.value = newState
-            AccWindow.update()
+            if (!control.isControlStart) {
+                doMain(false) {
+                    AccWindow.show()
+                }
+            } else {
+                AccWindow.update()
+            }
         }
     }
 
