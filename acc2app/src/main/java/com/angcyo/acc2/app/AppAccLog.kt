@@ -54,7 +54,7 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
         "next[$time]->${actionBean.title}${(actionBean.summary ?: actionBean.des).des()}".wrapLog()
             .saveAccRunLog()
 
-        doMain {
+        doMain(false) {
             val title = if (AccWindow.fullscreenLayer) {
                 actionBean.title
             } else {
