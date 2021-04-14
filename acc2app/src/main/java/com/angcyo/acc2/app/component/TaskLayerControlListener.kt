@@ -29,18 +29,24 @@ class TaskLayerControlListener : ControlListener() {
                 accSchedule.accParse.handleParse.registerActionList.forEach {
                     when (it) {
                         is FullscreenAction -> it.fullscreenAction = {
-                            AccWindow.fullscreenLayer = it
+                            doMain {
+                                AccWindow.fullscreenLayer = it
+                            }
                             true
                         }
                         is NotTouchableAction -> it.notTouchableAction = {
-                            AccWindow.notTouch = it
+                            doMain {
+                                AccWindow.notTouch = it
+                            }
                             true
                         }
                         is HideWindowAction -> it.hideWindowAction = { time, count ->
-                            when {
-                                time > 0 -> AccWindow.hideTime(time)
-                                count > 0 -> AccWindow.hideCount(time)
-                                else -> AccWindow.hide()
+                            doMain {
+                                when {
+                                    time > 0 -> AccWindow.hideTime(time)
+                                    count > 0 -> AccWindow.hideCount(time)
+                                    else -> AccWindow.hide()
+                                }
                             }
                             true
                         }

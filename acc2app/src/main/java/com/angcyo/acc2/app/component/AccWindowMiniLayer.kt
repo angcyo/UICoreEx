@@ -269,7 +269,7 @@ object AccWindowMiniLayer : ILayer() {
 
     /**修改[WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE]*/
     fun notTouchable(value: Boolean) {
-        AccWindowFullLayer._windowContainer.notTouchable(value, this)
+        _windowContainer.notTouchable(value, this)
         update()
     }
 }
