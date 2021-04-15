@@ -194,10 +194,10 @@ fun Appendable.logApp(packageName: String?, label: String? = "--", logAdaptive: 
     appendLine()
 }
 
-fun Context.shareApk() {
+fun Context.shareApk(title: CharSequence = "分享应用APK文件") {
     itemsDialog {
         canceledOnTouchOutside = true
-        dialogTitle = "分享应用APK文件"
+        dialogTitle = title
 
         val adaptiveModel = vmApp<AdaptiveModel>()
         allApp.sortedBy {

@@ -3,6 +3,7 @@ package com.angcyo.acc2.app.model
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.angcyo.acc2.app.R
+import com.angcyo.acc2.app.dslitem.shareApk
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.http.Message
 import com.angcyo.acc2.app.http.bean.*
@@ -161,7 +162,7 @@ class AdaptiveModel : LifecycleViewModel() {
             return false
         }
 
-        getAdaptiveInfo(packageName).let {
+        getAdaptiveInfo(packageName)?.let {
             //适配
         }.elseNull {
             //未适配
@@ -179,6 +180,10 @@ class AdaptiveModel : LifecycleViewModel() {
 
         if (noAdaptive) {
             //builder.append("\n继续使用将会产生未知的识别误差!")
+
+            //share
+            context?.shareApk("分享APK给技术适配")
+
             context?.normalIosDialog {
                 dialogTitle = "注意"
                 dialogMessage = builder.doIt()
