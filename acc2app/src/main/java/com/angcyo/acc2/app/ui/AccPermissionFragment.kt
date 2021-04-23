@@ -18,7 +18,7 @@ import com.angcyo.widget.span.span
 
 
 /**
- *
+ * 统一的全屏 浮窗权限/无障碍权限 申请界面
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/07/04
