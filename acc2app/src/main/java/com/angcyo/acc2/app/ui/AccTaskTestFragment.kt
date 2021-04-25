@@ -276,8 +276,17 @@ class AccTaskTestFragment : AccAppDslFragment() {
     fun updateList(list: List<TaskBean>? = giteeModel.allTaskData.value) {
         renderDslAdapter {
             loadDataEnd(AppTaskItem::class.java, list, null) { task ->
+                val taskData = taskModel.taskData.value
+
+                //是否正在运行任务
+                val taskRun = if (taskData?.taskId != -1L) {
+                    taskData?.taskId == task.taskId
+                } else {
+                    taskData.title == task.title
+                }
+
                 taskBean = task
-                taskState = if (taskModel.taskData.value?.taskId == task.taskId) 1 else 0
+                taskState = if (taskRun) 1 else 0
 
                 startAction = {
                     if (startTask(this, it)) {
@@ -338,23 +347,27 @@ class AccTaskTestFragment : AccAppDslFragment() {
                     //否则使用task.json默认
                 }
 
-                Task.start(task.init(), getEnableString(), getDisableString())
+                Task.start(task.init(), getEnableString(task), getDisableString(task))
             }
         }
         return true
     }
 
     /**需要禁用的[Action]*/
-    fun getDisableString(): String {
+    fun getDisableString(taskBean: TaskBean): String {
         return buildString {
+            //跳过debug分组
+            taskBean.disableAction = "${taskBean.disableAction ?: ""};debug;"
+
             //跳过口令
             if (_vh.isChecked(R.id.skip_word_box)) {
+                taskBean.disableAction = "${taskBean.disableAction ?: ""};a1;"
             }
         }
     }
 
     /**获取需要指定激活的[Action]*/
-    fun getEnableString(): String {
+    fun getEnableString(taskBean: TaskBean): String {
         return buildString {
 
             //-----------------------------↓ 视频相关-----------------------------
