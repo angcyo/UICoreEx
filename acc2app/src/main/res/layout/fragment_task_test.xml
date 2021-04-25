@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/lib_sdpi"
                 android:paddingTop="@dimen/lib_sdpi"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/task_app_tip_view"
                 app:r_flow_item_horizontal_space="@dimen/lib_ldpi"
                 app:r_flow_item_vertical_space="@dimen/lib_ldpi">
@@ -52,7 +52,8 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/lib_hdpi"
                     android:enabled="true"
-                    android:text="在线数据" />
+                    android:text="在线数据"
+                    tools:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/mini_checkbox"
@@ -81,7 +82,8 @@
                     android:minHeight="0dp"
                     android:paddingTop="@dimen/lib_sdpi"
                     android:paddingBottom="@dimen/lib_sdpi"
-                    android:text="提交Check" />
+                    android:text="提交Check"
+                    tools:visibility="gone" />
 
                 <com.angcyo.widget.DslButton
                     android:id="@+id/test_button"
@@ -164,7 +166,7 @@
             </com.angcyo.widget.layout.DslFlowLayout>
 
             <com.angcyo.widget.layout.DslFlowLayout
-                android:id="@+id/flow2"
+                android:id="@+id/video_flow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constrainedWidth="true"
@@ -253,14 +255,14 @@
             </com.angcyo.widget.layout.DslFlowLayout>
 
             <com.angcyo.widget.layout.DslFlowLayout
-                android:id="@+id/flow3"
+                android:id="@+id/live_flow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/flow2">
+                app:layout_constraintTop_toBottomOf="@id/video_flow">
 
                 <TextView
                     style="@style/AppBodyTextStyle"

@@ -223,7 +223,8 @@ class AdaptiveModel : LifecycleViewModel() {
         return adminData.value?.selfDevices?.contains(device) == true
     }
 
-    /**更新配置*/
+    /**更新配置
+     * [com.angcyo.acc2.app.AccMainActivity.onResume]*/
     fun updateOnResume() {
         //load
         loadAnim()

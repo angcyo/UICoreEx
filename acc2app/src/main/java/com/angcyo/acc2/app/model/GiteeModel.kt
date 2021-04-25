@@ -21,20 +21,29 @@ import com.angcyo.viewmodel.vmDataNull
  */
 class GiteeModel : LifecycleViewModel() {
 
-    /**存储功能列表*/
+    /**存储功能列表
+     * [com.angcyo.acc2.app.http.Gitee.fetchFunctionList]*/
     val allFunctionData = vmData(listOf<FunctionBean>())
 
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllAction]*/
     val allActionData = vmData(listOf<ActionBean>())
 
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllBackAction]*/
     val allBackActionData = vmData(listOf<ActionBean>())
 
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
     val allCheckData = vmData(listOf<CheckBean>())
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
     val allAssetCheckData = vmData(listOf<CheckBean>())
 
-    /**所有在线任务*/
+    /**所有在线任务
+     * [com.angcyo.acc2.app.http.Gitee.fetchAllTask]
+     * */
     val allTaskData = vmData(listOf<TaskBean>())
 
-    /**新消息提醒*/
+    /**新消息提醒
+     * [com.angcyo.acc2.app.http.Message.parseMessage]*/
     val messageData = vmDataNull<MessageBean>(null)
 
     /**获取指定类型的任务[TaskBean]*/

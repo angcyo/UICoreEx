@@ -44,6 +44,10 @@ class AccTaskTestFragment : AccAppDslFragment() {
         var COPY_WORD: CharSequence? = null
 
         var NO_WORD = "无口令"
+
+        var show_control_flow = true
+        var show_video_flow = true
+        var show_live_flow = true
     }
 
     val adaptiveModel: AdaptiveModel = vmApp()
@@ -82,6 +86,11 @@ class AccTaskTestFragment : AccAppDslFragment() {
         taskModel.taskData.observe {
             updateList()
         }
+
+        //flow
+        _vh.visible(R.id.task_control_layout, show_control_flow)
+        _vh.visible(R.id.video_flow, show_video_flow)
+        _vh.visible(R.id.live_flow, show_live_flow)
 
         //在线数据
         _vh.throttleClick(R.id.on_line_checkbox) {
@@ -199,7 +208,9 @@ class AccTaskTestFragment : AccAppDslFragment() {
         //加载测试任务
         if (giteeModel.allTaskData.value.isNullOrEmpty()) {
             _vh.post {
-                _adapter.toLoading()
+                if (!_adapter.isAdapterStatus()) {
+                    _adapter.toLoading()
+                }
             }
         }
         //加载全部离线数据
