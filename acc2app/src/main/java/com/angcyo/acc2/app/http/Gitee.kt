@@ -17,10 +17,7 @@ import com.angcyo.http.interceptor.LogInterceptor
 import com.angcyo.http.rx.observer
 import com.angcyo.http.toBean
 import com.angcyo.library.L
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.isHttpScheme
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.readAssets
+import com.angcyo.library.ex.*
 import com.google.gson.JsonElement
 import io.reactivex.disposables.Disposable
 import retrofit2.Response
@@ -109,7 +106,12 @@ object Gitee {
     }
 
     fun <T> assets(json: String, typeOfT: Type, end: (T) -> Unit) {
-        app().readAssets(json.jsonName())
+        val name = if (json.isHttpScheme()) {
+            json.subEnd("/", true)!!
+        } else {
+            json
+        }
+        app().readAssets(name.jsonName())
             ?.fromJson<T>(typeOfT)
             ?.let {
                 end(it)
@@ -169,9 +171,18 @@ object Gitee {
             }
         } else {
             list.forEach {
-                assets<List<CheckBean>>(it, listType(CheckBean::class.java)) {
-                    result.addAll(it)
-                    giteeModel.allCheckData.value = result
+                if (it.isHttpScheme()) {
+                    getCheck(it) { list, error ->
+                        list?.let {
+                            result.addAll(it)
+                            giteeModel.allCheckData.value = result
+                        }
+                    }
+                } else {
+                    assets<List<CheckBean>>(it, listType(CheckBean::class.java)) {
+                        result.addAll(it)
+                        giteeModel.allCheckData.value = result
+                    }
                 }
             }
         }
@@ -198,9 +209,18 @@ object Gitee {
             }
         } else {
             list.forEach {
-                assets<List<ActionBean>>(it, listType(ActionBean::class.java)) {
-                    result.addAll(it)
-                    giteeModel.allActionData.value = result
+                if (it.isHttpScheme()) {
+                    getAction(it) { list, error ->
+                        list?.let {
+                            result.addAll(it)
+                            giteeModel.allActionData.value = result
+                        }
+                    }
+                } else {
+                    assets<List<ActionBean>>(it, listType(ActionBean::class.java)) {
+                        result.addAll(it)
+                        giteeModel.allActionData.value = result
+                    }
                 }
             }
         }
@@ -227,9 +247,18 @@ object Gitee {
             }
         } else {
             list.forEach {
-                assets<List<ActionBean>>(it, listType(ActionBean::class.java)) {
-                    result.addAll(it)
-                    giteeModel.allBackActionData.value = result
+                if (it.isHttpScheme()) {
+                    getAction(it) { list, error ->
+                        list?.let {
+                            result.addAll(it)
+                            giteeModel.allBackActionData.value = result
+                        }
+                    }
+                } else {
+                    assets<List<ActionBean>>(it, listType(ActionBean::class.java)) {
+                        result.addAll(it)
+                        giteeModel.allBackActionData.value = result
+                    }
                 }
             }
         }
@@ -259,11 +288,23 @@ object Gitee {
             }
         } else {
             list.forEach {
-                assets<TaskBean>(it, TaskBean::class.java) {
-                    result.add(it)
-                    giteeModel.apply {
-                        allTaskData.value = null
-                        _addTasks(result)
+                if (it.isHttpScheme()) {
+                    getTask(it) { data, error ->
+                        data?.let {
+                            result.add(it)
+                            giteeModel.apply {
+                                allTaskData.value = null
+                                _addTasks(result)
+                            }
+                        }
+                    }
+                } else {
+                    assets<TaskBean>(it, TaskBean::class.java) {
+                        result.add(it)
+                        giteeModel.apply {
+                            allTaskData.value = null
+                            _addTasks(result)
+                        }
                     }
                 }
             }
@@ -285,7 +326,7 @@ object Gitee {
             return
         }
 
-        if (online) {
+        if (online || json.isHttpScheme()) {
             get(json) { data, error ->
                 data?.toBean(MemoryConfigBean::class.java)?.let {
                     app().memoryConfigBean = it
@@ -316,7 +357,7 @@ object Gitee {
             return
         }
 
-        if (online) {
+        if (online || json.isHttpScheme()) {
             get(json) { data, error ->
                 data?.toBean<List<FunctionBean>>(listType(FunctionBean::class.java))?.let {
                     result.addAll(it)

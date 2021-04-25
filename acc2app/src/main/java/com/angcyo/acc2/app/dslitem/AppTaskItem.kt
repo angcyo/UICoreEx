@@ -26,6 +26,7 @@ class AppTaskItem : DslAdapterItem() {
     //任务状态, >0 已开始
     var taskState: Int = 0
 
+    /**启动任务回调*/
     var startAction: (TaskBean) -> Unit = {}
 
     /**自定义关键字列表*/
@@ -44,9 +45,15 @@ class AppTaskItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.task_id_view)?.text = span {
-            append("任务ID:${taskBean?.taskId ?: -1}")
-            append(" [${taskBean?.actionList.size()}]")
-            append(" type:[${taskBean?.type.or()}]")
+            if (taskBean?.taskId != -1L) {
+                append("任务ID:${taskBean?.taskId ?: -1}")
+            }
+            taskBean?.actionList?.let {
+                append(" [${it.size()}]")
+            }
+            taskBean?.type?.let {
+                append(" type:[${it.or()}]")
+            }
         }
         itemHolder.tv(R.id.task_name_view)?.text = "任务名:${taskBean?.title.or()}"
         itemHolder.tv(R.id.task_des_view)?.text = "描述:${taskBean?.des.or()}"
