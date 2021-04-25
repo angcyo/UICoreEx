@@ -47,8 +47,9 @@ object Gitee {
      *     Gitee.fetch()
      * }
      * ```
+     * [force] 强制拉取
      * */
-    fun fetch(online: Boolean = !isDebugType()) {
+    fun fetch(online: Boolean = !isDebugType(), force: Boolean = false) {
         if (BASE.isEmpty()) {
             throw IllegalArgumentException("请先配置[BASE]地址.")
         }
@@ -63,7 +64,7 @@ object Gitee {
                         pass = true
                     }
                 }
-                if (!pass) {
+                if (force || !pass) {
                     fetchFunctionList(online)
                     fetchAllCheck(online)
                     fetchAllAction(online)

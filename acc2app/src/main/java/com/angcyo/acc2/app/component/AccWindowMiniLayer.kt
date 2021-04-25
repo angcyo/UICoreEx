@@ -85,11 +85,13 @@ object AccWindowMiniLayer : ILayer() {
             //pause
             tv(R.id.pause_button)?.apply {
                 visible(this)
+                visible(R.id.prev_button)
                 this.text = when {
                     Task.control.isControlPause -> "恢复"
                     Task.control.isControlStart -> "暂停"
                     else -> {
                         gone(this)
+                        gone(R.id.prev_button)
                         "..."
                     }
                 }
@@ -108,6 +110,11 @@ object AccWindowMiniLayer : ILayer() {
             //暂停状态切换
             throttleClick(R.id.pause_button) {
                 AccWindow.onPauseAction?.invoke()
+            }
+
+            //上一个步骤
+            throttleClick(R.id.prev_button) {
+                Task.control.accSchedule.prev()
             }
 
             //打开本机程序

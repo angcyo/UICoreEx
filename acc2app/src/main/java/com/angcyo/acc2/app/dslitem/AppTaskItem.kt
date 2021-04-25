@@ -45,17 +45,13 @@ class AppTaskItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.task_id_view)?.text = span {
-            if (taskBean?.taskId != -1L) {
-                append("任务ID:${taskBean?.taskId ?: -1}")
-            }
-            taskBean?.actionList?.let {
-                append(" [${it.size()}]")
-            }
+            append("任务ID:${taskBean?.taskId ?: -1}")
             taskBean?.type?.let {
                 append(" type:[${it.or()}]")
             }
         }
-        itemHolder.tv(R.id.task_name_view)?.text = "任务名:${taskBean?.title.or()}"
+        itemHolder.tv(R.id.task_name_view)?.text =
+            "任务名:${taskBean?.title.or()}[${taskBean?.actionList.size()}]"
         itemHolder.tv(R.id.task_des_view)?.text = "描述:${taskBean?.des.or()}"
         itemHolder.tv(R.id.task_package_name_view)?.text = "${taskBean?.packageName.or()}"
         itemHolder.tv(R.id.task_word_list_view)?.text = span {

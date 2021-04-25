@@ -22,6 +22,7 @@ import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loadLoadingBottom
 import com.angcyo.dsladapter.filter.batchLoad
 import com.angcyo.dsladapter.toLoading
+import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
@@ -79,6 +80,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
 
         //观察数据变化
         giteeModel.allTaskData.observe {
+            L.w(it)
             hideLoading()
             updateList(it)
         }
@@ -99,6 +101,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
                     /*checkModel.loadChecks((it as CompoundButton).isChecked)
                     taskModel.loadTasks(it.isChecked)
                     vmApp<ActionsModel>().loadActions(it.isChecked)*/
+                    Gitee.fetch(_vh.isChecked(R.id.on_line_checkbox), true)
                 }
             }
         }
