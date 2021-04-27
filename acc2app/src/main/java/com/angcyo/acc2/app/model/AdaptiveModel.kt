@@ -148,7 +148,8 @@ class AdaptiveModel : LifecycleViewModel() {
         }
     }
 
-    /**检查程序适配信息*/
+    /**检查程序适配信息
+     * [packageName] 要检查的应用包名*/
     fun checkAdaptiveInfo(
         context: Context?,
         packageName: String?,

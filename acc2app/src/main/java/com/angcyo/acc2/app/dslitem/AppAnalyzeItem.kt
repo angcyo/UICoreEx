@@ -207,16 +207,19 @@ fun Context.shareApk(title: CharSequence = "分享应用APK文件") {
                 -1
             }
         }.forEach {
-            it.packageName?.appBean()?.also { appBean ->
-                addDialogItem {
-                    itemText = "${appBean.appName}${appBean.versionName}(${appBean.versionCode})${
-                        if (adaptiveModel.getAdaptiveInfo(appBean.packageName) == null) " ×" else ""
-                    }"
-                    itemClick = {
-                        appBean.packageInfo.applicationInfo.sourceDir.file()
-                            ?.shareFile(this@shareApk)
+            if ((it.debug && isDebug()) || (!it.hide && it.enable)) {
+                it.packageName?.appBean()?.also { appBean ->
+                    addDialogItem {
+                        itemText =
+                            "${appBean.appName}${appBean.versionName}(${appBean.versionCode})${
+                                if (adaptiveModel.getAdaptiveInfo(appBean.packageName) == null) " ×" else ""
+                            }"
+                        itemClick = {
+                            appBean.packageInfo.applicationInfo.sourceDir.file()
+                                ?.shareFile(this@shareApk)
 
-                        itemText?.copy()
+                            itemText?.copy()
+                        }
                     }
                 }
             }

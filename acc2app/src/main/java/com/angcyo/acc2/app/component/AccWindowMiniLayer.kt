@@ -13,6 +13,7 @@ import com.angcyo.ilayer.ILayer
 import com.angcyo.ilayer.container.DragRectFConstraint
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library.*
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.widget.progress.CircleLoadingView
 
@@ -85,7 +86,7 @@ object AccWindowMiniLayer : ILayer() {
             //pause
             tv(R.id.pause_button)?.apply {
                 visible(this)
-                visible(R.id.prev_button)
+                visible(R.id.prev_button, isDebug())
                 this.text = when {
                     Task.control.isControlPause -> "恢复"
                     Task.control.isControlStart -> "暂停"
