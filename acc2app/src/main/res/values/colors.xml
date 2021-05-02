@@ -6,6 +6,7 @@
     <color name="dy_text_color_white">#DEDEDF</color>
     <color name="dy_text_color_dark">#7C7D84</color>
 
-    <color name="app_text_general_color">@color/dy_text_color_white</color>
+<!--    <color name="app_text_general_color">@color/dy_text_color_white</color>-->
+    <color name="app_text_general_color">@color/text_general_color</color>
     <color name="app_text_sub_color">@color/dy_text_color_dark</color>
 </resources>

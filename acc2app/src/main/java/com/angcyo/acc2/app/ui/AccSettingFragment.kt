@@ -70,10 +70,12 @@ open class AccSettingFragment : AccAppDslFragment() {
         }
     }
 
+    /**获取设置信息*/
     open fun fetchSetting() {
 
     }
 
+    /**跳转主界面*/
     open fun toMain() {
 
     }
