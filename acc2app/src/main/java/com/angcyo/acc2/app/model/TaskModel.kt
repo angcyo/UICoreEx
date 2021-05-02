@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.core.lifecycle.LifecycleViewModel
+import com.angcyo.core.vmApp
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
 
@@ -19,9 +20,12 @@ open class TaskModel : LifecycleViewModel() {
     companion object {
         /**放在首位的任务id*/
         val firstTaskId = listOf<Long>()
+
+        /**是否有任务正在运行*/
+        fun isTaskRun() = vmApp<TaskModel>().taskData.value != null
     }
 
-    /**正在运行的任务*/
+    /**正在运行的任务, 如果结束后会置空*/
     val taskData: MutableLiveData<TaskBean?> = vmDataNull()
 
     /**正在运行的任务状态*/

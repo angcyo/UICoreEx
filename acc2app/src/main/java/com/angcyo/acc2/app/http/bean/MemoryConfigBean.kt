@@ -105,8 +105,13 @@ data class MemoryConfigBean(
 
     var errorTip: String? = null,
 
+    /**请求下一个任务的延迟时长, 毫秒*/
     var requestTaskDelay: Long? = null,
+
+    /**熄屏时, 请求下一个任务的延迟时长, 毫秒*/
     var requestTaskDelayScreenOff: Long? = null,
+
+    /**请求错误时, 请求下一个任务的延迟时长, 毫秒*/
     var requestTaskDelayOnError: Long? = null,
 
     //</editor-fold desc="其他配置">
