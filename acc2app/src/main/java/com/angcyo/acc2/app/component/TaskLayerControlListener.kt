@@ -24,6 +24,8 @@ import com.angcyo.library.ex.openApp
 class TaskLayerControlListener : ControlListener() {
 
     companion object {
+
+        /**安装控制器*/
         fun install(control: AccControl) {
             control.apply {
                 accSchedule.accParse.handleParse.registerActionList.forEach {
