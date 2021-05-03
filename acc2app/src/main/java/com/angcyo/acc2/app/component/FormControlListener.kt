@@ -113,7 +113,7 @@ class FormControlListener : ControlListener() {
                     params?.let { putAll(it) }
                 }
 
-                control.log("表单参数${formUrl}:${query}")
+                control.log("表单参数 ${formUrl}↓\n${query}")
             }
         } else {
             post {
@@ -124,7 +124,7 @@ class FormControlListener : ControlListener() {
                     params?.let { putAll(it) }
                 }
 
-                control.log("表单参数${formUrl}:${requestParams}")
+                control.log("表单参数 ${formUrl}↓\n${requestParams}")
 
                 //请求体
                 if (formBean.contentType == FormBean.CONTENT_TYPE_FORM) {
@@ -139,7 +139,7 @@ class FormControlListener : ControlListener() {
             }
         }.observer {
             onObserverEnd = { data, error ->
-                control.log("表单返回${formBean}↓")
+                control.log("表单返回 ${formBean}↓")
                 data?.let {
                     control.log(it.body()?.toStr())
                 }
