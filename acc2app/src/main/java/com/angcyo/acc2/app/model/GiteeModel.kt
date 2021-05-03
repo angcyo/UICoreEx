@@ -94,6 +94,8 @@ class GiteeModel : LifecycleViewModel() {
 
     /**初始化[TaskBean],替换对应的数据*/
     fun TaskBean.init(): TaskBean {
+        _init = true
+
         actionList = actionList?.init()
         backActionList = backActionList?.init()
         before = before?.init()

@@ -43,8 +43,8 @@ object Task {
         enableActionString: String,
         disableActionString: String? = null,
         randomEnableActionString: String? = null,
-    ) {
-        start(
+    ): TaskBean? {
+        return start(
             taskBean,
             enableActionString.toActionIdList(),
             disableActionString?.toActionIdList(),
@@ -73,13 +73,18 @@ object Task {
         enableActionList: List<Long>? = null,
         disableActionList: List<Long>? = null,
         randomEnableActionList: List<Long>? = null
-    ) {
+    ): TaskBean? {
         if (taskBean == null) {
             L.e("无任务需要启动.")
-            return
+            return null
+        }
+        val bean = if (taskBean._init) {
+            taskBean
+        } else {
+            taskBean.init()
         }
         if (!enableActionList.isNullOrEmpty() || !disableActionList.isNullOrEmpty()) {
-            taskBean.actionList?.forEach {
+            bean.actionList?.forEach {
                 if (enableActionList?.contains(it.actionId) == true) {
                     it.enable = true
                 }
@@ -91,7 +96,8 @@ object Task {
                 }
             }
         }
-        control.start(taskBean, false)
+        control.start(bean, false)
+        return bean
     }
 
     /**从[assets]中, 获取json数据*/
