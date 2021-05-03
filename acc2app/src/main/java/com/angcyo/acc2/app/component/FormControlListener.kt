@@ -143,7 +143,7 @@ class FormControlListener : ControlListener() {
                     //错误日志, 写入acc
                     control.log(it.toStr())
                     if (formBean.sync) {
-                        control.error(it.message)
+                        control.error(it)
                     }
                 }
                 L.d(data, error)
