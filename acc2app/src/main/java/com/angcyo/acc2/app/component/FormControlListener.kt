@@ -35,17 +35,21 @@ class FormControlListener : ControlListener() {
 
     override fun onControlStateChanged(control: AccControl, oldState: Int, newState: Int) {
         super.onControlStateChanged(control, oldState, newState)
-        control._taskBean?.form?.let {
-            val params = hashMapOf<String, Any?>()
-            when (newState) {
-                AccControl.CONTROL_STATE_FINISH -> params[KEY_CODE] = 200
-                AccControl.CONTROL_STATE_STOP -> params[KEY_CODE] = 300 //本地执行中断, 任务终止.
-                AccControl.CONTROL_STATE_ERROR -> params[KEY_CODE] = 500 //本地执行错误, 任务终止.
-            }
-            params[KEY_MSG] = control.finishReason
-            params[KEY_DATA] = newState
 
-            request(control, it, params)
+        control._taskBean?.form?.let {
+            if (newState >= AccControl.CONTROL_STATE_FINISH) {
+                //结束之后, 才请求form
+                val params = hashMapOf<String, Any?>()
+                when (newState) {
+                    AccControl.CONTROL_STATE_FINISH -> params[KEY_CODE] = 200
+                    AccControl.CONTROL_STATE_STOP -> params[KEY_CODE] = 300 //本地执行中断, 任务终止.
+                    AccControl.CONTROL_STATE_ERROR -> params[KEY_CODE] = 500 //本地执行错误, 任务终止.
+                }
+                params[KEY_MSG] = control.finishReason
+                params[KEY_DATA] = newState
+
+                request(control, it, params)
+            }
         }
     }
 
