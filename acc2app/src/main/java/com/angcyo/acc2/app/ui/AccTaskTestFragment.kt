@@ -27,6 +27,8 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
 import com.angcyo.widget.base.appendDslItem
+import com.angcyo.widget.base.setInputText
+import com.angcyo.widget.base.string
 import com.angcyo.widget.base.updateAllDslItem
 import com.angcyo.widget.span.span
 
@@ -49,6 +51,8 @@ class AccTaskTestFragment : AccAppDslFragment() {
         var show_control_flow = true
         var show_video_flow = true
         var show_live_flow = true
+
+        val KEY_ENABLE_ACTION = "enable_action"
     }
 
     val adaptiveModel: AdaptiveModel = vmApp()
@@ -88,6 +92,9 @@ class AccTaskTestFragment : AccAppDslFragment() {
         taskModel.taskData.observe {
             updateList()
         }
+
+        //enable
+        _vh.ev(R.id.enable_action_edit)?.setInputText(KEY_ENABLE_ACTION.hawkGet())
 
         //flow
         _vh.visible(R.id.task_control_layout, show_control_flow)
@@ -262,18 +269,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
         }
 
         //getText获取到的值
-        _vh.tv(R.id.get_text_tip_view)?.text = span {
-            Task.control._taskBean?.textMap?.apply {
-                append(toString())
-            }
-            Task.control._taskBean?.textListMap?.apply {
-                append(toString())
-            }
-            Task.control.finishReason?.apply {
-                append(" ")
-                append(toString())
-            }
-        }
+        _vh.tv(R.id.get_text_tip_view)?.text = Task.control.controlToLog()
     }
 
     fun updateList(list: List<TaskBean>? = giteeModel.allTaskData.value) {
@@ -350,7 +346,10 @@ class AccTaskTestFragment : AccAppDslFragment() {
                     //否则使用task.json默认
                 }
 
-                Task.start(task.init(), getEnableString(task), getDisableString(task))
+                val enableString = getEnableString(task)
+                val disableString = getDisableString(task)
+
+                Task.start(task.init(), enableString, disableString)
             }
         }
         return true
@@ -372,6 +371,10 @@ class AccTaskTestFragment : AccAppDslFragment() {
     /**获取需要指定激活的[Action]*/
     fun getEnableString(taskBean: TaskBean): String {
         return buildString {
+
+            val enableAction = _vh.ev(R.id.enable_action_edit).string()
+            taskBean.enableAction = "${taskBean.enableAction ?: ""};$enableAction;"
+            KEY_ENABLE_ACTION.hawkPut(enableAction)
 
             //-----------------------------↓ 视频相关-----------------------------
 

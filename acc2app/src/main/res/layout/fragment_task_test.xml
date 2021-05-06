@@ -260,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"
                 app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/input_wrap_layout"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/video_flow">
 
@@ -317,6 +317,25 @@
                     android:text="所有" />
 
             </com.angcyo.widget.layout.DslFlowLayout>
+
+            <LinearLayout
+                android:id="@+id/input_wrap_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/lib_dpi"
+                android:paddingBottom="@dimen/lib_dpi"
+                app:layout_constraintTop_toBottomOf="@id/live_flow">
+
+                <com.angcyo.widget.edit.DslEditText
+                    android:id="@+id/enable_action_edit"
+                    style="@style/AppBodyTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="输入激活的功能(;号分割多个)"
+                    app:r_draw_left="激活: " />
+
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
