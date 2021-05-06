@@ -13,9 +13,9 @@ import com.angcyo.acc2.control.log
 import com.angcyo.acc2.parse.HandleResult
 import com.angcyo.http.GET
 import com.angcyo.http.base.jsonObject
+import com.angcyo.http.base.readString
 import com.angcyo.http.post
 import com.angcyo.http.rx.observer
-import com.angcyo.library.L
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.toStr
 import java.util.concurrent.CountDownLatch
@@ -109,7 +109,7 @@ class FormControlListener : ControlListener() {
                 url = formUrl
 
                 //请求参数
-                query = formBean.handleParams(taskBean, configParams).apply {
+                query = formBean.handleParams(control, taskBean, configParams).apply {
                     params?.let { putAll(it) }
                 }
 
@@ -120,7 +120,7 @@ class FormControlListener : ControlListener() {
                 url = formUrl
 
                 //请求参数
-                val requestParams = formBean.handleParams(taskBean, configParams).apply {
+                val requestParams = formBean.handleParams(control, taskBean, configParams).apply {
                     params?.let { putAll(it) }
                 }
 
@@ -141,16 +141,16 @@ class FormControlListener : ControlListener() {
             onObserverEnd = { data, error ->
                 control.log("表单返回 ${formBean}↓")
                 data?.let {
-                    control.log(it.body()?.toStr())
+                    control.log(it.body()?.toStr() ?: it.errorBody().readString())
                 }
                 error?.let {
                     //错误日志, 写入acc
-                    control.log(it.toStr())
+                    control.log(it.message)
                     if (formBean.sync) {
                         control.error(it)
                     }
                 }
-                L.d(data, error)
+                //L.d(data, error)
 
                 //放行
                 countDownLatch?.countDown()
