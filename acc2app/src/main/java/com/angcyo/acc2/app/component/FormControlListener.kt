@@ -18,6 +18,7 @@ import com.angcyo.http.post
 import com.angcyo.http.rx.observer
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.uuid
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -104,6 +105,8 @@ class FormControlListener : ControlListener() {
             countDownLatch = CountDownLatch(1)
         }
 
+        val uuid = uuid()
+
         if (formBean.method == GET) {
             com.angcyo.http.get {
                 url = formUrl
@@ -113,7 +116,7 @@ class FormControlListener : ControlListener() {
                     params?.let { putAll(it) }
                 }
 
-                control.log("表单参数 ${formUrl}↓\n${query}")
+                control.log("请求表单的参数[$uuid] ${formUrl}↓\n${query}")
             }
         } else {
             post {
@@ -124,7 +127,7 @@ class FormControlListener : ControlListener() {
                     params?.let { putAll(it) }
                 }
 
-                control.log("表单参数 ${formUrl}↓\n${requestParams}")
+                control.log("请求表单的参数[$uuid] ${formUrl}↓\n${requestParams}")
 
                 //请求体
                 if (formBean.contentType == FormBean.CONTENT_TYPE_FORM) {
@@ -139,17 +142,23 @@ class FormControlListener : ControlListener() {
             }
         }.observer {
             onObserverEnd = { data, error ->
-                control.log("表单返回 ${formBean}↓")
+                val builder = StringBuilder()
+
+                builder.appendLine("表单返回[$uuid] ${formBean}↓")
+
                 data?.let {
-                    control.log(it.body()?.toStr() ?: it.errorBody().readString())
+                    builder.appendLine(it.body()?.toStr() ?: it.errorBody().readString())
                 }
+
                 error?.let {
                     //错误日志, 写入acc
-                    control.log(it.message)
+                    builder.appendLine(it.message)
                     if (formBean.sync) {
                         control.error(it)
                     }
                 }
+
+                control.log(builder.toString())
                 //L.d(data, error)
 
                 //放行
