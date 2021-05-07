@@ -359,7 +359,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
     fun getDisableString(taskBean: TaskBean): String {
         return buildString {
             //跳过debug分组
-            taskBean.disableAction = "${taskBean.disableAction ?: ""};debug;"
+            taskBean.disableAction = "${taskBean.disableAction ?: ""};debug;d1;"
 
             //跳过口令
             if (_vh.isChecked(R.id.skip_word_box)) {
@@ -373,7 +373,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
         return buildString {
 
             val enableAction = _vh.ev(R.id.enable_action_edit).string()
-            taskBean.enableAction = "${taskBean.enableAction ?: ""};$enableAction;"
+            taskBean.enableAction = "${taskBean.enableAction ?: ""};$enableAction;e1;"
             KEY_ENABLE_ACTION.hawkPut(enableAction)
 
             //-----------------------------↓ 视频相关-----------------------------
