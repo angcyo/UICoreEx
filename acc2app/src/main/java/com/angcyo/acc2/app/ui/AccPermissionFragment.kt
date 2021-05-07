@@ -29,6 +29,9 @@ class AccPermissionFragment : BaseTitleFragment() {
     companion object {
         /**需要启动的目标界面*/
         var TARGET_CLASS: Class<out BaseFragment>? = null
+
+        /**显示其他权限*/
+        var SHOW_OTHER_PERMISSIONS = false
     }
 
     init {
@@ -45,8 +48,10 @@ class AccPermissionFragment : BaseTitleFragment() {
         _vh.tv(R.id.top_text_view)?.text = _string(R.string.lib_accessibility_description)
         _vh.tv(R.id.lib_tip_view)?.text = versionTipName()
 
-//        if (RUtils.getMIUIVersion() ?: 0 >= 12) {
-        //_vh.visible(R.id.other_tip_view)
+        //        if (RUtils.getMIUIVersion() ?: 0 >= 12) {
+        //        }
+
+        _vh.visible(R.id.other_tip_view, SHOW_OTHER_PERMISSIONS)
         _vh.tv(R.id.other_tip_view)?.apply {
             text = span {
                 append("部分手机还需要打开以下权限:\n1:读取应用列表\n2:读取剪切板\n3:后台弹出界面\n")
@@ -58,7 +63,6 @@ class AccPermissionFragment : BaseTitleFragment() {
                 fContext().toAppPermissionsDetail()
             }
         }
-//        }
 
         _vh.gone(R.id.start_tip_view)
         _vh.throttleClick(R.id.start_tip_view) {
