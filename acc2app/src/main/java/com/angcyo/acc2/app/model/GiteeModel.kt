@@ -117,6 +117,8 @@ class GiteeModel : LifecycleViewModel() {
 
         before = before?.init()
         after = after?.init()
+        leave = leave?.init()
+        lose = lose?.init()
 
         //公共列表
         if (allActionDataBack.isNotEmpty()) {
@@ -162,8 +164,12 @@ class GiteeModel : LifecycleViewModel() {
         if (result.check == null) {
             result.check = findCheck(result.checkId)
         }
+
         result.after = result.after?.init()
         result.before = result.before?.init()
+        result.leave = result.leave?.init()
+        result.lose = result.lose?.init()
+
         if (result.actionId == -1L) {
             //如果未指定[actionId]
             result.actionId = result.hashCode().toLong()
