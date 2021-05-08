@@ -28,11 +28,20 @@ class GiteeModel : LifecycleViewModel() {
     /**[com.angcyo.acc2.app.http.Gitee.fetchAllAction]*/
     val allActionData = vmData(listOf<ActionBean>())
 
+    //备份
+    val allActionDataBack = mutableListOf<ActionBean>()
+
     /**[com.angcyo.acc2.app.http.Gitee.fetchAllBackAction]*/
     val allBackActionData = vmData(listOf<ActionBean>())
 
+    //备份
+    val allBackActionDataBack = mutableListOf<ActionBean>()
+
     /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
     val allCheckData = vmData(listOf<CheckBean>())
+
+    //备份
+    val allCheckDataBack = mutableListOf<CheckBean>()
 
     /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
     val allAssetCheckData = vmData(listOf<CheckBean>())
@@ -74,6 +83,13 @@ class GiteeModel : LifecycleViewModel() {
                 return check.toJson().fromJson()
             }
         }
+        //3
+        for (check in allCheckDataBack) {
+            if (check.checkId == checkId) {
+                //深拷贝
+                return check.toJson().fromJson()
+            }
+        }
         L.w("未找到CheckId:$checkId")
         return null
     }
@@ -98,11 +114,27 @@ class GiteeModel : LifecycleViewModel() {
 
         actionList = actionList?.init()
         backActionList = backActionList?.init()
+
         before = before?.init()
         after = after?.init()
 
+        //公共列表
+        if (allActionDataBack.isNotEmpty()) {
+            allActionDataBack
+        } else {
+            allActionData.value
+        }?.init()?.let { allActionList ->
+            actionList = (actionList?.toMutableList() ?: mutableListOf()).apply {
+                addAll(allActionList)
+            }
+        }
+
         //回退列表
-        allBackActionData.value?.init()?.let { allBackActionList ->
+        if (allBackActionDataBack.isNotEmpty()) {
+            allBackActionDataBack
+        } else {
+            allBackActionData.value
+        }?.init()?.let { allBackActionList ->
             backActionList = (backActionList?.toMutableList() ?: mutableListOf()).apply {
                 addAll(allBackActionList)
             }

@@ -157,6 +157,9 @@ object Gitee {
             return
         }
 
+        //back
+        giteeModel.allCheckDataBack.resetAll(giteeModel.allCheckData.value)
+
         //保存一份Asset check
         if (giteeModel.allAssetCheckData.value.isNullOrEmpty() && !giteeModel.allCheckData.value.isNullOrEmpty()) {
             giteeModel.allAssetCheckData.value = giteeModel.allCheckData.value
@@ -200,6 +203,9 @@ object Gitee {
             giteeModel.allActionData.value = null
             return
         }
+
+        giteeModel.allActionDataBack.resetAll(giteeModel.allActionData.value)
+
         if (online) {
             list.forEach {
                 getAction(it) { list, error ->
@@ -238,6 +244,9 @@ object Gitee {
             giteeModel.allBackActionData.value = null
             return
         }
+
+        giteeModel.allBackActionDataBack.resetAll(giteeModel.allBackActionData.value)
+
         if (online) {
             list.forEach {
                 getAction(it) { list, error ->
