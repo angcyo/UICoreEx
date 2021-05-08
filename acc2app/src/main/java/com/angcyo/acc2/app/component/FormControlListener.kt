@@ -5,11 +5,9 @@ import com.angcyo.acc2.bean.FormBean
 import com.angcyo.acc2.bean.FormBean.Companion.KEY_CODE
 import com.angcyo.acc2.bean.FormBean.Companion.KEY_DATA
 import com.angcyo.acc2.bean.FormBean.Companion.KEY_MSG
+import com.angcyo.acc2.bean.HandleBean
 import com.angcyo.acc2.bean.handleParams
-import com.angcyo.acc2.control.AccControl
-import com.angcyo.acc2.control.ControlListener
-import com.angcyo.acc2.control.actionLog
-import com.angcyo.acc2.control.log
+import com.angcyo.acc2.control.*
 import com.angcyo.acc2.parse.HandleResult
 import com.angcyo.http.GET
 import com.angcyo.http.base.jsonObject
@@ -54,6 +52,18 @@ class FormControlListener : ControlListener() {
         }
     }
 
+    override fun onHandleAction(
+        controlContext: ControlContext,
+        control: AccControl,
+        handleBean: HandleBean,
+        handleResult: HandleResult
+    ) {
+        super.onHandleAction(controlContext, control, handleBean, handleResult)
+        handleBean.operate?.form?.let {
+            handleForm(control, it, controlContext.action, handleResult)
+        }
+    }
+
     override fun onActionRunAfter(
         control: AccControl,
         actionBean: ActionBean,
@@ -62,22 +72,31 @@ class FormControlListener : ControlListener() {
     ) {
         super.onActionRunAfter(control, actionBean, isPrimaryAction, handleResult)
         actionBean.form?.let {
-            val params = hashMapOf<String, Any?>()
-            if (handleResult.success || handleResult.forceSuccess) {
-                params[KEY_CODE] = 200
-            } else {
-                params[KEY_CODE] = 301 //本地执行中断, 但是需要继续任务
-            }
-            params[KEY_MSG] = actionBean.title
-            params[KEY_DATA] = actionBean.actionLog()
+            handleForm(control, it, actionBean, handleResult)
+        }
+    }
 
-            if (it.checkSuccess) {
-                if (handleResult.success || handleResult.forceSuccess) {
-                    request(control, it, params)
-                }
-            } else {
-                request(control, it, params)
+    fun handleForm(
+        control: AccControl,
+        formBean: FormBean,
+        actionBean: ActionBean?,
+        handleResult: HandleResult
+    ) {
+        val params = hashMapOf<String, Any?>()
+        if (handleResult.success || handleResult.forceSuccess) {
+            params[KEY_CODE] = 200
+        } else {
+            params[KEY_CODE] = 301 //本地执行中断, 但是需要继续任务
+        }
+        params[KEY_MSG] = actionBean?.title
+        params[KEY_DATA] = actionBean?.actionLog()
+
+        if (formBean.checkSuccess) {
+            if (handleResult.success || handleResult.forceSuccess) {
+                request(control, formBean, params)
             }
+        } else {
+            request(control, formBean, params)
         }
     }
 

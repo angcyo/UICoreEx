@@ -17,6 +17,7 @@ import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.app.model.TaskModel
 import com.angcyo.acc2.app.model.allApp
 import com.angcyo.acc2.bean.TaskBean
+import com.angcyo.acc2.parse.ConditionParse
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loadLoadingBottom
@@ -373,7 +374,8 @@ class AccTaskTestFragment : AccAppDslFragment() {
         return buildString {
 
             val enableAction = _vh.ev(R.id.enable_action_edit).string()
-            taskBean.enableAction = "${taskBean.enableAction ?: ""};$enableAction;e1;"
+            taskBean.enableAction =
+                "${taskBean.enableAction ?: ""};$enableAction;e1;${ConditionParse.OR};"
             KEY_ENABLE_ACTION.hawkPut(enableAction)
 
             //-----------------------------↓ 视频相关-----------------------------
