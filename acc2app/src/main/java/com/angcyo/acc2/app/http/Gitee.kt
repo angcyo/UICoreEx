@@ -2,6 +2,7 @@ package com.angcyo.acc2.app.http
 
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.component.jsonName
+import com.angcyo.acc2.app.http.bean.AdaptiveVersionBean
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.app.model.GiteeModel
@@ -340,6 +341,33 @@ object Gitee {
         } else {
             assets<MemoryConfigBean>(json, MemoryConfigBean::class.java) {
                 app().memoryConfigBean = it
+                end(it, null)
+            }
+        }
+    }
+
+    fun fetchAdaptiveConfig(
+        online: Boolean = !isDebugType(),
+        end: (data: AdaptiveVersionBean?, error: Throwable?) -> Unit = { _, _ -> }
+    ) {
+        val json = app().memoryConfigBean.file?.adaptive ?: "adaptive_version"
+
+        if (json.isEmpty()) {
+            L.e("请先配置[adaptive]")
+            return
+        }
+
+        if (online || json.isHttpScheme()) {
+            get(json) { data, error ->
+                data?.toBean(AdaptiveVersionBean::class.java)?.let {
+                    end(it, error)
+                }
+                error?.let {
+                    end(null, it)
+                }
+            }
+        } else {
+            assets<AdaptiveVersionBean>(json, AdaptiveVersionBean::class.java) {
                 end(it, null)
             }
         }

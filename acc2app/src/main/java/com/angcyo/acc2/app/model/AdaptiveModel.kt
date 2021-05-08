@@ -39,30 +39,11 @@ class AdaptiveModel : LifecycleViewModel() {
 
     /**加载本地适配数据信息*/
     fun loadAdaptiveVersion(online: Boolean = !isDebugType()) {
-        if (online) {
-            get {
-                url = "${Gitee.BASE}/adaptive_version.json"
-                query = hashMapOf("time" to nowTime()) //带上时间参数, 避免缓存
-                header = hashMapOf(LogInterceptor.closeLog())
-            }.observer {
-                onObserverEnd = { data, _ ->
-                    data?.let {
-                        if (it.isSucceed()) {
-                            it.toBean(AdaptiveVersionBean::class.java)?.let { bean ->
-                                val oldVersion: Long = adaptiveData.value?.version ?: 0
-                                if (oldVersion < bean.version) {
-                                    adaptiveData.value = bean
-                                }
-                            }
-                        }
-                    }
-                }
+        Gitee.fetchAdaptiveConfig(online) { data, error ->
+            val oldVersion: Long = adaptiveData.value?.version ?: 0
+            if (oldVersion < data?.version ?: -1) {
+                adaptiveData.value = data
             }
-        } else {
-            app().readAssets("adaptive_version.json")
-                ?.fromJson(AdaptiveVersionBean::class.java)?.let {
-                    adaptiveData.value = it
-                }
         }
     }
 

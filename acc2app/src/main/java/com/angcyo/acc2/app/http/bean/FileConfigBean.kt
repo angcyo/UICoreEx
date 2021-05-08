@@ -9,6 +9,7 @@ package com.angcyo.acc2.app.http.bean
  */
 data class FileConfigBean(
     var memoryConfig: String? = null,
+    var adaptive: String? = null,
     var message: String? = null,
     var function: String? = null,
     var version: String? = null,
