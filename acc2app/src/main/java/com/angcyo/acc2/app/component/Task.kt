@@ -35,7 +35,7 @@ object Task {
         TaskLayerControlListener.install(this)
 
         //表单请求支持
-        controlListenerList.add(FormControlListener())
+        accSchedule.accParse.formParse.formRequestListener = FormRequestListener()
     }
 
     fun start(
@@ -126,4 +126,8 @@ fun String.toActionIdList(): List<Long> {
 /**初始化任务*/
 fun TaskBean.init(): TaskBean {
     return vmApp<GiteeModel>().initTask(this)
+}
+
+fun ActionBean.init(): ActionBean {
+    return vmApp<GiteeModel>().initAction(this)
 }

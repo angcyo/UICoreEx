@@ -158,6 +158,10 @@ class GiteeModel : LifecycleViewModel() {
         return result
     }
 
+    fun initAction(bean: ActionBean): ActionBean {
+        return bean.init()
+    }
+
     /**初始化[ActionBean],替换对应的数据*/
     fun ActionBean.init(): ActionBean {
         val result = toJson().fromJson<ActionBean>() ?: this
