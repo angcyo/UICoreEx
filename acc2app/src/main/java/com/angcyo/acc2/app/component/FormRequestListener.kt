@@ -1,5 +1,7 @@
 package com.angcyo.acc2.app.component
 
+import com.angcyo.acc2.app.http.bean.HttpBean
+import com.angcyo.acc2.app.http.bean.beanType
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.FormBean
 import com.angcyo.acc2.bean.FormResultBean
@@ -102,7 +104,9 @@ class FormRequestListener : FormParse.RequestListener() {
                 data?.let {
                     builder.appendLine(it.body()?.toStr() ?: it.errorBody().readString())
 
-                    formResultBean = it.toBean(FormResultBean::class.java)
+                    //formResultBean = it.toBean(FormResultBean::class.java)
+                    formResultBean =
+                        it.toBean<HttpBean<FormResultBean>>(beanType(FormResultBean::class.java))?.data
                 }
 
                 error?.let {
