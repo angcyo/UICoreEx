@@ -3,7 +3,6 @@ package com.angcyo.acc2.app.component
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.FormBean
 import com.angcyo.acc2.bean.FormResultBean
-import com.angcyo.acc2.bean.handleParams
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.log
 import com.angcyo.acc2.parse.FormParse
@@ -70,9 +69,7 @@ class FormRequestListener : FormParse.RequestListener() {
                 url = formUrl
 
                 //请求参数
-                query = formBean.handleParams(control, taskBean, configParams).apply {
-                    params?.let { putAll(it) }
-                }
+                query = params ?: query
 
                 control.log("请求表单的参数[$uuid] ${formUrl}↓\n${query}")
             }
@@ -81,9 +78,7 @@ class FormRequestListener : FormParse.RequestListener() {
                 url = formUrl
 
                 //请求参数
-                val requestParams = formBean.handleParams(control, taskBean, configParams).apply {
-                    params?.let { putAll(it) }
-                }
+                val requestParams = params ?: query
 
                 control.log("请求表单的参数[$uuid] ${formUrl}↓\n${requestParams}")
 
