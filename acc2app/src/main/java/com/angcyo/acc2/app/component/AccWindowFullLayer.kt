@@ -1,6 +1,8 @@
 package com.angcyo.acc2.app.component
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.WindowManager
 import com.angcyo.core.R
 import com.angcyo.ilayer.ILayer
@@ -8,6 +10,8 @@ import com.angcyo.ilayer.container.OffsetPosition
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library._contentHeight
 import com.angcyo.library.app
+import com.angcyo.library.ex.getColor
+import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
 
 
@@ -37,12 +41,16 @@ object AccWindowFullLayer : ILayer() {
         autoRestorePosition = false
     }
 
+    var _colorAnimator: ValueAnimator? = null
+
     fun show() {
         renderLayer = {
             //常亮
             itemView.keepScreenOn = true
 
-            if (AccWindow.updateProgress) {
+            val circleLoadingView = v<CircleLoadingView>(R.id.progress_bar)
+
+            if (AccWindow.updateProgress && !AccWindow.progressFlicker) {
                 val duration = AccWindow.duration
                 val _hideTime = AccWindow._hideTime
                 if (duration > 0) {
@@ -55,14 +63,36 @@ object AccWindowFullLayer : ILayer() {
                         animDuration =
                             duration - _hideTime
                     }
-                    v<CircleLoadingView>(R.id.progress_bar)?.setProgress(
+                    circleLoadingView?.setProgress(
                         100,
                         fromProgress,
                         animDuration
                     )
                 } else if (duration == 0L) {
-                    v<CircleLoadingView>(R.id.progress_bar)?.setProgress(0)
+                    circleLoadingView?.setProgress(0)
                 }
+            }
+
+            //闪烁动画
+            if (AccWindow.progressFlicker) {
+                if (AccWindowMiniLayer._colorAnimator == null) {
+                    val defColor = getColor(R.color.colorAccent)
+                    AccWindowMiniLayer._colorAnimator = colorAnimator(
+                        defColor,
+                        Color.TRANSPARENT,
+                        true,
+                        duration = 1000,
+                        onEnd = {
+                            circleLoadingView?.loadingColor = defColor
+                        }
+                    ) { animator, color ->
+                        //circleLoadingView?.progress = 100
+                        circleLoadingView?.loadingColor = color
+                    }
+                }
+            } else {
+                AccWindowMiniLayer._colorAnimator?.cancel()
+                AccWindowMiniLayer._colorAnimator = null
             }
 
             tv(R.id.text_view)?.apply {

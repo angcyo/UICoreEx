@@ -67,6 +67,14 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
         }
     }
 
+    override fun sleep(time: Long) {
+        super.sleep(time)
+        doMain(false) {
+            AccWindow.progressFlicker = true
+            AccWindow.update()
+        }
+    }
+
     override fun handleNode(nodeList: List<AccessibilityNodeInfoCompat>?) {
         super.handleNode(nodeList)
 

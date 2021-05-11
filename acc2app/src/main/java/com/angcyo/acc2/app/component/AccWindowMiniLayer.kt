@@ -1,6 +1,8 @@
 package com.angcyo.acc2.app.component
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.RectF
 import android.view.WindowManager
 import com.angcyo.acc2.control.isControlPause
@@ -13,8 +15,10 @@ import com.angcyo.ilayer.ILayer
 import com.angcyo.ilayer.container.DragRectFConstraint
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library.*
+import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
 
 
@@ -47,6 +51,8 @@ object AccWindowMiniLayer : ILayer() {
         )
     }
 
+    var _colorAnimator: ValueAnimator? = null
+
     /**[text] 需要提示的文本
      * [summary] 描述文本
      * [duration] 转圈时长, 毫秒. -1 保持原来的进度; 0 清空进度; 其他 进度动画时长*/
@@ -55,7 +61,9 @@ object AccWindowMiniLayer : ILayer() {
             //常亮
             itemView.keepScreenOn = true
 
-            if (AccWindow.updateProgress) {
+            val circleLoadingView = v<CircleLoadingView>(R.id.progress_bar)
+
+            if (AccWindow.updateProgress && !AccWindow.progressFlicker) {
                 val duration = AccWindow.duration
                 val _hideTime = AccWindow._hideTime
                 if (duration > 0) {
@@ -68,14 +76,36 @@ object AccWindowMiniLayer : ILayer() {
                         animDuration =
                             duration - _hideTime
                     }
-                    v<CircleLoadingView>(R.id.progress_bar)?.setProgress(
+                    circleLoadingView?.setProgress(
                         100,
                         fromProgress,
                         animDuration
                     )
                 } else if (duration == 0L) {
-                    v<CircleLoadingView>(R.id.progress_bar)?.setProgress(0)
+                    circleLoadingView?.setProgress(0)
                 }
+            }
+
+            //闪烁动画
+            if (AccWindow.progressFlicker) {
+                if (_colorAnimator == null) {
+                    val defColor = getColor(R.color.colorAccent)
+                    _colorAnimator = colorAnimator(
+                        defColor,
+                        Color.TRANSPARENT,
+                        true,
+                        duration = 1000,
+                        onEnd = {
+                            circleLoadingView?.loadingColor = defColor
+                        }
+                    ) { animator, color ->
+                        //circleLoadingView?.progress = 100
+                        circleLoadingView?.loadingColor = color
+                    }
+                }
+            } else {
+                _colorAnimator?.cancel()
+                _colorAnimator = null
             }
 
             tv(R.id.text_view)?.apply {
