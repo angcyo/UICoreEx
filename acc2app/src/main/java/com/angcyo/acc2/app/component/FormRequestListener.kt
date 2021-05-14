@@ -7,8 +7,10 @@ import com.angcyo.acc2.bean.FormBean
 import com.angcyo.acc2.bean.FormResultBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.log
+import com.angcyo.acc2.core.ControlException
 import com.angcyo.acc2.parse.FormParse
 import com.angcyo.http.GET
+import com.angcyo.http.base.isSuccess
 import com.angcyo.http.base.jsonObject
 import com.angcyo.http.base.readString
 import com.angcyo.http.post
@@ -105,8 +107,15 @@ class FormRequestListener : FormParse.RequestListener() {
                     builder.appendLine(it.body()?.toStr() ?: it.errorBody().readString())
 
                     //formResultBean = it.toBean(FormResultBean::class.java)
-                    formResultBean =
-                        it.toBean<HttpBean<FormResultBean>>(beanType(FormResultBean::class.java))?.data
+
+                    it.toBean<HttpBean<FormResultBean>>(beanType(FormResultBean::class.java))
+                        ?.apply {
+                            if (code.isSuccess()) {
+                                formResultBean = this.data
+                            } else {
+                                control.error(ControlException(msg ?: "Form返回异常[${this.code}]"))
+                            }
+                        }
                 }
 
                 error?.let {
