@@ -39,7 +39,7 @@ class FormRequestListener : FormParse.RequestListener() {
     override fun request(
         control: AccControl,
         formBean: FormBean,
-        params: HashMap<String, Any?>?
+        params: HashMap<String, Any>?
     ): FormResultBean? {
         val taskBean = control._taskBean
         val formUrl = formBean.url
