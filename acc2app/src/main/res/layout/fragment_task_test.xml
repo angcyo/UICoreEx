@@ -75,6 +75,16 @@
                     android:text="分享APK" />
 
                 <com.angcyo.widget.DslButton
+                    android:id="@+id/share_log_button"
+                    style="@style/DefaultButtonMinStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingTop="@dimen/lib_sdpi"
+                    android:paddingBottom="@dimen/lib_sdpi"
+                    android:text="分享日志" />
+
+                <com.angcyo.widget.DslButton
                     android:id="@+id/add_check_button"
                     style="@style/DefaultButtonMinStyle"
                     android:layout_width="wrap_content"

@@ -10,6 +10,7 @@ import com.angcyo.acc2.app.component.init
 import com.angcyo.acc2.app.dslitem.AppTaskItem
 import com.angcyo.acc2.app.dslitem.AppTextItem
 import com.angcyo.acc2.app.dslitem.shareApk
+import com.angcyo.acc2.app.helper.LogHelper
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.model.AdaptiveModel
@@ -197,6 +198,11 @@ class AccTaskTestFragment : AccAppDslFragment() {
         //share apk
         _vh.throttleClick(R.id.share_app_button) {
             fContext().shareApk()
+        }
+
+        //share log
+        _vh.throttleClick(R.id.share_log_button) {
+            LogHelper.showLogShareDialog(fContext())
         }
 
         //app info
