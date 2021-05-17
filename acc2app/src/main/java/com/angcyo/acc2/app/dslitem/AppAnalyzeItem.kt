@@ -207,7 +207,7 @@ fun Context.shareApk(title: CharSequence = "分享应用APK文件") {
                 -1
             }
         }.forEach {
-            if ((it.debug && isDebug()) || (!it.hide && it.enable)) {
+            if ((it.debug && isDebug()) || it.enable || !it.hide) {
                 it.packageName?.appBean()?.also { appBean ->
                     addDialogItem {
                         itemText =
