@@ -113,7 +113,9 @@ class FormRequestListener : FormParse.RequestListener() {
                             if (code.isSuccess()) {
                                 formResultBean = this.data
                             } else {
-                                control.error(ControlException(msg ?: "Form返回异常[${this.code}]"))
+                                control.accSchedule.async {
+                                    control.error(ControlException(msg ?: "Form返回异常[${this.code}]"))
+                                }
                             }
                         }
                 }
@@ -122,7 +124,7 @@ class FormRequestListener : FormParse.RequestListener() {
                     //错误日志, 写入acc
                     builder.appendLine(it.message)
                     if (formBean.sync) {
-                        control.error(it)
+                        control.accSchedule.async { control.error(it) }
                     }
                 }
 
@@ -135,7 +137,12 @@ class FormRequestListener : FormParse.RequestListener() {
         }
 
         //同步时, 需要等待
-        countDownLatch?.await()
+        try {
+            countDownLatch?.await()
+        } catch (e: Exception) {
+            //中断异常
+            e.printStackTrace()
+        }
 
         return formResultBean
     }
