@@ -337,7 +337,7 @@
                 android:paddingBottom="@dimen/lib_dpi"
                 app:layout_constraintTop_toBottomOf="@id/live_flow">
 
-                <com.angcyo.widget.edit.DslEditText
+                <com.angcyo.widget.edit.AutoCompleteEditText
                     android:id="@+id/enable_action_edit"
                     style="@style/AppBodyTextStyle"
                     android:layout_width="match_parent"

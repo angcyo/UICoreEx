@@ -19,6 +19,7 @@ import com.angcyo.acc2.app.model.TaskModel
 import com.angcyo.acc2.app.model.allApp
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.parse.ConditionParse
+import com.angcyo.component.hawkInstallAndRestore
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loadLoadingBottom
@@ -29,9 +30,9 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
 import com.angcyo.widget.base.appendDslItem
-import com.angcyo.widget.base.setInputText
 import com.angcyo.widget.base.string
 import com.angcyo.widget.base.updateAllDslItem
+import com.angcyo.widget.hawkTag
 import com.angcyo.widget.span.span
 
 /**
@@ -96,7 +97,9 @@ class AccTaskTestFragment : AccAppDslFragment() {
         }
 
         //enable
-        _vh.ev(R.id.enable_action_edit)?.setInputText(KEY_ENABLE_ACTION.hawkGet())
+        //_vh.ev(R.id.enable_action_edit)?.setInputText(KEY_ENABLE_ACTION.hawkGet())
+        _vh.hawkTag(R.id.enable_action_edit, "enable_action_edit")
+        _vh.hawkInstallAndRestore()
 
         //flow
         _vh.visible(R.id.task_control_layout, show_control_flow)
@@ -276,7 +279,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
         }
 
         //getText获取到的值
-        _vh.tv(R.id.get_text_tip_view)?.text = Task.control.controlToLog()
+        _vh.tv(R.id.get_text_tip_view)?.text = Task.control.controlEndToLog()
     }
 
     fun updateList(list: List<TaskBean>? = giteeModel.allTaskData.value) {
