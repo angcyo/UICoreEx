@@ -15,6 +15,7 @@
         android:background="@drawable/tbs_menu_circle_border_shape"
         android:padding="@dimen/lib_xhdpi"
         android:scaleType="fitCenter"
+        app:layout_constrainedWidth="true"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

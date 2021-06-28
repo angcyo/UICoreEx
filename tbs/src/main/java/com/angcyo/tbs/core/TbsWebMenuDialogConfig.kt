@@ -3,6 +3,7 @@ package com.angcyo.tbs.core
 import android.app.Dialog
 import android.content.Context
 import com.angcyo.dialog.BaseDialogConfig
+import com.angcyo.dialog.ITouchBackDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.tbs.R
@@ -17,7 +18,7 @@ import com.angcyo.widget.base.gone
  * @date 2020/04/22
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class TbsWebMenuDialogConfig : BaseDialogConfig() {
+class TbsWebMenuDialogConfig : BaseDialogConfig(), ITouchBackDialogConfig {
 
     /**网页host*/
     var webHost: String? = null
@@ -34,6 +35,8 @@ class TbsWebMenuDialogConfig : BaseDialogConfig() {
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
+        initTouchBackLayout(dialog, dialogViewHolder)
+
         dialogViewHolder.tv(R.id.web_title_view)?.apply {
             text = "网页由 $webHost 提供"
             gone(webHost.isNullOrEmpty())

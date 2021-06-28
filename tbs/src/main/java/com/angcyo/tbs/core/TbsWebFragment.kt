@@ -197,55 +197,60 @@ open class TbsWebFragment : BaseTitleFragment() {
         if (webConfig.showRightMenu) {
             //更多
             appendRightItem(ico = R.drawable.tbs_ic_more) {
-                fContext().tbsWebMenuDialog {
-                    val url = _tbsWebView?._loadUrl
-                    webHost = url?.toUri()?.host
-                    line1Items = renderItemList {
-                        DslBaseWebMenuItem()() {
-                            menuText = "刷新"
-                            menuIcon = R.drawable.tbs_ic_refresh
-                            itemClick = {
-                                _dialog?.dismiss()
-                                _tbsWebView?.loadUrl(url)
-                            }
-                        }
-                        DslBaseWebMenuItem()() {
-                            menuText = "复制链接"
-                            menuIcon = R.drawable.tbs_ic_copy
-                            itemClick = {
-                                _dialog?.dismiss()
-                                url?.copy()
-                            }
-                        }
-                        DslBaseWebMenuItem()() {
-                            menuText = "分享"
-                            menuIcon = R.drawable.tbs_ic_share
-                            itemClick = {
-                                _dialog?.dismiss()
-                                dslIntentShare {
-                                    shareTitle = _tbsWebView?.title
-                                    shareText = url
-                                }
-                            }
-                        }
-                        DslBaseWebMenuItem()() {
-                            menuText = "浏览器打开"
-                            menuIcon = R.drawable.tbs_ic_browser
-                            itemClick = {
-                                _dialog?.dismiss()
-                                DslIntent.openUrl(fContext(), url)
-                            }
-                        }
+                showWebMenuDialog()
+            }
+        }
+    }
 
-                        if (isDebug()) {
-                            DslBaseWebMenuItem()() {
-                                menuText = "X5内核测试"
-                                menuIcon = R.drawable.tbs_ic_x5
-                                itemClick = {
-                                    _dialog?.dismiss()
-                                    _tbsWebView?.loadUrl(DEBUG_TBS_URL)
-                                }
-                            }
+    /**显示网页菜单对话框*/
+    open fun showWebMenuDialog() {
+        fContext().tbsWebMenuDialog {
+            val url = _tbsWebView?._loadUrl
+            webHost = url?.toUri()?.host
+            line1Items = renderItemList {
+                DslBaseWebMenuItem()() {
+                    menuText = "刷新"
+                    menuIcon = R.drawable.tbs_ic_refresh
+                    itemClick = {
+                        _dialog?.dismiss()
+                        _tbsWebView?.loadUrl(url)
+                    }
+                }
+                DslBaseWebMenuItem()() {
+                    menuText = "复制链接"
+                    menuIcon = R.drawable.tbs_ic_copy
+                    itemClick = {
+                        _dialog?.dismiss()
+                        url?.copy()
+                    }
+                }
+                DslBaseWebMenuItem()() {
+                    menuText = "分享"
+                    menuIcon = R.drawable.tbs_ic_share
+                    itemClick = {
+                        _dialog?.dismiss()
+                        dslIntentShare {
+                            shareTitle = _tbsWebView?.title
+                            shareText = url
+                        }
+                    }
+                }
+                DslBaseWebMenuItem()() {
+                    menuText = "浏览器打开"
+                    menuIcon = R.drawable.tbs_ic_browser
+                    itemClick = {
+                        _dialog?.dismiss()
+                        DslIntent.openUrl(fContext(), url)
+                    }
+                }
+
+                if (isDebug()) {
+                    DslBaseWebMenuItem()() {
+                        menuText = "X5内核测试"
+                        menuIcon = R.drawable.tbs_ic_x5
+                        itemClick = {
+                            _dialog?.dismiss()
+                            _tbsWebView?.loadUrl(DEBUG_TBS_URL)
                         }
                     }
                 }
