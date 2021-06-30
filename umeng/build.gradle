@@ -3,11 +3,14 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
 
+    //https://developer.umeng.com/docs/119267/detail/118584
+    //maven { url 'https://repo1.maven.org/maven2/' }
+
     //http://dl.bintray.com/umsdk/release/com/umeng/umsdk
-    // 友盟统计SDK
+    // 友盟统计SDK 2021-6-30
     //https://github.com/umeng/MultiFunctionAndroidMavenDemo-master/blob/master/app/build.gradle
-    api 'com.umeng.umsdk:common:9.3.7' // (必选)版本号
-    api 'com.umeng.umsdk:asms:1.2.0' // asms包依赖(必选)
+    api 'com.umeng.umsdk:common:9.4.0' // (必选)版本号
+    api 'com.umeng.umsdk:asms:1.2.3' // asms包依赖(必选)
 
     //implementation 'com.umeng.umsdk:apm:1.1.1' // apm包依赖
 }

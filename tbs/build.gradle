@@ -1,5 +1,6 @@
 apply from: allGradle.libBase
-apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-parcelize'
 
 android {
     defaultConfig {
@@ -27,7 +28,7 @@ dependencies {
 
     //https://github.com/lzyzsd/JsBridge
     //api 'com.github.lzyzsd:jsbridge:1.0.4'
-    
+
     //https://github.com/hjhrq1991/JsBridge
     //api 'com.hjhrq1991.library:jsbridge:1.1.0'
 }
