@@ -84,12 +84,13 @@ object Gitee {
         json: String,
         end: (data: Response<JsonElement>?, error: Throwable?) -> Unit
     ): Disposable {
+        val url = if (json.isHttpScheme()) {
+            json
+        } else {
+            "$BASE/${json.jsonName()}"
+        }
         return com.angcyo.http.get {
-            url = if (json.isHttpScheme()) {
-                json
-            } else {
-                "$BASE/${json.jsonName()}"
-            }
+            this.url = url
             query = hashMapOf("time" to nowTime()) //带上时间参数, 避免缓存
             header = hashMapOf(LogInterceptor.closeLog(true))
             isSuccessful = {
@@ -97,7 +98,7 @@ object Gitee {
             }
         }.map {
             if (!it.isSuccessful) {
-                throw IllegalArgumentException(it.message())
+                throw IllegalArgumentException("${url}:${it.message()}")
             }
             it
         }.observer {
