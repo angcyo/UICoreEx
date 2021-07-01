@@ -15,14 +15,14 @@ import com.angcyo.viewmodel.vmDataNull
  * @date 2021/02/07
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-open class TaskModel : LifecycleViewModel() {
+open class AccTaskModel : LifecycleViewModel() {
 
     companion object {
         /**放在首位的任务id*/
         val firstTaskId = listOf<Long>()
 
         /**是否有任务正在运行*/
-        fun isTaskRun() = vmApp<TaskModel>().taskData.value != null
+        fun isTaskRun() = vmApp<AccTaskModel>().taskData.value != null
     }
 
     /**正在运行的任务, 如果结束后会置空*/

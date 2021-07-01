@@ -223,7 +223,7 @@ class GiteeModel : LifecycleViewModel() {
                 //未适配放在最前面
                 Long.MIN_VALUE
             } else {
-                if (isDebug() && TaskModel.firstTaskId.contains(it.taskId)) {
+                if (isDebug() && AccTaskModel.firstTaskId.contains(it.taskId)) {
                     0
                 } else {
                     it.taskId

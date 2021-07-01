@@ -38,6 +38,9 @@ object Task {
         accSchedule.accParse.formParse.formRequestListener = FormRequestListener()
     }
 
+    /**acc控制器的状态*/
+    fun controlState() = control._controlState
+
     fun start(
         taskBean: TaskBean?,
         enableActionString: String,

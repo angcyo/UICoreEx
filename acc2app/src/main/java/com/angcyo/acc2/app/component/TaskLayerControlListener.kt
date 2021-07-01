@@ -4,7 +4,7 @@ import android.graphics.Color
 import com.angcyo.acc2.action.FullscreenAction
 import com.angcyo.acc2.action.HideWindowAction
 import com.angcyo.acc2.action.NotTouchableAction
-import com.angcyo.acc2.app.model.TaskModel
+import com.angcyo.acc2.app.model.AccTaskModel
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.ControlListener
@@ -64,7 +64,7 @@ class TaskLayerControlListener : ControlListener() {
     override fun onControlStart(control: AccControl, taskBean: TaskBean) {
         super.onControlStart(control, taskBean)
         doMain {
-            vmApp<TaskModel>().taskData.value = taskBean
+            vmApp<AccTaskModel>().taskData.value = taskBean
             if (taskBean.fullscreen) {
                 //全屏浮窗
                 AccWindow.fullscreenLayer = true
@@ -80,7 +80,7 @@ class TaskLayerControlListener : ControlListener() {
     override fun onControlStateChanged(control: AccControl, oldState: Int, newState: Int) {
         super.onControlStateChanged(control, oldState, newState)
         doMain(false) {
-            vmApp<TaskModel>().taskStateData.value = newState
+            vmApp<AccTaskModel>().taskStateData.value = newState
 
             if (AccWindowMiniLayer._container != null) {
                 AccWindow.show()
@@ -96,7 +96,7 @@ class TaskLayerControlListener : ControlListener() {
     ) {
         super.onControlEnd(control, taskBean, state, reason)
         doMain {
-            vmApp<TaskModel>().taskData.value = null
+            vmApp<AccTaskModel>().taskData.value = null
             if (taskBean.finishToApp) {
                 //回到主程序
                 app().openApp()

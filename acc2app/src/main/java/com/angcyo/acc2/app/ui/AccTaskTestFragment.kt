@@ -15,7 +15,7 @@ import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.model.AdaptiveModel
 import com.angcyo.acc2.app.model.GiteeModel
-import com.angcyo.acc2.app.model.TaskModel
+import com.angcyo.acc2.app.model.AccTaskModel
 import com.angcyo.acc2.app.model.allApp
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.parse.ConditionParse
@@ -59,7 +59,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
     }
 
     val adaptiveModel: AdaptiveModel = vmApp()
-    val taskModel: TaskModel = vmApp()
+    val accTaskModel: AccTaskModel = vmApp()
     val giteeModel: GiteeModel = vmApp()
 
     val appItemList = mutableListOf<AppTextItem>()
@@ -92,7 +92,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
             updateList(it)
         }
 
-        taskModel.taskData.observe {
+        accTaskModel.taskData.observe {
             updateList()
         }
 
@@ -285,7 +285,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
     fun updateList(list: List<TaskBean>? = giteeModel.allTaskData.value) {
         renderDslAdapter {
             loadDataEnd(AppTaskItem::class.java, list, null) { task ->
-                val taskData = taskModel.taskData.value
+                val taskData = accTaskModel.taskData.value
 
                 //是否正在运行任务
                 val taskRun = if (taskData?.taskId != -1L) {
