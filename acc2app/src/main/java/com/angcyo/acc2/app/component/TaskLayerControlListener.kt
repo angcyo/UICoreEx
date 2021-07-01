@@ -21,7 +21,7 @@ import com.angcyo.library.ex.openApp
  * @date 2021/03/11
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class TaskLayerControlListener : ControlListener() {
+class TaskLayerControlListener : ControlListener {
 
     companion object {
 
