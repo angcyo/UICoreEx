@@ -13,9 +13,9 @@ import com.angcyo.acc2.app.dslitem.shareApk
 import com.angcyo.acc2.app.helper.LogHelper
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.http.bean.FunctionBean
+import com.angcyo.acc2.app.model.AccTaskModel
 import com.angcyo.acc2.app.model.AdaptiveModel
 import com.angcyo.acc2.app.model.GiteeModel
-import com.angcyo.acc2.app.model.AccTaskModel
 import com.angcyo.acc2.app.model.allApp
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.parse.ConditionParse
@@ -132,6 +132,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
                         }
                     }
                 }*/
+                loadEnd(null, IllegalArgumentException("无接口"))
             }
         }
 

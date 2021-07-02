@@ -87,6 +87,7 @@ class AccPermissionFragment : BaseTitleFragment() {
             _vh.longClick(R.id.start_wrap_layout) {
                 AccApp.jumpPermission = true
                 dslFHelper {
+                    noAnim()
                     remove(this@AccPermissionFragment)
                     restore(TARGET_CLASS!!)
                 }
