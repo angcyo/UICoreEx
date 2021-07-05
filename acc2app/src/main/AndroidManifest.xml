@@ -45,4 +45,10 @@
 
     </application>-->
 
+    <application>
+        <service
+            android:name=".server.AccServer"
+            android:exported="false" />
+    </application>
+
 </manifest>
