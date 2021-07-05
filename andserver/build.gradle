@@ -1,0 +1,17 @@
+apply from: allGradle.libBase
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.yanzhenjie.andserver'
+
+dependencies {
+    implementation project(allModule.library)
+
+    //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
+    //apply plugin: 'com.yanzhenjie.andserver'
+
+    //kapt 'com.yanzhenjie.andserver:processor:2.1.9'
+    //annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.9'
+
+    //https://github.com/yanzhenjie/AndServer
+    api 'com.yanzhenjie.andserver:api:2.1.9'
+    kapt 'com.yanzhenjie.andserver:processor:2.1.9'
+}
