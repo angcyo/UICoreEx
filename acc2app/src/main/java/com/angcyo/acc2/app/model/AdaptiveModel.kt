@@ -11,10 +11,6 @@ import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.normalIosDialog
 import com.angcyo.http.base.fromJson
-import com.angcyo.http.get
-import com.angcyo.http.interceptor.LogInterceptor
-import com.angcyo.http.isSucceed
-import com.angcyo.http.rx.observer
 import com.angcyo.http.toBean
 import com.angcyo.library.app
 import com.angcyo.library.component.appBean
@@ -50,21 +46,12 @@ class AdaptiveModel : LifecycleViewModel() {
     /**加载本地适配数据信息*/
     fun loadAnim(online: Boolean = !isDebugType()) {
         if (online) {
-            get {
-                url = "${Gitee.BASE}/admin.json"
-                query = hashMapOf("time" to nowTime()) //带上时间参数, 避免缓存
-                header = hashMapOf(LogInterceptor.closeLog())
-            }.observer {
-                onObserverEnd = { data, _ ->
-                    data?.let {
-                        if (it.isSucceed()) {
-                            it.toBean(AdminBean::class.java).let { bean ->
-                                val oldBean: Long = adminData.value?.version ?: 0
-                                if (oldBean < bean?.version ?: 0) {
-                                    adminData.value = bean
-                                }
-                            }
-                        }
+            Gitee.get("admin.json") { data, error ->
+                if (data != null) {
+                    val bean = data.toBean<AdminBean>()
+                    val oldBean: Long = adminData.value?.version ?: 0
+                    if (oldBean < bean?.version ?: 0) {
+                        adminData.value = bean
                     }
                 }
             }
@@ -80,21 +67,13 @@ class AdaptiveModel : LifecycleViewModel() {
     fun loadAppList(online: Boolean = !isDebugType()) {
         val beanListType = listBeanType(AppInfoBean::class.java)
         if (online) {
-            get {
-                url = "${Gitee.BASE}/app_list.json"
-                query = hashMapOf("time" to nowTime()) //带上时间参数, 避免缓存
-                header = hashMapOf(LogInterceptor.closeLog())
-            }.observer {
-                onObserverEnd = { data, _ ->
-                    data?.let {
-                        if (it.isSucceed()) {
-                            it.toBean<HttpBean<List<AppInfoBean>>>(beanListType).let { bean ->
-                                val oldVersion = appListData.value?.version ?: 0
-                                if (oldVersion < bean?.version ?: 0) {
-                                    appListData.value = bean
-                                    //应用列表
-                                }
-                            }
+            Gitee.get("app_list.json") { data, error ->
+                data?.let {
+                    it.toBean<HttpBean<List<AppInfoBean>>>(beanListType).let { bean ->
+                        val oldVersion = appListData.value?.version ?: 0
+                        if (oldVersion < bean?.version ?: 0) {
+                            //应用列表
+                            appListData.value = bean
                         }
                     }
                 }
