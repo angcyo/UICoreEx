@@ -4,6 +4,9 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.angcyo.library.L
+import com.angcyo.library.component.*
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.urlIntent
 import com.angcyo.server.DslAndServer.DEFAULT_PORT
 import com.angcyo.server.DslAndServer.DEFAULT_RETRY_COUNT
 import com.yanzhenjie.andserver.AndServer
@@ -29,6 +32,9 @@ open class AndServerService : Service(), ServerListener {
 
     /**端口被占用时, 重试的次数*/
     var retryCount = DEFAULT_RETRY_COUNT
+
+    /**通知栏*/
+    var showNotify: Boolean? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -75,15 +81,30 @@ open class AndServerService : Service(), ServerListener {
     /**地址*/
     fun address(): String {
         val address: InetAddress? = NetUtils.localIPAddress
-        return "http://$address:${serverPort}"
+        return "http:/$address:${serverPort}"
     }
 
+    var _notifyId: Int = -1
+
     override fun onStarted() {
-        L.i("AndServer已启动: ${address()}")
+        val address = address()
+        L.i("AndServer已启动: $address")
+        if (showNotify == true || isDebug()) {
+            _notifyId = dslNotify {
+                channelName = "Server"
+                notifyOngoing = true
+                low()
+                clickActivity(address.urlIntent())
+                single("AccServer已启动", address)
+            }
+        }
     }
 
     override fun onStopped() {
         L.i("AndServer已停止: ${address()}")
+        if (_notifyId > 0) {
+            DslNotify.cancelNotify(this, _notifyId)
+        }
     }
 
     //默认的端口

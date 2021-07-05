@@ -111,9 +111,8 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
 /**写入acc log 到文件*/
 fun Any.saveAccLog() = DslFileHelper.write(AppAccLog.accLogFolderName, data = this.toString())
 
-fun Any.saveAccRunLog() =
-    DslFileHelper.write(
-        AppAccLog.accLogFolderName,
-        AppAccLog.accLogFileName,
-        data = this.toString()
-    )
+fun Any.saveAccRunLog() = DslFileHelper.write(
+    AppAccLog.accLogFolderName,
+    AppAccLog.accLogFileName,
+    data = this.toString()
+)

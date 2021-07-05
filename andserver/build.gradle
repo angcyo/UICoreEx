@@ -12,6 +12,10 @@ dependencies {
     //annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.9'
 
     //https://github.com/yanzhenjie/AndServer
-    api 'com.yanzhenjie.andserver:api:2.1.9'
-    kapt 'com.yanzhenjie.andserver:processor:2.1.9'
+    api "com.yanzhenjie.andserver:api:$andServerVersion"
+    kapt "com.yanzhenjie.andserver:processor:$andServerVersion"
+
+    //[WARN] Can't find annotation processor class com.yanzhenjie.andserver.processor.ControllerProcessor: javax/activation/MimeTypeParseException
+    //https://github.com/yanzhenjie/AndServer/issues/391
+    api 'javax.activation:javax.activation-api:1.2.0'
 }
