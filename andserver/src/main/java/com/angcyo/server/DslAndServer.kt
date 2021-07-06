@@ -2,6 +2,7 @@ package com.angcyo.server
 
 import android.content.Context
 import android.content.Intent
+import com.angcyo.library.component.DslNotify
 
 /**
  * https://github.com/yanzhenjie/AndServer
@@ -23,6 +24,9 @@ object DslAndServer {
 
     /**通知通道名*/
     var DEFAULT_CHANNEL_NAME = "Server"
+
+    /**通知图标*/
+    var DEFAULT_NOTIFY_ICON = DslNotify.DEFAULT_NOTIFY_ICON
 
     fun startServer(context: Context, server: Class<*>) {
         val intent = Intent(context, server)

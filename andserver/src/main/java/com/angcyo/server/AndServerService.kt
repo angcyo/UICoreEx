@@ -9,6 +9,7 @@ import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.urlIntent
 import com.angcyo.library.toastQQ
 import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
+import com.angcyo.server.DslAndServer.DEFAULT_NOTIFY_ICON
 import com.angcyo.server.DslAndServer.DEFAULT_PORT
 import com.angcyo.server.DslAndServer.DEFAULT_RETRY_COUNT
 import com.yanzhenjie.andserver.AndServer
@@ -40,6 +41,9 @@ open class AndServerService : Service(), ServerListener {
 
     /**通知通道*/
     var notifyChannelName = DEFAULT_CHANNEL_NAME
+
+    /**通知图标*/
+    var notifyIcon = DEFAULT_NOTIFY_ICON
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -96,7 +100,7 @@ open class AndServerService : Service(), ServerListener {
         L.i("AndServer已启动: $address")
         if (showNotify == true || isDebug()) {
             _notifyId = dslNotify {
-                //notifySmallIcon
+                notifySmallIcon = notifyIcon
                 channelName = notifyChannelName
                 notifyOngoing = true
                 low()
