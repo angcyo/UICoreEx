@@ -9,6 +9,7 @@ import com.yanzhenjie.andserver.annotation.GetMapping
 import com.yanzhenjie.andserver.annotation.RestController
 
 /**
+ * https://yanzhenjie.com/AndServer/annotation/RestController.html
  *
  * Email:angcyo@126.com
  * @author angcyo
