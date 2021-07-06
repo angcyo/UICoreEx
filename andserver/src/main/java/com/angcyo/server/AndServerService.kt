@@ -91,6 +91,7 @@ open class AndServerService : Service(), ServerListener {
         L.i("AndServer已启动: $address")
         if (showNotify == true || isDebug()) {
             _notifyId = dslNotify {
+                //notifySmallIcon
                 channelName = "Server"
                 notifyOngoing = true
                 low()
