@@ -131,9 +131,9 @@ open class TbsWebFragment : BaseTitleFragment() {
             //加载数据
             attachTbsWebView(wrapLayout, null, data)
         } else if (uri == null) {
-            toastQQ("Uri异常", R.drawable.lib_ic_error)
+            toastQQ("Uri异常", fContext(), R.drawable.lib_ic_error)
         } else if (wrapLayout == null) {
-            toastQQ("布局异常", R.drawable.lib_ic_error)
+            toastQQ("布局异常", fContext(), R.drawable.lib_ic_error)
         } else {
             val loadUrl = uri.loadUrl()
             val mimeType = loadUrl.mimeType() ?: webConfig.mimeType

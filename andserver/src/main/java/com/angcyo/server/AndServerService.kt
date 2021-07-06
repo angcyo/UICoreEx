@@ -7,6 +7,8 @@ import com.angcyo.library.L
 import com.angcyo.library.component.*
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.urlIntent
+import com.angcyo.library.toastQQ
+import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
 import com.angcyo.server.DslAndServer.DEFAULT_PORT
 import com.angcyo.server.DslAndServer.DEFAULT_RETRY_COUNT
 import com.yanzhenjie.andserver.AndServer
@@ -35,6 +37,9 @@ open class AndServerService : Service(), ServerListener {
 
     /**通知栏*/
     var showNotify: Boolean? = null
+
+    /**通知通道*/
+    var notifyChannelName = DEFAULT_CHANNEL_NAME
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -92,11 +97,15 @@ open class AndServerService : Service(), ServerListener {
         if (showNotify == true || isDebug()) {
             _notifyId = dslNotify {
                 //notifySmallIcon
-                channelName = "Server"
+                channelName = notifyChannelName
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
                 single("AccServer已启动", address)
+            }
+
+            if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {
+                toastQQ("请打开通知通道[$notifyChannelName]")
             }
         }
     }

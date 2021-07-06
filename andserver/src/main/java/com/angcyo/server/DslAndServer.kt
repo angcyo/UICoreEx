@@ -21,6 +21,9 @@ object DslAndServer {
     /**重试次数*/
     var DEFAULT_RETRY_COUNT = 10
 
+    /**通知通道名*/
+    var DEFAULT_CHANNEL_NAME = "Server"
+
     fun startServer(context: Context, server: Class<*>) {
         val intent = Intent(context, server)
         context.startService(intent)
