@@ -75,7 +75,8 @@ object Task {
         taskBean: TaskBean?,
         enableActionList: List<Long>? = null,
         disableActionList: List<Long>? = null,
-        randomEnableActionList: List<Long>? = null
+        randomEnableActionList: List<Long>? = null,
+        force: Boolean = false
     ): TaskBean? {
         if (taskBean == null) {
             L.e("无任务需要启动.")
@@ -99,7 +100,7 @@ object Task {
                 }
             }
         }
-        control.start(bean, false)
+        control.start(bean, force)
         return bean
     }
 

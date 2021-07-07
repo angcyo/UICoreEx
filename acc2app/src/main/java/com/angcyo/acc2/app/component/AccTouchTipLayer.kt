@@ -7,15 +7,14 @@ import com.angcyo.acc2.app.R
 import com.angcyo.drawable.skeleton.circle
 import com.angcyo.drawable.skeleton.line
 import com.angcyo.drawable.skeleton.rectStroke
+import com.angcyo.drawable.text.dslNumberBadgeDrawable
 import com.angcyo.ilayer.ILayer
 import com.angcyo.ilayer.container.OffsetPosition
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library._contentHeight
 import com.angcyo.library.app
 import com.angcyo.library.component.MainExecutor
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex.abs
-import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.*
 import com.angcyo.widget.SkeletonView
 import kotlin.math.min
 
@@ -66,18 +65,18 @@ class AccTouchTipLayer : ILayer() {
         autoRestorePosition = false
     }
 
-    fun _show() {
+    fun _show(delayHide: Long = showTime) {
         MainExecutor.handler.removeCallbacks(_hideRunnable)
 
-        if (showTime > 0) {
+        if (delayHide > 0) {
             show(_windowContainer)
-            MainExecutor.handler.postDelayed(_hideRunnable, showTime)
+            MainExecutor.handler.postDelayed(_hideRunnable, delayHide)
         }
     }
 
     /**显示touch的提示, 横竖一根线.
      * [x] [y] 请使用比例值*/
-    fun showTouch(x: Float, y: Float) {
+    fun showTouch(x: Float, y: Float, delayHide: Long = showTime) {
         renderLayer = {
             post {
                 _windowContainer.updateLayout(this@AccTouchTipLayer)
@@ -108,12 +107,12 @@ class AccTouchTipLayer : ILayer() {
                 }
             }
         }
-        _show()
+        _show(delayHide)
     }
 
     /**显示移动提示
      *  [x] [y] 请使用比例值*/
-    fun showMove(x1: Float, y1: Float, x2: Float, y2: Float) {
+    fun showMove(x1: Float, y1: Float, x2: Float, y2: Float, delayHide: Long = showTime) {
         renderLayer = {
             post {
                 _windowContainer.updateLayout(this@AccTouchTipLayer)
@@ -191,11 +190,11 @@ class AccTouchTipLayer : ILayer() {
                 }
             }
         }
-        _show()
+        _show(delayHide)
     }
 
     /**显示矩形提示*/
-    fun showRect(rectList: List<Rect>?) {
+    fun showRect(rectList: List<Rect>?, delayHide: Long = showTime) {
         if (rectList.isNullOrEmpty()) {
             return
         }
@@ -208,18 +207,25 @@ class AccTouchTipLayer : ILayer() {
                 infiniteMode = false
                 enableLight = false
                 render {
-                    rectList.forEach { rect ->
+                    rectList.forEachIndexed { index, rect ->
                         rectStroke("${lineWidth}dp") {
                             color = lineColor
                             left = "${rect.left}"
                             top = "${rect.top}"
                             width = "${rect.width()}"
                             height = "${rect.height()}"
+
+                            if (rectList.size() > 1) {
+
+                                drawable = dslNumberBadgeDrawable("$index") {
+                                    textPaint.isFakeBoldText = true
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        _show()
+        _show(delayHide)
     }
 }
