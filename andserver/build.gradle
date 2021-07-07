@@ -4,6 +4,7 @@ apply plugin: 'com.yanzhenjie.andserver'
 
 dependencies {
     implementation project(allModule.library)
+    implementation project(allModule.http)
 
     //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
     //apply plugin: 'com.yanzhenjie.andserver'
