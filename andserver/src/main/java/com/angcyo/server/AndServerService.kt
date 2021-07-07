@@ -93,20 +93,22 @@ open class AndServerService : Service(), ServerListener {
         return "http:/$address:${serverPort}"
     }
 
-    var _notifyId: Int = -1
+    var _notifyId: Int = (System.currentTimeMillis() and 0xFFFFFFF).toInt()
 
     override fun onStarted() {
         val address = address()
         L.i("AndServer已启动: $address")
         if (showNotify == true || isDebug()) {
-            _notifyId = dslNotify {
+
+            //foreground
+            startForeground(_notifyId, dslBuildNotify {
                 notifySmallIcon = notifyIcon
                 channelName = notifyChannelName
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
                 single("AccServer已启动", address)
-            }
+            })
 
             if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {
                 toastQQ("请打开通知通道[$notifyChannelName]")
