@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
  * @date 2021/07/05
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class AndServerService : Service(), ServerListener {
+open class AndServerService : Service(), ServerListener, NetStateChangeObserver {
 
     /**端口*/
     var serverPort = DEFAULT_PORT
@@ -45,11 +45,17 @@ open class AndServerService : Service(), ServerListener {
     /**通知图标*/
     var notifyIcon = DEFAULT_NOTIFY_ICON
 
+    //<editor-fold desc="周期回调方法">
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
         initServer()
+
+        if (_needNotify) {
+            RNetwork.registerObserver(this)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -61,6 +67,14 @@ open class AndServerService : Service(), ServerListener {
         stopServer()
         super.onDestroy()
     }
+
+    //</editor-fold desc="周期回调方法">
+
+    override fun onNetConnected(networkType: NetworkType) {
+        updateNotify()
+    }
+
+    //<editor-fold desc="Server">
 
     var _server: Server? = null
 
@@ -87,33 +101,15 @@ open class AndServerService : Service(), ServerListener {
         _server?.shutdown()
     }
 
-    /**地址*/
-    fun address(): String {
-        val address: InetAddress? = NetUtils.localIPAddress
-        return "http:/$address:${serverPort}"
-    }
-
     var _notifyId: Int = (System.currentTimeMillis() and 0xFFFFFFF).toInt()
+
+    val _needNotify: Boolean
+        get() = showNotify == true || isDebug()
 
     override fun onStarted() {
         val address = address()
         L.i("AndServer已启动: $address")
-        if (showNotify == true || isDebug()) {
-
-            //foreground
-            startForeground(_notifyId, dslBuildNotify {
-                notifySmallIcon = notifyIcon
-                channelName = notifyChannelName
-                notifyOngoing = true
-                low()
-                clickActivity(address.urlIntent())
-                single("AccServer已启动", address)
-            })
-
-            if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {
-                toastQQ("请打开通知通道[$notifyChannelName]")
-            }
-        }
+        updateNotify()
     }
 
     override fun onStopped() {
@@ -144,4 +140,37 @@ open class AndServerService : Service(), ServerListener {
             }
         }
     }
+
+    //</editor-fold desc="Server">
+
+    /**地址*/
+    fun address(): String {
+        return if (RNetwork.isConnect()) {
+            val address: InetAddress? = NetUtils.localIPAddress
+            "http:/$address:${serverPort}"
+        } else {
+            "无网络"
+        }
+    }
+
+    fun updateNotify() {
+        if (_needNotify) {
+            val address = address()
+
+            //foreground
+            startForeground(_notifyId, dslBuildNotify {
+                notifySmallIcon = notifyIcon
+                channelName = notifyChannelName
+                notifyOngoing = true
+                low()
+                clickActivity(address.urlIntent())
+                single("AccServer已启动", address)
+            })
+
+            if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {
+                toastQQ("请打开通知通道[$notifyChannelName]")
+            }
+        }
+    }
+
 }
