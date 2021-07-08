@@ -8,10 +8,12 @@ import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.ControlContext
 import com.angcyo.acc2.parse.HandleResult
 import com.angcyo.acc2.parse.toLog
-import com.yanzhenjie.andserver.annotation.PostMapping
-import com.yanzhenjie.andserver.annotation.RequestBody
-import com.yanzhenjie.andserver.annotation.RequestMapping
-import com.yanzhenjie.andserver.annotation.RestController
+import com.angcyo.library.ex.nowTimeString
+import com.yanzhenjie.andserver.annotation.*
+import com.yanzhenjie.andserver.framework.body.StringBody
+import com.yanzhenjie.andserver.http.HttpRequest
+import com.yanzhenjie.andserver.http.HttpResponse
+import com.yanzhenjie.andserver.http.ResponseBody
 
 /**
  *
@@ -66,5 +68,11 @@ class DoController {
     fun find(@RequestBody bean: FindBean): String {
         return Task.control.accSchedule.findNodeList(listOf(bean))
             ?.toLog() ?: "空"
+    }
+
+    @GetMapping("/test")
+    fun test(request: HttpRequest, response: HttpResponse): ResponseBody {
+        //response.setBody(StringBody(nowTimeString()))
+        return StringBody(nowTimeString())
     }
 }

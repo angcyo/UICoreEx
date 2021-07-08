@@ -146,7 +146,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     /**地址*/
     fun address(): String {
         return if (RNetwork.isConnect()) {
-            val address: InetAddress? = NetUtils.localIPAddress
+            val address: InetAddress = NetUtils.localIPAddress ?: return "无网络"
             "http:/$address:${serverPort}"
         } else {
             "无网络"

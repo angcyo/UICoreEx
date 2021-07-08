@@ -1,14 +1,12 @@
 package com.angcyo.acc2.app.server
 
-import android.graphics.Bitmap
-import com.angcyo.acc2.app.app
-import com.angcyo.core.component.Screenshot
-import com.angcyo.library.ex.await
-import com.angcyo.server.sendBitmap
-import com.yanzhenjie.andserver.annotation.Controller
+import com.angcyo.library.ex.nowTimeString
 import com.yanzhenjie.andserver.annotation.GetMapping
+import com.yanzhenjie.andserver.annotation.RestController
+import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.http.HttpRequest
 import com.yanzhenjie.andserver.http.HttpResponse
+import com.yanzhenjie.andserver.http.ResponseBody
 
 /**
  * https://yanzhenjie.com/AndServer/annotation/Controller.html
@@ -19,11 +17,12 @@ import com.yanzhenjie.andserver.http.HttpResponse
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 
-@Controller
+@RestController
 class FunController {
 
     /*
-    *//**屏幕截图*//*
+    */
+    /**屏幕截图*//*
     @GetMapping("/shot")
     fun screenshot(request: HttpRequest, response: HttpResponse) {
         val await = await(1)
@@ -35,5 +34,11 @@ class FunController {
         }).startToShot()
         await.await()
     }*/
+
+    @GetMapping("/test")
+    fun test(request: HttpRequest, response: HttpResponse): ResponseBody {
+        //response.setBody()
+        return StringBody(nowTimeString())
+    }
 
 }
