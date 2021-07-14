@@ -1,7 +1,9 @@
 package com.angcyo.acc2.app.server
 
 import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.toastQQ
 import com.yanzhenjie.andserver.annotation.GetMapping
+import com.yanzhenjie.andserver.annotation.PathVariable
 import com.yanzhenjie.andserver.annotation.RestController
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.http.HttpRequest
@@ -39,6 +41,17 @@ class FunController {
     fun test(request: HttpRequest, response: HttpResponse): ResponseBody {
         //response.setBody()
         return StringBody(nowTimeString())
+    }
+
+    @GetMapping("/toast/{msg}")
+    fun toast(
+        request: HttpRequest,
+        response: HttpResponse,
+        @PathVariable("msg", required = false) msg: String? = null
+    ): ResponseBody {
+        val message = msg ?: nowTimeString()
+        toastQQ(message)
+        return StringBody(message)
     }
 
 }
