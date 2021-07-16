@@ -1,5 +1,6 @@
 package com.angcyo.github.dslitem
 
+import com.angcyo.dsladapter.item.IDslItem
 import com.leochuan.AutoPlaySnapHelper
 
 /**
@@ -9,7 +10,7 @@ import com.leochuan.AutoPlaySnapHelper
  * @date 2020/03/18
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-interface ILoopAdapterItem {
+interface ILoopAdapterItem : IDslItem {
 
     /**获取轮播图循环间隔时长, 毫秒*/
     fun getLoopInterval(): Int = AutoPlaySnapHelper.TIME_INTERVAL
