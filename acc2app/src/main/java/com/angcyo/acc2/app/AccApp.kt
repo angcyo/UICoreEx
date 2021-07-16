@@ -66,7 +66,7 @@ open class AccApp : CoreApplication() {
         DslNotify.DEFAULT_NOTIFY_ICON = R.drawable.notify_logo
 
         BaseUI.fragmentUI.apply {
-            fragmentCreateAfter = { _, fragmentConfig ->
+            fragmentCreateAfter = { _, fragmentConfig, _ ->
                 //fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.bg_color))
             }
         }
