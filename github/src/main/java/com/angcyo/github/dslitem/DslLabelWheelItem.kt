@@ -8,6 +8,7 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
+import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.TextStyleConfig
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
@@ -19,16 +20,13 @@ import com.angcyo.widget.DslViewHolder
  * @date 2020/03/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-open class DslLabelWheelItem : DslBaseLabelItem() {
+open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem {
 
     /**数据集合*/
     var itemWheelList: List<Any>? = null
 
     /**设置选中项, -1不设置*/
     var itemSelectedIndex = -1
-
-    /**统一样式配置*/
-    var itemTextStyle = TextStyleConfig()
 
     /**选中回调*/
     var itemWheelSelector: (dialog: Dialog, index: Int, item: Any) -> Boolean =
@@ -48,6 +46,16 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
     /**点击item之前拦截处理, 返回true拦截默认处理*/
     var itemClickBefore: (clickView: View) -> Boolean = { false }
 
+    override var itemTextViewId: Int = R.id.lib_text_view
+
+    override var itemText: CharSequence? = null
+        set(value) {
+            field = value
+            itemTextStyle.text = value
+        }
+
+    override var itemTextStyle: TextStyleConfig = TextStyleConfig()
+
     init {
         itemLayoutId = R.layout.dsl_wheel_item
 
@@ -65,8 +73,8 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-        itemHolder.tv(R.id.lib_text_view)?.apply {
-            itemTextStyle.updateStyle(this)
+        initTextItem(itemHolder)
+        itemHolder.tv(itemTextViewId)?.apply {
             text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
             }
@@ -99,10 +107,6 @@ open class DslLabelWheelItem : DslBaseLabelItem() {
 
             itemConfigDialog(this)
         }
-    }
-
-    open fun configTextStyle(action: TextStyleConfig.() -> Unit) {
-        itemTextStyle.action()
     }
 }
 
