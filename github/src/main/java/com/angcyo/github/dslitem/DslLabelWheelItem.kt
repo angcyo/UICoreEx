@@ -8,8 +8,11 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
+import com.angcyo.item.extend.IToText
+import com.angcyo.item.style.ILoadItem
 import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.TextStyleConfig
+import com.angcyo.library.ex.ResultThrowable
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
@@ -20,7 +23,7 @@ import com.angcyo.widget.DslViewHolder
  * @date 2020/03/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem {
+open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
 
     /**数据集合*/
     var itemWheelList: List<Any>? = null
@@ -35,8 +38,12 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem {
         }
 
     /**上屏显示转换回调*/
-    var itemWheelToText: (item: Any) -> CharSequence = {
-        it.string()
+    var itemWheelToText: (item: Any) -> CharSequence? = {
+        if (it is IToText) {
+            it.toText()
+        } else {
+            it.string()
+        }
     }
 
     var itemConfigDialog: (WheelDialogConfig) -> Unit = {
@@ -56,12 +63,24 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem {
 
     override var itemTextStyle: TextStyleConfig = TextStyleConfig()
 
+    override var itemLoadAction: ((result: ResultThrowable) -> Unit)? = null
+
     init {
         itemLayoutId = R.layout.dsl_wheel_item
 
-        itemClick = {
-            if (itemEnable && !itemClickBefore(it)) {
-                showWheelDialog(it.context)
+        itemClick = { view ->
+            if (itemEnable && !itemClickBefore(view)) {
+
+                if (itemLoadAction == null) {
+                    showWheelDialog(view.context)
+                } else {
+                    //异步加载
+                    itemLoadAction?.invoke {
+                        if (it == null) {
+                            showWheelDialog(view.context)
+                        }
+                    }
+                }
             }
         }
     }

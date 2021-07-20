@@ -37,7 +37,7 @@ open class WheelDialogConfig : BaseDialogConfig() {
         }
 
     /**上屏显示转换回调*/
-    var wheelItemToStringAction: (item: Any) -> CharSequence = {
+    var wheelItemToStringAction: (item: Any) -> CharSequence? = {
         if (it is CharSequence) {
             it
         } else {
@@ -70,7 +70,7 @@ open class WheelDialogConfig : BaseDialogConfig() {
             val stringList = mutableListOf<CharSequence>()
 
             for (item in wheelItems ?: emptyList()) {
-                stringList.add(wheelItemToStringAction.invoke(item))
+                stringList.add("${wheelItemToStringAction(item)}")
             }
 
             setOnItemSelectedListener {
