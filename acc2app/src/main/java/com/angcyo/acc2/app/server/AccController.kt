@@ -176,6 +176,27 @@ class AccController {
 
                     val text = node.text ?: node.contentDescription
 
+                    val nodeState = buildString {
+                        if (node.isClickable) {
+                            append(":C")
+                        }
+                        if (node.isLongClickable) {
+                            append(":LC")
+                        }
+                        if (node.isScrollable) {
+                            append(":SC")
+                        }
+                        if (node.isSelected) {
+                            append(":S")
+                        }
+                        if (node.isChecked) {
+                            append(":CK")
+                        }
+                        if (node.isFocused) {
+                            append(":F")
+                        }
+                    }
+
                     if (!nodeOutBounds.isEmpty) {
 
                         if (nodeOutBounds.top > windowOutBounds.height()) {
@@ -193,7 +214,7 @@ class AccController {
                             //绘制文本
                             configTextPaint()
                             canvas.drawTextByLT(
-                                text,
+                                "$text\n$nodeState",
                                 nodeOutBounds.left.toFloat(),
                                 nodeOutBounds.top.toFloat(),
                                 paint
@@ -205,7 +226,8 @@ class AccController {
                             //绘制文本
                             configTextPaint(subTextColor, subTextSize)
                             canvas.drawTextByLT(
-                                node.className.toString().subEnd(".", true) ?: "",
+                                (node.className.toString().subEnd(".", true)
+                                    ?: "") + "\n$nodeState",
                                 nodeOutBounds.left.toFloat(),
                                 nodeOutBounds.top.toFloat(),
                                 paint
