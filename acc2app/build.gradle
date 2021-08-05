@@ -1,7 +1,6 @@
 apply from: allGradle.libBase
 
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.yanzhenjie.andserver'
 
 dependencies {
     api project(allModule.core)
@@ -26,3 +25,6 @@ dependencies {
 
     kapt "com.yanzhenjie.andserver:processor:$andServerVersion"
 }
+
+//java.lang.IllegalStateException: Cannot query the value of property 'applicationId' because configuration of project ':UICoreEx:acc2app' has not completed yet.
+apply plugin: 'com.yanzhenjie.andserver'
