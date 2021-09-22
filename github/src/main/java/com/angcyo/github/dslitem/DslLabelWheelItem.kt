@@ -9,10 +9,7 @@ import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
 import com.angcyo.item.extend.IToText
-import com.angcyo.item.style.ILoadItem
-import com.angcyo.item.style.ITextItem
-import com.angcyo.item.style.TextStyleConfig
-import com.angcyo.library.ex.ResultThrowable
+import com.angcyo.item.style.*
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
@@ -53,17 +50,8 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
     /**点击item之前拦截处理, 返回true拦截默认处理*/
     var itemClickBefore: (clickView: View) -> Boolean = { false }
 
-    override var itemTextViewId: Int = R.id.lib_text_view
-
-    override var itemText: CharSequence? = null
-        set(value) {
-            field = value
-            itemTextStyle.text = value
-        }
-
-    override var itemTextStyle: TextStyleConfig = TextStyleConfig()
-
-    override var itemLoadAction: ((result: ResultThrowable) -> Unit)? = null
+    override var textItemConfig: TextItemConfig = TextItemConfig()
+    override var loadItemConfig: LoadItemConfig = LoadItemConfig()
 
     init {
         itemLayoutId = R.layout.dsl_wheel_item
@@ -71,11 +59,11 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         itemClick = { view ->
             if (itemEnable && !itemClickBefore(view)) {
 
-                if (itemLoadAction == null) {
+                if (loadItemConfig.itemLoadAction == null) {
                     showWheelDialog(view.context)
                 } else {
                     //异步加载
-                    itemLoadAction?.invoke {
+                    loadItemConfig.itemLoadAction?.invoke {
                         if (it == null) {
                             showWheelDialog(view.context)
                         }
@@ -93,7 +81,7 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         initTextItem(itemHolder)
-        itemHolder.tv(itemTextViewId)?.apply {
+        itemHolder.tv(textItemConfig.itemTextViewId)?.apply {
             text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
             }
@@ -104,7 +92,7 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
     /**显示dialog*/
     open fun showWheelDialog(context: Context) {
         context.wheelDialog {
-            dialogTitle = itemLabelText
+            dialogTitle = labelItemConfig.itemLabelText
 
             wheelItems = itemWheelList?.toMutableList()
 

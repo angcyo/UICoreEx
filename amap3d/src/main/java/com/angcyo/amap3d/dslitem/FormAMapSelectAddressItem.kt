@@ -9,6 +9,8 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.item.DslLabelEditItem
 import com.angcyo.item.form.DslFormItemConfig
 import com.angcyo.item.form.IFormItem
+import com.angcyo.item.style.configEditTextStyle
+import com.angcyo.item.style.configLabelTextStyle
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.wayto.core.form.dslitem.FormItem
@@ -36,7 +38,7 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
     var itemAddress: CharSequence? = null
         set(value) {
             field = value
-            itemEditText = value
+            editItemConfig.itemEditText = value
         }
 
     var itemFragment: Fragment? = null
@@ -82,7 +84,7 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
     override var itemFormConfig: DslFormItemConfig = DslFormItemConfig().apply {
         formCheck = { params, end ->
             end(
-                if (formRequired && !TextUtils.isEmpty(itemEditText) &&
+                if (formRequired && !TextUtils.isEmpty(editItemConfig.itemEditText) &&
                     itemLatitude != 0.0 &&
                     itemLongitude != 0.0
                 ) {

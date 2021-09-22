@@ -92,7 +92,7 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
         itemClick = {
             if (itemEnable) {
                 it.context.wheelDateDialog {
-                    dialogTitle = itemLabelText
+                    dialogTitle = labelItemConfig.itemLabelText
 
                     dateType = itemDateTypeArray
 
