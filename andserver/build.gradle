@@ -6,6 +6,8 @@ dependencies {
     implementation project(allModule.library)
     implementation project(allModule.http)
 
+    implementation project(allModule.fragment)
+
     //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
     //apply plugin: 'com.yanzhenjie.andserver'
 
