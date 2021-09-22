@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--放大-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/map_zoom_in_view"
+        style="@style/MapControlIconStyle"
+        android:background="@null"
+        android:padding="0dp"
+        app:srcCompat="@drawable/icon_map_zoom_in" />
+
+    <!--缩小-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/map_zoom_out_view"
+        style="@style/MapControlIconStyle"
+        android:background="@null"
+        android:padding="0dp"
+        app:srcCompat="@drawable/icon_map_zoom_out" />
+
+    <!--我的位置-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/map_location_view"
+        style="@style/MapControlIconStyle"
+        android:layout_marginTop="@dimen/lib_xxhdpi"
+        android:background="@null"
+        android:padding="0dp"
+        app:srcCompat="@drawable/icon_map_my_gps" />
+
+</LinearLayout>
