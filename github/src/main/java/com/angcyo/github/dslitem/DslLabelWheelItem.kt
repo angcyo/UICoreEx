@@ -80,7 +80,6 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-        initTextItem(itemHolder)
         itemHolder.tv(textItemConfig.itemTextViewId)?.apply {
             text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
