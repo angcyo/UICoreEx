@@ -3,6 +3,7 @@ package com.angcyo.amap3d.core
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -11,6 +12,8 @@ import com.angcyo.amap3d.AMapHelper
 import com.angcyo.amap3d.DslAMap
 import com.angcyo.amap3d.DslMarker
 import com.angcyo.library.L
+import com.angcyo.widget.base.mH
+import com.angcyo.widget.base.mW
 
 /**
  * 常用地图容器
@@ -98,4 +101,10 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
 
     //<editor-fold desc="必须的方法">
 
+    /**设置地图中心点坐标, 相对于视图的坐标, 默认是0.5,0.5*/
+    fun setPointToCenter(x: Float, y: Float) {
+        doOnLayout {
+            map.setPointToCenter((mW() * x).toInt(), (mH() * y).toInt())
+        }
+    }
 }
