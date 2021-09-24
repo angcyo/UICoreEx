@@ -28,9 +28,14 @@ object DslAndServer {
     /**通知图标*/
     var DEFAULT_NOTIFY_ICON = DslNotify.DEFAULT_NOTIFY_ICON
 
+    //app is in background uid UidRecord{d5b2549 u0a216 TPSL idle procs:1 seq(0,0,0)}
     fun startServer(context: Context, server: Class<*>) {
         val intent = Intent(context, server)
-        context.startService(intent)
+        try {
+            context.startService(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun stopServer(context: Context, server: Class<*>) {
