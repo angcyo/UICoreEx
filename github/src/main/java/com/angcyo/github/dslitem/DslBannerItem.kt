@@ -3,9 +3,9 @@ package com.angcyo.github.dslitem
 import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.github.R
+import com.angcyo.item.DslNestedRecyclerItem
 import com.angcyo.library.app
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.dslitem.DslNestedRecyclerItem
 import com.angcyo.widget.pager.DrawableIndicator
 import com.leochuan.ScaleLayoutManager
 import com.leochuan.ViewPagerLayoutManager
@@ -22,7 +22,7 @@ open class DslBannerItem : DslNestedRecyclerItem() {
     init {
         itemLayoutId = R.layout.dsl_banner_item
 
-        itemNestedLayoutManager = ScaleLayoutManager(app(), 0).apply {
+        nestedRecyclerItemConfig.itemNestedLayoutManager = ScaleLayoutManager(app(), 0).apply {
             recycleChildrenOnDetach = true
             isFullItem = true
             minScale = 1f
@@ -34,16 +34,22 @@ open class DslBannerItem : DslNestedRecyclerItem() {
     }
 
     val pagerLayoutManager: ViewPagerLayoutManager?
-        get() = itemNestedLayoutManager as? ViewPagerLayoutManager
+        get() = nestedRecyclerItemConfig.itemNestedLayoutManager as? ViewPagerLayoutManager
 
-    override fun onBindRecyclerView(
+    override fun onBindNestedRecyclerView(
         recyclerView: RecyclerView,
         itemHolder: DslViewHolder,
         itemPosition: Int,
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        super.onBindRecyclerView(recyclerView, itemHolder, itemPosition, adapterItem, payloads)
+        super.onBindNestedRecyclerView(
+            recyclerView,
+            itemHolder,
+            itemPosition,
+            adapterItem,
+            payloads
+        )
 
         val drawableIndicator: DrawableIndicator? = itemHolder.v(R.id.lib_drawable_indicator)
 
@@ -56,21 +62,25 @@ open class DslBannerItem : DslNestedRecyclerItem() {
 
             override fun onPageSelected(position: Int) {
                 //L.v(position), 相当页面滑动也会通知.
-                _scrollPositionConfig?.adapterPosition = position
+                nestedRecyclerItemConfig._scrollPositionConfig?.adapterPosition = position
                 drawableIndicator?.animatorToIndex(position)
             }
         })
 
         //列表
         recyclerView.apply {
-            drawableIndicator?.indicatorCount = itemNestedAdapter.itemCount
+            drawableIndicator?.indicatorCount = nestedRecyclerItemConfig.itemNestedAdapter.itemCount
 
-            itemNestedAdapter.onDispatchUpdatesOnce {
+            nestedRecyclerItemConfig.itemNestedAdapter.onDispatchUpdatesOnce {
                 drawableIndicator?.indicatorCount = it.itemCount
             }
 
-            if (itemKeepScrollPosition) {
-                _scrollPositionConfig?.run { scrollToPosition(adapterPosition) }
+            if (nestedRecyclerItemConfig.itemKeepScrollPosition) {
+                nestedRecyclerItemConfig._scrollPositionConfig?.run {
+                    scrollToPosition(
+                        adapterPosition
+                    )
+                }
             }
         }
     }
