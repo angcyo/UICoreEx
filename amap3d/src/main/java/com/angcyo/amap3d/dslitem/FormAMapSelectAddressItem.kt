@@ -9,8 +9,6 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.item.DslLabelEditItem
 import com.angcyo.item.form.DslFormItemConfig
 import com.angcyo.item.form.IFormItem
-import com.angcyo.item.style.configEditTextStyle
-import com.angcyo.item.style.configLabelTextStyle
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.wayto.core.form.dslitem.FormItem
