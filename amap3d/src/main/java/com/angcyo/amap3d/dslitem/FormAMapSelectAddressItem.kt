@@ -7,7 +7,7 @@ import com.angcyo.amap3d.R
 import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.base.dslFHelper
 import com.angcyo.item.DslLabelEditItem
-import com.angcyo.item.form.DslFormItemConfig
+import com.angcyo.item.form.FormItemConfig
 import com.angcyo.item.form.IFormItem
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
@@ -79,7 +79,7 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
 
     //<editor-fold desc="表单相关">
 
-    override var itemFormConfig: DslFormItemConfig = DslFormItemConfig().apply {
+    override var itemFormConfig: FormItemConfig = FormItemConfig().apply {
         formCheck = { params, end ->
             end(
                 if (formRequired && !TextUtils.isEmpty(editItemConfig.itemEditText) &&
