@@ -19,7 +19,7 @@ https://developer.umeng.com/docs/119267/detail/118578
 buildscript {
   repositories {
     google()
-    jcenter()
+    mavenCentral()
     maven { url 'https://dl.bintray.com/umsdk/release' }
   }
   dependencies {
@@ -31,7 +31,7 @@ buildscript {
 allprojects {
   repositories {
     google()
-    jcenter()
+    mavenCentral()
     maven { url 'https://dl.bintray.com/umsdk/release' }
   }
 }
