@@ -1,20 +1,26 @@
 def library = "com.android.library"
+def appPlugin = "com.android.application"
 
-if (!project.hasProperty("amap_key")) {
+def isLib = project.plugins.hasPlugin(library)
+def isApp = project.plugins.hasPlugin(appPlugin)
+
+if (project.hasProperty("amap_key")) {
+
+    def key = project.ext.amap_key
+
+    if (isLib) {
+        //只在lib中输出log
+        println("高德key[amap_key]:$key")
+    }
+
+    android {
+        defaultConfig {
+            manifestPlaceholders = [
+                    AMAP_KEY: key
+            ]
+        }
+    }
+} else if (isApp) {
     throw new IllegalStateException("请在[gradle.properties]中配置[amap_key].")
 }
 
-def key = project.ext.amap_key
-
-if (project.plugins.hasPlugin(library)) {
-    //只在lib中输出log
-    println("高德key[amap_key]:$key")
-}
-
-android {
-    defaultConfig {
-        manifestPlaceholders = [
-                AMAP_KEY: key
-        ]
-    }
-}

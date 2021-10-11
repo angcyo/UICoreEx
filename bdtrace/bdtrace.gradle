@@ -1,22 +1,28 @@
 def library = "com.android.library"
+def appPlugin = "com.android.application"
 
-if (!project.hasProperty("baidu_ak")) {
+def isLib = project.plugins.hasPlugin(library)
+def isApp = project.plugins.hasPlugin(appPlugin)
+
+if (project.hasProperty("baidu_ak")) {
+
+    def key = project.ext.baidu_ak
+
+    if (isLib) {
+        //只在lib中输出log
+        if (project.hasProperty("baidu_ak")) {
+            println("百度ak[baidu_ak]:$key")
+        }
+    }
+
+    android {
+        defaultConfig {
+            manifestPlaceholders = [
+                    BAIDU_AK: key
+            ]
+        }
+    }
+} else if (isApp) {
     throw new IllegalStateException("请在[gradle.properties]中配置[baidu_ak].")
 }
 
-def key = project.ext.baidu_ak
-
-if (project.plugins.hasPlugin(library)) {
-    //只在lib中输出log
-    if (project.hasProperty("baidu_ak")) {
-        println("百度ak[baidu_ak]:$key")
-    }
-}
-
-android {
-    defaultConfig {
-        manifestPlaceholders = [
-                BAIDU_AK: key
-        ]
-    }
-}

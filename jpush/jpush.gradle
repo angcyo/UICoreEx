@@ -17,24 +17,29 @@ childProjects.each {
     }
 }
 
-if (!project.hasProperty("jpush_key")) {
+def isLib = project.plugins.hasPlugin(library)
+def isApp = project.plugins.hasPlugin(appPlugin)
+
+if (project.hasProperty("jpush_key")) {
+
+    def key = project.ext.jpush_key
+
+    if (isLib) {
+        //只在lib中输出log
+        println("极光key[jpush_key]:$key")
+    }
+
+    android {
+        defaultConfig {
+
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME: applicationId,
+                    JPUSH_APPKEY : key, //JPush 上注册的包名对应的 Appkey.
+                    JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+            ]
+        }
+    }
+} else if (isApp) {
     throw new IllegalStateException("请在[gradle.properties]中配置[jpush_key].")
 }
 
-def key = project.ext.jpush_key
-
-if (project.plugins.hasPlugin(library)) {
-    //只在lib中输出log
-    println("极光key[jpush_key]:$key")
-}
-
-android {
-    defaultConfig {
-
-        manifestPlaceholders = [
-                JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : key, //JPush 上注册的包名对应的 Appkey.
-                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
-        ]
-    }
-}
