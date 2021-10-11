@@ -1,0 +1,53 @@
+def library = "com.android.library"
+
+if (!project.hasProperty("bugly_id")) {
+    throw new IllegalStateException("请在[gradle.properties]中配置[bugly_id].")
+}
+
+if (!project.hasProperty("bugly_key")) {
+    throw new IllegalStateException("请在[gradle.properties]中配置[bugly_key].")
+}
+
+def id = project.ext.bugly_id
+def key = project.ext.bugly_key
+
+if (project.plugins.hasPlugin(library)) {
+    //只在lib中输出log
+    println("bugly[bugly_id]:$id")
+    println("bugly[bugly_key]:$key")
+}
+
+//bugly 符号表上传插件
+apply plugin: 'bugly'
+
+bugly {
+    appId = id // 注册时分配的App ID
+    appKey = key // 注册时分配的App Key
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String", "BUGLY_ID", '"' + id + '"'
+        buildConfigField "String", "BUGLY_KEY", '"' + key + '"'
+    }
+}
+
+//https://bugly.qq.com/docs/utility-tools/plugin-gradle-bugly/
+/*
+android.applicationVariants.all { variant ->
+    def buglyAppId = null;
+    def buglyAppKey = null;
+    if (variant.flavorName.equals("channel1")) { // 渠道1：channel1
+        buglyAppId = 'xxxxxx'
+        buglyAppKey = 'xxxxxx'
+    } else if (variant.flavorName.equals("channel2")) { // 渠道2：channel2
+        buglyAppId = 'xxxxxx'
+        buglyAppKey = 'xxxxxx'
+    }
+    if (buglyAppId != null) {
+        variant.ext.buglyAppId = buglyAppId
+    }
+    if (buglyAppKey != null) {
+        variant.ext.buglyAppKey = buglyAppKey
+    }
+}*/

@@ -1,0 +1,18 @@
+apply from: allGradle.libBase
+
+dependencies {
+    //api fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation project(allModule.library)
+
+    //https://repo1.maven.org/maven2/
+
+    //https://repo1.maven.org/maven2/com/tencent/bugly/
+    api 'com.tencent.bugly:crashreport:3.4.4'
+    api 'com.tencent.bugly:nativecrashreport:3.9.2'
+}
+
+apply from: allGradle.v7a
+
+//需要在app工程也是用这个脚本
+apply from: allGradle.bugly
