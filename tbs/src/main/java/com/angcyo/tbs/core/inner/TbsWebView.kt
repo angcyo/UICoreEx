@@ -17,8 +17,12 @@ import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.ex.decode
 import com.angcyo.library.ex.encode
 import com.angcyo.library.ex.fileSizeString
+import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.model.AppBean
+import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.getMember
+import com.angcyo.library.utils.logFilePath
+import com.angcyo.library.utils.writeTo
 import com.hjhrq1991.library.tbs.TbsBridgeWebView
 import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension
 import com.tencent.smtt.export.external.interfaces.*
@@ -85,7 +89,13 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     val webClient: WebViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
-            L.d("加载:${url?.decode()}\no:${webView.originalUrl?.decode()}\nu:${webView.url?.decode()}\ntitle:${webView.title} ")
+            val urlLog =
+                "加载:${url?.decode()}\no:${webView.originalUrl?.decode()}\nu:${webView.url?.decode()}\ntitle:${webView.title}"
+            L.d(urlLog)
+            "${nowTimeString()} $urlLog\n".writeTo(
+                Constant.LOG_FOLDER_NAME.logFilePath("url.log"),
+                true
+            )
             return onShouldOverrideUrlLoading(this, webView, url)
         }
 
