@@ -8,8 +8,8 @@ dependencies {
     //https://jcenter.bintray.com/com/contrarywind/wheelview/
     //api 'com.contrarywind:wheelview:4.1.0'
     //https://jitpack.io/#WaytoInc/Android-PickerView
-    api 'com.github.WaytoIns.Android-PickerView:wheelview:4.1.0_fix4'
-    api 'com.github.WaytoIns.Android-PickerView:pickerview:4.1.0_fix4'
+    api 'com.github.WaytoInc.Android-PickerView:wheelview:4.1.0_fix4'
+    api 'com.github.WaytoInc.Android-PickerView:pickerview:4.1.0_fix4'
 
     //https://jcenter.bintray.com/rouchuan/viewpagerlayoutmanager/viewpagerlayoutmanager/
     //https://github.com/leochuan/ViewPagerLayoutManager
