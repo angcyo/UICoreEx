@@ -41,7 +41,10 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     //<editor-fold desc="回调">
 
-    /**网页加载进度回调*/
+    /**网页加载进度回调,
+     * 等于0时, 表示页面开始加载
+     * 等于100时, 表示页面完成加载
+     * */
     var progressChangedAction: (url: String?, progress: Int) -> Unit = { _, _ ->
 
     }
@@ -77,6 +80,13 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     /**选择文件回调, 选择文件后请务必[onReceiveValue]方法*/
     var fileChooseAction: (param: FileChooserParam) -> Unit = {}
+
+    /**请求拦截回调*/
+    var shouldInterceptRequestAction: ((
+        view: WebView,
+        request: WebResourceRequest?,
+        bundle: Bundle?
+    ) -> WebResourceResponse?)? = null
 
     //</editor-fold desc="回调">
 
@@ -151,7 +161,8 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             bundle: Bundle?
         ): WebResourceResponse? {
             appendWebLog("请求[${request?.method}]:${request?.url}")
-            return super.shouldInterceptRequest(view, request, bundle)
+            return shouldInterceptRequestAction?.invoke(view, request, bundle)
+                ?: super.shouldInterceptRequest(view, request, bundle)
         }
 
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
@@ -175,14 +186,14 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         override fun onPageStarted(webView: WebView, url: String?, bitmap: Bitmap?) {
             super.onPageStarted(webView, url, bitmap)
             progressChangedAction(url, 0)
-            appendWebLog("开始加载页面:${webView.title}:$url\n")
+            appendWebLog("开始加载页面:[${webView.title}]:$url\n")
         }
 
         //页面加载完成
         override fun onPageFinished(webView: WebView, url: String?) {
             super.onPageFinished(webView, url)
             progressChangedAction(url, 100)
-            appendWebLog("完成加载页面:${webView.title}:$url\n")
+            appendWebLog("完成加载页面:[${webView.title}]:$url\n")
         }
     }
 
