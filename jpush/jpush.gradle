@@ -18,7 +18,7 @@ childProjects.each {
 }
 
 def isLib = project.plugins.hasPlugin(library)
-def isApp = project.plugins.hasPlugin(appPlugin)
+def isApp = project.plugins.hasPlugin(application)
 
 if (project.hasProperty("jpush_key")) {
 
