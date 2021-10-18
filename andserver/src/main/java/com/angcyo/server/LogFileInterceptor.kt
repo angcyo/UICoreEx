@@ -31,7 +31,7 @@ class LogFileInterceptor : HandlerInterceptor {
         val valueMap = request.parameter
         if (valueMap["delete"]?.firstOrNull() == "true") {
             val logFile = File(FileUtils.appRootExternalFolder(), httpPath)
-            response.setBody(StringBody("删除文件[$${logFile.delete()}]:${logFile.absolutePath}"))
+            response.setBody(StringBody("删除文件[${logFile.delete()}]:${logFile.absolutePath}"))
             return true
         }
         if (valueMap["raw"]?.firstOrNull() == "true") {
