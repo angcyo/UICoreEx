@@ -3,6 +3,7 @@ apply from: allGradle.libBase
 dependencies {
 
     implementation project(allModule.core)
+    implementation project(allModule.dslitem)
 
     // https://lbs.amap.com/api/android-sdk/guide/create-project/android-studio-create-project#gradle_sdk
     // https://jcenter.bintray.com/com/amap/api/

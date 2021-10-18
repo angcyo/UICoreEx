@@ -11,8 +11,6 @@ import com.angcyo.item.form.FormItemConfig
 import com.angcyo.item.form.IFormItem
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
-import com.wayto.core.form.dslitem.FormItem
-import com.wayto.core.form.formDrawLeft
 
 /**
  * 高德地图选地址 表单item
@@ -49,12 +47,12 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
         }
 
         configEditTextStyle {
-            hint = FormItem.DEFAULT_SELECTOR_HINT
+            hint = IFormItem.DEFAULT_SELECTOR_HINT
             textColor = _color(R.color.text_sub_color)
             textGravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             noEditModel = true
         }
-        formDrawLeft()
+        //formDrawLeft()
 
         itemRightIcoClick = { _, _ ->
             if (itemFragment == null) {
