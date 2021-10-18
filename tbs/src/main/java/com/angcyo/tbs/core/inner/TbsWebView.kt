@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -87,15 +88,78 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     var _filePathCallback: ValueCallback<Uri?>? = null
     var _filePathCallbacks: ValueCallback<Array<Uri?>>? = null
 
+    /*
+    * 当点击网页里的一个链接,伪流程:    ...代表多个
+    * shouldOverrideUrlLoading
+    * onPageStarted
+    * onProgressChanged
+    * onLoadResource...
+    * onReceivedTitle
+    * onProgressChanged...
+    * onPageFinished
+    */
     val webClient: WebViewClient = object : WebViewClient() {
+
+        //加载资源, css js ttf html等
+        override fun onLoadResource(view: WebView, url: String?) {
+            super.onLoadResource(view, url)
+            appendWebLog("load:$url")
+        }
+
+        override fun onReceivedError(
+            view: WebView,
+            errorCode: Int,
+            description: String?,
+            failingUrl: String?
+        ) {
+            super.onReceivedError(view, errorCode, description, failingUrl)
+        }
+
+        override fun onReceivedError(
+            view: WebView,
+            request: WebResourceRequest?,
+            error: WebResourceError?
+        ) {
+            super.onReceivedError(view, request, error)
+            appendWebLog("异常[${request?.method}]:${request?.url}->${error?.errorCode}:${error?.description}")
+        }
+
+        override fun onReceivedHttpError(
+            view: WebView,
+            request: WebResourceRequest?,
+            response: WebResourceResponse?
+        ) {
+            super.onReceivedHttpError(view, request, response)
+            appendWebLog("http异常:${response?.statusCode}:${response?.mimeType}:[${request?.method}]:${request?.url}")
+        }
+
+        override fun shouldInterceptRequest(view: WebView, url: String?): WebResourceResponse? {
+            return super.shouldInterceptRequest(view, url)
+        }
+
+        override fun shouldInterceptRequest(
+            view: WebView,
+            request: WebResourceRequest?
+        ): WebResourceResponse? {
+            return super.shouldInterceptRequest(view, request)
+        }
+
+        //1: 拦截请求, 所有请求都会通过这里. 比如css js等
+        override fun shouldInterceptRequest(
+            view: WebView,
+            request: WebResourceRequest?,
+            bundle: Bundle?
+        ): WebResourceResponse? {
+            appendWebLog("请求[${request?.method}]:${request?.url}")
+            return super.shouldInterceptRequest(view, request, bundle)
+        }
+
         override fun shouldOverrideUrlLoading(webView: WebView, url: String?): Boolean {
             val urlLog =
                 "加载:${url?.decode()}\no:${webView.originalUrl?.decode()}\nu:${webView.url?.decode()}\ntitle:${webView.title}"
             L.d(urlLog)
-            "${nowTimeString()} $urlLog\n".writeTo(
-                Constant.LOG_FOLDER_NAME.logFilePath("url.log"),
-                true
-            )
+
+            appendWebLog(urlLog)
             return onShouldOverrideUrlLoading(this, webView, url)
         }
 
@@ -107,14 +171,18 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             return super.shouldOverrideUrlLoading(webView, requeset)
         }
 
+        //开始加载页面
         override fun onPageStarted(webView: WebView, url: String?, bitmap: Bitmap?) {
             super.onPageStarted(webView, url, bitmap)
             progressChangedAction(url, 0)
+            appendWebLog("开始加载页面:${webView.title}:$url\n")
         }
 
+        //页面加载完成
         override fun onPageFinished(webView: WebView, url: String?) {
             super.onPageFinished(webView, url)
             progressChangedAction(url, 100)
+            appendWebLog("完成加载页面:${webView.title}:$url\n")
         }
     }
 
@@ -126,6 +194,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
         //<editor-fold desc="基础回调">
 
+        //接收页面标题,在[onPageStarted]之后
         override fun onReceivedTitle(webView: WebView?, title: String?) {
             super.onReceivedTitle(webView, title)
             receivedTitle = title
@@ -142,6 +211,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         //</editor-fold desc="基础回调">
 
         //<editor-fold desc="全屏播放视频">
+
         var viewCallback: IX5WebChromeClient.CustomViewCallback? = null
 
         override fun onShowCustomView(
@@ -379,6 +449,14 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         historyUrl: String? = null
     ) {
         loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl)
+    }
+
+    /**写入web log*/
+    open fun appendWebLog(log: String) {
+        "${nowTimeString()} $log \n".writeTo(
+            Constant.LOG_FOLDER_NAME.logFilePath("webview.log"),
+            true
+        )
     }
 
     //</editor-fold desc="初始化相关">
