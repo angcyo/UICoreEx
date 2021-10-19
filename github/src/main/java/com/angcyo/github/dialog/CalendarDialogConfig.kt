@@ -8,7 +8,6 @@ import com.angcyo.github.R
 import com.angcyo.library.L
 import com.angcyo.widget.DslViewHolder
 import com.haibin.calendarview.*
-import com.haibin.calendarview.RCalendarView.Companion.today
 
 /**
  * 日历选择对话框
@@ -23,6 +22,7 @@ import com.haibin.calendarview.RCalendarView.Companion.today
 open class CalendarDialogConfig : BaseDialogConfig() {
 
     companion object {
+
         fun ymd(builder: StringBuilder, calendar: Calendar) {
             ymd(builder, calendar.year, calendar.month, calendar.day)
         }

@@ -19,7 +19,12 @@ class RCalendarViewDelegate(context: Context, attributeSet: AttributeSet? = null
 
     var isInEditMode = false
 
+    var outRangeTextColor = Color.parseColor("#CBCBCB")
+    var outRangeTextLunarColor = Color.parseColor("#CBCBCB")
+
     override fun init() {
+        //2021-10-18
+
         try {
             mWeekBarClass = if (TextUtils.isEmpty(mWeekBarClassPath))
                 WeekBar::class.java

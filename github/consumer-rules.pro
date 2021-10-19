@@ -14,3 +14,7 @@
 -keep class **.**YearView {
     public <init>(android.content.Context);
 }
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context);
+}

@@ -16,11 +16,6 @@ open class RCalendarView(context: Context, attributeSet: AttributeSet? = null) :
 
     companion object {
 
-        /**今天*/
-        fun today(): Calendar {
-            return Calendar.today()
-        }
-
         /**
          * 上一个日期是否选中
          *
