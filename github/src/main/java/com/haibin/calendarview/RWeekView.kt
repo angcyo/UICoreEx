@@ -9,11 +9,10 @@ import kotlin.math.min
  *
  * Email:angcyo@126.com
  * @author angcyo
- * @date 2019/07/04
- * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
+ * @date 2021/10/20
+ * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-
-open class RMonthView(context: Context) : DefaultMonthView(context) {
+class RWeekView(context: Context) : DefaultWeekView(context) {
 
     companion object {
 
@@ -30,24 +29,18 @@ open class RMonthView(context: Context) : DefaultMonthView(context) {
     /**选中时, 背景高亮的样式*/
     var showStyle = STYLE_CIRCLE
 
-    override fun initPaint() {
-        super.initPaint()
-        mCurMonthTextPaint
-    }
-
     override fun onDrawSelected(
         canvas: Canvas,
         calendar: Calendar,
         x: Int,
-        y: Int,
         hasScheme: Boolean
     ): Boolean {
-        if (showStyle == STYLE_RECT) {
-            return super.onDrawSelected(canvas, calendar, x, y, hasScheme)
+        if (showStyle == RMonthView.STYLE_RECT) {
+            return super.onDrawSelected(canvas, calendar, x, hasScheme)
         } else {
             mSelectedPaint.style = Paint.Style.FILL
             val cx = x + mItemWidth / 2
-            val cy = y + mItemHeight / 2
+            val cy = mItemHeight / 2
             canvas.drawCircle(
                 cx.toFloat(),
                 cy.toFloat(),
@@ -58,21 +51,16 @@ open class RMonthView(context: Context) : DefaultMonthView(context) {
         return true
     }
 
-    override fun onDrawScheme(canvas: Canvas, calendar: Calendar, x: Int, y: Int) {
-        super.onDrawScheme(canvas, calendar, x, y)
-    }
-
     override fun onDrawText(
         canvas: Canvas,
         calendar: Calendar,
         x: Int,
-        y: Int,
         hasScheme: Boolean,
         isSelected: Boolean
     ) {
         val cx = x + mItemWidth / 2
-        val cy = y + mItemHeight / 2
-        val top = y - mItemHeight / 6
+        val cy = mItemHeight / 2
+        val top = -mItemHeight / 6
 
         val textPaint = when {
             isSelected -> mSelectTextPaint //选中的笔
@@ -94,9 +82,10 @@ open class RMonthView(context: Context) : DefaultMonthView(context) {
             canvas.drawText(
                 calendar.lunar,
                 cx.toFloat(),
-                mTextBaseLine + y.toFloat() + (mItemHeight / 10).toFloat(),
+                mTextBaseLine + (mItemHeight / 10).toFloat(),
                 lunarPaint
             )
         }
     }
+
 }

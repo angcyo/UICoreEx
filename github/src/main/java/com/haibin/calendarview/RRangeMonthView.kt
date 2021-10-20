@@ -16,6 +16,7 @@ import kotlin.math.min
 class RRangeMonthView(context: Context) : RangeMonthView(context) {
 
     companion object {
+
         fun drawSelectedBackground(
             canvas: Canvas,
             x: Int,
@@ -27,6 +28,7 @@ class RRangeMonthView(context: Context) : RangeMonthView(context) {
             radius: Float,
             paint: Paint
         ): Boolean {
+
             val itemWidth = mItemWidth + 1 * dpi
             val cx = x + itemWidth / 2
             val cy = y + mItemHeight / 2
@@ -112,6 +114,9 @@ class RRangeMonthView(context: Context) : RangeMonthView(context) {
         y: Int,
         isSelected: Boolean
     ) {
+        val cx = x + mItemWidth / 2
+        val cy = y + mItemHeight / 2
+        canvas.drawCircle(cx.toFloat(), cy.toFloat(), radius, mSchemePaint)
     }
 
     override fun onDrawText(

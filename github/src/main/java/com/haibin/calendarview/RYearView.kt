@@ -18,7 +18,7 @@ import kotlin.math.min
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 
-class RYearView(context: Context) : YearView(context) {
+class RYearView(context: Context) : DefaultYearView(context) {
 
     companion object {
         var LEAP_YEAR_STRING = "闰年"
