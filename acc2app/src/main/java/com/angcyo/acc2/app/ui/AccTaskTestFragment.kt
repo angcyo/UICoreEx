@@ -109,7 +109,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
         //在线数据
         _vh.throttleClick(R.id.on_line_checkbox) {
             loadLoadingBottom(showCloseView = false) { cancel, loadEnd ->
-                if (!cancel) {
+                if (!cancel.get()) {
                     /*checkModel.loadChecks((it as CompoundButton).isChecked)
                     taskModel.loadTasks(it.isChecked)
                     vmApp<ActionsModel>().loadActions(it.isChecked)*/
