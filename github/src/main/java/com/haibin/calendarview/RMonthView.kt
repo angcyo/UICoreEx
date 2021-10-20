@@ -2,11 +2,9 @@ package com.haibin.calendarview
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
-import kotlin.math.min
 
 /**
- *
+ * 选中时,是矩形的月视图
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2019/07/04
@@ -15,26 +13,16 @@ import kotlin.math.min
 
 open class RMonthView(context: Context) : DefaultMonthView(context) {
 
-    companion object {
-
-        /**圆*/
-        const val STYLE_CIRCLE = 1
-
-        /**矩形*/
-        const val STYLE_RECT = 2
-    }
-
     /**显示阴历*/
     var showLunar = true
-
-    /**选中时, 背景高亮的样式*/
-    var showStyle = STYLE_CIRCLE
 
     override fun initPaint() {
         super.initPaint()
         mCurMonthTextPaint
     }
 
+    /**1: 选中时绘制
+     * [draw]*/
     override fun onDrawSelected(
         canvas: Canvas,
         calendar: Calendar,
@@ -42,26 +30,17 @@ open class RMonthView(context: Context) : DefaultMonthView(context) {
         y: Int,
         hasScheme: Boolean
     ): Boolean {
-        if (showStyle == STYLE_RECT) {
-            return super.onDrawSelected(canvas, calendar, x, y, hasScheme)
-        } else {
-            mSelectedPaint.style = Paint.Style.FILL
-            val cx = x + mItemWidth / 2
-            val cy = y + mItemHeight / 2
-            canvas.drawCircle(
-                cx.toFloat(),
-                cy.toFloat(),
-                min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding,
-                mSelectedPaint
-            )
-        }
-        return true
+        return super.onDrawSelected(canvas, calendar, x, y, hasScheme)
     }
 
+    /**2: 有事务时绘制
+     * [draw]*/
     override fun onDrawScheme(canvas: Canvas, calendar: Calendar, x: Int, y: Int) {
         super.onDrawScheme(canvas, calendar, x, y)
     }
 
+    /**3: 绘制日历文本
+     * [draw]*/
     override fun onDrawText(
         canvas: Canvas,
         calendar: Calendar,

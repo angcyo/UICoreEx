@@ -32,7 +32,7 @@ class RCalendarViewDelegate(context: Context, attributeSet: AttributeSet? = null
         }
         //年视图
         if (mYearViewClassPath.isNullOrEmpty()) {
-            mYearViewClassPath = DefaultYearView::class.java.name
+            mYearViewClassPath = RYearView::class.java.name
         }
         //月视图
         if (mMonthViewClassPath.isNullOrEmpty()) {
