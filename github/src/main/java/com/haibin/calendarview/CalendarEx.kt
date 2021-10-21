@@ -13,14 +13,20 @@ import java.util.*
 
 //<editor-fold desc="日历扩展方法">
 
-/**今天的日历*/
-fun today(): Calendar {
+/**今天的日历
+ * [lunar] 是否需要农历*/
+fun today(lunar: Boolean = false): Calendar {
     val calendar = Calendar()
     val d = Date()
     calendar.year = CalendarUtil.getDate("yyyy", d)
     calendar.month = CalendarUtil.getDate("MM", d)
     calendar.day = CalendarUtil.getDate("dd", d)
     calendar.isCurrentDay = true
+
+    if (lunar) {
+        LunarCalendar.setupLunarCalendar(calendar)
+    }
+
     return calendar
 }
 
