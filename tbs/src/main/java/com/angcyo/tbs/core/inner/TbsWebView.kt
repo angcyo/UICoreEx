@@ -310,21 +310,25 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
             //参数的意义见上面的接口说明
             super.onGeolocationPermissionsShowPrompt(origin, callback)
             L.i("$origin")
+            appendWebLog("权限:onGeolocationPermissionsShowPrompt:${origin}")
         }
 
         override fun onPermissionRequest(permissionRequest: PermissionRequest?) {
             super.onPermissionRequest(permissionRequest)
             L.i(permissionRequest)
+            appendWebLog("权限:onPermissionRequest:${permissionRequest?.origin}:${permissionRequest?.resources}")
         }
 
         override fun onPermissionRequestCanceled(permissionRequest: PermissionRequest?) {
             super.onPermissionRequestCanceled(permissionRequest)
             L.i(permissionRequest)
+            appendWebLog("权限:onPermissionRequestCanceled:${permissionRequest?.origin}:${permissionRequest?.resources}")
         }
 
         override fun onGeolocationPermissionsHidePrompt() {
             super.onGeolocationPermissionsHidePrompt()
             L.i()
+            appendWebLog("权限:onGeolocationPermissionsHidePrompt")
         }
 
         override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
