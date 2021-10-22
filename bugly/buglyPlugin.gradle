@@ -14,13 +14,13 @@ if (project.hasProperty("bugly_id") && project.hasProperty("bugly_key")) {
         println("bugly[bugly_key]:$key")
     }
 
-    //不带bugly符号表上传插件
-    /*apply plugin: 'bugly'
+    //bugly 符号表上传插件
+    apply plugin: 'bugly'
 
     bugly {
         appId = id // 注册时分配的App ID
         appKey = key // 注册时分配的App Key
-    }*/
+    }
 
     android {
         defaultConfig {
