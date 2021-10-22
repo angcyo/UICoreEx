@@ -17,6 +17,8 @@ import java.util.*
 
 //<editor-fold desc="日历扩展方法">
 
+val ONE_DAY: Long = (1000 * 3600 * 24).toLong()
+
 /**今天的日历
  * [lunar] 是否需要农历*/
 fun today(lunar: Boolean = false): Calendar {
@@ -279,6 +281,58 @@ fun WeekBar.setWeekendTextColor(color: Int = "#E14A4C".toColor()) {
     childIndexList.forEach {
         (getChildAt(it) as? TextView)?.setTextColor(color)
     }
+}
+
+/**周视图下, 直接切换到上一个月*/
+fun WeekViewPager.scrollToPreMonth(smoothScroll: Boolean = true) {
+    //mWeekPager.setCurrentItem(mWeekPager.getCurrentItem() - 1, smoothScroll);
+    val currentItem: Int = currentItem
+    val baseView: BaseView = findViewWithTag(currentItem)
+    val firstCalendar = baseView.mItems[0]
+    val days = CalendarUtil.getMonthDaysCount(firstCalendar.year, firstCalendar.month)
+    val targetCalendar: Calendar =
+        getCalendarWidthDiffer(firstCalendar, -days * ONE_DAY)
+    scrollToCalendar(
+        targetCalendar.year,
+        targetCalendar.month,
+        targetCalendar.day,
+        smoothScroll,
+        false
+    )
+}
+
+/**周视图下, 直接切换到下一个月*/
+fun WeekViewPager.scrollToNextMonth(smoothScroll: Boolean = true) {
+    //mWeekPager.setCurrentItem(mWeekPager.getCurrentItem() + 1, smoothScroll);
+    val currentItem: Int = currentItem
+    val baseView: BaseView = findViewWithTag(currentItem)
+    val firstCalendar = baseView.mItems[0]
+    val days = CalendarUtil.getMonthDaysCount(firstCalendar.year, firstCalendar.month)
+    val targetCalendar: Calendar =
+        getCalendarWidthDiffer(firstCalendar, days * ONE_DAY)
+    scrollToCalendar(
+        targetCalendar.year,
+        targetCalendar.month,
+        targetCalendar.day,
+        smoothScroll,
+        false
+    )
+}
+
+/**
+ * 获取指定相差天数的日历
+ * [millis] 相差的毫秒数
+ */
+fun getCalendarWidthDiffer(calendar: Calendar, millis: Long): Calendar {
+    val date = java.util.Calendar.getInstance()
+    date[calendar.year, calendar.month - 1, calendar.day, 12, 0] = 0 //
+    val timeMills = date.timeInMillis //获得起始时间戳
+    date.timeInMillis = timeMills + millis
+    val preCalendar = Calendar()
+    preCalendar.year = date[java.util.Calendar.YEAR]
+    preCalendar.month = date[java.util.Calendar.MONTH] + 1
+    preCalendar.day = date[java.util.Calendar.DAY_OF_MONTH]
+    return preCalendar
 }
 
 //</editor-fold desc="日历视图扩展方法">
