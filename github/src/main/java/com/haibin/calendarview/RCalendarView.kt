@@ -2,6 +2,7 @@ package com.haibin.calendarview
 
 import android.content.Context
 import android.util.AttributeSet
+import com.angcyo.library.ex.toColor
 
 /**
  * https://github.com/huanghaibin-dev/CalendarView
@@ -85,4 +86,9 @@ open class RCalendarView(context: Context, attributeSet: AttributeSet? = null) :
     }
 
     fun getCalendarViewDelegate(): RCalendarViewDelegate = mDelegate as RCalendarViewDelegate
+
+    fun setWeekendTextColor(color: Int = "#E14A4C".toColor()) {
+        mWeekBar?.setWeekendTextColor(color)
+    }
+
 }

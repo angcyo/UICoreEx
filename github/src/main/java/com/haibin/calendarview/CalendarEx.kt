@@ -1,6 +1,10 @@
 package com.haibin.calendarview
 
 import android.graphics.Color
+import android.widget.TextView
+import com.angcyo.library.ex.*
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -30,6 +34,16 @@ fun today(lunar: Boolean = false): Calendar {
     return calendar
 }
 
+/**获取前一天的日历*/
+fun Calendar.getPreCalendar(): Calendar {
+    return CalendarUtil.getPreCalendar(this)
+}
+
+/**获取后一天的日历*/
+fun Calendar.getNextCalendar(): Calendar {
+    return CalendarUtil.getNextCalendar(this)
+}
+
 /**创建一个日历*/
 fun createCalendar(year: Int, month: Int, day: Int): Calendar {
     val calendar = Calendar()
@@ -37,6 +51,44 @@ fun createCalendar(year: Int, month: Int, day: Int): Calendar {
     calendar.month = month
     calendar.day = day
     return calendar
+}
+
+/**当前日历是否在目标之前
+ * 之前的时间*/
+fun Calendar.isBefore(target: Calendar): Boolean {
+    if (year < target.year) {
+        return true
+    } else if (year > target.year) {
+        return false
+    }
+    if (month < target.month) {
+        return true
+    } else if (month > target.month) {
+        return false
+    }
+    if (day < target.day) {
+        return true
+    }
+    return false
+}
+
+/**当前日历是否在目标之后
+ * 之后的时间 */
+fun Calendar.isAfter(target: Calendar): Boolean {
+    if (year > target.year) {
+        return true
+    } else if (year < target.year) {
+        return false
+    }
+    if (month > target.month) {
+        return true
+    } else if (month < target.month) {
+        return false
+    }
+    if (day > target.day) {
+        return true
+    }
+    return false
 }
 
 //</editor-fold desc="日历扩展方法">
@@ -92,6 +144,21 @@ fun CalendarView.toPreMonth(smoothScroll: Boolean = true) {
 /**滚动到下一个月*/
 fun CalendarView.toNextMonth(smoothScroll: Boolean = true) {
     scrollToNext(smoothScroll)
+}
+
+/**添加一个事务*/
+fun CalendarView.addSchemeDate(
+    time: String, pattern: String = "yyyy-MM-dd",
+    text: String?, color: Int = 0, obj: Any? = null
+) {
+    try {
+        val format: SimpleDateFormat = SimpleDateFormat.getDateInstance() as SimpleDateFormat
+        format.applyPattern(pattern)
+        val calendar = format.parse(time)!!.toCalendar()
+        addSchemeDate(calendar.year(), calendar.month(), calendar.day(), text, color, obj)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
 }
 
 /**添加一个事务标记*/
@@ -150,6 +217,69 @@ fun CalendarView.test() {
     setFixMode() //月份显示所有, 不撑开高度
 }
 
+
+/**当前月视图中, 第一个日历*/
+fun BaseMonthView.firstCalendar(): Calendar? = mItems.find { it.isCurrentMonth }
+
+/**获取指定日期在当前月视图中的第几行, 第几列
+ * -1 表示未找到*/
+fun BaseMonthView.getIndexPath(target: Calendar): IntArray {
+
+    var d = 0
+
+    //行
+    var row = -1
+
+    //列
+    var column = -1
+
+    for (i in 0 until mLineCount) { //行枚举
+        for (j in 0..6) { //列枚举
+
+            if (d >= mItems.size) {
+                return intArrayOf(row, column)
+            }
+
+            val calendar = mItems[d]
+
+            if (calendar.isCurrentMonth && calendar == target) {
+                row = i
+                column = j
+                return intArrayOf(row, column)
+            }
+
+            ++d
+        }
+    }
+
+    return intArrayOf(row, column)
+}
+
+/**设置周末的文本颜色*/
+fun WeekBar.setWeekendTextColor(color: Int = "#E14A4C".toColor()) {
+    val childIndexList = mutableListOf<Int>()
+    when (mDelegate.weekStart) {
+        CalendarViewDelegate.WEEK_START_WITH_SUN -> {
+            //周日开始
+            childIndexList.add(0)
+            childIndexList.add(6)
+        }
+        CalendarViewDelegate.WEEK_START_WITH_MON -> {
+            //周一开始
+            childIndexList.add(5)
+            childIndexList.add(6)
+        }
+        else -> {
+            //周六开始
+            childIndexList.add(0)
+            childIndexList.add(1)
+        }
+    }
+
+    childIndexList.forEach {
+        (getChildAt(it) as? TextView)?.setTextColor(color)
+    }
+}
 
 //</editor-fold desc="日历视图扩展方法">
 
