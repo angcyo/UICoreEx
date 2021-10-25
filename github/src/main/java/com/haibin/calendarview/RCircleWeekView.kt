@@ -23,10 +23,18 @@ class RCircleWeekView(context: Context) : RWeekView(context) {
         mSelectedPaint.style = Paint.Style.FILL
         val cx = x + mItemWidth / 2
         val cy = mItemHeight / 2
+
+        val radius = if (isTouchDown && mCurrentItem == mItems.indexOf(index)) {
+            //点击当前选中的item, 缩放效果提示
+            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding * 2
+        } else {
+            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding
+        }
+
         canvas.drawCircle(
             cx.toFloat(),
             cy.toFloat(),
-            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding,
+            radius,
             mSelectedPaint
         )
         return true

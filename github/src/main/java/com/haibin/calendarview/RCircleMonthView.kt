@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import kotlin.math.min
 
+
 /**
  * 选中时,是圆角的月视图
  * Email:angcyo@126.com
@@ -27,10 +28,18 @@ open class RCircleMonthView(context: Context) : RMonthView(context) {
         mSelectedPaint.style = Paint.Style.FILL
         val cx = x + mItemWidth / 2
         val cy = y + mItemHeight / 2
+
+        val radius = if (isTouchDown && mCurrentItem == mItems.indexOf(index)) {
+            //点击当前选中的item, 缩放效果提示
+            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding * 2
+        } else {
+            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding
+        }
+
         canvas.drawCircle(
             cx.toFloat(),
             cy.toFloat(),
-            min(mItemWidth / 2, mItemHeight / 2).toFloat() - mPadding,
+            radius,
             mSelectedPaint
         )
         return true
