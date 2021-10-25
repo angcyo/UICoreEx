@@ -58,7 +58,8 @@ fun createCalendar(year: Int, month: Int, day: Int): Calendar {
 /**当前日历是否在目标之前
  * 之前的时间*/
 fun Calendar.isBefore(target: Calendar): Boolean {
-    if (year < target.year) {
+    return timeInMillis < target.timeInMillis
+    /*if (year < target.year) {
         return true
     } else if (year > target.year) {
         return false
@@ -71,13 +72,14 @@ fun Calendar.isBefore(target: Calendar): Boolean {
     if (day < target.day) {
         return true
     }
-    return false
+    return false*/
 }
 
 /**当前日历是否在目标之后
  * 之后的时间 */
 fun Calendar.isAfter(target: Calendar): Boolean {
-    if (year > target.year) {
+    return timeInMillis > target.timeInMillis
+    /*if (year > target.year) {
         return true
     } else if (year < target.year) {
         return false
@@ -90,7 +92,7 @@ fun Calendar.isAfter(target: Calendar): Boolean {
     if (day > target.day) {
         return true
     }
-    return false
+    return false*/
 }
 
 //</editor-fold desc="日历扩展方法">
