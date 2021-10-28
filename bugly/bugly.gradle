@@ -26,6 +26,8 @@ if (project.hasProperty("bugly_id") && project.hasProperty("bugly_key")) {
         defaultConfig {
             buildConfigField "String", "BUGLY_ID", '"' + id + '"'
             buildConfigField "String", "BUGLY_KEY", '"' + key + '"'
+            resValue "string", "bugly_id", '"' + id + '"'
+            resValue "string", "bugly_key", '"' + key + '"'
         }
     }
 } else if (isApp) {

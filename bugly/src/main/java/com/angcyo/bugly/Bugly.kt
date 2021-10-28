@@ -3,9 +3,9 @@ package com.angcyo.bugly
 import android.content.Context
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.getAppString
 import com.angcyo.library.isMainProgress
 import com.tencent.bugly.crashreport.CrashReport
-
 import com.tencent.bugly.crashreport.CrashReport.UserStrategy
 
 
@@ -28,7 +28,8 @@ object Bugly {
         CrashReport.setIsDevelopmentDevice(context, debug)
 
         //init
-        CrashReport.initCrashReport(context, BuildConfig.BUGLY_ID, debug, strategy)
+        //CrashReport.initCrashReport(context, BuildConfig.BUGLY_ID, debug, strategy)
+        CrashReport.initCrashReport(context, getAppString("bugly_id"), debug, strategy)
     }
 
     /**测试bugly功能*/
