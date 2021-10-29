@@ -82,6 +82,12 @@ data class MemoryConfigBean(
     /**签到赠送时长(分钟)*/
     var signGiveServiceTime: Int = 30,
 
+    /**完播最少时长 秒*/
+    var minPlayTime: Long = 30,
+
+    /**完播最大时长 秒*/
+    var maxPlayTime: Long = 50,
+
     /**系统维护中*/
     var vindicate: String? = null,
 
