@@ -1,0 +1,14 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+
+    //https://repo1.maven.org/maven2/
+
+    //https://repo1.maven.org/maven2/com/tencent/imsdk/
+
+    //https://repo1.maven.org/maven2/com/tencent/imsdk/imsdk-plus/
+    api 'com.tencent.imsdk:imsdk-plus:5.7.1435'
+}
+
+apply from: allGradle.v7a
