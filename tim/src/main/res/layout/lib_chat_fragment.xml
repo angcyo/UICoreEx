@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.DslSoftInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_soft_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:r_handler_mode="MODE_CONTENT_HEIGHT">
+
+    <com.angcyo.widget.layout.RCoordinatorLayout
+        android:id="@+id/lib_coordinator_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--内容布局包裹-->
+        <LinearLayout
+            android:id="@+id/lib_content_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_behavior="com.angcyo.behavior.refresh.RefreshContentBehavior">
+
+            <com.angcyo.widget.recycler.DslRecyclerView
+                android:id="@+id/lib_recycler_view"
+                style="@style/LibRecyclerViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:r_layout_manager="V" />
+
+            <include layout="@layout/lib_chat_input_layout" />
+
+        </LinearLayout>
+
+        <!--覆盖在内容上面的布局包裹, 不跟随内容滑动-->
+        <FrameLayout
+            android:id="@+id/lib_content_overlay_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchor="@id/lib_title_wrap_layout"
+            app:layout_anchorGravity="bottom"
+            app:layout_behavior="com.angcyo.behavior.placeholder.TitleBarBelowBehavior" />
+
+        <!--刷新头布局包裹-->
+        <FrameLayout
+            android:id="@+id/lib_refresh_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_behavior=".behavior.ArcLoadingHeaderBehavior">
+
+            <com.angcyo.widget.progress.ArcLoadingView
+                android:id="@+id/lib_arc_loading_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/lib_xxhdpi"
+                app:arc_auto_start="false" />
+
+        </FrameLayout>
+
+        <!--标题栏放在后面, 可以保证显示在内容之上-->
+        <FrameLayout
+            android:id="@+id/lib_title_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_behavior="com.angcyo.behavior.HideTitleBarBehavior">
+
+            <com.angcyo.widget.layout.TitleWrapLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_bar_height">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/lib_title_text_view"
+                    style="@style/LibMainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    tools:text="标题栏文本" />
+
+                <LinearLayout
+                    android:id="@+id/lib_left_wrap_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+
+                <LinearLayout
+                    android:id="@+id/lib_right_wrap_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+
+            </com.angcyo.widget.layout.TitleWrapLayout>
+        </FrameLayout>
+
+    </com.angcyo.widget.layout.RCoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/lib_emoji_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/chat_emoji_bg_color">
+
+    </FrameLayout>
+</com.angcyo.widget.layout.DslSoftInputLayout>

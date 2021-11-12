@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="chat_icon_input_size">30dp</dimen>
+    <dimen name="chat_emoji_icon_size">32dp</dimen>
+    <dimen name="chat_icon_input_padding">3dp</dimen>
+    <dimen name="chat_icon_margin">5dp</dimen>
+    <dimen name="chat_edit_min_height">36dp</dimen>
+    <dimen name="chat_edit_max_height">120dp</dimen>
+</resources>

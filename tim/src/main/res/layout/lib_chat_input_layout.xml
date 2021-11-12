@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lib_white"
+    tools:background="@color/transparent10">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/chat_voice_view"
+        android:layout_width="@dimen/chat_icon_input_size"
+        android:layout_height="@dimen/chat_icon_input_size"
+        android:layout_margin="@dimen/chat_icon_margin"
+        android:padding="@dimen/chat_icon_input_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat_voice" />
+
+    <FrameLayout
+        android:id="@+id/wrap_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/chat_icon_margin"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="@dimen/chat_icon_margin"
+        android:layout_marginBottom="9dp"
+        android:minHeight="@dimen/chat_edit_min_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/chat_voice_view"
+        app:layout_constraintRight_toLeftOf="@id/chat_emoji_view"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.angcyo.tim.ui.view.ChatEditText
+            android:id="@+id/chat_edit_text"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_input_bg_shape"
+            android:maxHeight="@dimen/chat_edit_max_height"
+            android:minHeight="@dimen/chat_edit_min_height"
+            android:padding="@dimen/chat_icon_margin" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/chat_voice_input"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_input_bg_shape"
+            android:gravity="center"
+            android:minHeight="@dimen/chat_edit_min_height"
+            android:text="按住说话"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/chat_emoji_view"
+        android:layout_width="@dimen/chat_icon_input_size"
+        android:layout_height="@dimen/chat_icon_input_size"
+        android:layout_margin="@dimen/chat_icon_margin"
+        android:padding="@dimen/chat_icon_input_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/wrap_layout"
+        app:layout_constraintRight_toLeftOf="@id/chat_more_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat_emoji" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/chat_more_view"
+        android:layout_width="@dimen/chat_icon_input_size"
+        android:layout_height="@dimen/chat_icon_input_size"
+        android:layout_margin="@dimen/chat_icon_margin"
+        android:padding="@dimen/chat_icon_input_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/chat_emoji_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat_more" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/chat_send_button"
+        style="@style/LibButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/chat_icon_input_size"
+        android:layout_margin="@dimen/chat_icon_margin"
+        android:paddingLeft="@dimen/lib_sdpi"
+        android:paddingRight="@dimen/lib_sdpi"
+        android:text="发送"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

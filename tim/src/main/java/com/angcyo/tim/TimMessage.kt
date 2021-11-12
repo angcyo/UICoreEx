@@ -12,6 +12,12 @@ import com.tencent.imsdk.v2.*
  */
 object TimMessage {
 
+    /**tim 核心类*/
+    val timManager = V2TIMManager.getInstance()
+
+    /**消息管理*/
+    val messageManager = V2TIMManager.getMessageManager()
+
     //<editor-fold desc="发送消息">
 
     /**发送文本消息
@@ -22,7 +28,7 @@ object TimMessage {
         text: String,
         callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
-        V2TIMManager.getInstance().sendC2CTextMessage(text, userId,
+        timManager.sendC2CTextMessage(text, userId,
             object : V2TIMValueCallback<V2TIMMessage> {
                 override fun onSuccess(v2TIMMessage: V2TIMMessage) {
                     callback(v2TIMMessage, null)
@@ -42,7 +48,7 @@ object TimMessage {
         data: ByteArray,
         callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
-        V2TIMManager.getInstance().sendC2CCustomMessage(data, userId,
+        timManager.sendC2CCustomMessage(data, userId,
             object : V2TIMValueCallback<V2TIMMessage> {
                 override fun onSuccess(v2TIMMessage: V2TIMMessage) {
                     callback(v2TIMMessage, null)
@@ -70,7 +76,7 @@ object TimMessage {
         offlinePushInfo: V2TIMOfflinePushInfo? = null,
         callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
-        V2TIMManager.getMessageManager().sendMessage(
+        messageManager.sendMessage(
             message,
             userId,
             groupId,
@@ -93,18 +99,18 @@ object TimMessage {
     }
 
     fun imageMessage(imagePath: String) =
-        V2TIMManager.getMessageManager().createImageMessage(imagePath)
+        messageManager.createImageMessage(imagePath)
 
     fun videoMessage(videoFilePath: String, type: String, duration: Int, snapshotPath: String) =
-        V2TIMManager.getMessageManager()
+        messageManager
             .createVideoMessage(videoFilePath, type, duration, snapshotPath)
 
     fun soundMessage(soundPath: String, duration: Int) =
-        V2TIMManager.getMessageManager()
+        messageManager
             .createSoundMessage(soundPath, duration)
 
     fun fileMessage(filePath: String, fileName: String) =
-        V2TIMManager.getMessageManager()
+        messageManager
             .createFileMessage(filePath, fileName)
 
 
@@ -114,7 +120,7 @@ object TimMessage {
 
     /**监听简单的消息*/
     fun listenerSimpleMessage() {
-        V2TIMManager.getInstance().addSimpleMsgListener(object : V2TIMSimpleMsgListener() {
+        timManager.addSimpleMsgListener(object : V2TIMSimpleMsgListener() {
             override fun onRecvC2CTextMessage(
                 msgID: String?,
                 sender: V2TIMUserInfo?,
@@ -135,7 +141,7 @@ object TimMessage {
 
     /**监听消息*/
     fun listenerMessage() {
-        V2TIMManager.getMessageManager()
+        messageManager
             .addAdvancedMsgListener(object : V2TIMAdvancedMsgListener() {
                 override fun onRecvNewMessage(msg: V2TIMMessage?) {
                     super.onRecvNewMessage(msg)
@@ -154,7 +160,7 @@ object TimMessage {
 
     /**撤销消息*/
     fun revokeMessage(message: V2TIMMessage, callback: (TimSdkException?) -> Unit) {
-        V2TIMManager.getMessageManager().revokeMessage(message, object : V2TIMCallback {
+        messageManager.revokeMessage(message, object : V2TIMCallback {
             override fun onSuccess() {
                 callback(null)
             }
@@ -179,7 +185,7 @@ object TimMessage {
         lastMsg: V2TIMMessage? = null,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
-        V2TIMManager.getMessageManager().getC2CHistoryMessageList(userId, count, lastMsg,
+        messageManager.getC2CHistoryMessageList(userId, count, lastMsg,
             object : V2TIMValueCallback<List<V2TIMMessage>> {
                 override fun onSuccess(list: List<V2TIMMessage>?) {
                     callback(list, null)
