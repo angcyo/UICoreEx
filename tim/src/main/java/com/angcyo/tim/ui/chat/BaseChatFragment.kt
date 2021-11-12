@@ -52,11 +52,17 @@ abstract class BaseChatFragment : BaseDslFragment() {
     }
 
     open fun onInitChat() {
-        if (chatInfoBean == null) {
+        val chatInfo = chatInfoBean
+        if (chatInfo == null) {
             toastQQ("数据异常")
             removeThis()
         } else {
-            //chatPresenter?.initView(this)
+            fragmentTitle = chatInfo.chatTitle
+
+            chatPresenter?.initView(this)
+            chatPresenter?.initMoreAction()
+
+            chatPresenter?.loadMessage()
         }
     }
 }

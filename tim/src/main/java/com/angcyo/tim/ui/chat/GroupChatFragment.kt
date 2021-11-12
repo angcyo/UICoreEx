@@ -17,8 +17,6 @@ open class GroupChatFragment : BaseChatFragment() {
 
     override fun onInitChat() {
         super.onInitChat()
-
-        chatPresenter?.initView(this)
     }
 
 }

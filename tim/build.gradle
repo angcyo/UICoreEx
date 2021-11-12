@@ -2,6 +2,11 @@ apply from: allGradle.libBase
 
 dependencies {
     implementation project(allModule.library)
+    implementation project(allModule.media)
+    implementation project(allModule.core)
+    implementation project(allModule.dslitem)
+    implementation project(allModule.dslitem)
+    implementation project(allModule.glide)
 
     //https://repo1.maven.org/maven2/
 

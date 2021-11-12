@@ -6,4 +6,12 @@
     <dimen name="chat_icon_margin">5dp</dimen>
     <dimen name="chat_edit_min_height">36dp</dimen>
     <dimen name="chat_edit_max_height">120dp</dimen>
+
+    <dimen name="msg_check_box_size">18dp</dimen>
+
+    <dimen name="msg_avatar_size">44dp</dimen>
+
+    <dimen name="msg_padding_left">12dp</dimen>
+    <dimen name="msg_padding_right">12dp</dimen>
+    <dimen name="msg_padding_bottom">12dp</dimen>
 </resources>

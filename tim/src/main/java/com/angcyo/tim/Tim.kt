@@ -20,6 +20,10 @@ import com.tencent.imsdk.v2.*
  */
 object Tim {
 
+    /**sdk登录的用户*/
+    val loginUer: String
+        get() = V2TIMManager.getInstance().loginUser
+
     /**初始化
      * https://cloud.tencent.com/document/product/269/44477*/
     fun init(appId: Int, context: Context = app()) {

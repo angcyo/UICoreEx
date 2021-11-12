@@ -1,5 +1,7 @@
 package com.angcyo.tim
 
+import com.angcyo.library.ex.nowTime
+import com.angcyo.tim.bean.MessageInfoBean
 import com.tencent.imsdk.v2.*
 
 /**
@@ -98,21 +100,46 @@ object TimMessage {
             })
     }
 
+    /**返回一个图片消息*/
     fun imageMessage(imagePath: String) =
         messageManager.createImageMessage(imagePath)
 
+    /**返回一个视频消息*/
     fun videoMessage(videoFilePath: String, type: String, duration: Int, snapshotPath: String) =
         messageManager
             .createVideoMessage(videoFilePath, type, duration, snapshotPath)
 
+    /**返回一个语音消息*/
     fun soundMessage(soundPath: String, duration: Int) =
         messageManager
             .createSoundMessage(soundPath, duration)
 
+    /**返回一个文件消息*/
     fun fileMessage(filePath: String, fileName: String) =
         messageManager
             .createFileMessage(filePath, fileName)
 
+    /**返回一个文本消息
+     * [atUserList] @的用户id列表
+     * 需要 @ 的用户列表，如果需要 @ALL，请传入 AT_ALL_TAG 常量字符串。 举个例子，假设该条文本消息希望@提醒 denny 和 lucy 两个用户，同时又希望@所有人，atUserList 传 ["denny","lucy",AT_ALL_TAG]
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a09a259ceb314754dd267533597138391
+     * */
+    fun textMessage(message: String?, atUserList: List<String>? = null) =
+        if (atUserList.isNullOrEmpty()) {
+            messageManager.createTextMessage(message)
+        } else {
+            messageManager.createTextAtMessage(message, atUserList)
+        }
+
+
+    fun textMessageBean(message: String?): MessageInfoBean {
+        val bean = MessageInfoBean()
+        bean.message = textMessage(message)
+        bean.content = message
+        bean.timestamp = nowTime()
+        bean.fromUser = V2TIMManager.getInstance().loginUser
+        return bean
+    }
 
     //</editor-fold desc="发送消息">
 
@@ -171,18 +198,48 @@ object TimMessage {
         })
     }
 
-    /**获取历史消息
+    /**获取历史消息高级接口
+     *
+     * [option] 拉取消息选项设置，可以设置从云端、本地拉取更老或更新的消息
+     *
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageListGetOption.html
+     */
+    fun getHistoryMessageList(
+        option: V2TIMMessageListGetOption,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+    ) {
+        messageManager.getHistoryMessageList(
+            option,
+            object : V2TIMValueCallback<List<V2TIMMessage>> {
+                override fun onSuccess(list: List<V2TIMMessage>?) {
+                    callback(list, null)
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    callback(null, TimSdkException(code, desc))
+                }
+
+            })
+    }
+
+    //fun
+
+    /**获取单聊历史消息
      * 历史消息的注意事项
      * 历史消息存储时长如下：
      * 体验版：免费存储7天，不支持延长
      * 专业版：免费存储7天，支持延长
      * 旗舰版：免费存储30天，支持延长
+     *
+     * [count] 拉取消息的个数，不宜太多，会影响消息拉取的速度，这里建议一次拉取 20 个
+     * [lastMsg] 获取消息的起始消息，如果传 null，起始消息为会话的最新消息
+     *
      * https://cloud.tencent.com/document/product/269/44489
      * */
-    fun getHistoryMessageList(
-        userId: String,
-        count: Int = 20,
+    fun getC2CHistoryMessageList(
+        userId: String?,
         lastMsg: V2TIMMessage? = null,
+        count: Int = 20,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getC2CHistoryMessageList(userId, count, lastMsg,
@@ -196,6 +253,27 @@ object TimMessage {
                 }
 
             })
+    }
+
+    /**获取群聊历史消息*/
+    fun getGroupHistoryMessageList(
+        groupId: String,
+        count: Int = 20,
+        lastMsg: V2TIMMessage? = null,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+    ) {
+        messageManager.getGroupHistoryMessageList(groupId, count, lastMsg,
+            object : V2TIMValueCallback<List<V2TIMMessage>> {
+                override fun onSuccess(list: List<V2TIMMessage>?) {
+                    callback(list, null)
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    callback(null, TimSdkException(code, desc))
+                }
+            })
+
+        //messageManager.getGroupHistoryMessageList()
     }
 
     //</editor-fold desc="消息操作">

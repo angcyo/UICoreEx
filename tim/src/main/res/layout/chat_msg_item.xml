@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/msg_padding_left"
+    android:paddingTop="0dp"
+    android:paddingRight="@dimen/msg_padding_right"
+    android:paddingBottom="@dimen/msg_padding_bottom"
+    tools:background="@color/transparent10">
+
+    <!--消息时间-->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/msg_time_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:includeFontPadding="false"
+        tools:text="2021-11-12" />
+
+    <!--选择消息的box-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/msg_select_box"
+        android:layout_width="@dimen/msg_check_box_size"
+        android:layout_height="@dimen/msg_check_box_size"
+        android:layout_below="@+id/msg_time_view"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="6dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/msg_check_selector"
+        tools:visibility="visible" />
+
+    <!--消息容器-->
+    <RelativeLayout
+        android:id="@+id/msg_container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/msg_time_view"
+        android:layout_toRightOf="@id/msg_select_box">
+
+        <!--左边的头像-->
+        <com.angcyo.glide.GlideImageView
+            android:id="@+id/msg_left_avatar_view"
+            android:layout_width="@dimen/msg_avatar_size"
+            android:layout_height="@dimen/msg_avatar_size"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="6dp"
+            android:scaleType="centerCrop"
+            android:src="@color/lib_image_placeholder_white_color"
+            app:r_image_radius="@dimen/lib_radius_common2" />
+
+        <!--右边的头像-->
+        <com.angcyo.glide.GlideImageView
+            android:id="@+id/msg_right_avatar_view"
+            android:layout_width="@dimen/msg_avatar_size"
+            android:layout_height="@dimen/msg_avatar_size"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="6dp"
+            android:scaleType="centerCrop"
+            android:src="@color/lib_image_placeholder_white_color"
+            app:r_image_radius="@dimen/lib_radius_common2" />
+
+        <!--用户昵称, 群聊时才会显示-->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/msg_user_name_view"
+            style="@style/LibPlaceTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toLeftOf="@id/msg_right_avatar_view"
+            android:layout_toRightOf="@id/msg_left_avatar_view"
+            tools:text="angcyo" />
+
+        <!--消息体/状态的容器-->
+        <LinearLayout
+            android:id="@+id/msg_content_container_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/msg_user_name_view"
+            android:layout_toLeftOf="@id/msg_right_avatar_view"
+            android:layout_toRightOf="@id/msg_left_avatar_view"
+            android:orientation="horizontal">
+
+            <!--真正的消息内容, 动态添加-->
+            <FrameLayout
+                android:id="@+id/msg_content_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:background="@drawable/chat_bubble_left"
+                tools:layout_height="100dp"
+                tools:layout_width="100dp" />
+
+            <!--音频未读提示-->
+            <com.angcyo.widget.text.BadgeTextView
+                android:id="@+id/msg_audio_unread_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                app:r_badge_circle_radius="2dp"
+                tools:r_badge_text="" />
+
+            <!--消息发送中提示view-->
+            <ProgressBar
+                android:id="@+id/msg_sending_view"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp" />
+
+            <!--消息已读未读提示-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/msg_read_tip_view"
+                style="@style/LibPlaceTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="6dp"
+                android:textSize="@dimen/text_little_size"
+                tools:text="未读" />
+
+            <!--消息发送状态提示view-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/msg_status_view"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/message_send_fail"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -17,8 +17,5 @@ open class SingleChatFragment : BaseChatFragment() {
 
     override fun onInitChat() {
         super.onInitChat()
-
-        chatPresenter?.initView(this)
-        chatPresenter?.initMoreAction()
     }
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.text.TextUtils
 import com.angcyo.library.L
 import com.angcyo.library.ex.bitmapSize
+import com.angcyo.library.ex.notEmptyOf
 import com.angcyo.library.ex.toUri
 import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_DOWNLOADED
 import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_REVOKE
@@ -81,6 +82,12 @@ class MessageInfoBean {
 
     /**消息的下载状态*/
     var downloadStatus: Int = MSG_STATUS_NORMAL
+
+    /**消息的时间, 毫秒*/
+    var timestamp: Long = 0
+
+    /**消息的发送者*/
+    var fromUser: String? = null
 }
 
 val MessageInfoBean.isGroup: Boolean
@@ -104,12 +111,24 @@ val MessageInfoBean.isPeerRead: Boolean
 /**获取消息发送者 userID*/
 val MessageInfoBean.sender: String
     get() {
-        val sender = message?.sender
+        val sender = fromUser ?: message?.sender
         return if (sender.isNullOrEmpty()) {
             V2TIMManager.getInstance().loginUser
         } else {
             sender
         }
+    }
+
+/**获取聊天中, 需要显示的用户名*/
+val MessageInfoBean.showUserName: String?
+    get() {
+        var result: String? = null
+
+        message?.apply {
+            result = notEmptyOf(nameCard, friendRemark, nickName, sender)
+        }
+
+        return result
     }
 
 fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
@@ -127,6 +146,8 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
 
     val bean = MessageInfoBean()
     bean.message = this
+    bean.timestamp = timestamp * 1000
+    bean.fromUser = sender
 
     //https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessage.html#a00455865d1a14191b8c612252bf20a1c
     when (elemType) {
