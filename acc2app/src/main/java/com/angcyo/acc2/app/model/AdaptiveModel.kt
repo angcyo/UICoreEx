@@ -1,7 +1,6 @@
 package com.angcyo.acc2.app.model
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.dslitem.shareApk
 import com.angcyo.acc2.app.http.Gitee
@@ -16,7 +15,7 @@ import com.angcyo.library.app
 import com.angcyo.library.component.appBean
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.Device
-import com.angcyo.viewmodel.vmData
+import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.widget.span.DslSpan
 
 /**
@@ -29,9 +28,9 @@ import com.angcyo.widget.span.DslSpan
 
 class AdaptiveModel : LifecycleViewModel() {
 
-    val adaptiveData: MutableLiveData<AdaptiveVersionBean> = vmData(null)
-    val adminData: MutableLiveData<AdminBean> = vmData(null)
-    val appListData: MutableLiveData<HttpBean<List<AppInfoBean>>> = vmData(null)
+    val adaptiveData = vmDataNull<AdaptiveVersionBean>()
+    val adminData = vmDataNull<AdminBean>()
+    val appListData = vmDataNull<HttpBean<List<AppInfoBean>>>(null)
 
     /**加载本地适配数据信息*/
     fun loadAdaptiveVersion(online: Boolean = !isDebugType()) {
