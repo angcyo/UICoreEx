@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="0dp"
+    android:paddingTop="0dp"
+    android:paddingRight="0dp"
+    android:paddingBottom="@dimen/msg_padding_bottom"
+    tools:background="@color/transparent10">
+
+    <!--消息时间-->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/msg_time_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:includeFontPadding="false"
+        tools:text="2021-11-12" />
+
+    <!--消息内容, 动态添加-->
+    <FrameLayout
+        android:id="@+id/msg_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/msg_time_view"
+        android:background="@color/transparent10"
+        tools:layout_height="100dp" />
+
+</RelativeLayout>

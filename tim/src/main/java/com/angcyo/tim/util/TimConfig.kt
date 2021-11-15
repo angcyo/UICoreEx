@@ -19,6 +19,10 @@ object TimConfig {
     const val FILE_DOWNLOAD_DIR_SUFFIX = "/tim/file/download/"
     const val CRASH_LOG_DIR_SUFFIX = "/tim/crash/"
 
+    /**显示消息时间的时间间隔 5分钟
+     * 距离上一条消息5分钟时, 就显示消息时间*/
+    const val SHOW_MESSAGE_TIME_INTERVAL = 5 * 60 * 1000
+
     /**
      * 根据图片 UUID 和 类型得到图片文件路径
      * @param uuid 图片 UUID

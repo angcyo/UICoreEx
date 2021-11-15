@@ -63,6 +63,11 @@ abstract class BaseChatFragment : BaseDslFragment() {
             chatPresenter?.initMoreAction()
 
             chatPresenter?.loadMessage()
+            chatPresenter?.listenerMessage()
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return super.onBackPressed()
     }
 }

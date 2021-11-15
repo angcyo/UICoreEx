@@ -10,16 +10,15 @@ import com.angcyo.library.ex.randomColorList
 import com.angcyo.library.ex.toColor
 import com.angcyo.library.ex.undefined_res
 import com.angcyo.tim.R
-import com.angcyo.tim.bean.MessageInfoBean
-import com.angcyo.tim.bean.isGroup
-import com.angcyo.tim.bean.isSelf
-import com.angcyo.tim.bean.showUserName
+import com.angcyo.tim.bean.*
 import com.angcyo.tim.model.ChatModel
+import com.angcyo.tim.util.TimConfig.SHOW_MESSAGE_TIME_INTERVAL
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.replace
 
 /**
- * 基础聊天界面的item
+ * 基础聊天界面的item,
+ * 包含消息的时间, 消息的左右2个头像, 和消息体以及消息状态
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/11/12
@@ -34,7 +33,7 @@ open class BaseChatMsgItem : DslAdapterItem() {
     var messageInfoBean: MessageInfoBean? = null
 
     init {
-        itemLayoutId = R.layout.chat_msg_item
+        itemLayoutId = R.layout.chat_msg_content_item
     }
 
     override fun onItemBind(
@@ -79,6 +78,10 @@ open class BaseChatMsgItem : DslAdapterItem() {
             if (isSelf) {
                 itemHolder.gone(R.id.msg_left_avatar_view)
                 itemHolder.visible(R.id.msg_right_avatar_view)
+            } else {
+                //对方发送的消息
+                itemHolder.visible(R.id.msg_left_avatar_view)
+                itemHolder.gone(R.id.msg_right_avatar_view)
             }
 
             //头像
@@ -110,10 +113,10 @@ open class BaseChatMsgItem : DslAdapterItem() {
         var showTime = false
         if (itemPosition > 1) {
             //距离上一条消息, 大于5分钟时, 才显示时间
-            itemDslAdapter?.dataItems?.lastOrNull()?.let { last ->
-                if (last is BaseChatMsgItem) {
-                    last.messageInfoBean?.timestamp?.let { lastTimestamp ->
-                        if (timestamp - lastTimestamp >= 5 * 60 * 1000) {
+            itemDslAdapter?.getValidFilterDataList()?.getOrNull(itemPosition - 1)?.let { prevItem ->
+                if (prevItem is BaseChatMsgItem) {
+                    prevItem.messageInfoBean?.timestamp?.let { prevTimestamp ->
+                        if (timestamp - prevTimestamp >= SHOW_MESSAGE_TIME_INTERVAL) {
                             showTime = true
                         }
                     }
@@ -145,7 +148,27 @@ open class BaseChatMsgItem : DslAdapterItem() {
                     ?.setBackgroundResource(R.drawable.chat_bubble_left)
             }
 
-            //
+            //消息状态
+            itemHolder.visible(R.id.msg_sending_view, status == MessageInfoBean.MSG_STATUS_SENDING)
+            if (status == MessageInfoBean.MSG_STATUS_SEND_FAIL) {
+                //消息发送失败
+                itemHolder.visible(R.id.msg_status_view)
+            } else {
+                itemHolder.gone(R.id.msg_status_view)
+            }
+
+            //已读/未读
+            if (isGroup || status != MessageInfoBean.MSG_STATUS_SEND_SUCCESS) {
+                itemHolder.gone(R.id.msg_read_tip_view)
+            } else {
+                itemHolder.visible(R.id.msg_read_tip_view)
+                itemHolder.tv(R.id.msg_read_tip_view)?.text = if (isPeerRead) {
+                    "已读"
+                } else {
+                    "未读"
+                }
+            }
+
         }
     }
 

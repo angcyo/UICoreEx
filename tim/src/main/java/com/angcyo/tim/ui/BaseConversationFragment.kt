@@ -8,7 +8,7 @@ import com.angcyo.item.DslMessageListItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
-import com.angcyo.tim.conversation.ConversationModel
+import com.angcyo.tim.model.ConversationModel
 import com.angcyo.tim.bean.faceUrl
 
 /**

@@ -3,6 +3,7 @@ package com.angcyo.tim
 import com.angcyo.library.ex.nowTime
 import com.angcyo.tim.bean.MessageInfoBean
 import com.tencent.imsdk.v2.*
+import com.tencent.imsdk.v2.V2TIMMessageListGetOption.*
 
 /**
  * 消息收发
@@ -222,7 +223,29 @@ object TimMessage {
             })
     }
 
-    //fun
+    /**获取单聊/群聊的历史消息高级接口,
+     * 拉取历史消息的时候不会把 lastMsg 返回，需要手动添加上
+     * [getType] 拉取类型，取值为 V2TIM_GET_CLOUD_OLDER_MSG，V2TIM_GET_CLOUD_NEWER_MSG，V2TIM_GET_LOCAL_OLDER_MSG，V2TIM_GET_LOCAL_NEWER_MSG
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a97fe2d6a7bab8f45b758f84df48c0b12*/
+    fun getHistoryMessageList(
+        chatId: String,
+        isGroup: Boolean,
+        lastMsg: V2TIMMessage? = null,
+        getType: Int = V2TIM_GET_CLOUD_OLDER_MSG,
+        count: Int = 20,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+    ) {
+        val option = V2TIMMessageListGetOption()
+        option.count = count
+        option.getType = getType
+        option.lastMsg = lastMsg
+        if (isGroup) {
+            option.groupID = chatId
+        } else {
+            option.userID = chatId
+        }
+        getHistoryMessageList(option, callback)
+    }
 
     /**获取单聊历史消息
      * 历史消息的注意事项
@@ -251,15 +274,14 @@ object TimMessage {
                 override fun onError(code: Int, desc: String?) {
                     callback(null, TimSdkException(code, desc))
                 }
-
             })
     }
 
     /**获取群聊历史消息*/
     fun getGroupHistoryMessageList(
-        groupId: String,
-        count: Int = 20,
+        groupId: String?,
         lastMsg: V2TIMMessage? = null,
+        count: Int = 20,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getGroupHistoryMessageList(groupId, count, lastMsg,
@@ -278,3 +300,11 @@ object TimMessage {
 
     //</editor-fold desc="消息操作">
 }
+
+/**获取旧的消息*/
+fun Int.isGetOldMsg(): Boolean =
+    this == V2TIM_GET_CLOUD_OLDER_MSG || this == V2TIM_GET_LOCAL_OLDER_MSG
+
+/**获取新的消息*/
+fun Int.isGetNewMsg(): Boolean =
+    this == V2TIM_GET_CLOUD_NEWER_MSG || this == V2TIM_GET_LOCAL_NEWER_MSG

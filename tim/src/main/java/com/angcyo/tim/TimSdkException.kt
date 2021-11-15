@@ -7,4 +7,8 @@ package com.angcyo.tim
  * @date 2021/11/09
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class TimSdkException(val code: Int, val desc: String?) : RuntimeException(desc)
+class TimSdkException(val code: Int, val desc: String?) : RuntimeException(desc) {
+    override fun toString(): String {
+        return "Tim异常:$code:$desc"
+    }
+}

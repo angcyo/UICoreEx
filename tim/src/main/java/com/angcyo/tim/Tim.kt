@@ -1,9 +1,12 @@
 package com.angcyo.tim
 
 import android.content.Context
+import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
+import com.angcyo.tim.model.ChatModel
+import com.angcyo.tim.model.ConversationModel
 import com.angcyo.tim.util.FaceManager
 import com.tencent.imsdk.v2.*
 
@@ -39,7 +42,6 @@ object Tim {
         //IM SDK 的日志在4.8.50版本之前默认存储于 /sdcard/tencenet/imsdklogs/应用包名 目录下，
         // 4.8.50及之后的版本存储于 /sdcard/Android/data/包名/files/log/tencent/imsdk 目录下。
 
-
         // 4. 初始化 SDK 并设置 V2TIMSDKListener 的监听对象。
         // initSDK 后 SDK 会自动连接网络，网络连接状态可以在 V2TIMSDKListener 回调里面监听。
         V2TIMManager.getInstance().initSDK(context, appId, config)
@@ -58,6 +60,18 @@ object Tim {
         V2TIMManager.getInstance().login(userId, userSig, object : V2TIMCallback {
             override fun onSuccess() {
                 callback?.invoke(null)
+
+                //会话
+                vmApp<ConversationModel>().apply {
+                    listenerUnreadCount()
+                    listenerConversation()
+                    fetchConversationList()
+                }
+
+                //消息
+                vmApp<ChatModel>().apply {
+                    listenerMessage()
+                }
             }
 
             override fun onError(code: Int, desc: String?) {

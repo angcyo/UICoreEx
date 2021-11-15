@@ -2,24 +2,38 @@ package com.angcyo.tim.chat
 
 import android.view.View
 import android.widget.EditText
+import androidx.recyclerview.widget.RecyclerView
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.http.base.toJson
 import com.angcyo.library.L
-import com.angcyo.library.ex.str
+import com.angcyo.library.component._delay
+import com.angcyo.library.ex.*
 import com.angcyo.library.ex.string
 import com.angcyo.tim.R
 import com.angcyo.tim.TimMessage
-import com.angcyo.tim.bean.MessageInfoBean
+import com.angcyo.tim.TimSdkException
+import com.angcyo.tim.bean.*
+import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_REVOKE
+import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SENDING
+import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_FAIL
+import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_SUCCESS
 import com.angcyo.tim.dslitem.ChatEmojiItem
 import com.angcyo.tim.dslitem.ChatLoadingItem
 import com.angcyo.tim.dslitem.ChatMoreActionItem
-import com.angcyo.tim.dslitem.MsgTextItem
+import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.ui.chat.BaseChatFragment
 import com.angcyo.tim.util.FaceManager
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.*
 import com.angcyo.widget.layout.DslSoftInputLayout
-import com.angcyo.widget.recycler.DslRecyclerView
-import com.angcyo.widget.recycler.initDslAdapter
+import com.angcyo.widget.layout.isEmojiShowAction
+import com.angcyo.widget.layout.isSoftInputShowAction
+import com.angcyo.widget.layout.onSoftInputChangeEnd
+import com.angcyo.widget.recycler.*
+import com.tencent.imsdk.v2.*
+import com.tencent.imsdk.v2.V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG
 
 /**
  * 聊天操作层
@@ -50,6 +64,20 @@ abstract class BaseChatPresenter {
     val inputEditText: EditText?
         get() = _vh?.v<EditText>(R.id.chat_edit_text)
 
+    val chatBean: ChatInfoBean?
+        get() = chatFragment?.chatInfoBean
+
+    /**消息管理*/
+    val messageManager = V2TIMManager.getMessageManager()
+
+    // 消息已读上报时间间隔
+    val READ_REPORT_INTERVAL = 1000 // 单位： 毫秒
+
+    var _lastReadReportTime = 0L
+    var _canReadReport = true
+
+    var _isLoading = false
+
     //<editor-fold desc="初始化">
 
     /**初始化界面*/
@@ -64,11 +92,22 @@ abstract class BaseChatPresenter {
                 _vh?.visible(R.id.chat_send_button)
             }
         }
+        //键盘
+        softInputLayout?.onSoftInputChangeEnd { action, height, oldHeight ->
+            if (action.isSoftInputShowAction()) {
+                _scrollToLast()
+            } else if (action.isEmojiShowAction() && _recycler?.isLastItemVisibleCompleted() == true) {
+                _scrollToLast()
+            }
+        }
 
         //发送按钮
         _vh?.click(R.id.chat_send_button) {
             sendInputMessage(inputEditText?.string())
-            inputEditText?.setInputText()
+            if (!isDebugType()) {
+                //清空输入框
+                inputEditText?.setInputText()
+            }
         }
 
         //语音
@@ -90,6 +129,20 @@ abstract class BaseChatPresenter {
             _showMoreLayout()
             if (isVoiceInput) {
                 _switchVoiceInput(false, false)
+            }
+        }
+        //recycler
+        _recycler?.apply {
+            onScrollStateChangedAction { recyclerView, newState ->
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    //滚动停止后
+                    if (recyclerView.isTopItemVisibleCompleted()) {
+                        loadHistoryMessage()
+                    }
+                }
+            }
+            onScrolledAction { recyclerView, dx, dy ->
+                L.i()
             }
         }
     }
@@ -127,19 +180,46 @@ abstract class BaseChatPresenter {
 
     /**加载消息*/
     open fun loadMessage() {
-        val lastMessageInfo: MessageInfoBean? = chatFragment?.chatInfoBean?.lastMessageInfoBean
-
-        _adapter?.changeDataItems {
-            it.add(0, ChatLoadingItem())
+        if (_isLoading) {
+            return
         }
+        showLoadingItem()
 
-        chatFragment?.let {
-            it.chatInfoBean?.let { chatBean ->
-                TimMessage.getC2CHistoryMessageList(
-                    chatBean.chatId,
-                    lastMessageInfo?.message
-                ) { list, timSdkException ->
-                    L.i()
+        chatBean?.let { chatBean ->
+            getMessageList(chatBean.lastMessageInfoBean?.message) { list, timSdkException ->
+                timSdkException?.let {
+                    L.w(timSdkException)
+                }
+                list?.let {
+                    //消息已读回执
+                    limitReadReport(chatBean.chatId, chatBean.isGroup)
+
+                    showLoadingItem(false)
+                    _addMessageItem(it.toDslAdapterItemList(), true)
+                }
+            }
+        }
+    }
+
+    open fun loadHistoryMessage(getType: Int = V2TIM_GET_CLOUD_OLDER_MSG) {
+        if (_isLoading) {
+            return
+        }
+        showLoadingItem()
+
+        _delay(160) {
+            chatBean?.let { chatBean ->
+                getMessageList(_adapter?.firstMessageInfoBean()?.message) { list, timSdkException ->
+                    timSdkException?.let {
+                        L.w(timSdkException)
+                    }
+                    list?.let {
+                        //消息已读回执
+                        limitReadReport(chatBean.chatId, chatBean.isGroup)
+
+                        showLoadingItem(false)
+                        _addMessageItem(it.toDslAdapterItemList(), false, 1)
+                    }
                 }
             }
         }
@@ -152,17 +232,298 @@ abstract class BaseChatPresenter {
         }
 
         chatFragment?.chatInfoBean?.let { chatBean ->
-            _adapter?.changeDataItems {
-                it.add(MsgTextItem().apply {
-                    messageInfoBean = TimMessage.textMessageBean(text.str())
+            sendMessage(chatBean, TimMessage.textMessageBean(text.str()))
+        }
+    }
+
+    /**显示加载消息item*/
+    fun showLoadingItem(loading: Boolean = true) {
+        _isLoading = loading
+        _adapter?.changeDataItems {
+            val item = it.firstOrNull()
+            if (item == null || item !is ChatLoadingItem) {
+                it.add(0, ChatLoadingItem().apply {
+                    isLoading = loading
                 })
+            } else {
+                item.isLoading = loading
+            }
+        }
+    }
+
+    /**获取消息列表*/
+    fun getMessageList(
+        lastMsg: V2TIMMessage? = null,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+    ) {
+        chatBean?.let { chatBean ->
+            if (chatBean.isGroup) {
+                TimMessage.getGroupHistoryMessageList(
+                    chatBean.chatId,
+                    lastMsg,
+                    callback = callback
+                )
+            } else {
+                TimMessage.getC2CHistoryMessageList(
+                    chatBean.chatId,
+                    lastMsg,
+                    callback = callback
+                )
             }
         }
     }
 
     //</editor-fold desc="操作">
 
+    //<editor-fold desc="消息">
+
+    /**发送消息
+     * [retry] 是否是重新发送消息, 如果是重新发送的消息, 那么消息item, 会被移除并重新添加到尾部*/
+    fun sendMessage(chatInfo: ChatInfoBean, info: MessageInfoBean?, retry: Boolean = false) {
+        if (info == null || info.status == MSG_STATUS_SENDING || info.message == null) {
+            //消息正在发送中
+            return
+        }
+
+        //离线推送信息构建
+        val containerBean = OfflineMessageContainerBean()
+        val entity = OfflineMessageBean()
+        entity.content = info.content
+        entity.sender = info.fromUser
+        entity.title = chatInfo.chatTitle
+        entity.faceUrl = vmApp<ChatModel>().selfFaceUrlData.value //头像地址
+        containerBean.entity = entity
+
+        if (chatInfo.isGroup) {
+            entity.chatType = V2TIMConversation.V2TIM_GROUP
+            entity.sender = chatInfo.chatId
+        }
+
+        val v2TIMOfflinePushInfo = V2TIMOfflinePushInfo()
+        v2TIMOfflinePushInfo.ext = containerBean.toJson()?.toByteArray()
+        // OPPO必须设置ChannelID才可以收到推送消息，这个channelID需要和控制台一致
+        v2TIMOfflinePushInfo.setAndroidOPPOChannelID("default")
+
+        //发送消息
+        info.messageId = sendMessage(
+            chatInfo,
+            info.message!!,
+            offlinePushInfo = v2TIMOfflinePushInfo
+        ) { v2TIMMessage, timSdkException, progress ->
+            v2TIMMessage?.let {
+                info.status = MSG_STATUS_SEND_SUCCESS
+                info.timestamp = it.timestamp * 1000
+                info.findDslAdapterItem(_adapter)?.updateAdapterItem()
+            }
+            timSdkException?.let {
+                info.status = MSG_STATUS_SEND_FAIL
+                info.findDslAdapterItem(_adapter)?.updateAdapterItem()
+            }
+        }
+
+        //添加到界面
+        if (info.msgType < V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS || info.msgType > MSG_STATUS_REVOKE) {
+            info.status = MSG_STATUS_SENDING //消息状态
+            if (retry) {
+                info.findDslAdapterItem(_adapter)?.let { item ->
+                    item.messageInfoBean = info
+                    _adapter?.changeDataItems {
+                        it.moveToLast(item)
+                    }
+                }
+            } else {
+                _addMessageItem(info.toDslAdapterItem(), true)
+            }
+        }
+    }
+
+    /**
+     * 发送高级消息（高级版本：可以指定优先级，推送信息等特性）
+     *
+     *
+     * [message]待发送的消息对象，需要通过对应的 createXXXMessage 接口进行创建。
+     * [receiver]消息接收者的 userID, 如果是发送 C2C 单聊消息，只需要指定 receiver 即可。
+     * [groupID]目标群组 ID，如果是发送群聊消息，只需要指定 groupID 即可。
+     * [priority]消息优先级，仅针对群聊消息有效。请把重要消息设置为高优先级（比如红包、礼物消息），高频且不重要的消息设置为低优先级（比如点赞消息）。
+     * [onlineUserOnly]是否只有在线用户才能收到，如果设置为 true ，接收方历史消息拉取不到，常被用于实现“对方正在输入”或群组里的非重要提示等弱提示功能，该字段不支持 AVChatRoom。
+     * [offlinePushInfo]离线推送时携带的标题和内容。
+     *
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a28e01403acd422e53e999f21ec064795
+     *
+     * @return 消息唯一标识
+     * */
+    fun sendMessage(
+        chatInfo: ChatInfoBean,
+        message: V2TIMMessage,
+        priority: Int = V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+        onlineUserOnly: Boolean = false,
+        offlinePushInfo: V2TIMOfflinePushInfo? = null,
+        callback: (V2TIMMessage?, TimSdkException?, Int) -> Unit
+    ): String {
+        //消息是否不计入会话未读数：默认为 false
+        //message.isExcludedFromUnreadCount = false
+
+        //获取消息是否不计入会话 lastMessage
+        //message.isExcludedFromLastMessage = false
+
+        val userId: String?
+        val groupId: String?
+        if (chatInfo.isGroup) {
+            userId = null
+            groupId = chatInfo.chatId
+        } else {
+            userId = chatInfo.chatId
+            groupId = null
+        }
+
+        return messageManager.sendMessage(message,
+            userId,
+            groupId,
+            priority,
+            onlineUserOnly,
+            offlinePushInfo,
+            object : V2TIMSendCallback<V2TIMMessage> {
+
+                override fun onSuccess(message: V2TIMMessage) {
+                    L.d("消息发送成功:${message.msgID}")
+                    callback(message, null, 100)
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    L.d("消息发送失败:${code}:${desc}")
+                    callback(null, TimSdkException(code, desc), -1)
+                }
+
+                override fun onProgress(progress: Int) {
+                    L.d("消息发送中:${progress}")
+                    callback(null, null, progress)
+                }
+            })
+    }
+
+    /**监听消息变化*/
+    fun listenerMessage() {
+        chatFragment?.let { fragment ->
+            val chatBean = fragment.chatInfoBean
+            if (chatBean?.chatId != null) {
+                vmApp<ChatModel>().newMessageData.observe(fragment) { timMessage ->
+                    if (timMessage != null) {
+                        if ((chatBean.isGroup && timMessage.groupID == chatBean.chatId) || timMessage.userID == chatBean.chatId) {
+                            //界面需要处理的消息
+                            val message = timMessage.toMessageInfoBean()
+                            if (fragment.isFragmentShow) {
+                                //消息已读回执
+                                limitReadReport(chatBean.chatId, chatBean.isGroup)
+                            }
+                            _addMessageItem(
+                                message?.toDslAdapterItem(),
+                                _recycler?.isLastItemVisibleCompleted() == true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 收到消息上报已读加频率限制
+     * @param chatId 如果是 C2C 消息， chatId 是 userId, 如果是 Group 消息 chatId 是 groupId
+     * @param isGroup 是否为 Group 消息
+     */
+    fun limitReadReport(chatId: String?, isGroup: Boolean) {
+        if (chatId.isNullOrEmpty()) {
+            return
+        }
+        val currentTime = System.currentTimeMillis()
+        val timeDifference: Long = currentTime - _lastReadReportTime
+        if (timeDifference >= READ_REPORT_INTERVAL) {
+            readReport(chatId, isGroup)
+            _lastReadReportTime = currentTime
+        } else {
+            if (!_canReadReport) {
+                return
+            }
+            val delay: Long = READ_REPORT_INTERVAL - timeDifference
+            _canReadReport = false
+            _delay(delay) {
+                readReport(chatId, isGroup)
+                _lastReadReportTime = System.currentTimeMillis()
+                _canReadReport = true
+            }
+        }
+    }
+
+    fun readReport(
+        chatId: String,
+        isGroup: Boolean,
+        callback: ((TimSdkException?) -> Unit)? = null
+    ) {
+        val listener = object : V2TIMCallback {
+            override fun onError(code: Int, desc: String) {
+                L.w("设置已读失败:$desc")
+                callback?.invoke(TimSdkException(code, desc))
+            }
+
+            override fun onSuccess() {
+                callback?.invoke(null)
+            }
+        }
+        if (!isGroup) {
+            messageManager.markC2CMessageAsRead(chatId, listener)
+        } else {
+            messageManager.markGroupMessageAsRead(chatId, listener)
+        }
+    }
+
+    //</editor-fold desc="消息">
+
     //<editor-fold desc="内部操作">
+
+    /**向界面中添加一个item,并且滚动到底部*/
+    fun _addMessageItem(item: DslAdapterItem?, scrollToEnd: Boolean) {
+        item?.let {
+            _adapter?.apply {
+                changeDataItems {
+                    it.add(item)
+                }
+                if (scrollToEnd) {
+                    onDispatchUpdatesOnce {
+                        _scrollToLast()
+                    }
+                }
+            }
+        }
+    }
+
+    fun _addMessageItem(list: List<DslAdapterItem>?, scrollToEnd: Boolean, index: Int = -1) {
+        if (list.isNullOrEmpty()) {
+            return
+        }
+        _adapter?.apply {
+            val filterParams = _defaultFilterParams()
+            if (index != -1) {
+                filterParams.onDispatchUpdatesTo = { diffResult, diffList ->
+                    //如果使用dispatchUpdatesTo, 列表顶部会从0的位置开始布局, 并把原来的布局挤掉
+                    //如果使用notifyItemRangeInserted, 则原来的布局不会动, 列表会从0的位置, 从上布局
+                    notifyItemRangeInserted(0, list.size)
+                }
+            }
+            changeDataItems(filterParams) {
+                if (index == -1) {
+                    //尾部追加
+                    it.addAll(list)
+                } else {
+                    it.addAll(index, list)
+                }
+            }
+            if (scrollToEnd) {
+                onDispatchUpdatesOnce {
+                    _scrollToLast()
+                }
+            }
+        }
+    }
 
     /**语音输入布局控制*/
     fun _switchVoiceInput(voiceInput: Boolean, showSoftInput: Boolean = true) {
@@ -191,6 +552,10 @@ abstract class BaseChatPresenter {
             }
             isVoiceInput = voiceInput
         }
+    }
+
+    fun _scrollToLast() {
+        _recycler?.scrollHelper?.scrollToLast()
     }
 
     /**关闭表情布局*/
