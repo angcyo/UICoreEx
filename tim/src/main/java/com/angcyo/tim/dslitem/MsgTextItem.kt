@@ -1,6 +1,7 @@
 package com.angcyo.tim.dslitem
 
 import com.angcyo.tim.R
+import com.angcyo.tim.util.handlerEmojiText
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -18,7 +19,7 @@ class MsgTextItem : BaseChatMsgItem() {
 
     override fun bindMsgContent(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
         super.bindMsgContent(itemHolder, itemPosition, payloads)
-        itemHolder.tv(R.id.msg_text_view)?.text = messageInfoBean?.content
+        itemHolder.tv(R.id.msg_text_view)?.text = messageInfoBean?.content?.handlerEmojiText()
     }
 
 }

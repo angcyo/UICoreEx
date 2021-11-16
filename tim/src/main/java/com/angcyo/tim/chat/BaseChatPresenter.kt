@@ -27,10 +27,7 @@ import com.angcyo.tim.ui.chat.BaseChatFragment
 import com.angcyo.tim.util.FaceManager
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.*
-import com.angcyo.widget.layout.DslSoftInputLayout
-import com.angcyo.widget.layout.isEmojiShowAction
-import com.angcyo.widget.layout.isSoftInputShowAction
-import com.angcyo.widget.layout.onSoftInputChangeEnd
+import com.angcyo.widget.layout.*
 import com.angcyo.widget.recycler.*
 import com.tencent.imsdk.v2.*
 import com.tencent.imsdk.v2.V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG
@@ -93,7 +90,7 @@ abstract class BaseChatPresenter {
             }
         }
         //键盘
-        softInputLayout?.onSoftInputChangeEnd { action, height, oldHeight ->
+        softInputLayout?.onSoftInputChangeStart { action, height, oldHeight ->
             if (action.isSoftInputShowAction()) {
                 _scrollToLast()
             } else if (action.isEmojiShowAction() && _recycler?.isLastItemVisibleCompleted() == true) {
@@ -555,12 +552,53 @@ abstract class BaseChatPresenter {
     }
 
     fun _scrollToLast() {
-        _recycler?.scrollHelper?.scrollToLast()
+        _recycler?.scrollHelper?.lockScrollToLast {
+            firstScrollAnim = false
+            lockDuration = 200
+        }
     }
 
     /**关闭表情布局*/
     fun onCloseEmojiLayout() {
 
+    }
+
+    /**点击表情时回调*/
+    fun onEmojiClick(emoji: Emoji) {
+        inputEditText?.apply {
+            val index: Int = selectionStart
+            val editable = text
+            editable.insert(index, emoji.filter)
+            FaceManager.handlerEmojiText(this, editable.toString(), true)
+        }
+    }
+
+    /**表情上的删除按钮*/
+    fun onEmojiDelete() {
+        inputEditText?.apply {
+            sendDelKey()
+            /*val index: Int = selectionStart
+            val editable = text
+            var isFace = false
+            if (index <= 0) {
+                return
+            }
+            if (editable[index - 1] == ']') {
+                for (i in index - 2 downTo 0) {
+                    if (editable[i] == '[') {
+                        val faceChar = editable.subSequence(i, index).toString()
+                        if (FaceManager.isFaceChar(faceChar)) {
+                            editable.delete(i, index)
+                            isFace = true
+                        }
+                        break
+                    }
+                }
+            }
+            if (!isFace) {
+                editable.delete(index - 1, index)
+            }*/
+        }
     }
 
     var emojiLayout: View? = null
@@ -578,11 +616,18 @@ abstract class BaseChatPresenter {
                     moreLayout = null
 
                     find<DslRecyclerView>(R.id.lib_recycler_view)?.initDslAdapter {
-                        FaceManager.emojiList.forEach {
+                        FaceManager.emojiList.forEach { emoji ->
                             ChatEmojiItem()() {
-                                emoji = it
+                                itemEmoji = emoji
+                                itemClick = {
+                                    onEmojiClick(emoji)
+                                }
                             }
                         }
+                    }
+                    //删除
+                    find<View>(R.id.lib_delete_view)?.clickIt {
+                        onEmojiDelete()
                     }
                 }
             } else {

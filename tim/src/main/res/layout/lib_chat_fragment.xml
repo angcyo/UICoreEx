@@ -5,7 +5,8 @@
     android:id="@+id/lib_soft_input_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:r_handler_mode="MODE_CONTENT_HEIGHT">
+    app:r_handler_mode="MODE_CONTENT_HEIGHT"
+    app:r_hide_emoji_view_on_soft_input="true">
 
     <!--内容布局包裹-->
     <LinearLayout

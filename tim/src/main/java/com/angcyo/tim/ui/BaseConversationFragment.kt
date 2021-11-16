@@ -1,15 +1,23 @@
 package com.angcyo.tim.ui
 
 import android.os.Bundle
+import com.angcyo.base.dslFHelper
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.toLoading
 import com.angcyo.item.DslMessageListItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.*
-import com.angcyo.library.toast
-import com.angcyo.tim.model.ConversationModel
+import com.angcyo.putData
 import com.angcyo.tim.bean.faceUrl
+import com.angcyo.tim.bean.isGroup
+import com.angcyo.tim.bean.msgType
+import com.angcyo.tim.bean.toChatInfoBean
+import com.angcyo.tim.model.ConversationModel
+import com.angcyo.tim.ui.chat.GroupChatFragment
+import com.angcyo.tim.ui.chat.SingleChatFragment
+import com.angcyo.tim.util.handlerEmojiText
+import com.tencent.imsdk.v2.V2TIMMessage
 
 /**
  * 会话列表界面
@@ -48,14 +56,18 @@ open class BaseConversationFragment : BaseDslFragment() {
                     val draftInfo = bean.draftInfo
                     if (draftInfo != null) {
                         //草稿内容
-                        itemDes = draftInfo.text
+                        itemDes = draftInfo.text.handlerEmojiText()
                         itemTime = draftInfo.time.shotTimeString()
                     } else {
+                        val content = bean.messageInfoBean?.content
                         itemDes = if (!bean.atInfoText.isNullOrEmpty()) {
                             //at信息
                             bean.atInfoText
                         } else {
-                            bean.messageInfoBean?.content
+                            when (bean.messageInfoBean?.msgType) {
+                                V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> content?.handlerEmojiText()
+                                else -> content
+                            }
                         }
                         itemTime = bean.lastMessageTime.shotTimeString()
                     }
@@ -67,7 +79,11 @@ open class BaseConversationFragment : BaseDslFragment() {
                     }
 
                     itemClick = {
-                        toast(bean.toString())
+                        dslFHelper {
+                            show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
+                                putData(bean.toChatInfoBean())
+                            }
+                        }
                     }
                 }
             }

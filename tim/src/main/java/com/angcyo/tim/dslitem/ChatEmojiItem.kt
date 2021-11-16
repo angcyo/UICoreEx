@@ -14,7 +14,7 @@ import com.angcyo.widget.DslViewHolder
  */
 class ChatEmojiItem : DslAdapterItem() {
 
-    var emoji: Emoji? = null
+    var itemEmoji: Emoji? = null
 
     init {
         itemLayoutId = R.layout.chat_emoji_item
@@ -28,7 +28,7 @@ class ChatEmojiItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.img(R.id.lib_image_view)?.setImageBitmap(emoji?.icon)
+        itemHolder.img(R.id.lib_image_view)?.setImageBitmap(itemEmoji?.icon)
     }
 
 }
