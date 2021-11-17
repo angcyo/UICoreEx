@@ -195,7 +195,10 @@ abstract class BaseChatPresenter {
             title = "拍摄"
             iconResId = R.drawable.ic_camera_type_item
             action = {
-                chatFragment?.recordVideo {
+                chatFragment?.recordVideo(
+                    maxRecordTime = (TimConfig.MAX_VIDEO_DURATION / 1000).toInt(),
+                    minRecordTime = (TimConfig.MIN_VIDEO_DURATION / 1000).toInt()
+                ) {
                     sendImageOrVideoMessage(it)
                 }
             }
