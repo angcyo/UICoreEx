@@ -1,5 +1,6 @@
 package com.angcyo.tim.dslitem
 
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.vmApp
@@ -50,10 +51,10 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
     }
 
     override fun onItemBind(
-            itemHolder: DslViewHolder,
-            itemPosition: Int,
-            adapterItem: DslAdapterItem,
-            payloads: List<Any>
+        itemHolder: DslViewHolder,
+        itemPosition: Int,
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
@@ -102,19 +103,19 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
                 if (isSelf) {
                     //自己
                     itemHolder.giv(R.id.msg_right_avatar_view)
-                            ?.loadAvatar(
-                                    vmApp<ChatModel>().selfFaceUrlData.value,
-                                    vmApp<ChatModel>().selfShowNameData.value ?: "?",
-                                    solidColor = randomColorList[1].toColor()
-                            )
+                        ?.loadAvatar(
+                            vmApp<ChatModel>().selfFaceUrlData.value,
+                            vmApp<ChatModel>().selfShowNameData.value ?: "?",
+                            solidColor = randomColorList[1].toColor()
+                        )
                 } else {
                     //对方
                     itemHolder.giv(R.id.msg_left_avatar_view)
-                            ?.loadAvatar(
-                                    message?.faceUrl,
-                                    showUserName ?: "?",
-                                    solidColor = randomColorList.first().toColor()
-                            )
+                        ?.loadAvatar(
+                            message?.faceUrl,
+                            showUserName ?: "?",
+                            solidColor = randomColorList.first().toColor()
+                        )
                 }
             }
         }
@@ -157,10 +158,10 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
             //消息气泡背景
             if (isSelf) {
                 itemHolder.view(R.id.msg_content_layout)
-                        ?.setBackgroundResource(R.drawable.chat_bubble_right)
+                    ?.setBackgroundResource(R.drawable.chat_bubble_right)
             } else {
                 itemHolder.view(R.id.msg_content_layout)
-                        ?.setBackgroundResource(R.drawable.chat_bubble_left)
+                    ?.setBackgroundResource(R.drawable.chat_bubble_left)
             }
 
             //消息状态
@@ -183,7 +184,14 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
                     "未读"
                 }
             }
+        }
+    }
 
+    /**清空聊天背景图, .9图片会给控件追加padding属性, 所以需要清除*/
+    fun clearMsgBackground(itemHolder: DslViewHolder) {
+        itemHolder.view(R.id.msg_content_layout)?.apply {
+            setPadding(0)
+            background = null
         }
     }
 
@@ -191,7 +199,7 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
     fun _changeMsgContent(itemHolder: DslViewHolder, toSelf: Boolean) {
         //消息内容的容器
         val msgContentContainerLayout =
-                itemHolder.group(R.id.msg_content_container_layout) ?: return
+            itemHolder.group(R.id.msg_content_container_layout) ?: return
         //消息内容包裹的layout
         val msgContentLayout = itemHolder.group(R.id.msg_content_layout) ?: return
         if (toSelf) {

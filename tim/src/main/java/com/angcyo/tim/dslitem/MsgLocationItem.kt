@@ -1,15 +1,12 @@
 package com.angcyo.tim.dslitem
 
 import com.angcyo.amap3d.fragment.aMapDetail
-import com.angcyo.library.ex._drawable
 import com.angcyo.tim.R
-import com.angcyo.tim.bean.isSelf
 import com.angcyo.tim.bean.locationElem
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.layout.RFrameLayout
 
 /**
- * 位置消息
+ * 位置消息item
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/11/17
@@ -24,7 +21,7 @@ class MsgLocationItem : BaseChatMsgItem() {
     override fun bindMsgStyle(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
         super.bindMsgStyle(itemHolder, itemPosition, payloads)
         //取消消息的背景
-        itemHolder.view(R.id.msg_content_layout)?.background = null
+        clearMsgBackground(itemHolder)
     }
 
     override fun bindMsgContent(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {

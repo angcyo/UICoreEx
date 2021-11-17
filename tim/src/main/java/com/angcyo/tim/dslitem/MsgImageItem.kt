@@ -35,7 +35,7 @@ class MsgImageItem : BaseChatMsgItem() {
     override fun bindMsgStyle(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
         super.bindMsgStyle(itemHolder, itemPosition, payloads)
         //取消消息的背景
-        itemHolder.view(R.id.msg_content_layout)?.background = null
+        clearMsgBackground(itemHolder)
     }
 
     override fun bindMsgContent(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {

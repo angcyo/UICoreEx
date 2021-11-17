@@ -53,7 +53,8 @@
             android:layout_marginRight="6dp"
             android:scaleType="centerCrop"
             android:src="@color/lib_image_placeholder_white_color"
-            app:r_image_radius="@dimen/lib_radius_common2" />
+            app:r_image_radius="@dimen/lib_radius_common2"
+            tools:visibility="gone" />
 
         <!--右边的头像-->
         <com.angcyo.glide.GlideImageView
@@ -87,15 +88,6 @@
             android:layout_toLeftOf="@id/msg_right_avatar_view"
             android:layout_toRightOf="@id/msg_left_avatar_view"
             android:orientation="horizontal">
-
-            <!--真正的消息内容, 动态添加-->
-            <FrameLayout
-                android:id="@+id/msg_content_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:background="@drawable/chat_bubble_left"
-                tools:layout_height="100dp"
-                tools:layout_width="100dp" />
 
             <!--音频未读提示-->
             <com.angcyo.widget.text.BadgeTextView
@@ -136,6 +128,15 @@
                 android:src="@mipmap/message_send_fail"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
+            <!--真正的消息内容, 动态添加-->
+            <FrameLayout
+                android:id="@+id/msg_content_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:background="@drawable/chat_bubble_right"
+                tools:layout_height="100dp"
+                tools:layout_width="100dp" />
 
         </LinearLayout>
 
