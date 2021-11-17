@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.view.postDelayed
+import androidx.fragment.app.Fragment
 import com.amap.api.maps.AMap
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
@@ -28,6 +29,7 @@ import com.angcyo.amap3d.core.latLng
 import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.amap3d.dslitem.DslSelectPoiItem
 import com.angcyo.base.back
+import com.angcyo.base.dslFHelper
 import com.angcyo.base.onFragmentResult
 import com.angcyo.base.setFragmentResult
 import com.angcyo.core.fragment.BaseDslFragment
@@ -396,8 +398,12 @@ class AMapSelectorFragment : BaseDslFragment() {
         Inputtips(fContext(), InputtipsQuery("", null)).apply {
             //输入提示回调的方法。
             setInputtipsListener { mutableList, resultID ->
-                if (resultID.isSearchSuccess() && mutableList.isNotEmpty()) {
-                    renderTipsResult(mutableList)
+                if (resultID.isSearchSuccess()) {
+                    if (mutableList.isNullOrEmpty()) {
+                        tipsDslAdapter.toEmpty()
+                    } else {
+                        renderTipsResult(mutableList)
+                    }
                 } else {
                     tipsDslAdapter.toError()
                 }
@@ -436,6 +442,13 @@ class AMapSelectorFragment : BaseDslFragment() {
 
     //</editor-fold desc="输入提示搜索">
 
+}
+
+/**选择地图定位点*/
+fun Fragment.aMapSelector(result: (location: MapLocation?) -> Unit) {
+    dslFHelper {
+        aMapSelector(result)
+    }
 }
 
 /**快速启动高德地图选位置界面, 并获取返回值*/

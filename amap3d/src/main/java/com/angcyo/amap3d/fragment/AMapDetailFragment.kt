@@ -1,6 +1,7 @@
 package com.angcyo.amap3d.fragment
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.amap.api.maps.AMap
 import com.angcyo.DslFHelper
 import com.angcyo.amap3d.*
@@ -9,13 +10,14 @@ import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.amap3d.core.latLng
 import com.angcyo.amap3d.core.toLatLng
 import com.angcyo.base.back
+import com.angcyo.base.dslFHelper
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.getData
 import com.angcyo.library.L
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.toast
-import com.angcyo.library.toastQQ
 import com.angcyo.putData
+import com.angcyo.widget.base.postDelay
 
 /**
  * 高德坐标系坐标点详情
@@ -56,6 +58,8 @@ class AMapDetailFragment : BaseTitleFragment() {
         super.initBaseView(savedInstanceState)
 
         _vh.initMapView(this, savedInstanceState) {
+            dslAMap.locationMoveFirst = false
+
             map?.apply {
                 //地图事件监听
                 onMapLoadedListener {
@@ -65,8 +69,6 @@ class AMapDetailFragment : BaseTitleFragment() {
                             position(targetLatLng)
                             icon(markerIcon(R.drawable.map_location_point))
                         }
-
-                        moveInclude(targetLatLng, myLocation.toLatLng(), padding = 150 * dpi)
                     }
                 }
 
@@ -77,6 +79,12 @@ class AMapDetailFragment : BaseTitleFragment() {
                             "${MapNaviUtils.friendlyDistance(distance)} ${targetMapLocation?.address}"
                     }
                 }
+
+                onMapLoadedAndLocationListener {
+                    postDelay(100) {
+                        moveInclude(targetMapLocation?.latLng(), it.toLatLng(), padding = 150 * dpi)
+                    }
+                }
             }
         }
 
@@ -85,17 +93,27 @@ class AMapDetailFragment : BaseTitleFragment() {
         _vh.visible(R.id.lib_sub_text_view, targetMapLocation?.address != null)
 
         _vh.throttleClick(R.id.lib_nav_view) {
-            if (AMapHelper.haveNavApp(fContext())) {
-                AMapHelper.navTo(fContext(), targetMapLocation!!.toLatLng())
-            } else {
-                toastQQ("未安装高德APP")
-//                MapNaviUtils.openGaoDeNavi(
-//                    fContext(),
-//                    targetMapLocation!!.toLatLng(),
-//                    targetMapLocation?.poiName
-//                )
+            targetMapLocation?.let { location ->
+                if (AMapHelper.haveNavApp(fContext())) {
+                    AMapHelper.navTo(fContext(), location.toLatLng())
+                } else {
+                    //toastQQ("未安装高德APP")
+                    MapNaviUtils.openGaoDeNavi(fContext(), location.toLatLng(), location.poiName)
+                }
             }
         }
+    }
+}
+
+/**显示地图详情*/
+fun Fragment.aMapDetail(
+    latitude: Double,
+    longitude: Double,
+    address: String? = null,
+    poiName: String? = null
+) {
+    dslFHelper {
+        aMapDetail(MapLocation.from(latitude, longitude, address, poiName))
     }
 }
 

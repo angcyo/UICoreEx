@@ -60,6 +60,9 @@ class DslAMap {
     /**首次定位移动延迟*/
     var firstMoveDelay = 16L
 
+    /**首次移动的动画时长*/
+    var firstMoveAnimDuration = 0L
+
     var _locationMoveFirstEnd = false
 
     /**回到中心位置时, 需要使用的zoom*/
@@ -133,7 +136,7 @@ class DslAMap {
                     AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
                         _delay(firstMoveDelay) {
                             L.w("move to first by map loaded:$latLng $locationMoveZoom")
-                            map.moveTo(latLng, locationMoveZoom)
+                            map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration)
                             _locationMoveFirstEnd = true
                             map.removeOnMapLoadedListener(loadedListener)
                         }
@@ -147,7 +150,11 @@ class DslAMap {
                     _delay(firstMoveDelay) {
                         L.w("move to first by cache:$latLng $locationMoveZoom")
                         _locationMoveFirstEnd = true
-                        map.moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom)
+                        map.moveTo(
+                            LatLng(it.latitude, it.longitude),
+                            locationMoveZoom,
+                            firstMoveAnimDuration
+                        )
                     }
                 }
             }
@@ -168,7 +175,7 @@ class DslAMap {
                     val latLng = it.toLatLng()
                     _delay(firstMoveDelay) {
                         L.w("move to first by location changed:$latLng $locationMoveZoom")
-                        map.moveTo(latLng, locationMoveZoom)
+                        map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration)
                         _locationMoveFirstEnd = true
                     }
                 }
@@ -447,7 +454,7 @@ fun AMap.moveInclude(latLngList: List<LatLng>, padding: Int = 50 * dpi, animDura
     moveInclude(bounds, padding, animDuration)
 }
 
-fun AMap.moveInclude(vararg latLng: LatLng, padding: Int = 50 * dpi, animDuration: Long = 250) {
+fun AMap.moveInclude(vararg latLng: LatLng?, padding: Int = 50 * dpi, animDuration: Long = 250) {
     // 设置所有maker显示在当前可视区域地图中
     val bounds = LatLngBounds.Builder().run {
         latLng.forEach {
@@ -589,6 +596,32 @@ fun AMap.onMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener 
 
 fun AMap.addMapLoadedListener(action: () -> Unit = {}): AMap.OnMapLoadedListener {
     return onMapLoadedListener(action)
+}
+
+/**当地图加载完, 并且自己的位置有信息时的回调*/
+fun AMap.onMapLoadedAndLocationListener(action: (myLocation: Inner_3dMap_location) -> Unit = {}) {
+    var locationListener: AMap.OnMyLocationChangeListener? = null
+    var loadedListener: AMap.OnMapLoadedListener? = null
+
+    var isLoaded = false
+    var myLocation: Inner_3dMap_location? = null
+
+    loadedListener = onMapLoadedListener {
+        isLoaded = true
+        if (isLoaded && myLocation != null) {
+            removeOnMapLoadedListener(loadedListener)
+            removeOnMyLocationChangeListener(locationListener)
+            action(myLocation!!)
+        }
+    }
+    locationListener = onMyLocationChange {
+        myLocation = it
+        if (isLoaded && myLocation != null) {
+            removeOnMapLoadedListener(loadedListener)
+            removeOnMyLocationChangeListener(locationListener)
+            action(myLocation!!)
+        }
+    }
 }
 
 /**地图点击事件
