@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:background="@color/transparent10">
+
+    <com.angcyo.glide.GlideImageView
+        android:id="@+id/msg_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="false"
+        android:scaleType="fitCenter"
+        app:r_draw_border="false" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/msg_video_play_view"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:clickable="false"
+        android:src="@mipmap/message_chat_play_icon" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/msg_video_duration_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="6.5dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/lib_white"
+        android:textSize="11sp"
+        tools:text="00:30" />
+
+</FrameLayout>

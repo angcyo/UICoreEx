@@ -1,21 +1,9 @@
 package com.angcyo.tim.bean
 
 import android.net.Uri
-import android.text.TextUtils
-import com.angcyo.library.L
-import com.angcyo.library.ex.bitmapSize
-import com.angcyo.library.ex.notEmptyOf
-import com.angcyo.library.ex.toUri
-import com.angcyo.library.ex.uuid
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_DOWNLOADED
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_REVOKE
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SENDING
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_FAIL
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_SUCCESS
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_UN_DOWNLOAD
+import com.angcyo.library.ex.*
 import com.angcyo.tim.util.TimConfig
 import com.tencent.imsdk.v2.*
-import com.tencent.imsdk.v2.V2TIMElem.V2ProgressInfo
 import java.io.File
 
 /**
@@ -69,11 +57,13 @@ class MessageInfoBean {
     /**消息需要显示的文本内容*/
     var content: String? = null
 
-    /**数据路径, 比如:语音文件路径等*/
+    /**数据路径, 比如:语音文件路径等
+     * 如果是视频消息, 此处是视频缩略图的本地路径*/
     var dataPath: String? = null
 
-    /**数据的uri, 如视频*/
-    var dataUri: Uri? = null
+    /**数据的uri, 如视频的本地地址, 图片的原图本地地址
+     * 使用[String]类型, 而不是[Uri]类型, 方便传输数据*/
+    var dataUri: String? = null
 
     /**图片的宽度, 视频的缩略图*/
     var imageWidth: Int = -1
@@ -139,213 +129,82 @@ val MessageInfoBean.showUserName: String?
         return result
     }
 
-fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
-    if (status == V2TIMMessage.V2TIM_MSG_STATUS_HAS_DELETED /*消息被删除*/ ||
-        elemType == V2TIMMessage.V2TIM_ELEM_TYPE_NONE /*无元素的消息*/) {
-        return null
-    }
-
-    if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM) {
-        //自定义消息, 但是没有内容
-        if (customElem == null || customElem.data.isEmpty()) {
+/**
+ * 获取图片在本地的原始路径 (可能是沙盒中的路径)
+ * @param messageInfo 图片消息元组
+ * @return 图片原始路径，如果不存在返回 null
+ */
+val MessageInfoBean.localImagePath: String?
+    get() {
+        if (!isSelf) {
             return null
         }
+        val message: V2TIMMessage? = message
+        if (message == null || message.elemType != V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE) {
+            return null
+        }
+        val imageElem = message.imageElem ?: return null
+        val path = imageElem.path
+        val file = File(path)
+        return if (file.exists()) {
+            path
+        } else null
     }
 
-    val bean = MessageInfoBean()
-    bean.message = this
-    bean.timestamp = timestamp * 1000
-    bean.fromUser = sender
-    bean.messageId = msgID
-
-    //https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessage.html#a00455865d1a14191b8c612252bf20a1c
-    when (elemType) {
-        V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM -> {
-            //自定义的消息
-            bean.content = "[自定义消息]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS -> {
-            //群 tips 消息内容
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
-            //文本消息内容
-            bean.content = textElem.text
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_FACE -> {
-            //表情消息内容
-            if (faceElem.index < 1 || faceElem.data == null) {
-                L.w("faceElem data is null or index<1")
-                return null
-            }
-            bean.content = "[自定义表情]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_SOUND -> {
-            //语音消息内容
-            val soundElemEle: V2TIMSoundElem = soundElem
-            if (bean.isSelf) {
-                bean.dataPath = soundElemEle.path
-            } else {
-                val path: String = TimConfig.getRecordDownloadDir(soundElemEle.uuid)
-                val file = File(path)
-                if (!file.exists()) {
-                    soundElemEle.downloadSound(path, object : V2TIMDownloadCallback {
-                        override fun onProgress(progressInfo: V2ProgressInfo) {
-                            val currentSize = progressInfo.currentSize
-                            val totalSize = progressInfo.totalSize
-                            var progress = 0
-                            if (totalSize > 0) {
-                                progress = (100 * currentSize / totalSize).toInt()
-                            }
-                            if (progress > 100) {
-                                progress = 100
-                            }
-                            L.i(
-                                "ConversationMessageInfoUtil getSoundToFile",
-                                "progress:$progress"
-                            )
-                        }
-
-                        override fun onError(code: Int, desc: String) {
-                            L.e(
-                                "ConversationMessageInfoUtil getSoundToFile",
-                                "$code:$desc"
-                            )
-                        }
-
-                        override fun onSuccess() {
-                            bean.dataPath = path
-                        }
-                    })
-                } else {
-                    bean.dataPath = path
+/**获取原图地址*/
+val MessageInfoBean.originImagePath: String?
+    get() {
+        val v2TIMMessage: V2TIMMessage = message ?: return null
+        val v2TIMImageElem = v2TIMMessage.imageElem ?: return null
+        var localImgPath: String? = localImagePath
+        if (localImgPath == null) {
+            var originUUID: String? = null
+            for (image in v2TIMImageElem.imageList) {
+                if (image.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN) {
+                    originUUID = image.uuid
+                    break
                 }
             }
-            bean.content = "[语音]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
-            //图片消息内容
-            val imageEle: V2TIMImageElem = imageElem
-            val localPath = imageEle.path
-            if (bean.isSelf && !TextUtils.isEmpty(localPath) && File(localPath).exists()) {
-                bean.dataPath = localPath
-                val size: IntArray = localPath.bitmapSize()
-                bean.imageWidth = size[0]
-                bean.imageHeight = size[1]
-            } else {
-                val imageList = imageEle.imageList
-                for (i in imageList.indices) {
-                    val img = imageList[i]
-                    if (img.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB) {
-                        val path: String = TimConfig.generateImagePath(
-                            img.uuid,
-                            V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB
-                        )
-                        bean.imageWidth = img.width
-                        bean.imageHeight = img.height
-                        val file = File(path)
-                        if (file.exists()) {
-                            bean.dataPath = path
-                        }
-                    }
-                }
-            }
-            bean.content = "[图片]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO -> {
-            //视频消息内容
-            val videoEle: V2TIMVideoElem = videoElem
-            if (bean.isSelf && !TextUtils.isEmpty(videoEle.snapshotPath)) {
-                val size: IntArray = videoEle.snapshotPath.bitmapSize()
-                bean.imageWidth = size[0]
-                bean.imageHeight = size[1]
-                bean.dataPath = videoEle.snapshotPath
-                bean.dataUri = videoEle.videoPath.toUri()
-            } else {
-                val videoPath: String = TimConfig.getVideoDownloadDir(videoEle.videoUUID)
-                val uri = Uri.parse(videoPath)
-                bean.dataUri = uri
-                bean.imageWidth = videoEle.snapshotWidth
-                bean.imageHeight = videoEle.snapshotHeight
-                val snapPath: String = TimConfig.getImageDownloadDir(videoEle.snapshotUUID)
-                //判断快照是否存在,不存在自动下载
-                if (File(snapPath).exists()) {
-                    bean.dataPath = snapPath
-                }
-            }
-            bean.content = "[视频]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_FILE -> {
-            //文件消息内容
-            val fileElem: V2TIMFileElem = fileElem
-            var filename = fileElem.uuid
-            if (TextUtils.isEmpty(filename)) {
-                filename = System.currentTimeMillis().toString() + fileElem.fileName
-            }
-            val path: String = TimConfig.getFileDownloadDir(filename)
-            var finalPath: String? = path
-            var file = File(path)
+            val originPath: String =
+                    TimConfig.generateImagePath(originUUID, V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN)
+            val file = File(originPath)
             if (file.exists()) {
-                if (bean.isSelf) {
-                    bean.status = MSG_STATUS_SEND_SUCCESS
-                }
-                bean.downloadStatus = MSG_STATUS_DOWNLOADED
-            } else {
-                if (bean.isSelf) {
-                    if (TextUtils.isEmpty(fileElem.path)) {
-                        bean.downloadStatus = MSG_STATUS_UN_DOWNLOAD
-                    } else {
-                        file = File(fileElem.path)
-                        if (file.exists()) {
-                            bean.status = MSG_STATUS_SEND_SUCCESS
-                            bean.downloadStatus = MSG_STATUS_DOWNLOADED
-                            finalPath = fileElem.path
-                        } else {
-                            bean.downloadStatus = MSG_STATUS_UN_DOWNLOAD
-                        }
-                    }
-                } else {
-                    bean.downloadStatus = MSG_STATUS_UN_DOWNLOAD
-                }
+                localImgPath = originPath
             }
-            bean.dataPath = finalPath
-            bean.content = "[文件]"
         }
-        V2TIMMessage.V2TIM_ELEM_TYPE_MERGER -> {
-            //转发消息
-            bean.content = "[聊天记录]"
-        }
-        V2TIMMessage.V2TIM_ELEM_TYPE_NONE -> {
-            //没有元素
-        }
+        return localImgPath
     }
 
-    if (status == V2TIMMessage.V2TIM_MSG_STATUS_LOCAL_REVOKED) {
-        bean.status = MSG_STATUS_REVOKE
-        bean.content = when {
-            isSelf -> "您撤回了一条消息"
-            bean.isGroup -> {
-                val message: String = TimConfig.covert2HTMLString(bean.sender)
-                message + "撤回了一条消息"
-            }
-            else -> "对方撤回了一条消息"
-        }
-    } else {
-        if (isSelf) {
-            when (status) {
-                V2TIMMessage.V2TIM_MSG_STATUS_SEND_FAIL -> {
-                    bean.status = MSG_STATUS_SEND_FAIL
-                }
-                V2TIMMessage.V2TIM_MSG_STATUS_SEND_SUCC -> {
-                    bean.status = MSG_STATUS_SEND_SUCCESS
-                }
-                V2TIMMessage.V2TIM_MSG_STATUS_SENDING -> {
-                    bean.status = MSG_STATUS_SENDING
+/**图片显示或视频消息, 需要展示的图片本地地址*/
+val MessageInfoBean.imagePath: String?
+    get() = originImagePath ?: dataPath
+
+/**图片列表*/
+val MessageInfoBean.imageList: List<V2TIMImageElem.V2TIMImage>
+    get() {
+        val images = mutableListOf<V2TIMImageElem.V2TIMImage>()
+        val message: V2TIMMessage? = message
+        if (message != null) {
+            if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE) {
+                val imageElem = message.imageElem
+                val imageList = imageElem.imageList
+                if (!imageList.isNullOrEmpty()) {
+                    images.addAll(imageList)
                 }
             }
-        } else {
-            bean.status = MSG_STATUS_SEND_SUCCESS
         }
+        return images
     }
 
-    return bean
-}
+/**视频元素*/
+val MessageInfoBean.videoElem: V2TIMVideoElem?
+    get() {
+        val message: V2TIMMessage? = message
+        var videoElem: V2TIMVideoElem? = null
+        if (message != null) {
+            if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO) {
+                videoElem = message.videoElem
+            }
+        }
+        return videoElem
+    }

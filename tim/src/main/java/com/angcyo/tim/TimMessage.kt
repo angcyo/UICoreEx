@@ -1,7 +1,11 @@
 package com.angcyo.tim
 
-import com.angcyo.library.ex.nowTime
+import android.media.MediaMetadataRetriever
+import com.angcyo.library.L
+import com.angcyo.library.ex.save
 import com.angcyo.tim.bean.MessageInfoBean
+import com.angcyo.tim.chat.toMyselfImageMessageInfoBean
+import com.angcyo.tim.chat.toMyselfVideoMessageInfoBean
 import com.tencent.imsdk.v2.*
 import com.tencent.imsdk.v2.V2TIMMessageListGetOption.*
 
@@ -27,40 +31,40 @@ object TimMessage {
      * 即普通的文字消息，该类消息会经过即时通信 IM 的敏感词过滤，发送包含的敏感词消息时会报80001错误码。
      * */
     fun sendTextMessage(
-        userId: String,
-        text: String,
-        callback: (V2TIMMessage?, TimSdkException?) -> Unit
+            userId: String,
+            text: String,
+            callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
         timManager.sendC2CTextMessage(text, userId,
-            object : V2TIMValueCallback<V2TIMMessage> {
-                override fun onSuccess(v2TIMMessage: V2TIMMessage) {
-                    callback(v2TIMMessage, null)
-                }
+                object : V2TIMValueCallback<V2TIMMessage> {
+                    override fun onSuccess(v2TIMMessage: V2TIMMessage) {
+                        callback(v2TIMMessage, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
-            })
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
+                })
     }
 
     /**发送自定义消息
      * 即一段二进制 buffer，通常用于传输您应用中的自定义信令，内容不会经过敏感词过滤。
      * */
     fun sendCustomMessage(
-        userId: String,
-        data: ByteArray,
-        callback: (V2TIMMessage?, TimSdkException?) -> Unit
+            userId: String,
+            data: ByteArray,
+            callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
         timManager.sendC2CCustomMessage(data, userId,
-            object : V2TIMValueCallback<V2TIMMessage> {
-                override fun onSuccess(v2TIMMessage: V2TIMMessage) {
-                    callback(v2TIMMessage, null)
-                }
+                object : V2TIMValueCallback<V2TIMMessage> {
+                    override fun onSuccess(v2TIMMessage: V2TIMMessage) {
+                        callback(v2TIMMessage, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
-            })
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
+                })
     }
 
     /**
@@ -71,54 +75,94 @@ object TimMessage {
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a28e01403acd422e53e999f21ec064795
      * */
     fun sendMessage(
-        message: V2TIMMessage,
-        userId: String? = null,
-        groupId: String? = null,
-        priority: Int = V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
-        onlineUserOnly: Boolean = false,
-        offlinePushInfo: V2TIMOfflinePushInfo? = null,
-        callback: (V2TIMMessage?, TimSdkException?) -> Unit
+            message: V2TIMMessage,
+            userId: String? = null,
+            groupId: String? = null,
+            priority: Int = V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+            onlineUserOnly: Boolean = false,
+            offlinePushInfo: V2TIMOfflinePushInfo? = null,
+            callback: (V2TIMMessage?, TimSdkException?) -> Unit
     ) {
         messageManager.sendMessage(
-            message,
-            userId,
-            groupId,
-            priority,
-            onlineUserOnly,
-            offlinePushInfo,
-            object : V2TIMSendCallback<V2TIMMessage?> {
-                override fun onSuccess(v2TIMMessage: V2TIMMessage?) {
-                    callback(message, null)
-                }
+                message,
+                userId,
+                groupId,
+                priority,
+                onlineUserOnly,
+                offlinePushInfo,
+                object : V2TIMSendCallback<V2TIMMessage?> {
+                    override fun onSuccess(v2TIMMessage: V2TIMMessage?) {
+                        callback(message, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
 
-                override fun onProgress(progress: Int) {
+                    override fun onProgress(progress: Int) {
 
-                }
-            })
+                    }
+                })
     }
 
     /**返回一个图片消息*/
     fun imageMessage(imagePath: String) =
-        messageManager.createImageMessage(imagePath)
+            messageManager.createImageMessage(imagePath)
 
-    /**返回一个视频消息*/
-    fun videoMessage(videoFilePath: String, type: String, duration: Int, snapshotPath: String) =
-        messageManager
-            .createVideoMessage(videoFilePath, type, duration, snapshotPath)
+    fun imageMessageBean(imagePath: String): MessageInfoBean =
+            imageMessage(imagePath).toMyselfImageMessageInfoBean(imagePath)
+
+    /**返回一个视频消息
+     *
+     * [type]]	视频类型，如 mp4 mov 等
+     * [duration]]	视频时长，单位 s
+     * [snapshotPath]]	视频封面图片路径
+     * */
+    fun videoMessage(
+            videoFilePath: String,
+            duration: Int,
+            snapshotPath: String,
+            type: String = "mp4"
+    ) = messageManager.createVideoMessage(videoFilePath, type, duration, snapshotPath)
+
+    fun videoMessageBean(videoFilePath: String): MessageInfoBean? {
+        val mmr = MediaMetadataRetriever()
+        try {
+            mmr.setDataSource(videoFilePath)
+            val duration =
+                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toIntOrNull()
+                            ?: 0 //时长(毫秒)
+            val bitmap =
+                    mmr.getFrameAtTime(0, MediaMetadataRetriever.OPTION_NEXT_SYNC) //缩略图
+            if (bitmap == null) {
+                L.e("buildVideoMessage() bitmap is null")
+                return null
+            }
+            val imgPath: String = bitmap.save(quality = 100).absolutePath
+            return videoMessage(
+                    videoFilePath,
+                    duration / 1000,
+                    imgPath
+            ).toMyselfVideoMessageInfoBean(
+                    videoFilePath,
+                    imgPath
+            )
+        } catch (ex: Exception) {
+            L.e("MediaMetadataRetriever exception $ex")
+        } finally {
+            mmr.release()
+        }
+
+        return null
+    }
 
     /**返回一个语音消息*/
     fun soundMessage(soundPath: String, duration: Int) =
-        messageManager
-            .createSoundMessage(soundPath, duration)
+            messageManager.createSoundMessage(soundPath, duration)
 
     /**返回一个文件消息*/
     fun fileMessage(filePath: String, fileName: String) =
-        messageManager
-            .createFileMessage(filePath, fileName)
+            messageManager.createFileMessage(filePath, fileName)
 
     /**返回一个文本消息
      * [atUserList] @的用户id列表
@@ -126,21 +170,15 @@ object TimMessage {
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a09a259ceb314754dd267533597138391
      * */
     fun textMessage(message: String?, atUserList: List<String>? = null) =
-        if (atUserList.isNullOrEmpty()) {
-            messageManager.createTextMessage(message)
-        } else {
-            messageManager.createTextAtMessage(message, atUserList)
-        }
+            if (atUserList.isNullOrEmpty()) {
+                messageManager.createTextMessage(message)
+            } else {
+                messageManager.createTextAtMessage(message, atUserList)
+            }
 
 
-    fun textMessageBean(message: String?): MessageInfoBean {
-        val bean = MessageInfoBean()
-        bean.message = textMessage(message)
-        bean.content = message
-        bean.timestamp = nowTime()
-        bean.fromUser = V2TIMManager.getInstance().loginUser
-        return bean
-    }
+    fun textMessageBean(message: String?): MessageInfoBean =
+            textMessage(message).toMyselfImageMessageInfoBean(message)
 
     //</editor-fold desc="发送消息">
 
@@ -150,17 +188,17 @@ object TimMessage {
     fun listenerSimpleMessage() {
         timManager.addSimpleMsgListener(object : V2TIMSimpleMsgListener() {
             override fun onRecvC2CTextMessage(
-                msgID: String?,
-                sender: V2TIMUserInfo?,
-                text: String?
+                    msgID: String?,
+                    sender: V2TIMUserInfo?,
+                    text: String?
             ) {
                 super.onRecvC2CTextMessage(msgID, sender, text)
             }
 
             override fun onRecvC2CCustomMessage(
-                msgID: String?,
-                sender: V2TIMUserInfo?,
-                customData: ByteArray?
+                    msgID: String?,
+                    sender: V2TIMUserInfo?,
+                    customData: ByteArray?
             ) {
                 super.onRecvC2CCustomMessage(msgID, sender, customData)
             }
@@ -170,15 +208,15 @@ object TimMessage {
     /**监听消息*/
     fun listenerMessage() {
         messageManager
-            .addAdvancedMsgListener(object : V2TIMAdvancedMsgListener() {
-                override fun onRecvNewMessage(msg: V2TIMMessage?) {
-                    super.onRecvNewMessage(msg)
-                }
+                .addAdvancedMsgListener(object : V2TIMAdvancedMsgListener() {
+                    override fun onRecvNewMessage(msg: V2TIMMessage?) {
+                        super.onRecvNewMessage(msg)
+                    }
 
-                override fun onRecvMessageRevoked(msgID: String?) {
-                    super.onRecvMessageRevoked(msgID)
-                }
-            })
+                    override fun onRecvMessageRevoked(msgID: String?) {
+                        super.onRecvMessageRevoked(msgID)
+                    }
+                })
 
     }
 
@@ -206,21 +244,21 @@ object TimMessage {
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageListGetOption.html
      */
     fun getHistoryMessageList(
-        option: V2TIMMessageListGetOption,
-        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+            option: V2TIMMessageListGetOption,
+            callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getHistoryMessageList(
-            option,
-            object : V2TIMValueCallback<List<V2TIMMessage>> {
-                override fun onSuccess(list: List<V2TIMMessage>?) {
-                    callback(list, null)
-                }
+                option,
+                object : V2TIMValueCallback<List<V2TIMMessage>> {
+                    override fun onSuccess(list: List<V2TIMMessage>?) {
+                        callback(list, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
 
-            })
+                })
     }
 
     /**获取单聊/群聊的历史消息高级接口,
@@ -228,12 +266,12 @@ object TimMessage {
      * [getType] 拉取类型，取值为 V2TIM_GET_CLOUD_OLDER_MSG，V2TIM_GET_CLOUD_NEWER_MSG，V2TIM_GET_LOCAL_OLDER_MSG，V2TIM_GET_LOCAL_NEWER_MSG
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a97fe2d6a7bab8f45b758f84df48c0b12*/
     fun getHistoryMessageList(
-        chatId: String,
-        isGroup: Boolean,
-        lastMsg: V2TIMMessage? = null,
-        getType: Int = V2TIM_GET_CLOUD_OLDER_MSG,
-        count: Int = 20,
-        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+            chatId: String,
+            isGroup: Boolean,
+            lastMsg: V2TIMMessage? = null,
+            getType: Int = V2TIM_GET_CLOUD_OLDER_MSG,
+            count: Int = 20,
+            callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         val option = V2TIMMessageListGetOption()
         option.count = count
@@ -260,40 +298,40 @@ object TimMessage {
      * https://cloud.tencent.com/document/product/269/44489
      * */
     fun getC2CHistoryMessageList(
-        userId: String?,
-        lastMsg: V2TIMMessage? = null,
-        count: Int = 20,
-        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+            userId: String?,
+            lastMsg: V2TIMMessage? = null,
+            count: Int = 20,
+            callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getC2CHistoryMessageList(userId, count, lastMsg,
-            object : V2TIMValueCallback<List<V2TIMMessage>> {
-                override fun onSuccess(list: List<V2TIMMessage>?) {
-                    callback(list, null)
-                }
+                object : V2TIMValueCallback<List<V2TIMMessage>> {
+                    override fun onSuccess(list: List<V2TIMMessage>?) {
+                        callback(list, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
-            })
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
+                })
     }
 
     /**获取群聊历史消息*/
     fun getGroupHistoryMessageList(
-        groupId: String?,
-        lastMsg: V2TIMMessage? = null,
-        count: Int = 20,
-        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+            groupId: String?,
+            lastMsg: V2TIMMessage? = null,
+            count: Int = 20,
+            callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getGroupHistoryMessageList(groupId, count, lastMsg,
-            object : V2TIMValueCallback<List<V2TIMMessage>> {
-                override fun onSuccess(list: List<V2TIMMessage>?) {
-                    callback(list, null)
-                }
+                object : V2TIMValueCallback<List<V2TIMMessage>> {
+                    override fun onSuccess(list: List<V2TIMMessage>?) {
+                        callback(list, null)
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    callback(null, TimSdkException(code, desc))
-                }
-            })
+                    override fun onError(code: Int, desc: String?) {
+                        callback(null, TimSdkException(code, desc))
+                    }
+                })
 
         //messageManager.getGroupHistoryMessageList()
     }
@@ -303,8 +341,8 @@ object TimMessage {
 
 /**获取旧的消息*/
 fun Int.isGetOldMsg(): Boolean =
-    this == V2TIM_GET_CLOUD_OLDER_MSG || this == V2TIM_GET_LOCAL_OLDER_MSG
+        this == V2TIM_GET_CLOUD_OLDER_MSG || this == V2TIM_GET_LOCAL_OLDER_MSG
 
 /**获取新的消息*/
 fun Int.isGetNewMsg(): Boolean =
-    this == V2TIM_GET_CLOUD_NEWER_MSG || this == V2TIM_GET_LOCAL_NEWER_MSG
+        this == V2TIM_GET_CLOUD_NEWER_MSG || this == V2TIM_GET_LOCAL_NEWER_MSG

@@ -1,5 +1,6 @@
 package com.angcyo.tim.util
 
+import com.angcyo.library._screenWidth
 import com.angcyo.library.utils.folderPath
 
 /**
@@ -23,6 +24,9 @@ object TimConfig {
      * 距离上一条消息5分钟时, 就显示消息时间*/
     const val SHOW_MESSAGE_TIME_INTERVAL = 5 * 60 * 1000
 
+    /**图片消息显示的最大大小*/
+    val IMAGE_MESSAGE_DEFAULT_MAX_SIZE = _screenWidth * 2 / 3
+
     /**
      * 根据图片 UUID 和 类型得到图片文件路径
      * @param uuid 图片 UUID
@@ -30,7 +34,7 @@ object TimConfig {
      * V2TIMImageElem.V2TIM_IMAGE_TYPE_LARGE
      * @return 图片文件路径
      */
-    fun generateImagePath(uuid: String, imageType: Int): String {
+    fun generateImagePath(uuid: String?, imageType: Int): String {
         return folderPath(IMAGE_DOWNLOAD_DIR_SUFFIX) + uuid + "_" + imageType
     }
 

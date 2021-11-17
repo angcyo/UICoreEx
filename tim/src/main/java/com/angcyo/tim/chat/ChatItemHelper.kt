@@ -1,11 +1,12 @@
 package com.angcyo.tim.chat
 
+import androidx.fragment.app.Fragment
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
 import com.angcyo.tim.bean.MessageInfoBean
-import com.angcyo.tim.bean.toMessageInfoBean
 import com.angcyo.tim.dslitem.BaseChatMsgItem
+import com.angcyo.tim.dslitem.MsgImageItem
 import com.angcyo.tim.dslitem.MsgTextItem
 import com.tencent.imsdk.v2.V2TIMMessage
 
@@ -21,7 +22,7 @@ object ChatItemHelper {
 
 /**[V2TIMMessage]->[BaseChatMsgItem]
  * [reverse] 将消息进行反序*/
-fun List<V2TIMMessage>.toDslAdapterItemList(reverse: Boolean = true): List<BaseChatMsgItem> {
+fun List<V2TIMMessage>.toDslAdapterItemList(fragment: Fragment?, reverse: Boolean = true): List<BaseChatMsgItem> {
     val result = mutableListOf<BaseChatMsgItem>()
     val list = mutableListOf<MessageInfoBean>()
     forEach {
@@ -31,7 +32,7 @@ fun List<V2TIMMessage>.toDslAdapterItemList(reverse: Boolean = true): List<BaseC
         list.reverse()
     }
     list.forEach {
-        it.toDslAdapterItem()?.let { item ->
+        it.toDslAdapterItem(fragment)?.let { item ->
             result.add(item)
         }
     }
@@ -39,16 +40,19 @@ fun List<V2TIMMessage>.toDslAdapterItemList(reverse: Boolean = true): List<BaseC
 }
 
 /**[MessageInfoBean]->[BaseChatMsgItem]*/
-fun MessageInfoBean.toDslAdapterItem(): BaseChatMsgItem? {
-    var result: BaseChatMsgItem? = null
+fun MessageInfoBean.toDslAdapterItem(fragment: Fragment?): BaseChatMsgItem? {
     val bean = this
 
-    when (message?.elemType) {
-        V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> result = MsgTextItem().apply {
-            messageInfoBean = bean
-        }
+    val result: BaseChatMsgItem? = when (message?.elemType) {
+        V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> MsgTextItem()
+        V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE, V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO -> MsgImageItem()
+        else -> null
     }
 
+    result?.apply {
+        itemFragment = fragment
+        messageInfoBean = bean
+    }
     return result
 }
 

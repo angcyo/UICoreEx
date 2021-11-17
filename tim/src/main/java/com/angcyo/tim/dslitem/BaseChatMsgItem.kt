@@ -1,5 +1,7 @@
 package com.angcyo.tim.dslitem
 
+import androidx.fragment.app.Fragment
+import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.isUpdateMedia
@@ -24,7 +26,18 @@ import com.angcyo.widget.base.replace
  * @date 2021/11/12
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class BaseChatMsgItem : DslAdapterItem() {
+open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
+
+    override var itemFragment: Fragment? = null
+
+    override var itemViewType: Int? = null
+        get() {
+            return if (msgContentLayoutId == undefined_res) {
+                super.itemViewType
+            } else {
+                msgContentLayoutId
+            }
+        }
 
     /**真正的消息体布局*/
     var msgContentLayoutId: Int = undefined_res
@@ -37,10 +50,10 @@ open class BaseChatMsgItem : DslAdapterItem() {
     }
 
     override fun onItemBind(
-        itemHolder: DslViewHolder,
-        itemPosition: Int,
-        adapterItem: DslAdapterItem,
-        payloads: List<Any>
+            itemHolder: DslViewHolder,
+            itemPosition: Int,
+            adapterItem: DslAdapterItem,
+            payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
@@ -89,19 +102,19 @@ open class BaseChatMsgItem : DslAdapterItem() {
                 if (isSelf) {
                     //自己
                     itemHolder.giv(R.id.msg_right_avatar_view)
-                        ?.loadAvatar(
-                            vmApp<ChatModel>().selfFaceUrlData.value,
-                            vmApp<ChatModel>().selfShowNameData.value ?: "?",
-                            solidColor = randomColorList[1].toColor()
-                        )
+                            ?.loadAvatar(
+                                    vmApp<ChatModel>().selfFaceUrlData.value,
+                                    vmApp<ChatModel>().selfShowNameData.value ?: "?",
+                                    solidColor = randomColorList[1].toColor()
+                            )
                 } else {
                     //对方
                     itemHolder.giv(R.id.msg_left_avatar_view)
-                        ?.loadAvatar(
-                            message?.faceUrl,
-                            showUserName ?: "?",
-                            solidColor = randomColorList.first().toColor()
-                        )
+                            ?.loadAvatar(
+                                    message?.faceUrl,
+                                    showUserName ?: "?",
+                                    solidColor = randomColorList.first().toColor()
+                            )
                 }
             }
         }
@@ -142,10 +155,10 @@ open class BaseChatMsgItem : DslAdapterItem() {
             //消息气泡背景
             if (isSelf) {
                 itemHolder.view(R.id.msg_content_layout)
-                    ?.setBackgroundResource(R.drawable.chat_bubble_right)
+                        ?.setBackgroundResource(R.drawable.chat_bubble_right)
             } else {
                 itemHolder.view(R.id.msg_content_layout)
-                    ?.setBackgroundResource(R.drawable.chat_bubble_left)
+                        ?.setBackgroundResource(R.drawable.chat_bubble_left)
             }
 
             //消息状态
@@ -176,7 +189,7 @@ open class BaseChatMsgItem : DslAdapterItem() {
     fun _changeMsgContent(itemHolder: DslViewHolder, toSelf: Boolean) {
         //消息内容的容器
         val msgContentContainerLayout =
-            itemHolder.group(R.id.msg_content_container_layout) ?: return
+                itemHolder.group(R.id.msg_content_container_layout) ?: return
         //消息内容包裹的layout
         val msgContentLayout = itemHolder.group(R.id.msg_content_layout) ?: return
         if (toSelf) {

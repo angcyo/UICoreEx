@@ -1,5 +1,6 @@
 package com.angcyo.tim.bean
 
+import com.angcyo.tim.chat.toMessageInfoBean
 import com.angcyo.tim.conversation.ConversationHelper
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo
