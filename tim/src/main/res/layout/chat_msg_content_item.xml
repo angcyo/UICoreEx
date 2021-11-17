@@ -94,9 +94,10 @@
                 android:id="@+id/msg_audio_unread_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:layout_margin="2dp"
                 app:r_badge_circle_radius="2dp"
-                tools:r_badge_text="" />
+                app:r_badge_text="" />
 
             <!--消息发送中提示view-->
             <ProgressBar
@@ -113,6 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
                 android:textSize="@dimen/text_little_size"
                 tools:text="未读" />
