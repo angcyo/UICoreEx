@@ -94,12 +94,12 @@ class AMapDetailFragment : BaseTitleFragment() {
 
         _vh.throttleClick(R.id.lib_nav_view) {
             targetMapLocation?.let { location ->
-                if (AMapHelper.haveNavApp(fContext())) {
-                    AMapHelper.navTo(fContext(), location.toLatLng())
+                AMapHelper.navTo(fContext(), location.toLatLng())
+                /*if (AMapHelper.haveNavApp(fContext())) {
                 } else {
                     //toastQQ("未安装高德APP")
-                    MapNaviUtils.openGaoDeNavi(fContext(), location.toLatLng(), location.poiName)
-                }
+                    //MapNaviUtils.openGaoDeNavi(fContext(), location.toLatLng(), location.poiName)
+                }*/
             }
         }
     }

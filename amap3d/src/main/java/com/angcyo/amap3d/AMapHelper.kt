@@ -140,7 +140,8 @@ object AMapHelper {
         context.startActivity(Intent(context, OfflineMapActivity::class.java))
     }
 
-    /**调用外部导航到指定位置*/
+    /**调用外部导航到指定位置
+     * 支持app, 和web*/
     fun navTo(context: Context, target: LatLng) {
         // 构造导航参数
         val naviPara = NaviPara()
