@@ -1,4 +1,4 @@
-package com.angcyo.tim.conversation
+package com.angcyo.tim.helper
 
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo

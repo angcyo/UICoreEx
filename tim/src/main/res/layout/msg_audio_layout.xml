@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="37dp"
+    android:minWidth="50dp"
+    android:paddingLeft="@dimen/lib_hdpi"
+    android:paddingRight="@dimen/lib_hdpi"
+    tools:background="@color/transparent10">
+
+    <LinearLayout
+        android:id="@+id/msg_audio_content_layout"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:orientation="horizontal"
+        tools:gravity="left">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/msg_audio_time_view"
+            style="@style/LibPlaceTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="#000000"
+            android:textSize="14.5sp"
+            tools:text="24″" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/msg_audio_play_view"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/voice_msg_playing_3"
+            tools:rotation="0" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -4,8 +4,10 @@ import android.media.MediaMetadataRetriever
 import com.angcyo.library.L
 import com.angcyo.library.ex.save
 import com.angcyo.tim.bean.MessageInfoBean
-import com.angcyo.tim.chat.toMyselfImageMessageInfoBean
-import com.angcyo.tim.chat.toMyselfVideoMessageInfoBean
+import com.angcyo.tim.helper.toMyselfImageMessageInfoBean
+import com.angcyo.tim.helper.toMyselfMessageInfoBean
+import com.angcyo.tim.helper.toMyselfSoundMessageInfoBean
+import com.angcyo.tim.helper.toMyselfVideoMessageInfoBean
 import com.tencent.imsdk.v2.*
 import com.tencent.imsdk.v2.V2TIMMessageListGetOption.*
 
@@ -156,9 +158,14 @@ object TimMessage {
         return null
     }
 
-    /**返回一个语音消息*/
+    /**返回一个语音消息
+     * 2.6 创建语音消息（语音最大支持 28 MB）
+     * [duration] 秒*/
     fun soundMessage(soundPath: String, duration: Int) =
             messageManager.createSoundMessage(soundPath, duration)
+
+    fun soundMessageBean(soundPath: String, duration: Int) =
+            soundMessage(soundPath, duration).toMyselfSoundMessageInfoBean(soundPath)
 
     /**返回一个文件消息*/
     fun fileMessage(filePath: String, fileName: String) =
@@ -178,7 +185,7 @@ object TimMessage {
 
 
     fun textMessageBean(message: String?): MessageInfoBean =
-            textMessage(message).toMyselfImageMessageInfoBean(message)
+            textMessage(message).toMyselfMessageInfoBean(message)
 
     //</editor-fold desc="发送消息">
 

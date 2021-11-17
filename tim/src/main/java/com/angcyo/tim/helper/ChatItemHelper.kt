@@ -1,4 +1,4 @@
-package com.angcyo.tim.chat
+package com.angcyo.tim.helper
 
 import androidx.fragment.app.Fragment
 import com.angcyo.dsladapter.DslAdapter
@@ -6,6 +6,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.dslitem.BaseChatMsgItem
+import com.angcyo.tim.dslitem.MsgAudioItem
 import com.angcyo.tim.dslitem.MsgImageItem
 import com.angcyo.tim.dslitem.MsgTextItem
 import com.tencent.imsdk.v2.V2TIMMessage
@@ -46,6 +47,7 @@ fun MessageInfoBean.toDslAdapterItem(fragment: Fragment?): BaseChatMsgItem? {
     val result: BaseChatMsgItem? = when (message?.elemType) {
         V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> MsgTextItem()
         V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE, V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO -> MsgImageItem()
+        V2TIMMessage.V2TIM_ELEM_TYPE_SOUND -> MsgAudioItem()
         else -> null
     }
 

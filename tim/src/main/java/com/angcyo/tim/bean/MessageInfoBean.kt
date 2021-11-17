@@ -58,11 +58,12 @@ class MessageInfoBean {
     var content: String? = null
 
     /**数据路径, 比如:语音文件路径等
-     * 如果是视频消息, 此处是视频缩略图的本地路径*/
+     * 如果是视频消息, 此处是视频缩略图的本地路径.*/
     var dataPath: String? = null
 
-    /**数据的uri, 如视频的本地地址, 图片的原图本地地址
-     * 使用[String]类型, 而不是[Uri]类型, 方便传输数据*/
+    /**数据的uri, 如视频的本地地址, 图片的原图本地地址, 音频的本地地址
+     * 使用[String]类型, 而不是[Uri]类型, 方便传输数据
+     * 在部分消息类型下, 会等同于[dataPath]*/
     var dataUri: String? = null
 
     /**图片的宽度, 视频的缩略图*/
@@ -207,4 +208,17 @@ val MessageInfoBean.videoElem: V2TIMVideoElem?
             }
         }
         return videoElem
+    }
+
+/**音频元素*/
+val MessageInfoBean.soundElem: V2TIMSoundElem?
+    get() {
+        val message: V2TIMMessage? = message
+        var soundElem: V2TIMSoundElem? = null
+        if (message != null) {
+            if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_SOUND) {
+                soundElem = message.soundElem
+            }
+        }
+        return soundElem
     }

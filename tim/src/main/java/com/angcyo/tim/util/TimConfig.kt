@@ -1,6 +1,7 @@
 package com.angcyo.tim.util
 
 import com.angcyo.library._screenWidth
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.utils.folderPath
 
 /**
@@ -26,6 +27,14 @@ object TimConfig {
 
     /**图片消息显示的最大大小*/
     val IMAGE_MESSAGE_DEFAULT_MAX_SIZE = _screenWidth * 2 / 3
+
+    /**音频消息, 最小/最大宽度*/
+    val AUDIO_MESSAGE_MIN_WIDTH: Int = 60 * dpi
+    val AUDIO_MESSAGE_MAX_WIDTH: Int = 250 * dpi
+
+    /**视频录制/选择最大时长, 毫秒*/
+    val MAX_VIDEO_DURATION = 30 * 1000L
+    val MIN_VIDEO_DURATION = 3 * 1000L
 
     /**
      * 根据图片 UUID 和 类型得到图片文件路径

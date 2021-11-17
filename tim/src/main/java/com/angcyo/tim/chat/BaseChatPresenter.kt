@@ -12,6 +12,8 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.ex.string
 import com.angcyo.library.model.loadPath
+import com.angcyo.media.audio.record.RecordControl
+import com.angcyo.media.video.record.recordVideo
 import com.angcyo.picker.dslPickerImageVideo
 import com.angcyo.tim.R
 import com.angcyo.tim.TimMessage
@@ -24,9 +26,11 @@ import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_SUCCESS
 import com.angcyo.tim.dslitem.ChatEmojiItem
 import com.angcyo.tim.dslitem.ChatLoadingItem
 import com.angcyo.tim.dslitem.ChatMoreActionItem
+import com.angcyo.tim.helper.*
 import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.ui.chat.BaseChatFragment
 import com.angcyo.tim.util.FaceManager
+import com.angcyo.tim.util.TimConfig
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.*
 import com.angcyo.widget.layout.*
@@ -77,6 +81,12 @@ abstract class BaseChatPresenter {
 
     var _isLoading = false
 
+    /**语音录制*/
+    var recordControl: RecordControl = RecordControl().apply {
+        recordUI.minRecordTime = 3
+        recordUI.maxRecordTime = 60
+    }
+
     //<editor-fold desc="初始化">
 
     /**初始化界面*/
@@ -106,6 +116,22 @@ abstract class BaseChatPresenter {
             if (!isDebugType()) {
                 //清空输入框
                 inputEditText?.setInputText()
+            }
+        }
+        //录制语音
+        fragment.activity?.let {
+            val voiceInput = _vh?.view(R.id.chat_voice_input)
+            recordControl.wrap(_vh?.view(R.id.chat_voice_input), it, onTouch = {
+                if (it.isTouchDown()) {
+                    voiceInput?.setBackgroundResource(R.drawable.chat_audio_input_press_bg_shape)
+                } else if (it.isTouchFinish()) {
+                    voiceInput?.setBackgroundResource(R.drawable.chat_input_bg_shape)
+                }
+            }) { recordFile ->
+                val file = recordControl.rename(recordFile)
+                val duration = recordControl.recordUI.currentRecordTime / 1000 //秒
+                L.i("录制结束:${file}")
+                sendSoundMessage(file.absolutePath, duration.toInt())
             }
         }
 
@@ -155,9 +181,12 @@ abstract class BaseChatPresenter {
             title = "相册"
             iconResId = R.drawable.ic_image_type_item
             action = {
-                chatFragment?.dslPickerImageVideo {
+                chatFragment?.dslPickerImageVideo(
+                    videoMinDuration = TimConfig.MIN_VIDEO_DURATION,
+                    videoMaxDuration = TimConfig.MAX_VIDEO_DURATION
+                ) {
                     it?.firstOrNull()?.let {
-                        sendImageOrVideo(it.loadPath())
+                        sendImageOrVideoMessage(it.loadPath())
                     }
                 }
             }
@@ -165,6 +194,11 @@ abstract class BaseChatPresenter {
         moreActionList.add(MoreActionBean().apply {
             title = "拍摄"
             iconResId = R.drawable.ic_camera_type_item
+            action = {
+                chatFragment?.recordVideo {
+                    sendImageOrVideoMessage(it)
+                }
+            }
         })
         moreActionList.add(MoreActionBean().apply {
             title = "视频通话"
@@ -256,21 +290,21 @@ abstract class BaseChatPresenter {
 
     /**获取消息列表*/
     fun getMessageList(
-            lastMsg: V2TIMMessage? = null,
-            callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+        lastMsg: V2TIMMessage? = null,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         chatBean?.let { chatBean ->
             if (chatBean.isGroup) {
                 TimMessage.getGroupHistoryMessageList(
-                        chatBean.chatId,
-                        lastMsg,
-                        callback = callback
+                    chatBean.chatId,
+                    lastMsg,
+                    callback = callback
                 )
             } else {
                 TimMessage.getC2CHistoryMessageList(
-                        chatBean.chatId,
-                        lastMsg,
-                        callback = callback
+                    chatBean.chatId,
+                    lastMsg,
+                    callback = callback
                 )
             }
         }
@@ -281,7 +315,7 @@ abstract class BaseChatPresenter {
     //<editor-fold desc="消息">
 
     /**发送图片或视频消息*/
-    fun sendImageOrVideo(path: String?) {
+    fun sendImageOrVideoMessage(path: String?) {
         if (path.isNullOrEmpty() || !path.isFileExist()) {
             return
         }
@@ -294,6 +328,13 @@ abstract class BaseChatPresenter {
         } else if (type.isVideoMimeType()) {
             sendMessage(TimMessage.videoMessageBean(path))
         }
+    }
+
+    fun sendSoundMessage(path: String?, duration: Int) {
+        if (path.isNullOrEmpty() || !path.isFileExist()) {
+            return
+        }
+        sendMessage(TimMessage.soundMessageBean(path, duration))
     }
 
     /**发送消息*/
@@ -332,9 +373,9 @@ abstract class BaseChatPresenter {
 
         //发送消息
         info.messageId = sendMessage(
-                chatInfo,
-                info.message!!,
-                offlinePushInfo = v2TIMOfflinePushInfo
+            chatInfo,
+            info.message!!,
+            offlinePushInfo = v2TIMOfflinePushInfo
         ) { v2TIMMessage, timSdkException, progress ->
             v2TIMMessage?.let {
                 info.status = MSG_STATUS_SEND_SUCCESS
@@ -379,12 +420,12 @@ abstract class BaseChatPresenter {
      * @return 消息唯一标识
      * */
     fun sendMessage(
-            chatInfo: ChatInfoBean,
-            message: V2TIMMessage,
-            priority: Int = V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
-            onlineUserOnly: Boolean = false,
-            offlinePushInfo: V2TIMOfflinePushInfo? = null,
-            callback: (V2TIMMessage?, TimSdkException?, Int) -> Unit
+        chatInfo: ChatInfoBean,
+        message: V2TIMMessage,
+        priority: Int = V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+        onlineUserOnly: Boolean = false,
+        offlinePushInfo: V2TIMOfflinePushInfo? = null,
+        callback: (V2TIMMessage?, TimSdkException?, Int) -> Unit
     ): String {
         //消息是否不计入会话未读数：默认为 false
         //message.isExcludedFromUnreadCount = false
@@ -403,28 +444,28 @@ abstract class BaseChatPresenter {
         }
 
         return messageManager.sendMessage(message,
-                userId,
-                groupId,
-                priority,
-                onlineUserOnly,
-                offlinePushInfo,
-                object : V2TIMSendCallback<V2TIMMessage> {
+            userId,
+            groupId,
+            priority,
+            onlineUserOnly,
+            offlinePushInfo,
+            object : V2TIMSendCallback<V2TIMMessage> {
 
-                    override fun onSuccess(message: V2TIMMessage) {
-                        L.d("消息发送成功:${message.msgID}")
-                        callback(message, null, 100)
-                    }
+                override fun onSuccess(message: V2TIMMessage) {
+                    L.d("消息发送成功:${message.msgID}")
+                    callback(message, null, 100)
+                }
 
-                    override fun onError(code: Int, desc: String?) {
-                        L.d("消息发送失败:${code}:${desc}")
-                        callback(null, TimSdkException(code, desc), -1)
-                    }
+                override fun onError(code: Int, desc: String?) {
+                    L.d("消息发送失败:${code}:${desc}")
+                    callback(null, TimSdkException(code, desc), -1)
+                }
 
-                    override fun onProgress(progress: Int) {
-                        L.d("消息发送中:${progress}")
-                        callback(null, null, progress)
-                    }
-                })
+                override fun onProgress(progress: Int) {
+                    L.d("消息发送中:${progress}")
+                    callback(null, null, progress)
+                }
+            })
     }
 
     /**监听消息变化*/
@@ -442,8 +483,8 @@ abstract class BaseChatPresenter {
                                 limitReadReport(chatBean.chatId, chatBean.isGroup)
                             }
                             _addMessageItem(
-                                    message?.toDslAdapterItem(fragment),
-                                    _recycler?.isLastItemVisibleCompleted() == true
+                                message?.toDslAdapterItem(fragment),
+                                _recycler?.isLastItemVisibleCompleted() == true
                             )
                         }
                     }
@@ -481,9 +522,9 @@ abstract class BaseChatPresenter {
     }
 
     fun readReport(
-            chatId: String,
-            isGroup: Boolean,
-            callback: ((TimSdkException?) -> Unit)? = null
+        chatId: String,
+        isGroup: Boolean,
+        callback: ((TimSdkException?) -> Unit)? = null
     ) {
         val listener = object : V2TIMCallback {
             override fun onError(code: Int, desc: String) {

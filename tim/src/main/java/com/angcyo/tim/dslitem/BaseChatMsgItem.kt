@@ -149,6 +149,8 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
 
     /**绑定消息的状态*/
     open fun bindMsgStyle(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
+        itemHolder.gone(R.id.msg_audio_unread_view) //音频未读提示
+
         messageInfoBean?.apply {
             _changeMsgContent(itemHolder, isSelf)
 

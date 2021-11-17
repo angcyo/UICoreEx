@@ -1,8 +1,9 @@
-package com.angcyo.tim.chat
+package com.angcyo.tim.helper
 
 import android.text.TextUtils
 import com.angcyo.library.L
 import com.angcyo.library.ex.bitmapSize
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.nowTime
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.isGroup
@@ -130,10 +131,10 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
             val soundElemEle: V2TIMSoundElem = soundElem
             if (bean.isSelf) {
                 bean.dataPath = soundElemEle.path
-            } else {
+                bean.dataUri = soundElemEle.path
+            } else if (!soundElemEle.uuid.isNullOrEmpty()) {
                 val path: String = TimConfig.getRecordDownloadDir(soundElemEle.uuid)
-                val file = File(path)
-                if (!file.exists()) {
+                if (!path.isFileExist()) {
                     soundElemEle.downloadSound(path, object : V2TIMDownloadCallback {
                         override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
                             val currentSize = progressInfo.currentSize
@@ -145,25 +146,21 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
                             if (progress > 100) {
                                 progress = 100
                             }
-                            L.i(
-                                    "ConversationMessageInfoUtil getSoundToFile",
-                                    "progress:$progress"
-                            )
+                            L.i("下载音频progress:$progress")
                         }
 
                         override fun onError(code: Int, desc: String) {
-                            L.e(
-                                    "ConversationMessageInfoUtil getSoundToFile",
-                                    "$code:$desc"
-                            )
+                            L.e("下载音频失败:$code:$desc")
                         }
 
                         override fun onSuccess() {
                             bean.dataPath = path
+                            bean.dataUri = path
                         }
                     })
                 } else {
                     bean.dataPath = path
+                    bean.dataUri = path
                 }
             }
             bean.content = "[语音]"
@@ -245,7 +242,7 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
 }
 
 /**简单消息的包装体*/
-fun V2TIMMessage.toMyselfImageMessageInfoBean(content: String?): MessageInfoBean {
+fun V2TIMMessage.toMyselfMessageInfoBean(content: String?): MessageInfoBean {
     val bean = MessageInfoBean()
 
     bean.message = this
@@ -261,7 +258,7 @@ fun V2TIMMessage.toMyselfImageMessageInfoBean(
         imagePath: String,
         content: String? = "[图片]",
 ): MessageInfoBean {
-    val bean = toMyselfImageMessageInfoBean(content)
+    val bean = toMyselfMessageInfoBean(content)
     bean.dataUri = imagePath
     bean.dataPath = imagePath
 
@@ -281,5 +278,13 @@ fun V2TIMMessage.toMyselfVideoMessageInfoBean(
     val bean = toMyselfImageMessageInfoBean(snapshotPath, content)
     bean.dataUri = videoFilePath
     bean.dataPath = videoFilePath
+    return bean
+}
+
+/**视频消息的包装体*/
+fun V2TIMMessage.toMyselfSoundMessageInfoBean(soundPath: String, content: String? = "[语音]"): MessageInfoBean {
+    val bean = toMyselfMessageInfoBean(content)
+    bean.dataUri = soundPath
+    bean.dataPath = soundPath
     return bean
 }

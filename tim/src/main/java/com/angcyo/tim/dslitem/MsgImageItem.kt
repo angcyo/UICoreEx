@@ -6,6 +6,7 @@ import com.angcyo.dsladapter.mediaPayload
 import com.angcyo.glide.clear
 import com.angcyo.glide.giv
 import com.angcyo.library.L
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.toElapsedTime
 import com.angcyo.library.ex.toMillisecond
 import com.angcyo.pager.dslSinglePager
@@ -132,20 +133,56 @@ class MsgImageItem : BaseChatMsgItem() {
         //下载图片
         for (image in images) {
             val uuid = image.uuid
-            if (downloadElementList.contains(uuid)) {
+            if (uuid.isNullOrEmpty() || downloadElementList.contains(uuid)) {
                 continue
             }
             downloadElementList.add(uuid)
             val path: String = generateImagePath(uuid, image.type)
-            image.downloadImage(path, object : V2TIMDownloadCallback {
+            if (!path.isFileExist()) {
+                image.downloadImage(path, object : V2TIMDownloadCallback {
+                    override fun onSuccess() {
+                        //downloadElementList.remove(uuid)
+                        if (image.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN) {
+                            msg.dataUri = path
+                        } else {
+                            msg.dataPath = path
+                            updateAdapterItem(mediaPayload())
+                        }
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        L.w("下载失败:$code:$desc")
+                        downloadElementList.remove(uuid)
+                    }
+
+                    override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
+                        L.i("图片下载中:${progressInfo.currentSize}/${progressInfo.totalSize}")
+                    }
+                })
+            }
+        }
+    }
+
+    /**下载视频快照*/
+    fun downloadVideoSnapshot(msg: MessageInfoBean) {
+        val videoElem: V2TIMVideoElem = msg.videoElem ?: return
+
+        //下载视频快照图片
+        val uuid = videoElem.snapshotUUID
+        if (uuid.isNullOrEmpty()) {
+            return
+        }
+        if (downloadElementList.contains(uuid)) {
+            return
+        }
+        downloadElementList.add(uuid)
+        val path: String = getImageDownloadDir(uuid)
+        if (!path.isFileExist()) {
+            videoElem.downloadSnapshot(path, object : V2TIMDownloadCallback {
                 override fun onSuccess() {
                     //downloadElementList.remove(uuid)
-                    if (image.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN) {
-                        msg.dataUri = path
-                    } else {
-                        msg.dataPath = path
-                        updateAdapterItem(mediaPayload())
-                    }
+                    msg.dataPath = path
+                    updateAdapterItem(mediaPayload())
                 }
 
                 override fun onError(code: Int, desc: String?) {
@@ -160,61 +197,37 @@ class MsgImageItem : BaseChatMsgItem() {
         }
     }
 
-    /**下载视频快照*/
-    fun downloadVideoSnapshot(msg: MessageInfoBean) {
-        val videoElem: V2TIMVideoElem = msg.videoElem ?: return
-
-        //下载视频快照图片
-        val uuid = videoElem.snapshotUUID
-        if (downloadElementList.contains(uuid)) {
-            return
-        }
-        downloadElementList.add(uuid)
-        val path: String = getImageDownloadDir(uuid)
-        videoElem.downloadSnapshot(path, object : V2TIMDownloadCallback {
-            override fun onSuccess() {
-                //downloadElementList.remove(uuid)
-                msg.dataPath = path
-                updateAdapterItem(mediaPayload())
-            }
-
-            override fun onError(code: Int, desc: String?) {
-                L.w("下载失败:$code:$desc")
-                downloadElementList.remove(uuid)
-            }
-
-            override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
-                L.i("图片下载中:${progressInfo.currentSize}/${progressInfo.totalSize}")
-            }
-        })
-    }
-
     /**下载视频*/
     fun downloadVideo(msg: MessageInfoBean) {
         val videoElem: V2TIMVideoElem = msg.videoElem ?: return
 
         //下载视频快照图片
         val uuid = videoElem.videoUUID
+        if (uuid.isNullOrEmpty()) {
+            return
+        }
         if (downloadElementList.contains(uuid)) {
             return
         }
         downloadElementList.add(uuid)
         val path: String = getVideoDownloadDir(uuid)
-        videoElem.downloadVideo(path, object : V2TIMDownloadCallback {
-            override fun onSuccess() {
-                //downloadElementList.remove(uuid)
-                msg.dataUri = path
-                updateAdapterItem(mediaPayload())
-            }
+        if (!path.isFileExist()) {
+            videoElem.downloadVideo(path, object : V2TIMDownloadCallback {
+                override fun onSuccess() {
+                    //downloadElementList.remove(uuid)
+                    msg.dataUri = path
+                    updateAdapterItem(mediaPayload())
+                }
 
-            override fun onError(code: Int, desc: String?) {
-                L.w("下载失败:$code:$desc")
-                downloadElementList.remove(uuid)
-            }
+                override fun onError(code: Int, desc: String?) {
+                    L.w("下载失败:$code:$desc")
+                    downloadElementList.remove(uuid)
+                }
 
-            override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
-                L.i("图片下载中:${progressInfo.currentSize}/${progressInfo.totalSize}")
-            }
-        })
+                override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
+                    L.i("图片下载中:${progressInfo.currentSize}/${progressInfo.totalSize}")
+                }
+            })
+        }
     }
 }
