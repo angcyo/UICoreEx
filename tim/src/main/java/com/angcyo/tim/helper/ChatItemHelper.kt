@@ -5,10 +5,7 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
 import com.angcyo.tim.bean.MessageInfoBean
-import com.angcyo.tim.dslitem.BaseChatMsgItem
-import com.angcyo.tim.dslitem.MsgAudioItem
-import com.angcyo.tim.dslitem.MsgImageItem
-import com.angcyo.tim.dslitem.MsgTextItem
+import com.angcyo.tim.dslitem.*
 import com.tencent.imsdk.v2.V2TIMMessage
 
 /**
@@ -23,7 +20,10 @@ object ChatItemHelper {
 
 /**[V2TIMMessage]->[BaseChatMsgItem]
  * [reverse] 将消息进行反序*/
-fun List<V2TIMMessage>.toDslAdapterItemList(fragment: Fragment?, reverse: Boolean = true): List<BaseChatMsgItem> {
+fun List<V2TIMMessage>.toDslAdapterItemList(
+    fragment: Fragment?,
+    reverse: Boolean = true
+): List<BaseChatMsgItem> {
     val result = mutableListOf<BaseChatMsgItem>()
     val list = mutableListOf<MessageInfoBean>()
     forEach {
@@ -40,18 +40,22 @@ fun List<V2TIMMessage>.toDslAdapterItemList(fragment: Fragment?, reverse: Boolea
     return result
 }
 
-/**[MessageInfoBean]->[BaseChatMsgItem]*/
+/**
+ * [MessageInfoBean]->[BaseChatMsgItem]
+ * 聊天消息转换成界面元素
+ * */
 fun MessageInfoBean.toDslAdapterItem(fragment: Fragment?): BaseChatMsgItem? {
     val bean = this
 
-    val result: BaseChatMsgItem? = when (message?.elemType) {
+    val result: BaseChatMsgItem = when (message?.elemType) {
         V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> MsgTextItem()
         V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE, V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO -> MsgImageItem()
         V2TIMMessage.V2TIM_ELEM_TYPE_SOUND -> MsgAudioItem()
-        else -> null
+        V2TIMMessage.V2TIM_ELEM_TYPE_FILE -> MsgFileItem()
+        else -> MsgUnknownItem()
     }
 
-    result?.apply {
+    result.apply {
         itemFragment = fragment
         messageInfoBean = bean
     }

@@ -26,7 +26,7 @@ object ChatMessageHelper {
 /**[V2TIMMessage]->[MessageInfoBean]*/
 fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
     if (status == V2TIMMessage.V2TIM_MSG_STATUS_HAS_DELETED /*消息被删除*/ ||
-            elemType == V2TIMMessage.V2TIM_ELEM_TYPE_NONE /*无元素的消息*/) {
+        elemType == V2TIMMessage.V2TIM_ELEM_TYPE_NONE /*无元素的消息*/) {
         return null
     }
 
@@ -83,8 +83,8 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
                     if (img.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB) {
                         //缩略图
                         val path: String = TimConfig.generateImagePath(
-                                img.uuid,
-                                V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB
+                            img.uuid,
+                            V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB
                         )
                         bean.imageWidth = img.width
                         bean.imageHeight = img.height
@@ -95,8 +95,8 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
                     } else if (img.type == V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN) {
                         //原图
                         val path: String = TimConfig.generateImagePath(
-                                img.uuid,
-                                V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN
+                            img.uuid,
+                            V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN
                         )
                         bean.dataUri = path
                     }
@@ -168,9 +168,10 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
         V2TIMMessage.V2TIM_ELEM_TYPE_FILE -> {
             //文件消息内容
             val fileElem: V2TIMFileElem = fileElem
-            var filename = fileElem.uuid
-            if (TextUtils.isEmpty(filename)) {
-                filename = System.currentTimeMillis().toString() + fileElem.fileName
+            val filename = if (fileElem.uuid.isNullOrEmpty()) {
+                "${System.currentTimeMillis()}${fileElem.fileName}"
+            } else {
+                fileElem.uuid
             }
             val path: String = TimConfig.getFileDownloadDir(filename)
             var finalPath: String? = path
@@ -199,6 +200,7 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
                 }
             }
             bean.dataPath = finalPath
+            bean.dataUri = finalPath
             bean.content = "[文件]"
         }
         V2TIMMessage.V2TIM_ELEM_TYPE_MERGER -> {
@@ -255,8 +257,8 @@ fun V2TIMMessage.toMyselfMessageInfoBean(content: String?): MessageInfoBean {
 
 /**图片消息的包装体*/
 fun V2TIMMessage.toMyselfImageMessageInfoBean(
-        imagePath: String,
-        content: String? = "[图片]",
+    imagePath: String,
+    content: String? = "[图片]",
 ): MessageInfoBean {
     val bean = toMyselfMessageInfoBean(content)
     bean.dataUri = imagePath
@@ -271,9 +273,9 @@ fun V2TIMMessage.toMyselfImageMessageInfoBean(
 
 /**视频消息的包装体*/
 fun V2TIMMessage.toMyselfVideoMessageInfoBean(
-        videoFilePath: String,
-        snapshotPath: String,
-        content: String? = "[视频]",
+    videoFilePath: String,
+    snapshotPath: String,
+    content: String? = "[视频]",
 ): MessageInfoBean {
     val bean = toMyselfImageMessageInfoBean(snapshotPath, content)
     bean.dataUri = videoFilePath
@@ -281,10 +283,24 @@ fun V2TIMMessage.toMyselfVideoMessageInfoBean(
     return bean
 }
 
-/**视频消息的包装体*/
-fun V2TIMMessage.toMyselfSoundMessageInfoBean(soundPath: String, content: String? = "[语音]"): MessageInfoBean {
+/**音频消息的包装体*/
+fun V2TIMMessage.toMyselfSoundMessageInfoBean(
+    soundPath: String,
+    content: String? = "[语音]"
+): MessageInfoBean {
     val bean = toMyselfMessageInfoBean(content)
     bean.dataUri = soundPath
     bean.dataPath = soundPath
+    return bean
+}
+
+/**文件消息的包装体*/
+fun V2TIMMessage.toMyselfFileMessageInfoBean(
+    filePath: String,
+    content: String? = "[文件]"
+): MessageInfoBean {
+    val bean = toMyselfMessageInfoBean(content)
+    bean.dataUri = filePath
+    bean.dataPath = filePath
     return bean
 }

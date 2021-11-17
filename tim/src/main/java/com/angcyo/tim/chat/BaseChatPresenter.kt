@@ -1,7 +1,9 @@
 package com.angcyo.tim.chat
 
+import android.net.Uri
 import android.view.View
 import android.widget.EditText
+import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
@@ -12,6 +14,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.ex.string
 import com.angcyo.library.model.loadPath
+import com.angcyo.library.utils.getContentLauncher
 import com.angcyo.media.audio.record.RecordControl
 import com.angcyo.media.video.record.recordVideo
 import com.angcyo.picker.dslPickerImageVideo
@@ -87,11 +90,19 @@ abstract class BaseChatPresenter {
         recordUI.maxRecordTime = 60
     }
 
+    /**获取文件的启动器*/
+    var getFileLauncher: ActivityResultLauncher<String>? = null
+
     //<editor-fold desc="初始化">
 
     /**初始化界面*/
     open fun initView(fragment: BaseChatFragment) {
         chatFragment = fragment
+
+        //注册启动器
+        getFileLauncher = fragment.getContentLauncher {
+            sendFileMessage(it)
+        }
 
         //输入框
         inputEditText?.onTextChange {
@@ -203,10 +214,10 @@ abstract class BaseChatPresenter {
                 }
             }
         })
-        moreActionList.add(MoreActionBean().apply {
+        /*moreActionList.add(MoreActionBean().apply {
             title = "视频通话"
             iconResId = R.drawable.ic_video_type_item
-        })
+        })*/
         moreActionList.add(MoreActionBean().apply {
             title = "位置"
             iconResId = R.drawable.ic_gps_type_item
@@ -214,6 +225,9 @@ abstract class BaseChatPresenter {
         moreActionList.add(MoreActionBean().apply {
             title = "文件"
             iconResId = R.drawable.ic_file_type_item
+            action = {
+                getFileLauncher?.launch("*/*")
+            }
         })
     }
 
@@ -338,6 +352,13 @@ abstract class BaseChatPresenter {
             return
         }
         sendMessage(TimMessage.soundMessageBean(path, duration))
+    }
+
+    fun sendFileMessage(uri: Uri?) {
+        if (uri == null) {
+            return
+        }
+        sendMessage(TimMessage.fileMessageBean(uri))
     }
 
     /**发送消息*/

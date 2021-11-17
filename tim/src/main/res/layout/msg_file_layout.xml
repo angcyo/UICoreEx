@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:maxWidth="200dp"
+    android:padding="@dimen/lib_xhdpi"
+    tools:background="@color/transparent10">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/msg_file_name_view"
+        style="@style/LibSubTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_general_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/msg_file_icon_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="新建文本新建文本新建文本新建文本新建文本新建文本新建文本新建文本新建文本新建文本.txt" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/msg_file_size_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_ldpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/msg_file_name_view"
+        app:layout_constraintTop_toBottomOf="@id/msg_file_name_view"
+        tools:text="105kb" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/msg_file_icon_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="centerInside"
+        android:textColor="@color/text_general_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/msg_file_name_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat_msg_file"
+        tools:text="新建文本.txt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

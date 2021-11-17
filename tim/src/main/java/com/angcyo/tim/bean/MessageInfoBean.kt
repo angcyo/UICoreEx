@@ -167,7 +167,7 @@ val MessageInfoBean.originImagePath: String?
                 }
             }
             val originPath: String =
-                    TimConfig.generateImagePath(originUUID, V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN)
+                TimConfig.generateImagePath(originUUID, V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN)
             val file = File(originPath)
             if (file.exists()) {
                 localImgPath = originPath
@@ -221,4 +221,17 @@ val MessageInfoBean.soundElem: V2TIMSoundElem?
             }
         }
         return soundElem
+    }
+
+/**文件元素*/
+val MessageInfoBean.fileElem: V2TIMFileElem?
+    get() {
+        val message: V2TIMMessage? = message
+        var elem: V2TIMFileElem? = null
+        if (message != null) {
+            if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FILE) {
+                elem = message.fileElem
+            }
+        }
+        return elem
     }
