@@ -209,9 +209,18 @@ object TimMessage {
             messageManager.createTextAtMessage(message, atUserList)
         }
 
-
     fun textMessageBean(message: String?): MessageInfoBean =
         textMessage(message).toMyselfMessageInfoBean(message)
+
+    /**
+     * 创建地理位置消息
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a67cebe27192392080fc80a86c80a4321*/
+    fun locationMessageBean(desc: String?, longitude: Double, latitude: Double): MessageInfoBean? =
+        messageManager.createLocationMessage(
+            desc,
+            longitude,
+            latitude
+        )?.toMyselfLocationMessageInfoBean()
 
     //</editor-fold desc="发送消息">
 

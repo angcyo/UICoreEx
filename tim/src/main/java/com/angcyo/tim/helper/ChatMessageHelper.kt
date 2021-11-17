@@ -64,6 +64,10 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
             }
             bean.content = "[自定义表情]"
         }
+        V2TIMMessage.V2TIM_ELEM_TYPE_LOCATION -> {
+            //位置消息内容
+            bean.content = "[位置]"
+        }
         V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
             //图片消息内容
             val imageEle: V2TIMImageElem = imageElem
@@ -210,6 +214,9 @@ fun V2TIMMessage.toMessageInfoBean(): MessageInfoBean? {
         V2TIMMessage.V2TIM_ELEM_TYPE_NONE -> {
             //没有元素
         }
+        else -> {
+            bean.content = "[不支持的消息类型]"
+        }
     }
 
     if (status == V2TIMMessage.V2TIM_MSG_STATUS_LOCAL_REVOKED) {
@@ -302,5 +309,11 @@ fun V2TIMMessage.toMyselfFileMessageInfoBean(
     val bean = toMyselfMessageInfoBean(content)
     bean.dataUri = filePath
     bean.dataPath = filePath
+    return bean
+}
+
+/**位置消息的包装体*/
+fun V2TIMMessage.toMyselfLocationMessageInfoBean(content: String? = "[位置]"): MessageInfoBean {
+    val bean = toMyselfMessageInfoBean(content)
     return bean
 }

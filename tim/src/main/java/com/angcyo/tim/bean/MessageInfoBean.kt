@@ -235,3 +235,16 @@ val MessageInfoBean.fileElem: V2TIMFileElem?
         }
         return elem
     }
+
+/**位置元素*/
+val MessageInfoBean.locationElem: V2TIMLocationElem?
+    get() {
+        val message: V2TIMMessage? = message
+        var elem: V2TIMLocationElem? = null
+        if (message != null) {
+            if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_LOCATION) {
+                elem = message.locationElem
+            }
+        }
+        return elem
+    }

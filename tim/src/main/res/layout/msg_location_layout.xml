@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msg_content_root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/lib_white_round_shape"
+    tools:r_layout_mask_drawable="@drawable/chat_bubble_left">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/msg_location_gps_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="379:174"
+            app:srcCompat="@mipmap/message_chat_location_bg" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/msg_location_desc_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/lib_ldpi"
+            app:layout_constraintTop_toBottomOf="@id/msg_location_gps_view"
+            tools:text="广东省深圳市福田区八卦三路五街542栋西座三楼" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.angcyo.widget.layout.RFrameLayout>

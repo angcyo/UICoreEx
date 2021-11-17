@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
+import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -221,6 +222,14 @@ abstract class BaseChatPresenter {
         moreActionList.add(MoreActionBean().apply {
             title = "位置"
             iconResId = R.drawable.ic_gps_type_item
+
+            action = {
+                chatFragment?.aMapSelector {
+                    it?.let {
+                        sendLocationMessage(it.address, it.longitude, it.latitude)
+                    }
+                }
+            }
         })
         moreActionList.add(MoreActionBean().apply {
             title = "文件"
@@ -359,6 +368,10 @@ abstract class BaseChatPresenter {
             return
         }
         sendMessage(TimMessage.fileMessageBean(uri))
+    }
+
+    fun sendLocationMessage(desc: String?, longitude: Double, latitude: Double) {
+        sendMessage(TimMessage.locationMessageBean(desc, longitude, latitude))
     }
 
     /**发送消息*/

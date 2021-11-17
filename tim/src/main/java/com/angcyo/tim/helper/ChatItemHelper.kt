@@ -52,6 +52,7 @@ fun MessageInfoBean.toDslAdapterItem(fragment: Fragment?): BaseChatMsgItem? {
         V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE, V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO -> MsgImageItem()
         V2TIMMessage.V2TIM_ELEM_TYPE_SOUND -> MsgAudioItem()
         V2TIMMessage.V2TIM_ELEM_TYPE_FILE -> MsgFileItem()
+        V2TIMMessage.V2TIM_ELEM_TYPE_LOCATION -> MsgLocationItem()
         else -> MsgUnknownItem()
     }
 
