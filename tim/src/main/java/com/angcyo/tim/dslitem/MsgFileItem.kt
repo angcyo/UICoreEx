@@ -1,20 +1,16 @@
 package com.angcyo.tim.dslitem
 
-import com.angcyo.library.L
+import com.angcyo.dsladapter.isItemDetached
 import com.angcyo.library.app
 import com.angcyo.library.component.DslIntent
 import com.angcyo.library.ex.fileSize
 import com.angcyo.library.ex.formatFileSize
-import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.toUri
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.fileElem
-import com.angcyo.tim.util.TimConfig
+import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.widget.DslViewHolder
-import com.tencent.imsdk.v2.V2TIMDownloadCallback
-import com.tencent.imsdk.v2.V2TIMElem
-import com.tencent.imsdk.v2.V2TIMFileElem
 
 /**
  * 文件消息item
@@ -37,54 +33,47 @@ class MsgFileItem : BaseChatMsgItem() {
                 itemHolder.tv(R.id.msg_file_name_view)?.text = element.fileName
 
                 val path = bean.dataUri
-                itemHolder.tv(R.id.msg_file_size_view)?.text =
-                    formatFileSize(app(), path.fileSize(element.fileSize.toLong()))
+                itemHolder.tv(R.id.msg_file_size_view)?.text = if (element.fileSize.toLong() <= 0) {
+                    formatFileSize(app(), path.fileSize())
+                } else {
+                    formatFileSize(app(), element.fileSize.toLong())
+                }
+            }
 
-                downloadFile(bean, element)
+            //下载中提示
+            itemHolder.visible(
+                R.id.msg_sending_view,
+                bean.status == MessageInfoBean.MSG_STATUS_SENDING ||
+                        bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADING
+            )
+
+            //下载状态提示
+            itemHolder.tv(R.id.msg_file_status_view)?.text = when (bean.downloadStatus) {
+                MessageInfoBean.MSG_STATUS_DOWNLOADING -> "下载中...${bean.downloadProgress}%"
+                MessageInfoBean.MSG_STATUS_DOWNLOADED -> "已下载"
+                else -> "未下载"
             }
 
             itemHolder.click(R.id.msg_content_layout) {
                 //消息内容点击
-                val path = bean.dataUri
-                if (path.isFileExist()) {
-                    DslIntent.openFile(itemHolder.context, path.toUri()!!)
+                if (bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADED) {
+                    //文本下载完成
+                    DslIntent.openFile(itemHolder.context, bean.dataUri.toUri()!!)
+                } else if (bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADING) {
+                    //下载中
+                } else {
+                    //开始下载
+                    ChatDownloadHelper.downloadFile(
+                        bean.fileElem,
+                        bean,
+                        this
+                    ) { progress, error ->
+                        if (progress == ChatDownloadHelper.DOWNLOAD_SUCCESS && !isItemDetached()) {
+                            DslIntent.openFile(itemHolder.context, bean.dataUri.toUri()!!)
+                        }
+                    }
                 }
             }
-        }
-    }
-
-    fun downloadFile(bean: MessageInfoBean, element: V2TIMFileElem) {
-        if (element.uuid.isNullOrEmpty()) {
-            return
-        }
-        val path: String = TimConfig.getFileDownloadDir(element.uuid)
-        if (!path.isFileExist()) {
-            element.downloadFile(path, object : V2TIMDownloadCallback {
-                override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
-                    val currentSize = progressInfo.currentSize
-                    val totalSize = progressInfo.totalSize
-                    var progress = 0
-                    if (totalSize > 0) {
-                        progress = (100 * currentSize / totalSize).toInt()
-                    }
-                    if (progress > 100) {
-                        progress = 100
-                    }
-                    L.i("下载文件progress:$progress")
-                }
-
-                override fun onError(code: Int, desc: String) {
-                    L.e("下载文件失败:$code:$desc")
-                }
-
-                override fun onSuccess() {
-                    bean.dataPath = path
-                    bean.dataUri = path
-                }
-            })
-        } else {
-            bean.dataPath = path
-            bean.dataUri = path
         }
     }
 }

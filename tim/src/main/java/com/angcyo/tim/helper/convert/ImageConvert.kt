@@ -6,10 +6,10 @@ import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.isSelf
 import com.angcyo.tim.dslitem.BaseChatMsgItem
 import com.angcyo.tim.dslitem.MsgImageItem
+import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.tim.util.TimConfig
 import com.tencent.imsdk.v2.V2TIMImageElem
 import com.tencent.imsdk.v2.V2TIMMessage
-import java.io.File
 
 /**
  * 图片消息的转换
@@ -55,9 +55,16 @@ class ImageConvert : BaseConvert() {
                         )
                         imageWidth = img.width
                         imageHeight = img.height
-                        val file = File(path)
-                        if (file.exists()) {
+                        if (path.isFileExist()) {
                             dataPath = path
+                        } else {
+                            //下载缩略图
+                            ChatDownloadHelper.downloadImage(
+                                imageEle,
+                                V2TIMImageElem.V2TIM_IMAGE_TYPE_THUMB,
+                                this,
+                                null
+                            )
                         }
                         if (dataUri.isNullOrEmpty()) {
                             dataUri = path
@@ -69,7 +76,6 @@ class ImageConvert : BaseConvert() {
                             V2TIMImageElem.V2TIM_IMAGE_TYPE_ORIGIN
                         )
                         dataUri = path
-
                         downloadStatus = if (path.isFileExist()) {
                             MessageInfoBean.MSG_STATUS_DOWNLOADED
                         } else {

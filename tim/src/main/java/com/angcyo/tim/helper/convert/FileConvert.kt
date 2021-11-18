@@ -1,10 +1,12 @@
 package com.angcyo.tim.helper.convert
 
 import android.text.TextUtils
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.isSelf
 import com.angcyo.tim.dslitem.BaseChatMsgItem
 import com.angcyo.tim.dslitem.MsgFileItem
+import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.tim.util.TimConfig
 import com.tencent.imsdk.v2.V2TIMFileElem
 import com.tencent.imsdk.v2.V2TIMMessage
@@ -37,8 +39,24 @@ class FileConvert : BaseConvert() {
             } else {
                 fileElem.uuid
             }
-            val path: String = TimConfig.getFileDownloadDir(filename)
-            var finalPath: String? = path
+            val localPath = fileElem.path //获取文件的本地文件路径
+            if (isSelf && localPath.isFileExist()) {
+                dataPath = localPath
+                dataUri = localPath
+                downloadStatus = MessageInfoBean.MSG_STATUS_DOWNLOADED
+            } else {
+                val path: String = TimConfig.getFileDownloadDir(filename)
+                if (path.isFileExist()) {
+                    dataPath = path
+                    dataUri = path
+                    downloadStatus = MessageInfoBean.MSG_STATUS_DOWNLOADED
+                } else {
+                    dataPath = path
+                    dataUri = path
+                }
+            }
+
+            /*var finalPath: String? = path
             var file = File(path)
             if (file.exists()) {
                 if (isSelf) {
@@ -64,7 +82,7 @@ class FileConvert : BaseConvert() {
                 }
             }
             dataPath = finalPath
-            dataUri = finalPath
+            dataUri = finalPath*/
         }
     }
 

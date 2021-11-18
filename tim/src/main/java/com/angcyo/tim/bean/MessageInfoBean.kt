@@ -5,6 +5,7 @@ import com.angcyo.library.ex.*
 import com.angcyo.tim.util.TimConfig
 import com.tencent.imsdk.v2.*
 import java.io.File
+import java.io.Serializable
 
 /**
  *
@@ -13,7 +14,7 @@ import java.io.File
  * @date 2021/11/10
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class MessageInfoBean {
+class MessageInfoBean : Serializable {
 
     companion object {
 
@@ -46,6 +47,9 @@ class MessageInfoBean {
 
         /** 消息内容已下载状态 */
         const val MSG_STATUS_DOWNLOADED = 6
+
+        /**下载失败*/
+        const val MSG_STATUS_DOWNLOAD_FAIL = 7
     }
 
     /**消息的id*/
@@ -79,6 +83,9 @@ class MessageInfoBean {
     /**消息的下载状态
      * 音频/文件/图片/视频文件的下载状态*/
     var downloadStatus: Int = MSG_STATUS_UN_DOWNLOAD
+
+    /**下载进度[0-100]*/
+    var downloadProgress: Int = 0
 
     /**消息的时间, 毫秒*/
     var timestamp: Long = 0

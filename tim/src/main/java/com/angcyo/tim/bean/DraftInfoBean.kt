@@ -1,5 +1,7 @@
 package com.angcyo.tim.bean
 
+import java.io.Serializable
+
 /**
  *
  * Email:angcyo@126.com
@@ -14,4 +16,4 @@ data class DraftInfoBean(
     val text: String,
     /**草稿时间 毫秒*/
     val time: Long
-)
+) : Serializable

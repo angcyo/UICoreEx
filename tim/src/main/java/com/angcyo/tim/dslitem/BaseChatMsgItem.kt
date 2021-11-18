@@ -166,12 +166,8 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
 
             //消息状态
             itemHolder.visible(R.id.msg_sending_view, status == MessageInfoBean.MSG_STATUS_SENDING)
-            if (status == MessageInfoBean.MSG_STATUS_SEND_FAIL) {
-                //消息发送失败
-                itemHolder.visible(R.id.msg_status_view)
-            } else {
-                itemHolder.gone(R.id.msg_status_view)
-            }
+            //消息发送失败
+            itemHolder.visible(R.id.msg_status_view, status == MessageInfoBean.MSG_STATUS_SEND_FAIL)
 
             //已读/未读
             if (isSelf && status == MessageInfoBean.MSG_STATUS_SEND_SUCCESS) {

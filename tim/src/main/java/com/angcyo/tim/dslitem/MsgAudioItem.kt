@@ -5,24 +5,19 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.angcyo.library.L
+import com.angcyo.dsladapter.isItemDetached
 import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.isFileExist
-import com.angcyo.library.toastQQ
 import com.angcyo.media.audio.AudioPlayerHelper
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.isSelf
 import com.angcyo.tim.bean.soundElem
-import com.angcyo.tim.util.TimConfig
+import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MAX_WIDTH
 import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MIN_WIDTH
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.adjustOrder
 import com.angcyo.widget.base.setWidth
-import com.tencent.imsdk.v2.V2TIMDownloadCallback
-import com.tencent.imsdk.v2.V2TIMElem
-import com.tencent.imsdk.v2.V2TIMSoundElem
 import kotlin.math.max
 import kotlin.math.min
 
@@ -78,10 +73,16 @@ class MsgAudioItem : BaseChatMsgItem() {
                 )
             }
 
+            //下载中提示
+            itemHolder.visible(
+                R.id.msg_sending_view,
+                bean.status == MessageInfoBean.MSG_STATUS_SENDING ||
+                        bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADING
+            )
+
             //音频
             bean.soundElem?.let { element ->
                 val duration = max(element.duration, 1)
-
                 audioTimeView?.text = "$duration″"
 
                 //布局的宽度
@@ -89,33 +90,28 @@ class MsgAudioItem : BaseChatMsgItem() {
                     min(AUDIO_MESSAGE_MIN_WIDTH + (duration * 6) * dpi, AUDIO_MESSAGE_MAX_WIDTH)
                 audioLayout?.setWidth(width)
 
-                //下载文件
-                downloadSound(bean, element)
-
                 itemHolder.click(R.id.msg_content_layout) {
                     //消息内容点击, 播放音频
-                    if (soundPath.isNullOrEmpty()) {
-                        toastQQ("音频异常, 无法播放")
-                    } else if (AudioPlayerHelper.isPlaying()) {
+                    if (AudioPlayerHelper.isPlaying()) {
                         AudioPlayerHelper.stop()
                     } else {
-                        audioPlayView?.apply {
-                            setImageResource(R.drawable.play_voice_message)
-                            (drawable as? AnimationDrawable)?.start()
-                        }
-                        bean.message?.localCustomInt = READ //已读
-                        itemHolder.gone(R.id.msg_audio_unread_view)
-
-                        //播放结束
-                        AudioPlayerHelper.onPlayEnd { i, playerException ->
-                            audioPlayView?.apply {
-                                //恢复图标
-                                (drawable as? AnimationDrawable)?.stop()
-                                setImageResource(R.mipmap.voice_msg_playing_3)
+                        if (bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADED) {
+                            //文本下载完成
+                            playAudio(itemHolder, bean, bean.dataUri)
+                        } else if (bean.downloadStatus == MessageInfoBean.MSG_STATUS_DOWNLOADING) {
+                            //下载中
+                        } else {
+                            //开始下载
+                            ChatDownloadHelper.downloadSound(
+                                element,
+                                bean,
+                                this
+                            ) { progress, error ->
+                                if (progress == ChatDownloadHelper.DOWNLOAD_SUCCESS && !isItemDetached()) {
+                                    playAudio(itemHolder, bean, bean.dataUri)
+                                }
                             }
                         }
-                        //开始播放
-                        AudioPlayerHelper.play(soundPath)
                     }
                 }
             }
@@ -128,38 +124,28 @@ class MsgAudioItem : BaseChatMsgItem() {
         AudioPlayerHelper.clearListener()
     }
 
-    fun downloadSound(bean: MessageInfoBean, element: V2TIMSoundElem) {
-        if (element.uuid.isNullOrEmpty()) {
+    /**播放音频*/
+    fun playAudio(itemHolder: DslViewHolder, bean: MessageInfoBean, path: String?) {
+        if (AudioPlayerHelper.isPlaying(path) || path.isNullOrEmpty()) {
             return
         }
-        val path: String = TimConfig.getRecordDownloadDir(element.uuid)
-        if (!path.isFileExist()) {
-            element.downloadSound(path, object : V2TIMDownloadCallback {
-                override fun onProgress(progressInfo: V2TIMElem.V2ProgressInfo) {
-                    val currentSize = progressInfo.currentSize
-                    val totalSize = progressInfo.totalSize
-                    var progress = 0
-                    if (totalSize > 0) {
-                        progress = (100 * currentSize / totalSize).toInt()
-                    }
-                    if (progress > 100) {
-                        progress = 100
-                    }
-                    L.i("下载音频progress:$progress")
-                }
-
-                override fun onError(code: Int, desc: String) {
-                    L.e("下载音频失败:$code:$desc")
-                }
-
-                override fun onSuccess() {
-                    bean.dataPath = path
-                    bean.dataUri = path
-                }
-            })
-        } else {
-            bean.dataPath = path
-            bean.dataUri = path
+        val audioPlayView = itemHolder.v<ImageView>(R.id.msg_audio_play_view)
+        audioPlayView?.apply {
+            setImageResource(R.drawable.play_voice_message)
+            (drawable as? AnimationDrawable)?.start()
         }
+        bean.message?.localCustomInt = READ //已读
+        itemHolder.gone(R.id.msg_audio_unread_view)
+
+        //播放结束
+        AudioPlayerHelper.onPlayEnd { duration, error ->
+            audioPlayView?.apply {
+                //恢复图标
+                (drawable as? AnimationDrawable)?.stop()
+                setImageResource(R.mipmap.voice_msg_playing_3)
+            }
+        }
+        //开始播放
+        AudioPlayerHelper.play(path)
     }
 }
