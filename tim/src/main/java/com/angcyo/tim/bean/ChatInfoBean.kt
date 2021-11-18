@@ -1,6 +1,7 @@
 package com.angcyo.tim.bean
 
 import com.tencent.imsdk.v2.V2TIMConversation
+import java.io.Serializable
 
 /**
  * 开始聊天时, 需要的数据结构
@@ -9,7 +10,7 @@ import com.tencent.imsdk.v2.V2TIMConversation
  * @date 2021/11/11
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class ChatInfoBean {
+class ChatInfoBean : Serializable {
 
     /**聊天的标题*/
     var chatTitle: String? = null

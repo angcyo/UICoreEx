@@ -58,7 +58,8 @@ class MessageInfoBean {
     var content: String? = null
 
     /**数据路径, 比如:语音文件路径等
-     * 如果是视频消息, 此处是视频缩略图的本地路径.*/
+     * 如果是视频消息, 此处是视频缩略图的本地路径.
+     * 如果是图片消息, 则是图片的缩略图*/
     var dataPath: String? = null
 
     /**数据的uri, 如视频的本地地址, 图片的原图本地地址, 音频的本地地址
@@ -75,8 +76,9 @@ class MessageInfoBean {
     /**消息的发送状态*/
     var status: Int = MSG_STATUS_NORMAL
 
-    /**消息的下载状态*/
-    var downloadStatus: Int = MSG_STATUS_NORMAL
+    /**消息的下载状态
+     * 音频/文件/图片/视频文件的下载状态*/
+    var downloadStatus: Int = MSG_STATUS_UN_DOWNLOAD
 
     /**消息的时间, 毫秒*/
     var timestamp: Long = 0

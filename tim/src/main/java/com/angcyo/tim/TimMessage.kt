@@ -9,6 +9,7 @@ import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.save
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.helper.*
+import com.angcyo.tim.util.TimConfig.MSG_PAGE_COUNT
 import com.tencent.imsdk.v2.*
 import com.tencent.imsdk.v2.V2TIMMessageListGetOption.*
 
@@ -283,6 +284,8 @@ object TimMessage {
      *
      * [option] 拉取消息选项设置，可以设置从云端、本地拉取更老或更新的消息
      *
+     * [V2TIM_GET_CLOUD_OLDER_MSG] 按照时间 从大到小排序, [2021-11-18 13:52:51]->[2021-11-17 16:56:00] 排序
+     * [V2TIM_GET_CLOUD_NEWER_MSG] 按照时间 从小到大排列, [2021-11-18 13:46:51]->[2021-11-18 13:52:51] 排序
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageListGetOption.html
      */
     fun getHistoryMessageList(
@@ -308,11 +311,11 @@ object TimMessage {
      * [getType] 拉取类型，取值为 V2TIM_GET_CLOUD_OLDER_MSG，V2TIM_GET_CLOUD_NEWER_MSG，V2TIM_GET_LOCAL_OLDER_MSG，V2TIM_GET_LOCAL_NEWER_MSG
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a97fe2d6a7bab8f45b758f84df48c0b12*/
     fun getHistoryMessageList(
-        chatId: String,
+        chatId: String?,
         isGroup: Boolean,
         lastMsg: V2TIMMessage? = null,
         getType: Int = V2TIM_GET_CLOUD_OLDER_MSG,
-        count: Int = 20,
+        count: Int = MSG_PAGE_COUNT,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         val option = V2TIMMessageListGetOption()
@@ -325,6 +328,50 @@ object TimMessage {
             option.userID = chatId
         }
         getHistoryMessageList(option, callback)
+    }
+
+    /**获取当前[msg]消息前后的历史消息*/
+    fun getHistoryMessageBothList(
+        chatId: String?,
+        isGroup: Boolean,
+        msg: V2TIMMessage,
+        count: Int = MSG_PAGE_COUNT,
+        callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
+    ) {
+        val option = V2TIMMessageListGetOption()
+        option.count = count
+        option.getType = V2TIM_GET_CLOUD_OLDER_MSG //第一次先获取当前消息的云端老数据
+        option.lastMsg = msg
+        if (isGroup) {
+            option.groupID = chatId
+        } else {
+            option.userID = chatId
+        }
+        val result = mutableListOf<V2TIMMessage>()
+        getHistoryMessageList(option) { list, timSdkException ->
+            timSdkException?.let {
+                result.add(msg)
+                callback(result, it)
+            }
+            list?.let {
+                //时间大->小
+                result.add(msg)
+                result.addAll(it)
+
+                option.getType = V2TIM_GET_CLOUD_NEWER_MSG  //第二次再获取当前消息的云端新数据
+                getHistoryMessageList(option) { list, timSdkException ->
+                    //end
+                    timSdkException?.let {
+                        callback(result, it)
+                    }
+                    list?.let {
+                        //时间小->大
+                        result.addAll(0, it.reversed())
+                        callback(result, null)
+                    }
+                }
+            }
+        }
     }
 
     /**获取单聊历史消息
@@ -342,7 +389,7 @@ object TimMessage {
     fun getC2CHistoryMessageList(
         userId: String?,
         lastMsg: V2TIMMessage? = null,
-        count: Int = 20,
+        count: Int = MSG_PAGE_COUNT,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getC2CHistoryMessageList(userId, count, lastMsg,
@@ -361,7 +408,7 @@ object TimMessage {
     fun getGroupHistoryMessageList(
         groupId: String?,
         lastMsg: V2TIMMessage? = null,
-        count: Int = 20,
+        count: Int = MSG_PAGE_COUNT,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         messageManager.getGroupHistoryMessageList(groupId, count, lastMsg,

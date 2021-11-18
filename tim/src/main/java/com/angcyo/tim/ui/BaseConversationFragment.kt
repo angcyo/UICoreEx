@@ -8,7 +8,7 @@ import com.angcyo.dsladapter.toLoading
 import com.angcyo.item.DslMessageListItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.*
-import com.angcyo.putData
+import com.angcyo.putDataSerializable
 import com.angcyo.tim.bean.faceUrl
 import com.angcyo.tim.bean.isGroup
 import com.angcyo.tim.bean.msgType
@@ -81,7 +81,7 @@ open class BaseConversationFragment : BaseDslFragment() {
                     itemClick = {
                         dslFHelper {
                             show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
-                                putData(bean.toChatInfoBean())
+                                putDataSerializable(bean.toChatInfoBean())
                             }
                         }
                     }

@@ -72,7 +72,10 @@ class MsgAudioItem : BaseChatMsgItem() {
                 audioLayout?.adjustOrder(audioPlayView, audioTimeView)
 
                 //音频未读提示
-                itemHolder.visible(R.id.msg_audio_unread_view, bean.message?.localCustomInt == UNREAD)
+                itemHolder.visible(
+                    R.id.msg_audio_unread_view,
+                    bean.message?.localCustomInt == UNREAD
+                )
             }
 
             //音频
@@ -82,7 +85,8 @@ class MsgAudioItem : BaseChatMsgItem() {
                 audioTimeView?.text = "$duration″"
 
                 //布局的宽度
-                val width = min(AUDIO_MESSAGE_MIN_WIDTH + (duration * 6) * dpi, AUDIO_MESSAGE_MAX_WIDTH)
+                val width =
+                    min(AUDIO_MESSAGE_MIN_WIDTH + (duration * 6) * dpi, AUDIO_MESSAGE_MAX_WIDTH)
                 audioLayout?.setWidth(width)
 
                 //下载文件
@@ -121,6 +125,7 @@ class MsgAudioItem : BaseChatMsgItem() {
     override fun onItemViewRecycled(itemHolder: DslViewHolder, itemPosition: Int) {
         super.onItemViewRecycled(itemHolder, itemPosition)
         AudioPlayerHelper.stop()
+        AudioPlayerHelper.clearListener()
     }
 
     fun downloadSound(bean: MessageInfoBean, element: V2TIMSoundElem) {

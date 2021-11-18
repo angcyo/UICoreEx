@@ -3,7 +3,7 @@ package com.angcyo.tim.ui.chat
 import android.os.Bundle
 import com.angcyo.base.removeThis
 import com.angcyo.core.fragment.BaseDslFragment
-import com.angcyo.getData
+import com.angcyo.getDataSerializable
 import com.angcyo.library.toastQQ
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.ChatInfoBean
@@ -38,7 +38,7 @@ abstract class BaseChatFragment : BaseDslFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        chatInfoBean = getData()
+        chatInfoBean = getDataSerializable()
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {

@@ -36,6 +36,16 @@ object TimConfig {
     val MAX_VIDEO_DURATION = 30 * 1000L
     val MIN_VIDEO_DURATION = 3 * 1000L
 
+    /**音频录制/选择最大时长, 秒*/
+    val MAX_AUDIO_DURATION = 60L
+    val MIN_AUDIO_DURATION = 3L
+
+    /**拉取消息的数量*/
+    const val MSG_PAGE_COUNT = 20
+
+    // 消息已读上报时间间隔
+    val READ_REPORT_INTERVAL = 1000 // 单位： 毫秒
+
     /**
      * 根据图片 UUID 和 类型得到图片文件路径
      * @param uuid 图片 UUID

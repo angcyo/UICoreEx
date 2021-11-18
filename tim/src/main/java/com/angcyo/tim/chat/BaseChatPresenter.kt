@@ -6,6 +6,7 @@ import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.amap3d.fragment.aMapSelector
+import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -35,6 +36,9 @@ import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.ui.chat.BaseChatFragment
 import com.angcyo.tim.util.FaceManager
 import com.angcyo.tim.util.TimConfig
+import com.angcyo.tim.util.TimConfig.MAX_AUDIO_DURATION
+import com.angcyo.tim.util.TimConfig.MIN_AUDIO_DURATION
+import com.angcyo.tim.util.TimConfig.READ_REPORT_INTERVAL
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.*
 import com.angcyo.widget.layout.*
@@ -77,9 +81,6 @@ abstract class BaseChatPresenter {
     /**消息管理*/
     val messageManager = V2TIMManager.getMessageManager()
 
-    // 消息已读上报时间间隔
-    val READ_REPORT_INTERVAL = 1000 // 单位： 毫秒
-
     var _lastReadReportTime = 0L
     var _canReadReport = true
 
@@ -87,8 +88,8 @@ abstract class BaseChatPresenter {
 
     /**语音录制*/
     var recordControl: RecordControl = RecordControl().apply {
-        recordUI.minRecordTime = 3
-        recordUI.maxRecordTime = 60
+        recordUI.minRecordTime = MIN_AUDIO_DURATION
+        recordUI.maxRecordTime = MAX_AUDIO_DURATION
     }
 
     /**获取文件的启动器*/
@@ -178,9 +179,9 @@ abstract class BaseChatPresenter {
                     }
                 }
             }
-            onScrolledAction { recyclerView, dx, dy ->
+            /*onScrolledAction { recyclerView, dx, dy ->
                 L.i()
-            }
+            }*/
         }
     }
 
@@ -252,7 +253,7 @@ abstract class BaseChatPresenter {
         showLoadingItem()
 
         chatBean?.let { chatBean ->
-            getMessageList() { list, timSdkException ->
+            getMessageList(chatBean.lastMessageInfoBean?.message, true) { list, timSdkException ->
                 timSdkException?.let {
                     L.w(timSdkException)
                 }
@@ -261,7 +262,7 @@ abstract class BaseChatPresenter {
                     limitReadReport(chatBean.chatId, chatBean.isGroup)
 
                     showLoadingItem(false)
-                    _addMessageItem(it.toDslAdapterItemList(chatFragment), true)
+                    _addMessageItem(it.toDslAdapterItemList(), true)
                 }
             }
         }
@@ -284,7 +285,7 @@ abstract class BaseChatPresenter {
                         limitReadReport(chatBean.chatId, chatBean.isGroup)
 
                         showLoadingItem(false)
-                        _addMessageItem(it.toDslAdapterItemList(chatFragment), false, 1)
+                        _addMessageItem(it.toDslAdapterItemList(), false, 1)
                     }
                 }
             }
@@ -317,21 +318,31 @@ abstract class BaseChatPresenter {
     /**获取消息列表*/
     fun getMessageList(
         lastMsg: V2TIMMessage? = null,
+        both: Boolean = false /*获取消息前后的历史消息*/,
         callback: (List<V2TIMMessage>?, TimSdkException?) -> Unit
     ) {
         chatBean?.let { chatBean ->
-            if (chatBean.isGroup) {
-                TimMessage.getGroupHistoryMessageList(
+            if (both && lastMsg != null) {
+                TimMessage.getHistoryMessageBothList(
                     chatBean.chatId,
+                    chatBean.isGroup,
                     lastMsg,
                     callback = callback
                 )
             } else {
-                TimMessage.getC2CHistoryMessageList(
-                    chatBean.chatId,
-                    lastMsg,
-                    callback = callback
-                )
+                if (chatBean.isGroup) {
+                    TimMessage.getGroupHistoryMessageList(
+                        chatBean.chatId,
+                        lastMsg,
+                        callback = callback
+                    )
+                } else {
+                    TimMessage.getC2CHistoryMessageList(
+                        chatBean.chatId,
+                        lastMsg,
+                        callback = callback
+                    )
+                }
             }
         }
     }
@@ -436,7 +447,7 @@ abstract class BaseChatPresenter {
                     }
                 }
             } else {
-                _addMessageItem(info.toDslAdapterItem(chatFragment), true)
+                _addMessageItem(info.toDslAdapterItem(), true)
             }
         }
     }
@@ -520,7 +531,7 @@ abstract class BaseChatPresenter {
                                 limitReadReport(chatBean.chatId, chatBean.isGroup)
                             }
                             _addMessageItem(
-                                message?.toDslAdapterItem(fragment),
+                                message?.toDslAdapterItem(),
                                 _recycler?.isLastItemVisibleCompleted() == true
                             )
                         }
@@ -587,6 +598,9 @@ abstract class BaseChatPresenter {
     /**向界面中添加一个item,并且滚动到底部*/
     fun _addMessageItem(item: DslAdapterItem?, scrollToEnd: Boolean) {
         item?.let {
+            if (it is IFragmentItem) {
+                it.itemFragment = chatFragment
+            }
             _adapter?.apply {
                 changeDataItems {
                     it.add(item)
@@ -603,6 +617,11 @@ abstract class BaseChatPresenter {
     fun _addMessageItem(list: List<DslAdapterItem>?, scrollToEnd: Boolean, index: Int = -1) {
         if (list.isNullOrEmpty()) {
             return
+        }
+        list.forEach {
+            if (it is IFragmentItem) {
+                it.itemFragment = chatFragment
+            }
         }
         _adapter?.apply {
             val filterParams = _defaultFilterParams()

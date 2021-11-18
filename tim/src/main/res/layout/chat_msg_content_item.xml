@@ -94,9 +94,9 @@
                 android:id="@+id/msg_audio_unread_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="2dp"
-                app:r_badge_circle_radius="2dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="4dp"
+                app:r_badge_circle_radius="4dp"
                 app:r_badge_text="" />
 
             <!--消息发送中提示view-->

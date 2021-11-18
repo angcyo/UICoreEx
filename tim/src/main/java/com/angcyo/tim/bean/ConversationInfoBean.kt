@@ -6,6 +6,7 @@ import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
+import java.io.Serializable
 
 /**
  * 会话列表中需要的数据结构
@@ -14,7 +15,7 @@ import com.tencent.imsdk.v2.V2TIMMessage
  * @date 2021/11/10
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class ConversationInfoBean : Comparable<ConversationInfoBean> {
+class ConversationInfoBean : Serializable, Comparable<ConversationInfoBean> {
 
     /**TIM SDK 原始的会话数据*/
     var conversation: V2TIMConversation? = null

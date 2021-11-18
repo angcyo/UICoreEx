@@ -174,15 +174,15 @@ open class BaseChatMsgItem : DslAdapterItem(), IFragmentItem {
             }
 
             //已读/未读
-            if (isGroup || status != MessageInfoBean.MSG_STATUS_SEND_SUCCESS) {
-                itemHolder.gone(R.id.msg_read_tip_view)
-            } else {
+            if (isSelf && status == MessageInfoBean.MSG_STATUS_SEND_SUCCESS) {
                 itemHolder.visible(R.id.msg_read_tip_view)
                 itemHolder.tv(R.id.msg_read_tip_view)?.text = if (isPeerRead) {
                     "已读"
                 } else {
                     "未读"
                 }
+            } else {
+                itemHolder.gone(R.id.msg_read_tip_view)
             }
         }
     }
