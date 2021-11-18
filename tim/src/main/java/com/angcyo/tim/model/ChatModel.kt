@@ -1,7 +1,9 @@
 package com.angcyo.tim.model
 
 import com.angcyo.core.lifecycle.LifecycleViewModel
+import com.angcyo.http.base.toJson
 import com.angcyo.library.L
+import com.angcyo.tim.helper.toMessageInfoBean
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 import com.tencent.imsdk.v2.*
@@ -36,7 +38,8 @@ class ChatModel : LifecycleViewModel() {
     val _messageListener = object : V2TIMAdvancedMsgListener() {
 
         override fun onRecvNewMessage(msg: V2TIMMessage?) {
-            L.i("收到新消息:${msg?.msgID}:$msg")
+            L.i("收到新消息:${msg?.msgID}:${msg?.elemType}")
+            L.d(msg?.toMessageInfoBean()?.toJson())
             //val messageInfoBean = msg?.toMessageInfoBean()
             if (msg?.groupID.isNullOrEmpty()) {
                 //C2C单聊
