@@ -477,6 +477,16 @@ fun AMap.boundsLimit(bounds: LatLngBounds) {
     setMapStatusLimits(bounds)
 }
 
+fun AMap.boundsLimit(list: List<LatLng>) {
+    val bounds = LatLngBounds.Builder().run {
+        list.forEach {
+            include(it)
+        }
+        build()
+    }
+    boundsLimit(bounds)
+}
+
 fun AMap.boundsLimit(vararg latLng: LatLng?) {
     val bounds = LatLngBounds.Builder().run {
         latLng.forEach {
