@@ -15,6 +15,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.ex.string
 import com.angcyo.library.model.loadPath
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.getContentLauncher
 import com.angcyo.media.audio.record.RecordControl
 import com.angcyo.media.video.record.recordVideo
@@ -262,6 +263,8 @@ open class BaseChatPresenter : BaseChatControl() {
             getMessageList(chatBean.lastMessageInfoBean?.message, true) { list, timSdkException ->
                 timSdkException?.let {
                     L.w(timSdkException)
+                    showLoadingItem(false)
+                    toastQQ(timSdkException.desc)
                 }
                 list?.let {
                     //消息已读回执

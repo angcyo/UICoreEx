@@ -4,10 +4,7 @@ import androidx.fragment.app.Fragment
 import com.angcyo.base.dslFHelper
 import com.angcyo.library.L
 import com.angcyo.putDataSerializable
-import com.angcyo.tim.bean.ConversationInfoBean
-import com.angcyo.tim.bean.DraftInfoBean
-import com.angcyo.tim.bean.isGroup
-import com.angcyo.tim.bean.toChatInfoBean
+import com.angcyo.tim.bean.*
 import com.angcyo.tim.ui.chat.GroupChatFragment
 import com.angcyo.tim.ui.chat.SingleChatFragment
 import com.tencent.imsdk.v2.V2TIMConversation
@@ -113,6 +110,11 @@ object ConversationHelper {
     fun conversationJump(fragment: Fragment, bean: ConversationInfoBean) {
         conversationJumpListener.conversationJump(fragment, bean)
     }
+
+    /**会话跳转*/
+    fun conversationJump(fragment: Fragment, bean: ChatInfoBean) {
+        conversationJumpListener.conversationJump(fragment, bean)
+    }
 }
 
 /**会话跳转监听*/
@@ -122,6 +124,14 @@ open class ConversationJumpListener {
         fragment.dslFHelper {
             show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
                 putDataSerializable(bean.toChatInfoBean())
+            }
+        }
+    }
+
+    open fun conversationJump(fragment: Fragment, bean: ChatInfoBean) {
+        fragment.dslFHelper {
+            show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
+                putDataSerializable(bean)
             }
         }
     }
