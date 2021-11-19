@@ -2,13 +2,12 @@ package com.angcyo.tim.chat
 
 import android.net.Uri
 import android.view.View
-import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.amap3d.fragment.aMapSelector
+import com.angcyo.behavior.BaseScrollBehavior
 import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.vmApp
-import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.http.base.toJson
 import com.angcyo.library.L
@@ -24,10 +23,6 @@ import com.angcyo.tim.R
 import com.angcyo.tim.TimMessage
 import com.angcyo.tim.TimSdkException
 import com.angcyo.tim.bean.*
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_REVOKE
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SENDING
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_FAIL
-import com.angcyo.tim.bean.MessageInfoBean.Companion.MSG_STATUS_SEND_SUCCESS
 import com.angcyo.tim.dslitem.ChatEmojiItem
 import com.angcyo.tim.dslitem.ChatLoadingItem
 import com.angcyo.tim.dslitem.ChatMoreActionItem
@@ -36,47 +31,25 @@ import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.ui.chat.BaseChatFragment
 import com.angcyo.tim.util.FaceManager
 import com.angcyo.tim.util.TimConfig
-import com.angcyo.tim.util.TimConfig.MAX_AUDIO_DURATION
-import com.angcyo.tim.util.TimConfig.MIN_AUDIO_DURATION
-import com.angcyo.tim.util.TimConfig.READ_REPORT_INTERVAL
-import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.*
-import com.angcyo.widget.layout.*
+import com.angcyo.widget.layout.isEmojiShowAction
+import com.angcyo.widget.layout.isSoftInputShowAction
+import com.angcyo.widget.layout.onDispatchTouchEventAction
+import com.angcyo.widget.layout.onSoftInputChangeStart
 import com.angcyo.widget.recycler.*
 import com.tencent.imsdk.v2.*
-import com.tencent.imsdk.v2.V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG
 
 /**
- * 聊天操作层
+ * 聊天界面消息Presenter
  * Email:angcyo@126.com
  * @author angcyo
- * @date 2021/11/11
+ * @date 2021/11/19
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-abstract class BaseChatPresenter {
+open class BaseChatPresenter : BaseChatControl() {
 
-    var chatFragment: BaseChatFragment? = null
-
-    /**是否是语音输入*/
-    var isVoiceInput: Boolean = false
-
-    val _adapter: DslAdapter?
-        get() = chatFragment?._adapter
-
-    val _recycler: DslRecyclerView?
-        get() = chatFragment?._recycler
-
-    val _vh: DslViewHolder?
-        get() = chatFragment?._vh
-
-    val softInputLayout: DslSoftInputLayout?
-        get() = _vh?.v<DslSoftInputLayout>(R.id.lib_soft_input_layout)
-
-    val inputEditText: EditText?
-        get() = _vh?.v<EditText>(R.id.chat_edit_text)
-
-    val chatBean: ChatInfoBean?
-        get() = chatFragment?.chatInfoBean
+    /**聊天界面顶部通知*/
+    val chatNoticeControl = ChatNoticeControl()
 
     /**消息管理*/
     val messageManager = V2TIMManager.getMessageManager()
@@ -88,18 +61,23 @@ abstract class BaseChatPresenter {
 
     /**语音录制*/
     var recordControl: RecordControl = RecordControl().apply {
-        recordUI.minRecordTime = MIN_AUDIO_DURATION
-        recordUI.maxRecordTime = MAX_AUDIO_DURATION
+        recordUI.minRecordTime = TimConfig.MIN_AUDIO_DURATION
+        recordUI.maxRecordTime = TimConfig.MAX_AUDIO_DURATION
     }
 
     /**获取文件的启动器*/
     var getFileLauncher: ActivityResultLauncher<String>? = null
 
-    //<editor-fold desc="初始化">
+    override fun initControl(fragment: BaseChatFragment) {
+        super.initControl(fragment)
+        initView(fragment)
+        initMoreAction()
+
+        chatNoticeControl.initControl(fragment)
+    }
 
     /**初始化界面*/
     open fun initView(fragment: BaseChatFragment) {
-        chatFragment = fragment
 
         //注册启动器
         getFileLauncher = fragment.getContentLauncher {
@@ -171,19 +149,48 @@ abstract class BaseChatPresenter {
         }
         //recycler
         _recycler?.apply {
+            var handleSoftInputUE = false
+            onDispatchTouchEventAction {
+                if (it.isTouchDown()) {
+                    handleSoftInputUE = true
+                }
+            }
+
+            //上滑显示键盘
+            (behavior() as? BaseScrollBehavior)?.onBehaviorScrollToAction { scrollBehavior, x, y, scrollType ->
+                if (y <= -100) {
+                    //手指向上滚动了100距离, 则显示键盘
+                    _switchVoiceInput(false, true)
+                    handleSoftInputUE = false
+                } else if (y > 10 && handleSoftInputUE) {
+                    handleSoftInputUE = false
+                    inputEditText?.hideSoftInput()
+                    softInputLayout?.hideEmojiLayout()
+                }
+            }
+
             onScrollStateChangedAction { recyclerView, newState ->
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //滚动停止后
                     if (recyclerView.isTopItemVisibleCompleted()) {
+                        stopScroll()
                         loadHistoryMessage()
                     }
                 }
             }
-            /*onScrolledAction { recyclerView, dx, dy ->
-                L.i()
-            }*/
+            onScrolledAction { recyclerView, dx, dy ->
+                if (dy < 0 && softInputLayout?.isNormal() == true) {
+                    showLoadingItem()
+                    _isLoading = false
+                }
+                if (dy < -10) {
+                    inputEditText?.hideSoftInput()
+                    softInputLayout?.hideEmojiLayout()
+                }
+            }
         }
     }
+
 
     val moreActionList: MutableList<MoreActionBean> = mutableListOf()
 
@@ -241,7 +248,6 @@ abstract class BaseChatPresenter {
         })
     }
 
-    //</editor-fold desc="初始化">
 
     //<editor-fold desc="操作">
 
@@ -268,7 +274,7 @@ abstract class BaseChatPresenter {
         }
     }
 
-    open fun loadHistoryMessage(getType: Int = V2TIM_GET_CLOUD_OLDER_MSG) {
+    open fun loadHistoryMessage(getType: Int = V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG) {
         if (_isLoading) {
             return
         }
@@ -395,7 +401,7 @@ abstract class BaseChatPresenter {
     /**发送消息
      * [retry] 是否是重新发送消息, 如果是重新发送的消息, 那么消息item, 会被移除并重新添加到尾部*/
     fun sendMessage(chatInfo: ChatInfoBean, info: MessageInfoBean?, retry: Boolean = false) {
-        if (info == null || info.status == MSG_STATUS_SENDING || info.message == null) {
+        if (info == null || info.status == MessageInfoBean.MSG_STATUS_SENDING || info.message == null) {
             //消息正在发送中
             return
         }
@@ -426,19 +432,19 @@ abstract class BaseChatPresenter {
             offlinePushInfo = v2TIMOfflinePushInfo
         ) { v2TIMMessage, timSdkException, progress ->
             v2TIMMessage?.let {
-                info.status = MSG_STATUS_SEND_SUCCESS
+                info.status = MessageInfoBean.MSG_STATUS_SEND_SUCCESS
                 info.timestamp = it.timestamp * 1000
                 info.findDslAdapterItem(_adapter)?.updateAdapterItem()
             }
             timSdkException?.let {
-                info.status = MSG_STATUS_SEND_FAIL
+                info.status = MessageInfoBean.MSG_STATUS_SEND_FAIL
                 info.findDslAdapterItem(_adapter)?.updateAdapterItem()
             }
         }
 
         //添加到界面
-        if (info.msgType < V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS || info.msgType > MSG_STATUS_REVOKE) {
-            info.status = MSG_STATUS_SENDING //消息状态
+        if (info.msgType < V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS || info.msgType > MessageInfoBean.MSG_STATUS_REVOKE) {
+            info.status = MessageInfoBean.MSG_STATUS_SENDING //消息状态
             if (retry) {
                 info.findDslAdapterItem(_adapter)?.let { item ->
                     item.messageInfoBean = info
@@ -552,14 +558,14 @@ abstract class BaseChatPresenter {
         }
         val currentTime = System.currentTimeMillis()
         val timeDifference: Long = currentTime - _lastReadReportTime
-        if (timeDifference >= READ_REPORT_INTERVAL) {
+        if (timeDifference >= TimConfig.READ_REPORT_INTERVAL) {
             readReport(chatId, isGroup)
             _lastReadReportTime = currentTime
         } else {
             if (!_canReadReport) {
                 return
             }
-            val delay: Long = READ_REPORT_INTERVAL - timeDifference
+            val delay: Long = TimConfig.READ_REPORT_INTERVAL - timeDifference
             _canReadReport = false
             _delay(delay) {
                 readReport(chatId, isGroup)
@@ -597,6 +603,7 @@ abstract class BaseChatPresenter {
 
     /**向界面中添加一个item,并且滚动到底部*/
     fun _addMessageItem(item: DslAdapterItem?, scrollToEnd: Boolean) {
+        _recycler?.stopScroll()
         item?.let {
             if (it is IFragmentItem) {
                 it.itemFragment = chatFragment
@@ -618,6 +625,7 @@ abstract class BaseChatPresenter {
         if (list.isNullOrEmpty()) {
             return
         }
+        _recycler?.stopScroll()
         list.forEach {
             if (it is IFragmentItem) {
                 it.itemFragment = chatFragment
@@ -792,4 +800,5 @@ abstract class BaseChatPresenter {
     }
 
     //</editor-fold desc="内部操作">
+
 }

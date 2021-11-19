@@ -59,8 +59,7 @@ abstract class BaseChatFragment : BaseDslFragment() {
         } else {
             fragmentTitle = chatInfo.chatTitle
 
-            chatPresenter?.initView(this)
-            chatPresenter?.initMoreAction()
+            chatPresenter?.initControl(this)
 
             chatPresenter?.loadMessage()
             chatPresenter?.listenerMessage()

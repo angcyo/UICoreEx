@@ -71,3 +71,11 @@ val ConversationInfoBean.conversationId: String?
 /**是否是请勿打扰*/
 val ConversationInfoBean.isDisturb: Boolean
     get() = conversation?.recvOpt == V2TIMMessage.V2TIM_NOT_RECEIVE_MESSAGE
+
+/**用户id*/
+val ConversationInfoBean.userId: String?
+    get() = conversation?.userID
+
+/**群组id*/
+val ConversationInfoBean.groupId: String?
+    get() = conversation?.groupID

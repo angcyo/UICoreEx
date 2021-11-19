@@ -20,13 +20,16 @@ class ChatModel : LifecycleViewModel() {
     //<editor-fold desc="数据监听">
 
     /**自己的头像全路径url*/
-    var selfFaceUrlData = vmDataNull<String>()
+    val selfFaceUrlData = vmDataNull<String>()
 
     /**无头像时, 需要绘制的昵称文本*/
-    var selfShowNameData = vmDataNull<String>()
+    val selfShowNameData = vmDataNull<String>()
 
-    /**新消息通知*/
-    var newMessageData = vmDataOnce<V2TIMMessage>()
+    /**新消息通知, 不会保存新消息*/
+    val newMessageData = vmDataOnce<V2TIMMessage>()
+
+    /**是否连接上了sdk服务器*/
+    val sdkConnectData = vmDataNull(true)
 
     //</editor-fold desc="数据监听">
 
@@ -86,6 +89,61 @@ class ChatModel : LifecycleViewModel() {
         })
     }
 
-    //</editor-fold desc="监听">
+    /**添加群组监听器*/
+    fun listenerGroup() {
+        V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
 
+        })
+    }
+
+    val _sdkListener = object : V2TIMSDKListener() {
+        //SDK 正在连接到腾讯云服务器
+        override fun onConnecting() {
+            super.onConnecting()
+            L.d("TIM服务器连接中...")
+        }
+
+        //SDK 已经成功连接到腾讯云服务器
+        override fun onConnectSuccess() {
+            super.onConnectSuccess()
+            L.i("TIM服务器连接成功.")
+            sdkConnectData.value = true
+        }
+
+        //SDK 连接腾讯云服务器失败
+        override fun onConnectFailed(code: Int, error: String?) {
+            super.onConnectFailed(code, error)
+            L.w("TIM服务器连接失败:$code:$error")
+            sdkConnectData.value = false
+        }
+
+        //当前用户被踢下线，此时可以 UI 提示用户，并再次调用 V2TIMManager 的 login() 函数重新登录。
+        override fun onKickedOffline() {
+            super.onKickedOffline()
+            L.w("TIM服务器被踢下线!")
+        }
+
+        //在线时票据过期：此时您需要生成新的 userSig 并再次调用 V2TIMManager 的 login() 函数重新登录。
+        override fun onUserSigExpired() {
+            super.onUserSigExpired()
+        }
+
+        //登录用户的资料发生了更新
+        override fun onSelfInfoUpdated(info: V2TIMUserFullInfo?) {
+            super.onSelfInfoUpdated(info)
+            L.i(info)
+        }
+    }
+
+    /**添加 IM 监听
+     * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMManager.html#a2f0297e96d365013e7923275ce2a5d4e*/
+    fun listenerSdk() {
+        V2TIMManager.getInstance().addIMSDKListener(_sdkListener)
+    }
+
+    fun removeListenerSdk() {
+        V2TIMManager.getInstance().removeIMSDKListener(_sdkListener)
+    }
+
+    //</editor-fold desc="监听">
 }

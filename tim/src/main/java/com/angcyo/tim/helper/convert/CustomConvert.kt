@@ -14,7 +14,15 @@ import com.tencent.imsdk.v2.V2TIMMessage
 class CustomConvert : BaseConvert() {
 
     override fun handleMessage(message: V2TIMMessage): Boolean {
-        return message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM
+        if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM) {
+            //自定义消息, 但是没有内容
+            val data = message.customElem?.data
+            if (data == null || data.isEmpty()) {
+                return false
+            }
+            return true
+        }
+        return false
     }
 
     override fun handleBean(bean: MessageInfoBean): Boolean {

@@ -8,4 +8,5 @@ package com.angcyo.tim.chat
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 class SingleChatPresenter : BaseChatPresenter() {
+
 }

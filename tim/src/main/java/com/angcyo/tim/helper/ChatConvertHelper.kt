@@ -46,14 +46,6 @@ object ChatConvertHelper : BaseConvert() {
             return null
         }
 
-        if (message.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM) {
-            //自定义消息, 但是没有内容
-            val data = message.customElem?.data
-            if (data == null || data.isEmpty()) {
-                return null
-            }
-        }
-
         var result: MessageInfoBean? = null
         for (convert in convertList) {
             if (convert.handleMessage(message)) {

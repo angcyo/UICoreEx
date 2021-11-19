@@ -53,13 +53,27 @@
             </com.angcyo.widget.layout.TitleWrapLayout>
         </FrameLayout>
 
-        <com.angcyo.widget.recycler.DslRecyclerView
-            android:id="@+id/lib_recycler_view"
-            style="@style/LibRecyclerViewStyle"
+        <com.angcyo.widget.layout.RCoordinatorLayout
+            android:id="@+id/lib_recycler_wrap_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            app:r_layout_manager="V" />
+            android:layout_weight="1">
+
+            <com.angcyo.widget.recycler.DslRecyclerView
+                android:id="@+id/lib_recycler_view"
+                style="@style/LibRecyclerViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="com.angcyo.behavior.effect.VerticalEdgeEffectBehavior"
+                app:r_layout_manager="V" />
+
+            <LinearLayout
+                android:id="@+id/msg_notice_wrap_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </com.angcyo.widget.layout.RCoordinatorLayout>
 
         <include layout="@layout/lib_chat_input_layout" />
 

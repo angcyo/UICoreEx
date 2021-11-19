@@ -57,6 +57,10 @@ object Tim {
      * [userSig] 从业务服务器获取的 userSig
      * */
     fun login(userId: String, userSig: String, callback: ((TimSdkException?) -> Unit)? = null) {
+        //消息
+        vmApp<ChatModel>().apply {
+            listenerSdk()
+        }
         V2TIMManager.getInstance().login(userId, userSig, object : V2TIMCallback {
             override fun onSuccess() {
                 callback?.invoke(null)
@@ -70,6 +74,7 @@ object Tim {
 
                 //消息
                 vmApp<ChatModel>().apply {
+                    listenerSdk()
                     listenerMessage()
                 }
             }

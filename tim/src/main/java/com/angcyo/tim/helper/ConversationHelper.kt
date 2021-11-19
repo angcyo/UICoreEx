@@ -1,8 +1,15 @@
 package com.angcyo.tim.helper
 
+import androidx.fragment.app.Fragment
+import com.angcyo.base.dslFHelper
 import com.angcyo.library.L
+import com.angcyo.putDataSerializable
 import com.angcyo.tim.bean.ConversationInfoBean
 import com.angcyo.tim.bean.DraftInfoBean
+import com.angcyo.tim.bean.isGroup
+import com.angcyo.tim.bean.toChatInfoBean
+import com.angcyo.tim.ui.chat.GroupChatFragment
+import com.angcyo.tim.ui.chat.SingleChatFragment
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo
 import com.tencent.imsdk.v2.V2TIMManager
@@ -15,6 +22,8 @@ import com.tencent.imsdk.v2.V2TIMManager
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 object ConversationHelper {
+
+    var conversationJumpListener = ConversationJumpListener()
 
     /**转换一下数据结构
      * [V2TIMConversation]->[ConversationInfoBean]*/
@@ -98,6 +107,23 @@ object ConversationHelper {
             V2TIMGroupAtInfo.TIM_AT_UNKNOWN
         }
         return atInfoType
+    }
+
+    /**会话跳转*/
+    fun conversationJump(fragment: Fragment, bean: ConversationInfoBean) {
+        conversationJumpListener.conversationJump(fragment, bean)
+    }
+}
+
+/**会话跳转监听*/
+open class ConversationJumpListener {
+
+    open fun conversationJump(fragment: Fragment, bean: ConversationInfoBean) {
+        fragment.dslFHelper {
+            show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
+                putDataSerializable(bean.toChatInfoBean())
+            }
+        }
     }
 
 }

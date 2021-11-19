@@ -1,21 +1,19 @@
 package com.angcyo.tim.ui
 
 import android.os.Bundle
-import com.angcyo.base.dslFHelper
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.toLoading
 import com.angcyo.item.DslMessageListItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.*
-import com.angcyo.putDataSerializable
+import com.angcyo.tim.bean.ConversationInfoBean
 import com.angcyo.tim.bean.faceUrl
-import com.angcyo.tim.bean.isGroup
 import com.angcyo.tim.bean.msgType
-import com.angcyo.tim.bean.toChatInfoBean
+import com.angcyo.tim.dslitem.ChatConnectTipItem
+import com.angcyo.tim.helper.ConversationHelper
+import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.model.ConversationModel
-import com.angcyo.tim.ui.chat.GroupChatFragment
-import com.angcyo.tim.ui.chat.SingleChatFragment
 import com.angcyo.tim.util.handlerEmojiText
 import com.tencent.imsdk.v2.V2TIMMessage
 
@@ -29,6 +27,9 @@ import com.tencent.imsdk.v2.V2TIMMessage
 open class BaseConversationFragment : BaseDslFragment() {
 
     val conversationModel = vmApp<ConversationModel>()
+
+    /**SDK未连接时的提示*/
+    val chatConnectTipItem = ChatConnectTipItem()
 
     init {
         fragmentTitle = "会话列表"
@@ -45,6 +46,23 @@ open class BaseConversationFragment : BaseDslFragment() {
 
     open fun onInitConversation() {
         _adapter.toLoading()
+
+        vmApp<ChatModel>().sdkConnectData.observe {
+            if (it == false) {
+                //未连接
+                _adapter.changeHeaderItems {
+                    if (!it.contains(chatConnectTipItem)) {
+                        it.add(0, chatConnectTipItem)
+                    }
+                }
+            } else {
+                //网络链接
+                _adapter.changeHeaderItems {
+                    it.remove(chatConnectTipItem)
+                }
+            }
+        }
+
         conversationModel.conversationListData.observe {
             if (conversationModel.conversationListData.isSetValue) {
                 loadDataEndIndex(DslMessageListItem::class.java, it) { bean, index ->
@@ -78,13 +96,13 @@ open class BaseConversationFragment : BaseDslFragment() {
                         null
                     }
 
+                    //click
                     itemClick = {
-                        dslFHelper {
-                            show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
-                                putDataSerializable(bean.toChatInfoBean())
-                            }
-                        }
+                        onClickConversationItem(bean)
                     }
+
+                    //init
+                    onInitConversationItem(this, bean)
                 }
             }
         }
@@ -93,5 +111,13 @@ open class BaseConversationFragment : BaseDslFragment() {
     override fun onLoadData() {
         super.onLoadData()
         conversationModel.fetchConversationList()
+    }
+
+    open fun onInitConversationItem(item: DslMessageListItem, bean: ConversationInfoBean) {
+
+    }
+
+    open fun onClickConversationItem(bean: ConversationInfoBean) {
+        ConversationHelper.conversationJump(this, bean)
     }
 }

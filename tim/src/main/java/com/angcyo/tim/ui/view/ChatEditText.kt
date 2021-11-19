@@ -34,7 +34,7 @@ open class ChatEditText : DslEditText {
         val TIM_MENTION_PATTERN_FULL = Pattern.compile("＠[^\\s]+\\s")
     }
 
-    private val mentionTextColor = _color(R.color.colorAccent)
+    private var mentionTextColor = 0
 
     private val patternMap = hashMapOf<String, Pattern>()
 
@@ -64,6 +64,7 @@ open class ChatEditText : DslEditText {
     }
 
     private fun initAttribute(context: Context, attrs: AttributeSet?) {
+        mentionTextColor = _color(R.color.colorAccent, context)
         patternMap.clear()
         patternMap[TIM_MENTION_TAG] = TIM_MENTION_PATTERN
         patternMap[TIM_MENTION_TAG_FULL] = TIM_MENTION_PATTERN_FULL

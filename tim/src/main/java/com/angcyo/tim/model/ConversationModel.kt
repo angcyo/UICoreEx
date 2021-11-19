@@ -8,6 +8,7 @@ import com.angcyo.tim.bean.conversationId
 import com.angcyo.tim.helper.toConversationInfoBean
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMConversationListener
 import com.tencent.imsdk.v2.V2TIMManager
@@ -36,6 +37,9 @@ class ConversationModel : LifecycleViewModel() {
 
     /**会话列表, 排好序了*/
     val conversationListData = vmDataNull<List<ConversationInfoBean>>()
+
+    /**新的会话消息通知, 不保存会话*/
+    val newConversationMessageData = vmDataOnce<ConversationInfoBean>()
 
     //</editor-fold desc="成员">
 
@@ -132,10 +136,32 @@ class ConversationModel : LifecycleViewModel() {
 
         override fun onNewConversation(conversationList: MutableList<V2TIMConversation>?) {
             notifyConversationList(conversationList)
+            //新会话通知
+            _notifyNewConversation(conversationList?.lastOrNull())
+
         }
 
         override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>?) {
             notifyConversationList(conversationList)
+            //会话改变通知
+            _notifyNewConversation(conversationList?.lastOrNull())
+        }
+    }
+
+    var _lastConversationMessageTimestamp: Long = 0
+
+    fun _notifyNewConversation(conversation: V2TIMConversation?) {
+        if (conversation == null) {
+            return
+        }
+        val timestamp = conversation.lastMessage?.timestamp ?: 0 //本次消息的时间戳, 秒
+
+        if (_lastConversationMessageTimestamp != timestamp) {
+            _lastConversationMessageTimestamp = timestamp
+            //消息改变时才通知
+            conversation.toConversationInfoBean()?.apply {
+                newConversationMessageData.value = this
+            }
         }
     }
 
