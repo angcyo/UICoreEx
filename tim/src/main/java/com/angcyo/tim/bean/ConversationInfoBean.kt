@@ -1,10 +1,6 @@
 package com.angcyo.tim.bean
 
-import com.angcyo.tim.helper.ConversationHelper
-import com.angcyo.tim.helper.toMessageInfoBean
 import com.tencent.imsdk.v2.V2TIMConversation
-import com.tencent.imsdk.v2.V2TIMGroupAtInfo
-import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import java.io.Serializable
 
@@ -75,47 +71,3 @@ val ConversationInfoBean.conversationId: String?
 /**是否是请勿打扰*/
 val ConversationInfoBean.isDisturb: Boolean
     get() = conversation?.recvOpt == V2TIMMessage.V2TIM_NOT_RECEIVE_MESSAGE
-
-/**转换一下数据结构*/
-fun V2TIMConversation.toConversationInfoBean(): ConversationInfoBean? {
-    if (type == V2TIMConversation.V2TIM_C2C || type == V2TIMConversation.V2TIM_GROUP) {
-        //单聊消息 和 群组消息
-
-        val bean = ConversationInfoBean()
-        bean.conversation = this
-
-        //草稿
-        if (!draftText.isNullOrEmpty()) {
-            bean.draftInfo = DraftInfoBean(draftText, draftTimestamp * 1000)
-        }
-
-        //最后一条消息
-        val lastMessage = lastMessage
-        if (lastMessage != null) {
-            bean.lastMessageTime = lastMessage.timestamp * 1000
-
-            //转换
-            bean.messageInfoBean = lastMessage.toMessageInfoBean()
-        }
-
-        bean.title = showName
-        bean.top = isPinned == true
-        bean.orderKey = orderKey
-
-        bean.atInfoText = when (ConversationHelper.getAtInfoType(this)) {
-            V2TIMGroupAtInfo.TIM_AT_ME -> "[有人@我]"
-            V2TIMGroupAtInfo.TIM_AT_ALL -> "[@所有人]"
-            V2TIMGroupAtInfo.TIM_AT_ALL_AT_ME -> "[@所有人][有人@我]"
-            else -> null
-        }
-
-        if (groupType != V2TIMManager.GROUP_TYPE_AVCHATROOM) {
-            //非直播群
-            bean.unReadCount = unreadCount
-        }
-
-        return bean
-    }
-
-    return null
-}

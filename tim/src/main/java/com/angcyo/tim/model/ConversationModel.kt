@@ -5,7 +5,7 @@ import com.angcyo.library.L
 import com.angcyo.tim.Tim
 import com.angcyo.tim.bean.ConversationInfoBean
 import com.angcyo.tim.bean.conversationId
-import com.angcyo.tim.bean.toConversationInfoBean
+import com.angcyo.tim.helper.toConversationInfoBean
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
 import com.tencent.imsdk.v2.V2TIMConversation
