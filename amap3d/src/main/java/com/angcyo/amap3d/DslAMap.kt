@@ -929,17 +929,4 @@ fun AMap.screenShot(action: (Bitmap?) -> Unit) {
  *
  * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/index.html
  * */
-fun latlng(latitude: Double, longitude: Double): LatLng {
-    var lat: Double = latitude
-    var lng: Double = longitude
-
-    if (latitude > 90 || latitude < -90) {
-        lng = latitude
-    }
-
-    if (longitude > 180 || latitude < -180) {
-        lat = longitude
-    }
-
-    return LatLng(lat, lng, true)
-}
+fun latlng(latitude: Double, longitude: Double): LatLng = LatLng(latitude, longitude, true)
