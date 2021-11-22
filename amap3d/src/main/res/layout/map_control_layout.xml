@@ -24,29 +24,15 @@
         android:elevation="@dimen/lib_elevation"
         app:srcCompat="@drawable/map_icon_location" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:layout_marginRight="@dimen/lib_xhdpi"
-        android:layout_marginBottom="@dimen/lib_xhdpi"
-        android:elevation="@dimen/lib_elevation"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/lib_xhdpi">
 
-        <!--放大-->
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/map_zoom_in_view"
-            style="@style/MapControlIconStyle"
-            android:background="@drawable/map_control_icon_top_bg_selector"
-            app:srcCompat="@drawable/map_icon_zoom_in" />
+        <include layout="@layout/map_scale_control_layout" />
 
-        <!--缩小-->
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/map_zoom_out_view"
-            style="@style/MapControlIconStyle"
-            android:background="@drawable/map_control_icon_bottom_bg_selector"
-            app:srcCompat="@drawable/map_icon_zoom_out" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </FrameLayout>

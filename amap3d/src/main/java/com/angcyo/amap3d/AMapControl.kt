@@ -109,7 +109,7 @@ fun AMap.bindControlLayout(
     onCameraChangeListener {
         vh.enable(R.id.map_zoom_in_view, maxZoomLevel != it.zoom)
         vh.enable(R.id.map_zoom_out_view, minZoomLevel != it.zoom)
-        if (maxZoomLevel == it.zoom) {
+        /*if (maxZoomLevel == it.zoom) {
             vh.img(R.id.map_zoom_in_view)?.imageTintList =
                 ColorStateList.valueOf(_color(R.color.lib_disable_bg_color))
         } else {
@@ -121,6 +121,6 @@ fun AMap.bindControlLayout(
                 ColorStateList.valueOf(_color(R.color.lib_disable_bg_color))
         } else {
             vh.img(R.id.map_zoom_out_view)?.imageTintList = null
-        }
+        }*/
     }
 }

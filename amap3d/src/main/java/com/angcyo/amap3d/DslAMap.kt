@@ -519,8 +519,6 @@ fun LatLng.isInBounds(bounds: List<LatLng>): Boolean {
     return latLngBounds.contains(this)
 }
 
-/**返回两点间的距离，单位米。*/
-fun LatLng.distance(endLatLng: LatLng): Float = AMapUtils.calculateLineDistance(this, endLatLng)
 
 
 /** 在经度/纬度 方向偏移指定的距离 (米)
@@ -931,12 +929,3 @@ fun AMap.screenShot(action: (Bitmap?) -> Unit) {
 }
 
 //</editor-fold desc="其他操作">
-
-/**
- * latitude - 地点的纬度，在-90 与90 之间的double 型数值。
- * longitude - 地点的经度，在-180 与180 之间的double 型数值。
- * isCheck - 是否需要检查经纬度的合法性，建议填写true 如果设为true，传入的经纬度不合理，会打印错误日志进行提示，然后转换为接近的合理的经纬度。
- *
- * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/index.html
- * */
-fun latlng(latitude: Double, longitude: Double): LatLng = LatLng(latitude, longitude, true)

@@ -38,6 +38,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
     /**提供[Marker]的常规操作*/
     val dslMarker: DslMarker = DslMarker().apply {
         //do something
+        //toHeatMapZoom = -1f //热力图
     }
 
     //</editor-fold desc="样式配置">

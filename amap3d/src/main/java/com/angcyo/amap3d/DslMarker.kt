@@ -390,12 +390,42 @@ class DslMarker : AMap.InfoWindowAdapter {
 
     /**通过位置, 移除一个[Marker]*/
     fun removeMarker(latLng: LatLng) {
+        if (currentSelectedShowMarker?.position == latLng) {
+            removeSelectedMarker()
+        }
         findMarker(latLng)?.apply {
             isVisible = false
             remove()
             `object` = null
             _allMarker.remove(this)
         }
+    }
+
+    /**移动选中的marker*/
+    fun removeSelectedMarker() {
+        //切换选中的[Marker]
+        currentSelectedShowMarker?.apply {
+            //移除替补[Marker]
+            remove()
+            currentSelectedShowMarker = null
+
+            currentSelectedMarker?.apply {
+                //显示真身
+                isVisible = true
+                currentSelectedMarker = null
+            }
+        }
+    }
+
+    /**移除所有Marker*/
+    fun removeAllMarker() {
+        removeSelectedMarker()
+        for (marker in _allMarker) {
+            marker.isVisible = false
+            marker.remove()
+            marker.`object` = null
+        }
+        _allMarker.clear()
     }
 
     /**优先使用相同位置的[Marker]*/
@@ -650,6 +680,12 @@ fun MarkerOptions.icon(res: Int) {
 fun markerIcon(resId: Int) = BitmapDescriptorFactory.fromResource(resId)
 
 fun markerIcon(view: View) = BitmapDescriptorFactory.fromView(view)
+
+fun markerIcon(context: Context, layoutId: Int, init: View.() -> Unit = {}): BitmapDescriptor {
+    val view = LayoutInflater.from(context).inflate(layoutId, FrameLayout(context), false)
+    view.init()
+    return markerIcon(view)
+}
 
 //</editor-fold desc="Marker图标">
 
