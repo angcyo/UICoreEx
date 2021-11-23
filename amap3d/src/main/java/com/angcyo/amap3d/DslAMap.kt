@@ -520,7 +520,6 @@ fun LatLng.isInBounds(bounds: List<LatLng>): Boolean {
 }
 
 
-
 /** 在经度/纬度 方向偏移指定的距离 (米)
  * latitude 纬度, 决定上下距离
  * longitude 经度, 决定左右距离
@@ -849,6 +848,12 @@ fun AMap.addPolyline(action: PolylineOptions.() -> Unit): Polyline {
  * */
 fun AMap.addArc(action: ArcOptions.() -> Unit): Arc {
     val options = ArcOptions()
+
+    options.strokeColor(_color(R.color.colorAccent))
+    options.strokeWidth(3f)
+
+    //options.point()
+
     options.action()
     val arc = addArc(options)
     arc.isVisible = true
@@ -858,8 +863,20 @@ fun AMap.addArc(action: ArcOptions.() -> Unit): Arc {
 /**添加圆[Circle]
  * https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/com/amap/api/maps/model/Circle.html
  * */
-fun AMap.addCircle(action: CircleOptions.() -> Unit): Circle {
+fun AMap.addCircle(
+    latLng: LatLng,
+    radius: Double = 0.0,
+    action: CircleOptions.() -> Unit = {}
+): Circle {
     val options = CircleOptions()
+
+    options.fillColor(_color(R.color.colorAccent).alphaRatio(0.3f))
+    options.strokeColor(_color(R.color.colorAccent))
+    options.strokeWidth(3f)
+
+    options.center(latLng)
+    options.radius(radius)
+
     options.action()
     val circle = addCircle(options)
     circle.isVisible = true
@@ -871,6 +888,14 @@ fun AMap.addCircle(action: CircleOptions.() -> Unit): Circle {
  * */
 fun AMap.addPolygon(action: PolygonOptions.() -> Unit): Polygon {
     val options = PolygonOptions()
+
+    options.fillColor(_color(R.color.colorAccent).alphaRatio(0.3f))
+    options.strokeColor(_color(R.color.colorAccent))
+    options.strokeWidth(3f)
+
+    //options.add()
+    //options.addAll()
+
     options.action()
     val polygon = addPolygon(options)
     polygon.isVisible = true
