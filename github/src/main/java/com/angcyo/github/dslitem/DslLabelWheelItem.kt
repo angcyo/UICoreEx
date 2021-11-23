@@ -9,7 +9,10 @@ import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
 import com.angcyo.item.extend.IToText
-import com.angcyo.item.style.*
+import com.angcyo.item.style.ILoadItem
+import com.angcyo.item.style.ITextItem
+import com.angcyo.item.style.LoadItemConfig
+import com.angcyo.item.style.TextItemConfig
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
@@ -62,10 +65,14 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
                 if (loadItemConfig.itemLoadAction == null) {
                     showWheelDialog(view.context)
                 } else {
-                    //异步加载
-                    loadItemConfig.itemLoadAction?.invoke {
-                        if (it == null) {
-                            showWheelDialog(view.context)
+                    if (loadItemConfig.itemUseLoadCache && itemWheelList?.isNotEmpty() == true) {
+                        showWheelDialog(view.context)
+                    } else {
+                        //异步加载
+                        loadItemConfig.itemLoadAction?.invoke {
+                            if (it == null) {
+                                showWheelDialog(view.context)
+                            }
                         }
                     }
                 }
