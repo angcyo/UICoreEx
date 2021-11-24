@@ -10,6 +10,7 @@ import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.core.PoiItem
 import com.angcyo.amap3d.core.MapLocation
 import com.angcyo.amap3d.core.toLatLng
+import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
@@ -592,10 +593,13 @@ fun AMap.onMyLocationChange(action: (location: Inner_3dMap_location) -> Unit = {
         if (it is Inner_3dMap_location) {
             if (it.errorCode == 0) {
                 AMapHelper.lastMapLocation = MapLocation.from(it)
+                vmApp<AMapModel>().myLocationData.value = AMapHelper.lastMapLocation
             }
-        }
 
-        action(it as Inner_3dMap_location)
+            action(it)
+        } else {
+            L.w("未知定位数据类型:$it")
+        }
     }
     addOnMyLocationChangeListener(listener)
     return listener
