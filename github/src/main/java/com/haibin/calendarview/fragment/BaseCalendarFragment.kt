@@ -70,9 +70,7 @@ abstract class BaseCalendarFragment : BaseDslFragment() {
             onCalendarSelectListener { calendar, isClick, isOutOfRange ->
                 L.i("选中日期: ", calendar, " :", isClick, " :", isOutOfRange)
                 //_updateCurrentMonth()
-                if (isClick) {
-                    onCalendarSelect(calendar)
-                }
+                selectCalendar(calendar)
             }
             onWeekChangeListener {
                 L.i(it)
@@ -84,7 +82,21 @@ abstract class BaseCalendarFragment : BaseDslFragment() {
             }
 
             toToday()
-            updateCurrentMonth(selectedCalendar.year, selectedCalendar.month)
+            val year = selectedCalendar.year
+            val month = selectedCalendar.month
+            updateCurrentMonth(year, month)
+            onMonthChange(year, month)
+        }
+    }
+
+    var _lastSelectCalendar: Calendar? = null
+
+    open fun selectCalendar(calendar: Calendar) {
+        if (_lastSelectCalendar == calendar) {
+
+        } else {
+            _lastSelectCalendar = calendar
+            onCalendarSelect(calendar)
         }
     }
 

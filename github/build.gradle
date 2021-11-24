@@ -28,7 +28,7 @@ dependencies {
     //https://github.com/huanghaibin-dev/CalendarView
     //api 'com.haibin:calendarview:3.6.7'
     //https://github.com/angcyo/CalendarView
-    api 'com.github.angcyo:CalendarView:3.7.1.26'
+    api 'com.github.angcyo:CalendarView:3.7.1.27'
 
     //https://github.com/scwang90/MultiWaveHeader
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'

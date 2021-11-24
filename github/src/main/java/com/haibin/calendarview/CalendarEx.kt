@@ -1,6 +1,7 @@
 package com.haibin.calendarview
 
 import android.graphics.Color
+import android.view.View
 import android.widget.TextView
 import com.angcyo.library.ex.*
 import java.text.ParseException
@@ -95,6 +96,8 @@ fun Calendar.isAfter(target: Calendar): Boolean {
     return false*/
 }
 
+fun Calendar.toTime(pattern: String = "yyyy-MM-dd HH:mm"): String = timeInMillis.toTime(pattern)
+
 //</editor-fold desc="日历扩展方法">
 
 //<editor-fold desc="日历视图扩展方法">
@@ -142,31 +145,53 @@ fun CalendarView.toToday(
 
 /**滚动到上一个月*/
 fun CalendarView.toPreMonth(smoothScroll: Boolean = true) {
-    scrollToPre(smoothScroll)
+    if (mWeekPager.visibility == View.VISIBLE) {
+        mWeekPager.scrollToPreMonth(smoothScroll)
+    } else {
+        scrollToPre(smoothScroll)
+    }
 }
 
 /**滚动到下一个月*/
 fun CalendarView.toNextMonth(smoothScroll: Boolean = true) {
-    scrollToNext(smoothScroll)
+    if (mWeekPager.visibility == View.VISIBLE) {
+        mWeekPager.scrollToNextMonth(smoothScroll)
+    } else {
+        scrollToNext(smoothScroll)
+    }
+}
+
+fun CalendarView.addScheme(
+    timeList: List<String>,
+    pattern: String = "yyyy-MM-dd",
+    color: Int = 0,
+    obj: Any? = null
+) {
+    for (time in timeList) {
+        addScheme(time, pattern, time, color, obj)
+    }
 }
 
 /**添加一个事务*/
-fun CalendarView.addSchemeDate(
-    time: String, pattern: String = "yyyy-MM-dd",
-    text: String?, color: Int = 0, obj: Any? = null
+fun CalendarView.addScheme(
+    time: String,
+    pattern: String = "yyyy-MM-dd",
+    text: String?,
+    color: Int = 0,
+    obj: Any? = null
 ) {
     try {
         val format: SimpleDateFormat = SimpleDateFormat.getDateInstance() as SimpleDateFormat
         format.applyPattern(pattern)
         val calendar = format.parse(time)!!.toCalendar()
-        addSchemeDate(calendar.year(), calendar.month(), calendar.day(), text, color, obj)
+        addScheme(calendar.year(), calendar.month(), calendar.day(), text, color, obj)
     } catch (e: ParseException) {
         e.printStackTrace()
     }
 }
 
 /**添加一个事务标记*/
-fun CalendarView.addSchemeDate(
+fun CalendarView.addScheme(
     year: Int,
     month: Int,
     day: Int,
@@ -288,37 +313,61 @@ fun WeekBar.setWeekendTextColor(color: Int = "#E14A4C".toColor()) {
 /**周视图下, 直接切换到上一个月*/
 fun WeekViewPager.scrollToPreMonth(smoothScroll: Boolean = true) {
     //mWeekPager.setCurrentItem(mWeekPager.getCurrentItem() - 1, smoothScroll);
+
     val currentItem: Int = currentItem
     val baseView: BaseView = findViewWithTag(currentItem)
     val firstCalendar = baseView.mItems[0]
     val days = CalendarUtil.getMonthDaysCount(firstCalendar.year, firstCalendar.month)
     val targetCalendar: Calendar =
         getCalendarWidthDiffer(firstCalendar, -days * ONE_DAY)
-    scrollToCalendar(
+
+    //这种方式会改变选中的日历
+    /* scrollToCalendar(
         targetCalendar.year,
         targetCalendar.month,
         targetCalendar.day,
         smoothScroll,
-        false
-    )
+        invokeListener
+    )*/
+
+    val position = CalendarUtil.getWeekFromCalendarStartWithMinCalendar(
+        targetCalendar,
+        mDelegate.minYear,
+        mDelegate.minYearMonth,
+        mDelegate.minYearDay,
+        mDelegate.weekStart
+    ) - 1
+    setCurrentItem(position, smoothScroll)
 }
 
 /**周视图下, 直接切换到下一个月*/
 fun WeekViewPager.scrollToNextMonth(smoothScroll: Boolean = true) {
     //mWeekPager.setCurrentItem(mWeekPager.getCurrentItem() + 1, smoothScroll);
+
     val currentItem: Int = currentItem
     val baseView: BaseView = findViewWithTag(currentItem)
     val firstCalendar = baseView.mItems[0]
     val days = CalendarUtil.getMonthDaysCount(firstCalendar.year, firstCalendar.month)
     val targetCalendar: Calendar =
         getCalendarWidthDiffer(firstCalendar, days * ONE_DAY)
-    scrollToCalendar(
-        targetCalendar.year,
-        targetCalendar.month,
-        targetCalendar.day,
-        smoothScroll,
-        false
-    )
+
+    //这种方式会改变选中的日历
+    /*scrollToCalendar(
+       targetCalendar.year,
+       targetCalendar.month,
+       targetCalendar.day,
+       smoothScroll,
+       invokeListener
+    )*/
+
+    val position = CalendarUtil.getWeekFromCalendarStartWithMinCalendar(
+        targetCalendar,
+        mDelegate.minYear,
+        mDelegate.minYearMonth,
+        mDelegate.minYearDay,
+        mDelegate.weekStart
+    ) - 1
+    setCurrentItem(position, smoothScroll)
 }
 
 /**
