@@ -70,6 +70,7 @@ open class BaseConversationFragment : BaseDslFragment() {
                     itemLoadImage = bean.messageInfoBean?.faceUrl
                     itemLoadImageText = itemText.orString()
                     itemLoadImageTextBgColor = randomColorList.getSafe(index)!!.toColor()
+                    itemShowLastLineView = true
 
                     val draftInfo = bean.draftInfo
                     if (draftInfo != null) {
