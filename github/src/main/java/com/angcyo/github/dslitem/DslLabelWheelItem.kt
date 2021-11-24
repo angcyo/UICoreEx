@@ -9,10 +9,8 @@ import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
 import com.angcyo.item.extend.IToText
-import com.angcyo.item.style.ILoadItem
-import com.angcyo.item.style.ITextItem
-import com.angcyo.item.style.LoadItemConfig
-import com.angcyo.item.style.TextItemConfig
+import com.angcyo.item.style.*
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.string
 import com.angcyo.widget.DslViewHolder
 
@@ -90,7 +88,7 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         itemHolder.tv(textItemConfig.itemTextViewId)?.apply {
             text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
                 itemWheelToText(this)
-            }
+            } ?: textItemConfig.itemText //默认文本
         }
         itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
     }
@@ -145,5 +143,46 @@ inline fun <reified DATA> DslAdapterItem.itemWheelData(): DATA? {
         itemWheelList?.getOrNull(itemSelectedIndex) as DATA?
     } else {
         null
+    }
+}
+
+/**更新默认选中的项, 如果可行
+ * [index] 想要选中的索引
+ * [item] 想要选中的数据, 如果设置了, 则优先级高
+ * [defText] 默认情况下需要显示的文本*/
+fun DslLabelWheelItem.updateWheelSelected(
+    index: Int,
+    item: Any? = null,
+    defText: CharSequence? = null
+) {
+    //默认显示的文本
+    val text = if (item == null) {
+        defText
+    } else {
+        itemWheelToText(item) ?: defText
+    }
+    itemText = text
+    itemSelectedIndex = -1
+
+    val list = itemWheelList
+    if (list != null) {
+        //查找对应的index
+
+        val _index = if (item == null) {
+            index
+        } else {
+            list.indexOfFirst {
+                itemWheelToText(it) == itemWheelToText(item)
+            }.run {
+                if (this == -1) index else this
+            }
+        }
+
+        val size = list.size()
+        if (_index in 0 until size) {
+            //在范围内
+            itemSelectedIndex = _index
+            return
+        }
     }
 }
