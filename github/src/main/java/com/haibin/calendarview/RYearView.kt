@@ -130,6 +130,18 @@ class RYearView(context: Context) : DefaultYearView(context) {
                 radius,
                 mSelectedPaint
             )
+        } else if (calendar == mDelegate.mSelectedCalendar) {
+            RRangeMonthView.drawSelectedBackground(
+                canvas,
+                x,
+                y,
+                false,
+                false,
+                mItemWidth,
+                mItemHeight,
+                radius,
+                mSelectedPaint
+            )
         }
 
         if (!isInRange) {

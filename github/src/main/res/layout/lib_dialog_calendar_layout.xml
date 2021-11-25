@@ -52,6 +52,10 @@
         app:calendar_height="65dp"
         app:month_view="com.haibin.calendarview.RRangeMonthView"
         app:month_view_show_mode="mode_all"
+        app:select_mode="single_mode"
+        app:selected_lunar_text_color="@color/lib_white"
+        app:selected_text_color="@color/lib_white"
+        app:selected_theme_color="@color/colorAccent"
         app:year_view="com.haibin.calendarview.RYearView" />
 
 </LinearLayout>

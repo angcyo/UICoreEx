@@ -57,6 +57,9 @@ open class CalendarDialogConfig : BaseDialogConfig() {
     var minYearMonth = 1
     var minYearDay = 1
 
+    /**是否是多选模式*/
+    var isMultiMode = true
+
     /**
      * 日历返回, 想要拿到日期 范围. 使用 list.first list.last就行
      * 返回 true, 则不会自动 调用 dismiss
@@ -69,6 +72,8 @@ open class CalendarDialogConfig : BaseDialogConfig() {
 
     init {
         dialogLayoutId = R.layout.lib_dialog_calendar_layout
+
+        dialogTitle = "选择日期"
 
         positiveButtonListener = { dialog, _ ->
             if (dialogResult.invoke(dialog, calendarList)) {
@@ -111,28 +116,28 @@ open class CalendarDialogConfig : BaseDialogConfig() {
 
         calendarView?.apply {
 
+            if (isMultiMode) {
+                setMonthView(RRangeMonthView::class.java)
+                setSelectMultiMode()
+            } else {
+                setMonthView(RCircleMonthView::class.java)
+                setSelectSingleMode()
+            }
+
             val calendarViewDelegate = calendarView.getCalendarViewDelegate()
             calendar = calendarViewDelegate.createCurrentDate() ?: today()
 
             //监听月份左右滑动
-            calendarView.setOnCalendarSelectListener(object :
-                CalendarView.OnCalendarSelectListener {
-                override fun onCalendarOutOfRange(calendar: Calendar) {
-                    L.w("超范围:$calendar")
+            calendarView.onMonthChangeListener { year, month ->
+                currentCalendarTipView?.text = buildString {
+                    append(year)
+                    append("年")
+                    append(month)
+                    append("月")
                 }
+            }
 
-                override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
-                    this@CalendarDialogConfig.calendar = calendar
-                    currentCalendarTipView?.text = buildString {
-                        append(calendar.year)
-                        append("年")
-                        append(calendar.month)
-                        append("月")
-                    }
-                }
-            })
-
-            //监听日期点击选择
+            //监听日期范围选择
             calendarView.setOnCalendarRangeSelectListener(object :
                 CalendarView.OnCalendarRangeSelectListener {
                 override fun onCalendarSelectOutOfRange(calendar: Calendar) {
@@ -144,23 +149,40 @@ open class CalendarDialogConfig : BaseDialogConfig() {
                 }
 
                 override fun onCalendarRangeSelect(calendar: Calendar, isEnd: Boolean) {
-
-                    if (isEnd) {
-                        //结束选中
-                        if (calendarList.size > 1) {
-                            calendarList[1] = calendar
+                    if (isMultiMode) {
+                        if (isEnd) {
+                            //结束选中
+                            if (calendarList.size > 1) {
+                                calendarList[1] = calendar
+                            } else {
+                                calendarList.add(calendar)
+                            }
                         } else {
+                            //选中开始, 第一个选中
+                            calendarList.clear()
+                            //追加2次, 当只选择了开始开始时, 结束时间就是当天
+                            calendarList.add(calendar)
                             calendarList.add(calendar)
                         }
-                    } else {
-                        //选中开始, 第一个选中
-                        calendarList.clear()
-                        //追加2次, 当只选择了开始开始时, 结束时间就是当天
-                        calendarList.add(calendar)
-                        calendarList.add(calendar)
+                        checkCalendar(dialogViewHolder, calendarViewDelegate)
                     }
+                }
+            })
 
-                    checkCalendar(dialogViewHolder, calendarViewDelegate)
+            //监听日期点击选择
+            calendarView.setOnCalendarSelectListener(object :
+                CalendarView.OnCalendarSelectListener {
+                override fun onCalendarOutOfRange(calendar: Calendar) {
+                    L.w("选择超范围:$calendar")
+                }
+
+                override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
+                    this@CalendarDialogConfig.calendar = calendar
+                    if (!isMultiMode) {
+                        calendarList.clear()
+                        calendarList.add(calendar)
+                        checkCalendar(dialogViewHolder, calendarViewDelegate)
+                    }
                 }
             })
 
@@ -184,15 +206,6 @@ open class CalendarDialogConfig : BaseDialogConfig() {
                 }
             }
 
-            calendarView.setRange(
-                minYear,
-                minYearMonth,
-                minYearDay,
-                maxYear,
-                maxYearMonth,
-                maxYearDay
-            )
-
             //切换年视图
             dialogViewHolder.click(R.id.current_calendar_tip) {
                 if (calendarView.isYearSelectLayoutVisible) {
@@ -207,47 +220,66 @@ open class CalendarDialogConfig : BaseDialogConfig() {
                 //滚动到今天
                 calendarView.scrollToCurrent()
             } else {
-                if (calendarList.size < 2) {
-                    calendarList.add(calendarList.first())
-                }
+                val first = calendarList.first()
+                if (isMultiMode) {
+                    if (calendarList.size < 2) {
+                        calendarList.add(first)
+                    }
 
-                if (calendarList.size > 1) {
-                    calendarView.getCalendarViewDelegate().mSelectedEndRangeCalendar =
-                        calendarList[1]
-                }
+                    if (calendarList.size > 1) {
+                        calendarView.getCalendarViewDelegate().mSelectedEndRangeCalendar =
+                            calendarList[1]
+                    }
 
-                calendarList.first().apply {
-                    calendarView.getCalendarViewDelegate().mSelectedStartRangeCalendar = this
-                    calendarView.scrollToCalendar(year, month, day)
+                    first.apply {
+                        calendarView.getCalendarViewDelegate().mSelectedStartRangeCalendar = this
+                        calendarView.scrollToCalendar(year, month, day)
+                    }
+                } else {
+                    calendarView.scrollToCalendar(first.year, first.month, first.day)
                 }
             }
 
             checkCalendar(dialogViewHolder, calendarViewDelegate)
+
+            //设置年份范围
+            calendarView.setRange(
+                minYear,
+                minYearMonth,
+                minYearDay,
+                maxYear,
+                maxYearMonth,
+                maxYearDay
+            )
         }
     }
 
-    private fun checkCalendar(
-        dialogViewHolder: DslViewHolder,
-        calendarViewDelegate: RCalendarViewDelegate
-    ) {
-        dialogViewHolder.tv(R.id.selector_calendar_tip)?.text = buildString {
-            val selectedStartRangeCalendar = calendarViewDelegate.getSelectedStartRangeCalendar()
-            if (selectedStartRangeCalendar == null) {
-
-            } else {
-                selectedStartRangeCalendar.apply {
-                    append("始:")
-                    ymd(this@buildString, this)
+    private fun checkCalendar(viewHolder: DslViewHolder, calendarDelegate: RCalendarViewDelegate) {
+        viewHolder.tv(R.id.selector_calendar_tip)?.text = buildString {
+            if (isMultiMode) {
+                val selectedStartRangeCalendar =
+                    calendarDelegate.getSelectedStartRangeCalendar()
+                if (selectedStartRangeCalendar == null) {
+                    //no
+                } else {
+                    selectedStartRangeCalendar.apply {
+                        append("始:")
+                        ymd(this@buildString, this)
+                    }
+                    (calendarDelegate.getSelectedEndRangeCalendar()
+                        ?: selectedStartRangeCalendar).apply {
+                        appendln()
+                        append("止:")
+                        ymd(this@buildString, this)
+                    }
                 }
-                (calendarViewDelegate.getSelectedEndRangeCalendar()
-                    ?: selectedStartRangeCalendar).apply {
-                    appendln()
-                    append("止:")
-                    ymd(this@buildString, this)
+            } else {
+                calendarDelegate.mSelectedCalendar?.let {
+                    ymd(this@buildString, it)
                 }
             }
         }
-        dialogViewHolder.enable(R.id.positive_button, calendarList.isNotEmpty())
+        viewHolder.enable(R.id.positive_button, calendarList.isNotEmpty())
     }
 }
 
@@ -258,6 +290,11 @@ open class CalendarDialogConfig : BaseDialogConfig() {
 fun Context.calendarDialog(config: CalendarDialogConfig.() -> Unit): Dialog {
     return CalendarDialogConfig().run {
         configBottomDialog(this@calendarDialog)
+
+        //isMultiMode = false
+        //dialogTitle
+        //dialogResult
+
         config()
         show()
     }

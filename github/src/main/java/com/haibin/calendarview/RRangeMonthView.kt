@@ -84,6 +84,27 @@ class RRangeMonthView(context: Context) : RangeMonthView(context) {
         mSelectedPaint.style = Paint.Style.FILL_AND_STROKE
     }
 
+    override fun isSelectPreCalendar(calendar: Calendar, calendarIndex: Int): Boolean {
+        if (isInEditMode) {
+            return calendar.day in 2..10
+        }
+        return super.isSelectPreCalendar(calendar, calendarIndex)
+    }
+
+    override fun isSelectNextCalendar(calendar: Calendar, calendarIndex: Int): Boolean {
+        if (isInEditMode) {
+            return calendar.day in 1 until 10
+        }
+        return super.isSelectNextCalendar(calendar, calendarIndex)
+    }
+
+    override fun isCalendarSelected(calendar: Calendar): Boolean {
+        if (isInEditMode) {
+            return calendar.day <= 10
+        }
+        return super.isCalendarSelected(calendar)
+    }
+
     override fun onDrawSelected(
         canvas: Canvas,
         calendar: Calendar,
