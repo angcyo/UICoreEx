@@ -513,6 +513,22 @@ class DslMarker : AMap.InfoWindowAdapter {
         return result
     }
 
+    /**移动地图, 使得地图包含所有[Marker]*/
+    fun moveIncludeMarker(
+        includeMy: Boolean = true,
+        padding: Int = 50 * dpi,
+        animDuration: Long = 250
+    ) {
+        _checkInit {
+            val latLngList = mutableListOf<LatLng>()
+            if (includeMy) {
+                (myLatLng() ?: AMapHelper.lastMapLocation?.toLatLng())?.let { latLngList.add(it) }
+            }
+            latLngList.addAll(getAllMarkerLatLng())
+            moveInclude(latLngList, padding, animDuration)
+        }
+    }
+
     /**查找指定位置是否有[Marker]*/
     fun findMarker(latLng: LatLng): Marker? {
         return _allMarker.find { it.position == latLng }

@@ -3,6 +3,7 @@ package com.angcyo.amap3d.core
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
+import android.view.MotionEvent
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -12,6 +13,8 @@ import com.angcyo.amap3d.AMapHelper
 import com.angcyo.amap3d.DslAMap
 import com.angcyo.amap3d.DslMarker
 import com.angcyo.library.L
+import com.angcyo.widget.base.isTouchDown
+import com.angcyo.widget.base.isTouchFinish
 import com.angcyo.widget.base.mH
 import com.angcyo.widget.base.mW
 
@@ -43,7 +46,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
 
     //</editor-fold desc="样式配置">
 
-    //</editor-fold desc="必须的方法">
+    //<editor-fold desc="必须的方法">
 
     /**绑定[LifecycleOwner]的生命周期*/
     fun bindLifecycle(owner: LifecycleOwner, savedInstanceState: Bundle?) {
@@ -100,7 +103,7 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
         onSaveInstanceState(outState)
     }
 
-    //<editor-fold desc="必须的方法">
+    //</editor-fold desc="必须的方法">
 
     /**设置地图中心点坐标, 相对于视图的坐标, 默认是0.5,0.5*/
     fun setPointToCenter(x: Float, y: Float) {
@@ -108,4 +111,21 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
             map.setPointToCenter((mW() * x).toInt(), (mH() * y).toInt())
         }
     }
+
+    //<editor-fold desc="事件拦截">
+
+    var interceptEvent: Boolean = false
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (interceptEvent) {
+            if (ev.isTouchDown()) {
+                parent.requestDisallowInterceptTouchEvent(true)
+            } else if (ev.isTouchFinish()) {
+                parent.requestDisallowInterceptTouchEvent(false)
+            }
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+
+    //</editor-fold desc="事件拦截">
 }

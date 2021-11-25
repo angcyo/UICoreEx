@@ -5,7 +5,7 @@ import com.amap.api.maps.AMap
 import com.angcyo.amap3d.R
 import com.angcyo.amap3d.core.RTextureMapView
 import com.angcyo.amap3d.initMapView
-import com.angcyo.core.fragment.BaseTitleFragment
+import com.angcyo.core.fragment.BaseDslFragment
 
 /**
  * 高德地图基类
@@ -14,7 +14,7 @@ import com.angcyo.core.fragment.BaseTitleFragment
  * @date 2021/11/23
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-open class BaseMapFragment : BaseTitleFragment() {
+open class BaseMapFragment : BaseDslFragment() {
 
     val mapView: RTextureMapView? get() = _vh.v<RTextureMapView>(R.id.lib_map_view)
 
