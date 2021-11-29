@@ -11,7 +11,6 @@ import com.angcyo.pager.dslSinglePager
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.bean.imagePath
-import com.angcyo.tim.bean.msgType
 import com.angcyo.tim.bean.videoElem
 import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.tim.util.TimConfig.IMAGE_MESSAGE_DEFAULT_MAX_SIZE

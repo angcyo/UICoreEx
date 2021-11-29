@@ -9,7 +9,6 @@ import com.angcyo.library.ex.shotTimeString
 import com.angcyo.library.ex.toColor
 import com.angcyo.tim.bean.ConversationInfoBean
 import com.angcyo.tim.bean.faceUrl
-import com.angcyo.tim.bean.msgType
 import com.angcyo.tim.util.handlerEmojiText
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.setRBgDrawable

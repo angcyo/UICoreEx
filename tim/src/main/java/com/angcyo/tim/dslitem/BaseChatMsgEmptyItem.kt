@@ -1,6 +1,7 @@
 package com.angcyo.tim.dslitem
 
 import com.angcyo.tim.R
+import com.angcyo.widget.DslViewHolder
 
 /**
  * 仅有消息的时间和消息体, 没有消息的左右2个头像和消息状态
@@ -15,4 +16,8 @@ abstract class BaseChatMsgEmptyItem : BaseChatMsgItem() {
         itemLayoutId = R.layout.chat_msg_empty_item
     }
 
+    override fun bindMsgStyle(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
+        super.bindMsgStyle(itemHolder, itemPosition, payloads)
+        clearMsgBackground(itemHolder)
+    }
 }

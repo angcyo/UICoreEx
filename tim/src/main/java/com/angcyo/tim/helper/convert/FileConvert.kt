@@ -26,7 +26,7 @@ class FileConvert : BaseConvert() {
     }
 
     override fun handleBean(bean: MessageInfoBean): Boolean {
-        return bean.message?.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FILE
+        return bean.msgType == V2TIMMessage.V2TIM_ELEM_TYPE_FILE
     }
 
     override fun convertToBean(message: V2TIMMessage): MessageInfoBean {

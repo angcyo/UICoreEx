@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/msg_time_view"
-        android:background="@color/transparent10"
+        tools:background="@color/transparent10"
         tools:layout_height="100dp" />
 
 </RelativeLayout>

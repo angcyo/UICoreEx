@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.behavior.BaseScrollBehavior
-import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.http.base.toJson
@@ -608,9 +607,7 @@ open class BaseChatPresenter : BaseChatControl() {
     fun _addMessageItem(item: DslAdapterItem?, scrollToEnd: Boolean) {
         _recycler?.stopScroll()
         item?.let {
-            if (it is IFragmentItem) {
-                it.itemFragment = chatFragment
-            }
+            chatFragment?.onInitChatAdapterItem(it)
             _adapter?.apply {
                 changeDataItems {
                     it.add(item)
@@ -630,9 +627,7 @@ open class BaseChatPresenter : BaseChatControl() {
         }
         _recycler?.stopScroll()
         list.forEach {
-            if (it is IFragmentItem) {
-                it.itemFragment = chatFragment
-            }
+            chatFragment?.onInitChatAdapterItem(it)
         }
         _adapter?.apply {
             val filterParams = _defaultFilterParams()

@@ -34,6 +34,7 @@ object ChatConvertHelper : BaseConvert() {
         convertList.add(SoundConvert())
         convertList.add(FileConvert())
         convertList.add(LocationConvert())
+        convertList.add(TipsConvert())
 
         //last
         convertList.add(UnknownConvert())
@@ -60,7 +61,10 @@ object ChatConvertHelper : BaseConvert() {
         //init
         result?.apply {
             this.message = message
+            msgType = message.elemType //this
+
             if (message.status == V2TIMMessage.V2TIM_MSG_STATUS_LOCAL_REVOKED) {
+                msgType = MessageInfoBean.MSG_STATUS_REVOKE //改变消息类型, 才能改变ui界面
                 status = MessageInfoBean.MSG_STATUS_REVOKE
                 content = when {
                     isSelf -> "您撤回了一条消息"
@@ -107,6 +111,7 @@ object ChatConvertHelper : BaseConvert() {
 
         //init
         result?.apply {
+            itemData = bean //用来thisAreItemsTheSame
             messageInfoBean = bean
         }
 
@@ -154,6 +159,7 @@ fun DslAdapter.firstMessageInfoBean(): MessageInfoBean? {
 fun V2TIMMessage.toMyselfMessageInfoBean(content: String?): MessageInfoBean {
     val bean = MessageInfoBean()
 
+    bean.msgType = elemType
     bean.message = this
     bean.timestamp = nowTime()
     bean.fromUser = V2TIMManager.getInstance().loginUser

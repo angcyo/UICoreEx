@@ -13,6 +13,19 @@ import com.tencent.imsdk.v2.V2TIMMessage
  */
 abstract class BaseConvert {
 
+    companion object {
+        fun baseMessageInfoBean(message: V2TIMMessage): MessageInfoBean {
+            val bean = MessageInfoBean()
+            message.apply {
+                bean.message = this
+                bean.timestamp = timestamp * 1000
+                bean.fromUser = sender
+                bean.messageId = msgID
+            }
+            return bean
+        }
+    }
+
     /**是否需要处理[message], 决定[convertToBean]是否调用
      * https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessage.html#a00455865d1a14191b8c612252bf20a1c
      * */
@@ -39,17 +52,6 @@ abstract class BaseConvert {
      * */
     open fun convertToItem(bean: MessageInfoBean): BaseChatMsgItem? {
         return null
-    }
-
-    fun baseMessageInfoBean(message: V2TIMMessage): MessageInfoBean {
-        val bean = MessageInfoBean()
-        message.apply {
-            bean.message = this
-            bean.timestamp = timestamp * 1000
-            bean.fromUser = sender
-            bean.messageId = msgID
-        }
-        return bean
     }
 
 }

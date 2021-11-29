@@ -25,7 +25,7 @@ class ImageConvert : BaseConvert() {
     }
 
     override fun handleBean(bean: MessageInfoBean): Boolean {
-        return bean.message?.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE
+        return bean.msgType == V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE
     }
 
     override fun convertToBean(message: V2TIMMessage): MessageInfoBean {

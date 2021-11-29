@@ -52,8 +52,9 @@ open class BaseConversationFragment : BaseDslFragment() {
     open fun onInitConversation() {
         _adapter.toLoading()
 
-        vmApp<ChatModel>().sdkConnectData.observe {
-            if (it == false) {
+        //监听连接状态
+        vmApp<ChatModel>().sdkConnectData.observe { connect ->
+            if (connect == false) {
                 //未连接
                 _adapter.changeHeaderItems {
                     if (!it.contains(chatConnectTipItem)) {
@@ -68,6 +69,7 @@ open class BaseConversationFragment : BaseDslFragment() {
             }
         }
 
+        //监听会话列表变化
         conversationModel.conversationListData.observe {
             if (conversationModel.conversationListData.isSetValue) {
 
@@ -100,13 +102,17 @@ open class BaseConversationFragment : BaseDslFragment() {
 
     override fun onLoadData() {
         super.onLoadData()
+
+        //主动获取会话列表
         conversationModel.fetchConversationList()
     }
 
+    /**初始化[DslMessageListItem]*/
     open fun onInitConversationItem(item: DslMessageListItem, bean: ConversationInfoBean) {
 
     }
 
+    /**点击[DslMessageListItem]*/
     open fun onClickConversationItem(
         item: DslMessageListItem,
         view: View,
@@ -115,6 +121,7 @@ open class BaseConversationFragment : BaseDslFragment() {
         ConversationHelper.conversationJump(this, bean)
     }
 
+    /**长按[DslMessageListItem]*/
     open fun onLongClickConversationItem(
         item: DslMessageListItem,
         view: View,

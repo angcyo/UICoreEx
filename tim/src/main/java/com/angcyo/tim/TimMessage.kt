@@ -280,6 +280,19 @@ object TimMessage {
         })
     }
 
+    /**删除消息*/
+    fun deleteMessages(list: List<V2TIMMessage>, callback: (TimSdkException?) -> Unit) {
+        messageManager.deleteMessages(list, object : V2TIMCallback {
+            override fun onSuccess() {
+                callback(null)
+            }
+
+            override fun onError(code: Int, desc: String?) {
+                callback(TimSdkException(code, desc))
+            }
+        })
+    }
+
     /**获取历史消息高级接口
      *
      * [option] 拉取消息选项设置，可以设置从云端、本地拉取更老或更新的消息

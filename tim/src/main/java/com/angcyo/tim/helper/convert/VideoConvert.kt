@@ -26,7 +26,7 @@ class VideoConvert : BaseConvert() {
     }
 
     override fun handleBean(bean: MessageInfoBean): Boolean {
-        return bean.message?.elemType == V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO
+        return bean.msgType == V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO
     }
 
     override fun convertToBean(message: V2TIMMessage): MessageInfoBean {

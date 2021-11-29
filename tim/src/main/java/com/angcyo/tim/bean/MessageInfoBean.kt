@@ -77,6 +77,9 @@ class MessageInfoBean : Serializable {
     /**图片的高度*/
     var imageHeight: Int = -1
 
+    /**消息类型, 使用本地变量而非[V2TIMMessage]的变量, 这样就可以主动修改消息类型了*/
+    var msgType = V2TIMMessage.V2TIM_ELEM_TYPE_NONE
+
     /**消息的发送状态*/
     var status: Int = MSG_STATUS_NORMAL
 
@@ -111,10 +114,6 @@ val MessageInfoBean.faceUrl: String?
 /**消息对方是否已读（只有 C2C 消息有效）*/
 val MessageInfoBean.isPeerRead: Boolean
     get() = message?.isPeerRead == true
-
-/**消息的类型*/
-val MessageInfoBean.msgType: Int
-    get() = message?.elemType ?: V2TIMMessage.V2TIM_ELEM_TYPE_NONE
 
 /**获取消息发送者 userID*/
 val MessageInfoBean.sender: String
