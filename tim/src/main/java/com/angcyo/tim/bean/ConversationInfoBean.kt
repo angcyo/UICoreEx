@@ -35,7 +35,7 @@ class ConversationInfoBean : Serializable, Comparable<ConversationInfoBean> {
     var unReadCount: Int = 0
 
     /**是否置顶*/
-    var top: Boolean = false
+    var isTop: Boolean = false
 
     /**排序key*/
     var orderKey: Long = 0
@@ -44,9 +44,9 @@ class ConversationInfoBean : Serializable, Comparable<ConversationInfoBean> {
      * 从小到大排序
      * */
     override fun compareTo(other: ConversationInfoBean): Int {
-        return if (this.top && !other.top) {
+        return if (this.isTop && !other.isTop) {
             -1
-        } else if (!this.top && other.top) {
+        } else if (!this.isTop && other.isTop) {
             1
         } else {
             val thisOrderKey: Long = this.orderKey
@@ -79,3 +79,11 @@ val ConversationInfoBean.userId: String?
 /**群组id*/
 val ConversationInfoBean.groupId: String?
     get() = conversation?.groupID
+
+/**聊天id*/
+val ConversationInfoBean.chatId: String?
+    get() = if (conversation?.type == V2TIMConversation.V2TIM_C2C) {
+        conversation?.userID
+    } else {
+        conversation?.groupID
+    }

@@ -1,21 +1,26 @@
 package com.angcyo.tim.ui
 
 import android.os.Bundle
+import android.view.View
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.popup.actionPopupWindow
+import com.angcyo.dsladapter.removeIt
 import com.angcyo.dsladapter.toLoading
 import com.angcyo.item.DslMessageListItem
-import com.angcyo.item.style.*
-import com.angcyo.library.ex.*
+import com.angcyo.item.style.itemLoadImageTextBgColor
+import com.angcyo.library.ex.getSafe
+import com.angcyo.library.ex.randomColorList
+import com.angcyo.library.ex.toColor
 import com.angcyo.tim.bean.ConversationInfoBean
-import com.angcyo.tim.bean.faceUrl
-import com.angcyo.tim.bean.msgType
+import com.angcyo.tim.bean.chatId
+import com.angcyo.tim.bean.conversationId
+import com.angcyo.tim.bean.isGroup
 import com.angcyo.tim.dslitem.ChatConnectTipItem
+import com.angcyo.tim.dslitem.ConversationItem
 import com.angcyo.tim.helper.ConversationHelper
 import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.model.ConversationModel
-import com.angcyo.tim.util.handlerEmojiText
-import com.tencent.imsdk.v2.V2TIMMessage
 
 /**
  * 会话列表界面
@@ -65,41 +70,25 @@ open class BaseConversationFragment : BaseDslFragment() {
 
         conversationModel.conversationListData.observe {
             if (conversationModel.conversationListData.isSetValue) {
-                loadDataEndIndex(DslMessageListItem::class.java, it) { bean, index ->
-                    itemText = bean.title
-                    itemLoadImage = bean.messageInfoBean?.faceUrl
-                    itemLoadImageText = itemText.orString()
+
+                val list = mutableListOf<ConversationInfoBean>()
+                for (i in 0..30) {
+                    list.addAll(it ?: emptyList())
+                }
+
+                loadDataEndIndex(ConversationItem::class.java, it) { bean, index ->
+                    initConversationItem(bean)
+
                     itemLoadImageTextBgColor = randomColorList.getSafe(index)!!.toColor()
-                    itemShowLastLineView = true
-
-                    val draftInfo = bean.draftInfo
-                    if (draftInfo != null) {
-                        //草稿内容
-                        itemDes = draftInfo.text.handlerEmojiText()
-                        itemTime = draftInfo.time.shotTimeString()
-                    } else {
-                        val content = bean.messageInfoBean?.content
-                        itemDes = if (!bean.atInfoText.isNullOrEmpty()) {
-                            //at信息
-                            bean.atInfoText
-                        } else {
-                            when (bean.messageInfoBean?.msgType) {
-                                V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> content?.handlerEmojiText()
-                                else -> content
-                            }
-                        }
-                        itemTime = bean.lastMessageTime.shotTimeString()
-                    }
-
-                    itemBadgeText = if (bean.unReadCount > 0) {
-                        ""
-                    } else {
-                        null
-                    }
 
                     //click
                     itemClick = {
-                        onClickConversationItem(bean)
+                        onClickConversationItem(this, it, bean)
+                    }
+
+                    //long press
+                    itemLongClick = {
+                        onLongClickConversationItem(this, it, bean)
                     }
 
                     //init
@@ -118,7 +107,44 @@ open class BaseConversationFragment : BaseDslFragment() {
 
     }
 
-    open fun onClickConversationItem(bean: ConversationInfoBean) {
+    open fun onClickConversationItem(
+        item: DslMessageListItem,
+        view: View,
+        bean: ConversationInfoBean
+    ) {
         ConversationHelper.conversationJump(this, bean)
+    }
+
+    open fun onLongClickConversationItem(
+        item: DslMessageListItem,
+        view: View,
+        bean: ConversationInfoBean
+    ): Boolean {
+
+        fContext().actionPopupWindow(view) {
+            if (bean.isTop) {
+                addAction("取消置顶") { _, _ ->
+                    ConversationHelper.setConversationTop(bean.conversationId, false)
+                }
+            } else {
+                addAction("置顶聊天") { _, _ ->
+                    ConversationHelper.setConversationTop(bean.conversationId, true)
+                }
+            }
+
+            addAction("删除聊天") { _, _ ->
+                ConversationHelper.deleteConversation(bean.conversationId) { timSdkException ->
+                    if (timSdkException == null) {
+                        //删除成功
+                        item.removeIt()
+                    }
+                }
+
+            }
+            addAction("清空消息") { _, _ ->
+                ConversationHelper.clearHistoryMessage(bean.chatId, bean.isGroup)
+            }
+        }
+        return true
     }
 }

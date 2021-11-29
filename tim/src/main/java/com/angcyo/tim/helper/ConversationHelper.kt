@@ -4,9 +4,11 @@ import androidx.fragment.app.Fragment
 import com.angcyo.base.dslFHelper
 import com.angcyo.library.L
 import com.angcyo.putDataSerializable
+import com.angcyo.tim.TimSdkException
 import com.angcyo.tim.bean.*
 import com.angcyo.tim.ui.chat.GroupChatFragment
 import com.angcyo.tim.ui.chat.SingleChatFragment
+import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMGroupAtInfo
 import com.tencent.imsdk.v2.V2TIMManager
@@ -47,7 +49,7 @@ object ConversationHelper {
                 }
 
                 bean.title = showName
-                bean.top = isPinned == true
+                bean.isTop = isPinned == true
                 bean.orderKey = orderKey
 
                 bean.atInfoText = when (getAtInfoType(this)) {
@@ -114,6 +116,65 @@ object ConversationHelper {
     /**会话跳转*/
     fun conversationJump(fragment: Fragment, bean: ChatInfoBean) {
         conversationJumpListener.conversationJump(fragment, bean)
+    }
+
+    /**置顶会话*/
+    fun setConversationTop(
+        conversationId: String?,
+        isTop: Boolean = true,
+        callback: ((TimSdkException?) -> Unit)? = null
+    ) {
+        V2TIMManager.getConversationManager()
+            .pinConversation(conversationId, isTop, object : V2TIMCallback {
+                override fun onSuccess() {
+                    callback?.invoke(null)
+                }
+
+                override fun onError(code: Int, desc: String) {
+                    callback?.invoke(TimSdkException(code, desc))
+                }
+            })
+    }
+
+    /**删除会话*/
+    fun deleteConversation(
+        conversationId: String?,
+        callback: ((TimSdkException?) -> Unit)? = null
+    ) {
+        V2TIMManager.getConversationManager()
+            .deleteConversation(conversationId, object : V2TIMCallback {
+                override fun onSuccess() {
+                    callback?.invoke(null)
+                }
+
+                override fun onError(code: Int, desc: String) {
+                    callback?.invoke(TimSdkException(code, desc))
+                }
+            })
+    }
+
+    /**清理会话历史记录*/
+    fun clearHistoryMessage(
+        chatId: String?,
+        isGroup: Boolean,
+        callback: ((TimSdkException?) -> Unit)? = null
+    ) {
+
+        val _callback = object : V2TIMCallback {
+            override fun onError(code: Int, desc: String) {
+                callback?.invoke(TimSdkException(code, desc))
+            }
+
+            override fun onSuccess() {
+                callback?.invoke(null)
+            }
+        }
+
+        if (isGroup) {
+            V2TIMManager.getMessageManager().clearGroupHistoryMessage(chatId, _callback)
+        } else {
+            V2TIMManager.getMessageManager().clearC2CHistoryMessage(chatId, _callback)
+        }
     }
 }
 
