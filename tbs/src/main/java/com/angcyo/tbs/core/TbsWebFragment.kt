@@ -67,6 +67,7 @@ open class TbsWebFragment : BaseTitleFragment() {
         contentLayoutId = R.layout.layout_tbs_web_content
         contentOverlayLayoutId = R.layout.layout_tbs_web_content_overlay
         fragmentTitle = null
+        enableTitleBarHideBehavior
     }
 
     override fun onCreateBackItem(): View? {
@@ -101,6 +102,7 @@ open class TbsWebFragment : BaseTitleFragment() {
             if (title != null) {
                 fragmentTitle = title
             }
+            this@TbsWebFragment.enableTitleBarHideBehavior = enableTitleBarHideBehavior
         }
     }
 

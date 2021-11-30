@@ -25,5 +25,6 @@ data class TbsWebConfig(
     /**是否需要显示右边的菜单*/
     var showRightMenu: Boolean = true,
     /**是否需要loading提示, 包括顶部和中间*/
-    var showLoading: Boolean = true
+    var showLoading: Boolean = true,
+    var enableTitleBarHideBehavior: Boolean = true,
 ) : Parcelable
