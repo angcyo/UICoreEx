@@ -84,14 +84,6 @@ open class TbsWebFragment : BaseTitleFragment() {
         }
     }
 
-    override fun onCreateBehavior(child: View): CoordinatorLayout.Behavior<*>? {
-        return if (child.id == R.id.lib_title_wrap_layout) {
-            HideTitleBarBehavior(fContext())
-        } else {
-            super.onCreateBehavior(child)
-        }
-    }
-
     var webConfig = TbsWebConfig()
 
     override fun onCreate(savedInstanceState: Bundle?) {
