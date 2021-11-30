@@ -18,6 +18,7 @@ abstract class BaseConvert {
             val bean = MessageInfoBean()
             message.apply {
                 bean.message = this
+                bean.msgType = elemType //this
                 bean.timestamp = timestamp * 1000
                 bean.fromUser = sender
                 bean.messageId = msgID

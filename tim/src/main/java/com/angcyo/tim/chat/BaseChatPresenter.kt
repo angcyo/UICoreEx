@@ -92,6 +92,16 @@ open class BaseChatPresenter : BaseChatControl() {
                 _vh?.visible(R.id.chat_send_button)
             }
         }
+
+        /*inputEditText?.onAfterTextChanged {
+            if (it.isEmpty()) {
+                _vh?.gone(R.id.chat_send_button)
+            } else {
+                //FaceManager.handlerEmojiText(inputEditText, it.toString(), true)
+                _vh?.visible(R.id.chat_send_button)
+            }
+        }*/
+
         //键盘
         softInputLayout?.onSoftInputChangeStart { action, height, oldHeight ->
             if (action.isSoftInputShowAction()) {
@@ -695,13 +705,13 @@ open class BaseChatPresenter : BaseChatControl() {
 
     }
 
-    /**点击表情时回调*/
+    /**点击表情时回调
+     * [_showEmojiLayout]*/
     fun onEmojiClick(emoji: Emoji) {
         inputEditText?.apply {
             val index: Int = selectionStart
             val editable = text
             editable.insert(index, emoji.filter)
-            FaceManager.handlerEmojiText(this, editable.toString(), true)
         }
     }
 

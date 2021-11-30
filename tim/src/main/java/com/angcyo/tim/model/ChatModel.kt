@@ -42,7 +42,7 @@ class ChatModel : LifecycleViewModel() {
 
         override fun onRecvNewMessage(msg: V2TIMMessage?) {
             L.i("收到新消息:${msg?.msgID}:${msg?.elemType}")
-            L.d(msg?.toMessageInfoBean()?.toJson())
+            //L.d(msg?.toMessageInfoBean()?.toJson())
             //val messageInfoBean = msg?.toMessageInfoBean()
             if (msg?.groupID.isNullOrEmpty()) {
                 //C2C单聊

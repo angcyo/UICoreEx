@@ -13,6 +13,8 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import com.angcyo.library.ex._color
 import com.angcyo.tim.R
+import com.angcyo.tim.util.handlerEmojiText
+import com.angcyo.widget.base.restoreSelection
 import com.angcyo.widget.edit.DslEditText
 import java.util.*
 import java.util.regex.Pattern
@@ -76,13 +78,25 @@ open class ChatEditText : DslEditText {
         return HackInputConnection(super.onCreateInputConnection(outAttrs), true, this)
     }
 
+    var _lastInputText: CharSequence? = null
+
     override fun onTextChanged(
         text: CharSequence?,
         start: Int,
         lengthBefore: Int,
         lengthAfter: Int
     ) {
-        colorMentionString()
+        val textStr = text?.toString()
+        val lastStr = _lastInputText?.toString()
+        if (lastStr != textStr) {
+            val sStart = selectionStart
+            val sEnd = selectionEnd
+            _lastInputText = textStr?.handlerEmojiText()
+            setText(_lastInputText)
+            restoreSelection(sStart, sEnd)
+        } else {
+            colorMentionString()
+        }
     }
 
     /**获取@的人

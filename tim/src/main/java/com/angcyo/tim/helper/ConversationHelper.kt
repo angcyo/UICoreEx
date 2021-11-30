@@ -22,6 +22,7 @@ import com.tencent.imsdk.v2.V2TIMManager
  */
 object ConversationHelper {
 
+    /**会话跳转监听拦截器*/
     var conversationJumpListener = ConversationJumpListener()
 
     /**转换一下数据结构

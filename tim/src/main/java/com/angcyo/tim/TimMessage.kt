@@ -223,6 +223,24 @@ object TimMessage {
             latitude
         )?.toMyselfLocationMessageInfoBean()
 
+    /**https://im.sdk.qcloud.com/doc/zh-cn/classcom_1_1tencent_1_1imsdk_1_1v2_1_1V2TIMMessageManager.html#a313b1ea616f082f535946c83edd2cc7f*/
+    fun createCustomMessage(
+        data: ByteArray?,
+        description: String? = null,
+        extension: ByteArray? = null
+    ) = messageManager.createCustomMessage(data, description, extension)
+
+    fun customMessageBean(
+        msgType: Int,
+        data: ByteArray?,
+        description: String? = null,
+        extension: ByteArray? = null
+    ): MessageInfoBean =
+        createCustomMessage(data, description, extension).toMyselfCustomMessageInfoBean(
+            msgType,
+            description
+        )
+
     //</editor-fold desc="发送消息">
 
     //<editor-fold desc="监听消息">

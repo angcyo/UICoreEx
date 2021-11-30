@@ -132,16 +132,18 @@ class ConversationModel : LifecycleViewModel() {
         conversationManager.removeConversationListener(_conversationCountListener)
     }
 
+    /**会话监听*/
     val _conversationListener = object : V2TIMConversationListener() {
 
         override fun onNewConversation(conversationList: MutableList<V2TIMConversation>?) {
+            L.i("收到新会话:${conversationList}")
             notifyConversationList(conversationList)
             //新会话通知
             _notifyNewConversation(conversationList?.lastOrNull())
-
         }
 
         override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>?) {
+            L.i("会话改变:${conversationList}")
             notifyConversationList(conversationList)
             //会话改变通知
             _notifyNewConversation(conversationList?.lastOrNull())

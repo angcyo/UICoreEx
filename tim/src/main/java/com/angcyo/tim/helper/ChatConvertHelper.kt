@@ -61,7 +61,6 @@ object ChatConvertHelper : BaseConvert() {
         //init
         result?.apply {
             this.message = message
-            msgType = message.elemType //this
 
             if (message.status == V2TIMMessage.V2TIM_MSG_STATUS_LOCAL_REVOKED) {
                 msgType = MessageInfoBean.MSG_STATUS_REVOKE //改变消息类型, 才能改变ui界面
@@ -223,5 +222,12 @@ fun V2TIMMessage.toMyselfFileMessageInfoBean(
 /**位置消息的包装体*/
 fun V2TIMMessage.toMyselfLocationMessageInfoBean(content: String? = "[位置]"): MessageInfoBean {
     val bean = toMyselfMessageInfoBean(content)
+    return bean
+}
+
+/**自定义消息的包装体*/
+fun V2TIMMessage.toMyselfCustomMessageInfoBean(msgType: Int, content: String?): MessageInfoBean {
+    val bean = toMyselfMessageInfoBean(content)
+    bean.msgType = msgType
     return bean
 }

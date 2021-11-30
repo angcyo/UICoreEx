@@ -1,5 +1,6 @@
 package com.angcyo.tim.helper.convert
 
+import com.angcyo.http.base.fromJson
 import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.dslitem.BaseChatMsgItem
 import com.tencent.imsdk.v2.V2TIMMessage
@@ -31,7 +32,15 @@ class CustomConvert : BaseConvert() {
 
     override fun convertToBean(message: V2TIMMessage): MessageInfoBean {
         return baseMessageInfoBean(message).apply {
-            content = "[自定义消息]"
+            //{"businessId":2,"description":"您有新的合同待签署","businessType":"CONTRACT","contentType":"TEXT"}
+            val data = message.customElem?.data
+            if (data == null) {
+                content = "[自定义消息]"
+            } else {
+                val json = String(data)
+                val map = json.fromJson<Map<String, Any>>()
+                content = map?.get("textContent")?.toString() ?: map?.get("description")?.toString()
+            }
         }
     }
 
