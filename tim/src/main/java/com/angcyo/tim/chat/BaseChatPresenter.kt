@@ -54,8 +54,8 @@ open class BaseChatPresenter : BaseChatControl() {
     /**消息管理*/
     val messageManager = V2TIMManager.getMessageManager()
 
-    var _lastReadReportTime = 0L
-    var _canReadReport = true
+    /**已读上报控制*/
+    val readReportControl = ChatReadReportControl()
 
     var _isLoading = false
 
@@ -277,7 +277,7 @@ open class BaseChatPresenter : BaseChatControl() {
                 }
                 list?.let {
                     //消息已读回执
-                    limitReadReport(chatBean.chatId, chatBean.isGroup)
+                    readReportControl.limitReadReport(chatBean.chatId, chatBean.isGroup)
 
                     showLoadingItem(false)
                     _addMessageItem(it.toDslAdapterItemList(), true)
@@ -300,7 +300,7 @@ open class BaseChatPresenter : BaseChatControl() {
                     }
                     list?.let {
                         //消息已读回执
-                        limitReadReport(chatBean.chatId, chatBean.isGroup)
+                        readReportControl.limitReadReport(chatBean.chatId, chatBean.isGroup)
 
                         showLoadingItem(false)
                         _addMessageItem(it.toDslAdapterItemList(), false, 1)
@@ -546,7 +546,7 @@ open class BaseChatPresenter : BaseChatControl() {
                             val message = timMessage.toMessageInfoBean()
                             if (fragment.isFragmentShow) {
                                 //消息已读回执
-                                limitReadReport(chatBean.chatId, chatBean.isGroup)
+                                readReportControl.limitReadReport(chatBean.chatId, chatBean.isGroup)
                             }
                             _addMessageItem(
                                 message?.toDslAdapterItem(),
@@ -556,56 +556,6 @@ open class BaseChatPresenter : BaseChatControl() {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * 收到消息上报已读加频率限制
-     * @param chatId 如果是 C2C 消息， chatId 是 userId, 如果是 Group 消息 chatId 是 groupId
-     * @param isGroup 是否为 Group 消息
-     */
-    fun limitReadReport(chatId: String?, isGroup: Boolean) {
-        if (chatId.isNullOrEmpty()) {
-            return
-        }
-        val currentTime = System.currentTimeMillis()
-        val timeDifference: Long = currentTime - _lastReadReportTime
-        if (timeDifference >= TimConfig.READ_REPORT_INTERVAL) {
-            readReport(chatId, isGroup)
-            _lastReadReportTime = currentTime
-        } else {
-            if (!_canReadReport) {
-                return
-            }
-            val delay: Long = TimConfig.READ_REPORT_INTERVAL - timeDifference
-            _canReadReport = false
-            _delay(delay) {
-                readReport(chatId, isGroup)
-                _lastReadReportTime = System.currentTimeMillis()
-                _canReadReport = true
-            }
-        }
-    }
-
-    fun readReport(
-        chatId: String,
-        isGroup: Boolean,
-        callback: ((TimSdkException?) -> Unit)? = null
-    ) {
-        val listener = object : V2TIMCallback {
-            override fun onError(code: Int, desc: String) {
-                L.w("设置已读失败:$desc")
-                callback?.invoke(TimSdkException(code, desc))
-            }
-
-            override fun onSuccess() {
-                callback?.invoke(null)
-            }
-        }
-        if (!isGroup) {
-            messageManager.markC2CMessageAsRead(chatId, listener)
-        } else {
-            messageManager.markGroupMessageAsRead(chatId, listener)
         }
     }
 
