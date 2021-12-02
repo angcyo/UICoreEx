@@ -22,19 +22,21 @@ open class DslBannerItem : DslNestedRecyclerItem() {
     init {
         itemLayoutId = R.layout.dsl_banner_item
 
-        nestedRecyclerItemConfig.itemNestedLayoutManager = ScaleLayoutManager(app(), 0).apply {
-            recycleChildrenOnDetach = true
-            isFullItem = true
-            minScale = 1f
-            maxScale = 1f
-            maxAlpha = 1f
-            minAlpha = 1f
-            itemSpace = 0
+        nestedRecyclerItemConfig.itemNestedLayoutManagerProvide = {
+            ScaleLayoutManager(app(), 0).apply {
+                recycleChildrenOnDetach = true
+                isFullItem = true
+                minScale = 1f
+                maxScale = 1f
+                maxAlpha = 1f
+                minAlpha = 1f
+                itemSpace = 0
+            }
         }
     }
 
     val pagerLayoutManager: ViewPagerLayoutManager?
-        get() = nestedRecyclerItemConfig.itemNestedLayoutManager as? ViewPagerLayoutManager
+        get() = nestedRecyclerItemConfig.itemNestedLayoutManagerProvide as? ViewPagerLayoutManager
 
     override fun onBindNestedRecyclerView(
         recyclerView: RecyclerView,
