@@ -22,6 +22,10 @@ open class HttpBean<T> {
 
     //任务集合
     var data: T? = null
+
+    //新数据格式支持
+    var statusCode: Int = -1
+    var errors: String? = null
 }
 
 class PageBean<T> {
@@ -40,6 +44,9 @@ class PageBean<T> {
     /**数据集合*/
     var records: List<T>? = null
 }
+
+/**是否请求成功*/
+fun HttpBean<*>.isSuccess() = this.code in 200..299 || this.statusCode in 200..299
 
 class HttpPageBean<T> : HttpBean<PageBean<T>>()
 

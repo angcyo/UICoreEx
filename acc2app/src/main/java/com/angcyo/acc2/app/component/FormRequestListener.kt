@@ -2,6 +2,7 @@ package com.angcyo.acc2.app.component
 
 import com.angcyo.acc2.app.http.bean.HttpBean
 import com.angcyo.acc2.app.http.bean.beanType
+import com.angcyo.acc2.app.http.bean.isSuccess
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.FormBean
 import com.angcyo.acc2.bean.FormResultBean
@@ -10,7 +11,6 @@ import com.angcyo.acc2.control.log
 import com.angcyo.acc2.core.ControlException
 import com.angcyo.acc2.parse.FormParse
 import com.angcyo.http.GET
-import com.angcyo.http.base.isSuccess
 import com.angcyo.http.base.jsonObject
 import com.angcyo.http.base.readString
 import com.angcyo.http.post
@@ -110,7 +110,7 @@ class FormRequestListener : FormParse.RequestListener() {
 
                     it.toBean<HttpBean<FormResultBean>>(beanType(FormResultBean::class.java))
                         ?.apply {
-                            if (code.isSuccess()) {
+                            if (this.isSuccess()) {
                                 formResultBean = this.data
                             } else {
                                 control.accSchedule.async {
