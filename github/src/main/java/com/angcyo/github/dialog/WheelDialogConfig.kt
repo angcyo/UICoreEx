@@ -6,6 +6,7 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.github.widget.wheel.ArrayWheelAdapter
+import com.angcyo.item.extend.IToText
 import com.angcyo.library.L
 import com.angcyo.widget.DslViewHolder
 import com.contrarywind.view.WheelView
@@ -21,7 +22,7 @@ import com.contrarywind.view.WheelView
 open class WheelDialogConfig : BaseDialogConfig() {
 
     /**数据集合*/
-    var wheelItems: MutableList<Any>? = null
+    var wheelItems: List<Any>? = null
 
     /**是否无限循环*/
     var wheelCyclic = false
@@ -29,7 +30,7 @@ open class WheelDialogConfig : BaseDialogConfig() {
     /**设置选中项, -1不设置*/
     var wheelSelectedIndex = -1
 
-    /**选中回调*/
+    /**选中回调, 返回true拦截默认操作*/
     var wheelItemSelectorAction: (dialog: Dialog, index: Int, item: Any) -> Boolean =
         { dialog, index, item ->
             L.i("选中->$index:${wheelItemToStringAction(item)}")
@@ -38,10 +39,10 @@ open class WheelDialogConfig : BaseDialogConfig() {
 
     /**上屏显示转换回调*/
     var wheelItemToStringAction: (item: Any) -> CharSequence? = {
-        if (it is CharSequence) {
-            it
-        } else {
-            it.toString()
+        when (it) {
+            is CharSequence -> it
+            is IToText -> it.toText()
+            else -> it.toString()
         }
     }
 
@@ -49,6 +50,8 @@ open class WheelDialogConfig : BaseDialogConfig() {
     var _selectedIndex = -1
 
     init {
+        dialogTitle = "请选择"
+
         dialogLayoutId = R.layout.lib_dialog_wheel_layout
 
         positiveButtonListener = { dialog, _ ->
@@ -97,10 +100,14 @@ open class WheelDialogConfig : BaseDialogConfig() {
 
     /**添加Item*/
     fun addDialogItem(any: Any) {
-        if (wheelItems == null) {
+        if (wheelItems is MutableList) {
+        } else {
             wheelItems = mutableListOf()
         }
-        wheelItems?.add(any)
+        val list = wheelItems
+        if (list is MutableList) {
+            list.add(any)
+        }
     }
 }
 
@@ -110,6 +117,8 @@ open class WheelDialogConfig : BaseDialogConfig() {
 fun Context.wheelDialog(config: WheelDialogConfig.() -> Unit): Dialog {
     return WheelDialogConfig().run {
         configBottomDialog(this@wheelDialog)
+        //wheelItems
+        //wheelItemSelectorAction
         config()
         show()
     }
