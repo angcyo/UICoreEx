@@ -29,6 +29,7 @@ import com.angcyo.widget.progress.CircleLoadingView
  * @date 2020/07/03
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
+
 @SuppressLint("StaticFieldLeak")
 object AccWindowMiniLayer : ILayer() {
 
@@ -44,7 +45,7 @@ object AccWindowMiniLayer : ILayer() {
         dragContainer = DragRectFConstraint(
             RectF(
                 0f,
-                _satusBarHeight * 1f / _screenHeight,
+                _statusBarHeight * 1f / _screenHeight,
                 0f,
                 0.0000001f
             )
