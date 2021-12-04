@@ -75,9 +75,9 @@ object AccWindowFullLayer : ILayer() {
 
             //闪烁动画
             if (AccWindow.progressFlicker) {
-                if (AccWindowMiniLayer._colorAnimator == null) {
+                if (_colorAnimator == null) {
                     val defColor = getColor(R.color.colorAccent)
-                    AccWindowMiniLayer._colorAnimator = colorAnimator(
+                    _colorAnimator = colorAnimator(
                         defColor,
                         Color.TRANSPARENT,
                         true,
@@ -91,8 +91,8 @@ object AccWindowFullLayer : ILayer() {
                     }
                 }
             } else {
-                AccWindowMiniLayer._colorAnimator?.cancel()
-                AccWindowMiniLayer._colorAnimator = null
+                _colorAnimator?.cancel()
+                _colorAnimator = null
             }
 
             tv(R.id.text_view)?.apply {
