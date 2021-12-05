@@ -190,7 +190,7 @@ class DslBox {
         /**获取BoxStore*/
         fun getBoxStore(packageName: String): BoxStore {
             return boxStoreMap.get(packageName)
-                ?: throw NullPointerException("$packageName 未初始化[ObjectBox].")
+                ?: throw NullPointerException("$packageName 未初始化[ObjectBox], 请先调用[DslBox.init()]")
         }
 
         fun <T> getBox(packageName: String, entityClass: Class<T>): Box<T> {
@@ -209,7 +209,14 @@ fun boxStoreOf(
     return boxStore
 }
 
-/**快速获取[Box]*/
+/**
+ * 快速获取[Box]
+ * boxOf(MessageEntity::class.java) {
+ *   val list = query().build().find()
+ *   val list2 = query().equal(MessageEntity_.isSkip, false).build().find()
+ *   val list3 = query().equal(MessageEntity_.isSkip, false).build().find(10, 20)
+ * }
+ * */
 fun <T> boxOf(
     entityClass: Class<T>,
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
