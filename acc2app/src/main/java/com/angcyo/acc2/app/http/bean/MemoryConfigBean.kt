@@ -121,4 +121,17 @@ data class MemoryConfigBean(
     var requestTaskDelayOnError: Long? = null,
 
     //</editor-fold desc="其他配置">
+
+    //<editor-fold desc="2021-12-05">
+
+    /**通用: 请求数据的时间间隔, 毫秒*/
+    var refreshDataInterval: Long = 1000,
+
+    /**通用: 提醒动画时长*/
+    var remindAnimatorDuration: Long = 600,
+
+    /**通用: 历史数据, 查询多少天内的数据*/
+    var historyDataQueryDay: Int = 7,
+
+    //</editor-fold desc="2021-12-05">
 )
