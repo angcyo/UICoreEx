@@ -214,7 +214,7 @@ fun boxStoreOf(
  * boxOf(MessageEntity::class.java) {
  *   val list = query().build().find()
  *   val list2 = query().equal(MessageEntity_.isSkip, false).build().find()
- *   val list3 = query().equal(MessageEntity_.isSkip, false).build().find(10, 20)
+ *   val list3 = query().equal(MessageEntity_.isSkip, false).order(MessageEntity_.timestamp).build().find(10, 20)
  * }
  * */
 fun <T> boxOf(
