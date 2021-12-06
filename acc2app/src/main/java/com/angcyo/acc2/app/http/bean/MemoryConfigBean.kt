@@ -125,7 +125,7 @@ data class MemoryConfigBean(
     //<editor-fold desc="2021-12-05">
 
     /**通用: 请求数据的时间间隔, 毫秒*/
-    var refreshDataInterval: Long = 1000,
+    var refreshDataInterval: Long = 5000,
 
     /**通用: 提醒动画时长*/
     var remindAnimatorDuration: Long = 600,
