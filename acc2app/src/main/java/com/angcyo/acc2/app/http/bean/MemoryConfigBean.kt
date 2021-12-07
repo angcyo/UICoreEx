@@ -133,5 +133,8 @@ data class MemoryConfigBean(
     /**通用: 历史数据, 查询多少天内的数据*/
     var historyDataQueryDay: Int = 7,
 
+    /**通用: 闪屏通知延迟, 毫秒*/
+    var flashNotifyDelay: Long = 5000,
+
     //</editor-fold desc="2021-12-05">
 )
