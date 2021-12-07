@@ -1,9 +1,7 @@
 package com.angcyo.tim.model
 
 import com.angcyo.core.lifecycle.LifecycleViewModel
-import com.angcyo.http.base.toJson
 import com.angcyo.library.L
-import com.angcyo.tim.helper.toMessageInfoBean
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 import com.tencent.imsdk.v2.*
@@ -30,6 +28,9 @@ class ChatModel : LifecycleViewModel() {
 
     /**是否连接上了sdk服务器*/
     val sdkConnectData = vmDataNull(true)
+
+    /**被踢提醒*/
+    val kickedOfflineData = vmDataOnce(false)
 
     //</editor-fold desc="数据监听">
 
@@ -121,6 +122,7 @@ class ChatModel : LifecycleViewModel() {
         override fun onKickedOffline() {
             super.onKickedOffline()
             L.w("TIM服务器被踢下线!")
+            kickedOfflineData.value = true
         }
 
         //在线时票据过期：此时您需要生成新的 userSig 并再次调用 V2TIMManager 的 login() 函数重新登录。
