@@ -136,5 +136,11 @@ data class MemoryConfigBean(
     /**通用: 闪屏通知延迟, 毫秒*/
     var flashNotifyDelay: Long = 5000,
 
+    /**通用: 倒计时, 毫秒*/
+    var countDown: Long = 3 * 60 * 1000,
+
+    /**通用: 倒计时, 第二阶段, 毫秒*/
+    var countDownStep2: Long = 60 * 1000,
+
     //</editor-fold desc="2021-12-05">
 )
