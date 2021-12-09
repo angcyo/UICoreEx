@@ -140,9 +140,12 @@ class DslAMap {
                     AMapHelper.lastMapLocation?.toLatLng()?.let { latLng ->
                         _delay(firstMoveDelay) {
                             L.w("move to first by map loaded:$latLng $locationMoveZoom")
-                            map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration)
-                            _locationMoveFirstEnd = true
-                            map.removeOnMapLoadedListener(loadedListener)
+                            map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration) {
+                                if (it) {
+                                    _locationMoveFirstEnd = true
+                                    map.removeOnMapLoadedListener(loadedListener)
+                                }
+                            }
                         }
                     }
                 }
@@ -153,12 +156,15 @@ class DslAMap {
                 if (_isMapLoaded) {
                     _delay(firstMoveDelay) {
                         L.w("move to first by cache:$latLng $locationMoveZoom")
-                        _locationMoveFirstEnd = true
                         map.moveTo(
                             LatLng(it.latitude, it.longitude),
                             locationMoveZoom,
                             firstMoveAnimDuration
-                        )
+                        ) {
+                            if (it) {
+                                _locationMoveFirstEnd = true
+                            }
+                        }
                     }
                 }
             }
@@ -179,8 +185,11 @@ class DslAMap {
                     val latLng = it.toLatLng()
                     _delay(firstMoveDelay) {
                         L.w("move to first by location changed:$latLng $locationMoveZoom")
-                        map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration)
-                        _locationMoveFirstEnd = true
+                        map.moveTo(latLng, locationMoveZoom, firstMoveAnimDuration) {
+                            if (it) {
+                                _locationMoveFirstEnd = true
+                            }
+                        }
                     }
                 }
             }
@@ -408,26 +417,34 @@ fun AMap.zoomOut(animDuration: Long = 250) {
 /**移动至当前位置*/
 fun AMap.moveToLocation(
     animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/,
-    locationMoveZoom: Float = cameraPosition.zoom
+    locationMoveZoom: Float = cameraPosition.zoom,
+    callback: ((finish: Boolean) -> Unit)? = null
 ) {
     myLocation?.let {
-        moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration)
+        moveTo(LatLng(it.latitude, it.longitude), locationMoveZoom, animDuration, callback)
     }
 }
 
-fun AMap.moveTo(update: CameraUpdate, animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/) {
+fun AMap.moveTo(
+    update: CameraUpdate,
+    animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/,
+    callback: ((finish: Boolean) -> Unit)? = null
+) {
     if (animDuration > 0) {
         animateCamera(update, animDuration, object : AMap.CancelableCallback {
             override fun onFinish() {
                 L.d("AMap Camera Finish! $animDuration $update")
+                callback?.invoke(true)
             }
 
             override fun onCancel() {
                 L.d("AMap Camera Cancel! $update")
+                callback?.invoke(false)
             }
         })
     } else {
         moveCamera(update)
+        callback?.invoke(true)
     }
 }
 
@@ -437,17 +454,28 @@ fun AMap.moveTo(update: CameraUpdate, animDuration: Long = 250 /*动画耗时250
 fun AMap.moveTo(
     latLng: LatLng,
     zoom: Float = cameraPosition.zoom /*地图放大级别, 数值越大地图放大的越大.*/,
-    animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/
+    animDuration: Long = 250 /*动画耗时250毫秒, 小于0表示关闭动画*/,
+    callback: ((finish: Boolean) -> Unit)? = null
 ) {
-    moveTo(CameraUpdateFactory.newLatLngZoom(latLng, zoom), animDuration)
+    moveTo(CameraUpdateFactory.newLatLngZoom(latLng, zoom), animDuration, callback)
 }
 
 /**移动地图至包含所有指定的点位*/
-fun AMap.moveInclude(bounds: LatLngBounds?, padding: Int = 50 * dpi, animDuration: Long = 250) {
-    moveTo(CameraUpdateFactory.newLatLngBounds(bounds, padding), animDuration)
+fun AMap.moveInclude(
+    bounds: LatLngBounds?,
+    padding: Int = 50 * dpi,
+    animDuration: Long = 250,
+    callback: ((finish: Boolean) -> Unit)? = null
+) {
+    moveTo(CameraUpdateFactory.newLatLngBounds(bounds, padding), animDuration, callback)
 }
 
-fun AMap.moveInclude(latLngList: List<LatLng>, padding: Int = 50 * dpi, animDuration: Long = 250) {
+fun AMap.moveInclude(
+    latLngList: List<LatLng>,
+    padding: Int = 50 * dpi,
+    animDuration: Long = 250,
+    callback: ((finish: Boolean) -> Unit)? = null
+) {
     // 设置所有maker显示在当前可视区域地图中
     val bounds = LatLngBounds.Builder().run {
         latLngList.forEach {
@@ -455,10 +483,15 @@ fun AMap.moveInclude(latLngList: List<LatLng>, padding: Int = 50 * dpi, animDura
         }
         build()
     }
-    moveInclude(bounds, padding, animDuration)
+    moveInclude(bounds, padding, animDuration, callback)
 }
 
-fun AMap.moveInclude(vararg latLng: LatLng?, padding: Int = 50 * dpi, animDuration: Long = 250) {
+fun AMap.moveInclude(
+    vararg latLng: LatLng?,
+    padding: Int = 50 * dpi,
+    animDuration: Long = 250,
+    callback: ((finish: Boolean) -> Unit)? = null
+) {
     // 设置所有maker显示在当前可视区域地图中
     val bounds = LatLngBounds.Builder().run {
         latLng.forEach {
@@ -466,7 +499,7 @@ fun AMap.moveInclude(vararg latLng: LatLng?, padding: Int = 50 * dpi, animDurati
         }
         build()
     }
-    moveInclude(bounds, padding, animDuration)
+    moveInclude(bounds, padding, animDuration, callback)
 }
 
 //</editor-fold desc="Move方法">
