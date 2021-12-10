@@ -373,7 +373,7 @@ class DslMarker : AMap.InfoWindowAdapter {
         var result: Marker? = null
         _checkInit {
             result = addMarker {
-                anchor(0.5f, 0.5f) //将图标的中心位置放置在点上
+                anchor(0.5f, 0.5f) //将图标的中心位置放置在点上, 以icon的左上角为原点
                 icon(icon)
                 position(latLng)
                 draggable(false) //不可拖拽
