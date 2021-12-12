@@ -1,11 +1,11 @@
 package com.angcyo.amap3d.dslitem
 
-import android.text.TextUtils
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import com.angcyo.amap3d.R
 import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.base.dslFHelper
+import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.item.DslLabelEditItem
 import com.angcyo.item.form.FormItemConfig
 import com.angcyo.item.form.IFormItem
@@ -19,7 +19,7 @@ import com.angcyo.library.ex._color
  * @date 2020/06/04
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
+class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem, IFragmentItem {
 
     /**选中后的经度*/
     var itemLongitude: Double = 0.0
@@ -37,7 +37,7 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
             editItemConfig.itemEditText = value
         }
 
-    var itemFragment: Fragment? = null
+    override var itemFragment: Fragment? = null
 
     init {
         itemEditTipIcon = R.drawable.map_icon_gps
@@ -79,16 +79,16 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem {
 
     override var itemFormConfig: FormItemConfig = FormItemConfig().apply {
         formCheck = { params, end ->
-            end(
-                if (formRequired && !TextUtils.isEmpty(editItemConfig.itemEditText) &&
-                    itemLatitude != 0.0 &&
-                    itemLongitude != 0.0
+            var error: Throwable? = null
+            if (formRequired) {
+                if (editItemConfig.itemEditText.isNullOrEmpty() ||
+                    itemLatitude == 0.0 ||
+                    itemLongitude == 0.0
                 ) {
-                    IllegalArgumentException("请选择位置")
-                } else {
-                    null
+                    error = IllegalArgumentException("请选择位置")
                 }
-            )
+            }
+            end(error)
         }
         onGetFormValue = {
             null
