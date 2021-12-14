@@ -6,8 +6,8 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.github.widget.wheel.ArrayWheelAdapter
-import com.angcyo.item.extend.IToText
 import com.angcyo.library.L
+import com.angcyo.library.extend.IToText
 import com.angcyo.widget.DslViewHolder
 import com.contrarywind.view.WheelView
 

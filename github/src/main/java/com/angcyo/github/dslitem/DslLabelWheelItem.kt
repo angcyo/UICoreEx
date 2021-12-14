@@ -8,10 +8,10 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
-import com.angcyo.item.extend.IToText
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.string
+import com.angcyo.library.extend.IToText
 import com.angcyo.widget.DslViewHolder
 
 /**
