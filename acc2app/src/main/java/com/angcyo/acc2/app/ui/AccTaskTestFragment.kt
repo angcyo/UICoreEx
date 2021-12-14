@@ -51,8 +51,13 @@ class AccTaskTestFragment : AccAppDslFragment() {
 
         var NO_WORD = "无口令"
 
+        //任务流控件
         var show_control_flow = true
+
+        //视频流控件
         var show_video_flow = true
+
+        //直播流控件
         var show_live_flow = true
 
         val KEY_ENABLE_ACTION = "enable_action"
