@@ -6,11 +6,13 @@ import com.angcyo.amap3d.R
 import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.base.dslFHelper
 import com.angcyo.core.dslitem.IFragmentItem
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.DslLabelEditItem
 import com.angcyo.item.form.FormItemConfig
 import com.angcyo.item.form.IFormItem
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
+import com.angcyo.widget.DslViewHolder
 
 /**
  * 高德地图选地址 表单item
@@ -39,42 +41,6 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem, IFragmentItem {
 
     override var itemFragment: Fragment? = null
 
-    init {
-        itemEditTipIcon = R.drawable.map_icon_gps
-
-        configLabelTextStyle {
-            textColor = _color(R.color.text_general_color)
-        }
-
-        configEditTextStyle {
-            hint = IFormItem.DEFAULT_SELECTOR_HINT
-            textColor = _color(R.color.text_sub_color)
-            textGravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
-            noEditModel = true
-        }
-        //formDrawLeft()
-
-        itemRightIcoClick = { _, _ ->
-            if (itemFragment == null) {
-                L.w("itemFragment is null.")
-            } else {
-                itemFragment?.dslFHelper {
-                    aMapSelector {
-                        it?.apply {
-                            itemLongitude = longitude
-                            itemLatitude = latitude
-
-                            itemPoiName = poiName
-                            itemAddress = address
-
-                            itemChanging = true
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     //<editor-fold desc="表单相关">
 
     override var itemFormConfig: FormItemConfig = FormItemConfig().apply {
@@ -96,4 +62,61 @@ class FormAMapSelectAddressItem : DslLabelEditItem(), IFormItem, IFragmentItem {
     }
 
     //</editor-fold desc="表单相关">
+
+    init {
+        itemEditTipIcon = R.drawable.map_icon_gps
+
+        configLabelTextStyle {
+            textColor = _color(R.color.text_general_color)
+        }
+
+        configEditTextStyle {
+            hint = IFormItem.DEFAULT_SELECTOR_HINT
+            textColor = _color(R.color.text_sub_color)
+            textGravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            noEditModel = true
+        }
+        //formDrawLeft()
+
+        itemRightIcoClick = { _, _ ->
+            selectorAddress()
+        }
+
+        itemClick = {
+            selectorAddress()
+        }
+    }
+
+    override fun onItemBind(
+        itemHolder: DslViewHolder,
+        itemPosition: Int,
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
+    ) {
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+    }
+
+    fun selectorAddress() {
+        if (!itemFormConfig.formCanEdit) {
+            return
+        }
+
+        if (itemFragment == null) {
+            L.w("itemFragment is null.")
+        } else {
+            itemFragment?.dslFHelper {
+                aMapSelector {
+                    it?.apply {
+                        itemLongitude = longitude
+                        itemLatitude = latitude
+
+                        itemPoiName = poiName
+                        itemAddress = address
+
+                        itemChanging = true
+                    }
+                }
+            }
+        }
+    }
 }
