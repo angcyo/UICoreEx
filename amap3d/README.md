@@ -42,3 +42,9 @@ https://a.amap.com/lbs/static/unzip/Android_Map_Doc/index.html
 4.MapApiServices.jar包是AMap搜索包，支持Android SDK1.6及以上，
 
 5.如果遇到问题，可以上技术支持论坛http://bbs.amap.com/forum.php。
+
+# 2021-12-16
+
+合规检查
+
+https://lbs.amap.com/api/android-location-sdk/guide/create-project/dev-attention
