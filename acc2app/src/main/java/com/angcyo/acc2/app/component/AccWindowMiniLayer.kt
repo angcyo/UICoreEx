@@ -13,11 +13,13 @@ import com.angcyo.core.R
 import com.angcyo.http.rx.doBack
 import com.angcyo.ilayer.ILayer
 import com.angcyo.ilayer.container.DragRectFConstraint
+import com.angcyo.ilayer.container.IContainer
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library.*
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
 
@@ -35,7 +37,7 @@ object AccWindowMiniLayer : ILayer() {
 
     val _windowContainer = WindowContainer(app()).apply {
         wmLayoutParams.flags = wmLayoutParams.flags or
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
     }
 
     init {
@@ -310,5 +312,12 @@ object AccWindowMiniLayer : ILayer() {
     fun notTouchable(value: Boolean) {
         _windowContainer.notTouchable(value, this)
         update()
+    }
+
+    override fun onDestroy(fromContainer: IContainer, viewHolder: DslViewHolder) {
+        super.onDestroy(fromContainer, viewHolder)
+        if (Task.control.isControlStart) {
+            //
+        }
     }
 }
