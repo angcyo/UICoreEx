@@ -114,6 +114,7 @@ class GiteeModel : LifecycleViewModel() {
 
         actionList = actionList?.init()
         backActionList = backActionList?.init()
+        intervalList = intervalList?.init()
 
         before = before?.init()
         after = after?.init()
@@ -173,6 +174,7 @@ class GiteeModel : LifecycleViewModel() {
         result.before = result.before?.init()
         result.leave = result.leave?.init()
         result.lose = result.lose?.init()
+        result.interval = result.interval?.init()
 
         if (result.actionId == -1L) {
             //如果未指定[actionId]
