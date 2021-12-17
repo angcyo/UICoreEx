@@ -79,12 +79,7 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
         super.handleNode(nodeList)
         val showNodeTip = accControl?._taskBean?.showNodeTip
         if (isDebugType() || (showNodeTip ?: app().memoryConfigBean.showNodeTip)) {
-            doMain {
-                AccTouchTipLayer().apply {
-                    lineColor = cColor
-                    showRect(nodeList?.toRect())
-                }
-            }
+            showNodeRect(nodeList)
         }
     }
 
@@ -101,6 +96,16 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
                     }
                 }
             }
+        }
+    }
+}
+
+/**显示节点矩形提示*/
+fun showNodeRect(nodeList: List<AccessibilityNodeInfoCompat>?) {
+    doMain {
+        AccTouchTipLayer().apply {
+            lineColor = cColor
+            showRect(nodeList?.toRect())
         }
     }
 }
