@@ -77,10 +77,8 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
 
     override fun handleNode(nodeList: List<AccessibilityNodeInfoCompat>?) {
         super.handleNode(nodeList)
-
-        if (isDebugType() ||
-            (accControl?._taskBean?.showNodeTip ?: app().memoryConfigBean.showNodeTip)
-        ) {
+        val showNodeTip = accControl?._taskBean?.showNodeTip
+        if (isDebugType() || (showNodeTip ?: app().memoryConfigBean.showNodeTip)) {
             doMain {
                 AccTouchTipLayer().apply {
                     lineColor = cColor
@@ -92,9 +90,8 @@ class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
 
     override fun touch(x1: Float, y1: Float, x2: Float?, y2: Float?) {
         super.touch(x1, y1, x2, y2)
-        if (isDebugType() ||
-            (accControl?._taskBean?.showTouchTip ?: app().memoryConfigBean.showTouchTip)
-        ) {
+        val showTouchTip = accControl?._taskBean?.showTouchTip
+        if (isDebugType() || (showTouchTip ?: app().memoryConfigBean.showTouchTip)) {
             doMain {
                 AccTouchTipLayer().apply {
                     if (x2 == null || y2 == null) {

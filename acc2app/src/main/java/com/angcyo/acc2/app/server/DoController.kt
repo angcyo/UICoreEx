@@ -4,6 +4,7 @@ import com.angcyo.acc2.app.component.Task
 import com.angcyo.acc2.app.component.init
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.FindBean
+import com.angcyo.acc2.bean.HandleBean
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.ControlContext
 import com.angcyo.acc2.parse.HandleResult
@@ -68,6 +69,19 @@ class DoController {
     fun find(@RequestBody bean: FindBean): String {
         return Task.control.accSchedule.findNodeList(listOf(bean))
             ?.toLog() ?: "空"
+    }
+
+    /**执行HandleBean*/
+    @PostMapping("/handle")
+    fun handle(@RequestBody bean: HandleBean): String {
+        val old = Task.control.accPrint.memory
+        Task.control.accPrint.memory = true
+        val handleResult = Task.control.accSchedule.handle(listOf(bean))
+        Task.control.accPrint.memory = old
+        if (handleResult.isSuccessResult()) {
+            return Task.control.accPrint.memoryLogCache?.joinToString("\n") ?: "处理成功"
+        }
+        return "处理失败"
     }
 
     @GetMapping("/test")
