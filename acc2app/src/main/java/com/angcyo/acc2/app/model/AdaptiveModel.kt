@@ -1,5 +1,6 @@
 package com.angcyo.acc2.app.model
 
+import android.app.Activity
 import android.content.Context
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.dslitem.shareApk
@@ -14,6 +15,7 @@ import com.angcyo.http.toBean
 import com.angcyo.library.app
 import com.angcyo.library.component.appBean
 import com.angcyo.library.ex.*
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.Device
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.widget.span.DslSpan
@@ -27,6 +29,14 @@ import com.angcyo.widget.span.DslSpan
  */
 
 class AdaptiveModel : LifecycleViewModel() {
+
+    companion object {
+        //包名
+        const val DY_PACKAGENAME = "com.ss.android.ugc.aweme"
+        const val KS_PACKAGENAME = "com.smile.gifmaker"
+        const val WX_PACKAGENAME = "com.tencent.mm"
+        const val XHS_PACKAGENAME = "com.xingin.xhs"
+    }
 
     val adaptiveData = vmDataNull<AdaptiveVersionBean>()
     val adminData = vmDataNull<AdminBean>()
@@ -81,6 +91,14 @@ class AdaptiveModel : LifecycleViewModel() {
             Gitee.assets<HttpBean<List<AppInfoBean>>>("app_list.json", beanListType) {
                 appListData.value = it
             }
+        }
+    }
+
+    /**最后一条的适配信息*/
+    fun lastAdaptiveInfo(packageName: String?): AppVersionBean? {
+        return adaptiveData.value?.data?.last { adaptiveBean ->
+            //获取对应包名的适配信息
+            adaptiveBean.packageName == packageName
         }
     }
 
@@ -142,17 +160,65 @@ class AdaptiveModel : LifecycleViewModel() {
             //builder.append("\n继续使用将会产生未知的识别误差!")
 
             //share
-            context?.shareApk("分享APK给技术适配")
+            if (context is Activity) {
+                context.shareApk("分享APK给技术适配")
 
-            context?.normalIosDialog {
-                dialogTitle = "注意"
-                dialogMessage = builder.doIt()
+                context.normalIosDialog {
+                    dialogTitle = "注意"
+                    dialogMessage = builder.doIt()
 
-                negativeButtonText = null
-                positiveButton("查看帮助") { dialog, dialogViewHolder ->
-                    dialog.dismiss()
-                    toHelp()
+                    negativeButtonText = null
+                    positiveButton("查看帮助") { dialog, dialogViewHolder ->
+                        dialog.dismiss()
+                        toHelp()
+                    }
                 }
+            } else {
+                toastQQ(builder.doIt())
+            }
+        }
+
+        return noAdaptive
+    }
+
+    /**检查程序适配信息
+     * [packageName] 要检查的应用包名*/
+    fun checkAdaptiveInfo2(context: Context?, packageName: String?): Boolean {
+        val builder = DslSpan()
+
+        var noAdaptive = false
+
+        if (packageName == null) {
+            return false
+        }
+
+        val adaptiveInfo = lastAdaptiveInfo(packageName)
+
+        getAdaptiveInfo(packageName)?.let {
+            //适配
+        }.elseNull {
+            //未适配
+            builder.append("您的${adaptiveInfo?.name}版本不匹配\n\n")
+            builder.append("请使用: ")
+            builder.append(adaptiveInfo?.versionNameList?.lastOrNull()) {
+                foregroundColor = _color(R.color.colorAccent)
+            }
+            builder.appendln()
+
+            noAdaptive = true
+        }
+
+        if (noAdaptive) {
+            //builder.append("\n继续使用将会产生未知的识别误差!")
+            if (context is Activity) {
+                context.normalIosDialog {
+                    dialogTitle = "注意"
+                    dialogMessage = builder.doIt()
+
+                    negativeButtonText = null
+                }
+            } else {
+                toastQQ(builder.doIt())
             }
         }
 
@@ -163,8 +229,8 @@ class AdaptiveModel : LifecycleViewModel() {
     fun isAdmin(num: String? = null, device: String = Device.androidId): Boolean {
         val adminBean = adminData.value
         return adminBean?.data?.contains(num) == true ||
-                adminBean?.devices?.contains(device) == true ||
-                isSuperAdmin(num, device)
+            adminBean?.devices?.contains(device) == true ||
+            isSuperAdmin(num, device)
     }
 
     /**是否是调试设备*/
