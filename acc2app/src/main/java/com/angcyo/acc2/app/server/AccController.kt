@@ -15,6 +15,7 @@ import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.*
 import com.yanzhenjie.andserver.annotation.GetMapping
 import com.yanzhenjie.andserver.annotation.PathVariable
+import com.yanzhenjie.andserver.annotation.QueryParam
 import com.yanzhenjie.andserver.annotation.RestController
 import kotlin.math.max
 
@@ -31,8 +32,14 @@ import kotlin.math.max
 class AccController {
 
     /**捕抓界面*/
+    @GetMapping("/c")
+    fun c(): String {
+        return catch()
+    }
+
+    /**捕抓界面*/
     @GetMapping("/catch")
-    fun catchLog(): String {
+    fun catch(): String {
         return AccNodeLog().getAccessibilityWindowLog().toString()
     }
 
@@ -45,9 +52,27 @@ class AccController {
     }
 
     /**返回控制器的状态日志*/
-    @GetMapping("/controlLog")
+    @GetMapping("/log/control")
     fun controlLog(): String {
         return Task.control.controlLog()
+    }
+
+    /**返回acc的日志*/
+    @GetMapping("/log/acc")
+    fun accLog(
+        @QueryParam("line", required = false, defaultValue = "100") line: Int
+    ): String {
+        val log: String = AppAccLog.logPath()?.file()?.readTextLastLines(line) ?: "no data"
+        return log
+    }
+
+    /**返回catch的日志*/
+    @GetMapping("/log/catch")
+    fun catchLog(
+        @QueryParam("line", required = false, defaultValue = "100") line: Int
+    ): String {
+        val log: String = AppAccLog.logCatchPath()?.file()?.readTextLastLines(line) ?: "no data"
+        return log
     }
 
     /**控制器正在进行的任务*/
