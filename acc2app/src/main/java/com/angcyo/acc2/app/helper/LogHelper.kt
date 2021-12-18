@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app.helper
 
 import android.content.Context
-import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.core.component.file.DslFileHelper
 import com.angcyo.core.component.file.wrapData
 import com.angcyo.dialog.itemsDialog
@@ -28,7 +28,7 @@ object LogHelper {
     fun taskLog(data: CharSequence?) {
         if (!data.isNullOrEmpty()) {
             DslFileHelper.write(
-                AppAccLog.accLogFolderName,
+                AppAccPrint.accLogFolderName,
                 LOG_TASK_FILE_NAME,
                 data.wrapData()
             )
@@ -36,7 +36,7 @@ object LogHelper {
     }
 
     fun taskLogPath() = FileUtils.appRootExternalFolderFile(
-        folder = AppAccLog.accLogFolderName,
+        folder = AppAccPrint.accLogFolderName,
         name = LOG_TASK_FILE_NAME
     )?.absolutePath
 
@@ -56,7 +56,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享catch日志"
                 itemClick = {
-                    AppAccLog.logCatchPath()?.file()?.shareFile(it.context, toast = true)
+                    AppAccPrint.logCatchPath()?.file()?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }
@@ -65,7 +65,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享acc日志"
                 itemClick = {
-                    AppAccLog.logPath()?.file()?.shareFile(it.context, toast = true)
+                    AppAccPrint.logPath()?.file()?.shareFile(it.context, toast = true)
                     _dialog?.dismiss()
                 }
             }

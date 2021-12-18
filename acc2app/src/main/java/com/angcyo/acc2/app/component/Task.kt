@@ -1,6 +1,6 @@
 package com.angcyo.acc2.app.component
 
-import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.http.Gitee
 import com.angcyo.acc2.app.model.GiteeModel
@@ -29,7 +29,7 @@ object Task {
         }
 
         //日志
-        accPrint = AppAccLog(this)
+        accPrint = AppAccPrint(this)
 
         //浮窗控制支持
         TaskLayerControlListener.install(this)

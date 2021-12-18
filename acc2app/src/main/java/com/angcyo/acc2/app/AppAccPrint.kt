@@ -26,7 +26,7 @@ import com.angcyo.library.utils.logFilePath
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-class AppAccLog(accControl: AccControl) : AccPrint(accControl) {
+class AppAccPrint(accControl: AccControl) : AccPrint(accControl) {
 
     companion object {
 
@@ -111,10 +111,10 @@ fun showNodeRect(nodeList: List<AccessibilityNodeInfoCompat>?) {
 }
 
 /**写入acc log 到文件*/
-fun Any.saveAccLog() = DslFileHelper.write(AppAccLog.accLogFolderName, data = this.toString())
+fun Any.saveAccLog() = DslFileHelper.write(AppAccPrint.accLogFolderName, data = this.toString())
 
 fun Any.saveAccRunLog() = DslFileHelper.write(
-    AppAccLog.accLogFolderName,
-    AppAccLog.accLogFileName,
+    AppAccPrint.accLogFolderName,
+    AppAccPrint.accLogFileName,
     data = this.toString()
 )

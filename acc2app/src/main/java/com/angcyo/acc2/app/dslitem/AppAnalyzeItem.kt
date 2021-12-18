@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.TextView
 import com.angcyo.acc2.app.AccApp
-import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.model.AdaptiveModel
@@ -61,7 +61,7 @@ class AppAnalyzeItem : DslAdapterItem() {
 
         //任务日志
         itemHolder.throttleClick(R.id.task_log_button) {
-            _loadFilePath = AppAccLog.logPath()
+            _loadFilePath = AppAccPrint.logPath()
 
             if (taskLog == null) {
                 runRx({

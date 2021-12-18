@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app.server
 
 import android.graphics.*
-import com.angcyo.acc2.app.AppAccLog
+import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.component.Task
 import com.angcyo.acc2.core.AccNodeLog
@@ -46,7 +46,7 @@ class AccController {
     /**清理日志, 只会清理acc目录下的日志*/
     @GetMapping("/clear")
     fun clearLog(): String {
-        val path = AppAccLog.logPath()
+        val path = AppAccPrint.logPath()
         val result = path?.file()?.deleteRecursively() == true
         return "清理日志[$result]:$path"
     }
@@ -62,7 +62,7 @@ class AccController {
     fun accLog(
         @QueryParam("line", required = false, defaultValue = "100") line: Int
     ): String {
-        val log: String = AppAccLog.logPath()?.file()?.readTextLastLines(line) ?: "no data"
+        val log: String = AppAccPrint.logPath()?.file()?.readTextLastLines(line) ?: "no data"
         return log
     }
 
@@ -71,7 +71,7 @@ class AccController {
     fun catchLog(
         @QueryParam("line", required = false, defaultValue = "100") line: Int
     ): String {
-        val log: String = AppAccLog.logCatchPath()?.file()?.readTextLastLines(line) ?: "no data"
+        val log: String = AppAccPrint.logCatchPath()?.file()?.readTextLastLines(line) ?: "no data"
         return log
     }
 
@@ -79,6 +79,31 @@ class AccController {
     @GetMapping("/task")
     fun task(): String {
         return Task.control._taskBean?.toJson() ?: "无任务在运行"
+    }
+
+    /**获取任务采集到的数据*/
+    @GetMapping("/task/data")
+    fun taskData(): String {
+        return buildString {
+            Task.control._taskBean?.apply {
+                map?.let {
+                    appendln("map↓")
+                    appendln(it.toJson())
+                }
+
+                textMap?.let {
+                    appendln("textMap↓")
+                    appendln(it.toJson())
+                }
+
+                textListMap?.let {
+                    appendln("textListMap↓")
+                    appendln(it.toJson())
+                }
+            }.elseNull {
+                append("无任务在运行")
+            }
+        }
     }
 
     /**使用acc抓取界面, 然后还原成蓝图
