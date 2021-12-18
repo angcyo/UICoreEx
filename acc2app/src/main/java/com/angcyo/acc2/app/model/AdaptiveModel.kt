@@ -126,7 +126,8 @@ class AdaptiveModel : LifecycleViewModel() {
     }
 
     /**检查程序适配信息
-     * [packageName] 要检查的应用包名*/
+     * [packageName] 要检查的应用包名
+     * 返回 是否未适配*/
     fun checkAdaptiveInfo(
         context: Context?,
         packageName: String?,
@@ -182,11 +183,12 @@ class AdaptiveModel : LifecycleViewModel() {
     }
 
     /**检查程序适配信息
-     * [packageName] 要检查的应用包名*/
+     * [packageName] 要检查的应用包名
+     * 返回是否适配*/
     fun checkAdaptiveInfo2(context: Context?, packageName: String?): Boolean {
         val builder = DslSpan()
 
-        var noAdaptive = false
+        var adaptive = false
 
         if (packageName == null) {
             return false
@@ -196,6 +198,7 @@ class AdaptiveModel : LifecycleViewModel() {
 
         getAdaptiveInfo(packageName)?.let {
             //适配
+            adaptive = true
         }.elseNull {
             //未适配
             builder.append("您的${adaptiveInfo?.name}版本不匹配\n\n")
@@ -204,11 +207,9 @@ class AdaptiveModel : LifecycleViewModel() {
                 foregroundColor = _color(R.color.colorAccent)
             }
             builder.appendln()
-
-            noAdaptive = true
         }
 
-        if (noAdaptive) {
+        if (!adaptive) {
             //builder.append("\n继续使用将会产生未知的识别误差!")
             if (context is Activity) {
                 context.normalIosDialog {
@@ -222,15 +223,15 @@ class AdaptiveModel : LifecycleViewModel() {
             }
         }
 
-        return noAdaptive
+        return adaptive
     }
 
     /**是否是管理员*/
     fun isAdmin(num: String? = null, device: String = Device.androidId): Boolean {
         val adminBean = adminData.value
         return adminBean?.data?.contains(num) == true ||
-            adminBean?.devices?.contains(device) == true ||
-            isSuperAdmin(num, device)
+                adminBean?.devices?.contains(device) == true ||
+                isSuperAdmin(num, device)
     }
 
     /**是否是调试设备*/
