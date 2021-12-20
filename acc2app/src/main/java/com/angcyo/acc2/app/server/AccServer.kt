@@ -18,8 +18,17 @@ import com.angcyo.server.DslAndServer
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 class AccServer : AndServerService() {
+
+    init {
+        notifyName = "AccServer已启动"
+    }
+
     override fun initServer() {
         super.initServer()
+    }
+
+    override fun updateNotify() {
+        super.updateNotify()
     }
 }
 

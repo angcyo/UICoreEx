@@ -17,6 +17,7 @@ import java.io.File
 
 @Config
 class AndServerConfig : WebConfig {
+
     override fun onConfig(context: Context, delegate: WebConfig.Delegate) {
         // 添加一个网站图标
         delegate.addWebsite(FaviconWebsite())
