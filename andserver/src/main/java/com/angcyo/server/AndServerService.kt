@@ -45,6 +45,9 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     /**通知图标*/
     var notifyIcon = DEFAULT_NOTIFY_ICON
 
+    /**通知的名称*/
+    var notifyName: String = "AndServer已启动"
+
     //<editor-fold desc="周期回调方法">
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -153,7 +156,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
         }
     }
 
-    fun updateNotify() {
+    open fun updateNotify() {
         if (_needNotify) {
             val address = address()
 
@@ -164,7 +167,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
-                single("AccServer已启动", address)
+                single(notifyName, address)
             })
 
             if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {

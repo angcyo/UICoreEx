@@ -19,8 +19,17 @@ import com.angcyo.server.DslAndServer
  */
 
 class FileServer : AndServerService() {
+
+    init {
+        notifyName = "FileServer已启动"
+    }
+
     override fun initServer() {
         super.initServer()
+    }
+
+    override fun updateNotify() {
+        super.updateNotify()
     }
 }
 
