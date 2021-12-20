@@ -13,6 +13,7 @@ import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.RUtils
+import com.angcyo.widget.edit.BaseEditDelegate
 import com.angcyo.widget.span.span
 
 /**
@@ -73,6 +74,9 @@ open class AccApp : CoreApplication() {
 
         //初始化
         Gitee.init()
+
+        //debug
+        BaseEditDelegate.textChangedActionList.add(AccDebug::onAccDebugTextChanged)
     }
 
     //配置信息
