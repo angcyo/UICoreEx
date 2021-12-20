@@ -18,6 +18,24 @@ data class MemoryConfigBean(
     /**[checkApp]忽略白名单*/
     var checkIgnoreAndroidId: List<String>? = null,
 
+    /**数据版本*/
+    var version: Long = 0,
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchFunctionList]*/
+    var updateFunction: Boolean = false,
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllAction]*/
+    var updateAction: Boolean = false,
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllBackAction]*/
+    var updateBackAction: Boolean = false,
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
+    var updateCheck: Boolean = false,
+
+    /**[com.angcyo.acc2.app.http.Gitee.fetchAllTask]*/
+    var updateTask: Boolean = false,
+
     //</editor-fold desc="检查配置">
 
     //<editor-fold desc="界面配置">

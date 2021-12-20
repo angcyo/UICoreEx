@@ -36,6 +36,9 @@ object Gitee {
 
     var _last_fetch_time = 0L
 
+    //首次拉取数据
+    var isFirst = true
+
     /**[com.angcyo.core.CoreApplication.onCreate]*/
     fun init(online: Boolean = !isDebugType()) {
         fetch(online)
@@ -50,27 +53,47 @@ object Gitee {
      * ```
      * [force] 强制拉取
      * */
-    fun fetch(online: Boolean = !isDebugType(), force: Boolean = false) {
+    fun fetch(online: Boolean = !isDebugType(), force: Boolean = isFirst) {
         if (BASE.isEmpty()) {
             throw IllegalArgumentException("请先配置[BASE]地址.")
         }
+
+        val memoryConfigBean = app().memoryConfigBean
         fetchMemoryConfig(online) { data, error ->
             if (error == null) {
+                val newMemoryConfigBean = app().memoryConfigBean
+
                 var pass = false
                 val nowTime = nowTime()
                 if (online) {
-                    if (nowTime - _last_fetch_time >= app().memoryConfigBean.fetchInterval * 1000) {
+                    if (nowTime - _last_fetch_time >= newMemoryConfigBean.fetchInterval * 1000) {
                         //需要拉取数据
+                        isFirst = false
+                        pass = false
                     } else {
                         pass = true
                     }
                 }
-                if (force || !pass) {
-                    fetchFunctionList(online)
-                    fetchAllCheck(online)
-                    fetchAllAction(online)
-                    fetchAllBackAction(online)
-                    fetchAllTask(online)
+
+                if (!pass) {
+                    if (force || memoryConfigBean.version < newMemoryConfigBean.version) {
+                        //需要更新数据
+                        if (force || newMemoryConfigBean.updateFunction) {
+                            fetchFunctionList(online)
+                        }
+                        if (force || newMemoryConfigBean.updateCheck) {
+                            fetchAllCheck(online)
+                        }
+                        if (force || newMemoryConfigBean.updateAction) {
+                            fetchAllAction(online)
+                        }
+                        if (force || newMemoryConfigBean.updateBackAction) {
+                            fetchAllBackAction(online)
+                        }
+                        if (force || newMemoryConfigBean.updateTask) {
+                            fetchAllTask(online)
+                        }
+                    }
                 }
                 _last_fetch_time = nowTime
             }
