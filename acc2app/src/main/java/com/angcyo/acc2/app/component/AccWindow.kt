@@ -10,6 +10,7 @@ import com.angcyo.acc2.core.AccNodeLog
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.R
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.*
 import com.angcyo.library.component.MainExecutor
 import com.angcyo.library.ex.*
@@ -254,6 +255,15 @@ object AccWindow {
             AccWindow.text = text
             AccWindow.textColor = textColor
             action()
+        }
+    }
+
+    /**进度闪烁*/
+    fun flicker() {
+        doMain {
+            progressFlicker = true
+            updateProgress = false
+            update()
         }
     }
 
