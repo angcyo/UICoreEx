@@ -138,6 +138,10 @@ data class MemoryConfigBean(
     /**请求错误时, 请求下一个任务的延迟时长, 毫秒*/
     var requestTaskDelayOnError: Long? = null,
 
+    /**日志上传行数限制,
+     * 数据量太大的话... {"message":"500 Internal Server Error"}*/
+    var uploadLogLineLimit: Int = 150,
+
     //</editor-fold desc="其他配置">
 
     //<editor-fold desc="2021-12-05">

@@ -2,16 +2,21 @@ package com.angcyo.acc2.app.helper
 
 import android.content.Context
 import com.angcyo.acc2.app.AppAccPrint
+import com.angcyo.acc2.app.app
+import com.angcyo.core.component.GitModel
+import com.angcyo.core.component.addGistFile
 import com.angcyo.core.component.file.DslFileHelper
 import com.angcyo.core.component.file.wrapData
+import com.angcyo.core.component.gistBodyBuilder
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.library.L
-import com.angcyo.library.ex.file
-import com.angcyo.library.ex.readText
-import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.*
 import com.angcyo.library.utils.Constant
+import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.FileUtils
 import com.angcyo.library.utils.logFilePath
+import java.io.File
 
 /**
  *
@@ -56,7 +61,10 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享catch日志"
                 itemClick = {
-                    AppAccPrint.logCatchPath()?.file()?.shareFile(it.context, toast = true)
+                    AppAccPrint.logCatchPath()?.file()?.apply {
+                        uploadFileToGist("catch.log", this)
+                        shareFile(it.context, toast = true)
+                    }
                     _dialog?.dismiss()
                 }
             }
@@ -65,7 +73,10 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享acc日志"
                 itemClick = {
-                    AppAccPrint.logPath()?.file()?.shareFile(it.context, toast = true)
+                    AppAccPrint.logPath()?.file()?.apply {
+                        uploadFileToGist("acc.log", this)
+                        shareFile(it.context, toast = true)
+                    }
                     _dialog?.dismiss()
                 }
             }
@@ -74,8 +85,10 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享http日志"
                 itemClick = {
-                    Constant.HTTP_FOLDER_NAME.logFilePath()?.file()
-                        ?.shareFile(it.context, toast = true)
+                    Constant.HTTP_FOLDER_NAME.logFilePath()?.file()?.apply {
+                        uploadFileToGist("http.log", this)
+                        shareFile(it.context, toast = true)
+                    }
                     _dialog?.dismiss()
                 }
             }
@@ -84,7 +97,10 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享log日志"
                 itemClick = {
-                    L.DEFAULT_FILE_PRINT_PATH?.file()?.shareFile(it.context, toast = true)
+                    L.DEFAULT_FILE_PRINT_PATH?.file()?.apply {
+                        uploadFileToGist("l.log", this)
+                        shareFile(it.context, toast = true)
+                    }
                     _dialog?.dismiss()
                 }
             }
@@ -94,11 +110,34 @@ object LogHelper {
                     //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                     itemText = "分享task日志"
                     itemClick = {
-                        taskLogPath()?.file()?.shareFile(it.context, toast = true)
+                        taskLogPath()?.file()?.apply {
+                            uploadFileToGist("task.log", this)
+                            shareFile(it.context, toast = true)
+                        }
                         _dialog?.dismiss()
                     }
                 }
             }
         }
+    }
+
+    /**上传数据到gist*/
+    fun uploadFileToGist(des: String, file: File) {
+        val limit = app().memoryConfigBean.uploadLogLineLimit
+        val log = file.readTextLastLines(limit)?.ifEmpty { "no data!" } ?: "no data!"
+
+        val info = buildString {
+            //屏幕信息, 设备信息
+            app().let {
+                Device.screenInfo(it, this)
+                appendln()
+                Device.deviceInfo(it, this)
+            }
+        }
+
+        vmApp<GitModel>().postGist(gistBodyBuilder("${nowTimeString()}/${Device.androidId}/$des") {
+            addGistFile("device info", info)
+            addGistFile(des, log)
+        })
     }
 }
