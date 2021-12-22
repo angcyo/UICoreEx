@@ -111,12 +111,12 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
 
     override fun onStarted() {
         val address = address()
-        L.i("AndServer已启动: $address")
+        L.i("${notifyName}已启动: $address")
         updateNotify()
     }
 
     override fun onStopped() {
-        L.i("AndServer已停止: ${address()}")
+        L.i("${notifyName}已停止: ${address()}")
         if (_notifyId > 0) {
             DslNotify.cancelNotify(this, _notifyId)
         }
@@ -126,7 +126,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var _defPort: Int = -1
 
     override fun onException(e: Exception) {
-        L.e("AndServer异常: ${address()}")
+        L.e("${notifyName}异常: ${address()}")
         e.printStackTrace()
 
         if (e is SocketException) {
@@ -136,7 +136,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
             if ((serverPort - _defPort) < retryCount) {
                 serverPort += 1
 
-                L.w("AndServer重试端口: ${address()}")
+                L.w("${notifyName}重试端口: ${address()}")
 
                 initServer()
                 startServer()
