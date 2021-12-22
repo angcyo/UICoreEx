@@ -1,0 +1,25 @@
+apply from: allGradle.libBase
+
+dependencies {
+/*
+    // https://mvnrepository.com/artifact/org.mozilla/rhino
+    // api 'org.mozilla:rhino:1.7.13'
+    // https://mvnrepository.com/artifact/org.mozilla/rhino
+    api 'org.mozilla:rhino:1.7.14-RC1'
+
+    // https://mvnrepository.com/artifact/org.mozilla/rhino-engine
+    api 'org.mozilla:rhino-engine:1.7.14-RC1'
+
+
+    // https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8
+    api 'com.eclipsesource.j2v8:j2v8:6.2.1'
+
+    // https://mvnrepository.com/artifact/app.cash.zipline/zipline
+    // Unsupported OS: windows 10
+    api 'app.cash.zipline:zipline:0.1.0'*/
+
+    // https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_android
+    // https://github.com/eclipsesource/j2v8
+    api 'com.eclipsesource.j2v8:j2v8_android:3.0.5@aar'
+
+}
