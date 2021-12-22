@@ -87,8 +87,8 @@ object Tim {
     /**登出*/
     fun logout(callback: ((TimSdkException?) -> Unit)? = null) {
         //清除缓存
-        vmApp<ChatModel>().clear()
-        vmApp<ConversationModel>().clear()
+        vmApp<ChatModel>().release()
+        vmApp<ConversationModel>().release()
 
         V2TIMManager.getInstance().logout(object : V2TIMCallback {
             override fun onSuccess() {

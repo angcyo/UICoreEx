@@ -157,7 +157,7 @@ class ChatModel : LifecycleViewModel() {
         super.cancel()
     }
 
-    fun clear() {
+    fun release() {
         selfFaceUrlData.postValue(null)
         selfShowNameData.postValue(null)
 
