@@ -178,4 +178,13 @@ class ConversationModel : LifecycleViewModel() {
 
     //</editor-fold desc="监听">
 
+    fun clear() {
+        conversationCountData.postValue(0)
+        conversationListData.postValue(null)
+        _lastConversationMessageTimestamp = 0
+
+        removeListenerUnreadCount()
+        removeListenerConversation()
+    }
+
 }

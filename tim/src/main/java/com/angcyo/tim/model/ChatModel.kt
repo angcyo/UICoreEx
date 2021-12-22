@@ -148,4 +148,20 @@ class ChatModel : LifecycleViewModel() {
     }
 
     //</editor-fold desc="监听">
+
+    override fun reset() {
+        super.reset()
+    }
+
+    override fun cancel() {
+        super.cancel()
+    }
+
+    fun clear() {
+        selfFaceUrlData.postValue(null)
+        selfShowNameData.postValue(null)
+
+        removeListenerMessage()
+        removeListenerSdk()
+    }
 }
