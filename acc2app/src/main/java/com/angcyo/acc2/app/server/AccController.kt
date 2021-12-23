@@ -4,8 +4,10 @@ import android.graphics.*
 import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.component.Task
+import com.angcyo.acc2.app.model.AccServerModel
 import com.angcyo.acc2.core.AccNodeLog
 import com.angcyo.acc2.eachChildDepth
+import com.angcyo.core.vmApp
 import com.angcyo.drawable.drawTextByLT
 import com.angcyo.drawable.paint
 import com.angcyo.drawable.textHeight
@@ -13,10 +15,7 @@ import com.angcyo.http.base.toJson
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.*
-import com.yanzhenjie.andserver.annotation.GetMapping
-import com.yanzhenjie.andserver.annotation.PathVariable
-import com.yanzhenjie.andserver.annotation.QueryParam
-import com.yanzhenjie.andserver.annotation.RestController
+import com.yanzhenjie.andserver.annotation.*
 import kotlin.math.max
 
 /**
@@ -31,15 +30,22 @@ import kotlin.math.max
 @RestController
 class AccController {
 
+    /**接收客户端发过来的消息*/
+    @PostMapping("/send")
+    fun accept(@RequestBody body: String): String {
+        vmApp<AccServerModel>().newAcceptData.postValue(body)
+        return "已收到:${nowTimeString()}:${body.length.toLong().fileSizeString()}"
+    }
+
     /**捕抓界面*/
     @GetMapping("/c")
     fun c(): String {
-        return catch()
+        return catchNode()
     }
 
     /**捕抓界面*/
     @GetMapping("/catch")
-    fun catch(): String {
+    fun catchNode(): String {
         return AccNodeLog().getAccessibilityWindowLog().toString()
     }
 

@@ -10,6 +10,7 @@ import com.angcyo.acc2.control.AccControl
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.L
+import com.angcyo.library.ex.ensureName
 import com.angcyo.library.ex.readAssets
 
 /**
@@ -115,7 +116,7 @@ object Task {
     }
 }
 
-fun String.jsonName() = if (endsWith(".json")) this else "$this.json"
+fun String.jsonName() = ensureName(".json")
 
 /**to id*/
 fun String.toActionIdList(): List<Long> {

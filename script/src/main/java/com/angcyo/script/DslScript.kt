@@ -3,7 +3,9 @@ package com.angcyo.script
 import android.content.Context
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.utils.isPublic
 import com.angcyo.script.annotation.ScriptInject
+import com.angcyo.script.core.Console
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
@@ -29,43 +31,65 @@ class DslScript {
     //对象保持, 用来释放
     val v8ObjectHoldSet = mutableSetOf<V8Value>()
 
+    //<editor-fold desc="核心对象">
+
+    var console: Console
+
+    //<e/ditor-fold desc="核心对象">
+
+    init {
+        console = Console()
+    }
+
     /**初始化引擎*/
     fun initEngine(context: Context) {
         val dir = context.getExternalFilesDir("v8")
         v8 = V8.createV8Runtime("v8", dir?.absolutePath)
+
+        injectObj(console)
     }
 
     /**释放引擎资源*/
     fun releaseEngine() {
         v8ObjectHoldSet.forEach {
-            it.release()
+            try {
+                it.release()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         v8ObjectHoldSet.clear()
-        v8.release(true)
+        try {
+            v8.release(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     /**运行脚本, 默认是主线程*/
     fun runScript(script: String) {
-        val result = v8.executeScript(script)
-        L.i("脚本返回:$result")
+        L.i("准备执行脚本↓\n$script")
+        try {
+            val result = v8.executeScript(script)
+            L.i("脚本返回:$result")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     /**注入对象*/
-    fun injectObj(obj: Any) {
+    fun injectObj(obj: Any, key: String? = null) {
         val clsInject = obj.javaClass.getAnnotation(ScriptInject::class.java)
 
-        if (clsInject == null) {
-            L.w("${obj.javaClass.name} 未使用 ${ScriptInject::class.java.name} 标注!")
-            return
-        }
+        if (clsInject == null || !clsInject.ignore) {
+            //注入对象
+            var objKey: String = key ?: clsInject?.key ?: obj.javaClass.simpleName
+            if (objKey.isEmpty()) {
+                objKey = obj.javaClass.simpleName
+            }
 
-        //注入对象
-        var objKey: String = clsInject.key
-        if (objKey.isEmpty()) {
-            objKey = obj.javaClass.simpleName
+            v8.add(objKey, convertToV8Value(obj))
         }
-
-        v8.add(objKey, convertToV8Value(obj))
     }
 
     fun convertToV8Value(obj: Any?): V8Value? {
@@ -111,12 +135,15 @@ class DslScript {
         v8ObjectHoldSet.add(v8Obj)
 
         obj.javaClass.apply {
+
+            //注入属性
             for (f in declaredFields) {
-                f.isAccessible = true
                 val fInject = f.getAnnotation(ScriptInject::class.java)
-                if (fInject != null) {
+                if ((fInject == null && f.isPublic()) || fInject?.ignore == false) {
+                    f.isAccessible = true
+
                     //注入对象的属性
-                    var key: String = fInject.key
+                    var key: String = fInject?.key ?: f.name
                     if (key.isEmpty()) {
                         key = f.name
                     }
@@ -154,11 +181,15 @@ class DslScript {
                     }
                 }
             }
-            for (m in declaredMethods) {
-                m.isAccessible = true
+
+            //注入方法
+            for (m in methods) {
                 val mInject = m.getAnnotation(ScriptInject::class.java)
-                if (mInject != null) {
-                    var key: String = mInject.key
+                if (m.isPublic() && (mInject == null || !mInject.ignore)) {
+                    m.isAccessible = true
+
+                    var key: String = mInject?.key ?: m.name
+                    val includeReceiver = mInject?.includeReceiver ?: false
                     if (key.isEmpty()) {
                         key = m.name
                     }
@@ -168,43 +199,15 @@ class DslScript {
                         m.name,
                         key,
                         m.parameterTypes,
-                        mInject.includeReceiver
+                        includeReceiver
                     )
 
                     v8ObjectHoldSet.add(v8Callback)
                 }
             }
-            //v8Obj.add()
         }
 
         return v8Obj
-    }
-
-    /**初始化引擎*/
-    fun wrapEngine() {
-        val v8 = V8.createV8Runtime()
-
-        /*val runtime = V8.createV8Runtime()
-
-
-        runtime.add("", V8Value)
-        runtime.registerJavaMethod()
-
-        val result = runtime.executeIntegerScript(
-            """
-              var hello = 'hello, ';
-              var world = 'world!';
-              hello.concat(world).length;
-              """.trimIndent()
-        )
-
-        //runtime.executeScript()
-
-        runtime.getObject()//.release()
-
-        println(result)
-
-        runtime.release()*/
     }
 }
 

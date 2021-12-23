@@ -46,6 +46,7 @@ class Test {
         return "${a1} / ${a2} / ${a} / ${b}"
     }
 
+    @ScriptInject
     private fun test2(b1: Double?, a2: Test?): String? {
         return "${b1} // ${a2} // ${c} / ${d}"
     }
