@@ -9,6 +9,7 @@ import com.angcyo.github.dialog.WheelDialogConfig
 import com.angcyo.github.dialog.wheelDialog
 import com.angcyo.item.DslBaseLabelItem
 import com.angcyo.item.style.*
+import com.angcyo.library.ex.ResultThrowable
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.string
 import com.angcyo.library.extend.IToText
@@ -52,6 +53,7 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
     var itemClickBefore: (clickView: View) -> Boolean = { false }
 
     override var textItemConfig: TextItemConfig = TextItemConfig()
+
     override var loadItemConfig: LoadItemConfig = LoadItemConfig()
 
     init {
@@ -60,14 +62,16 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         itemClick = { view ->
             if (itemEnable && !itemClickBefore(view)) {
 
-                if (loadItemConfig.itemLoadAction == null) {
+                val itemLoadAction = loadItemConfig.itemLoadAction
+                if (itemLoadAction == null) {
                     showWheelDialog(view.context)
                 } else {
-                    if (loadItemConfig.itemUseLoadCache && itemWheelList?.isNotEmpty() == true) {
+                    if (loadItemConfig.itemUseLoadCache && !itemWheelList.isNullOrEmpty()) {
                         showWheelDialog(view.context)
                     } else {
-                        //异步加载
-                        loadItemConfig.itemLoadAction?.invoke {
+                        //开始异步加载
+                        startItemLoading {
+                            //加载之后的回调
                             if (it == null) {
                                 showWheelDialog(view.context)
                             }
@@ -118,6 +122,21 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
 
             itemConfigDialog(this)
         }
+    }
+
+    /**调用此方法, 通知item选中改变*/
+    fun notifyWheelItemSelected(index: Int) {
+        val old = itemSelectedIndex
+        itemSelectedIndex = index
+        itemChanging = old != index
+    }
+
+    override fun startItemLoading(loading: Boolean, result: ResultThrowable?) {
+        if (loading) {
+            //加载数据的时候, 清空之前的数据
+            itemWheelList = null
+        }
+        super.startItemLoading(loading, result)
     }
 }
 
