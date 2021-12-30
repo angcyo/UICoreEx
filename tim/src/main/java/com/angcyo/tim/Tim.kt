@@ -7,6 +7,7 @@ import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
 import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.model.ConversationModel
+import com.angcyo.tim.model.MessageNotifyModel
 import com.angcyo.tim.util.FaceManager
 import com.tencent.imsdk.v2.*
 
@@ -24,8 +25,12 @@ import com.tencent.imsdk.v2.*
 object Tim {
 
     /**sdk登录的用户*/
-    val loginUer: String
+    val loginUer: String?
         get() = V2TIMManager.getInstance().loginUser
+
+    /**SDK是否已登录*/
+    val isLogin: Boolean
+        get() = V2TIMManager.getInstance().loginStatus == V2TIMManager.V2TIM_STATUS_LOGOUT
 
     /**初始化
      * https://cloud.tencent.com/document/product/269/44477*/
@@ -64,6 +69,9 @@ object Tim {
         V2TIMManager.getInstance().login(userId, userSig, object : V2TIMCallback {
             override fun onSuccess() {
                 callback?.invoke(null)
+
+                //监听
+                vmApp<MessageNotifyModel>().init()
 
                 //会话
                 vmApp<ConversationModel>().apply {

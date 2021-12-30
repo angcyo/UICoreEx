@@ -107,6 +107,14 @@ val MessageInfoBean.isSelf: Boolean
 val MessageInfoBean.messageId: String?
     get() = message?.msgID
 
+/**用来聊天的id*/
+val MessageInfoBean.chatId: String?
+    get() = if (isGroup) {
+        message?.groupID
+    } else {
+        message?.userID
+    }
+
 /**发送者的头像*/
 val MessageInfoBean.faceUrl: String?
     get() = message?.faceUrl

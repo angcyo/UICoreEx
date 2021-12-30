@@ -2,6 +2,8 @@ package com.angcyo.tim.model
 
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.library.L
+import com.angcyo.tim.bean.MessageInfoBean
+import com.angcyo.tim.helper.toMessageInfoBean
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 import com.tencent.imsdk.v2.*
@@ -26,6 +28,9 @@ class ChatModel : LifecycleViewModel() {
     /**新消息通知, 不会保存新消息*/
     val newMessageData = vmDataOnce<V2TIMMessage>()
 
+    /**等同于[newMessageData], 只是类型不一样*/
+    val newMessageInfoData = vmDataOnce<MessageInfoBean>()
+
     /**是否连接上了sdk服务器*/
     val sdkConnectData = vmDataNull(true)
 
@@ -42,15 +47,17 @@ class ChatModel : LifecycleViewModel() {
     val _messageListener = object : V2TIMAdvancedMsgListener() {
 
         override fun onRecvNewMessage(msg: V2TIMMessage?) {
-            L.i("收到新消息:${msg?.msgID}:${msg?.elemType}")
+            L.i("收到新消息:\n${msg?.msgID}:${msg?.elemType} sender:${msg?.sender} userId:${msg?.userID} groupId:${msg?.groupID}")
             //L.d(msg?.toMessageInfoBean()?.toJson())
-            //val messageInfoBean = msg?.toMessageInfoBean()
             if (msg?.groupID.isNullOrEmpty()) {
                 //C2C单聊
             } else {
                 //群聊
             }
+            //通知新消息
             newMessageData.value = msg
+            val messageInfoBean = msg?.toMessageInfoBean()
+            newMessageInfoData.value = messageInfoBean
         }
 
         /**收到 C2C 消息已读回执*/

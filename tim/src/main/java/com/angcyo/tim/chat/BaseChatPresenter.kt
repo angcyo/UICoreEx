@@ -539,17 +539,18 @@ open class BaseChatPresenter : BaseChatControl() {
         chatFragment?.let { fragment ->
             val chatBean = fragment.chatInfoBean
             if (chatBean?.chatId != null) {
-                vmApp<ChatModel>().newMessageData.observe(fragment) { timMessage ->
-                    if (timMessage != null) {
-                        if ((chatBean.isGroup && timMessage.groupID == chatBean.chatId) || timMessage.userID == chatBean.chatId) {
+                vmApp<ChatModel>().newMessageInfoData.observe(fragment) { message ->
+                    if (message != null) {
+                        if ((chatBean.isGroup && message.message?.groupID == chatBean.chatId) ||
+                            message.message?.userID == chatBean.chatId
+                        ) {
                             //界面需要处理的消息
-                            val message = timMessage.toMessageInfoBean()
                             if (fragment.isFragmentShow) {
                                 //消息已读回执
                                 readReportControl.limitReadReport(chatBean.chatId, chatBean.isGroup)
                             }
                             _addMessageItem(
-                                message?.toDslAdapterItem(),
+                                message.toDslAdapterItem(),
                                 _recycler?.isLastItemVisibleCompleted() == true
                             )
                         }
