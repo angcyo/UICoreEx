@@ -20,12 +20,16 @@ class OfflineMessageBean {
     }
 
     var version = 1
-    var chatType = V2TIMConversation.V2TIM_C2C //聊天类型
     var action = REDIRECT_ACTION_CHAT //动作
-    var sender: String? = null //发送者, 群聊则是groupId
-    var title: String? = null //聊天标题
     var faceUrl: String? = null //头像
+
     var content: String? = null //内容
+
+    //聊天的核心数据
+    var sender: String? = null //发送者, 群聊则是groupId
+    var chatType = V2TIMConversation.V2TIM_C2C //聊天类型
+    var title: String? = null //聊天标题
+
 
     // 发送时间戳，单位毫秒
     var sendTime: Long = 0 //发送事件

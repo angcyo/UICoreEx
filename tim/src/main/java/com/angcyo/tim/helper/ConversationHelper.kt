@@ -1,6 +1,6 @@
 package com.angcyo.tim.helper
 
-import androidx.fragment.app.Fragment
+import androidx.activity.result.ActivityResultCaller
 import com.angcyo.base.dslFHelper
 import com.angcyo.library.L
 import com.angcyo.putDataSerializable
@@ -110,13 +110,13 @@ object ConversationHelper {
     }
 
     /**会话跳转*/
-    fun conversationJump(fragment: Fragment, bean: ConversationInfoBean) {
-        conversationJumpListener.conversationJump(fragment, bean)
+    fun conversationJump(caller: ActivityResultCaller, bean: ConversationInfoBean) {
+        conversationJumpListener.conversationJump(caller, bean)
     }
 
     /**会话跳转*/
-    fun conversationJump(fragment: Fragment, bean: ChatInfoBean) {
-        conversationJumpListener.conversationJump(fragment, bean)
+    fun conversationJump(caller: ActivityResultCaller, bean: ChatInfoBean) {
+        conversationJumpListener.conversationJump(caller, bean)
     }
 
     /**置顶会话*/
@@ -182,16 +182,16 @@ object ConversationHelper {
 /**会话跳转监听*/
 open class ConversationJumpListener {
 
-    open fun conversationJump(fragment: Fragment, bean: ConversationInfoBean) {
-        fragment.dslFHelper {
+    open fun conversationJump(caller: ActivityResultCaller, bean: ConversationInfoBean) {
+        caller.dslFHelper {
             show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
                 putDataSerializable(bean.toChatInfoBean())
             }
         }
     }
 
-    open fun conversationJump(fragment: Fragment, bean: ChatInfoBean) {
-        fragment.dslFHelper {
+    open fun conversationJump(caller: ActivityResultCaller, bean: ChatInfoBean) {
+        caller.dslFHelper {
             show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
                 putDataSerializable(bean)
             }

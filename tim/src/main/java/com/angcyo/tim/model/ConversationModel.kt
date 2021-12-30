@@ -178,7 +178,7 @@ class ConversationModel : LifecycleViewModel() {
 
     //</editor-fold desc="监听">
 
-    fun release() {
+    override fun release() {
         conversationCountData.postValue(0)
         conversationListData.postValue(null)
         _lastConversationMessageTimestamp = 0

@@ -15,7 +15,27 @@ dependencies {
     //https://repo1.maven.org/maven2/com/tencent/imsdk/
 
     //https://repo1.maven.org/maven2/com/tencent/imsdk/imsdk-plus/
-    api 'com.tencent.imsdk:imsdk-plus:5.7.1435'
+    api 'com.tencent.imsdk:imsdk-plus:5.9.1872'
+
+    //https://repo1.maven.org/maven2/com/tencent/tpns/
+    def tpns = '1.2.9.2-release'
+    // 小米
+    api "com.tencent.tpns:xiaomi:$tpns"
+    // 魅族
+    api "com.tencent.tpns:meizu:$tpns"
+    // OPPO
+    api "com.tencent.tpns:oppo:$tpns"
+    // vivo
+    api "com.tencent.tpns:vivo:$tpns" //VIVO_APPID VIVO_APPKEY
+    // 华为
+    api "com.tencent.tpns:huawei:$tpns"
+
+    //https://developer.huawei.com/repo/com/huawei/hms/push/5.0.2.300/push-5.0.2.300.pom
+    //https://developer.huawei.com/consumer/cn/codelab/HMSPushKit/index.html  接入指南
+    //https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-app-version-0000001074227861 //版本
+    // maven {url 'https://developer.huawei.com/repo/'}
+    api 'com.huawei.hms:push:6.3.0.300'
+
 }
 
 apply from: allGradle.v7a
