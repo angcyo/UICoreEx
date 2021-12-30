@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultCaller
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -13,6 +16,7 @@ import com.angcyo.amap3d.AMapHelper
 import com.angcyo.amap3d.DslAMap
 import com.angcyo.amap3d.DslMarker
 import com.angcyo.library.L
+import com.angcyo.library.utils.requestMultiplePermissionsLauncher
 import com.angcyo.widget.base.isTouchDown
 import com.angcyo.widget.base.isTouchFinish
 import com.angcyo.widget.base.mH
@@ -30,6 +34,12 @@ import com.angcyo.widget.base.mW
 
 class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
     TextureMapView(context, attributeSet) {
+
+    //<editor-fold desc="基础">
+
+    var requestMultiplePermissionsLauncher: ActivityResultLauncher<Array<String>>? = null
+
+    //</editor-fold desc="基础">
 
     //<editor-fold desc="样式配置">
 
@@ -51,7 +61,30 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
     /**绑定[LifecycleOwner]的生命周期*/
     fun bindLifecycle(owner: LifecycleOwner, savedInstanceState: Bundle?) {
         //请求权限
-        AMapHelper.requestPermissions(context, true)
+        val context = context
+        val backLocation = true //是否需要后台定位权限
+        val permissions = AMapHelper.permissions(true).toTypedArray()
+        if (owner is ActivityResultCaller) {
+            requestMultiplePermissionsLauncher =
+                owner.requestMultiplePermissionsLauncher(ActivityResultCallback {
+                    var result = true
+                    for (p in permissions) {
+                        if (it[p] == false) {
+                            result = false
+                            break
+                        }
+                    }
+                    if (result) {
+                        //有权限
+                        dslAMap.checkMoveToFirst(map)
+                    } else {
+                        //无权限
+                    }
+                    requestMultiplePermissionsLauncher = null
+                })
+        } else {
+            AMapHelper.requestPermissions(context, backLocation)
+        }
 
         if (owner.lifecycle.currentState != Lifecycle.State.CREATED) {
             L.w("错误的生命周期绑定时机!")
@@ -70,7 +103,12 @@ class RTextureMapView(context: Context, attributeSet: AttributeSet? = null) :
                                 loadStyleFromAssets(map, context.assets)
                             }
                         }
-                        Lifecycle.Event.ON_RESUME -> onResume()
+                        Lifecycle.Event.ON_RESUME -> {
+                            onResume()
+                            requestMultiplePermissionsLauncher?.launch(
+                                AMapHelper.permissions(backLocation).toTypedArray()
+                            )
+                        }
                         Lifecycle.Event.ON_PAUSE -> onPause()
                         //OnDestroy 方法需要在OnDestroyView中调用
                         Lifecycle.Event.ON_DESTROY -> {

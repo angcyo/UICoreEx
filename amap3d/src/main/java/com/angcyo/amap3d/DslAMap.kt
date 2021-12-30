@@ -196,6 +196,29 @@ class DslAMap {
         }
     }
 
+    /**首次移动检查*/
+    fun checkMoveToFirst(map: AMap) {
+        _locationMoveFirstEnd = false
+        //走_locationChangeListener监听即可.
+        /*map.myLocation?.let {
+            val latLng = it.toLatLng()
+            if (_isMapLoaded && locationMoveFirst && !_locationMoveFirstEnd) {
+                _delay(firstMoveDelay) {
+                    L.w("move to first by check:$latLng $locationMoveZoom")
+                    map.moveTo(
+                        LatLng(it.latitude, it.longitude),
+                        locationMoveZoom,
+                        firstMoveAnimDuration
+                    ) {
+                        if (it) {
+                            _locationMoveFirstEnd = true
+                        }
+                    }
+                }
+            }
+        }*/
+    }
+
     //</editor-fold desc="定位蓝点相关">
 
     //<editor-fold desc="样式相关">
