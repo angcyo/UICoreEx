@@ -5,6 +5,7 @@ import android.view.View
 import com.angcyo.base.removeThis
 import com.angcyo.core.dslitem.IFragmentItem
 import com.angcyo.core.fragment.BaseDslFragment
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.PopupAction
 import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapterItem
@@ -24,6 +25,7 @@ import com.angcyo.tim.chat.BaseChatPresenter
 import com.angcyo.tim.dslitem.BaseChatMsgItem
 import com.angcyo.tim.helper.ChatConvertHelper
 import com.angcyo.tim.helper.convert.BaseConvert
+import com.angcyo.tim.model.MessageNotifyModel
 import com.tencent.imsdk.BaseConstants.ERR_REVOKE_TIME_LIMIT_EXCEED
 import com.tencent.imsdk.BaseConstants.ERR_SVR_MSG_REVOKE_TIME_LIMIT
 import com.tencent.imsdk.v2.V2TIMMessage
@@ -68,6 +70,19 @@ abstract class BaseChatFragment : BaseDslFragment() {
 
     override fun onFragmentShow(bundle: Bundle?) {
         super.onFragmentShow(bundle)
+        vmApp<MessageNotifyModel>().apply {
+            currentChatId = chatInfoBean?.chatId
+            cancelChatNotify(chatInfoBean?.chatId)
+        }
+    }
+
+    override fun onFragmentHide() {
+        super.onFragmentHide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vmApp<MessageNotifyModel>().currentChatId = null
     }
 
     open fun onInitChat() {

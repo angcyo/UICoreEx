@@ -97,6 +97,7 @@ object Tim {
         //清除缓存
         vmApp<ChatModel>().release()
         vmApp<ConversationModel>().release()
+        vmApp<MessageNotifyModel>().release()
 
         V2TIMManager.getInstance().logout(object : V2TIMCallback {
             override fun onSuccess() {

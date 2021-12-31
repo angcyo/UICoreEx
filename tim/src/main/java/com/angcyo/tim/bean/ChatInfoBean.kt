@@ -15,12 +15,6 @@ class ChatInfoBean : Serializable {
     /**聊天的标题*/
     var chatTitle: String? = null
 
-    /**草稿信息*/
-    var draftInfoBean: DraftInfoBean? = null
-
-    /**最后一条消息*/
-    var lastMessageInfoBean: MessageInfoBean? = null
-
     /**聊天类型*/
     var chatType: Int = V2TIMConversation.V2TIM_C2C
 
@@ -29,6 +23,12 @@ class ChatInfoBean : Serializable {
      * 如果是 群聊, 应该是 groupId
      * */
     var chatId: String? = null
+
+    /**草稿信息*/
+    var draftInfoBean: DraftInfoBean? = null
+
+    /**最后一条消息*/
+    var lastMessageInfoBean: MessageInfoBean? = null
 }
 
 /**是否是群聊*/
@@ -51,6 +51,18 @@ fun ConversationInfoBean.toChatInfoBean(): ChatInfoBean {
     } else {
         conversation?.groupID
     }
+
+    return chatInfoBean
+}
+
+fun MessageInfoBean.toChatInfoBean(): ChatInfoBean {
+    val chatInfoBean = ChatInfoBean()
+
+    chatInfoBean.chatTitle = showUserName
+    chatInfoBean.chatId = chatId
+    chatInfoBean.chatType = chatType
+
+    chatInfoBean.lastMessageInfoBean = this
 
     return chatInfoBean
 }

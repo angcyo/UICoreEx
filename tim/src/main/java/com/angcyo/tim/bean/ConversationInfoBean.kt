@@ -1,5 +1,6 @@
 package com.angcyo.tim.bean
 
+import com.angcyo.tim.helper.ConversationHelper
 import com.tencent.imsdk.v2.V2TIMConversation
 import com.tencent.imsdk.v2.V2TIMMessage
 import java.io.Serializable
@@ -87,3 +88,6 @@ val ConversationInfoBean.chatId: String?
     } else {
         conversation?.groupID
     }
+
+fun V2TIMConversation.toConversationInfoBean(): ConversationInfoBean? =
+    ConversationHelper.convertToConversationBean(this)

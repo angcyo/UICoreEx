@@ -12,18 +12,16 @@ import com.angcyo.item.style.itemLoadImageTextBgColor
 import com.angcyo.library.ex.getSafe
 import com.angcyo.library.ex.randomColorList
 import com.angcyo.library.ex.toColor
-import com.angcyo.tim.bean.ConversationInfoBean
-import com.angcyo.tim.bean.chatId
-import com.angcyo.tim.bean.conversationId
-import com.angcyo.tim.bean.isGroup
+import com.angcyo.tim.bean.*
 import com.angcyo.tim.dslitem.ChatConnectTipItem
 import com.angcyo.tim.dslitem.ConversationItem
 import com.angcyo.tim.helper.ConversationHelper
 import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.model.ConversationModel
+import com.angcyo.tim.model.MessageNotifyModel
 
 /**
- * 会话列表界面
+ * IM会话列表界面, IM中聊过天的都会在这里显示
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/11/11
@@ -47,6 +45,16 @@ open class BaseConversationFragment : BaseDslFragment() {
         super.initBaseView(savedInstanceState)
 
         onInitConversation()
+    }
+
+    override fun onFragmentShow(bundle: Bundle?) {
+        super.onFragmentShow(bundle)
+        vmApp<MessageNotifyModel>().closeMessageNotify = true
+    }
+
+    override fun onFragmentHide() {
+        super.onFragmentHide()
+        vmApp<MessageNotifyModel>().closeMessageNotify = false
     }
 
     open fun onInitConversation() {
@@ -118,7 +126,7 @@ open class BaseConversationFragment : BaseDslFragment() {
         view: View,
         bean: ConversationInfoBean
     ) {
-        ConversationHelper.conversationJump(this, bean)
+        ConversationHelper.conversationJump(this, bean.toChatInfoBean())
     }
 
     /**长按[DslMessageListItem]*/

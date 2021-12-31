@@ -115,6 +115,9 @@ val MessageInfoBean.chatId: String?
         message?.userID
     }
 
+val MessageInfoBean.chatType: Int
+    get() = if (isGroup) V2TIMConversation.V2TIM_GROUP else V2TIMConversation.V2TIM_C2C
+
 /**发送者的头像*/
 val MessageInfoBean.faceUrl: String?
     get() = message?.faceUrl

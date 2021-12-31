@@ -4,6 +4,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.item.style.itemText
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.groupId
+import com.angcyo.tim.bean.toChatInfoBean
 import com.angcyo.tim.bean.userId
 import com.angcyo.tim.dslitem.ChatConnectTipItem
 import com.angcyo.tim.dslitem.ChatOtherMessageTipItem
@@ -56,7 +57,7 @@ class ChatNoticeControl : BaseChatControl() {
 
                     //先配置
                     chatOtherMessageTipItem.itemClick = {
-                        ConversationHelper.conversationJump(fragment, bean)
+                        ConversationHelper.conversationJump(fragment, bean.toChatInfoBean())
                         noticeWrapLayout?.removeDslItem(chatOtherMessageTipItem)
                     }
 

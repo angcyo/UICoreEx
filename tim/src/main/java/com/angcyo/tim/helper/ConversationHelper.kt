@@ -109,12 +109,7 @@ object ConversationHelper {
         return atInfoType
     }
 
-    /**会话跳转*/
-    fun conversationJump(caller: ActivityResultCaller, bean: ConversationInfoBean) {
-        conversationJumpListener.conversationJump(caller, bean)
-    }
-
-    /**会话跳转*/
+    /**会话跳转[ChatInfoBean]*/
     fun conversationJump(caller: ActivityResultCaller, bean: ChatInfoBean) {
         conversationJumpListener.conversationJump(caller, bean)
     }
@@ -182,14 +177,7 @@ object ConversationHelper {
 /**会话跳转监听*/
 open class ConversationJumpListener {
 
-    open fun conversationJump(caller: ActivityResultCaller, bean: ConversationInfoBean) {
-        caller.dslFHelper {
-            show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
-                putDataSerializable(bean.toChatInfoBean())
-            }
-        }
-    }
-
+    /**根据[ChatInfoBean]跳转到指定界面*/
     open fun conversationJump(caller: ActivityResultCaller, bean: ChatInfoBean) {
         caller.dslFHelper {
             show(if (bean.isGroup) GroupChatFragment::class.java else SingleChatFragment::class.java) {
@@ -197,8 +185,4 @@ open class ConversationJumpListener {
             }
         }
     }
-
 }
-
-fun V2TIMConversation.toConversationInfoBean(): ConversationInfoBean? =
-    ConversationHelper.convertToConversationBean(this)
