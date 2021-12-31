@@ -18,20 +18,22 @@
             tools:text="任务Id:999" />
 
         <TextView
-            android:id="@+id/task_package_name_view"
-            style="@style/AppBodyTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:text="包名" />
-
-        <TextView
             android:id="@+id/task_name_view"
             style="@style/AppBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/task_id_view"
             tools:text="任务名称" />
+
+        <TextView
+            android:id="@+id/task_package_name_view"
+            style="@style/AppBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/task_name_view"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/task_name_view"
+            tools:text="包名" />
 
         <TextView
             android:id="@+id/task_des_view"
@@ -61,10 +63,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_hdpi"
+            android:layout_marginRight="@dimen/lib_hdpi"
             android:layout_marginBottom="@dimen/lib_hdpi"
             android:text="自定义"
-            app:layout_constraintBottom_toTopOf="@id/start_button"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/start_button"
+            app:layout_constraintTop_toBottomOf="@id/task_word_list_view"
             tools:enabled="false" />
 
         <com.angcyo.widget.DslButton
@@ -74,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_hdpi"
             android:text="启动"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/task_word_list_view"
             tools:enabled="false" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
