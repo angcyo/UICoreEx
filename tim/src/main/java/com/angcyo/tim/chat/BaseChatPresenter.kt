@@ -105,9 +105,9 @@ open class BaseChatPresenter : BaseChatControl() {
         //键盘
         softInputLayout?.onSoftInputChangeStart { action, height, oldHeight ->
             if (action.isSoftInputShowAction()) {
-                _scrollToLast()
+                _scrollToLast(false)
             } else if (action.isEmojiShowAction() && _recycler?.isLastItemVisibleCompleted() == true) {
-                _scrollToLast()
+                _scrollToLast(false)
             }
         }
 
@@ -575,7 +575,7 @@ open class BaseChatPresenter : BaseChatControl() {
                 }
                 if (scrollToEnd) {
                     onDispatchUpdatesOnce {
-                        _scrollToLast()
+                        _scrollToLast(true)
                     }
                 }
             }
@@ -609,7 +609,7 @@ open class BaseChatPresenter : BaseChatControl() {
             }
             if (scrollToEnd) {
                 onDispatchUpdatesOnce {
-                    _scrollToLast()
+                    _scrollToLast(true)
                 }
             }
         }
@@ -644,9 +644,9 @@ open class BaseChatPresenter : BaseChatControl() {
         }
     }
 
-    fun _scrollToLast() {
+    fun _scrollToLast(step:Boolean) {
         _recycler?.scrollHelper?.lockScrollToLast {
-            firstScrollAnim = false
+            stepScroll = step
             lockDuration = 200
         }
     }
