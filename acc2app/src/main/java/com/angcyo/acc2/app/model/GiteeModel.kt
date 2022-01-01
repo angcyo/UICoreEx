@@ -3,6 +3,7 @@ package com.angcyo.acc2.app.model
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.bean.*
+import com.angcyo.acc2.control.AccControl
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.toJson
@@ -112,6 +113,9 @@ class GiteeModel : LifecycleViewModel() {
     fun TaskBean.init(): TaskBean {
         _init = true
 
+        //dynamic
+        AccControl.initTaskDynamic(this)
+
         actionList = actionList?.init()
         backActionList = backActionList?.init()
         intervalList = intervalList?.init()
@@ -145,6 +149,9 @@ class GiteeModel : LifecycleViewModel() {
 
         //init
         initConfig()
+
+        //dynamic
+        AccControl.initAllHandleCls(this)
 
         return this
     }
