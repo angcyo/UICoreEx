@@ -250,10 +250,17 @@ inline fun <reified T> T.saveEntity(): Long {
     return boxOf(T::class.java).put(this)
 }
 
+/**批量保存或者更新
+ * id不为0时, 就是更新*/
+inline fun <reified T> Collection<T>.saveAllEntity() {
+    boxOf(T::class.java).put(this)
+}
+
 inline fun <reified T> T.deleteEntity(): Boolean {
     return boxOf(T::class.java).remove(this)
 }
 
+/**获取所有*/
 inline fun <reified T> T.allEntity(): List<T> {
     return boxOf(T::class.java).all
 }
