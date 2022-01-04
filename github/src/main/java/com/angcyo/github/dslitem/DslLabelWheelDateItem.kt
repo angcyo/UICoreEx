@@ -6,6 +6,9 @@ import com.angcyo.github.R
 import com.angcyo.github.dialog.WheelDateDialogConfig
 import com.angcyo.github.dialog.wheelDateDialog
 import com.angcyo.item.DslBaseLabelItem
+import com.angcyo.item.style.ITextItem
+import com.angcyo.item.style.TextItemConfig
+import com.angcyo.item.style.itemText
 import com.angcyo.library.component.toCalendar
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toTime
@@ -21,7 +24,7 @@ import java.util.*
  * @date 2020/03/23
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
-class DslLabelWheelDateItem : DslBaseLabelItem() {
+open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
 
     companion object {
         //选择 年月日 时分秒
@@ -36,9 +39,6 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
         //时分
         const val TYPE_TIME_2 = 3
     }
-
-    /**文本*/
-    var itemWheelText: CharSequence? = null
 
     var itemDateTypeArray = booleanArrayOf(true, true, true, false, false, false)
 
@@ -73,9 +73,12 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
     /**日期 时间 全格式, 最终使用格式*/
     var itemPattern = itemDatePattern
 
-    /**开始和结束时间*/
+    /**开始和结束时间, 毫秒*/
     var itemDateStartTime = 0L
     var itemDateEndTime = nowTime()
+
+    //选中的[Date]对象
+    var _itemDateSelectDate: Date? = null
 
     /**点击确定后回调*/
     var itemDateSelectListener: (dialog: Dialog, date: Date) -> Boolean = { _, _ ->
@@ -85,6 +88,8 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
     var itemConfigDialog: (WheelDateDialogConfig) -> Unit = {
 
     }
+
+    override var textItemConfig: TextItemConfig = TextItemConfig()
 
     init {
         itemLayoutId = R.layout.dsl_wheel_date_item
@@ -105,12 +110,13 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
                     }
 
                     dateSelectAction = { dialog, date ->
+                        _itemDateSelectDate = date
                         if (itemDateSelectListener(dialog, date)) {
                             //拦截了
                             true
                         } else {
                             val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
-                            itemWheelText = dateFormat.format(date)
+                            itemText = dateFormat.format(date)
                             itemChanging = true
                             false
                         }
@@ -129,7 +135,6 @@ class DslLabelWheelDateItem : DslBaseLabelItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-        itemHolder.tv(R.id.lib_text_view)?.text = itemWheelText
         itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
     }
 }
