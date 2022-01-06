@@ -421,7 +421,7 @@ object Gitee {
         val json = app().memoryConfigBean.file?.function //?: "function_list"
 
         if (json.isNullOrEmpty()) {
-            L.e("请先配置[function]json文件")
+            end(null, IllegalArgumentException("请先配置[function]json文件"))
             return
         }
 
