@@ -36,19 +36,21 @@ open class AccSettingFragment : AccAppDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
         renderDslAdapter {
-            DslBottomButtonItem()() {
-                itemTag = "Button"
-                itemHidden = true
-                itemButtonText = "初始化失败, 点击重试"
-                itemClick = {
-                    fetchSetting()
-                }
-                if (isDebugType()) {
-                    itemLongClick = {
-                        toMain()
-                        true
+            changeFooterItems {
+                it.add(DslBottomButtonItem().apply {
+                    itemTag = "Button"
+                    itemHidden = true
+                    itemButtonText = "初始化失败, 点击重试"
+                    itemClick = {
+                        fetchSetting()
                     }
-                }
+                    if (isDebugType()) {
+                        itemLongClick = {
+                            toMain()
+                            true
+                        }
+                    }
+                })
             }
         }
     }
