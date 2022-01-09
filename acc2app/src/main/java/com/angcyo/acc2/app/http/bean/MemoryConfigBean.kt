@@ -165,4 +165,11 @@ data class MemoryConfigBean(
     var countDownStep2: Long = 60 * 1000,
 
     //</editor-fold desc="2021-12-05">
+
+    //<editor-fold desc="每个包名对应各自的配置">
+
+    /**马甲包的包名, 对应的配置, 如果没有找到对应的配置, 则使用主配置*/
+    var pks: Map<String, MemoryConfigBean>? = null
+
+    //</editor-fold desc="每个包名对应各自的配置">
 )

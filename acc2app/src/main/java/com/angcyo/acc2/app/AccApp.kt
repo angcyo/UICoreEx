@@ -13,6 +13,7 @@ import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.RUtils
+import com.angcyo.library.utils.fillTo
 import com.angcyo.widget.edit.BaseEditDelegate
 import com.angcyo.widget.span.span
 
@@ -84,6 +85,19 @@ open class AccApp : CoreApplication() {
 }
 
 fun app() = com.angcyo.library.app() as AccApp
+
+fun mainMemoryConfig() = app().memoryConfigBean
+
+/**[MemoryConfigBean]复制一份配置*/
+fun memoryConfig(packageName: String = app().packageName): MemoryConfigBean {
+    val main = mainMemoryConfig()
+    return main.pks?.get(packageName)?.run {
+        val bean = MemoryConfigBean()
+        main.fillTo(bean)
+        fillTo(bean, true)
+        bean
+    } ?: main
+}
 
 fun String.isMyDevice() = this == Device.androidId
 
