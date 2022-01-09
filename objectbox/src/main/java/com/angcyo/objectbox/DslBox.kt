@@ -21,6 +21,7 @@ import io.objectbox.exception.DbException
 import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
 import java.io.File
+import kotlin.reflect.KClass
 
 
 /**
@@ -31,8 +32,12 @@ import java.io.File
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 class DslBox {
+
     companion object {
+
         private const val ERROR_FILE_NAME = "error.log"
+
+        /**将包名和对应的[BoxStore]保存起来*/
         val boxStoreMap = SimpleArrayMap<String, BoxStore>()
 
         /**默认的包名*/
@@ -44,6 +49,29 @@ class DslBox {
             dbName: String? = null,
             debug: Boolean = isDebug()
         ) {
+            val _pName = packageName ?: context.packageName
+            val myObjectBoxClass = Class.forName("$_pName.MyObjectBox")
+            init(myObjectBoxClass, context, _pName, dbName, debug)
+        }
+
+        fun init(
+            myObjectBoxClass: KClass<*>,
+            context: Context = app(),
+            packageName: String? = default_package_name,
+            dbName: String? = null,
+            debug: Boolean = isDebug()
+        ) {
+            init(myObjectBoxClass.java, context, packageName, dbName, debug)
+        }
+
+        fun init(
+            myObjectBoxClass: Class<*>,
+            context: Context = app(),
+            packageName: String? = default_package_name,
+            dbName: String? = null,
+            debug: Boolean = isDebug()
+        ) {
+
             //生成的[MyObjectBox]类, 所在的包名. [PlaceholderEntity]
             val _pName = packageName ?: context.packageName
             //数据库的名字
@@ -56,8 +84,9 @@ class DslBox {
 //            }
 
             try {
-                val builderMethod =
-                    Class.forName("$_pName.MyObjectBox").getDeclaredMethod("builder")
+
+                //获取[builder]方法
+                val builderMethod = myObjectBoxClass.getDeclaredMethod("builder")
 
                 if (default_package_name == null) {
                     default_package_name = _pName
@@ -71,7 +100,6 @@ class DslBox {
                     storeBuilder.debugFlags(DebugFlags.LOG_TRANSACTIONS_READ or DebugFlags.LOG_TRANSACTIONS_WRITE)
                     storeBuilder.debugRelations()
                 }
-
 
                 val baseDirectory = File(boxPath(context))
                 val dbDirectory = File(baseDirectory, _dbName)
