@@ -6,6 +6,7 @@ import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
 import com.angcyo.core.fragment.BaseUI
+import com.angcyo.http.base.copyByJson
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
@@ -88,14 +89,14 @@ fun app() = com.angcyo.library.app() as AccApp
 
 fun mainMemoryConfig() = app().memoryConfigBean
 
-/**[MemoryConfigBean]复制一份配置*/
+/**使用主要的配置填充补充当前的配置
+ * [MemoryConfigBean]*/
 fun memoryConfig(packageName: String = app().packageName): MemoryConfigBean {
     val main = mainMemoryConfig()
-    return main.pks?.get(packageName)?.run {
-        val bean = MemoryConfigBean()
-        main.fillTo(bean)
-        fillTo(bean, true)
-        bean
+    return main.pks?.get(packageName)?.apply {
+        val config = copyByJson(MemoryConfigBean::class.java)
+        main.fillTo(this)
+        config.fillTo(this, true)
     } ?: main
 }
 
