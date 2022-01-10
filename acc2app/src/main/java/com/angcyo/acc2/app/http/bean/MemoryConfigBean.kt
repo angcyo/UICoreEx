@@ -40,10 +40,6 @@ data class MemoryConfigBean(
      * [com.angcyo.acc2.app.http.Gitee.fetchMemoryConfig]*/
     var isOnlineData: Boolean = false,
 
-    /**是否已经填充过*/
-    @Transient
-    var _isFill: Boolean = false,
-
     //</editor-fold desc="检查配置">
 
     //<editor-fold desc="界面配置">
@@ -180,4 +176,9 @@ data class MemoryConfigBean(
     var pks: Map<String, MemoryConfigBean>? = null
 
     //</editor-fold desc="每个包名对应各自的配置">
-)
+) /*{
+
+    override fun toString(): String {
+        return "MemoryConfigBean file=${file}"
+    }
+}*/

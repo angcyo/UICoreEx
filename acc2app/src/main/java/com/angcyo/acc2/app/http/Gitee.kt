@@ -378,7 +378,7 @@ object Gitee {
                         entry.value.isOnlineData = true
                     }
                     app().memoryConfigBean = it.fillPks()
-                    end(it, error)
+                    end(app().memoryConfigBean, error)
                 }
                 error?.let {
                     end(null, it)
@@ -387,7 +387,7 @@ object Gitee {
         } else {
             assets<MemoryConfigBean>(json, MemoryConfigBean::class.java) {
                 app().memoryConfigBean = it.fillPks()
-                end(it, null)
+                end(app().memoryConfigBean, null)
             }
         }
     }

@@ -109,8 +109,12 @@ fun versionTipName() = span {
 /**使用主配置, 填充pks字段*/
 fun MemoryConfigBean.fillPks(): MemoryConfigBean {
     pks?.forEach { entry ->
-        this.fillTo(entry.value, ignoreNull = true, jumpValue = true)
-        entry.value._isFill = true
+        this.fillTo(
+            entry.value,
+            ignoreNull = true,
+            jumpValue = true,
+            ignoreFiledNameList = listOf("pks")
+        )
     }
     return this
 }
