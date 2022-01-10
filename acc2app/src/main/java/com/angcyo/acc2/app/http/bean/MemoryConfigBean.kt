@@ -36,6 +36,14 @@ data class MemoryConfigBean(
     /**[com.angcyo.acc2.app.http.Gitee.fetchAllTask]*/
     var updateTask: Boolean = false,
 
+    /**是否是在线获取到的数据
+     * [com.angcyo.acc2.app.http.Gitee.fetchMemoryConfig]*/
+    var isOnlineData: Boolean = false,
+
+    /**是否已经填充过*/
+    @Transient
+    var _isFill: Boolean = false,
+
     //</editor-fold desc="检查配置">
 
     //<editor-fold desc="界面配置">

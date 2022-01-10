@@ -61,9 +61,12 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Gitee.fetchVersion { data, error ->
-            data.let {
-                versionUpdate(it)
+
+        if (mainMemoryConfig().isOnlineData) {
+            Gitee.fetchVersion { data, error ->
+                data.let {
+                    versionUpdate(it)
+                }
             }
         }
     }

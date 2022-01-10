@@ -2,9 +2,11 @@ package com.angcyo.acc2.app.http
 
 import com.angcyo.acc2.app.app
 import com.angcyo.acc2.app.component.jsonName
+import com.angcyo.acc2.app.fillPks
 import com.angcyo.acc2.app.http.bean.AdaptiveVersionBean
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.http.bean.MemoryConfigBean
+import com.angcyo.acc2.app.memoryConfig
 import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.CheckBean
@@ -58,10 +60,10 @@ object Gitee {
             throw IllegalArgumentException("请先配置[BASE]地址.")
         }
 
-        val memoryConfigBean = app().memoryConfigBean
+        val memoryConfigBean = memoryConfig()
         fetchMemoryConfig(online) { data, error ->
             if (error == null) {
-                val newMemoryConfigBean = app().memoryConfigBean
+                val newMemoryConfigBean = memoryConfig()
 
                 var pass = false
                 val nowTime = nowTime()
@@ -178,7 +180,7 @@ object Gitee {
     /**获取所有[CheckBean]*/
     fun fetchAllCheck(online: Boolean) {
         val result = mutableListOf<CheckBean>()
-        val list = app().memoryConfigBean.file?.check //?: mutableListOf("check_common")
+        val list = memoryConfig().file?.check //?: mutableListOf("check_common")
         val giteeModel = vmApp<GiteeModel>()
 
         if (list.isNullOrEmpty()) {
@@ -226,7 +228,7 @@ object Gitee {
     /**获取所有[ActionBean]*/
     fun fetchAllAction(online: Boolean) {
         val result = mutableListOf<ActionBean>()
-        val list = app().memoryConfigBean.file?.action //?: mutableListOf("all_actions")
+        val list = memoryConfig().file?.action //?: mutableListOf("all_actions")
         val giteeModel = vmApp<GiteeModel>()
         if (list.isNullOrEmpty()) {
             L.e("请先配置[action]json文件")
@@ -267,7 +269,7 @@ object Gitee {
     /**获取所有回退[ActionBean]*/
     fun fetchAllBackAction(online: Boolean) {
         val result = mutableListOf<ActionBean>()
-        val list = app().memoryConfigBean.file?.backAction //?: mutableListOf("back_actions")
+        val list = memoryConfig().file?.backAction //?: mutableListOf("back_actions")
         val giteeModel = vmApp<GiteeModel>()
         if (list.isNullOrEmpty()) {
             L.e("请先配置[backAction]json文件")
@@ -308,7 +310,7 @@ object Gitee {
     /**获取所有[TaskBean]*/
     fun fetchAllTask(online: Boolean) {
         val result = mutableListOf<TaskBean>()
-        val list = app().memoryConfigBean.file?.task
+        val list = memoryConfig().file?.task
         val giteeModel = vmApp<GiteeModel>()
         if (list.isNullOrEmpty()) {
             L.e("请先配置[task]json文件")
@@ -356,11 +358,12 @@ object Gitee {
 
     //<editor-fold desc="fetch">
 
+    /**拉取内存配置信息*/
     fun fetchMemoryConfig(
         online: Boolean = !isDebugType(),
         end: (data: MemoryConfigBean?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
-        val json = app().memoryConfigBean.file?.memoryConfig ?: "memory_config"
+        val json = memoryConfig().file?.memoryConfig ?: "memory_config"
 
         if (json.isEmpty()) {
             L.e("请先配置[memoryConfig]j")
@@ -370,7 +373,11 @@ object Gitee {
         if (online || json.isHttpScheme()) {
             get(json) { data, error ->
                 data?.toBean(MemoryConfigBean::class.java)?.let {
-                    app().memoryConfigBean = it
+                    it.isOnlineData = true
+                    it.pks?.forEach { entry ->
+                        entry.value.isOnlineData = true
+                    }
+                    app().memoryConfigBean = it.fillPks()
                     end(it, error)
                 }
                 error?.let {
@@ -379,7 +386,7 @@ object Gitee {
             }
         } else {
             assets<MemoryConfigBean>(json, MemoryConfigBean::class.java) {
-                app().memoryConfigBean = it
+                app().memoryConfigBean = it.fillPks()
                 end(it, null)
             }
         }
@@ -389,7 +396,7 @@ object Gitee {
         online: Boolean = !isDebugType(),
         end: (data: AdaptiveVersionBean?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
-        val json = app().memoryConfigBean.file?.adaptive ?: "adaptive_version"
+        val json = memoryConfig().file?.adaptive ?: "adaptive_version"
 
         if (json.isEmpty()) {
             L.e("请先配置[adaptive]")
@@ -418,7 +425,7 @@ object Gitee {
         end: (list: List<FunctionBean>?, error: Throwable?) -> Unit = { _, _ -> }
     ) {
         val result = mutableListOf<FunctionBean>()
-        val json = app().memoryConfigBean.file?.function //?: "function_list"
+        val json = memoryConfig().file?.function //?: "function_list"
 
         if (json.isNullOrEmpty()) {
             end(null, IllegalArgumentException("请先配置[function]json文件"))
@@ -452,7 +459,7 @@ object Gitee {
     var lastVersionUpdateBean: VersionUpdateBean? = null
 
     fun fetchVersion(end: (data: VersionUpdateBean?, error: Throwable?) -> Unit) {
-        val json = app().memoryConfigBean.file?.version ?: "version"
+        val json = memoryConfig().file?.version ?: "version"
         get(json) { data, error ->
             data?.toBean<VersionUpdateBean>(bean(VersionUpdateBean::class.java))?.let {
                 lastVersionUpdateBean = it

@@ -6,7 +6,6 @@ import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
 import com.angcyo.core.fragment.BaseUI
-import com.angcyo.http.base.copyByJson
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
@@ -93,11 +92,7 @@ fun mainMemoryConfig() = app().memoryConfigBean
  * [MemoryConfigBean]*/
 fun memoryConfig(packageName: String = app().packageName): MemoryConfigBean {
     val main = mainMemoryConfig()
-    return main.pks?.get(packageName)?.apply {
-        val config = copyByJson(MemoryConfigBean::class.java)
-        main.fillTo(this)
-        config.fillTo(this, true)
-    } ?: main
+    return main.pks?.get(packageName) ?: main
 }
 
 fun String.isMyDevice() = this == Device.androidId
@@ -109,4 +104,13 @@ fun versionTipName() = span {
     } else if (isDebug()) {
         append("-debug")
     }
+}
+
+/**使用主配置, 填充pks字段*/
+fun MemoryConfigBean.fillPks(): MemoryConfigBean {
+    pks?.forEach { entry ->
+        this.fillTo(entry.value, ignoreNull = true, jumpValue = true)
+        entry.value._isFill = true
+    }
+    return this
 }
