@@ -23,7 +23,6 @@ import io.objectbox.query.QueryBuilder
 import java.io.File
 import kotlin.reflect.KClass
 
-
 /**
  * Entity 有变化时, 请 执行 Make Project, 否则可能不会生效
  * Email:angcyo@126.com
@@ -243,6 +242,8 @@ fun boxStoreOf(
  *   val list = query().build().find()
  *   val list2 = query().equal(MessageEntity_.isSkip, false).build().find()
  *   val list3 = query().equal(MessageEntity_.isSkip, false).order(MessageEntity_.timestamp).build().find(10, 20)
+ *
+ *   query(FriendEntity_.state.equal("已是好友").or(FriendEntity_.state.equal("已发送申请")))
  * }
  * */
 fun <T> boxOf(
@@ -292,3 +293,8 @@ inline fun <reified T> T.deleteEntity(): Boolean {
 inline fun <reified T> T.allEntity(): List<T> {
     return boxOf(T::class.java).all
 }
+
+/**
+ * [io.objectbox.android.ObjectBoxLiveData] 使用
+ * val operateData: ObjectBoxLiveData<OperateEntity> = ObjectBoxLiveData(boxOf(OperateEntity::class.java).query().build())
+ * */
