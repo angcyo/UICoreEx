@@ -105,16 +105,16 @@ class GiteeModel : LifecycleViewModel() {
 
     //<editor-fold desc="初始化">
 
-    fun initTask(bean: TaskBean): TaskBean {
-        return bean.toJson().fromJson<TaskBean>()!!.init()
+    fun initTask(control: AccControl?, bean: TaskBean): TaskBean {
+        return bean.toJson().fromJson<TaskBean>()!!.init(control)
     }
 
     /**初始化[TaskBean],替换对应的数据*/
-    fun TaskBean.init(): TaskBean {
+    fun TaskBean.init(control: AccControl?): TaskBean {
         _init = true
 
         //dynamic
-        AccControl.initTaskDynamic(this)
+        AccControl.initTaskDynamic(control, this)
 
         actionList = actionList?.init()
         backActionList = backActionList?.init()
@@ -151,7 +151,7 @@ class GiteeModel : LifecycleViewModel() {
         initConfig()
 
         //dynamic
-        AccControl.initAllHandleCls(this)
+        AccControl.initAllHandleCls(control, this)
 
         return this
     }

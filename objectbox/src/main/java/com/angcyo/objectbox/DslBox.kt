@@ -5,10 +5,7 @@ import android.text.TextUtils
 import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.ex.file
-import com.angcyo.library.ex.getWifiIP
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.saveTo
+import com.angcyo.library.ex.*
 import com.angcyo.objectbox.DslBox.Companion.default_package_name
 import com.angcyo.objectbox.DslBox.Companion.getBox
 import com.angcyo.objectbox.DslBox.Companion.getBoxStore
@@ -111,17 +108,6 @@ class DslBox {
                     val boxStore: BoxStore = buildStore(context, _pName, storeBuilder)
                     boxStoreMap.put(_pName, boxStore)
                     L.w("数据库:${BoxStore.getVersionNative()}" + " 路径:" + _pName + "->" + dbDirectory.absolutePath)
-
-                    if (debug) {
-                        val started: Boolean =
-                            AndroidObjectBrowser(boxStore).start(context.applicationContext)
-                        L._tempTag = "ObjectBrowser"
-                        if (started) {
-                            L.i("数据库浏览服务启动成功: http://${getWifiIP() ?: "localhost"}:${boxStore.objectBrowserPort}/index.html")
-                        } else {
-                            L.w("数据库浏览服务启动失败, 请检查是否使用了[objectbox-android-objectbrowser]")
-                        }
-                    }
                 } catch (e: DbException) {
                     //e.printStackTrace();
                     //io.objectbox.exception.DbException, 数据库初始化异常.一般是迁移导致的,改变了字段的数据类型
@@ -223,6 +209,27 @@ class DslBox {
         fun <T> getBox(packageName: String, entityClass: Class<T>): Box<T> {
             return getBoxStore(packageName).boxFor(entityClass)
         }
+
+        /**启动所有数据服务*/
+        fun startObjectBrowserAll() {
+            boxStoreMap.each { key, boxStore ->
+                boxStore?.let {
+                    startObjectBrowser(it)
+                }
+            }
+        }
+
+        /**启动数据浏览服务*/
+        fun startObjectBrowser(boxStore: BoxStore) {
+            val started: Boolean =
+                AndroidObjectBrowser(boxStore).start(app())
+            L._tempTag = "ObjectBrowser"
+            if (started) {
+                L.i("数据库浏览服务启动成功: http://${getWifiIP() ?: "localhost"}:${boxStore.objectBrowserPort}/index.html")
+            } else {
+                L.w("数据库浏览服务启动失败, 请检查是否使用了[objectbox-android-objectbrowser]")
+            }
+        }
     }
 }
 
@@ -256,19 +263,19 @@ fun <T> boxOf(
     return box
 }
 
-fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit): List<T> {
+fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return query(block).find()
 }
 
-fun <T> Box<T>.findFirst(block: QueryBuilder<T>.() -> Unit): T? {
+fun <T> Box<T>.findFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return query(block).findFirst()
 }
 
-fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit): List<T> {
+fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return findAll(block).apply { this@removeAll.remove(this) }
 }
 
-fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit): T? {
+fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return findFirst(block)?.apply { this@removeFirst.remove(this) }
 }
 

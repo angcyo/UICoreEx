@@ -60,9 +60,25 @@ class AppAccPrint(accControl: AccControl) : AccPrint(accControl) {
             } else {
                 actionBean.summary ?: actionBean.title
             }
-            AccWindow.showProgress(accControl?.accSchedule?.indexTip(), title, time) {
-                textColor =
-                    if (accControl?.accSchedule?._isLeaveWindow == true) _color(R.color.warning) else Color.WHITE
+
+            val color =
+                if (accControl?.accSchedule?._isLeaveWindow == true) _color(R.color.warning) else Color.WHITE
+
+            if (time <= 0) {
+                AccWindow.apply {
+                    text = accControl?.accSchedule?.indexTip()
+                    textColor = color
+
+                    summary = title
+
+                    progressFlicker = true
+                    updateProgress = false
+                    update()
+                }
+            } else {
+                AccWindow.showProgress(accControl?.accSchedule?.indexTip(), title, time) {
+                    textColor = color
+                }
             }
         }
     }

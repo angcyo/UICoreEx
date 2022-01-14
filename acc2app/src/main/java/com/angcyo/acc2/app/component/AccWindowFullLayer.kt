@@ -31,8 +31,8 @@ object AccWindowFullLayer : ILayer() {
             width = -1
             height = _contentHeight //_contentHeight //-1
             flags = wmLayoutParams.flags or
-                    /*WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or*/
-                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                /*WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or*/
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         }
     }
 
@@ -53,6 +53,7 @@ object AccWindowFullLayer : ILayer() {
             if (AccWindow.updateProgress && !AccWindow.progressFlicker) {
                 val duration = AccWindow.duration
                 val _hideTime = AccWindow._hideTime
+                circleLoadingView?.isIndeterminate = false
                 if (duration > 0) {
                     var animDuration = duration
                     var fromProgress = 0
@@ -86,7 +87,7 @@ object AccWindowFullLayer : ILayer() {
                             circleLoadingView?.loadingColor = defColor
                         }
                     ) { animator, color ->
-                        //circleLoadingView?.progress = 100
+                        circleLoadingView?.progress = 100
                         circleLoadingView?.loadingColor = color
                     }
                 }

@@ -59,7 +59,7 @@ object Task {
     /**根据指定的url, 启动任务*/
     fun start(taskUrl: String, startAction: (TaskBean?, Throwable?) -> Unit) {
         Gitee.getTask(taskUrl) { data, error ->
-            val task = data?.init()
+            val task = data?.init(control)
             startAction(task, error)
             task?.let {
                 start(it)
@@ -86,7 +86,7 @@ object Task {
         val bean = if (taskBean._init) {
             taskBean
         } else {
-            taskBean.init()
+            taskBean.init(control)
         }
         if (!enableActionList.isNullOrEmpty() || !disableActionList.isNullOrEmpty()) {
             bean.actionList?.forEach {
@@ -129,8 +129,8 @@ fun String.toActionIdList(): List<Long> {
 }
 
 /**初始化任务*/
-fun TaskBean.init(): TaskBean {
-    return vmApp<GiteeModel>().initTask(this)
+fun TaskBean.init(control: AccControl? = Task.control): TaskBean {
+    return vmApp<GiteeModel>().initTask(control, this)
 }
 
 fun ActionBean.init(): ActionBean {

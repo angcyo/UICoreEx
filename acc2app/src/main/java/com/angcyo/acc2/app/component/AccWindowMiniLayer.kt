@@ -69,6 +69,7 @@ object AccWindowMiniLayer : ILayer() {
             if (AccWindow.updateProgress && !AccWindow.progressFlicker) {
                 val duration = AccWindow.duration
                 val _hideTime = AccWindow._hideTime
+                circleLoadingView?.isIndeterminate = false
                 if (duration > 0) {
                     var animDuration = duration
                     var fromProgress = 0
@@ -102,7 +103,7 @@ object AccWindowMiniLayer : ILayer() {
                             circleLoadingView?.loadingColor = defColor
                         }
                     ) { animator, color ->
-                        //circleLoadingView?.progress = 100
+                        circleLoadingView?.progress = 100
                         circleLoadingView?.loadingColor = color
                     }
                 }
@@ -121,7 +122,7 @@ object AccWindowMiniLayer : ILayer() {
                 visible(this)
                 visible(R.id.prev_button, isDebug())
                 this.text = when {
-                    Task.control.isControlPause -> "恢复"
+                    Task.control.isControlPause -> "继续"
                     Task.control.isControlStart -> "暂停"
                     else -> {
                         gone(this)
