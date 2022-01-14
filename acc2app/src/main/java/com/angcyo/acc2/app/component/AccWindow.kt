@@ -57,7 +57,7 @@ object AccWindow {
     var updateProgress: Boolean = false
 
     /**进度闪烁, 颜色渐变*/
-    var progressFlicker: Boolean = true
+    var progressFlicker: Boolean = false
 
     /**全屏时, 顶部文本*/
     var fullTopText: CharSequence? = span {

@@ -101,6 +101,7 @@ class TaskLayerControlListener : ControlListener {
                 //回到主程序
                 app().openApp()
             }
+            AccWindow.progressFlicker = false
             if (isDebugType()) {
                 when (state) {
                     AccControl.CONTROL_STATE_FINISH -> AccWindow.showState("^..^")
