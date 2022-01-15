@@ -26,6 +26,7 @@ import io.reactivex.subjects.PublishSubject
  *
  *
  * 2022-1-15 指纹识别
+ * 1.2.1
  * https://github.com/Zweihui/RxFingerPrinter
  */
 class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : LifecycleListener {
@@ -47,7 +48,7 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
     private var mKeyManager: KeyguardManager? = null
     private var mLogging = false
     private var mSelfCompleted = false
-    private var mDisposables: CompositeDisposable? = CompositeDisposable()
+    private var mDisposables: CompositeDisposable? = null
 
     init {
         supportFingerPrinterManagerFragment = getRxPermissionsFragment(fragmentActivity)
@@ -84,10 +85,10 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
         if (observer == null) {
             throw RuntimeException("Observer can not be null!")
         }
-        publishSubject!!.subscribe(observer)
+        publishSubject?.subscribe(observer)
         addDispose(observer)
         if (Build.VERSION.SDK_INT < 23) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.SYSTEM_API_ERROR))
+            publishSubject?.onNext(IdentificationInfo(CodeException.SYSTEM_API_ERROR))
         } else {
             initManager()
             if (confirmFinger()) {
@@ -104,7 +105,7 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.PERMISSION_DENIED_ERROE))
+            publishSubject?.onNext(IdentificationInfo(CodeException.PERMISSION_DENIED_ERROE))
         }
         mCancellationSignal = CancellationSignal()
         if (manager != null && authenticationCallback != null) {
@@ -127,7 +128,7 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 //多次指纹密码验证错误后，进入此方法；并且，不能短时间内调用指纹验证
                 if (mCancellationSignal != null) {
-                    publishSubject!!.onNext(IdentificationInfo(CodeException.FINGERPRINTERS_FAILED_ERROR))
+                    publishSubject?.onNext(IdentificationInfo(CodeException.FINGERPRINTERS_FAILED_ERROR))
                     mCancellationSignal!!.cancel()
                     mSelfCompleted = true
                 }
@@ -138,12 +139,12 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
             }
 
             override fun onAuthenticationSucceeded(result: FingerprintManager.AuthenticationResult) {
-                publishSubject!!.onNext(IdentificationInfo(true))
+                publishSubject?.onNext(IdentificationInfo(true))
                 mSelfCompleted = true
             }
 
             override fun onAuthenticationFailed() {
-                publishSubject!!.onNext(IdentificationInfo(CodeException.FINGERPRINTERS_RECOGNIZE_FAILED))
+                publishSubject?.onNext(IdentificationInfo(CodeException.FINGERPRINTERS_RECOGNIZE_FAILED))
             }
         }
     }
@@ -160,28 +161,31 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.PERMISSION_DENIED_ERROE))
+            publishSubject?.onNext(IdentificationInfo(CodeException.PERMISSION_DENIED_ERROE))
             isDeviceSupport = false
         }
         //判断硬件是否支持指纹识别
         if (!manager!!.isHardwareDetected) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.HARDWARE_MISSIING_ERROR))
+            publishSubject?.onNext(IdentificationInfo(CodeException.HARDWARE_MISSIING_ERROR))
             isDeviceSupport = false
         }
         //判断 是否开启锁屏密码
         if (!mKeyManager!!.isKeyguardSecure) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.KEYGUARDSECURE_MISSIING_ERROR))
+            publishSubject?.onNext(IdentificationInfo(CodeException.KEYGUARDSECURE_MISSIING_ERROR))
             isDeviceSupport = false
         }
         //判断是否有指纹录入
         if (!manager!!.hasEnrolledFingerprints()) {
-            publishSubject!!.onNext(IdentificationInfo(CodeException.NO_FINGERPRINTERS_ENROOLED_ERROR))
+            publishSubject?.onNext(IdentificationInfo(CodeException.NO_FINGERPRINTERS_ENROOLED_ERROR))
             isDeviceSupport = false
         }
         return isDeviceSupport
     }
 
     fun addDispose(disposable: Disposable?) {
+        if (mDisposables == null || mDisposables?.isDisposed == true) {
+            mDisposables = CompositeDisposable()
+        }
         mDisposables?.add(disposable!!)
     }
 

@@ -45,4 +45,10 @@ dependencies {
 
     //https://github.com/google/flexbox-layout
     //api 'com.google.android:flexbox:2.0.1'
+
+    //https://mvnrepository.com/artifact/androidx.biometric/biometric
+    //生物指纹
+    api 'androidx.biometric:biometric:1.1.0'
+    //https://mvnrepository.com/artifact/androidx.biometric/biometric-ktx
+    //api 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
 }

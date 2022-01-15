@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="calendar_bg_color">#334555</color>
-
     <style name="LibWheelStyle">
         <item name="wheelview_gravity">center</item>
         <item name="wheelview_isCenterLabel">true</item>
@@ -13,4 +11,11 @@
         <item name="wheelview_textColorOut">@color/text_sub_color</item>
         <item name="wheelview_textSize">@dimen/wheel_text_size</item>
     </style>
+
+    <style name="BiometricCancelButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="colorAccent">@color/biometric_cancel_button_background</item>
+        <item name="colorPrimary">@color/biometric_cancel_button_background</item>
+    </style>
+
+
 </resources>
