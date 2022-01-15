@@ -152,9 +152,7 @@ internal class AndroidXBiometricAuth(
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 emitter.onNext(AuthenticationEvent.Success(result.cryptoObject?.let {
-                    BiometricAuth.Crypto(
-                        it
-                    )
+                    BiometricAuth.Crypto(it)
                 }))
             }
 
