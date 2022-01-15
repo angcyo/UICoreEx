@@ -38,4 +38,5 @@ dependencies {
 
 }
 
-apply from: allGradle.v7a
+//apply from: allGradle.v7a
+apply from: allGradle.v7v8a
