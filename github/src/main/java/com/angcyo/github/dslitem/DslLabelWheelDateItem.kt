@@ -77,6 +77,9 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
     var itemDateStartTime = 0L
     var itemDateEndTime = nowTime()
 
+    /**当前选中的时间, 毫秒. 默认是当前的时间*/
+    var itemCurrentTime = nowTime()
+
     //选中的[Date]对象
     var _itemDateSelectDate: Date? = null
 
@@ -101,14 +104,20 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
 
                     dateType = itemDateTypeArray
 
+                    //开始时间设置
                     if (itemDateStartTime > 0) {
                         dateStartDate =
                             itemDateStartTime.toTime(itemPattern).toCalendar(itemPattern)
                     }
+                    //结束时间设置
                     if (itemDateEndTime > 0) {
                         dateEndDate = itemDateEndTime.toTime(itemPattern).toCalendar(itemPattern)
                     }
 
+                    //当前时间设置
+                    dateCurrent = itemCurrentTime.toTime(itemPattern).toCalendar(itemPattern)
+
+                    //选中回调
                     dateSelectAction = { dialog, date ->
                         _itemDateSelectDate = date
                         if (itemDateSelectListener(dialog, date)) {
