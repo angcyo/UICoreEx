@@ -78,23 +78,22 @@ object Gitee {
                 }
 
                 if (!pass) {
-                    if (force || memoryConfigBean.version < newMemoryConfigBean.version) {
-                        //需要更新数据
-                        if (force || newMemoryConfigBean.updateFunction) {
-                            fetchFunctionList(online)
-                        }
-                        if (force || newMemoryConfigBean.updateCheck) {
-                            fetchAllCheck(online)
-                        }
-                        if (force || newMemoryConfigBean.updateAction) {
-                            fetchAllAction(online)
-                        }
-                        if (force || newMemoryConfigBean.updateBackAction) {
-                            fetchAllBackAction(online)
-                        }
-                        if (force || newMemoryConfigBean.updateTask) {
-                            fetchAllTask(online)
-                        }
+                    val update = memoryConfigBean.version < newMemoryConfigBean.version
+                    //需要更新数据
+                    if (force || update || newMemoryConfigBean.updateFunction) {
+                        fetchFunctionList(online)
+                    }
+                    if (force || update || newMemoryConfigBean.updateCheck) {
+                        fetchAllCheck(online)
+                    }
+                    if (force || update || newMemoryConfigBean.updateAction) {
+                        fetchAllAction(online)
+                    }
+                    if (force || update || newMemoryConfigBean.updateBackAction) {
+                        fetchAllBackAction(online)
+                    }
+                    if (force || update || newMemoryConfigBean.updateTask) {
+                        fetchAllTask(online)
                     }
                 }
                 _last_fetch_time = nowTime
