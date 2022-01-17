@@ -14,6 +14,8 @@ import com.tencent.smtt.sdk.WebView
  */
 object TbsWeb {
 
+    var UA_EXTEND = " angcyo"
+
     /**初始化*/
     fun initWebView(webView: WebView) {
         val webSetting: WebSettings = webView.settings
@@ -47,7 +49,8 @@ object TbsWeb {
 
         webSetting.mediaPlaybackRequiresUserGesture = true//this
 
-        webSetting.setUserAgent(webSetting.userAgentString + " angcyo")
+        //UA设置
+        webSetting.setUserAgent(webSetting.userAgentString + UA_EXTEND)
 
         CookieSyncManager.createInstance(webView.context)
         CookieSyncManager.getInstance().sync()
