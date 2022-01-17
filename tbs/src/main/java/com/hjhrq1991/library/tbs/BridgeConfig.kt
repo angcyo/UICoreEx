@@ -5,6 +5,8 @@ package com.hjhrq1991.library.tbs
  * 配置文件
  */
 object BridgeConfig {
+
+    /**需要加载桥接js文件*/
     const val toLoadJs = "WebViewJavascriptBridge.js"
 
     /**
@@ -13,7 +15,7 @@ object BridgeConfig {
     const val defaultJs = "WebViewJavascriptBridge"
 
     /**
-     * 自定义桥名
+     * 自定义桥名, 代码中使用此对象调用
      */
     var customJs = "androidJs"
 }

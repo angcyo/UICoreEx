@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
-import com.angcyo.behavior.HideTitleBarBehavior
 import com.angcyo.core.component.fileSelector
 import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.dialog.configBottomDialog
@@ -34,6 +32,7 @@ import com.angcyo.picker.dslPicker
 import com.angcyo.tablayout.screenWidth
 import com.angcyo.tbs.DslTbs
 import com.angcyo.tbs.R
+import com.angcyo.tbs.TbsImagePager
 import com.angcyo.tbs.core.dslitem.DslBaseWebMenuItem
 import com.angcyo.tbs.core.inner.TbsWeb
 import com.angcyo.tbs.core.inner.TbsWebView
@@ -402,6 +401,9 @@ open class TbsWebFragment : BaseTitleFragment() {
                     }
                 }
             }
+
+            //注入图片预览回调
+            TbsImagePager.register(this@TbsWebFragment, this)
 
             //加载url
             if (data.isNullOrEmpty()) {

@@ -201,10 +201,7 @@ open class TbsBridgeWebView : WebView, WebViewJavascriptBridge {
 
     fun loadUrl(jsUrl: String?, returnCallback: CallBackFunction) {
         this.loadUrl(jsUrl)
-        responseCallbacks[parseFunctionName(
-            jsUrl!!,
-            BridgeConfig.customJs
-        )] = returnCallback
+        responseCallbacks[parseFunctionName(jsUrl!!, BridgeConfig.customJs)] = returnCallback
     }
 
     /**
