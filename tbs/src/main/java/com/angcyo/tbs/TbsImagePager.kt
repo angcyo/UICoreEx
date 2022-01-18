@@ -2,6 +2,7 @@ package com.angcyo.tbs
 
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toUri
 import com.angcyo.library.model.LoaderMedia
 import com.angcyo.pager.dslPager
 import com.angcyo.tbs.core.TbsWebFragment
@@ -44,7 +45,15 @@ object TbsImagePager {
                 val index = min(max(bean.index, 0), size - 1)
                 fragment.dslPager {
                     startPosition = index
-                    loaderMediaList.addAll(bean.images.map { LoaderMedia(url = it) })
+                    loaderMediaList.addAll(bean.images.map {
+                        if (it.startsWith("http")) {
+                            LoaderMedia(url = it)
+                        } else {
+                            val uri = webView.url.toUri()
+                            val url = uri?.buildUpon()?.path(it)?.build()?.toString()
+                            LoaderMedia(url = url)
+                        }
+                    })
                 }
                 function?.onCallBack("开始预览:[$index/${size}]")
             }

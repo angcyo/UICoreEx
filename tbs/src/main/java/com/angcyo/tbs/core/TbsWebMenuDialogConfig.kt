@@ -21,7 +21,10 @@ import com.angcyo.widget.base.gone
 class TbsWebMenuDialogConfig : BaseDialogConfig(), ITouchBackDialogConfig {
 
     /**网页host*/
-    var webHost: String? = null
+    var webHost: CharSequence? = null
+
+    /**描述内容*/
+    var webDes: CharSequence? = null
 
     /**第一行 菜单*/
     var line1Items = listOf<DslAdapterItem>()
@@ -40,6 +43,11 @@ class TbsWebMenuDialogConfig : BaseDialogConfig(), ITouchBackDialogConfig {
         dialogViewHolder.tv(R.id.web_title_view)?.apply {
             text = "网页由 $webHost 提供"
             gone(webHost.isNullOrEmpty())
+        }
+
+        dialogViewHolder.tv(R.id.web_des_view)?.apply {
+            text = webDes
+            gone(webDes.isNullOrEmpty())
         }
 
         //第一行item

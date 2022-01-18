@@ -200,6 +200,15 @@ open class TbsWebFragment : BaseTitleFragment() {
         fContext().tbsWebMenuDialog {
             val url = _tbsWebView?._loadUrl
             webHost = url?.toUri()?.host
+
+            if (isDebug()) {
+                webDes = span {
+                    append(_tbsWebView?.settings?.userAgentString)
+                    appendln()
+                    append(url)
+                }
+            }
+
             line1Items = renderItemList {
                 DslBaseWebMenuItem()() {
                     menuText = "刷新"
