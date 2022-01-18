@@ -441,9 +441,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     }
 
     override fun loadUrl(url: String?) {
-        if (url?.startsWith("javascript") == true) {
-            //javascript
-        } else {
+        if (url?.startsWith("http") == true) {
             _loadUrl = url
         }
         if (url.isNullOrEmpty()) {
@@ -454,8 +452,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     }
 
     override fun loadUrl(url: String?, map: Map<String, String>) {
-        if (url?.startsWith("javascript") == true) {
-        } else {
+        if (url?.startsWith("http") == true) {
             _loadUrl = url
         }
         super.loadUrl(url, map)
