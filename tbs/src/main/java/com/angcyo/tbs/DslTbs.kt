@@ -37,6 +37,12 @@ class DslTbs {
         /**x5内核是否初始化成功*/
         var isX5Core = false
 
+        /**默认的[TbsWebActivity]*/
+        var DEF_TBS_ACTIVITY: Class<out TbsWebActivity>? = null
+
+        /**默认的[TbsWebFragment]*/
+        var DEF_TBS_FRAGMENT: Class<out TbsWebFragment>? = null
+
         /**初始化tbs*/
         fun init(context: Context) {
             val appContext = context.applicationContext
@@ -227,7 +233,7 @@ class DslTbs {
  * about:blank */
 fun DslAHelper.open(
     url: String? = null,
-    cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
+    cls: Class<out TbsWebActivity> = DslTbs.DEF_TBS_ACTIVITY ?: TbsWebActivity::class.java,
     config: TbsWebConfig.() -> Unit = {}
 ) {
     start(Intent(context, cls).apply {

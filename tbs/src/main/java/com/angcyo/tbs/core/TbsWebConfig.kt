@@ -2,6 +2,7 @@ package com.angcyo.tbs.core
 
 import android.net.Uri
 import android.os.Parcelable
+import com.angcyo.tbs.DslTbs
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -19,7 +20,8 @@ data class TbsWebConfig(
      * [com.angcyo.tbs.core.inner.TbsWebView.loadDataWithBaseURL2]*/
     var data: String? = null,
     var mimeType: String? = null, /*当无法从uri中获取mimeType时, 使用此mimeType*/
-    var targetClass: Class<out TbsWebFragment> = TbsWebFragment::class.java,
+    var targetClass: Class<out TbsWebFragment> = DslTbs.DEF_TBS_FRAGMENT
+        ?: TbsWebFragment::class.java,
     /**指定界面的标题*/
     var title: CharSequence? = null,
     /**是否需要显示右边的菜单*/

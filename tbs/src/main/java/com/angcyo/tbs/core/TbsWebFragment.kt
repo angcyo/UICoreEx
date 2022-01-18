@@ -264,10 +264,9 @@ open class TbsWebFragment : BaseTitleFragment() {
 
         val webView = TbsWebView(fContext())
         webView.apply {
-
             id = R.id.tbs_web_view
-
             _tbsWebView = this
+            onInitTbsWebView(this)
 
             //标题回调
             receivedTitleAction = {
@@ -414,6 +413,10 @@ open class TbsWebFragment : BaseTitleFragment() {
         }
 
         parent?.addView(webView, -1, -1)
+    }
+
+    open fun onInitTbsWebView(webView: TbsWebView) {
+
     }
 
     fun updateHost(url: String?) {

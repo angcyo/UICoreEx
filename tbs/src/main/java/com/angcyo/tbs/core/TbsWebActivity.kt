@@ -7,8 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
+import com.angcyo.tbs.DslTbs
 
 /**
+ * [TbsWebFragment] 容器
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/03/01
@@ -50,7 +53,7 @@ open class TbsWebActivity : BaseAppCompatActivity() {
         arg.putParcelable(TbsWebFragment.KEY_CONFIG, webConfig)
 
         dslFHelper {
-            show(config?.targetClass ?: TbsWebFragment::class.java)
+            show(config?.targetClass ?: DslTbs.DEF_TBS_FRAGMENT ?: TbsWebFragment::class.java)
             configFragment {
                 arguments = arg
             }

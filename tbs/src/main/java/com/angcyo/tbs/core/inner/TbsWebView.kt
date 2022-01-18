@@ -98,7 +98,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         webClient: WebViewClient,
         webView: WebView,
         url: String?
-    ) -> Boolean = {webClient, webView, url ->
+    ) -> Boolean = { webClient, webView, url ->
         false
     }
 
@@ -446,10 +446,14 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         } else {
             _loadUrl = url
         }
-        super.loadUrl(url)
+        if (url.isNullOrEmpty()) {
+            super.loadUrl(url)
+        } else {
+            loadUrl(url, headerAction(url) ?: emptyMap())
+        }
     }
 
-    override fun loadUrl(url: String?, map: MutableMap<String, String>?) {
+    override fun loadUrl(url: String?, map: Map<String, String>) {
         if (url?.startsWith("javascript") == true) {
         } else {
             _loadUrl = url
