@@ -88,6 +88,20 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         bundle: Bundle?
     ) -> WebResourceResponse?)? = null
 
+    /**加载[url], 需要设置的请求头*/
+    var headerAction: (url: String) -> Map<String, String>? = {
+        null
+    }
+
+    /**是否需要拦截[url]的加载*/
+    var shouldOverrideUrlLoadAction: (
+        webClient: WebViewClient,
+        webView: WebView,
+        url: String?
+    ) -> Boolean = {webClient, webView, url ->
+        false
+    }
+
     //</editor-fold desc="回调">
 
     //<editor-fold desc="WebViewClient">
@@ -398,9 +412,15 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         webView: WebView,
         url: String?
     ): Boolean {
+        
+        if (shouldOverrideUrlLoadAction(webClient, webView, url)) {
+            return true
+        }
+
         url?.run {
             if (startsWith("http")) {
-                webView.loadUrl(url)
+                //additionalHttpHeaders
+                webView.loadUrl(url, headerAction(url) ?: emptyMap())
             } else {
                 //查询是否是app intent
                 dslIntentQuery {
