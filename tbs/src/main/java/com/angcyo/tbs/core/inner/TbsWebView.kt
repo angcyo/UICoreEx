@@ -412,7 +412,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
         webView: WebView,
         url: String?
     ): Boolean {
-        
+
         if (shouldOverrideUrlLoadAction(webClient, webView, url)) {
             return true
         }
