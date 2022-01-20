@@ -17,7 +17,7 @@ class AccTaskControlListener : ControlListener {
 
     val volumeObserver = object : IObserver {
         override fun onChange(type: Int, from: Int, value: Int) {
-            if (value < from) {
+            if (value != from) {
                 //音量变小
                 if (memoryConfig().pauseOnVolumeDown) {
                     Task.pause()
