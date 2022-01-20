@@ -32,6 +32,9 @@ object Task {
         //日志
         accPrint = AppAccPrint(this)
 
+        //任务监听
+        controlListenerList.add(AccTaskControlListener())
+
         //浮窗控制支持
         TaskLayerControlListener.install(this)
 
@@ -113,6 +116,16 @@ object Task {
     /**停止任务*/
     fun stop(reason: String? = null) {
         control.stop(reason ?: "主动停止")
+    }
+
+    /**暂停任务*/
+    fun pause() {
+        control.pause()
+    }
+
+    /**恢复任务*/
+    fun resume() {
+        control.resume(false)
     }
 }
 

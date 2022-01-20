@@ -40,6 +40,9 @@ data class MemoryConfigBean(
      * [com.angcyo.acc2.app.http.Gitee.fetchMemoryConfig]*/
     var isOnlineData: Boolean = false,
 
+    /**音量减少时, 是否停止任务*/
+    var pauseOnVolumeDown: Boolean = true,
+
     //</editor-fold desc="检查配置">
 
     //<editor-fold desc="界面配置">
