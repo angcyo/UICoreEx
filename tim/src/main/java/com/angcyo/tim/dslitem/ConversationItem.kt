@@ -2,6 +2,7 @@ package com.angcyo.tim.dslitem
 
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import com.angcyo.core.coreApp
 import com.angcyo.item.DslMessageListItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex.orString
@@ -9,6 +10,7 @@ import com.angcyo.library.ex.shotTimeString
 import com.angcyo.library.ex.toColor
 import com.angcyo.tim.bean.ConversationInfoBean
 import com.angcyo.tim.bean.faceUrl
+import com.angcyo.tim.helper.convert.UnknownConvert
 import com.angcyo.tim.util.handlerEmojiText
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.setRBgDrawable
@@ -46,7 +48,7 @@ class ConversationItem : DslMessageListItem() {
         conversationInfo = bean
 
         itemText = bean.title
-        itemLoadImage = bean.messageInfoBean?.faceUrl
+        itemLoadImage = coreApp().toUrl(bean.messageInfoBean?.faceUrl)
         itemLoadImageText = itemText.orString()
         itemShowLastLineView = true
 
@@ -60,6 +62,8 @@ class ConversationItem : DslMessageListItem() {
             itemDes = if (!bean.atInfoText.isNullOrEmpty()) {
                 //at信息
                 bean.atInfoText
+            } else if (bean.messageInfoBean == null) {
+                UnknownConvert.UNKNOWN_TYPE
             } else {
                 when (bean.messageInfoBean?.msgType) {
                     V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> content?.handlerEmojiText()

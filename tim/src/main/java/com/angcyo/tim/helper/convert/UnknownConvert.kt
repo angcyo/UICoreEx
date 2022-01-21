@@ -14,6 +14,10 @@ import com.tencent.imsdk.v2.V2TIMMessage
  */
 class UnknownConvert : BaseConvert() {
 
+    companion object {
+        const val UNKNOWN_TYPE = "[不支持的消息类型]"
+    }
+
     override fun handleMessage(message: V2TIMMessage): Boolean {
         return true
     }
@@ -24,7 +28,7 @@ class UnknownConvert : BaseConvert() {
 
     override fun convertToBean(message: V2TIMMessage): MessageInfoBean {
         return baseMessageInfoBean(message).apply {
-            content = "[不支持的消息类型]"
+            content = UNKNOWN_TYPE
         }
     }
 

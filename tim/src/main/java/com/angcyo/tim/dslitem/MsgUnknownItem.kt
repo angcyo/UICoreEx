@@ -1,6 +1,7 @@
 package com.angcyo.tim.dslitem
 
 import com.angcyo.tim.R
+import com.angcyo.tim.helper.convert.UnknownConvert
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -18,6 +19,6 @@ class MsgUnknownItem : BaseChatMsgItem() {
 
     override fun bindMsgContent(itemHolder: DslViewHolder, itemPosition: Int, payloads: List<Any>) {
         super.bindMsgContent(itemHolder, itemPosition, payloads)
-        itemHolder.tv(R.id.msg_text_view)?.text = "[不支持的消息类型]"
+        itemHolder.tv(R.id.msg_text_view)?.text = UnknownConvert.UNKNOWN_TYPE
     }
 }
