@@ -18,7 +18,6 @@ import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 
 /**
@@ -106,13 +105,20 @@ class DslTbs {
                 //TbsFileInterfaceImpl.setProviderSetting(FileProvider::class.java.name)
 
                 try {
+                    L.i("腾讯X5 canLoadX5:${QbSdk.canLoadX5(appContext)} isTbsCoreInited:${QbSdk.isTbsCoreInited()}")
+                    QbSdk.checkTbsValidity(appContext)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                try {
                     QbSdk.getMiniQBVersion(appContext).apply {
                         L.i("MiniQBVersion:$this".apply {
                             writeTo()
                         })
                     }
                 } catch (e: Exception) {
-                    L.w(e)
+                    e.printStackTrace()
                 }
             }
         }
