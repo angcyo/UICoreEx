@@ -230,8 +230,8 @@ class AdaptiveModel : LifecycleViewModel() {
     fun isAdmin(num: String? = null, device: String = Device.androidId): Boolean {
         val adminBean = adminData.value
         return adminBean?.data?.contains(num) == true ||
-                adminBean?.devices?.contains(device) == true ||
-                isSuperAdmin(num, device)
+            adminBean?.devices?.contains(device) == true ||
+            isSuperAdmin(num, device)
     }
 
     /**是否是调试设备*/
@@ -248,6 +248,11 @@ class AdaptiveModel : LifecycleViewModel() {
     /**自己的设备*/
     fun isSelfDevice(device: String = Device.androidId): Boolean {
         return adminData.value?.selfDevices?.contains(device) == true
+    }
+
+    /**vip*/
+    fun isVip(device: String = Device.androidId): Boolean {
+        return adminData.value?.vip?.contains(device) == true
     }
 
     /**更新配置

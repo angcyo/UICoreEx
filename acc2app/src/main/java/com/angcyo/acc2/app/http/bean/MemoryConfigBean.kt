@@ -149,6 +149,9 @@ data class MemoryConfigBean(
      * 数据量太大的话... {"message":"500 Internal Server Error"}*/
     var uploadLogLineLimit: Int = 150,
 
+    /**每天最多可以拉取的微信账号数量*/
+    var maxFetchAccountCount: Int = 100,
+
     //</editor-fold desc="其他配置">
 
     //<editor-fold desc="2021-12-05">

@@ -22,4 +22,6 @@ data class AdminBean(
     var debugDevices: List<String>? = null,
     var superDevices: List<String>? = null,
     var selfDevices: List<String>? = null,
+    //vip的设备列表
+    var vip: List<String>? = null,
 )
