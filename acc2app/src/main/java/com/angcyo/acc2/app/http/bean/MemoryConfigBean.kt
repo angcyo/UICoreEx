@@ -152,6 +152,9 @@ data class MemoryConfigBean(
     /**每天最多可以拉取的微信账号数量*/
     var maxFetchAccountCount: Int = 100,
 
+    /**一次拉取的数量*/
+    var fetchAccountCount: Int = 20,
+
     //</editor-fold desc="其他配置">
 
     //<editor-fold desc="2021-12-05">
