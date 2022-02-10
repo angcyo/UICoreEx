@@ -3,7 +3,7 @@ package com.angcyo.tbs.core
 import android.net.Uri
 import android.os.Parcelable
 import com.angcyo.tbs.DslTbs
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * 启动[TbsWebActivity]附带的参数信息
