@@ -119,14 +119,11 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
 
                     //选中回调
                     dateSelectAction = { dialog, date ->
-                        _itemDateSelectDate = date
                         if (itemDateSelectListener(dialog, date)) {
                             //拦截了
                             true
                         } else {
-                            val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
-                            itemText = dateFormat.format(date)
-                            itemChanging = true
+                            onSelectDate(date)
                             false
                         }
                     }
@@ -145,5 +142,12 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
+    }
+
+    fun onSelectDate(date: Date) {
+        _itemDateSelectDate = date
+        val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
+        itemText = dateFormat.format(date)
+        itemChanging = true
     }
 }
