@@ -1,6 +1,8 @@
 package com.angcyo.acc2.app.component
 
+import com.angcyo.acc2.action.BaseTouchAction
 import com.angcyo.acc2.app.memoryConfig
+import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.ControlListener
 import com.angcyo.core.component.IObserver
@@ -22,6 +24,20 @@ class AccTaskControlListener : ControlListener {
                 if (memoryConfig().pauseOnVolumeDown) {
                     Task.pause()
                 }
+            }
+        }
+    }
+
+    override fun onControlStart(control: AccControl, taskBean: TaskBean) {
+        super.onControlStart(control, taskBean)
+        control.accSchedule.accParse.handleParse.registerActionList.forEach {
+            if (it is BaseTouchAction) {
+                val memoryConfig = memoryConfig()
+                it.gestureStartTime = memoryConfig.gestureStartTime ?: it.gestureStartTime
+                it.gestureDuration = memoryConfig.gestureDuration ?: it.gestureDuration
+                it.gestureMoveDuration = memoryConfig.gestureMoveDuration ?: it.gestureMoveDuration
+                it.gestureFlingDuration =
+                    memoryConfig.gestureFlingDuration ?: it.gestureFlingDuration
             }
         }
     }

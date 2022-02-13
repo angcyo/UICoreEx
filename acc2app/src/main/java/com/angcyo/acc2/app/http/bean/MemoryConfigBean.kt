@@ -155,6 +155,12 @@ data class MemoryConfigBean(
     /**一次拉取的数量*/
     var fetchAccountCount: Int = 20,
 
+    /**[com.angcyo.acc2.action.BaseTouchAction]*/
+    var gestureStartTime: Long? = null,
+    var gestureDuration: Long? = null,
+    var gestureMoveDuration: Long? = null,
+    var gestureFlingDuration: Long? = null,
+
     //</editor-fold desc="其他配置">
 
     //<editor-fold desc="2021-12-05">
