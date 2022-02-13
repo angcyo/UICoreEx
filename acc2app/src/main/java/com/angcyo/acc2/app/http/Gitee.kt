@@ -1,6 +1,7 @@
 package com.angcyo.acc2.app.http
 
 import com.angcyo.acc2.app.app
+import com.angcyo.acc2.app.component.AccWindow
 import com.angcyo.acc2.app.component.jsonName
 import com.angcyo.acc2.app.fillPks
 import com.angcyo.acc2.app.http.bean.AdaptiveVersionBean
@@ -378,6 +379,10 @@ object Gitee {
                     }
                     app().memoryConfigBean = it.fillPks()
                     end(app().memoryConfigBean, error)
+
+                    memoryConfig().showCatchButton?.let {
+                        AccWindow.showCatchButton = it
+                    }
                 }
                 error?.let {
                     end(null, it)

@@ -60,6 +60,9 @@ data class MemoryConfigBean(
 
     var functionStartTitle: String? = "操作区♪ ",
 
+    /**是否需要显示catch按钮*/
+    var showCatchButton: Boolean? = null,
+
     //</editor-fold desc="界面配置">
 
     //<editor-fold desc="功能配置">
