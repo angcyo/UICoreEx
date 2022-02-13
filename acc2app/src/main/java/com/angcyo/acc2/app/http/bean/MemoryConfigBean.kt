@@ -18,7 +18,8 @@ data class MemoryConfigBean(
     /**[checkApp]忽略白名单*/
     var checkIgnoreAndroidId: List<String>? = null,
 
-    /**数据版本*/
+    /**数据版本
+     * 只影响[fetch]相关数据的获取*/
     var version: Long = 0,
 
     /**[com.angcyo.acc2.app.http.Gitee.fetchFunctionList]*/
