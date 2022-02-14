@@ -73,6 +73,9 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
     /**日期 时间 全格式, 最终使用格式*/
     var itemPattern = itemDatePattern
 
+    /**设置显示文本时使用的格式, 默认是[itemPattern]*/
+    var itemShowTextPattern: String? = null
+
     /**开始和结束时间, 毫秒*/
     var itemDateStartTime = 0L
     var itemDateEndTime = nowTime()
@@ -146,7 +149,7 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
 
     fun onSelectDate(date: Date) {
         _itemDateSelectDate = date
-        val dateFormat: DateFormat = SimpleDateFormat(itemPattern)
+        val dateFormat: DateFormat = SimpleDateFormat(itemShowTextPattern ?: itemPattern)
         itemText = dateFormat.format(date)
         itemChanging = true
     }
