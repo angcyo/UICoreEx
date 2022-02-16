@@ -3,14 +3,13 @@ package com.angcyo.acc2.app.component
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.RectF
 import android.view.WindowManager
 import com.angcyo.acc2.control.isControlPause
 import com.angcyo.acc2.control.isControlStart
 import com.angcyo.acc2.core.BaseAccService
-import com.angcyo.acc2.core.double
 import com.angcyo.core.R
-import com.angcyo.http.rx.doBack
 import com.angcyo.ilayer.ILayer
 import com.angcyo.ilayer.container.DragRectFConstraint
 import com.angcyo.ilayer.container.IContainer
@@ -177,9 +176,17 @@ object AccWindowMiniLayer : ILayer() {
             visible(R.id.test_button, isDebugType())
             throttleClick(R.id.test_button) {
 
-                doBack {
-                    L.w("双击:${BaseAccService.lastService?.gesture?.double()}")
-                }
+                /*doBack {
+                    //L.w("双击:${BaseAccService.lastService?.gesture?.double()}")
+                    L.w("点击:${BaseAccService.lastService?.gesture?.click()}")
+                }*/
+
+                BaseAccService.lastService?.pressLocation(
+                    Point(
+                        _screenWidth / 2,
+                        _screenHeight / 2
+                    )
+                )
 
                 //TouchTipLayer.showTouch(0.2f, 0f)
 
