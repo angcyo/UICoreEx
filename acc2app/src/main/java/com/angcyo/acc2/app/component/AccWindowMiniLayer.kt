@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.view.WindowManager
 import com.angcyo.acc2.control.isControlPause
 import com.angcyo.acc2.control.isControlStart
+import com.angcyo.acc2.core.AccPermission
 import com.angcyo.acc2.core.BaseAccService
 import com.angcyo.core.R
 import com.angcyo.ilayer.ILayer
@@ -187,6 +188,9 @@ object AccWindowMiniLayer : ILayer() {
                         _screenHeight / 2
                     )
                 )
+
+                AccPermission.getEnabledAccessibilityServiceList()
+                AccPermission.getEnabledAccessibilityGesturesAppList()
 
                 //TouchTipLayer.showTouch(0.2f, 0f)
 
