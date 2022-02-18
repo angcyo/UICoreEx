@@ -251,6 +251,7 @@ fun boxStoreOf(
  *   val list3 = query().equal(MessageEntity_.isSkip, false).order(MessageEntity_.timestamp).build().find(10, 20)
  *
  *   query(FriendEntity_.state.equal("已是好友").or(FriendEntity_.state.equal("已发送申请")))
+ *   query(FriendEntity_.state.equal("已发送申请"))
  * }
  * */
 fun <T> boxOf(
