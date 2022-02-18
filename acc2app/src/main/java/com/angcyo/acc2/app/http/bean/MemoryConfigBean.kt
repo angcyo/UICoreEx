@@ -159,6 +159,9 @@ data class MemoryConfigBean(
     /**一次拉取的数量*/
     var fetchAccountCount: Int = 20,
 
+    /**是否允许数据重复*/
+    var allowRepeat: Boolean = false,
+
     /**[com.angcyo.acc2.action.BaseTouchAction]*/
     var gestureStartTime: Long? = null,
     var gestureDuration: Long? = null,
@@ -195,9 +198,4 @@ data class MemoryConfigBean(
     var pks: Map<String, MemoryConfigBean>? = null
 
     //</editor-fold desc="每个包名对应各自的配置">
-) /*{
-
-    override fun toString(): String {
-        return "MemoryConfigBean file=${file}"
-    }
-}*/
+)
