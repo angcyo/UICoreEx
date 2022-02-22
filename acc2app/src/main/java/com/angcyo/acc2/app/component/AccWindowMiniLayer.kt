@@ -3,11 +3,15 @@ package com.angcyo.acc2.app.component
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.RectF
+import android.view.ViewConfiguration
 import android.view.WindowManager
 import com.angcyo.acc2.control.isControlPause
 import com.angcyo.acc2.control.isControlStart
+import com.angcyo.acc2.core.AccPermission
 import com.angcyo.acc2.core.BaseAccService
+import com.angcyo.acc2.core.click
 import com.angcyo.acc2.core.double
 import com.angcyo.core.R
 import com.angcyo.http.rx.doBack
@@ -18,7 +22,6 @@ import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library.*
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
@@ -174,32 +177,46 @@ object AccWindowMiniLayer : ILayer() {
             }
 
             //测试按钮
-            visible(R.id.test_button, isDebugType())
-            throttleClick(R.id.test_button) {
-
+            visible(R.id.double_button, AccWindow.showTestButton)
+            throttleClick(R.id.double_button) {
                 doBack {
                     L.w(
                         "双击:${
                             BaseAccService.lastService?.gesture?.double(
                                 0.5f * _screenWidth,
-                                0.7f * _screenHeight
+                                0.5f * _screenHeight
                             ) { gestureDescription, dispatched, canceled ->
                                 //no op
                             }
+                        } ${ViewConfiguration.getDoubleTapTimeout()}"
+                    )
+                }
+            }
+
+            visible(R.id.click_button, AccWindow.showTestButton)
+            throttleClick(R.id.click_button) {
+                doBack {
+                    L.w(
+                        "点击:${
+                            BaseAccService.lastService?.gesture?.click(
+                                0.5f * _screenWidth,
+                                0.5f * _screenHeight
+                            )
                         }"
                     )
-//                    L.w("点击:${BaseAccService.lastService?.gesture?.click()}")
                 }
+            }
 
-                /*BaseAccService.lastService?.pressLocation(
+            visible(R.id.test_button, AccWindow.showTestButton)
+            throttleClick(R.id.test_button) {
+                BaseAccService.lastService?.pressLocation(
                     Point(
                         _screenWidth / 2,
                         _screenHeight / 2
                     )
                 )
-
                 AccPermission.getEnabledAccessibilityServiceList()
-                AccPermission.getEnabledAccessibilityGesturesAppList()*/
+                AccPermission.getEnabledAccessibilityGesturesAppList()
 
                 //TouchTipLayer.showTouch(0.2f, 0f)
 

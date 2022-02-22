@@ -132,6 +132,16 @@ object AccWindow {
             }
         }
 
+    var showTestButton: Boolean = isDebugType()
+        set(value) {
+            val old = field
+            field = value
+            if (old != value && value) {
+                AccWindowFullLayer.update()
+                AccWindowMiniLayer.update()
+            }
+        }
+
     //</editor-fold desc="可操作属性">
 
     /**浮窗需要隐藏到什么时间, 13位时间戳*/

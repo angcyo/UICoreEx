@@ -383,6 +383,10 @@ object Gitee {
                     memoryConfig().showCatchButton?.let {
                         AccWindow.showCatchButton = it
                     }
+
+                    memoryConfig().showTestButton?.let {
+                        AccWindow.showTestButton = it
+                    }
                 }
                 error?.let {
                     end(null, it)

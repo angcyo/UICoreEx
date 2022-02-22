@@ -64,6 +64,9 @@ data class MemoryConfigBean(
     /**是否需要显示catch按钮*/
     var showCatchButton: Boolean? = null,
 
+    /**是否需要显示test按钮*/
+    var showTestButton: Boolean? = null,
+
     //</editor-fold desc="界面配置">
 
     //<editor-fold desc="功能配置">
@@ -165,6 +168,7 @@ data class MemoryConfigBean(
     /**[com.angcyo.acc2.action.BaseTouchAction]*/
     var gestureStartTime: Long? = null,
     var gestureDuration: Long? = null,
+    var gestureDoubleInterval: Long? = null,
     var gestureMoveDuration: Long? = null,
     var gestureFlingDuration: Long? = null,
 
