@@ -84,12 +84,11 @@ open class AccSettingFragment : AccAppDslFragment() {
     }
 
     fun _showButtonItem(error: Throwable) {
-        _adapter.apply {
+        _adapter.render {
             find<DslBottomButtonItem>("Button", false)?.apply {
                 itemHidden = false
                 itemButtonText = "初始化失败, 点击重试\n${error.message}"
             }
-            updateItemDepend()
         }
     }
 
