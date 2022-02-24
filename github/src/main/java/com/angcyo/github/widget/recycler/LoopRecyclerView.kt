@@ -28,6 +28,9 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
     /**一个一个滑动*/
     var snapByOne: Boolean = true
 
+    val enableLoop: Boolean
+        get() = adapter?.itemCount ?: 0 > 1
+
     init {
         val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.LoopRecyclerView)
         val timeInterval = typedArray.getInt(
@@ -95,6 +98,18 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
         return result
     }
 
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        return super.onTouchEvent(ev)
+    }
+
+    override fun scrollBy(x: Int, y: Int) {
+        super.scrollBy(x, y)
+    }
+
+    override fun scrollTo(x: Int, y: Int) {
+        super.scrollTo(x, y)
+    }
+
     fun _startInner() {
         if (autoStartLoop) {
             start()
@@ -102,7 +117,12 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
     }
 
     open fun start() {
-        loopSnapHelper.start()
+        if (enableLoop) {
+            //大于一个时才滚动
+            loopSnapHelper.start()
+        } else {
+            pause()
+        }
     }
 
     open fun pause() {
