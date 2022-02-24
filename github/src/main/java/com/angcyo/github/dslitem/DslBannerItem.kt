@@ -78,9 +78,7 @@ open class DslBannerItem : DslNestedRecyclerItem() {
 
             if (nestedRecyclerItemConfig.itemKeepScrollPosition) {
                 nestedRecyclerItemConfig._scrollPositionConfig?.run {
-                    scrollToPosition(
-                        adapterPosition
-                    )
+                    scrollToPosition(adapterPosition)
                 }
             }
         }
