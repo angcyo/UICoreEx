@@ -24,14 +24,15 @@ open class DslBannerItem : DslNestedRecyclerItem() {
 
         nestedRecyclerItemConfig.itemNestedLayoutManager = ScaleLayoutManager(app(), 0).apply {
             recycleChildrenOnDetach = true
-            isFullItem = true
+            isFullItem = true //全屏item
+            maxVisibleItemCount = 3 //最大可见item数量
+            infinite = true //无限滚动
+            itemSpace = 0 //item之间的间隙
             minScale = 1f
             maxScale = 1f
             maxAlpha = 1f
             minAlpha = 1f
-            itemSpace = 0
         }
-
     }
 
     val pagerLayoutManager: ViewPagerLayoutManager?
