@@ -122,7 +122,9 @@
         <!-- ********华为推送设置end******** -->
 
         <!-- ********魅族推送设置start******** -->
-        <receiver android:name=".push.MEIZUPushReceiver">
+        <receiver
+            android:name=".push.MEIZUPushReceiver"
+            android:exported="true">
             <intent-filter>
 
                 <!-- 接收push消息 -->
