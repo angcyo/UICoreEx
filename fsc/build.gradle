@@ -1,0 +1,27 @@
+apply from: allGradle.libBase
+
+//https://stackoverflow.com/questions/23446233/compile-jar-from-url-in-gradle
+def urlFile = { url, name ->
+    def file = new File("$buildDir/download/${name}")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.core)
+
+    //def coroutine_version = "1.5.0"
+    //implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/ble.aar', 'ble.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/spp.aar', 'spp.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/common.aar', 'common.3.4.0.aar')
+}

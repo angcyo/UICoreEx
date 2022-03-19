@@ -75,8 +75,10 @@ class BluetoothModel : LifecycleViewModel() {
             BleManager.getInstance().initScanRule(scanRuleConfig)
         }
 
+        /**手机是否有蓝牙设备*/
         fun isSupportBle() = BleManager.getInstance().isSupportBle
 
+        /**是否开启了蓝牙*/
         fun isBlueEnable() = BleManager.getInstance().isBlueEnable
 
         /**GPS是否已打开*/
@@ -290,7 +292,7 @@ data class DeviceConnectState(
     val state: Int = CONNECT_STATE_NORMAL,
     val gatt: BluetoothGatt? = null,
     val exception: BleException? = null,
-    val isActiveDisConnected: Boolean = false
+    val isActiveDisConnected: Boolean = false //主动断开连接
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0
