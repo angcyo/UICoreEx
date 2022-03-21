@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT
+import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -517,16 +518,15 @@ class FscBleApiModel : LifecycleViewModel() {
     /**断开连接*/
     fun disconnect(bleDevice: FscDevice) {
         if (isConnected(bleDevice)) {
-            connectDeviceList.removeAll { it.device == bleDevice }
-            fscApi.disconnect(bleDevice.address)
             connectStateData.postValue(
                 DeviceConnectState(
                     bleDevice,
-                    CONNECT_STATE_DISCONNECT,
+                    CONNECT_STATE_DISCONNECT_START,
                     null,
                     isActiveDisConnected = true
                 )
             )
+            fscApi.disconnect(bleDevice.address)
         }
     }
 
@@ -606,6 +606,7 @@ data class DeviceConnectState(
         const val CONNECT_STATE_START = 1
         const val CONNECT_STATE_SUCCESS = 2
         const val CONNECT_STATE_FAIL = 3
-        const val CONNECT_STATE_DISCONNECT = 4
+        const val CONNECT_STATE_DISCONNECT_START = 4
+        const val CONNECT_STATE_DISCONNECT = 5
     }
 }

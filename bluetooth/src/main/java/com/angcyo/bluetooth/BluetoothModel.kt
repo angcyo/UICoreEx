@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT
+import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_FAIL
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
@@ -308,12 +309,11 @@ class BluetoothModel : LifecycleViewModel() {
 
     /**断开连接*/
     fun disconnect(bleDevice: BleDevice) {
-        connectDeviceList.removeAll { it.device == bleDevice }
         BleManager.getInstance().disconnect(bleDevice)
         connectStateData.postValue(
             DeviceConnectState(
                 bleDevice,
-                CONNECT_STATE_DISCONNECT,
+                CONNECT_STATE_DISCONNECT_START,
                 null,
                 isActiveDisConnected = true
             )
@@ -342,6 +342,7 @@ data class DeviceConnectState(
         const val CONNECT_STATE_START = 1
         const val CONNECT_STATE_SUCCESS = 2
         const val CONNECT_STATE_FAIL = 3
-        const val CONNECT_STATE_DISCONNECT = 4
+        const val CONNECT_STATE_DISCONNECT_START = 4
+        const val CONNECT_STATE_DISCONNECT = 5
     }
 }
