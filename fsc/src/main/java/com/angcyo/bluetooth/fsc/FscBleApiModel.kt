@@ -63,7 +63,7 @@ class FscBleApiModel : LifecycleViewModel() {
             get() = FscSppCentralApiImp.getInstance()
 
         /**初始化方法*/
-        fun init(application: Application, debug: Boolean = isDebug()) {
+        fun init(application: Application = app(), debug: Boolean = isDebug()) {
             FscBleCentralApiImp.getInstance(application).apply {
                 initialize()
                 isShowLog(debug)
@@ -347,15 +347,22 @@ class FscBleApiModel : LifecycleViewModel() {
     /**连接状态监听*/
     val connectStateData: MutableOnceLiveData<DeviceConnectState> = vmDataOnce(null)
 
+    /**设备连接状态列表,包括已连接的设备*/
+    val connectDeviceList = mutableListOf<DeviceConnectState>()
+
     val handle = Handler(Looper.getMainLooper())
 
     /**是否使用spp模式扫描蓝牙设备*/
     var useSppScan = false
         set(value) {
+            fscApi.stopScan()
             field = value
-            if (value && bleStateData.value == BLUETOOTH_STATE_SCANNING) {
-                fscApi.stopScan()
-                //fscApi.stopSend()
+            if (value) {
+                useSppModel = true
+
+                if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
+                    //fscApi.stopSend()
+                }
             }
         }
 
@@ -375,13 +382,16 @@ class FscBleApiModel : LifecycleViewModel() {
 
     /**设备是否已连接*/
     fun isConnected(bleDevice: FscDevice?): Boolean {
-        return bleDevice?.address?.run { fscApi.isConnected(this) } ?: false
+        return bleDevice?.run {
+            connectDeviceList.find { it.device == this }?.run { state == CONNECT_STATE_SUCCESS }
+            //address?.run { fscApi.isConnected(this) }
+        } ?: false
     }
 
     /**开始扫描蓝牙设备
      * [delayStop] 多少毫秒后, 自动关闭扫描
      * [context] 使用 Activity 才会申请对应的权限*/
-    fun startScan(delayStop: Long = 10_000, context: Context = app()) {
+    fun startScan(context: Context = app(), delayStop: Long = 10_000) {
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
             return
@@ -401,7 +411,7 @@ class FscBleApiModel : LifecycleViewModel() {
             //等待2s之后, 继续操作
             handle.postDelayed({
                 if (isBlueEnable()) {
-                    startScan(delayStop, context)
+                    startScan(context, delayStop)
                 }
             }, 1800L)
             return
@@ -442,7 +452,15 @@ class FscBleApiModel : LifecycleViewModel() {
         if (!bluetoothAdapter.isEnabled) {
             return false
         }
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN
+            )
+        } else {
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
         val permissionDeniedList: MutableList<String> = ArrayList()
         for (permission in permissions) {
             val permissionCheck = ContextCompat.checkSelfPermission(context, permission)
@@ -465,10 +483,32 @@ class FscBleApiModel : LifecycleViewModel() {
         return permissionDeniedList.isEmpty()
     }
 
+    /**包裹[DeviceConnectState]*/
+    fun wrapStateDevice(device: FscDevice, action: DeviceConnectState.() -> Unit) {
+        val state = connectDeviceList.find { it.device == device } ?: DeviceConnectState(device)
+        state.action()
+        connectDeviceList.remove(state)
+        connectDeviceList.add(state)
+    }
+
+    fun connectState(bleDevice: FscDevice?): Int {
+        val find = connectDeviceList.find { it.device == bleDevice }
+        if (find == null) {
+            if (isConnected(bleDevice)) {
+                return CONNECT_STATE_SUCCESS
+            }
+            return CONNECT_STATE_DISCONNECT
+        }
+        return find.state
+    }
+
     /**连接设备*/
     fun connect(bleDevice: FscDevice) {
         if (isConnected(bleDevice)) {
             return
+        }
+        wrapStateDevice(bleDevice) {
+            state = CONNECT_STATE_START
         }
         connectStateData.postValue(DeviceConnectState(bleDevice, CONNECT_STATE_START))
         fscApi.connect(bleDevice.address)
@@ -477,6 +517,7 @@ class FscBleApiModel : LifecycleViewModel() {
     /**断开连接*/
     fun disconnect(bleDevice: FscDevice) {
         if (isConnected(bleDevice)) {
+            connectDeviceList.removeAll { it.device == bleDevice }
             fscApi.disconnect(bleDevice.address)
             connectStateData.postValue(
                 DeviceConnectState(
@@ -491,7 +532,7 @@ class FscBleApiModel : LifecycleViewModel() {
 
     override fun release() {
         fscApi.disconnect()
-        bleDeviceListData.postValue(null)
+        bleDeviceListData.postValue(emptyList())
     }
 
     //</editor-fold desc="操作方法">
@@ -519,6 +560,11 @@ class FscBleApiModel : LifecycleViewModel() {
 
     fun _peripheralConnected(address: String, gatt: BluetoothGatt?, type: ConnectType) {
         bleDeviceListData.value?.find { it.address == address }?.let { bleDevice ->
+            wrapStateDevice(bleDevice) {
+                this.state = CONNECT_STATE_SUCCESS
+                this.gatt = gatt
+                this.type = type
+            }
             connectStateData.postValue(
                 DeviceConnectState(
                     bleDevice,
@@ -532,6 +578,7 @@ class FscBleApiModel : LifecycleViewModel() {
 
     fun _peripheralDisconnected(address: String, gatt: BluetoothGatt?) {
         bleDeviceListData.value?.find { it.address == address }?.let { bleDevice ->
+            connectDeviceList.removeAll { it.device == bleDevice }
             connectStateData.postValue(
                 DeviceConnectState(
                     bleDevice,
@@ -547,12 +594,12 @@ class FscBleApiModel : LifecycleViewModel() {
 
 /**连接状态*/
 data class DeviceConnectState(
-    val bleDevice: FscDevice,
-    val state: Int = CONNECT_STATE_NORMAL,
-    val gatt: BluetoothGatt? = null,
-    val type: ConnectType? = null,
-    val exception: Exception? = null,
-    val isActiveDisConnected: Boolean = false //主动断开连接
+    val device: FscDevice,
+    var state: Int = CONNECT_STATE_NORMAL,
+    var gatt: BluetoothGatt? = null,
+    var type: ConnectType? = null,
+    var exception: Exception? = null,
+    var isActiveDisConnected: Boolean = false //主动断开连接
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0

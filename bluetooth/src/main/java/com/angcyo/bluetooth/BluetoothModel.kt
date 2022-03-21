@@ -133,6 +133,9 @@ class BluetoothModel : LifecycleViewModel() {
     /**连接状态监听*/
     val connectStateData: MutableOnceLiveData<DeviceConnectState> = vmDataOnce(null)
 
+    /**设备连接状态列表,包括已连接的设备*/
+    val connectDeviceList = mutableListOf<DeviceConnectState>()
+
     //<editor-fold desc="操作方法">
 
     /**开始扫描蓝牙设备
@@ -193,7 +196,15 @@ class BluetoothModel : LifecycleViewModel() {
         if (!bluetoothAdapter.isEnabled) {
             return false
         }
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN
+            )
+        } else {
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
         val permissionDeniedList: MutableList<String> = ArrayList()
         for (permission in permissions) {
             val permissionCheck = ContextCompat.checkSelfPermission(context, permission)
@@ -216,6 +227,25 @@ class BluetoothModel : LifecycleViewModel() {
         return permissionDeniedList.isEmpty()
     }
 
+    /**包裹[DeviceConnectState]*/
+    fun wrapStateDevice(device: BleDevice, action: DeviceConnectState.() -> Unit) {
+        val state = connectDeviceList.find { it.device == device } ?: DeviceConnectState(device)
+        state.action()
+        connectDeviceList.remove(state)
+        connectDeviceList.add(state)
+    }
+
+    fun connectState(bleDevice: BleDevice?): Int {
+        val find = connectDeviceList.find { it.device == bleDevice }
+        if (find == null) {
+            if (isConnected(bleDevice)) {
+                return CONNECT_STATE_SUCCESS
+            }
+            return CONNECT_STATE_DISCONNECT
+        }
+        return find.state
+    }
+
     /**连接设备*/
     fun connect(bleDevice: BleDevice) {
         if (isConnected(bleDevice)) {
@@ -223,10 +253,17 @@ class BluetoothModel : LifecycleViewModel() {
         }
         BleManager.getInstance().connect(bleDevice, object : BleGattCallback() {
             override fun onStartConnect() {
+                wrapStateDevice(bleDevice) {
+                    state = CONNECT_STATE_START
+                }
                 connectStateData.postValue(DeviceConnectState(bleDevice, CONNECT_STATE_START))
             }
 
             override fun onConnectFail(bleDevice: BleDevice, exception: BleException) {
+                wrapStateDevice(bleDevice) {
+                    state = CONNECT_STATE_FAIL
+                    this.exception = exception
+                }
                 connectStateData.postValue(
                     DeviceConnectState(
                         bleDevice,
@@ -237,6 +274,10 @@ class BluetoothModel : LifecycleViewModel() {
             }
 
             override fun onConnectSuccess(bleDevice: BleDevice, gatt: BluetoothGatt, status: Int) {
+                wrapStateDevice(bleDevice) {
+                    this.state = CONNECT_STATE_SUCCESS
+                    this.gatt = gatt
+                }
                 connectStateData.postValue(
                     DeviceConnectState(
                         bleDevice,
@@ -252,6 +293,7 @@ class BluetoothModel : LifecycleViewModel() {
                 gatt: BluetoothGatt,
                 status: Int
             ) {
+                connectDeviceList.removeAll { it.device == bleDevice }
                 connectStateData.postValue(
                     DeviceConnectState(
                         bleDevice,
@@ -266,6 +308,7 @@ class BluetoothModel : LifecycleViewModel() {
 
     /**断开连接*/
     fun disconnect(bleDevice: BleDevice) {
+        connectDeviceList.removeAll { it.device == bleDevice }
         BleManager.getInstance().disconnect(bleDevice)
         connectStateData.postValue(
             DeviceConnectState(
@@ -280,7 +323,7 @@ class BluetoothModel : LifecycleViewModel() {
     override fun release() {
         BleManager.getInstance().disconnectAllDevice()
         BleManager.getInstance().destroy()
-        bluetoothDeviceListData.postValue(null)
+        bluetoothDeviceListData.postValue(emptyList())
     }
 
     //</editor-fold desc="操作方法">
@@ -288,11 +331,11 @@ class BluetoothModel : LifecycleViewModel() {
 
 /**连接状态*/
 data class DeviceConnectState(
-    val bleDevice: BleDevice,
-    val state: Int = CONNECT_STATE_NORMAL,
-    val gatt: BluetoothGatt? = null,
-    val exception: BleException? = null,
-    val isActiveDisConnected: Boolean = false //主动断开连接
+    val device: BleDevice,
+    var state: Int = CONNECT_STATE_NORMAL,
+    var gatt: BluetoothGatt? = null,
+    var exception: BleException? = null,
+    var isActiveDisConnected: Boolean = false //主动断开连接
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0
