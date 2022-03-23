@@ -65,9 +65,11 @@ class FscBleApiModel : LifecycleViewModel() {
 
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
 
+        /**默认情况下, 34748 bytes/s */
         val bleApi: FscBleCentralApi
             get() = FscBleCentralApiImp.getInstance()
 
+        /**默认情况下, 36412 45544 70826 bytes/s */
         val sppApi: FscSppCentralApi
             get() = FscSppCentralApiImp.getInstance()
 
@@ -561,7 +563,10 @@ class FscBleApiModel : LifecycleViewModel() {
     }
 
     override fun release() {
+        fscApi.stopScan()
+        fscApi.stopSend()
         fscApi.disconnect()
+        devicePacketProgressCacheList.clear()
         bleDeviceListData.postValue(emptyList())
     }
 
@@ -721,6 +726,8 @@ class FscBleApiModel : LifecycleViewModel() {
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
         L.i("$address 发送:$strValue ${data.size}bytes")
         wrapProgressDevice(address) {
+            sendBytesSize += data.size
+            sendPacketCount++
             if (percentage == -1) {
                 //记录开始发送的时间
                 percentage = 0
@@ -733,7 +740,6 @@ class FscBleApiModel : LifecycleViewModel() {
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
         L.i("$address 发送进度:$percentage% ${sendByte.size}bytes")
         wrapProgressDevice(address) {
-            sendBytesSize += sendByte.size
             this.percentage = percentage
             if (percentage == 100) {
                 //记录完成发送的时间
@@ -812,6 +818,8 @@ data class DevicePacketProgress(
     val address: String,
     /**已发送成功的字节大小*/
     var sendBytesSize: Long = 0,
+    /**发送包的数量*/
+    var sendPacketCount: Int = 0,
     var percentage: Int = -1,
     /**发送的开始时间, 毫秒*/
     var startTime: Long = -1,
