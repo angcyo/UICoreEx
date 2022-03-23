@@ -122,7 +122,7 @@ class BluetoothModel : LifecycleViewModel() {
     /**蓝牙的状态*/
     val bluetoothStateData: MutableLiveData<Int> = vmData(BLUETOOTH_STATE_NORMAL)
 
-    /**扫描到的蓝牙设备*/
+    /**扫描到的蓝牙设备, 不重复的设备*/
     val bluetoothDeviceData: MutableOnceLiveData<BleDevice> = vmDataOnce(null)
 
     /**扫到了设备变化, 会出现重复的数据*/

@@ -13,6 +13,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +21,13 @@ import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCO
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
+import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_PAUSE
+import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_PROGRESS
+import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_RECEIVED
+import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_START
+import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_STOP
 import com.angcyo.core.lifecycle.LifecycleViewModel
+import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
 import com.angcyo.viewmodel.MutableOnceLiveData
@@ -35,6 +42,7 @@ import com.feasycom.common.controler.FscApi
 import com.feasycom.spp.controler.FscSppCentralApi
 import com.feasycom.spp.controler.FscSppCentralApiImp
 import com.feasycom.spp.controler.FscSppCentralCallbacksImp
+import java.io.InputStream
 
 /**
  * 蓝牙模型
@@ -104,7 +112,7 @@ class FscBleApiModel : LifecycleViewModel() {
         }
     }
 
-    //扫描回调
+    //扫描回调, 子线程回调
     val bleCallback = object : FscBleCentralCallbacksImp() {
 
         override fun startScan() {
@@ -155,6 +163,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
             super.sendPacketProgress(address, percentage, sendByte)
+            _sendPacketProgress(address, percentage, sendByte)
         }
 
         /**
@@ -165,6 +174,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun packetSend(address: String, strValue: String, data: ByteArray) {
             super.packetSend(address, strValue, data)
+            _packetSend(address, strValue, data)
         }
 
         /**
@@ -181,6 +191,7 @@ class FscBleApiModel : LifecycleViewModel() {
             data: ByteArray
         ) {
             super.packetReceived(address, strValue, dataHexString, data)
+            _packetReceived(address, strValue, dataHexString, data)
         }
 
         /**
@@ -219,6 +230,7 @@ class FscBleApiModel : LifecycleViewModel() {
         }
     }
 
+    //spp回调, 子线程回调
     val sppCallback = object : FscSppCentralCallbacksImp() {
 
         override fun startScan() {
@@ -256,6 +268,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
             super.sendPacketProgress(address, percentage, sendByte)
+            _sendPacketProgress(address, percentage, sendByte)
         }
 
         /**
@@ -266,6 +279,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun packetSend(address: String, strValue: String, data: ByteArray) {
             super.packetSend(address, strValue, data)
+            _packetSend(address, strValue, data)
         }
 
         /**
@@ -279,9 +293,10 @@ class FscBleApiModel : LifecycleViewModel() {
             address: String,
             strValue: String,
             packetReceived: String,
-            data: ByteArray?
+            data: ByteArray
         ) {
             super.packetSend(address, strValue, packetReceived, data)
+            _packetSend(address, strValue, data)
         }
 
         /**
@@ -298,6 +313,7 @@ class FscBleApiModel : LifecycleViewModel() {
             data: ByteArray
         ) {
             super.packetReceived(address, strValue, dataHexString, data)
+            _packetReceived(address, strValue, dataHexString, data)
         }
 
         /**
@@ -339,8 +355,11 @@ class FscBleApiModel : LifecycleViewModel() {
     /**蓝牙的状态*/
     val bleStateData: MutableLiveData<Int> = vmData(BLUETOOTH_STATE_NORMAL)
 
-    /**扫描到的蓝牙设备*/
+    /**扫描到的蓝牙设备, 不重复的设备*/
     val bleDeviceData: MutableOnceLiveData<FscDevice> = vmDataOnce(null)
+
+    /**扫到了设备变化, 会出现重复的数据*/
+    val bleScanDeviceData: MutableOnceLiveData<FscDevice> = vmDataOnce(null)
 
     /**扫描到的所有蓝牙设备*/
     val bleDeviceListData: MutableLiveData<List<FscDevice>> = vmData(emptyList())
@@ -353,14 +372,15 @@ class FscBleApiModel : LifecycleViewModel() {
 
     val handle = Handler(Looper.getMainLooper())
 
+    /**扫描时长*/
+    val scanTimeOut = 20_000L
+
     /**是否使用spp模式扫描蓝牙设备*/
     var useSppScan = false
         set(value) {
             fscApi.stopScan()
             field = value
             if (value) {
-                useSppModel = true
-
                 if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
                     //fscApi.stopSend()
                 }
@@ -369,6 +389,10 @@ class FscBleApiModel : LifecycleViewModel() {
 
     /**是否激活spp模式, 走spp api, 并且激活sdp服务*/
     var useSppModel = false
+        set(value) {
+            useSppScan = value
+            field = value
+        }
 
     /**api*/
     val fscApi: FscApi<*>
@@ -392,7 +416,7 @@ class FscBleApiModel : LifecycleViewModel() {
     /**开始扫描蓝牙设备
      * [delayStop] 多少毫秒后, 自动关闭扫描
      * [context] 使用 Activity 才会申请对应的权限*/
-    fun startScan(context: Context = app(), delayStop: Long = 10_000) {
+    fun startScan(context: Context = app(), delayStop: Long = scanTimeOut) {
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
             return
@@ -504,7 +528,10 @@ class FscBleApiModel : LifecycleViewModel() {
     }
 
     /**连接设备*/
-    fun connect(bleDevice: FscDevice) {
+    fun connect(bleDevice: FscDevice?) {
+        if (bleDevice == null) {
+            return
+        }
         if (isConnected(bleDevice)) {
             return
         }
@@ -516,7 +543,10 @@ class FscBleApiModel : LifecycleViewModel() {
     }
 
     /**断开连接*/
-    fun disconnect(bleDevice: FscDevice) {
+    fun disconnect(bleDevice: FscDevice?) {
+        if (bleDevice == null) {
+            return
+        }
         if (isConnected(bleDevice)) {
             connectStateData.postValue(
                 DeviceConnectState(
@@ -552,8 +582,9 @@ class FscBleApiModel : LifecycleViewModel() {
     }
 
     fun _peripheralFound(device: FscDevice) {
-        bleDeviceData.postValue(device)
+        bleScanDeviceData.postValue(device)
         if (!cacheScanDeviceList.contains(device)) {
+            bleDeviceData.postValue(device)
             cacheScanDeviceList.add(device)
         }
     }
@@ -590,6 +621,141 @@ class FscBleApiModel : LifecycleViewModel() {
     }
 
     //</editor-fold desc="Callback">
+
+    //<editor-fold desc="send and received">
+
+    /**停止发送*/
+    fun stopSend(address: String) {
+        fscApi.stopSend(address)
+        clearProgressCache(address)
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                byteArrayOf(),
+                findProgressCache(address)?.percentage ?: -1,
+                PACKET_STATE_STOP
+            )
+        )
+    }
+
+    /**暂停发送*/
+    fun pauseSend(address: String): Boolean {
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                byteArrayOf(),
+                findProgressCache(address)?.percentage ?: -1,
+                PACKET_STATE_PAUSE
+            )
+        )
+        wrapProgressDevice(address) {
+            isPause = true
+        }
+        return fscApi.pauseSend(address)
+    }
+
+    /**继续发送*/
+    fun continueSend(address: String): Boolean {
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                byteArrayOf(),
+                findProgressCache(address)?.percentage ?: -1,
+                PACKET_STATE_PROGRESS
+            )
+        )
+        wrapProgressDevice(address) {
+            isPause = false
+        }
+        return fscApi.continueSend(address)
+    }
+
+    fun send(address: String, data: String): Boolean {
+        clearProgressCache(address)
+        return fscApi.send(address, data)
+    }
+
+    fun send(address: String, packet: ByteArray): Boolean {
+        clearProgressCache(address)
+        return fscApi.send(address, packet)
+    }
+
+    fun sendFile(address: String, size: Int): Boolean {
+        clearProgressCache(address)
+        return fscApi.sendFile(address, size)
+    }
+
+    fun sendFile(address: String, inputStream: InputStream): Boolean {
+        clearProgressCache(address)
+        return fscApi.sendFile(address, inputStream)
+    }
+
+    fun sendFile(address: String, byteArray: ByteArray): Boolean {
+        clearProgressCache(address)
+        return fscApi.sendFile(address, byteArray)
+    }
+
+    /**数据发送状态,进度监听*/
+    val devicePacketStateData: MutableOnceLiveData<DevicePacketState> = vmDataOnce(null)
+
+    val devicePacketProgressCacheList = mutableListOf<DevicePacketProgress>()
+
+    fun clearProgressCache(address: String?) {
+        devicePacketProgressCacheList.removeAll { it.address == address }
+    }
+
+    /**进度缓存*/
+    fun findProgressCache(address: String?): DevicePacketProgress? {
+        return devicePacketProgressCacheList.find { it.address == address }
+    }
+
+    /**包裹[DevicePacketProgress]*/
+    fun wrapProgressDevice(address: String, action: DevicePacketProgress.() -> Unit) {
+        val progress = devicePacketProgressCacheList.find { it.address == address }
+            ?: DevicePacketProgress(address)
+        progress.action()
+        devicePacketProgressCacheList.remove(progress)
+        devicePacketProgressCacheList.add(progress)
+    }
+
+    fun _packetSend(address: String, strValue: String, data: ByteArray) {
+        L.i("$address 发送:$strValue ${data.size}bytes")
+        wrapProgressDevice(address) {
+            if (percentage == -1) {
+                //记录开始发送的时间
+                percentage = 0
+                startTime = SystemClock.elapsedRealtime()
+            }
+        }
+        devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_START))
+    }
+
+    fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
+        L.i("$address 发送进度:$percentage% ${sendByte.size}bytes")
+        wrapProgressDevice(address) {
+            sendBytesSize += sendByte.size
+            this.percentage = percentage
+            if (percentage == 100) {
+                //记录完成发送的时间
+                finishTime = SystemClock.elapsedRealtime()
+            }
+        }
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                sendByte,
+                percentage,
+                PACKET_STATE_PROGRESS
+            )
+        )
+    }
+
+    fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
+        L.i("$address 收到:$strValue ${data.size}bytes")
+        devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_RECEIVED))
+    }
+
+    //</editor-fold desc="send and received">
 }
 
 /**连接状态*/
@@ -610,3 +776,47 @@ data class DeviceConnectState(
         const val CONNECT_STATE_DISCONNECT = 5
     }
 }
+
+/**数据发送状态*/
+data class DevicePacketState(
+    val address: String,
+    val bytes: ByteArray,
+    /**数据发送的进度[0-100]
+     * -1表示发送的数据包
+     * [0-100]表示发送包的进度*/
+    val percentage: Int = -1,
+    val state: Int = PACKET_STATE_NORMAL,
+) {
+    companion object {
+        const val PACKET_STATE_NORMAL = 0
+
+        /**开始发送数据*/
+        const val PACKET_STATE_START = 1
+
+        /**发送数据的进度*/
+        const val PACKET_STATE_PROGRESS = 2
+
+        /**暂停发送*/
+        const val PACKET_STATE_PAUSE = 3
+
+        /**停止发送*/
+        const val PACKET_STATE_STOP = 4
+
+        /**接收的数据*/
+        const val PACKET_STATE_RECEIVED = 5
+    }
+}
+
+/**数据发送进度,速度*/
+data class DevicePacketProgress(
+    val address: String,
+    /**已发送成功的字节大小*/
+    var sendBytesSize: Long = 0,
+    var percentage: Int = -1,
+    /**发送的开始时间, 毫秒*/
+    var startTime: Long = -1,
+    /**完成时的时间, 毫秒*/
+    var finishTime: Long = -1,
+    /**是否暂停了*/
+    var isPause: Boolean = false,
+)
