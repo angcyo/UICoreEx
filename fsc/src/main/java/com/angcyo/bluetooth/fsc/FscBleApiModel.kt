@@ -86,8 +86,8 @@ class FscBleApiModel : LifecycleViewModel() {
         }
 
         /**手机是否有蓝牙设备*/
-        fun isSupportBle() = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                && app().packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
+        fun isSupportBle() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
+                && app().packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
 
         /**是否开启了蓝牙*/
         fun isBlueEnable() =
@@ -558,6 +558,7 @@ class FscBleApiModel : LifecycleViewModel() {
                     isActiveDisConnected = true
                 )
             )
+            stopSend(bleDevice.address)
             fscApi.disconnect(bleDevice.address)
         }
     }
