@@ -567,6 +567,7 @@ class FscBleApiModel : LifecycleViewModel() {
         fscApi.stopScan()
         fscApi.stopSend()
         fscApi.disconnect()
+        connectDeviceList.clear()
         devicePacketProgressCacheList.clear()
         bleDeviceListData.postValue(emptyList())
     }
@@ -678,36 +679,64 @@ class FscBleApiModel : LifecycleViewModel() {
 
     fun send(address: String, data: String): Boolean {
         clearProgressCache(address)
+        clearReceiveCache(address)
+        if (data.isEmpty()) {
+            L.w("$address 发送空数据!")
+        }
         return fscApi.send(address, data)
     }
 
     fun send(address: String, packet: ByteArray): Boolean {
         clearProgressCache(address)
+        clearReceiveCache(address)
+        if (packet.isEmpty()) {
+            L.w("$address 发送空数据!")
+        }
         return fscApi.send(address, packet)
     }
 
     fun sendFile(address: String, size: Int): Boolean {
         clearProgressCache(address)
+        clearReceiveCache(address)
+        if (size <= 0) {
+            L.w("$address 发送空数据!")
+        }
         return fscApi.sendFile(address, size)
     }
 
     fun sendFile(address: String, inputStream: InputStream): Boolean {
         clearProgressCache(address)
+        clearReceiveCache(address)
+        if (inputStream.available() <= 0) {
+            L.w("$address 发送空数据!")
+        }
         return fscApi.sendFile(address, inputStream)
     }
 
     fun sendFile(address: String, byteArray: ByteArray): Boolean {
         clearProgressCache(address)
+        clearReceiveCache(address)
+        if (byteArray.isEmpty()) {
+            L.w("$address 发送空数据!")
+        }
         return fscApi.sendFile(address, byteArray)
     }
 
     /**数据发送状态,进度监听*/
     val devicePacketStateData: MutableOnceLiveData<DevicePacketState> = vmDataOnce(null)
 
+    //发送数据缓存
     val devicePacketProgressCacheList = mutableListOf<DevicePacketProgress>()
+
+    //接收数据缓存
+    val devicePacketReceiveCacheList = mutableListOf<DevicePacketReceive>()
 
     fun clearProgressCache(address: String?) {
         devicePacketProgressCacheList.removeAll { it.address == address }
+    }
+
+    fun clearReceiveCache(address: String?) {
+        devicePacketReceiveCacheList.removeAll { it.address == address }
     }
 
     /**进度缓存*/
@@ -715,13 +744,25 @@ class FscBleApiModel : LifecycleViewModel() {
         return devicePacketProgressCacheList.find { it.address == address }
     }
 
+    fun findReceiveCache(address: String?): DevicePacketReceive? {
+        return devicePacketReceiveCacheList.find { it.address == address }
+    }
+
     /**包裹[DevicePacketProgress]*/
     fun wrapProgressDevice(address: String, action: DevicePacketProgress.() -> Unit) {
-        val progress = devicePacketProgressCacheList.find { it.address == address }
+        val element = devicePacketProgressCacheList.find { it.address == address }
             ?: DevicePacketProgress(address)
-        progress.action()
-        devicePacketProgressCacheList.remove(progress)
-        devicePacketProgressCacheList.add(progress)
+        element.action()
+        devicePacketProgressCacheList.remove(element)
+        devicePacketProgressCacheList.add(element)
+    }
+
+    fun wrapReceiveDevice(address: String, action: DevicePacketReceive.() -> Unit) {
+        val element = devicePacketReceiveCacheList.find { it.address == address }
+            ?: DevicePacketReceive(address)
+        element.action()
+        devicePacketReceiveCacheList.remove(element)
+        devicePacketReceiveCacheList.add(element)
     }
 
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
@@ -757,8 +798,18 @@ class FscBleApiModel : LifecycleViewModel() {
         )
     }
 
+    /**
+     * [address] DC:0D:30:10:19:5E
+     * [dataHexString] [AA BB 13 00 06 00 00 00 00 00 00 00 00 00 00 00 06 00 01 00 00 0D ]*/
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.i("$address 收到:$strValue ${data.size}bytes")
+        L.i("$address 收到:$dataHexString ${data.size}bytes $strValue")
+        wrapReceiveDevice(address) {
+            if (startTime == -1L) {
+                startTime = SystemClock.elapsedRealtime()
+            }
+            receiveBytesSize += data.size
+            receivePacketCount++
+        }
         devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_RECEIVED))
     }
 
@@ -828,4 +879,15 @@ data class DevicePacketProgress(
     var finishTime: Long = -1,
     /**是否暂停了*/
     var isPause: Boolean = false,
+)
+
+/**数据接收*/
+data class DevicePacketReceive(
+    val address: String,
+    /**已接收的字节数量*/
+    var receiveBytesSize: Long = 0,
+    /**接收包的数量*/
+    var receivePacketCount: Int = 0,
+    /**接收的开始时间, 毫秒*/
+    var startTime: Long = -1
 )
