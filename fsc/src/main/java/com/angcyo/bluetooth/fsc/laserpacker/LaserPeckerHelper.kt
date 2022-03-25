@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean.ReceivePacketBean
 import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString

@@ -1,4 +1,4 @@
-package com.angcyo.bluetooth.fsc.laserpacker
+package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 /**
  * 接收包的数据

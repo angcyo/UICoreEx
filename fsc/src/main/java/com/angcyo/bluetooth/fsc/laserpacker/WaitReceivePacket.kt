@@ -6,6 +6,7 @@ import android.os.SystemClock
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.bean.ReceivePacketBean
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexInt
