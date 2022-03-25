@@ -17,6 +17,10 @@ object LaserPeckerHelper {
     //固定数据头
     const val PACKET_HEAD = "AABB"
 
+    //固定头的字节数
+    val packetHeadSize: Int
+        get() = PACKET_HEAD.toHexByteArray().size
+
     //校验位的占用字节数量
     const val CHECK_SIZE = 2
 

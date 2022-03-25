@@ -8,7 +8,6 @@ import com.angcyo.bluetooth.fsc.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.bean.ReceivePacketBean
 import com.angcyo.library.ex.copyTo
-import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import java.io.ByteArrayOutputStream
@@ -38,7 +37,7 @@ class WaitReceivePacket(
     var _isFinish: Boolean = false
 
     //头部字节大小
-    val headSize = LaserPeckerHelper.PACKET_HEAD.toHexByteArray().size
+    val headSize = LaserPeckerHelper.packetHeadSize
 
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
