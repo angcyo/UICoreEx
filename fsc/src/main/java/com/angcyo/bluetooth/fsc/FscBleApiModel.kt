@@ -17,6 +17,7 @@ import android.os.SystemClock
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
 import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_START
@@ -26,10 +27,10 @@ import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_PROGRES
 import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_STOP
-import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
+import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableOnceLiveData
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataOnce
@@ -43,6 +44,7 @@ import com.feasycom.spp.controler.FscSppCentralApi
 import com.feasycom.spp.controler.FscSppCentralApiImp
 import com.feasycom.spp.controler.FscSppCentralCallbacksImp
 import java.io.InputStream
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * 蓝牙模型
@@ -50,7 +52,7 @@ import java.io.InputStream
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/19
  */
-class FscBleApiModel : LifecycleViewModel() {
+class FscBleApiModel : ViewModel(), IViewModel {
 
     companion object {
 
@@ -215,6 +217,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
+            L.i("AT...${command}")
         }
 
         /**
@@ -222,6 +225,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun endATCommand() {
             super.endATCommand()
+            L.i("AT...")
         }
 
         /**
@@ -229,6 +233,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun startATCommand() {
             super.startATCommand()
+            L.i("AT...")
         }
     }
 
@@ -337,6 +342,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
+            L.i("AT...${command}")
         }
 
         /**
@@ -344,6 +350,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun endATCommand() {
             super.endATCommand()
+            L.i("AT...")
         }
 
         /**
@@ -351,6 +358,7 @@ class FscBleApiModel : LifecycleViewModel() {
          */
         override fun startATCommand() {
             super.startATCommand()
+            L.i("AT...")
         }
     }
 
@@ -731,6 +739,16 @@ class FscBleApiModel : LifecycleViewModel() {
     //接收数据缓存
     val devicePacketReceiveCacheList = mutableListOf<DevicePacketReceive>()
 
+    val packetListenerList = CopyOnWriteArraySet<IPacketListener>()
+
+    fun addPacketListener(listener: IPacketListener) {
+        packetListenerList.add(listener)
+    }
+
+    fun removePacketListener(listener: IPacketListener) {
+        packetListenerList.remove(listener)
+    }
+
     fun clearProgressCache(address: String?) {
         devicePacketProgressCacheList.removeAll { it.address == address }
     }
@@ -777,6 +795,9 @@ class FscBleApiModel : LifecycleViewModel() {
             }
         }
         devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_START))
+        packetListenerList.forEach {
+            it.onPacketSend(address, strValue, data)
+        }
     }
 
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
@@ -796,6 +817,9 @@ class FscBleApiModel : LifecycleViewModel() {
                 PACKET_STATE_PROGRESS
             )
         )
+        packetListenerList.forEach {
+            it.onSendPacketProgress(address, percentage, sendByte)
+        }
     }
 
     /**
@@ -811,9 +835,31 @@ class FscBleApiModel : LifecycleViewModel() {
             receivePacketCount++
         }
         devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_RECEIVED))
+        packetListenerList.forEach {
+            it.onPacketReceived(address, strValue, dataHexString, data)
+        }
     }
 
     //</editor-fold desc="send and received">
+}
+
+/**数据包监听回调*/
+interface IPacketListener {
+
+    fun onPacketSend(address: String, strValue: String, data: ByteArray) {
+    }
+
+    fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
+    }
+
+    fun onPacketReceived(
+        address: String,
+        strValue: String,
+        dataHexString: String,
+        data: ByteArray
+    ) {
+
+    }
 }
 
 /**连接状态*/
@@ -872,6 +918,7 @@ data class DevicePacketProgress(
     var sendBytesSize: Long = 0,
     /**发送包的数量*/
     var sendPacketCount: Int = 0,
+    /**发送进度[0-100]*/
     var percentage: Int = -1,
     /**发送的开始时间, 毫秒*/
     var startTime: Long = -1,
