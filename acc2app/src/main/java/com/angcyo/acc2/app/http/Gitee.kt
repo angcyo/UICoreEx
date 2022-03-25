@@ -120,6 +120,7 @@ object Gitee {
             header = hashMapOf(
                 LogInterceptor.closeLog(false),
                 "Host" to (url.toUri()?.host ?: "gitee.com"),
+                "Referer" to (url.toUri()?.host ?: "gitee.com"),
                 "Cache-Control" to "no-cache",
                 "Cookie" to "gitee-session-n=MEl6NWFQd3RVMjhuL1pjWEJzWWE3MGpXMXFCcXMvRjdEWHl4ZXdQSVhVbFpQdTJtdVdWMVloYmYxWVQ4ZTkvVWFrRnl4WTdtazBpNTZpZkllUnFhTHc9PS0tMUdwM2JSM1R0VnRMNzhmamR6c081dz09--555bc1476152411c5402088a42058307da19dc8e; oschina_new_user=false",
                 "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.64"
