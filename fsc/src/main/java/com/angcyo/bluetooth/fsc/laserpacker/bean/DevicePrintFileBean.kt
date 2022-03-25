@@ -8,7 +8,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class PrintFileBean(
+data class DevicePrintFileBean(
     //文件数量
     var num: Int = 0,
     //文件编号列表
@@ -25,9 +25,9 @@ data class PrintFileBean(
 ) {
     companion object {
         //解析数据
-        fun parse(packet: ByteArray): PrintFileBean? {
+        fun parse(packet: ByteArray): DevicePrintFileBean? {
             return try {
-                PrintFileBean().apply {
+                DevicePrintFileBean().apply {
                     packet.reader {
                         offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                         offset(1)//偏移长度
