@@ -21,7 +21,7 @@ data class PrintCmd(
     val time: Byte = 0x1//打印次数
 ) : IDeviceCommand {
     override fun toHexCommandString(): String {
-        val dataLength = 16 //数据长度
+        val dataLength = 0x10 //16 //数据长度
         val func = "01" //功能码
         val data = buildString {
             append(func)
