@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
 import com.angcyo.library.component.reader
 
 /**
@@ -24,26 +25,23 @@ data class DeviceVersionBean(
     var hardwareVersion: Int = 0,
     var custom: Int = -1,
     var state: Int = 0
-) {
-    companion object {
-        //解析数据
-        fun parse(packet: ByteArray): DeviceVersionBean? {
-            return try {
-                DeviceVersionBean().apply {
-                    packet.reader {
-                        offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                        offset(1)//偏移长度
-                        offset(1)//偏移功能码
-                        softwareVersion = readInt(2)
-                        hardwareVersion = readInt(4)
-                        custom = readInt(1)
-                        state = readInt(1)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+) : IPacketParse<DeviceVersionBean> {
+    //解析数据
+    override fun parse(packet: ByteArray): DeviceVersionBean? {
+        return try {
+            packet.reader {
+                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
+                offset(1)//偏移长度
+                offset(1)//偏移功能码
+                softwareVersion = readInt(2)
+                hardwareVersion = readInt(4)
+                custom = readInt(1)
+                state = readInt(1)
             }
+            this
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }

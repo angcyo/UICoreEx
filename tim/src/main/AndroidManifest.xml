@@ -53,6 +53,7 @@
         <service
             android:name="com.xiaomi.push.service.XMPushService"
             android:enabled="true"
+            android:exported="true"
             android:process=":pushservice" />
         <service
             android:name="com.xiaomi.push.service.XMJobService"
@@ -68,7 +69,8 @@
             android:exported="true" />
         <service
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true" />
 
         <!-- 注：此service必须在2.2.5版本以后（包括2.2.5版本）加入 -->
         <receiver
@@ -154,7 +156,9 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- push应用定义消息receiver声明 -->
-        <receiver android:name=".push.VIVOPushMessageReceiverImpl">
+        <receiver
+            android:name=".push.VIVOPushMessageReceiverImpl"
+            android:exported="true">
             <intent-filter>
 
                 <!-- 接收push消息 -->
@@ -185,7 +189,7 @@
         <!-- ********OPPO 推送 start******** -->
         <service
             android:name="com.heytap.msp.push.service.CompatibleDataMessageCallbackService"
-
+            android:exported="true"
             android:permission="com.coloros.mcs.permission.SEND_MCS_MESSAGE">
             <intent-filter>
                 <action android:name="com.coloros.mcs.action.RECEIVE_MCS_MESSAGE" />
@@ -195,7 +199,7 @@
 
         <service
             android:name="com.heytap.msp.push.service.DataMessageCallbackService"
-
+            android:exported="true"
             android:permission="com.heytap.mcs.permission.SEND_PUSH_MESSAGE">
 
             <intent-filter>

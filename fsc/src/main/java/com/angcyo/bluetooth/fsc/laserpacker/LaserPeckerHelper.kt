@@ -59,17 +59,6 @@ object LaserPeckerHelper {
         return result
     }
 
-    /**查询指令
-     * [state] 0:表示查询工作状态 1:表示查询文件列表 2:表示查询设置状态 3:表示查询版本
-     * [custom] 自定义的数据*/
-    fun stateCmd(state: Byte, custom: Byte = 0): String {
-        val dataLength = 8
-        val data = "00 ${state.toHexString()} ${custom.toHexString()}".padHexString(dataLength - 2)
-        val check = data.checksum() //“功能码”和“数据内容”在内的校验和
-        val cmd = "$PACKET_HEAD ${dataLength.toHexString()} $data $check"
-        return cmd
-    }
-
     //<editor-fold desc="packet">
 
     /**发送指令, 并且等待指令返回*/

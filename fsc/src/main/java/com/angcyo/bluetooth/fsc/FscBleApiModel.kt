@@ -30,6 +30,7 @@ import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_STOP
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.toHexString
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableOnceLiveData
 import com.angcyo.viewmodel.vmData
@@ -784,7 +785,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
-        L.i("$address 发送:$strValue ${data.size}bytes")
+        L.i("$address 发送:${data.toHexString(true)} ${data.size}bytes")
         wrapProgressDevice(address) {
             sendBytesSize += data.size
             sendPacketCount++
@@ -826,7 +827,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [address] DC:0D:30:10:19:5E
      * [dataHexString] [AA BB 13 00 06 00 00 00 00 00 00 00 00 00 00 00 06 00 01 00 00 0D ]*/
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.i("$address 收到:$dataHexString ${data.size}bytes $strValue")
+        L.i("$address 收到:$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = SystemClock.elapsedRealtime()

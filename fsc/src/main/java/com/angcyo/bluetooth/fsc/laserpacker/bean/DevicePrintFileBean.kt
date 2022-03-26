@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
 import com.angcyo.library.component.reader
 
 /**
@@ -22,33 +23,30 @@ data class DevicePrintFileBean(
     //3时表示查询版本
     //4时表示查询安全码与用户帐号
     var state: Int = 0,
-) {
-    companion object {
-        //解析数据
-        fun parse(packet: ByteArray): DevicePrintFileBean? {
-            return try {
-                DevicePrintFileBean().apply {
-                    packet.reader {
-                        offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                        offset(1)//偏移长度
-                        offset(1)//偏移功能码
-                        num = readInt(1)
+) : IPacketParse<DevicePrintFileBean> {
+    //解析数据
+    override fun parse(packet: ByteArray): DevicePrintFileBean? {
+        return try {
+            packet.reader {
+                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
+                offset(1)//偏移长度
+                offset(1)//偏移功能码
+                num = readInt(1)
 
-                        if (num > 0) {
-                            val list = mutableListOf<Int>()
-                            for (i in 0 until num) {
-                                list.add(readInt(4))
-                            }
-                            nameList = list
-                        }
-                        custom = readInt(1)
-                        state = readInt(1)
+                if (num > 0) {
+                    val list = mutableListOf<Int>()
+                    for (i in 0 until num) {
+                        list.add(readInt(4))
                     }
+                    nameList = list
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+                custom = readInt(1)
+                state = readInt(1)
             }
+            this
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }

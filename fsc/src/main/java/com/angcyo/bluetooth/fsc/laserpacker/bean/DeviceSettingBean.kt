@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
 import com.angcyo.library.component.reader
 
 /**
@@ -31,34 +32,31 @@ data class DeviceSettingBean(
     //一键打印使能开关，1为开，0为关。
     var keyPrint: Int = 0,
     var state: Int = 0
-) {
-    companion object {
-        //解析数据
-        fun parse(packet: ByteArray): DeviceSettingBean? {
-            return try {
-                DeviceSettingBean().apply {
-                    packet.reader {
-                        offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                        offset(1)//偏移长度
-                        offset(1)//偏移功能码
-                        free = readInt(1)
-                        buzzer = readInt(1)
-                        view = readInt(1)
-                        gcodeView = readInt(1)
-                        safe = readInt(1)
-                        custom = readInt(1)
-                        zFlag = readInt(1)
-                        zDir = readInt(1)
-                        keyView = readInt(1)
-                        irDst = readInt(1)
-                        keyPrint = readInt(1)
-                        state = readInt(1)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+) : IPacketParse<DeviceSettingBean> {
+    //解析数据
+    override fun parse(packet: ByteArray): DeviceSettingBean? {
+        return try {
+            packet.reader {
+                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
+                offset(1)//偏移长度
+                offset(1)//偏移功能码
+                free = readInt(1)
+                buzzer = readInt(1)
+                view = readInt(1)
+                gcodeView = readInt(1)
+                safe = readInt(1)
+                custom = readInt(1)
+                zFlag = readInt(1)
+                zDir = readInt(1)
+                keyView = readInt(1)
+                irDst = readInt(1)
+                keyPrint = readInt(1)
+                state = readInt(1)
             }
+            this
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }

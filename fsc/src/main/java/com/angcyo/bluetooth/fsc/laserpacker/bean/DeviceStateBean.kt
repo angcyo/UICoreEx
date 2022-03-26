@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
 import com.angcyo.library.component.reader
 
 /**
@@ -52,36 +53,32 @@ data class DeviceStateBean(
     var printTimes: Int = 0,
     //设备与水平面的平角
     var angle: Int = 0
-) {
-    companion object {
-
-        //解析数据
-        fun parse(packet: ByteArray): DeviceStateBean? {
-            return try {
-                DeviceStateBean().apply {
-                    packet.reader {
-                        offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                        offset(1)//偏移长度
-                        offset(1)//偏移功能码
-                        mode = readInt(1)
-                        workState = readInt(1)
-                        rate = readInt(1)
-                        laser = readInt(1)
-                        speed = readInt(1)
-                        error = readInt(1)
-                        state = readInt(1)
-                        name = readInt(4)
-                        temp = readInt(1)
-                        custom = readInt(1)
-                        zConnect = readInt(1)
-                        printTimes = readInt(1)
-                        angle = readInt(1)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+) : IPacketParse<DeviceStateBean> {
+    //解析数据
+    override fun parse(packet: ByteArray): DeviceStateBean? {
+        return try {
+            packet.reader {
+                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
+                offset(1)//偏移长度
+                offset(1)//偏移功能码
+                mode = readInt(1)
+                workState = readInt(1)
+                rate = readInt(1)
+                laser = readInt(1)
+                speed = readInt(1)
+                error = readInt(1)
+                state = readInt(1)
+                name = readInt(4)
+                temp = readInt(1)
+                custom = readInt(1)
+                zConnect = readInt(1)
+                printTimes = readInt(1)
+                angle = readInt(1)
             }
+            this
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
