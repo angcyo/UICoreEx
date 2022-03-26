@@ -47,7 +47,9 @@
 
     <uses-permission android:name="com.tencent.qcloud.tim.tuikit.permission.C2D_MESSAGE" />
 
-    <application>
+    <application
+        android:allowBackup="true"
+        tools:replace="android:allowBackup">
 
         <!-- ********小米推送service和receiver设置start******** -->
         <service

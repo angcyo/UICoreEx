@@ -70,6 +70,28 @@ data class PrintPreviewCmd(
                 d4 = heightBytes[1]
             }
         }
+
+        /**电动支架升降控制指令
+         * 支架升
+         * [step] 步数*/
+        fun previewBracketUp(step: Int = 1): PrintPreviewCmd {
+            return PrintPreviewCmd(0x06).apply {
+                d1 = 0x1
+                val bytes = step.toHexString(4).toHexByteArray()
+                d2 = bytes[0]
+                d3 = bytes[1]
+            }
+        }
+
+        /**支架降*/
+        fun previewBracketDown(step: Int = 1): PrintPreviewCmd {
+            return PrintPreviewCmd(0x06).apply {
+                d1 = 0x0
+                val bytes = step.toHexString(4).toHexByteArray()
+                d2 = bytes[0]
+                d3 = bytes[1]
+            }
+        }
     }
 
     override fun toHexCommandString(): String {
