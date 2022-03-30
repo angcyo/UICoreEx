@@ -16,7 +16,6 @@ import com.angcyo.tim.R
 import com.angcyo.tim.util.handlerEmojiText
 import com.angcyo.widget.base.restoreSelection
 import com.angcyo.widget.edit.DslEditText
-import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -74,7 +73,8 @@ open class ChatEditText : DslEditText {
         addTextChangedListener(MentionTextWatcher())
     }
 
-    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+    override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+        //return super.onCreateInputConnection(outAttrs)
         return HackInputConnection(super.onCreateInputConnection(outAttrs), true, this)
     }
 
