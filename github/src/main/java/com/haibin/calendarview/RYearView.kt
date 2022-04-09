@@ -3,10 +3,10 @@ package com.haibin.calendarview
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import com.angcyo.drawable.textWidth
 import com.angcyo.github.R
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.textWidth
 import com.haibin.calendarview.CalendarUtil.isLeapYear
 import kotlin.math.min
 

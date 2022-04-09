@@ -3,8 +3,8 @@ package com.haibin.calendarview
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import com.angcyo.drawable.textHeight
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.textHeight
 import com.angcyo.library.ex.toBrightness
 import com.angcyo.library.ex.toColor
 
