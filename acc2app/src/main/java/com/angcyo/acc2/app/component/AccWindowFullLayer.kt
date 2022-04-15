@@ -10,8 +10,8 @@ import com.angcyo.ilayer.container.OffsetPosition
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library._contentHeight
 import com.angcyo.library.app
+import com.angcyo.library.ex.colorAnimator
 import com.angcyo.library.ex.getColor
-import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
 
 

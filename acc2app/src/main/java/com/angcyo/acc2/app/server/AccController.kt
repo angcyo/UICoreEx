@@ -1,6 +1,7 @@
 package com.angcyo.acc2.app.server
 
 import android.graphics.*
+import android.os.Build
 import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.component.Task
@@ -8,9 +9,6 @@ import com.angcyo.acc2.app.model.AccServerModel
 import com.angcyo.acc2.core.AccNodeLog
 import com.angcyo.acc2.eachChildDepth
 import com.angcyo.core.vmApp
-import com.angcyo.drawable.drawTextByLT
-import com.angcyo.drawable.paint
-import com.angcyo.drawable.textHeight
 import com.angcyo.http.base.toJson
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
@@ -213,8 +211,13 @@ class AccController {
 
                 //绘制窗口标题和包名
                 configTextPaint()
+                val title = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    windowInfo.title
+                } else {
+                    ""
+                }
                 canvas.drawTextByLT(
-                    "${windowInfo.title} ${windowInfo.root.packageName}",
+                    "$title ${windowInfo.root.packageName}",
                     left,
                     top,
                     paint

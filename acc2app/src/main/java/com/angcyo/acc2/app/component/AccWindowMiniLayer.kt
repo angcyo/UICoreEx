@@ -20,10 +20,10 @@ import com.angcyo.ilayer.container.DragRectFConstraint
 import com.angcyo.ilayer.container.IContainer
 import com.angcyo.ilayer.container.WindowContainer
 import com.angcyo.library.*
+import com.angcyo.library.ex.colorAnimator
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.colorAnimator
 import com.angcyo.widget.progress.CircleLoadingView
 
 
