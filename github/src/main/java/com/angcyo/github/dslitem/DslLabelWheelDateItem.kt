@@ -11,6 +11,7 @@ import com.angcyo.item.style.TextItemConfig
 import com.angcyo.item.style.itemText
 import com.angcyo.library.component.toCalendar
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toCalendar
 import com.angcyo.library.ex.toTime
 import com.angcyo.widget.DslViewHolder
 import java.text.DateFormat
@@ -118,7 +119,9 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
                     }
 
                     //当前时间设置
-                    dateCurrent = itemCurrentTime.toTime(itemPattern).toCalendar(itemPattern)
+                    dateCurrent =
+                        _itemDateSelectDate?.toCalendar() ?: itemCurrentTime.toTime(itemPattern)
+                            .toCalendar(itemPattern)
 
                     //选中回调
                     dateSelectAction = { dialog, date ->
@@ -126,7 +129,7 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
                             //拦截了
                             true
                         } else {
-                            onSelectDate(date)
+                            onItemSelectDate(date)
                             false
                         }
                     }
@@ -147,7 +150,8 @@ open class DslLabelWheelDateItem : DslBaseLabelItem(), ITextItem {
         itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
     }
 
-    fun onSelectDate(date: Date) {
+    /**选中[Date]回调*/
+    fun onItemSelectDate(date: Date) {
         _itemDateSelectDate = date
         val dateFormat: DateFormat = SimpleDateFormat(itemShowTextPattern ?: itemPattern)
         itemText = dateFormat.format(date)
