@@ -3,7 +3,7 @@ package com.angcyo.github.widget
 import android.content.Context
 import android.util.AttributeSet
 import com.angcyo.github.R
-import com.angcyo.widget.base.getColor
+import com.angcyo.library.ex.getColor
 import com.scwang.wave.MultiWaveHeader
 
 /**

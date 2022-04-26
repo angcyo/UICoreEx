@@ -19,8 +19,8 @@ import com.angcyo.library.L
 import com.angcyo.library.utils.requestMultiplePermissionsLauncher
 import com.angcyo.widget.base.isTouchDown
 import com.angcyo.widget.base.isTouchFinish
-import com.angcyo.widget.base.mH
-import com.angcyo.widget.base.mW
+import com.angcyo.library.ex.mH
+import com.angcyo.library.ex.mW
 
 /**
  * 常用地图容器

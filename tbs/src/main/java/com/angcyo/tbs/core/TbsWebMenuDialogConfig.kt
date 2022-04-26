@@ -6,10 +6,10 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.ITouchBackDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex.gone
 import com.angcyo.tbs.R
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.appendDslItem
-import com.angcyo.widget.base.gone
 
 /**
  *

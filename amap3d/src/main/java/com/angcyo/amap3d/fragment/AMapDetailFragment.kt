@@ -15,9 +15,9 @@ import com.angcyo.core.fragment.BaseTitleFragment
 import com.angcyo.getData
 import com.angcyo.library.L
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.postDelay
 import com.angcyo.library.toast
 import com.angcyo.putData
-import com.angcyo.widget.base.postDelay
 
 /**
  * 高德坐标系坐标点详情

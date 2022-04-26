@@ -37,11 +37,11 @@ import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.data.loadDataEnd
 import com.angcyo.dsladapter.data.loadDataEndIndex
 import com.angcyo.library.L
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.isResultOk
+import com.angcyo.library.ex.*
 import com.angcyo.library.model.singlePage
-import com.angcyo.widget.base.*
+import com.angcyo.widget.base.onImeAction
+import com.angcyo.widget.base.onTextChange
+import com.angcyo.widget.base.setInputText
 import com.angcyo.widget.recycler.initDslAdapter
 
 /**
