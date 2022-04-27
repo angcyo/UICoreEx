@@ -3,6 +3,7 @@ package com.angcyo.acc2.app.helper
 import android.content.Context
 import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.app
+import com.angcyo.core.CoreApplication.Companion.DEFAULT_FILE_PRINT_PATH
 import com.angcyo.core.component.GitModel
 import com.angcyo.core.component.addGistFile
 import com.angcyo.core.component.file.DslFileHelper
@@ -10,7 +11,6 @@ import com.angcyo.core.component.file.wrapData
 import com.angcyo.core.component.gistBodyBuilder
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
-import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.Device
@@ -97,7 +97,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享log日志"
                 itemClick = {
-                    L.DEFAULT_FILE_PRINT_PATH?.file()?.apply {
+                    DEFAULT_FILE_PRINT_PATH?.file()?.apply {
                         uploadFileToGist("l.log", this)
                         shareFile(it.context, toast = true)
                     }

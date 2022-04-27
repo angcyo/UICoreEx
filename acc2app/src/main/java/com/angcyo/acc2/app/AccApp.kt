@@ -6,6 +6,7 @@ import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
 import com.angcyo.core.fragment.BaseUI
+import com.angcyo.library.L
 import com.angcyo.library.component.DslNotify
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
@@ -78,6 +79,9 @@ open class AccApp : CoreApplication() {
 
         //debug
         BaseEditDelegate.textChangedActionList.add(AccDebug::onAccDebugTextChanged)
+
+        //开启log to file
+        L.debug = true
     }
 
     //配置信息
