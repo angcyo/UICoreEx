@@ -1,0 +1,32 @@
+/**
+ * 2022-4-27
+ * 请求此依赖放在App工程中
+ * */
+
+//https://stackoverflow.com/questions/23446233/compile-jar-from-url-in-gradle
+def urlFile = { url, name ->
+    def urlName = name
+    if (name == null || name.isEmpty()) {
+        urlName = url.substring(url.lastIndexOf("/") + 1)
+    }
+    def file = new File("$buildDir/download/${urlName}")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
+dependencies {
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/common.aar', 'common.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/logger.aar', 'logger.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/encrypt.aar', 'encrypt.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/ota.aar', 'ota.3.4.0.aar')
+
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/ble.aar', 'ble.3.4.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/spp.aar', 'spp.3.4.0.aar')
+}

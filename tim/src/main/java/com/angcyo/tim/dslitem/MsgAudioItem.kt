@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.angcyo.dsladapter.isItemDetached
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.setWidth
 import com.angcyo.media.audio.AudioPlayerHelper
 import com.angcyo.tim.R
 import com.angcyo.tim.bean.MessageInfoBean
@@ -17,7 +18,6 @@ import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MAX_WIDTH
 import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MIN_WIDTH
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.adjustOrder
-import com.angcyo.widget.base.setWidth
 import kotlin.math.max
 import kotlin.math.min
 
