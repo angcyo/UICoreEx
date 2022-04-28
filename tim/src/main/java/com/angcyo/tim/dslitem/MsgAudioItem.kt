@@ -17,7 +17,7 @@ import com.angcyo.tim.helper.ChatDownloadHelper
 import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MAX_WIDTH
 import com.angcyo.tim.util.TimConfig.AUDIO_MESSAGE_MIN_WIDTH
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.adjustOrder
+import com.angcyo.library.ex.adjustOrder
 import kotlin.math.max
 import kotlin.math.min
 

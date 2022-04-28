@@ -17,7 +17,7 @@ import com.angcyo.tim.bean.*
 import com.angcyo.tim.model.ChatModel
 import com.angcyo.tim.util.TimConfig.SHOW_MESSAGE_TIME_INTERVAL
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.replace
+import com.angcyo.library.ex.replace
 
 /**
  * 基础聊天界面的item,
