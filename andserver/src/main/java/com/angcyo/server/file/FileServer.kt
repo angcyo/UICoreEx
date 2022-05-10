@@ -47,6 +47,7 @@ fun LifecycleOwner.bindFileServer() {
                 when (event) {
                     Lifecycle.Event.ON_CREATE -> context.startFileServer()
                     Lifecycle.Event.ON_DESTROY -> context.stopFileServer()
+                    else -> Unit
                 }
             } else {
                 L.w("无效的context类型, 无法启动[FileServer]")
