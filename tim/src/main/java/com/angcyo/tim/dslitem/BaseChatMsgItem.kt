@@ -2,7 +2,7 @@ package com.angcyo.tim.dslitem
 
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import com.angcyo.core.dslitem.IFragmentItem
+import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.isUpdateMedia

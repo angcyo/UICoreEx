@@ -3,7 +3,7 @@ package com.angcyo.tim.ui.chat
 import android.os.Bundle
 import android.view.View
 import com.angcyo.base.removeThis
-import com.angcyo.core.dslitem.IFragmentItem
+import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.PopupAction

@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import com.angcyo.amap3d.R
 import com.angcyo.amap3d.fragment.aMapSelector
 import com.angcyo.base.dslFHelper
-import com.angcyo.core.dslitem.IFragmentItem
+import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.DslLabelEditItem
 import com.angcyo.item.form.FormItemConfig
