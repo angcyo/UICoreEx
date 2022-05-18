@@ -17,6 +17,7 @@ import com.angcyo.download.version.VersionUpdateBean
 import com.angcyo.http.base.bean
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
+import com.angcyo.http.exception.HttpResponseException
 import com.angcyo.http.interceptor.LogInterceptor
 import com.angcyo.http.rx.observer
 import com.angcyo.http.toBean
@@ -35,7 +36,14 @@ import java.lang.reflect.Type
 object Gitee {
 
     //无/结尾
+    //https://gitee.com/angcyo/json/raw/master/accauto
+    //https://gitee.com/angcyo/json/raw/master/accauto/memory_config.json
     var BASE = ""
+
+    //备用地址, 当BASE访问403时, 自动将BACKUP替换之
+    //https://gitcode.net/angcyo/json/-/raw/master/accauto
+    //https://gitcode.net/angcyo/json/-/raw/master/accauto/memory_config.json
+    var BASE_BACKUP = ""
 
     var _last_fetch_time = 0L
 
@@ -135,7 +143,16 @@ object Gitee {
             it
         }.observer {
             onObserverEnd = { data, error ->
-                end(data, error)
+                if (error is HttpResponseException &&
+                    (error.code == 404 || error.code == 403) &&
+                    BASE != BASE_BACKUP
+                ) {
+                    //替换备用地址, 重新请求
+                    BASE = BASE_BACKUP
+                    get(json, end)
+                } else {
+                    end(data, error)
+                }
             }
         }
     }
