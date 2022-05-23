@@ -51,4 +51,9 @@ dependencies {
     api 'androidx.biometric:biometric:1.1.0'
     //https://mvnrepository.com/artifact/androidx.biometric/biometric-ktx
     //api 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
+
+    //bus 消息总线
+    //https://github.com/JeremyLiao/LiveEventBus
+    //https://search.maven.org/artifact/io.github.jeremyliao/live-event-bus
+    api 'io.github.jeremyliao:live-event-bus-x:1.8.0'
 }
