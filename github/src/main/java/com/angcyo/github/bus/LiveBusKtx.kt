@@ -59,6 +59,11 @@ fun <T : LiveEvent> Class<T>.liveBus(): Observable<T> = LiveEventBus.get(this)
 
 fun <T : LiveEvent> KClass<T>.liveBus(): Observable<T> = LiveEventBus.get(this.java)
 
+/**直接发布自己*/
+inline fun <reified T : LiveEvent> T.busPost() {
+    T::class.busPost(this)
+}
+
 //endregion
 
 //region ------post------
