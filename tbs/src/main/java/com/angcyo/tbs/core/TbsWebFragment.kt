@@ -148,7 +148,7 @@ open class TbsWebFragment : BaseTitleFragment() {
                 attachTbsWebView(wrapLayout, loadUrl!!)
             } else if (uri.isFileScheme()) {
                 val fileExt = loadUrl!!.ext()
-                fragmentTitle = loadUrl.file()!!.name
+                fragmentTitle = loadUrl.file().name
 
                 val readerView = TbsReaderView(fContext()) { actionType, args, result ->
                     hideLoadingView()

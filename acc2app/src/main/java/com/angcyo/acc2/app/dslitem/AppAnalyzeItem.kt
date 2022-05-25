@@ -216,7 +216,7 @@ fun Context.shareApk(title: CharSequence = "分享应用APK文件") {
                             }"
                         itemClick = {
                             appBean.packageInfo.applicationInfo.sourceDir.file()
-                                ?.shareFile(this@shareApk)
+                                .shareFile(this@shareApk)
 
                             itemText?.copy()
                         }

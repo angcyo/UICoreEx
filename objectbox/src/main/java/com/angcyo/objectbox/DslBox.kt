@@ -179,7 +179,7 @@ class DslBox {
          * 删除数据库文件
          */
         fun deleteBoxDb(context: Context, dbName: String?): Boolean {
-            return boxDbPath(context, dbName).file()?.deleteRecursively() ?: false
+            return boxDbPath(context, dbName).file().deleteRecursively()
         }
 
         /**
