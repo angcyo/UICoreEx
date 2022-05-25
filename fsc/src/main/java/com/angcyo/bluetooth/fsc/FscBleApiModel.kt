@@ -398,7 +398,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
         }
 
-    /**是否激活spp模式, 走spp api, 并且激活sdp服务*/
+    /**是否激活spp模式, 走spp api, 并且激活sdp服务
+     * 开启sdp服务后, 设备可以通过spp主动连接手机. Service Discovery Protocol
+     * [com.feasycom.spp.controler.FscSppCentralApiImp.openSdpService]*/
     var useSppModel = false
         set(value) {
             useSppScan = value
