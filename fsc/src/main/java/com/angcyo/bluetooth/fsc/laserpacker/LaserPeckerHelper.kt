@@ -1,8 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
-import com.angcyo.bluetooth.fsc.FscBleApiModel
-import com.angcyo.bluetooth.fsc.laserpacker.bean.ReceivePacketBean
-import com.angcyo.library.ex.padHexString
+import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -78,11 +77,11 @@ object LaserPeckerHelper {
             autoSend,
             receiveTimeOut,
             object : IReceiveListener {
-                override fun onPacketProgress(bean: ReceivePacketBean) {
+                override fun onPacketProgress(bean: ReceivePacket) {
                     progress(bean)
                 }
 
-                override fun onReceive(bean: ReceivePacketBean?, error: Exception?) {
+                override fun onReceive(bean: ReceivePacket?, error: Exception?) {
                     action(bean, error)
                 }
             }).apply {

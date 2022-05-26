@@ -1,4 +1,4 @@
-package com.angcyo.bluetooth.fsc.laserpacker.bean
+package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
@@ -9,7 +9,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DeviceStateBean(
+data class DeviceStateParse(
     //设备当前工作模式
     //L1当前工作模式，0x01为打印模式，0x02为打印预览模式，0x04为调焦模式，
     //0x05为文件下载模式，0x06为空闲模式，0x07为关机状态，0x08为设置模式，0x09为下载模式。
@@ -53,9 +53,9 @@ data class DeviceStateBean(
     var printTimes: Int = 0,
     //设备与水平面的平角
     var angle: Int = 0
-) : IPacketParse<DeviceStateBean> {
+) : IPacketParse<DeviceStateParse> {
     //解析数据
-    override fun parse(packet: ByteArray): DeviceStateBean? {
+    override fun parse(packet: ByteArray): DeviceStateParse? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

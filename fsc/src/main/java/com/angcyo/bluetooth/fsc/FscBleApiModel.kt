@@ -18,15 +18,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT
-import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
-import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_START
-import com.angcyo.bluetooth.fsc.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
-import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_PAUSE
-import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_PROGRESS
-import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_RECEIVED
-import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_START
-import com.angcyo.bluetooth.fsc.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.bluetooth.fsc.core.*
+import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT
+import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_DISCONNECT_START
+import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_START
+import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PAUSE
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PROGRESS
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.isDebug
@@ -740,7 +741,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     val devicePacketProgressCacheList = mutableListOf<DevicePacketProgress>()
 
     //接收数据缓存
-    val devicePacketReceiveCacheList = mutableListOf<DevicePacketReceive>()
+    val devicePacketReceiveCacheList = mutableListOf<PacketReceive>()
 
     val packetListenerList = CopyOnWriteArraySet<IPacketListener>()
 
@@ -765,7 +766,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return devicePacketProgressCacheList.find { it.address == address }
     }
 
-    fun findReceiveCache(address: String?): DevicePacketReceive? {
+    fun findReceiveCache(address: String?): PacketReceive? {
         return devicePacketReceiveCacheList.find { it.address == address }
     }
 
@@ -778,9 +779,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         devicePacketProgressCacheList.add(element)
     }
 
-    fun wrapReceiveDevice(address: String, action: DevicePacketReceive.() -> Unit) {
+    fun wrapReceiveDevice(address: String, action: PacketReceive.() -> Unit) {
         val element = devicePacketReceiveCacheList.find { it.address == address }
-            ?: DevicePacketReceive(address)
+            ?: PacketReceive(address)
         element.action()
         devicePacketReceiveCacheList.remove(element)
         devicePacketReceiveCacheList.add(element)
@@ -845,99 +846,3 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     //</editor-fold desc="send and received">
 }
-
-/**数据包监听回调*/
-interface IPacketListener {
-
-    fun onPacketSend(address: String, strValue: String, data: ByteArray) {
-    }
-
-    fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
-    }
-
-    fun onPacketReceived(
-        address: String,
-        strValue: String,
-        dataHexString: String,
-        data: ByteArray
-    ) {
-
-    }
-}
-
-/**连接状态*/
-data class DeviceConnectState(
-    val device: FscDevice,
-    var state: Int = CONNECT_STATE_NORMAL,
-    var gatt: BluetoothGatt? = null,
-    var type: ConnectType? = null,
-    var exception: Exception? = null,
-    var isActiveDisConnected: Boolean = false //主动断开连接
-) {
-    companion object {
-        const val CONNECT_STATE_NORMAL = 0
-        const val CONNECT_STATE_START = 1
-        const val CONNECT_STATE_SUCCESS = 2
-        const val CONNECT_STATE_FAIL = 3
-        const val CONNECT_STATE_DISCONNECT_START = 4
-        const val CONNECT_STATE_DISCONNECT = 5
-    }
-}
-
-/**数据发送状态*/
-data class DevicePacketState(
-    val address: String,
-    val bytes: ByteArray,
-    /**数据发送的进度[0-100]
-     * -1表示发送的数据包
-     * [0-100]表示发送包的进度*/
-    val percentage: Int = -1,
-    val state: Int = PACKET_STATE_NORMAL,
-) {
-    companion object {
-        const val PACKET_STATE_NORMAL = 0
-
-        /**开始发送数据*/
-        const val PACKET_STATE_START = 1
-
-        /**发送数据的进度*/
-        const val PACKET_STATE_PROGRESS = 2
-
-        /**暂停发送*/
-        const val PACKET_STATE_PAUSE = 3
-
-        /**停止发送*/
-        const val PACKET_STATE_STOP = 4
-
-        /**接收的数据*/
-        const val PACKET_STATE_RECEIVED = 5
-    }
-}
-
-/**数据发送进度,速度*/
-data class DevicePacketProgress(
-    val address: String,
-    /**已发送成功的字节大小*/
-    var sendBytesSize: Long = 0,
-    /**发送包的数量*/
-    var sendPacketCount: Int = 0,
-    /**发送进度[0-100]*/
-    var percentage: Int = -1,
-    /**发送的开始时间, 毫秒*/
-    var startTime: Long = -1,
-    /**完成时的时间, 毫秒*/
-    var finishTime: Long = -1,
-    /**是否暂停了*/
-    var isPause: Boolean = false,
-)
-
-/**数据接收*/
-data class DevicePacketReceive(
-    val address: String,
-    /**已接收的字节数量*/
-    var receiveBytesSize: Long = 0,
-    /**接收包的数量*/
-    var receivePacketCount: Int = 0,
-    /**接收的开始时间, 毫秒*/
-    var startTime: Long = -1
-)

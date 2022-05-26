@@ -1,4 +1,4 @@
-package com.angcyo.bluetooth.fsc.laserpacker.bean
+package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
@@ -9,16 +9,16 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DeviceSafeCodeBean(
+data class DeviceSafeCodeParse(
     //Safe_code：占4个字节Data0为高字节。
     var safeCode: Int = 0,
     //Admin：用户帐号，占用40个字节。
     var account: String? = null,
     var custom: Int = -1,
     var state: Int = 0
-) : IPacketParse<DeviceSafeCodeBean> {
+) : IPacketParse<DeviceSafeCodeParse> {
     //解析数据
-    override fun parse(packet: ByteArray): DeviceSafeCodeBean? {
+    override fun parse(packet: ByteArray): DeviceSafeCodeParse? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

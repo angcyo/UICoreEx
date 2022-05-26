@@ -1,11 +1,13 @@
-package com.angcyo.bluetooth.fsc.laserpacker.bean
+package com.angcyo.bluetooth.fsc
 
 /**
+ * 发送的数据详情, 和接收的数据详情.
+ * 包含数据发送/接收/完成的时间.
  * 接收包的数据
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-class ReceivePacketBean {
+class ReceivePacket {
 
     /**设备地址*/
     var address: String = ""

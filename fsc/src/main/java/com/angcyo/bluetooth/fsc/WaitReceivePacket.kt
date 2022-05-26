@@ -1,12 +1,11 @@
-package com.angcyo.bluetooth.fsc.laserpacker
+package com.angcyo.bluetooth.fsc
 
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import com.angcyo.bluetooth.fsc.FscBleApiModel
-import com.angcyo.bluetooth.fsc.IPacketListener
+import com.angcyo.bluetooth.fsc.core.IPacketListener
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
-import com.angcyo.bluetooth.fsc.laserpacker.bean.ReceivePacketBean
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -47,7 +46,7 @@ class WaitReceivePacket(
     }
 
     //接收到的数据
-    var receivePacketBean: ReceivePacketBean? = null
+    var receivePacket: ReceivePacket? = null
 
     fun start() {
         api.addPacketListener(this)
@@ -106,7 +105,7 @@ class WaitReceivePacket(
                     val sumString = sumByteArray.checksum(hasSpace = false)
                     val checkString = checkByteArray.toHexString(false)
 
-                    receivePacketBean?.apply {
+                    receivePacket?.apply {
                         receiveDataLength = dataCount
                         receiveFinishTime = SystemClock.elapsedRealtime()
                         receivePacket = ByteArray(headSize + 1 + dataCount).apply {
@@ -115,7 +114,7 @@ class WaitReceivePacket(
                     }
                     if (sumString == checkString) {
                         //数据校验通过
-                        listener.onReceive(receivePacketBean, null)
+                        listener.onReceive(receivePacket, null)
                     } else {
                         listener.onReceive(
                             null,
@@ -145,14 +144,14 @@ class WaitReceivePacket(
     override fun onPacketSend(address: String, strValue: String, data: ByteArray) {
         super.onPacketSend(address, strValue, data)
         if (!_isFinish) {
-            if (receivePacketBean == null) {
-                receivePacketBean = ReceivePacketBean().apply {
+            if (receivePacket == null) {
+                receivePacket = ReceivePacket().apply {
                     this.address = address
                     this.sendPacket = this@WaitReceivePacket.sendPacket
                     this.sendStartTime = SystemClock.elapsedRealtime()
                 }
             }
-            receivePacketBean?.apply {
+            receivePacket?.apply {
                 sendPacketCount++
             }
         }
@@ -161,7 +160,7 @@ class WaitReceivePacket(
     override fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
         super.onSendPacketProgress(address, percentage, sendByte)
         if (!_isFinish) {
-            receivePacketBean?.apply {
+            receivePacket?.apply {
                 sendPacketPercentage = percentage
                 if (percentage >= 100) {
                     sendFinishTime = SystemClock.elapsedRealtime()
@@ -182,7 +181,7 @@ class WaitReceivePacket(
     ) {
         super.onPacketReceived(address, strValue, dataHexString, data)
         if (!_isFinish) {
-            receivePacketBean?.apply {
+            receivePacket?.apply {
                 receivePacketCount++
                 if (receiveStartTime < 0) {
                     receiveStartTime = SystemClock.elapsedRealtime()
@@ -202,18 +201,18 @@ class ReceiveTimeOutException(message: String) : Exception(message)
 /**接收校验异常*/
 class ReceiveVerifyException(message: String) : Exception(message)
 
-typealias ISendProgressAction = (bean: ReceivePacketBean) -> Unit
-typealias IReceiveBeanAction = (bean: ReceivePacketBean?, error: Exception?) -> Unit
+typealias ISendProgressAction = (bean: ReceivePacket) -> Unit
+typealias IReceiveBeanAction = (bean: ReceivePacket?, error: Exception?) -> Unit
 
 interface IReceiveListener {
 
     /**发包的进度回调*/
-    fun onPacketProgress(bean: ReceivePacketBean) {
+    fun onPacketProgress(bean: ReceivePacket) {
         bean.sendPacketPercentage //发包进度
     }
 
     /**接收完成的回调*/
-    fun onReceive(bean: ReceivePacketBean?, error: Exception?) {
+    fun onReceive(bean: ReceivePacket?, error: Exception?) {
 
     }
 }

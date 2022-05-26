@@ -1,4 +1,4 @@
-package com.angcyo.bluetooth.fsc.laserpacker.bean
+package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
@@ -8,7 +8,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */
-data class PrintReceiveBean(
+data class PrintReceiveParse(
     var func: Int = -1, //功能码
     var state: Int = 0,
     var custom: Int = -1,
@@ -16,8 +16,8 @@ data class PrintReceiveBean(
     var d1: Int = -1,
     var d2: Int = -1,
     var d3: Int = -1,
-) : IPacketParse<PrintReceiveBean> {
-    override fun parse(packet: ByteArray): PrintReceiveBean? {
+) : IPacketParse<PrintReceiveParse> {
+    override fun parse(packet: ByteArray): PrintReceiveParse? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
