@@ -8,12 +8,14 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattService
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -30,6 +32,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_ST
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.ex.baseConfig
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.toHexString
 import com.angcyo.viewmodel.IViewModel
@@ -73,6 +76,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         const val BLUETOOTH_STATE_STOP = 3
 
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
+        const val REQUEST_CODE_ENABLE_BLUETOOTH = 0x9903
 
         /**默认情况下, 34748 bytes/s */
         val bleApi: FscBleCentralApi
@@ -103,23 +107,43 @@ class FscBleApiModel : ViewModel(), IViewModel {
             FscBleCentralApiImp.getInstance().isEnabled || FscSppCentralApiImp.getInstance().isEnabled
 
         /**GPS是否已打开*/
-        fun checkGPSIsOpen(context: Context): Boolean {
+        fun checkGPSIsOpen(context: Context = app()): Boolean {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
                     ?: return false
-            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         }
 
-        /**激活蓝牙*/
+        /**打开GPS的设置页面*/
+        fun enableGpsSetting(context: Context = app()) {
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            intent.baseConfig(context)
+            context.startActivity(intent)
+        }
+
+        /**激活蓝牙, 或者发起激活蓝牙的请求*/
         fun enableBluetooth(context: Context = app()): Boolean {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    //有权限, 自动激活蓝牙
+                    return BluetoothAdapter.getDefaultAdapter().enable()
+                }
             }
-            return BluetoothAdapter.getDefaultAdapter().enable()
+
+            //请求打开蓝牙
+            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            intent.baseConfig(context)
+            if (context is Activity) {
+                context.startActivityForResult(intent, REQUEST_CODE_ENABLE_BLUETOOTH)
+            } else {
+                context.startActivity(intent)
+            }
+            return false
         }
 
         /**蓝牙需要的权限列表*/
@@ -494,18 +518,23 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //不支持蓝牙的设备
             bleStateData.postValue(BLUETOOTH_STATE_UNAVAILABLE)
             return
-        } else if (!isBlueEnable()) {
-            //未开启蓝牙
-            bleStateData.postValue(BLUETOOTH_STATE_UNAVAILABLE)
-            enableBluetooth()
+        } else {
+            if (!checkGPSIsOpen(context)) {
+                enableGpsSetting(context)
+            }
+            if (!isBlueEnable()) {
+                //未开启蓝牙
+                bleStateData.postValue(BLUETOOTH_STATE_UNAVAILABLE)
+                enableBluetooth(context)
 
-            //等待2s之后, 继续操作
-            handle.postDelayed({
-                if (isBlueEnable()) {
-                    startScan(context, delayStop)
-                }
-            }, 1800L)
-            return
+                //等待5s之后, 继续操作. 用户操作到打开蓝牙需要一定的时间.
+                handle.postDelayed({
+                    if (isBlueEnable()) {
+                        startScan(context, delayStop)
+                    }
+                }, 5000L)
+                return
+            }
         }
 
         //扫描
