@@ -20,10 +20,10 @@ data class DeviceConnectState(
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0
-        const val CONNECT_STATE_START = 1
-        const val CONNECT_STATE_SUCCESS = 2
+        const val CONNECT_STATE_START = 1 //开始连接
+        const val CONNECT_STATE_SUCCESS = 2 //连接成功
         const val CONNECT_STATE_FAIL = 3
-        const val CONNECT_STATE_DISCONNECT_START = 4
-        const val CONNECT_STATE_DISCONNECT = 5
+        const val CONNECT_STATE_DISCONNECT_START = 4 //开始断开连接
+        const val CONNECT_STATE_DISCONNECT = 5 //断开成功
     }
 }

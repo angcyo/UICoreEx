@@ -1,7 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import com.angcyo.bluetooth.fsc.*
-import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -12,6 +11,9 @@ import com.angcyo.library.ex.toHexString
  * @since 2022/03/24
  */
 object LaserPeckerHelper {
+
+    /**蓝牙名称前缀, 只显示指定前缀的蓝牙设备*/
+    const val PRODUCT_PREFIX = "LaserPecker"
 
     //固定数据头
     const val PACKET_HEAD = "AABB"
