@@ -36,6 +36,7 @@ import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.baseConfig
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.isMain
 import com.angcyo.viewmodel.IViewModel
@@ -702,10 +703,23 @@ class FscBleApiModel : ViewModel(), IViewModel {
             connectStateData.value = wrapStateDevice(bleDevice) {
                 state = CONNECT_STATE_DISCONNECT_START
                 gatt = null
+                disconnectTime = nowTime()
                 isActiveDisConnected = true
             }
             stopSend(bleDevice.address)
             fscApi.disconnect(bleDevice.address)
+        } else if (connectState(bleDevice) == CONNECT_STATE_DISCONNECT_START) {
+            connectDeviceList.find { it.device == bleDevice }?.let { deviceState ->
+                if (nowTime() - deviceState.disconnectTime > 5_000) {
+                    //断开超时
+                    connectStateData.value = wrapStateDevice(bleDevice) {
+                        state = CONNECT_STATE_DISCONNECT
+                        gatt = null
+                        disconnectTime = nowTime()
+                        isActiveDisConnected = true
+                    }
+                }
+            }
         }
     }
 
@@ -746,8 +760,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @UiThread
     fun _peripheralConnected(address: String, gatt: BluetoothGatt?, type: ConnectType) {
-        bleDeviceListData.value?.find { it.address == address }?.let { bleDevice ->
-            connectStateData.postValue(wrapStateDevice(bleDevice) {
+        val cacheDeviceState = connectDeviceList.find { it.device.address == address }
+        cacheDeviceState?.let { deviceState ->
+            connectStateData.postValue(wrapStateDevice(deviceState.device) {
                 this.state = CONNECT_STATE_SUCCESS
                 this.gatt = gatt
                 this.type = type
@@ -759,8 +774,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @UiThread
     fun _peripheralDisconnected(address: String, gatt: BluetoothGatt?) {
-        bleDeviceListData.value?.find { it.address == address }?.let { bleDevice ->
-            connectStateData.postValue(wrapStateDevice(bleDevice) {
+        val cacheDeviceState = connectDeviceList.find { it.device.address == address }
+        cacheDeviceState?.let { deviceState ->
+            connectStateData.postValue(wrapStateDevice(deviceState.device) {
                 state = CONNECT_STATE_DISCONNECT
                 this.gatt = gatt
             })
