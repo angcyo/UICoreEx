@@ -50,6 +50,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * 蓝牙模型
+ * [com.angcyo.bluetooth.fsc.FscBleApiModel.Companion.init]
+ * [com.angcyo.bluetooth.fsc.FscBleApiModel.Companion.bluetoothPermissionList]
  *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/19
@@ -66,6 +68,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         /**蓝牙不可用*/
         const val BLUETOOTH_STATE_UNAVAILABLE = 2
+
+        /**扫描结束*/
+        const val BLUETOOTH_STATE_STOP = 3
 
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
 
@@ -116,7 +121,25 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             return BluetoothAdapter.getDefaultAdapter().enable()
         }
+
+        /**蓝牙需要的权限列表*/
+        fun bluetoothPermissionList(): List<String> {
+            val result = mutableListOf<String>()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                result.add(Manifest.permission.BLUETOOTH_SCAN)
+                result.add(Manifest.permission.BLUETOOTH_ADVERTISE)
+                result.add(Manifest.permission.BLUETOOTH_CONNECT)
+                //result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                //result.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                result.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+            return result
+        }
     }
+
+    //region ---Callbacks---
 
     //扫描回调, 子线程回调
     val bleCallback = object : FscBleCentralCallbacksImp() {
@@ -364,7 +387,13 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
-    /**蓝牙的状态*/
+    //endregion
+
+    /**蓝牙的状态
+     * [BLUETOOTH_STATE_NORMAL]
+     * [BLUETOOTH_STATE_SCANNING]
+     * [BLUETOOTH_STATE_UNAVAILABLE]
+     * */
     val bleStateData: MutableLiveData<Int> = vmData(BLUETOOTH_STATE_NORMAL)
 
     /**扫描到的蓝牙设备, 不重复的设备*/
@@ -373,7 +402,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**扫到了设备变化, 会出现重复的数据*/
     val bleScanDeviceData: MutableOnceLiveData<FscDevice> = vmDataOnce(null)
 
-    /**扫描到的所有蓝牙设备*/
+    /**扫描到的所有蓝牙设备, 在停止扫描之后才会有值*/
     val bleDeviceListData: MutableLiveData<List<FscDevice>> = vmData(emptyList())
 
     /**连接状态监听*/
@@ -385,18 +414,17 @@ class FscBleApiModel : ViewModel(), IViewModel {
     val handle = Handler(Looper.getMainLooper())
 
     /**扫描时长*/
-    val scanTimeOut = 20_000L
+    var scanTimeOut = 20_000L
 
     /**是否使用spp模式扫描蓝牙设备*/
     var useSppScan = false
         set(value) {
-            fscApi.stopScan()
-            field = value
-            if (value) {
-                if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
-                    //fscApi.stopSend()
-                }
+            if (field != value) {
+                stopScan()
+                stopSend()
             }
+            //last
+            field = value
         }
 
     /**是否激活spp模式, 走spp api, 并且激活sdp服务
@@ -412,12 +440,33 @@ class FscBleApiModel : ViewModel(), IViewModel {
     val fscApi: FscApi<*>
         get() = if (useSppModel) sppApi else bleApi
 
+    /**延迟停止[Runnable]*/
+    val _delayStopRunnable = Runnable {
+        stopScan()
+    }
+
     init {
         bleApi.setCallbacks(bleCallback)
         sppApi.setCallbacks(sppCallback)
     }
 
     //<editor-fold desc="操作方法">
+
+    /**开启sdp服务, Service Discovery Protocol*/
+    fun openSdpService(open: Boolean = true) {
+        val api = fscApi
+        if (api is FscSppCentralApiImp) {
+            if (open) {
+                if (!api.isEnabledSDP) {
+                    api.openSdpService()
+                }
+            } else {
+                if (api.isEnabledSDP) {
+                    api.closeSdpService()
+                }
+            }
+        }
+    }
 
     /**设备是否已连接*/
     fun isConnected(bleDevice: FscDevice?): Boolean {
@@ -428,6 +477,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     /**开始扫描蓝牙设备
+     * [bleDeviceData] 监听设备发现
+     * [bleDeviceListData] 监听所有的设备
+     *
      * [delayStop] 多少毫秒后, 自动关闭扫描
      * [context] 使用 Activity 才会申请对应的权限*/
     fun startScan(context: Context = app(), delayStop: Long = scanTimeOut) {
@@ -436,7 +488,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             return
         }
 
-        val instance = fscApi
+        val api = fscApi
 
         if (!isSupportBle()) {
             //不支持蓝牙的设备
@@ -459,27 +511,29 @@ class FscBleApiModel : ViewModel(), IViewModel {
         //扫描
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermissions(context)) {
-                instance.startScan()
+                api.startScan()
             }
         } else {
-            instance.startScan()
+            api.startScan()
         }
 
         //自动停止扫描
         if (delayStop > 0) {
-            handle.postDelayed({
-                stopScan()
-            }, delayStop)
+            handle.postDelayed(_delayStopRunnable, delayStop)
         }
     }
 
-    /**停止扫描*/
+    /**停止扫描
+     * [com.angcyo.bluetooth.fsc.FscBleApiModel._stopScan]*/
     fun stopScan() {
+        handle.removeCallbacks(_delayStopRunnable)
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
-            bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
+            //bleStateData.postValue(BLUETOOTH_STATE_STOP) //可能的重复调用
             fscApi.stopScan()
-            return
+        } else if (bleStateData.value == BLUETOOTH_STATE_STOP) {
+            //恢复默认状态
+            bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
         }
     }
 
@@ -491,19 +545,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (!bluetoothAdapter.isEnabled) {
             return false
         }
-        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_SCAN
-            )
-        } else {
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+        val permissions = bluetoothPermissionList()
         val permissionDeniedList: MutableList<String> = ArrayList()
         for (permission in permissions) {
             val permissionCheck = ContextCompat.checkSelfPermission(context, permission)
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                //权限给予
                 //onPermissionGranted(permission)
             } else {
                 permissionDeniedList.add(permission)
@@ -541,7 +588,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return find.state
     }
 
-    /**连接设备*/
+    /**连接设备
+     * [connectStateData] 监听设备的连接状态*/
     fun connect(bleDevice: FscDevice?) {
         if (bleDevice == null) {
             return
@@ -596,7 +644,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     fun _stopScan() {
-        bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
+        handle.removeCallbacks(_delayStopRunnable)
+        bleStateData.postValue(BLUETOOTH_STATE_STOP)
         bleDeviceListData.postValue(cacheScanDeviceList)
     }
 
@@ -642,6 +691,10 @@ class FscBleApiModel : ViewModel(), IViewModel {
     //</editor-fold desc="Callback">
 
     //<editor-fold desc="send and received">
+
+    fun stopSend() {
+        fscApi.stopSend()
+    }
 
     /**停止发送*/
     fun stopSend(address: String) {
