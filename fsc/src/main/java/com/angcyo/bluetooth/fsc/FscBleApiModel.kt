@@ -548,6 +548,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [delayStop] 多少毫秒后, 自动关闭扫描
      * [context] 使用 Activity 才会申请对应的权限*/
     fun startScan(context: Context = app(), delayStop: Long = scanTimeout) {
+        _checkDisconnectTimeout()
+
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
             return
@@ -684,6 +686,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [stopScan] 是否停止扫描
      * */
     fun connect(device: FscDevice?, disconnectOther: Boolean = false, stopScan: Boolean = true) {
+        _checkDisconnectTimeout()
         if (stopScan) {
             stopScan()
         }
@@ -713,19 +716,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (bleDevice == null) {
             return
         }
-        if (connectState(bleDevice) == CONNECT_STATE_DISCONNECT_START) {
-            connectDeviceList.find { it.device == bleDevice }?.let { deviceState ->
-                if (nowTime() - deviceState.disconnectTime > 1_000) {
-                    //断开超时
-                    connectStateData.value = wrapStateDevice(bleDevice) {
-                        state = CONNECT_STATE_DISCONNECT
-                        gatt = null
-                        disconnectTime = nowTime()
-                        isActiveDisConnected = true
-                    }
-                }
-            }
-        } else if (isConnectState(bleDevice)) {
+        _checkDisconnectTimeout()
+        if (isConnectState(bleDevice)) {
             connectStateData.value = wrapStateDevice(bleDevice) {
                 state = CONNECT_STATE_DISCONNECT_START
                 gatt = null
@@ -734,6 +726,23 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             stopSend(bleDevice.address)
             fscApi.disconnect(bleDevice.address)
+        }
+    }
+
+    /**断开连接, 有时候会收不到通知.
+     * 这里检查一下超时*/
+    fun _checkDisconnectTimeout(isActiveDisConnected: Boolean = true) {
+        val list = connectDeviceList.toList()
+        list.forEach { deviceState ->
+            if (deviceState.state == CONNECT_STATE_DISCONNECT_START && nowTime() - deviceState.disconnectTime > 1_000) {
+                //断开超时
+                connectStateData.value = wrapStateDevice(deviceState.device) {
+                    state = CONNECT_STATE_DISCONNECT
+                    gatt = null
+                    disconnectTime = nowTime()
+                    this.isActiveDisConnected = isActiveDisConnected
+                }
+            }
         }
     }
 
@@ -805,6 +814,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }.apply {
             connectDeviceListData.postValue(this)
         }
+        _checkDisconnectTimeout()
     }
 
     //</editor-fold desc="Callback">
