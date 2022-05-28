@@ -3,10 +3,7 @@ package com.angcyo.bluetooth.fsc
 import android.Manifest
 import android.app.Activity
 import android.app.Application
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattService
+import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -153,21 +150,21 @@ class FscBleApiModel : ViewModel(), IViewModel {
         /**蓝牙需要的权限列表*/
         fun bluetoothPermissionList(): List<String> {
             val result = mutableListOf<String>()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                //位置权限是必须的
+                result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                result.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 result.add(Manifest.permission.BLUETOOTH_SCAN)
                 result.add(Manifest.permission.BLUETOOTH_ADVERTISE)
                 result.add(Manifest.permission.BLUETOOTH_CONNECT)
-                //result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-                //result.add(Manifest.permission.ACCESS_FINE_LOCATION)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-                result.add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
             return result
         }
     }
 
-    //region ---Callbacks---
+    //<editor-fold desc="Callbacks Init">
 
     //扫描回调, 子线程回调
     val bleCallback = object : FscBleCentralCallbacksImp() {
@@ -311,6 +308,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         // 连接成功
         override fun sppPeripheralConnected(device: BluetoothDevice, type: ConnectType) {
             super.sppPeripheralConnected(device, type)
+            val cacheDeviceState = connectDeviceList.find { it.device.address == device.address }
+            cacheDeviceState?.device?.device = device
             _peripheralConnected(device.address, null, type)
         }
 
@@ -417,7 +416,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
-    //endregion
+    //</editor-fold desc="Callbacks">
 
     /**蓝牙的状态
      * [BLUETOOTH_STATE_NORMAL]
@@ -450,7 +449,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     var scanTimeout = 20_000L
 
     /**是否使用spp模式扫描蓝牙设备*/
-    var useSppScan = false
+    var useSppScan = true
         set(value) {
             if (field != value) {
                 stopScan()
@@ -463,7 +462,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**是否激活spp模式, 走spp api, 并且激活sdp服务
      * 开启sdp服务后, 设备可以通过spp主动连接手机. Service Discovery Protocol
      * [com.feasycom.spp.controler.FscSppCentralApiImp.openSdpService]*/
-    var useSppModel = false
+    var useSppModel = true
         set(value) {
             useSppScan = value
             field = value
@@ -664,19 +663,34 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return find.state
     }
 
+    /**通过地址直接连接蓝牙设备*/
+    fun connect(
+        address: String,
+        name: String = "Unknown",
+        disconnectOther: Boolean = true,
+        stopScan: Boolean = true
+    ) {
+        val bluetoothManager =
+            app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+        val device = (bluetoothManager?.adapter
+            ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
+        val fscDevice = FscDevice(name, address, device, -1, if (useSppModel) "SPP" else "BLE")
+        connect(fscDevice, disconnectOther, stopScan)
+    }
+
     /**连接设备
      * [connectStateData] 监听设备的连接状态
      * [disconnectOther] 是否断开其他设备
      * [stopScan] 是否停止扫描
      * */
-    fun connect(bleDevice: FscDevice?, disconnectOther: Boolean = false, stopScan: Boolean = true) {
+    fun connect(device: FscDevice?, disconnectOther: Boolean = false, stopScan: Boolean = true) {
         if (stopScan) {
             stopScan()
         }
-        if (bleDevice == null) {
+        if (device == null) {
             return
         }
-        if (isConnectState(bleDevice)) {
+        if (isConnectState(device)) {
             return
         }
         if (disconnectOther) {
@@ -688,10 +702,10 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 }
             }
         }
-        connectStateData.value = wrapStateDevice(bleDevice) {
+        connectStateData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
         }
-        fscApi.connect(bleDevice.address)
+        fscApi.connect(device.address)
     }
 
     /**断开连接*/
@@ -699,18 +713,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (bleDevice == null) {
             return
         }
-        if (isConnectState(bleDevice)) {
-            connectStateData.value = wrapStateDevice(bleDevice) {
-                state = CONNECT_STATE_DISCONNECT_START
-                gatt = null
-                disconnectTime = nowTime()
-                isActiveDisConnected = true
-            }
-            stopSend(bleDevice.address)
-            fscApi.disconnect(bleDevice.address)
-        } else if (connectState(bleDevice) == CONNECT_STATE_DISCONNECT_START) {
+        if (connectState(bleDevice) == CONNECT_STATE_DISCONNECT_START) {
             connectDeviceList.find { it.device == bleDevice }?.let { deviceState ->
-                if (nowTime() - deviceState.disconnectTime > 5_000) {
+                if (nowTime() - deviceState.disconnectTime > 1_000) {
                     //断开超时
                     connectStateData.value = wrapStateDevice(bleDevice) {
                         state = CONNECT_STATE_DISCONNECT
@@ -720,6 +725,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
                     }
                 }
             }
+        } else if (isConnectState(bleDevice)) {
+            connectStateData.value = wrapStateDevice(bleDevice) {
+                state = CONNECT_STATE_DISCONNECT_START
+                gatt = null
+                disconnectTime = nowTime()
+                isActiveDisConnected = true
+            }
+            stopSend(bleDevice.address)
+            fscApi.disconnect(bleDevice.address)
         }
     }
 
@@ -734,7 +748,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     //</editor-fold desc="操作方法">
 
-    //<editor-fold desc="Callback">
+    //<editor-fold desc="Callback Action">
 
     val cacheScanDeviceList = mutableListOf<FscDevice>()
 
