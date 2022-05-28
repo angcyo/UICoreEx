@@ -14,7 +14,7 @@ import com.angcyo.library.ex.toHexString
 data class StateCmd(
     val state: Byte, //0:表示查询工作状态 1:表示查询文件列表 2:表示查询设置状态 3:表示查询版本
     val custom: Byte = 0 //自定义的数据
-) : IDeviceCommand {
+) : ICommand {
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度
         val func = "00" //功能码

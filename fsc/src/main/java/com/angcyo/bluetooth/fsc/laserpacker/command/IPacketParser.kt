@@ -5,7 +5,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */
-interface IPacketParse<T> {
+interface IPacketParser<T> {
 
     fun parse(packet: ByteArray): T?
 }

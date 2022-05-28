@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
 /**
@@ -9,7 +9,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DeviceSettingParse(
+data class DeviceSettingParser(
     //1为自由模式开，0关，默认为0。
     var free: Int = 0,
     //工作提示音,1为打开提示音，0为关，默认为0。
@@ -32,9 +32,9 @@ data class DeviceSettingParse(
     //一键打印使能开关，1为开，0为关。
     var keyPrint: Int = 0,
     var state: Int = 0
-) : IPacketParse<DeviceSettingParse> {
+) : IPacketParser<DeviceSettingParser> {
     //解析数据
-    override fun parse(packet: ByteArray): DeviceSettingParse? {
+    override fun parse(packet: ByteArray): DeviceSettingParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

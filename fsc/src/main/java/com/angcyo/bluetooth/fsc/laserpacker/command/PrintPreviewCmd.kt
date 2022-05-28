@@ -1,9 +1,11 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import android.graphics.Rect
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.toHexByteArray
+import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 
 /**
@@ -40,10 +42,10 @@ data class PrintPreviewCmd(
     //PX = 0x03 时 图片分辨率为1300*1300
     //PX = 0x02 时 图片分辨率为2000*2000
     //PX = 0x01 时 图片分辨率为4000*4000
-    var px: Byte = 0x05,
+    var px: Byte = 0x04,
     //为预览光功率设置，data11为功率档位，范围为1 - 10。
     var pwr: Byte = 0x1,
-) : IDeviceCommand {
+) : ICommand {
 
     companion object {
 
@@ -60,7 +62,11 @@ data class PrintPreviewCmd(
         }
 
         /**表示范围预览*/
-        fun previewRange(width: Int, height: Int): PrintPreviewCmd {
+        fun previewRange(x: Int, y: Int, width: Int, height: Int): PrintPreviewCmd? {
+            if (x < 0 || y < 0 || width < 0 || height < 0) {
+                //不支持负数预览
+                return null
+            }
             val widthBytes = width.toHexString(4).toHexByteArray()
             val heightBytes = height.toHexString(4).toHexByteArray()
             return PrintPreviewCmd(0x02).apply {
@@ -68,8 +74,26 @@ data class PrintPreviewCmd(
                 d2 = widthBytes[1]
                 d3 = heightBytes[0]
                 d4 = heightBytes[1]
+
+                this.x = x
+                this.y = y
             }
         }
+
+        /**表示更新范围预览*/
+        /*fun previewUpdateRange(x: Int, y: Int, width: Int, height: Int): PrintPreviewCmd {
+            val widthBytes = width.toHexString(4).toHexByteArray()
+            val heightBytes = height.toHexString(4).toHexByteArray()
+            return PrintPreviewCmd(0x04).apply {
+                d1 = widthBytes[0]
+                d2 = widthBytes[1]
+                d3 = heightBytes[0]
+                d4 = heightBytes[1]
+
+                this.x = x
+                this.y = y
+            }
+        }*/
 
         /**电动支架升降控制指令
          * 支架升
@@ -91,6 +115,11 @@ data class PrintPreviewCmd(
                 d2 = bytes[0]
                 d3 = bytes[1]
             }
+        }
+
+        /**结束预览指令*/
+        fun previewStop(): PrintPreviewCmd {
+            return PrintPreviewCmd(0x03)
         }
     }
 
@@ -122,13 +151,24 @@ data class PrintPreviewCmd(
                     heightBytes[0] = d3
                     heightBytes[1] = d4
                     val width = widthBytes.toHexString(false)
+                    append(" ")
                     append(width)
                     val height = heightBytes.toHexString(false)
+                    append(" ")
                     append(height)
                 }
-                /*0x06.toByte() -> {
+                0x03.toByte() -> {
+                    //结束预览
+                }
+                0x04.toByte() -> {
+                    //第三轴暂停预览, 发送此状态, 更新x,y值. (z轴)
+                }
+                0x05.toByte() -> {
+                    //第三轴继续预览
+                }
+                0x06.toByte() -> {
                     //电动支架升降控制指令
-                }*/
+                }
                 else -> {
                     append(d1.toHexString())
                     append(d2.toHexString())
@@ -136,8 +176,11 @@ data class PrintPreviewCmd(
                     append(d4.toHexString())
                 }
             }
+            append(" ")
             append(x.toHexString(4))
+            append(" ")
             append(y.toHexString(4))
+            append(" ")
             append(custom.toHexString())
             append(px.toHexString())
             append(pwr.toHexString())
@@ -145,5 +188,27 @@ data class PrintPreviewCmd(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    /**获取预览范围矩形*/
+    fun getPreviewRange(): Rect {
+        val rect = Rect()
+        rect.left = x
+        rect.top = y
+
+        val widthBytes = ByteArray(2)
+        widthBytes[0] = d1
+        widthBytes[1] = d2
+
+        val heightBytes = ByteArray(2)
+        heightBytes[0] = d3
+        heightBytes[1] = d4
+
+        val w = widthBytes.toHexInt()
+        val h = heightBytes.toHexInt()
+
+        rect.right = x + w
+        rect.bottom = y + h
+        return rect
     }
 }

@@ -1,6 +1,8 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
+import com.angcyo.core.vmApp
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -62,7 +64,8 @@ object LaserPeckerHelper {
 
     //<editor-fold desc="packet">
 
-    /**发送指令, 并且等待指令返回*/
+    /**发送指令, 并且等待指令返回
+     * [com.angcyo.bluetooth.fsc.FscBleApiModel.send)]*/
     fun waitCmdReturn(
         api: FscBleApiModel,
         address: String,
@@ -89,6 +92,25 @@ object LaserPeckerHelper {
             }).apply {
             start()
         }
+    }
+
+    /**发送指令*/
+    fun sendCommand(
+        address: String,
+        command: ICommand,
+        api: FscBleApiModel = vmApp(),
+        progress: ISendProgressAction = {},
+        action: IReceiveBeanAction
+    ): WaitReceivePacket {
+        return waitCmdReturn(
+            api,
+            address,
+            command.toHexCommandString().toHexByteArray(),
+            true,
+            1_000,
+            progress,
+            action
+        )
     }
 
     //</editor-fold desc="packet">

@@ -14,6 +14,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
 import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -215,6 +216,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param percentage 进度
          *  @param data 源数据
          */
+        @WorkerThread
         override fun sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
             super.sendPacketProgress(address, percentage, sendByte)
             _sendPacketProgress(address, percentage, sendByte)
@@ -226,6 +228,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param strValue 字符串
          *  @param data 源数据
          */
+        @WorkerThread
         override fun packetSend(address: String, strValue: String, data: ByteArray) {
             super.packetSend(address, strValue, data)
             _packetSend(address, strValue, data)
@@ -238,6 +241,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param dataHexString 十六进制
          *  @param data 源数据
          */
+        @WorkerThread
         override fun packetReceived(
             address: String,
             strValue: String,
@@ -327,6 +331,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param percentage 进度
          *  @param data 源数据
          */
+        @WorkerThread
         override fun sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
             super.sendPacketProgress(address, percentage, sendByte)
             _sendPacketProgress(address, percentage, sendByte)
@@ -338,6 +343,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param strValue 字符串
          *  @param data 源数据
          */
+        @WorkerThread
         override fun packetSend(address: String, strValue: String, data: ByteArray) {
             super.packetSend(address, strValue, data)
             _packetSend(address, strValue, data)
@@ -350,6 +356,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          * @param hexString     发送的十六进制数据
          * @param data          原数据
          */
+        @WorkerThread
         override fun packetSend(
             address: String,
             strValue: String,
@@ -367,6 +374,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param dataHexString 十六进制
          *  @param data 源数据
          */
+        @WorkerThread
         override fun packetReceived(
             address: String,
             strValue: String,
@@ -961,6 +969,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         devicePacketProgressCacheList.add(element)
     }
 
+    @Synchronized
     fun wrapReceiveDevice(address: String, action: PacketReceive.() -> Unit) {
         val element = devicePacketReceiveCacheList.find { it.address == address }
             ?: PacketReceive(address)
@@ -969,8 +978,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         devicePacketReceiveCacheList.add(element)
     }
 
+    @WorkerThread
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
-        L.i("$address 发送:${data.toHexString(true)} ${data.size}bytes")
+        L.i("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
         wrapProgressDevice(address) {
             sendBytesSize += data.size
             sendPacketCount++
@@ -986,6 +996,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
+    @WorkerThread
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
         L.i("$address 发送进度:$percentage% ${sendByte.size}bytes")
         wrapProgressDevice(address) {
@@ -1011,8 +1022,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**
      * [address] DC:0D:30:10:19:5E
      * [dataHexString] [AA BB 13 00 06 00 00 00 00 00 00 00 00 00 00 00 06 00 01 00 00 0D ]*/
+    @WorkerThread
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.i("$address 收到:$dataHexString ${data.size}bytes")
+        L.i("$address 收到:\n$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = SystemClock.elapsedRealtime()

@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
 /**
@@ -9,7 +9,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DeviceVersionParse(
+data class DeviceVersionParser(
     //软件版本号占两个字节，Data0为高字节，Data1为低字节。
     //L1基础版本号为100如有更新版本号自加1，版本表示V1.0.0
     //L1P基础版本号为200如上。
@@ -25,9 +25,9 @@ data class DeviceVersionParse(
     var hardwareVersion: Int = 0,
     var custom: Int = -1,
     var state: Int = 0
-) : IPacketParse<DeviceVersionParse> {
+) : IPacketParser<DeviceVersionParser> {
     //解析数据
-    override fun parse(packet: ByteArray): DeviceVersionParse? {
+    override fun parse(packet: ByteArray): DeviceVersionParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

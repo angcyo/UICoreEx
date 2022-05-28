@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
 /**
@@ -9,15 +9,15 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */
-data class MiniReceiveParse(
+data class MiniReceiveParser(
     var func: Int = -1, //功能码
     var d1: Int = -1,
     var d2: Int = -1,
     var d3: Int = -1,
     var d4: Int = -1,
     var d5: Int = -1
-) : IPacketParse<MiniReceiveParse> {
-    override fun parse(packet: ByteArray): MiniReceiveParse? {
+) : IPacketParser<MiniReceiveParser> {
+    override fun parse(packet: ByteArray): MiniReceiveParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

@@ -1,5 +1,7 @@
 package com.angcyo.bluetooth.fsc
 
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+
 /**
  * 发送的数据详情, 和接收的数据详情.
  * 包含数据发送/接收/完成的时间.
@@ -49,4 +51,11 @@ class ReceivePacket {
     var receivePacketCount: Int = 0
 
     //</editor-fold desc="receive">
+}
+
+/**解析返回的数据*/
+inline fun <reified T : IPacketParser<T>> ReceivePacket.parse(): T? {
+    val parser = T::class.java.newInstance()
+    parser.parse(receivePacket)
+    return parser
 }

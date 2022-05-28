@@ -3,9 +3,11 @@ package com.angcyo.bluetooth.fsc
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.library.L
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -41,24 +43,27 @@ class WaitReceivePacket(
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
             end()
-            listener.onReceive(null, ReceiveTimeOutException("已超过接收时长:$receiveTimeOut ms"))
+            listener.onReceive(null, ReceiveTimeOutException("接收超时:$receiveTimeOut ms"))
         }
     }
 
     //接收到的数据
     var receivePacket: ReceivePacket? = null
 
+    /**开始数据发送, 并等待*/
     fun start() {
         api.addPacketListener(this)
         if (autoSend) {
             api.send(address, sendPacket)
         }
         if (receiveTimeOut > 0) {
-            handle.postDelayed(_timeOutRunnable, receiveTimeOut)
+            //测试模式下, 防止debug中断
+            handle.postDelayed(_timeOutRunnable, if (L.debug) 20_000 else receiveTimeOut)
         }
         _isSend = true
     }
 
+    /**结束*/
     fun end() {
         _isFinish = true
         handle.removeCallbacks(_timeOutRunnable)
@@ -204,6 +209,7 @@ class ReceiveVerifyException(message: String) : Exception(message)
 typealias ISendProgressAction = (bean: ReceivePacket) -> Unit
 typealias IReceiveBeanAction = (bean: ReceivePacket?, error: Exception?) -> Unit
 
+@WorkerThread
 interface IReceiveListener {
 
     /**发包的进度回调*/

@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParse
+import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
 /**
@@ -9,7 +9,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DevicePrintFileParse(
+data class DevicePrintFileParser(
     //文件数量
     var num: Int = 0,
     //文件编号列表
@@ -23,9 +23,9 @@ data class DevicePrintFileParse(
     //3时表示查询版本
     //4时表示查询安全码与用户帐号
     var state: Int = 0,
-) : IPacketParse<DevicePrintFileParse> {
+) : IPacketParser<DevicePrintFileParser> {
     //解析数据
-    override fun parse(packet: ByteArray): DevicePrintFileParse? {
+    override fun parse(packet: ByteArray): DevicePrintFileParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
