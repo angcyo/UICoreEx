@@ -389,7 +389,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  OTA 升级进度
          *  @param address 设备地址
          *  @param percentage 进度
-         *  @param status 状态
+         *  @param status 状态 120
          */
         override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
@@ -709,7 +709,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
             if (connectDeviceList.isNotEmpty()) {
                 val list = connectDeviceList.toList()
                 list.forEach {
-                    disconnect(it.device)
+                    if (it.state == CONNECT_STATE_START || it.state == CONNECT_STATE_SUCCESS) {
+                        disconnect(it.device)
+                    }
                 }
             }
         }

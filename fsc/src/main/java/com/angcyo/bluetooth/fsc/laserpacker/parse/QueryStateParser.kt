@@ -9,11 +9,19 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DeviceStateParser(
+//DeviceStateParser(mode=2, workState=2, rate=0, laser=0, speed=0, error=0, state=0, name=0, temp=0, custom=0, zConnect=0, printTimes=1, angle=0)
+data class QueryStateParser(
     //设备当前工作模式
-    //L1当前工作模式，0x01为打印模式，0x02为打印预览模式，0x04为调焦模式，
-    //0x05为文件下载模式，0x06为空闲模式，0x07为关机状态，0x08为设置模式，0x09为下载模式。
-    var mode: Int = 0x06,
+    //L1当前工作模式，
+    // 0x01为打印模式，
+    // 0x02为打印预览模式，
+    // 0x04为调焦模式，
+    // 0x05为文件下载模式，
+    // 0x06为空闲模式，
+    // 0x07为关机状态，
+    // 0x08为设置模式，
+    // 0x09为下载模式。
+    var mode: Int = WORK_MODE_IDLE,
     //当前模式下的工作状态, 暂停, 255:结束, 1:预览图片 2:预览范围 6:支架
     var workState: Int = 0,
     //打印进度百分比[0-100]
@@ -53,9 +61,9 @@ data class DeviceStateParser(
     var printTimes: Int = 0,
     //设备与水平面的平角
     var angle: Int = 0
-) : IPacketParser<DeviceStateParser> {
+) : IPacketParser<QueryStateParser> {
     //解析数据
-    override fun parse(packet: ByteArray): DeviceStateParser? {
+    override fun parse(packet: ByteArray): QueryStateParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
@@ -80,5 +88,32 @@ data class DeviceStateParser(
             e.printStackTrace()
             null
         }
+    }
+
+    companion object {
+
+        /**0x01为打印模式*/
+        const val WORK_MODE_ENGRAVE = 0x01
+
+        /**0x02为打印预览模式*/
+        const val WORK_MODE_ENGRAVE_PREVIEW = 0x02
+
+        /**0x04为调焦模式*/
+        const val WORK_MODE_FOCUSING = 0x04
+
+        /**0x05为文件下载模式*/
+        const val WORK_MODE_FILE_DOWNLOAD = 0x05
+
+        /**0x06为空闲模式*/
+        const val WORK_MODE_IDLE = 0x06
+
+        /**0x07为关机状态*/
+        const val WORK_MODE_SHUTDOWN = 0x07
+
+        /**0x08为设置模式*/
+        const val WORK_MODE_SETUP = 0x08
+
+        /**0x09为下载模式(工厂)*/
+        const val WORK_MODE_DOWNLOAD = 0x09
     }
 }

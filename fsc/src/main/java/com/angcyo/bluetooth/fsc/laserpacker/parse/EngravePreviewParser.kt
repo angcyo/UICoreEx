@@ -8,7 +8,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */
-data class PrintPreviewParser(
+data class EngravePreviewParser(
     var func: Int = -1, //功能码
     var state: Int = 0,
     var custom: Int = -1,
@@ -18,8 +18,8 @@ data class PrintPreviewParser(
     //预留位置
     var d1: Int = -1,
     var d2: Int = -1,
-) : IPacketParser<PrintPreviewParser> {
-    override fun parse(packet: ByteArray): PrintPreviewParser? {
+) : IPacketParser<EngravePreviewParser> {
+    override fun parse(packet: ByteArray): EngravePreviewParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

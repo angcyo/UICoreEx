@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker
 
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
+import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
@@ -62,6 +63,39 @@ object LaserPeckerHelper {
         return result
     }
 
+    /**根据选中的分辨率, 转换输入的大小*/
+    fun transformHorizontalPixel(value: Int, px: Byte, productInfo: ProductInfo?): Int {
+        if (productInfo == null) {
+            return value
+        }
+        val scale = value * 1f / productInfo.bounds.width()
+        val ref: Int = when (px) {
+            0x01.toByte() -> 4000
+            0x02.toByte() -> 2000
+            0x03.toByte() -> 1300
+            0x04.toByte() -> 1000
+            0x05.toByte() -> 800
+            else -> productInfo.bounds.width().toInt()
+        }
+        return (ref * scale).toInt()
+    }
+
+    fun transformVerticalPixel(value: Int, px: Byte, productInfo: ProductInfo?): Int {
+        if (productInfo == null) {
+            return value
+        }
+        val scale = value * 1f / productInfo.bounds.height()
+        val ref: Int = when (px) {
+            0x01.toByte() -> 4000
+            0x02.toByte() -> 2000
+            0x03.toByte() -> 1300
+            0x04.toByte() -> 1000
+            0x05.toByte() -> 800
+            else -> productInfo.bounds.height().toInt()
+        }
+        return (ref * scale).toInt()
+    }
+
     //<editor-fold desc="packet">
 
     /**发送指令, 并且等待指令返回
@@ -72,7 +106,7 @@ object LaserPeckerHelper {
         sendPacket: ByteArray,
         autoSend: Boolean = true,
         receiveTimeOut: Long = 10_000,
-        progress: ISendProgressAction = {},
+        progress: ISendProgressAction = {}, //发包的进度回调
         action: IReceiveBeanAction
     ): WaitReceivePacket {
         return WaitReceivePacket(
@@ -111,6 +145,18 @@ object LaserPeckerHelper {
             progress,
             action
         )
+    }
+
+    /**发送一条指令
+     * [ICommand]*/
+    fun sendCommand(
+        command: ICommand,
+        progress: ISendProgressAction = {},
+        action: IReceiveBeanAction
+    ): WaitReceivePacket? {
+        val apiModel = vmApp<FscBleApiModel>()
+        val deviceState = apiModel.connectDeviceListData.value?.firstOrNull() ?: return null
+        return sendCommand(deviceState.device.address, command, apiModel, progress, action)
     }
 
     //</editor-fold desc="packet">

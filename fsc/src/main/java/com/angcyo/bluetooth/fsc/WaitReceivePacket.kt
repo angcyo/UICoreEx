@@ -206,7 +206,10 @@ class ReceiveTimeOutException(message: String) : Exception(message)
 /**接收校验异常*/
 class ReceiveVerifyException(message: String) : Exception(message)
 
+/**发包的进度*/
 typealias ISendProgressAction = (bean: ReceivePacket) -> Unit
+
+/**接收回调*/
 typealias IReceiveBeanAction = (bean: ReceivePacket?, error: Exception?) -> Unit
 
 @WorkerThread

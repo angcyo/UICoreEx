@@ -33,4 +33,6 @@ dependencies {
 
     compileOnly urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/ble.aar', 'ble.3.4.0.aar')
     compileOnly urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/FeasyBlue/3.4.0/spp.aar', 'spp.3.4.0.aar')
+
+    compileOnly project(allModule.canvas)
 }

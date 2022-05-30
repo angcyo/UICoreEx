@@ -9,7 +9,7 @@ import com.angcyo.library.component.reader
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
-data class DevicePrintFileParser(
+data class QueryEngraveFileParser(
     //文件数量
     var num: Int = 0,
     //文件编号列表
@@ -23,9 +23,9 @@ data class DevicePrintFileParser(
     //3时表示查询版本
     //4时表示查询安全码与用户帐号
     var state: Int = 0,
-) : IPacketParser<DevicePrintFileParser> {
+) : IPacketParser<QueryEngraveFileParser> {
     //解析数据
-    override fun parse(packet: ByteArray): DevicePrintFileParser? {
+    override fun parse(packet: ByteArray): QueryEngraveFileParser? {
         return try {
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部

@@ -3,17 +3,21 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import android.graphics.Rect
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.core.vmApp
+import com.angcyo.library.L
 import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 
 /**
- * 打印预览指令
+ * 雕刻/打印预览指令
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */
-data class PrintPreviewCmd(
+data class EngravePreviewCmd(
     //0x01 预览flash内存中的图片，name内容为将预览文件名称。
     //0x02 表示范围预览，name内容为长宽。
     //0x03 结束预览打印。
@@ -51,9 +55,9 @@ data class PrintPreviewCmd(
 
         /**预览flash内存中的图片
          * [name] 文件编号*/
-        fun previewFlashBitmap(name: Int): PrintPreviewCmd {
+        fun previewFlashBitmap(name: Int): EngravePreviewCmd {
             val bytes = name.toHexString(8).toHexByteArray()
-            return PrintPreviewCmd(0x01).apply {
+            return EngravePreviewCmd(0x01).apply {
                 d1 = bytes[0]
                 d2 = bytes[1]
                 d3 = bytes[2]
@@ -62,21 +66,45 @@ data class PrintPreviewCmd(
         }
 
         /**表示范围预览*/
-        fun previewRange(x: Int, y: Int, width: Int, height: Int): PrintPreviewCmd? {
-            if (x < 0 || y < 0 || width < 0 || height < 0) {
+        fun previewRange(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            px: Byte = 0x04,
+            productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        ): EngravePreviewCmd? {
+            var previewX = x
+            var previewY = y
+
+            if (productInfo != null) {
+                //设备原点在中心
+                previewX = x - productInfo.bounds.left.toInt()
+                previewY = y - productInfo.bounds.top.toInt()
+            }
+
+            if (previewX < 0 || previewY < 0 || width < 0 || height < 0) {
                 //不支持负数预览
+                L.w("参数需要大于0")
                 return null
             }
-            val widthBytes = width.toHexString(4).toHexByteArray()
-            val heightBytes = height.toHexString(4).toHexByteArray()
-            return PrintPreviewCmd(0x02).apply {
+
+            previewX = LaserPeckerHelper.transformHorizontalPixel(previewX, px, productInfo)
+            previewY = LaserPeckerHelper.transformVerticalPixel(previewY, px, productInfo)
+
+            val previewWidth = LaserPeckerHelper.transformHorizontalPixel(width, px, productInfo)
+            val previewHeight = LaserPeckerHelper.transformVerticalPixel(height, px, productInfo)
+
+            val widthBytes = previewWidth.toHexString(4).toHexByteArray()
+            val heightBytes = previewHeight.toHexString(4).toHexByteArray()
+            return EngravePreviewCmd(0x02, px = px).apply {
                 d1 = widthBytes[0]
                 d2 = widthBytes[1]
                 d3 = heightBytes[0]
                 d4 = heightBytes[1]
 
-                this.x = x
-                this.y = y
+                this.x = previewX
+                this.y = previewY
             }
         }
 
@@ -98,8 +126,8 @@ data class PrintPreviewCmd(
         /**电动支架升降控制指令
          * 支架升
          * [step] 步数*/
-        fun previewBracketUp(step: Int = 1): PrintPreviewCmd {
-            return PrintPreviewCmd(0x06).apply {
+        fun previewBracketUp(step: Int = 1): EngravePreviewCmd {
+            return EngravePreviewCmd(0x06).apply {
                 d1 = 0x1
                 val bytes = step.toHexString(4).toHexByteArray()
                 d2 = bytes[0]
@@ -108,8 +136,8 @@ data class PrintPreviewCmd(
         }
 
         /**支架降*/
-        fun previewBracketDown(step: Int = 1): PrintPreviewCmd {
-            return PrintPreviewCmd(0x06).apply {
+        fun previewBracketDown(step: Int = 1): EngravePreviewCmd {
+            return EngravePreviewCmd(0x06).apply {
                 d1 = 0x0
                 val bytes = step.toHexString(4).toHexByteArray()
                 d2 = bytes[0]
@@ -118,8 +146,8 @@ data class PrintPreviewCmd(
         }
 
         /**结束预览指令*/
-        fun previewStop(): PrintPreviewCmd {
-            return PrintPreviewCmd(0x03)
+        fun previewStop(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x03)
         }
     }
 
@@ -156,6 +184,7 @@ data class PrintPreviewCmd(
                     val height = heightBytes.toHexString(false)
                     append(" ")
                     append(height)
+                    L.w("预览:x:$x y:$y w:${widthBytes.toHexInt()} h:${heightBytes.toHexInt()}")
                 }
                 0x03.toByte() -> {
                     //结束预览

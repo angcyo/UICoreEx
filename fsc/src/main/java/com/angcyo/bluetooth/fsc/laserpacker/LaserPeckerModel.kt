@@ -4,13 +4,15 @@ import android.graphics.RectF
 import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ISendProgressAction
-import com.angcyo.bluetooth.fsc.laserpacker.command.PrintPreviewCmd
-import com.angcyo.bluetooth.fsc.laserpacker.parse.DeviceStateParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.DeviceVersionParser
-import com.angcyo.core.vmApp
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
+import com.angcyo.bluetooth.fsc.parse
+import com.angcyo.library.L
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
@@ -21,26 +23,17 @@ import com.angcyo.viewmodel.vmDataNull
  */
 class LaserPeckerModel : ViewModel(), IViewModel {
 
-    companion object {
-
-        /**设备空闲*/
-        const val DEVICE_MODEL_IDLE = -1
-
-        /**预览模式, 表示设备正在预览模式*/
-        const val DEVICE_MODEL_PREVIEW = 0x02
-    }
-
     /**当前设备的模式*/
-    val deviceModelData: MutableLiveData<Int> = vmData(DEVICE_MODEL_IDLE)
+    val deviceModelData: MutableLiveData<Int> = vmData(QueryStateParser.WORK_MODE_IDLE)
 
     /**设备版本*/
-    val deviceVersionData: MutableLiveData<DeviceVersionParser?> = vmDataNull()
+    val deviceVersionData: MutableLiveData<QueryVersionParser?> = vmDataNull()
 
     /**设备状态*/
-    val deviceStateData: MutableLiveData<DeviceStateParser?> = vmDataNull()
+    val deviceStateData: MutableLiveData<QueryStateParser?> = vmDataNull()
 
-    /**版本名称*/
-    var productName: String = LaserPeckerProduct.UNKNOWN
+    /**连接的设备产品信息*/
+    var productInfoData: MutableLiveData<ProductInfo?> = vmDataNull()
 
     /**更新设备模式*/
     @AnyThread
@@ -49,14 +42,17 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     @AnyThread
-    fun updateDeviceVersion(deviceVersionParser: DeviceVersionParser) {
-        productName = LaserPeckerProduct.parseProductName(deviceVersionParser.softwareVersion)
-        deviceVersionData.postValue(deviceVersionParser)
+    fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
+        L.i("设备版本:$queryVersionParser")
+        productInfoData.postValue(LaserPeckerProduct.parseProduct(queryVersionParser.softwareVersion))
+        deviceVersionData.postValue(queryVersionParser)
     }
 
     @AnyThread
-    fun updateDeviceState(deviceStateParser: DeviceStateParser) {
-        deviceStateData.postValue(deviceStateParser)
+    fun updateDeviceState(queryStateParser: QueryStateParser) {
+        L.i("设备状态:$queryStateParser")
+        deviceStateData.postValue(queryStateParser)
+        updateDeviceModel(queryStateParser.mode)
     }
 
     //<editor-fold desc="Command">
@@ -67,20 +63,27 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
-        vmApp<FscBleApiModel>().connectDeviceListData.value?.firstOrNull()
-            ?.let { deviceState ->
-                val cmd = PrintPreviewCmd.previewRange(
-                    bounds.left.toInt(),
-                    bounds.top.toInt(),
-                    bounds.width().toInt(),
-                    bounds.height().toInt()
-                )
-                if (cmd != null) {
-                    LaserPeckerHelper.sendCommand(
-                        deviceState.device.address, cmd, progress = progress, action = action
-                    )
+        val cmd = EngravePreviewCmd.previewRange(
+            bounds.left.toInt(),
+            bounds.top.toInt(),
+            bounds.width().toInt(),
+            bounds.height().toInt()
+        )
+        if (cmd != null) {
+            LaserPeckerHelper.sendCommand(cmd, progress, action)
+        }
+    }
+
+    /**查询设备状态*/
+    fun queryDeviceState(block: IReceiveBeanAction = { _, _ -> }) {
+        LaserPeckerHelper.sendCommand(QueryCmd(0x00)) { bean, error ->
+            bean?.let {
+                it.parse<QueryStateParser>()?.let {
+                    updateDeviceState(it)
                 }
             }
+            block(bean, error)
+        }
     }
 
     //</editor-fold desc="Command">
