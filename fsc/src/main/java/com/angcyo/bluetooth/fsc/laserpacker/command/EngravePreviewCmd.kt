@@ -73,9 +73,12 @@ data class EngravePreviewCmd(
             height: Int,
             px: Byte = 0x04,
             productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): EngravePreviewCmd? {
+        ): EngravePreviewCmd {
             var previewX = x
             var previewY = y
+
+            var previewWidth = width
+            var previewHeight = height
 
             if (productInfo != null) {
                 //设备原点在中心
@@ -85,15 +88,22 @@ data class EngravePreviewCmd(
 
             if (previewX < 0 || previewY < 0 || width < 0 || height < 0) {
                 //不支持负数预览
-                L.w("参数需要大于0")
-                return null
+                //L.w("参数需要大于0")
+                //return null
+
+                //超过范围, 缩成在中心的一个点
+                previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
+                previewY = (productInfo?.bounds?.height()?.toInt() ?: 0) / 2
+
+                previewWidth = 1
+                previewHeight = 1
             }
 
             previewX = LaserPeckerHelper.transformHorizontalPixel(previewX, px, productInfo)
             previewY = LaserPeckerHelper.transformVerticalPixel(previewY, px, productInfo)
 
-            val previewWidth = LaserPeckerHelper.transformHorizontalPixel(width, px, productInfo)
-            val previewHeight = LaserPeckerHelper.transformVerticalPixel(height, px, productInfo)
+            previewWidth = LaserPeckerHelper.transformHorizontalPixel(previewWidth, px, productInfo)
+            previewHeight = LaserPeckerHelper.transformVerticalPixel(previewHeight, px, productInfo)
 
             val widthBytes = previewWidth.toHexString(4).toHexByteArray()
             val heightBytes = previewHeight.toHexString(4).toHexByteArray()

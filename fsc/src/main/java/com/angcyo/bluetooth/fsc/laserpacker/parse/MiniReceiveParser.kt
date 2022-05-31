@@ -6,6 +6,11 @@ import com.angcyo.library.component.reader
 
 /**
  * 最小8字节解析
+ *
+ * AA BB 08 01 01 00 00 00 00 00 02
+ *
+ * AA BB 08 05 02 01 00 00 00 00 08
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */

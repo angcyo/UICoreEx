@@ -70,6 +70,7 @@ class WaitReceivePacket(
         api.removePacketListener(this)
     }
 
+    @WorkerThread
     fun _checkReceiveFinish() {
         val bytes = _receiveStream.toByteArray()
 
@@ -146,6 +147,7 @@ class WaitReceivePacket(
 
     //<editor-fold desc="packet">
 
+    @WorkerThread
     override fun onPacketSend(address: String, strValue: String, data: ByteArray) {
         super.onPacketSend(address, strValue, data)
         if (!_isFinish) {
@@ -162,6 +164,7 @@ class WaitReceivePacket(
         }
     }
 
+    @WorkerThread
     override fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
         super.onSendPacketProgress(address, percentage, sendByte)
         if (!_isFinish) {
@@ -216,11 +219,13 @@ typealias IReceiveBeanAction = (bean: ReceivePacket?, error: Exception?) -> Unit
 interface IReceiveListener {
 
     /**发包的进度回调*/
+    @WorkerThread
     fun onPacketProgress(bean: ReceivePacket) {
         bean.sendPacketPercentage //发包进度
     }
 
     /**接收完成的回调*/
+    @WorkerThread
     fun onReceive(bean: ReceivePacket?, error: Exception?) {
 
     }

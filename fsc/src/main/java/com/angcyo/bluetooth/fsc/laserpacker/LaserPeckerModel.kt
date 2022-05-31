@@ -88,4 +88,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     //</editor-fold desc="Command">
 
+
+
 }

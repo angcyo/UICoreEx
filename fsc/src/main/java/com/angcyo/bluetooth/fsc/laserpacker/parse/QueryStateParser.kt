@@ -62,33 +62,6 @@ data class QueryStateParser(
     //设备与水平面的平角
     var angle: Int = 0
 ) : IPacketParser<QueryStateParser> {
-    //解析数据
-    override fun parse(packet: ByteArray): QueryStateParser? {
-        return try {
-            packet.reader {
-                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                offset(1)//偏移长度
-                offset(1)//偏移功能码
-                mode = readInt(1)
-                workState = readInt(1)
-                rate = readInt(1)
-                laser = readInt(1)
-                speed = readInt(1)
-                error = readInt(1)
-                state = readInt(1)
-                name = readInt(4)
-                temp = readInt(1)
-                custom = readInt(1)
-                zConnect = readInt(1)
-                printTimes = readInt(1)
-                angle = readInt(1)
-            }
-            this
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
 
     companion object {
 
@@ -115,5 +88,33 @@ data class QueryStateParser(
 
         /**0x09为下载模式(工厂)*/
         const val WORK_MODE_DOWNLOAD = 0x09
+    }
+
+    //解析数据
+    override fun parse(packet: ByteArray): QueryStateParser? {
+        return try {
+            packet.reader {
+                offset(LaserPeckerHelper.packetHeadSize)//偏移头部
+                offset(1)//偏移长度
+                offset(1)//偏移功能码
+                mode = readInt(1)
+                workState = readInt(1)
+                rate = readInt(1)
+                laser = readInt(1)
+                speed = readInt(1)
+                error = readInt(1)
+                state = readInt(1)
+                name = readInt(4)
+                temp = readInt(1)
+                custom = readInt(1)
+                zConnect = readInt(1)
+                printTimes = readInt(1)
+                angle = readInt(1)
+            }
+            this
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

@@ -5,6 +5,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
 /**
+ * 数据:
+ * AA BB 08 02 02 00 00 00 00 00 04
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
  */

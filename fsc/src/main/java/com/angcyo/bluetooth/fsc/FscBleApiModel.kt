@@ -30,13 +30,13 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PR
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.baseConfig
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toHexString
-import com.angcyo.library.isMain
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableOnceLiveData
 import com.angcyo.viewmodel.vmData
@@ -320,7 +320,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         // 断开连接
         override fun sppPeripheralDisconnected(address: String) {
             super.sppPeripheralDisconnected(address)
-            if (isMain()) {
+            doMain(true) {
                 _peripheralDisconnected(address, null)
             }
         }
@@ -670,6 +670,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             return CONNECT_STATE_NORMAL
         }
+        if (find.state == CONNECT_STATE_SUCCESS) {
+            if (!isConnected(bleDevice)) {
+                return CONNECT_STATE_NORMAL
+            }
+        }
         return find.state
     }
 
@@ -736,6 +741,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             stopSend(bleDevice.address)
             fscApi.disconnect(bleDevice.address)
+        } else {
+            val cacheDeviceState = connectDeviceList.find { it.device.address == bleDevice.address }
+            cacheDeviceState?.let {
+                connectDeviceList.remove(it)
+                _notifyConnectDeviceChanged()
+            }
         }
     }
 
@@ -746,12 +757,14 @@ class FscBleApiModel : ViewModel(), IViewModel {
         list.forEach { deviceState ->
             if (deviceState.state == CONNECT_STATE_DISCONNECT_START && nowTime() - deviceState.disconnectTime > 1_000) {
                 //断开超时
+                connectDeviceList.remove(deviceState)
                 connectStateData.value = wrapStateDevice(deviceState.device) {
                     state = CONNECT_STATE_DISCONNECT
                     gatt = null
                     disconnectTime = nowTime()
                     this.isActiveDisConnected = isActiveDisConnected
                 }
+                _notifyConnectDeviceChanged()
             }
         }
     }
@@ -780,6 +793,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         handle.removeCallbacks(_delayStopRunnable)
         bleStateData.postValue(BLUETOOTH_STATE_STOP)
         bleDeviceListData.postValue(cacheScanDeviceList)
+        //重置
+        bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
     }
 
     @UiThread
@@ -813,6 +828,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 state = CONNECT_STATE_DISCONNECT
                 this.gatt = gatt
             })
+            connectDeviceList.remove(deviceState)
             _notifyConnectDeviceChanged()
         }
     }
@@ -976,13 +992,19 @@ class FscBleApiModel : ViewModel(), IViewModel {
         val element = devicePacketReceiveCacheList.find { it.address == address }
             ?: PacketReceive(address)
         element.action()
-        devicePacketReceiveCacheList.remove(element)
+        if (devicePacketReceiveCacheList.contains(element)) {
+            try {
+                devicePacketReceiveCacheList.remove(element)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         devicePacketReceiveCacheList.add(element)
     }
 
     @WorkerThread
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
-        L.i("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
+        L.w("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
         wrapProgressDevice(address) {
             sendBytesSize += data.size
             sendPacketCount++
@@ -1000,7 +1022,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @WorkerThread
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
-        L.i("$address 发送进度:$percentage% ${sendByte.size}bytes")
+        L.w("$address 发送进度:$percentage% ${sendByte.size}bytes")
         wrapProgressDevice(address) {
             this.percentage = percentage
             if (percentage == 100) {
@@ -1026,7 +1048,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [dataHexString] [AA BB 13 00 06 00 00 00 00 00 00 00 00 00 00 00 06 00 01 00 00 0D ]*/
     @WorkerThread
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.i("$address 收到:\n$dataHexString ${data.size}bytes")
+        L.w("$address 收到:\n$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = SystemClock.elapsedRealtime()

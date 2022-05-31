@@ -21,12 +21,18 @@ object LaserPeckerHelper {
     //固定数据头
     const val PACKET_HEAD = "AABB"
 
+    //固定文件头的字节数量
+    const val PACKET_FILE_HEAD_SIZE = 64
+
     //固定头的字节数
     val packetHeadSize: Int
         get() = PACKET_HEAD.toHexByteArray().size
 
     //校验位的占用字节数量
     const val CHECK_SIZE = 2
+
+    //数据返回超时时长
+    const val DEFAULT_RECEIVE_TIMEOUT = 1_000L
 
     /**移除所有空格*/
     fun String.trimCmd() = replace(" ", "")
@@ -64,7 +70,11 @@ object LaserPeckerHelper {
     }
 
     /**根据选中的分辨率, 转换输入的大小*/
-    fun transformHorizontalPixel(value: Int, px: Byte, productInfo: ProductInfo?): Int {
+    fun transformHorizontalPixel(
+        value: Int,
+        px: Byte,
+        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+    ): Int {
         if (productInfo == null) {
             return value
         }
@@ -80,7 +90,11 @@ object LaserPeckerHelper {
         return (ref * scale).toInt()
     }
 
-    fun transformVerticalPixel(value: Int, px: Byte, productInfo: ProductInfo?): Int {
+    fun transformVerticalPixel(
+        value: Int,
+        px: Byte,
+        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+    ): Int {
         if (productInfo == null) {
             return value
         }
@@ -139,15 +153,15 @@ object LaserPeckerHelper {
         return waitCmdReturn(
             api,
             address,
-            command.toHexCommandString().toHexByteArray(),
+            command.toByteArray(),
             true,
-            1_000,
+            DEFAULT_RECEIVE_TIMEOUT, //数据返回超时时长
             progress,
             action
         )
     }
 
-    /**发送一条指令
+    /**发送一条指令, 未连接设备时, 返回空
      * [ICommand]*/
     fun sendCommand(
         command: ICommand,
