@@ -521,15 +521,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return state == CONNECT_STATE_START || state == CONNECT_STATE_SUCCESS
     }
 
-    /**设备是否已连接*/
-    fun isConnected(device: FscDevice?): Boolean {
+    /**设备是否已连接
+     * [resetConnectState] 是否要恢复连接状态*/
+    fun isConnected(device: FscDevice?, resetConnectState: Boolean = false): Boolean {
         val address = device?.address
         if (address.isNullOrEmpty()) {
             return false
         }
         val cacheDevice = connectDeviceList.find { it.device == device }
         return if (fscApi.isConnected(address)) {
-            if (cacheDevice == null) {
+            if (resetConnectState && cacheDevice == null) {
                 connectStateData.value = wrapStateDevice(device) {
                     this.state = CONNECT_STATE_SUCCESS
                 }
@@ -704,6 +705,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
             stopScan()
         }
         if (device == null) {
+            return
+        }
+        if (isConnected(device, true)) {
             return
         }
         if (isConnectState(device)) {
