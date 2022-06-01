@@ -133,6 +133,8 @@ data class EngravePreviewCmd(
 
                 this.x = rect.left
                 this.y = rect.top
+
+                updatePWR(LaserPeckerHelper.lastPwrProgress)
             }
         }
 
@@ -153,7 +155,11 @@ data class EngravePreviewCmd(
 
         /**电动支架升降控制指令
          * 支架升
-         * [step] 步长毫米*/
+         * [step] 步长毫米
+         * 发送:  AA BB 0F 02 06 01 00 82 00 00 00 00 00 00 04 01 00 90
+         * 返回:  AA BB 08 02 06 00 01 00 00 00 09
+         *       AA BB 08 02 06 00 00 00 00 00 08
+         * */
         fun previewBracketUp(step: Int = 1): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 d1 = 0x1
@@ -183,7 +189,9 @@ data class EngravePreviewCmd(
 
         /**显示中心*/
         fun previewShowCenter(): EngravePreviewCmd {
-            return EngravePreviewCmd(0x07)
+            return EngravePreviewCmd(0x07).apply {
+                updatePWR(LaserPeckerHelper.lastPwrProgress)
+            }
         }
 
         /**结束预览指令*/
@@ -280,5 +288,11 @@ data class EngravePreviewCmd(
         rect.right = x + w
         rect.bottom = y + h
         return rect
+    }
+
+    /**[progress] [0~1f]
+     * */
+    fun updatePWR(progress: Float) {
+        pwr = (1 + 9 * progress).toInt().toByte()
     }
 }

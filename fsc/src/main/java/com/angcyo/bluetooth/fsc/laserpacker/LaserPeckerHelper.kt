@@ -46,6 +46,9 @@ object LaserPeckerHelper {
         add(PxInfo(0x05, 800, 800))
     }
 
+    /**预览光功率设置 [0~1f]*/
+    var lastPwrProgress: Float = 0.5f
+
     /**移除所有空格*/
     fun String.trimCmd() = replace(" ", "")
 

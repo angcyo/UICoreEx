@@ -58,6 +58,18 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         updateDeviceModel(queryStateParser.mode)
     }
 
+    /**雕刻预览模式, 并且非显示中心*/
+    fun isEngravePreviewMode(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && deviceState.workState != 7
+    }
+
+    /**是否是雕刻预览模式下的显示中心*/
+    fun isEngravePreviewShowCenterMode(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && deviceState.workState == 7
+    }
+
     //<editor-fold desc="Command">
 
     /**发送更新预览范围指令*/
