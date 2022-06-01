@@ -58,6 +58,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         updateDeviceModel(queryStateParser.mode)
     }
 
+    /**空闲模式*/
+    fun isIdleMode(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_IDLE
+    }
+
     /**雕刻预览模式, 并且非显示中心*/
     fun isEngravePreviewMode(): Boolean {
         val deviceState = deviceStateData.value
