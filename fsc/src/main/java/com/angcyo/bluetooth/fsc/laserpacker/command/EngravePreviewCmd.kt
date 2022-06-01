@@ -153,7 +153,7 @@ data class EngravePreviewCmd(
 
         /**电动支架升降控制指令
          * 支架升
-         * [step] 步数*/
+         * [step] 步长毫米*/
         fun previewBracketUp(step: Int = 1): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 d1 = 0x1
@@ -163,7 +163,8 @@ data class EngravePreviewCmd(
             }
         }
 
-        /**支架降*/
+        /**支架降
+         * [step] 步长1mm*/
         fun previewBracketDown(step: Int = 1): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 d1 = 0x0
@@ -171,6 +172,18 @@ data class EngravePreviewCmd(
                 d2 = bytes[0]
                 d3 = bytes[1]
             }
+        }
+
+        /**停止支架*/
+        fun previewBracketStop(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x06).apply {
+                d1 = 0x2
+            }
+        }
+
+        /**显示中心*/
+        fun previewShowCenter(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x07)
         }
 
         /**结束预览指令*/
@@ -214,7 +227,7 @@ data class EngravePreviewCmd(
                     append(height)
                     L.w("预览:x:$x y:$y w:${widthBytes.toHexInt()} h:${heightBytes.toHexInt()}")
                 }
-                0x03.toByte() -> {
+                /*0x03.toByte() -> {
                     //结束预览
                 }
                 0x04.toByte() -> {
@@ -225,7 +238,7 @@ data class EngravePreviewCmd(
                 }
                 0x06.toByte() -> {
                     //电动支架升降控制指令
-                }
+                }*/
                 else -> {
                     append(d1.toHexString())
                     append(d2.toHexString())

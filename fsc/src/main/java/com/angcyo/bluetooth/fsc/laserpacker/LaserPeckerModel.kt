@@ -23,7 +23,10 @@ import com.angcyo.viewmodel.vmDataNull
  */
 class LaserPeckerModel : ViewModel(), IViewModel {
 
-    /**当前设备的模式*/
+    /**当前设备的模式
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_IDLE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW]*/
     val deviceModelData: MutableLiveData<Int> = vmData(QueryStateParser.WORK_MODE_IDLE)
 
     /**设备版本*/
@@ -85,6 +88,5 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="Command">
-
 
 }

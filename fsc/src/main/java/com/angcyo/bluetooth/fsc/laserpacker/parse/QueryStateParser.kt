@@ -71,6 +71,9 @@ data class QueryStateParser(
         /**0x02为打印预览模式*/
         const val WORK_MODE_ENGRAVE_PREVIEW = 0x02
 
+        /**0x03为结束预览模式*/
+        const val WORK_MODE_STOP_ENGRAVE_PREVIEW = 0x03
+
         /**0x04为调焦模式*/
         const val WORK_MODE_FOCUSING = 0x04
 
