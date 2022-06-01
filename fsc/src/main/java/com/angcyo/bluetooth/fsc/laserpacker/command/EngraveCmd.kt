@@ -21,7 +21,7 @@ import com.angcyo.library.ex.toHexString
 data class EngraveCmd(
     val name: Int,//为将打印文件名。 文件编号 4字节
     val laser: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
-    val speed: Byte = 0x32,//为当前打印速度。1 - 100，分100个等级。
+    val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
     val state: Byte = 0x01,//0x01 从头开始打印文件，0x02继续打印文件，0x03结束打印，0x04暂停打印
     val x: Int = 0x0,//图片起始坐标。 2字节
     val y: Int = 0x0,

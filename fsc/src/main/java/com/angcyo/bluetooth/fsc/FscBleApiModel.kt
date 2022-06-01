@@ -769,6 +769,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
+    @Synchronized
     override fun release() {
         fscApi.stopScan()
         fscApi.stopSend()
@@ -961,24 +962,29 @@ class FscBleApiModel : ViewModel(), IViewModel {
         packetListenerList.remove(listener)
     }
 
+    @Synchronized
     fun clearProgressCache(address: String?) {
         devicePacketProgressCacheList.removeAll { it.address == address }
     }
 
+    @Synchronized
     fun clearReceiveCache(address: String?) {
         devicePacketReceiveCacheList.removeAll { it.address == address }
     }
 
     /**进度缓存*/
+    @Synchronized
     fun findProgressCache(address: String?): DevicePacketProgress? {
         return devicePacketProgressCacheList.find { it.address == address }
     }
 
+    @Synchronized
     fun findReceiveCache(address: String?): PacketReceive? {
         return devicePacketReceiveCacheList.find { it.address == address }
     }
 
     /**包裹[DevicePacketProgress]*/
+    @Synchronized
     fun wrapProgressDevice(address: String, action: DevicePacketProgress.() -> Unit) {
         val element = devicePacketProgressCacheList.find { it.address == address }
             ?: DevicePacketProgress(address)
@@ -992,13 +998,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         val element = devicePacketReceiveCacheList.find { it.address == address }
             ?: PacketReceive(address)
         element.action()
-        if (devicePacketReceiveCacheList.contains(element)) {
-            try {
-                devicePacketReceiveCacheList.remove(element)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        devicePacketReceiveCacheList.remove(element)
         devicePacketReceiveCacheList.add(element)
     }
 
@@ -1047,6 +1047,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [address] DC:0D:30:10:19:5E
      * [dataHexString] [AA BB 13 00 06 00 00 00 00 00 00 00 00 00 00 00 06 00 01 00 00 0D ]*/
     @WorkerThread
+    @Synchronized
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
         L.w("$address 收到:\n$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {

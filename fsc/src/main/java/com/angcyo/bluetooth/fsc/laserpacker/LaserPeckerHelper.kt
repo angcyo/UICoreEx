@@ -1,8 +1,11 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
+import android.graphics.Bitmap
+import androidx.core.graphics.scale
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
@@ -31,8 +34,17 @@ object LaserPeckerHelper {
     //校验位的占用字节数量
     const val CHECK_SIZE = 2
 
-    //数据返回超时时长
+    //数据返回超时时长, 毫秒
     const val DEFAULT_RECEIVE_TIMEOUT = 1_000L
+
+    //所有支持的分辨率
+    val pxInfoList = mutableListOf<PxInfo>().apply {
+        add(PxInfo(0x01, 4000, 4000))
+        add(PxInfo(0x02, 2000, 2000))
+        add(PxInfo(0x03, 1300, 1300))
+        add(PxInfo(0x04, 1000, 1000))
+        add(PxInfo(0x05, 800, 800))
+    }
 
     /**移除所有空格*/
     fun String.trimCmd() = replace(" ", "")
@@ -69,45 +81,42 @@ object LaserPeckerHelper {
         return result
     }
 
+    fun findPxInfo(px: Byte): PxInfo? = pxInfoList.find { it.px == px }
+
     /**根据选中的分辨率, 转换输入的大小*/
-    fun transformHorizontalPixel(
-        value: Int,
-        px: Byte,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
-        if (productInfo == null) {
-            return value
-        }
-        val scale = value * 1f / productInfo.bounds.width()
-        val ref: Int = when (px) {
-            0x01.toByte() -> 4000
-            0x02.toByte() -> 2000
-            0x03.toByte() -> 1300
-            0x04.toByte() -> 1000
-            0x05.toByte() -> 800
-            else -> productInfo.bounds.width().toInt()
-        }
-        return (ref * scale).toInt()
+    fun transformWidth(value: Int, px: Byte): Int {
+        return findPxInfo(px)?.transformWidth(value) ?: value
     }
 
-    fun transformVerticalPixel(
-        value: Int,
+    fun transformHeight(value: Int, px: Byte): Int {
+        return findPxInfo(px)?.transformHeight(value) ?: value
+    }
+
+    /**根据选中的分辨率, 转换图片起始x坐标*/
+    fun transformX(x: Int, px: Byte): Int {
+        return findPxInfo(px)?.transformX(x) ?: x
+    }
+
+    fun transformY(y: Int, px: Byte): Int {
+        return findPxInfo(px)?.transformX(y) ?: y
+    }
+
+    /**缩放图片到[px]指定的宽高*/
+    fun bitmapScale(
+        bitmap: Bitmap,
         px: Byte,
         productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
-        if (productInfo == null) {
-            return value
-        }
-        val scale = value * 1f / productInfo.bounds.height()
-        val ref: Int = when (px) {
-            0x01.toByte() -> 4000
-            0x02.toByte() -> 2000
-            0x03.toByte() -> 1300
-            0x04.toByte() -> 1000
-            0x05.toByte() -> 800
-            else -> productInfo.bounds.height().toInt()
-        }
-        return (ref * scale).toInt()
+    ): Bitmap {
+        val productWidth = productInfo?.bounds?.width()?.toInt() ?: bitmap.width
+        val productHeight = productInfo?.bounds?.height()?.toInt() ?: bitmap.height
+
+        val scaleWidth = bitmap.width * 1f / productWidth
+        val scaleHeight = bitmap.height * 1f / productHeight
+
+        val width = findPxInfo(px)?.pxWidth ?: productWidth
+        val height = findPxInfo(px)?.pxHeight ?: productHeight
+
+        return bitmap.scale((width * scaleWidth).toInt(), (height * scaleHeight).toInt())
     }
 
     //<editor-fold desc="packet">
@@ -155,7 +164,7 @@ object LaserPeckerHelper {
             address,
             command.toByteArray(),
             true,
-            DEFAULT_RECEIVE_TIMEOUT, //数据返回超时时长
+            command.getReceiveTimeout(), //数据返回超时时长
             progress,
             action
         )
@@ -170,7 +179,13 @@ object LaserPeckerHelper {
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
         val deviceState = apiModel.connectDeviceListData.value?.firstOrNull() ?: return null
-        return sendCommand(deviceState.device.address, command, apiModel, progress, action)
+        return sendCommand(
+            deviceState.device.address,
+            command,
+            apiModel,
+            progress,
+            action
+        )
     }
 
     //</editor-fold desc="packet">

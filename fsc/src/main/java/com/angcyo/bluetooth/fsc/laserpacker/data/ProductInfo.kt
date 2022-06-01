@@ -4,6 +4,7 @@ import android.graphics.Path
 import android.graphics.RectF
 
 /**
+ * 物理产品的一些配置信息
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */

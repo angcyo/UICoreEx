@@ -69,9 +69,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             bounds.width().toInt(),
             bounds.height().toInt()
         )
-        if (cmd != null) {
-            LaserPeckerHelper.sendCommand(cmd, progress, action)
-        }
+        LaserPeckerHelper.sendCommand(cmd, progress, action)
     }
 
     /**查询设备状态*/
@@ -87,7 +85,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="Command">
-
 
 
 }

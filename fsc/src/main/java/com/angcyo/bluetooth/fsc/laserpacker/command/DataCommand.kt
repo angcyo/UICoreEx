@@ -1,9 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.ex.colorChannel
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -25,34 +23,20 @@ data class DataCommand(
     companion object {
 
         /**
-         * [name] 文件名,用来打印. 32位 最大值[4294967295]
-         * [bitmap] 文件数据
+         * [name] 雕刻文件名,用来打印. 32位 最大值[4294967295]
+         * [bitmapData] 图片数据
          * [px]  当PX为以下值时对应图片分辨率：
          *       PX = 0x05 时 图片分辨率为800*800
          *       PX = 0x04 时 图片分辨率为1000*1000
          *       PX = 0x03 时 图片分辨率为1300*1300
          *       PX = 0x02 时 图片分辨率为2000*2000
          *       PX = 0x01 时 图片分辨率为4000*4000
+         * [bitmapWidth] 图片编辑时的宽高
+         * [bitmapHeight]
+         *
+         * [minX] 图片编辑时的x,y坐标
          *
          * */
-        fun bitmapData(
-            name: Int,
-            bitmap: Bitmap,
-            minX: Int = 0, //图片最小坐标(X,Y)。2字节
-            minY: Int = 0,
-            px: Byte = 0x04,
-        ): DataCommand {
-            return bitmapData(
-                name,
-                bitmap.colorChannel(),
-                bitmap.width,
-                bitmap.height,
-                minX,
-                minY,
-                px
-            )
-        }
-
         fun bitmapData(
             name: Int,
             bitmapData: ByteArray,
@@ -68,12 +52,12 @@ data class DataCommand(
                 write(0x10)
 
                 //图片的宽高8位
-                val width = LaserPeckerHelper.transformHorizontalPixel(bitmapWidth, px)
+                val width = LaserPeckerHelper.transformWidth(bitmapWidth, px)
                 write(width and 0xff00 shr 8 and 0xff) //高8位
                 //图片的宽低8位
                 write(width and 0xff) //低8位
 
-                val height = LaserPeckerHelper.transformHorizontalPixel(bitmapHeight, px)
+                val height = LaserPeckerHelper.transformWidth(bitmapHeight, px)
                 //图片的高高8位
                 write(height and 0xff00 shr 8 and 0xff) //高8位
                 //图片的高低8位
@@ -83,8 +67,8 @@ data class DataCommand(
                 write(name, 4)
 
                 write(px)
-                val x = LaserPeckerHelper.transformHorizontalPixel(minX, px)
-                val y = LaserPeckerHelper.transformHorizontalPixel(minY, px)
+                val x = LaserPeckerHelper.transformX(minX, px)
+                val y = LaserPeckerHelper.transformY(minY, px)
                 write(x, 2)
                 write(y, 2)
 
@@ -126,6 +110,10 @@ data class DataCommand(
             write(head)
             write(data)
         }
+    }
+
+    override fun getReceiveTimeout(): Long {
+        return 1 * 60 * 60 * 1_000
     }
 
     override fun equals(other: Any?): Boolean {

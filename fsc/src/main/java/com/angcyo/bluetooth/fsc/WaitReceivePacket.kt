@@ -27,7 +27,7 @@ class WaitReceivePacket(
     //自动发送数据
     val autoSend: Boolean,
     //接收超时时间, 毫秒
-    val receiveTimeOut: Long,
+    val receiveTimeout: Long,
     //调用者线程回调, 通常在子线程
     val listener: IReceiveListener
 ) : IPacketListener {
@@ -43,7 +43,7 @@ class WaitReceivePacket(
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
             end()
-            listener.onReceive(null, ReceiveTimeOutException("接收超时:$receiveTimeOut ms"))
+            listener.onReceive(null, ReceiveTimeOutException("接收超时:$receiveTimeout ms"))
         }
     }
 
@@ -56,9 +56,9 @@ class WaitReceivePacket(
         if (autoSend) {
             api.send(address, sendPacket)
         }
-        if (receiveTimeOut > 0) {
+        if (receiveTimeout > 0) {
             //测试模式下, 防止debug中断
-            handle.postDelayed(_timeOutRunnable, if (L.debug) 20_000 else receiveTimeOut)
+            handle.postDelayed(_timeOutRunnable, if (L.debug) 20_000 else receiveTimeout)
         }
         _isSend = true
     }

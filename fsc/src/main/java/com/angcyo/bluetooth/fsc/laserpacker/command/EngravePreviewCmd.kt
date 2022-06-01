@@ -65,15 +65,15 @@ data class EngravePreviewCmd(
             }
         }
 
-        /**表示范围预览*/
-        fun previewRange(
+        /**修正预览的范围*/
+        fun adjustPreviewRange(
             x: Int,
             y: Int,
             width: Int,
             height: Int,
             px: Byte = 0x04,
             productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): EngravePreviewCmd {
+        ): Rect {
             var previewX = x
             var previewY = y
 
@@ -99,22 +99,40 @@ data class EngravePreviewCmd(
                 previewHeight = 1
             }
 
-            previewX = LaserPeckerHelper.transformHorizontalPixel(previewX, px, productInfo)
-            previewY = LaserPeckerHelper.transformVerticalPixel(previewY, px, productInfo)
+            previewX = LaserPeckerHelper.transformWidth(previewX, px)
+            previewY = LaserPeckerHelper.transformHeight(previewY, px)
 
-            previewWidth = LaserPeckerHelper.transformHorizontalPixel(previewWidth, px, productInfo)
-            previewHeight = LaserPeckerHelper.transformVerticalPixel(previewHeight, px, productInfo)
+            previewWidth = LaserPeckerHelper.transformWidth(previewWidth, px)
+            previewHeight = LaserPeckerHelper.transformHeight(previewHeight, px)
 
-            val widthBytes = previewWidth.toHexString(4).toHexByteArray()
-            val heightBytes = previewHeight.toHexString(4).toHexByteArray()
+            return Rect(previewX, previewY, previewX + previewWidth, previewY + previewHeight)
+        }
+
+        /**根据[px]和[productInfo]调整预览的范围*/
+        fun previewRange(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            px: Byte = 0x04,
+            productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        ): EngravePreviewCmd {
+            return previewRange(adjustPreviewRange(x, y, width, height, px, productInfo), px)
+        }
+
+        /**表示范围预览
+         * [rect] 经过[px]处理过的像素*/
+        fun previewRange(rect: Rect, px: Byte = 0x04): EngravePreviewCmd {
+            val widthBytes = rect.width().toHexString(4).toHexByteArray()
+            val heightBytes = rect.height().toHexString(4).toHexByteArray()
             return EngravePreviewCmd(0x02, px = px).apply {
                 d1 = widthBytes[0]
                 d2 = widthBytes[1]
                 d3 = heightBytes[0]
                 d4 = heightBytes[1]
 
-                this.x = previewX
-                this.y = previewY
+                this.x = rect.left
+                this.y = rect.top
             }
         }
 

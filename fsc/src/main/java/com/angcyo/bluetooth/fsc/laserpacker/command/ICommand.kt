@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ISendProgressAction
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
 import com.angcyo.library.ex.toHexByteArray
 
 /**
@@ -29,6 +30,9 @@ interface ICommand {
      *
      * */
     fun toHexCommandString(): String = ""
+
+    /**获取指令超时时长*/
+    fun getReceiveTimeout(): Long = DEFAULT_RECEIVE_TIMEOUT
 }
 
 /**发送一条指令, 未连接设备时, 返回空*/
