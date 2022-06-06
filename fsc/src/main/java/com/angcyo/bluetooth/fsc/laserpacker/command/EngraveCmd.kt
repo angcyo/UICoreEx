@@ -21,13 +21,14 @@ import com.angcyo.library.ex.toHexString
 data class EngraveCmd(
     val name: Int,//为将打印文件名。 文件编号 4字节
     val laser: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
-    val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
+    val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(100-)
+    //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
     val state: Byte = 0x01,//0x01 从头开始打印文件，0x02继续打印文件，0x03结束打印，0x04暂停打印
     val x: Int = 0x0,//图片起始坐标。 2字节
     val y: Int = 0x0,
-    val custom: Byte = 0x0,
     val time: Byte = 0x1,//打印次数
     val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
+    val custom: Byte = 0x0,
 ) : ICommand {
     override fun toHexCommandString(): String {
         val dataLength = 0x11 //16 //数据长度
@@ -36,7 +37,7 @@ data class EngraveCmd(
             append(func)
             append(state.toHexString())
             append(laser.toHexString())
-            append(speed.toHexString())
+            append((100 - depth).toHexString()) //打印速度
             //append(name.toHexString(8))
             append(name.toByteArray(4).toHexString(false))
             append(x.toHexString(4))

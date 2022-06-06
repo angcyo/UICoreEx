@@ -1,6 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.library.component.byteWriter
 
 /**
@@ -31,10 +31,10 @@ data class DataCommand(
          *       PX = 0x03 时 图片分辨率为1300*1300
          *       PX = 0x02 时 图片分辨率为2000*2000
          *       PX = 0x01 时 图片分辨率为4000*4000
-         * [bitmapWidth] 图片编辑时的宽高
+         * [bitmapWidth] 图片的宽高. px修正过后的数据
          * [bitmapHeight]
          *
-         * [minX] 图片编辑时的x,y坐标
+         * [minX] 图片的x,y坐标. px修正过后的数据
          *
          * */
         fun bitmapData(
@@ -44,7 +44,7 @@ data class DataCommand(
             bitmapHeight: Int,
             minX: Int = 0, //图片最小坐标(X,Y)。2字节
             minY: Int = 0,
-            px: Byte = 0x04,
+            px: Byte = DEFAULT_PX,
         ): DataCommand {
             //数据头
             val head = byteWriter {
@@ -52,25 +52,21 @@ data class DataCommand(
                 write(0x10)
 
                 //图片的宽高8位
-                val width = LaserPeckerHelper.transformWidth(bitmapWidth, px)
-                write(width and 0xff00 shr 8 and 0xff) //高8位
+                write(bitmapWidth and 0xff00 shr 8 and 0xff) //高8位
                 //图片的宽低8位
-                write(width and 0xff) //低8位
+                write(bitmapWidth and 0xff) //低8位
 
-                val height = LaserPeckerHelper.transformWidth(bitmapHeight, px)
                 //图片的高高8位
-                write(height and 0xff00 shr 8 and 0xff) //高8位
+                write(bitmapHeight and 0xff00 shr 8 and 0xff) //高8位
                 //图片的高低8位
-                write(height and 0xff) //低8位
+                write(bitmapHeight and 0xff) //低8位
 
                 //图片名称，占用4个字节
                 write(name, 4)
 
                 write(px)
-                val x = LaserPeckerHelper.transformX(minX, px)
-                val y = LaserPeckerHelper.transformY(minY, px)
-                write(x, 2)
-                write(y, 2)
+                write(minX, 2)
+                write(minY, 2)
 
                 padLength(64) //需要64个字节
             }
@@ -113,7 +109,7 @@ data class DataCommand(
     }
 
     override fun getReceiveTimeout(): Long {
-        return 1 * 60 * 60 * 1_000
+        return 1 * 60 * 60 * 1_000 //1小时
     }
 
     override fun equals(other: Any?): Boolean {

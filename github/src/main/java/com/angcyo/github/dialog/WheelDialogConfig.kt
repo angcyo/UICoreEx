@@ -30,6 +30,9 @@ open class WheelDialogConfig : BaseDialogConfig() {
     /**设置选中项, -1不设置*/
     var wheelSelectedIndex = -1
 
+    /**单位设置*/
+    var wheelUnit: CharSequence? = null
+
     /**选中回调, 返回true拦截默认操作*/
     var wheelItemSelectorAction: (dialog: Dialog, index: Int, item: Any) -> Boolean =
         { dialog, index, item ->
@@ -49,15 +52,24 @@ open class WheelDialogConfig : BaseDialogConfig() {
     //内部变量
     var _selectedIndex = -1
 
+    var _wheelView: WheelView? = null
+
     init {
         dialogTitle = "请选择"
 
         dialogLayoutId = R.layout.lib_dialog_wheel_layout
 
         positiveButtonListener = { dialog, _ ->
+            _wheelView?.apply {
+                if (isScrollSetting) {
+                    _selectedIndex = currentItem
+                }
+            }
+
             if (_selectedIndex in 0 until (wheelItems?.size ?: 0) &&
                 wheelItemSelectorAction.invoke(dialog, _selectedIndex, wheelItems!![_selectedIndex])
             ) {
+                //被拦截
             } else {
                 dialog.dismiss()
             }
@@ -70,6 +82,8 @@ open class WheelDialogConfig : BaseDialogConfig() {
         dialogViewHolder.enable(R.id.positive_button, !wheelItems.isNullOrEmpty())
 
         dialogViewHolder.v<WheelView>(R.id.lib_wheel_view)?.apply {
+            _wheelView = this
+
             val stringList = mutableListOf<CharSequence>()
 
             for (item in wheelItems ?: emptyList()) {
@@ -96,6 +110,9 @@ open class WheelDialogConfig : BaseDialogConfig() {
 
         //空数据提示
         dialogViewHolder.visible(R.id.lib_empty_view, wheelItems.isNullOrEmpty())
+
+        //单位
+        dialogViewHolder.tv(R.id.lib_unit_view)?.text = wheelUnit
     }
 
     /**添加Item*/

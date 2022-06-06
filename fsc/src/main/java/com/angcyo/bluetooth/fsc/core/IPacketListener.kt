@@ -12,11 +12,21 @@ import androidx.annotation.WorkerThread
 interface IPacketListener {
 
     @WorkerThread
-    fun onPacketSend(address: String, strValue: String, data: ByteArray) {
+    fun onPacketSend(
+        packetProgress: DevicePacketProgress,
+        address: String,
+        strValue: String,
+        data: ByteArray
+    ) {
     }
 
     @WorkerThread
-    fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
+    fun onSendPacketProgress(
+        packetProgress: DevicePacketProgress,
+        address: String,
+        percentage: Int,
+        sendByte: ByteArray
+    ) {
     }
 
     @WorkerThread

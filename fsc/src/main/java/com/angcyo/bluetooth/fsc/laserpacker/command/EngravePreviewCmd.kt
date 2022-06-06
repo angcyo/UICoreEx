@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import android.graphics.Rect
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
@@ -46,7 +47,7 @@ data class EngravePreviewCmd(
     //PX = 0x03 时 图片分辨率为1300*1300
     //PX = 0x02 时 图片分辨率为2000*2000
     //PX = 0x01 时 图片分辨率为4000*4000
-    var px: Byte = 0x04,
+    var px: Byte = DEFAULT_PX,
     //为预览光功率设置，data11为功率档位，范围为1 - 10。
     var pwr: Byte = 0x1,
 ) : ICommand {
@@ -65,13 +66,13 @@ data class EngravePreviewCmd(
             }
         }
 
-        /**修正预览的范围*/
-        fun adjustPreviewRange(
+        /**修正预览的范围, 返回的是[px]调整过后的坐标*/
+        fun adjustBitmapRange(
             x: Int,
             y: Int,
             width: Int,
             height: Int,
-            px: Byte = 0x04,
+            px: Byte = DEFAULT_PX,
             productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): Rect {
             var previewX = x
@@ -80,16 +81,24 @@ data class EngravePreviewCmd(
             var previewWidth = width
             var previewHeight = height
 
-            if (productInfo != null) {
+            previewX = LaserPeckerHelper.transformX(previewX, px)
+            previewY = LaserPeckerHelper.transformY(previewY, px)
+
+            previewWidth = LaserPeckerHelper.transformWidth(previewWidth, px)
+            previewHeight = LaserPeckerHelper.transformHeight(previewHeight, px)
+
+            val pxInfo = LaserPeckerHelper.findPxInfo(px)
+
+            /*if (productInfo != null) {
                 //设备原点在中心
                 previewX = x - productInfo.bounds.left.toInt()
                 previewY = y - productInfo.bounds.top.toInt()
-            }
+            }*/
 
-            if (previewX < 0 || previewY < 0 || width < 0 || height < 0) {
-                //不支持负数预览
-                //L.w("参数需要大于0")
-                //return null
+            if (previewX < 0 || previewY < 0 || width < 0 || height < 0 ||
+                (pxInfo != null && (previewX > pxInfo.pxWidth || previewY > pxInfo.pxHeight || width > pxInfo.pxWidth || height > pxInfo.pxHeight))
+            ) {
+                //不支持负数预览, 预览数据异常
 
                 //超过范围, 缩成在中心的一个点
                 previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
@@ -98,12 +107,6 @@ data class EngravePreviewCmd(
                 previewWidth = 1
                 previewHeight = 1
             }
-
-            previewX = LaserPeckerHelper.transformWidth(previewX, px)
-            previewY = LaserPeckerHelper.transformHeight(previewY, px)
-
-            previewWidth = LaserPeckerHelper.transformWidth(previewWidth, px)
-            previewHeight = LaserPeckerHelper.transformHeight(previewHeight, px)
 
             return Rect(previewX, previewY, previewX + previewWidth, previewY + previewHeight)
         }
@@ -114,15 +117,15 @@ data class EngravePreviewCmd(
             y: Int,
             width: Int,
             height: Int,
-            px: Byte = 0x04,
+            px: Byte = DEFAULT_PX,
             productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            return previewRange(adjustPreviewRange(x, y, width, height, px, productInfo), px)
+            return previewRange(adjustBitmapRange(x, y, width, height, px, productInfo), px)
         }
 
         /**表示范围预览
          * [rect] 经过[px]处理过的像素*/
-        fun previewRange(rect: Rect, px: Byte = 0x04): EngravePreviewCmd {
+        fun previewRange(rect: Rect, px: Byte = DEFAULT_PX): EngravePreviewCmd {
             val widthBytes = rect.width().toHexString(4).toHexByteArray()
             val heightBytes = rect.height().toHexString(4).toHexByteArray()
             return EngravePreviewCmd(0x02, px = px).apply {
@@ -142,7 +145,7 @@ data class EngravePreviewCmd(
         /*fun previewUpdateRange(x: Int, y: Int, width: Int, height: Int): PrintPreviewCmd {
             val widthBytes = width.toHexString(4).toHexByteArray()
             val heightBytes = height.toHexString(4).toHexByteArray()
-            return PrintPreviewCmd(0x04).apply {
+            return PrintPreviewCmd(DEFAULT_PX).apply {
                 d1 = widthBytes[0]
                 d2 = widthBytes[1]
                 d3 = heightBytes[0]

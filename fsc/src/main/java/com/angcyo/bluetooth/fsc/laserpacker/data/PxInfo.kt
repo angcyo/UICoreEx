@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.data
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 
@@ -15,7 +16,7 @@ data class PxInfo(
     //PX = 0x03 时 图片分辨率为1300*1300
     //PX = 0x02 时 图片分辨率为2000*2000
     //PX = 0x01 时 图片分辨率为4000*4000
-    val px: Byte = 0x04,
+    val px: Byte = DEFAULT_PX,
     //对应分辨率的宽高
     val pxWidth: Int,
     val pxHeight: Int,

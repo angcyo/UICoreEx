@@ -31,6 +31,9 @@ class ReceivePacket {
     /**发送完成的时间, 毫秒*/
     var sendFinishTime: Long = -1
 
+    /**预计的剩余时间, 毫秒*/
+    var remainingTime: Long = -1
+
     //</editor-fold desc="send">
 
     //<editor-fold desc="receive">

@@ -30,6 +30,9 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
     /**设置选中项, -1不设置*/
     var itemSelectedIndex = -1
 
+    /**wheel dialog 单位设置*/
+    var itemWheelUnit: CharSequence? = null
+
     /**选中回调*/
     var itemWheelSelector: (dialog: Dialog, index: Int, item: Any) -> Boolean =
         { dialog, index, item ->
@@ -45,6 +48,7 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         }
     }
 
+    /**配置[WheelDialogConfig]*/
     var itemConfigDialog: (WheelDialogConfig) -> Unit = {
 
     }
@@ -91,7 +95,11 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(textItemConfig.itemTextViewId)?.apply {
             text = itemWheelList?.getOrNull(itemSelectedIndex)?.run {
-                itemWheelToText(this)
+                if (itemWheelUnit == null) {
+                    itemWheelToText(this)
+                } else {
+                    "${itemWheelToText(this)}${itemWheelUnit}"
+                }
             } ?: textItemConfig.itemText //默认文本
         }
         itemHolder.visible(R.id.lib_right_ico_view, itemEnable)
@@ -105,6 +113,8 @@ open class DslLabelWheelItem : DslBaseLabelItem(), ITextItem, ILoadItem {
             wheelItems = itemWheelList?.toMutableList()
 
             wheelItemToStringAction = itemWheelToText
+
+            wheelUnit = itemWheelUnit
 
             wheelItemSelectorAction = { dialog, index, item ->
                 if (itemWheelSelector(dialog, index, item)) {

@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
@@ -12,6 +13,7 @@ import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import java.io.ByteArrayOutputStream
+import kotlin.math.roundToLong
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -113,7 +115,7 @@ class WaitReceivePacket(
 
                     receivePacket?.apply {
                         receiveDataLength = dataCount
-                        receiveFinishTime = SystemClock.elapsedRealtime()
+                        receiveFinishTime = System.currentTimeMillis()
                         receivePacket = ByteArray(headSize + 1 + dataCount).apply {
                             bytes.copyTo(this, headStartIndex)
                         }
@@ -148,30 +150,47 @@ class WaitReceivePacket(
     //<editor-fold desc="packet">
 
     @WorkerThread
-    override fun onPacketSend(address: String, strValue: String, data: ByteArray) {
-        super.onPacketSend(address, strValue, data)
+    override fun onPacketSend(
+        packetProgress: DevicePacketProgress,
+        address: String,
+        strValue: String,
+        data: ByteArray
+    ) {
+        super.onPacketSend(packetProgress, address, strValue, data)
         if (!_isFinish) {
             if (receivePacket == null) {
                 receivePacket = ReceivePacket().apply {
                     this.address = address
                     this.sendPacket = this@WaitReceivePacket.sendPacket
-                    this.sendStartTime = SystemClock.elapsedRealtime()
+                    this.sendStartTime = System.currentTimeMillis()
                 }
             }
             receivePacket?.apply {
                 sendPacketCount++
+                val nowTime = System.currentTimeMillis()
+                //每毫秒发送的字节数量
+                val speed = packetProgress.sendBytesSize * 1f / (nowTime - sendStartTime)
+                //剩余需要发送的字节大小
+                val remainingSize = sendPacket.size - packetProgress.sendBytesSize
+                remainingTime = (remainingSize / speed).roundToLong()
+                //listener.onPacketProgress(this) //need?
             }
         }
     }
 
     @WorkerThread
-    override fun onSendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
-        super.onSendPacketProgress(address, percentage, sendByte)
+    override fun onSendPacketProgress(
+        packetProgress: DevicePacketProgress,
+        address: String,
+        percentage: Int,
+        sendByte: ByteArray
+    ) {
+        super.onSendPacketProgress(packetProgress, address, percentage, sendByte)
         if (!_isFinish) {
             receivePacket?.apply {
                 sendPacketPercentage = percentage
                 if (percentage >= 100) {
-                    sendFinishTime = SystemClock.elapsedRealtime()
+                    sendFinishTime = System.currentTimeMillis()
                 }
 
                 listener.onPacketProgress(this)
@@ -192,7 +211,7 @@ class WaitReceivePacket(
             receivePacket?.apply {
                 receivePacketCount++
                 if (receiveStartTime < 0) {
-                    receiveStartTime = SystemClock.elapsedRealtime()
+                    receiveStartTime = System.currentTimeMillis()
                 }
             }
             _receiveStream.write(data)

@@ -37,6 +37,9 @@ object LaserPeckerHelper {
     //数据返回超时时长, 毫秒
     const val DEFAULT_RECEIVE_TIMEOUT = 1_000L
 
+    //默认的分辨率
+    const val DEFAULT_PX: Byte = 0x04
+
     //所有支持的分辨率
     val pxInfoList = mutableListOf<PxInfo>().apply {
         add(PxInfo(0x01, 4000, 4000))
@@ -101,7 +104,7 @@ object LaserPeckerHelper {
     }
 
     fun transformY(y: Int, px: Byte): Int {
-        return findPxInfo(px)?.transformX(y) ?: y
+        return findPxInfo(px)?.transformY(y) ?: y
     }
 
     /**缩放图片到[px]指定的宽高*/
@@ -181,7 +184,11 @@ object LaserPeckerHelper {
         action: IReceiveBeanAction
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
-        val deviceState = apiModel.connectDeviceListData.value?.firstOrNull() ?: return null
+        val deviceState = apiModel.connectDeviceListData.value?.firstOrNull()
+        if (deviceState == null) {
+            action(null, IllegalArgumentException("未连接设备"))
+            return null
+        }
         return sendCommand(
             deviceState.device.address,
             command,

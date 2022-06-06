@@ -989,61 +989,63 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**包裹[DevicePacketProgress]*/
     @Synchronized
-    fun wrapProgressDevice(address: String, action: DevicePacketProgress.() -> Unit) {
+    fun wrapProgressDevice(
+        address: String,
+        action: DevicePacketProgress.() -> Unit
+    ): DevicePacketProgress {
         val element = devicePacketProgressCacheList.find { it.address == address }
             ?: DevicePacketProgress(address)
         element.action()
         devicePacketProgressCacheList.remove(element)
         devicePacketProgressCacheList.add(element)
+        return element
     }
 
     @Synchronized
-    fun wrapReceiveDevice(address: String, action: PacketReceive.() -> Unit) {
+    fun wrapReceiveDevice(address: String, action: PacketReceive.() -> Unit): PacketReceive {
         val element = devicePacketReceiveCacheList.find { it.address == address }
             ?: PacketReceive(address)
         element.action()
         devicePacketReceiveCacheList.remove(element)
         devicePacketReceiveCacheList.add(element)
+        return element
     }
 
     @WorkerThread
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
         L.w("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
-        wrapProgressDevice(address) {
+        val packetProgress = wrapProgressDevice(address) {
             sendBytesSize += data.size
             sendPacketCount++
             if (percentage == -1) {
                 //记录开始发送的时间
                 percentage = 0
-                startTime = SystemClock.elapsedRealtime()
+                startTime = System.currentTimeMillis()
             }
         }
-        devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_START))
+        devicePacketStateData.postValue(
+            DevicePacketState(address, data, -1, PACKET_STATE_START)
+        )
         packetListenerList.forEach {
-            it.onPacketSend(address, strValue, data)
+            it.onPacketSend(packetProgress, address, strValue, data)
         }
     }
 
     @WorkerThread
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
         L.w("$address 发送进度:$percentage% ${sendByte.size}bytes")
-        wrapProgressDevice(address) {
+        val packetProgress = wrapProgressDevice(address) {
             this.percentage = percentage
             if (percentage == 100) {
                 //记录完成发送的时间
-                finishTime = SystemClock.elapsedRealtime()
+                finishTime = System.currentTimeMillis()
             }
         }
         devicePacketStateData.postValue(
-            DevicePacketState(
-                address,
-                sendByte,
-                percentage,
-                PACKET_STATE_PROGRESS
-            )
+            DevicePacketState(address, sendByte, percentage, PACKET_STATE_PROGRESS)
         )
         packetListenerList.forEach {
-            it.onSendPacketProgress(address, percentage, sendByte)
+            it.onSendPacketProgress(packetProgress, address, percentage, sendByte)
         }
     }
 
@@ -1056,7 +1058,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         L.w("$address 收到:\n$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
-                startTime = SystemClock.elapsedRealtime()
+                startTime = System.currentTimeMillis()
             }
             receiveBytesSize += data.size
             receivePacketCount++
