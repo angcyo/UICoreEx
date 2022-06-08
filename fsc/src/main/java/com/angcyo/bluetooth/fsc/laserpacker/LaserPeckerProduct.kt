@@ -76,7 +76,7 @@ object LaserPeckerProduct {
             }
             else -> Path()
         }
-        val info = ProductInfo(name, bounds, limitPath, isOriginCenter)
+        val info = ProductInfo(version, name, bounds, limitPath, isOriginCenter)
         return info
     }
 
