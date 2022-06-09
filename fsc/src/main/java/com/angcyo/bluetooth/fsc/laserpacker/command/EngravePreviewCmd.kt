@@ -95,9 +95,24 @@ data class EngravePreviewCmd(
                 previewY = y - productInfo.bounds.top.toInt()
             }*/
 
-            if (previewX < 0 || previewY < 0 || width < 0 || height < 0 ||
-                (pxInfo != null && (previewX > pxInfo.pxWidth || previewY > pxInfo.pxHeight || width > pxInfo.pxWidth || height > pxInfo.pxHeight))
-            ) {
+            //是否溢出
+            var overflow = false
+            if (previewX < 0 || previewY < 0 || previewWidth < 0 || previewHeight < 0) {
+                overflow = true
+            }
+
+            if (!overflow) {
+                if (pxInfo != null) {
+                    if (previewX > pxInfo.pxWidth || previewY > pxInfo.pxHeight) {
+                        overflow = true
+                    }
+                    if (previewWidth > pxInfo.pxWidth || previewHeight > pxInfo.pxHeight) {
+                        overflow = true
+                    }
+                }
+            }
+
+            if (overflow) {
                 //不支持负数预览, 预览数据异常
 
                 //超过范围, 缩成在中心的一个点
