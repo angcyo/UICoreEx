@@ -4,9 +4,14 @@ import android.graphics.Bitmap
 import androidx.core.graphics.scale
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.core.vmApp
+import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -51,6 +56,8 @@ object LaserPeckerHelper {
 
     /**预览光功率设置 [0~1f]*/
     var lastPwrProgress: Float = 0.5f
+
+    //<editor-fold desc="operate">
 
     /**移除所有空格*/
     fun String.trimCmd() = replace(" ", "")
@@ -125,6 +132,8 @@ object LaserPeckerHelper {
         return bitmap.scale((width * scaleWidth).toInt(), (height * scaleHeight).toInt())
     }
 
+    //</editor-fold desc="operate">
+
     //<editor-fold desc="packet">
 
     /**发送指令, 并且等待指令返回
@@ -196,6 +205,44 @@ object LaserPeckerHelper {
             progress,
             action
         )
+    }
+
+    /**发送初始化的指令, 读取设备的基础信息*/
+    fun sendInitCommand(address: String, end: (Throwable?) -> Unit) {
+        val laserPeckerModel = vmApp<LaserPeckerModel>()
+        flow { chain ->
+            //读取设备版本
+            sendCommand(address, QueryCmd.version) { bean, error ->
+                bean?.let {
+                    it.parse<QueryVersionParser>()?.let {
+                        laserPeckerModel.updateDeviceVersion(it)
+                    }
+                }
+                chain(error)
+            }
+        }.flow { chain ->
+            //读取设备工作状态
+            sendCommand(address, QueryCmd.workState) { bean, error ->
+                bean?.let {
+                    it.parse<QueryStateParser>()?.let {
+                        laserPeckerModel.updateDeviceState(it)
+                    }
+                }
+                chain(error)
+            }
+        }.flow { chain ->
+            //读取设备设置状态
+            sendCommand(address, QueryCmd.settingState) { bean, error ->
+                bean?.let {
+                    it.parse<QuerySettingParser>()?.let {
+                        laserPeckerModel.updateDeviceSettingState(it)
+                    }
+                }
+                chain(error)
+            }
+        }.start {
+            end(it)
+        }
     }
 
     //</editor-fold desc="packet">

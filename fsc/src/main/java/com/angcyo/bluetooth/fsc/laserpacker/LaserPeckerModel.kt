@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.ISendProgressAction
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.bluetooth.fsc.parse
@@ -35,6 +36,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**设备状态*/
     val deviceStateData: MutableLiveData<QueryStateParser?> = vmDataNull()
 
+    /**设备设置状态*/
+    val deviceSettingStateData: MutableLiveData<QuerySettingParser?> = vmDataNull()
+
     /**连接的设备产品信息*/
     var productInfoData: MutableLiveData<ProductInfo?> = vmDataNull()
 
@@ -56,6 +60,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         L.i("设备状态:$queryStateParser")
         deviceStateData.postValue(queryStateParser)
         updateDeviceModel(queryStateParser.mode)
+    }
+
+    @AnyThread
+    fun updateDeviceSettingState(querySettingParser: QuerySettingParser) {
+        L.i("设备设置状态:$querySettingParser")
+        deviceSettingStateData.postValue(querySettingParser)
     }
 
     /**空闲模式*/
@@ -95,7 +105,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**查询设备状态*/
     fun queryDeviceState(block: IReceiveBeanAction = { _, _ -> }) {
-        LaserPeckerHelper.sendCommand(QueryCmd(0x00)) { bean, error ->
+        LaserPeckerHelper.sendCommand(QueryCmd.workState) { bean, error ->
             bean?.let {
                 it.parse<QueryStateParser>()?.let {
                     updateDeviceState(it)

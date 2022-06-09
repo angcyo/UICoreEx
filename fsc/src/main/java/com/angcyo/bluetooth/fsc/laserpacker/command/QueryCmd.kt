@@ -19,6 +19,30 @@ data class QueryCmd(
     val state: Byte,
     val custom: Byte = 0 //自定义的数据
 ) : ICommand {
+
+    companion object {
+
+        /**查询工作状态*/
+        val workState: QueryCmd
+            get() = QueryCmd(0x00)
+
+        /**查询文件列表/历史记录*/
+        val fileList: QueryCmd
+            get() = QueryCmd(0x01)
+
+        /**查询设置状态*/
+        val settingState: QueryCmd
+            get() = QueryCmd(0x02)
+
+        /**查询版本信息*/
+        val version: QueryCmd
+            get() = QueryCmd(0x03)
+
+        /**查询安全码和用户账号*/
+        val safeCode: QueryCmd
+            get() = QueryCmd(0x04)
+    }
+
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度
         val func = "00" //功能码

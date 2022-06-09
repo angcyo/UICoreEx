@@ -2,10 +2,12 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ISendProgressAction
+import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
 import com.angcyo.library.ex.toHexByteArray
+import com.angcyo.library.toast
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -36,9 +38,11 @@ interface ICommand {
 }
 
 /**发送一条指令, 未连接设备时, 返回空*/
-fun ICommand.send(
+fun ICommand.sendCommand(
     progress: ISendProgressAction = {},
-    action: IReceiveBeanAction
+    action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
+        error?.let { toast(it.message) }
+    }
 ): WaitReceivePacket? {
     return LaserPeckerHelper.sendCommand(this, progress, action)
 }
