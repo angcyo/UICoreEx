@@ -40,7 +40,7 @@ data class QueryStateParser(
     //6打印数据错误
     //7文件编号查询错误
     //8陀螺仪自检错误
-    //9 flash自检错误
+    //9flash自检错误
     var error: Int = 0,
     //发送查询指令时传递的state
     //0时表示查询工作状态

@@ -45,8 +45,12 @@ data class QuerySettingParser(
 ) : IPacketParser<QuerySettingParser>, ICommand {
 
     companion object {
+
         /**自动连接设备*/
         var AUTO_CONNECT_DEVICE: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+        /**第三轴模式*/
+        var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
     }
 
     //解析数据

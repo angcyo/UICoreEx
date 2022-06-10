@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="safety_tips">安全提示</string>
+    <string name="device_exception">设备异常</string>
+    <string name="ex_tips_one">请进入模式设定，开启[自由模式]</string>
+    <string name="ex_tips_two">紧急停止! 范围越界。请使用激光调节中的自动调整重置激光焦点的位置后再重试。</string>
+    <string name="ex_tips_three">紧急停止! 激光工作温度过高</string>
+    <string name="ex_tips_four">紧急停止! 机器可能遭到撞击或摇晃</string>
+    <string name="ex_tips_five">紧急停止! 超声波传感器检测到有物体进入雕刻范围</string>
+    <string name="ex_tips_six">紧急停止! 数据错误</string>
+    <string name="ex_tips_seven">紧急停止! 文件编号查询错误</string>
+    <string name="ex_tips_eight">紧急停止! 陀螺仪自检错误</string>
+    <string name="ex_tips_nine">紧急停止! flash自检错误</string>
+
+</resources>
