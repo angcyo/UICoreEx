@@ -11,17 +11,24 @@ import com.angcyo.canvas.core.MmValueUnit
  * @since 2022/05/28
  */
 object LaserPeckerProduct {
-
+    
+    //---焦距 200mm
     const val LI = "LI"
     const val LI_Z = "LI-Z"           //spp 100*100mm
     const val LI_PRO = "LI-PRO"       //spp 100*100mm
     const val LI_Z_PRO = "LI-Z-PRO"   //spp 100*100mm
+
+    //---焦距 110mm
     const val LII = "LII"             //spp 100*100mm
     const val LI_Z_ = "LI-Z模块"         //spp 100*100mm
     const val LII_M_ = "LII-M模块"       //spp 100*100mm
+
+    //---焦距 115mm
     const val LIII_YT = "LIII-YT"       //spp 50*50mm
     const val LIII = "LIII"           //spp 90*70mm 椭圆
     const val LIII_MAX = "LIII-MAX"   //spp 160*120mm 椭圆
+
+    //---焦距 40mm
     const val CI = "CI"               //spp 300*400mm
     const val CII = "CII"
     const val UNKNOWN = "Unknown"
