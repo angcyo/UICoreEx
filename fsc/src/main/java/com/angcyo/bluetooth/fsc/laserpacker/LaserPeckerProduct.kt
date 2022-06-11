@@ -11,7 +11,7 @@ import com.angcyo.canvas.core.MmValueUnit
  * @since 2022/05/28
  */
 object LaserPeckerProduct {
-    
+
     //---焦距 200mm
     const val LI = "LI"
     const val LI_Z = "LI-Z"           //spp 100*100mm
