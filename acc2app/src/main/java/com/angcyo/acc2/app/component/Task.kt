@@ -11,6 +11,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.L
 import com.angcyo.library.ex.ensureName
+import com.angcyo.library.ex.isHttpScheme
 import com.angcyo.library.ex.readAssets
 
 /**
@@ -129,7 +130,11 @@ object Task {
     }
 }
 
-fun String.jsonName() = ensureName(".json")
+fun String.jsonName() = if (isHttpScheme()) {
+    this
+} else {
+    ensureName(".json")
+}
 
 /**to id*/
 fun String.toActionIdList(): List<Long> {
