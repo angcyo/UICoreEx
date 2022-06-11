@@ -24,8 +24,9 @@ if (project.hasProperty("bugly_id") && project.hasProperty("bugly_key")) {
 
     android {
         defaultConfig {
-            buildConfigField "String", "BUGLY_ID", '"' + id + '"'
-            buildConfigField "String", "BUGLY_KEY", '"' + key + '"'
+            //buildConfigField 声明的变量, 无法在lib中访问, 请使用resValue
+            //buildConfigField "String", "BUGLY_ID", '"' + id + '"'
+            //buildConfigField "String", "BUGLY_KEY", '"' + key + '"'
         }
     }
 } else if (isApp) {

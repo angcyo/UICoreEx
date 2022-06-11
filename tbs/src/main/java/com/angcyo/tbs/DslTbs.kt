@@ -113,7 +113,7 @@ class DslTbs {
 
                 try {
                     QbSdk.getMiniQBVersion(appContext).apply {
-                        L.i("MiniQBVersion:$this".apply {
+                        L.d("MiniQBVersion:$this".apply {
                             writeTo()
                         })
                     }

@@ -220,7 +220,7 @@ class DslBaiduTrace {
          * <pre>10006：服务已开启</pre>
          */
         override fun onStartTraceCallback(status: Int, message: String?) {
-            L.i(status, "->", message, " startGather:$autoTraceStart $entityName")
+            L.d(status, "->", message, " startGather:$autoTraceStart $entityName")
             isTraceStart = status == 0
             if (autoTraceStart && status == 0) {
                 // 开启采集
@@ -257,7 +257,7 @@ class DslBaiduTrace {
          * <pre>12002：服务未开启</pre>
          */
         override fun onStartGatherCallback(status: Int, message: String?) {
-            L.i(status, "->", message)
+            L.d(status, "->", message)
             isGatherStart = status == 0
         }
 
