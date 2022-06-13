@@ -89,7 +89,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             get() = FscSppCentralApiImp.getInstance()
 
         /**初始化方法*/
-        fun init(application: Application = app(), debug: Boolean = isDebug()) {
+        fun init(application: Context = app(), debug: Boolean = isDebug()) {
             FscBleCentralApiImp.getInstance(application).apply {
                 initialize()
                 isShowLog(debug)
