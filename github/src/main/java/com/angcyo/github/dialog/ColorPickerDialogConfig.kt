@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
+import android.view.ViewGroup
 import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
@@ -87,6 +88,8 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
 
             //set
             paletteDrawable?.let {
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                
                 setPaletteDrawable(it)
                 post {
                     //发送一个手势事件, 触发颜色回调
