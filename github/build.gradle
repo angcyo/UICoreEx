@@ -37,9 +37,6 @@ dependencies {
     //api 'androidx.palette:palette:1.0.0'
     api 'androidx.palette:palette-ktx:1.0.0'
 
-    //https://github.com/duanhong169/ColorPicker
-    api 'com.github.duanhong169:colorpicker:1.1.6'
-
     //https://github.com/BelooS/ChipsLayoutManager
     //api 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 
@@ -56,4 +53,11 @@ dependencies {
     //https://github.com/JeremyLiao/LiveEventBus
     //https://search.maven.org/artifact/io.github.jeremyliao/live-event-bus
     api 'io.github.jeremyliao:live-event-bus-x:1.8.0'
+
+    //颜色选择
+    //https://github.com/duanhong169/ColorPicker
+    api 'com.github.duanhong169:colorpicker:1.1.6'
+
+    //https://github.com/LaserPeckerIst/ColorPickerView
+    api 'com.github.LaserPeckerIst:ColorPickerView:2.2.4.4'
 }

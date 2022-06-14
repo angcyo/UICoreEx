@@ -56,7 +56,6 @@ open class WheelDialogConfig : BaseDialogConfig() {
 
     init {
         dialogTitle = "请选择"
-
         dialogLayoutId = R.layout.lib_dialog_wheel_layout
 
         positiveButtonListener = { dialog, _ ->
