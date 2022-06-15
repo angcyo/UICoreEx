@@ -22,7 +22,9 @@ data class QueryStateParser(
     // 0x08为设置模式，
     // 0x09为下载模式。
     var mode: Int = WORK_MODE_IDLE,
-    //当前模式下的工作状态, 暂停, 255:结束, 1:预览图片 2:预览范围 6:支架
+    //当前模式下的工作状态, 暂停, 255:结束
+    //空闲模式下: 0xff
+    //打印预览模式下: 0x01:预览图片 0x02:预览范围 0x06:支架调整 0x07:显示中心
     var workState: Int = 0,
     //打印进度百分比[0-100]
     var rate: Int = 0,
