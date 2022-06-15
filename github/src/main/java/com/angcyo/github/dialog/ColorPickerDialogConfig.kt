@@ -3,6 +3,7 @@ package com.angcyo.github.dialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -10,7 +11,9 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.library.L
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.toBitmapDrawable
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.motionEvent
 import com.skydoves.colorpickerview.AlphaTileView
@@ -37,8 +40,14 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
     /**选中的颜色*/
     var selectedColor: Int = Color.TRANSPARENT
 
-    /**调色板, 从此[Drawable]中获取颜色*/
-    var paletteDrawable: Drawable? = null
+    /**调色板, 从此[Drawable]中获取颜色, 需要是[BitmapDrawable]*/
+    var colorPaletteDrawable: Drawable? = null
+
+    /**是否激活颜色的透明度*/
+    var enableAlpha = true
+
+    /**是否激活颜色的亮度*/
+    var enableBrightness = true
 
     /**选中回调, 返回true拦截默认操作*/
     var colorPickerAction: (dialog: Dialog, color: Int) -> Boolean =
@@ -72,10 +81,17 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
             dialogViewHolder.v<AlphaTileView>(R.id.lib_alpha_tile_view)
         val textView = dialogViewHolder.tv(R.id.lib_text_view)
 
+        dialogViewHolder.visible(R.id.lib_alpha_slide_bar, enableAlpha)
+        dialogViewHolder.visible(R.id.lib_brightness_slide_bar, enableBrightness)
+
         colorPickerView?.apply {
             //slider
-            attachAlphaSlider(alphaSlideBar!!)
-            attachBrightnessSlider(brightnessSlideBar!!)
+            if (enableAlpha) {
+                attachAlphaSlider(alphaSlideBar!!)
+            }
+            if (enableBrightness) {
+                attachBrightnessSlider(brightnessSlideBar!!)
+            }
 
             //回调
             setColorListener(object : ColorEnvelopeListener {
@@ -87,21 +103,34 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
             })
 
             //set
-            paletteDrawable?.let {
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                
-                setPaletteDrawable(it)
+            colorPaletteDrawable?.let {
+                //setHsvPaletteDrawable()
+                if (it is BitmapDrawable) {
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    setPaletteDrawable(it)
+                } else {
+                    layoutParams.height = 100 * dpi
+                }
                 post {
-                    //发送一个手势事件, 触发颜色回调
-                    val event =
-                        motionEvent(MotionEvent.ACTION_UP, measuredWidth / 2f, measuredHeight / 2f)
-                    dispatchTouchEvent(event)
-                    event.recycle()
+                    if (it !is BitmapDrawable) {
+                        setPaletteDrawable(it.toBitmapDrawable(measuredWidth, measuredHeight))
+                    }
 
-                    //flag
-                    val bubbleFlag = BubbleFlag(context)
-                    bubbleFlag.flagMode = FlagMode.FADE
-                    colorPickerView.flagView = bubbleFlag
+                    post {
+                        //发送一个手势事件, 触发颜色回调
+                        val event = motionEvent(
+                            MotionEvent.ACTION_UP,
+                            measuredWidth / 2f,
+                            measuredHeight / 2f
+                        )
+                        dispatchTouchEvent(event)
+                        event.recycle()
+
+                        //flag
+                        val bubbleFlag = BubbleFlag(context)
+                        bubbleFlag.flagMode = FlagMode.FADE
+                        colorPickerView.flagView = bubbleFlag
+                    }
                 }
             }.elseNull {
                 //flag
