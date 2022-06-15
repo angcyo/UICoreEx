@@ -12,6 +12,9 @@ dependencies {
     //https://repo1.maven.org/maven2/com/tencent/bugly/
     api 'com.tencent.bugly:crashreport:4.0.4'
     api 'com.tencent.bugly:nativecrashreport:3.9.2'
+
+    //海外版本
+    //https://bugly.qcloud.com/welcome/#/
 }
 
 //apply from: allGradle.v7a

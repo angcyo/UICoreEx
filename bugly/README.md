@@ -20,3 +20,7 @@ classpath 'com.tencent.bugly:symtabfileuploader:2.2.1'
 ```
 com.angcyo.bugly.Bugly.init
 ```
+
+# 海外版本
+
+https://bugly.qcloud.com/welcome/#/
