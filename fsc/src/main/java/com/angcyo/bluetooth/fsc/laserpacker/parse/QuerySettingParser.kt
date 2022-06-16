@@ -46,10 +46,10 @@ data class QuerySettingParser(
 
     companion object {
 
-        /**自动连接设备*/
+        /**自动连接设备状态存储*/
         var AUTO_CONNECT_DEVICE: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
-        /**第三轴模式*/
+        /**第三轴模式状态存储*/
         var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
     }
 
@@ -91,7 +91,7 @@ data class QuerySettingParser(
             append(state.toHexString())
 
             if (state == 0x02) {
-                //todo
+                //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
                 dataLength = 0x0E

@@ -55,7 +55,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
         L.i("设备版本:$queryVersionParser")
-        productInfoData.postValue(LaserPeckerProduct.parseProduct(queryVersionParser.softwareVersion))
+        productInfoData.postValue(LaserPeckerProduct.parseProductInfo(queryVersionParser.softwareVersion))
         deviceVersionData.postValue(queryVersionParser)
     }
 
@@ -88,7 +88,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun updateDeviceSettingState(querySettingParser: QuerySettingParser) {
         L.i("设备设置状态:$querySettingParser")
         if (QuerySettingParser.Z_MODEL == -1) {
-            //未初始化第三轴模式
+            //本地未初始化第三轴模式
             QuerySettingParser.Z_MODEL = querySettingParser.zDir
         }
         deviceSettingStateData.postValue(querySettingParser)

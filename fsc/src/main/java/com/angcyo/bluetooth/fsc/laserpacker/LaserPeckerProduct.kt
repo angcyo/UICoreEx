@@ -33,9 +33,11 @@ object LaserPeckerProduct {
     const val CII = "CII"
     const val UNKNOWN = "Unknown"
 
-    /**解析产品信息*/
-    fun parseProduct(version: Int): ProductInfo {
-        val name = parseProductName(version)
+    /**
+     * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
+     * 解析产品信息*/
+    fun parseProductInfo(softwareVersion: Int): ProductInfo {
+        val name = parseProductName(softwareVersion)
         val unit = MmValueUnit()
         val bounds = RectF()
         var isOriginCenter = true
@@ -83,7 +85,7 @@ object LaserPeckerProduct {
             }
             else -> Path()
         }
-        val info = ProductInfo(version, name, bounds, limitPath, isOriginCenter)
+        val info = ProductInfo(softwareVersion, name, bounds, limitPath, isOriginCenter)
         return info
     }
 
