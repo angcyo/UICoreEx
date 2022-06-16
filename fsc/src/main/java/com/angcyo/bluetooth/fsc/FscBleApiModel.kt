@@ -2,7 +2,6 @@ package com.angcyo.bluetooth.fsc
 
 import android.Manifest
 import android.app.Activity
-import android.app.Application
 import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
@@ -11,7 +10,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.provider.Settings
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
@@ -454,7 +452,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     val handle = Handler(Looper.getMainLooper())
 
     /**扫描时长*/
-    var scanTimeout = 20_000L
+    var scanTimeout = 5_000L
 
     /**是否使用spp模式扫描蓝牙设备*/
     var useSppScan = true
@@ -966,6 +964,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
         packetListenerList.remove(listener)
     }
 
+    /**清除Packet监听对象*/
+    fun clearPacketListener() {
+        packetListenerList.clear()
+    }
+
     @Synchronized
     fun clearProgressCache(address: String?) {
         devicePacketProgressCacheList.removeAll { it.address == address }
@@ -1013,7 +1016,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @WorkerThread
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
-        L.w("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
+        if (data.size > 100) {
+            L.w("$address 发送:数据大小${data.size}bytes")
+        } else {
+            L.w("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
+        }
         val packetProgress = wrapProgressDevice(address) {
             sendBytesSize += data.size
             sendPacketCount++

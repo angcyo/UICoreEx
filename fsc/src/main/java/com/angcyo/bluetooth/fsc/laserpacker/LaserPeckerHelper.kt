@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.core.vmApp
+import com.angcyo.library.L
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
@@ -40,7 +41,7 @@ object LaserPeckerHelper {
     const val CHECK_SIZE = 2
 
     //数据返回超时时长, 毫秒
-    const val DEFAULT_RECEIVE_TIMEOUT = 1_000L
+    const val DEFAULT_RECEIVE_TIMEOUT = 3_000L
 
     //默认的分辨率
     const val DEFAULT_PX: Byte = 0x04
@@ -174,6 +175,7 @@ object LaserPeckerHelper {
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction
     ): WaitReceivePacket {
+        L.i("发送指令:$address->${command.toCommandLogString()}")
         return waitCmdReturn(
             api,
             address,

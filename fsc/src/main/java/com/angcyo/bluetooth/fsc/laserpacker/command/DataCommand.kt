@@ -108,6 +108,10 @@ data class DataCommand(
         }
     }
 
+    override fun toCommandLogString(): String = buildString {
+        append("数据:size:${head.size + data.size}bytes")
+    }
+
     override fun getReceiveTimeout(): Long {
         return 1 * 60 * 60 * 1_000 //1小时
     }

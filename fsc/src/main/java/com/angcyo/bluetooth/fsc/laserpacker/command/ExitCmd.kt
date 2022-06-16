@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.ex.padHexString
+import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toHexString
 
 /**
@@ -24,6 +25,11 @@ data class ExitCmd(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    override fun toCommandLogString(): String = buildString {
+        append(toHexCommandString().removeAll())
+        append(" 退出:$custom")
     }
 
 }

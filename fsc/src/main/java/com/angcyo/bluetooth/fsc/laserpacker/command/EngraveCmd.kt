@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.ex.padHexString
+import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -30,6 +31,7 @@ data class EngraveCmd(
     val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
     val custom: Byte = 0x0,
 ) : ICommand {
+
     override fun toHexCommandString(): String {
         val dataLength = 0x11 //16 //数据长度
         val func = "01" //功能码
@@ -49,5 +51,10 @@ data class EngraveCmd(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    override fun toCommandLogString(): String = buildString {
+        append(toHexCommandString().removeAll())
+        append(" 开始雕刻:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
     }
 }

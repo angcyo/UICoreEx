@@ -2,13 +2,11 @@ package com.angcyo.bluetooth.fsc
 
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
-import com.angcyo.library.L
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -58,9 +56,9 @@ class WaitReceivePacket(
         if (autoSend) {
             api.send(address, sendPacket)
         }
-        if (receiveTimeout > 0) {
+        if (receiveTimeout > 0 && !BuildConfig.DEBUG) {
             //测试模式下, 防止debug中断
-            handle.postDelayed(_timeOutRunnable, if (L.debug) 20_000 else receiveTimeout)
+            handle.postDelayed(_timeOutRunnable, receiveTimeout)
         }
         _isSend = true
     }

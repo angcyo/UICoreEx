@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PACKET_FILE_HEAD_SIZE
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.ex.padHexString
+import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toHexString
 
 /**
@@ -15,8 +16,7 @@ import com.angcyo.library.ex.toHexString
  * @since 2022/05/30
  */
 data class FileModeCmd(
-    /**需要传输的数据字节大小, 不包含[PACKET_FILE_HEAD_SIZE]
-     * */
+    /**需要传输的数据字节大小, 不包含[PACKET_FILE_HEAD_SIZE] */
     val dataSize: Int,
     //State = 0x01时为传输文件，data为传输文件数据字节总数。
     //State = 0x02时为传输结束。当文件传输完成时下位自动回复指令。
@@ -43,5 +43,10 @@ data class FileModeCmd(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    override fun toCommandLogString(): String = buildString {
+        append(toHexCommandString().removeAll())
+        append(" 进入文件传输模式:数据大小:${dataSize}bytes state:$state")
     }
 }

@@ -8,10 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
-import com.angcyo.library.ex.padHexString
-import com.angcyo.library.ex.toHexByteArray
-import com.angcyo.library.ex.toHexInt
-import com.angcyo.library.ex.toHexString
+import com.angcyo.library.ex.*
 
 /**
  * 雕刻/打印预览指令
@@ -284,6 +281,41 @@ data class EngravePreviewCmd(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    override fun toCommandLogString(): String = buildString {
+        append(toHexCommandString().removeAll())
+        append(" 打印预览:")
+        when (state) {
+            0x01.toByte() -> {
+                append("图片预览")
+                val nameBytes = ByteArray(4)
+                nameBytes[0] = d1
+                nameBytes[1] = d2
+                nameBytes[2] = d3
+                nameBytes[3] = d4
+                append(" ${nameBytes.toHexInt()}")
+            }
+            0x02.toByte() -> {
+                append("范围预览")
+                //先宽
+                val widthBytes = ByteArray(2)
+                widthBytes[0] = d1
+                widthBytes[1] = d2
+                //后高
+                val heightBytes = ByteArray(2)
+                heightBytes[0] = d3
+                heightBytes[1] = d4
+                append(" w:${widthBytes.toHexInt()} h:${heightBytes.toHexInt()}")
+            }
+            0x03.toByte() -> append("打印预览")
+            0x04.toByte() -> append("暂停预览")
+            0x05.toByte() -> append("继续预览")
+            0x06.toByte() -> append("升降控制")
+            0x07.toByte() -> append("显示中心")
+            else -> append("Unknown")
+        }
+        append(" x:$x y:$y px:$px pwr:$pwr")
     }
 
     /**获取预览范围矩形*/

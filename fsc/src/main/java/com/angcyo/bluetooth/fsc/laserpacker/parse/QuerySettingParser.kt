@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex.padHexString
+import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toHexString
 
 /**
@@ -121,6 +122,11 @@ data class QuerySettingParser(
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
+    }
+
+    override fun toCommandLogString(): String = buildString {
+        append(toHexCommandString().removeAll())
+        append(" 功能设置:${this@QuerySettingParser}")
     }
 
     /**当state为1时表示功能设置*/
