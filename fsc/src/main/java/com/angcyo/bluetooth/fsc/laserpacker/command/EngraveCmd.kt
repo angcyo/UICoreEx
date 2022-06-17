@@ -32,11 +32,13 @@ data class EngraveCmd(
     val custom: Byte = 0x0,
 ) : ICommand {
 
+    //功能码
+    override fun commandFunc(): Byte = 0x01
+
     override fun toHexCommandString(): String {
         val dataLength = 0x11 //16 //数据长度
-        val func = "01" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
             append(state.toHexString())
             append(laser.toHexString())
             append((100 - depth).toHexString()) //打印速度

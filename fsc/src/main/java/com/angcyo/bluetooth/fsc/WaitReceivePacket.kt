@@ -26,6 +26,10 @@ class WaitReceivePacket(
     val sendPacket: ByteArray,
     //自动发送数据
     val autoSend: Boolean,
+    //用来验证的功能码, 保证收到的数据是相同指令发送过来的, null 则自动取第4个字节
+    val func: Byte?,
+    //是否检查功能码
+    val checkFunc: Boolean,
     //接收超时时间, 毫秒
     val receiveTimeout: Long,
     //调用者线程回调, 通常在子线程
@@ -34,12 +38,26 @@ class WaitReceivePacket(
 
     val handle = Handler(Looper.getMainLooper())
 
+    /**是否被取消*/
+    @Volatile
+    var isCancel: Boolean = false
+        set(value) {
+            field = value
+            end()
+        }
+
+    //数据是否发送
+    @Volatile
     var _isSend: Boolean = false
+
+    //数据是否接收完成
+    @Volatile
     var _isFinish: Boolean = false
 
     //头部字节大小
     val headSize = LaserPeckerHelper.packetHeadSize
 
+    //超时处理
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
             end()
@@ -47,7 +65,8 @@ class WaitReceivePacket(
         }
     }
 
-    //接收到的数据
+    /**接收到的数据, 在发送第一包后赋值
+     * [com.angcyo.bluetooth.fsc.WaitReceivePacket.onPacketSend]*/
     var receivePacket: ReceivePacket? = null
 
     /**开始数据发送, 并等待*/
@@ -56,9 +75,11 @@ class WaitReceivePacket(
         if (autoSend) {
             api.send(address, sendPacket)
         }
-        if (receiveTimeout > 0 && !BuildConfig.DEBUG) {
+        if (receiveTimeout > 0) {
+            //if (!BuildConfig.DEBUG) {
             //测试模式下, 防止debug中断
             handle.postDelayed(_timeOutRunnable, receiveTimeout)
+            //}
         }
         _isSend = true
     }
@@ -83,11 +104,26 @@ class WaitReceivePacket(
 
             //查找数据头
             for (byte in bytes) {
+                if (index + headSize >= bytes.size) {
+                    break
+                }
                 bytes.copyTo(headByteArray, index, 0, headSize)
                 if (headByteArray.toHexString(false) == LaserPeckerHelper.PACKET_HEAD) {
                     //数据头
-                    headStartIndex = index
-                    break
+
+                    if (checkFunc) {
+                        //对比func功能码, 确保收到的指令数据和返回的数据是统一类型
+                        val commandFunc = func ?: sendPacket[headSize + 1]//命令的功能码
+                        val receiveFunc = bytes[index + headSize + 1]//接收到的数据功能码
+
+                        if (commandFunc == receiveFunc) {
+                            headStartIndex = index
+                            break
+                        }
+                    } else {
+                        headStartIndex = index
+                        break
+                    }
                 }
                 index++
             }
@@ -118,14 +154,19 @@ class WaitReceivePacket(
                             bytes.copyTo(this, headStartIndex)
                         }
                     }
-                    if (sumString == checkString) {
-                        //数据校验通过
-                        listener.onReceive(receivePacket, null)
-                    } else {
-                        listener.onReceive(
-                            null,
-                            ReceiveVerifyException("数据校验失败: 计算值:$sumString 比较值:$checkString")
-                        )
+                    _main {
+                        //切一下线程, 方便[isCancel]判断
+                        if (!isCancel) {
+                            if (sumString == checkString) {
+                                //数据校验通过
+                                listener.onReceive(receivePacket, null)
+                            } else {
+                                listener.onReceive(
+                                    null,
+                                    ReceiveVerifyException("数据校验失败: 计算值:$sumString 比较值:$checkString")
+                                )
+                            }
+                        }
                     }
                 } else {
                     _isFinish = false
@@ -196,6 +237,7 @@ class WaitReceivePacket(
         }
     }
 
+    //接收到的所有数据流
     val _receiveStream = ByteArrayOutputStream()
 
     override fun onPacketReceived(

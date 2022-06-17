@@ -1,0 +1,169 @@
+package com.angcyo.bluetooth.fsc
+
+import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
+import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
+import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
+import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.library.L
+import com.angcyo.library.ex.className
+import com.angcyo.library.ex.have
+import com.angcyo.library.ex.size
+import com.angcyo.library.toast
+import java.util.*
+
+/**
+ * 蓝牙指令发送队列
+ * @author <a href="mailto:angcyo@126.com">angcyo</a>
+ * @since 2022/06/17
+ */
+
+object CommandQueueHelper {
+
+    /**默认标识*/
+    const val FLAG_NORMAL = 0x00
+
+    /**标识, 清除之前的所有指令*/
+    const val FLAG_CLEAR_BEFORE = 0x00001
+
+    /**标识, 清除之前的所有相同的指令*/
+    const val FLAG_CLEAR_BEFORE_SAME = 0x00002
+
+    /**标识, 异步执行指令*/
+    const val FLAG_ASYNC = 0x00004
+
+    /**待执行的指令列表*/
+    private val linkedList = LinkedList<CommandInfo>()
+
+    /**当前执行的指令*/
+    @Volatile
+    var _currentCommand: CommandInfo? = null
+
+    /**添加一个指令到队列*/
+    @Synchronized
+    fun addCommand(info: CommandInfo) {
+        //flag
+        if (info.flag.have(FLAG_CLEAR_BEFORE)) {
+            //清理之前所有任务
+            linkedList.forEach {
+                it._receiveTask?.isCancel = true
+            }
+            linkedList.clear()
+        }
+        if (info.flag.have(FLAG_CLEAR_BEFORE_SAME)) {
+            //清除之前相同类型的指令
+            val list = mutableListOf<CommandInfo>()
+            linkedList.forEach {
+                if (it.command.className() == info.command.className()) {
+                    list.add(it)
+                    it._receiveTask?.isCancel = true
+                }
+            }
+            linkedList.removeAll { list.contains(it) }
+        }
+        if (info.flag.have(FLAG_ASYNC) && linkedList.size() >= 1) {
+            //异步任务
+            _runCommand(info, false)
+            return
+        }
+
+        //入队
+        linkedList.add(info)
+        start()
+    }
+
+    /**开始执行队列*/
+    @Synchronized
+    fun start() {
+        if (_currentCommand == null) {
+            val commandInfo = linkedList.poll()
+            if (commandInfo == null) {
+                //无指令需要执行
+                L.w("队列所有指令执行完毕!")
+            } else {
+                //执行指令
+                _currentCommand = commandInfo
+                _runCommand(commandInfo, true)
+            }
+        } else {
+            //已经在执行指令
+            val command = _currentCommand?.command
+            L.w("${command.hashCode()} ${command?.toCommandLogString()},指令正在运行,剩余:${linkedList.size()}")
+        }
+    }
+
+    /**执行下一个*/
+    @Synchronized
+    fun next() {
+        _currentCommand = null
+        start()
+    }
+
+    fun _runCommand(commandInfo: CommandInfo, next: Boolean) {
+        val command = commandInfo.command
+        val task = command.sendCommand(progress = {
+            try {
+                commandInfo.listener?.onPacketProgress(it)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }) { bean, error ->
+            L.i("指令返回:${command.hashCode()}->${bean?.parse<MiniReceiveParser>()} $error")
+            //
+            if (next) {
+                next()
+            }
+            try {
+                commandInfo.listener?.onReceive(bean, error)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        commandInfo._receiveTask = task
+    }
+
+    /**需要入队列的信息*/
+    data class CommandInfo(
+        val command: ICommand,
+        val flag: Int,
+        @WorkerThread
+        val listener: IReceiveListener?,
+
+        //任务
+        var _receiveTask: WaitReceivePacket? = null,
+    )
+}
+
+/**指令入队*/
+fun ICommand.enqueue(
+    progress: ISendProgressAction = {},
+    action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
+        error?.let { toast(it.message) }
+    }
+) {
+    enqueue(FLAG_NORMAL, progress, action)
+}
+
+/**指令入队*/
+fun ICommand.enqueue(
+    flag: Int = FLAG_NORMAL,
+    progress: ISendProgressAction = {},
+    action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
+        error?.let { toast(it.message) }
+    }
+) {
+    CommandQueueHelper.addCommand(
+        CommandQueueHelper.CommandInfo(
+            this,
+            flag,
+            object : IReceiveListener {
+                override fun onPacketProgress(bean: ReceivePacket) {
+                    progress(bean)
+                }
+
+                override fun onReceive(bean: ReceivePacket?, error: Exception?) {
+                    action(bean, error)
+                }
+            })
+    )
+}

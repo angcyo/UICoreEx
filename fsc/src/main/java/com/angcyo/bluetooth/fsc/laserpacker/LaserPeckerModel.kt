@@ -4,16 +4,14 @@ import android.graphics.RectF
 import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.angcyo.bluetooth.fsc.IReceiveBeanAction
-import com.angcyo.bluetooth.fsc.ISendProgressAction
-import com.angcyo.bluetooth.fsc.R
+import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.ex._string
@@ -126,12 +124,15 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             bounds.width().toInt(),
             bounds.height().toInt()
         )
-        LaserPeckerHelper.sendCommand(cmd, progress, action)
+        cmd.sendCommand(progress, action)
     }
 
     /**查询设备状态*/
-    fun queryDeviceState(block: IReceiveBeanAction = { _, _ -> }) {
-        LaserPeckerHelper.sendCommand(QueryCmd.workState) { bean, error ->
+    fun queryDeviceState(
+        flag: Int = CommandQueueHelper.FLAG_ASYNC,
+        block: IReceiveBeanAction = { _, _ -> }
+    ) {
+        QueryCmd.workState.enqueue(flag) { bean, error ->
             bean?.let {
                 it.parse<QueryStateParser>()?.let {
                     updateDeviceState(it)

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/dialog_white_top_round_bg_shape"
+    android:orientation="vertical"
+    app:r_layout_height="0.7sh">
+
+    <FrameLayout
+        android:id="@+id/lib_title_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dialog_item_height">
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/negative_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/lib_bg_selector"
+            android:minHeight="@dimen/dialog_item_height"
+            android:paddingLeft="@dimen/lib_xhdpi"
+            android:paddingRight="@dimen/lib_xhdpi"
+            android:textColor="@color/text_place_color"
+            tools:text="取消" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/dialog_item_height"
+            android:textStyle="bold"
+            tools:text="标题" />
+
+        <com.angcyo.widget.loading.TGStrokeLoadingView
+            android:id="@+id/lib_loading_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/lib_bg_selector"
+            android:padding="12dp"
+            app:r_loading_bg_color="@color/canvas_ico_dark"
+            app:r_loading_bg_stroke_width="3dp"
+            app:r_loading_color="@color/canvas_ico_dark"
+            app:r_loading_offset="6dp"
+            app:r_loading_width="3dp" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/title_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line_px"
+        android:background="@color/dialog_line" />
+
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyleBase"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</com.angcyo.widget.layout.RLinearLayout>

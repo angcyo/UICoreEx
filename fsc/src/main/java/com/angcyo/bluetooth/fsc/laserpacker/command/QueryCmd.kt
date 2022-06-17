@@ -44,11 +44,13 @@ data class QueryCmd(
             get() = QueryCmd(0x04)
     }
 
+    //功能码
+    override fun commandFunc(): Byte = 0x00
+
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度
-        val func = "00" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
             append(state.toHexString())
             append(custom.toHexString())
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)

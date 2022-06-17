@@ -24,6 +24,9 @@ data class FileModeCmd(
     val custom: Byte = 0 //自定义的数据
 ) : ICommand {
 
+    //功能码
+    override fun commandFunc(): Byte = 0x05
+
     /**返回:
      * 2022-05-30 18:39:15.348
      * AA BB 08 05 01 01 00 00 00 00 07
@@ -33,9 +36,8 @@ data class FileModeCmd(
      * */
     override fun toHexCommandString(): String {
         val dataLength = 0x09//16进制
-        val func = "05" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
             append(state.toHexString())
             append((dataSize + PACKET_FILE_HEAD_SIZE).toHexString(8))
             append(custom.toHexString())

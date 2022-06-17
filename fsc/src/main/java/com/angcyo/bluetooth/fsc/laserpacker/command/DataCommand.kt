@@ -17,7 +17,10 @@ data class DataCommand(
      * 文件数据, 大小要等于
      * [com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd.dataSize]
      * */
-    val data: ByteArray
+    val data: ByteArray,
+
+    /**数据指令日志信息*/
+    var log: String? = null
 ) : ICommand {
 
     companion object {
@@ -46,6 +49,7 @@ data class DataCommand(
             minY: Int = 0,
             px: Byte = DEFAULT_PX,
         ): DataCommand {
+            val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x10时图片数据
@@ -69,12 +73,19 @@ data class DataCommand(
                 write(minY, 2)
 
                 padLength(64) //需要64个字节
+
+                logBuilder.append("0x10图片")
+                logBuilder.append(" name:$name")
+                logBuilder.append(" w:$bitmapWidth")
+                logBuilder.append(" h:$bitmapHeight")
+                logBuilder.append(" minX:$minX")
+                logBuilder.append(" minY:$minY")
             }
             //数据
             val data = byteWriter {
                 write(bitmapData)
             }
-            return DataCommand(head, data)
+            return DataCommand(head, data, logBuilder.toString())
         }
 
         /**GCode数据*/
@@ -82,6 +93,7 @@ data class DataCommand(
             name: Int,
             gcodeData: ByteArray,
         ): DataCommand {
+            val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x20时为GCODE数据
@@ -92,14 +104,20 @@ data class DataCommand(
                 write(name, 4)
                 //垫满
                 padLength(64) //需要64个字节
+
+                logBuilder.append("0x20GCode")
+                logBuilder.append("name:$name")
             }
             //数据
             val data = byteWriter {
                 write(gcodeData)
             }
-            return DataCommand(head, data)
+            return DataCommand(head, data, logBuilder.toString())
         }
     }
+
+    //功能码
+    override fun commandFunc(): Byte = 0x05
 
     override fun toByteArray(): ByteArray {
         return byteWriter {
@@ -109,7 +127,8 @@ data class DataCommand(
     }
 
     override fun toCommandLogString(): String = buildString {
-        append("数据:size:${head.size + data.size}bytes")
+        append("数据:size:${head.size + data.size}bytes ")
+        append(log)
     }
 
     override fun getReceiveTimeout(): Long {

@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.packetHeadSize
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.toast
 
@@ -34,6 +35,9 @@ interface ICommand {
 
     /**优先调用此方法, 如果为空, 则使用[toHexCommandString]*/
     fun toByteArray(): ByteArray = toHexCommandString().toHexByteArray()
+
+    /**功能码*/
+    fun commandFunc(): Byte = toByteArray()[packetHeadSize + 1]
 
     /**转换成十六进制指令, 可以包含空格.
      * 最后转换ByteArray时, 会剔除空格

@@ -81,12 +81,15 @@ data class QuerySettingParser(
         }
     }
 
+    //功能码
+    override fun commandFunc(): Byte = 0x06
+
     //转换成指令
     override fun toHexCommandString(): String {
         var dataLength = 0x0E  //数据长度
-        val func = "06" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
+
             //当state为1时表示功能设置
             //当state为2时表示安全码与用户设置
             append(state.toHexString())

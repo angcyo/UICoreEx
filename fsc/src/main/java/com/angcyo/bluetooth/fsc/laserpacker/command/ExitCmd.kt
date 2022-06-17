@@ -15,11 +15,13 @@ data class ExitCmd(
     val custom: Byte = 0 //自定义的数据
 ) : ICommand {
 
+    //功能码
+    override fun commandFunc(): Byte = 0xff.toByte()
+
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度
-        val func = "FF" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
             append(custom.toHexString())
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和

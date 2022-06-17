@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bluetooth_ft_blue_connect_act">蓝牙连接</string>
+    <string name="bluetooth_ft_connected">已连接</string>
+    <string name="bluetooth_ft_mtu_no_device_connected">未连接设备</string>
+    <string name="bluetooth_ft_blue_connecting">蓝牙正在连接...</string>
+    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
+    <string name="bluetooth_lib_scan_disconnected">蓝牙已断开</string>
+    <string name="preview_center">显示中心</string>
+    <string name="preview_continue">继续预览</string>
+    <string name="print_v2_package_preview_over">结束预览</string>
+    <string name="laser_brightness">激光亮度</string>
+    <string name="print_v2_package_previewing">预览中…</string>
+    <string name="print_setting">镭雕设置</string>
+    <string name="print_v2_package_transfer">文件传输中…</string>
+    <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
+    <string name="estimated_remaining_time">预计剩余时间:</string>
+    <string name="print_v2_package_Laser_start">开始镭雕</string>
+    <string name="print_v2_package_Laser_pause">暂停镭雕</string>
+    <string name="print_v2_package_Laser_stop">结束镭雕</string>
+    <string name="print_v2_package_Laser_continue">继续镭雕</string>
+    <string name="print_v2_package_printing">镭雕中</string>
+    <string name="print_laser_start_tips">请勿在高反光材质上雕刻</string>
+
+    <array name="sourceMaterial">
+        <item>环保纸</item>
+        <item>瓦楞纸</item>
+        <item>皮革</item>
+        <item>竹质</item>
+        <item>木质</item>
+        <item>软木</item>
+        <item>塑料</item>
+        <item>布料</item>
+        <item>毛毡布</item>
+        <item>不透明亚克力</item>
+        <item>光敏印章</item>
+        <item>果皮</item>
+        <item>自定义</item>
+    </array>
+
+    <string name="canvas_operate">操作</string>
+    <string name="ui_slip_menu_model">模式设定</string>
+    <string name="device_setting_tips_fourteen_8">平板</string>
+    <string name="device_setting_tips_fourteen_9">小车</string>
+    <string name="device_setting_tips_fourteen_10">圆柱</string>
+    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+
+    <string name="device_setting_act_model_warning_tone">工作提示音</string>
+    <string name="device_setting_act_des_sound">开始工作和工作结束时会有提示音</string>
+    <string name="device_setting_act_model_security">安全状态</string>
+    <string name="device_setting_act_des_security">有保护罩状态下自动开启安全模式</string>
+    <string name="device_setting_act_model_free">自由模式</string>
+    <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
+    <string name="device_setting_act_model_preview_g_code">向量图预览</string>
+    <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
+    <string name="device_setting_tips_fourteen_2">第三轴</string>
+    <string name="device_setting_tips_fourteen_3">支持在规则长方体和圆柱体物体表面雕刻场景的参数设置（尺寸限制:宽度限制为100mm以内，长度为5m以内，圆柱体横截面周长在5m以内）</string>
+    <string name="device_setting_txt_3">主机触摸按键</string>
+    <string name="device_setting_txt_4">该开关可控制主机上的预览和停止触摸按键的启用和禁用状态</string>
+    <string name="button_infra_red_title">红光常亮</string>
+    <string name="button_infra_red_content">因设备使用不可见光雕刻，当打开此按钮时，设备在工作时提供红外指示</string>
+    <string name="device_setting_txt_5">批量雕刻按键</string>
+    <string name="device_setting_txt_6">该开关可控制外接配件“批量雕刻按键”的启用和禁用状态</string>
+    <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
+</resources>

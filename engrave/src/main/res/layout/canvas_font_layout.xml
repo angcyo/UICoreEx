@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_item_min_height"
+        android:background="@drawable/canvas_top_round_shape">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_title_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/canvas_font" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/import_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/lib_bg_selector"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/lib_hdpi"
+            android:text="@string/canvas_import_font" />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line"
+        android:background="@color/canvas_line" />
+
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/canvas_bottom_round_shape"
+        app:r_layout_manager="v"
+        app:r_max_height="0.5sh" />
+
+</LinearLayout>

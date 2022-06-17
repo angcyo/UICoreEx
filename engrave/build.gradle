@@ -1,0 +1,14 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.core)
+    implementation project(allModule.dslitem)
+    implementation project(allModule.github)
+
+    api project(allModule.fsc)
+    api project(allModule.canvas)
+
+    api 'com.angcyo:opencv:hingin-SNAPSHOT'
+}
+
+apply from: allGradle.libfscaar

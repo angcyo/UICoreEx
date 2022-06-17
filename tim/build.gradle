@@ -5,7 +5,6 @@ dependencies {
     implementation project(allModule.media)
     implementation project(allModule.core)
     implementation project(allModule.dslitem)
-    implementation project(allModule.dslitem)
     implementation project(allModule.glide)
     implementation project(allModule.picker)
     implementation project(allModule.amap3d)

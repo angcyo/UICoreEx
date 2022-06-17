@@ -7,7 +7,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
 import com.angcyo.core.vmApp
-import com.angcyo.library.L
 import com.angcyo.library.ex.*
 
 /**
@@ -215,11 +214,13 @@ data class EngravePreviewCmd(
         }
     }
 
+    //功能码
+    override fun commandFunc(): Byte = 0x02
+
     override fun toHexCommandString(): String {
         val dataLength = 0x0F //数据长度
-        val func = "02" //功能码
         val data = buildString {
-            append(func)
+            append(commandFunc().toHexString())
             append(state.toHexString())
             when (state) {
                 0x01.toByte() -> {

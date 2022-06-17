@@ -144,6 +144,8 @@ object LaserPeckerHelper {
         address: String,
         sendPacket: ByteArray,
         autoSend: Boolean = true,
+        func: Byte? = null,
+        checkFunc: Boolean = true,
         receiveTimeOut: Long = 10_000,
         progress: ISendProgressAction = {}, //发包的进度回调
         action: IReceiveBeanAction
@@ -153,6 +155,8 @@ object LaserPeckerHelper {
             address,
             sendPacket,
             autoSend,
+            func,
+            checkFunc,
             receiveTimeOut,
             object : IReceiveListener {
                 override fun onPacketProgress(bean: ReceivePacket) {
@@ -180,6 +184,8 @@ object LaserPeckerHelper {
             api,
             address,
             command.toByteArray(),
+            true,
+            command.commandFunc(),
             true,
             command.getReceiveTimeout(), //数据返回超时时长
             progress,
