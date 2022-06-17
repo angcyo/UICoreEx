@@ -269,7 +269,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
-            L.i("AT...${command}")
+            L.v("AT...${command} $param $type $status")
         }
 
         /**
@@ -277,7 +277,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun endATCommand() {
             super.endATCommand()
-            L.i("AT...")
+            L.v("AT...")
         }
 
         /**
@@ -285,7 +285,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun startATCommand() {
             super.startATCommand()
-            L.i("AT...")
+            L.v("AT...")
         }
     }
 
@@ -402,15 +402,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
-            L.i("AT...${command}")
+            L.v("AT...${command} $param $type $status")
         }
 
         /**
          *  AT 指令发送结束时触发
          */
+        @WorkerThread
         override fun endATCommand() {
             super.endATCommand()
-            L.i("AT...")
+            L.v("AT...endATCommand")
         }
 
         /**
@@ -418,7 +419,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun startATCommand() {
             super.startATCommand()
-            L.i("AT...")
+            L.v("AT...startATCommand")
         }
     }
 
@@ -1017,9 +1018,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
     @WorkerThread
     fun _packetSend(address: String, strValue: String, data: ByteArray) {
         if (data.size > 100) {
-            L.w("$address 发送:数据大小${data.size}bytes")
+            L.d("$address 发送:数据大小${data.size}bytes")
         } else {
-            L.w("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
+            L.d("$address 发送:\n${data.toHexString(true)} ${data.size}bytes")
         }
         val packetProgress = wrapProgressDevice(address) {
             sendBytesSize += data.size
@@ -1040,7 +1041,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @WorkerThread
     fun _sendPacketProgress(address: String, percentage: Int, sendByte: ByteArray) {
-        L.w("$address 发送进度:$percentage% ${sendByte.size}bytes")
+        L.d("$address 发送进度:$percentage% ${sendByte.size}bytes")
         val packetProgress = wrapProgressDevice(address) {
             this.percentage = percentage
             if (percentage == 100) {
@@ -1062,7 +1063,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     @WorkerThread
     @Synchronized
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.w("$address 收到:\n$dataHexString ${data.size}bytes")
+        L.d("$address 收到:\n$dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = System.currentTimeMillis()

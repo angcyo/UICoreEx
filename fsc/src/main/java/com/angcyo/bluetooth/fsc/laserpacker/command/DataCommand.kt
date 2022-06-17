@@ -113,7 +113,7 @@ data class DataCommand(
     }
 
     override fun getReceiveTimeout(): Long {
-        return 1 * 60 * 60 * 1_000 //1小时
+        return 30 * 60 * 1_000 //30分钟
     }
 
     override fun equals(other: Any?): Boolean {

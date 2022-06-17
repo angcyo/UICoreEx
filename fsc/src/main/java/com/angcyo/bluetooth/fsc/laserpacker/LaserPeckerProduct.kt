@@ -12,6 +12,8 @@ import com.angcyo.canvas.core.MmValueUnit
  */
 object LaserPeckerProduct {
 
+    //1为450nm激光, 波长
+
     //---焦距 200mm
     const val LI = "LI"
     const val LI_Z = "LI-Z"           //spp 100*100mm
@@ -26,6 +28,8 @@ object LaserPeckerProduct {
     //---焦距 115mm
     const val LIII_YT = "LIII-YT"       //spp 50*50mm
     const val LIII = "LIII"           //spp 90*70mm 椭圆
+
+    //0为1064nm激光
     const val LIII_MAX = "LIII-MAX"   //spp 160*120mm 椭圆
 
     //---焦距 40mm

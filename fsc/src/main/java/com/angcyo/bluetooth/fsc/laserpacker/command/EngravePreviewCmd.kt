@@ -248,7 +248,6 @@ data class EngravePreviewCmd(
                     val height = heightBytes.toHexString(false)
                     append(" ")
                     append(height)
-                    L.w("预览:x:$x y:$y w:${widthBytes.toHexInt()} h:${heightBytes.toHexInt()}")
                 }
                 /*0x03.toByte() -> {
                     //结束预览

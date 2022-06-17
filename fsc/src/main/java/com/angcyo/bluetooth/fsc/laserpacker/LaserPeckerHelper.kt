@@ -175,7 +175,7 @@ object LaserPeckerHelper {
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction
     ): WaitReceivePacket {
-        L.i("发送指令:$address->${command.toCommandLogString()}")
+        L.i("发送指令:$address->${command.hashCode()} ${command.toCommandLogString()}")
         return waitCmdReturn(
             api,
             address,
