@@ -125,13 +125,20 @@ object CommandQueueHelper {
     /**需要入队列的信息*/
     data class CommandInfo(
         val command: ICommand,
-        val flag: Int,
+        val flag: Int = FLAG_NORMAL,
         @WorkerThread
-        val listener: IReceiveListener?,
+        val listener: IReceiveListener? = null,
 
         //任务
         var _receiveTask: WaitReceivePacket? = null,
     )
+}
+
+/**入队*/
+fun List<ICommand>.enqueue() {
+    forEach {
+        CommandQueueHelper.addCommand(CommandQueueHelper.CommandInfo(it, FLAG_NORMAL, null))
+    }
 }
 
 /**指令入队*/

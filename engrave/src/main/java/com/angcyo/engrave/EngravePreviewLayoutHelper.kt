@@ -74,9 +74,8 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
                         //空闲模式, 继续预览
                         startPreviewCmd(canvasDelegate, true)
                     } else {
-                        exitCmd { bean, error ->
-                            queryDeviceStateCmd()
-                        }
+                        ExitCmd().enqueue()
+                        queryDeviceStateCmd()
                     }
                 }
             }
@@ -119,17 +118,15 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
             if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
                 showPreviewCenterCmd(true)
             } else {
-                exitCmd { bean, error ->
-                    showPreviewCenterCmd(true)
-                }
+                ExitCmd().enqueue()
+                showPreviewCenterCmd(true)
             }
         }
         viewHolder?.click(R.id.preview_button) {
             if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
                 //继续预览
-                exitCmd { bean, error ->
-                    startPreviewCmd(canvasDelegate, true)
-                }
+                ExitCmd().enqueue()
+                startPreviewCmd(canvasDelegate, true)
             } else {
                 //结束预览
                 hideLayout()
@@ -154,9 +151,8 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
     /**隐藏预览布局, 并且停止预览*/
     override fun hideLayout() {
         super.hideLayout()
-        exitCmd { bean, error ->
-            queryDeviceStateCmd()
-        }
+        ExitCmd().enqueue()
+        queryDeviceStateCmd()
     }
 
     //region ------command------
@@ -229,14 +225,6 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
             if (updateState) {
                 queryDeviceStateCmd()
             }
-        }
-    }
-
-    /**退出工作模式*/
-    fun exitCmd(action: IReceiveBeanAction) {
-        val cmd = ExitCmd()
-        cmd.enqueue { bean, error ->
-            action(bean, error)
         }
     }
 

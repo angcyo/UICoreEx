@@ -130,7 +130,10 @@ object LaserPeckerHelper {
         val width = findPxInfo(px)?.pxWidth ?: productWidth
         val height = findPxInfo(px)?.pxHeight ?: productHeight
 
-        return bitmap.scale((width * scaleWidth).toInt(), (height * scaleHeight).toInt())
+        val newWidth = (width * scaleWidth).toInt()
+        val newHeight = (height * scaleHeight).toInt()
+
+        return bitmap.scale(newWidth, newHeight)
     }
 
     //</editor-fold desc="operate">

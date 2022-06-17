@@ -129,7 +129,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**查询设备状态*/
     fun queryDeviceState(
-        flag: Int = CommandQueueHelper.FLAG_ASYNC,
+        flag: Int = CommandQueueHelper.FLAG_NORMAL,
         block: IReceiveBeanAction = { _, _ -> }
     ) {
         QueryCmd.workState.enqueue(flag) { bean, error ->

@@ -195,11 +195,15 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         //根据px, 修正坐标
                         val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
 
+                        //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
+                        val engraveWidth = bitmap.width
+                        val engraveHeight = bitmap.height
+
                         EngraveDataInfo(
                             EngraveDataInfo.TYPE_BITMAP,
                             data,
-                            rect.width(),
-                            rect.height(),
+                            engraveWidth,
+                            engraveHeight,
                             rect.left,
                             rect.top,
                             px
@@ -350,8 +354,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
         //进入空闲模式
         ExitCmd().enqueue { _, _ ->
-            vmApp<LaserPeckerModel>().queryDeviceState()
         }
+        vmApp<LaserPeckerModel>().queryDeviceState()
     }
 
     fun findIndex(list: List<Any>?, value: Byte): Int {
