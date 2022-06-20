@@ -260,7 +260,8 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
     }
 }
 
-/**Dsl*/
+/**Dsl
+ * 画布图片编辑属性弹窗*/
 fun Context.canvasRegulateWindow(anchor: View?, config: CanvasRegulatePopupConfig.() -> Unit): Any {
     val popupConfig = CanvasRegulatePopupConfig()
     popupConfig.anchor = anchor

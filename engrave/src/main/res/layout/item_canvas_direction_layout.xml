@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
+        android:paddingRight="@dimen/lib_padding_left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,54 +44,58 @@
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/lib_ripple_shape"
-            android:button="@drawable/canvas_check_selector"
+            android:background="@drawable/lib_border_check_selector"
+            android:button="@null"
             android:paddingLeft="@dimen/lib_hdpi"
             android:paddingTop="@dimen/lib_ldpi"
             android:paddingRight="@dimen/lib_hdpi"
             android:paddingBottom="@dimen/lib_ldpi"
             android:tag="0"
             android:text="0°"
+            android:textColor="@color/lib_border_check_color_selector"
             tools:checked="true" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/lib_ripple_shape"
-            android:button="@drawable/canvas_check_selector"
+            android:background="@drawable/lib_border_check_selector"
+            android:button="@null"
             android:paddingLeft="@dimen/lib_hdpi"
             android:paddingTop="@dimen/lib_ldpi"
             android:paddingRight="@dimen/lib_hdpi"
             android:paddingBottom="@dimen/lib_ldpi"
             android:tag="1"
-            android:text="90°" />
+            android:text="90°"
+            android:textColor="@color/lib_border_check_color_selector" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/lib_ripple_shape"
-            android:button="@drawable/canvas_check_selector"
+            android:background="@drawable/lib_border_check_selector"
+            android:button="@null"
             android:paddingLeft="@dimen/lib_hdpi"
             android:paddingTop="@dimen/lib_ldpi"
             android:paddingRight="@dimen/lib_hdpi"
             android:paddingBottom="@dimen/lib_ldpi"
             android:tag="2"
-            android:text="180°" />
+            android:text="180°"
+            android:textColor="@color/lib_border_check_color_selector" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/lib_ripple_shape"
-            android:button="@drawable/canvas_check_selector"
+            android:background="@drawable/lib_border_check_selector"
+            android:button="@null"
             android:paddingLeft="@dimen/lib_hdpi"
             android:paddingTop="@dimen/lib_ldpi"
             android:paddingRight="@dimen/lib_hdpi"
             android:paddingBottom="@dimen/lib_ldpi"
             android:tag="3"
-            android:text="270°" />
+            android:text="270°"
+            android:textColor="@color/lib_border_check_color_selector" />
 
     </com.angcyo.widget.layout.DslCheckFlowLayout>
 
