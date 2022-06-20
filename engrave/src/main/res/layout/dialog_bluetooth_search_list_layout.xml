@@ -58,11 +58,21 @@
         android:layout_height="@dimen/lib_line_px"
         android:background="@color/dialog_line" />
 
-    <com.angcyo.widget.recycler.DslRecyclerView
-        android:id="@+id/lib_recycler_view"
-        style="@style/LibRecyclerViewStyleBase"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
 
+        <com.angcyo.widget.loading.RadarScanLoadingView
+            android:id="@+id/radar_scan_loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.angcyo.widget.recycler.DslRecyclerView
+            android:id="@+id/lib_recycler_view"
+            style="@style/LibRecyclerViewStyleBase"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 </com.angcyo.widget.layout.RLinearLayout>

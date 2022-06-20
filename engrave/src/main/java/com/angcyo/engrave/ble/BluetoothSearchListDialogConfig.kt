@@ -14,6 +14,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.canvas.strokeLoading2
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -102,9 +103,16 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
         //蓝牙状态监听
         apiModel.bleStateData.observe(this) {
+            //loading
             dialogViewHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)
                 ?.loading(it == BLUETOOTH_STATE_SCANNING)
 
+            //radar
+            dialogViewHolder.v<RadarScanLoadingView>(R.id.radar_scan_loading_view)
+                ?.loading(it == BLUETOOTH_STATE_SCANNING)
+            dialogViewHolder.visible(R.id.radar_scan_loading_view, it == BLUETOOTH_STATE_SCANNING)
+
+            //state
             if (it == FscBleApiModel.BLUETOOTH_STATE_STOP) {
                 dialogViewHolder.rv(R.id.lib_recycler_view)?._dslAdapter?.updateAdapterState()
             }
