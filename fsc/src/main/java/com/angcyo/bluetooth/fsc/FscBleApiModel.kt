@@ -203,9 +203,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
 
         // 断开连接
+        @WorkerThread
         override fun blePeripheralDisconnected(gatt: BluetoothGatt, address: String, p2: Int) {
             super.blePeripheralDisconnected(gatt, address, p2)
-            _peripheralDisconnected(address, gatt)
+            doMain(true) {
+                _peripheralDisconnected(address, gatt)
+            }
         }
 
         /**
@@ -316,6 +319,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
 
         // 断开连接
+        @WorkerThread
         override fun sppPeripheralDisconnected(address: String) {
             super.sppPeripheralDisconnected(address)
             doMain(true) {
@@ -389,6 +393,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          *  @param percentage 进度
          *  @param status 状态 120
          */
+        @WorkerThread
         override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
         }

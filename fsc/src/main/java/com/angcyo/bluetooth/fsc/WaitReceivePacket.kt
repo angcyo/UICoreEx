@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc
 
+import android.os.Debug
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.WorkerThread
@@ -76,10 +77,10 @@ class WaitReceivePacket(
             api.send(address, sendPacket)
         }
         if (receiveTimeout > 0) {
-            //if (!BuildConfig.DEBUG) {
-            //测试模式下, 防止debug中断
-            handle.postDelayed(_timeOutRunnable, receiveTimeout)
-            //}
+            if (!Debug.isDebuggerConnected()) {
+                //非调试下, 防止debug中断
+                handle.postDelayed(_timeOutRunnable, receiveTimeout)
+            }
         }
         _isSend = true
     }
