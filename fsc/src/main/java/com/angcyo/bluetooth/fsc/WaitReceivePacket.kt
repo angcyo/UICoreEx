@@ -62,7 +62,7 @@ class WaitReceivePacket(
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
             end()
-            listener.onReceive(null, ReceiveTimeOutException("接收超时:$receiveTimeout ms"))
+            listener.onReceive(null, ReceiveTimeOutException("指令超时"))
         }
     }
 
