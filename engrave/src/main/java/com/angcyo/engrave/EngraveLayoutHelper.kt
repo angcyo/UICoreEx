@@ -102,6 +102,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         return (1..100).toList()
     }
 
+    //region ---Engrave---
+
     /**显示错误提示*/
     fun showEngraveError(error: String?) {
         dslAdapter?.render {
@@ -109,6 +111,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 itemUpdateFlag = true
                 itemProgress = 0
                 itemTip = error
+                itemTime = null
             }
         }
         doMain {
@@ -116,8 +119,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         }
     }
 
-    /**显示进度提示*/
-    fun showEngraveProgress(progress: Int, tip: CharSequence? = null, time: Long? = null) {
+    /**插入显示进度提示*/
+    fun insertEngraveProgress(progress: Int, tip: CharSequence? = null, time: Long? = null) {
         dslAdapter?.render {
             insertItem(0, engraveProgressItem.apply {
                 itemUpdateFlag = true
@@ -129,7 +132,9 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         //_dialogViewHolder?.visible(R.id.close_layout_view)
     }
 
-    //region ---handle---
+    //endregion
+
+    //region ---Handle---
 
     /**处理雕刻数据*/
     fun handleEngrave() {
@@ -144,7 +149,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             val path = item.shapePath
             if (path != null) {
                 lifecycleOwner.launchLifecycle {
-                    showEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+                    insertEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
                     val dataInfo = withBlock {
                         val file = EngraveHelper.pathStrokeToGCode(
                             path,
@@ -159,7 +164,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         } else {
             //其他方式, 使用图片雕刻
             lifecycleOwner.launchLifecycle {
-                showEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+                insertEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
 
                 val dataInfo = withBlock {
 
@@ -188,7 +193,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         }
 
                         if (isAppDebug()) {
-                            val channelBitmap = data.toChannelBitmap(bitmap.width, bitmap.height)
+                            val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
                             L.v("$channelBitmap")
                         }
 
@@ -222,7 +227,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     /**发送雕刻数据*/
     fun sendEngraveData(engraveData: EngraveDataInfo) {
         _engraveDataInfo = engraveData
-        showEngraveProgress(0, _string(R.string.print_v2_package_transfer))
+        insertEngraveProgress(0, _string(R.string.print_v2_package_transfer))
         val cmd = FileModeCmd(engraveData.data.size)
         cmd.enqueue { bean, error ->
             bean?.parse<FileTransferParser>()?.let {
@@ -259,7 +264,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     if (dataCommand != null) {
                         dataCommand.enqueue({
                             //进度
-                            showEngraveProgress(it.sendPacketPercentage, null, it.remainingTime)
+                            insertEngraveProgress(it.sendPacketPercentage, null, it.remainingTime)
                         }) { bean, error ->
                             val result = bean?.parse<FileTransferParser>()
                             L.w("传输结束:$result $error")
@@ -306,21 +311,21 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             EngraveOptionItem()() {
                 itemLabelText = "功率:"
                 itemWheelList = percentList()
-                itemSelectedIndex = findIndex(itemWheelList, engraveOptionInfo.power)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.power)
                 itemTag = EngraveOptionInfo::power.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionItem()() {
                 itemLabelText = "深度:"
                 itemWheelList = percentList()
-                itemSelectedIndex = findIndex(itemWheelList, engraveOptionInfo.depth)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.depth)
                 itemTag = EngraveOptionInfo::depth.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionItem()() {
                 itemLabelText = "次数:"
                 itemWheelList = percentList()
-                itemSelectedIndex = findIndex(itemWheelList, engraveOptionInfo.time)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.time)
                 itemTag = EngraveOptionInfo::time.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
@@ -341,7 +346,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                             L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
 
                             if (error == null) {
-                                showEngraveProgress(
+                                insertEngraveProgress(
                                     100,
                                     _string(R.string.print_v2_package_printing)
                                 )
@@ -353,12 +358,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         }
 
         //进入空闲模式
-        ExitCmd().enqueue { _, _ ->
-        }
+        ExitCmd().enqueue()
         vmApp<LaserPeckerModel>().queryDeviceState()
     }
 
-    fun findIndex(list: List<Any>?, value: Byte): Int {
+    fun findOptionIndex(list: List<Any>?, value: Byte): Int {
         return list?.indexOfFirst { it.toString().toInt() == value.toInt() } ?: -1
     }
 

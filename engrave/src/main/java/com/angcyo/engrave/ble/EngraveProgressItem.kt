@@ -57,8 +57,8 @@ class EngraveProgressItem : DslAdapterItem() {
         } else {
             "${_string(R.string.estimated_remaining_time)}${
                 itemTime?.toElapsedTime(
-                    pattern = intArrayOf(1, 1, 1),
-                    units = arrayOf("", ":", ":", ":", ":")
+                    pattern = intArrayOf(-1, 1, 1),
+                    units = arrayOf("", "", ":", ":", ":")
                 )
             }"
         }

@@ -67,12 +67,12 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
                 onSeekChanged = { value, fraction, fromUser ->
                     LaserPeckerHelper.lastPwrProgress = fraction
                     if (laserPeckerModel.isEngravePreviewMode()) {
-                        startPreviewCmd(canvasDelegate, false)
+                        startPreviewCmd(canvasDelegate, false, true)
                     } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
                         showPreviewCenterCmd(false)
                     } else if (laserPeckerModel.isIdleMode()) {
                         //空闲模式, 继续预览
-                        startPreviewCmd(canvasDelegate, true)
+                        startPreviewCmd(canvasDelegate, true, true)
                     } else {
                         ExitCmd().enqueue()
                         queryDeviceStateCmd()
@@ -126,7 +126,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
             if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
                 //继续预览
                 ExitCmd().enqueue()
-                startPreviewCmd(canvasDelegate, true)
+                startPreviewCmd(canvasDelegate, true, false)
             } else {
                 //结束预览
                 hideLayout()
@@ -145,7 +145,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         }
 
         //cmd
-        startPreviewCmd(canvasDelegate, true)
+        startPreviewCmd(canvasDelegate, true, false)
     }
 
     /**隐藏预览布局, 并且停止预览*/
@@ -164,7 +164,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
 
     /**开始预览
      * [updateState] 是否要更新状态*/
-    fun startPreviewCmd(canvasDelegate: CanvasDelegate?, updateState: Boolean) {
+    fun startPreviewCmd(canvasDelegate: CanvasDelegate?, updateState: Boolean, async: Boolean) {
         canvasDelegate?.getSelectedRenderer()?.let { renderer ->
             renderer.getRotateBounds().let { bounds ->
                 val cmd = EngravePreviewCmd.previewRange(
@@ -173,11 +173,10 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
                     bounds.width().toInt(),
                     bounds.height().toInt()
                 )
-                cmd.enqueue(CommandQueueHelper.FLAG_ASYNC) { bean, error ->
-                    if (updateState) {
-                        queryDeviceStateCmd()
-                    }
-                }
+                val flag =
+                    if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+                cmd.enqueue(flag)
+                queryDeviceStateCmd()
             }
         }.elseNull {
             if (updateState) {
@@ -189,9 +188,8 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
     /**停止预览*/
     fun stopPreviewCmd() {
         val cmd = EngravePreviewCmd.previewStop()
-        cmd.enqueue { bean, error ->
-            queryDeviceStateCmd()
-        }
+        cmd.enqueue()
+        queryDeviceStateCmd()
     }
 
     /**支架上升*/
@@ -221,10 +219,9 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
     /**显示中心*/
     fun showPreviewCenterCmd(updateState: Boolean) {
         val cmd = EngravePreviewCmd.previewShowCenter()
-        cmd.enqueue(CommandQueueHelper.FLAG_ASYNC) { bean, error ->
-            if (updateState) {
-                queryDeviceStateCmd()
-            }
+        cmd.enqueue(CommandQueueHelper.FLAG_ASYNC)
+        if (updateState) {
+            queryDeviceStateCmd()
         }
     }
 
