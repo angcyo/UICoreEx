@@ -127,6 +127,9 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
                 //继续预览
                 ExitCmd().enqueue()
                 startPreviewCmd(canvasDelegate, true, false)
+            } else if (laserPeckerModel.deviceStateData.value?.isModeIdle() == true) {
+                //空闲模式中
+                startPreviewCmd(canvasDelegate, true, false)
             } else {
                 //结束预览
                 hideLayout()

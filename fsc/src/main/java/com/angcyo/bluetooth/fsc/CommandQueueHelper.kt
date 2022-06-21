@@ -88,7 +88,9 @@ object CommandQueueHelper {
         } else {
             //已经在执行指令
             val command = _currentCommand?.command
-            L.w("${command.hashCode()} ${command?.toCommandLogString()},指令正在运行,剩余:${linkedList.size()}")
+            if (linkedList.size() > 1) {
+                L.w("${command.hashCode()} ${command?.toCommandLogString()},指令正在运行,剩余:${linkedList.size()}")
+            }
         }
     }
 
@@ -97,6 +99,25 @@ object CommandQueueHelper {
     fun next() {
         _currentCommand = null
         start()
+    }
+
+    /**清空所有任务
+     * 设备断开后, 清除所有指令*/
+    @Synchronized
+    fun clearCommand() {
+        linkedList.forEach {
+            try {
+                it.listener?.onReceive(null, ReceiveCancelException("ReceiveCancel!"))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        linkedList.clear()
+        try {
+            _currentCommand?.listener?.onReceive(null, ReceiveCancelException("ReceiveCancel!"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun _runCommand(commandInfo: CommandInfo, next: Boolean) {

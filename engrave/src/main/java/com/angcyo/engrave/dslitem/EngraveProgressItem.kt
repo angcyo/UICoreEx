@@ -1,10 +1,9 @@
-package com.angcyo.engrave.ble
+package com.angcyo.engrave.dslitem
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.toEngraveTime
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.toElapsedTime
-
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.progress.DslProgressBar
 
@@ -17,6 +16,9 @@ class EngraveProgressItem : DslAdapterItem() {
 
     /**[0~100]*/
     var itemProgress: Int = 0
+
+    /**进度动画时长*/
+    var itemProgressAnimDuration: Long = 0
 
     /**进度条的Flow模式*/
     var itemEnableProgressFlowMode: Boolean = true
@@ -44,7 +46,7 @@ class EngraveProgressItem : DslAdapterItem() {
 
         itemHolder.v<DslProgressBar>(R.id.lib_progress_bar)?.apply {
             enableProgressFlowMode = itemEnableProgressFlowMode
-            setProgress(itemProgress, animDuration = 0)
+            setProgress(itemProgress, animDuration = itemProgressAnimDuration)
         }
 
         itemHolder.tv(R.id.lib_tip_view)?.text = itemTip
@@ -55,12 +57,7 @@ class EngraveProgressItem : DslAdapterItem() {
         } else if ((itemTime ?: 0) <= 0) {
             "${_string(R.string.estimated_remaining_time)}--"
         } else {
-            "${_string(R.string.estimated_remaining_time)}${
-                itemTime?.toElapsedTime(
-                    pattern = intArrayOf(-1, 1, 1),
-                    units = arrayOf("", "", ":", ":", ":")
-                )
-            }"
+            "${_string(R.string.estimated_remaining_time)}${itemTime?.toEngraveTime()}"
         }
     }
 }

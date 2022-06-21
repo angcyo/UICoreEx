@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.angcyo.library.ex.toElapsedTime
 import com.angcyo.library.ex.toHexInt
 
 /**
@@ -32,3 +33,9 @@ fun ByteArray.toEngraveBitmap(width: Int, height: Int): Bitmap {
     }
     return channelBitmap
 }
+
+/**分:秒 的时间格式*/
+fun Long?.toEngraveTime() = this?.toElapsedTime(
+    pattern = intArrayOf(-1, 1, 1),
+    units = arrayOf("", "", ":", ":", ":")
+)

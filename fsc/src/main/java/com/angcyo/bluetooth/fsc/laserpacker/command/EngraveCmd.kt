@@ -20,7 +20,7 @@ import com.angcyo.library.ex.toHexString
  * @since 2022/03/26
  */
 data class EngraveCmd(
-    val name: Int,//为将打印文件名。 文件编号 4字节
+    val name: Int = -1,//为将打印文件名。 文件编号 4字节
     val laser: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
     val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(100-)
     //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
@@ -31,6 +31,24 @@ data class EngraveCmd(
     val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
     val custom: Byte = 0x0,
 ) : ICommand {
+
+    companion object {
+
+        /**继续打印指令*/
+        fun continueEngrave(): EngraveCmd {
+            return EngraveCmd(state = 0x02)
+        }
+
+        /**暂停打印指令*/
+        fun pauseEngrave(): EngraveCmd {
+            return EngraveCmd(state = 0x04)
+        }
+
+        /**停止打印指令*/
+        fun stopEngrave(): EngraveCmd {
+            return EngraveCmd(state = 0x03)
+        }
+    }
 
     //功能码
     override fun commandFunc(): Byte = 0x01
@@ -57,6 +75,12 @@ data class EngraveCmd(
 
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
-        append(" 开始雕刻:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
+        when (state) {
+            0x01.toByte() -> append(" 开始雕刻:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
+            0x02.toByte() -> append(" 继续雕刻!")
+            0x03.toByte() -> append(" 停止雕刻!")
+            0x04.toByte() -> append(" 暂停雕刻!")
+        }
+
     }
 }

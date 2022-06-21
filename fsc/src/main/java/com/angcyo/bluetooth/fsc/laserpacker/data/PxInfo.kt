@@ -20,6 +20,8 @@ data class PxInfo(
     //对应分辨率的宽高
     val pxWidth: Int,
     val pxHeight: Int,
+    //显示的界面上的描述
+    val des: String,
 ) {
 
     /**宽度值转换*/

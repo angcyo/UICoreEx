@@ -1,6 +1,6 @@
-package com.angcyo.engrave.ble
+package com.angcyo.engrave.dslitem
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 
 /**
  * 需要雕刻数据
@@ -17,7 +17,7 @@ data class EngraveDataInfo(
     var height: Int = 0,
     var x: Int = 0,
     var y: Int = 0,
-    var px: Byte = DEFAULT_PX,
+    var px: Byte = LaserPeckerHelper.DEFAULT_PX,
     //自动生成的文件名
     var name: Int = (System.currentTimeMillis() / 1000).toInt()
 ) {

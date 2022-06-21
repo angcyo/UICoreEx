@@ -266,6 +266,9 @@ class WaitReceivePacket(
 /**接收超时异常*/
 class ReceiveTimeOutException(message: String) : Exception(message)
 
+/**接收取消异常*/
+class ReceiveCancelException(message: String) : Exception(message)
+
 /**接收校验异常*/
 class ReceiveVerifyException(message: String) : Exception(message)
 

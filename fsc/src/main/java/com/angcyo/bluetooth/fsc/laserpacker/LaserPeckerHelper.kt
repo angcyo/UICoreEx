@@ -48,11 +48,11 @@ object LaserPeckerHelper {
 
     //所有支持的分辨率
     val pxInfoList = mutableListOf<PxInfo>().apply {
-        add(PxInfo(0x01, 4000, 4000))
-        add(PxInfo(0x02, 2000, 2000))
-        add(PxInfo(0x03, 1300, 1300))
-        add(PxInfo(0x04, 1000, 1000))
-        add(PxInfo(0x05, 800, 800))
+        add(PxInfo(0x01, 4000, 4000, "4K"))
+        add(PxInfo(0x02, 2000, 2000, "2K"))
+        add(PxInfo(0x03, 1300, 1300, "1.3K"))
+        add(PxInfo(0x04, 1000, 1000, "1K"))
+        add(PxInfo(0x05, 800, 800, "0.8K"))
     }
 
     /**预览光功率设置 [0~1f]*/
@@ -95,7 +95,8 @@ object LaserPeckerHelper {
         return result
     }
 
-    fun findPxInfo(px: Byte): PxInfo? = pxInfoList.find { it.px == px }
+    /**查找[PxInfo]*/
+    fun findPxInfo(px: Byte?): PxInfo? = pxInfoList.find { it.px == px }
 
     /**根据选中的分辨率, 转换输入的大小*/
     fun transformWidth(value: Int, px: Byte): Int {

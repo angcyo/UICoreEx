@@ -118,7 +118,7 @@ object CanvasBitmapHandler {
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
                                     if (keepBounds) renderer.getBounds() else null,
-                                    hashMapOf(EngraveHelper.KEY_GCODE to it.first),
+                                    hashMapOf(CanvasDataHandleHelper.KEY_GCODE to it.first),
                                 )
                             }
                         }
@@ -130,7 +130,7 @@ object CanvasBitmapHandler {
                                 it.second,
                                 Strategy.normal,
                                 if (keepBounds) renderer.getBounds() else null,
-                                hashMapOf(EngraveHelper.KEY_GCODE to it.first),
+                                hashMapOf(CanvasDataHandleHelper.KEY_GCODE to it.first),
                             )
                         }
                     }

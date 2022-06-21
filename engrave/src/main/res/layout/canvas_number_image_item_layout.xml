@@ -5,4 +5,4 @@
     android:layout_height="50dp"
     android:background="@drawable/canvas_number_selector"
     android:scaleType="center"
-    app:srcCompat="@drawable/ic_backspace" />
+    app:srcCompat="@drawable/canvas_backspace" />

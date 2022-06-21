@@ -18,6 +18,6 @@ class CanvasNumberImageItem : DslAdapterItem(), IImageItem {
     init {
         itemLayoutId = R.layout.canvas_number_image_item_layout
         itemClickThrottleInterval = 0
-        itemLoadImage = R.drawable.ic_backspace
+        itemLoadImage = R.drawable.canvas_backspace
     }
 }

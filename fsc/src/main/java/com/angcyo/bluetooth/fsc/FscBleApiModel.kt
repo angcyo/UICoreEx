@@ -455,6 +455,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**设备连接状态列表,包括已连接的设备*/
     val connectDeviceList = mutableListOf<DeviceConnectState>()
 
+    //请求断开连接的设备集合
+    val pendingDisconnectList = mutableSetOf<String>()
+
     val handle = Handler(Looper.getMainLooper())
 
     /**扫描时长*/
@@ -668,6 +671,10 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**当前设备的连接状态*/
     fun connectState(bleDevice: FscDevice?): Int {
+        if (pendingDisconnectList.contains(bleDevice?.address)) {
+            //正在断开连接
+            return CONNECT_STATE_DISCONNECT_START
+        }
         val find = connectDeviceList.find { it.device == bleDevice }
         if (find == null) {
             if (isConnected(bleDevice)) {
@@ -717,6 +724,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (isConnectState(device)) {
             return
         }
+        pendingDisconnectList.remove(device.address)
         if (disconnectOther) {
             //断开其他设备
             if (connectDeviceList.isNotEmpty()) {
@@ -739,6 +747,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (bleDevice == null) {
             return
         }
+        pendingDisconnectList.add(bleDevice.address)
         _checkDisconnectTimeout()
         if (isConnectState(bleDevice)) {
             connectStateData.value = wrapStateDevice(bleDevice) {
@@ -766,6 +775,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             if (deviceState.state == CONNECT_STATE_DISCONNECT_START && nowTime() - deviceState.disconnectTime > 1_000) {
                 //断开超时
                 connectDeviceList.remove(deviceState)
+                pendingDisconnectList.remove(deviceState.device.address)
                 connectStateData.value = wrapStateDevice(deviceState.device) {
                     state = CONNECT_STATE_DISCONNECT
                     gatt = null
@@ -833,11 +843,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
     fun _peripheralDisconnected(address: String, gatt: BluetoothGatt?) {
         val cacheDeviceState = connectDeviceList.find { it.device.address == address }
         cacheDeviceState?.let { deviceState ->
-            connectStateData.postValue(wrapStateDevice(deviceState.device) {
+            pendingDisconnectList.remove(deviceState.device.address)
+            connectDeviceList.remove(deviceState)
+            connectStateData.value = wrapStateDevice(deviceState.device) {
                 state = CONNECT_STATE_DISCONNECT
                 this.gatt = gatt
-            })
-            connectDeviceList.remove(deviceState)
+            }
             _notifyConnectDeviceChanged()
         }
     }
@@ -845,6 +856,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**通知连接的蓝牙设备改变*/
     fun _notifyConnectDeviceChanged() {
         connectDeviceList.filterTo(mutableListOf()) { deviceConnectState ->
+            //过滤得到所有连接成功的设备
             deviceConnectState.state == CONNECT_STATE_SUCCESS
         }.apply {
             connectDeviceListData.postValue(this)

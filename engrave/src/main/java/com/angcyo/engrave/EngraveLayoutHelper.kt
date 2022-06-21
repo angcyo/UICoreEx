@@ -3,6 +3,7 @@ package com.angcyo.engrave
 import android.graphics.Color
 import android.graphics.Paint
 import android.view.ViewGroup
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -16,17 +17,22 @@ import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.utils.EngraveHelper
+import com.angcyo.canvas.utils.CanvasDataHandleHelper
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.engrave.ble.*
+import com.angcyo.dsladapter.updateItem
+import com.angcyo.engrave.dslitem.*
+import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
+import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
+import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
+import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
 
 /**
@@ -39,16 +45,16 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     /**雕刻对象*/
     var renderer: BaseItemRenderer<*>? = null
 
-    /**雕刻参数*/
-    var engraveOptionInfo: EngraveOptionInfo = EngraveOptionInfo("自定义", 100, 10, 1)
-
     /**进度item*/
     val engraveProgressItem = EngraveProgressItem()
 
     var dslAdapter: DslAdapter? = null
 
-    //雕刻数据
-    var _engraveDataInfo: EngraveDataInfo? = null
+    //产品模式
+    val peckerModel = vmApp<LaserPeckerModel>()
+
+    //雕刻模型
+    val engraveModel = vmApp<EngraveModel>()
 
     init {
         layoutId = R.layout.canvas_engrave_layout
@@ -57,7 +63,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     /**绑定布局*/
     @CanvasEntryPoint
     fun bindCanvasView(canvasView: CanvasView) {
-        vmApp<LaserPeckerModel>().productInfoData.observe(lifecycleOwner) { productInfo ->
+        //监听产品信息
+        peckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
             if (productInfo == null) {
                 canvasView.canvasDelegate.limitRenderer.clear()
             } else {
@@ -67,6 +74,38 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     canvasView.canvasDelegate.moveOriginToLT()
                 }
                 canvasView.canvasDelegate.showAndLimitBounds(productInfo.limitPath)
+            }
+        }
+        //监听设备状态
+        peckerModel.deviceStateData.observe(lifecycleOwner) {
+            it?.let {
+                engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
+                if (it.isEngraving()) {
+                    updateEngraveProgress(
+                        clamp(it.rate, 0, 100),
+                        time = engraveModel.calcEngraveRemainingTime(it.rate)
+                    ) {
+                        itemProgressAnimDuration = Anim.ANIM_DURATION
+                    }
+                    _delay(1_000) {
+                        //延迟1秒后, 继续查询状态
+                        peckerModel.queryDeviceState()
+                    }
+                } else if (it.isEngravePause()) {
+                    updateEngraveProgress(
+                        tip = _string(R.string.print_v2_package_print_state),
+                        time = -1
+                    )
+                } else if (it.isEngraveStop()) {
+                    updateEngraveProgress(
+                        100,
+                        tip = _string(R.string.print_v2_package_print_over),
+                        time = null
+                    )
+                    engraveModel.stopEngrave()
+                }
+                //更新界面
+                dslAdapter?.updateItem { it is EngravingItem }
             }
         }
     }
@@ -83,15 +122,28 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             hideLayout()
         }
 
-        viewHolder?.rv(R.id.lib_recycler_view)?.renderDslAdapter {
-            dslAdapter = this
+        viewHolder?.rv(R.id.lib_recycler_view)?.apply {
+            noItemChangeAnim()
+            renderDslAdapter {
+                dslAdapter = this
+            }
         }
 
         //close按钮
-        viewHolder?.visible(R.id.close_layout_view)
+        showCloseLayout()
 
         //engrave
-        handleEngrave()
+        if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
+            //设备空闲
+            handleEngrave()
+        } else if (peckerModel.deviceStateData.value?.isModeEngrave() == true) {
+            //设备雕刻中
+            showEngravingItem()
+        } else {
+            //其他模式下, 先退出其他模式, 再next
+            ExitCmd().enqueue()
+            handleEngrave()
+        }
     }
 
     override fun hideLayout() {
@@ -102,9 +154,17 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         return (1..100).toList()
     }
 
+    /**显示关闭按钮*/
+    fun showCloseLayout(show: Boolean = true) {
+        doMain {
+            viewHolder?.visible(R.id.close_layout_view, show)
+        }
+    }
+
     //region ---Engrave---
 
     /**显示错误提示*/
+    @AnyThread
     fun showEngraveError(error: String?) {
         dslAdapter?.render {
             this + engraveProgressItem.apply {
@@ -114,22 +174,40 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 itemTime = null
             }
         }
-        doMain {
-            viewHolder?.visible(R.id.close_layout_view)
-        }
+        showCloseLayout()
     }
 
-    /**插入显示进度提示*/
-    fun insertEngraveProgress(progress: Int, tip: CharSequence? = null, time: Long? = null) {
-        dslAdapter?.render {
-            insertItem(0, engraveProgressItem.apply {
+    /**更新显示进度提示*/
+    @AnyThread
+    fun updateEngraveProgress(
+        progress: Int = engraveProgressItem.itemProgress,
+        tip: CharSequence? = engraveProgressItem.itemTip,
+        time: Long? = engraveProgressItem.itemTime,
+        action: EngraveProgressItem .() -> Unit = {}
+    ) {
+        dslAdapter?.apply {
+            engraveProgressItem.apply {
                 itemUpdateFlag = true
                 itemProgress = progress
-                itemTip = tip ?: itemTip
-                itemTime = time ?: itemTime
-            })
+                itemTip = tip
+                itemTime = time
+                itemProgressAnimDuration = 0 //取消进度动画
+
+                //dsl
+                action()
+            }
+
+            //update
+            if (adapterItems.contains(engraveProgressItem)) {
+                doMain {
+                    engraveProgressItem.updateAdapterItem()
+                }
+            } else {
+                render {
+                    insertItem(0, engraveProgressItem)
+                }
+            }
         }
-        //_dialogViewHolder?.visible(R.id.close_layout_view)
     }
 
     //endregion
@@ -149,9 +227,9 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             val path = item.shapePath
             if (path != null) {
                 lifecycleOwner.launchLifecycle {
-                    insertEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+                    updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
                     val dataInfo = withBlock {
-                        val file = EngraveHelper.pathStrokeToGCode(
+                        val file = CanvasDataHandleHelper.pathStrokeToGCode(
                             path,
                             renderer.getRotateBounds(),
                             renderer.rotate
@@ -164,7 +242,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         } else {
             //其他方式, 使用图片雕刻
             lifecycleOwner.launchLifecycle {
-                insertEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+                updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
 
                 val dataInfo = withBlock {
 
@@ -177,7 +255,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         val width = bitmap.width
                         val height = bitmap.height
 
-                        val px: Byte = engraveOptionInfo.px
+                        val px: Byte = vmApp<EngraveModel>().engraveOptionInfoData.value!!.px
 
                         bitmap = LaserPeckerHelper.bitmapScale(bitmap, px)
 
@@ -225,9 +303,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     }
 
     /**发送雕刻数据*/
+    @AnyThread
     fun sendEngraveData(engraveData: EngraveDataInfo) {
-        _engraveDataInfo = engraveData
-        insertEngraveProgress(0, _string(R.string.print_v2_package_transfer))
+        showCloseLayout(false)//传输中不允许关闭
+        engraveModel.engraveInfoData.postValue(engraveData)
+        updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
         val cmd = FileModeCmd(engraveData.data.size)
         cmd.enqueue { bean, error ->
             bean?.parse<FileTransferParser>()?.let {
@@ -237,8 +317,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     //数据类型封装
                     val dataCommand: DataCommand? = when (engraveData.dataType) {
                         EngraveDataInfo.TYPE_BITMAP -> {
-                            engraveOptionInfo.x = engraveData.x
-                            engraveOptionInfo.y = engraveData.y
+                            engraveModel.engraveOptionInfoData.value?.x = engraveData.x
+                            engraveModel.engraveOptionInfoData.value?.y = engraveData.y
                             DataCommand.bitmapData(
                                 engraveData.name,
                                 engraveData.data,
@@ -258,13 +338,16 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
                     //将雕刻数据写入文件
                     dataCommand?.toByteArray()
-                        ?.writeTo(EngraveHelper.CACHE_FILE_FOLDER, "${engraveData.name}.engrave")
+                        ?.writeTo(
+                            CanvasDataHandleHelper.CACHE_FILE_FOLDER,
+                            "${engraveData.name}.engrave"
+                        )
 
                     //开始发送数据
                     if (dataCommand != null) {
                         dataCommand.enqueue({
                             //进度
-                            insertEngraveProgress(it.sendPacketPercentage, null, it.remainingTime)
+                            updateEngraveProgress(it.sendPacketPercentage, time = it.remainingTime)
                         }) { bean, error ->
                             val result = bean?.parse<FileTransferParser>()
                             L.w("传输结束:$result $error")
@@ -294,62 +377,65 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**显示开始雕刻相关的item*/
     fun showEngraveItem() {
-        doMain {
-            viewHolder?.visible(R.id.close_layout_view)
-        }
+        showCloseLayout()
+
+        val engraveOptionInfo = engraveModel.engraveOptionInfoData.value
+        val engraveInfo = engraveModel.engraveInfoData.value
 
         dslAdapter?.render {
-            removeItem(engraveProgressItem, false)
+            clearAllItems()
 
             EngraveOptionItem()() {
-                itemLabelText = "材质:"
+                itemLabelText = _string(R.string.custom_material)
                 itemWheelList = _stringArray(R.array.sourceMaterial).toList()
-                itemSelectedIndex = itemWheelList?.indexOf(engraveOptionInfo.material) ?: 0
+                val material = engraveOptionInfo?.material ?: _string(R.string.material_custom)
+                itemSelectedIndex = itemWheelList?.indexOf(material) ?: 0
                 itemTag = EngraveOptionInfo::material.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionItem()() {
-                itemLabelText = "功率:"
+                itemLabelText = _string(R.string.custom_power)
                 itemWheelList = percentList()
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.power)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.power)
                 itemTag = EngraveOptionInfo::power.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionItem()() {
-                itemLabelText = "深度:"
+                itemLabelText = _string(R.string.custom_speed)
                 itemWheelList = percentList()
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.depth)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
                 itemTag = EngraveOptionInfo::depth.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionItem()() {
-                itemLabelText = "次数:"
+                itemLabelText = _string(R.string.print_times)
                 itemWheelList = percentList()
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo.time)
+                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.time)
                 itemTag = EngraveOptionInfo::time.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveConfirmItem()() {
                 engraveAction = {
                     //开始雕刻
-                    _engraveDataInfo?.let {
-                        EngraveCmd(
-                            it.name,
-                            engraveOptionInfo.power,
-                            engraveOptionInfo.depth,
-                            engraveOptionInfo.state,
-                            engraveOptionInfo.x,
-                            engraveOptionInfo.y,
-                            engraveOptionInfo.time,
-                            engraveOptionInfo.type,
-                        ).enqueue { bean, error ->
-                            L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
+                    engraveOptionInfo?.let { option ->
+                        engraveInfo?.let { data ->
+                            EngraveCmd(
+                                data.name,
+                                option.power,
+                                option.depth,
+                                option.state,
+                                option.x,
+                                option.y,
+                                option.time,
+                                option.type,
+                            ).enqueue { bean, error ->
+                                L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
 
-                            if (error == null) {
-                                insertEngraveProgress(
-                                    100,
-                                    _string(R.string.print_v2_package_printing)
-                                )
+                                if (error == null) {
+                                    engraveModel.startEngrave()
+                                    showEngravingItem()
+                                    peckerModel.queryDeviceState()
+                                }
                             }
                         }
                     }
@@ -359,11 +445,24 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
         //进入空闲模式
         ExitCmd().enqueue()
-        vmApp<LaserPeckerModel>().queryDeviceState()
+        peckerModel.queryDeviceState()
     }
 
-    fun findOptionIndex(list: List<Any>?, value: Byte): Int {
-        return list?.indexOfFirst { it.toString().toInt() == value.toInt() } ?: -1
+    /**显示雕刻中相关的item*/
+    fun showEngravingItem() {
+        dslAdapter?.render {
+            clearAllItems()
+            updateEngraveProgress(0, _string(R.string.print_v2_package_printing), time = -1)
+            EngravingItem()() {
+                againAction = {
+                    showEngraveItem()
+                }
+            }
+        }
+    }
+
+    fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
+        return list?.indexOfFirst { it.toString().toInt() == value?.toInt() } ?: -1
     }
 
     //endregion

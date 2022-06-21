@@ -36,6 +36,7 @@ abstract class BaseEngraveLayoutHelper {
                 it.translationY = it.mH().toFloat()
                 it.animate().translationY(0f).setDuration(300).start()
             }
+            rootView.requestLayout()
         }
     }
 
@@ -47,6 +48,11 @@ abstract class BaseEngraveLayoutHelper {
                 it.removeFromParent()
             }.setDuration(300).start()
         }
+        viewHolder?.clear()
+        viewHolder = null
     }
+
+    /**是否附加到界面*/
+    fun isAttach() = viewHolder != null && viewHolder?.itemView?.parent != null
 
 }

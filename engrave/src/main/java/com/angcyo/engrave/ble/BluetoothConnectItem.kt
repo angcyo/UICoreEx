@@ -7,7 +7,6 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.visible
-
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.feasycom.common.bean.FscDevice
@@ -51,6 +50,7 @@ class BluetoothConnectItem : DslAdapterItem() {
         payloads: List<Any>
     ) {
         val connectState = fscApi.connectState(itemFscDevice)
+        //L.e("connectState:$connectState")
         itemIsSelected = connectState == DeviceConnectState.CONNECT_STATE_SUCCESS
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 

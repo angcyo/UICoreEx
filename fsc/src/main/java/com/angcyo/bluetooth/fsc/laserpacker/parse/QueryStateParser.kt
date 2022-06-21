@@ -24,6 +24,7 @@ data class QueryStateParser(
     var mode: Int = WORK_MODE_IDLE,
     //当前模式下的工作状态, 暂停, 255:结束
     //空闲模式下: 0xff
+    //打印模式下: 工作中0x01，暂停0x04，结束0x03
     //打印预览模式下: 0x01:预览图片 0x02:预览范围 0x06:支架调整 0x07:显示中心
     var workState: Int = 0,
     //打印进度百分比[0-100]
@@ -59,7 +60,7 @@ data class QueryStateParser(
     var custom: Int = -1,
     //Z轴连接状态, 0未连接, 1链接
     var zConnect: Int = 0,
-    //图片打印次数
+    //当前图片打印的次数
     var printTimes: Int = 0,
     //设备与水平面的平角
     var angle: Int = 0
@@ -122,4 +123,30 @@ data class QueryStateParser(
             null
         }
     }
+
+    //region ------Engrave------
+
+    /**打印模式下, 打印是否暂停了*/
+    fun isEngravePause(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x04
+
+    /**打印模式下, 打印是否正在打印*/
+    fun isEngraving(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x01
+
+    /**打印模式下, 打印是否停止了*/
+    fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x03
+
+    //endregion
+
+    //region ------Mode------
+
+    /**设备是否处于空闲模式*/
+    fun isModeIdle() = mode == WORK_MODE_IDLE
+
+    /**设备是否处于雕刻模式*/
+    fun isModeEngrave() = mode == WORK_MODE_ENGRAVE
+
+    /**雕刻预览模式*/
+    fun isModeEngravePreview() = mode == WORK_MODE_ENGRAVE_PREVIEW
+
+    //endregion
 }
