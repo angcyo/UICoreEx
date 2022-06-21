@@ -24,7 +24,7 @@ data class QueryStateParser(
     var mode: Int = WORK_MODE_IDLE,
     //当前模式下的工作状态, 暂停, 255:结束
     //空闲模式下: 0xff
-    //打印模式下: 工作中0x01，暂停0x04，结束0x03
+    //打印模式下: 工作中0x01，暂停0x04，结束0x03 继续打印0x02
     //打印预览模式下: 0x01:预览图片 0x02:预览范围 0x06:支架调整 0x07:显示中心
     var workState: Int = 0,
     //打印进度百分比[0-100]
@@ -130,7 +130,8 @@ data class QueryStateParser(
     fun isEngravePause(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x04
 
     /**打印模式下, 打印是否正在打印*/
-    fun isEngraving(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x01
+    fun isEngraving(): Boolean =
+        mode == WORK_MODE_ENGRAVE && (workState == 0x01 || workState == 0x02)
 
     /**打印模式下, 打印是否停止了*/
     fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x03

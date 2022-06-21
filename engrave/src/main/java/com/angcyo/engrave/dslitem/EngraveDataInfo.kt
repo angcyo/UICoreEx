@@ -19,7 +19,7 @@ data class EngraveDataInfo(
     var y: Int = 0,
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,
     //自动生成的文件名
-    var name: Int = (System.currentTimeMillis() / 1000).toInt()
+    var name: Int = -1 //(System.currentTimeMillis() / 1000).toInt()
 ) {
     companion object {
 

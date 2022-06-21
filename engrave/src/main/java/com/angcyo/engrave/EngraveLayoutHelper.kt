@@ -1,21 +1,20 @@
 package com.angcyo.engrave
 
-import android.graphics.Color
-import android.graphics.Paint
 import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.*
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
-import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasDataHandleHelper
 import com.angcyo.core.component.file.writeTo
@@ -30,7 +29,10 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.Anim
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex._stringArray
+import com.angcyo.library.ex.elseNull
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
@@ -83,6 +85,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 if (it.isEngraving()) {
                     updateEngraveProgress(
                         clamp(it.rate, 0, 100),
+                        _string(R.string.print_v2_package_printing),
                         time = engraveModel.calcEngraveRemainingTime(it.rate)
                     ) {
                         itemProgressAnimDuration = Anim.ANIM_DURATION
@@ -216,88 +219,15 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**处理雕刻数据*/
     fun handleEngrave() {
-        val renderer = renderer
-        val item = renderer?.getRendererItem()
-        if (item == null) {
-            showEngraveError("数据传输失败")
-            return
-        }
-        if (item is PictureShapeItem && item.paint.style == Paint.Style.STROKE) {
-            //描边时, 才处理成GCode
-            val path = item.shapePath
-            if (path != null) {
-                lifecycleOwner.launchLifecycle {
-                    updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
-                    val dataInfo = withBlock {
-                        val file = CanvasDataHandleHelper.pathStrokeToGCode(
-                            path,
-                            renderer.getRotateBounds(),
-                            renderer.rotate
-                        )
-                        EngraveDataInfo(EngraveDataInfo.TYPE_GCODE, file.readBytes())
-                    }
-                    sendEngraveData(dataInfo)
-                }
+        lifecycleOwner.launchLifecycle {
+            updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+            val dataInfo = withBlock {
+                EngraveHelper.handleEngraveData(renderer)
             }
-        } else {
-            //其他方式, 使用图片雕刻
-            lifecycleOwner.launchLifecycle {
-                updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
-
-                val dataInfo = withBlock {
-
-                    val bounds = renderer.getRotateBounds()
-                    var bitmap = renderer.preview()?.toBitmap()
-
-                    if (bitmap == null) {
-                        null
-                    } else {
-                        val width = bitmap.width
-                        val height = bitmap.height
-
-                        val px: Byte = vmApp<EngraveModel>().engraveOptionInfoData.value!!.px
-
-                        bitmap = LaserPeckerHelper.bitmapScale(bitmap, px)
-
-                        val x = bounds.left.toInt()
-                        val y = bounds.top.toInt()
-
-                        val data = bitmap.colorChannel { color, channelValue ->
-                            if (color == Color.TRANSPARENT) {
-                                255
-                            } else {
-                                channelValue
-                            }
-                        }
-
-                        if (isAppDebug()) {
-                            val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
-                            L.v("$channelBitmap")
-                        }
-
-                        //根据px, 修正坐标
-                        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
-
-                        //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
-                        val engraveWidth = bitmap.width
-                        val engraveHeight = bitmap.height
-
-                        EngraveDataInfo(
-                            EngraveDataInfo.TYPE_BITMAP,
-                            data,
-                            engraveWidth,
-                            engraveHeight,
-                            rect.left,
-                            rect.top,
-                            px
-                        )
-                    }
-                }
-                if (dataInfo == null) {
-                    showEngraveError("数据处理失败")
-                } else {
-                    sendEngraveData(dataInfo)
-                }
+            if (dataInfo == null) {
+                showEngraveError("数据处理失败")
+            } else {
+                sendEngraveData(dataInfo)
             }
         }
     }

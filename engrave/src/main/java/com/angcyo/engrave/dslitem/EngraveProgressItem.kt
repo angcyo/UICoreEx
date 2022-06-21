@@ -55,9 +55,9 @@ class EngraveProgressItem : DslAdapterItem() {
         itemHolder.tv(R.id.lib_time_view)?.text = if (itemTimeStr != null) {
             itemTimeStr
         } else if ((itemTime ?: 0) <= 0) {
-            "${_string(R.string.estimated_remaining_time)}--"
+            "${_string(R.string.estimated_remaining_time)} --"
         } else {
-            "${_string(R.string.estimated_remaining_time)}${itemTime?.toEngraveTime()}"
+            "${_string(R.string.estimated_remaining_time)} ${itemTime?.toEngraveTime()}"
         }
     }
 }
