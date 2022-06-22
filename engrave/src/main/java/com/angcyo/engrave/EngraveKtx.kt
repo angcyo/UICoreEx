@@ -4,8 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.ex.toElapsedTime
 import com.angcyo.library.ex.toHexInt
+import com.angcyo.library.utils.Constant
+import com.angcyo.library.utils.FileTextData
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>

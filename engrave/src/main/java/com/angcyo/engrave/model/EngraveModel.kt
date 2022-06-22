@@ -2,8 +2,8 @@ package com.angcyo.engrave.model
 
 import androidx.lifecycle.ViewModel
 import com.angcyo.engrave.R
-import com.angcyo.engrave.dslitem.EngraveDataInfo
-import com.angcyo.engrave.dslitem.EngraveOptionInfo
+import com.angcyo.engrave.data.EngraveDataInfo
+import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.viewmodel.IViewModel
@@ -41,6 +41,12 @@ class EngraveModel : ViewModel(), IViewModel {
     /**计算雕刻剩余时间, 毫秒
      * [rate] 打印进度百分比[0-100]*/
     fun calcEngraveRemainingTime(rate: Int): Long {
+        if (rate <= 0) {
+            return -1
+        } else if (rate >= 100) {
+            return 0
+        }
+
         val time = nowTime() - startEngraveTime
         val speed = rate * 1f / time
 

@@ -1,4 +1,4 @@
-package com.angcyo.engrave.dslitem
+package com.angcyo.engrave
 
 import android.app.Dialog
 import android.content.Context
@@ -11,7 +11,7 @@ import com.angcyo.engrave.R
 import com.angcyo.widget.DslViewHolder
 
 /**
- * 雕刻界面对话框
+ * 以对话框的方式显示雕刻界面
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/02
  */

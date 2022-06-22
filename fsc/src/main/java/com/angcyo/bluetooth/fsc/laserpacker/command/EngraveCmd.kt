@@ -6,6 +6,7 @@ import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
+import com.angcyo.tablayout.clamp
 
 /**
  * 雕刻/打印指令
@@ -22,7 +23,7 @@ import com.angcyo.library.ex.toHexString
 data class EngraveCmd(
     val name: Int = -1,//为将打印文件名。 文件编号 4字节
     val laser: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
-    val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(100-)
+    val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(101-)
     //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
     val state: Byte = 0x01,//0x01 从头开始打印文件，0x02继续打印文件，0x03结束打印，0x04暂停打印
     val x: Int = 0x0,//图片起始坐标。 2字节
@@ -59,7 +60,7 @@ data class EngraveCmd(
             append(commandFunc().toHexString())
             append(state.toHexString())
             append(laser.toHexString())
-            append((100 - depth).toHexString()) //打印速度
+            append(clamp((101 - depth), 1, 100).toHexString()) //打印速度
             //append(name.toHexString(8))
             append(name.toByteArray(4).toHexString(false))
             append(x.toHexString(4))

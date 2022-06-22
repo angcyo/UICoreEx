@@ -1,4 +1,4 @@
-package com.angcyo.engrave.dslitem
+package com.angcyo.engrave.data
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 
@@ -18,15 +18,17 @@ data class EngraveDataInfo(
     var x: Int = 0,
     var y: Int = 0,
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,
-    //自动生成的文件名
-    var name: Int = -1 //(System.currentTimeMillis() / 1000).toInt()
+    /**雕刻数据的文件名, 32位
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand]*/
+    var name: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
+    var lines: Int = -1, //GCode数据行数, 下位机用来计算进度使用
 ) {
     companion object {
 
         /**图片数据类型.
          *
          * 图片白色像素不打印打印, 色值:255  byte:-1
-         * 图片黑色像素打印, 色值:0
+         * 图片黑色像素打印,      色值:0    byte:0
          * */
         const val TYPE_BITMAP = 0x10
 

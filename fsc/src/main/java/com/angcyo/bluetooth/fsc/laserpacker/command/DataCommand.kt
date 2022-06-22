@@ -88,9 +88,11 @@ data class DataCommand(
             return DataCommand(head, data, logBuilder.toString())
         }
 
-        /**GCode数据*/
+        /**GCode数据
+         * [lines] GCode数据行数*/
         fun gcodeData(
             name: Int,
+            lines: Int,
             gcodeData: ByteArray,
         ): DataCommand {
             val logBuilder = StringBuilder()
@@ -98,15 +100,18 @@ data class DataCommand(
             val head = byteWriter {
                 //0x20时为GCODE数据
                 write(0x20)
-                //占位
-                writeSpace(4)
+                //GCode行数
+                write(lines, 4)
+                /*//占位
+                writeSpace(4)*/
                 //图片名称，占用4个字节
                 write(name, 4)
                 //垫满
                 padLength(64) //需要64个字节
 
                 logBuilder.append("0x20GCode")
-                logBuilder.append("name:$name")
+                logBuilder.append(" name:$name")
+                logBuilder.append(" lines:$lines")
             }
             //数据
             val data = byteWriter {

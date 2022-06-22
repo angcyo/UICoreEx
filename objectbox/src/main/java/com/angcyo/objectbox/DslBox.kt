@@ -21,7 +21,7 @@ import java.io.File
 import kotlin.reflect.KClass
 
 /**
- * Entity 有变化时, 请 执行 Make Project, 否则可能不会生效
+ * Entity 有变化时, 请 执行 Make Project, 否则[Entity]可能不会生效
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/04/14

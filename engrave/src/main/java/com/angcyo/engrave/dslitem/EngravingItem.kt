@@ -62,14 +62,15 @@ class EngravingItem : DslAdapterItem() {
         }
 
         //可见性
-        val isEngraveStop = stateParser?.isEngraveStop() == true
-        itemHolder.visible(R.id.pause_button, !isEngraveStop)
-        itemHolder.visible(R.id.stop_button, !isEngraveStop)
-        itemHolder.visible(R.id.again_button, isEngraveStop)
+        val isEngraving =
+            stateParser?.isEngraving() == true || stateParser?.isEngravePause() == true
+        itemHolder.visible(R.id.pause_button, isEngraving)
+        itemHolder.visible(R.id.stop_button, isEngraving)
+        itemHolder.visible(R.id.again_button, !isEngraving)
 
         //镭雕提示
         itemHolder.tv(R.id.lib_tip_view)?.text = span {
-            if (!isEngraveStop) {
+            if (isEngraving) {
                 append(_string(R.string.v3_print_state_tips))
                 appendln()
             }
@@ -94,12 +95,12 @@ class EngravingItem : DslAdapterItem() {
 
             //加工时间
             val engraveTime = (nowTime() - engraveModel.startEngraveTime).toEngraveTime()
-            if (isEngraveStop) {
-                append(_string(R.string.work_time))
-                append(" $engraveTime")
-            } else {
+            if (isEngraving) {
                 append(_string(R.string.tips_fourteen_12))
                 append(": $engraveTime")
+            } else {
+                append(_string(R.string.work_time))
+                append(" $engraveTime")
             }
             appendln()
 

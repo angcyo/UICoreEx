@@ -8,6 +8,7 @@ import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.utils.*
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.readText
 import com.angcyo.opencv.OpenCV
 
@@ -108,6 +109,7 @@ object CanvasBitmapHandler {
                                     ).toDouble()
                                 ).let {
                                     val gCodeText = it.readText()
+                                    it.deleteSafe()
                                     gCodeText to GCodeHelper.parseGCode(gCodeText)
                                 }
                             }

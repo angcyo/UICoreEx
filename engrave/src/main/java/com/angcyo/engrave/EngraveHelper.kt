@@ -9,15 +9,12 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasDataHandleHelper
 import com.angcyo.canvas.utils.getGCodeText
 import com.angcyo.canvas.utils.getPathList
+import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.dslitem.EngraveDataInfo
+import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.ex.colorChannel
-import com.angcyo.library.ex.isAppDebug
-import com.angcyo.library.ex.readText
-import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.*
 import com.angcyo.opencv.OpenCV
 
 /**
@@ -27,23 +24,30 @@ import com.angcyo.opencv.OpenCV
  */
 object EngraveHelper {
 
+    /**生成一个雕刻需要用到的文件名*/
+    fun generateEngraveName(): Int {
+        return (System.currentTimeMillis() / 1000).toInt()
+    }
+
     /**从[renderer]中获取需要雕刻的数据*/
     fun handleEngraveData(renderer: BaseItemRenderer<*>?): EngraveDataInfo? {
         var result: EngraveDataInfo? = null
         val item = renderer?.getRendererItem() ?: return result
 
         //打印的文件名
-        val name = (System.currentTimeMillis() / 1000).toInt()
+        val name = generateEngraveName()
 
         //GCode
         val gCodeText = renderer.getGCodeText()
         if (!gCodeText.isNullOrEmpty()) {
             //GCode数据
-            val gCodeData =
+            val gCodeFile =
                 CanvasDataHandleHelper.gCodeAdjust(gCodeText, renderer.getBounds(), renderer.rotate)
-                    .readText()
+            val gCodeData = gCodeFile.readText()
+            val gCodeLines = gCodeFile.lines()
+            gCodeFile.deleteSafe()
             if (!gCodeData.isNullOrEmpty()) {
-                return _handleGCodeEngraveData(name, gCodeData.toByteArray())
+                return _handleGCodeEngraveData(name, gCodeData, gCodeLines)
             }
         }
 
@@ -51,15 +55,18 @@ object EngraveHelper {
         val svgPathList = renderer.getPathList()
         if (!svgPathList.isNullOrEmpty()) {
             //path路径
-            val pathGCodeText = CanvasDataHandleHelper.pathStrokeToGCode(
+            val gCodeFile = CanvasDataHandleHelper.pathStrokeToGCode(
                 svgPathList,
                 renderer.getBounds(),
                 renderer.rotate
-            ).readText()
+            )
+            val pathGCodeText = gCodeFile.readText()
+            val gCodeLines = gCodeFile.lines()
+            gCodeFile.deleteSafe()
 
             if (!pathGCodeText.isNullOrEmpty()) {
                 //GCode数据
-                return _handleGCodeEngraveData(name, pathGCodeText.toByteArray())
+                return _handleGCodeEngraveData(name, pathGCodeText, gCodeLines)
             }
         }
 
@@ -68,29 +75,37 @@ object EngraveHelper {
                 //描边时, 才处理成GCode
                 val path = item.shapePath
                 if (path != null) {
-                    val pathGCodeText = CanvasDataHandleHelper.pathStrokeToGCode(
+                    val gCodeFile = CanvasDataHandleHelper.pathStrokeToGCode(
                         path,
                         renderer.getRotateBounds(),
                         renderer.rotate
-                    ).readText()
+                    )
+                    val pathGCodeText = gCodeFile.readText()
+                    val gCodeLines = gCodeFile.lines()
+                    gCodeFile.deleteSafe()
                     if (!pathGCodeText.isNullOrEmpty()) {
                         //GCode数据
-                        return _handleGCodeEngraveData(name, pathGCodeText.toByteArray())
+                        return _handleGCodeEngraveData(name, pathGCodeText, gCodeLines)
                     }
                 }
             } else {
                 //填充情况下, 使用bitmap转gcode
                 val bitmap = renderer.preview()?.toBitmap() ?: return result
-                val gCodeString = OpenCV.bitmapToGCode(app(), bitmap).readText()
+                var gCodeFile = OpenCV.bitmapToGCode(app(), bitmap)
+                val gCodeString = gCodeFile.readText()
+                gCodeFile.deleteSafe()
                 if (!gCodeString.isNullOrEmpty()) {
                     //GCode数据
-                    val gCodeData = CanvasDataHandleHelper.gCodeAdjust(
+                    gCodeFile = CanvasDataHandleHelper.gCodeAdjust(
                         gCodeString,
                         renderer.getBounds(),
                         renderer.rotate
-                    ).readText()
+                    )
+                    val gCodeData = gCodeFile.readText()
+                    val gCodeLines = gCodeFile.lines()
+                    gCodeFile.deleteSafe()
                     if (!gCodeData.isNullOrEmpty()) {
-                        return _handleGCodeEngraveData(name, gCodeData.toByteArray())
+                        return _handleGCodeEngraveData(name, gCodeData, gCodeLines)
                     }
                 }
             }
@@ -117,10 +132,11 @@ object EngraveHelper {
                 }
             }
 
-            if (isAppDebug()) {
-                val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
-                L.v("$channelBitmap")
-            }
+            val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
+            saveEngraveData(name, channelBitmap, "bitmap")
+
+            //二进制数据
+            saveEngraveData(name, data, "engrave")
 
             //根据px, 修正坐标
             val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
@@ -136,14 +152,27 @@ object EngraveHelper {
                 engraveHeight,
                 rect.left,
                 rect.top,
-                px
+                px,
+                name
             )
         }
         return result
     }
 
+    /**保存雕刻数据到文件*/
+    fun saveEngraveData(name: Int, data: Any, suffix: String = "engrave") {
+        //将雕刻数据写入文件
+        data.writeTo(CanvasDataHandleHelper.CACHE_FILE_FOLDER, "${name}.${suffix}")
+    }
+
     //返回GCode雕刻的数据
-    fun _handleGCodeEngraveData(name: Int, data: ByteArray): EngraveDataInfo {
-        return EngraveDataInfo(EngraveDataInfo.TYPE_GCODE, data, name)
+    fun _handleGCodeEngraveData(name: Int, data: String, lines: Int): EngraveDataInfo {
+        saveEngraveData(name, data, "gcode")
+        return EngraveDataInfo(
+            EngraveDataInfo.TYPE_GCODE,
+            data.toByteArray(),
+            name = name,
+            lines = lines
+        )
     }
 }

@@ -16,13 +16,13 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.utils.CanvasDataHandleHelper
-import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.updateItem
+import com.angcyo.engrave.data.EngraveDataInfo
+import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.dslitem.*
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
@@ -106,6 +106,13 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         time = null
                     )
                     engraveModel.stopEngrave()
+
+                    //退出打印模式, 进入空闲模式
+                    ExitCmd().enqueue()
+                    peckerModel.queryDeviceState()
+                } else if (it.isModeIdle()) {
+                    //空闲模式
+                    //dslAdapter?.removeItem { it is EngravingItem }
                 }
                 //更新界面
                 dslAdapter?.updateItem { it is EngravingItem }
@@ -261,17 +268,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         }
                         EngraveDataInfo.TYPE_GCODE -> DataCommand.gcodeData(
                             engraveData.name,
+                            engraveData.lines,
                             engraveData.data
                         )
                         else -> null
                     }
-
-                    //将雕刻数据写入文件
-                    dataCommand?.toByteArray()
-                        ?.writeTo(
-                            CanvasDataHandleHelper.CACHE_FILE_FOLDER,
-                            "${engraveData.name}.engrave"
-                        )
 
                     //开始发送数据
                     if (dataCommand != null) {
