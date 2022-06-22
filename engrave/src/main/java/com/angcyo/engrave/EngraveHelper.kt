@@ -1,21 +1,19 @@
 package com.angcyo.engrave
 
-import android.graphics.Color
 import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.utils.CanvasDataHandleHelper
-import com.angcyo.canvas.utils.getGCodeText
-import com.angcyo.canvas.utils.getPathList
+import com.angcyo.canvas.utils.*
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.library.app
-import com.angcyo.library.ex.*
-import com.angcyo.opencv.OpenCV
+import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.lines
+import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.toBitmap
 
 /**
  * 雕刻助手
@@ -91,7 +89,9 @@ object EngraveHelper {
             } else {
                 //填充情况下, 使用bitmap转gcode
                 val bitmap = renderer.preview()?.toBitmap() ?: return result
-                var gCodeFile = OpenCV.bitmapToGCode(app(), bitmap)
+                //OpenCV.bitmapToGCode(app(), bitmap)
+                var gCodeFile = CanvasDataHandleHelper.bitmapToGCode(bitmap)
+                val rotate = 0f//renderer.rotate
                 val gCodeString = gCodeFile.readText()
                 gCodeFile.deleteSafe()
                 if (!gCodeString.isNullOrEmpty()) {
@@ -99,7 +99,7 @@ object EngraveHelper {
                     gCodeFile = CanvasDataHandleHelper.gCodeAdjust(
                         gCodeString,
                         renderer.getBounds(),
-                        renderer.rotate
+                        rotate
                     )
                     val gCodeData = gCodeFile.readText()
                     val gCodeLines = gCodeFile.lines()
@@ -124,13 +124,7 @@ object EngraveHelper {
             val x = bounds.left.toInt()
             val y = bounds.top.toInt()
 
-            val data = bitmap.colorChannel { color, channelValue ->
-                if (color == Color.TRANSPARENT) {
-                    255
-                } else {
-                    channelValue
-                }
-            }
+            val data = bitmap.engraveColorBytes()
 
             val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
             saveEngraveData(name, channelBitmap, "bitmap")

@@ -23,7 +23,10 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.dslitem.*
+import com.angcyo.engrave.dslitem.EngraveConfirmItem
+import com.angcyo.engrave.dslitem.EngraveOptionItem
+import com.angcyo.engrave.dslitem.EngraveProgressItem
+import com.angcyo.engrave.dslitem.EngravingItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemLabelText
@@ -113,6 +116,12 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 } else if (it.isModeIdle()) {
                     //空闲模式
                     //dslAdapter?.removeItem { it is EngravingItem }
+                    updateEngraveProgress(
+                        100,
+                        tip = _string(R.string.print_v2_package_print_over),
+                        time = null,
+                        autoInsert = false
+                    )
                 }
                 //更新界面
                 dslAdapter?.updateItem { it is EngravingItem }
@@ -193,6 +202,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         progress: Int = engraveProgressItem.itemProgress,
         tip: CharSequence? = engraveProgressItem.itemTip,
         time: Long? = engraveProgressItem.itemTime,
+        autoInsert: Boolean = true, //自动插入到界面
         action: EngraveProgressItem .() -> Unit = {}
     ) {
         dslAdapter?.apply {
@@ -212,7 +222,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 doMain {
                     engraveProgressItem.updateAdapterItem()
                 }
-            } else {
+            } else if (autoInsert) {
                 render {
                     insertItem(0, engraveProgressItem)
                 }

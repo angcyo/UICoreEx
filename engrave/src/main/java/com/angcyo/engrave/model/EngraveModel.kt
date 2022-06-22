@@ -35,7 +35,7 @@ class EngraveModel : ViewModel(), IViewModel {
 
     /**停止雕刻了*/
     fun stopEngrave() {
-
+        startEngraveTime = 0L
     }
 
     /**计算雕刻剩余时间, 毫秒
