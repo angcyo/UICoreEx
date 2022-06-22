@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.data
 
 import android.graphics.Path
 import android.graphics.RectF
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct
 
 /**
  * 物理产品的一些配置信息
@@ -9,11 +10,24 @@ import android.graphics.RectF
  * @since 2022/05/30
  */
 data class ProductInfo(
-    val version: Int, //固件软件版本号
-    val name: String, //产品名称
-    val bounds: RectF, //机器物理的范围, 像素
-    val limitPath: Path, //机器在移动范围内的可打印范围, 像素
-    val isOriginCenter: Boolean, //机器的中心点, 是否在中心, 否则就是在左上角
+
+    /**
+     * 固件软件版本号
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceVersion]
+     * */
+    val version: Int,
+    /**
+     * 产品名称
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * */
+    val name: String,
+    /**机器物理的范围, 像素*/
+    val bounds: RectF,
+    /**机器在移动范围内的可打印范围, 像素*/
+    val limitPath: Path,
+    /**机器的中心点, 是否在中心, 否则就是在左上角
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductInfo]*/
+    val isOriginCenter: Boolean,
 ) {
 
     /**
@@ -22,7 +36,10 @@ data class ProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LII]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII]*/
     fun isLI(): Boolean {
-        val str = "$version"
-        return str.startsWith("1") || str.startsWith("25") || str.startsWith("41")
+        val version = "$version"
+        return version.startsWith("1") || version.startsWith("25") || version.startsWith("41")
     }
+
+    /**[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII_MAX]*/
+    fun isLIIIMax(): Boolean = name == LaserPeckerProduct.LIII_MAX
 }
