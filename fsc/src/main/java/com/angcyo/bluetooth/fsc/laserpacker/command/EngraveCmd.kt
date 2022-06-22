@@ -77,11 +77,10 @@ data class EngraveCmd(
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
         when (state) {
-            0x01.toByte() -> append(" 开始雕刻:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
+            0x01.toByte() -> append(" 开始雕刻:文件:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")
         }
-
     }
 }
