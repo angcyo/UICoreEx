@@ -132,7 +132,7 @@ data class DataCommand(
     }
 
     override fun toCommandLogString(): String = buildString {
-        append("数据:size:${head.size + data.size}bytes ")
+        append("发送数据:size:${head.size + data.size}bytes ")
         append(log)
     }
 
