@@ -26,8 +26,8 @@ data class EngraveCmd(
     val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(101-)
     //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
     val state: Byte = 0x01,//0x01 从头开始打印文件，0x02继续打印文件，0x03结束打印，0x04暂停打印
-    val x: Int = 0x0,//图片起始坐标。 2字节
-    val y: Int = 0x0,
+    val x: Int = 0x0,//图片起始坐标。 2字节。 占位数据
+    val y: Int = 0x0,//占位数据
     val time: Byte = 0x1,//打印次数
     val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
     val custom: Byte = 0x0,
