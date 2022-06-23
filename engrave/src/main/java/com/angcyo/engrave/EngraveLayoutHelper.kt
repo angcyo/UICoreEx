@@ -93,10 +93,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     ) {
                         itemProgressAnimDuration = Anim.ANIM_DURATION
                     }
-                    _delay(1_000) {
-                        //延迟1秒后, 继续查询状态
-                        peckerModel.queryDeviceState()
-                    }
+                    checkDeviceState()
                 } else if (it.isEngravePause()) {
                     updateEngraveProgress(
                         tip = _string(R.string.print_v2_package_print_state),
@@ -177,6 +174,19 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     fun showCloseLayout(show: Boolean = true) {
         doMain {
             viewHolder?.visible(R.id.close_layout_view, show)
+        }
+    }
+
+    /**持续检查工作作态*/
+    fun checkDeviceState() {
+        _delay(1_000) {
+            //延迟1秒后, 继续查询状态
+            peckerModel.queryDeviceState() { bean, error ->
+                if (error != null) {
+                    //出现了错误, 继续查询
+                    checkDeviceState()
+                }
+            }
         }
     }
 
