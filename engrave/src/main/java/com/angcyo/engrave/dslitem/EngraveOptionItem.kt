@@ -22,6 +22,7 @@ class EngraveOptionItem : DslLabelWheelItem() {
         itemLayoutId = R.layout.item_engrave_option_layout
 
         itemWheelSelector = { dialog, index, item ->
+            //赋值操作
             when (itemTag) {
                 EngraveOptionInfo::material.name -> {
                     itemEngraveOptionInfo?.apply {
@@ -36,6 +37,11 @@ class EngraveOptionItem : DslLabelWheelItem() {
                 EngraveOptionInfo::depth.name -> {
                     itemEngraveOptionInfo?.apply {
                         depth = itemWheelList?.get(index)?.toString()?.toByte() ?: depth
+                    }
+                }
+                EngraveOptionInfo::time.name -> {
+                    itemEngraveOptionInfo?.apply {
+                        time = itemWheelList?.get(index)?.toString()?.toByte() ?: time
                     }
                 }
             }

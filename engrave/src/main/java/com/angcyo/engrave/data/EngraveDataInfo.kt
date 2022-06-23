@@ -22,6 +22,12 @@ data class EngraveDataInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand]*/
     var name: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
     var lines: Int = -1, //GCode数据行数, 下位机用来计算进度使用
+
+    /**开始雕刻的时间, 毫秒*/
+    var startEngraveTime: Long = -1,
+
+    /**结束雕刻的时间, 毫秒*/
+    var stopEngraveTime: Long = -1,
 ) {
     companion object {
 

@@ -25,17 +25,14 @@ class EngraveModel : ViewModel(), IViewModel {
     /**当前正在雕刻的数据*/
     var engraveInfoData = vmDataNull<EngraveDataInfo>()
 
-    /**开始雕刻的时间, 毫秒*/
-    var startEngraveTime: Long = 0L
-
     /**开始雕刻*/
     fun startEngrave() {
-        startEngraveTime = nowTime()
+        engraveInfoData.value?.startEngraveTime = nowTime()
     }
 
     /**停止雕刻了*/
     fun stopEngrave() {
-        startEngraveTime = 0L
+        engraveInfoData.value?.stopEngraveTime = nowTime()
     }
 
     /**计算雕刻剩余时间, 毫秒
@@ -45,6 +42,11 @@ class EngraveModel : ViewModel(), IViewModel {
             return -1
         } else if (rate >= 100) {
             return 0
+        }
+
+        val startEngraveTime = engraveInfoData.value?.startEngraveTime ?: -1
+        if (startEngraveTime <= 0) {
+            return -1
         }
 
         val time = nowTime() - startEngraveTime

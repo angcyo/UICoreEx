@@ -94,18 +94,24 @@ class EngravingItem : DslAdapterItem() {
             appendln()
 
             //加工时间
-            val engraveTime = (nowTime() - engraveModel.startEngraveTime).toEngraveTime()
-            if (isEngraving) {
-                append(_string(R.string.tips_fourteen_12))
-                append(": $engraveTime")
-            } else {
-                append(_string(R.string.work_time))
-                append(" $engraveTime")
+            val startEngraveTime = engraveModel.engraveInfoData.value?.startEngraveTime ?: -1
+            if (startEngraveTime > 0) {
+                var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
+                if (isEngraving) {
+                    append(_string(R.string.tips_fourteen_12))
+                    append(": $engraveTime")
+                } else {
+                    val stopEngraveTime =
+                        engraveModel.engraveInfoData.value?.stopEngraveTime ?: nowTime()
+                    engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
+                    append(_string(R.string.work_time))
+                    append(" $engraveTime")
+                }
+                appendln()
             }
-            appendln()
 
             append(_string(R.string.print_times))
-            append(" ${stateParser?.printTimes ?: 0}/1")
+            append(" ${stateParser?.printTimes ?: 0}/${engraveModel.engraveOptionInfoData.value?.time ?: 1}")
         }
 
         //继续/暂停雕刻

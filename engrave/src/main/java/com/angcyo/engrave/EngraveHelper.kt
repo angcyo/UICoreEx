@@ -3,6 +3,7 @@ package com.angcyo.engrave
 import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.canvas.LinePath
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.*
@@ -69,8 +70,8 @@ object EngraveHelper {
         }
 
         if (item is PictureShapeItem) {
-            if (item.paint.style == Paint.Style.STROKE) {
-                //描边时, 才处理成GCode
+            if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
+                //描边时, 才处理成GCode. 并且不是线段
                 val path = item.shapePath
                 if (path != null) {
                     val gCodeFile = CanvasDataHandleHelper.pathStrokeToGCode(
@@ -96,11 +97,15 @@ object EngraveHelper {
                 gCodeFile.deleteSafe()
                 if (!gCodeString.isNullOrEmpty()) {
                     //GCode数据
-                    gCodeFile = CanvasDataHandleHelper.gCodeAdjust(
+                    gCodeFile = CanvasDataHandleHelper.gCodeTranslation(
+                        gCodeString,
+                        renderer.getRotateBounds()
+                    )
+                    /*CanvasDataHandleHelper.gCodeAdjust(
                         gCodeString,
                         renderer.getBounds(),
                         rotate
-                    )
+                    )*/ //这里只需要平移GCode即可
                     val gCodeData = gCodeFile.readText()
                     val gCodeLines = gCodeFile.lines()
                     gCodeFile.deleteSafe()
