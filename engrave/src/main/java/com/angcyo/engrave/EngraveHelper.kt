@@ -41,7 +41,7 @@ object EngraveHelper {
         if (!gCodeText.isNullOrEmpty()) {
             //GCode数据
             val gCodeFile =
-                CanvasDataHandleHelper.gCodeAdjust(gCodeText, renderer.getBounds(), renderer.rotate)
+                CanvasDataHandleOprate.gCodeAdjust(gCodeText, renderer.getBounds(), renderer.rotate)
             val gCodeData = gCodeFile.readText()
             val gCodeLines = gCodeFile.lines()
             gCodeFile.deleteSafe()
@@ -54,7 +54,7 @@ object EngraveHelper {
         val svgPathList = renderer.getPathList()
         if (!svgPathList.isNullOrEmpty()) {
             //path路径
-            val gCodeFile = CanvasDataHandleHelper.pathStrokeToGCode(
+            val gCodeFile = CanvasDataHandleOprate.pathStrokeToGCode(
                 svgPathList,
                 renderer.getBounds(),
                 renderer.rotate
@@ -74,7 +74,7 @@ object EngraveHelper {
                 //描边时, 才处理成GCode. 并且不是线段
                 val path = item.shapePath
                 if (path != null) {
-                    val gCodeFile = CanvasDataHandleHelper.pathStrokeToGCode(
+                    val gCodeFile = CanvasDataHandleOprate.pathStrokeToGCode(
                         path,
                         renderer.getRotateBounds(),
                         renderer.rotate
@@ -91,13 +91,13 @@ object EngraveHelper {
                 //填充情况下, 使用bitmap转gcode
                 val bitmap = renderer.preview()?.toBitmap() ?: return result
                 //OpenCV.bitmapToGCode(app(), bitmap)
-                var gCodeFile = CanvasDataHandleHelper.bitmapToGCode(bitmap)
+                var gCodeFile = CanvasDataHandleOprate.bitmapToGCode(bitmap)
                 val rotate = 0f//renderer.rotate
                 val gCodeString = gCodeFile.readText()
                 gCodeFile.deleteSafe()
                 if (!gCodeString.isNullOrEmpty()) {
                     //GCode数据
-                    gCodeFile = CanvasDataHandleHelper.gCodeTranslation(
+                    gCodeFile = CanvasDataHandleOprate.gCodeTranslation(
                         gCodeString,
                         renderer.getRotateBounds()
                     )
@@ -161,7 +161,7 @@ object EngraveHelper {
     /**保存雕刻数据到文件*/
     fun saveEngraveData(name: Int, data: Any, suffix: String = "engrave") {
         //将雕刻数据写入文件
-        data.writeTo(CanvasDataHandleHelper.CACHE_FILE_FOLDER, "${name}.${suffix}")
+        data.writeTo(CanvasDataHandleOprate.CACHE_FILE_FOLDER, "${name}.${suffix}")
     }
 
     //返回GCode雕刻的数据
