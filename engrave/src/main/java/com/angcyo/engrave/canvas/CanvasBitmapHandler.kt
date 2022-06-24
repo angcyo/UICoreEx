@@ -100,6 +100,7 @@ object CanvasBitmapHandler {
                                 OpenCV.bitmapToGCode(
                                     context,
                                     bitmap,
+                                    (bitmap.width / 2).toMm().toDouble(),
                                     lineSpace = getFloatOrDef(
                                         CanvasRegulatePopupConfig.KEY_LINE_SPACE, 0.125f
                                     ).toDouble(),
