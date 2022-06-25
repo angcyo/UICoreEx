@@ -11,6 +11,7 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.github.R
 import com.angcyo.library.L
+import com.angcyo.library.ex.copy
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.toBitmapDrawable
@@ -93,6 +94,10 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
         dialogViewHolder.visible(R.id.lib_alpha_slide_bar, enableAlpha)
         dialogViewHolder.visible(R.id.lib_brightness_slide_bar, enableBrightness)
 
+        textView?.setOnClickListener {
+            textView.text?.copy(it.context)
+        }
+
         colorPickerView?.apply {
             //slider
             if (enableAlpha) {
@@ -164,7 +169,7 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
 
 
 /**
- * 颜色选择对话框
+ * 圆盘颜色选择对话框
  * */
 fun Context.colorPickerDialog(config: ColorPickerDialogConfig.() -> Unit): Dialog {
     return ColorPickerDialogConfig().run {

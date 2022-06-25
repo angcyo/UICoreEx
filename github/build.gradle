@@ -60,4 +60,7 @@ dependencies {
 
     //https://github.com/LaserPeckerIst/ColorPickerView
     api 'com.github.LaserPeckerIst:ColorPickerView:2.2.4.5'
+
+    //https://github.com/LaserPeckerIst/ColorPicker
+    api 'com.github.LaserPeckerIst:ColorPicker:1.1.0.1'
 }
