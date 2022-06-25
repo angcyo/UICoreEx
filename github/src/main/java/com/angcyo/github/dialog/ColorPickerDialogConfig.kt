@@ -26,7 +26,7 @@ import com.skydoves.colorpickerview.sliders.AlphaSlideBar
 import com.skydoves.colorpickerview.sliders.BrightnessSlideBar
 
 /**
- * 颜色选择Dialog
+ * 颜色选择Dialog, 圆饼颜色选择
  * https://github.com/LaserPeckerIst/ColorPickerView
  *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -40,7 +40,16 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
     /**选中的颜色*/
     var selectedColor: Int = Color.TRANSPARENT
 
-    /**调色板, 从此[Drawable]中获取颜色, 需要是[BitmapDrawable]*/
+    /**[setHsvPaletteDrawable]
+     * 最后也是走[setPaletteDrawable]
+     * [com.skydoves.colorpickerview.ColorHsvPalette]
+     * */
+    var hsvPaletteDrawable: Boolean = false
+
+    /**调色板, 从此[Drawable]中获取颜色, 需要是[BitmapDrawable]
+     * [setPaletteDrawable]
+     * [com.angcyo.github.widget.drawable.ColorPaletteDrawable]
+     * */
     var colorPaletteDrawable: Drawable? = null
 
     /**是否激活颜色的透明度*/
@@ -102,9 +111,26 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
                 }
             })
 
+            //发送一个手势事件, 触发颜色回调
+            fun touchUp() {
+                post {
+                    val event = motionEvent(
+                        MotionEvent.ACTION_UP,
+                        measuredWidth / 2f,
+                        measuredHeight / 2f
+                    )
+                    dispatchTouchEvent(event)
+                    event.recycle()
+
+                    //flag
+                    val bubbleFlag = BubbleFlag(context)
+                    bubbleFlag.flagMode = FlagMode.FADE
+                    colorPickerView.flagView = bubbleFlag
+                }
+            }
+
             //set
             colorPaletteDrawable?.let {
-                //setHsvPaletteDrawable()
                 if (it is BitmapDrawable) {
                     layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                     setPaletteDrawable(it)
@@ -116,29 +142,21 @@ class ColorPickerDialogConfig : BaseDialogConfig() {
                         setPaletteDrawable(it.toBitmapDrawable(measuredWidth, measuredHeight))
                     }
 
-                    post {
-                        //发送一个手势事件, 触发颜色回调
-                        val event = motionEvent(
-                            MotionEvent.ACTION_UP,
-                            measuredWidth / 2f,
-                            measuredHeight / 2f
-                        )
-                        dispatchTouchEvent(event)
-                        event.recycle()
-
-                        //flag
-                        val bubbleFlag = BubbleFlag(context)
-                        bubbleFlag.flagMode = FlagMode.FADE
-                        colorPickerView.flagView = bubbleFlag
-                    }
+                    touchUp()
                 }
             }.elseNull {
                 //flag
-                val bubbleFlag = BubbleFlag(context)
-                bubbleFlag.flagMode = FlagMode.FADE
-                colorPickerView.flagView = bubbleFlag
-
-                setInitialColor(initialColor)
+                if (hsvPaletteDrawable) {
+                    post {
+                        setHsvPaletteDrawable()
+                        touchUp()
+                    }
+                } else {
+                    val bubbleFlag = BubbleFlag(context)
+                    bubbleFlag.flagMode = FlagMode.FADE
+                    colorPickerView.flagView = bubbleFlag
+                    setInitialColor(initialColor)
+                }
             }
         }
     }

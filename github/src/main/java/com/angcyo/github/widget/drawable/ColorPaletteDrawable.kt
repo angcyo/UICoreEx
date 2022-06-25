@@ -7,6 +7,7 @@ import com.angcyo.drawable.base.AbsDslDrawable
 import com.angcyo.library.ex.dpi
 
 /**
+ * 竖向一个一个色块
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/14
  */
