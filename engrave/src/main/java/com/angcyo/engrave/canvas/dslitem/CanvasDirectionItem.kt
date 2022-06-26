@@ -49,4 +49,8 @@ class CanvasDirectionItem : DslAdapterItem(), ITextItem {
         }
     }
 
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        //super.onItemChangeListener(item)
+    }
+
 }

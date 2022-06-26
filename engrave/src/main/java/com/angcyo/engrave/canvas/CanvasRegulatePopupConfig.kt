@@ -1,6 +1,8 @@
 package com.angcyo.engrave.canvas
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.PopupWindow
 import com.angcyo.canvas.items.renderer.IItemRenderer
@@ -59,17 +61,27 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
     /**操作的渲染对象*/
     var itemRenderer: IItemRenderer<*>? = null
 
-    /**需要调整的项目*/
+    /**需要调整的项目, 需要啥就添加对应的项*/
     val regulateList = mutableListOf<Int>()
 
-    //保存修改后的属性
-    val property = keepProperty // hashMapOf<String, Any?>()
+    /**保存修改后的属性*/
+    var property = keepProperty // hashMapOf<String, Any?>()
+
+    /**实时预览*/
+    var livePreview: Boolean = true
 
     /**应用属性实现方法的回调*/
     var onApplyAction: (preview: Boolean, cancel: Boolean, valueChanged: Boolean) -> Unit =
         { preview, cancel, valueChanged ->
 
         }
+
+    //抖动处理
+    val livePreviewRunnable = Runnable { onApplyAction(true, false, true) }
+
+    var shakeDelay: Long = 160L
+
+    val handler = Handler(Looper.getMainLooper())
 
     init {
         contentLayoutId = R.layout.canvas_regulate_layout
@@ -214,6 +226,7 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
                 _itemValueChanged = false //清除状态
             }
         }
+        viewHolder.gone(R.id.preview_view, livePreview)
         //确定
         viewHolder.click(R.id.confirm_view) {
             onApplyAction(false, false, _itemValueChanged)
@@ -222,6 +235,15 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
             if (window is PopupWindow) {
                 window.dismiss()
             }
+        }
+        checkLivePreviewRunnable()
+    }
+
+    /**检查是否需要实时预览*/
+    fun checkLivePreviewRunnable() {
+        if (livePreview) {
+            handler.removeCallbacks(livePreviewRunnable)
+            handler.postDelayed(livePreviewRunnable, shakeDelay)
         }
     }
 
@@ -236,6 +258,9 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
         itemChangeListener = {
             //拦截改成事件, 并且不需要更新界面
             _itemValueChanged = true
+
+            //实时预览
+            checkLivePreviewRunnable()
         }
     }
 

@@ -26,4 +26,8 @@ class CanvasSwitchItem : DslSwitchInfoItem() {
         }
     }
 
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        //super.onItemChangeListener(item)
+    }
+
 }

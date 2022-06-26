@@ -30,4 +30,8 @@ class CanvasSeekBarItem : DslSeekBarInfoItem() {
         }
     }
 
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        //super.onItemChangeListener(item)
+    }
+
 }
