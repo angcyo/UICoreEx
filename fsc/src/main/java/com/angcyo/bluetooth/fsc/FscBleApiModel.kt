@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import androidx.annotation.AnyThread
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.core.app.ActivityCompat
@@ -72,7 +73,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         /**蓝牙不可用*/
         const val BLUETOOTH_STATE_UNAVAILABLE = 2
 
-        /**扫描结束*/
+        /**蓝牙扫描结束*/
         const val BLUETOOTH_STATE_STOP = 3
 
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
@@ -434,6 +435,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [BLUETOOTH_STATE_NORMAL]
      * [BLUETOOTH_STATE_SCANNING]
      * [BLUETOOTH_STATE_UNAVAILABLE]
+     * [BLUETOOTH_STATE_STOP]
      * */
     val bleStateData: MutableLiveData<Int> = vmData(BLUETOOTH_STATE_NORMAL)
 
@@ -575,7 +577,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         if (!isSupportBle()) {
             //不支持蓝牙的设备
-            bleStateData.postValue(BLUETOOTH_STATE_UNAVAILABLE)
+            updateBleState(BLUETOOTH_STATE_UNAVAILABLE)
             return
         } else {
             if (!checkGPSIsOpen(context)) {
@@ -583,7 +585,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             if (!isBlueEnable()) {
                 //未开启蓝牙
-                bleStateData.postValue(BLUETOOTH_STATE_UNAVAILABLE)
+                updateBleState(BLUETOOTH_STATE_UNAVAILABLE)
                 enableBluetooth(context)
 
                 //等待5s之后, 继续操作. 用户操作到打开蓝牙需要一定的时间.
@@ -617,11 +619,19 @@ class FscBleApiModel : ViewModel(), IViewModel {
         handle.removeCallbacks(_delayStopRunnable)
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
-            //bleStateData.postValue(BLUETOOTH_STATE_STOP) //可能的重复调用
+            updateBleState(BLUETOOTH_STATE_STOP) //可能的重复调用
             fscApi.stopScan()
         } else if (bleStateData.value == BLUETOOTH_STATE_STOP) {
             //恢复默认状态
-            bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
+            updateBleState(BLUETOOTH_STATE_NORMAL)
+        }
+    }
+
+    /**更新蓝牙扫描的状态*/
+    @AnyThread
+    fun updateBleState(state: Int) {
+        if (bleStateData.value != state) {
+            bleStateData.postValue(state)
         }
     }
 
@@ -805,15 +815,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     fun _startScan() {
         cacheScanDeviceList.clear()
-        bleStateData.postValue(BLUETOOTH_STATE_SCANNING)
+        updateBleState(BLUETOOTH_STATE_SCANNING)
     }
 
     fun _stopScan() {
         handle.removeCallbacks(_delayStopRunnable)
-        bleStateData.postValue(BLUETOOTH_STATE_STOP)
+        updateBleState(BLUETOOTH_STATE_STOP)
         bleDeviceListData.postValue(cacheScanDeviceList)
         //重置
-        bleStateData.postValue(BLUETOOTH_STATE_NORMAL)
+        updateBleState(BLUETOOTH_STATE_NORMAL)
     }
 
     @UiThread
