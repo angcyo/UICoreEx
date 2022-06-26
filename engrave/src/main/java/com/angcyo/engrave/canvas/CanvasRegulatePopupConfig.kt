@@ -77,7 +77,10 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
         }
 
     //抖动处理
-    val livePreviewRunnable = Runnable { onApplyAction(true, false, true) }
+    val livePreviewRunnable = Runnable {
+        onApplyAction(true, false, true)
+        _itemValueChanged = false //清除状态
+    }
 
     var shakeDelay: Long = 160L
 
