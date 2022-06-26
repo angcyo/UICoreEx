@@ -81,6 +81,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig.REGULATE_LINE_SPACE)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_ANGLE)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_DIRECTION)
+            livePreview = false
 
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
