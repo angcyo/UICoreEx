@@ -62,6 +62,8 @@ fun ActivityResultCaller.strokeLoading(
     }
 }
 
+/**扩展的对象不一样
+ * [Context]*/
 fun Context.strokeLoading2(
     cancel: Boolean = false,
     showErrorToast: Boolean = false,
