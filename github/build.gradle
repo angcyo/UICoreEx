@@ -4,16 +4,6 @@ dependencies {
     implementation project(allModule.dslitem)
     implementation project(allModule.library)
 
-    //https://github.com/Bigkoo/Android-PickerView
-    //https://jcenter.bintray.com/com/contrarywind/wheelview/
-    //api 'com.contrarywind:wheelview:4.1.0'
-    //https://jitpack.io/#WaytoInc/Android-PickerView
-    //https://github.com/WaytoInc/Android-PickerView
-    api 'com.github.WaytoInc.Android-PickerView:wheelview:4.1.0.6'
-    api 'com.github.WaytoInc.Android-PickerView:pickerview:4.1.0.6'
-    //api 'com.github.WaytoInc.Android-PickerView:wheelview:master-SNAPSHOT'
-    //api 'com.github.WaytoInc.Android-PickerView:pickerview:master-SNAPSHOT'
-
     //https://jcenter.bintray.com/rouchuan/viewpagerlayoutmanager/viewpagerlayoutmanager/
     //https://github.com/leochuan/ViewPagerLayoutManager
     //api 'rouchuan.viewpagerlayoutmanager:viewpagerlayoutmanager:2.0.22'
@@ -24,11 +14,6 @@ dependencies {
     //https://github.com/XHGInc/FloatWindow
     //api 'com.github.XHGInc:FloatWindow:1.0.9.3'
     api 'com.github.XHGInc:FloatWindow:master-SNAPSHOT'
-
-    //https://github.com/huanghaibin-dev/CalendarView
-    //api 'com.haibin:calendarview:3.6.7'
-    //https://github.com/angcyo/CalendarView
-    api 'com.github.angcyo:CalendarView:3.7.1.42'
 
     //https://github.com/scwang90/MultiWaveHeader
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
@@ -57,13 +42,4 @@ dependencies {
     //颜色选择
     //https://github.com/duanhong169/ColorPicker
     api 'com.github.duanhong169:colorpicker:1.1.6'
-
-    //https://github.com/LaserPeckerIst/ColorPickerView
-    api 'com.github.LaserPeckerIst:ColorPickerView:2.2.4.5'
-
-    //https://github.com/LaserPeckerIst/ColorPicker
-    api 'com.github.LaserPeckerIst:ColorPicker:1.1.0.2'
-
-    //https://github.com/LaserPeckerIst/AnimatedSvgView
-    api 'com.github.LaserPeckerIst:AnimatedSvgView:1.0.6.2'
 }
