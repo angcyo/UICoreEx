@@ -63,4 +63,7 @@ dependencies {
 
     //https://github.com/LaserPeckerIst/ColorPicker
     api 'com.github.LaserPeckerIst:ColorPicker:1.1.0.2'
+
+    //https://github.com/LaserPeckerIst/AnimatedSvgView
+    api 'com.github.LaserPeckerIst:AnimatedSvgView:1.0.6.2'
 }
