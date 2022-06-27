@@ -19,6 +19,7 @@ import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.canvas.dslitem.TypefaceItem
+import com.angcyo.engrave.data.TypefaceInfo
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.library.utils.filePath
