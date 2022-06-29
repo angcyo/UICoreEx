@@ -1,5 +1,6 @@
 package com.angcyo.objectbox
 
+import androidx.annotation.Keep
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -16,6 +17,7 @@ import io.objectbox.annotation.Id
  * Copyright (c) 2019 ShenZhen O&M Cloud Co., Ltd. All rights reserved.
  */
 @Entity
+@Keep
 data class PlaceholderEntity(
     @Id var entityId: Long = 0L
 

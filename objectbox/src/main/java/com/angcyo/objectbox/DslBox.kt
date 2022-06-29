@@ -305,11 +305,12 @@ inline fun <reified T> Collection<T>.saveAllEntity() {
     boxOf(T::class.java).put(this)
 }
 
+/**删除一条记录*/
 inline fun <reified T> T.deleteEntity(): Boolean {
     return boxOf(T::class.java).remove(this)
 }
 
-/**获取所有*/
+/**获取所有记录*/
 inline fun <reified T> T.allEntity(): List<T> {
     return boxOf(T::class.java).all
 }
