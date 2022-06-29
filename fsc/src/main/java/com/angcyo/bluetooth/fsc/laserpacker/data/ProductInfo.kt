@@ -20,7 +20,7 @@ data class ProductInfo(
      * 产品名称
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
      * */
-    val name: String,
+    val name: String?,
     /**机器物理的范围, 像素*/
     val bounds: RectF,
     /**机器在移动范围内的可打印范围, 像素*/

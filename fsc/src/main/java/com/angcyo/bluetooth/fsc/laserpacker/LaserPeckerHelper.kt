@@ -223,7 +223,7 @@ object LaserPeckerHelper {
     }
 
     /**发送初始化的指令, 读取设备的基础信息*/
-    fun sendInitCommand(address: String, end: (Throwable?) -> Unit) {
+    fun sendInitCommand(address: String, end: (Throwable?) -> Unit = {}) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         flow { chain ->
             //读取设备版本

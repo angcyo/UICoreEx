@@ -702,25 +702,35 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**通过地址直接连接蓝牙设备*/
     fun connect(
-        address: String,
-        name: String = "Unknown",
+        address: String?,
+        name: String?,
+        isAutoConnect: Boolean = false,
         disconnectOther: Boolean = true,
         stopScan: Boolean = true
     ) {
+        if (address.isNullOrEmpty()) {
+            return
+        }
         val bluetoothManager =
             app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
         val device = (bluetoothManager?.adapter
             ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
         val fscDevice = FscDevice(name, address, device, -1, if (useSppModel) "SPP" else "BLE")
-        connect(fscDevice, disconnectOther, stopScan)
+        connect(fscDevice, isAutoConnect, disconnectOther, stopScan)
     }
 
     /**连接设备
      * [connectStateData] 监听设备的连接状态
      * [disconnectOther] 是否断开其他设备
      * [stopScan] 是否停止扫描
+     * [isAutoConnect] 是否是自动连接
      * */
-    fun connect(device: FscDevice?, disconnectOther: Boolean = false, stopScan: Boolean = true) {
+    fun connect(
+        device: FscDevice?,
+        isAutoConnect: Boolean = false,
+        disconnectOther: Boolean = false,
+        stopScan: Boolean = true
+    ) {
         _checkDisconnectTimeout()
         if (stopScan) {
             stopScan()
@@ -748,6 +758,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
         connectStateData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
+            this.isAutoConnect = isAutoConnect
         }
         fscApi.connect(device.address)
     }
@@ -765,6 +776,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 gatt = null
                 disconnectTime = nowTime()
                 isActiveDisConnected = true
+                isAutoConnect = false
             }
             stopSend(bleDevice.address)
             fscApi.disconnect(bleDevice.address)
@@ -791,6 +803,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                     gatt = null
                     disconnectTime = nowTime()
                     this.isActiveDisConnected = isActiveDisConnected
+                    isAutoConnect = false
                 }
                 _notifyConnectDeviceChanged()
             }

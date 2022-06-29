@@ -119,7 +119,7 @@ object LaserPeckerProduct {
     /**根据软件版本号, 解析成产品名称
      * Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ、Ⅶ、Ⅷ、Ⅸ、Ⅹ、Ⅺ、Ⅻ...
      * https://docs.qq.com/sheet/DT0htVG9tamZQTFBz*/
-    fun parseProductName(version: Int): String {
+    fun parseProductName(version: Int): String? {
         val str = "$version"
         return if (str.startsWith("1")) { //1
             if (str.startsWith("15")) LI_Z else LI
@@ -136,7 +136,7 @@ object LaserPeckerProduct {
         } else if (str.startsWith("7")) { //7
             if (str.startsWith("75")) CII else CI
         } else {
-            UNKNOWN
+            null //UNKNOWN
         }
     }
 }

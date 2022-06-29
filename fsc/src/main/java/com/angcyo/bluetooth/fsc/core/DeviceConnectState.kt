@@ -17,6 +17,7 @@ data class DeviceConnectState(
     var type: ConnectType? = null,
     var exception: Exception? = null,
     var isActiveDisConnected: Boolean = false, //主动断开连接
+    var isAutoConnect: Boolean = false, //自动连接, 用来弹出连接成功后的界面
     var disconnectTime: Long = 0L, //断开请求的开始时间
 ) {
     companion object {
