@@ -176,10 +176,15 @@ data class EngravePreviewCmd(
          * */
         fun previewBracketUp(step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x01
-                val bytes = step.toHexString(4).toHexByteArray()
-                d2 = bytes[0]
-                d3 = bytes[1]
+                if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
+                    d1 = 0x03 //0x01 //0x02
+                    d4 = 0x01
+                } else {
+                    d1 = 0x01
+                    val bytes = step.toHexString(4).toHexByteArray()
+                    d2 = bytes[0]
+                    d3 = bytes[1]
+                }
             }
         }
 
@@ -187,17 +192,27 @@ data class EngravePreviewCmd(
          * [step] 步长1mm*/
         fun previewBracketDown(step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x00
-                val bytes = step.toHexString(4).toHexByteArray()
-                d2 = bytes[0]
-                d3 = bytes[1]
+                if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
+                    d1 = 0x02 //0x00 //0x03
+                    d4 = 0x01
+                } else {
+                    d1 = 0x00
+                    val bytes = step.toHexString(4).toHexByteArray()
+                    d2 = bytes[0]
+                    d3 = bytes[1]
+                }
             }
         }
 
         /**停止支架*/
         fun previewBracketStop(): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x02
+                if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
+                    d1 = 0x04
+                    d4 = 0x01
+                } else {
+                    d1 = 0x02
+                }
             }
         }
 
@@ -312,14 +327,30 @@ data class EngravePreviewCmd(
             0x04.toByte() -> append("暂停预览")
             0x05.toByte() -> append("继续预览")
             0x06.toByte() -> {
-                val stepBytes = ByteArray(2)
-                stepBytes[0] = d2
-                stepBytes[1] = d3
-                when (d1) {
-                    0x00.toByte() -> append("降支架:${stepBytes.toHexInt()}")
-                    0x01.toByte() -> append("升支架:${stepBytes.toHexInt()}")
-                    0x02.toByte() -> append("停止支架")
-                    else -> append("未知支架控制:$state")
+                if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
+                    append("LI-Z")
+                    when (d4) {
+                        0x01.toByte() -> append(" 手动调焦")
+                        0x02.toByte() -> append(" 自动调焦")
+                        0x03.toByte() -> append(" 开关机")
+                    }
+                    when (d1) {
+                        0x00.toByte() -> append(" 单击向下调焦")
+                        0x01.toByte() -> append(" 单击向上调焦")
+                        0x02.toByte() -> append(" 长按向上调焦")
+                        0x03.toByte() -> append(" 长按向下调焦")
+                        0x04.toByte() -> append(" 停止移动")
+                    }
+                } else {
+                    val stepBytes = ByteArray(2)
+                    stepBytes[0] = d2
+                    stepBytes[1] = d3
+                    when (d1) {
+                        0x00.toByte() -> append("降支架:${stepBytes.toHexInt()}")
+                        0x01.toByte() -> append("升支架:${stepBytes.toHexInt()}")
+                        0x02.toByte() -> append("停止支架")
+                        else -> append("未知支架控制:$state")
+                    }
                 }
             }
             0x07.toByte() -> append("显示中心")

@@ -32,6 +32,7 @@ data class ProductInfo(
 
     /**
      * 是否是LI的设备
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LI]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LII]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII]*/
@@ -40,6 +41,17 @@ data class ProductInfo(
         return version.startsWith("1") || version.startsWith("25") || version.startsWith("41")
     }
 
-    /**[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII_MAX]*/
+    /**是否是LI-Z的设备
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * */
+    fun isLI_Z(): Boolean {
+        val version = "$version"
+        return version.startsWith("15") || version.startsWith("25")
+    }
+
+    /**
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII_MAX]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * */
     fun isLIIIMax(): Boolean = name == LaserPeckerProduct.LIII_MAX
 }
