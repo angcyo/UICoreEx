@@ -3,6 +3,8 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.core)
     implementation project(allModule.dslitem)
+    implementation project(allModule.transition)
+    implementation project(allModule.objectbox_lp) //数据库
 
     api project(allModule.dialog2)
     api project(allModule.fsc)

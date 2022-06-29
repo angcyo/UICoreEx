@@ -11,7 +11,6 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
-import com.angcyo.engrave.canvas.strokeLoading2
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
@@ -130,15 +129,9 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                     it is BluetoothConnectItem && it.itemFscDevice == state.device
                 }
                 if (state.state == CONNECT_STATE_SUCCESS) {
-                    //读取设备版本
-                    val context = dialog.context
-                    context.strokeLoading2 { cancel, loadEnd ->
-                        LaserPeckerHelper.sendInitCommand(state.device.address) {
-                            loadEnd(null, it)
-                            if (connectedDismiss) {
-                                dialog.dismiss()
-                            }
-                        }
+                    //读取设备版本, 移至: com.angcyo.engrave.model.FscDeviceModel.initDevice
+                    if (connectedDismiss) {
+                        dialog.dismiss()
                     }
                 }
             }

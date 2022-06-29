@@ -31,7 +31,7 @@ class BluetoothConnectItem : DslAdapterItem() {
             if (fscApi.isConnectState(itemFscDevice)) {
                 fscApi.disconnect(itemFscDevice)
             } else {
-                fscApi.connect(itemFscDevice, true)
+                fscApi.connect(itemFscDevice, false, true)
             }
         }
     }
