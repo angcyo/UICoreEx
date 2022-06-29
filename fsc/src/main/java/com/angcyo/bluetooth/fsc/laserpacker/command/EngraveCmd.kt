@@ -29,7 +29,7 @@ data class EngraveCmd(
     val x: Int = 0x0,//图片起始坐标。 2字节。 占位数据
     val y: Int = 0x0,//占位数据
     val time: Byte = 0x1,//打印次数
-    val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
+    val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
     val custom: Byte = 0x0,
 ) : ICommand {
 

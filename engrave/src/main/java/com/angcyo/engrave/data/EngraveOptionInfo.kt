@@ -21,7 +21,7 @@ data class EngraveOptionInfo(
     //图片雕刻时的起始坐标
     var x: Int = 0x0,
     var y: Int = 0x0,
-    //l_type：雕刻激光类型选择，0为1064nm激光 (白光)，1为450nm激光 (蓝光)。(L3max新增)
+    //l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
     var type: Byte = 0x0,
     //分辨率
     var px: Byte = DEFAULT_PX
