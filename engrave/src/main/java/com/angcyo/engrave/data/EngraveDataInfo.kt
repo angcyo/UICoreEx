@@ -11,16 +11,18 @@ data class EngraveDataInfo(
     //数据类型
     var dataType: Int = TYPE_BITMAP,
     //数据
-    var data: ByteArray = byteArrayOf(),
+    var data: ByteArray? = null,
     //图片数据相关属性, px修正过后的
     var width: Int = 0,
     var height: Int = 0,
     var x: Int = 0,
     var y: Int = 0,
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,
-    /**雕刻数据的文件名, 32位
+    /**雕刻数据的索引, 32位, 4个字节
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand]*/
-    var name: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
+    var index: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
+    /**雕刻显示的文件名, 36个字节*/
+    var name: String? = null,
     var lines: Int = -1, //GCode数据行数, 下位机用来计算进度使用
 
     /**开始雕刻的时间, 毫秒*/

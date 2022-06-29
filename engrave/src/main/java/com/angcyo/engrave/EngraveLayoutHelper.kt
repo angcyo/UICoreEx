@@ -265,7 +265,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         showCloseLayout(false)//传输中不允许关闭
         engraveModel.engraveInfoData.postValue(engraveData)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
-        val cmd = FileModeCmd(engraveData.data.size)
+        val cmd = FileModeCmd(engraveData.data?.size ?: 0)
         cmd.enqueue { bean, error ->
             bean?.parse<FileTransferParser>()?.let {
                 if (it.isIntoFileMode()) {
@@ -277,19 +277,21 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                             engraveModel.engraveOptionInfoData.value?.x = engraveData.x
                             engraveModel.engraveOptionInfoData.value?.y = engraveData.y
                             DataCommand.bitmapData(
-                                engraveData.name,
+                                engraveData.index,
                                 engraveData.data,
                                 engraveData.width,
                                 engraveData.height,
                                 engraveData.x,
                                 engraveData.y,
-                                engraveData.px
+                                engraveData.px,
+                                engraveData.name,
                             )
                         }
                         EngraveDataInfo.TYPE_GCODE -> DataCommand.gcodeData(
+                            engraveData.index,
                             engraveData.name,
                             engraveData.lines,
-                            engraveData.data
+                            engraveData.data,
                         )
                         else -> null
                     }
@@ -371,7 +373,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     engraveOptionInfo?.let { option ->
                         engraveInfo?.let { data ->
                             EngraveCmd(
-                                data.name,
+                                data.index,
                                 option.power,
                                 option.depth,
                                 option.state,

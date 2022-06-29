@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.ex.trimAndPad
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -26,7 +27,7 @@ data class DataCommand(
     companion object {
 
         /**
-         * [name] 雕刻文件名,用来打印. 32位 最大值[4294967295]
+         * [index] 雕刻文件索引, 下位机用来查找并打印. 32位 最大值[4294967295]
          * [bitmapData] 图片数据
          * [px]  当PX为以下值时对应图片分辨率：
          *       PX = 0x05 时 图片分辨率为800*800
@@ -38,16 +39,17 @@ data class DataCommand(
          * [bitmapHeight]
          *
          * [minX] 图片的x,y坐标. px修正过后的数据
-         *
+         * [name] 下位机用来显示的文件名, 真正的文件名. 最大36个字节, 再补充一个1字节0的数据
          * */
         fun bitmapData(
-            name: Int,
-            bitmapData: ByteArray,
+            index: Int,
+            bitmapData: ByteArray?,
             bitmapWidth: Int,
             bitmapHeight: Int,
             minX: Int = 0, //图片最小坐标(X,Y)。2字节
             minY: Int = 0,
             px: Byte = DEFAULT_PX,
+            name: String?,
         ): DataCommand {
             val logBuilder = StringBuilder()
             //数据头
@@ -65,16 +67,24 @@ data class DataCommand(
                 //图片的高低8位
                 write(bitmapHeight and 0xff) //低8位
 
-                //图片名称，占用4个字节
-                write(name, 4)
+                //图片索引，占用4个字节
+                write(index, 4)
 
                 write(px)
                 write(minX, 2)
                 write(minY, 2)
 
+                //塞满20个
+                padLength(20)
+                //第21个字节开始 共36个字节的文件名
+                write((name ?: "Default").toByteArray().trimAndPad(36))
+                write(0x00) //写入文件结束字节
+
                 padLength(64) //需要64个字节
 
+                //日志
                 logBuilder.append("0x10图片")
+                logBuilder.append(" index:$index")
                 logBuilder.append(" name:$name")
                 logBuilder.append(" w:$bitmapWidth")
                 logBuilder.append(" h:$bitmapHeight")
@@ -91,9 +101,10 @@ data class DataCommand(
         /**GCode数据
          * [lines] GCode数据行数*/
         fun gcodeData(
-            name: Int,
+            index: Int,
+            name: String?,
             lines: Int,
-            gcodeData: ByteArray,
+            gcodeData: ByteArray?,
         ): DataCommand {
             val logBuilder = StringBuilder()
             //数据头
@@ -104,14 +115,23 @@ data class DataCommand(
                 write(lines, 4)
                 /*//占位
                 writeSpace(4)*/
-                //图片名称，占用4个字节
-                write(name, 4)
+                //数据索引，占用4个字节
+                write(index, 4)
+
+                //塞满20个
+                padLength(20)
+                //第21个字节开始 共36个字节的文件名
+                write((name ?: "Default").toByteArray().trimAndPad(36))
+                write(0x00) //写入文件结束字节
+
                 //垫满
                 padLength(64) //需要64个字节
 
+                //日志
                 logBuilder.append("0x20GCode")
-                logBuilder.append(" name:$name")
+                logBuilder.append(" index:$index")
                 logBuilder.append(" lines:$lines")
+                logBuilder.append(" name:$name")
             }
             //数据
             val data = byteWriter {
