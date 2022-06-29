@@ -245,6 +245,8 @@ class DslBox {
     }
 }
 
+//region ---Box BoxStore---
+
 /**快速获取[BoxStore]*/
 fun boxStoreOf(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
@@ -276,13 +278,48 @@ fun <T> boxOf(
     return box
 }
 
+fun <T : Any> boxOf(
+    entityClass: KClass<T>,
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    action: Box<T>.() -> Unit = {}
+): Box<T> {
+    return boxOf(entityClass.java, packageName, action)
+}
+
+//endregion ---Box BoxStore---
+
+//region ---query find---
+
+/**获取所有记录*/
 fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return query(block).find()
 }
 
+/**获取第一条记录*/
 fun <T> Box<T>.findFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return query(block).findFirst()
 }
+
+/**获取最后一条记录*/
+fun <T> Box<T>.findLast(block: QueryBuilder<T>.() -> Unit = {}): T? {
+    val count = count()
+    if (count <= 0) {
+        //Invalid offset (-1): must be zero or positive
+        return null
+    }
+    return query(block).find(count - 1, 1).lastOrNull()
+}
+
+/**获取所有记录*/
+inline fun <reified T> T.allEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+): List<T> {
+    return boxOf(T::class.java, packageName).all
+}
+
+//endregion ---query find---
+
+//region ---remove---
 
 fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return findAll(block).apply { this@removeAll.remove(this) }
@@ -292,28 +329,35 @@ fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return findFirst(block)?.apply { this@removeFirst.remove(this) }
 }
 
+/**删除一条记录*/
+inline fun <reified T> T.deleteEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+): Boolean {
+    return boxOf(T::class.java, packageName).remove(this)
+}
+
+//endregion ---remove---
+
+//region ---save---
+
 /**保存实体,
  * id不为0时, 就是更新
  * 返回Entity的id*/
-inline fun <reified T> T.saveEntity(): Long {
-    return boxOf(T::class.java).put(this)
+inline fun <reified T> T.saveEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+): Long {
+    return boxOf(T::class.java, packageName).put(this)
 }
 
 /**批量保存或者更新
  * id不为0时, 就是更新*/
-inline fun <reified T> Collection<T>.saveAllEntity() {
-    boxOf(T::class.java).put(this)
+inline fun <reified T> Collection<T>.saveAllEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+) {
+    boxOf(T::class.java, packageName).put(this)
 }
 
-/**删除一条记录*/
-inline fun <reified T> T.deleteEntity(): Boolean {
-    return boxOf(T::class.java).remove(this)
-}
-
-/**获取所有记录*/
-inline fun <reified T> T.allEntity(): List<T> {
-    return boxOf(T::class.java).all
-}
+//endregion ---save---
 
 /**
  * [io.objectbox.android.ObjectBoxLiveData] 使用
