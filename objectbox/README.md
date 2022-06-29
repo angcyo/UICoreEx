@@ -1,5 +1,8 @@
 # ObjectBox
+
 2020-4-14
+
+修改`Entity`之后, 注意`Build Project`.
 
 ```kotlin
 DslBox.default_package_name = BuildConfig.APPLICATION_ID
@@ -131,5 +134,4 @@ String[]
 
 https://docs.objectbox.io/advanced/custom-types#list-array-types
 
-列表/数组类型
-您可以使用具有列表类型的转换器。例如，可以将字符串列表转换为 JSON 数组，从而生成数据库的单个字符串。目前无法将数组与转换器一起使用（您可以跟踪此功能请求）。
+列表/数组类型 您可以使用具有列表类型的转换器。例如，可以将字符串列表转换为 JSON 数组，从而生成数据库的单个字符串。目前无法将数组与转换器一起使用（您可以跟踪此功能请求）。

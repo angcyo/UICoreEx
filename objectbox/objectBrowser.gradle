@@ -1,7 +1,15 @@
+android {
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libobjectbox-jni.so'
+        pickFirst 'lib/arm64-v8a/libobjectbox-jni.so'
+        pickFirst 'lib/x86/libobjectbox-jni.so'
+        pickFirst 'lib/x86_64/libobjectbox-jni.so'
+    }
+}
 
 dependencies {
     //数据库浏览 https://docs.objectbox.io/data-browser
-    // 如果使用了浏览服务, 则在每个使用`apply plugin: 'io.objectbox'`的地方, 都需要用下面的3条语句
+    // 如果使用了浏览服务, 则在每个Module中都要使用`apply plugin: 'io.objectbox'`的地方, 都需要用下面的3条语句
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
     pretestImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
     releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"

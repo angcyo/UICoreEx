@@ -1,9 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.angcyo.objectbox">
+<manifest package="com.angcyo.objectbox">
 
-    <!-- Required to provide the web interface -->
+    <!--https://docs.objectbox.io/data-browser-->
+    <!--
+    &lt;!&ndash; Required to provide the web interface &ndash;&gt;
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Required to run keep-alive service when targeting API 28 or higher -->
+    &lt;!&ndash; Required to run keep-alive service when targeting API 28 or higher &ndash;&gt;
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    -->
+    
 </manifest>

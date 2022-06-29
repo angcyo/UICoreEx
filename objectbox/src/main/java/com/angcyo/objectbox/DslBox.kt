@@ -33,12 +33,17 @@ class DslBox {
 
         private const val ERROR_FILE_NAME = "error.log"
 
-        /**将包名和对应的[BoxStore]保存起来*/
+        /**将包名和对应的[BoxStore]保存起来.
+         * 用来获取[BoxStore]*/
         val boxStoreMap = SimpleArrayMap<String, BoxStore>()
 
         /**默认的包名*/
         var default_package_name: String? = null
 
+        /**
+         * [packageName] 数据库的包名. [MyObjectBox]所在的路径
+         * [dbName] 数据库的名字 [io.objectbox.BoxStoreBuilder.DEFAULT_NAME]
+         * */
         fun init(
             context: Context = app(),
             packageName: String? = default_package_name,
@@ -175,21 +180,28 @@ class DslBox {
             }
         }
 
-        /**
-         * 删除数据库文件
-         */
-        fun deleteBoxDb(context: Context, dbName: String?): Boolean {
+        /** 删除数据库文件 */
+        fun deleteBoxDb(context: Context, dbName: String? = BoxStoreBuilder.DEFAULT_NAME): Boolean {
             return boxDbPath(context, dbName).file().deleteRecursively()
         }
 
-        /**
-         * 数据库所在的文件夹
-         */
+        /** 数据库的文件夹路径
+         *  [/data/user/0/com.angcyo.uicore.demo/files/objectbox/LaserPecker/data.mdb]
+         *  [/data/user/0/com.angcyo.uicore.demo/files/objectbox/LaserPecker/lock.mdb]
+         *
+         *  [/data/user/0/com.angcyo.uicore.demo/files/objectbox/objectbox/data.mdb]
+         *  [/data/user/0/com.angcyo.uicore.demo/files/objectbox/objectbox/lock.mdb]
+         * */
         fun boxDbPath(context: Context, dbName: String?): String {
             return boxPath(context) + File.separator + dbName
         }
 
-        /**获取数据库默认路径*/
+        /**获取数据库默认路径文件夹
+         * [/data/user/0/com.angcyo.uicore.demo/files/]
+         *
+         * [android.content.Context.getFilesDir]
+         * [android.content.Context.getExternalFilesDir]
+         * */
         fun boxPath(context: Context): String {
             return context.filesDir.absolutePath + File.separator + "objectbox"
         }
@@ -221,8 +233,8 @@ class DslBox {
 
         /**启动数据浏览服务*/
         fun startObjectBrowser(boxStore: BoxStore) {
-            val started: Boolean =
-                AndroidObjectBrowser(boxStore).start(app())
+            //boolean started = new Admin(boxStore).start(this);
+            val started: Boolean = AndroidObjectBrowser(boxStore).start(app())
             L._tempTag = "ObjectBrowser"
             if (started) {
                 L.i("数据库浏览服务启动成功: http://${getWifiIP() ?: "localhost"}:${boxStore.objectBrowserPort}/index.html")
