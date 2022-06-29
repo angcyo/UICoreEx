@@ -174,9 +174,9 @@ data class EngravePreviewCmd(
          * 返回:  AA BB 08 02 06 00 01 00 00 00 09
          *       AA BB 08 02 06 00 00 00 00 00 08
          * */
-        fun previewBracketUp(step: Int = 1): EngravePreviewCmd {
+        fun previewBracketUp(step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x1
+                d1 = 0x01
                 val bytes = step.toHexString(4).toHexByteArray()
                 d2 = bytes[0]
                 d3 = bytes[1]
@@ -185,9 +185,9 @@ data class EngravePreviewCmd(
 
         /**支架降
          * [step] 步长1mm*/
-        fun previewBracketDown(step: Int = 1): EngravePreviewCmd {
+        fun previewBracketDown(step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x0
+                d1 = 0x00
                 val bytes = step.toHexString(4).toHexByteArray()
                 d2 = bytes[0]
                 d3 = bytes[1]
@@ -197,7 +197,7 @@ data class EngravePreviewCmd(
         /**停止支架*/
         fun previewBracketStop(): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
-                d1 = 0x2
+                d1 = 0x02
             }
         }
 
@@ -311,7 +311,17 @@ data class EngravePreviewCmd(
             0x03.toByte() -> append("打印预览")
             0x04.toByte() -> append("暂停预览")
             0x05.toByte() -> append("继续预览")
-            0x06.toByte() -> append("升降控制")
+            0x06.toByte() -> {
+                val stepBytes = ByteArray(2)
+                stepBytes[0] = d2
+                stepBytes[1] = d3
+                when (d1) {
+                    0x00.toByte() -> append("降支架:${stepBytes.toHexInt()}")
+                    0x01.toByte() -> append("升支架:${stepBytes.toHexInt()}")
+                    0x02.toByte() -> append("停止支架")
+                    else -> append("未知支架控制:$state")
+                }
+            }
             0x07.toByte() -> append("显示中心")
             else -> append("Unknown")
         }
