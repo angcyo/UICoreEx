@@ -33,6 +33,9 @@ class DslBox {
 
         private const val ERROR_FILE_NAME = "error.log"
 
+        /**默认的数据库所在的文件夹名字*/
+        var DEFAULT_FOLDER_NAME = "objectbox"
+
         /**将包名和对应的[BoxStore]保存起来.
          * 用来获取[BoxStore]*/
         val boxStoreMap = SimpleArrayMap<String, BoxStore>()
@@ -93,21 +96,22 @@ class DslBox {
                     default_package_name = _pName
                 }
 
-                val storeBuilder = builderMethod.invoke(null) as BoxStoreBuilder
-                storeBuilder.androidContext(context.applicationContext)
-                storeBuilder.name(_dbName)
-
-                if (debug) {
-                    storeBuilder.debugFlags(DebugFlags.LOG_TRANSACTIONS_READ or DebugFlags.LOG_TRANSACTIONS_WRITE)
-                    storeBuilder.debugRelations()
-                }
-
                 val baseDirectory = File(boxPath(context))
                 val dbDirectory = File(baseDirectory, _dbName)
 
                 //默认路径:/data/user/0/包名/files/objectbox/objectbox 文件夹下
                 //storeBuilder.baseDirectory()
                 ///data/user/0/com.wayto.wxbic.plugin/files/objectbox
+
+                val storeBuilder = builderMethod.invoke(null) as BoxStoreBuilder
+                storeBuilder.androidContext(context.applicationContext)
+                storeBuilder.baseDirectory(baseDirectory)
+                storeBuilder.name(_dbName)
+
+                if (debug) {
+                    storeBuilder.debugFlags(DebugFlags.LOG_TRANSACTIONS_READ or DebugFlags.LOG_TRANSACTIONS_WRITE)
+                    storeBuilder.debugRelations()
+                }
 
                 try {
                     val boxStore: BoxStore = buildStore(context, _pName, storeBuilder)
@@ -198,12 +202,13 @@ class DslBox {
 
         /**获取数据库默认路径文件夹
          * [/data/user/0/com.angcyo.uicore.demo/files/]
-         *
+         * [/storage/emulated/0/Android/data/com.angcyo.uicore.demo/files/]
          * [android.content.Context.getFilesDir]
          * [android.content.Context.getExternalFilesDir]
          * */
         fun boxPath(context: Context): String {
-            return context.filesDir.absolutePath + File.separator + "objectbox"
+            return context.filesDir.absolutePath + File.separator + DEFAULT_FOLDER_NAME
+            //return libFilePath(DEFAULT_FOLDER_NAME, context)
         }
 
         /**清理缓存*/
