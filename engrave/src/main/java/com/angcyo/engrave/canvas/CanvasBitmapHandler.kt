@@ -1,6 +1,7 @@
 package com.angcyo.engrave.canvas
 
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.Strategy
@@ -75,6 +76,7 @@ object CanvasBitmapHandler {
 
         var result: Pair<String?, GCodeDrawable?>? = null
         var keepBounds = true
+        val beforeBounds = RectF(renderer.getBounds())
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -86,11 +88,7 @@ object CanvasBitmapHandler {
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(
-                            it,
-                            Strategy.redo,
-                            renderer.getBounds()
-                        )
+                        renderer.updateRenderBitmap(it, Strategy.redo, beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
@@ -121,7 +119,7 @@ object CanvasBitmapHandler {
                                 renderer.updateItemDrawable(
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
-                                    if (keepBounds) renderer.getBounds() else null,
+                                    if (keepBounds) beforeBounds else null,
                                     hashMapOf(CanvasDataHandleOperate.KEY_GCODE to it.first),
                                 )
                             }
@@ -133,7 +131,7 @@ object CanvasBitmapHandler {
                             renderer.updateItemDrawable(
                                 it.second,
                                 Strategy.normal,
-                                if (keepBounds) renderer.getBounds() else null,
+                                if (keepBounds) beforeBounds else null,
                                 hashMapOf(CanvasDataHandleOperate.KEY_GCODE to it.first),
                             )
                         }
