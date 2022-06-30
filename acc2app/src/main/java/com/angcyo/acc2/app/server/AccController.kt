@@ -51,7 +51,7 @@ class AccController {
     @GetMapping("/clear")
     fun clearLog(): String {
         val path = AppAccPrint.logPath()
-        val result = path?.file()?.deleteRecursively() == true
+        val result = path.file().deleteRecursively()
         return "清理日志[$result]:$path"
     }
 
@@ -66,7 +66,7 @@ class AccController {
     fun accLog(
         @QueryParam("line", required = false, defaultValue = "100") line: Int
     ): String {
-        val log: String = AppAccPrint.logPath()?.file()?.readTextLastLines(line) ?: "no data"
+        val log: String = AppAccPrint.logPath().file().readTextLastLines(line) ?: "no data"
         return log
     }
 
@@ -75,7 +75,7 @@ class AccController {
     fun catchLog(
         @QueryParam("line", required = false, defaultValue = "100") line: Int
     ): String {
-        val log: String = AppAccPrint.logCatchPath()?.file()?.readTextLastLines(line) ?: "no data"
+        val log: String = AppAccPrint.logCatchPath().file().readTextLastLines(line) ?: "no data"
         return log
     }
 

@@ -29,19 +29,17 @@ object AccDebug {
         when (text?.toString()?.lowercase()) {
             //分享acc日志文件
             "cmd:share:acc", "9._1" -> {
-                val file = AppAccPrint.logPath()?.file()
-                file?.shareFile()
+                val file = AppAccPrint.logPath().file()
+                file.shareFile()
             }
             //分享catch日志文件
             "cmd:share:catch", "9._2" -> {
-                val file = AppAccPrint.logCatchPath()?.file()
-                file?.shareFile()
+                val file = AppAccPrint.logCatchPath().file()
+                file.shareFile()
             }
             //分享Apk对话框
             "cmd:share:apk", "9._8" -> {
-                editText?.context?.let {
-                    it.shareApk()
-                }
+                editText?.context?.shareApk()
             }
             //分享日志对话框
             "cmd:share:dialog", "9._9" -> {

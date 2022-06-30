@@ -37,11 +37,8 @@ class AppAccPrint(accControl: AccControl) : AccPrint(accControl) {
         fun logCatchPath() = accLogFolderName.logFilePath()
 
         /**acc的日志文件路径*/
-        fun logPath() = FileUtils.appRootExternalFolderFile(
-            app(),
-            accLogFolderName,
-            accLogFileName
-        )?.absolutePath
+        fun logPath() =
+            FileUtils.appRootExternalFolderFile(accLogFolderName, accLogFileName).absolutePath
     }
 
     override fun log(log: String?) {

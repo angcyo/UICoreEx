@@ -43,11 +43,11 @@ object LogHelper {
     fun taskLogPath() = FileUtils.appRootExternalFolderFile(
         folder = AppAccPrint.accLogFolderName,
         name = LOG_TASK_FILE_NAME
-    )?.absolutePath
+    ).absolutePath
 
     /**读取日志文本*/
     fun readTaskLog(): String? {
-        return taskLogPath()?.file()?.readText()
+        return taskLogPath().file().readText()
     }
 
     /**显示日志分享对话框*/
@@ -61,7 +61,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享catch日志"
                 itemClick = {
-                    AppAccPrint.logCatchPath()?.file()?.apply {
+                    AppAccPrint.logCatchPath().file().apply {
                         uploadFileToGist("catch.log", this)
                         shareFile(it.context, toast = true)
                     }
@@ -73,7 +73,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享acc日志"
                 itemClick = {
-                    AppAccPrint.logPath()?.file()?.apply {
+                    AppAccPrint.logPath().file().apply {
                         uploadFileToGist("acc.log", this)
                         shareFile(it.context, toast = true)
                     }
@@ -85,7 +85,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享http日志"
                 itemClick = {
-                    Constant.HTTP_FOLDER_NAME.logFilePath()?.file()?.apply {
+                    Constant.HTTP_FOLDER_NAME.logFilePath().file().apply {
                         uploadFileToGist("http.log", this)
                         shareFile(it.context, toast = true)
                     }
