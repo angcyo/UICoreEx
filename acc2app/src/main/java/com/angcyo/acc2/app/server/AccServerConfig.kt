@@ -19,6 +19,6 @@ import com.yanzhenjie.andserver.framework.website.FileBrowser
 class AccServerConfig : WebConfig {
     override fun onConfig(context: Context, delegate: WebConfig.Delegate) {
         // 添加一个文件浏览器网站
-        delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder()!!.absolutePath))
+        delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
     }
 }

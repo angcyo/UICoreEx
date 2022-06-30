@@ -24,7 +24,7 @@ open class FileWebConfig : WebConfig {
     override fun onConfig(context: Context, delegate: WebConfig.Delegate) {
         // 添加一个文件浏览器网站
         if (enable) {
-            delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder()!!.absolutePath))
+            delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
         }
     }
 }

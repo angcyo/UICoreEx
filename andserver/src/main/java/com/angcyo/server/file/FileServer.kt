@@ -12,12 +12,14 @@ import com.angcyo.server.DslAndServer
 
 /**
  * 文件服务
+ *
+ * [com.angcyo.server.file.FileWebConfig]
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/09/22
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-
 class FileServer : AndServerService() {
 
     init {
@@ -56,10 +58,12 @@ fun LifecycleOwner.bindFileServer() {
     })
 }
 
+/**开始一个文件服务, 用来访问app外部文件目录*/
 fun Context.startFileServer() {
     DslAndServer.startServer(this, FileServer::class.java)
 }
 
+/**停止文件服务*/
 fun Context.stopFileServer() {
     DslAndServer.stopServer(this, FileServer::class.java)
 }
