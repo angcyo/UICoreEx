@@ -80,7 +80,9 @@ data class DataCommand(
                 //塞满20个
                 padLength(20)
                 //第21个字节开始 共36个字节的文件名
-                write((name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT))
+                val nameBytes =
+                    (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
                 write(0x00) //写入文件结束字节
 
                 padLength(64) //需要64个字节
@@ -124,7 +126,9 @@ data class DataCommand(
                 //塞满20个
                 padLength(20)
                 //第21个字节开始 共36个字节的文件名
-                write((name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT))
+                val nameBytes =
+                    (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
                 write(0x00) //写入文件结束字节
 
                 //垫满
