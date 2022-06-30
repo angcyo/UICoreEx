@@ -26,6 +26,9 @@ data class DataCommand(
 
     companion object {
 
+        /**雕刻文件名称占用字节数量*/
+        const val DEFAULT_NAME_BYTE_COUNT = 36
+
         /**
          * [index] 雕刻文件索引, 下位机用来查找并打印. 32位 最大值[4294967295]
          * [bitmapData] 图片数据
@@ -77,7 +80,7 @@ data class DataCommand(
                 //塞满20个
                 padLength(20)
                 //第21个字节开始 共36个字节的文件名
-                write((name ?: "Default").toByteArray().trimAndPad(36))
+                write((name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT))
                 write(0x00) //写入文件结束字节
 
                 padLength(64) //需要64个字节
@@ -121,7 +124,7 @@ data class DataCommand(
                 //塞满20个
                 padLength(20)
                 //第21个字节开始 共36个字节的文件名
-                write((name ?: "Default").toByteArray().trimAndPad(36))
+                write((name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT))
                 write(0x00) //写入文件结束字节
 
                 //垫满
