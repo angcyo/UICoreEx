@@ -1,7 +1,7 @@
 package com.angcyo.server.file
 
 import android.content.Context
-import com.angcyo.library.utils.FileUtils
+import com.angcyo.library.libFolderPath
 import com.yanzhenjie.andserver.annotation.Config
 import com.yanzhenjie.andserver.framework.config.WebConfig
 import com.yanzhenjie.andserver.framework.website.FileBrowser
@@ -18,13 +18,20 @@ import com.yanzhenjie.andserver.framework.website.FileBrowser
 open class FileWebConfig : WebConfig {
 
     companion object {
+
+        /**是否激活文件服务*/
         var enable = true
+
+        /**文件服务路径
+         * FileUtils.appRootExternalFolder().absolutePath*/
+        var fileWebPath = libFolderPath("")
     }
 
     override fun onConfig(context: Context, delegate: WebConfig.Delegate) {
         // 添加一个文件浏览器网站
         if (enable) {
-            delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
+            //delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
+            delegate.addWebsite(FileBrowser(fileWebPath))
         }
     }
 }
