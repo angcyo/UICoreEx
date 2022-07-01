@@ -1,7 +1,6 @@
 package com.angcyo.engrave
 
 import android.view.MotionEvent
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
@@ -33,7 +32,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     init {
-        layoutId = R.layout.canvas_engrave_preview_layout
+        iViewLayoutId = R.layout.canvas_engrave_preview_layout
         //模式改变监听
         laserPeckerModel.deviceStateData.observe(fragment) {
             if (it != null) {
@@ -56,10 +55,8 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         }
     }
 
-    /**显示预览布局, 并且发送预览指令*/
-    override fun showLayout(viewGroup: ViewGroup, canvasDelegate: CanvasDelegate?) {
-        super.showLayout(viewGroup, canvasDelegate)
-
+    override fun onIViewShow() {
+        super.onIViewShow()
         //init
         viewHolder?.v<DslSeekBar>(R.id.brightness_seek_bar)?.apply {
             setProgress((LaserPeckerHelper.lastPwrProgress * 100).toInt())
@@ -112,7 +109,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
             bracketStopCmd()
         }
         viewHolder?.click(R.id.close_layout_view) {
-            hideLayout()
+            hide()
         }
         viewHolder?.click(R.id.centre_button) {
             if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
@@ -132,7 +129,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
                 startPreviewCmd(canvasDelegate, true, false)
             } else {
                 //结束预览
-                hideLayout()
+                hide()
             }
             /*if (laserPeckerModel.isEngravePreviewMode()) {
                 exitCmd { bean, error ->
@@ -151,9 +148,8 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         startPreviewCmd(canvasDelegate, true, false)
     }
 
-    /**隐藏预览布局, 并且停止预览*/
-    override fun hideLayout() {
-        super.hideLayout()
+    override fun onIViewRemove() {
+        super.onIViewRemove()
         ExitCmd().enqueue()
         queryDeviceStateCmd()
     }

@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import android.graphics.Color
 import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
@@ -12,13 +13,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
+import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
@@ -32,11 +33,9 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex.Anim
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex._stringArray
-import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.*
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
+import com.angcyo.widget.loading.DangerWarningView
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -61,13 +60,16 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     //雕刻模型
     val engraveModel = vmApp<EngraveModel>()
 
+    //雕刻提示
+    var dangerWarningView: DangerWarningView? = null
+
     init {
-        layoutId = R.layout.canvas_engrave_layout
+        iViewLayoutId = R.layout.canvas_engrave_layout
     }
 
     /**绑定布局*/
     @CanvasEntryPoint
-    fun bindCanvasView(canvasView: CanvasView) {
+    fun bindCanvasView(rootLayout: ViewGroup, canvasView: CanvasView) {
         //监听产品信息
         peckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
             if (productInfo == null) {
@@ -126,12 +128,35 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 }
                 //更新界面
                 dslAdapter?.updateItem { it is EngravingItem }
+
+                //提示
+                if (it.isModeEngravePreview()) {
+                    //预览模式
+                    showDangerWaring(rootLayout, Color.BLUE.alphaRatio(0.4f))
+                } else if (it.isModeEngrave()) {
+                    //雕刻模式
+                    showDangerWaring(rootLayout, Color.RED.alphaRatio(0.4f))
+                } else {
+                    //空闲
+                    dangerWarningView?.removeFromParent()
+                }
             }
         }
     }
 
-    override fun showLayout(viewGroup: ViewGroup, canvasDelegate: CanvasDelegate?) {
-        super.showLayout(viewGroup, canvasDelegate)
+    /**显示危险提示view*/
+    fun showDangerWaring(rootLayout: ViewGroup, color: Int) {
+        if (dangerWarningView == null) {
+            dangerWarningView = DangerWarningView(rootLayout.context)
+        }
+        dangerWarningView?.firstDrawable<DangerWarningDrawable>()?.warnColor = color
+        if (dangerWarningView?.parent == null) {
+            rootLayout.addView(dangerWarningView, -1, -1)
+        }
+    }
+
+    override fun onIViewShow() {
+        super.onIViewShow()
         initLayout()
     }
 
@@ -139,7 +164,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     fun initLayout() {
         //init
         viewHolder?.click(R.id.close_layout_view) {
-            hideLayout()
+            hide()
         }
 
         viewHolder?.rv(R.id.lib_recycler_view)?.apply {
@@ -164,10 +189,6 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             ExitCmd().enqueue()
             handleEngrave()
         }
-    }
-
-    override fun hideLayout() {
-        super.hideLayout()
     }
 
     fun percentList(): List<Int> {

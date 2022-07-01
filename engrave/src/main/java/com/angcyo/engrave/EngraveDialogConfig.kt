@@ -5,9 +5,6 @@ import android.content.Context
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
-
-import com.angcyo.engrave.EngraveLayoutHelper
-import com.angcyo.engrave.R
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -30,7 +27,7 @@ class EngraveDialogConfig(context: Context? = null) : BaseDialogConfig(context) 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
         engraveLayoutHelper.renderer = renderer
-        engraveLayoutHelper.viewHolder = dialogViewHolder
+        engraveLayoutHelper.iViewHolder = dialogViewHolder
         engraveLayoutHelper.initLayout()
     }
 }
