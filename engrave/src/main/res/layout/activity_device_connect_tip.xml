@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:r_path_animate_text="LaserPecker"
-        app:r_path_text_size="60dp" />
+        app:r_path_text_size="50dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_des_view"
