@@ -2,7 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.data
 
 import android.graphics.Path
 import android.graphics.RectF
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 
 /**
  * 物理产品的一些配置信息
@@ -15,43 +15,49 @@ data class ProductInfo(
      * 固件软件版本号
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceVersion]
      * */
-    val version: Int,
+    var version: Int,
     /**
      * 产品名称
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
      * */
-    val name: String?,
+    var name: String?,
     /**机器物理的范围, 像素*/
-    val bounds: RectF,
+    var bounds: RectF,
     /**机器在移动范围内的可打印范围, 像素*/
-    val limitPath: Path,
+    var limitPath: Path,
     /**机器的中心点, 是否在中心, 否则就是在左上角
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductInfo]*/
-    val isOriginCenter: Boolean,
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
+    var isOriginCenter: Boolean = false,
+    var hardwareVersion: Int = -1,
 ) {
 
     /**
      * 是否是LI的设备
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LI]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LII]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII]*/
-    fun isLI(): Boolean {
-        val version = "$version"
-        return version.startsWith("1") || version.startsWith("25") || version.startsWith("41")
-    }
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LI]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LII]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LIII]*/
+    fun isLI(): Boolean = name == LaserPeckerHelper.LI_Z ||
+            name == LaserPeckerHelper.LI ||
+            name == LaserPeckerHelper.LI_PRO ||
+            isLI_Z()
 
     /**是否是LI-Z的设备
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
      * */
-    fun isLI_Z(): Boolean {
-        val version = "$version"
-        return version.startsWith("15") || version.startsWith("25")
-    }
+    fun isLI_Z(): Boolean = name == LaserPeckerHelper.LI_Z_PRO
+
+    /**L2 只有蓝光*/
+    fun isLII(): Boolean = name == LaserPeckerHelper.LII
+
+    fun isLIII(): Boolean = name == LaserPeckerHelper.LIII || isLIIIMax()
 
     /**
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.LIII_MAX]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerProduct.parseProductName]
+     * L3-MAX 蓝光 白光 都有
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LIII_MAX]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
      * */
-    fun isLIIIMax(): Boolean = name == LaserPeckerProduct.LIII_MAX
+    fun isLIIIMax(): Boolean = name == LaserPeckerHelper.LIII_MAX
 }
+
+

@@ -53,7 +53,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
         L.i("设备版本:$queryVersionParser".writeBleLog())
-        productInfoData.postValue(LaserPeckerProduct.parseProductInfo(queryVersionParser.softwareVersion))
+        val productInfo = LaserPeckerHelper.parseProductInfo(queryVersionParser.softwareVersion)
+        productInfo.hardwareVersion = queryVersionParser.hardwareVersion
+        productInfoData.postValue(productInfo)
         deviceVersionData.postValue(queryVersionParser)
     }
 
@@ -143,5 +145,4 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="Command">
-
 }
