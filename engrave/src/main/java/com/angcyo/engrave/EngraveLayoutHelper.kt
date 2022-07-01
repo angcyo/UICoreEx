@@ -93,6 +93,10 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     ) {
                         itemProgressAnimDuration = Anim.ANIM_DURATION
                     }
+                    engraveModel.updateEngraveDataInfo {
+                        //更新打印次数
+                        printTimes = it.printTimes
+                    }
                     checkDeviceState()
                 } else if (it.isEngravePause()) {
                     updateEngraveProgress(
@@ -263,7 +267,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     @AnyThread
     fun sendEngraveData(engraveData: EngraveDataInfo) {
         showCloseLayout(false)//传输中不允许关闭
-        engraveModel.engraveInfoData.postValue(engraveData)
+        engraveModel.setEngraveDataInfo(engraveData)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
         val cmd = FileModeCmd(engraveData.data?.size ?: 0)
         cmd.enqueue { bean, error ->

@@ -1,5 +1,6 @@
 package com.angcyo.engrave.model
 
+import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveDataInfo
@@ -25,8 +26,24 @@ class EngraveModel : ViewModel(), IViewModel {
     /**当前正在雕刻的数据*/
     var engraveInfoData = vmDataNull<EngraveDataInfo>()
 
+    /**设置需要雕刻的数据*/
+    @AnyThread
+    fun setEngraveDataInfo(info: EngraveDataInfo) {
+        engraveInfoData.postValue(info)
+    }
+
+    /**更新雕刻数据信息*/
+    @AnyThread
+    fun updateEngraveDataInfo(block: EngraveDataInfo.() -> Unit) {
+        engraveInfoData.value?.let {
+            it.block()
+            setEngraveDataInfo(it)
+        }
+    }
+
     /**开始雕刻*/
     fun startEngrave() {
+        engraveInfoData.value?.printTimes = 0
         engraveInfoData.value?.startEngraveTime = nowTime()
     }
 

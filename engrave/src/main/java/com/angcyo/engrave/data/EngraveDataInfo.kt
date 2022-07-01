@@ -27,9 +27,10 @@ data class EngraveDataInfo(
 
     /**开始雕刻的时间, 毫秒*/
     var startEngraveTime: Long = -1,
-
     /**结束雕刻的时间, 毫秒*/
     var stopEngraveTime: Long = -1,
+    /**当前数据已经雕刻的次数*/
+    var printTimes: Int = 0,
 ) {
     companion object {
 

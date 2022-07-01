@@ -111,7 +111,9 @@ class EngravingItem : DslAdapterItem() {
             }
 
             append(_string(R.string.print_times))
-            append(" ${stateParser?.printTimes ?: 0}/${engraveModel.engraveOptionInfoData.value?.time ?: 1}")
+            val times = engraveModel.engraveOptionInfoData.value?.time ?: 1
+            val printTimes = engraveModel.engraveInfoData.value?.printTimes ?: 1
+            append(" ${printTimes}/${times}")
         }
 
         //继续/暂停雕刻
