@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="220dp"
     android:layout_gravity="bottom"
-    android:layout_margin="@dimen/lib_xxhdpi"
+    android:layout_margin="@dimen/lib_xhdpi"
     android:background="@drawable/dialog_white_round_common_bg_shape"
     android:fitsSystemWindows="true">
 
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:r_path_animate_text="LaserPecker"
-        app:r_path_text_size="50dp" />
+        app:r_path_text_size="56dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_des_view"
