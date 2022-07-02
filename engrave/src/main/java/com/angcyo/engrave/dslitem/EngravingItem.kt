@@ -77,7 +77,7 @@ class EngravingItem : DslAdapterItem() {
 
             //分辨率: 1k
             append(_string(R.string.tv_01))
-            append(": ${LaserPeckerHelper.findPxInfo(engraveModel.engraveOptionInfoData.value?.px)?.des}")
+            append(": ${LaserPeckerHelper.findPxInfo(engraveModel.engraveInfoData.value?.px)?.des}")
             appendln()
 
             //材质:

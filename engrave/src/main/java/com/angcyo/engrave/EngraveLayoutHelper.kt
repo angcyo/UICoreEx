@@ -21,15 +21,14 @@ import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.dslitem.EngraveConfirmItem
-import com.angcyo.engrave.dslitem.EngraveOptionItem
-import com.angcyo.engrave.dslitem.EngraveProgressItem
-import com.angcyo.engrave.dslitem.EngravingItem
+import com.angcyo.engrave.dslitem.*
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
+import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.component._delay
@@ -180,14 +179,14 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         //engrave
         if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
             //设备空闲
-            handleEngrave()
+            showEngraveOptionItem()
         } else if (peckerModel.deviceStateData.value?.isModeEngrave() == true) {
             //设备雕刻中
             showEngravingItem()
         } else {
             //其他模式下, 先退出其他模式, 再next
             ExitCmd().enqueue()
-            handleEngrave()
+            showEngraveOptionItem()
         }
     }
 
@@ -197,6 +196,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**显示关闭按钮*/
     fun showCloseLayout(show: Boolean = true) {
+        cancelable = show
         doMain {
             viewHolder?.visible(R.id.close_layout_view, show)
         }
@@ -270,13 +270,14 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     //region ---Handle---
 
     /**处理雕刻数据*/
-    fun handleEngrave() {
+    fun showHandleEngraveItem(engraveData: EngraveDataInfo) {
         lifecycleOwner.launchLifecycle {
+            dslAdapter?.clearAllItems()
             updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
             val dataInfo = withBlock {
-                EngraveHelper.handleEngraveData(renderer)
+                EngraveHelper.handleEngraveData(renderer, engraveData)
             }
-            if (dataInfo == null) {
+            if (dataInfo.data == null) {
                 showEngraveError("数据处理失败")
             } else {
                 sendEngraveData(dataInfo)
@@ -363,7 +364,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         dslAdapter?.render {
             clearAllItems()
 
-            EngraveOptionItem()() {
+            EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_material)
                 itemWheelList = _stringArray(R.array.sourceMaterial).toList()
                 val material = engraveOptionInfo?.material ?: _string(R.string.material_custom)
@@ -371,21 +372,21 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 itemTag = EngraveOptionInfo::material.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
-            EngraveOptionItem()() {
+            EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_power)
                 itemWheelList = percentList()
                 itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.power)
                 itemTag = EngraveOptionInfo::power.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
-            EngraveOptionItem()() {
+            EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_speed)
                 itemWheelList = percentList()
                 itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
                 itemTag = EngraveOptionInfo::depth.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
-            EngraveOptionItem()() {
+            EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.print_times)
                 itemWheelList = percentList()
                 itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.time)
@@ -424,6 +425,47 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         //进入空闲模式
         ExitCmd().enqueue()
         peckerModel.queryDeviceState()
+    }
+
+    /**显示雕刻数据处理前选项相关的item*/
+    fun showEngraveOptionItem() {
+        renderer?.let { renderer ->
+            dslAdapter?.render {
+                clearAllItems()
+
+                //预处理的数据
+                val dataInfo = EngraveHelper.generateEngraveDataInfo(renderer)
+                if (dataInfo == null) {
+                    showEngraveError("数据处理失败")
+                } else {
+                    /*EngraveDataPreviewItem()() {
+                        itemEngraveDataInfo = dataInfo
+                    }*/
+                    EngraveDataNameItem()() {
+                        itemEngraveDataInfo = dataInfo
+                    }
+                    /*EngraveDataModeItem()() {
+                        itemEngraveDataInfo = dataInfo
+                    }*/
+                    if (dataInfo.optionSupportPxList.isNullOrEmpty().not()) {
+                        EngraveDataPxItem()() {
+                            itemEngraveDataInfo = dataInfo
+                            itemPxList = dataInfo.optionSupportPxList
+                        }
+                    }
+                    EngraveDataNextItem()() {
+                        itemClick = {
+                            if (!checkItemThrowable()) {
+                                //next
+                                renderer.getRendererItem()?.itemName = dataInfo.name
+                                showHandleEngraveItem(dataInfo)
+                            }
+                        }
+                    }
+                    renderEmptyItem(_dimen(R.dimen.lib_xxhdpi))
+                }
+            }
+        }
     }
 
     /**显示雕刻中相关的item*/

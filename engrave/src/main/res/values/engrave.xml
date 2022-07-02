@@ -76,4 +76,8 @@
     <string name="device_setting_txt_5">批量雕刻按键</string>
     <string name="device_setting_txt_6">该开关可控制外接配件“批量雕刻按键”的启用和禁用状态</string>
     <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
+
+    <string name="print_v2_package_edit_name">文件命名</string>
+    <string name="ui_edit_main_next">下一步</string>
+
 </resources>

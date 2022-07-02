@@ -11,6 +11,9 @@ dependencies {
     api project(allModule.canvas)
 
     api 'com.angcyo:opencv:hingin-SNAPSHOT'
+
+    //https://github.com/chrisbanes/PhotoView/
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }
 
 apply from: allGradle.libfscaar

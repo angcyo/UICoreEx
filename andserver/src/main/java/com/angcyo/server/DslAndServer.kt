@@ -23,7 +23,7 @@ object DslAndServer {
     var DEFAULT_RETRY_COUNT = 10
 
     /**通知通道名*/
-    var DEFAULT_CHANNEL_NAME = "Server"
+    var DEFAULT_CHANNEL_NAME = "AndServer"
 
     /**通知图标*/
     var DEFAULT_NOTIFY_ICON = DslNotify.DEFAULT_NOTIFY_ICON

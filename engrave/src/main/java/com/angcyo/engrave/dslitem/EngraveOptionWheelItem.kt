@@ -13,7 +13,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/02
  */
-class EngraveOptionItem : DslLabelWheelItem() {
+class EngraveOptionWheelItem : DslLabelWheelItem() {
 
     /**数据*/
     var itemEngraveOptionInfo: EngraveOptionInfo? = null

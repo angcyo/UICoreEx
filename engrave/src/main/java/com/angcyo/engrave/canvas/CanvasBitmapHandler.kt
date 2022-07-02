@@ -20,6 +20,24 @@ import com.angcyo.opencv.OpenCV
  */
 object CanvasBitmapHandler {
 
+    /**图片模式, 版画*/
+    const val BITMAP_MODE_PRINT = 1
+
+    /**GCode*/
+    const val BITMAP_MODE_GCODE = 2
+
+    /**黑白*/
+    const val BITMAP_MODE_BLACK_WHITE = 3
+
+    /**抖动*/
+    const val BITMAP_MODE_DITHERING = 4
+
+    /**灰度*/
+    const val BITMAP_MODE_GREY = 5
+
+    /**印章*/
+    const val BITMAP_MODE_SEAL = 6
+
     /**版画*/
     fun handlePrint(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
         val context = anchor.context

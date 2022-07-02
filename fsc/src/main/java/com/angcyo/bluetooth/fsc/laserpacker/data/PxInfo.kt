@@ -3,6 +3,8 @@ package com.angcyo.bluetooth.fsc.laserpacker.data
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
+import com.angcyo.library.extend.IToText
+import com.angcyo.library.extend.IToValue
 
 /**
  * 打印像素的信息
@@ -22,7 +24,7 @@ data class PxInfo(
     val pxHeight: Int,
     //显示的界面上的描述
     val des: String,
-) {
+) : IToText, IToValue {
 
     /**宽度值转换*/
     fun transformWidth(
@@ -74,4 +76,7 @@ data class PxInfo(
         return (centerY + centerY * scale).toInt()
     }
 
+    override fun toText(): CharSequence? = des
+
+    override fun toValue(): Any? = px
 }

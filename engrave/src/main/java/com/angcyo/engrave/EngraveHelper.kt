@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import android.graphics.Bitmap
 import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
@@ -8,13 +9,14 @@ import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.component.file.writeTo
-import com.angcyo.core.vmApp
+import com.angcyo.engrave.canvas.CanvasBitmapHandler
 import com.angcyo.engrave.data.EngraveDataInfo
-import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.toBitmap
+import java.io.File
 
 /**
  * 雕刻助手
@@ -28,33 +30,70 @@ object EngraveHelper {
         return (System.currentTimeMillis() / 1000).toInt()
     }
 
-    /**从[renderer]中获取需要雕刻的数据*/
-    fun handleEngraveData(renderer: BaseItemRenderer<*>?): EngraveDataInfo? {
+    /**创建一个雕刻数据, 不处理雕刻数据, 加快响应速度*/
+    fun generateEngraveDataInfo(renderer: BaseItemRenderer<*>?): EngraveDataInfo? {
         var result: EngraveDataInfo? = null
         val item = renderer?.getRendererItem() ?: return result
+        result = EngraveDataInfo()
 
         //打印的文件索引
         val index = generateEngraveIndex()
+        result.index = index
+        result.name = item.itemName?.toString()
+        result.rendererItemUuid = item.uuid
 
-        //下位机显示的文件名
-        val name = "文件名-$index"
+        val gCodeText = renderer.getGCodeText()
+        if (!gCodeText.isNullOrEmpty()) {
+            //GCode数据
+            result.dataType = EngraveDataInfo.TYPE_GCODE
+            return result
+        }
+
+        val svgPathList = renderer.getPathList()
+        if (!svgPathList.isNullOrEmpty()) {
+            //path路径
+            result.dataType = EngraveDataInfo.TYPE_GCODE
+            return result
+        }
+
+        if (item is PictureShapeItem) {
+            result.dataType = EngraveDataInfo.TYPE_GCODE
+            if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
+                //
+            } else {
+                result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE
+                result.optionSupportModeList = listOf(
+                    CanvasBitmapHandler.BITMAP_MODE_GREY,
+                    CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE,
+                    CanvasBitmapHandler.BITMAP_MODE_GCODE
+                )
+            }
+            return result
+        } else {
+            result.px = LaserPeckerHelper.DEFAULT_PX
+            result.dataType = EngraveDataInfo.TYPE_BITMAP
+
+            //px list
+            result.optionSupportPxList = LaserPeckerHelper.findProductSupportPxList()
+        }
+        return result
+    }
+
+    /**处理需要打印的雕刻数据, 保存对应的数据等*/
+    fun handleEngraveData(renderer: BaseItemRenderer<*>?, info: EngraveDataInfo): EngraveDataInfo {
+        val item = renderer?.getRendererItem() ?: return info
 
         //GCode
         val gCodeText = renderer.getGCodeText()
         if (!gCodeText.isNullOrEmpty()) {
             //GCode数据
-            val gCodeFile =
-                CanvasDataHandleOperate.gCodeAdjust(
-                    gCodeText,
-                    renderer.getBounds(),
-                    renderer.rotate
-                )
-            val gCodeData = gCodeFile.readText()
-            val gCodeLines = gCodeFile.lines()
-            gCodeFile.deleteSafe()
-            if (!gCodeData.isNullOrEmpty()) {
-                return _handleGCodeEngraveData(index, name, gCodeData, gCodeLines)
-            }
+            val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
+                gCodeText,
+                renderer.getBounds(),
+                renderer.rotate
+            )
+            _handleGCodeInfo(info, gCodeFile)
+            return info
         }
 
         //SVG
@@ -66,16 +105,11 @@ object EngraveHelper {
                 renderer.getBounds(),
                 renderer.rotate
             )
-            val pathGCodeText = gCodeFile.readText()
-            val gCodeLines = gCodeFile.lines()
-            gCodeFile.deleteSafe()
-
-            if (!pathGCodeText.isNullOrEmpty()) {
-                //GCode数据
-                return _handleGCodeEngraveData(index, name, pathGCodeText, gCodeLines)
-            }
+            _handleGCodeInfo(info, gCodeFile)
+            return info
         }
 
+        //其他
         if (item is PictureShapeItem) {
             if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
                 //描边时, 才处理成GCode. 并且不是线段
@@ -86,17 +120,12 @@ object EngraveHelper {
                         renderer.getRotateBounds(),
                         renderer.rotate
                     )
-                    val pathGCodeText = gCodeFile.readText()
-                    val gCodeLines = gCodeFile.lines()
-                    gCodeFile.deleteSafe()
-                    if (!pathGCodeText.isNullOrEmpty()) {
-                        //GCode数据
-                        return _handleGCodeEngraveData(index, name, pathGCodeText, gCodeLines)
-                    }
+                    _handleGCodeInfo(info, gCodeFile)
+                    return info
                 }
             } else {
                 //填充情况下, 使用bitmap转gcode
-                val bitmap = renderer.preview()?.toBitmap() ?: return result
+                val bitmap = renderer.preview()?.toBitmap() ?: return info
                 //OpenCV.bitmapToGCode(app(), bitmap)
                 var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(bitmap)
                 val rotate = 0f//renderer.rotate
@@ -113,79 +142,99 @@ object EngraveHelper {
                         renderer.getBounds(),
                         rotate
                     )*/ //这里只需要平移GCode即可
-                    val gCodeData = gCodeFile.readText()
-                    val gCodeLines = gCodeFile.lines()
-                    gCodeFile.deleteSafe()
-                    if (!gCodeData.isNullOrEmpty()) {
-                        return _handleGCodeEngraveData(index, name, gCodeData, gCodeLines)
-                    }
+                    _handleGCodeInfo(info, gCodeFile)
+                    return info
                 }
             }
         } else {
             //其他方式, 使用图片雕刻
             val bounds = renderer.getRotateBounds()
-            var bitmap = renderer.preview()?.toBitmap() ?: return result
-
-            val width = bitmap.width
-            val height = bitmap.height
-
-            val px: Byte = vmApp<EngraveModel>().engraveOptionInfoData.value!!.px
-
-            bitmap = LaserPeckerHelper.bitmapScale(bitmap, px)
+            val bitmap = renderer.preview()?.toBitmap() ?: return info
 
             val x = bounds.left.toInt()
             val y = bounds.top.toInt()
 
-            val data = bitmap.engraveColorBytes()
+            info.dataType = EngraveDataInfo.TYPE_BITMAP
+            info.optionBitmap = bitmap
+            info.optionX = x
+            info.optionY = y
 
-            val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
-            saveEngraveData(index, channelBitmap, "bitmap")
-
-            //二进制数据
-            saveEngraveData(index, data, "engrave")
-
-            //根据px, 修正坐标
-            val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
-
-            //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
-            val engraveWidth = bitmap.width
-            val engraveHeight = bitmap.height
-
-            result = EngraveDataInfo(
-                EngraveDataInfo.TYPE_BITMAP,
-                data,
-                engraveWidth,
-                engraveHeight,
-                rect.left,
-                rect.top,
-                px,
-                index,
-                name,
-            )
+            updateBitmapPx(info, info.px)
         }
-        return result
+
+        return info
     }
 
-    /**保存雕刻数据到文件*/
-    fun saveEngraveData(name: Int, data: Any, suffix: String = "engrave") {
+    /**更新雕刻图片的分辨率
+     * [px] 图片需要调整到的分辨率*/
+    fun updateBitmapPx(info: EngraveDataInfo, px: Byte) {
+        var bitmap = info.optionBitmap ?: return
+        val width = bitmap.width
+        val height = bitmap.height
+
+        //scale
+        bitmap = LaserPeckerHelper.bitmapScale(bitmap, px)
+
+        //雕刻的数据
+        val data = bitmap.engraveColorBytes()
+        //保存一份byte数据
+        info.dataPath = saveEngraveData(info.index, data)//数据路径
+
+        //保存一份可视化的数据
+        val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
+        saveEngraveData(info.index, channelBitmap, "png")
+
+        //根据px, 修正坐标
+        val x = info.optionX
+        val y = info.optionY
+        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
+
+        //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
+        val engraveWidth = bitmap.width
+        val engraveHeight = bitmap.height
+
+        info.data = data
+        info.x = rect.left
+        info.y = rect.top
+        info.width = engraveWidth
+        info.height = engraveHeight
+        info.px = px
+    }
+
+    /**更新雕刻时的数据模式, 比如图片可以转GCode, 灰度, 黑白数据等*/
+    fun updateDataMode(info: EngraveDataInfo) {
+
+    }
+
+    /**保存雕刻数据到文件
+     * [data]
+     *   [String]
+     *   [ByteArray]
+     *   [Bitmap]
+     * ]*/
+    fun saveEngraveData(name: Int, data: Any, suffix: String = "engrave"): String? {
         //将雕刻数据写入文件
-        data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${name}.${suffix}")
+        return data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${name}.${suffix}")
     }
 
-    //返回GCode雕刻的数据
-    fun _handleGCodeEngraveData(
-        index: Int,
-        name: String,
-        data: String,
-        lines: Int
-    ): EngraveDataInfo {
-        saveEngraveData(index, data, "gcode")
-        return EngraveDataInfo(
-            EngraveDataInfo.TYPE_GCODE,
-            data.toByteArray(),
-            index = index,
-            name = name,
-            lines = lines
-        )
+    fun _handleGCodeInfo(info: EngraveDataInfo, gCodeFile: File) {
+        val pathGCodeText = gCodeFile.readText()
+        val gCodeLines = gCodeFile.lines()
+        gCodeFile.deleteSafe()
+
+        if (!pathGCodeText.isNullOrEmpty()) {
+            //GCode数据
+
+            info.dataType = EngraveDataInfo.TYPE_GCODE
+            info.lines = gCodeLines
+            val data = pathGCodeText.toByteArray()
+            info.data = data
+
+            //保存一份byte数据
+            info.dataPath = saveEngraveData(info.index, data)//数据路径
+
+            saveEngraveData(info.index, pathGCodeText, "gcode")
+            info.optionBitmap = GCodeHelper.parseGCode(pathGCodeText)?.toBitmap()
+        }
     }
 }

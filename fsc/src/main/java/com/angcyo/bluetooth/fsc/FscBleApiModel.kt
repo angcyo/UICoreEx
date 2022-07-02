@@ -517,6 +517,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
+    /**是否有设备连接成功*/
+    fun haveDeviceConnected(): Boolean {
+        return connectDeviceListData.value.isNullOrEmpty().not()
+    }
+
     /**蓝牙是否正在连接, 或者已经连接*/
     fun isConnectState(device: FscDevice?): Boolean {
         val address = device?.address

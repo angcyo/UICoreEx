@@ -180,7 +180,7 @@ open class TbsWebFragment : BaseTitleFragment() {
         appendLeftItem(ico = R.drawable.tbs_ic_close, action = {
             id = R.id.lib_close_view
             visibility = View.GONE
-            marginParams {
+            updateMarginParams {
                 leftMargin = -6 * dpi
             }
         }) {
