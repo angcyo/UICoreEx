@@ -15,7 +15,7 @@ data class EngraveDataInfo(
 
     //数据类型
     var dataType: Int = TYPE_BITMAP,
-    //数据
+    //数据, 纯数据. 不包含文件头
     var data: ByteArray? = null,
     //图片数据相关属性, px修正过后的
     var width: Int = 0,
