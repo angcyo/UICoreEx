@@ -92,7 +92,7 @@ object EngraveHelper {
                 renderer.getBounds(),
                 renderer.rotate
             )
-            _handleGCodeInfo(info, gCodeFile)
+            _handleGCodeEngraveDataInfo(info, gCodeFile)
             return info
         }
 
@@ -105,7 +105,7 @@ object EngraveHelper {
                 renderer.getBounds(),
                 renderer.rotate
             )
-            _handleGCodeInfo(info, gCodeFile)
+            _handleGCodeEngraveDataInfo(info, gCodeFile)
             return info
         }
 
@@ -120,7 +120,7 @@ object EngraveHelper {
                         renderer.getRotateBounds(),
                         renderer.rotate
                     )
-                    _handleGCodeInfo(info, gCodeFile)
+                    _handleGCodeEngraveDataInfo(info, gCodeFile)
                     return info
                 }
             } else {
@@ -142,7 +142,7 @@ object EngraveHelper {
                         renderer.getBounds(),
                         rotate
                     )*/ //这里只需要平移GCode即可
-                    _handleGCodeInfo(info, gCodeFile)
+                    _handleGCodeEngraveDataInfo(info, gCodeFile)
                     return info
                 }
             }
@@ -217,7 +217,7 @@ object EngraveHelper {
         return data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${name}.${suffix}")
     }
 
-    fun _handleGCodeInfo(info: EngraveDataInfo, gCodeFile: File) {
+    fun _handleGCodeEngraveDataInfo(info: EngraveDataInfo, gCodeFile: File) {
         val pathGCodeText = gCodeFile.readText()
         val gCodeLines = gCodeFile.lines()
         gCodeFile.deleteSafe()
