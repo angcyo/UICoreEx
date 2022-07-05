@@ -11,6 +11,7 @@ import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
+import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView

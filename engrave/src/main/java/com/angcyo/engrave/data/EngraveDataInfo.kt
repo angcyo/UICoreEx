@@ -3,9 +3,10 @@ package com.angcyo.engrave.data
 import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
+import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 
 /**
- * 需要雕刻数据
+ * 需要雕刻数据, 如果是历史文档, 部分数据可能会没有值
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/02
  */
@@ -13,7 +14,7 @@ data class EngraveDataInfo(
 
     //---雕刻相关属性---
 
-    //数据类型
+    /**数据类型*/
     var dataType: Int = TYPE_BITMAP,
     //数据, 纯数据. 不包含文件头
     var data: ByteArray? = null,
@@ -25,7 +26,7 @@ data class EngraveDataInfo(
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,
     /**雕刻数据的索引, 32位, 4个字节
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand]*/
-    var index: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
+    var index: Int? = null, //(System.currentTimeMillis() / 1000).toInt()
     /**雕刻显示的文件名, 36个字节*/
     var name: String? = null,
     var lines: Int = -1, //GCode数据行数, 下位机用来计算进度使用
@@ -38,7 +39,7 @@ data class EngraveDataInfo(
     var optionX: Int = 0,
     var optionY: Int = 0,
 
-    /**数据模式, 这里的数据模式和图片的算法模式并非一致
+    /**数据处理的模式, 比如是GCode数据, 黑白数据, 灰度数据等
      * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GREY]
      * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE]
      * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GCODE]
@@ -53,8 +54,13 @@ data class EngraveDataInfo(
 
     //---记录相关属性---
 
+    /**是否来自历史的数据, 历史数据部分属性没有值*/
+    var isFromHistory: Boolean = false,
+
     /**[data]数据存储的路径, 方便在历史文档中恢复数据*/
     var dataPath: String? = null,
+    /**历史文档预览的图片路径*/
+    var previewDataPath: String? = null,
 
     /**Canvas中对应的[com.angcyo.canvas.items.BaseItem]的uuid*/
     var rendererItemUuid: String? = null,
@@ -88,5 +94,27 @@ data class EngraveDataInfo(
 
         /**图片抖动数据类型*/
         const val TYPE_BITMAP_DITHERING = 0x60
+    }
+
+    /**更新数据到[EngraveHistoryEntity]*/
+    fun updateToEntity(entity: EngraveHistoryEntity) {
+        entity.dataType = dataType
+        entity.width = width
+        entity.height = height
+        entity.x = x
+        entity.y = y
+        entity.px = px
+
+        entity.name = name
+        entity.index = index
+        entity.lines = lines
+
+        entity.optionMode = optionMode
+        entity.dataPath = dataPath
+        entity.previewDataPath = previewDataPath
+
+        entity.startEngraveTime = startEngraveTime
+        entity.stopEngraveTime = stopEngraveTime
+        entity.printTimes = printTimes
     }
 }

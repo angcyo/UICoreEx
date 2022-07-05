@@ -69,7 +69,8 @@ object CanvasBitmapHandler {
                                 result = it
                                 renderer.updateRenderBitmap(
                                     it,
-                                    if (preview) Strategy.preview else Strategy.normal
+                                    if (preview) Strategy.preview else Strategy.normal,
+                                    holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_PRINT)
                                 )
                             }
                         }
@@ -77,7 +78,11 @@ object CanvasBitmapHandler {
                         //使用上一次的结果
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(it, Strategy.normal)
+                            renderer.updateRenderBitmap(
+                                it,
+                                Strategy.normal,
+                                holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_PRINT)
+                            )
                         }
                     }
                 }
@@ -138,7 +143,10 @@ object CanvasBitmapHandler {
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
                                     if (keepBounds) beforeBounds else null,
-                                    hashMapOf(CanvasDataHandleOperate.KEY_GCODE to it.first),
+                                    hashMapOf(
+                                        CanvasDataHandleOperate.KEY_GCODE to it.first,
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GCODE
+                                    ),
                                 )
                             }
                         }
@@ -150,7 +158,10 @@ object CanvasBitmapHandler {
                                 it.second,
                                 Strategy.normal,
                                 if (keepBounds) beforeBounds else null,
-                                hashMapOf(CanvasDataHandleOperate.KEY_GCODE to it.first),
+                                hashMapOf(
+                                    CanvasDataHandleOperate.KEY_GCODE to it.first,
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GCODE
+                                ),
                             )
                         }
                     }
@@ -200,7 +211,10 @@ object CanvasBitmapHandler {
                                 result = it
                                 renderer.updateRenderBitmap(
                                     it,
-                                    if (preview) Strategy.preview else Strategy.normal
+                                    if (preview) Strategy.preview else Strategy.normal,
+                                    holdData = hashMapOf(
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_BLACK_WHITE
+                                    )
                                 )
                             }
                         }
@@ -208,7 +222,11 @@ object CanvasBitmapHandler {
                         //使用上一次的结果
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(it, Strategy.normal)
+                            renderer.updateRenderBitmap(
+                                it, Strategy.normal, holdData = hashMapOf(
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_BLACK_WHITE
+                                )
+                            )
                         }
                     }
                 }
@@ -257,7 +275,10 @@ object CanvasBitmapHandler {
                                 result = it
                                 renderer.updateRenderBitmap(
                                     it,
-                                    if (preview) Strategy.preview else Strategy.normal
+                                    if (preview) Strategy.preview else Strategy.normal,
+                                    holdData = hashMapOf(
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_DITHERING
+                                    )
                                 )
                             }
                         }
@@ -265,7 +286,11 @@ object CanvasBitmapHandler {
                         //使用上一次的结果
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(it, Strategy.normal)
+                            renderer.updateRenderBitmap(
+                                it, Strategy.normal, holdData = hashMapOf(
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_DITHERING
+                                )
+                            )
                         }
                     }
                 }
@@ -281,7 +306,11 @@ object CanvasBitmapHandler {
             }
         }) {
             it?.let {
-                renderer.updateRenderBitmap(it)
+                renderer.updateRenderBitmap(
+                    it, holdData = hashMapOf(
+                        CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GREY
+                    )
+                )
             }
         }
     }
@@ -319,7 +348,10 @@ object CanvasBitmapHandler {
                                 result = it
                                 renderer.updateRenderBitmap(
                                     it,
-                                    if (preview) Strategy.preview else Strategy.normal
+                                    if (preview) Strategy.preview else Strategy.normal,
+                                    holdData = hashMapOf(
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_SEAL
+                                    )
                                 )
                             }
                         }
@@ -327,7 +359,11 @@ object CanvasBitmapHandler {
                         //使用上一次的结果
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(it, Strategy.normal)
+                            renderer.updateRenderBitmap(
+                                it, Strategy.normal, holdData = hashMapOf(
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_SEAL
+                                )
+                            )
                         }
                     }
                 }

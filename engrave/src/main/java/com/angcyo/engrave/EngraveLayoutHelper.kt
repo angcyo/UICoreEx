@@ -6,12 +6,10 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand
-import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.*
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
@@ -159,6 +157,13 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         initLayout()
     }
 
+    /**更新雕刻数据的索引*/
+    fun updateEngraveDataIndex(dataInfo: EngraveDataInfo) {
+        dataInfo.index = EngraveHelper.generateEngraveIndex()
+        dataInfo.isFromHistory = false
+        renderer?.getRendererItem()?.engraveIndex = dataInfo.index
+    }
+
     /**初始化布局*/
     fun initLayout() {
         //init
@@ -270,17 +275,42 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     //region ---Handle---
 
     /**处理雕刻数据*/
+    @AnyThread
     fun showHandleEngraveItem(engraveData: EngraveDataInfo) {
-        lifecycleOwner.launchLifecycle {
-            dslAdapter?.clearAllItems()
-            updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
-            val dataInfo = withBlock {
-                EngraveHelper.handleEngraveData(renderer, engraveData)
+        dslAdapter?.clearAllItems()
+        updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+
+        fun needHandleEngraveData() {
+            lifecycleOwner.launchLifecycle {
+                val dataInfo = withBlock {
+                    EngraveHelper.handleEngraveData(renderer, engraveData)
+                }
+                if (dataInfo.data == null) {
+                    showEngraveError("数据处理失败")
+                } else {
+                    sendEngraveData(dataInfo)
+                }
             }
-            if (dataInfo.data == null) {
-                showEngraveError("数据处理失败")
-            } else {
-                sendEngraveData(dataInfo)
+        }
+
+        val index = engraveData.index
+        if (index == null) {
+            //需要重新发送数据
+            updateEngraveDataIndex(engraveData)
+            needHandleEngraveData()
+        } else {
+            //检查数据索引是否存在
+            QueryCmd.fileList.enqueue { bean, error ->
+                val have =
+                    bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
+                if (have) {
+                    //已经存在数据, 更新数据配置即可. 直接显示雕刻相关item
+                    engraveData.isFromHistory = engraveData.data == null
+                    engraveModel.setEngraveDataInfo(engraveData)
+                    showEngraveItem()
+                } else {
+                    needHandleEngraveData()
+                }
             }
         }
     }
@@ -288,6 +318,12 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     /**发送雕刻数据*/
     @AnyThread
     fun sendEngraveData(engraveData: EngraveDataInfo) {
+        val index = engraveData.index
+        if (index == null) {
+            showEngraveError("数据索引异常")
+            return
+        }
+
         showCloseLayout(false)//传输中不允许关闭
         engraveModel.setEngraveDataInfo(engraveData)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
@@ -303,7 +339,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                             engraveModel.engraveOptionInfoData.value?.x = engraveData.x
                             engraveModel.engraveOptionInfoData.value?.y = engraveData.y
                             DataCommand.bitmapData(
-                                engraveData.index,
+                                index,
                                 engraveData.data,
                                 engraveData.width,
                                 engraveData.height,
@@ -314,7 +350,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                             )
                         }
                         EngraveDataInfo.TYPE_GCODE -> DataCommand.gcodeData(
-                            engraveData.index,
+                            index,
                             engraveData.name,
                             engraveData.lines,
                             engraveData.data,
@@ -399,7 +435,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     engraveOptionInfo?.let { option ->
                         engraveInfo?.let { data ->
                             EngraveCmd(
-                                data.index,
+                                data.index!!,
                                 option.power,
                                 option.depth,
                                 option.state,
@@ -448,9 +484,17 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                         itemEngraveDataInfo = dataInfo
                     }*/
                     if (dataInfo.optionSupportPxList.isNullOrEmpty().not()) {
+                        val defPx = dataInfo.px
                         EngraveDataPxItem()() {
                             itemEngraveDataInfo = dataInfo
                             itemPxList = dataInfo.optionSupportPxList
+
+                            observeItemChange {
+                                //当px改变之后, 需要更新数据索引
+                                if (defPx != dataInfo.px) {
+                                    updateEngraveDataIndex(dataInfo)
+                                }
+                            }
                         }
                     }
                     EngraveDataNextItem()() {

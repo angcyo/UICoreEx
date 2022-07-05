@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.LinePath
 import com.angcyo.canvas.items.PictureShapeItem
+import com.angcyo.canvas.items.getHoldData
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.component.file.writeTo
@@ -37,15 +38,18 @@ object EngraveHelper {
         result = EngraveDataInfo()
 
         //打印的文件索引
-        val index = generateEngraveIndex()
-        result.index = index
+        result.index = item.engraveIndex ?: generateEngraveIndex()
+        item.engraveIndex = result.index
+
         result.name = item.itemName?.toString()
         result.rendererItemUuid = item.uuid
+        result.optionMode = item.getHoldData(CanvasDataHandleOperate.KEY_DATA_MODE)
 
         val gCodeText = renderer.getGCodeText()
         if (!gCodeText.isNullOrEmpty()) {
             //GCode数据
             result.dataType = EngraveDataInfo.TYPE_GCODE
+            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             return result
         }
 
@@ -53,15 +57,16 @@ object EngraveHelper {
         if (!svgPathList.isNullOrEmpty()) {
             //path路径
             result.dataType = EngraveDataInfo.TYPE_GCODE
+            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             return result
         }
 
         if (item is PictureShapeItem) {
             result.dataType = EngraveDataInfo.TYPE_GCODE
+            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
                 //
             } else {
-                result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE
                 result.optionSupportModeList = listOf(
                     CanvasBitmapHandler.BITMAP_MODE_GREY,
                     CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE,
@@ -179,6 +184,9 @@ object EngraveHelper {
         val data = bitmap.engraveColorBytes()
         //保存一份byte数据
         info.dataPath = saveEngraveData(info.index, data)//数据路径
+        //保存一份用来历史文档预览的数据
+        info.optionBitmap = bitmap
+        info.previewDataPath = saveEngraveData("${info.index}.p", bitmap, "png")
 
         //保存一份可视化的数据
         val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
@@ -207,14 +215,16 @@ object EngraveHelper {
     }
 
     /**保存雕刻数据到文件
+     * [fileName] 需要保存的文件名, 无扩展
+     * [suffix] 文件后缀, 扩展名
      * [data]
      *   [String]
      *   [ByteArray]
      *   [Bitmap]
      * ]*/
-    fun saveEngraveData(name: Int, data: Any, suffix: String = "engrave"): String? {
+    fun saveEngraveData(fileName: Any?, data: Any?, suffix: String = "engrave"): String? {
         //将雕刻数据写入文件
-        return data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${name}.${suffix}")
+        return data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${fileName}.${suffix}")
     }
 
     fun _handleGCodeEngraveDataInfo(info: EngraveDataInfo, gCodeFile: File) {
@@ -234,7 +244,12 @@ object EngraveHelper {
             info.dataPath = saveEngraveData(info.index, data)//数据路径
 
             saveEngraveData(info.index, pathGCodeText, "gcode")
-            info.optionBitmap = GCodeHelper.parseGCode(pathGCodeText)?.toBitmap()
+            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
+            val bitmap = gCodeDrawable?.toBitmap()
+            info.width = gCodeDrawable?.gCodeBound?.width()?.toInt() ?: 0
+            info.height = gCodeDrawable?.gCodeBound?.height()?.toInt() ?: 0
+            info.optionBitmap = bitmap
+            info.previewDataPath = saveEngraveData("${info.index}.p", bitmap, "png")
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.angcyo.engrave.ble
+package com.angcyo.engrave.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState

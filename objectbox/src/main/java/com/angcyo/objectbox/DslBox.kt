@@ -6,6 +6,7 @@ import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.*
+import com.angcyo.library.model.Page
 import com.angcyo.objectbox.DslBox.Companion.default_package_name
 import com.angcyo.objectbox.DslBox.Companion.getBox
 import com.angcyo.objectbox.DslBox.Companion.getBoxStore
@@ -17,6 +18,7 @@ import io.objectbox.android.AndroidObjectBrowser
 import io.objectbox.exception.DbException
 import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
+import io.objectbox.query.QueryCondition
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -109,7 +111,12 @@ class DslBox {
                 storeBuilder.name(_dbName)
 
                 if (debug) {
-                    storeBuilder.debugFlags(DebugFlags.LOG_TRANSACTIONS_READ or DebugFlags.LOG_TRANSACTIONS_WRITE)
+                    storeBuilder.debugFlags(
+                        DebugFlags.LOG_QUERIES or
+                                DebugFlags.LOG_QUERY_PARAMETERS or
+                                DebugFlags.LOG_TRANSACTIONS_READ or
+                                DebugFlags.LOG_TRANSACTIONS_WRITE
+                    )
                     storeBuilder.debugRelations()
                 }
 
@@ -300,9 +307,28 @@ fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return query(block).find()
 }
 
+/**
+ * box.query(User_.name.equal("Jane") and (User_.age.less(12) or User_.status.equal("child")))
+ * */
+fun <T> Box<T>.findAll(
+    queryCondition: QueryCondition<T>? = null,
+    block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val builder = if (queryCondition == null) query() else query(queryCondition)
+    return builder.apply(block).build().find()
+}
+
 /**获取第一条记录*/
 fun <T> Box<T>.findFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return query(block).findFirst()
+}
+
+fun <T> Box<T>.findFirst(
+    queryCondition: QueryCondition<T>? = null,
+    block: QueryBuilder<T>.() -> Unit = {}
+): T? {
+    val builder = if (queryCondition == null) query() else query(queryCondition)
+    return builder.apply(block).build().findFirst()
 }
 
 /**获取最后一条记录*/
@@ -315,11 +341,41 @@ fun <T> Box<T>.findLast(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return query(block).find(count - 1, 1).lastOrNull()
 }
 
+fun <T> Box<T>.findLast(
+    queryCondition: QueryCondition<T>? = null,
+    block: QueryBuilder<T>.() -> Unit = {}
+): T? {
+    val count = count()
+    if (count <= 0) {
+        //Invalid offset (-1): must be zero or positive
+        return null
+    }
+    val builder = if (queryCondition == null) query() else query(queryCondition)
+    return builder.apply(block).build().find(count - 1, 1).lastOrNull()
+}
+
 /**获取所有记录*/
 inline fun <reified T> T.allEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
 ): List<T> {
     return boxOf(T::class.java, packageName).all
+}
+
+/**分页查找
+ * page(page) {
+ *    //降序排列
+ *    orderDesc(EngraveHistoryEntity_.entityId)
+ * }
+ * */
+fun <T> Box<T>.page(
+    page: Page,
+    queryCondition: QueryCondition<T>? = null,
+    block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val offset = (page.requestPageIndex - page.firstPageIndex) * page.requestPageSize
+    val limit = page.requestPageSize
+    val builder = if (queryCondition == null) query() else query(queryCondition)
+    return builder.apply(block).build().find(offset.toLong(), limit.toLong())
 }
 
 //endregion ---query find---
@@ -345,7 +401,7 @@ inline fun <reified T> T.deleteEntity(
 
 //region ---save---
 
-/**保存实体,
+/**保存实体, 保存成功之后, [entityId]会自动赋值
  * id不为0时, 就是更新
  * 返回Entity的id*/
 inline fun <reified T> T.saveEntity(

@@ -11,8 +11,8 @@ import io.objectbox.annotation.Id
  * @since 2022/06/29
  */
 
-@Entity
 @Keep
+@Entity
 data class DeviceConnectEntity(
     @Id var entityId: Long = 0L,
 

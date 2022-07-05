@@ -45,9 +45,123 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:2716962251255545080",
+      "lastPropertyId": "21:8256460259520890070",
+      "name": "EngraveHistoryEntity",
+      "properties": [
+        {
+          "id": "1:9059986846973417888",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8972110093310154526",
+          "name": "dataType",
+          "type": 5
+        },
+        {
+          "id": "3:1117526999348475143",
+          "name": "width",
+          "type": 5
+        },
+        {
+          "id": "4:7089162700589032883",
+          "name": "height",
+          "type": 5
+        },
+        {
+          "id": "5:5682665164979726139",
+          "name": "x",
+          "type": 5
+        },
+        {
+          "id": "6:8816867996294399814",
+          "name": "y",
+          "type": 5
+        },
+        {
+          "id": "7:2192565976605446740",
+          "name": "px",
+          "type": 2
+        },
+        {
+          "id": "8:3089917279529073439",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "9:8475855489004750299",
+          "name": "index",
+          "type": 5
+        },
+        {
+          "id": "10:925872378522898674",
+          "name": "lines",
+          "type": 5
+        },
+        {
+          "id": "11:2838291095304470660",
+          "name": "optionMode",
+          "type": 5
+        },
+        {
+          "id": "12:5747952340315598832",
+          "name": "dataPath",
+          "type": 9
+        },
+        {
+          "id": "13:2014053742986403386",
+          "name": "previewDataPath",
+          "type": 9
+        },
+        {
+          "id": "14:6996334846451815926",
+          "name": "startEngraveTime",
+          "type": 6
+        },
+        {
+          "id": "15:9086897056621231448",
+          "name": "stopEngraveTime",
+          "type": 6
+        },
+        {
+          "id": "16:117074543829453182",
+          "name": "printTimes",
+          "type": 5
+        },
+        {
+          "id": "17:85046129856384719",
+          "name": "duration",
+          "type": 6
+        },
+        {
+          "id": "18:1801806750688074249",
+          "name": "material",
+          "type": 9
+        },
+        {
+          "id": "19:576328138912545556",
+          "name": "power",
+          "type": 2
+        },
+        {
+          "id": "20:6827837178573007120",
+          "name": "depth",
+          "type": 2
+        },
+        {
+          "id": "21:8256460259520890070",
+          "name": "type",
+          "type": 2
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:8000287119433493370",
+  "lastEntityId": "3:2716962251255545080",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

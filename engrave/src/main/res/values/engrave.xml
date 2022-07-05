@@ -54,10 +54,18 @@
 
     <string name="canvas_operate">操作</string>
     <string name="ui_slip_menu_model">模式设定</string>
+    <string name="ui_slip_menu_history">历史文档</string>
     <string name="device_setting_tips_fourteen_8">平板</string>
     <string name="device_setting_tips_fourteen_9">小车</string>
     <string name="device_setting_tips_fourteen_10">圆柱</string>
     <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+    <string name="print_file_name">模式</string>
+    <string name="print_range">镭雕尺寸</string>
+    <string name="print_time">实际耗时</string>
+    <string name="wide">宽:</string>
+    <string name="high">高:</string>
+
+    <string name="file_name">命名:</string>
 
     <string name="device_setting_act_model_warning_tone">工作提示音</string>
     <string name="device_setting_act_des_sound">开始工作和工作结束时会有提示音</string>
