@@ -44,13 +44,14 @@ object CanvasBitmapHandler {
         val originBitmap = renderer.getRenderBitmap()
         val beforeBitmap = renderer.getRenderBitmap(false)
         var result: Bitmap? = null
+        val beforeBounds = RectF(renderer.getBounds())
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo)
+                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
@@ -70,6 +71,7 @@ object CanvasBitmapHandler {
                                 renderer.updateRenderBitmap(
                                     it,
                                     if (preview) Strategy.preview else Strategy.normal,
+                                    keepBounds = beforeBounds,
                                     holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_PRINT)
                                 )
                             }
@@ -81,6 +83,7 @@ object CanvasBitmapHandler {
                             renderer.updateRenderBitmap(
                                 it,
                                 Strategy.normal,
+                                keepBounds = beforeBounds,
                                 holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_PRINT)
                             )
                         }
@@ -111,13 +114,13 @@ object CanvasBitmapHandler {
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, beforeBounds)
+                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
                             val direction = getIntOrDef(CanvasRegulatePopupConfig.KEY_DIRECTION, 0)
-                            keepBounds = direction == 0 || direction == 2
+                            //keepBounds = direction == 0 || direction == 2
                             originBitmap?.let { bitmap ->
                                 OpenCV.bitmapToGCode(
                                     context,
@@ -177,6 +180,7 @@ object CanvasBitmapHandler {
         val beforeBitmap = renderer.getRenderBitmap(false)
 
         var result: Bitmap? = null
+        val beforeBounds = RectF(renderer.getBounds())
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -185,7 +189,7 @@ object CanvasBitmapHandler {
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo)
+                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
@@ -212,6 +216,7 @@ object CanvasBitmapHandler {
                                 renderer.updateRenderBitmap(
                                     it,
                                     if (preview) Strategy.preview else Strategy.normal,
+                                    keepBounds = beforeBounds,
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_BLACK_WHITE
                                     )
@@ -223,7 +228,9 @@ object CanvasBitmapHandler {
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
                             renderer.updateRenderBitmap(
-                                it, Strategy.normal, holdData = hashMapOf(
+                                it, Strategy.normal,
+                                keepBounds = beforeBounds,
+                                holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_BLACK_WHITE
                                 )
                             )
@@ -242,6 +249,7 @@ object CanvasBitmapHandler {
         val beforeBitmap = renderer.getRenderBitmap(false)
 
         var result: Bitmap? = null
+        val beforeBounds = RectF(renderer.getBounds())
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -251,7 +259,7 @@ object CanvasBitmapHandler {
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo)
+                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
@@ -276,6 +284,7 @@ object CanvasBitmapHandler {
                                 renderer.updateRenderBitmap(
                                     it,
                                     if (preview) Strategy.preview else Strategy.normal,
+                                    keepBounds = beforeBounds,
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_DITHERING
                                     )
@@ -287,7 +296,10 @@ object CanvasBitmapHandler {
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
                             renderer.updateRenderBitmap(
-                                it, Strategy.normal, holdData = hashMapOf(
+                                it,
+                                Strategy.normal,
+                                keepBounds = beforeBounds,
+                                holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_DITHERING
                                 )
                             )
@@ -300,6 +312,7 @@ object CanvasBitmapHandler {
 
     /**灰度*/
     fun handleGrey(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+        val beforeBounds = RectF(renderer.getBounds())
         owner.loadingAsync({
             renderer.getRenderBitmap()?.let { bitmap ->
                 OpenCV.bitmapToGrey(bitmap)
@@ -307,7 +320,9 @@ object CanvasBitmapHandler {
         }) {
             it?.let {
                 renderer.updateRenderBitmap(
-                    it, holdData = hashMapOf(
+                    it,
+                    keepBounds = beforeBounds,
+                    holdData = hashMapOf(
                         CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GREY
                     )
                 )
@@ -323,6 +338,7 @@ object CanvasBitmapHandler {
         val beforeBitmap = renderer.getRenderBitmap(false)
 
         var result: Bitmap? = null
+        val beforeBounds = RectF(renderer.getBounds())
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -330,7 +346,7 @@ object CanvasBitmapHandler {
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
                     beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo)
+                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
                     }
                 } else {
                     if (valueChanged) {
@@ -349,6 +365,7 @@ object CanvasBitmapHandler {
                                 renderer.updateRenderBitmap(
                                     it,
                                     if (preview) Strategy.preview else Strategy.normal,
+                                    keepBounds = beforeBounds,
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_SEAL
                                     )
@@ -360,7 +377,9 @@ object CanvasBitmapHandler {
                         result?.let {
                             renderer.onlySetRenderBitmap(beforeBitmap)
                             renderer.updateRenderBitmap(
-                                it, Strategy.normal, holdData = hashMapOf(
+                                it, Strategy.normal,
+                                keepBounds = beforeBounds,
+                                holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_SEAL
                                 )
                             )
