@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/lib_bg_selector"
     android:paddingHorizontal="@dimen/lib_xhdpi"
-    android:paddingTop="@dimen/lib_xhdpi">
+    android:paddingVertical="@dimen/lib_hdpi">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_image_view"
@@ -32,7 +33,6 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/lib_line_px"
         android:layout_marginTop="@dimen/lib_xhdpi"
-        android:layout_marginBottom="@dimen/lib_hdpi"
         android:background="@color/lib_line"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

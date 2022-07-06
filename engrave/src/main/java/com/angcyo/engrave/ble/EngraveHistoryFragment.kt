@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.itemsDialog
 import com.angcyo.engrave.EngraveBeforeLayoutHelper
 import com.angcyo.engrave.EngraveLayoutHelper
 import com.angcyo.engrave.EngravePreviewLayoutHelper
@@ -19,6 +20,8 @@ import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
+import com.angcyo.objectbox.deleteEntity
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity_
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
@@ -60,23 +63,12 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
         //开始预览
         engraveBeforeLayoutHelper.onPreviewAction = {
-            _readyDataInfo?.historyEntity?.let {
-                engravePreviewLayoutHelper.previewBounds = RectF(
-                    it.x.toFloat(),
-                    it.y.toFloat(),
-                    (it.x + it.width).toFloat(),
-                    (it.y + it.height).toFloat()
-                )
-                engravePreviewLayoutHelper.showIn(this)
-            }
+            toPreview()
         }
         //开始雕刻
         engraveBeforeLayoutHelper.onNextAction = {
             //更新雕刻参数
-            vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
-
-            engraveLayoutHelper.engraveReadyDataInfo = _readyDataInfo
-            engraveLayoutHelper.showIn(this)
+            toEngrave()
         }
         //监听雕刻状态, 结束后刷新数据
         val peckerModel = vmApp<LaserPeckerModel>()
@@ -99,16 +91,44 @@ class EngraveHistoryFragment : BaseDslFragment() {
                 orderDesc(EngraveHistoryEntity_.entityId)
             }
             loadDataEnd(EngraveHistoryItem::class.java, list) { bean ->
+                val item = this
                 engraveHistoryEntity = bean
+
+                itemLongClick = {
+                    selectHistoryEntity(bean)
+                    fContext().itemsDialog {
+                        addDialogItem {
+                            itemText = "Delete History!"
+                            itemClick = {
+                                _adapter.render {
+                                    item.removeAdapterItem()
+                                }
+                                //删除
+                                bean.deleteEntity(LPBox.PACKAGE_NAME)
+                            }
+                        }
+                        addDialogItem {
+                            itemText = _string(R.string.v3_bmp_setting_preview)
+                            itemClick = {
+                                toPreview()
+                            }
+                        }
+                        addDialogItem {
+                            itemText = _string(R.string.print_v2_package_Laser_start)
+                            itemClick = {
+                                toEngrave()
+                            }
+                        }
+                    }
+                    true
+                }
 
                 itemClick = {
                     //数据不存在, 需要重新发送数据
-                    engraveHistoryEntity?.let {
-                        selectHistoryEntity(it)
-                        engraveBeforeLayoutHelper.iViewTitle = it.name
-                        engraveBeforeLayoutHelper.engraveReadyDataInfo = _readyDataInfo
-                        engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
-                    }
+                    selectHistoryEntity(bean)
+                    engraveBeforeLayoutHelper.iViewTitle = bean.name
+                    engraveBeforeLayoutHelper.engraveReadyDataInfo = _readyDataInfo
+                    engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
                 }
             }
         }
@@ -134,6 +154,27 @@ class EngraveHistoryFragment : BaseDslFragment() {
             entity.type,
             entity.px
         )
+    }
+
+    /**开始预览*/
+    fun toPreview() {
+        _readyDataInfo?.historyEntity?.let {
+            engravePreviewLayoutHelper.previewBounds = RectF(
+                it.x.toFloat(),
+                it.y.toFloat(),
+                (it.x + it.width).toFloat(),
+                (it.y + it.height).toFloat()
+            )
+            engravePreviewLayoutHelper.showIn(this)
+        }
+    }
+
+    /**去雕刻*/
+    fun toEngrave() {
+        vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
+
+        engraveLayoutHelper.engraveReadyDataInfo = _readyDataInfo
+        engraveLayoutHelper.showIn(this)
     }
 
 }
