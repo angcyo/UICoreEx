@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import android.graphics.RectF
 import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
@@ -28,6 +29,12 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
 
     /**支架的最大移动步长*/
     val BRACKET_MAX_STEP: Int = 65535//130, 65535
+
+    /**预览的范围, 如果为null. 则从[canvasDelegate]中获取
+     *
+     * 如果需要实时更新预览,可以调用[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
+     * */
+    var previewBounds: RectF? = null
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
@@ -108,7 +115,7 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         viewHolder?.click(R.id.bracket_stop_view) {
             bracketStopCmd()
         }
-        viewHolder?.click(R.id.close_layout_view) {
+        viewHolder?.throttleClick(R.id.close_layout_view) {
             hide()
         }
         viewHolder?.click(R.id.centre_button) {
@@ -164,19 +171,19 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
     /**开始预览
      * [updateState] 是否要更新状态*/
     fun startPreviewCmd(canvasDelegate: CanvasDelegate?, updateState: Boolean, async: Boolean) {
-        canvasDelegate?.getSelectedRenderer()?.let { renderer ->
-            renderer.getRotateBounds().let { bounds ->
-                val cmd = EngravePreviewCmd.previewRange(
-                    bounds.left.toInt(),
-                    bounds.top.toInt(),
-                    bounds.width().toInt(),
-                    bounds.height().toInt()
-                )
-                val flag =
-                    if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
-                cmd.enqueue(flag)
-                queryDeviceStateCmd()
-            }
+        val bounds = previewBounds ?: canvasDelegate?.getSelectedRenderer()?.getRotateBounds()
+
+        bounds?.let {
+            val cmd = EngravePreviewCmd.previewRange(
+                bounds.left.toInt(),
+                bounds.top.toInt(),
+                bounds.width().toInt(),
+                bounds.height().toInt()
+            )
+            val flag =
+                if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+            cmd.enqueue(flag)
+            queryDeviceStateCmd()
         }.elseNull {
             if (updateState) {
                 queryDeviceStateCmd()

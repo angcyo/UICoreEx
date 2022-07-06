@@ -16,6 +16,7 @@ import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
+import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
@@ -98,7 +99,7 @@ object LaserPeckerHelper {
     }
 
     /**预览光功率设置 [0~1f]*/
-    var lastPwrProgress: Float = 0.5f
+    var lastPwrProgress: Float by HawkPropertyValue<Any, Float>(0.5f)
 
     //<editor-fold desc="operate">
 

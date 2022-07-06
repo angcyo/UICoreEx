@@ -4,7 +4,7 @@ import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveDataInfo
+import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.item.style.EditItemConfig
 import com.angcyo.item.style.IEditItem
 import com.angcyo.item.style.itemEditText
@@ -20,10 +20,10 @@ import com.angcyo.widget.span.span
 class EngraveDataNameItem : DslAdapterItem(), IEditItem {
 
     /**待雕刻的数据*/
-    var itemEngraveDataInfo: EngraveDataInfo? = null
+    var itemEngraveReadyDataInfo: EngraveReadyDataInfo? = null
         set(value) {
             field = value
-            itemEditText = value?.name
+            itemEditText = value?.engraveData?.name
         }
 
     override var editItemConfig: EditItemConfig = EditItemConfig()
@@ -66,7 +66,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
                     foregroundColor = Color.RED
                 } else {
                     itemThrowable = null
-                    itemEngraveDataInfo?.name = text.toString()
+                    itemEngraveReadyDataInfo?.engraveData?.name = text.toString()
                 }
             }
             append("/${DataCommand.DEFAULT_NAME_BYTE_COUNT} bytes")

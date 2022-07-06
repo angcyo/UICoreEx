@@ -6,6 +6,7 @@ import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -45,6 +46,9 @@ class FscDeviceModel : LifecycleViewModel() {
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
                     //蓝牙设备断开
                     toast(_string(R.string.bluetooth_lib_scan_disconnected))
+
+                    //蓝牙断开后,清空设备状态
+                    vmApp<LaserPeckerModel>().deviceStateData.postValue(null)
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
                     //蓝牙已连接
 

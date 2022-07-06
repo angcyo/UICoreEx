@@ -35,6 +35,8 @@ data class EngraveHistoryEntity(
     var index: Int? = null,
     var lines: Int = -1,
 
+    /**[com.angcyo.engrave.data.EngraveReadyDataInfo]*/
+
     var optionMode: Int? = null,
 
     var dataPath: String? = null,
@@ -43,8 +45,6 @@ data class EngraveHistoryEntity(
     var startEngraveTime: Long = -1,
     var stopEngraveTime: Long = -1,
     var printTimes: Int = 0,
-
-    //---
 
     /**打印耗时, 总时长/打印次数. 毫秒*/
     var duration: Long = -1,

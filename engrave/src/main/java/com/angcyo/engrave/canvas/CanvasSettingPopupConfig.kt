@@ -41,8 +41,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
         /**英寸单位*/
         const val CANVAS_VALUE_UNIT_INCH = 3
 
-        /**单温状态存储*/
+        /**单温状态, 持久化*/
         var CANVAS_VALUE_UNIT: Int by HawkPropertyValue<Any, Int>(2)
+
+        /**是否开启智能指南, 持久化*/
+        var CANVAS_SMART_ASSISTANT: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
         /**单位*/
         val valueUnit: IValueUnit
@@ -135,6 +138,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
                     canvasDelegate?.smartAssistant?.enable = it
+                    CANVAS_SMART_ASSISTANT = it
                 }
             }
         }

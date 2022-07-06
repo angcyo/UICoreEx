@@ -23,6 +23,7 @@ import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
+import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.dslitem.*
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
@@ -45,6 +46,12 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**雕刻对象*/
     var renderer: BaseItemRenderer<*>? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                engraveReadyDataInfo = null
+            }
+        }
 
     /**进度item*/
     val engraveProgressItem = EngraveProgressItem()
@@ -60,13 +67,16 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     //雕刻提示
     var dangerWarningView: DangerWarningView? = null
 
+    /**雕刻需要准备的数据*/
+    var engraveReadyDataInfo: EngraveReadyDataInfo? = null
+
     init {
         iViewLayoutId = R.layout.canvas_engrave_layout
     }
 
     /**绑定布局*/
     @CanvasEntryPoint
-    fun bindCanvasView(rootLayout: ViewGroup, canvasView: CanvasView) {
+    fun bindCanvasView(canvasView: CanvasView) {
         //监听产品信息
         peckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
             if (productInfo == null) {
@@ -80,6 +90,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 canvasView.canvasDelegate.showAndLimitBounds(productInfo.limitPath)
             }
         }
+    }
+
+    /**监听设备状态, 并做出相应*/
+    @CanvasEntryPoint
+    fun bindDeviceState(rootLayout: ViewGroup) {
         //监听设备状态
         peckerModel.deviceStateData.observe(lifecycleOwner) {
             it?.let {
@@ -92,9 +107,9 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     ) {
                         itemProgressAnimDuration = Anim.ANIM_DURATION
                     }
-                    engraveModel.updateEngraveDataInfo {
+                    engraveModel.updateEngraveReadyDataInfo {
                         //更新打印次数
-                        printTimes = it.printTimes
+                        engraveReadyDataInfo?.printTimes = it.printTimes
                     }
                     checkDeviceState()
                 } else if (it.isEngravePause()) {
@@ -137,6 +152,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     //空闲
                     dangerWarningView?.removeFromParent()
                 }
+            }.elseNull {
+                dangerWarningView?.removeFromParent()
             }
         }
     }
@@ -158,16 +175,15 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     }
 
     /**更新雕刻数据的索引*/
-    fun updateEngraveDataIndex(dataInfo: EngraveDataInfo) {
-        dataInfo.index = EngraveHelper.generateEngraveIndex()
-        dataInfo.isFromHistory = false
-        renderer?.getRendererItem()?.engraveIndex = dataInfo.index
+    fun updateEngraveDataIndex(dataInfo: EngraveDataInfo?) {
+        dataInfo?.index = EngraveHelper.generateEngraveIndex()
+        renderer?.getRendererItem()?.engraveIndex = dataInfo?.index
     }
 
     /**初始化布局*/
     fun initLayout() {
         //init
-        viewHolder?.click(R.id.close_layout_view) {
+        viewHolder?.throttleClick(R.id.close_layout_view) {
             hide()
         }
 
@@ -181,6 +197,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         //close按钮
         showCloseLayout()
 
+        if (engraveReadyDataInfo == null) {
+            //未指定需要雕刻的数据, 则从Render中获取需要雕刻的数据
+            engraveReadyDataInfo = EngraveHelper.generateEngraveReadyDataInfo(renderer)
+        }
+
         //engrave
         if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
             //设备空闲
@@ -191,6 +212,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         } else {
             //其他模式下, 先退出其他模式, 再next
             ExitCmd().enqueue()
+            peckerModel.queryDeviceState()
             showEngraveOptionItem()
         }
     }
@@ -276,27 +298,36 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**处理雕刻数据*/
     @AnyThread
-    fun showHandleEngraveItem(engraveData: EngraveDataInfo) {
+    fun showHandleEngraveItem(engraveReadyDataInfo: EngraveReadyDataInfo) {
         dslAdapter?.clearAllItems()
         updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
 
         fun needHandleEngraveData() {
             lifecycleOwner.launchLifecycle {
                 val dataInfo = withBlock {
-                    EngraveHelper.handleEngraveData(renderer, engraveData)
+                    if (renderer == null) {
+                        //此时可能来自历史文档的数据
+                        val dataPathFile = engraveReadyDataInfo.dataPath?.file()
+                        if (dataPathFile?.exists() == true) {
+                            engraveReadyDataInfo.engraveData?.data = dataPathFile.readBytes()
+                        }
+                    } else {
+                        EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
+                    }
+                    engraveReadyDataInfo.engraveData
                 }
-                if (dataInfo.data == null) {
-                    showEngraveError("数据处理失败")
+                if (dataInfo?.data == null) {
+                    showEngraveError("data exception!")
                 } else {
-                    sendEngraveData(dataInfo)
+                    sendEngraveData(engraveReadyDataInfo)
                 }
             }
         }
 
-        val index = engraveData.index
+        val index = engraveReadyDataInfo.engraveData?.index
         if (index == null) {
             //需要重新发送数据
-            updateEngraveDataIndex(engraveData)
+            updateEngraveDataIndex(engraveReadyDataInfo.engraveData)
             needHandleEngraveData()
         } else {
             //检查数据索引是否存在
@@ -305,8 +336,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
                 if (have) {
                     //已经存在数据, 更新数据配置即可. 直接显示雕刻相关item
-                    engraveData.isFromHistory = engraveData.data == null
-                    engraveModel.setEngraveDataInfo(engraveData)
+                    engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
                     showEngraveItem()
                 } else {
                     needHandleEngraveData()
@@ -317,7 +347,12 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**发送雕刻数据*/
     @AnyThread
-    fun sendEngraveData(engraveData: EngraveDataInfo) {
+    fun sendEngraveData(engraveReadyDataInfo: EngraveReadyDataInfo) {
+        val engraveData = engraveReadyDataInfo.engraveData
+        if (engraveData == null) {
+            showEngraveError("data exception")
+            return
+        }
         val index = engraveData.index
         if (index == null) {
             showEngraveError("数据索引异常")
@@ -325,7 +360,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         }
 
         showCloseLayout(false)//传输中不允许关闭
-        engraveModel.setEngraveDataInfo(engraveData)
+        engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
         val cmd = FileModeCmd(engraveData.data?.size ?: 0)
         cmd.enqueue { bean, error ->
@@ -395,7 +430,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         showCloseLayout()
 
         val engraveOptionInfo = engraveModel.engraveOptionInfoData.value
-        val engraveInfo = engraveModel.engraveInfoData.value
+        val engraveReadyInfo = engraveModel.engraveReadyInfoData.value
 
         dslAdapter?.render {
             clearAllItems()
@@ -433,9 +468,9 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 engraveAction = {
                     //开始雕刻
                     engraveOptionInfo?.let { option ->
-                        engraveInfo?.let { data ->
+                        engraveReadyInfo?.let { readyDataInfo ->
                             EngraveCmd(
-                                data.index!!,
+                                readyDataInfo.engraveData!!.index!!,
                                 option.power,
                                 option.depth,
                                 option.state,
@@ -465,49 +500,52 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     /**显示雕刻数据处理前选项相关的item*/
     fun showEngraveOptionItem() {
-        renderer?.let { renderer ->
-            dslAdapter?.render {
-                clearAllItems()
+        val dataInfo = engraveReadyDataInfo?.engraveData
+        if (dataInfo != null && engraveReadyDataInfo?.historyEntity != null) {
+            //来自历史文档的雕刻数据
+            showHandleEngraveItem(engraveReadyDataInfo!!)
+            return
+        }
 
-                //预处理的数据
-                val dataInfo = EngraveHelper.generateEngraveDataInfo(renderer)
-                if (dataInfo == null) {
-                    showEngraveError("数据处理失败")
-                } else {
-                    /*EngraveDataPreviewItem()() {
-                        itemEngraveDataInfo = dataInfo
-                    }*/
-                    EngraveDataNameItem()() {
-                        itemEngraveDataInfo = dataInfo
-                    }
-                    /*EngraveDataModeItem()() {
-                        itemEngraveDataInfo = dataInfo
-                    }*/
-                    if (dataInfo.optionSupportPxList.isNullOrEmpty().not()) {
-                        val defPx = dataInfo.px
-                        EngraveDataPxItem()() {
-                            itemEngraveDataInfo = dataInfo
-                            itemPxList = dataInfo.optionSupportPxList
+        dslAdapter?.render {
+            clearAllItems()
 
-                            observeItemChange {
-                                //当px改变之后, 需要更新数据索引
-                                if (defPx != dataInfo.px) {
-                                    updateEngraveDataIndex(dataInfo)
-                                }
-                            }
-                        }
-                    }
-                    EngraveDataNextItem()() {
-                        itemClick = {
-                            if (!checkItemThrowable()) {
-                                //next
-                                renderer.getRendererItem()?.itemName = dataInfo.name
-                                showHandleEngraveItem(dataInfo)
-                            }
-                        }
-                    }
-                    renderEmptyItem(_dimen(R.dimen.lib_xxhdpi))
+            if (dataInfo == null) {
+                showEngraveError("数据处理失败")
+            } else {
+                /*EngraveDataPreviewItem()() {
+                    itemEngraveDataInfo = dataInfo
+                }*/
+                EngraveDataNameItem()() {
+                    itemEngraveReadyDataInfo = engraveReadyDataInfo
                 }
+                /*EngraveDataModeItem()() {
+                    itemEngraveDataInfo = dataInfo
+                }*/
+                if (engraveReadyDataInfo?.optionSupportPxList.isNullOrEmpty().not()) {
+                    val defPx = dataInfo.px
+                    EngraveDataPxItem()() {
+                        itemEngraveDataInfo = dataInfo
+                        itemPxList = engraveReadyDataInfo?.optionSupportPxList
+
+                        observeItemChange {
+                            //当px改变之后, 需要更新数据索引
+                            if (defPx != dataInfo.px) {
+                                updateEngraveDataIndex(dataInfo)
+                            }
+                        }
+                    }
+                }
+                EngraveDataNextItem()() {
+                    itemClick = {
+                        if (!checkItemThrowable()) {
+                            //next
+                            renderer?.getRendererItem()?.itemName = dataInfo.name
+                            showHandleEngraveItem(engraveReadyDataInfo!!)
+                        }
+                    }
+                }
+                renderEmptyItem(_dimen(R.dimen.lib_xxhdpi))
             }
         }
     }

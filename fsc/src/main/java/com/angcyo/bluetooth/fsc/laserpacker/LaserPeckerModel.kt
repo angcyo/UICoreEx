@@ -5,6 +5,7 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
@@ -16,9 +17,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.library.toast
-import com.angcyo.viewmodel.IViewModel
-import com.angcyo.viewmodel.vmData
-import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.*
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -35,8 +34,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**设备版本*/
     val deviceVersionData: MutableLiveData<QueryVersionParser?> = vmDataNull()
 
-    /**设备状态*/
-    val deviceStateData: MutableLiveData<QueryStateParser?> = vmDataNull()
+    /**设备状态,蓝牙断开后,清空设备状态*/
+    val deviceStateData: MutableHoldLiveData<QueryStateParser?> = vmHoldDataNull()
 
     /**设备设置状态*/
     val deviceSettingStateData: MutableLiveData<QuerySettingParser?> = vmDataNull()

@@ -3,10 +3,11 @@ package com.angcyo.engrave.model
 import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
+import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.isMain
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
@@ -30,64 +31,73 @@ class EngraveModel : ViewModel(), IViewModel {
         vmData(EngraveOptionInfo(_string(R.string.material_custom), 100, 10, 1))
 
     /**当前正在雕刻的数据*/
-    var engraveInfoData = vmDataNull<EngraveDataInfo>()
+    var engraveReadyInfoData = vmDataNull<EngraveReadyDataInfo>()
 
     /**设置需要雕刻的数据*/
     @AnyThread
-    fun setEngraveDataInfo(info: EngraveDataInfo) {
-        engraveInfoData.postValue(info)
+    fun setEngraveReadyDataInfo(info: EngraveReadyDataInfo) {
+        if (isMain()) {
+            engraveReadyInfoData.value = info
+        } else {
+            engraveReadyInfoData.postValue(info)
+        }
     }
 
     /**更新雕刻数据信息*/
     @AnyThread
-    fun updateEngraveDataInfo(block: EngraveDataInfo.() -> Unit) {
-        engraveInfoData.value?.let {
+    fun updateEngraveReadyDataInfo(block: EngraveReadyDataInfo.() -> Unit) {
+        engraveReadyInfoData.value?.let {
             it.block()
-            setEngraveDataInfo(it)
+            setEngraveReadyDataInfo(it)
         }
     }
 
-    //雕刻历史数据表
-    var engraveHistoryEntity: EngraveHistoryEntity? = null
-
     /**开始雕刻*/
     fun startEngrave() {
-        engraveInfoData.value?.apply {
+        engraveReadyInfoData.value?.apply {
             printTimes = 0
             startEngraveTime = nowTime()
-            if (!isFromHistory) {
-                //不是历史雕刻的数据
-                lpBoxOf(EngraveHistoryEntity::class) {
-                    engraveHistoryEntity =
-                        findLast(EngraveHistoryEntity_.index.equal(index ?: -1))
-                            ?: EngraveHistoryEntity()
 
-                    engraveHistoryEntity?.apply {
-                        //入库
-                        updateToEntity(this)
-                        engraveOptionInfoData.value?.updateToEntity(this)
-                        saveEntity(LPBox.PACKAGE_NAME)
-                    }
+            var historyEntity: EngraveHistoryEntity? = historyEntity
+            if (historyEntity == null) {
+                lpBoxOf(EngraveHistoryEntity::class) {
+                    historyEntity =
+                        findLast(EngraveHistoryEntity_.index.equal(engraveData?.index ?: -1))
+                            ?: EngraveHistoryEntity()
                 }
+            }
+            historyEntity?.let { entity ->
+                //入库
+                engraveData?.updateToEntity(entity)
+                engraveOptionInfoData.value?.updateToEntity(entity)
+
+                entity.optionMode = optionMode
+                entity.dataPath = dataPath
+                entity.previewDataPath = previewDataPath
+                entity.startEngraveTime = startEngraveTime
+                entity.printTimes = printTimes
+
+                entity.saveEntity(LPBox.PACKAGE_NAME)
             }
         }
     }
 
     /**停止雕刻了*/
     fun stopEngrave() {
-        engraveInfoData.value?.apply {
+        engraveReadyInfoData.value?.apply {
             stopEngraveTime = nowTime()
             val time = stopEngraveTime - startEngraveTime
             var dTime = -1L
             if (time > 0 && printTimes > 0) {
                 dTime = time / printTimes
             }
-            engraveHistoryEntity?.apply {
+            historyEntity?.let { entity ->
                 //更新雕刻历史数据, 更新雕刻耗时
-                duration = dTime
-                saveEntity(LPBox.PACKAGE_NAME)
+                entity.stopEngraveTime = stopEngraveTime
+                entity.printTimes = printTimes
+                entity.duration = dTime
+                entity.saveEntity(LPBox.PACKAGE_NAME)
             }
-            engraveHistoryEntity = null
         }
     }
 
@@ -100,7 +110,7 @@ class EngraveModel : ViewModel(), IViewModel {
             return 0
         }
 
-        val startEngraveTime = engraveInfoData.value?.startEngraveTime ?: -1
+        val startEngraveTime = engraveReadyInfoData.value?.startEngraveTime ?: -1
         if (startEngraveTime <= 0) {
             return -1
         }

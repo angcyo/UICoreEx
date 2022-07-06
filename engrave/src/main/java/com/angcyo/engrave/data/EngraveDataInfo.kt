@@ -1,8 +1,6 @@
 package com.angcyo.engrave.data
 
-import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 
 /**
@@ -16,7 +14,7 @@ data class EngraveDataInfo(
 
     /**数据类型*/
     var dataType: Int = TYPE_BITMAP,
-    //数据, 纯数据. 不包含文件头
+    //数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库
     var data: ByteArray? = null,
     //图片数据相关属性, px修正过后的
     var width: Int = 0,
@@ -30,46 +28,6 @@ data class EngraveDataInfo(
     /**雕刻显示的文件名, 36个字节*/
     var name: String? = null,
     var lines: Int = -1, //GCode数据行数, 下位机用来计算进度使用
-
-    //---预览相关属性---
-
-    /**切换不同分辨率, 模式后的预览图片*/
-    var optionBitmap: Bitmap? = null,
-    /**操作数据时的原始x,y*/
-    var optionX: Int = 0,
-    var optionY: Int = 0,
-
-    /**数据处理的模式, 比如是GCode数据, 黑白数据, 灰度数据等
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GREY]
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE]
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GCODE]
-     * */
-    var optionMode: Int? = null,
-
-    /**当前数据格式[dataType]下支持的数据其他处理模式[optionMode]*/
-    var optionSupportModeList: List<Int>? = null,
-
-    /**当前数据支持像素调整列表*/
-    var optionSupportPxList: List<PxInfo>? = null,
-
-    //---记录相关属性---
-
-    /**是否来自历史的数据, 历史数据部分属性没有值*/
-    var isFromHistory: Boolean = false,
-
-    /**[data]数据存储的路径, 方便在历史文档中恢复数据*/
-    var dataPath: String? = null,
-    /**历史文档预览的图片路径*/
-    var previewDataPath: String? = null,
-
-    /**Canvas中对应的[com.angcyo.canvas.items.BaseItem]的uuid*/
-    var rendererItemUuid: String? = null,
-    /**开始雕刻的时间, 毫秒*/
-    var startEngraveTime: Long = -1,
-    /**结束雕刻的时间, 毫秒*/
-    var stopEngraveTime: Long = -1,
-    /**当前数据已经雕刻的次数*/
-    var printTimes: Int = 0,
 ) {
     companion object {
 
@@ -108,13 +66,20 @@ data class EngraveDataInfo(
         entity.name = name
         entity.index = index
         entity.lines = lines
+    }
 
-        entity.optionMode = optionMode
-        entity.dataPath = dataPath
-        entity.previewDataPath = previewDataPath
+    /**更新数据从[EngraveHistoryEntity]*/
+    fun updateFromEntity(entity: EngraveHistoryEntity): EngraveDataInfo {
+        dataType = entity.dataType
+        width = entity.width
+        height = entity.height
+        x = entity.x
+        y = entity.y
+        px = entity.px
 
-        entity.startEngraveTime = startEngraveTime
-        entity.stopEngraveTime = stopEngraveTime
-        entity.printTimes = printTimes
+        name = entity.name
+        index = entity.index
+        lines = entity.lines
+        return this
     }
 }

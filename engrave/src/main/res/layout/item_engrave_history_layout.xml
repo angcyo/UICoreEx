@@ -11,7 +11,7 @@
         android:id="@+id/lib_image_view"
         android:layout_width="160dp"
         android:layout_height="0dp"
-        android:background="@color/transparent20"
+        android:background="@color/transparent10"
         android:scaleType="centerInside"
         app:layout_constraintDimensionRatio="1:1" />
 
@@ -32,6 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/lib_line_px"
         android:layout_marginTop="@dimen/lib_xhdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
         android:background="@color/lib_line"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

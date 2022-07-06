@@ -77,7 +77,7 @@ class EngravingItem : DslAdapterItem() {
 
             //分辨率: 1k
             append(_string(R.string.tv_01))
-            append(": ${LaserPeckerHelper.findPxInfo(engraveModel.engraveInfoData.value?.px)?.des}")
+            append(": ${LaserPeckerHelper.findPxInfo(engraveModel.engraveReadyInfoData.value?.engraveData?.px)?.des}")
             appendln()
 
             //材质:
@@ -94,7 +94,7 @@ class EngravingItem : DslAdapterItem() {
             appendln()
 
             //加工时间
-            val startEngraveTime = engraveModel.engraveInfoData.value?.startEngraveTime ?: -1
+            val startEngraveTime = engraveModel.engraveReadyInfoData.value?.startEngraveTime ?: -1
             if (startEngraveTime > 0) {
                 var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
                 if (isEngraving) {
@@ -102,7 +102,7 @@ class EngravingItem : DslAdapterItem() {
                     append(": $engraveTime")
                 } else {
                     val stopEngraveTime =
-                        engraveModel.engraveInfoData.value?.stopEngraveTime ?: nowTime()
+                        engraveModel.engraveReadyInfoData.value?.stopEngraveTime ?: nowTime()
                     engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
                     append(_string(R.string.work_time))
                     append(" $engraveTime")
@@ -112,7 +112,7 @@ class EngravingItem : DslAdapterItem() {
 
             append(_string(R.string.print_times))
             val times = engraveModel.engraveOptionInfoData.value?.time ?: 1
-            val printTimes = engraveModel.engraveInfoData.value?.printTimes ?: 1
+            val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
             append(" ${printTimes}/${times}")
         }
 
