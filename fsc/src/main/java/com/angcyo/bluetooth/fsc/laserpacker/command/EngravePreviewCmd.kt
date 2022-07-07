@@ -99,10 +99,11 @@ data class EngravePreviewCmd(
 
             if (!overflow) {
                 if (pxInfo != null) {
-                    if (previewX > pxInfo.pxWidth || previewY > pxInfo.pxHeight) {
+                    if (previewX + previewWidth > pxInfo.pxWidth) {
                         overflow = true
                     }
-                    if (previewWidth > pxInfo.pxWidth || previewHeight > pxInfo.pxHeight) {
+                    if (!vmApp<LaserPeckerModel>().isZOpen() && previewY + previewHeight > pxInfo.pxHeight) {
+                        //Z轴没有打开的情况下, 才限制高度
                         overflow = true
                     }
                 }
@@ -139,14 +140,15 @@ data class EngravePreviewCmd(
         fun previewRange(rect: Rect, px: Byte = DEFAULT_PX): EngravePreviewCmd {
             val widthBytes = rect.width().toHexString(4).toHexByteArray()
             val heightBytes = rect.height().toHexString(4).toHexByteArray()
+
             return EngravePreviewCmd(0x02, px = px).apply {
                 d1 = widthBytes[0]
                 d2 = widthBytes[1]
                 d3 = heightBytes[0]
                 d4 = heightBytes[1]
 
-                this.x = rect.left
-                this.y = rect.top
+                x = rect.left
+                y = rect.top
 
                 updatePWR(LaserPeckerHelper.lastPwrProgress)
             }
@@ -226,6 +228,33 @@ data class EngravePreviewCmd(
         /**结束预览指令*/
         fun previewStop(): EngravePreviewCmd {
             return EngravePreviewCmd(0x03)
+        }
+
+        /**根据[px]和[productInfo]调整预览的范围*/
+        fun previewZRange(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            px: Byte = DEFAULT_PX,
+            productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        ): EngravePreviewCmd {
+            return previewZRange(adjustBitmapRange(x, y, width, height, px, productInfo), px)
+        }
+
+        /**第三轴暂停预览, 用来拖动时更新x,t
+         * [rect] 最终调整过后的坐标*/
+        fun previewZRange(rect: Rect, px: Byte = DEFAULT_PX): EngravePreviewCmd {
+            return EngravePreviewCmd(0x04, px = px).apply {
+                x = rect.left
+                y = rect.top
+                updatePWR(LaserPeckerHelper.lastPwrProgress)
+            }
+        }
+
+        /**第三轴继续预览指令, z轴滚动预览*/
+        fun previewZContinue(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x05)
         }
     }
 
@@ -323,9 +352,9 @@ data class EngravePreviewCmd(
                 heightBytes[1] = d4
                 append(" w:${widthBytes.toHexInt()} h:${heightBytes.toHexInt()}")
             }
-            0x03.toByte() -> append("打印预览")
-            0x04.toByte() -> append("暂停预览")
-            0x05.toByte() -> append("继续预览")
+            0x03.toByte() -> append("结束预览")
+            0x04.toByte() -> append("第三轴暂停预览")
+            0x05.toByte() -> append("第三轴继续预览")
             0x06.toByte() -> {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     append("LI-Z")

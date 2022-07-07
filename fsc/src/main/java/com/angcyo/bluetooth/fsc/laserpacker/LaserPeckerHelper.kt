@@ -89,6 +89,10 @@ object LaserPeckerHelper {
     //默认的分辨率
     const val DEFAULT_PX: Byte = PX_1K //1k
 
+    /**2米, mm单位
+     * 2m = 2000mm*/
+    const val Z_MAX_Y = 2_00_0
+
     //所有支持的分辨率
     val pxInfoList = mutableListOf<PxInfo>().apply {
         add(PxInfo(0x01, 4000, 4000, "4K"))
@@ -188,19 +192,26 @@ object LaserPeckerHelper {
         val unit = MmValueUnit()
         val bounds = RectF()
         var isOriginCenter = true
-        val limitPath: Path = when (name) {
+
+        val limitPath = Path()
+        val zLimitPath = Path()
+
+        val zMax = unit.convertValueToPixel(Z_MAX_Y.toFloat())
+
+        when (name) {
             LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_ -> {
-                Path().apply {
-                    val left = unit.convertValueToPixel(-50f)
-                    val right = unit.convertValueToPixel(50f)
+                val left = unit.convertValueToPixel(-50f)
+                val right = unit.convertValueToPixel(50f)
+                limitPath.apply {
                     bounds.set(left, left, right, right)
                     addRect(bounds, Path.Direction.CW)
                 }
+                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
             }
             LIII -> {
-                Path().apply {
-                    val left = unit.convertValueToPixel(-50f)
-                    val right = unit.convertValueToPixel(50f)
+                val left = unit.convertValueToPixel(-50f)
+                val right = unit.convertValueToPixel(50f)
+                limitPath.apply {
                     bounds.set(left, left, right, right)
 
                     val l = unit.convertValueToPixel(-50f)
@@ -208,11 +219,12 @@ object LaserPeckerHelper {
                     //addOval(l, t, -l, -t, Path.Direction.CW)
                     maxOvalPath(l, t, -l, -t, this)
                 }
+                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
             }
             LIII_MAX -> {
-                Path().apply {
-                    val left = unit.convertValueToPixel(-100f)
-                    val right = unit.convertValueToPixel(100f)
+                val left = unit.convertValueToPixel(-100f)
+                val right = unit.convertValueToPixel(100f)
+                limitPath.apply {
                     bounds.set(left, left, right, right)
 
                     val l = unit.convertValueToPixel(-80f)
@@ -220,19 +232,27 @@ object LaserPeckerHelper {
                     //addOval(l, t, -l, -t, Path.Direction.CW)
                     maxOvalPath(l, t, -l, -t, this)
                 }
+                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
             }
             CI -> {
                 isOriginCenter = false
-                Path().apply {
-                    val width = unit.convertValueToPixel(300f)
-                    val height = unit.convertValueToPixel(400f)
+                val width = unit.convertValueToPixel(300f)
+                val height = unit.convertValueToPixel(400f)
+                limitPath.apply {
                     bounds.set(0f, 0f, width, height)
                     addRect(bounds, Path.Direction.CW)
                 }
+                zLimitPath.addRect(0f, 0f, width, zMax, Path.Direction.CW)
             }
-            else -> Path()
         }
-        val info = LaserPeckerProductInfo(softwareVersion, name, bounds, limitPath, isOriginCenter)
+        val info = LaserPeckerProductInfo(
+            softwareVersion,
+            name,
+            bounds,
+            limitPath,
+            zLimitPath,
+            isOriginCenter
+        )
         return info
     }
 
@@ -385,6 +405,16 @@ object LaserPeckerHelper {
     fun sendInitCommand(address: String, end: (Throwable?) -> Unit = {}) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         flow { chain ->
+            //读取设备设置状态
+            sendCommand(address, QueryCmd.settingState) { bean, error ->
+                bean?.let {
+                    it.parse<QuerySettingParser>()?.let {
+                        laserPeckerModel.updateDeviceSettingState(it)
+                    }
+                }
+                chain(error)
+            }
+        }.flow { chain ->
             //读取设备版本
             sendCommand(address, QueryCmd.version) { bean, error ->
                 bean?.let {
@@ -404,18 +434,19 @@ object LaserPeckerHelper {
                 }
                 chain(error)
             }
-        }.flow { chain ->
-            //读取设备设置状态
-            sendCommand(address, QueryCmd.settingState) { bean, error ->
-                bean?.let {
-                    it.parse<QuerySettingParser>()?.let {
-                        laserPeckerModel.updateDeviceSettingState(it)
-                    }
-                }
-                chain(error)
-            }
         }.start {
             end(it)
+        }
+    }
+
+    /**初始化设备设置数据*/
+    fun initDeviceSetting() {
+        sendCommand(QueryCmd.settingState) { bean, error ->
+            bean?.let {
+                it.parse<QuerySettingParser>()?.let {
+                    vmApp<LaserPeckerModel>().updateDeviceSettingState(it)
+                }
+            }
         }
     }
 

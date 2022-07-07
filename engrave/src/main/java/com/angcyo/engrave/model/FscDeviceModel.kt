@@ -39,7 +39,6 @@ class FscDeviceModel : LifecycleViewModel() {
 
     /**初始化*/
     fun initDevice() {
-
         //蓝牙状态监听
         bleApiModel.connectStateData.observe(this) {
             it?.let { deviceConnectState ->
@@ -94,6 +93,10 @@ class FscDeviceModel : LifecycleViewModel() {
                 }
             }
         })
+
+        //设备主动退出工作模式
+        //AA BB 08 FF 00 00 00 00 00 00 FF
+
     }
 
 }

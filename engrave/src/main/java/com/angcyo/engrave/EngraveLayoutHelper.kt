@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.*
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
@@ -30,7 +30,6 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
-import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.loading.DangerWarningView
@@ -59,9 +58,6 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
     var dslAdapter: DslAdapter? = null
 
-    //产品模式
-    val peckerModel = vmApp<LaserPeckerModel>()
-
     //雕刻模型
     val engraveModel = vmApp<EngraveModel>()
 
@@ -75,20 +71,59 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         iViewLayoutId = R.layout.canvas_engrave_layout
     }
 
+    /**显示产品限制框*/
+    fun _showProductLimit(canvasView: CanvasView, productInfo: LaserPeckerProductInfo?) {
+        if (productInfo == null) {
+            canvasView.canvasDelegate.limitRenderer.clear()
+        } else {
+            if (productInfo.isOriginCenter) {
+                canvasView.canvasDelegate.moveOriginToCenter()
+            } else {
+                canvasView.canvasDelegate.moveOriginToLT()
+            }
+            canvasView.canvasDelegate.showAndLimitBounds(productInfo.limitPath)
+        }
+    }
+
+    /**显示Z轴限制框*/
+    fun _showZLimit(canvasView: CanvasView) {
+        val productInfo = laserPeckerModel.productInfoData.value
+        val zLimitPath = productInfo?.zLimitPath
+        if (laserPeckerModel.isZOpen() && productInfo != null && zLimitPath != null) {
+            //Z轴连接
+            //追加显示Z轴显示框
+            canvasView.canvasDelegate.limitRenderer.apply {
+                updateLimit {
+                    addPath(zLimitPath)
+                }
+                limitBounds = productInfo.bounds
+            }
+            canvasView.canvasDelegate.showRectBounds(productInfo.bounds)
+        } else {
+            _showProductLimit(canvasView, productInfo)
+        }
+    }
+
     /**绑定布局*/
     @CanvasEntryPoint
     fun bindCanvasView(canvasView: CanvasView) {
         //监听产品信息
-        peckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
-            if (productInfo == null) {
-                canvasView.canvasDelegate.limitRenderer.clear()
-            } else {
-                if (productInfo.isOriginCenter) {
-                    canvasView.canvasDelegate.moveOriginToCenter()
-                } else {
-                    canvasView.canvasDelegate.moveOriginToLT()
-                }
-                canvasView.canvasDelegate.showAndLimitBounds(productInfo.limitPath)
+        laserPeckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
+            _showProductLimit(canvasView, productInfo)
+        }
+        //监听Z轴
+        laserPeckerModel.deviceSettingData.observe(lifecycleOwner) {
+            val before = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
+            if (before != it?.zFlag) {
+                //z轴开关改变后, 检查是否要限制z轴限制
+                _showZLimit(canvasView)
+            }
+        }
+        laserPeckerModel.deviceStateData.observe(lifecycleOwner) {
+            val before = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
+            if (before != it?.zConnect) {
+                //z轴连接状态改变后, 检查是否要限制z轴限制
+                _showZLimit(canvasView)
             }
         }
     }
@@ -97,7 +132,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     @CanvasEntryPoint
     fun bindDeviceState(rootLayout: ViewGroup) {
         //监听设备状态
-        peckerModel.deviceStateData.observe(lifecycleOwner) {
+        laserPeckerModel.deviceStateData.observe(lifecycleOwner) {
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
                 if (it.isEngraving()) {
@@ -128,7 +163,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
                     //退出打印模式, 进入空闲模式
                     ExitCmd().enqueue()
-                    peckerModel.queryDeviceState()
+                    laserPeckerModel.queryDeviceState()
                 } else if (it.isModeIdle()) {
                     //空闲模式
                     //dslAdapter?.removeItem { it is EngravingItem }
@@ -204,16 +239,16 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         }
 
         //engrave
-        if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
+        if (laserPeckerModel.deviceStateData.value?.isModeIdle() == true) {
             //设备空闲
             showEngraveOptionItem()
-        } else if (peckerModel.deviceStateData.value?.isModeEngrave() == true) {
+        } else if (laserPeckerModel.deviceStateData.value?.isModeEngrave() == true) {
             //设备雕刻中
             showEngravingItem()
         } else {
             //其他模式下, 先退出其他模式, 再next
             ExitCmd().enqueue()
-            peckerModel.queryDeviceState()
+            laserPeckerModel.queryDeviceState()
             showEngraveOptionItem()
         }
     }
@@ -228,19 +263,6 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         cancelable = show
         doMain {
             viewHolder?.visible(R.id.close_layout_view, show)
-        }
-    }
-
-    /**持续检查工作作态*/
-    fun checkDeviceState() {
-        _delay(1_000) {
-            //延迟1秒后, 继续查询状态
-            peckerModel.queryDeviceState() { bean, error ->
-                if (error != null) {
-                    //出现了错误, 继续查询
-                    checkDeviceState()
-                }
-            }
         }
     }
 
@@ -490,7 +512,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                                 if (error == null) {
                                     engraveModel.startEngrave()
                                     showEngravingItem()
-                                    peckerModel.queryDeviceState()
+                                    laserPeckerModel.queryDeviceState()
                                 }
                             }
                         }
@@ -501,7 +523,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
 
         //进入空闲模式
         ExitCmd().enqueue()
-        peckerModel.queryDeviceState()
+        laserPeckerModel.queryDeviceState()
     }
 
     /**显示雕刻数据处理前选项相关的item*/

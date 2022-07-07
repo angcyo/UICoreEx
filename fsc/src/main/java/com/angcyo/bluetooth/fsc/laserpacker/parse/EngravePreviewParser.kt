@@ -41,4 +41,7 @@ data class EngravePreviewParser(
             null
         }
     }
+
+    /**支架是否连接*/
+    fun isBracketConnect(): Boolean = res == 0x01
 }

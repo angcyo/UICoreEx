@@ -34,13 +34,19 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**设备版本*/
     val deviceVersionData: MutableLiveData<QueryVersionParser?> = vmDataNull()
 
-    /**设备状态,蓝牙断开后,清空设备状态*/
+    /**设备状态,蓝牙断开后,清空设备状态
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
+     * */
     val deviceStateData: MutableHoldLiveData<QueryStateParser?> = vmHoldDataNull()
 
-    /**设备设置状态*/
-    val deviceSettingStateData: MutableLiveData<QuerySettingParser?> = vmDataNull()
+    /**设备设置状态
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
+     * */
+    val deviceSettingData: MutableHoldLiveData<QuerySettingParser?> = vmHoldDataNull()
 
-    /**连接的设备产品信息*/
+    /**连接的设备产品信息
+     * [deviceVersionData]*/
     var productInfoData: MutableLiveData<LaserPeckerProductInfo?> = vmDataNull()
 
     /**更新设备模式*/
@@ -90,7 +96,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             //本地未初始化第三轴模式
             QuerySettingParser.Z_MODEL = querySettingParser.zDir
         }
-        deviceSettingStateData.postValue(querySettingParser)
+        deviceSettingData.postValue(querySettingParser)
+    }
+
+    /**z轴是否打开, 需要先打开设置, 再连接上*/
+    fun isZOpen(): Boolean {
+        return deviceSettingData.value?.zFlag == 1 && deviceStateData.value?.zConnect == 1
     }
 
     /**空闲模式*/
@@ -102,29 +113,55 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**雕刻预览模式, 并且非显示中心*/
     fun isEngravePreviewMode(): Boolean {
         val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && deviceState.workState != 7
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
+                deviceState.workState != 0x07
     }
 
     /**是否是雕刻预览模式下的显示中心*/
     fun isEngravePreviewShowCenterMode(): Boolean {
         val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && deviceState.workState == 7
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
+                deviceState.workState == 0x07
+    }
+
+    /**是否是雕刻预览模式下的显示中心*/
+    fun isEngravePreviewPause(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
+                deviceState.workState == 0x04
+    }
+
+    /**Z轴滚动预览中*/
+    fun isEngravePreviewZ(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
+                deviceState.workState == 0x05
     }
 
     //<editor-fold desc="Command">
 
-    /**发送更新预览范围指令*/
+    /**发送更新预览范围指令, 支持Z轴判断*/
     fun sendUpdatePreviewRange(
         bounds: RectF,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
-        val cmd = EngravePreviewCmd.previewRange(
-            bounds.left.toInt(),
-            bounds.top.toInt(),
-            bounds.width().toInt(),
-            bounds.height().toInt()
-        )
+        val cmd = if (isZOpen()) {
+            EngravePreviewCmd.previewZRange(
+                bounds.left.toInt(),
+                bounds.top.toInt(),
+                bounds.width().toInt(),
+                bounds.height().toInt()
+            )
+        } else {
+            EngravePreviewCmd.previewRange(
+                bounds.left.toInt(),
+                bounds.top.toInt(),
+                bounds.width().toInt(),
+                bounds.height().toInt()
+            )
+        }
+
         cmd.sendCommand(progress, action)
     }
 

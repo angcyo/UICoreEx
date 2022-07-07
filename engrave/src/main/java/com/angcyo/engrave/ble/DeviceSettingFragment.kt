@@ -36,7 +36,7 @@ class DeviceSettingFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        val settingParser = vmApp<LaserPeckerModel>().deviceSettingStateData.value
+        val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
         settingParser?.functionSetting()
 
         renderDslAdapter {
