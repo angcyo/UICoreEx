@@ -7,7 +7,7 @@ import androidx.core.graphics.scale
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
-import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
@@ -163,7 +163,7 @@ object LaserPeckerHelper {
     fun bitmapScale(
         bitmap: Bitmap,
         px: Byte,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Bitmap {
         val productWidth = productInfo?.bounds?.width()?.toInt() ?: bitmap.width
         val productHeight = productInfo?.bounds?.height()?.toInt() ?: bitmap.height
@@ -183,7 +183,7 @@ object LaserPeckerHelper {
     /**
      * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
      * 解析产品信息*/
-    fun parseProductInfo(softwareVersion: Int): ProductInfo {
+    fun parseProductInfo(softwareVersion: Int): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
         val unit = MmValueUnit()
         val bounds = RectF()
@@ -232,7 +232,7 @@ object LaserPeckerHelper {
             }
             else -> Path()
         }
-        val info = ProductInfo(softwareVersion, name, bounds, limitPath, isOriginCenter)
+        val info = LaserPeckerProductInfo(softwareVersion, name, bounds, limitPath, isOriginCenter)
         return info
     }
 

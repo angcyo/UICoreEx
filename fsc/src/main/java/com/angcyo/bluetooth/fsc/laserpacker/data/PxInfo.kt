@@ -29,7 +29,7 @@ data class PxInfo(
     /**宽度值转换*/
     fun transformWidth(
         width: Int,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Int {
         if (productInfo == null) {
             return width
@@ -41,7 +41,7 @@ data class PxInfo(
     /**高度值转换*/
     fun transformHeight(
         height: Int,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Int {
         if (productInfo == null) {
             return height
@@ -53,7 +53,7 @@ data class PxInfo(
     /**X坐标转换*/
     fun transformX(
         x: Int,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Int {
         if (productInfo == null) {
             return x
@@ -66,7 +66,7 @@ data class PxInfo(
     /**Y坐标转换*/
     fun transformY(
         y: Int,
-        productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Int {
         if (productInfo == null) {
             return y

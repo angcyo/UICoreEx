@@ -5,7 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.*
 
@@ -69,7 +69,7 @@ data class EngravePreviewCmd(
             width: Int,
             height: Int,
             px: Byte = DEFAULT_PX,
-            productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+            productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): Rect {
             var previewX = x
             var previewY = y
@@ -129,7 +129,7 @@ data class EngravePreviewCmd(
             width: Int,
             height: Int,
             px: Byte = DEFAULT_PX,
-            productInfo: ProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+            productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
             return previewRange(adjustBitmapRange(x, y, width, height, px, productInfo), px)
         }

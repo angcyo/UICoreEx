@@ -9,7 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
-data class ProductInfo(
+data class LaserPeckerProductInfo(
 
     /**
      * 固件软件版本号

@@ -9,7 +9,7 @@ import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
-import com.angcyo.bluetooth.fsc.laserpacker.data.ProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
@@ -41,7 +41,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     val deviceSettingStateData: MutableLiveData<QuerySettingParser?> = vmDataNull()
 
     /**连接的设备产品信息*/
-    var productInfoData: MutableLiveData<ProductInfo?> = vmDataNull()
+    var productInfoData: MutableLiveData<LaserPeckerProductInfo?> = vmDataNull()
 
     /**更新设备模式*/
     @AnyThread
