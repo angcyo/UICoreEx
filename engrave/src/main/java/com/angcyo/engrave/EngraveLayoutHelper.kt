@@ -17,6 +17,7 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
+import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderEmptyItem
@@ -497,24 +498,8 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     //开始雕刻
                     engraveOptionInfo?.let { option ->
                         engraveReadyInfo?.let { readyDataInfo ->
-                            EngraveCmd(
-                                readyDataInfo.engraveData!!.index!!,
-                                option.power,
-                                option.depth,
-                                option.state,
-                                option.x,
-                                option.y,
-                                max(1, option.time.toHexInt()).toByte(),
-                                option.type,
-                            ).enqueue { bean, error ->
-                                L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
-
-                                if (error == null) {
-                                    engraveModel.startEngrave()
-                                    showEngravingItem()
-                                    laserPeckerModel.queryDeviceState()
-                                }
-                            }
+                            //start check
+                            checkStartEngrave(readyDataInfo.engraveData!!.index!!, option)
                         }
                     }
                 }
@@ -596,5 +581,62 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     }
 
     //endregion
+
+    /**检查开始雕刻
+     * [index] 需要雕刻的数据索引
+     * [option] 需要雕刻的数据选项*/
+    fun checkStartEngrave(index: Int, option: EngraveOptionInfo) {
+        val zFlag = laserPeckerModel.deviceSettingData.value?.zFlag
+        if (zFlag == 1) {
+            //Z轴开关打开
+            val zConnect = laserPeckerModel.deviceStateData.value?.zConnect
+            if (zConnect != 1) {
+                //未连接z轴, 弹窗提示
+                viewHolder?.context?.messageDialog {
+                    dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+                    dialogMessage = _string(R.string.zflag_discontent_tips)
+
+                    onDismissListener = {
+                        laserPeckerModel.queryDeviceState()
+                    }
+                }
+                return
+            }
+        }
+
+        //安全提示弹窗
+        viewHolder?.context?.messageDialog {
+            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+            dialogTitle = _string(R.string.size_safety_tips)
+            dialogMessage = _string(R.string.size_safety_content)
+            negativeButtonText = _string(R.string.dialog_negative)
+
+            positiveButton { dialog, dialogViewHolder ->
+                dialog.dismiss()
+                _startEngrave(index, option)
+            }
+        }
+    }
+
+    fun _startEngrave(index: Int, option: EngraveOptionInfo) {
+        EngraveCmd(
+            index,
+            option.power,
+            option.depth,
+            option.state,
+            option.x,
+            option.y,
+            max(1, option.time.toHexInt()).toByte(),
+            option.type,
+        ).enqueue { bean, error ->
+            L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
+
+            if (error == null) {
+                engraveModel.startEngrave()
+                showEngravingItem()
+                laserPeckerModel.queryDeviceState()
+            }
+        }
+    }
 
 }

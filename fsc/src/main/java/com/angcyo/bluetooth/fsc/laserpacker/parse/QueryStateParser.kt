@@ -58,7 +58,7 @@ data class QueryStateParser(
     var temp: Int = 0,
     //发送指令时, 自定义的数据
     var custom: Int = -1,
-    //Z轴连接状态, 0未连接, 1链接
+    //Z轴连接状态, 0未连接, 1连接
     var zConnect: Int = 0,
     //当前图片打印的次数
     var printTimes: Int = 0,

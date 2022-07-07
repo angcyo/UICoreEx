@@ -76,6 +76,14 @@ class EngraveHistoryItem : DslAdapterItem() {
 
             val pxDes = LaserPeckerHelper.findPxInfo(engraveHistoryEntity?.px)?.des
             append("${_string(R.string.tv_01)}: $pxDes")
+
+            /*暂时不显示
+            val zMode = engraveHistoryEntity?.zMode ?: -1
+            if (zMode >= 0) {
+                appendln()
+                append(_string(R.string.device_setting_tips_fourteen_11))
+                append(zMode.toZModeString())
+            }*/
         }
     }
 

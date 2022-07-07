@@ -103,13 +103,14 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_9))
                 itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_10))
 
-                val zDir = if (settingParser?.zDir == 1) 2 else 0
+                //zDir 0为打直板，1为打印圆柱。
+                val zDirIndex = if (settingParser?.zDir == 1) 2 else 0
                 itemCurrentIndex =
-                    if (zDir == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
+                    if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
                         //平板和小车都对应的 0
                         QuerySettingParser.Z_MODEL
                     } else {
-                        zDir
+                        zDirIndex
                     }
                 itemSelectIndexChangeAction =
                     { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
@@ -169,3 +170,16 @@ class DeviceSettingFragment : BaseDslFragment() {
     }
 
 }
+
+/**将z轴的模式, 转换成可视化*/
+fun Int.toZModeString() = when (this) {
+    0 -> _string(R.string.device_setting_tips_fourteen_8)
+    1 -> _string(R.string.device_setting_tips_fourteen_9)
+    2 -> _string(R.string.device_setting_tips_fourteen_10)
+    else -> _string(R.string.device_setting_tips_fourteen_8)
+}
+
+/**将z轴模式, 转换成机器指令
+ * Z_dir:  0为打直板，1为打印圆柱。
+ * */
+fun Int.toZModeDir() = if (this == 2) 1 else 0

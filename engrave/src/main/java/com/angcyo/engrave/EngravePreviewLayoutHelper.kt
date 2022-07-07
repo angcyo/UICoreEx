@@ -2,7 +2,6 @@ package com.angcyo.engrave
 
 import android.graphics.RectF
 import android.view.MotionEvent
-import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
@@ -11,24 +10,26 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.vmApp
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.disableParentInterceptTouchEvent
-import com.angcyo.library.ex.elseNull
-import com.angcyo.library.ex.longFeedback
+import com.angcyo.dialog.messageDialog
+import com.angcyo.engrave.ble.toZModeString
+import com.angcyo.fragment.AbsLifecycleFragment
+import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.widget.image.TouchCompatImageView
 import com.angcyo.widget.progress.DslSeekBar
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻预览布局相关操作
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/01
  */
-class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelper() {
+class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngraveLayoutHelper() {
 
     /**支架的最大移动步长*/
     val BRACKET_MAX_STEP: Int = 65535//130, 65535
@@ -43,6 +44,16 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         iViewLayoutId = R.layout.canvas_engrave_preview_layout
         //模式改变监听, 改变按钮的文本
         laserPeckerModel.deviceStateData.observe(fragment) {
+
+            //雕刻模式提示
+            viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())
+            if (laserPeckerModel.isZOpen()) {
+                viewHolder?.tv(R.id.preview_text_view)?.text = span {
+                    append(_string(R.string.device_setting_tips_fourteen_11))
+                    append(QuerySettingParser.Z_MODEL.toZModeString())
+                }
+            }
+
             if (it != null) {
                 val mode = it.mode
                 viewHolder?.enable(R.id.centre_button, true)
@@ -163,7 +174,18 @@ class EngravePreviewLayoutHelper(val fragment: Fragment) : BaseEngraveLayoutHelp
         }
 
         //cmd
-        startPreviewCmd(canvasDelegate, true, false)
+        //安全提示弹窗
+        viewHolder?.context?.messageDialog {
+            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+            dialogTitle = _string(R.string.size_safety_tips)
+            dialogMessage = _string(R.string.size_safety_content)
+            negativeButtonText = _string(R.string.dialog_negative)
+
+            positiveButton { dialog, dialogViewHolder ->
+                dialog.dismiss()
+                startPreviewCmd(canvasDelegate, true, false)
+            }
+        }
     }
 
     override fun onIViewRemove() {

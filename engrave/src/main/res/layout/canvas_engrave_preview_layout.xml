@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/engrave_preview_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -30,8 +31,10 @@
             android:layout_marginTop="50dp"
             android:layout_marginRight="@dimen/lib_xxhdpi"
             android:background="@drawable/lib_bg2_selector"
+            app:layout_constraintBottom_toTopOf="@id/bracket_down_view"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             app:srcCompat="@mipmap/bracket_arrow_up" />
 
         <com.angcyo.widget.image.TouchCompatImageView
@@ -40,6 +43,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="@dimen/lib_xxhdpi"
             android:background="@drawable/lib_bg2_selector"
+            app:layout_constraintBottom_toTopOf="@id/bracket_stop_view"
             app:layout_constraintRight_toRightOf="@id/bracket_up_view"
             app:layout_constraintTop_toBottomOf="@id/bracket_up_view"
             app:srcCompat="@mipmap/bracket_arrow_down" />
@@ -48,7 +52,7 @@
             android:id="@+id/bracket_stop_view"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:layout_marginTop="@dimen/lib_xxxhdpi"
             android:layout_marginBottom="@dimen/lib_xxhdpi"
             android:background="@drawable/lib_bg2_selector"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -67,16 +71,29 @@
             app:srcCompat="@drawable/engrave_close"
             app:tint="@color/lib_white" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/preview_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/lib_xhdpi"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/bracket_up_view"
+            app:layout_constraintTop_toBottomOf="@id/lib_title_view"
+            tools:text="长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本"
+            tools:visibility="visible" />
+
         <LinearLayout
             android:id="@+id/brightness_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/lib_xxhdpi"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/centre_button"
             app:layout_constraintLeft_toLeftOf="@id/centre_button"
             app:layout_constraintRight_toRightOf="@id/centre_button"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/preview_text_view"
             app:layout_constraintVertical_chainStyle="packed">
 
             <androidx.appcompat.widget.AppCompatTextView

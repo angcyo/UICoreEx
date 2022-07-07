@@ -55,4 +55,11 @@ data class EngraveHistoryEntity(
     var power: Byte = -1,
     var depth: Byte = -1,
     var type: Byte = -1,
+
+    /**z轴的模式,
+     * Z_dir:  0为打直板，1为打印圆柱。
+     * [com.angcyo.engrave.ble.DeviceSettingFragmentKt.toZModeString]
+     * [com.angcyo.engrave.ble.DeviceSettingFragmentKt.toZModeDir]
+     * */
+    var zMode: Int = -1
 )

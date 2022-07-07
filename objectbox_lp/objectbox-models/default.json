@@ -48,7 +48,7 @@
     },
     {
       "id": "3:2716962251255545080",
-      "lastPropertyId": "21:8256460259520890070",
+      "lastPropertyId": "22:1730696775391088157",
       "name": "EngraveHistoryEntity",
       "properties": [
         {
@@ -156,6 +156,11 @@
           "id": "21:8256460259520890070",
           "name": "type",
           "type": 2
+        },
+        {
+          "id": "22:1730696775391088157",
+          "name": "zMode",
+          "type": 5
         }
       ],
       "relations": []

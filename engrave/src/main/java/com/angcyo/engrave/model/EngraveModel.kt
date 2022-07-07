@@ -2,6 +2,9 @@ package com.angcyo.engrave.model
 
 import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
@@ -76,6 +79,11 @@ class EngraveModel : ViewModel(), IViewModel {
                 entity.previewDataPath = previewDataPath
                 entity.startEngraveTime = startEngraveTime
                 entity.printTimes = printTimes
+
+                if (vmApp<LaserPeckerModel>().isZOpen()) {
+                    //z轴模式
+                    entity.zMode = QuerySettingParser.Z_MODEL
+                }
 
                 entity.saveEntity(LPBox.PACKAGE_NAME)
             }

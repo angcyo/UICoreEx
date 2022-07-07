@@ -4,11 +4,14 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.Companion.WORK_MODE_ENGRAVE
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.ble.toZModeString
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.library.ex.*
@@ -22,7 +25,7 @@ import com.angcyo.widget.span.span
  */
 class EngravingItem : DslAdapterItem() {
 
-    val peckerModel = vmApp<LaserPeckerModel>()
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     val engraveModel = vmApp<EngraveModel>()
 
@@ -42,7 +45,7 @@ class EngravingItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         //雕刻状态
-        val stateParser: QueryStateParser? = peckerModel.deviceStateData.value
+        val stateParser: QueryStateParser? = laserPeckerModel.deviceStateData.value
 
         if (stateParser?.mode == WORK_MODE_ENGRAVE) {
             //打印模式
@@ -69,6 +72,12 @@ class EngravingItem : DslAdapterItem() {
         itemHolder.tv(R.id.lib_tip_view)?.text = span {
             if (isEngraving) {
                 append(_string(R.string.v3_print_state_tips))
+                appendln()
+            }
+
+            if (laserPeckerModel.isZOpen()) {
+                append(_string(R.string.device_setting_tips_fourteen_11))
+                append(QuerySettingParser.Z_MODEL.toZModeString())
                 appendln()
             }
 
@@ -115,21 +124,30 @@ class EngravingItem : DslAdapterItem() {
 
         //继续/暂停雕刻
         itemHolder.click(R.id.pause_button) {
-            if (peckerModel.deviceStateData.value?.isEngravePause() == true) {
+            if (laserPeckerModel.deviceStateData.value?.isEngravePause() == true) {
                 //打印暂停中, 继续雕刻
                 EngraveCmd.continueEngrave().enqueue()
-                peckerModel.queryDeviceState()
+                laserPeckerModel.queryDeviceState()
             } else {
                 //暂停雕刻
                 EngraveCmd.pauseEngrave().enqueue()
-                peckerModel.queryDeviceState()
+                laserPeckerModel.queryDeviceState()
             }
         }
 
         //结束雕刻
         itemHolder.click(R.id.stop_button) {
-            EngraveCmd.stopEngrave().enqueue()
-            peckerModel.queryDeviceState()
+            it.context.messageDialog {
+                dialogMessage = _string(R.string.print_stop)
+                negativeButtonText = _string(R.string.dialog_negative)
+
+                positiveButton { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                    //print_stop
+                    EngraveCmd.stopEngrave().enqueue()
+                    laserPeckerModel.queryDeviceState()
+                }
+            }
         }
 
         //再次雕刻

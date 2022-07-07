@@ -57,7 +57,9 @@
         <item>自定义</item>
     </array>
 
+    <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
     <string name="canvas_operate">操作</string>
+
     <string name="ui_slip_menu_model">模式设定</string>
     <string name="ui_slip_menu_history">历史文档</string>
     <string name="device_setting_tips_fourteen_8">平板</string>
@@ -93,5 +95,10 @@
 
     <string name="print_v2_package_edit_name">文件命名</string>
     <string name="ui_edit_main_next">下一步</string>
+
+    <string name="size_safety_tips">请确认激光工作区安全</string>
+    <string name="size_safety_content">请务必佩戴护目镜并安装保护罩</string>
+    <string name="print_stop">确定要结束镭雕吗？</string>
+
 
 </resources>
