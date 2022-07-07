@@ -11,6 +11,7 @@ import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.rotate
 import com.angcyo.opencv.OpenCV
 
 /**
@@ -101,7 +102,7 @@ object CanvasBitmapHandler {
         val beforeDrawable = renderer.getRenderDrawable()
 
         var result: Pair<String?, GCodeDrawable?>? = null
-        var keepBounds = true
+        var boundsRotate = 0f //需要旋转的角度
         val beforeBounds = RectF(renderer.getBounds())
 
         context.canvasRegulateWindow(anchor) {
@@ -121,6 +122,9 @@ object CanvasBitmapHandler {
                         owner.loadingAsync({
                             val direction = getIntOrDef(CanvasRegulatePopupConfig.KEY_DIRECTION, 0)
                             //keepBounds = direction == 0 || direction == 2
+                            if (direction == 1 || direction == 3) {
+                                boundsRotate = 90f
+                            }
                             originBitmap?.let { bitmap ->
                                 OpenCV.bitmapToGCode(
                                     context,
@@ -145,7 +149,7 @@ object CanvasBitmapHandler {
                                 renderer.updateItemDrawable(
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
-                                    if (keepBounds) beforeBounds else null,
+                                    beforeBounds.rotate(boundsRotate),
                                     hashMapOf(
                                         CanvasDataHandleOperate.KEY_GCODE to it.first,
                                         CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GCODE
@@ -160,7 +164,7 @@ object CanvasBitmapHandler {
                             renderer.updateItemDrawable(
                                 it.second,
                                 Strategy.normal,
-                                if (keepBounds) beforeBounds else null,
+                                beforeBounds.rotate(boundsRotate),
                                 hashMapOf(
                                     CanvasDataHandleOperate.KEY_GCODE to it.first,
                                     CanvasDataHandleOperate.KEY_DATA_MODE to BITMAP_MODE_GCODE

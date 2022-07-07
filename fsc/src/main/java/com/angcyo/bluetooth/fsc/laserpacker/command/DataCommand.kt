@@ -185,3 +185,10 @@ data class DataCommand(
         return result
     }
 }
+
+/**将字符串剔除到36个字节*/
+fun String.trimEngraveName(): String {
+    return toByteArray(Charsets.UTF_8)
+        .trimAndPad(DataCommand.DEFAULT_NAME_BYTE_COUNT, false)
+        .toString(Charsets.UTF_8)
+}
