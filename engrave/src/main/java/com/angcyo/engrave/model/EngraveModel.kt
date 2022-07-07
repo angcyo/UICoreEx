@@ -58,15 +58,15 @@ class EngraveModel : ViewModel(), IViewModel {
             printTimes = 0
             startEngraveTime = nowTime()
 
-            var historyEntity: EngraveHistoryEntity? = historyEntity
-            if (historyEntity == null) {
+            var history: EngraveHistoryEntity? = historyEntity
+            if (history == null) {
                 lpBoxOf(EngraveHistoryEntity::class) {
-                    historyEntity =
+                    history =
                         findLast(EngraveHistoryEntity_.index.equal(engraveData?.index ?: -1))
                             ?: EngraveHistoryEntity()
                 }
             }
-            historyEntity?.let { entity ->
+            history?.let { entity ->
                 //入库
                 engraveData?.updateToEntity(entity)
                 engraveOptionInfoData.value?.updateToEntity(entity)
@@ -79,6 +79,9 @@ class EngraveModel : ViewModel(), IViewModel {
 
                 entity.saveEntity(LPBox.PACKAGE_NAME)
             }
+
+            //hold
+            historyEntity = history
         }
     }
 
@@ -96,6 +99,19 @@ class EngraveModel : ViewModel(), IViewModel {
                 entity.stopEngraveTime = stopEngraveTime
                 entity.printTimes = printTimes
                 entity.duration = dTime
+                entity.saveEntity(LPBox.PACKAGE_NAME)
+            }
+        }
+    }
+
+    /**更新打印次数*/
+    fun updatePrintTimes(times: Int) {
+        engraveReadyInfoData.value?.apply {
+            printTimes = times
+            setEngraveReadyDataInfo(this)
+
+            historyEntity?.let { entity ->
+                entity.printTimes = times
                 entity.saveEntity(LPBox.PACKAGE_NAME)
             }
         }

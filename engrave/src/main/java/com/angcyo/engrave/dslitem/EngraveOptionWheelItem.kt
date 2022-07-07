@@ -31,17 +31,17 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                 }
                 EngraveOptionInfo::power.name -> {
                     itemEngraveOptionInfo?.apply {
-                        power = itemWheelList?.get(index)?.toString()?.toByte() ?: power
+                        power = getSelectedByte(index, power)
                     }
                 }
                 EngraveOptionInfo::depth.name -> {
                     itemEngraveOptionInfo?.apply {
-                        depth = itemWheelList?.get(index)?.toString()?.toByte() ?: depth
+                        depth = getSelectedByte(index, depth)
                     }
                 }
                 EngraveOptionInfo::time.name -> {
                     itemEngraveOptionInfo?.apply {
-                        time = itemWheelList?.get(index)?.toString()?.toByte() ?: time
+                        time = getSelectedByte(index, time)
                     }
                 }
             }
@@ -65,4 +65,8 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
     override fun showWheelDialog(context: Context) {
         super.showWheelDialog(context)
     }
+
+    /**获取选中的byte数据*/
+    fun getSelectedByte(index: Int, def: Byte): Byte =
+        itemWheelList?.get(index)?.toString()?.toIntOrNull()?.toByte() ?: def
 }

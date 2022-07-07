@@ -19,7 +19,7 @@ data class EngraveOptionInfo(
     //打印深度 10% [0~100]
     //com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.toHexCommandString
     var depth: Byte = 10,
-    //打印次数
+    //打印次数, 最大255
     var time: Byte = 1,
     //图片雕刻时的起始坐标
     var x: Int = 0x0,

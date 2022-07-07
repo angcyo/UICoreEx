@@ -36,6 +36,7 @@ import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.loading.DangerWarningView
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
+import kotlin.math.max
 
 /**
  * 雕刻布局相关操作
@@ -217,8 +218,9 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         }
     }
 
-    fun percentList(): List<Int> {
-        return (1..100).toList()
+    /**生成百分比数值列表*/
+    fun percentList(max: Int = 100): List<Int> {
+        return (1..max).toList()
     }
 
     /**显示关闭按钮*/
@@ -336,6 +338,10 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
                 if (have) {
                     //已经存在数据, 更新数据配置即可. 直接显示雕刻相关item
+                    if (renderer != null) {
+                        //重写解析一下, 但是数据不需要发送给机器
+                        EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
+                    }
                     engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
                     showEngraveItem()
                 } else {
@@ -459,7 +465,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.print_times)
-                itemWheelList = percentList()
+                itemWheelList = percentList(255)
                 itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.time)
                 itemTag = EngraveOptionInfo::time.name
                 itemEngraveOptionInfo = engraveOptionInfo
@@ -476,7 +482,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                                 option.state,
                                 option.x,
                                 option.y,
-                                option.time,
+                                max(1, option.time.toHexInt()).toByte(),
                                 option.type,
                             ).enqueue { bean, error ->
                                 L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
@@ -564,7 +570,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
     }
 
     fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
-        return list?.indexOfFirst { it.toString().toInt() == value?.toInt() } ?: -1
+        return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1
     }
 
     //endregion

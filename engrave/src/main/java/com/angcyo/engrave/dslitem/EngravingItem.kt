@@ -11,15 +11,12 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
-import com.angcyo.library.ex.ClickAction
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.or
+import com.angcyo.library.ex.*
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
- * 雕刻中item
+ * 雕刻中/雕刻结束的item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/20
  */
@@ -111,7 +108,7 @@ class EngravingItem : DslAdapterItem() {
             }
 
             append(_string(R.string.print_times))
-            val times = engraveModel.engraveOptionInfoData.value?.time ?: 1
+            val times = engraveModel.engraveOptionInfoData.value?.time?.toHexInt() ?: 1
             val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
             append(" ${printTimes}/${times}")
         }
