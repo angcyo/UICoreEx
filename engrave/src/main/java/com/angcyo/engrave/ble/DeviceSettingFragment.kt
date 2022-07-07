@@ -99,9 +99,9 @@ class DeviceSettingFragment : BaseDslFragment() {
                 initItem()
 
                 itemSegmentList.clear()
-                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_8))
-                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_9))
-                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_10))
+                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_8)) //平板
+                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_9)) //小车
+                itemSegmentList.add(_string(R.string.device_setting_tips_fourteen_10)) //圆柱
 
                 //zDir 0为打直板，1为打印圆柱。
                 val zDirIndex = if (settingParser?.zDir == 1) 2 else 0

@@ -94,7 +94,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         L.i("设备设置状态:$querySettingParser".writeBleLog())
         if (QuerySettingParser.Z_MODEL == -1) {
             //本地未初始化第三轴模式
-            QuerySettingParser.Z_MODEL = querySettingParser.zDir
+            QuerySettingParser.Z_MODEL = if (querySettingParser.zDir == 1) {
+                //圆柱
+                2
+            } else {
+                0
+            }
         }
         deviceSettingData.postValue(querySettingParser)
     }
