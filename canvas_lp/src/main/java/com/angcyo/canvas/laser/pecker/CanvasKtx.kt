@@ -1,4 +1,4 @@
-package com.angcyo.engrave.canvas
+package com.angcyo.canvas.laser.pecker
 
 import android.app.Activity
 import android.app.Dialog
@@ -11,7 +11,6 @@ import com.angcyo.coroutine.withBlock
 import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loading2
 import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
-import com.angcyo.engrave.R
 import com.angcyo.library.L
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.setBgDrawable

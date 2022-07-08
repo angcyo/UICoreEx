@@ -10,7 +10,6 @@ import com.angcyo.canvas.items.getHoldData
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.component.file.writeTo
-import com.angcyo.engrave.canvas.CanvasBitmapHandler
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.gcode.GCodeHelper
@@ -51,7 +50,7 @@ object EngraveHelper {
         if (!gCodeText.isNullOrEmpty()) {
             //GCode数据
             dataInfo.dataType = EngraveDataInfo.TYPE_GCODE
-            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
+            result.optionMode = CanvasConstant.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             return result
         }
 
@@ -59,20 +58,20 @@ object EngraveHelper {
         if (!svgPathList.isNullOrEmpty()) {
             //path路径
             dataInfo.dataType = EngraveDataInfo.TYPE_GCODE
-            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
+            result.optionMode = CanvasConstant.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             return result
         }
 
         if (item is PictureShapeItem) {
             dataInfo.dataType = EngraveDataInfo.TYPE_GCODE
-            result.optionMode = CanvasBitmapHandler.BITMAP_MODE_GCODE //GCode数据使用GCode模式
+            result.optionMode = CanvasConstant.BITMAP_MODE_GCODE //GCode数据使用GCode模式
             if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
                 //
             } else {
                 result.optionSupportModeList = listOf(
-                    CanvasBitmapHandler.BITMAP_MODE_GREY,
-                    CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE,
-                    CanvasBitmapHandler.BITMAP_MODE_GCODE
+                    CanvasConstant.BITMAP_MODE_GREY,
+                    CanvasConstant.BITMAP_MODE_BLACK_WHITE,
+                    CanvasConstant.BITMAP_MODE_GCODE
                 )
             }
             return result
@@ -81,7 +80,7 @@ object EngraveHelper {
             dataInfo.dataType = EngraveDataInfo.TYPE_BITMAP
 
             result.optionMode = item.getHoldData(CanvasDataHandleOperate.KEY_DATA_MODE)
-                ?: CanvasBitmapHandler.BITMAP_MODE_GREY
+                ?: CanvasConstant.BITMAP_MODE_GREY
 
             //px list
             result.optionSupportPxList = LaserPeckerHelper.findProductSupportPxList()

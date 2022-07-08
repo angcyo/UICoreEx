@@ -1,21 +1,19 @@
-package com.angcyo.engrave.canvas
+package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.view.View
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.core.IValueUnit
 import com.angcyo.canvas.core.InchValueUnit
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.core.PixelValueUnit
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.engrave.R
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -29,32 +27,6 @@ import com.angcyo.widget.recycler.renderDslAdapter
  * @since 2022/05/16
  */
 class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
-
-    companion object {
-
-        /**像素单位*/
-        const val CANVAS_VALUE_UNIT_PIXEL = 1
-
-        /**厘米单位*/
-        const val CANVAS_VALUE_UNIT_MM = 2
-
-        /**英寸单位*/
-        const val CANVAS_VALUE_UNIT_INCH = 3
-
-        /**单温状态, 持久化*/
-        var CANVAS_VALUE_UNIT: Int by HawkPropertyValue<Any, Int>(2)
-
-        /**是否开启智能指南, 持久化*/
-        var CANVAS_SMART_ASSISTANT: Boolean by HawkPropertyValue<Any, Boolean>(true)
-
-        /**单位*/
-        val valueUnit: IValueUnit
-            get() = when (CANVAS_VALUE_UNIT) {
-                CANVAS_VALUE_UNIT_PIXEL -> PixelValueUnit()
-                CANVAS_VALUE_UNIT_INCH -> InchValueUnit()
-                else -> MmValueUnit()
-            }
-    }
 
     var canvasDelegate: CanvasDelegate? = null
 
@@ -82,10 +54,12 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                     itemSwitchChecked = false
                                     updateAdapterItem()
                                 }
-                                CANVAS_VALUE_UNIT = CANVAS_VALUE_UNIT_PIXEL
+                                CanvasConstant.CANVAS_VALUE_UNIT =
+                                    CanvasConstant.CANVAS_VALUE_UNIT_PIXEL
                                 PixelValueUnit()
                             } else {
-                                CANVAS_VALUE_UNIT = CANVAS_VALUE_UNIT_MM
+                                CanvasConstant.CANVAS_VALUE_UNIT =
+                                    CanvasConstant.CANVAS_VALUE_UNIT_MM
                                 MmValueUnit()
                             }
                         )
@@ -107,10 +81,10 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                     updateAdapterItem()
                                 }
                             }
-                            CANVAS_VALUE_UNIT = CANVAS_VALUE_UNIT_INCH
+                            CanvasConstant.CANVAS_VALUE_UNIT = CanvasConstant.CANVAS_VALUE_UNIT_INCH
                             InchValueUnit()
                         } else {
-                            CANVAS_VALUE_UNIT = CANVAS_VALUE_UNIT_MM
+                            CanvasConstant.CANVAS_VALUE_UNIT = CanvasConstant.CANVAS_VALUE_UNIT_MM
                             MmValueUnit()
                         }
                     )
@@ -138,7 +112,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
                     canvasDelegate?.smartAssistant?.enable = it
-                    CANVAS_SMART_ASSISTANT = it
+                    CanvasConstant.CANVAS_SMART_ASSISTANT = it
                 }
             }
         }

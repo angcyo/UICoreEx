@@ -1,4 +1,4 @@
-package com.angcyo.engrave.canvas
+package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.os.Handler
@@ -11,10 +11,9 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.engrave.R
-import com.angcyo.engrave.canvas.dslitem.CanvasDirectionItem
-import com.angcyo.engrave.canvas.dslitem.CanvasSeekBarItem
-import com.angcyo.engrave.canvas.dslitem.CanvasSwitchItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction

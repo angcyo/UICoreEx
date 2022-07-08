@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/engrave_preview_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:clickable="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+
+    <!--阴影-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/lib_bottom_tran_solid_gradient" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/canvas_top_round_shape"
+        android:padding="@dimen/lib_xhdpi">
+
+        <com.angcyo.widget.image.TouchCompatImageView
+            android:id="@+id/bracket_up_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="@dimen/lib_xxhdpi"
+            android:background="@drawable/lib_bg2_selector"
+            app:layout_constraintBottom_toTopOf="@id/bracket_down_view"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@mipmap/bracket_arrow_up" />
+
+        <com.angcyo.widget.image.TouchCompatImageView
+            android:id="@+id/bracket_down_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/lib_xxhdpi"
+            android:background="@drawable/lib_bg2_selector"
+            app:layout_constraintBottom_toTopOf="@id/bracket_stop_view"
+            app:layout_constraintRight_toRightOf="@id/bracket_up_view"
+            app:layout_constraintTop_toBottomOf="@id/bracket_up_view"
+            app:srcCompat="@mipmap/bracket_arrow_down" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bracket_stop_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/lib_xxxhdpi"
+            android:layout_marginBottom="@dimen/lib_xxhdpi"
+            android:background="@drawable/lib_bg2_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="@id/bracket_up_view"
+            app:layout_constraintTop_toBottomOf="@id/bracket_down_view"
+            app:srcCompat="@mipmap/bracket_stop" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/close_layout_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/lib_remove_circle_shape"
+            android:padding="6dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/engrave_close"
+            app:tint="@color/lib_white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/preview_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/lib_xhdpi"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/bracket_up_view"
+            app:layout_constraintTop_toBottomOf="@id/lib_title_view"
+            tools:text="长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本长文本"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/brightness_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/centre_button"
+            app:layout_constraintLeft_toLeftOf="@id/centre_button"
+            app:layout_constraintRight_toRightOf="@id/centre_button"
+            app:layout_constraintTop_toBottomOf="@id/preview_text_view"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/brightness_tip_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/laser_brightness"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.angcyo.widget.progress.DslSeekBar
+                android:id="@+id/brightness_seek_bar"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                app:progress_bg_gradient_colors="@color/bg_sub_color"
+                app:seek_thumb_over_height="8dp" />
+
+        </LinearLayout>
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/centre_button"
+            style="@style/LibButtonSolidStyle"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="@string/preview_center"
+            app:layout_constraintBottom_toTopOf="@id/preview_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/bracket_up_view"
+            app:layout_constraintTop_toBottomOf="@id/brightness_layout" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/preview_button"
+            style="@style/LibButtonSolidStyle"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:text="@string/print_v2_package_preview_over"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/centre_button"
+            app:layout_constraintRight_toRightOf="@id/centre_button"
+            app:layout_constraintTop_toBottomOf="@id/centre_button" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_title_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/print_v2_package_previewing"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

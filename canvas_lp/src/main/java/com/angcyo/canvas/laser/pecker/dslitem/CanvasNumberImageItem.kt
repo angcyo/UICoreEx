@@ -1,7 +1,7 @@
-package com.angcyo.engrave.canvas.dslitem
+package com.angcyo.canvas.laser.pecker.dslitem
 
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.R
 import com.angcyo.item.style.IImageItem
 import com.angcyo.item.style.ImageItemConfig
 import com.angcyo.item.style.itemLoadImage

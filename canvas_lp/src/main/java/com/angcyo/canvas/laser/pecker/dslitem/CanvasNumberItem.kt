@@ -1,8 +1,8 @@
-package com.angcyo.engrave.canvas.dslitem
+package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.view.Gravity
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.R
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.TextItemConfig
 

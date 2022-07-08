@@ -2,9 +2,9 @@ package com.angcyo.engrave.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.core.convertPixelToValueUnit
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.canvas.CanvasSettingPopupConfig
 import com.angcyo.engrave.getModeString
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.glide.loadImage
@@ -23,7 +23,7 @@ class EngraveHistoryItem : DslAdapterItem() {
 
     var engraveHistoryEntity: EngraveHistoryEntity? = null
 
-    val valueUnit = CanvasSettingPopupConfig.valueUnit
+    val valueUnit = CanvasConstant.valueUnit
 
     init {
         itemLayoutId = R.layout.item_engrave_history_layout
