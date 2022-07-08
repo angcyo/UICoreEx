@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
+import com.angcyo.library.ex.connect
 
 /**
  * 设备版本信息
@@ -24,7 +25,8 @@ data class QueryVersionParser(
     //L1P硬件版本19111110 ，191111表示版本生成日期 10表示V1.0版
     var hardwareVersion: Int = 0,
     var custom: Int = -1,
-    var state: Int = 0
+    var state: Int = 0,
+    var softwareVersionName: String? = null
 ) : IPacketParser<QueryVersionParser> {
     //解析数据
     override fun parse(packet: ByteArray): QueryVersionParser? {
@@ -37,6 +39,9 @@ data class QueryVersionParser(
                 hardwareVersion = readInt(4)
                 custom = readInt(1)
                 state = readInt(1)
+
+                //转义
+                softwareVersionName = softwareVersion.toLaserPeckerVersionName()
             }
             this
         } catch (e: Exception) {
@@ -44,4 +49,11 @@ data class QueryVersionParser(
             null
         }
     }
+}
+
+/**357 -> V3.5.7*/
+fun Int.toLaserPeckerVersionName(): String = buildString {
+    val version = this@toLaserPeckerVersionName
+    append("V")
+    append("$version".split("").connect("."))
 }

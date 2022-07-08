@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.core.vmApp
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -28,6 +29,7 @@ class WaitReceivePacket(
     //自动发送数据
     val autoSend: Boolean,
     //用来验证的功能码, 保证收到的数据是相同指令发送过来的, null 则自动取第4个字节
+    //需要先开启[checkFunc]
     val func: Byte?,
     //是否检查功能码
     val checkFunc: Boolean,
@@ -292,4 +294,35 @@ interface IReceiveListener {
     fun onReceive(bean: ReceivePacket?, error: Exception?) {
 
     }
+}
+
+/**监听设备发来的数据包, 直到主动停止监听为止
+ * [com.angcyo.bluetooth.fsc.WaitReceivePacket.isCancel] 取消监听
+ * */
+fun listenerReceivePacket(
+    receiveTimeout: Long = 10 * 60 * 1_000,
+    action: (receivePacket: WaitReceivePacket, bean: ReceivePacket?, error: Exception?) -> Unit
+): WaitReceivePacket {
+    var waitReceivePacket: WaitReceivePacket? = null
+    waitReceivePacket = WaitReceivePacket(
+        vmApp(),
+        "",
+        byteArrayOf(),
+        false,
+        null,
+        false,
+        receiveTimeout,
+        object : IReceiveListener {
+            override fun onPacketProgress(bean: ReceivePacket) {
+                //no
+            }
+
+            override fun onReceive(bean: ReceivePacket?, error: Exception?) {
+                //回调
+                action(waitReceivePacket!!, bean, error)
+            }
+        }).apply {
+        start()
+    }
+    return waitReceivePacket
 }

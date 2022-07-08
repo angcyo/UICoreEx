@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.library.L
 import com.angcyo.library.ex.className
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
 import com.angcyo.library.toast
 import java.util.*
@@ -33,6 +34,9 @@ object CommandQueueHelper {
     /**标识, 异步执行指令*/
     const val FLAG_ASYNC = 0x00004
 
+    /**当前指令, 不需要接收返回的数据*/
+    const val FLAG_NO_RECEIVE = 0x00008
+
     /**待执行的指令列表*/
     private val linkedList = LinkedList<CommandInfo>()
 
@@ -43,6 +47,7 @@ object CommandQueueHelper {
     /**添加一个指令到队列*/
     @Synchronized
     fun addCommand(info: CommandInfo) {
+        info.startTime = nowTime()
         //flag
         if (info.flag.have(FLAG_CLEAR_BEFORE)) {
             //清理之前所有任务
@@ -91,6 +96,14 @@ object CommandQueueHelper {
             val command = _currentCommand?.command
             if (linkedList.size() > 1) {
                 L.w("${command.hashCode()} ${command?.toCommandLogString()},指令正在运行,剩余:${linkedList.size()}")
+
+                //检查超时指令, 自动取消
+                _currentCommand?.apply {
+                    if (startTime - nowTime() > (command?.getReceiveTimeout() ?: Long.MAX_VALUE)) {
+                        //指令超时了
+                        _currentCommand?._receiveTask?.isCancel = true
+                    }
+                }
             }
         }
     }
@@ -142,6 +155,13 @@ object CommandQueueHelper {
             }
         }
         commandInfo._receiveTask = task
+
+        //不需要返回值
+        if (commandInfo.flag.have(FLAG_NO_RECEIVE)) {
+            //直接完成
+            task?.listener?.onReceive(null, null)
+            task?.end()
+        }
     }
 
     /**需要入队列的信息*/
@@ -150,9 +170,10 @@ object CommandQueueHelper {
         val flag: Int = FLAG_NORMAL,
         @WorkerThread
         val listener: IReceiveListener? = null,
-
         //任务
         var _receiveTask: WaitReceivePacket? = null,
+        //入队的时间
+        var startTime: Long = -1
     )
 }
 

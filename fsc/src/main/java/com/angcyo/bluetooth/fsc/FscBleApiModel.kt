@@ -752,20 +752,25 @@ class FscBleApiModel : ViewModel(), IViewModel {
         pendingDisconnectList.remove(device.address)
         if (disconnectOther) {
             //断开其他设备
-            if (connectDeviceList.isNotEmpty()) {
-                val list = connectDeviceList.toList()
-                list.forEach {
-                    if (it.state == CONNECT_STATE_START || it.state == CONNECT_STATE_SUCCESS) {
-                        disconnect(it.device)
-                    }
-                }
-            }
+            disconnectAll()
         }
         connectStateData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
             this.isAutoConnect = isAutoConnect
         }
         fscApi.connect(device.address)
+    }
+
+    /**断开所有连接的设备*/
+    fun disconnectAll() {
+        if (connectDeviceList.isNotEmpty()) {
+            val list = connectDeviceList.toList()
+            list.forEach {
+                if (it.state == CONNECT_STATE_START || it.state == CONNECT_STATE_SUCCESS) {
+                    disconnect(it.device)
+                }
+            }
+        }
     }
 
     /**断开连接*/

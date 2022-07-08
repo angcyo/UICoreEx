@@ -146,6 +146,16 @@ data class DataCommand(
             }
             return DataCommand(head, data, logBuilder.toString())
         }
+
+        /**纯数据*/
+        fun data(data: ByteArray): DataCommand {
+            //数据头
+            /*val head = byteWriter {
+                //垫满
+                padLength(64) //需要64个字节
+            }*/
+            return DataCommand(byteArrayOf(), data)
+        }
     }
 
     //功能码
@@ -160,11 +170,11 @@ data class DataCommand(
 
     override fun toCommandLogString(): String = buildString {
         append("发送数据:size:${head.size + data.size}bytes ")
-        append(log)
+        log?.let { append(it) }
     }
 
     override fun getReceiveTimeout(): Long {
-        return 30 * 60 * 1_000 //30分钟
+        return 30 * 60 * 1_000 //10分钟
     }
 
     override fun equals(other: Any?): Boolean {
