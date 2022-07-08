@@ -33,7 +33,7 @@
             android:visibility="invisible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/canvas_picker_close"
+            app:srcCompat="@drawable/lib_iview_close"
             app:tint="@color/lib_white"
             tools:visibility="visible" />
 
