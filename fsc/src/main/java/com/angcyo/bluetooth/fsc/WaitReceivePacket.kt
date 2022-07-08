@@ -301,6 +301,7 @@ interface IReceiveListener {
  * */
 fun listenerReceivePacket(
     receiveTimeout: Long = 10 * 60 * 1_000,
+    progress: ISendProgressAction = {},
     action: (receivePacket: WaitReceivePacket, bean: ReceivePacket?, error: Exception?) -> Unit
 ): WaitReceivePacket {
     var waitReceivePacket: WaitReceivePacket? = null
@@ -314,7 +315,7 @@ fun listenerReceivePacket(
         receiveTimeout,
         object : IReceiveListener {
             override fun onPacketProgress(bean: ReceivePacket) {
-                //no
+                progress(bean)
             }
 
             override fun onReceive(bean: ReceivePacket?, error: Exception?) {
