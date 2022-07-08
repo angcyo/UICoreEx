@@ -38,9 +38,6 @@
             android:layout_height="30dp"
             android:padding="@dimen/lib_hdpi"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/item_name_view"
-            app:layout_constraintRight_toRightOf="@id/layer_visible_view"
-            app:layout_constraintTop_toTopOf="@id/item_name_view"
             app:srcCompat="@drawable/lib_check_selector"
             tools:visibility="visible" />
 
