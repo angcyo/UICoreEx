@@ -23,10 +23,7 @@ import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.*
-import com.angcyo.canvas.laser.pecker.CanvasBitmapHandler
-import com.angcyo.canvas.laser.pecker.canvasFontWindow
-import com.angcyo.canvas.laser.pecker.canvasSettingWindow
-import com.angcyo.canvas.laser.pecker.loadingAsync
+import com.angcyo.canvas.laser.pecker.*
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.ShapesHelper
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
@@ -41,7 +38,6 @@ import com.angcyo.picker.dslSinglePickerImage
 import com.angcyo.qrcode.createBarCode
 import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
-import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -480,12 +476,16 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 super.onCanvasUndoChanged(undoManager)
                 _undoCanvasItem?.apply {
                     itemEnable = undoManager.canUndo()
-                    itemTextSuperscript = "${undoManager.undoStack.size()}"
+                    if (isShowDebug()) {
+                        itemTextSuperscript = "${undoManager.undoStack.size()}"
+                    }
                     updateAdapterItem()
                 }
                 _redoCanvasItem?.apply {
                     itemEnable = undoManager.canRedo()
-                    itemTextSuperscript = "${undoManager.redoStack.size()}"
+                    if (isShowDebug()) {
+                        itemTextSuperscript = "${undoManager.redoStack.size()}"
+                    }
                     updateAdapterItem()
                 }
             }
