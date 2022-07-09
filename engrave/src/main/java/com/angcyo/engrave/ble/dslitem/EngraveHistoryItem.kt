@@ -5,8 +5,8 @@ import com.angcyo.canvas.core.convertPixelToValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.toModeString
 import com.angcyo.engrave.toEngraveTime
+import com.angcyo.engrave.toModeString
 import com.angcyo.glide.loadImage
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.or
@@ -69,13 +69,11 @@ class EngraveHistoryItem : DslAdapterItem() {
             appendln()
 
             append("${_string(R.string.custom_power)} ${engraveHistoryEntity?.power}%")
+            append(" ${_string(R.string.custom_speed)} ${engraveHistoryEntity?.depth}%")
             appendln()
-
-            append("${_string(R.string.custom_speed)} ${engraveHistoryEntity?.depth}%")
-            appendln()
-
+            
             val pxDes = LaserPeckerHelper.findPxInfo(engraveHistoryEntity?.px)?.des
-            append("${_string(R.string.tv_01)}: $pxDes")
+            append(" ${_string(R.string.tv_01)}: $pxDes")
 
             /*暂时不显示
             val zMode = engraveHistoryEntity?.zMode ?: -1
