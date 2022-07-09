@@ -71,7 +71,7 @@ class EngraveHistoryItem : DslAdapterItem() {
             append("${_string(R.string.custom_power)} ${engraveHistoryEntity?.power}%")
             append(" ${_string(R.string.custom_speed)} ${engraveHistoryEntity?.depth}%")
             appendln()
-            
+
             val pxDes = LaserPeckerHelper.findPxInfo(engraveHistoryEntity?.px)?.des
             append(" ${_string(R.string.tv_01)}: $pxDes")
 
