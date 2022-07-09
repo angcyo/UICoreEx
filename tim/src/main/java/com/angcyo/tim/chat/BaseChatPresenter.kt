@@ -599,7 +599,7 @@ open class BaseChatPresenter : BaseChatControl() {
                     notifyItemRangeInserted(0, list.size)
                 }
             }
-            changeDataItems(filterParams) {
+            changeDataItems(false, filterParams) {
                 if (index == -1) {
                     //尾部追加
                     it.addAll(list)
@@ -644,7 +644,7 @@ open class BaseChatPresenter : BaseChatControl() {
         }
     }
 
-    fun _scrollToLast(step:Boolean) {
+    fun _scrollToLast(step: Boolean) {
         _recycler?.scrollHelper?.lockScrollToLast {
             stepScroll = step
             lockDuration = 200
