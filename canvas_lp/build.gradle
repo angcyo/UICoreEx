@@ -6,6 +6,7 @@ dependencies {
     implementation project(allModule.picker)
     implementation project(allModule.engrave)
     implementation project(allModule.qrcode)
+    implementation project(allModule.component)
 
     api project(allModule.dialog2)
     api project(allModule.canvas)
