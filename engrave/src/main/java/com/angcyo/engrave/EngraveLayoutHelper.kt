@@ -605,6 +605,14 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                     dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                     dialogMessage = _string(R.string.zflag_discontent_tips)
 
+                    if (isDebug()) {
+                        negativeButtonText = _string(com.angcyo.dialog.R.string.dialog_negative)
+                        positiveButtonListener = { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            checkSafeTip(index, option)
+                        }
+                    }
+
                     onDismissListener = {
                         laserPeckerModel.queryDeviceState()
                     }
@@ -612,7 +620,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
                 return
             }
         }
+        checkSafeTip(index, option)
+    }
 
+    /**安全提示弹窗*/
+    fun checkSafeTip(index: Int, option: EngraveOptionInfo) {
         //安全提示弹窗
         viewHolder?.context?.messageDialog {
             dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
