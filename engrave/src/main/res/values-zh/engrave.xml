@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
+    <string name="canvas_operate">操作</string>
+    <string name="laser_type">激光类型</string>
+    <string name="laser_type_white">白光</string>
+    <string name="laser_type_blue">蓝光</string>
+
+    <string name="bluetooth_ft_mtu_no_device_connected">未连接设备</string>
+    <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
+
     <string name="bluetooth_ft_blue_connect_act">蓝牙连接</string>
     <string name="bluetooth_ft_connected">已连接</string>
-    <string name="bluetooth_ft_mtu_no_device_connected">未连接设备</string>
     <string name="bluetooth_ft_blue_connecting">蓝牙正在连接...</string>
-    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
     <string name="bluetooth_ft_scan_connected">蓝牙已连接</string>
     <string name="bluetooth_lib_scan_disconnected">蓝牙已断开</string>
 
@@ -56,9 +63,6 @@
         <item>果皮</item>
         <item>自定义</item>
     </array>
-
-    <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
-    <string name="canvas_operate">操作</string>
 
     <string name="ui_slip_menu_model">模式设定</string>
     <string name="ui_slip_menu_history">历史文档</string>

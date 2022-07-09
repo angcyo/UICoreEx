@@ -14,6 +14,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.toZModeString
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
+import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.library.ex.*
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -78,6 +79,12 @@ class EngravingItem : DslAdapterItem() {
             if (laserPeckerModel.isZOpen()) {
                 append(_string(R.string.device_setting_tips_fourteen_11))
                 append(QuerySettingParser.Z_MODEL.toZModeString())
+                appendln()
+            }
+
+            if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
+                append("${_string(R.string.laser_type)}:")
+                append(engraveModel.engraveOptionInfoData.value?.type.toLaserTypeString())
                 appendln()
             }
 

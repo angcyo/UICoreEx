@@ -89,6 +89,11 @@ object LaserPeckerHelper {
     //默认的分辨率
     const val DEFAULT_PX: Byte = PX_1K //1k
 
+    //雕刻激光类型选择
+    const val LASER_TYPE_WHITE = 0x01.toByte() //1为1064nm激光 (白光-雕)
+
+    const val LASER_TYPE_BLUE = 0x00.toByte() //0为450nm激光 (蓝光-烧)
+
     /**2米, mm单位
      * 2m = 2000mm*/
     const val Z_MAX_Y = 2_00_0

@@ -5,7 +5,7 @@ import com.angcyo.canvas.core.convertPixelToValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.getModeString
+import com.angcyo.engrave.toModeString
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.glide.loadImage
 import com.angcyo.library.ex._string
@@ -43,7 +43,7 @@ class EngraveHistoryItem : DslAdapterItem() {
             append("${_string(R.string.file_name)} ${engraveHistoryEntity?.name.or()}")
             appendln()
 
-            val mode = engraveHistoryEntity?.optionMode.getModeString()
+            val mode = engraveHistoryEntity?.optionMode.toModeString()
             append("${_string(R.string.print_file_name)}: $mode")
             appendln()
 

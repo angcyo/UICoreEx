@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toElapsedTime
@@ -16,7 +17,7 @@ fun Long?.toEngraveTime() = this?.toElapsedTime(
 )
 
 /**模式字符串*/
-fun Int?.getModeString() = when (this) {
+fun Int?.toModeString() = when (this) {
     CanvasConstant.BITMAP_MODE_PRINT -> _string(R.string.canvas_prints)
     CanvasConstant.BITMAP_MODE_GCODE -> _string(R.string.canvas_gcode)
     CanvasConstant.BITMAP_MODE_BLACK_WHITE -> _string(R.string.canvas_black_white)
@@ -24,4 +25,10 @@ fun Int?.getModeString() = when (this) {
     CanvasConstant.BITMAP_MODE_GREY -> _string(R.string.canvas_grey)
     CanvasConstant.BITMAP_MODE_SEAL -> _string(R.string.canvas_seal)
     else -> null
+}
+
+/**激光类型字符串*/
+fun Byte?.toLaserTypeString() = when (this) {
+    LaserPeckerHelper.LASER_TYPE_WHITE -> _string(R.string.laser_type_white)
+    else -> _string(R.string.laser_type_blue)
 }

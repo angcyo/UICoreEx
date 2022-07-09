@@ -88,7 +88,7 @@ data class DataCommand(
                 padLength(64) //需要64个字节
 
                 //日志
-                logBuilder.append("0x10图片")
+                logBuilder.append("0x10 图片->")
                 logBuilder.append(" index:$index")
                 logBuilder.append(" name:$name")
                 logBuilder.append(" w:$bitmapWidth")
@@ -135,7 +135,7 @@ data class DataCommand(
                 padLength(64) //需要64个字节
 
                 //日志
-                logBuilder.append("0x20GCode")
+                logBuilder.append("0x20 GCode->")
                 logBuilder.append(" index:$index")
                 logBuilder.append(" lines:$lines")
                 logBuilder.append(" name:$name")

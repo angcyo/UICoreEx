@@ -464,6 +464,15 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         dslAdapter?.render {
             clearAllItems()
 
+            //激光类型
+            if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
+                EngraveOptionTypeItem()() {
+                    itemEngraveOptionInfo = engraveOptionInfo
+                }
+            } else {
+                engraveOptionInfo?.type = 0x01
+            }
+
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_material)
                 itemWheelList = _stringArray(R.array.sourceMaterial).toList()

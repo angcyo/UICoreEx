@@ -21,7 +21,7 @@ import com.angcyo.tablayout.clamp
  * @since 2022/03/26
  */
 data class EngraveCmd(
-    val name: Int = -1,//为将打印文件名。 文件编号 4字节
+    val index: Int = -1,//为将打印文件的索引。 文件编号 4字节
     val laser: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
     val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(101-)
     //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
@@ -29,7 +29,7 @@ data class EngraveCmd(
     val x: Int = 0x0,//图片起始坐标。 2字节。 占位数据
     val y: Int = 0x0,//占位数据
     val time: Byte = 0x1,//打印次数
-    val type: Byte = 0x0,//l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
+    val type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE,//l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
     val custom: Byte = 0x0,
 ) : ICommand {
 
@@ -62,7 +62,7 @@ data class EngraveCmd(
             append(laser.toHexString())
             append(clamp((101 - depth), 1, 100).toHexString()) //打印速度
             //append(name.toHexString(8))
-            append(name.toByteArray(4).toHexString(false))
+            append(index.toByteArray(4).toHexString(false))
             append(x.toHexString(4))
             append(y.toHexString(4))
             append(custom.toHexString())
@@ -77,7 +77,7 @@ data class EngraveCmd(
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
         when (state) {
-            0x01.toByte() -> append(" 开始雕刻:文件:$name 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
+            0x01.toByte() -> append(" 开始雕刻:文件:$index 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")

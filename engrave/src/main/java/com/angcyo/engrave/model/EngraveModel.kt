@@ -61,6 +61,8 @@ class EngraveModel : ViewModel(), IViewModel {
             printTimes = 0
             startEngraveTime = nowTime()
 
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
+
             var history: EngraveHistoryEntity? = historyEntity
             if (history == null) {
                 lpBoxOf(EngraveHistoryEntity::class) {
@@ -80,7 +82,10 @@ class EngraveModel : ViewModel(), IViewModel {
                 entity.startEngraveTime = startEngraveTime
                 entity.printTimes = printTimes
 
-                if (vmApp<LaserPeckerModel>().isZOpen()) {
+                entity.productVersion =
+                    laserPeckerModel.productInfoData.value?.version ?: entity.productVersion
+
+                if (laserPeckerModel.isZOpen()) {
                     //z轴模式
                     entity.zMode = QuerySettingParser.Z_MODEL
                 }

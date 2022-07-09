@@ -1,4 +1,13 @@
 <resources>
+    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
+    <string name="canvas_operate">操作</string>
+    <string name="laser_type">激光类型</string>
+    <string name="laser_type_white">白光</string>
+    <string name="laser_type_blue">蓝光</string>
+
+    <string name="bluetooth_ft_mtu_no_device_connected">Unconnected device</string>
+    <string name="zflag_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
+
     <string name="print_v2_package_preview_over">Quit Preview</string>
     <string name="print_v2_package_Laser_start">Start</string>
     <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
@@ -112,8 +121,6 @@
     <string name="laser_brightness">Brightness of laser beam</string>
     <string name="v4_bmp_edit_tips">Image data processing, please wait</string>
 
-    <string name="bluetooth_ft_mtu_no_device_connected">未连接设备</string>
-    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
     <string name="work_time">Processing Time:</string>
     <string name="print_times">Pass:</string>
     <string name="bluetooth_lib_scan_disconnected">BLE disconnect</string>
@@ -127,7 +134,6 @@
     <string name="device_setting_tips_fourteen_10">Cylinder</string>
     <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
 
-    <string name="canvas_operate">操作</string>
     <string name="ui_slip_menu_history">History Documents</string>
     <string name="ui_slip_menu_model">Mode Settings</string>
     <string name="ui_edit_main_next">Next</string>
@@ -158,5 +164,4 @@
     <string name="size_safety_content">Always wear protective goggles and install protective cover</string>
     <string name="print_stop">Are you sure you want to end the laser engraving?</string>
 
-    <string name="zflag_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
 </resources>

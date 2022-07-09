@@ -24,7 +24,7 @@ data class EngraveHistoryEntity(
 
     /**[com.angcyo.engrave.data.EngraveDataInfo]*/
 
-    var dataType: Int = -1,
+    var dataType: Int = -1, //雕刻的数据类型
     var width: Int = -1,
     var height: Int = -1,
     var x: Int = -1,
@@ -37,7 +37,7 @@ data class EngraveHistoryEntity(
 
     /**[com.angcyo.engrave.data.EngraveReadyDataInfo]*/
 
-    var optionMode: Int? = null,
+    var optionMode: Int? = null, //数据操作的模式
 
     var dataPath: String? = null,
     var previewDataPath: String? = null,
@@ -51,15 +51,20 @@ data class EngraveHistoryEntity(
 
     /**[com.angcyo.engrave.data.EngraveOptionInfo]*/
 
-    var material: String? = null,
-    var power: Byte = -1,
-    var depth: Byte = -1,
-    var type: Byte = -1,
+    var material: String? = null, //材质
+    var power: Byte = -1, //功率
+    var depth: Byte = -1, //深度
+    var type: Byte = -1, //激光类型
 
     /**z轴的模式,
      * Z_dir:  0为打直板，1为打印圆柱。
      * [com.angcyo.engrave.ble.DeviceSettingFragmentKt.toZModeString]
      * [com.angcyo.engrave.ble.DeviceSettingFragmentKt.toZModeDir]
      * */
-    var zMode: Int = -1
+    var zMode: Int = -1,
+
+    /**[com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo]*/
+
+    //雕刻时, 产品的固件版本
+    var productVersion: Int = -1
 )
