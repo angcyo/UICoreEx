@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/lib_hdpi">
+
+    <com.jaredrummler.android.colorpicker.ColorPanelView
+        android:id="@+id/item_color_view"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="@dimen/lib_xhdpi"
+        android:visibility="gone"
+        app:cpv_colorShape="circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/item_drawable_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_color_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginLeft="0dp"
+        tools:srcCompat="@drawable/canvas_layer_hide"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/item_drawable_line_view"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:background="@color/canvas_dark_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_drawable_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--宽度-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_width_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@drawable/canvas_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/width_label_view"
+        app:layout_constraintLeft_toRightOf="@id/item_drawable_line_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginLeft="@dimen/lib_xhdpi"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/width_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:text="@string/canvas_width"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/item_width_view"
+        app:layout_constraintRight_toRightOf="@id/item_width_view"
+        app:layout_constraintTop_toBottomOf="@id/item_width_view" />
+
+    <!--锁-->
+
+    <View
+        android:id="@+id/lock_line_view"
+        android:layout_width="40dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@color/canvas_gray"
+        app:layout_constraintBottom_toBottomOf="@id/item_width_view"
+        app:layout_constraintLeft_toRightOf="@id/item_width_view"
+        app:layout_constraintTop_toTopOf="@id/item_width_view" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/item_lock_view"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="@id/lock_line_view"
+        app:layout_constraintLeft_toLeftOf="@id/lock_line_view"
+        app:layout_constraintRight_toRightOf="@id/lock_line_view"
+        app:layout_constraintTop_toTopOf="@id/lock_line_view"
+        app:srcCompat="@drawable/canvas_lock_selector"
+        app:tint="@color/canvas_ico" />
+
+    <!--高度-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_height_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@drawable/canvas_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/width_label_view"
+        app:layout_constraintLeft_toRightOf="@id/lock_line_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/height_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:text="@string/canvas_height"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/item_height_view"
+        app:layout_constraintRight_toRightOf="@id/item_height_view"
+        app:layout_constraintTop_toBottomOf="@id/item_height_view" />
+
+    <!--x轴-->
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:background="@color/canvas_dark_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_height_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_axis_x_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/canvas_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/width_label_view"
+        app:layout_constraintLeft_toRightOf="@id/item_height_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/axis_x_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:text="@string/canvas_axis_x"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/item_axis_x_view"
+        app:layout_constraintRight_toRightOf="@id/item_axis_x_view"
+        app:layout_constraintTop_toBottomOf="@id/item_axis_x_view" />
+
+    <!--y轴-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_axis_y_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@drawable/canvas_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/width_label_view"
+        app:layout_constraintLeft_toRightOf="@id/item_axis_x_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/axis_y_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:text="@string/canvas_axis_y"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/item_axis_y_view"
+        app:layout_constraintRight_toRightOf="@id/item_axis_y_view"
+        app:layout_constraintTop_toBottomOf="@id/item_axis_y_view" />
+
+    <!--旋转-->
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:background="@color/canvas_dark_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_axis_y_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_rotate_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/canvas_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/width_label_view"
+        app:layout_constraintLeft_toRightOf="@id/item_axis_y_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/rotate_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:text="@string/canvas_rotate"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/item_rotate_view"
+        app:layout_constraintRight_toRightOf="@id/item_rotate_view"
+        app:layout_constraintTop_toBottomOf="@id/item_rotate_view" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/lib_hdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:background="@color/canvas_dark_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_rotate_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

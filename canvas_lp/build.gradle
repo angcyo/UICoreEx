@@ -1,13 +1,11 @@
 apply from: allGradle.libBase
 
 dependencies {
-    //implementation project(allModule.core)
-    //implementation project(allModule.glide)
-    //implementation project(allModule.transition)
-    //implementation project(allModule.objectbox_lp) //数据库
-
     implementation project(allModule.dslitem)
     implementation project(allModule.dialog)
+    implementation project(allModule.picker)
+    implementation project(allModule.engrave)
+    implementation project(allModule.qrcode)
 
     api project(allModule.dialog2)
     api project(allModule.canvas)
