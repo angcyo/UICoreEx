@@ -10,9 +10,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.app
 import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
@@ -33,11 +35,13 @@ import com.angcyo.objectbox.saveEntity
 class FscDeviceModel : LifecycleViewModel() {
 
     val bleApiModel = vmApp<FscBleApiModel>()
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     /**最后一次触发自动连接的时间, 毫秒*/
     var lastConnectTime: Long = -1
 
     /**初始化*/
+    @CallPoint
     fun initDevice() {
         //蓝牙状态监听
         bleApiModel.connectStateData.observe(this) {
@@ -94,9 +98,28 @@ class FscDeviceModel : LifecycleViewModel() {
             }
         })
 
+        //监听设备变化
+        laserPeckerModel.productInfoData.observe(this) {
+            it?.let { product ->
+                //材质列表初始化, 按需初始化, 节省内存
+                if (product.isLI()) {
+                    EngraveHelper.initL1MaterialList()
+                } else if (product.isLII()) {
+                    EngraveHelper.initL2MaterialList()
+                } else if (product.isLIII()) {
+                    EngraveHelper.initL3MaterialList()
+                }
+                vmApp<EngraveModel>().engraveOptionInfoData.value?.let { option ->
+                    if (product.typeList.isNotEmpty() && !product.typeList.contains(option.type)) {
+                        //当前设备不支持选中的激光类型, 则调整一下
+                        option.type = product.typeList.first()
+                    }
+                }
+            }
+        }
+
         //设备主动退出工作模式
         //AA BB 08 FF 00 00 00 00 00 00 FF
-
     }
 
 }

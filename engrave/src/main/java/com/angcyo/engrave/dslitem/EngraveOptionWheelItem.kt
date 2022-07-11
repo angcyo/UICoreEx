@@ -3,9 +3,11 @@ package com.angcyo.engrave.dslitem
 import android.content.Context
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.updateAllItemBy
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
-
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -25,18 +27,31 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
             //赋值操作
             when (itemTag) {
                 EngraveOptionInfo::material.name -> {
+                    //当切换了材质
                     itemEngraveOptionInfo?.apply {
-                        material = itemWheelList?.get(index)?.toString() ?: material
+                        val materialEntity = itemWheelList?.get(index) as? MaterialEntity
+                        material = materialEntity?.toText()?.toString() ?: material
+                        power = materialEntity?.power?.toByte() ?: power
+                        depth = materialEntity?.depth?.toByte() ?: depth
+
+                        //更新其他
+                        _updatePowerDepthItem()
                     }
                 }
                 EngraveOptionInfo::power.name -> {
                     itemEngraveOptionInfo?.apply {
                         power = getSelectedByte(index, power)
+
+                        //重置为自定义
+                        _updateMaterialItem()
                     }
                 }
                 EngraveOptionInfo::depth.name -> {
                     itemEngraveOptionInfo?.apply {
                         depth = getSelectedByte(index, depth)
+
+                        //重置为自定义
+                        _updateMaterialItem()
                     }
                 }
                 EngraveOptionInfo::time.name -> {
@@ -69,4 +84,44 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
     /**获取选中的byte数据*/
     fun getSelectedByte(index: Int, def: Byte): Byte =
         itemWheelList?.get(index)?.toString()?.toIntOrNull()?.toByte() ?: def
+
+    /**更新功率/深度的数据*/
+    fun _updatePowerDepthItem() {
+        itemDslAdapter?.updateAllItemBy {
+            if (it is EngraveOptionWheelItem) {
+                if (it.itemTag == EngraveOptionInfo::power.name) {
+                    //功率
+                    it.itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        it.itemWheelList,
+                        itemEngraveOptionInfo?.power
+                    )
+                    true
+                } else if (it.itemTag == EngraveOptionInfo::depth.name) {
+                    //深度
+                    it.itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        it.itemWheelList,
+                        itemEngraveOptionInfo?.depth
+                    )
+                    true
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        }
+    }
+
+    /**重置为自定义*/
+    fun _updateMaterialItem() {
+        itemDslAdapter?.updateAllItemBy {
+            if (it is EngraveOptionWheelItem && it.itemTag == EngraveOptionInfo::material.name) {
+                //材质item, 选中第一个, 自定义
+                it.itemSelectedIndex = itemWheelList?.indexOf(0) ?: 0
+                true
+            } else {
+                false
+            }
+        }
+    }
 }

@@ -38,76 +38,34 @@
     <!--打印部分-->
     <string name="file_name">Named：</string>
     <string name="estimated_remaining_time">Estimated Remaining Time:</string>
+
+    <string name="material_hbz">Recycle Paper</string>
+    <string name="material_wlz">Corrugated Paper</string>
+    <string name="material_pg">Leather</string>
+    <string name="material_zz">Bamboo</string>
+    <string name="material_mz">Wood</string>
+    <string name="material_rm">Cork</string>
+    <string name="material_sl">Plastic</string>
+    <string name="material_bl">Cloth</string>
+    <string name="material_mzb">Felt</string>
+    <string name="material_btmykl">Opacity Acrylic</string>
+    <string name="material_gmyz">Photosensitive Seal</string>
+    <string name="material_gp">Fruit Peel</string>
     <string name="material_custom">Custom</string>
 
-    <array name="sourceMaterial">
-        <item>Recycle Paper</item>
-        <item>Corrugated Paper</item>
-        <item>Leather</item>
-        <item>Bamboo</item>
-        <item>Wood</item>
-        <item>Cork</item>
-        <item>Plastic</item>
-        <item>Cloth</item>
-        <item>Felt</item>
-        <item>Opacity Acrylic</item>
-        <item>Photosensitive Seal</item>
-        <item>Fruit Peel</item>
-        <item>Custom</item>
-    </array>
-    <!--    <array name="sourceMaterial1Z">-->
-    <!--        <item>Recycle Paper</item>-->
-    <!--        <item>Corrugated Paper</item>-->
-    <!--        <item>Leather</item>-->
-    <!--        <item>Bamboo</item>-->
-    <!--        <item>Wood</item>-->
-    <!--        <item>Cork</item>-->
-    <!--        <item>Plastic</item>-->
-    <!--        <item>Cloth</item>-->
-    <!--        <item>Felt</item>-->
-    <!--        <item>Opacity Acrylic</item>-->
-    <!--        <item>Photosensitive Seal</item>-->
-    <!--        <item>Fruit Peel</item>-->
-    <!--        <item>Custom</item>-->
-    <!--    </array>-->
+    <string name="material_klg">Coke Can</string>
+    <string name="material_st">Stone</string>
+    <string name="material_yhjs">Metal Oxide</string>
+    <string name="material_tzp">Pottery</string>
+    <string name="material_qtc">Paint Coating</string>
+    <string name="material_bxg">Stainless Steel</string>
 
-    <!--    <item>Coke Can</item>-->
-    <array name="sourceMaterialL2">
-        <item>Recycle Paper</item>
-        <item>Corrugated Paper</item>
-        <item>Leather</item>
-        <item>Bamboo</item>
-        <item>Wood</item>
-        <item>Cork</item>
-        <item>Plastic</item>
-        <item>Cloth</item>
-        <item>Felt</item>
-        <item>Opacity Acrylic</item>
-        <item>Photosensitive Seal</item>
-        <item>Fruit Peel</item>
-
-        <item>Coke Can</item>
-        <item>Stone</item>
-        <item>Oxidized Metal</item>
-        <item>Pottery</item>
-        <item>Paint Coating</item>
-        <item>Stainless Steel</item>
-        <item>Custom</item>
-    </array>
-
-    <array name="sourceMaterialL3">
-        <item>Photosensitive Seal</item>
-        <item>Silicone</item>
-        <item>Painted Paperboard</item>
-        <item>Oxidized Metal</item>
-        <item>Wire Drawing Stainless Steel</item>
-        <item>Pure Copper</item>
-        <item>Aluminium Alloy</item>
-        <item>Acrylic</item>
-        <item>Paint Coating</item>
-        <item>Leather</item>
-        <item>Custom</item>
-    </array>
+    <string name="material_gj">Silicone</string>
+    <string name="material_qmzb">Painted Paperboard</string>
+    <string name="material_lsbxg">Wire Drawing Stainless Steel</string>
+    <string name="material_tong">Pure Copper</string>
+    <string name="material_lhj">Aluminium Alloy</string>
+    <string name="material_ykl">Acrylic</string>
 
     <string name="custom_material">Material:</string>
     <string name="custom_power">Power:</string>

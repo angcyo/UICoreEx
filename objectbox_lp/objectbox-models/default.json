@@ -169,9 +169,63 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "4:3649377060527503412",
+      "lastPropertyId": "9:8571243668196448558",
+      "name": "MaterialEntity",
+      "properties": [
+        {
+          "id": "1:3003575303070860458",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3667926979751520161",
+          "name": "resId",
+          "type": 5
+        },
+        {
+          "id": "3:3428978213144566749",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:1232199269055730414",
+          "name": "product",
+          "type": 9
+        },
+        {
+          "id": "5:4054332879591325087",
+          "name": "dataMode",
+          "type": 5
+        },
+        {
+          "id": "6:7331769955861319310",
+          "name": "px",
+          "type": 5
+        },
+        {
+          "id": "7:1140505630177632808",
+          "name": "power",
+          "type": 5
+        },
+        {
+          "id": "8:8589957887352058077",
+          "name": "depth",
+          "type": 5
+        },
+        {
+          "id": "9:8571243668196448558",
+          "name": "type",
+          "type": 5
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "3:2716962251255545080",
+  "lastEntityId": "4:3649377060527503412",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

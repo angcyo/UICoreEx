@@ -52,7 +52,8 @@ object LaserPeckerHelper {
     const val LIII = "LIII"           //spp 90*70mm 椭圆
 
     //0为1064nm激光, LIII_MAX 改名 LIV
-    const val LIII_MAX = "LIV"   //spp 200mm*200mm 160*120mm 椭圆
+    const val LIII_MAX = "LIV"   //spp 160mm*160mm 160*120mm 椭圆
+    const val LIV = LIII_MAX
 
     //---焦距 40mm
     const val CI = "CI"               //spp 300*400mm
@@ -195,6 +196,10 @@ object LaserPeckerHelper {
      * 解析产品信息*/
     fun parseProductInfo(softwareVersion: Int): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
+
+        //激光类型
+        var typeList: List<Byte> = listOf(LASER_TYPE_BLUE)
+
         val unit = MmValueUnit()
         val bounds = RectF()
         var isOriginCenter = true
@@ -226,10 +231,12 @@ object LaserPeckerHelper {
                     maxOvalPath(l, t, -l, -t, this)
                 }
                 zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
+                typeList = listOf(LASER_TYPE_WHITE)
             }
             LIII_MAX -> {
-                val left = unit.convertValueToPixel(-100f)
-                val right = unit.convertValueToPixel(100f)
+                //160*160
+                val left = unit.convertValueToPixel(-80f)
+                val right = unit.convertValueToPixel(80f)
                 limitPath.apply {
                     bounds.set(left, left, right, right)
 
@@ -239,6 +246,7 @@ object LaserPeckerHelper {
                     maxOvalPath(l, t, -l, -t, this)
                 }
                 zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
+                typeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
             }
             CI -> {
                 isOriginCenter = false
@@ -254,6 +262,7 @@ object LaserPeckerHelper {
         val info = LaserPeckerProductInfo(
             softwareVersion,
             name,
+            typeList,
             bounds,
             limitPath,
             zLimitPath,
@@ -313,12 +322,19 @@ object LaserPeckerHelper {
     fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
         vmApp<LaserPeckerModel>().productInfoData.value?.let {
+            //1k 所有设备都支持
             result.add(findPxInfo(PX_1K)!!)
-            if (!it.isLI()) {
+
+            if (it.isLI() || it.isLII()) {
+                //L1 L2 支持 1.3k
                 result.add(findPxInfo(PX_1_3K)!!)
-                result.add(findPxInfo(PX_2K)!!)
             }
-            if (!it.isLII()) {
+
+            //2K 都支持
+            result.add(findPxInfo(PX_2K)!!)
+
+            if (it.isLIII()) {
+                //L3 支持4k
                 result.add(findPxInfo(PX_4K)!!)
             }
         }

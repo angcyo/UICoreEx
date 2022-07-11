@@ -26,9 +26,9 @@ data class EngraveReadyDataInfo(
     var optionY: Int = 0,
 
     /**数据处理的模式, 比如是GCode数据, 黑白数据, 灰度数据等
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GREY]
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_BLACK_WHITE]
-     * [com.angcyo.engrave.canvas.CanvasBitmapHandler.BITMAP_MODE_GCODE]
+     * [com.angcyo.canvas.utils.CanvasConstant.BITMAP_MODE_GREY]
+     * [com.angcyo.canvas.utils.CanvasConstant.BITMAP_MODE_BLACK_WHITE]
+     * [com.angcyo.canvas.utils.CanvasConstant.BITMAP_MODE_GCODE]
      * */
     var optionMode: Int? = null,
 

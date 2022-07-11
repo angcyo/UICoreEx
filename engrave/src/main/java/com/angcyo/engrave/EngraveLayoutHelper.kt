@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.*
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
@@ -401,44 +402,60 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         val engraveOptionInfo = engraveModel.engraveOptionInfoData.value
         val engraveReadyInfo = engraveModel.engraveReadyInfoData.value
 
+        //材质列表
+        val materialList = EngraveHelper.getProductMaterialList()
+
         dslAdapter?.render {
             clearAllItems()
 
             //激光类型
-            if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
+            if (laserPeckerModel.productInfoData.value?.typeList.size() > 1) {
                 EngraveOptionTypeItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
+
+                    observeItemChange {
+                        //更新过滤
+                    }
                 }
             } else {
-                engraveOptionInfo?.type = 0x01
+                engraveOptionInfo?.type = LaserPeckerHelper.LASER_TYPE_BLUE
             }
 
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_material)
-                itemWheelList = _stringArray(R.array.sourceMaterial).toList()
+                itemWheelList = materialList
                 val material = engraveOptionInfo?.material ?: _string(R.string.material_custom)
-                itemSelectedIndex = itemWheelList?.indexOf(material) ?: 0
+                val index = materialList.indexOfFirst { it.toText() == material }
+                if (index == -1) {
+                    engraveOptionInfo?.material =
+                        materialList.getOrNull(0)?.toText()?.toString()
+                            ?: _string(R.string.material_custom)
+                }
+                itemSelectedIndex = max(0, index)
                 itemTag = EngraveOptionInfo::material.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_power)
                 itemWheelList = percentList()
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.power)
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.power)
                 itemTag = EngraveOptionInfo::power.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_speed)
                 itemWheelList = percentList()
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
                 itemTag = EngraveOptionInfo::depth.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.print_times)
                 itemWheelList = percentList(255)
-                itemSelectedIndex = findOptionIndex(itemWheelList, engraveOptionInfo?.time)
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.time)
                 itemTag = EngraveOptionInfo::time.name
                 itemEngraveOptionInfo = engraveOptionInfo
             }
@@ -523,10 +540,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 }
             }
         }
-    }
-
-    fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
-        return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1
     }
 
     //endregion

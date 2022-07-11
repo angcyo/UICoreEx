@@ -1,11 +1,12 @@
 package com.angcyo.engrave.dslitem
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.item.DslCheckFlowItem
-import com.angcyo.item.style._itemCheckedIndexList
 import com.angcyo.item.style.itemCheckItems
 import com.angcyo.item.style.itemCheckedItems
 import com.angcyo.item.style.itemText
@@ -23,33 +24,28 @@ class EngraveOptionTypeItem : DslCheckFlowItem() {
     var itemEngraveOptionInfo: EngraveOptionInfo? = null
         set(value) {
             field = value
-            if (value?.type == 0.toByte()) {
-                //白光
-                itemCheckedItems.add(itemCheckItems[0])
-            } else {
-                itemCheckedItems.add(itemCheckItems[1])
-            }
+            //默认选中
+            itemCheckedItems.add(value?.type ?: LaserPeckerHelper.LASER_TYPE_BLUE)
         }
 
     init {
         itemText = "${_string(R.string.laser_type)}:"
         itemLayoutId = R.layout.item_engrave_data_px
-
-        itemCheckItems =
-            listOf(_string(R.string.laser_type_white), _string(R.string.laser_type_blue))
+        itemCheckItems = vmApp<LaserPeckerModel>().productInfoData.value?.typeList ?: emptyList()
+        checkGroupItemConfig.itemCheckItemToText = {
+            if (it == LaserPeckerHelper.LASER_TYPE_WHITE) {
+                _string(R.string.laser_type_white)
+            } else {
+                _string(R.string.laser_type_blue)
+            }
+        }
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         super.onItemChangeListener(item)
-        val selected = _itemCheckedIndexList.firstOrNull()
+        val byte = itemCheckedItems.firstOrNull() as? Byte
         itemEngraveOptionInfo?.apply {
-            type = if (selected == 0) {
-                //白光
-                LaserPeckerHelper.LASER_TYPE_WHITE
-            } else {
-                //蓝光
-                LaserPeckerHelper.LASER_TYPE_BLUE
-            }
+            type = byte ?: LaserPeckerHelper.LASER_TYPE_BLUE
         }
     }
 }
