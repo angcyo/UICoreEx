@@ -3,12 +3,12 @@ package com.angcyo.canvas.laser.pecker
 import android.content.Context
 import android.view.View
 import android.widget.PopupWindow
-import com.angcyo.dialog.TargetWindow
-import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasNumberImageItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasNumberIncrementItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasNumberItem
+import com.angcyo.dialog.TargetWindow
+import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemText
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.appendDslItem
@@ -85,7 +85,10 @@ class CanvasNumberPopupConfig : ShadowAnchorPopupConfig() {
 }
 
 /**Dsl*/
-fun Context.canvasNumberWindow(anchor: View?, config: CanvasNumberPopupConfig.() -> Unit): Any {
+fun Context.canvasNumberWindow(
+    anchor: View?,
+    config: CanvasNumberPopupConfig.() -> Unit
+): TargetWindow {
     val popupConfig = CanvasNumberPopupConfig()
     popupConfig.anchor = anchor
     popupConfig.config()

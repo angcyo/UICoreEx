@@ -48,7 +48,7 @@ data class QuerySettingParser(
     companion object {
 
         /**自动连接设备状态存储*/
-        var AUTO_CONNECT_DEVICE: Boolean by HawkPropertyValue<Any, Boolean>(false)
+        var AUTO_CONNECT_DEVICE: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
         /**第三轴模式状态存储
          * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceSettingState] 在此会初始化*/

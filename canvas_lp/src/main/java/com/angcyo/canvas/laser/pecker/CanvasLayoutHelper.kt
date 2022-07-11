@@ -1,7 +1,8 @@
-package com.angcyo.canvas.laser.pecker.dslitem
+package com.angcyo.canvas.laser.pecker
 
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.drawable.BitmapDrawable
 import android.text.InputType
 import android.view.Gravity
 import android.view.MotionEvent
@@ -23,14 +24,17 @@ import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.*
-import com.angcyo.canvas.laser.pecker.*
+import com.angcyo.canvas.items.setHoldData
+import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.ShapesHelper
+import com.angcyo.canvas.utils.addDrawableRenderer
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
 import com.angcyo.library.toast
@@ -40,6 +44,7 @@ import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.pixplicity.sharp.SharpDrawable
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -148,7 +153,36 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemEnable = true
 
                 itemClick = {
-                    toast("功能开发中...")
+                    fragment.context?.canvasMaterialWindow(it) {
+                        onDrawableAction = { drawable ->
+                            when (drawable) {
+                                is BitmapDrawable -> {
+                                    //bitmap
+                                    canvasView.canvasDelegate.addPictureBitmapRenderer(drawable.bitmap)
+                                }
+                                is GCodeDrawable -> {
+                                    //gcode
+                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
+                                        .setHoldData(
+                                            CanvasDataHandleOperate.KEY_GCODE,
+                                            drawable.gCodeData
+                                        )
+                                }
+                                is SharpDrawable -> {
+                                    //svg
+                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
+                                        .setHoldData(
+                                            CanvasDataHandleOperate.KEY_SVG,
+                                            drawable.pathList
+                                        )
+                                }
+                                else -> {
+                                    //other
+                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
+                                }
+                            }
+                        }
+                    }
                 }
             }
             AddDoodleItem()() {

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 
 /**异步加载, 带loading dialog*/
-fun <T> LifecycleOwner.loadingAsync(block: () -> T?, action: (T?) -> Unit) {
+fun <T> LifecycleOwner.loadingAsync(block: () -> T?, action: (T?) -> Unit = {}) {
     val context = this
     if (context is ActivityResultCaller) {
         context.strokeLoading { cancel, loadEnd ->

@@ -15,10 +15,12 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.vmApp
-import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.ble.toZModeString
 import com.angcyo.fragment.AbsLifecycleFragment
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.disableParentInterceptTouchEvent
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.longFeedback
 import com.angcyo.library.toast
 import com.angcyo.widget.image.TouchCompatImageView
 import com.angcyo.widget.progress.DslSeekBar
@@ -174,18 +176,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         }
 
         //cmd
-        //安全提示弹窗
-        viewHolder?.context?.messageDialog {
-            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-            dialogTitle = _string(R.string.size_safety_tips)
-            dialogMessage = _string(R.string.size_safety_content)
-            negativeButtonText = _string(R.string.dialog_negative)
-
-            positiveButton { dialog, dialogViewHolder ->
-                dialog.dismiss()
-                startPreviewCmd(canvasDelegate, true, false)
-            }
-        }
+        startPreviewCmd(canvasDelegate, true, false)
     }
 
     override fun onIViewRemove() {

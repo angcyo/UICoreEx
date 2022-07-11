@@ -15,6 +15,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
+import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.flow
@@ -440,7 +441,14 @@ object LaserPeckerHelper {
                 chain(error)
             }
         }.start {
-            end(it)
+            if (it == null) {
+                end(it)
+            } else {
+                //再来一次
+                doBack {
+                    sendInitCommand(address, end)
+                }
+            }
         }
     }
 

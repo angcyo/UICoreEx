@@ -236,7 +236,11 @@ object EngraveHelper {
      * ]*/
     fun saveEngraveData(fileName: Any?, data: Any?, suffix: String = "engrave"): String? {
         //将雕刻数据写入文件
-        return data.writeTo(CanvasDataHandleOperate.CACHE_FILE_FOLDER, "${fileName}.${suffix}")
+        return data.writeTo(
+            CanvasDataHandleOperate.CACHE_FILE_FOLDER,
+            "${fileName}.${suffix}",
+            false
+        )
     }
 
     fun _handleGCodeEngraveDataInfo(engraveReadyDataInfo: EngraveReadyDataInfo, gCodeFile: File) {

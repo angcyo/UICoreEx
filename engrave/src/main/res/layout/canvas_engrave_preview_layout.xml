@@ -130,7 +130,7 @@
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_xhdpi"
-            android:text="@string/print_v2_package_preview_over"
+            android:text="@string/v3_bmp_setting_preview"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/centre_button"
             app:layout_constraintRight_toRightOf="@id/centre_button"
