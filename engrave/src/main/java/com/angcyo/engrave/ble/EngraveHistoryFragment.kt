@@ -36,10 +36,10 @@ import com.angcyo.tablayout.clamp
 class EngraveHistoryFragment : BaseDslFragment() {
 
     /**前布局*/
-    val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper(this)
+    val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper()
 
     /**雕刻布局*/
-    val engraveLayoutHelper = EngraveLayoutHelper(this)
+    val engraveLayoutHelper = EngraveLayoutHelper()
 
     /**雕刻预览布局*/
     val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this)

@@ -17,7 +17,7 @@ class EngraveDialogConfig(context: Context? = null) : BaseDialogConfig(context) 
     /**雕刻对象*/
     var renderer: BaseItemRenderer<*>? = null
 
-    val engraveLayoutHelper = EngraveLayoutHelper(this)
+    val engraveLayoutHelper = EngraveLayoutHelper()
 
     init {
         amount = 0f

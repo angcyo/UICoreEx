@@ -4,7 +4,6 @@ import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.dslitem.EngraveDataNextItem
 import com.angcyo.engrave.dslitem.EngraveDataPreviewItem
-import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._dimen
@@ -18,7 +17,7 @@ import com.angcyo.library.ex._string
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/06
  */
-class EngraveBeforeLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngraveLayoutHelper() {
+class EngraveBeforeLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**目标数据*/
     var engraveReadyDataInfo: EngraveReadyDataInfo? = null

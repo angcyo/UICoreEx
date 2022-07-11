@@ -45,7 +45,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     init {
         iViewLayoutId = R.layout.canvas_engrave_preview_layout
         //模式改变监听, 改变按钮的文本
-        laserPeckerModel.deviceStateData.observe(fragment) {
+        laserPeckerModel.deviceStateData.observe(this) {
 
             //雕刻模式提示
             viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())

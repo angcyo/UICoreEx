@@ -3,15 +3,12 @@ package com.angcyo.engrave
 import android.graphics.Color
 import android.view.ViewGroup
 import androidx.annotation.AnyThread
-import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.*
-import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.vmApp
@@ -43,7 +40,7 @@ import kotlin.math.max
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
-class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayoutHelper() {
+class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**雕刻对象*/
     var renderer: BaseItemRenderer<*>? = null
@@ -72,68 +69,11 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         iViewLayoutId = R.layout.canvas_engrave_layout
     }
 
-    /**显示产品限制框*/
-    fun _showProductLimit(canvasView: CanvasView, productInfo: LaserPeckerProductInfo?) {
-        if (productInfo == null) {
-            canvasView.canvasDelegate.limitRenderer.clear()
-        } else {
-            if (productInfo.isOriginCenter) {
-                canvasView.canvasDelegate.moveOriginToCenter()
-            } else {
-                canvasView.canvasDelegate.moveOriginToLT()
-            }
-            canvasView.canvasDelegate.showAndLimitBounds(productInfo.limitPath)
-        }
-    }
-
-    /**显示Z轴限制框*/
-    fun _showZLimit(canvasView: CanvasView) {
-        val productInfo = laserPeckerModel.productInfoData.value
-        val zLimitPath = productInfo?.zLimitPath
-        if (laserPeckerModel.isZOpen() && productInfo != null && zLimitPath != null) {
-            //Z轴连接
-            //追加显示Z轴显示框
-            canvasView.canvasDelegate.limitRenderer.apply {
-                updateLimit {
-                    addPath(zLimitPath)
-                }
-                limitBounds = productInfo.bounds
-            }
-            canvasView.canvasDelegate.showRectBounds(productInfo.bounds)
-        } else {
-            _showProductLimit(canvasView, productInfo)
-        }
-    }
-
-    /**绑定布局*/
-    @CanvasEntryPoint
-    fun bindCanvasView(canvasView: CanvasView) {
-        //监听产品信息
-        laserPeckerModel.productInfoData.observe(lifecycleOwner) { productInfo ->
-            _showProductLimit(canvasView, productInfo)
-        }
-        //监听Z轴
-        laserPeckerModel.deviceSettingData.observe(lifecycleOwner) {
-            val before = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
-            if (before != it?.zFlag) {
-                //z轴开关改变后, 检查是否要限制z轴限制
-                _showZLimit(canvasView)
-            }
-        }
-        laserPeckerModel.deviceStateData.observe(lifecycleOwner) {
-            val before = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
-            if (before != it?.zConnect) {
-                //z轴连接状态改变后, 检查是否要限制z轴限制
-                _showZLimit(canvasView)
-            }
-        }
-    }
-
     /**监听设备状态, 并做出相应*/
     @CanvasEntryPoint
     fun bindDeviceState(rootLayout: ViewGroup) {
         //监听设备状态
-        laserPeckerModel.deviceStateData.observe(lifecycleOwner) {
+        laserPeckerModel.deviceStateData.observe(this) {
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
                 if (it.isEngraving()) {
@@ -328,7 +268,7 @@ class EngraveLayoutHelper(val lifecycleOwner: LifecycleOwner) : BaseEngraveLayou
         updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
 
         fun needHandleEngraveData() {
-            lifecycleOwner.launchLifecycle {
+            launchLifecycle {
                 val dataInfo = withBlock {
                     if (renderer == null) {
                         //此时可能来自历史文档的数据
