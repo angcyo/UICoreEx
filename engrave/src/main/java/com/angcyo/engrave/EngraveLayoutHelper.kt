@@ -11,8 +11,6 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.vmApp
-import com.angcyo.coroutine.launchLifecycle
-import com.angcyo.coroutine.withBlock
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderEmptyItem
@@ -23,6 +21,7 @@ import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.dslitem.*
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
+import com.angcyo.http.rx.runRx
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
@@ -169,6 +168,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     }
 
     /**显示关闭按钮*/
+    @AnyThread
     fun showCloseLayout(show: Boolean = true) {
         cancelable = show
         doMain {
@@ -236,20 +236,20 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         dslAdapter?.clearAllItems()
         updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
 
+        //开始处理需要发送的bytes数据
         fun needHandleEngraveData() {
-            launchLifecycle {
-                val dataInfo = withBlock {
-                    if (renderer == null) {
-                        //此时可能来自历史文档的数据
-                        val dataPathFile = engraveReadyDataInfo.dataPath?.file()
-                        if (dataPathFile?.exists() == true) {
-                            engraveReadyDataInfo.engraveData?.data = dataPathFile.readBytes()
-                        }
-                    } else {
-                        EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
+            runRx({
+                if (renderer == null) {
+                    //此时可能来自历史文档的数据
+                    val dataPathFile = engraveReadyDataInfo.dataPath?.file()
+                    if (dataPathFile?.exists() == true) {
+                        engraveReadyDataInfo.engraveData?.data = dataPathFile.readBytes()
                     }
-                    engraveReadyDataInfo.engraveData
+                } else {
+                    EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
                 }
+                engraveReadyDataInfo.engraveData
+            }) { dataInfo ->
                 if (dataInfo?.data == null) {
                     showEngraveError("data exception!")
                 } else {
