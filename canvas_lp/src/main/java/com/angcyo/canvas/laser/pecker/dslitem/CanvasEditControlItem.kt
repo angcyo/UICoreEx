@@ -14,8 +14,10 @@ import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.canvasNumberWindow
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.canvas.utils.lineShapeOrientation
+import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.singleColorPickerDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.L
 import com.angcyo.library.ex.ADJUST_TYPE_LT
 import com.angcyo.library.ex.adjustSize
 import com.angcyo.library.ex.adjustSizeWithRotate
@@ -139,6 +141,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             val renderer = itemRenderer
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.canvasNumberWindow(it) {
+                    onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     val builder = StringBuilder()
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_width_view)?.text = inputValueWith(
@@ -185,6 +188,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                                             )
                                         }
                                     }
+
+                                    //清空输入
+                                    builder.clear()
                                 }
                                 itemHolder.postDelay(_widthPendingRunnable!!, pendingDelay)
                             }
@@ -198,6 +204,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             val renderer = itemRenderer
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.canvasNumberWindow(it) {
+                    onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     val builder = StringBuilder()
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_height_view)?.text = inputValueWith(
@@ -243,6 +250,8 @@ class CanvasEditControlItem : DslAdapterItem() {
                                         )
                                     }
 
+                                    //清空输入
+                                    builder.clear()
                                 }
                                 itemHolder.postDelay(_heightPendingRunnable!!, pendingDelay)
                             }
@@ -263,6 +272,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             val renderer = itemRenderer
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.canvasNumberWindow(it) {
+                    onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     val builder = StringBuilder()
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_axis_x_view)?.text = inputValueWith(
@@ -286,6 +296,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                                         renderer,
                                         bounds
                                     )
+
+                                    //清空输入
+                                    builder.clear()
                                 }
                                 itemHolder.postDelay(_axisXPendingRunnable!!, pendingDelay)
                             }
@@ -299,6 +312,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             val renderer = itemRenderer
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.canvasNumberWindow(it) {
+                    onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     val builder = StringBuilder()
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_axis_y_view)?.text = inputValueWith(
@@ -322,6 +336,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                                         renderer,
                                         bounds
                                     )
+
+                                    //清空输入
+                                    builder.clear()
                                 }
                                 itemHolder.postDelay(_axisYPendingRunnable!!, pendingDelay)
                             }
@@ -341,6 +358,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             val renderer = itemRenderer
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.canvasNumberWindow(it) {
+                    onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     val builder = StringBuilder()
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_rotate_view)?.text = inputValueWith(
@@ -356,6 +374,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                                         renderer,
                                         toRotate
                                     )
+
+                                    //清空输入
+                                    builder.clear()
                                 }
                                 itemHolder.postDelay(_rotatePendingRunnable!!, pendingDelay)
                             }
@@ -409,7 +430,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                 newValueBuild.append(op)
             }
         }
-        return newValueBuild.toString()
+        val result = newValueBuild.toString()
+        L.v("input result:$result")
+        return result
     }
 
     /**颜色*/
@@ -462,5 +485,11 @@ class CanvasEditControlItem : DslAdapterItem() {
                 }
             }
         }
+    }
+
+    /**popup销毁后, 刷新item*/
+    fun onPopupDismiss(window: TargetWindow): Boolean {
+        updateAdapterItem()
+        return false
     }
 }
