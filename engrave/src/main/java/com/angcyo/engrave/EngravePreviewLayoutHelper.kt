@@ -175,7 +175,10 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         }
 
         //next
-        viewHolder?.visible(R.id.next_button, onNextAction != null)
+        viewHolder?.visible(
+            R.id.next_button,
+            onNextAction != null && canvasDelegate?.getSelectedRenderer() != null
+        )
         viewHolder?.click(R.id.next_button) {
             onNextAction?.invoke(it)
         }
