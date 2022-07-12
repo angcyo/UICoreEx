@@ -130,7 +130,7 @@ object CanvasBitmapHandler {
                                 renderer.updateItemDrawable(
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
-                                    beforeBounds.rotate(boundsRotate),
+                                    beforeBounds.rotate(boundsRotate, result = RectF()),
                                     hashMapOf(
                                         CanvasDataHandleOperate.KEY_GCODE to it.first,
                                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_GCODE
@@ -145,7 +145,7 @@ object CanvasBitmapHandler {
                             renderer.updateItemDrawable(
                                 it.second,
                                 Strategy.normal,
-                                beforeBounds.rotate(boundsRotate),
+                                beforeBounds.rotate(boundsRotate, result = RectF()),
                                 hashMapOf(
                                     CanvasDataHandleOperate.KEY_GCODE to it.first,
                                     CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_GCODE
