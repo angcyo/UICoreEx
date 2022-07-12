@@ -16,6 +16,7 @@ import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import java.io.File
@@ -26,6 +27,15 @@ import java.io.File
  * @since 2022/06/21
  */
 object EngraveHelper {
+
+    /**最后一次预览光功率设置 [0~1f]*/
+    var lastPwrProgress: Float by HawkPropertyValue<Any, Float>(0.5f)
+
+    /**最后一次功率*/
+    var lastPower: Int by HawkPropertyValue<Any, Int>(100)
+
+    /**最后一次深度*/
+    var lastDepth: Int by HawkPropertyValue<Any, Int>(10)
 
     /**生成一个雕刻需要用到的文件索引*/
     fun generateEngraveIndex(): Int {
@@ -2749,10 +2759,11 @@ object EngraveHelper {
                 match
             }
         }
+        //自定义, 自动记住了上一次的值
         val custom = MaterialEntity()
         custom.resId = R.string.material_custom
-        custom.power = 100
-        custom.depth = 10
+        custom.power = lastPower
+        custom.depth = lastDepth
         result.add(0, custom)
         return result
     }

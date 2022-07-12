@@ -17,7 +17,6 @@ import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
-import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
@@ -99,9 +98,6 @@ object LaserPeckerHelper {
     /**2米, mm单位
      * 2m = 2000mm*/
     const val Z_MAX_Y = 2_00_0
-
-    /**预览光功率设置 [0~1f]*/
-    var lastPwrProgress: Float by HawkPropertyValue<Any, Float>(0.5f)
 
     //<editor-fold desc="operate">
 

@@ -5,7 +5,6 @@ import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -92,10 +91,10 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         super.onIViewShow()
         //init
         viewHolder?.v<DslSeekBar>(R.id.brightness_seek_bar)?.apply {
-            setProgress((LaserPeckerHelper.lastPwrProgress * 100).toInt())
+            setProgress((EngraveHelper.lastPwrProgress * 100).toInt())
             config {
                 onSeekChanged = { value, fraction, fromUser ->
-                    LaserPeckerHelper.lastPwrProgress = fraction
+                    EngraveHelper.lastPwrProgress = fraction
                     if (laserPeckerModel.isEngravePreviewMode()) {
                         startPreviewCmd(canvasDelegate, false, true)
                     } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
@@ -209,14 +208,16 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                     bounds.left.toInt(),
                     bounds.top.toInt(),
                     bounds.width().toInt(),
-                    bounds.height().toInt()
+                    bounds.height().toInt(),
+                    EngraveHelper.lastPwrProgress
                 )
             } else {
                 EngravePreviewCmd.previewRange(
                     bounds.left.toInt(),
                     bounds.top.toInt(),
                     bounds.width().toInt(),
-                    bounds.height().toInt()
+                    bounds.height().toInt(),
+                    EngraveHelper.lastPwrProgress
                 )
             }
             val flag =
@@ -279,7 +280,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
 
     /**显示中心*/
     fun showPreviewCenterCmd(updateState: Boolean) {
-        val cmd = EngravePreviewCmd.previewShowCenter()
+        val cmd = EngravePreviewCmd.previewShowCenter(EngraveHelper.lastPwrProgress)
         cmd.enqueue(CommandQueueHelper.FLAG_ASYNC)
         if (updateState) {
             queryDeviceStateCmd()

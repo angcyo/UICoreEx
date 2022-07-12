@@ -123,21 +123,28 @@ data class EngravePreviewCmd(
             return Rect(previewX, previewY, previewX + previewWidth, previewY + previewHeight)
         }
 
-        /**根据[px]和[productInfo]调整预览的范围*/
+        /**根据[px]和[productInfo]调整预览的范围
+         * [pwrProgress] [0~1f] 预览光功率
+         * */
         fun previewRange(
             x: Int,
             y: Int,
             width: Int,
             height: Int,
+            pwrProgress: Float,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            return previewRange(adjustBitmapRange(x, y, width, height, px, productInfo), px)
+            return previewRange(
+                adjustBitmapRange(x, y, width, height, px, productInfo),
+                pwrProgress,
+                px
+            )
         }
 
         /**表示范围预览
          * [rect] 经过[px]处理过的像素*/
-        fun previewRange(rect: Rect, px: Byte = DEFAULT_PX): EngravePreviewCmd {
+        fun previewRange(rect: Rect, pwrProgress: Float, px: Byte = DEFAULT_PX): EngravePreviewCmd {
             val widthBytes = rect.width().toHexString(4).toHexByteArray()
             val heightBytes = rect.height().toHexString(4).toHexByteArray()
 
@@ -150,7 +157,7 @@ data class EngravePreviewCmd(
                 x = rect.left
                 y = rect.top
 
-                updatePWR(LaserPeckerHelper.lastPwrProgress)
+                updatePWR(pwrProgress)
             }
         }
 
@@ -218,10 +225,12 @@ data class EngravePreviewCmd(
             }
         }
 
-        /**显示中心*/
-        fun previewShowCenter(): EngravePreviewCmd {
+        /**显示中心
+         * [pwrProgress] [0~1f] 预览光功率
+         * */
+        fun previewShowCenter(pwrProgress: Float): EngravePreviewCmd {
             return EngravePreviewCmd(0x07).apply {
-                updatePWR(LaserPeckerHelper.lastPwrProgress)
+                updatePWR(pwrProgress)
             }
         }
 
@@ -236,19 +245,30 @@ data class EngravePreviewCmd(
             y: Int,
             width: Int,
             height: Int,
+            pwrProgress: Float,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            return previewZRange(adjustBitmapRange(x, y, width, height, px, productInfo), px)
+            return previewZRange(
+                adjustBitmapRange(x, y, width, height, px, productInfo),
+                pwrProgress,
+                px
+            )
         }
 
         /**第三轴暂停预览, 用来拖动时更新x,t
-         * [rect] 最终调整过后的坐标*/
-        fun previewZRange(rect: Rect, px: Byte = DEFAULT_PX): EngravePreviewCmd {
+         * [rect] 最终调整过后的坐标
+         * [pwrProgress] [0~1f] 预览光功率
+         * */
+        fun previewZRange(
+            rect: Rect,
+            pwrProgress: Float,
+            px: Byte = DEFAULT_PX
+        ): EngravePreviewCmd {
             return EngravePreviewCmd(0x04, px = px).apply {
                 x = rect.left
                 y = rect.top
-                updatePWR(LaserPeckerHelper.lastPwrProgress)
+                updatePWR(pwrProgress)
             }
         }
 

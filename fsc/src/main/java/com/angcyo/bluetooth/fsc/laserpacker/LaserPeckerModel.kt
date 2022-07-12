@@ -148,6 +148,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**发送更新预览范围指令, 支持Z轴判断*/
     fun sendUpdatePreviewRange(
         bounds: RectF,
+        pwrProgress: Float,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
@@ -156,14 +157,16 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                 bounds.left.toInt(),
                 bounds.top.toInt(),
                 bounds.width().toInt(),
-                bounds.height().toInt()
+                bounds.height().toInt(),
+                pwrProgress
             )
         } else {
             EngravePreviewCmd.previewRange(
                 bounds.left.toInt(),
                 bounds.top.toInt(),
                 bounds.width().toInt(),
-                bounds.height().toInt()
+                bounds.height().toInt(),
+                pwrProgress
             )
         }
 

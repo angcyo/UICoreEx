@@ -7,6 +7,7 @@ import com.angcyo.dsladapter.updateAllItemBy
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
+import com.angcyo.library.ex.toHexInt
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.widget.DslViewHolder
 
@@ -41,7 +42,8 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                 EngraveOptionInfo::power.name -> {
                     itemEngraveOptionInfo?.apply {
                         power = getSelectedByte(index, power)
-
+                        EngraveHelper.lastPower = depth.toHexInt()
+                        
                         //重置为自定义
                         _updateMaterialItem()
                     }
@@ -49,6 +51,7 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                 EngraveOptionInfo::depth.name -> {
                     itemEngraveOptionInfo?.apply {
                         depth = getSelectedByte(index, depth)
+                        EngraveHelper.lastDepth = depth.toHexInt()
 
                         //重置为自定义
                         _updateMaterialItem()
@@ -117,7 +120,7 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
         itemDslAdapter?.updateAllItemBy {
             if (it is EngraveOptionWheelItem && it.itemTag == EngraveOptionInfo::material.name) {
                 //材质item, 选中第一个, 自定义
-                it.itemSelectedIndex = itemWheelList?.indexOf(0) ?: 0
+                it.itemSelectedIndex = 0
                 true
             } else {
                 false
