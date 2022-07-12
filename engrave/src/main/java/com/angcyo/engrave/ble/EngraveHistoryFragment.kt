@@ -10,10 +10,7 @@ import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
-import com.angcyo.engrave.EngraveBeforeLayoutHelper
-import com.angcyo.engrave.EngraveLayoutHelper
-import com.angcyo.engrave.EngravePreviewLayoutHelper
-import com.angcyo.engrave.R
+import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
@@ -44,6 +41,9 @@ class EngraveHistoryFragment : BaseDslFragment() {
     /**雕刻预览布局*/
     val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this)
 
+    /**产品布局*/
+    val productLayoutHelper = ProductLayoutHelper(this)
+
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_history)
 
@@ -59,7 +59,12 @@ class EngraveHistoryFragment : BaseDslFragment() {
         super.initBaseView(savedInstanceState)
 
         //bind
-        engraveLayoutHelper.bindDeviceState(_vh.itemView as ViewGroup)
+        engraveLayoutHelper.bindDeviceState()
+
+        //product _vh.group(R.id.lib_content_wrap_layout) ?:
+        //lib_content_overlay_wrap_layout
+        val group = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
+        productLayoutHelper.bindCanvasView(group, null)
 
         //开始预览
         engraveBeforeLayoutHelper.onPreviewAction = {
@@ -151,8 +156,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
             clamp(entity.printTimes, 1, 100).toByte(),//最小打印1次
             entity.x,
             entity.y,
-            entity.type,
-            entity.px
+            entity.type
         )
     }
 

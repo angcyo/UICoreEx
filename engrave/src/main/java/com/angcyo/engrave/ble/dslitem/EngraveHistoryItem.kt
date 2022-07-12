@@ -1,6 +1,6 @@
 package com.angcyo.engrave.ble.dslitem
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.toPxDes
 import com.angcyo.canvas.core.convertPixelToValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
@@ -72,8 +72,8 @@ class EngraveHistoryItem : DslAdapterItem() {
             append(" ${_string(R.string.custom_speed)} ${engraveHistoryEntity?.depth}%")
             appendln()
 
-            val pxDes = LaserPeckerHelper.findPxInfo(engraveHistoryEntity?.px)?.des
-            append(" ${_string(R.string.tv_01)}: $pxDes")
+            val pxDes = engraveHistoryEntity?.px?.toPxDes()
+            append("${_string(R.string.tv_01)}: $pxDes")
 
             /*暂时不显示
             val zMode = engraveHistoryEntity?.zMode ?: -1

@@ -33,6 +33,11 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE]
      * */
     var typeList: List<Byte> = listOf(LaserPeckerHelper.LASER_TYPE_BLUE),
+    /**设备支持的分辨率*/
+    var pxList: List<PxInfo> = emptyList(),
+    /**物理尺寸宽高, mm单位*/
+    var widthPhys: Int = 0,
+    var heightPhys: Int = 0,
     /**机器物理的范围, 像素*/
     var bounds: RectF,
     /**机器在移动范围内的可打印范围, 像素*/

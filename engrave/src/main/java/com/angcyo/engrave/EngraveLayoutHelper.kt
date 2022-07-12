@@ -1,7 +1,5 @@
 package com.angcyo.engrave
 
-import android.graphics.Color
-import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -16,7 +14,6 @@ import com.angcyo.core.vmApp
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.dialog.messageDialog
-import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.updateItem
@@ -31,7 +28,6 @@ import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
-import com.angcyo.widget.loading.DangerWarningView
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
 import kotlin.math.max
@@ -60,9 +56,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     //雕刻模型
     val engraveModel = vmApp<EngraveModel>()
 
-    //雕刻提示
-    var dangerWarningView: DangerWarningView? = null
-
     /**雕刻需要准备的数据*/
     var engraveReadyDataInfo: EngraveReadyDataInfo? = null
 
@@ -72,7 +65,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**监听设备状态, 并做出相应*/
     @CanvasEntryPoint
-    fun bindDeviceState(rootLayout: ViewGroup) {
+    fun bindDeviceState() {
         //监听设备状态
         laserPeckerModel.deviceStateData.observe(this) {
             it?.let {
@@ -118,32 +111,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 }
                 //更新界面
                 dslAdapter?.updateItem { it is EngravingItem }
-
-                //提示
-                if (it.isModeEngravePreview()) {
-                    //预览模式
-                    showDangerWaring(rootLayout, Color.BLUE.alphaRatio(0.4f))
-                } else if (it.isModeEngrave()) {
-                    //雕刻模式
-                    showDangerWaring(rootLayout, Color.RED.alphaRatio(0.4f))
-                } else {
-                    //空闲
-                    dangerWarningView?.removeFromParent()
-                }
-            }.elseNull {
-                dangerWarningView?.removeFromParent()
             }
-        }
-    }
-
-    /**显示危险提示view*/
-    fun showDangerWaring(rootLayout: ViewGroup, color: Int) {
-        if (dangerWarningView == null) {
-            dangerWarningView = DangerWarningView(rootLayout.context)
-        }
-        dangerWarningView?.firstDrawable<DangerWarningDrawable>()?.warnColor = color
-        if (dangerWarningView?.parent == null) {
-            rootLayout.addView(dangerWarningView, -1, -1)
         }
     }
 

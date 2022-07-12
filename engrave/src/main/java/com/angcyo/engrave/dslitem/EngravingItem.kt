@@ -1,12 +1,12 @@
 package com.angcyo.engrave.dslitem
 
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.Companion.WORK_MODE_ENGRAVE
+import com.angcyo.bluetooth.fsc.laserpacker.toPxDes
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -90,7 +90,7 @@ class EngravingItem : DslAdapterItem() {
 
             //分辨率: 1k
             append(_string(R.string.tv_01))
-            append(": ${LaserPeckerHelper.findPxInfo(engraveModel.engraveReadyInfoData.value?.engraveData?.px)?.des}")
+            append(": ${engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()}")
             appendln()
 
             //材质:

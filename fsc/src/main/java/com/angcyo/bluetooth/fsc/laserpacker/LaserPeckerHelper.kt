@@ -100,15 +100,6 @@ object LaserPeckerHelper {
      * 2m = 2000mm*/
     const val Z_MAX_Y = 2_00_0
 
-    //所有支持的分辨率
-    val pxInfoList = mutableListOf<PxInfo>().apply {
-        add(PxInfo(0x01, 4000, 4000, "4K"))
-        add(PxInfo(0x02, 2000, 2000, "2K"))
-        add(PxInfo(0x03, 1300, 1300, "1.3K"))
-        add(PxInfo(0x04, 1000, 1000, "1K"))
-        add(PxInfo(0x05, 800, 800, "0.8K"))
-    }
-
     /**预览光功率设置 [0~1f]*/
     var lastPwrProgress: Float by HawkPropertyValue<Any, Float>(0.5f)
 
@@ -150,7 +141,8 @@ object LaserPeckerHelper {
     }
 
     /**查找[PxInfo]*/
-    fun findPxInfo(px: Byte?): PxInfo? = pxInfoList.find { it.px == px }
+    fun findPxInfo(px: Byte?): PxInfo? =
+        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.find { it.px == px }
 
     /**根据选中的分辨率, 转换输入的大小*/
     fun transformWidth(value: Int, px: Byte): Int {
@@ -200,6 +192,9 @@ object LaserPeckerHelper {
         //激光类型
         var typeList: List<Byte> = listOf(LASER_TYPE_BLUE)
 
+        //所有支持的分辨率
+        val pxList: MutableList<PxInfo> = mutableListOf()
+
         val unit = MmValueUnit()
         val bounds = RectF()
         var isOriginCenter = true
@@ -209,10 +204,16 @@ object LaserPeckerHelper {
 
         val zMax = unit.convertValueToPixel(Z_MAX_Y.toFloat())
 
+        //物理尺寸宽高mm单位
+        var wPhys = 0
+        var hPhys = 0
+
         when (name) {
             LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_ -> {
-                val left = unit.convertValueToPixel(-50f)
-                val right = unit.convertValueToPixel(50f)
+                wPhys = 100
+                hPhys = 100
+                val left = unit.convertValueToPixel(-wPhys / 2f)
+                val right = unit.convertValueToPixel(wPhys / 2f)
                 limitPath.apply {
                     bounds.set(left, left, right, right)
                     addRect(bounds, Path.Direction.CW)
@@ -220,8 +221,10 @@ object LaserPeckerHelper {
                 zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
             }
             LIII -> {
-                val left = unit.convertValueToPixel(-50f)
-                val right = unit.convertValueToPixel(50f)
+                wPhys = 100
+                hPhys = 100
+                val left = unit.convertValueToPixel(-wPhys / 2f)
+                val right = unit.convertValueToPixel(wPhys / 2f)
                 limitPath.apply {
                     bounds.set(left, left, right, right)
 
@@ -235,8 +238,10 @@ object LaserPeckerHelper {
             }
             LIII_MAX -> {
                 //160*160
-                val left = unit.convertValueToPixel(-80f)
-                val right = unit.convertValueToPixel(80f)
+                wPhys = 160
+                hPhys = 160
+                val left = unit.convertValueToPixel(-wPhys / 2f)
+                val right = unit.convertValueToPixel(wPhys / 2f)
                 limitPath.apply {
                     bounds.set(left, left, right, right)
 
@@ -249,9 +254,11 @@ object LaserPeckerHelper {
                 typeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
             }
             CI -> {
+                wPhys = 300
+                hPhys = 400
                 isOriginCenter = false
-                val width = unit.convertValueToPixel(300f)
-                val height = unit.convertValueToPixel(400f)
+                val width = unit.convertValueToPixel(wPhys.toFloat())
+                val height = unit.convertValueToPixel(hPhys.toFloat())
                 limitPath.apply {
                     bounds.set(0f, 0f, width, height)
                     addRect(bounds, Path.Direction.CW)
@@ -259,10 +266,35 @@ object LaserPeckerHelper {
                 zLimitPath.addRect(0f, 0f, width, zMax, Path.Direction.CW)
             }
         }
+
+        pxList.add(PxInfo(PX_1K, wPhys * 10, hPhys * 10, PX_1K.toPxDes()))
+
+        when (name) {
+            LI, LI_PRO -> {
+                //pxList.add(PxInfo(0x04, 1000, 1000, "1K"))
+            }
+            LI_Z, LI_Z_PRO, LII -> {
+                pxList.add(PxInfo(PX_1_3K, wPhys * 13, hPhys * 13, PX_1_3K.toPxDes()))
+                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
+            }
+            LIII -> {
+                pxList.add(PxInfo(PX_1_3K, wPhys * 13, hPhys * 13, PX_1_3K.toPxDes()))
+                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
+                pxList.add(PxInfo(PX_4K, wPhys * 40, hPhys * 40, PX_4K.toPxDes()))
+            }
+            LIV -> {
+                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
+                pxList.add(PxInfo(PX_4K, wPhys * 40, hPhys * 40, PX_4K.toPxDes()))
+            }
+        }
+
         val info = LaserPeckerProductInfo(
             softwareVersion,
             name,
             typeList,
+            pxList,
+            wPhys,
+            hPhys,
             bounds,
             limitPath,
             zLimitPath,
@@ -321,22 +353,8 @@ object LaserPeckerHelper {
     /**返回设备支持的分辨率列表*/
     fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
-        vmApp<LaserPeckerModel>().productInfoData.value?.let {
-            //1k 所有设备都支持
-            result.add(findPxInfo(PX_1K)!!)
-
-            if (it.isLI() || it.isLII()) {
-                //L1 L2 支持 1.3k
-                result.add(findPxInfo(PX_1_3K)!!)
-            }
-
-            //2K 都支持
-            result.add(findPxInfo(PX_2K)!!)
-
-            if (it.isLIII()) {
-                //L3 支持4k
-                result.add(findPxInfo(PX_4K)!!)
-            }
+        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.let {
+            result.addAll(it)
         }
         return result
     }
@@ -480,6 +498,16 @@ object LaserPeckerHelper {
     }
 
     //</editor-fold desc="packet">
+}
+
+/**分辨率转描述字符串*/
+fun Byte.toPxDes() = when (this) {
+    LaserPeckerHelper.PX_4K -> "4K"
+    LaserPeckerHelper.PX_2K -> "2K"
+    LaserPeckerHelper.PX_1_3K -> "1.3K"
+    LaserPeckerHelper.PX_1K -> "1K"
+    LaserPeckerHelper.PX_0_8K -> "0.8K"
+    else -> "~1K"
 }
 
 /**将日志写入到[ble.log]*/
