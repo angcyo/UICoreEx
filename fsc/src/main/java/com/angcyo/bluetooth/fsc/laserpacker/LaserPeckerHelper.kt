@@ -288,7 +288,7 @@ object LaserPeckerHelper {
             }
         }
 
-        val info = LaserPeckerProductInfo(
+        return LaserPeckerProductInfo(
             softwareVersion,
             name,
             typeList,
@@ -300,7 +300,6 @@ object LaserPeckerHelper {
             zLimitPath,
             isOriginCenter
         )
-        return info
     }
 
     /**中间一个正方形, 左右各一个半圆*/
