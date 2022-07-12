@@ -59,7 +59,10 @@ class FscDeviceModel : LifecycleViewModel() {
                     //蓝牙已连接
 
                     //发送初始化指令
-                    LaserPeckerHelper.sendInitCommand(deviceConnectState.device.address)
+                    LaserPeckerHelper.sendInitCommand(
+                        deviceConnectState.device.name,
+                        deviceConnectState.device.address
+                    )
 
                     //入库
                     DeviceConnectEntity().apply {

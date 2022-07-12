@@ -63,6 +63,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
         L.i("设备版本:$queryVersionParser".writeBleLog())
         val productInfo = LaserPeckerHelper.parseProductInfo(queryVersionParser.softwareVersion)
+        productInfo.deviceName = LaserPeckerHelper.initDeviceName
+        productInfo.deviceAddress = LaserPeckerHelper.initDeviceAddress
+        productInfo.softwareVersion = queryVersionParser.softwareVersion
         productInfo.hardwareVersion = queryVersionParser.hardwareVersion
         productInfoData.postValue(productInfo)
         deviceVersionData.postValue(queryVersionParser)

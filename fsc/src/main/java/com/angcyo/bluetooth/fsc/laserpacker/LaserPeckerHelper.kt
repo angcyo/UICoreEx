@@ -436,9 +436,20 @@ object LaserPeckerHelper {
         )
     }
 
-    /**发送初始化的指令, 读取设备的基础信息*/
-    fun sendInitCommand(address: String, end: (Throwable?) -> Unit = {}) {
+    /**初始化的蓝牙设备名称*/
+    var initDeviceName: String? = null
+
+    /**初始化的蓝牙设备地址*/
+    var initDeviceAddress: String? = null
+
+    /**发送初始化的指令, 读取设备的基础信息
+     * [name] 蓝牙设备的名称
+     * [address] 蓝牙设备的地址
+     * */
+    fun sendInitCommand(name: String, address: String, end: (Throwable?) -> Unit = {}) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
+        initDeviceName = name
+        initDeviceAddress = address
         flow { chain ->
             //读取设备设置状态
             sendCommand(address, QueryCmd.settingState) { bean, error ->
@@ -477,7 +488,7 @@ object LaserPeckerHelper {
             } else {
                 //再来一次
                 doBack {
-                    sendInitCommand(address, end)
+                    sendInitCommand(name, address, end)
                 }
             }
         }

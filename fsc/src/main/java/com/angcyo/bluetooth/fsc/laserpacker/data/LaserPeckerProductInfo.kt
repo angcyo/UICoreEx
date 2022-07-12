@@ -47,6 +47,12 @@ data class LaserPeckerProductInfo(
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,
+
+    //---
+    var deviceName: String? = null, //蓝牙设备名称
+    var deviceAddress: String? = null, //蓝牙设备地址
+    /**等同于[version]*/
+    var softwareVersion: Int = -1,
     var hardwareVersion: Int = -1,
 ) {
 
