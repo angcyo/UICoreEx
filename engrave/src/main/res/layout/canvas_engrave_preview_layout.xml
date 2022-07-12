@@ -52,7 +52,7 @@
             android:id="@+id/bracket_stop_view"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="@dimen/lib_xxxhdpi"
+            android:layout_marginTop="@dimen/lib_xxhdpi"
             android:layout_marginBottom="@dimen/lib_xxhdpi"
             android:background="@drawable/lib_bg2_selector"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -131,10 +131,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_xhdpi"
             android:text="@string/v3_bmp_setting_preview"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/next_button"
             app:layout_constraintLeft_toLeftOf="@id/centre_button"
             app:layout_constraintRight_toRightOf="@id/centre_button"
             app:layout_constraintTop_toBottomOf="@id/centre_button" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/next_button"
+            style="@style/LibButtonSolidStyle"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:text="@string/ui_edit_main_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/centre_button"
+            app:layout_constraintRight_toRightOf="@id/centre_button"
+            app:layout_constraintTop_toBottomOf="@id/preview_button" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_title_view"

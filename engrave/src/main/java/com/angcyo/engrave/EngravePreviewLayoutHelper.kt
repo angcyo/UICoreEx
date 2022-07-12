@@ -16,10 +16,7 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.ble.toZModeString
 import com.angcyo.fragment.AbsLifecycleFragment
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.disableParentInterceptTouchEvent
-import com.angcyo.library.ex.elseNull
-import com.angcyo.library.ex.longFeedback
+import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.widget.image.TouchCompatImageView
 import com.angcyo.widget.progress.DslSeekBar
@@ -40,6 +37,9 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
      * 如果需要实时更新预览,可以调用[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
      * */
     var previewBounds: RectF? = null
+
+    /**下一步回调*/
+    var onNextAction: ClickAction? = null
 
     init {
         iViewLayoutId = R.layout.canvas_engrave_preview_layout
@@ -172,6 +172,12 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 //结束预览
                 hide()
             }
+        }
+
+        //next
+        viewHolder?.visible(R.id.next_button, onNextAction != null)
+        viewHolder?.click(R.id.next_button) {
+            onNextAction?.invoke(it)
         }
 
         //cmd

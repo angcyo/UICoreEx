@@ -39,7 +39,12 @@ class EngraveHistoryFragment : BaseDslFragment() {
     val engraveLayoutHelper = EngraveLayoutHelper()
 
     /**雕刻预览布局*/
-    val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this)
+    val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this).apply {
+        //next
+        onNextAction = {
+            toEngrave()
+        }
+    }
 
     /**产品布局*/
     val productLayoutHelper = ProductLayoutHelper(this)
@@ -162,14 +167,16 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
     /**开始预览*/
     fun toPreview() {
-        _readyDataInfo?.historyEntity?.let {
-            engravePreviewLayoutHelper.previewBounds = RectF(
-                it.x.toFloat(),
-                it.y.toFloat(),
-                (it.x + it.width).toFloat(),
-                (it.y + it.height).toFloat()
-            )
-            engravePreviewLayoutHelper.showIn(this)
+        engravePreviewLayoutHelper.showPreviewSafetyTips(fContext()) {
+            _readyDataInfo?.historyEntity?.let {
+                engravePreviewLayoutHelper.previewBounds = RectF(
+                    it.x.toFloat(),
+                    it.y.toFloat(),
+                    (it.x + it.width).toFloat(),
+                    (it.y + it.height).toFloat()
+                )
+                engravePreviewLayoutHelper.showIn(this)
+            }
         }
     }
 
