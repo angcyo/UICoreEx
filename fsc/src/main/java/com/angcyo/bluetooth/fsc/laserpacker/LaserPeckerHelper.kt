@@ -470,7 +470,9 @@ object LaserPeckerHelper {
                 chain(error)
             }
         }.start {
+            laserPeckerModel.initializeData.postValue(it == null)
             if (it == null) {
+                //初始化完成
                 end(it)
             } else {
                 //再来一次

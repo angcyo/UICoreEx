@@ -51,7 +51,10 @@ class FscDeviceModel : LifecycleViewModel() {
                     toast(_string(R.string.bluetooth_lib_scan_disconnected))
 
                     //蓝牙断开后,清空设备状态
-                    vmApp<LaserPeckerModel>().deviceStateData.postValue(null)
+                    vmApp<LaserPeckerModel>().apply {
+                        deviceStateData.postValue(null)
+                        initializeData.postValue(false)
+                    }
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
                     //蓝牙已连接
 
