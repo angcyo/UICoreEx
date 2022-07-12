@@ -10,6 +10,7 @@ import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.canvasNumberWindow
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.canvas.utils.lineShapeOrientation
@@ -19,7 +20,6 @@ import com.angcyo.library.ex.ADJUST_TYPE_LT
 import com.angcyo.library.ex.adjustSize
 import com.angcyo.library.ex.adjustSizeWithRotate
 import com.angcyo.library.ex.gone
-import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.clickIt
 import com.jaredrummler.android.colorpicker.ColorPanelView
@@ -345,7 +345,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                     onClickNumberAction = {
                         itemHolder.tv(R.id.item_rotate_view)?.text = inputValueWith(
                             builder,
-                            itemHolder.tv(R.id.item_rotate_view)?.text?.toString(),
+                            renderer.rotate.toString(),
                             it,
                             1f
                         ).apply {
@@ -387,16 +387,15 @@ class CanvasEditControlItem : DslAdapterItem() {
             }
             "-1" -> {
                 //自减
-                val oldValue = newValueBuild.toString()
                 newValueBuild.clear()
-                newValueBuild.append(oldValue.toFloatOrNull()?.run { "${this - step}" }
+                newValueBuild.append(firstValue?.toFloatOrNull()?.run { "${this - step}" }
                     ?: "${-step}")
             }
             "+1" -> {
                 //自增
-                val oldValue = newValueBuild.toString()
                 newValueBuild.clear()
-                newValueBuild.append(oldValue.toFloatOrNull()?.run { "${this + step}" } ?: "$step")
+                newValueBuild.append(firstValue?.toFloatOrNull()?.run { "${this + step}" }
+                    ?: "$step")
             }
             "." -> {
                 val value = newValueBuild.toString()
