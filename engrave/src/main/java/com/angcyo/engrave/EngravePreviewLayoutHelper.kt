@@ -234,6 +234,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             cmd.enqueue(flag)
             queryDeviceStateCmd()
         }.elseNull {
+            toast("No preview elements!")
             if (updateState) {
                 queryDeviceStateCmd()
             }
