@@ -554,7 +554,9 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             //如果要隐藏控制布局时, 判断是否已经选中了item
             val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
             if (itemRenderer != null && showSelectedItemControlLayout(
-                    this, canvasView, itemRenderer
+                    this,
+                    canvasView,
+                    itemRenderer
                 )
             ) {
                 //被处理
@@ -1066,7 +1068,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         if (vh.isVisible(R.id.canvas_layer_layout)) {
             vh.rv(R.id.canvas_layer_view)?._dslAdapter?.apply {
                 render {
-                    CanvasLayerItem()() {
+                    CanvasLayerItem()(0) {
                         itemCanvasDelegate = canvasView.canvasDelegate
                         itemRenderer = item
                     }
@@ -1091,7 +1093,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                 _dslAdapter?.eachItem { index, dslAdapterItem ->
                                     if (dslAdapterItem is CanvasLayerItem) {
                                         dslAdapterItem.itemRenderer?.let {
-                                            list.add(it)
+                                            list.add(0, it)
                                         }
                                     }
                                 }
@@ -1103,7 +1105,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             renderDslAdapter {
                 hookUpdateDepend()
                 canvasView.canvasDelegate.itemsRendererList.forEach {
-                    CanvasLayerItem()() {
+                    CanvasLayerItem()(0) {
                         itemCanvasDelegate = canvasView.canvasDelegate
                         itemRenderer = it
 
