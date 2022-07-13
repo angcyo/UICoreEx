@@ -19,7 +19,7 @@ import com.angcyo.widget.loading.DangerWarningView
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/11
  */
-class ProductLayoutHelper(val fragment: AbsLifecycleFragment) {
+class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -30,10 +30,12 @@ class ProductLayoutHelper(val fragment: AbsLifecycleFragment) {
     /**绑定布局*/
     @CanvasEntryPoint
     fun bindCanvasView(rootLayout: ViewGroup, canvasView: CanvasView?) {
+
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
             _showProductLimit(canvasView, productInfo)
         }
+
         //监听Z轴
         laserPeckerModel.deviceSettingData.observe(fragment) {
             val before = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
@@ -43,6 +45,7 @@ class ProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             }
         }
         laserPeckerModel.deviceStateData.observe(fragment) {
+
             val before = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
             if (before != it?.zConnect) {
                 //z轴连接状态改变后, 检查是否要限制z轴限制
@@ -67,6 +70,8 @@ class ProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             }
         }
     }
+
+    //region ---内部操作---
 
     /**显示产品限制框*/
     fun _showProductLimit(canvasView: CanvasView?, productInfo: LaserPeckerProductInfo?) {
@@ -117,5 +122,7 @@ class ProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             rootLayout.addView(dangerWarningView, -1, -1)
         }
     }
+
+    //endregion ---内部操作---
 
 }

@@ -47,7 +47,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
     }
 
     /**产品布局*/
-    val productLayoutHelper = ProductLayoutHelper(this)
+    val engraveProductLayoutHelper = EngraveProductLayoutHelper(this)
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_history)
@@ -69,7 +69,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
         //product _vh.group(R.id.lib_content_wrap_layout) ?:
         //lib_content_overlay_wrap_layout
         val group = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
-        productLayoutHelper.bindCanvasView(group, null)
+        engraveProductLayoutHelper.bindCanvasView(group, null)
 
         //开始预览
         engraveBeforeLayoutHelper.onPreviewAction = {
