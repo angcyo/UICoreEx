@@ -5,7 +5,6 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
-import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
@@ -13,9 +12,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
-import com.angcyo.library.ex._string
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
 
@@ -76,20 +75,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         L.i("设备状态:$queryStateParser".writeBleLog())
         if (queryStateParser.error != 0) {
             doMain {
-                toast(
-                    when (queryStateParser.error) {
-                        1 -> _string(R.string.ex_tips_one)
-                        2 -> _string(R.string.ex_tips_two)
-                        3 -> _string(R.string.ex_tips_three)
-                        4 -> _string(R.string.ex_tips_four)
-                        5 -> _string(R.string.ex_tips_five)
-                        6 -> _string(R.string.ex_tips_six)
-                        7 -> _string(R.string.ex_tips_seven)
-                        8 -> _string(R.string.ex_tips_eight)
-                        9 -> _string(R.string.ex_tips_nine)
-                        else -> _string(R.string.ex_tips_six)
-                    }
-                )
+                toast(queryStateParser.error.toErrorStateString())
             }
         }
         deviceStateData.postValue(queryStateParser)

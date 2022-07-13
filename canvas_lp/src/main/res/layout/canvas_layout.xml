@@ -12,6 +12,38 @@
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1" />
 
+    <LinearLayout
+        android:id="@+id/canvas_device_state_wrap_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/dialog_white_round_max_bg_shape"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/canvas_device_state_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/canvas_device_state_tip_ico" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/canvas_device_state_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/lib_hdpi"
+            tools:text="预览中...\n预览中...预览中...预览中...预览中...预览中...预览中...预览中...预览中...预览中...预览中...预览中...预览中..." />
+
+    </LinearLayout>
+
     <com.angcyo.widget.layout.DslFlowLayout
         android:id="@+id/control_layout"
         android:layout_width="match_parent"
@@ -307,7 +339,7 @@
         app:layout_constraintBottom_toTopOf="@id/canvas_bottom_layout"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <!--阴影-->
         <View

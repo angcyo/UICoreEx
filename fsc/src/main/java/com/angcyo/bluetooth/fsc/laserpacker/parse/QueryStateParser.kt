@@ -1,8 +1,10 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
+import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
+import com.angcyo.library.ex._string
 
 /**
  * 蓝牙设备状态数据结构
@@ -150,4 +152,62 @@ data class QueryStateParser(
     fun isModeEngravePreview() = mode == WORK_MODE_ENGRAVE_PREVIEW
 
     //endregion
+}
+
+/**转换成模式状态文本*/
+fun QueryStateParser.toDeviceStateString(): String? {
+    val builder = StringBuilder()
+
+    when (mode) {
+        QueryStateParser.WORK_MODE_ENGRAVE -> {
+            builder.append("镭雕")
+            when (workState) {
+                0x03 -> builder.append("结束")
+                0x04 -> builder.append("暂停")
+                else -> builder.append("中")
+            }
+        }
+        QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW -> {
+            builder.append("预览")
+            when (workState) {
+                0x01 -> builder.append("图片")
+                0x02 -> builder.append("范围")
+                0x04 -> builder.append("第三轴暂停")
+                0x05 -> builder.append("第三轴继续")
+                0x06 -> builder.append("支架调整")
+                0x07 -> builder.append("显示中心")
+                else -> builder.append("中")
+            }
+        }
+        QueryStateParser.WORK_MODE_FOCUSING -> builder.append("调焦模式")
+        QueryStateParser.WORK_MODE_FILE_DOWNLOAD -> builder.append("文件下载模式")
+        QueryStateParser.WORK_MODE_SHUTDOWN -> builder.append("关机状态")
+        QueryStateParser.WORK_MODE_SETUP -> builder.append("设置模式")
+        QueryStateParser.WORK_MODE_DOWNLOAD -> builder.append("下载模式")
+    }
+
+    if (builder.isEmpty()) {
+        return null
+    }
+
+    //错误信息
+    if (error != 0) {
+        builder.appendLine()
+        builder.append(error.toErrorStateString())
+    }
+
+    return builder.toString()
+}
+
+fun Int.toErrorStateString() = when (this) {
+    1 -> _string(R.string.ex_tips_one)
+    2 -> _string(R.string.ex_tips_two)
+    3 -> _string(R.string.ex_tips_three)
+    4 -> _string(R.string.ex_tips_four)
+    5 -> _string(R.string.ex_tips_five)
+    6 -> _string(R.string.ex_tips_six)
+    7 -> _string(R.string.ex_tips_seven)
+    8 -> _string(R.string.ex_tips_eight)
+    9 -> _string(R.string.ex_tips_nine)
+    else -> _string(R.string.ex_tips_six)
 }

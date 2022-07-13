@@ -69,7 +69,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
         //product _vh.group(R.id.lib_content_wrap_layout) ?:
         //lib_content_overlay_wrap_layout
         val group = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
-        engraveProductLayoutHelper.bindCanvasView(group, null)
+        engraveProductLayoutHelper.bindCanvasView(_vh, group, null)
 
         //开始预览
         engraveBeforeLayoutHelper.onPreviewAction = {
