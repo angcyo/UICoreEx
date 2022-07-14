@@ -31,6 +31,8 @@ data class EngraveCmd(
     val time: Byte = 0x1,//打印次数
     val type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE,//l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
     val custom: Byte = 0x0,
+    //雕刻物体直径, 如果是mm单位, 还需要乘以100
+    val diameter: Int = 0,//雕刻物体直径（L4旋转轴生效），2字节,obj_d  = d * 100; d为物体实际尺寸单位为mm;
 ) : ICommand {
 
     companion object {
@@ -55,7 +57,7 @@ data class EngraveCmd(
     override fun commandFunc(): Byte = 0x01
 
     override fun toHexCommandString(): String {
-        val dataLength = 0x11 //16 //数据长度
+        val dataLength = 0x13 //18 //数据长度
         val data = buildString {
             append(commandFunc().toHexString())
             append(state.toHexString())
@@ -68,6 +70,7 @@ data class EngraveCmd(
             append(custom.toHexString())
             append(time.toHexString())
             append(type.toHexString())
+            append(diameter.toByteArray(2).toHexString(false))
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
@@ -77,7 +80,7 @@ data class EngraveCmd(
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
         when (state) {
-            0x01.toByte() -> append(" 开始雕刻:文件:$index 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type")
+            0x01.toByte() -> append(" 开始雕刻:文件:$index 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type 直径:${diameter}")
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")

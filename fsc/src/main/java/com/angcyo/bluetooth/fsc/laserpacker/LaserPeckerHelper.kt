@@ -13,15 +13,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.canvas.core.MmValueUnit
-import com.angcyo.core.component.file.writeTo
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
-import com.angcyo.library.ex.wrapLog
-import com.angcyo.library.utils.Constant
 
 /**
  * https://docs.qq.com/doc/DWE1MVnVOQ3RJSXZ1
@@ -519,7 +517,4 @@ fun Byte.toPxDes() = when (this) {
 }
 
 /**将日志写入到[ble.log]*/
-fun String.writeBleLog(): String {
-    wrapLog().writeTo(Constant.LOG_FOLDER_NAME, "ble.log")
-    return this
-}
+fun String.writeBleLog(): String = writeToLog("ble.log")

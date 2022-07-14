@@ -4,6 +4,7 @@
     <string name="laser_type">激光类型</string>
     <string name="laser_type_white">白光</string>
     <string name="laser_type_blue">蓝光</string>
+    <string name="object_diameter">物体直径</string>
 
     <string name="bluetooth_ft_mtu_no_device_connected">Unconnected device</string>
     <string name="zflag_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>

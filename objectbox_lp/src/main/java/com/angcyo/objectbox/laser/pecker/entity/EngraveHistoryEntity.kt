@@ -55,6 +55,7 @@ data class EngraveHistoryEntity(
     var power: Byte = -1, //功率
     var depth: Byte = -1, //深度
     var type: Byte = -1, //激光类型
+    var diameter: Float = 0f, //物体直径mm单位
 
     /**z轴的模式,
      * Z_dir:  0为打直板，1为打印圆柱。

@@ -42,8 +42,8 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                 EngraveOptionInfo::power.name -> {
                     itemEngraveOptionInfo?.apply {
                         power = getSelectedByte(index, power)
-                        EngraveHelper.lastPower = depth.toHexInt()
-                        
+                        EngraveHelper.lastPower = power.toHexInt()
+
                         //重置为自定义
                         _updateMaterialItem()
                     }

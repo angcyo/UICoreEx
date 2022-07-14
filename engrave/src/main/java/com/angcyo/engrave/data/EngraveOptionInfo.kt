@@ -1,6 +1,7 @@
 package com.angcyo.engrave.data
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 
 /**
@@ -26,6 +27,10 @@ data class EngraveOptionInfo(
     var y: Int = 0x0,
     //l_type：雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
     var type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE,
+    /**雕刻物体直径, 这里用像素作为单位
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
+     * */
+    var diameterPixel: Float = 0f,
     /* 在[com.angcyo.engrave.data.EngraveDataInfo.px]中设置
     //分辨率
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,*/
@@ -38,5 +43,6 @@ data class EngraveOptionInfo(
         entity.power = power
         entity.depth = depth
         entity.type = type
+        entity.diameter = MmValueUnit().convertPixelToValue(diameterPixel)
     }
 }

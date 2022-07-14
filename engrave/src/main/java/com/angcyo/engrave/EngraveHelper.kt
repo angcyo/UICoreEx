@@ -37,6 +37,9 @@ object EngraveHelper {
     /**最后一次深度*/
     var lastDepth: Int by HawkPropertyValue<Any, Int>(10)
 
+    /**最后一次的物理尺寸, 像素*/
+    var lastDiameter: Float by HawkPropertyValue<Any, Float>(300f)
+
     /**生成一个雕刻需要用到的文件索引*/
     fun generateEngraveIndex(): Int {
         return (System.currentTimeMillis() / 1000).toInt()

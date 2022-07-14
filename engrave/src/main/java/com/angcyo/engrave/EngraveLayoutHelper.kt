@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.core.CanvasEntryPoint
+import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
@@ -26,10 +27,12 @@ import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
+import com.angcyo.library.toast
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * 雕刻布局相关操作
@@ -386,7 +389,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             clearAllItems()
 
             //激光类型
-            if (laserPeckerModel.productInfoData.value?.typeList.size() > 1) {
+            if (laserPeckerModel.productInfoData.value?.typeList.size() > 1 || isDebugType()) {
                 EngraveOptionTypeItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
 
@@ -398,6 +401,17 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveOptionInfo?.type = LaserPeckerHelper.LASER_TYPE_BLUE
             }
 
+            //物体直径
+            val showDiameter =
+                laserPeckerModel.productInfoData.value?.isLIV() == true || isDebugType()
+            if (showDiameter) {
+                engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameter
+                EngraveOptionDiameterItem()() {
+                    itemEngraveOptionInfo = engraveOptionInfo
+                }
+            }
+
+            //材质
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_material)
                 itemWheelList = materialList
@@ -440,9 +454,13 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveAction = {
                     //开始雕刻
                     engraveOptionInfo?.let { option ->
-                        engraveReadyInfo?.let { readyDataInfo ->
-                            //start check
-                            checkStartEngrave(readyDataInfo.engraveData!!.index!!, option)
+                        if (showDiameter && option.diameterPixel <= 0) {
+                            toast("diameter need > 0")
+                        } else {
+                            engraveReadyInfo?.let { readyDataInfo ->
+                                //start check
+                                checkStartEngrave(readyDataInfo.engraveData!!.index!!, option)
+                            }
                         }
                     }
                 }
@@ -569,6 +587,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         }
     }
 
+    /**开始雕刻, 发送雕刻指令*/
     fun _startEngrave(index: Int, option: EngraveOptionInfo) {
         EngraveCmd(
             index,
@@ -579,6 +598,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             option.y,
             max(1, option.time.toHexInt()).toByte(),
             option.type,
+            0x09,
+            (MmValueUnit().convertPixelToValue(option.diameterPixel) * 100).roundToInt()
         ).enqueue { bean, error ->
             L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
 

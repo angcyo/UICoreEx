@@ -14,6 +14,7 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingRight="@dimen/lib_padding_right"
         tools:text="材质:" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -21,7 +22,6 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_xhdpi"
         app:layout_constraintLeft_toRightOf="@id/lib_label_view"
         tools:text="木质" />
 

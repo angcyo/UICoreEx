@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
@@ -30,8 +31,14 @@ import kotlin.math.roundToLong
 class EngraveModel : ViewModel(), IViewModel {
 
     /**当前选中的雕刻参数*/
-    var engraveOptionInfoData =
-        vmData(EngraveOptionInfo(_string(R.string.material_custom), 100, 10, 1))
+    var engraveOptionInfoData = vmData(
+        EngraveOptionInfo(
+            _string(R.string.material_custom),
+            EngraveHelper.lastPower.toByte(),
+            EngraveHelper.lastDepth.toByte(),
+            1
+        )
+    )
 
     /**当前正在雕刻的数据*/
     var engraveReadyInfoData = vmDataNull<EngraveReadyDataInfo>()
