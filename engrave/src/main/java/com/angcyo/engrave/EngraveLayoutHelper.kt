@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
@@ -257,6 +258,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             }) { dataInfo ->
                 if (dataInfo?.data == null) {
                     showEngraveError("data exception!")
+                    "雕刻数据处理结果为null".writeErrorLog()
                 } else {
                     sendEngraveData(engraveReadyDataInfo)
                 }
@@ -294,10 +296,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         val engraveData = engraveReadyDataInfo.engraveData
         if (engraveData == null) {
             showEngraveError("data exception")
+            "无需要发送的雕刻数据".writeErrorLog()
             return
         }
         val index = engraveData.index
         if (index == null) {
+            "雕刻数据索引为null".writeErrorLog()
             showEngraveError("数据索引异常")
             return
         }
@@ -356,20 +360,25 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                                     //文件传输完成
                                     showEngraveItem()
                                 } else {
+                                    "数据接收未完成".writeErrorLog()
                                     showEngraveError("数据传输失败")
                                 }
                             }
                             if (result == null) {
+                                "发送数据失败".writeErrorLog()
                                 showEngraveError("数据传输失败")
                             }
                         }
                     } else {
+                        "数据指令为null".writeErrorLog()
                         showEngraveError("数据有误")
                     }
                 } else {
+                    "未成功进入数据传输模式".writeErrorLog()
                     showEngraveError("数据传输失败")
                 }
             }.elseNull {
+                "进入数据传输模式失败".writeErrorLog()
                 showEngraveError(error?.message ?: "数据传输失败")
             }
         }
@@ -485,6 +494,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             clearAllItems()
 
             if (dataInfo == null) {
+                "无需要雕刻的数据".writeErrorLog()
                 showEngraveError("数据处理失败")
             } else {
                 /*EngraveDataPreviewItem()() {
@@ -607,6 +617,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveModel.startEngrave()
                 showEngravingItem()
                 laserPeckerModel.queryDeviceState()
+            } else {
+                "雕刻失败:$error".writeErrorLog()
             }
         }
     }
