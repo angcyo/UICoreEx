@@ -402,8 +402,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             }
 
             //物体直径
-            val showDiameter =
-                laserPeckerModel.productInfoData.value?.isLIV() == true || isDebugType()
+            val showDiameter = (laserPeckerModel.isZOpen() &&
+                    laserPeckerModel.productInfoData.value?.isLIV() == true) || isDebugType()
             if (showDiameter) {
                 engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameter
                 EngraveOptionDiameterItem()() {
