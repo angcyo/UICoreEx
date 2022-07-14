@@ -1,6 +1,6 @@
 package com.angcyo.tbs.core.inner
 
-import com.angcyo.library.ex.getFileAttachmentName
+import com.angcyo.library.component.Web
 import com.tencent.smtt.sdk.CookieSyncManager
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
@@ -59,6 +59,5 @@ object TbsWeb {
      * attachment;filename="百度手机助手(360手机助手).apk"
      * attachment;filename="baidusearch_AndroidPhone_1021446w.apk"
      */
-    fun getFileName(url: String, attachment: String?): String? =
-        url.getFileAttachmentName(attachment)
+    fun getFileName(url: String, attachment: String?): String? = Web.getFileName(url, attachment)
 }
