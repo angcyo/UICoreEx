@@ -26,6 +26,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.saveEntity
+import com.angcyo.viewmodel.observe
 
 /**
  * 蓝牙设备模式
@@ -44,7 +45,7 @@ class FscDeviceModel : LifecycleViewModel() {
     @CallPoint
     fun initDevice() {
         //蓝牙状态监听
-        bleApiModel.connectStateData.observe(this) {
+        bleApiModel.connectStateData.observe(this, allowBackward = false) {
             it?.let { deviceConnectState ->
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
                     //蓝牙设备断开

@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
+import com.angcyo.canvas.utils.engraveMode
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.fragment.AbsLifecycleFragment
@@ -83,6 +84,9 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             }.elseNull {
                 dangerWarningView?.removeFromParent()
             }
+
+            //雕刻中禁止手势
+            canvasView?.canvasDelegate?.engraveMode(it?.isModeEngrave() == true)
         }
     }
 
