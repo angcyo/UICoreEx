@@ -234,7 +234,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     @AnyThread
     fun showHandleEngraveItem(engraveReadyDataInfo: EngraveReadyDataInfo) {
         dslAdapter?.clearAllItems()
-        updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips))
+        updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips)) {
+            itemEnableProgressFlowMode = true
+        }
 
         //开始处理需要发送的bytes数据
         fun needHandleEngraveData() {
@@ -299,7 +301,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
         showCloseLayout(false)//传输中不允许关闭
         engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
-        updateEngraveProgress(0, _string(R.string.print_v2_package_transfer))
+        updateEngraveProgress(0, _string(R.string.print_v2_package_transfer)) {
+            itemEnableProgressFlowMode = true
+        }
         val cmd = FileModeCmd(engraveData.data?.size ?: 0)
         cmd.enqueue { bean, error ->
             bean?.parse<FileTransferParser>()?.let {
@@ -335,7 +339,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     if (dataCommand != null) {
                         dataCommand.enqueue({
                             //进度
-                            updateEngraveProgress(it.sendPacketPercentage, time = it.remainingTime)
+                            updateEngraveProgress(
+                                it.sendPacketPercentage,
+                                time = it.remainingTime
+                            ) {
+                                itemEnableProgressFlowMode = true
+                            }
                         }) { bean, error ->
                             val result = bean?.parse<FileTransferParser>()
                             L.w("传输结束:$result $error")

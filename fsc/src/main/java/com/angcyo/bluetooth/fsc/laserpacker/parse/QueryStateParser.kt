@@ -65,7 +65,15 @@ data class QueryStateParser(
     //当前图片打印的次数
     var printTimes: Int = 0,
     //设备与水平面的平角
-    var angle: Int = 0
+    var angle: Int = 0,
+    //雕刻模块识别位（C1专用位）
+    //0 5W激光
+    //1 10W激光
+    //2 单色笔模式
+    //3 刀切割模式
+    //4 彩绘模式
+    //5 CNC模式
+    var moduleState: Int = -1
 ) : IPacketParser<QueryStateParser> {
 
     companion object {
@@ -118,6 +126,7 @@ data class QueryStateParser(
                 zConnect = readInt(1)
                 printTimes = readInt(1)
                 angle = readInt(1)
+                moduleState = readInt(1)
             }
             this
         } catch (e: Exception) {
