@@ -410,7 +410,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveOptionInfo?.type = LaserPeckerHelper.LASER_TYPE_BLUE
             }
 
-            //物体直径
+            //物体直径, 这里应该判断z轴设备的类型, 决定是否显示物理直径
             val showDiameter = (laserPeckerModel.isZOpen() &&
                     laserPeckerModel.productInfoData.value?.isLIV() == true) || isDebugType()
             if (showDiameter) {
