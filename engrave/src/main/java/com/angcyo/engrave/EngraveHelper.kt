@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.LinePath
+import com.angcyo.canvas.core.renderer.SelectGroupGCodeItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.getHoldData
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -76,6 +77,12 @@ object EngraveHelper {
             return result
         }
 
+        if (item is SelectGroupGCodeItem) {
+            dataInfo.dataType = EngraveDataInfo.TYPE_GCODE
+            result.optionMode = CanvasConstant.BITMAP_MODE_GCODE //GCode数据使用GCode模式
+            return result
+        }
+
         if (item is PictureShapeItem) {
             dataInfo.dataType = EngraveDataInfo.TYPE_GCODE
             result.optionMode = CanvasConstant.BITMAP_MODE_GCODE //GCode数据使用GCode模式
@@ -133,6 +140,24 @@ object EngraveHelper {
             )
             _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
             return engraveReadyDataInfo
+        }
+
+        //group
+        if (item is SelectGroupGCodeItem) {
+            //使用bitmap转gcode
+            val bitmap = renderer.preview()?.toBitmap() ?: return engraveReadyDataInfo
+            var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(bitmap)
+            val gCodeString = gCodeFile.readText()
+            gCodeFile.deleteSafe()
+            if (!gCodeString.isNullOrEmpty()) {
+                //GCode数据
+                gCodeFile = CanvasDataHandleOperate.gCodeTranslation(
+                    gCodeString,
+                    renderer.getRotateBounds()
+                )
+                _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+                return engraveReadyDataInfo
+            }
         }
 
         //其他

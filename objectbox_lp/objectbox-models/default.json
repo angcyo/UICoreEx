@@ -48,7 +48,7 @@
     },
     {
       "id": "3:2716962251255545080",
-      "lastPropertyId": "23:2344100504472985488",
+      "lastPropertyId": "24:8504189286920846919",
       "name": "EngraveHistoryEntity",
       "properties": [
         {
@@ -166,6 +166,11 @@
           "id": "23:2344100504472985488",
           "name": "productVersion",
           "type": 5
+        },
+        {
+          "id": "24:8504189286920846919",
+          "name": "diameter",
+          "type": 7
         }
       ],
       "relations": []
