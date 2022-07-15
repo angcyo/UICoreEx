@@ -23,8 +23,8 @@ open class TbsWebActivity : BaseAppCompatActivity() {
         window.setFormat(PixelFormat.TRANSLUCENT)
     }
 
-    override fun onHandleIntent(intent: Intent, fromNew: Boolean) {
-        super.onHandleIntent(intent, fromNew)
+    override fun onHandleIntent(intent: Intent, fromNewIntent: Boolean) {
+        super.onHandleIntent(intent, fromNewIntent)
 
         //https://developer.android.google.cn/guide/topics/search
 
