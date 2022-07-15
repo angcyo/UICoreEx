@@ -95,6 +95,11 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
         /**导入字体*/
         fun importFont(uri: Uri?): TypefaceInfo? {
             val path = uri?.getPathFromUri()
+            return importFont(path)
+        }
+
+        /**导入字体*/
+        fun importFont(path: String?): TypefaceInfo? {
             try {
                 if (path.isFontType()) {
                     val file = File(path!!)
