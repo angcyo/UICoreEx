@@ -32,8 +32,12 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         _vh.postDelay(2_000L) {
             _vh.tv(R.id.lib_des_view)?.text = buildString {
                 append(_string(R.string.bluetooth_ft_connected))
-                append(" LaserPecker ")
-                vmApp<LaserPeckerModel>().productInfoData.value?.name?.let { append(it) }
+                vmApp<LaserPeckerModel>().productInfoData.value?.deviceName?.let {
+                    append(" ")
+                    append(it)
+                }
+                //append(" LaserPecker ")
+                //vmApp<LaserPeckerModel>().productInfoData.value?.name?.let { append(it) }
             }
             dslTransition(_vh.group(R.id.lib_dialog_root_layout)) {
                 onCaptureEndValues = {
