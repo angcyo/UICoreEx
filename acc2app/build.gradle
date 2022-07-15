@@ -10,6 +10,7 @@ dependencies {
     api project(allModule.download)
     //服务
     api project(allModule.andserver)
+    api project(allModule.dialog2)
     //api project(allModule.github)
     //api project(allModule.objectbox)
     //api project(allModule.transition)

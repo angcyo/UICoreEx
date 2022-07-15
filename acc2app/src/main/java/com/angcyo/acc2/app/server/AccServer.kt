@@ -46,6 +46,7 @@ fun LifecycleOwner.bindAccServer() {
                 when (event) {
                     Lifecycle.Event.ON_CREATE -> context.startAccServer()
                     Lifecycle.Event.ON_DESTROY -> context.stopAccServer()
+                    else -> Unit
                 }
             } else {
                 L.w("无效的context类型, 无法启动[AccServer]")

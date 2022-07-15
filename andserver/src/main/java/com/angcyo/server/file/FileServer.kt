@@ -14,6 +14,7 @@ import com.angcyo.server.DslAndServer
  * 文件服务
  *
  * [com.angcyo.server.file.FileWebConfig]
+ * [com.angcyo.server.LogFileInterceptor]
  *
  * Email:angcyo@126.com
  * @author angcyo

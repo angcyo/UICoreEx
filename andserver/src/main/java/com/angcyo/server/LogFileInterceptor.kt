@@ -22,6 +22,12 @@ import java.io.File
 @Interceptor
 class LogFileInterceptor : HandlerInterceptor {
 
+    companion object {
+
+        /**以下后缀, 全部返回字符串内容*/
+        val STRING_BODY_LIST = mutableListOf(".log", ".gcode", ".txt")
+    }
+
     override fun onIntercept(
         request: HttpRequest,
         response: HttpResponse,
@@ -37,7 +43,9 @@ class LogFileInterceptor : HandlerInterceptor {
         if (valueMap["raw"]?.firstOrNull() == "true") {
             return false
         }
-        if (httpPath.endsWith(".log")) {
+        val path = httpPath.lowercase()
+        val find = STRING_BODY_LIST.find { path.endsWith(it) }
+        if (find != null) {
             val logFile = File(FileUtils.appRootExternalFolder(), httpPath)
             if (logFile.exists()) {
                 response.setBody(StringBody(logFile.readText()))
