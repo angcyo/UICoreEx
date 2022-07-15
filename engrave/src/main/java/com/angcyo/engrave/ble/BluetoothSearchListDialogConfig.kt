@@ -13,6 +13,7 @@ import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.loading.TGStrokeLoadingView
@@ -27,6 +28,9 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
     /**连接成功后, 是否关闭界面*/
     var connectedDismiss: Boolean = false
+
+    /**是否显示rssi信号强度*/
+    var showRssi: Boolean = isDebugType()
 
     val apiModel = vmApp<FscBleApiModel>()
 
@@ -83,6 +87,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                                         itemAnimateRes = R.anim.item_translate_to_left_animation
                                         itemData = device
                                         itemFscDevice = device
+                                        itemShowRssi = showRssi
                                     }
 
                                     autoAdapterStatus()

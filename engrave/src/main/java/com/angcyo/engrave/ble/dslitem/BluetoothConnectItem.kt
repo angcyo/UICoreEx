@@ -21,6 +21,9 @@ class BluetoothConnectItem : DslAdapterItem() {
     /**设备*/
     var itemFscDevice: FscDevice? = null
 
+    /**是否显示信号强度*/
+    var itemShowRssi: Boolean = false
+
     val fscApi = vmApp<FscBleApiModel>()
 
     init {
@@ -59,6 +62,9 @@ class BluetoothConnectItem : DslAdapterItem() {
         itemHolder.tv(R.id.device_name_view)?.text = buildString {
             appendLine(itemFscDevice?.name)
             append(itemFscDevice?.address)
+            if (itemShowRssi) {
+                append(" ${itemFscDevice?.rssi}")
+            }
         }
 
         when (connectState) {
