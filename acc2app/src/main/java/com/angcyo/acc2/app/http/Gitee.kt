@@ -22,6 +22,7 @@ import com.angcyo.http.interceptor.LogInterceptor
 import com.angcyo.http.rx.observer
 import com.angcyo.http.toBean
 import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*
 import com.google.gson.JsonElement
 import io.reactivex.disposables.Disposable
@@ -51,6 +52,7 @@ object Gitee {
     var isFirst = true
 
     /**[com.angcyo.core.CoreApplication.onCreate]*/
+    @CallPoint
     fun init(online: Boolean = !isDebugType()) {
         fetch(online)
     }

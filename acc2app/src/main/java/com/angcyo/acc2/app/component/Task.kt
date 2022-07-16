@@ -7,6 +7,7 @@ import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.TaskBean
 import com.angcyo.acc2.control.AccControl
+import com.angcyo.acc2.control.isControlStart
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.L
@@ -128,6 +129,9 @@ object Task {
     fun resume() {
         control.resume(false)
     }
+
+    /**返回是否已有任务在运行*/
+    fun isTaskStart(): Boolean = control.isControlStart
 }
 
 fun String.jsonName() = if (isHttpScheme()) {
