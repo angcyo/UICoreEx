@@ -75,6 +75,8 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
         super.onResume()
         //load
         vmApp<AdaptiveModel>().updateOnResume()
+
+        //giteeVersionUpdate()
     }
 
     override fun onDestroy() {
