@@ -366,8 +366,8 @@ object LaserPeckerHelper {
         func: Byte? = null,
         checkFunc: Boolean = true,
         receiveTimeOut: Long = 10_000,
-        progress: ISendProgressAction = {}, //发包的进度回调
-        action: IReceiveBeanAction
+        progress: ISendProgressAction?, //发包的进度回调
+        action: IReceiveBeanAction?
     ): WaitReceivePacket {
         return WaitReceivePacket(
             api,
@@ -379,11 +379,11 @@ object LaserPeckerHelper {
             receiveTimeOut,
             object : IReceiveListener {
                 override fun onPacketProgress(bean: ReceivePacket) {
-                    progress(bean)
+                    progress?.invoke(bean)
                 }
 
                 override fun onReceive(bean: ReceivePacket?, error: Exception?) {
-                    action(bean, error)
+                    action?.invoke(bean, error)
                 }
             }).apply {
             start()
@@ -395,8 +395,8 @@ object LaserPeckerHelper {
         address: String,
         command: ICommand,
         api: FscBleApiModel = vmApp(),
-        progress: ISendProgressAction = {},
-        action: IReceiveBeanAction
+        progress: ISendProgressAction? = null,
+        action: IReceiveBeanAction?
     ): WaitReceivePacket {
         L.i("发送指令:$address->${command.hashCode()} ${command.toCommandLogString()}".writeBleLog())
         return waitCmdReturn(
@@ -419,15 +419,15 @@ object LaserPeckerHelper {
     fun sendCommand(
         command: ICommand,
         address: String? = null,
-        progress: ISendProgressAction = {},
-        action: IReceiveBeanAction
+        progress: ISendProgressAction? = null,
+        action: IReceiveBeanAction?
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
         var deviceAddress = address
         if (deviceAddress.isNullOrEmpty()) {
             val deviceState = apiModel.connectDeviceListData.value?.lastOrNull()
             if (deviceState == null) {
-                action(null, IllegalArgumentException("未连接设备"))
+                action?.invoke(null, IllegalArgumentException("未连接设备"))
                 return null
             }
             deviceAddress = deviceState.device.address
