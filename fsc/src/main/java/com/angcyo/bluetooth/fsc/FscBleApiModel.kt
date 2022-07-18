@@ -537,6 +537,18 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return state == CONNECT_STATE_START || state == CONNECT_STATE_SUCCESS
     }
 
+    /**设备是否已连接*/
+    fun isConnected(
+        address: String?,
+        name: String? = null,
+        resetConnectState: Boolean = false
+    ): Boolean {
+        if (address.isNullOrEmpty()) {
+            return false
+        }
+        return isConnected(generateFscDevice(address, name), resetConnectState)
+    }
+
     /**设备是否已连接
      * [resetConnectState] 是否要恢复连接状态*/
     fun isConnected(device: FscDevice?, resetConnectState: Boolean = false): Boolean {
@@ -718,11 +730,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (address.isNullOrEmpty()) {
             return
         }
-        val bluetoothManager =
-            app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
-        val device = (bluetoothManager?.adapter
-            ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
-        val fscDevice = FscDevice(name, address, device, -1, if (useSppModel) "SPP" else "BLE")
+        val fscDevice = generateFscDevice(address, name)
         connect(fscDevice, isAutoConnect, disconnectOther, stopScan)
     }
 
@@ -820,6 +828,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 _notifyConnectDeviceChanged()
             }
         }
+    }
+
+    /**通过[address] [name]构建一个[FscDevice]对象*/
+    fun generateFscDevice(address: String, name: String? = null): FscDevice {
+        val bluetoothManager =
+            app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+        val device = (bluetoothManager?.adapter
+            ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
+        return FscDevice(name, address, device, -1, if (useSppModel) "SPP" else "BLE")
     }
 
     @Synchronized
