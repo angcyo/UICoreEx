@@ -30,6 +30,9 @@ data class DevicePacketState(
         /**停止发送*/
         const val PACKET_STATE_STOP = 4
 
+        /**发送完成*/
+        const val PACKET_STATE_FINISH = 5
+
         /**接收的数据*/
         const val PACKET_STATE_RECEIVED = 5
     }

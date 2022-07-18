@@ -24,6 +24,7 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_NORMAL
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
+import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_FINISH
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PAUSE
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PROGRESS
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
@@ -1130,7 +1131,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
         }
         devicePacketStateData.postValue(
-            DevicePacketState(address, sendByte, percentage, PACKET_STATE_PROGRESS)
+            DevicePacketState(
+                address,
+                sendByte,
+                percentage,
+                if (percentage >= 100) PACKET_STATE_FINISH else PACKET_STATE_PROGRESS
+            )
         )
         packetListenerList.forEach {
             it.onSendPacketProgress(packetProgress, address, percentage, sendByte)
