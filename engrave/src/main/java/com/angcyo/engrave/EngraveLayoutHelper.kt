@@ -73,6 +73,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         laserPeckerModel.deviceStateData.observe(this) {
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
+                if (it.isModeEngrave() && !it.isEngraveStop()) {
+                    //雕刻模式, 并且雕刻没有结束
+                    checkDeviceState()
+                }
                 if (it.isEngraving()) {
                     updateEngraveProgress(
                         clamp(it.rate, 0, 100),
@@ -85,7 +89,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         //更新打印次数
                         engraveReadyDataInfo?.printTimes = it.printTimes
                     }
-                    checkDeviceState()
                 } else if (it.isEngravePause()) {
                     updateEngraveProgress(
                         tip = _string(R.string.print_v2_package_print_state),

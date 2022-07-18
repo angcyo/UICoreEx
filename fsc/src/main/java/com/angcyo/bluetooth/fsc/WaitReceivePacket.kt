@@ -33,7 +33,7 @@ class WaitReceivePacket(
     val func: Byte?,
     //是否检查功能码
     val checkFunc: Boolean,
-    //接收超时时间, 毫秒
+    //接收超时时间, 大于0生效, 毫秒
     val receiveTimeout: Long,
     //调用者线程回调, 通常在子线程
     val listener: IReceiveListener
@@ -298,6 +298,7 @@ interface IReceiveListener {
 
 /**监听设备发来的数据包, 直到主动停止监听为止
  * [com.angcyo.bluetooth.fsc.WaitReceivePacket.isCancel] 取消监听
+ * [receiveTimeout] 超时时长, 大于0生效
  * */
 fun listenerReceivePacket(
     receiveTimeout: Long = 10 * 60 * 1_000,
