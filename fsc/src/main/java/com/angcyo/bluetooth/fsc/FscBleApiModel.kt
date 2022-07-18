@@ -182,15 +182,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
         // 扫描到设备
         override fun blePeripheralFound(device: FscDevice, rssi: Int, record: ByteArray?) {
             super.blePeripheralFound(device, rssi, record)
+            device.rssi = rssi
             _peripheralFound(device)
         }
 
         override fun servicesFound(
-            p0: BluetoothGatt?,
-            p1: String?,
-            p2: MutableList<BluetoothGattService>?
+            gatt: BluetoothGatt,
+            address: String,
+            services: List<BluetoothGattService>
         ) {
-            super.servicesFound(p0, p1, p2)
+            super.servicesFound(gatt, address, services)
         }
 
         // 连接成功
@@ -308,6 +309,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         override fun sppPeripheralFound(sppDevice: FscDevice, rssi: Int) {
             super.sppPeripheralFound(sppDevice, rssi)
+            sppDevice.rssi = rssi
             _peripheralFound(sppDevice)
         }
 
