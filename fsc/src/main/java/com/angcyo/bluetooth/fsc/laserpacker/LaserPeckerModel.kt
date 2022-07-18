@@ -142,6 +142,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun sendUpdatePreviewRange(
         bounds: RectF,
         pwrProgress: Float,
+        address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
@@ -163,7 +164,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             )
         }
 
-        cmd.sendCommand(progress, action)
+        cmd.sendCommand(address, progress, action)
     }
 
     /**查询设备状态*/

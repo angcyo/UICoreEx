@@ -344,7 +344,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
                     //开始发送数据
                     if (dataCommand != null) {
-                        dataCommand.enqueue({
+                        dataCommand.enqueue(null, {
                             //进度
                             updateEngraveProgress(
                                 it.sendPacketPercentage,

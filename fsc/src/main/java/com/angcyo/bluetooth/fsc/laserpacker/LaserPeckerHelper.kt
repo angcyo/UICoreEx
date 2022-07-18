@@ -412,21 +412,28 @@ object LaserPeckerHelper {
         )
     }
 
-    /**发送一条指令, 未连接设备时, 返回空
-     * [ICommand]*/
+    /**发送一条指令, 未连接设备时, 返回空 [ICommand]
+     * [command] 需要发送的指令
+     * [address] 设备地址, 如果不传, 则使用最后一台连接的设备
+     * */
     fun sendCommand(
         command: ICommand,
+        address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
-        val deviceState = apiModel.connectDeviceListData.value?.firstOrNull()
-        if (deviceState == null) {
-            action(null, IllegalArgumentException("未连接设备"))
-            return null
+        var deviceAddress = address
+        if (deviceAddress.isNullOrEmpty()) {
+            val deviceState = apiModel.connectDeviceListData.value?.lastOrNull()
+            if (deviceState == null) {
+                action(null, IllegalArgumentException("未连接设备"))
+                return null
+            }
+            deviceAddress = deviceState.device.address
         }
         return sendCommand(
-            deviceState.device.address,
+            deviceAddress!!,
             command,
             apiModel,
             progress,

@@ -136,7 +136,7 @@ object CommandQueueHelper {
 
     fun _runCommand(commandInfo: CommandInfo, next: Boolean) {
         val command = commandInfo.command
-        val task = command.sendCommand(progress = {
+        val task = command.sendCommand(commandInfo.address, {
             try {
                 commandInfo.listener?.onPacketProgress(it)
             } catch (e: Exception) {
@@ -168,6 +168,7 @@ object CommandQueueHelper {
     data class CommandInfo(
         val command: ICommand,
         val flag: Int = FLAG_NORMAL,
+        val address: String? = null,
         @WorkerThread
         val listener: IReceiveListener? = null,
         //任务
@@ -178,25 +179,34 @@ object CommandQueueHelper {
 }
 
 /**入队*/
-fun List<ICommand>.enqueue() {
+fun List<ICommand>.enqueue(address: String? = null) {
     forEach {
-        CommandQueueHelper.addCommand(CommandQueueHelper.CommandInfo(it, FLAG_NORMAL, null))
+        CommandQueueHelper.addCommand(
+            CommandQueueHelper.CommandInfo(
+                it,
+                FLAG_NORMAL,
+                address,
+                null
+            )
+        )
     }
 }
 
 /**指令入队*/
 fun ICommand.enqueue(
+    address: String? = null,
     progress: ISendProgressAction = {},
     action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
         error?.let { toast(it.message) }
     }
 ) {
-    enqueue(FLAG_NORMAL, progress, action)
+    enqueue(FLAG_NORMAL, address, progress, action)
 }
 
 /**指令入队*/
 fun ICommand.enqueue(
     flag: Int = FLAG_NORMAL,
+    address: String? = null,
     progress: ISendProgressAction = {},
     action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
         error?.let { toast(it.message) }
@@ -206,6 +216,7 @@ fun ICommand.enqueue(
         CommandQueueHelper.CommandInfo(
             this,
             flag,
+            address,
             object : IReceiveListener {
                 override fun onPacketProgress(bean: ReceivePacket) {
                     progress(bean)
