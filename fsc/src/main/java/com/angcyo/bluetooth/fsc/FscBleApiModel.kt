@@ -537,7 +537,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return state == CONNECT_STATE_START || state == CONNECT_STATE_SUCCESS
     }
 
-    /**设备是否已连接*/
+    /**设备是否已连接
+     * [isConnected]*/
     fun isConnected(
         address: String?,
         name: String? = null,
@@ -696,6 +697,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
         connectDeviceList.remove(state)
         connectDeviceList.add(state)
         return state
+    }
+
+    /**[connectState]*/
+    fun connectState(address: String?, name: String? = null): Int {
+        if (address.isNullOrEmpty()) {
+            return CONNECT_STATE_NORMAL
+        }
+        val fscDevice = generateFscDevice(address, name)
+        return connectState(fscDevice)
     }
 
     /**当前设备的连接状态*/
