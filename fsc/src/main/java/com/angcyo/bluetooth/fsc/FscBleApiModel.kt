@@ -971,6 +971,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return fscApi.send(address, packet)
     }
 
+    /**发送假数据, [size]数据大小*/
     fun sendFile(address: String, size: Int): Boolean {
         clearProgressCache(address)
         clearReceiveCache(address)
