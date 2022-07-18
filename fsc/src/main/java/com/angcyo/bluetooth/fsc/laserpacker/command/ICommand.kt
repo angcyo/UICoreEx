@@ -64,8 +64,8 @@ interface ICommand {
 /**发送一条指令, 未连接设备时, 返回空*/
 fun ICommand.sendCommand(
     address: String? = null,
-    progress: ISendProgressAction = {},
-    action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
+    progress: ISendProgressAction? = null,
+    action: IReceiveBeanAction? = { bean: ReceivePacket?, error: Exception? ->
         error?.let { toast(it.message) }
     }
 ): WaitReceivePacket? {
