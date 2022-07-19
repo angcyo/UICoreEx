@@ -177,7 +177,8 @@ class EngraveModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateEngraveProgress(progress: Int) {
         engraveReadyInfoData.value?.let {
-            engraveItemData.postValue(EngraveItemInfo(it.rendererItemUuid, progress))
+            val uuid = if (progress < 0) null else it.rendererItemUuid
+            engraveItemData.postValue(EngraveItemInfo(uuid, progress))
         }
     }
 
