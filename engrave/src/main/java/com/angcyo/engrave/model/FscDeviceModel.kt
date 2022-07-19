@@ -8,6 +8,10 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.core.component.DebugAction
+import com.angcyo.core.component.DebugFragment
+import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
@@ -21,6 +25,8 @@ import com.angcyo.library.component.RBackground
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toast
+import com.angcyo.library.utils.Constant
+import com.angcyo.library.utils.appFolderPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
@@ -124,6 +130,19 @@ class FscDeviceModel : LifecycleViewModel() {
                 }
             }
         }
+
+        //ble日志
+        DebugFragment.DEBUG_ACTION_LIST.add(
+            DebugAction(
+                "ble.log",
+                appFilePath("ble.log", Constant.LOG_FOLDER_NAME)
+            )
+        )
+
+        //雕刻目录
+        DebugFragment.DEBUG_ACTION_LIST.add(
+            DebugAction("engrave", appFolderPath(CanvasDataHandleOperate.CACHE_FILE_FOLDER))
+        )
 
         //设备主动退出工作模式
         //AA BB 08 FF 00 00 00 00 00 00 FF
