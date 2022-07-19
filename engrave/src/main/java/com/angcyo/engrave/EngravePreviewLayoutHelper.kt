@@ -197,6 +197,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
 
     override fun onIViewRemove() {
         super.onIViewRemove()
+        loopCheckDeviceState = false
         ExitCmd().enqueue()
         queryDeviceStateCmd()
     }

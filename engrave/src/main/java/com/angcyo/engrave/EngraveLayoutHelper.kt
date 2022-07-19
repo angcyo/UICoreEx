@@ -69,6 +69,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     fun bindDeviceState() {
         //监听设备状态
         laserPeckerModel.deviceStateData.observe(this) {
+            val beforeState = laserPeckerModel.deviceStateData.beforeValue
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
                 if (it.isModeEngrave() && !it.isEngraveStop()) {
@@ -106,6 +107,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     ExitCmd().enqueue()
                     laserPeckerModel.queryDeviceState()
                 } else if (it.isModeIdle()) {
+                    if (beforeState?.isModeEngrave() == true) {
+                        engraveModel.stopEngrave()
+                    }
                     //空闲模式
                     //dslAdapter?.removeItem { it is EngravingItem }
                     updateEngraveProgress(

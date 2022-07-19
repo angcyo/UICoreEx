@@ -41,7 +41,7 @@ class CanvasEditControlItem : DslAdapterItem() {
     val _tempMatrix = Matrix()
 
     /**限流*/
-    var pendingDelay = 300L
+    var pendingDelay = NumberKeyboardPopupConfig.DEFAULT_INPUT_DELAY
 
     init {
         itemLayoutId = R.layout.item_canvas_edit_control_layout
