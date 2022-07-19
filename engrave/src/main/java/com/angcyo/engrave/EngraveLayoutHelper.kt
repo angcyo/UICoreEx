@@ -72,11 +72,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             val beforeState = laserPeckerModel.deviceStateData.beforeValue
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
-                if (it.isModeEngrave() && !it.isEngraveStop()) {
-                    //雕刻模式, 并且雕刻没有结束
-                    checkDeviceState()
-                }
                 if (it.isEngraving()) {
+                    //雕刻中
                     val progress = clamp(it.rate, 0, 100)
                     updateEngraveProgress(
                         progress,
@@ -90,12 +87,15 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         engraveReadyDataInfo?.printTimes = it.printTimes
                     }
                     engraveModel.updateEngraveProgress(progress)
+                    checkDeviceState()
                 } else if (it.isEngravePause()) {
+                    //雕刻暂停中
                     updateEngraveProgress(
                         tip = _string(R.string.print_v2_package_print_state),
                         time = -1
                     )
                 } else if (it.isEngraveStop()) {
+                    //雕刻停止中
                     updateEngraveProgress(
                         100,
                         tip = _string(R.string.print_v2_package_print_over),
@@ -107,8 +107,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     ExitCmd().enqueue()
                     laserPeckerModel.queryDeviceState()
                 } else if (it.isModeIdle()) {
+                    //空闲模式
                     if (beforeState?.isModeEngrave() == true) {
                         engraveModel.stopEngrave()
+                        checkDeviceState()
                     }
                     //空闲模式
                     //dslAdapter?.removeItem { it is EngravingItem }
