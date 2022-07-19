@@ -20,6 +20,7 @@ import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
 import io.objectbox.query.QueryCondition
 import java.io.File
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
@@ -338,8 +339,7 @@ fun <T> Box<T>.findLast(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {})
         //Invalid offset (-1): must be zero or positive
         return emptyList()
     }
-    val offset = if (count - limit < 0) count else count - limit
-    return query(block).find(offset, limit)
+    return query(block).find(max(count - limit, 0), limit)
 }
 
 fun <T> Box<T>.findLast(
@@ -353,15 +353,21 @@ fun <T> Box<T>.findLast(
         return emptyList()
     }
     val builder = if (queryCondition == null) query() else query(queryCondition)
-    val offset = if (count - limit < 0) count else count - limit
-    return builder.apply(block).build().find(offset, limit)
+    return builder.apply(block).build().find(max(count - limit, 0), limit)
 }
 
 /**获取所有记录*/
-inline fun <reified T> T.allEntity(
+inline fun <reified T> allEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
 ): List<T> {
     return boxOf(T::class.java, packageName).all
+}
+
+fun <T : Any> allEntity(
+    entityClass: KClass<T>,
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+): List<T> {
+    return boxOf(entityClass.java, packageName).all
 }
 
 /**分页查找
