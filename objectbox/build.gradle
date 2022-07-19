@@ -17,7 +17,8 @@ android {
 }
 
 dependencies {
-    implementation project(allModule.library)
+    compileOnly project(allModule.library)
+    compileOnly "io.objectbox:objectbox-android:$objectboxVersion"
 
     //https://jcenter.bintray.com/io/objectbox
 
@@ -32,8 +33,17 @@ dependencies {
     api "io.objectbox:objectbox-kotlin:$objectboxVersion"
 }
 
+//当前库不需要具备ObjectBox实体构建能力, 请在主工程配置
 //apply plugin: 'kotlin-kapt'
 //apply plugin: 'io.objectbox' // Apply last.
 
-apply from: allGradle.objectBrowser
+//当前库不包含object browser代码, 请直接在主工程引入
+//apply from: allGradle.objectBrowser
+
+//debug release
+//apply from: 'https://gitee.com/angcyo/gradle/raw/master/objectBrowser.gradle'
+
+//debug pretest release
+//apply from: 'https://gitee.com/angcyo/gradle/raw/master/objectBrowser3.gradle'
+
 

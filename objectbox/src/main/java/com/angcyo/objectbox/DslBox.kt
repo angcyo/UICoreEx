@@ -14,7 +14,7 @@ import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.BoxStoreBuilder
 import io.objectbox.DebugFlags
-import io.objectbox.android.AndroidObjectBrowser
+import io.objectbox.android.Admin
 import io.objectbox.exception.DbException
 import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
@@ -244,9 +244,9 @@ class DslBox {
         }
 
         /**启动数据浏览服务*/
-        fun startObjectBrowser(boxStore: BoxStore) {
-            //boolean started = new Admin(boxStore).start(this);
-            val started: Boolean = AndroidObjectBrowser(boxStore).start(app())
+        fun startObjectBrowser(boxStore: BoxStore, context: Context = app()) {
+            val started = Admin(boxStore).start(context)
+            //val started: Boolean = AndroidObjectBrowser(boxStore).start(app())
             L._tempTag = "ObjectBrowser"
             if (started) {
                 L.i("数据库浏览服务启动成功: http://${getWifiIP() ?: "localhost"}:${boxStore.objectBrowserPort}/index.html")

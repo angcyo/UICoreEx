@@ -5,4 +5,7 @@ dependencies {
     api project(allModule.objectbox)
 }
 
+//apply plugin: 'kotlin-kapt'
+//apply plugin: 'io.objectbox' // Apply last.
+
 apply from: allGradle.objectBrowser
