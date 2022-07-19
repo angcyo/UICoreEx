@@ -8,6 +8,7 @@ import com.angcyo.chart.formatter.PercentFormatter
 import com.angcyo.library.L
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.undefined_color
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.*
@@ -477,7 +478,8 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     //<editor-fold desc="Legend图例配置">
 
-    var chartLegendEnable = true
+    /**图例, 有多个[DataSet]时自动开启*/
+    var chartLegendEnable: Boolean? = null
 
     /**图例的样式*/
     var chartLegendForm = LegendForm.SQUARE
@@ -487,8 +489,13 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     var chartLegendHorizontalAlignment = LegendHorizontalAlignment.LEFT
     var chartLegendVerticalAlignment = LegendVerticalAlignment.BOTTOM
+
+    /**图例排列*/
     var chartLegendOrientation = LegendOrientation.HORIZONTAL
+
+    /**图例方向*/
     var chartLegendDirection = LegendDirection.LEFT_TO_RIGHT
+
     var chartLegendDrawInside = false
 
     /**图例之间的空隙*/
@@ -507,7 +514,7 @@ abstract class BaseChartConfig<EntryType : Entry, DataSetType : IDataSet<EntryTy
 
     open fun configLegend(chart: Chart<*>) {
         chart.legend?.apply {
-            isEnabled = chartLegendEnable
+            isEnabled = chartLegendEnable ?: (dataSetList.size() > 1)
             form = chartLegendForm
             formSize = chartLegendFormSize
             horizontalAlignment = chartLegendHorizontalAlignment
