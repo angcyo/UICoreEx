@@ -1,7 +1,7 @@
 package com.angcyo.server
 
 import com.angcyo.library.ex.readText
-import com.angcyo.library.utils.FileUtils
+import com.angcyo.server.file.FileWebConfig
 import com.yanzhenjie.andserver.annotation.Interceptor
 import com.yanzhenjie.andserver.framework.HandlerInterceptor
 import com.yanzhenjie.andserver.framework.body.StringBody
@@ -36,7 +36,7 @@ class LogFileInterceptor : HandlerInterceptor {
         val httpPath = request.path
         val valueMap = request.parameter
         if (valueMap["delete"]?.firstOrNull() == "true") {
-            val logFile = File(FileUtils.appRootExternalFolder(), httpPath)
+            val logFile = File(FileWebConfig.fileWebPath, httpPath)
             response.setBody(StringBody("删除文件[${logFile.delete()}]:${logFile.absolutePath}"))
             return true
         }
@@ -46,7 +46,7 @@ class LogFileInterceptor : HandlerInterceptor {
         val path = httpPath.lowercase()
         val find = STRING_BODY_LIST.find { path.endsWith(it) }
         if (find != null) {
-            val logFile = File(FileUtils.appRootExternalFolder(), httpPath)
+            val logFile = File(FileWebConfig.fileWebPath, httpPath)
             if (logFile.exists()) {
                 response.setBody(StringBody(logFile.readText()))
                 return true
