@@ -45,8 +45,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         iViewLayoutId = R.layout.canvas_engrave_preview_layout
     }
 
-    override fun onIViewCreate() {
-        super.onIViewCreate()
+    fun bindDeviceState() {
         //模式改变监听, 改变按钮的文本
         laserPeckerModel.deviceStateData.observe(this) {
 
@@ -89,6 +88,11 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 loopCheckDeviceState = false
             }
         }
+    }
+
+    override fun onIViewCreate() {
+        super.onIViewCreate()
+        bindDeviceState()
     }
 
     override fun onIViewShow() {

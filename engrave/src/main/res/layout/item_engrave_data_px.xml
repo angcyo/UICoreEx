@@ -30,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
         android:gravity="center_horizontal"
         android:paddingRight="@dimen/lib_padding_left"
         app:layout_constraintBottom_toBottomOf="parent"

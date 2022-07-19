@@ -30,6 +30,7 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
         android:ellipsize="end"
         android:maxLength="8"
         android:maxLines="1"

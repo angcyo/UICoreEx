@@ -63,9 +63,6 @@ class EngraveHistoryFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        //bind
-        engraveLayoutHelper.bindDeviceState()
-
         //product _vh.group(R.id.lib_content_wrap_layout) ?:
         //lib_content_overlay_wrap_layout
         val group = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup

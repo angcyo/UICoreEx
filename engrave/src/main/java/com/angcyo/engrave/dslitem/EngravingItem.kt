@@ -48,6 +48,9 @@ class EngravingItem : DslAdapterItem() {
         //雕刻状态
         val stateParser: QueryStateParser? = laserPeckerModel.deviceStateData.value
 
+        //恢复的雕刻状态
+        val isRestore = engraveModel.engraveReadyInfoData.value == null
+
         if (stateParser?.mode == WORK_MODE_ENGRAVE) {
             //打印模式
         }
@@ -75,58 +78,61 @@ class EngravingItem : DslAdapterItem() {
                 append(_string(R.string.v3_print_state_tips))
                 appendln()
             }
-
-            if (laserPeckerModel.isZOpen()) {
-                append(_string(R.string.device_setting_tips_fourteen_11))
-                append(QuerySettingParser.Z_MODEL.toZModeString())
-                appendln()
-            }
-
-            if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
-                append("${_string(R.string.laser_type)}:")
-                append(engraveModel.engraveOptionInfoData.value?.type.toLaserTypeString())
-                appendln()
-            }
-
-            //分辨率: 1k
-            append(_string(R.string.tv_01))
-            append(": ${engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()}")
-            appendln()
-
-            //材质:
-            append(_string(R.string.custom_material))
-            append("${engraveModel.engraveOptionInfoData.value?.material.or()} ")
-
-            //功率:
-            append(_string(R.string.custom_power))
-            append("${engraveModel.engraveOptionInfoData.value?.power ?: 0}% ")
-
-            //深度:
-            append(_string(R.string.custom_speed))
-            append("${engraveModel.engraveOptionInfoData.value?.depth ?: 0}% ")
-            appendln()
-
-            //加工时间
-            val startEngraveTime = engraveModel.engraveReadyInfoData.value?.startEngraveTime ?: -1
-            if (startEngraveTime > 0) {
-                var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
-                if (isEngraving) {
-                    append(_string(R.string.tips_fourteen_12))
-                    append(": $engraveTime")
-                } else {
-                    val stopEngraveTime =
-                        engraveModel.engraveReadyInfoData.value?.stopEngraveTime ?: nowTime()
-                    engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
-                    append(_string(R.string.work_time))
-                    append(" $engraveTime")
+            if (!isRestore) {
+                //不是恢复的数据
+                if (laserPeckerModel.isZOpen()) {
+                    append(_string(R.string.device_setting_tips_fourteen_11))
+                    append(QuerySettingParser.Z_MODEL.toZModeString())
+                    appendln()
                 }
-                appendln()
-            }
 
-            append(_string(R.string.print_times))
-            val times = engraveModel.engraveOptionInfoData.value?.time?.toHexInt() ?: 1
-            val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
-            append(" ${printTimes}/${times}")
+                if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
+                    append("${_string(R.string.laser_type)}:")
+                    append(engraveModel.engraveOptionInfoData.value?.type.toLaserTypeString())
+                    appendln()
+                }
+
+                //分辨率: 1k
+                append(_string(R.string.tv_01))
+                append(": ${engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()}")
+                appendln()
+
+                //材质:
+                append(_string(R.string.custom_material))
+                append("${engraveModel.engraveOptionInfoData.value?.material.or()} ")
+
+                //功率:
+                append(_string(R.string.custom_power))
+                append("${engraveModel.engraveOptionInfoData.value?.power ?: 0}% ")
+
+                //深度:
+                append(_string(R.string.custom_speed))
+                append("${engraveModel.engraveOptionInfoData.value?.depth ?: 0}% ")
+                appendln()
+
+                //加工时间
+                val startEngraveTime =
+                    engraveModel.engraveReadyInfoData.value?.startEngraveTime ?: -1
+                if (startEngraveTime > 0) {
+                    var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
+                    if (isEngraving) {
+                        append(_string(R.string.tips_fourteen_12))
+                        append(": $engraveTime")
+                    } else {
+                        val stopEngraveTime =
+                            engraveModel.engraveReadyInfoData.value?.stopEngraveTime ?: nowTime()
+                        engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
+                        append(_string(R.string.work_time))
+                        append(" $engraveTime")
+                    }
+                    appendln()
+                }
+
+                append(_string(R.string.print_times))
+                val times = engraveModel.engraveOptionInfoData.value?.time?.toHexInt() ?: 1
+                val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
+                append(" ${printTimes}/${times}")
+            }
         }
 
         //继续/暂停雕刻

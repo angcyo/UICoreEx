@@ -8,11 +8,12 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
-import com.angcyo.canvas.utils.engraveMode
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
+import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.ex.*
+import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
 
@@ -25,6 +26,9 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+    //雕刻模式
+    val engraveModel = vmApp<EngraveModel>()
 
     //雕刻提示
     var dangerWarningView: DangerWarningView? = null
@@ -84,9 +88,16 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             }.elseNull {
                 dangerWarningView?.removeFromParent()
             }
+        }
 
-            //雕刻中禁止手势
-            canvasView?.canvasDelegate?.engraveMode(it?.isModeEngrave() == true)
+        //监听item雕刻进度
+        engraveModel.engraveItemData.observe(fragment, allowBackward = false) { info ->
+            info?.let {
+                canvasView?.canvasDelegate?.progressRenderer?.let {
+                    it.targetRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
+                    it.progress = info.progress
+                }
+            }
         }
     }
 

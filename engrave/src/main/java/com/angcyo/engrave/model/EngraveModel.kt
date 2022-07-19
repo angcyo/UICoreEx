@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.EngraveItemInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.library.ex._string
@@ -21,6 +22,7 @@ import com.angcyo.objectbox.saveEntity
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
 import kotlin.math.roundToLong
 
 /**
@@ -31,7 +33,7 @@ import kotlin.math.roundToLong
 class EngraveModel : ViewModel(), IViewModel {
 
     /**当前选中的雕刻参数*/
-    var engraveOptionInfoData = vmData(
+    val engraveOptionInfoData = vmData(
         EngraveOptionInfo(
             _string(R.string.material_custom),
             EngraveHelper.lastPower.toByte(),
@@ -41,7 +43,10 @@ class EngraveModel : ViewModel(), IViewModel {
     )
 
     /**当前正在雕刻的数据*/
-    var engraveReadyInfoData = vmDataNull<EngraveReadyDataInfo>()
+    val engraveReadyInfoData = vmDataNull<EngraveReadyDataInfo>()
+
+    /**用来通知item的雕刻进度*/
+    val engraveItemData = vmDataOnce<EngraveItemInfo>()
 
     /**设置需要雕刻的数据*/
     @AnyThread
@@ -103,6 +108,9 @@ class EngraveModel : ViewModel(), IViewModel {
 
             //hold
             historyEntity = history
+
+            //progress
+            updateEngraveProgress(0)
         }
     }
 
@@ -122,6 +130,8 @@ class EngraveModel : ViewModel(), IViewModel {
                 entity.duration = dTime
                 entity.saveEntity(LPBox.PACKAGE_NAME)
             }
+
+            updateEngraveProgress(-1)
         }
     }
 
@@ -160,6 +170,15 @@ class EngraveModel : ViewModel(), IViewModel {
             return -1
         }
         return (sum / speed).roundToLong()
+    }
+
+    /**更新雕刻进度
+     * [progress] 0~100*/
+    @AnyThread
+    fun updateEngraveProgress(progress: Int) {
+        engraveReadyInfoData.value?.let {
+            engraveItemData.postValue(EngraveItemInfo(it.rendererItemUuid, progress))
+        }
     }
 
 }

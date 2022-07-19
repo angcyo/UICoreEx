@@ -8,7 +8,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.component.file.writeErrorLog
@@ -67,7 +66,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     }
 
     /**监听设备状态, 并做出相应*/
-    @CanvasEntryPoint
     fun bindDeviceState() {
         //监听设备状态
         laserPeckerModel.deviceStateData.observe(this) {
@@ -78,8 +76,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     checkDeviceState()
                 }
                 if (it.isEngraving()) {
+                    val progress = clamp(it.rate, 0, 100)
                     updateEngraveProgress(
-                        clamp(it.rate, 0, 100),
+                        progress,
                         _string(R.string.print_v2_package_printing),
                         time = engraveModel.calcEngraveRemainingTime(it.rate)
                     ) {
@@ -89,6 +88,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         //更新打印次数
                         engraveReadyDataInfo?.printTimes = it.printTimes
                     }
+                    engraveModel.updateEngraveProgress(progress)
                 } else if (it.isEngravePause()) {
                     updateEngraveProgress(
                         tip = _string(R.string.print_v2_package_print_state),
@@ -119,6 +119,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 dslAdapter?.updateItem { it is EngravingItem }
             }
         }
+    }
+
+    override fun onIViewCreate() {
+        super.onIViewCreate()
+        //bind
+        bindDeviceState()
     }
 
     override fun onIViewShow() {
@@ -544,7 +550,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             updateEngraveProgress(0, _string(R.string.print_v2_package_printing), time = -1)
             EngravingItem()() {
                 againAction = {
-                    showEngraveItem()
+                    if (engraveReadyDataInfo == null) {
+                        //恢复的数据
+                        hide()
+                    } else {
+                        showEngraveItem()
+                    }
                 }
             }
         }
