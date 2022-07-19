@@ -95,7 +95,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         val nowTime = nowTime()
                         if (nowTime - lastConnectTime > 1 * 60 * 1_000 || Debug.isDebuggerConnected()) {
                             //1分钟
-                            lpBoxOf(DeviceConnectEntity::class).findLast()?.let {
+                            lpBoxOf(DeviceConnectEntity::class).findLast().lastOrNull()?.let {
                                 L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
                                 bleApiModel.connect(it.deviceAddress, it.deviceName, true)
                             }

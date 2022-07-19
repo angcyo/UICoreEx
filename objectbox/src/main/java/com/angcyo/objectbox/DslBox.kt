@@ -331,27 +331,30 @@ fun <T> Box<T>.findFirst(
     return builder.apply(block).build().findFirst()
 }
 
-/**获取最后一条记录*/
-fun <T> Box<T>.findLast(block: QueryBuilder<T>.() -> Unit = {}): T? {
+/**获取最后[limit]条记录*/
+fun <T> Box<T>.findLast(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     val count = count()
     if (count <= 0) {
         //Invalid offset (-1): must be zero or positive
-        return null
+        return emptyList()
     }
-    return query(block).find(count - 1, 1).lastOrNull()
+    val offset = if (count - limit < 0) count else count - limit
+    return query(block).find(offset, limit)
 }
 
 fun <T> Box<T>.findLast(
+    limit: Long = 1,
     queryCondition: QueryCondition<T>? = null,
     block: QueryBuilder<T>.() -> Unit = {}
-): T? {
+): List<T> {
     val count = count()
     if (count <= 0) {
         //Invalid offset (-1): must be zero or positive
-        return null
+        return emptyList()
     }
     val builder = if (queryCondition == null) query() else query(queryCondition)
-    return builder.apply(block).build().find(count - 1, 1).lastOrNull()
+    val offset = if (count - limit < 0) count else count - limit
+    return builder.apply(block).build().find(offset, limit)
 }
 
 /**获取所有记录*/

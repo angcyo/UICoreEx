@@ -73,9 +73,10 @@ class EngraveModel : ViewModel(), IViewModel {
             var history: EngraveHistoryEntity? = historyEntity
             if (history == null) {
                 lpBoxOf(EngraveHistoryEntity::class) {
-                    history =
-                        findLast(EngraveHistoryEntity_.index.equal(engraveData?.index ?: -1))
-                            ?: EngraveHistoryEntity()
+                    history = findLast(
+                        1,
+                        EngraveHistoryEntity_.index.equal(engraveData?.index ?: -1)
+                    ).lastOrNull() ?: EngraveHistoryEntity()
                 }
             }
             history?.let { entity ->
