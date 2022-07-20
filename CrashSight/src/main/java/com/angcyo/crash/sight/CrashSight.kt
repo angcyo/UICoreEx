@@ -22,7 +22,7 @@ object CrashSight {
         CrashReport.setServerUrl(serverUrl)
         //初始化
         CrashReport.initCrashReport(app(), appId, debug)
-        L.i("CrashSight初始化:$appId $serverUrl")
+        L.i("CrashSight初始化[$debug]:$appId $serverUrl")
     }
 
     /**测试崩溃*/
