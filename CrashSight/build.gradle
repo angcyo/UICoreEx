@@ -6,6 +6,9 @@ android {
     defaultConfig {
         resValue "string", "CrashSightUrl", '"xxx"'
         resValue "string", "CrashSightAppID", '"xxx"'
+
+        resValue "string", "CrashSightUrl", 'xxx'
+        resValue "string", "CrashSightAppID", 'xxx'
     }
 }
 */
