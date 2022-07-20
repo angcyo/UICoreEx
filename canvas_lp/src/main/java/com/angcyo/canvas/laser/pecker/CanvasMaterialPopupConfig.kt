@@ -8,6 +8,7 @@ import com.angcyo.canvas.utils.loadAssetsSvgPath
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.initItemGapStyle
+import com.angcyo.library._screenWidth
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex.filterAssets
 import com.angcyo.widget.DslViewHolder
@@ -34,7 +35,9 @@ class CanvasMaterialPopupConfig : ShadowAnchorPopupConfig() {
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
             context.filterAssets("svg") { true }?.forEach {
                 CanvasMaterialItem()() {
-                    itemDrawable = loadAssetsSvgPath("svg/$it")
+                    //0.75sw
+                    val size = (_screenWidth * 0.75f / 4).toInt()
+                    itemDrawable = loadAssetsSvgPath("svg/$it", viewWidth = size, viewHeight = size)
 //                    itemDrawable = loadAssetsSvg("svg/$it")
 
                     //网格线
