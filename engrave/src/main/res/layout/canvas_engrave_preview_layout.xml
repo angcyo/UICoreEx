@@ -35,7 +35,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@mipmap/bracket_arrow_up" />
+            app:srcCompat="@mipmap/bracket_arrow_up"
+            app:tint="@color/lib_icon_color_accent" />
 
         <com.angcyo.widget.image.TouchCompatImageView
             android:id="@+id/bracket_down_view"
@@ -46,7 +47,8 @@
             app:layout_constraintBottom_toTopOf="@id/bracket_stop_view"
             app:layout_constraintRight_toRightOf="@id/bracket_up_view"
             app:layout_constraintTop_toBottomOf="@id/bracket_up_view"
-            app:srcCompat="@mipmap/bracket_arrow_down" />
+            app:srcCompat="@mipmap/bracket_arrow_down"
+            app:tint="@color/lib_icon_color_accent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bracket_stop_view"
@@ -58,7 +60,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="@id/bracket_up_view"
             app:layout_constraintTop_toBottomOf="@id/bracket_down_view"
-            app:srcCompat="@mipmap/bracket_stop" />
+            app:srcCompat="@mipmap/bracket_stop"
+            app:tint="@color/lib_icon_color_accent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/close_layout_view"
