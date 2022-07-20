@@ -46,7 +46,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var notifyIcon = DEFAULT_NOTIFY_ICON
 
     /**通知的名称*/
-    var notifyName: String = "AndServer已启动"
+    var notifyName: String = "AndServer"
 
     //<editor-fold desc="周期回调方法">
 

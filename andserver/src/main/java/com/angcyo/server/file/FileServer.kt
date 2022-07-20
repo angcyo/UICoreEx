@@ -24,7 +24,7 @@ import com.angcyo.server.DslAndServer
 class FileServer : AndServerService() {
 
     init {
-        notifyName = "FileServer已启动"
+        notifyName = "FileServer"
         notifyChannelName = "FileServer"
     }
 

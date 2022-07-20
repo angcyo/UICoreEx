@@ -20,7 +20,7 @@ import com.angcyo.server.DslAndServer
 class AccServer : AndServerService() {
 
     init {
-        notifyName = "AccServer已启动"
+        notifyName = "AccServer"
     }
 
     override fun initServer() {
