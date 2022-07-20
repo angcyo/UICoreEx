@@ -1,0 +1,15 @@
+apply from: allGradle.libBase
+
+/*
+//配置项
+android {
+    defaultConfig {
+        resValue "string", "CrashSightUrl", '"xxx"'
+        resValue "string", "CrashSightAppID", '"xxx"'
+    }
+}
+*/
+
+dependencies {
+    implementation project(allModule.library)
+}
