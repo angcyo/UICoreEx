@@ -191,7 +191,7 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
             }
             if (regulateList.contains(REGULATE_ANGLE)) {
                 CanvasSeekBarItem()() {
-                    itemInfoText = _string(R.string.canvas_agnle) //0-90
+                    itemInfoText = _string(R.string.canvas_angle) //0-90
                     initItem()
 
                     itemProgressTextFormatAction = {
