@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/lib_xhdpi"
+    android:layout_marginHorizontal="@dimen/lib_hdpi"
     android:layout_marginTop="@dimen/lib_hdpi"
     android:background="@drawable/engrave_stroke_selector"
-    android:padding="@dimen/lib_xhdpi">
+    android:padding="@dimen/lib_padding_right">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_label_view"
@@ -15,6 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/lib_padding_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="材质:" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -22,10 +24,14 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/lib_label_view"
-        tools:text="木质" />
+        app:layout_constraintRight_toLeftOf="@id/lib_right_ico_view"
+        tools:text="木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质木质" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_right_ico_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

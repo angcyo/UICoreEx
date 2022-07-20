@@ -37,7 +37,7 @@
     <string name="high">Height:</string>
 
     <!--打印部分-->
-    <string name="file_name">Named：</string>
+    <string name="file_name">Named</string>
     <string name="estimated_remaining_time">Estimated Remaining Time:</string>
 
     <string name="material_hbz">Recycle Paper</string>
@@ -68,9 +68,9 @@
     <string name="material_lhj">Aluminium Alloy</string>
     <string name="material_ykl">Acrylic</string>
 
-    <string name="custom_material">Material:</string>
-    <string name="custom_power">Power:</string>
-    <string name="custom_speed">Depth:</string>
+    <string name="custom_material">Material</string>
+    <string name="custom_power">Power</string>
+    <string name="custom_speed">Depth</string>
 
     <string name="preview_center">Show Center Point</string>
     <string name="preview_continue">Continue Preview</string>
@@ -80,8 +80,8 @@
     <string name="laser_brightness">Brightness of laser beam</string>
     <string name="v4_bmp_edit_tips">Image data processing, please wait</string>
 
-    <string name="work_time">Processing Time:</string>
-    <string name="print_times">Pass:</string>
+    <string name="work_time">Processing Time</string>
+    <string name="print_times">Pass</string>
     <string name="bluetooth_lib_scan_disconnected">BLE disconnect</string>
     <string name="bluetooth_ft_scan_connected">BLE connected</string>
     <string name="bluetooth_ft_blue_connecting">Bluetooth Connecting</string>

@@ -12,11 +12,15 @@ import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.toZModeString
+import com.angcyo.engrave.data.LabelDesData
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.library.ex.*
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.dslViewHolder
+import com.angcyo.widget.base.resetChild
+import com.angcyo.widget.flow
 import com.angcyo.widget.span.span
 
 /**
@@ -32,6 +36,9 @@ class EngravingItem : DslAdapterItem() {
 
     /**再雕一次*/
     var againAction: ClickAction? = null
+
+    //所有需要提示的数据
+    val labelDesList = mutableListOf<LabelDesData>()
 
     init {
         itemLayoutId = R.layout.item_engraving_layout
@@ -71,69 +78,100 @@ class EngravingItem : DslAdapterItem() {
         itemHolder.visible(R.id.pause_button, isEngraving)
         itemHolder.visible(R.id.stop_button, isEngraving)
         itemHolder.visible(R.id.again_button, !isEngraving)
+        itemHolder.visible(R.id.lib_tip_view, isEngraving)
 
         //镭雕提示
         itemHolder.tv(R.id.lib_tip_view)?.text = span {
             if (isEngraving) {
                 append(_string(R.string.v3_print_state_tips))
-                appendln()
-            }
-            if (!isRestore) {
-                //不是恢复的数据
-                if (laserPeckerModel.isZOpen()) {
-                    append(_string(R.string.device_setting_tips_fourteen_11))
-                    append(QuerySettingParser.Z_MODEL.toZModeString())
-                    appendln()
-                }
-
-                if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
-                    append("${_string(R.string.laser_type)}:")
-                    append(engraveModel.engraveOptionInfoData.value?.type.toLaserTypeString())
-                    appendln()
-                }
-
-                //分辨率: 1k
-                append(_string(R.string.tv_01))
-                append(": ${engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()}")
-                appendln()
-
-                //材质:
-                append(_string(R.string.custom_material))
-                append("${engraveModel.engraveOptionInfoData.value?.material.or()} ")
-
-                //功率:
-                append(_string(R.string.custom_power))
-                append("${engraveModel.engraveOptionInfoData.value?.power ?: 0}% ")
-
-                //深度:
-                append(_string(R.string.custom_speed))
-                append("${engraveModel.engraveOptionInfoData.value?.depth ?: 0}% ")
-                appendln()
-
-                //加工时间
-                val startEngraveTime =
-                    engraveModel.engraveReadyInfoData.value?.startEngraveTime ?: -1
-                if (startEngraveTime > 0) {
-                    var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
-                    if (isEngraving) {
-                        append(_string(R.string.tips_fourteen_12))
-                        append(": $engraveTime")
-                    } else {
-                        val stopEngraveTime =
-                            engraveModel.engraveReadyInfoData.value?.stopEngraveTime ?: nowTime()
-                        engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
-                        append(_string(R.string.work_time))
-                        append(" $engraveTime")
-                    }
-                    appendln()
-                }
-
-                append(_string(R.string.print_times))
-                val times = engraveModel.engraveOptionInfoData.value?.time?.toHexInt() ?: 1
-                val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
-                append(" ${printTimes}/${times}")
             }
         }
+
+        //提示2
+        labelDesList.clear()
+        if (!isRestore) {
+            //不是恢复的数据
+            if (laserPeckerModel.isZOpen()) {
+                labelDesList.add(
+                    LabelDesData(
+                        _string(R.string.device_setting_tips_fourteen_11),
+                        QuerySettingParser.Z_MODEL.toZModeString()
+                    )
+                )
+            }
+
+            if (laserPeckerModel.productInfoData.value?.isLIIIMax() == true) {
+                labelDesList.add(
+                    LabelDesData(
+                        _string(R.string.laser_type),
+                        engraveModel.engraveOptionInfoData.value?.type.toLaserTypeString()
+                    )
+                )
+            }
+
+            //分辨率: 1k
+            labelDesList.add(
+                LabelDesData(
+                    _string(R.string.tv_01),
+                    engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()
+                )
+            )
+            //材质:
+            labelDesList.add(
+                LabelDesData(
+                    _string(R.string.custom_material),
+                    engraveModel.engraveOptionInfoData.value?.material.or()
+                )
+            )
+
+            //功率:
+            labelDesList.add(
+                LabelDesData(
+                    _string(R.string.custom_power),
+                    "${engraveModel.engraveOptionInfoData.value?.power ?: 0}%"
+                )
+            )
+
+            //深度:
+            labelDesList.add(
+                LabelDesData(
+                    _string(R.string.custom_speed),
+                    "${engraveModel.engraveOptionInfoData.value?.depth ?: 0}%"
+                )
+            )
+
+            //雕刻次数
+            val times = engraveModel.engraveOptionInfoData.value?.time?.toHexInt() ?: 1
+            val printTimes = engraveModel.engraveReadyInfoData.value?.printTimes ?: 1
+            labelDesList.add(
+                LabelDesData(_string(R.string.print_times), "${printTimes}/${times}")
+            )
+
+            //加工时间
+            val startEngraveTime =
+                engraveModel.engraveReadyInfoData.value?.startEngraveTime ?: -1
+            if (startEngraveTime > 0) {
+                var engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
+                if (isEngraving) {
+                    labelDesList.add(
+                        LabelDesData(_string(R.string.tips_fourteen_12), engraveTime)
+                    )
+                } else {
+                    val stopEngraveTime =
+                        engraveModel.engraveReadyInfoData.value?.stopEngraveTime ?: nowTime()
+                    engraveTime = (stopEngraveTime - startEngraveTime).toEngraveTime()
+                    labelDesList.add(
+                        LabelDesData(_string(R.string.work_time), engraveTime)
+                    )
+                }
+            }
+        }
+
+        itemHolder.flow(R.id.lib_flow_layout)
+            ?.resetChild(labelDesList, R.layout.dsl_solid_tag_item) { itemView, item, itemIndex ->
+                itemView.dslViewHolder().tv(R.id.lib_label_view)?.text = item.label
+                itemView.dslViewHolder().tv(R.id.lib_des_view)?.text = item.des
+            }
 
         //继续/暂停雕刻
         itemHolder.click(R.id.pause_button) {
@@ -168,5 +206,4 @@ class EngravingItem : DslAdapterItem() {
             againAction?.invoke(it)
         }
     }
-
 }

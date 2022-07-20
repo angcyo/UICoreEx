@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import android.view.ViewGroup
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -11,7 +12,6 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.component.file.writeErrorLog
-import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderEmptyItem
@@ -20,11 +20,12 @@ import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.dslitem.*
-import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.http.rx.doMain
 import com.angcyo.http.rx.runRx
+import com.angcyo.item.DslNestedGridRecyclerItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.item.style.renderNestedAdapter
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
@@ -103,6 +104,11 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     //退出打印模式, 进入空闲模式
                     ExitCmd().enqueue()
                     laserPeckerModel.queryDeviceState()
+
+                    if (engraveModel.isRestore()) {
+                        //恢复的雕刻状态
+                        hide()
+                    }
                 } else if (it.isModeIdle()) {
                     //空闲模式
                     if (beforeState?.isModeEngrave() == true) {
@@ -294,7 +300,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
                     }
                     engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
-                    showEngraveItem()
+                    showStartEngraveItem()
                 } else {
                     needHandleEngraveData()
                 }
@@ -370,7 +376,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                             result?.let {
                                 if (it.isFileTransferSuccess()) {
                                     //文件传输完成
-                                    showEngraveItem()
+                                    showStartEngraveItem()
                                 } else {
                                     "数据接收未完成".writeErrorLog()
                                     showEngraveError("数据传输失败")
@@ -397,7 +403,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     }
 
     /**显示开始雕刻相关的item*/
-    fun showEngraveItem() {
+    fun showStartEngraveItem() {
         showCloseLayout()
 
         val engraveOptionInfo = engraveModel.engraveOptionInfoData.value
@@ -408,6 +414,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
         dslAdapter?.render {
             clearAllItems()
+
+            //物体直径, 这里应该判断z轴设备的类型, 决定是否显示物理直径
+            val showDiameter = (laserPeckerModel.isZOpen() &&
+                    laserPeckerModel.productInfoData.value?.isLIV() == true) || isDebugType()
 
             //激光类型
             if (laserPeckerModel.productInfoData.value?.typeList.size() > 1 || isDebugType()) {
@@ -422,9 +432,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveOptionInfo?.type = LaserPeckerHelper.LASER_TYPE_BLUE
             }
 
-            //物体直径, 这里应该判断z轴设备的类型, 决定是否显示物理直径
-            val showDiameter = (laserPeckerModel.isZOpen() &&
-                    laserPeckerModel.productInfoData.value?.isLIV() == true) || isDebugType()
             if (showDiameter) {
                 engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameter
                 EngraveOptionDiameterItem()() {
@@ -432,44 +439,52 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 }
             }
 
-            //材质
-            EngraveOptionWheelItem()() {
-                itemLabelText = _string(R.string.custom_material)
-                itemWheelList = materialList
-                val material = engraveOptionInfo?.material ?: _string(R.string.material_custom)
-                val index = materialList.indexOfFirst { it.toText() == material }
-                if (index == -1) {
-                    engraveOptionInfo?.material =
-                        materialList.getOrNull(0)?.toText()?.toString()
-                            ?: _string(R.string.material_custom)
+            DslNestedGridRecyclerItem()() {
+                itemGridSpanCount = 2
+                itemWidth = ViewGroup.LayoutParams.MATCH_PARENT
+
+                renderNestedAdapter {
+                    //材质
+                    EngraveOptionWheelItem()() {
+                        itemLabelText = _string(R.string.custom_material)
+                        itemWheelList = materialList
+                        val material =
+                            engraveOptionInfo?.material ?: _string(R.string.material_custom)
+                        val index = materialList.indexOfFirst { it.toText() == material }
+                        if (index == -1) {
+                            engraveOptionInfo?.material =
+                                materialList.getOrNull(0)?.toText()?.toString()
+                                    ?: _string(R.string.material_custom)
+                        }
+                        itemSelectedIndex = max(0, index)
+                        itemTag = EngraveOptionInfo::material.name
+                        itemEngraveOptionInfo = engraveOptionInfo
+                    }
+                    EngraveOptionWheelItem()() {
+                        itemLabelText = _string(R.string.custom_power)
+                        itemWheelList = percentList()
+                        itemSelectedIndex =
+                            EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.power)
+                        itemTag = EngraveOptionInfo::power.name
+                        itemEngraveOptionInfo = engraveOptionInfo
+                    }
+                    EngraveOptionWheelItem()() {
+                        itemLabelText = _string(R.string.custom_speed)
+                        itemWheelList = percentList()
+                        itemSelectedIndex =
+                            EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
+                        itemTag = EngraveOptionInfo::depth.name
+                        itemEngraveOptionInfo = engraveOptionInfo
+                    }
+                    EngraveOptionWheelItem()() {
+                        itemLabelText = _string(R.string.print_times)
+                        itemWheelList = percentList(255)
+                        itemSelectedIndex =
+                            EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.time)
+                        itemTag = EngraveOptionInfo::time.name
+                        itemEngraveOptionInfo = engraveOptionInfo
+                    }
                 }
-                itemSelectedIndex = max(0, index)
-                itemTag = EngraveOptionInfo::material.name
-                itemEngraveOptionInfo = engraveOptionInfo
-            }
-            EngraveOptionWheelItem()() {
-                itemLabelText = _string(R.string.custom_power)
-                itemWheelList = percentList()
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.power)
-                itemTag = EngraveOptionInfo::power.name
-                itemEngraveOptionInfo = engraveOptionInfo
-            }
-            EngraveOptionWheelItem()() {
-                itemLabelText = _string(R.string.custom_speed)
-                itemWheelList = percentList()
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
-                itemTag = EngraveOptionInfo::depth.name
-                itemEngraveOptionInfo = engraveOptionInfo
-            }
-            EngraveOptionWheelItem()() {
-                itemLabelText = _string(R.string.print_times)
-                itemWheelList = percentList(255)
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.time)
-                itemTag = EngraveOptionInfo::time.name
-                itemEngraveOptionInfo = engraveOptionInfo
             }
             EngraveConfirmItem()() {
                 engraveAction = {
@@ -557,7 +572,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         //恢复的数据
                         hide()
                     } else {
-                        showEngraveItem()
+                        showStartEngraveItem()
                     }
                 }
             }

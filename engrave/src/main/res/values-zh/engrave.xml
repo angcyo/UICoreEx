@@ -36,13 +36,13 @@
     <string name="print_v2_package_print_over">已镭雕结束</string>
     <string name="print_laser_start_tips">请勿在高反光材质上雕刻</string>
     <string name="v3_print_state_tips">请勿移动设备</string>
-    <string name="custom_material">材质:</string>
-    <string name="custom_power">功率:</string>
-    <string name="custom_speed">深度:</string>
-    <string name="print_times">次数:</string>
+    <string name="custom_material">材质</string>
+    <string name="custom_power">功率</string>
+    <string name="custom_speed">深度</string>
+    <string name="print_times">次数</string>
     <string name="tv_01">分辨率</string>
     <string name="tips_fourteen_12">时间</string>
-    <string name="work_time">加工时间:</string>
+    <string name="work_time">加工时间</string>
     <string name="print_v2_package_Laser_again">再雕一次</string>
     <string name="print_v2_package_Laser_home">返回首页</string>
     <string name="preview_scroll_continue">滚动预览</string>
@@ -89,7 +89,7 @@
     <string name="wide">宽:</string>
     <string name="high">高:</string>
 
-    <string name="file_name">命名:</string>
+    <string name="file_name">命名</string>
 
     <string name="device_setting_act_model_warning_tone">工作提示音</string>
     <string name="device_setting_act_des_sound">开始工作和工作结束时会有提示音</string>

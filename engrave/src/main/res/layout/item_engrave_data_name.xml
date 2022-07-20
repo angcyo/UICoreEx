@@ -7,16 +7,15 @@
     android:layout_marginHorizontal="@dimen/lib_xhdpi"
     android:layout_marginTop="@dimen/lib_hdpi"
     android:background="@drawable/engrave_stroke_selector"
-    android:minHeight="@dimen/lib_item_height"
-    android:paddingHorizontal="@dimen/lib_xhdpi"
-    android:paddingVertical="@dimen/lib_hdpi">
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_sdpi">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_label_view"
         style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="80dp"
+        android:paddingRight="@dimen/lib_padding_right"
         android:text="@string/print_v2_package_edit_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,7 +27,7 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_margin="0dp"
         android:background="@null"
         android:gravity="left|center_vertical"
         android:maxLength="36"
