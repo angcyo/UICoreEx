@@ -58,11 +58,20 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 }
             }
 
+            if (it?.isModeEngravePreview() == false) {
+                //非预览模式
+                engraveModel.updateEngravePreviewUuid(null)
+            }
+
             if (it != null) {
                 val mode = it.mode
                 viewHolder?.enable(R.id.centre_button, true)
                 if (mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
-                    if (it.workState == 0x07) {
+                    //雕刻预览中
+                    if (engraveModel.isRestore()) {
+                        viewHolder?.tv(R.id.preview_button)?.text =
+                            _string(R.string.print_v2_package_preview_over)
+                    } else if (it.workState == 0x07) {
                         //显示中心模式
                         viewHolder?.enable(R.id.centre_button, false)
                         viewHolder?.tv(R.id.preview_button)?.text =
@@ -158,7 +167,10 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             }
         }
         viewHolder?.click(R.id.preview_button) {
-            if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
+            if (engraveModel.isRestore()) {
+                //结束预览
+                hide()
+            } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
                 //中心点预览模式下, 继续预览
                 ExitCmd().enqueue()
                 startPreviewCmd(canvasDelegate, true, false)
@@ -181,12 +193,13 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 hide()
             }
         }
+        val isRestore = canvasDelegate?.getSelectedRenderer() == null
 
         //next
-        viewHolder?.visible(
-            R.id.next_button,
-            onNextAction != null && canvasDelegate?.getSelectedRenderer() != null
-        )
+        viewHolder?.visible(R.id.brightness_layout, !isRestore)
+        viewHolder?.visible(R.id.centre_button, !isRestore)
+        viewHolder?.visible(R.id.next_button, onNextAction != null && !isRestore)
+
         viewHolder?.click(R.id.next_button) {
             onNextAction?.invoke(it)
         }
@@ -220,6 +233,9 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         zPause: Boolean = false
     ) {
         val bounds = previewBounds ?: canvasDelegate?.getSelectedRenderer()?.getRotateBounds()
+        engraveModel.updateEngravePreviewUuid(
+            canvasDelegate?.getSelectedRenderer()?.getRendererItem()?.uuid
+        )
         bounds?.let {
             val cmd = if (zPause) {
                 EngravePreviewCmd.previewZRange(
@@ -243,7 +259,9 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             cmd.enqueue(flag)
             queryDeviceStateCmd()
         }.elseNull {
-            toast("No preview elements!")
+            if (engraveModel.isRestore().not()) {
+                toast("No preview elements!")
+            }
             if (updateState) {
                 queryDeviceStateCmd()
             }

@@ -1,10 +1,10 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.PointF
 import android.graphics.RectF
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.items.PictureShapeItem
@@ -16,7 +16,6 @@ import com.angcyo.canvas.utils.lineShapeOrientation
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.singleColorPickerDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.ADJUST_TYPE_LT
 import com.angcyo.library.ex.adjustSize
@@ -37,11 +36,6 @@ class CanvasEditControlItem : DslAdapterItem() {
     var itemCanvasDelegate: CanvasDelegate? = null
 
     val _tempPoint = PointF()
-    val _tempRect = RectF()
-    val _tempMatrix = Matrix()
-
-    /**限流*/
-    var pendingDelay = NumberKeyboardPopupConfig.DEFAULT_INPUT_DELAY
 
     init {
         itemLayoutId = R.layout.item_canvas_edit_control_layout
@@ -132,9 +126,6 @@ class CanvasEditControlItem : DslAdapterItem() {
 
     fun DslViewHolder.isLockRatio() = view(R.id.item_lock_view)?.isSelected == true
 
-    var _widthPendingRunnable: Runnable? = null
-    var _heightPendingRunnable: Runnable? = null
-
     /**绑定宽高事件*/
     fun bindWidthHeight(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.item_width_view) {
@@ -142,61 +133,43 @@ class CanvasEditControlItem : DslAdapterItem() {
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.keyboardNumberWindow(it) {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
-                    val builder = StringBuilder()
-                    onClickNumberAction = {
-                        itemHolder.tv(R.id.item_width_view)?.text =
-                            NumberKeyboardPopupConfig.keyboardInputValueParse(
-                                builder,
-                                itemHolder.tv(R.id.item_width_view)?.text?.toString(),
-                                it,
-                                1f
-                            ).apply {
-                                itemHolder.removeCallbacks(_widthPendingRunnable)
-                                this.toFloatOrNull()?.let { toWidth ->
-                                    _widthPendingRunnable = Runnable {
-                                        val width =
-                                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
-                                                toWidth
-                                            ) ?: toWidth
+                    keyboardBindTextView = it as? TextView
+                    onNumberResultAction = { toWidth ->
+                        val width =
+                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
+                                toWidth
+                            ) ?: toWidth
 
-                                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
-                                        val from = RectF(renderer.getRotateBounds())
-                                        val to = RectF(from)
-                                        to.adjustSize(width, from.height(), ADJUST_TYPE_LT)
-                                        val result = RectF(renderer.getBounds())
-                                        val lockRatio = itemHolder.isLockRatio()
-                                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
-                                            result,
-                                            from,
-                                            to,
-                                            renderer.rotate,
-                                            lockRatio
-                                        )?.apply {
-                                            //计算结果后
-                                            val newWidth = this[0]
-                                            val newHeight = this[1]
+                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
+                        val from = RectF(renderer.getRotateBounds())
+                        val to = RectF(from)
+                        to.adjustSize(width, from.height(), ADJUST_TYPE_LT)
+                        val result = RectF(renderer.getBounds())
+                        val lockRatio = itemHolder.isLockRatio()
+                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
+                            result,
+                            from,
+                            to,
+                            renderer.rotate,
+                            lockRatio
+                        )?.apply {
+                            //计算结果后
+                            val newWidth = this[0]
+                            val newHeight = this[1]
 
-                                            if (newWidth != 0f && newHeight != 0f) {
-                                                result.adjustSizeWithRotate(
-                                                    newWidth, newHeight,
-                                                    renderer.rotate,
-                                                    ADJUST_TYPE_LT
-                                                )
+                            if (newWidth != 0f && newHeight != 0f) {
+                                result.adjustSizeWithRotate(
+                                    newWidth, newHeight,
+                                    renderer.rotate,
+                                    ADJUST_TYPE_LT
+                                )
 
-                                                itemCanvasDelegate?.addChangeItemBounds(
-                                                    renderer,
-                                                    result
-                                                )
-                                            }
-                                        }
-
-                                        //清空输入
-                                        builder.clear()
-                                    }
-                                    itemHolder.postDelay(_widthPendingRunnable!!, pendingDelay)
-                                }
+                                itemCanvasDelegate?.addChangeItemBounds(
+                                    renderer,
+                                    result
+                                )
                             }
-                        false
+                        }
                     }
                 }
             }
@@ -206,67 +179,46 @@ class CanvasEditControlItem : DslAdapterItem() {
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.keyboardNumberWindow(it) {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
-                    val builder = StringBuilder()
-                    onClickNumberAction = {
-                        itemHolder.tv(R.id.item_height_view)?.text =
-                            NumberKeyboardPopupConfig.keyboardInputValueParse(
-                                builder,
-                                itemHolder.tv(R.id.item_height_view)?.text?.toString(),
-                                it,
-                                1f
-                            ).apply {
-                                itemHolder.removeCallbacks(_heightPendingRunnable)
-                                this.toFloatOrNull()?.let { toHeight ->
-                                    _heightPendingRunnable = Runnable {
-                                        val height =
-                                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
-                                                toHeight
-                                            ) ?: toHeight
+                    keyboardBindTextView = it as? TextView
+                    onNumberResultAction = { toHeight ->
+                        val height =
+                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
+                                toHeight
+                            ) ?: toHeight
 
-                                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
-                                        val from = RectF(renderer.getRotateBounds())
-                                        val to = RectF(from)
-                                        to.adjustSize(from.width(), height, ADJUST_TYPE_LT)
-                                        val result = RectF(renderer.getBounds())
-                                        val lockRatio = itemHolder.isLockRatio()
-                                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
-                                            result,
-                                            from,
-                                            to,
-                                            renderer.rotate,
-                                            lockRatio
-                                        )?.apply {
-                                            //计算结果后
-                                            val newWidth = this[0]
-                                            val newHeight = this[1]
+                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
+                        val from = RectF(renderer.getRotateBounds())
+                        val to = RectF(from)
+                        to.adjustSize(from.width(), height, ADJUST_TYPE_LT)
+                        val result = RectF(renderer.getBounds())
+                        val lockRatio = itemHolder.isLockRatio()
+                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
+                            result,
+                            from,
+                            to,
+                            renderer.rotate,
+                            lockRatio
+                        )?.apply {
+                            //计算结果后
+                            val newWidth = this[0]
+                            val newHeight = this[1]
 
-                                            result.adjustSizeWithRotate(
-                                                newWidth, newHeight,
-                                                renderer.rotate,
-                                                ADJUST_TYPE_LT
-                                            )
+                            result.adjustSizeWithRotate(
+                                newWidth, newHeight,
+                                renderer.rotate,
+                                ADJUST_TYPE_LT
+                            )
 
-                                            itemCanvasDelegate?.addChangeItemBounds(
-                                                renderer,
-                                                result
-                                            )
-                                        }
-
-                                        //清空输入
-                                        builder.clear()
-                                    }
-                                    itemHolder.postDelay(_heightPendingRunnable!!, pendingDelay)
-                                }
-                            }
-                        false
+                            itemCanvasDelegate?.addChangeItemBounds(
+                                renderer,
+                                result
+                            )
+                        }
                     }
                 }
             }
         }
     }
-
-    var _axisXPendingRunnable: Runnable? = null
-    var _axisYPendingRunnable: Runnable? = null
 
     /**绑定xy轴事件*/
     fun bindAxis(itemHolder: DslViewHolder) {
@@ -275,38 +227,20 @@ class CanvasEditControlItem : DslAdapterItem() {
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.keyboardNumberWindow(it) {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
-                    val builder = StringBuilder()
-                    onClickNumberAction = {
-                        itemHolder.tv(R.id.item_axis_x_view)?.text =
-                            NumberKeyboardPopupConfig.keyboardInputValueParse(
-                                builder,
-                                itemHolder.tv(R.id.item_axis_x_view)?.text?.toString(),
-                                it,
-                                1f
-                            ).apply {
-                                itemHolder.removeCallbacks(_axisXPendingRunnable)
-                                this.toFloatOrNull()?.let { toX ->
-                                    _axisXPendingRunnable = Runnable {
-                                        val x =
-                                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
-                                                toX
-                                            ) ?: toX
-                                        val rotate = renderer.getRotateBounds()
-                                        val bounds = RectF(renderer.getBounds())
-                                        val dx = x - rotate.left
-                                        bounds.offset(dx, 0f)
-                                        itemCanvasDelegate?.addChangeItemBounds(
-                                            renderer,
-                                            bounds
-                                        )
-
-                                        //清空输入
-                                        builder.clear()
-                                    }
-                                    itemHolder.postDelay(_axisXPendingRunnable!!, pendingDelay)
-                                }
-                            }
-                        false
+                    keyboardBindTextView = it as? TextView
+                    onNumberResultAction = { toX ->
+                        val x =
+                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
+                                toX
+                            ) ?: toX
+                        val rotate = renderer.getRotateBounds()
+                        val bounds = RectF(renderer.getBounds())
+                        val dx = x - rotate.left
+                        bounds.offset(dx, 0f)
+                        itemCanvasDelegate?.addChangeItemBounds(
+                            renderer,
+                            bounds
+                        )
                     }
                 }
             }
@@ -316,45 +250,25 @@ class CanvasEditControlItem : DslAdapterItem() {
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.keyboardNumberWindow(it) {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
-                    val builder = StringBuilder()
-                    onClickNumberAction = {
-                        itemHolder.tv(R.id.item_axis_y_view)?.text =
-                            NumberKeyboardPopupConfig.keyboardInputValueParse(
-                                builder,
-                                itemHolder.tv(R.id.item_axis_y_view)?.text?.toString(),
-                                it,
-                                1f
-                            ).apply {
-                                itemHolder.removeCallbacks(_axisYPendingRunnable)
-                                this.toFloatOrNull()?.let { toY ->
-                                    _axisYPendingRunnable = Runnable {
-                                        val y =
-                                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
-                                                toY
-                                            ) ?: toY
-                                        val rotate = renderer.getRotateBounds()
-                                        val bounds = RectF(renderer.getBounds())
-                                        val dy = y - rotate.top
-                                        bounds.offset(0f, dy)
-                                        itemCanvasDelegate?.addChangeItemBounds(
-                                            renderer,
-                                            bounds
-                                        )
-
-                                        //清空输入
-                                        builder.clear()
-                                    }
-                                    itemHolder.postDelay(_axisYPendingRunnable!!, pendingDelay)
-                                }
-                            }
-                        false
+                    keyboardBindTextView = it as? TextView
+                    onNumberResultAction = { toY ->
+                        val y =
+                            itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
+                                toY
+                            ) ?: toY
+                        val rotate = renderer.getRotateBounds()
+                        val bounds = RectF(renderer.getBounds())
+                        val dy = y - rotate.top
+                        bounds.offset(0f, dy)
+                        itemCanvasDelegate?.addChangeItemBounds(
+                            renderer,
+                            bounds
+                        )
                     }
                 }
             }
         }
     }
-
-    var _rotatePendingRunnable: Runnable? = null
 
     /**绑定旋转事件*/
     fun bindRotate(itemHolder: DslViewHolder) {
@@ -363,36 +277,17 @@ class CanvasEditControlItem : DslAdapterItem() {
             if (renderer is BaseItemRenderer<*>) {
                 itemHolder.context.keyboardNumberWindow(it) {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
-                    val builder = StringBuilder()
-                    onClickNumberAction = {
-                        itemHolder.tv(R.id.item_rotate_view)?.text =
-                            NumberKeyboardPopupConfig.keyboardInputValueParse(
-                                builder,
-                                renderer.rotate.toString(),
-                                it,
-                                1f
-                            ).apply {
-                                itemHolder.removeCallbacks(_rotatePendingRunnable)
-                                this.toFloatOrNull()?.let { toRotate ->
-                                    _rotatePendingRunnable = Runnable {
-                                        itemCanvasDelegate?.addChangeItemRotate(
-                                            renderer,
-                                            toRotate
-                                        )
-
-                                        //清空输入
-                                        builder.clear()
-                                    }
-                                    itemHolder.postDelay(_rotatePendingRunnable!!, pendingDelay)
-                                }
-                            }
-                        false
+                    keyboardBindTextView = it as? TextView
+                    onNumberResultAction = { toRotate ->
+                        itemCanvasDelegate?.addChangeItemRotate(
+                            renderer,
+                            toRotate
+                        )
                     }
                 }
             }
         }
     }
-
 
     /**颜色*/
     fun bindColor(itemHolder: DslViewHolder) {

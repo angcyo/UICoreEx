@@ -94,8 +94,17 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         engraveModel.engraveItemData.observe(fragment, allowBackward = false) { info ->
             info?.let {
                 canvasView?.canvasDelegate?.progressRenderer?.let {
-                    it.targetRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
+                    it.progressRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
                     it.progress = info.progress
+                }
+            }
+        }
+
+        //监听正在预览的item
+        engraveModel.engravePreviewItemData.observe(fragment, allowBackward = false) { info ->
+            info?.let {
+                canvasView?.canvasDelegate?.progressRenderer?.let {
+                    it.borderRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
                 }
             }
         }

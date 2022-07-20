@@ -48,6 +48,9 @@ class EngraveModel : ViewModel(), IViewModel {
     /**用来通知item的雕刻进度*/
     val engraveItemData = vmDataOnce<EngraveItemInfo>()
 
+    /**用来通知正在预览的item*/
+    val engravePreviewItemData = vmDataOnce<EngraveItemInfo>()
+
     /**设置需要雕刻的数据*/
     @AnyThread
     fun setEngraveReadyDataInfo(info: EngraveReadyDataInfo) {
@@ -181,5 +184,14 @@ class EngraveModel : ViewModel(), IViewModel {
             engraveItemData.postValue(EngraveItemInfo(uuid, progress))
         }
     }
+
+    /**更新预览的item*/
+    @AnyThread
+    fun updateEngravePreviewUuid(uuid: String?) {
+        engravePreviewItemData.postValue(EngraveItemInfo(uuid))
+    }
+
+    /**恢复的状态*/
+    fun isRestore() = engraveReadyInfoData.value == null
 
 }

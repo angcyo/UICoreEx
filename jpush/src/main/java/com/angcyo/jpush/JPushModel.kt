@@ -47,6 +47,7 @@ fun LifecycleOwner.onJPushConnected(action: () -> Unit) {
         if (it == true) {
             action()
         }
+        true
     }
 }
 

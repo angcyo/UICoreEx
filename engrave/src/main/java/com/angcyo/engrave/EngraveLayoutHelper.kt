@@ -55,9 +55,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     var dslAdapter: DslAdapter? = null
 
-    //雕刻模型
-    val engraveModel = vmApp<EngraveModel>()
-
     /**雕刻需要准备的数据*/
     var engraveReadyDataInfo: EngraveReadyDataInfo? = null
 

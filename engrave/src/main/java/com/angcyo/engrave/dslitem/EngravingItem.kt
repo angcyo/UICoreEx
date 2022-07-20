@@ -49,7 +49,7 @@ class EngravingItem : DslAdapterItem() {
         val stateParser: QueryStateParser? = laserPeckerModel.deviceStateData.value
 
         //恢复的雕刻状态
-        val isRestore = engraveModel.engraveReadyInfoData.value == null
+        val isRestore = engraveModel.isRestore()
 
         if (stateParser?.mode == WORK_MODE_ENGRAVE) {
             //打印模式

@@ -35,6 +35,7 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.EngraveHelper
+import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
@@ -454,6 +455,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 ) {
                     //设备正在预览模式, 更新预览
                     if (item is BaseItemRenderer<*>) {
+                        vmApp<EngraveModel>().updateEngravePreviewUuid(item.getRendererItem()?.uuid)
                         peckerModel.sendUpdatePreviewRange(
                             item.getRotateBounds(),
                             EngraveHelper.lastPwrProgress
@@ -505,6 +507,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
                     //设备正在预览模式, 更新预览
                     if (itemRenderer is BaseItemRenderer<*>) {
+                        vmApp<EngraveModel>().updateEngravePreviewUuid(itemRenderer.getRendererItem()?.uuid)
                         peckerModel.sendUpdatePreviewRange(
                             itemRenderer.getRotateBounds(),
                             EngraveHelper.lastPwrProgress
