@@ -4,8 +4,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.angcyo.library.L
+import com.angcyo.library.app
 import com.angcyo.library.component.*
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.urlIntent
 import com.angcyo.library.toastQQ
 import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
@@ -46,7 +48,11 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var notifyIcon = DEFAULT_NOTIFY_ICON
 
     /**通知的名称*/
-    var notifyName: String = "AndServer"
+    var notifyName: String = ""
+
+    init {
+        notifyName = "AndServer/${app().packageName}"
+    }
 
     //<editor-fold desc="周期回调方法">
 
@@ -167,7 +173,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
-                single(notifyName, address)
+                single(notifyName, "$address/${nowTimeString()}")
             })
 
             if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {
