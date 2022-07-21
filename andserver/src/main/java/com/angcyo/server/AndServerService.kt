@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.angcyo.library.L
-import com.angcyo.library.app
 import com.angcyo.library.component.*
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTimeString
@@ -51,7 +50,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var notifyName: String = ""
 
     init {
-        notifyName = "AndServer/${app().packageName}"
+        notifyName = "AndServer"
     }
 
     //<editor-fold desc="周期回调方法">
@@ -173,7 +172,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
-                single(notifyName, "${nowTimeString()}\n${address}")
+                single(notifyName, "${nowTimeString()}\n${packageName}\n${address}")
             })
 
             if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {

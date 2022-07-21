@@ -7,7 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.library.L
-import com.angcyo.library.app
 import com.angcyo.server.AndServerService
 import com.angcyo.server.DslAndServer
 
@@ -25,7 +24,7 @@ import com.angcyo.server.DslAndServer
 class FileServer : AndServerService() {
 
     init {
-        notifyName = "FileServer/${app().packageName}"
+        notifyName = "FileServer"
         notifyChannelName = "FileServer"
     }
 
