@@ -47,6 +47,7 @@ import java.io.File
 class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
 
     companion object {
+
         /**默认的字体文件夹名称*/
         const val DEFAULT_FONT_FOLDER_NAME = "fonts"
 
@@ -60,6 +61,19 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
             //字体文件夹
             val fontFolder = folderPath(DEFAULT_FONT_FOLDER_NAME)
 
+            //自定义的字体
+            fontFolder.file().eachFile { file ->
+                try {
+                    if (file.name.isFontType()) {
+                        val typeface = Typeface.createFromFile(file)
+                        fontList.add(TypefaceInfo(file.name.noExtName(), typeface))
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            //系统默认字体
             //typefaceItem("normal", Typeface.DEFAULT)
             //typefaceItem("sans", Typeface.SANS_SERIF)
             fontList.add(TypefaceInfo("serif", Typeface.SERIF))
@@ -78,18 +92,6 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                     Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
                 )
             )
-
-            //自定义的字体
-            fontFolder.file().eachFile { file ->
-                try {
-                    if (file.name.isFontType()) {
-                        val typeface = Typeface.createFromFile(file)
-                        fontList.add(TypefaceInfo(file.name.noExtName(), typeface))
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
         }
 
         /**导入字体*/
@@ -101,13 +103,16 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
         /**导入字体*/
         fun importFont(path: String?): TypefaceInfo? {
             try {
+                if (fontList.isEmpty()) {
+                    initFontList()
+                }
                 if (path.isFontType()) {
                     val file = File(path!!)
                     val typeface = Typeface.createFromFile(file)
                     file.copyTo(filePath(DEFAULT_FONT_FOLDER_NAME, file.name))
 
                     val typefaceInfo = TypefaceInfo(file.name.noExtName(), typeface)
-                    fontList.add(typefaceInfo)
+                    fontList.add(0, typefaceInfo)
 
                     return typefaceInfo
                 }
