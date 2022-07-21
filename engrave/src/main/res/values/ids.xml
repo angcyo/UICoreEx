@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="canvas_device_state_wrap_layout" type="id" />
-    <item name="canvas_device_state_text_view" type="id" />
-    <item name="canvas_device_state_image_view" type="id" />
 </resources>

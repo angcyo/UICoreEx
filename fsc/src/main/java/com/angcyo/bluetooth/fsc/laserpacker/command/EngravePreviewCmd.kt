@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowRect
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.*
 
@@ -70,7 +71,7 @@ data class EngravePreviewCmd(
             height: Int,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): Rect {
+        ): OverflowRect {
             var previewX = x
             var previewY = y
 
@@ -120,7 +121,10 @@ data class EngravePreviewCmd(
                 previewHeight = 1
             }
 
-            return Rect(previewX, previewY, previewX + previewWidth, previewY + previewHeight)
+            return OverflowRect(
+                Rect(previewX, previewY, previewX + previewWidth, previewY + previewHeight),
+                overflow
+            )
         }
 
         /**根据[px]和[productInfo]调整预览的范围
@@ -135,11 +139,9 @@ data class EngravePreviewCmd(
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            return previewRange(
-                adjustBitmapRange(x, y, width, height, px, productInfo),
-                pwrProgress,
-                px
-            )
+            val overflowRect = adjustBitmapRange(x, y, width, height, px, productInfo)
+            vmApp<LaserPeckerModel>().overflowRectData.postValue(overflowRect.isOverflow)
+            return previewRange(overflowRect.rect, pwrProgress, px)
         }
 
         /**表示范围预览
@@ -249,11 +251,9 @@ data class EngravePreviewCmd(
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            return previewZRange(
-                adjustBitmapRange(x, y, width, height, px, productInfo),
-                pwrProgress,
-                px
-            )
+            val overflowRect = adjustBitmapRange(x, y, width, height, px, productInfo)
+            vmApp<LaserPeckerModel>().overflowRectData.postValue(overflowRect.isOverflow)
+            return previewZRange(overflowRect.rect, pwrProgress, px)
         }
 
         /**第三轴暂停预览, 用来拖动时更新x,t

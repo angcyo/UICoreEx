@@ -246,7 +246,7 @@ object EngraveHelper {
         //根据px, 修正坐标
         val x = engraveReadyDataInfo.optionX
         val y = engraveReadyDataInfo.optionY
-        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px)
+        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px).rect
 
         //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
         val engraveWidth = bitmap.width

@@ -52,6 +52,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]*/
     val initializeData = vmData(false)
 
+    /**预览的时候, 矩形是否溢出了*/
+    val overflowRectData = vmData(false)
+
     /**更新设备模式*/
     @AnyThread
     fun updateDeviceModel(model: Int) {

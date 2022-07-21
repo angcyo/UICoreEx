@@ -2,7 +2,6 @@ package com.angcyo.engrave
 
 import android.graphics.Color
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
@@ -12,7 +11,12 @@ import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.fragment.AbsLifecycleFragment
-import com.angcyo.library.ex.*
+import com.angcyo.library.component.StateLayoutInfo
+import com.angcyo.library.component.StateLayoutManager
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.removeFromParent
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
@@ -66,10 +70,17 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             val mode = it?.mode
 
             if (stateString.isNullOrEmpty()) {
-                hideDeviceStateTip(viewHolder)
+                stateLayoutManager.removeState(engraveStateInfo)
             } else {
                 //模式改变
-                showDeviceStateTip(viewHolder, stateString, mode != beforeMode)
+                engraveStateInfo.text = stateString
+                engraveStateInfo.updataAnim = beforeMode != mode
+                stateLayoutManager.updateState(engraveStateInfo)
+            }
+
+            if (it?.isModeEngravePreview() != true) {
+                //停止预览后, 清除状态
+                laserPeckerModel.overflowRectData.postValue(null)
             }
 
             //警示提示动画
@@ -108,6 +119,18 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                 }
             }
         }
+
+        //监听范围预览
+        laserPeckerModel.overflowRectData.observe(fragment, allowBackward = false) {
+            if (it == true) {
+                stateLayoutManager.updateState(previewOverflowStateInfo)
+            } else {
+                stateLayoutManager.removeState(previewOverflowStateInfo)
+            }
+        }
+
+        //状态管理
+        stateLayoutManager.group = viewHolder.group(R.id.canvas_device_state_wrap_layout)
     }
 
     //region ---内部操作---
@@ -162,31 +185,14 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }
     }
 
-    /**显示设备状态提示*/
-    fun showDeviceStateTip(viewHolder: DslViewHolder, text: CharSequence?, anim: Boolean) {
-        viewHolder.view(R.id.canvas_device_state_wrap_layout)?.apply {
-            visible(true)
-            viewHolder.tv(R.id.canvas_device_state_text_view)?.text = text
+    //状态管理
+    val stateLayoutManager = StateLayoutManager()
 
-            if (anim) {
-                doOnPreDraw {
-                    clipBoundsAnimatorFromLeft()
-                    viewHolder.view(R.id.canvas_device_state_image_view)?.rotateYAnimator()
-                }
-            }
-        }
-    }
+    //雕刻状态信息
+    val engraveStateInfo = StateLayoutInfo()
 
-    /**隐藏设备状态提示*/
-    fun hideDeviceStateTip(viewHolder: DslViewHolder) {
-        viewHolder.view(R.id.canvas_device_state_wrap_layout)?.apply {
-            if (isVisible()) {
-                viewHolder.img(R.id.canvas_device_state_image_view)?.cancelAnimator()
-                cancelAnimator()
-                clipBoundsAnimatorFromRightHide()
-            }
-        }
-    }
+    //预览超范围状态信息
+    val previewOverflowStateInfo = StateLayoutInfo(_string(R.string.preview_out_of_range))
 
     //endregion ---内部操作---
 
