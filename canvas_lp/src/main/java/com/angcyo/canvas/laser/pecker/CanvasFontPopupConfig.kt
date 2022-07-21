@@ -18,6 +18,7 @@ import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
+import com.angcyo.library.app
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.library.utils.filePath
@@ -63,6 +64,19 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
 
             //自定义的字体
             fontFolder.file().eachFile { file ->
+                try {
+                    if (file.name.isFontType()) {
+                        val typeface = Typeface.createFromFile(file)
+                        fontList.add(TypefaceInfo(file.name.noExtName(), typeface))
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            //旧版本字体目录
+            val oldFontFolder = File(app().getExternalFilesDir("laserpecker"), "font")
+            oldFontFolder.eachFile { file ->
                 try {
                     if (file.name.isFontType()) {
                         val typeface = Typeface.createFromFile(file)
