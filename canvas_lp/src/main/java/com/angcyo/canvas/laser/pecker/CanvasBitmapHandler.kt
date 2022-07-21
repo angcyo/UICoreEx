@@ -7,10 +7,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.utils.*
+import com.angcyo.core.component.file.writeToCache
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
+import com.angcyo.library.utils.fileName
 import com.angcyo.opencv.OpenCV
 
 /**
@@ -127,6 +129,10 @@ object CanvasBitmapHandler {
                         }) {
                             it?.let {
                                 result = it
+                                it.first.writeToCache(
+                                    CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
+                                    fileName(suffix = ".gcode")
+                                )
                                 renderer.updateItemDrawable(
                                     it.second,
                                     if (preview) Strategy.preview else Strategy.normal,
