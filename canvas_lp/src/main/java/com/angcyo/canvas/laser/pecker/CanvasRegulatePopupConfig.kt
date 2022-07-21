@@ -6,14 +6,14 @@ import android.os.Looper
 import android.view.View
 import android.widget.PopupWindow
 import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
@@ -69,7 +69,10 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
     /**实时预览*/
     var livePreview: Boolean = true
 
-    /**应用属性实现方法的回调*/
+    /**应用属性实现方法的回调
+     * [preview] 是否来自预览
+     * [cancel] 是否需要取消
+     * [valueChanged] 相对于上一次预览时, 值是否有改变*/
     var onApplyAction: (preview: Boolean, cancel: Boolean, valueChanged: Boolean) -> Unit =
         { preview, cancel, valueChanged ->
 

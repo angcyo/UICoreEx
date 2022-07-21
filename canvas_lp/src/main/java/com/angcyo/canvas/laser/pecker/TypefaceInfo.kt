@@ -11,5 +11,7 @@ data class TypefaceInfo(
     //字体显示的名字
     val name: String,
     //字体
-    val typeface: Typeface
+    val typeface: Typeface,
+    //字体的本地路径, 如果有
+    val filePath: String? = null
 )

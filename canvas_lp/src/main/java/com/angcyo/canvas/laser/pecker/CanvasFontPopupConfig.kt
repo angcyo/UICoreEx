@@ -15,6 +15,7 @@ import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
 import com.angcyo.component.getFile
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
+import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
@@ -67,7 +68,9 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 try {
                     if (file.name.isFontType()) {
                         val typeface = Typeface.createFromFile(file)
-                        fontList.add(TypefaceInfo(file.name.noExtName(), typeface))
+                        fontList.add(
+                            TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
+                        )
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -80,7 +83,9 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 try {
                     if (file.name.isFontType()) {
                         val typeface = Typeface.createFromFile(file)
-                        fontList.add(TypefaceInfo(file.name.noExtName(), typeface))
+                        fontList.add(
+                            TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
+                        )
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -125,7 +130,8 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                     val typeface = Typeface.createFromFile(file)
                     file.copyTo(filePath(DEFAULT_FONT_FOLDER_NAME, file.name))
 
-                    val typefaceInfo = TypefaceInfo(file.name.noExtName(), typeface)
+                    val typefaceInfo =
+                        TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
                     fontList.add(0, typefaceInfo)
 
                     return typefaceInfo
@@ -157,7 +163,7 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
         //字体列表
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
             fontList.forEach {
-                typefaceItem(it.name, it.typeface)
+                typefaceItem(it)
             }
         }
         //导入字体
@@ -173,7 +179,7 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                                 viewHolder.rv(R.id.lib_recycler_view)
                                     ?.renderDslAdapter(true, false) {
 
-                                        typefaceItem(typefaceInfo.name, typefaceInfo.typeface)
+                                        typefaceItem(typefaceInfo)
 
                                         onDispatchUpdatesOnce {
                                             viewHolder.rv(R.id.lib_recycler_view)?.scrollToEnd()
@@ -194,8 +200,11 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
         }
     }
 
-    fun DslAdapter.typefaceItem(name: String, type: Typeface, line: Boolean = true) {
+    fun DslAdapter.typefaceItem(info: TypefaceInfo, line: Boolean = true) {
+        val name = info.name
+        val type = info.typeface
         TypefaceItem()() {
+            itemData = info
             displayName = name
             previewText = _string(R.string.canvas_font_text)
             typeface = type
@@ -210,6 +219,21 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                     updatePaintTypeface(typeface)
                     updateAdapterItem()
                 }
+            }
+            itemLongClick = {
+                //长按删除字体
+                if (info.filePath.isFileExist()) {
+                    it.context.actionPopupWindow(it) {
+                        addAction(_string(R.string.canvas_delete_font)) { window, view ->
+                            fontList.remove(info)
+                            info.filePath?.file()?.delete()
+                            render {
+                                removeAdapterItem()
+                            }
+                        }
+                    }
+                }
+                true
             }
         }
     }
