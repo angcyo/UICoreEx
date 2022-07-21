@@ -41,6 +41,11 @@ import com.angcyo.viewmodel.observe
  */
 class FscDeviceModel : LifecycleViewModel() {
 
+    companion object {
+        /**自动连接阈值, 2次连接间隔大于此值才触发*/
+        var AUTO_CONNECT_THRESHOLD = 1 * 60 * 1_000L
+    }
+
     val bleApiModel = vmApp<FscBleApiModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
@@ -104,7 +109,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     if (QuerySettingParser.AUTO_CONNECT_DEVICE) {
                         //需要自动连接设备
                         val nowTime = nowTime()
-                        if (nowTime - lastConnectTime > 1 * 60 * 1_000 || Debug.isDebuggerConnected()) {
+                        if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {
                             //1分钟
                             lpBoxOf(DeviceConnectEntity::class).findLast().lastOrNull()?.let {
                                 L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
