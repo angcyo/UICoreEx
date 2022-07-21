@@ -13,7 +13,8 @@
         android:background="@drawable/canvas_top_round_shape"
         android:gravity="center"
         android:minHeight="@dimen/lib_item_min_height"
-        android:text="@string/canvas_setting" />
+        android:text="@string/canvas_setting"
+        android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
