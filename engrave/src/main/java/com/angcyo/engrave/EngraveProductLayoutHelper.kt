@@ -74,7 +74,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             } else {
                 //模式改变
                 engraveStateInfo.text = stateString
-                engraveStateInfo.updataAnim = beforeMode != mode
+                engraveStateInfo.updateAnim = beforeMode != mode
                 stateLayoutManager.updateState(engraveStateInfo)
             }
 
