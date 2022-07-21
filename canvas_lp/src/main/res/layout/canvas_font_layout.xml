@@ -41,8 +41,8 @@
         android:id="@+id/lib_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
         android:background="@drawable/canvas_bottom_round_shape"
+        android:paddingBottom="6dp"
         app:r_layout_manager="v"
         app:r_max_height="0.5sh" />
 
