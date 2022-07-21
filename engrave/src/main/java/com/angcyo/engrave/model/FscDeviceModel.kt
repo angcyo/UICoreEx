@@ -54,8 +54,13 @@ class FscDeviceModel : LifecycleViewModel() {
         bleApiModel.connectStateData.observe(this, allowBackward = false) {
             it?.let { deviceConnectState ->
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
-                    //蓝牙设备断开
-                    toast(_string(R.string.bluetooth_lib_scan_disconnected))
+                    val lastState = bleApiModel.connectStateData.lastValue?.state
+                    if (lastState == DeviceConnectState.CONNECT_STATE_SUCCESS ||
+                        lastState == DeviceConnectState.CONNECT_STATE_DISCONNECT_START
+                    ) {
+                        //蓝牙设备断开
+                        toast(_string(R.string.bluetooth_lib_scan_disconnected))
+                    }
 
                     //蓝牙断开后,清空设备状态
                     vmApp<LaserPeckerModel>().apply {
