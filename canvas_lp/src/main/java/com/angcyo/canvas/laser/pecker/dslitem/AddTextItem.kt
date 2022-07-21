@@ -2,12 +2,12 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.addPictureTextRender
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
-import com.angcyo.canvas.laser.pecker.R
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -19,6 +19,8 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentIt
 
     companion object {
         const val MAX_INPUT_LENGTH = 30
+
+        const val KEY_ADD_TEXT = "canvas_add_text"
     }
 
     init {
@@ -30,6 +32,7 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentIt
                 itemFragment?.context?.inputDialog {
                     inputViewHeight = 100 * dpi
                     maxInputLength = MAX_INPUT_LENGTH
+                    inputHistoryHawkKey = KEY_ADD_TEXT
                     onInputResult = { dialog, inputText ->
                         if (inputText.isNotEmpty()) {
                             //canvasView.addTextRenderer("$inputText")

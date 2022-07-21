@@ -399,6 +399,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                             inputViewHeight = 100 * dpi
                             defaultInputString = renderItem.text
                             maxInputLength = AddTextItem.MAX_INPUT_LENGTH
+                            inputHistoryHawkKey = AddTextItem.KEY_ADD_TEXT
                             onInputResult = { dialog, inputText ->
                                 if (inputText.isNotEmpty()) {
                                     itemRenderer.updateItemText("$inputText")
