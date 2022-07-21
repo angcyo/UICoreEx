@@ -151,7 +151,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
         //雕刻目录
         DebugFragment.DEBUG_ACTION_LIST.add(
-            DebugAction("engrave", appFolderPath(CanvasDataHandleOperate.CACHE_FILE_FOLDER))
+            DebugAction("engrave", appFolderPath(CanvasDataHandleOperate.ENGRAVE_CACHE_FILE_FOLDER))
         )
 
         //设备主动退出工作模式
