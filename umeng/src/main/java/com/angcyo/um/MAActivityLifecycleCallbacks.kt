@@ -6,13 +6,14 @@ import android.os.Bundle
 import com.umeng.analytics.MobclickAgent
 
 /**
- *
+ * 页面监听上报
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/02/20
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class MAActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
     }
