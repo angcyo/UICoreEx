@@ -13,5 +13,7 @@ data class TypefaceInfo(
     //字体
     val typeface: Typeface,
     //字体的本地路径, 如果有
-    val filePath: String? = null
+    val filePath: String? = null,
+    //字体是否重复
+    var isRepeat: Boolean = false
 )

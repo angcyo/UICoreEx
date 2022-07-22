@@ -26,7 +26,7 @@ import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.folderPath
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
-import com.angcyo.widget.recycler.scrollToEnd
+import com.angcyo.widget.recycler.scrollToFirst
 import java.io.File
 
 /**
@@ -115,8 +115,10 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
 
         /**导入字体*/
         fun importFont(uri: Uri?): TypefaceInfo? {
-            val path = uri?.getPathFromUri()
-            return importFont(path)
+            if (uri == null) {
+                return null
+            }
+            return importFont(uri.saveToFolder())
         }
 
         /**导入字体*/
@@ -127,12 +129,20 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 }
                 if (path.isFontType()) {
                     val file = File(path!!)
+
                     val typeface = Typeface.createFromFile(file)
                     file.copyTo(filePath(DEFAULT_FONT_FOLDER_NAME, file.name))
 
                     val typefaceInfo =
                         TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
-                    fontList.add(0, typefaceInfo)
+
+                    val find = fontList.find { it.name == typefaceInfo.name }
+                    if (find == null) {
+                        fontList.add(0, typefaceInfo)
+                    } else {
+                        //字体已存在
+                        typefaceInfo.isRepeat = true
+                    }
 
                     return typefaceInfo
                 }
@@ -176,15 +186,18 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                             val typefaceInfo: TypefaceInfo? = importFont(it)
                             if (typefaceInfo != null) {
                                 //ui
-                                viewHolder.rv(R.id.lib_recycler_view)
-                                    ?.renderDslAdapter(true, false) {
-
-                                        typefaceItem(typefaceInfo)
-
-                                        onDispatchUpdatesOnce {
-                                            viewHolder.rv(R.id.lib_recycler_view)?.scrollToEnd()
+                                if (!typefaceInfo.isRepeat) {
+                                    viewHolder.rv(R.id.lib_recycler_view)
+                                        ?.renderDslAdapter(true, false) {
+                                            typefaceItem(typefaceInfo, index = 0)
+                                            onDispatchUpdatesOnce {
+                                                viewHolder.rv(R.id.lib_recycler_view)
+                                                    ?.scrollToFirst()
+                                            }
                                         }
-                                    }
+                                } else {
+                                    toast(_string(R.string.canvas_font_exist))
+                                }
                             } else {
                                 error("is not font.")
                             }
@@ -200,10 +213,10 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
         }
     }
 
-    fun DslAdapter.typefaceItem(info: TypefaceInfo, line: Boolean = true) {
+    fun DslAdapter.typefaceItem(info: TypefaceInfo, line: Boolean = true, index: Int = -1) {
         val name = info.name
         val type = info.typeface
-        TypefaceItem()() {
+        TypefaceItem()(index) {
             itemData = info
             displayName = name
             previewText = _string(R.string.canvas_font_text)
