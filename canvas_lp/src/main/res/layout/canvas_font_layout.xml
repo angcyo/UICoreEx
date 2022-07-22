@@ -43,7 +43,7 @@
         android:id="@+id/lib_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:r_layout_manager="v"
-        app:r_max_height="0.5sh" />
+        app:r_layout_height="0.3sh"
+        app:r_layout_manager="v" />
 
 </LinearLayout>
