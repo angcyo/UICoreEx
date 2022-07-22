@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.ex.isDebug
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 
@@ -12,6 +11,17 @@ import com.umeng.commonsdk.UMConfigure
  * UMeng统计
  *
  * https://developer.umeng.com/docs/119267/detail/118578
+ *
+ * 集成测试配置, 之后扫码就能测试
+ * ```
+ * <!--umeng-->
+ * <intent-filter>
+ *   <action android:name="android.intent.action.VIEW" />
+ *   <category android:name="android.intent.category.DEFAULT" />
+ *   <category android:name="android.intent.category.BROWSABLE" />
+ *   <data android:scheme="um.62d6327c88ccdf4b7ed61eba" />
+ * </intent-filter>
+ * ```
  *
  * Email:angcyo@126.com
  * @author angcyo
@@ -26,8 +36,8 @@ class UM {
         //event id长度不能超过128个字节，key不能超过128个字节，value不能超过256个字节
         //event ID或者key请使用英文、数字、下划线、中划线及加号进行定义，使用其中一种或者几种都可以，不能以“数字”开头，避免使用中文。
         //具体限制请查看下文注意事项为保证数据计算的准确性，非这些“合法”以外的字符无法添加，具体限制请查看下文注意事项；
-        fun event(eventId: String, value: String? = null, context: Context = app()) {
-            MobclickAgent.onEvent(context, eventId, value)
+        fun event(eventId: String, context: Context = app()) {
+            MobclickAgent.onEvent(context, eventId)
         }
 
         /**计数事件
@@ -75,11 +85,13 @@ class UM {
         }
     }
 
-    var isDebug: Boolean = isDebug()
+    /**请主动赋值*/
+    var isDebug: Boolean = false
 
     //https://developer.umeng.com/docs/193624/detail/194590
 
-    var context: Context? = app()
+    /**请主动赋值*/
+    var context: Context? = null
 
     /**
      * 注意: 即使您已经在AndroidManifest.xml中配置过appkey和channel值，也需要在App代码中调
@@ -153,4 +165,16 @@ class UM {
         }
         return true
     }
+}
+
+fun String.umengEvent() {
+    UM.event(this)
+}
+
+fun String.umengEventValue() {
+    UM.event(this, 1)
+}
+
+fun String.umengEventObject(map: Map<String, String>) {
+    UM.event(this, map)
 }

@@ -27,21 +27,20 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentIt
         itemIco = R.drawable.canvas_text_ico
         itemText = _string(R.string.canvas_text)
 
-        itemClick =
-            {
-                itemFragment?.context?.inputDialog {
-                    inputViewHeight = 100 * dpi
-                    maxInputLength = MAX_INPUT_LENGTH
-                    inputHistoryHawkKey = KEY_ADD_TEXT
-                    onInputResult = { dialog, inputText ->
-                        if (inputText.isNotEmpty()) {
-                            //canvasView.addTextRenderer("$inputText")
-                            //canvasView.addPictureTextRenderer("$inputText")
-                            canvasView.addPictureTextRender("$inputText")
-                        }
-                        false
+        itemClick = {
+            itemFragment?.context?.inputDialog {
+                inputViewHeight = 100 * dpi
+                maxInputLength = MAX_INPUT_LENGTH
+                inputHistoryHawkKey = KEY_ADD_TEXT
+                onInputResult = { dialog, inputText ->
+                    if (inputText.isNotEmpty()) {
+                        //canvasView.addTextRenderer("$inputText")
+                        //canvasView.addPictureTextRenderer("$inputText")
+                        canvasView.addPictureTextRender("$inputText")
                     }
+                    false
                 }
             }
+        }
     }
 }
