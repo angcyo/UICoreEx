@@ -172,7 +172,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
                 notifyOngoing = true
                 low()
                 clickActivity(address.urlIntent())
-                single(notifyName, "${nowTimeString()}\n${packageName}\n${address}")
+                single(notifyName, "${nowTimeString()}\n${address}")
             })
 
             if (!isNotificationsEnabled() || !notifyChannelName.isChannelEnable()) {

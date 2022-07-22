@@ -2,7 +2,9 @@ package com.angcyo.server
 
 import android.content.Context
 import android.content.Intent
+import com.angcyo.core.component.DebugFragment
 import com.angcyo.library.component.DslNotify
+import com.angcyo.server.file.bindFileServer
 
 /**
  * https://github.com/yanzhenjie/AndServer
@@ -27,6 +29,15 @@ object DslAndServer {
 
     /**通知图标*/
     var DEFAULT_NOTIFY_ICON = DslNotify.DEFAULT_NOTIFY_ICON
+
+    init {
+        DebugFragment.addDebugAction {
+            name = "FileServer"
+            action = {
+                it.bindFileServer()
+            }
+        }
+    }
 
     //app is in background uid UidRecord{d5b2549 u0a216 TPSL idle procs:1 seq(0,0,0)}
     fun startServer(context: Context, server: Class<*>) {
