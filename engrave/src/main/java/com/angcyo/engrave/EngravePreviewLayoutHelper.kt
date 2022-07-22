@@ -21,6 +21,8 @@ import com.angcyo.library.toast
 import com.angcyo.widget.image.TouchCompatImageView
 import com.angcyo.widget.progress.DslSeekBar
 import com.angcyo.widget.span.span
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 雕刻预览布局相关操作
@@ -206,6 +208,9 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
 
         //cmd
         startPreviewCmd(canvasDelegate, true, false)
+
+        //
+        UMEvent.PREVIEW.umengEventValue()
     }
 
     override fun onIViewRemove() {

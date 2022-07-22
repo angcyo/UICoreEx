@@ -32,6 +32,8 @@ import com.angcyo.library.toast
 import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -649,6 +651,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 engraveModel.startEngrave()
                 showEngravingItem()
                 laserPeckerModel.queryDeviceState()
+
+                UMEvent.ENGRAVE.umengEventValue()
             } else {
                 "雕刻失败:$error".writeErrorLog()
             }

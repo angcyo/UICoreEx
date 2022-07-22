@@ -9,6 +9,8 @@ dependencies {
     implementation project(allModule.canvas)
     implementation project(allModule.dialog2)
 
+    compileOnly project(allModule.umeng_lp)
+
     api project(allModule.fsc)
 
     //https://github.com/chrisbanes/PhotoView/

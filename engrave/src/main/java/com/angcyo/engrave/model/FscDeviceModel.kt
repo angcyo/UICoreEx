@@ -33,6 +33,8 @@ import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.saveEntity
 import com.angcyo.viewmodel.observe
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 蓝牙设备模式
@@ -97,6 +99,9 @@ class FscDeviceModel : LifecycleViewModel() {
                     } else {
                         toast(_string(R.string.bluetooth_ft_scan_connected))
                     }
+
+                    //
+                    UMEvent.CONNECT_DEVICE.umengEventValue()
                 }
             }
         }

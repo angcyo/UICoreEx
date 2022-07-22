@@ -1,0 +1,10 @@
+apply from: allGradle.libBase
+apply from: allGradle.urlFile
+
+dependencies {
+    implementation project(allModule.library)
+
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-abtest-v1.0.0.aar', 'umeng-abtest-v1.0.0.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-apm-armeabi-v1.4.2.aar', 'umeng-apm-armeabi-v1.4.2.aar')
+    api urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-asms-armeabi-v1.4.1.aar', 'umeng-asms-armeabi-v1.4.1.aar')
+}
