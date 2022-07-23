@@ -553,7 +553,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     itemClick = {
                         if (!checkItemThrowable()) {
                             //next
-                            renderer?.getRendererItem()?.itemName = dataInfo.name
+                            renderer?.getRendererItem()?.itemLayerName = dataInfo.name
                             showHandleEngraveItem(engraveReadyDataInfo!!)
                         }
                     }

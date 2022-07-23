@@ -18,13 +18,13 @@ class ShapeItem(val canvasView: CanvasView) : CanvasControlItem() {
         itemClick = {
             if (shapePath == null) {
                 _drawable(itemIco)?.let {
-                    canvasView.addDrawableRenderer(it)
+                    canvasView.canvasDelegate.addDrawableRenderer(it)
                 }
             } else {
                 shapePath?.let {
                     //canvasView.addShapeRenderer(it)
                     canvasView.addPictureShapeRender(it).apply {
-                        itemName = itemText
+                        itemLayerName = itemText
                     }
                 }
             }

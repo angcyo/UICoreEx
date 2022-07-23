@@ -59,7 +59,7 @@ object EngraveHelper {
         dataInfo.index = item.engraveIndex ?: generateEngraveIndex()
         item.engraveIndex = dataInfo.index
 
-        dataInfo.name = item.itemName?.toString()
+        dataInfo.name = item.itemLayerName?.toString()
         result.rendererItemUuid = item.uuid
 
         val gCodeText = renderer.getGCodeText()

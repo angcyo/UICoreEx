@@ -33,9 +33,9 @@ class CanvasLayerItem : DslAdapterItem() {
 
     val itemLayerName: CharSequence? get() = itemRenderer?.getName()
 
-    val itemItemDrawable: Drawable? get() = itemRenderer?.getRendererItem()?.itemDrawable
+    val itemItemDrawable: Drawable? get() = itemRenderer?.getRendererItem()?.itemLayerDrawable
 
-    val itemItemName: CharSequence? get() = itemRenderer?.getRendererItem()?.itemName
+    val itemItemName: CharSequence? get() = itemRenderer?.getRendererItem()?.itemLayerName
 
     //endregion ---计算属性---
 

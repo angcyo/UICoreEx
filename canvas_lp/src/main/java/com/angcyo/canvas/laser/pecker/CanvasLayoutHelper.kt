@@ -20,12 +20,10 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.PictureBitmapItem
-import com.angcyo.canvas.items.PictureShapeItem
-import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.*
 import com.angcyo.canvas.items.renderer.*
-import com.angcyo.canvas.items.setHoldData
 import com.angcyo.canvas.laser.pecker.dslitem.*
+import com.angcyo.canvas.laser.pecker.dslitem.ShapeItem
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.ShapesHelper
 import com.angcyo.canvas.utils.addDrawableRenderer
@@ -606,6 +604,13 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             renderBitmapControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is SelectGroupRenderer) {
             renderGroupControlLayout(vh, canvasView, itemRenderer)
+        } else if (itemRenderer is DrawableItemRenderer) {
+            val itemDrawable = (itemRenderer.getRendererItem() as? DrawableItem)?.drawable
+            if (itemDrawable is SharpDrawable) {
+                renderSVGControlLayout(vh, canvasView, itemRenderer)
+            } else {
+                result = false
+            }
         } else {
             //vh.showControlLayout(false)
             result = false
@@ -976,6 +981,41 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     if (itemRenderer is PictureItemRenderer) {
                         itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
                     }
+                }
+            }
+        }
+    }
+
+    /**SVG属性控制item*/
+    fun renderSVGControlLayout(
+        vh: DslViewHolder,
+        canvasView: CanvasView,
+        itemRenderer: DrawableItemRenderer<*>
+    ) {
+        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
+            hookUpdateDepend()
+            CanvasControlItem()() {
+                itemIco = R.drawable.canvas_style_stroke_ico
+                itemText = _string(R.string.canvas_stroke)
+                itemTintColor = false
+                itemClick = {
+                    itemRenderer.updatePaintStyle(Paint.Style.STROKE)
+                }
+            }
+            CanvasControlItem()() {
+                itemIco = R.drawable.canvas_style_fill_ico
+                itemText = _string(R.string.canvas_fill)
+                itemTintColor = false
+                itemClick = {
+                    itemRenderer.updatePaintStyle(Paint.Style.FILL)
+                }
+            }
+            CanvasControlItem()() {
+                itemIco = R.drawable.canvas_style_fill_ico
+                itemText = _string(R.string.canvas_fill_stroke)
+                itemTintColor = false
+                itemClick = {
+                    itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
                 }
             }
         }
