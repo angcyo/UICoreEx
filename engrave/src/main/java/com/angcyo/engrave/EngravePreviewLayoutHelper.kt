@@ -216,8 +216,11 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     override fun onIViewRemove() {
         super.onIViewRemove()
         loopCheckDeviceState = false
-        ExitCmd().enqueue()
-        queryDeviceStateCmd()
+        if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
+            //关闭界面时, 如果在预览状态, 则退出预览
+            ExitCmd().enqueue()
+            queryDeviceStateCmd()
+        }
     }
 
     //region ------command------
