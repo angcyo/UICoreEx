@@ -29,6 +29,9 @@ data class EngraveOptionInfo(
     var type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE,
     /**雕刻物体直径, 这里用像素作为单位
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
+     *
+     * [com.angcyo.engrave.data.EngraveDataInfo.width]
+     * [com.angcyo.engrave.data.EngraveDataInfo.height]
      * */
     var diameterPixel: Float = 0f,
     /* 在[com.angcyo.engrave.data.EngraveDataInfo.px]中设置

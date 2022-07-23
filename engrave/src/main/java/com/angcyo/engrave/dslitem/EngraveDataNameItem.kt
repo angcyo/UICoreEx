@@ -1,7 +1,7 @@
 package com.angcyo.engrave.dslitem
 
 import android.graphics.Color
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveReadyDataInfo
@@ -33,7 +33,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
         editItemConfig.itemTextChangeShakeDelay = 0//去掉抖动, 实时回调
 
         configEditTextStyle {
-            editMaxInputLength = DataCommand.DEFAULT_NAME_BYTE_COUNT
+            editMaxInputLength = DataCmd.DEFAULT_NAME_BYTE_COUNT
         }
     }
 
@@ -61,7 +61,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
         itemHolder.tv(R.id.lib_bytes_view)?.text = span {
             val bytes = text.toString().byteSize()
             append("$bytes") {
-                if (bytes > DataCommand.DEFAULT_NAME_BYTE_COUNT) {
+                if (bytes > DataCmd.DEFAULT_NAME_BYTE_COUNT) {
                     itemThrowable = IllegalArgumentException("Text out of limit!")
                     foregroundColor = Color.RED
                 } else {
@@ -69,7 +69,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
                     itemEngraveReadyDataInfo?.engraveData?.name = text.toString()
                 }
             }
-            append("/${DataCommand.DEFAULT_NAME_BYTE_COUNT} bytes")
+            append("/${DataCmd.DEFAULT_NAME_BYTE_COUNT} bytes")
         }
     }
 

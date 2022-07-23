@@ -2,10 +2,12 @@ package com.angcyo.engrave
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.LinePath
+import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.core.renderer.SelectGroupGCodeItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.getHoldData
@@ -126,7 +128,7 @@ object EngraveHelper {
                 renderer.getBounds(),
                 renderer.rotate
             )
-            _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+            _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile, renderer.getRotateBounds())
             return engraveReadyDataInfo
         }
 
@@ -139,7 +141,7 @@ object EngraveHelper {
                 renderer.getBounds(),
                 renderer.rotate
             )
-            _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+            _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile, renderer.getRotateBounds())
             return engraveReadyDataInfo
         }
 
@@ -156,7 +158,11 @@ object EngraveHelper {
                     gCodeString,
                     renderer.getRotateBounds()
                 )
-                _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+                _handleGCodeEngraveDataInfo(
+                    engraveReadyDataInfo,
+                    gCodeFile,
+                    renderer.getRotateBounds()
+                )
                 return engraveReadyDataInfo
             }
         }
@@ -174,7 +180,11 @@ object EngraveHelper {
                     renderer.getRotateBounds(),
                     renderer.rotate
                 )
-                _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+                _handleGCodeEngraveDataInfo(
+                    engraveReadyDataInfo,
+                    gCodeFile,
+                    renderer.getRotateBounds()
+                )
                 return engraveReadyDataInfo
             }
 
@@ -285,7 +295,16 @@ object EngraveHelper {
         )
     }
 
-    fun _handleGCodeEngraveDataInfo(engraveReadyDataInfo: EngraveReadyDataInfo, gCodeFile: File) {
+    /**
+     * [engraveReadyDataInfo] 需要赋值的数据对象
+     * [gCodeFile] gcode数据文件对象
+     * [rotateBounds] itemRenderer旋转后的矩形坐标, px坐标, 内部自行转换成mm
+     * */
+    fun _handleGCodeEngraveDataInfo(
+        engraveReadyDataInfo: EngraveReadyDataInfo,
+        gCodeFile: File,
+        rotateBounds: RectF
+    ) {
         val pathGCodeText = gCodeFile.readText()
         val gCodeLines = gCodeFile.lines()
         gCodeFile.deleteSafe()
@@ -293,22 +312,31 @@ object EngraveHelper {
         if (!pathGCodeText.isNullOrEmpty()) {
             //GCode数据
 
-            engraveReadyDataInfo.engraveData?.dataType = EngraveDataInfo.TYPE_GCODE
-            engraveReadyDataInfo.engraveData?.lines = gCodeLines
+            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
             val data = pathGCodeText.toByteArray()
-            engraveReadyDataInfo.engraveData?.data = data
+            engraveReadyDataInfo.engraveData?.apply {
+                dataType = EngraveDataInfo.TYPE_GCODE
+                lines = gCodeLines
+                this.data = data
+
+                val mmValueUnit = MmValueUnit()
+                x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 100).toInt()
+                y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 100).toInt()
+                width = (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 100).toInt()
+                height = (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 100).toInt()
+                px = LaserPeckerHelper.DEFAULT_PX
+
+                //val gCodeBound = gCodeDrawable?.gCodeBound
+                //width = gCodeBound?.width()?.toInt() ?: 0
+                //height = gCodeBound?.height()?.toInt() ?: 0
+            }
 
             //保存一份byte数据
             engraveReadyDataInfo.dataPath =
                 saveEngraveData(engraveReadyDataInfo.engraveData?.index, data)//数据路径
 
             saveEngraveData(engraveReadyDataInfo.engraveData?.index, pathGCodeText, "gcode")
-            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
             val bitmap = gCodeDrawable?.toBitmap()
-            engraveReadyDataInfo.engraveData?.width =
-                gCodeDrawable?.gCodeBound?.width()?.toInt() ?: 0
-            engraveReadyDataInfo.engraveData?.height =
-                gCodeDrawable?.gCodeBound?.height()?.toInt() ?: 0
             engraveReadyDataInfo.optionBitmap = bitmap
             engraveReadyDataInfo.previewDataPath =
                 saveEngraveData("${engraveReadyDataInfo.engraveData?.index}.p", bitmap, "png")

@@ -16,14 +16,29 @@ data class EngraveDataInfo(
     var dataType: Int = TYPE_BITMAP,
     //数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库
     var data: ByteArray? = null,
-    //图片数据相关属性, px修正过后的
+    //图片/GCode数据相关属性, px修正过后的
+
+    /**
+     * 图片的宽高, 需要使用px分辨率进行调整修正
+     * GCode的宽高, 是mm*100后的值
+     * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
+     * */
     var width: Int = 0,
     var height: Int = 0,
+
+    /**
+     * 图片的xy, 需要使用px分辨率进行调整修正
+     * GCode的xy, 是mm*100后的值
+     * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
+     * */
     var x: Int = 0,
     var y: Int = 0,
+
     var px: Byte = LaserPeckerHelper.DEFAULT_PX,
     /**雕刻数据的索引, 32位, 4个字节
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCommand]*/
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd]*/
     var index: Int? = null, //(System.currentTimeMillis() / 1000).toInt()
     /**雕刻显示的文件名, 36个字节*/
     var name: String? = null,
@@ -57,10 +72,12 @@ data class EngraveDataInfo(
     /**更新数据到[EngraveHistoryEntity]*/
     fun updateToEntity(entity: EngraveHistoryEntity) {
         entity.dataType = dataType
+
         entity.width = width
         entity.height = height
         entity.x = x
         entity.y = y
+
         entity.px = px
 
         entity.name = name
@@ -71,10 +88,12 @@ data class EngraveDataInfo(
     /**更新数据从[EngraveHistoryEntity]*/
     fun updateFromEntity(entity: EngraveHistoryEntity): EngraveDataInfo {
         dataType = entity.dataType
+
         width = entity.width
         height = entity.height
         x = entity.x
         y = entity.y
+
         px = entity.px
 
         name = entity.name

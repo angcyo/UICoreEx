@@ -8,7 +8,7 @@ import com.angcyo.library.ex.trimAndPad
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
-data class DataCommand(
+data class DataCmd(
     /**
      * 64位的文件数据头部信息
      * */
@@ -53,19 +53,19 @@ data class DataCommand(
             minY: Int = 0,
             px: Byte = DEFAULT_PX,
             name: String?,
-        ): DataCommand {
+        ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x10时图片数据
                 write(0x10)
 
-                //图片的宽高8位
+                //图片的宽,2字节
                 write(bitmapWidth and 0xff00 shr 8 and 0xff) //高8位
                 //图片的宽低8位
                 write(bitmapWidth and 0xff) //低8位
 
-                //图片的高高8位
+                //图片的高,2字节
                 write(bitmapHeight and 0xff00 shr 8 and 0xff) //高8位
                 //图片的高低8位
                 write(bitmapHeight and 0xff) //低8位
@@ -100,28 +100,57 @@ data class DataCommand(
             val data = byteWriter {
                 write(bitmapData)
             }
-            return DataCommand(head, data, logBuilder.toString())
+            return DataCmd(head, data, logBuilder.toString())
         }
 
         /**GCode数据
-         * [lines] GCode数据行数*/
+         * [lines] GCode数据行数
+         * [x] GCode起始坐标, 相对于坐标原点
+         * [y] GCode起始坐标, 相对于坐标原点
+         * [width] GCode的宽度2字节
+         * [height] GCode的高度2字节
+         * */
         fun gcodeData(
             index: Int,
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
             name: String?,
             lines: Int,
             gcodeData: ByteArray?,
-        ): DataCommand {
+        ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x20时为GCODE数据
                 write(0x20)
-                //GCode行数
-                write(lines, 4)
-                /*//占位
-                writeSpace(4)*/
+
+                //宽,2字节
+                write(width and 0xff00 shr 8 and 0xff) //高8位
+                //图片的宽低8位
+                write(width and 0xff) //低8位
+
+                //高,2字节
+                write(height and 0xff00 shr 8 and 0xff) //高8位
+                //图片的高低8位
+                write(height and 0xff) //低8位
+
                 //数据索引，占用4个字节
                 write(index, 4)
+
+                //GCode行数
+                write(lines, 4)
+
+                //x,2字节
+                write(x and 0xff00 shr 8 and 0xff) //高8位
+                //图片的宽低8位
+                write(x and 0xff) //低8位
+
+                //y,2字节
+                write(y and 0xff00 shr 8 and 0xff) //高8位
+                //图片的高低8位
+                write(y and 0xff) //低8位
 
                 //塞满20个
                 padLength(20)
@@ -139,22 +168,26 @@ data class DataCommand(
                 logBuilder.append(" index:$index")
                 logBuilder.append(" lines:$lines")
                 logBuilder.append(" name:$name")
+                logBuilder.append(" w:$width")
+                logBuilder.append(" h:$height")
+                logBuilder.append(" x:$x")
+                logBuilder.append(" y:$y")
             }
             //数据
             val data = byteWriter {
                 write(gcodeData)
             }
-            return DataCommand(head, data, logBuilder.toString())
+            return DataCmd(head, data, logBuilder.toString())
         }
 
         /**纯数据*/
-        fun data(data: ByteArray): DataCommand {
+        fun data(data: ByteArray): DataCmd {
             //数据头
             /*val head = byteWriter {
                 //垫满
                 padLength(64) //需要64个字节
             }*/
-            return DataCommand(byteArrayOf(), data)
+            return DataCmd(byteArrayOf(), data)
         }
     }
 
@@ -181,7 +214,7 @@ data class DataCommand(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as DataCommand
+        other as DataCmd
 
         if (!head.contentEquals(other.head)) return false
         if (!data.contentEquals(other.data)) return false
@@ -199,6 +232,6 @@ data class DataCommand(
 /**将字符串剔除到36个字节*/
 fun String.trimEngraveName(): String {
     return toByteArray(Charsets.UTF_8)
-        .trimAndPad(DataCommand.DEFAULT_NAME_BYTE_COUNT, false)
+        .trimAndPad(DataCmd.DEFAULT_NAME_BYTE_COUNT, false)
         .toString(Charsets.UTF_8)
 }

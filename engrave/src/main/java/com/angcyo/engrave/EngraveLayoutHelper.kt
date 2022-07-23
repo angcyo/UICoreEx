@@ -338,11 +338,11 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     //成功进入大数据模式
 
                     //数据类型封装
-                    val dataCommand: DataCommand? = when (engraveData.dataType) {
+                    val dataCmd: DataCmd? = when (engraveData.dataType) {
                         EngraveDataInfo.TYPE_BITMAP -> {
                             engraveModel.engraveOptionInfoData.value?.x = engraveData.x
                             engraveModel.engraveOptionInfoData.value?.y = engraveData.y
-                            DataCommand.bitmapData(
+                            DataCmd.bitmapData(
                                 index,
                                 engraveData.data,
                                 engraveData.width,
@@ -353,8 +353,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                                 engraveData.name,
                             )
                         }
-                        EngraveDataInfo.TYPE_GCODE -> DataCommand.gcodeData(
+                        EngraveDataInfo.TYPE_GCODE -> DataCmd.gcodeData(
                             index,
+                            engraveData.x,
+                            engraveData.y,
+                            engraveData.width,
+                            engraveData.height,
                             engraveData.name,
                             engraveData.lines,
                             engraveData.data,
@@ -363,8 +367,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     }
 
                     //开始发送数据
-                    if (dataCommand != null) {
-                        dataCommand.enqueue(null, {
+                    if (dataCmd != null) {
+                        dataCmd.enqueue(null, {
                             //进度
                             updateEngraveProgress(
                                 it.sendPacketPercentage,
