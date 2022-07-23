@@ -180,7 +180,7 @@ object LaserPeckerHelper {
     /**
      * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
      * 解析产品信息*/
-    fun parseProductInfo(softwareVersion: Int): LaserPeckerProductInfo {
+    fun parseProductInfo(softwareVersion: Int, center: Boolean? = null): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
 
         //激光类型, 默认是蓝光
@@ -191,7 +191,7 @@ object LaserPeckerHelper {
 
         val unit = MmValueUnit()
         val bounds = RectF()
-        var isOriginCenter = false
+        var isOriginCenter = center ?: false
 
         val limitPath = Path()
         val zLimitPath = Path()
@@ -206,18 +206,18 @@ object LaserPeckerHelper {
             LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_, LIII -> {
                 wPhys = 100
                 hPhys = 100
-                isOriginCenter = false
+                isOriginCenter = center ?: false
             }
             LIII_MAX -> {
                 //160*160
                 wPhys = 160
                 hPhys = 160
-                isOriginCenter = false
+                isOriginCenter = center ?: false
             }
             CI -> {
                 wPhys = 300
                 hPhys = 400
-                isOriginCenter = false
+                isOriginCenter = center ?: false
             }
         }
 
@@ -300,6 +300,22 @@ object LaserPeckerHelper {
             zLimitPath,
             isOriginCenter
         )
+    }
+
+    /**切换设备中心点
+     * @return 切换是否成功*/
+    fun switchDeviceCenter(): Boolean {
+        val productInfoData = vmApp<LaserPeckerModel>().productInfoData
+        val productInfo = productInfoData.value ?: return false
+        val center = !productInfo.isOriginCenter
+        val newProductInfo = parseProductInfo(productInfo.softwareVersion, center)
+        //赋值
+        newProductInfo.deviceName = productInfo.deviceName
+        newProductInfo.deviceAddress = productInfo.deviceAddress
+        newProductInfo.softwareVersion = productInfo.softwareVersion
+        newProductInfo.hardwareVersion = productInfo.hardwareVersion
+        productInfoData.postValue(newProductInfo)
+        return true
     }
 
     /**中间一个正方形, 左右各一个半圆*/

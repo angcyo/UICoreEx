@@ -104,6 +104,13 @@
             android:text="清除历史" />
 
         <com.angcyo.widget.DslButton
+            android:id="@+id/device_origin_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="切换设备中心点" />
+
+        <com.angcyo.widget.DslButton
             android:id="@+id/setting_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
