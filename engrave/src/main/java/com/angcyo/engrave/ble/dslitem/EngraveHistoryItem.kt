@@ -10,6 +10,7 @@ import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.toModeString
 import com.angcyo.glide.loadImage
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.widget.DslViewHolder
@@ -46,6 +47,12 @@ class EngraveHistoryItem : DslAdapterItem() {
         itemHolder.img(R.id.lib_image_view)?.loadImage(engraveHistoryEntity?.previewDataPath)
 
         labelDesList.clear()
+
+        if (isDebug()) {
+            labelDesList.add(
+                LabelDesData("编号", "${engraveHistoryEntity?.index}")
+            )
+        }
 
         labelDesList.add(LabelDesData(_string(R.string.file_name), engraveHistoryEntity?.name.or()))
 

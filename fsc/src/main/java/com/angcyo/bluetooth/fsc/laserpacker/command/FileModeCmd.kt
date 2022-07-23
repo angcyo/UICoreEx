@@ -3,14 +3,18 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PACKET_FILE_HEAD_SIZE
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
+import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
 
 /**
  * 文件传输模式指令, 进入数据传输模式.
  *
  * 300ms 下位机自动退出大数据模式。
+ *
+ * [FileTransferParser]
  *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
@@ -20,9 +24,20 @@ data class FileModeCmd(
     val dataSize: Int,
     //State = 0x01时为传输文件，data为传输文件数据字节总数。
     //State = 0x02时为传输结束。当文件传输完成时下位自动回复指令。
+    //State = 0x04时为擦除所有文件。
+    //State = 0x06时为擦除单个文件, data为指定文件索引。
     val state: Byte = 0x1,
     val custom: Byte = 0 //自定义的数据
 ) : ICommand {
+
+    companion object {
+
+        /**删除所有历史文件*/
+        fun deleteAllHistory(): FileModeCmd = FileModeCmd(0, 0x04)
+
+        /**删除指定历史文件*/
+        fun deleteHistory(index: Int): FileModeCmd = FileModeCmd(index, 0x06)
+    }
 
     //功能码
     override fun commandFunc(): Byte = 0x05
@@ -42,7 +57,12 @@ data class FileModeCmd(
         val data = buildString {
             append(commandFunc().toHexString())
             append(state.toHexString())
-            append((dataSize + PACKET_FILE_HEAD_SIZE).toHexString(8))
+
+            when (state) {
+                0x01.toByte() -> append((dataSize + PACKET_FILE_HEAD_SIZE).toHexString(8))
+                0x06.toByte() -> append(dataSize.toByteArray(4).toHexString(false))
+                else -> append(dataSize.toHexString(8))
+            }
             append(custom.toHexString())
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
@@ -51,7 +71,14 @@ data class FileModeCmd(
     }
 
     override fun toCommandLogString(): String = buildString {
-        append(toHexCommandString().removeAll())
-        append(" 进入文件传输模式:数据大小:${dataSize}bytes state:$state")
+        when (state) {
+            0x01.toByte() -> {
+                append(toHexCommandString().removeAll())
+                append(" 进入文件传输模式:数据大小:${dataSize}bytes state:$state")
+            }
+            0x02.toByte() -> append(" 传输结束! $dataSize")
+            0x04.toByte() -> append(" 擦除所有文件!")
+            0x06.toByte() -> append(" 擦除文件:$dataSize")
+        }
     }
 }

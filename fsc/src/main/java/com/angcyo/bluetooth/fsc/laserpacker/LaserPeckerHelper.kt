@@ -183,15 +183,15 @@ object LaserPeckerHelper {
     fun parseProductInfo(softwareVersion: Int): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
 
-        //激光类型
-        var typeList: List<Byte> = listOf(LASER_TYPE_BLUE)
+        //激光类型, 默认是蓝光
+        var laserTypeList: List<Byte> = listOf(LASER_TYPE_BLUE)
 
         //所有支持的分辨率
         val pxList: MutableList<PxInfo> = mutableListOf()
 
         val unit = MmValueUnit()
         val bounds = RectF()
-        var isOriginCenter = true
+        var isOriginCenter = false
 
         val limitPath = Path()
         val zLimitPath = Path()
@@ -203,64 +203,69 @@ object LaserPeckerHelper {
         var hPhys = 0
 
         when (name) {
-            LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_ -> {
+            LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_, LIII -> {
                 wPhys = 100
                 hPhys = 100
-                val left = unit.convertValueToPixel(-wPhys / 2f)
-                val right = unit.convertValueToPixel(wPhys / 2f)
-                limitPath.apply {
-                    bounds.set(left, left, right, right)
-                    addRect(bounds, Path.Direction.CW)
-                }
-                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
-            }
-            LIII -> {
-                wPhys = 100
-                hPhys = 100
-                val left = unit.convertValueToPixel(-wPhys / 2f)
-                val right = unit.convertValueToPixel(wPhys / 2f)
-                limitPath.apply {
-                    bounds.set(left, left, right, right)
-
-                    val l = unit.convertValueToPixel(-50f)
-                    val t = unit.convertValueToPixel(-35f)
-                    //addOval(l, t, -l, -t, Path.Direction.CW)
-                    maxOvalPath(l, t, -l, -t, this)
-                }
-                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
-                typeList = listOf(LASER_TYPE_WHITE)
+                isOriginCenter = false
             }
             LIII_MAX -> {
                 //160*160
                 wPhys = 160
                 hPhys = 160
-                val left = unit.convertValueToPixel(-wPhys / 2f)
-                val right = unit.convertValueToPixel(wPhys / 2f)
-                limitPath.apply {
-                    bounds.set(left, left, right, right)
-
-                    val l = unit.convertValueToPixel(-80f)
-                    val t = unit.convertValueToPixel(-60f)
-                    //addOval(l, t, -l, -t, Path.Direction.CW)
-                    maxOvalPath(l, t, -l, -t, this)
-                }
-                zLimitPath.addRect(left, left, right, zMax, Path.Direction.CW)
-                typeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
+                isOriginCenter = false
             }
             CI -> {
                 wPhys = 300
                 hPhys = 400
                 isOriginCenter = false
-                val width = unit.convertValueToPixel(wPhys.toFloat())
-                val height = unit.convertValueToPixel(hPhys.toFloat())
-                limitPath.apply {
-                    bounds.set(0f, 0f, width, height)
-                    addRect(bounds, Path.Direction.CW)
-                }
-                zLimitPath.addRect(0f, 0f, width, zMax, Path.Direction.CW)
             }
         }
 
+        //bounds
+        val left = unit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f)
+        val top = unit.convertValueToPixel(if (isOriginCenter) -hPhys / 2f else 0f)
+        val right =
+            unit.convertValueToPixel(if (isOriginCenter) wPhys / 2f else wPhys.toFloat())
+        val bottom =
+            unit.convertValueToPixel(if (isOriginCenter) hPhys / 2f else hPhys.toFloat())
+        bounds.set(left, top, right, bottom)
+        limitPath.addRect(bounds, Path.Direction.CW)
+        zLimitPath.addRect(left, top, right, zMax, Path.Direction.CW)
+
+        //最佳预览范围设置
+        when (name) {
+            LIII -> {
+                //最佳打印范围是椭圆
+                limitPath.apply {
+                    rewind()
+                    val rW = 100f
+                    val rH = 70f
+                    val l = unit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
+                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else 0f)
+                    val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
+                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH)
+                    maxOvalPath(l, t, r, b, this)
+                }
+                laserTypeList = listOf(LASER_TYPE_WHITE)
+            }
+            LIII_MAX -> {
+                //最佳打印范围是椭圆
+                //160*160
+                limitPath.apply {
+                    rewind()
+                    val rW = 160f
+                    val rH = 120f
+                    val l = unit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
+                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else 0f)
+                    val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
+                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH)
+                    maxOvalPath(l, t, r, b, this)
+                }
+                laserTypeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
+            }
+        }
+
+        //像素分辨率支持
         pxList.add(PxInfo(PX_1K, wPhys * 10, hPhys * 10, PX_1K.toPxDes()))
 
         when (name) {
@@ -282,10 +287,11 @@ object LaserPeckerHelper {
             }
         }
 
+        //result
         return LaserPeckerProductInfo(
             softwareVersion,
             name,
-            typeList,
+            laserTypeList,
             pxList,
             wPhys,
             hPhys,

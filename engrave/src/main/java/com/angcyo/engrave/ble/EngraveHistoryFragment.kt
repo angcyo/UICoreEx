@@ -5,7 +5,11 @@ import android.graphics.RectF
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
@@ -17,6 +21,7 @@ import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
+import com.angcyo.library.toast
 import com.angcyo.objectbox.deleteEntity
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
@@ -107,11 +112,19 @@ class EngraveHistoryFragment : BaseDslFragment() {
                         addDialogItem {
                             itemText = "Delete History!"
                             itemClick = {
-                                _adapter.render {
-                                    item.removeAdapterItem()
+                                FileModeCmd.deleteHistory(bean.index ?: 0).enqueue { bean, error ->
+                                    if (bean?.parse<FileTransferParser>()
+                                            ?.isFileDeleteSuccess() == true
+                                    ) {
+                                        toast("删除成功")
+                                        _adapter.render {
+                                            item.removeAdapterItem()
+                                        }
+                                        //删除
+                                        bean.deleteEntity(LPBox.PACKAGE_NAME)
+                                    }
+                                    error?.let { toast(it.message) }
                                 }
-                                //删除
-                                bean.deleteEntity(LPBox.PACKAGE_NAME)
                             }
                         }
                         addDialogItem {

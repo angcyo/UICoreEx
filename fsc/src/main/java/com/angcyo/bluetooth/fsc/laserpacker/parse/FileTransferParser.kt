@@ -40,4 +40,10 @@ data class FileTransferParser(
     fun isFileTransferSuccess(): Boolean {
         return func == 0x05.toByte() && state == 0x02.toByte() && rev == 0x01.toByte()
     }
+
+    /**文件删除是否成功完成*/
+    fun isFileDeleteSuccess(): Boolean {
+        return func == 0x05.toByte() /*&& state == 0x02.toByte()*/ && rev == 0x01.toByte()
+    }
+
 }
