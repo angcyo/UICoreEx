@@ -20,6 +20,7 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.svg.StylePath
 import java.io.File
 
 /**
@@ -133,7 +134,7 @@ object EngraveHelper {
         val svgPathList = renderer.getPathList()
         if (!svgPathList.isNullOrEmpty()) {
             //path路径
-            val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
+            val gCodeFile = CanvasDataHandleOperate.pathToGCode(
                 svgPathList,
                 renderer.getBounds(),
                 renderer.rotate
@@ -162,41 +163,43 @@ object EngraveHelper {
 
         //其他
         if (item is PictureShapeItem) {
-            if (item.paint.style == Paint.Style.STROKE && item.shapePath !is LinePath) {
-                //描边时, 才处理成GCode. 并且不是线段
-                val path = item.shapePath
-                if (path != null) {
-                    val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
-                        path,
-                        renderer.getRotateBounds(),
-                        renderer.rotate
-                    )
-                    _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
-                    return engraveReadyDataInfo
-                }
-            } else {
-                //填充情况下, 使用bitmap转gcode
-                val bitmap = renderer.preview()?.toBitmap() ?: return engraveReadyDataInfo
-                //OpenCV.bitmapToGCode(app(), bitmap)
-                var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(bitmap)
-                val rotate = 0f//renderer.rotate
-                val gCodeString = gCodeFile.readText()
-                gCodeFile.deleteSafe()
-                if (!gCodeString.isNullOrEmpty()) {
-                    //GCode数据
-                    gCodeFile = CanvasDataHandleOperate.gCodeTranslation(
-                        gCodeString,
-                        renderer.getRotateBounds()
-                    )
-                    /*CanvasDataHandleHelper.gCodeAdjust(
-                        gCodeString,
-                        renderer.getBounds(),
-                        rotate
-                    )*/ //这里只需要平移GCode即可
-                    _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
-                    return engraveReadyDataInfo
-                }
+            val stylePath = StylePath()
+            stylePath.style = item.paint.style
+
+            val path = item.shapePath
+            if (path != null) {
+                stylePath.set(path)
+                val gCodeFile = CanvasDataHandleOperate.pathToGCode(
+                    stylePath,
+                    renderer.getRotateBounds(),
+                    renderer.rotate
+                )
+                _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+                return engraveReadyDataInfo
             }
+
+            /*2022-7-23 已经实现了 Path 填充转GCode了
+            //使用bitmap转gcode
+            val bitmap = renderer.preview()?.toBitmap() ?: return engraveReadyDataInfo
+            //OpenCV.bitmapToGCode(app(), bitmap)
+            var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(bitmap)
+            val rotate = 0f//renderer.rotate
+            val gCodeString = gCodeFile.readText()
+            gCodeFile.deleteSafe()
+            if (!gCodeString.isNullOrEmpty()) {
+                //GCode数据
+                gCodeFile = CanvasDataHandleOperate.gCodeTranslation(
+                    gCodeString,
+                    renderer.getRotateBounds()
+                )
+                *//*CanvasDataHandleHelper.gCodeAdjust(
+                    gCodeString,
+                    renderer.getBounds(),
+                    rotate
+                )*//* //这里只需要平移GCode即可
+                _handleGCodeEngraveDataInfo(engraveReadyDataInfo, gCodeFile)
+                return engraveReadyDataInfo
+            }*/
         } else {
             //其他方式, 使用图片雕刻
             val bounds = renderer.getRotateBounds()

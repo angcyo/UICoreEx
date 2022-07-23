@@ -240,7 +240,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                 if (item is PictureShapeItem) {
                                     fragment.loadingAsync({
                                         item.shapePath?.let { path ->
-                                            CanvasDataHandleOperate.pathStrokeToGCode(
+                                            CanvasDataHandleOperate.pathToGCode(
                                                 path,
                                                 renderer.getRotateBounds(),
                                                 renderer.rotate
@@ -961,6 +961,16 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             CanvasControlItem()() {
                 itemIco = R.drawable.canvas_style_fill_ico
                 itemText = _string(R.string.canvas_fill)
+                itemTintColor = false
+                itemClick = {
+                    if (itemRenderer is PictureItemRenderer) {
+                        itemRenderer.updatePaintStyle(Paint.Style.FILL)
+                    }
+                }
+            }
+            CanvasControlItem()() {
+                itemIco = R.drawable.canvas_style_fill_ico
+                itemText = _string(R.string.canvas_fill_stroke)
                 itemTintColor = false
                 itemClick = {
                     if (itemRenderer is PictureItemRenderer) {
