@@ -41,6 +41,9 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
     @CanvasEntryPoint
     fun bindCanvasView(viewHolder: DslViewHolder, rootLayout: ViewGroup, canvasView: CanvasView?) {
 
+        //状态管理
+        stateLayoutManager.group = viewHolder.group(R.id.canvas_device_state_wrap_layout)
+
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
             _showProductLimit(canvasView, productInfo)
@@ -96,8 +99,14 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                     //空闲
                     dangerWarningView?.removeFromParent()
                 }
+
+                //有设备连接
+                stateLayoutManager.removeState(connectStateInfo)
             }.elseNull {
                 dangerWarningView?.removeFromParent()
+
+                //无设备连接
+                stateLayoutManager.updateState(connectStateInfo)
             }
         }
 
@@ -128,9 +137,6 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                 stateLayoutManager.removeState(previewOverflowStateInfo)
             }
         }
-
-        //状态管理
-        stateLayoutManager.group = viewHolder.group(R.id.canvas_device_state_wrap_layout)
     }
 
     //region ---内部操作---
@@ -193,6 +199,9 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
 
     //预览超范围状态信息
     val previewOverflowStateInfo = StateLayoutInfo(_string(R.string.preview_out_of_range))
+
+    //设备连接状态
+    val connectStateInfo = StateLayoutInfo(_string(R.string.bluetooth_ft_mtu_no_device_connected))
 
     //endregion ---内部操作---
 
