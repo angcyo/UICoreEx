@@ -974,9 +974,9 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 }
             }
             CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_fill_ico
+                itemIco = R.drawable.canvas_style_stroke_fill_ico
                 itemText = _string(R.string.canvas_fill_stroke)
-                itemTintColor = false
+                itemTintColor = true
                 itemClick = {
                     if (itemRenderer is PictureItemRenderer) {
                         itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
@@ -1011,9 +1011,9 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 }
             }
             CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_fill_ico
+                itemIco = R.drawable.canvas_style_stroke_fill_ico
                 itemText = _string(R.string.canvas_fill_stroke)
-                itemTintColor = false
+                itemTintColor = true
                 itemClick = {
                     itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
                 }
