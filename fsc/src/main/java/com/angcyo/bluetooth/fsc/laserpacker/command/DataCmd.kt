@@ -26,8 +26,11 @@ data class DataCmd(
 
     companion object {
 
+        /**名字前面的字节数*/
+        const val DEFAULT_NAME_BYTE_START = 34
+
         /**雕刻文件名称占用字节数量*/
-        const val DEFAULT_NAME_BYTE_COUNT = 36
+        const val DEFAULT_NAME_BYTE_COUNT = 28
 
         /**
          * [index] 雕刻文件索引, 下位机用来查找并打印. 32位 最大值[4294967295]
@@ -77,8 +80,8 @@ data class DataCmd(
                 write(minX, 2)
                 write(minY, 2)
 
-                //塞满20个
-                padLength(20)
+                //塞满34个
+                padLength(DEFAULT_NAME_BYTE_START)
                 //第21个字节开始 共36个字节的文件名
                 val nameBytes =
                     (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
@@ -152,8 +155,8 @@ data class DataCmd(
                 //图片的高低8位
                 write(y and 0xff) //低8位
 
-                //塞满20个
-                padLength(20)
+                //塞满34个
+                padLength(DEFAULT_NAME_BYTE_START)
                 //第21个字节开始 共36个字节的文件名
                 val nameBytes =
                     (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
