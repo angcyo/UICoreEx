@@ -58,9 +58,8 @@ data class PxInfo(
         if (productInfo == null) {
             return x
         }
-        val scale = x * 1f / (productInfo.bounds.width() / 2) //x方向的实际缩放比例
-        val centerX = pxWidth / 2
-        return (centerX + centerX * scale).toInt()
+        val scale = (x - productInfo.bounds.left) * 1f / productInfo.bounds.width() //x方向的实际缩放比例
+        return (pxWidth * scale).toInt()
     }
 
     /**Y坐标转换*/
@@ -71,9 +70,8 @@ data class PxInfo(
         if (productInfo == null) {
             return y
         }
-        val scale = y * 1f / (productInfo.bounds.height() / 2) //y方向的实际缩放比例
-        val centerY = pxHeight / 2
-        return (centerY + centerY * scale).toInt()
+        val scale = (y - productInfo.bounds.top) * 1f / productInfo.bounds.height() //y方向的实际缩放比例
+        return (pxHeight * scale).toInt()
     }
 
     override fun toText(): CharSequence? = des
