@@ -83,6 +83,21 @@ class UM {
         fun pageEnd(name: String) {
             MobclickAgent.onPageEnd(name)
         }
+
+        /**登录用户id*/
+        fun signInUserId(userId: String?) {
+            //账号来源, 账号id
+            if (userId.isNullOrEmpty()) {
+                signOffUserId()
+            } else {
+                MobclickAgent.onProfileSignIn(userId)
+            }
+        }
+
+        /**登出用户id*/
+        fun signOffUserId() {
+            MobclickAgent.onProfileSignOff()
+        }
     }
 
     /**请主动赋值*/
