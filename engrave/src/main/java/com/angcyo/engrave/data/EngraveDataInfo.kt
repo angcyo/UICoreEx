@@ -20,7 +20,7 @@ data class EngraveDataInfo(
 
     /**
      * 图片的宽高, 需要使用px分辨率进行调整修正
-     * GCode的宽高, 是mm*100后的值
+     * GCode的宽高, 是mm*10后的值
      * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
      * */
@@ -29,7 +29,7 @@ data class EngraveDataInfo(
 
     /**
      * 图片的xy, 需要使用px分辨率进行调整修正
-     * GCode的xy, 是mm*100后的值
+     * GCode的xy, 是mm*10后的值
      * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
      * */

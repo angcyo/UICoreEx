@@ -320,10 +320,10 @@ object EngraveHelper {
                 this.data = data
 
                 val mmValueUnit = MmValueUnit()
-                x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 100).toInt()
-                y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 100).toInt()
-                width = (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 100).toInt()
-                height = (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 100).toInt()
+                x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
+                y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
+                width = (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).toInt()
+                height = (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).toInt()
                 px = LaserPeckerHelper.DEFAULT_PX
 
                 //val gCodeBound = gCodeDrawable?.gCodeBound
