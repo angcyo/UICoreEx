@@ -227,7 +227,7 @@ data class EngravePreviewCmd(
             }
         }
 
-        /**显示中心
+        /**显示中心, 中心点预览
          * [pwrProgress] [0~1f] 预览光功率
          * */
         fun previewShowCenter(pwrProgress: Float): EngravePreviewCmd {
