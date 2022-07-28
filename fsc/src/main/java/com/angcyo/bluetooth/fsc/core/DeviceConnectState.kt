@@ -18,7 +18,9 @@ data class DeviceConnectState(
     var exception: Exception? = null,
     var isActiveDisConnected: Boolean = false, //主动断开连接
     var isAutoConnect: Boolean = false, //自动连接, 用来弹出连接成功后的界面
-    var disconnectTime: Long = 0L, //断开请求的开始时间
+    var connectTime: Long = 0L, //触发连接的时间, 13位时间戳, 毫秒
+    var connectedTime: Long = 0L, //连接上的时间, 13位时间戳, 毫秒
+    var disconnectTime: Long = 0L, //断开请求的开始时间, 13位时间戳, 毫秒
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0

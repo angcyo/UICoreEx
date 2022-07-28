@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.nowTime
 
 /**
  * 蓝牙设备状态数据结构
@@ -73,7 +74,8 @@ data class QueryStateParser(
     //3 刀切割模式
     //4 彩绘模式
     //5 CNC模式
-    var moduleState: Int = -1
+    var moduleState: Int = -1,
+    var stateTime: Long = nowTime() //app数据时间
 ) : IPacketParser<QueryStateParser> {
 
     companion object {

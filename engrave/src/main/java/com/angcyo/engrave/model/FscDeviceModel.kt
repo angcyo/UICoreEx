@@ -60,7 +60,13 @@ class FscDeviceModel : LifecycleViewModel() {
         //蓝牙状态监听
         bleApiModel.connectStateData.observe(this, allowBackward = false) {
             it?.let { deviceConnectState ->
-                if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
+
+                if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_START) {
+                    //
+                    UMEvent.CONNECT_DEVICE.umengEventValue {
+                        put(UMEvent.KEY_START_TIME, nowTime().toString())
+                    }
+                } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
                     val lastState = bleApiModel.connectStateData.lastValue?.state
                     if (lastState == DeviceConnectState.CONNECT_STATE_SUCCESS ||
                         lastState == DeviceConnectState.CONNECT_STATE_DISCONNECT_START
@@ -101,7 +107,14 @@ class FscDeviceModel : LifecycleViewModel() {
                     }
 
                     //
-                    UMEvent.CONNECT_DEVICE.umengEventValue()
+                    UMEvent.CONNECT_DEVICE.umengEventValue {
+                        val nowTime = nowTime()
+                        put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+                        put(
+                            UMEvent.KEY_DURATION,
+                            (nowTime - deviceConnectState.connectTime).toString()
+                        )
+                    }
                 }
             }
         }

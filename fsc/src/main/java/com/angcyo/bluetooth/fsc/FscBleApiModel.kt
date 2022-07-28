@@ -563,6 +563,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             if (resetConnectState && cacheDevice == null) {
                 connectStateData.value = wrapStateDevice(device) {
                     this.state = CONNECT_STATE_SUCCESS
+                    this.connectedTime = nowTime()
                 }
                 //通知连接的蓝牙设备改变
                 _notifyConnectDeviceChanged()
@@ -777,6 +778,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
         connectStateData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
+            connectTime = nowTime()
+            connectedTime = 0L
+            disconnectTime = 0L
             this.isAutoConnect = isAutoConnect
         }
         fscApi.connect(device.address)
@@ -896,6 +900,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 this.state = CONNECT_STATE_SUCCESS
                 this.gatt = gatt
                 this.type = type
+                this.connectedTime = nowTime()
             })
             //通知连接的蓝牙设备改变
             _notifyConnectDeviceChanged()

@@ -6,8 +6,19 @@ package com.hingin.umeng
  */
 object UMEvent {
 
+    //region ---origin---
+
     /**连接设备事件*/
     const val CONNECT_DEVICE = "connect_device"
+
+    //事件开始的时间 13位时间戳,毫秒
+    const val KEY_START_TIME = "key_start_time"
+
+    //事件完成的时间 13位时间戳,毫秒
+    const val KEY_FINISH_TIME = "key_finish_time"
+
+    //事件持续的时长 毫秒差值
+    const val KEY_DURATION = "key_duration"
 
     /**创作事件*/
     const val CREATE = "create"
@@ -59,4 +70,38 @@ object UMEvent {
 
     /**创作图片-印章*/
     const val CANVAS_IMAGE_SEAL = "canvas_image_seal"
+
+    //endregion ---origin---
+
+    //region ---rn---
+
+    /**RN-发帖事件*/
+    const val RN_PUBLISH = "rn_publish"
+
+    /**RN-点赞事件*/
+    const val RN_LIKE = "rn_like"
+
+    /**RN-下载事件*/
+    const val RN_DOWNLOAD = "rn_download"
+
+    /**RN-评论事件*/
+    const val RN_COMMENT = "rn_comment"
+
+    /**RN-分享事件*/
+    const val RN_SHARE = "rn_share"
+
+    /**RN-帮助事件*/
+    const val RN_HELP = "rn_help"
+
+    /**RN-FAQ事件*/
+    const val RN_FAQ = "rn_faq"
+
+    /**RN-新手引导事件*/
+    const val RN_GUIDE = "rn_guide"
+
+    /**RN-新手教程事件*/
+    const val RN_COURSE = "rn_course"
+
+    //endregion ---rn---
+
 }

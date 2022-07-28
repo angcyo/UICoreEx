@@ -72,6 +72,19 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             val beforeState = laserPeckerModel.deviceStateData.beforeValue
             it?.let {
                 engraveProgressItem.itemEnableProgressFlowMode = it.isEngraving()
+
+                if (beforeState?.isModeEngrave() == true && (it.isEngraveStop() || it.isModeIdle())) {
+                    //雕刻结束
+                    UMEvent.ENGRAVE.umengEventValue {
+                        val nowTime = nowTime()
+                        put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+                        put(
+                            UMEvent.KEY_DURATION,
+                            (nowTime - beforeState.stateTime).toString()
+                        )
+                    }
+                }
+
                 if (it.isEngraving()) {
                     //雕刻中
                     val progress = clamp(it.rate, 0, 100)
@@ -656,7 +669,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 showEngravingItem()
                 laserPeckerModel.queryDeviceState()
 
-                UMEvent.ENGRAVE.umengEventValue()
+                UMEvent.ENGRAVE.umengEventValue {
+                    put(UMEvent.KEY_START_TIME, nowTime().toString())
+                }
             } else {
                 "雕刻失败:$error".writeErrorLog()
             }

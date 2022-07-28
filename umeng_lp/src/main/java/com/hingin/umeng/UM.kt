@@ -53,7 +53,7 @@ class UM {
          * MobclickAgent.onEventObject(this, "play_music", music);
          * ```
          * */
-        fun event(eventId: String, map: Map<String, String>, context: Context = app()) {
+        fun event(eventId: String, map: Map<String, Any>, context: Context = app()) {
             MobclickAgent.onEventObject(context, eventId, map)
         }
 
@@ -175,6 +175,15 @@ fun String.umengEventValue() {
     UM.event(this, 1)
 }
 
-fun String.umengEventObject(map: Map<String, String>) {
+fun String.umengEventValue(action: HashMap<String, String>.() -> Unit) {
+    UM.event(this, 1, HashMap<String, String>().apply(action))
+}
+
+fun String.umengEventObject(map: Map<String, Any>) {
     UM.event(this, map)
+}
+
+/**DSL*/
+fun String.umengEventObject(action: HashMap<String, Any>.() -> Unit) {
+    UM.event(this, HashMap<String, Any>().apply(action))
 }
