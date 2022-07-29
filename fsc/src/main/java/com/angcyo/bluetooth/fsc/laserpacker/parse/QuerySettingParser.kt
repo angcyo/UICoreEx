@@ -164,4 +164,11 @@ data class QuerySettingParser(
     fun safeCodeSetting() {
         state = 0x02
     }
+
+    /**清理设备标识*/
+    fun clearFlag() {
+        zFlag = 0
+        rFlag = 0
+        sFlag = 0
+    }
 }

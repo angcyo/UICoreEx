@@ -36,10 +36,14 @@ class DeviceSettingFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
+        renderData()
+    }
+
+    fun renderData() {
         val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
         settingParser?.functionSetting()
 
-        renderDslAdapter {
+        renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_act_model_warning_tone)
                 itemDes = _string(R.string.device_setting_act_des_sound)
@@ -90,8 +94,10 @@ class DeviceSettingFragment : BaseDslFragment() {
 
                 itemSwitchChecked = settingParser?.zFlag == 1
                 itemSwitchChangedAction = {
+                    settingParser?.clearFlag()
                     settingParser?.zFlag = if (it) 1 else 0
                     settingParser?.sendCommand()
+                    renderData()
                 }
             }
             DslSegmentTabItem()() {
@@ -119,6 +125,32 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.zDir = if (index == 2) 1 else 0
                         settingParser?.sendCommand()
                     }
+            }
+            DslPropertySwitchItem()() {
+                itemLabel = "旋转轴" //_string(R.string.device_setting_act_model_preview_g_code)
+                itemDes = "--"      //_string(R.string.device_setting_act_des_preview_g_code)
+                initItem()
+
+                itemSwitchChecked = settingParser?.rFlag == 1
+                itemSwitchChangedAction = {
+                    settingParser?.clearFlag()
+                    settingParser?.rFlag = if (it) 1 else 0
+                    settingParser?.sendCommand()
+                    renderData()
+                }
+            }
+            DslPropertySwitchItem()() {
+                itemLabel = "滑台" //_string(R.string.device_setting_act_model_preview_g_code)
+                itemDes = "--"      //_string(R.string.device_setting_act_des_preview_g_code)
+                initItem()
+
+                itemSwitchChecked = settingParser?.sFlag == 1
+                itemSwitchChangedAction = {
+                    settingParser?.clearFlag()
+                    settingParser?.sFlag = if (it) 1 else 0
+                    settingParser?.sendCommand()
+                    renderData()
+                }
             }
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_txt_3)
