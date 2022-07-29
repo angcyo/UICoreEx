@@ -56,7 +56,7 @@ data class QueryStateParser(
     //4时表示查询安全码与用户帐号
     var state: Int = 0,
     //当前正在打印的文件编号(文本编号对应本地存储的文件信息)
-    var name: Int = 0,
+    var index: Int = 0,
     //工作温度, 精度1度
     var temp: Int = 0,
     //发送指令时, 自定义的数据
@@ -126,7 +126,7 @@ data class QueryStateParser(
                 speed = readInt(1)
                 error = readInt(1)
                 state = readInt(1)
-                name = readInt(4)
+                index = readInt(4)
                 temp = readInt(1)
                 custom = readInt(1)
                 zConnect = readInt(1)

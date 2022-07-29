@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
+import com.angcyo.dsladapter.toEmpty
+import com.angcyo.dsladapter.toError
 import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.EngraveDataInfo
@@ -22,6 +26,7 @@ import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toast
 import com.angcyo.objectbox.deleteEntity
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -97,60 +102,93 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
     override fun onLoadData() {
         super.onLoadData()
+        if (isDebugType()) {
+            //loadEntityHistoryList()
+        }
+        loadDeviceHistoryList()
+    }
 
+    /**加载设备雕刻记录*/
+    fun loadDeviceHistoryList() {
+        QueryCmd.fileList.enqueue { bean, error ->
+            finishRefresh()
+            if (error == null) {
+                val nameList = bean?.parse<QueryEngraveFileParser>()?.nameList
+                if (nameList.isNullOrEmpty()) {
+                    _adapter.toEmpty()
+                } else {
+                    val allList = lpBoxOf(EngraveHistoryEntity::class).all
+                    val resultList = allList.filter { nameList.contains(it.index) }
+                    loadDataEnd(resultList)
+                }
+            } else {
+                _adapter.toError(error)
+            }
+        }
+    }
+
+    /**加载app历史记录*/
+    fun loadEntityHistoryList() {
         lpBoxOf(EngraveHistoryEntity::class) {
             val list = page(page) {
                 //降序排列
                 orderDesc(EngraveHistoryEntity_.entityId)
             }
-            loadDataEnd(EngraveHistoryItem::class.java, list) { bean ->
-                val item = this
-                engraveHistoryEntity = bean
+            loadDataEnd(list)
+        }
+    }
 
-                itemLongClick = {
-                    selectHistoryEntity(bean)
-                    fContext().itemsDialog {
-                        addDialogItem {
-                            itemText = "Delete History!"
-                            itemClick = {
-                                FileModeCmd.deleteHistory(bean.index ?: 0).enqueue { bean, error ->
-                                    if (bean?.parse<FileTransferParser>()
-                                            ?.isFileDeleteSuccess() == true
-                                    ) {
-                                        toast("删除成功")
-                                        _adapter.render {
-                                            item.removeAdapterItem()
-                                        }
-                                        //删除
-                                        bean.deleteEntity(LPBox.PACKAGE_NAME)
+    /**加载结束, 渲染界面*/
+    fun loadDataEnd(list: List<EngraveHistoryEntity>) {
+        loadDataEnd(EngraveHistoryItem::class.java, list) { bean ->
+            val item = this
+            engraveHistoryEntity = bean
+
+            itemLongClick = {
+                selectHistoryEntity(bean)
+                fContext().itemsDialog {
+                    addDialogItem {
+                        itemText = "删除历史"
+                        itemClick = {
+                            //删除机器记录
+                            FileModeCmd.deleteHistory(bean.index ?: 0).enqueue { bean, error ->
+                                if (bean?.parse<FileTransferParser>()
+                                        ?.isFileDeleteSuccess() == true
+                                ) {
+                                    toast("删除成功")
+
+                                    _adapter.render {
+                                        item.removeAdapterItem()
                                     }
-                                    error?.let { toast(it.message) }
+                                    //删除本地记录
+                                    engraveHistoryEntity?.deleteEntity(LPBox.PACKAGE_NAME)
                                 }
-                            }
-                        }
-                        addDialogItem {
-                            itemText = _string(R.string.v3_bmp_setting_preview)
-                            itemClick = {
-                                toPreview()
-                            }
-                        }
-                        addDialogItem {
-                            itemText = _string(R.string.print_v2_package_Laser_start)
-                            itemClick = {
-                                toEngrave()
+                                error?.let { toast(it.message) }
                             }
                         }
                     }
-                    true
+                    addDialogItem {
+                        itemText = _string(R.string.v3_bmp_setting_preview)
+                        itemClick = {
+                            toPreview()
+                        }
+                    }
+                    addDialogItem {
+                        itemText = _string(R.string.print_v2_package_Laser_start)
+                        itemClick = {
+                            toEngrave()
+                        }
+                    }
                 }
+                true
+            }
 
-                itemClick = {
-                    //数据不存在, 需要重新发送数据
-                    selectHistoryEntity(bean)
-                    engraveBeforeLayoutHelper.iViewTitle = bean.name
-                    engraveBeforeLayoutHelper.engraveReadyDataInfo = _readyDataInfo
-                    engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
-                }
+            itemClick = {
+                //数据不存在, 需要重新发送数据
+                selectHistoryEntity(bean)
+                engraveBeforeLayoutHelper.iViewTitle = bean.name
+                engraveBeforeLayoutHelper.engraveReadyDataInfo = _readyDataInfo
+                engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
             }
         }
     }
