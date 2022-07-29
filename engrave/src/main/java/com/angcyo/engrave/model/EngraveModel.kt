@@ -1,6 +1,7 @@
 package com.angcyo.engrave.model
 
 import androidx.annotation.AnyThread
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -9,6 +10,7 @@ import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveItemInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
+import com.angcyo.engrave.data.EngravePreviewInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
@@ -50,6 +52,11 @@ class EngraveModel : ViewModel(), IViewModel {
 
     /**用来通知正在预览的item*/
     val engravePreviewItemData = vmDataOnce<EngraveItemInfo>()
+
+    /**正在预览的信息
+     * [com.angcyo.engrave.EngravePreviewLayoutHelper.bindDeviceState] 清空数据
+     * */
+    val engravePreviewInfoData = vmDataNull<EngravePreviewInfo>()
 
     /**设置需要雕刻的数据*/
     @AnyThread
@@ -188,10 +195,22 @@ class EngraveModel : ViewModel(), IViewModel {
     /**更新预览的item*/
     @AnyThread
     fun updateEngravePreviewUuid(uuid: String?) {
-        engravePreviewItemData.postValue(EngraveItemInfo(uuid))
+        engravePreviewItemData.postValue(
+            EngraveItemInfo(uuid, engravePreviewItemData.value?.progress ?: -1)
+        )
     }
 
     /**恢复的状态*/
     fun isRestore() = engraveReadyInfoData.value == null
+
+    /**更新正在预览的信息*/
+    @MainThread
+    fun updateEngravePreviewInfo(action: EngravePreviewInfo.() -> Unit) {
+        if (engravePreviewInfoData.value == null) {
+            engravePreviewInfoData.setValue(EngravePreviewInfo().apply(action))
+        } else {
+            engravePreviewInfoData.setValue(engravePreviewInfoData.value!!.apply(action))
+        }
+    }
 
 }

@@ -19,6 +19,7 @@ import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
 import com.angcyo.library.toast
@@ -179,11 +180,13 @@ class EngraveHistoryFragment : BaseDslFragment() {
     fun toPreview() {
         engravePreviewLayoutHelper.showPreviewSafetyTips(fContext()) {
             _readyDataInfo?.historyEntity?.let {
-                engravePreviewLayoutHelper.previewBounds = RectF(
-                    it.x.toFloat(),
-                    it.y.toFloat(),
-                    (it.x + it.width).toFloat(),
-                    (it.y + it.height).toFloat()
+                engravePreviewLayoutHelper.previewBoundsInfo = PreviewBoundsInfo(
+                    RectF(
+                        it.x.toFloat(),
+                        it.y.toFloat(),
+                        (it.x + it.width).toFloat(),
+                        (it.y + it.height).toFloat()
+                    )
                 )
                 engravePreviewLayoutHelper.showIn(this)
             }

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
@@ -15,6 +14,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
+import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
 
@@ -100,9 +100,22 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceSettingData.postValue(querySettingParser)
     }
 
-    /**z轴是否打开, 需要先打开设置, 再连接上*/
+    /**是否连接了扩展设备*/
+    fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
+
+    /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {
         return deviceSettingData.value?.zFlag == 1 && deviceStateData.value?.zConnect == 1
+    }
+
+    /**旋转轴是否打开, 需要先打开设置, 再连接上 */
+    fun isROpen(): Boolean {
+        return deviceSettingData.value?.rFlag == 1 && deviceStateData.value?.rConnect == 1
+    }
+
+    /**滑台是否打开, 需要先打开设置, 再连接上 */
+    fun isSOpen(): Boolean {
+        return deviceSettingData.value?.sFlag == 1 && deviceStateData.value?.sConnect == 1
     }
 
     /**空闲模式*/
@@ -141,33 +154,61 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     //<editor-fold desc="Command">
 
-    /**发送更新预览范围指令, 支持Z轴判断*/
+    /**发送更新预览范围指令, 支持Z轴判断
+     * [bounds] 未旋转的矩形
+     * [rotateBounds] 旋转后的矩形, 与[bounds]可以相同
+     * [rotate] [bounds]需要旋转的角度, 如果设置了, 则自动开启4点预览
+     * [updateState] 是否要发送更新状态指令
+     * [zPause] 是否需要第三轴暂停预览
+     * [async] 是否是异步指令
+     * */
     fun sendUpdatePreviewRange(
         bounds: RectF,
+        rotateBounds: RectF,
+        rotate: Float?,
         pwrProgress: Float,
+        updateState: Boolean,
+        async: Boolean,
+        zPause: Boolean = false,
         address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
-        val cmd = if (isZOpen()) {
+        val cmd = if (zPause) {
+            //外接设备暂停预览
             EngravePreviewCmd.previewZRange(
-                bounds.left.toInt(),
-                bounds.top.toInt(),
-                bounds.width().toInt(),
-                bounds.height().toInt(),
+                rotateBounds.left.toInt(),
+                rotateBounds.top.toInt(),
+                rotateBounds.width().toInt(),
+                rotateBounds.height().toInt(),
                 pwrProgress
             )
         } else {
-            EngravePreviewCmd.previewRange(
-                bounds.left.toInt(),
-                bounds.top.toInt(),
-                bounds.width().toInt(),
-                bounds.height().toInt(),
-                pwrProgress
-            )
+            if (QuerySettingParser.USE_FOUR_POINTS_PREVIEW //开启了4点预览
+                && !haveExDevice() //没有外置设备连接
+                && rotate != null //4点预览
+            ) {
+                //需要4点预览
+                EngravePreviewCmd.previewFourPoint(bounds.toFourPoint(rotate), pwrProgress)
+            } else {
+                EngravePreviewCmd.previewRange(
+                    rotateBounds.left.toInt(),
+                    rotateBounds.top.toInt(),
+                    rotateBounds.width().toInt(),
+                    rotateBounds.height().toInt(),
+                    pwrProgress,
+                    0
+                )
+            }
         }
 
-        cmd.sendCommand(address, progress, action)
+        //send
+        val flag =
+            if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+        cmd.enqueue(flag, address, progress, action)
+        if (updateState) {
+            queryDeviceState()
+        }
     }
 
     /**查询设备状态*/

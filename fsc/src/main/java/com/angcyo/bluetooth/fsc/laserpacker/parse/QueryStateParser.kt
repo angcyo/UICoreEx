@@ -28,7 +28,7 @@ data class QueryStateParser(
     //当前模式下的工作状态, 暂停, 255:结束
     //空闲模式下: 0xff
     //打印模式下: 工作中0x01，暂停0x04，结束0x03 继续打印0x02
-    //打印预览模式下: 0x01:预览图片 0x02:预览范围 0x04:预览暂停 0x06:支架调整 0x07:显示中心
+    //打印预览模式下: 0x01:预览图片 0x02:预览范围 0x04:预览暂停 0x06:支架调整 0x07:显示中心 0x08:4点预览
     var workState: Int = 0,
     //打印进度百分比[0-100]
     var rate: Int = 0,
@@ -75,6 +75,10 @@ data class QueryStateParser(
     //4 彩绘模式
     //5 CNC模式
     var moduleState: Int = -1,
+    //旋转轴连接状态, 0未连接, 1连接
+    var rConnect: Int = 0,
+    //滑台连接状态, 0未连接, 1连接
+    var sConnect: Int = 0,
     var stateTime: Long = nowTime() //app数据时间
 ) : IPacketParser<QueryStateParser> {
 
@@ -187,6 +191,7 @@ fun QueryStateParser.toDeviceStateString(): String? {
                 0x05 -> builder.append("第三轴继续")
                 0x06 -> builder.append("支架调整")
                 0x07 -> builder.append("显示中心")
+                0x08 -> builder.append("4点范围")
                 else -> builder.append("中")
             }
         }

@@ -31,6 +31,9 @@ data class EngraveHistoryEntity(
     var y: Int = -1,
     var px: Byte = -1,
 
+    /**4点预览的开启标识, 暂不支持*/
+    //var rotate: Float? = null,
+
     var name: String? = null,
     var index: Int? = null,
     var lines: Int = -1,

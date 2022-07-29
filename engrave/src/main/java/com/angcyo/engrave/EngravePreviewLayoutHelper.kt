@@ -1,11 +1,9 @@
 package com.angcyo.engrave
 
-import android.graphics.RectF
 import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
@@ -13,10 +11,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.core.vmApp
 import com.angcyo.engrave.ble.toZModeString
+import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.fragment.AbsLifecycleFragment
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.ClickAction
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.disableParentInterceptTouchEvent
+import com.angcyo.library.ex.longFeedback
 import com.angcyo.library.toast
 import com.angcyo.widget.image.TouchCompatImageView
 import com.angcyo.widget.progress.DslSeekBar
@@ -34,11 +35,13 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     /**支架的最大移动步长*/
     val BRACKET_MAX_STEP: Int = 65535//130, 65535
 
-    /**预览的范围, 如果为null. 则从[canvasDelegate]中获取
+    /**强制指定预览信息, 用于历史文档数据
+     *
+     * 预览的范围, 如果为null. 则从[canvasDelegate]中获取
      *
      * 如果需要实时更新预览,可以调用[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
      * */
-    var previewBounds: RectF? = null
+    var previewBoundsInfo: PreviewBoundsInfo? = null
 
     /**下一步回调*/
     var onNextAction: ClickAction? = null
@@ -63,6 +66,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             if (it?.isModeEngravePreview() == false) {
                 //非预览模式
                 engraveModel.updateEngravePreviewUuid(null)
+                engraveModel.engravePreviewInfoData.postValue(null)
             }
 
             if (it != null) {
@@ -227,51 +231,42 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
 
     /**查询设备状态*/
     fun queryDeviceStateCmd() {
-        vmApp<LaserPeckerModel>().queryDeviceState()
+        laserPeckerModel.queryDeviceState()
     }
 
-    /**开始预览
-     * [updateState] 是否要更新状态
-     * [zPause] 是否是第三轴暂停预览
-     * */
+    /**开始预览*/
     fun startPreviewCmd(
         canvasDelegate: CanvasDelegate?,
         updateState: Boolean,
         async: Boolean,
         zPause: Boolean = false
     ) {
-        val bounds = previewBounds ?: canvasDelegate?.getSelectedRenderer()?.getRotateBounds()
-        engraveModel.updateEngravePreviewUuid(
-            canvasDelegate?.getSelectedRenderer()?.getRendererItem()?.uuid
-        )
-        bounds?.let {
-            val cmd = if (zPause) {
-                EngravePreviewCmd.previewZRange(
-                    bounds.left.toInt(),
-                    bounds.top.toInt(),
-                    bounds.width().toInt(),
-                    bounds.height().toInt(),
-                    EngraveHelper.lastPwrProgress
-                )
+        val selectedRenderer = canvasDelegate?.getSelectedRenderer()
+
+        if (previewBoundsInfo == null) {
+            //没有强制指定的预览信息
+
+            if (selectedRenderer != null) {
+                EngraveHelper.sendPreviewRange(selectedRenderer, updateState, async, zPause)
             } else {
-                EngravePreviewCmd.previewRange(
-                    bounds.left.toInt(),
-                    bounds.top.toInt(),
-                    bounds.width().toInt(),
-                    bounds.height().toInt(),
-                    EngraveHelper.lastPwrProgress
+                if (engraveModel.isRestore().not()) {
+                    toast("No preview elements!")
+                }
+                if (updateState) {
+                    queryDeviceStateCmd()
+                }
+            }
+        } else {
+            previewBoundsInfo?.apply {
+                laserPeckerModel.sendUpdatePreviewRange(
+                    originRectF,
+                    originRectF,
+                    originRotate,
+                    EngraveHelper.lastPwrProgress,
+                    updateState,
+                    async,
+                    zPause
                 )
-            }
-            val flag =
-                if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
-            cmd.enqueue(flag)
-            queryDeviceStateCmd()
-        }.elseNull {
-            if (engraveModel.isRestore().not()) {
-                toast("No preview elements!")
-            }
-            if (updateState) {
-                queryDeviceStateCmd()
             }
         }
     }

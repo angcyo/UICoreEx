@@ -125,6 +125,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             info?.let {
                 canvasView?.canvasDelegate?.progressRenderer?.let {
                     it.borderRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
+                    it.drawRotateBorder = engraveModel.engravePreviewInfoData.value?.rotate != null
                 }
             }
         }

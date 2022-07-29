@@ -3,9 +3,11 @@ package com.angcyo.engrave
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.RectF
+import androidx.annotation.MainThread
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.canvas.LinePath
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.core.renderer.SelectGroupGCodeItem
@@ -259,7 +261,7 @@ object EngraveHelper {
         //根据px, 修正坐标
         val x = engraveReadyDataInfo.optionX
         val y = engraveReadyDataInfo.optionY
-        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px).rect
+        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px).first
 
         //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
         val engraveWidth = bitmap.width
@@ -345,6 +347,43 @@ object EngraveHelper {
 
     fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
         return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1
+    }
+
+    /**发送预览范围指令
+     * [itemRenderer] 需要预览的*/
+    @MainThread
+    fun sendPreviewRange(
+        itemRenderer: BaseItemRenderer<*>,
+        updateState: Boolean,
+        async: Boolean,
+        zPause: Boolean = false
+    ) {
+        val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+        vmApp<EngraveModel>().apply {
+            //先执行
+            updateEngravePreviewInfo {
+                itemUuid = itemRenderer.getRendererItem()?.uuid
+
+                if (QuerySettingParser.USE_FOUR_POINTS_PREVIEW //开启了4点预览
+                    && !laserPeckerModel.haveExDevice() //没有外置设备连接
+                ) {
+                    rotate = itemRenderer.rotate
+                } else {
+                    rotate = null
+                }
+            }
+            //后执行
+            updateEngravePreviewUuid(itemRenderer.getRendererItem()?.uuid)
+        }
+
+        laserPeckerModel.sendUpdatePreviewRange(
+            itemRenderer.getBounds(),
+            itemRenderer.getRotateBounds(),
+            itemRenderer.rotate,
+            lastPwrProgress,
+            updateState, async, zPause
+        )
     }
 
     //<editor-fold desc="material">

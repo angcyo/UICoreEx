@@ -31,6 +31,14 @@ data class QuerySettingParser(
     var zFlag: Int = 0,
     //0为打直板，1为打印圆柱。
     var zDir: Int = 0,
+    //0为旋转轴关闭，1为打开。
+    var rFlag: Int = 0,
+    //0为滑台关闭，1为打开。
+    var sFlag: Int = 0,
+    //旋转轴方向控制，0为反转，1为正转。
+    var dir: Int = 0,
+    //gcode激光功率值选择位，0从app输入值取值，1从gcode指令中取值。
+    var gcodePower: Int = 0,
     //触摸按键启动预览使能位，1为开启，0为关闭。
     var keyView: Int = 0,
     //测距红外指示光开关，0为关，1为开，上电默认关。(L3设置测距红光开关)
@@ -38,7 +46,8 @@ data class QuerySettingParser(
     //一键打印使能开关，1为开，0为关。
     var keyPrint: Int = 0,
     var state: Int = 0,
-
+    //当前雕刻激光类型选择，0为450nm; 1为1064nm。（L3MAX切换光源用）
+    var lType: Int = LaserPeckerHelper.LASER_TYPE_BLUE.toInt(),
     //Safe_code：为安全码，占用了4个字节，Data1为高字节。
     var safeCode: Int = 0,
     //Admin：为用户帐号占用40
@@ -53,6 +62,9 @@ data class QuerySettingParser(
         /**第三轴模式状态存储
          * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceSettingState] 在此会初始化*/
         var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
+
+        /**是否使用4点预览*/
+        var USE_FOUR_POINTS_PREVIEW: Boolean by HawkPropertyValue<Any, Boolean>(false)
     }
 
     //解析数据
@@ -74,6 +86,11 @@ data class QuerySettingParser(
                 irDst = readInt(1)
                 keyPrint = readInt(1)
                 state = readInt(1)
+                lType = readInt(1)
+                rFlag = readInt(1)
+                sFlag = readInt(1)
+                dir = readInt(1)
+                gcodePower = readInt(1)
             }
             this
         } catch (e: Exception) {
@@ -99,7 +116,7 @@ data class QuerySettingParser(
                 //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
-                dataLength = 0x0E
+                dataLength = 0x12
 
                 //1为自由模式，为0时安全模式。
                 append(free.toHexString())
@@ -121,6 +138,11 @@ data class QuerySettingParser(
                 append(irDst.toHexString())
                 //一键打印使能位，1为开，0为关。
                 append(keyPrint.toHexString())
+                //2022-7-28
+                append(rFlag.toHexString())
+                append(sFlag.toHexString())
+                append(dir.toHexString())
+                append(gcodePower.toHexString())
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
