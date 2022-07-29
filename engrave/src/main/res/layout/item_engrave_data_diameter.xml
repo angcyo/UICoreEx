@@ -25,7 +25,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/diameter_text_view"
         style="@style/LibBodyTextStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLength="8"
@@ -33,7 +33,6 @@
         android:paddingRight="@dimen/lib_hdpi"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/lib_text_view"
         app:layout_constraintRight_toLeftOf="@id/diameter_unit_view"
         app:layout_constraintTop_toTopOf="parent"

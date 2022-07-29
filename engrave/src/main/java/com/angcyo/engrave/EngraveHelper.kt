@@ -44,7 +44,7 @@ object EngraveHelper {
     var lastDepth: Int by HawkPropertyValue<Any, Int>(10)
 
     /**最后一次的物理尺寸, 像素*/
-    var lastDiameter: Float by HawkPropertyValue<Any, Float>(300f)
+    var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
     /**生成一个雕刻需要用到的文件索引*/
     fun generateEngraveIndex(): Int {
@@ -349,6 +349,23 @@ object EngraveHelper {
         return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1
     }
 
+    /**获取物理尺寸的值*/
+    fun getDiameter(): Int {
+        val laserPeckerModel = vmApp<LaserPeckerModel>()
+        val engraveModel = vmApp<EngraveModel>()
+
+        //物理尺寸
+        val diameter = if (laserPeckerModel.haveExDevice()) {
+            0
+        } else {
+            val diameterPixel = engraveModel.engraveOptionInfoData.value!!.diameterPixel
+            val mmValueUnit = MmValueUnit()
+            val mm = mmValueUnit.convertPixelToValue(diameterPixel)
+            (mm * 100).toInt()
+        }
+        return diameter
+    }
+
     /**发送预览范围指令
      * [itemRenderer] 需要预览的*/
     @MainThread
@@ -359,8 +376,9 @@ object EngraveHelper {
         zPause: Boolean = false
     ) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
+        val engraveModel = vmApp<EngraveModel>()
 
-        vmApp<EngraveModel>().apply {
+        engraveModel.apply {
             //先执行
             updateEngravePreviewInfo {
                 itemUuid = itemRenderer.getRendererItem()?.uuid
@@ -377,12 +395,15 @@ object EngraveHelper {
             updateEngravePreviewUuid(itemRenderer.getRendererItem()?.uuid)
         }
 
+        val diameter = getDiameter()
+
         laserPeckerModel.sendUpdatePreviewRange(
             itemRenderer.getBounds(),
             itemRenderer.getRotateBounds(),
             itemRenderer.rotate,
             lastPwrProgress,
-            updateState, async, zPause
+            updateState, async, zPause,
+            diameter
         )
     }
 

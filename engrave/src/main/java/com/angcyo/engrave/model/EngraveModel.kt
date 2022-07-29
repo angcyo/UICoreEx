@@ -40,7 +40,8 @@ class EngraveModel : ViewModel(), IViewModel {
             _string(R.string.material_custom),
             EngraveHelper.lastPower.toByte(),
             EngraveHelper.lastDepth.toByte(),
-            1
+            1,
+            diameterPixel = EngraveHelper.lastDiameterPixel
         )
     )
 

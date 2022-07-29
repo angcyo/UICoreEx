@@ -153,6 +153,18 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             DslPropertySwitchItem()() {
+                itemLabel = "正转" //_string(R.string.device_setting_act_model_preview_g_code)
+                itemDes =
+                    "旋转轴/滑台 正转或者反转"      //_string(R.string.device_setting_act_des_preview_g_code)
+                initItem()
+
+                itemSwitchChecked = settingParser?.dir == 1
+                itemSwitchChangedAction = {
+                    settingParser?.dir = if (it) 1 else 0
+                    settingParser?.sendCommand()
+                }
+            }
+            DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_txt_3)
                 itemDes = _string(R.string.device_setting_txt_4)
                 initItem()

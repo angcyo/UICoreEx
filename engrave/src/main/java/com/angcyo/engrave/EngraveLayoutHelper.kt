@@ -452,7 +452,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             }
 
             if (showDiameter) {
-                engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameter
+                engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameterPixel
                 EngraveOptionDiameterItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
                 }

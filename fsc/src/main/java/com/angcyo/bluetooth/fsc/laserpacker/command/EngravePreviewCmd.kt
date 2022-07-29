@@ -224,6 +224,7 @@ data class EngravePreviewCmd(
 
         /**根据[px]和[productInfo]调整预览的范围
          * [pwrProgress] [0~1f] 预览光功率
+         * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
          * */
         fun previewRange(
             x: Int,
@@ -559,7 +560,7 @@ data class EngravePreviewCmd(
             0x02.toByte() -> {
                 append("范围预览")
                 val rect = getPreviewRange()
-                append(" $rect")
+                append(" $rect 直径:$diameter")
             }
             0x03.toByte() -> append("结束预览")
             0x04.toByte() -> append("第三轴暂停预览")

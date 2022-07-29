@@ -15,6 +15,7 @@ import com.angcyo.item.style.TextItemConfig
 import com.angcyo.item.style.itemText
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.bindInRootView
 
 /**
  * 雕刻物理直径item
@@ -58,16 +59,27 @@ class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
     /**绑定事件*/
     fun bindDiameter(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.diameter_text_view) {
+            if (!itemHolder.isInRecyclerView()) {
+                bindInRootView(itemHolder.itemView)
+            }
+
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = {
-                    updateAdapterItem()
+                    if (itemHolder.isInRecyclerView()) {
+                        updateAdapterItem()
+                    } else {
+                        bindInRootView(itemHolder.itemView)
+                    }
                     false
                 }
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val value = CanvasConstant.valueUnit.convertValueToPixel(number)
                     itemEngraveOptionInfo?.diameterPixel = value
-                    EngraveHelper.lastDiameter = value
+                    EngraveHelper.lastDiameterPixel = value
+
+                    //通知item改变
+                    itemChanging = true
                 }
             }
         }

@@ -14,6 +14,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
@@ -110,7 +111,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**旋转轴是否打开, 需要先打开设置, 再连接上 */
     fun isROpen(): Boolean {
-        return deviceSettingData.value?.rFlag == 1 && deviceStateData.value?.rConnect == 1
+        return deviceSettingData.value?.rFlag == 1 && (deviceStateData.value?.rConnect == 1 || isDebugType())
     }
 
     /**滑台是否打开, 需要先打开设置, 再连接上 */
@@ -161,6 +162,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * [updateState] 是否要发送更新状态指令
      * [zPause] 是否需要第三轴暂停预览
      * [async] 是否是异步指令
+     * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
      * */
     fun sendUpdatePreviewRange(
         bounds: RectF,
@@ -170,6 +172,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         updateState: Boolean,
         async: Boolean,
         zPause: Boolean = false,
+        diameter: Int = 0,
         address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
@@ -197,7 +200,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                     rotateBounds.width().toInt(),
                     rotateBounds.height().toInt(),
                     pwrProgress,
-                    0
+                    diameter
                 )
             }
         }

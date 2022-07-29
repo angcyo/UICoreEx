@@ -93,9 +93,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/centre_button"
-            app:layout_constraintLeft_toLeftOf="@id/centre_button"
-            app:layout_constraintRight_toRightOf="@id/centre_button"
+            app:layout_constraintBottom_toTopOf="@id/control_wrap_layout"
+            app:layout_constraintLeft_toLeftOf="@id/control_wrap_layout"
+            app:layout_constraintRight_toRightOf="@id/control_wrap_layout"
             app:layout_constraintTop_toBottomOf="@id/preview_text_view"
             app:layout_constraintVertical_chainStyle="packed">
 
@@ -116,40 +116,54 @@
 
         </LinearLayout>
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/centre_button"
-            style="@style/LibButtonSolidStyle"
-            android:layout_width="240dp"
+        <LinearLayout
+            android:id="@+id/control_wrap_layout"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:text="@string/preview_center"
-            app:layout_constraintBottom_toTopOf="@id/preview_button"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/bracket_up_view"
-            app:layout_constraintTop_toBottomOf="@id/brightness_layout" />
+            app:layout_constraintTop_toBottomOf="@id/brightness_layout">
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/preview_button"
-            style="@style/LibButtonSolidStyle"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/lib_xhdpi"
-            android:text="@string/v3_bmp_setting_preview"
-            app:layout_constraintBottom_toTopOf="@id/next_button"
-            app:layout_constraintLeft_toLeftOf="@id/centre_button"
-            app:layout_constraintRight_toRightOf="@id/centre_button"
-            app:layout_constraintTop_toBottomOf="@id/centre_button" />
+            <!--物理直径包裹-->
+            <FrameLayout
+                android:id="@+id/diameter_wrap_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/next_button"
-            style="@style/LibButtonSolidStyle"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/lib_xhdpi"
-            android:text="@string/ui_edit_main_next"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/centre_button"
-            app:layout_constraintRight_toRightOf="@id/centre_button"
-            app:layout_constraintTop_toBottomOf="@id/preview_button" />
+                <include layout="@layout/item_engrave_data_diameter" />
+
+            </FrameLayout>
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/centre_button"
+                style="@style/LibButtonSolidStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/lib_xhdpi"
+                android:text="@string/preview_center" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/preview_button"
+                style="@style/LibButtonSolidStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/lib_xhdpi"
+                android:text="@string/v3_bmp_setting_preview" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/next_button"
+                style="@style/LibButtonSolidStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/lib_xhdpi"
+                android:text="@string/ui_edit_main_next" />
+
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_title_view"
