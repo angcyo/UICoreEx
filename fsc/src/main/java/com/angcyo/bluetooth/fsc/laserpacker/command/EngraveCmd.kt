@@ -6,7 +6,7 @@ import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll
 import com.angcyo.library.ex.toByteArray
 import com.angcyo.library.ex.toHexString
-import com.angcyo.tablayout.clamp
+import com.angcyo.library.ex.*
 
 /**
  * 雕刻/打印指令

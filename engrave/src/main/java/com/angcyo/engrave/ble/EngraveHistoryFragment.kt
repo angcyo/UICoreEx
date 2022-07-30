@@ -34,7 +34,7 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity_
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.page
-import com.angcyo.tablayout.clamp
+import com.angcyo.library.ex.*
 
 /**
  * 历史文档界面

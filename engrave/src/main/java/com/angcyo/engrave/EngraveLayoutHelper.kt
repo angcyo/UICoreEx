@@ -29,7 +29,6 @@ import com.angcyo.item.style.renderNestedAdapter
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
-import com.angcyo.widget.layout.touch.SwipeBackLayout.Companion.clamp
 import com.angcyo.widget.recycler.noItemChangeAnim
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
