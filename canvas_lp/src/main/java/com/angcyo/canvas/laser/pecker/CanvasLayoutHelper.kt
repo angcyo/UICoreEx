@@ -33,7 +33,6 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.EngraveHelper
-import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
@@ -443,22 +442,22 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 updateLayerLayout(vh)
             }
 
-            override fun onItemBoundsChanged(item: IRenderer, reason: Reason, oldBounds: RectF) {
-                super.onItemBoundsChanged(item, reason, oldBounds)
+            override fun onItemBoundsChanged(
+                itemRenderer: IRenderer,
+                reason: Reason,
+                oldBounds: RectF
+            ) {
+                super.onItemBoundsChanged(itemRenderer, reason, oldBounds)
                 updateControlLayout(vh, canvasView)
                 updateLayerLayout(vh)
 
                 val peckerModel = vmApp<LaserPeckerModel>()
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                    item == canvasView.canvasDelegate.getSelectedRenderer()
+                    itemRenderer == canvasView.canvasDelegate.getSelectedRenderer()
                 ) {
                     //设备正在预览模式, 更新预览
-                    if (item is BaseItemRenderer<*>) {
-                        vmApp<EngraveModel>().updateEngravePreviewUuid(item.getRendererItem()?.uuid)
-                        peckerModel.sendUpdatePreviewRange(
-                            item.getRotateBounds(),
-                            EngraveHelper.lastPwrProgress
-                        )
+                    if (itemRenderer is BaseItemRenderer<*>) {
+                        EngraveHelper.sendPreviewRange(itemRenderer, false, true)
                     }
                 }
             }
@@ -506,11 +505,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
                     //设备正在预览模式, 更新预览
                     if (itemRenderer is BaseItemRenderer<*>) {
-                        vmApp<EngraveModel>().updateEngravePreviewUuid(itemRenderer.getRendererItem()?.uuid)
-                        peckerModel.sendUpdatePreviewRange(
-                            itemRenderer.getRotateBounds(),
-                            EngraveHelper.lastPwrProgress
-                        )
+                        EngraveHelper.sendPreviewRange(itemRenderer, false, true)
                     }
                 }
             }
