@@ -81,6 +81,9 @@ object UMEvent {
     /**RN-点赞事件*/
     const val RN_LIKE = "rn_like"
 
+    /**RN-取消点赞事件*/
+    const val RN_UNLIKE = "rn_unlike"
+
     /**RN-下载事件*/
     const val RN_DOWNLOAD = "rn_download"
 
