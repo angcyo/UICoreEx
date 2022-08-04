@@ -434,11 +434,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             clearAllItems()
 
             //物体直径, 这里应该判断z轴设备的类型, 决定是否显示物理直径
-            val showDiameter = (laserPeckerModel.isZOpen() &&
-                    laserPeckerModel.productInfoData.value?.isLIV() == true) || isDebugType()
+            val showDiameter = laserPeckerModel.isROpen()
 
             //激光类型
-            if (laserPeckerModel.productInfoData.value?.typeList.size() > 1 || isDebugType()) {
+            if (laserPeckerModel.productInfoData.value?.typeList.size() > 1) {
                 EngraveOptionTypeItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
 
@@ -609,6 +608,56 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             val zConnect = laserPeckerModel.deviceStateData.value?.zConnect
             if (zConnect != 1) {
                 //未连接z轴, 弹窗提示
+                viewHolder?.context?.messageDialog {
+                    dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+                    dialogMessage = _string(R.string.zflag_discontent_tips)
+
+                    if (isDebug()) {
+                        negativeButtonText = _string(com.angcyo.dialog.R.string.dialog_negative)
+                        positiveButtonListener = { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            checkSafeTip(index, option)
+                        }
+                    }
+
+                    onDismissListener = {
+                        laserPeckerModel.queryDeviceState()
+                    }
+                }
+                return
+            }
+        }
+        val rFlag = laserPeckerModel.deviceSettingData.value?.rFlag
+        if (rFlag == 1) {
+            //旋转轴开关打开
+            val rConnect = laserPeckerModel.deviceStateData.value?.rConnect
+            if (rConnect != 1) {
+                //未连接r轴, 弹窗提示
+                viewHolder?.context?.messageDialog {
+                    dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+                    dialogMessage = _string(R.string.zflag_discontent_tips)
+
+                    if (isDebug()) {
+                        negativeButtonText = _string(com.angcyo.dialog.R.string.dialog_negative)
+                        positiveButtonListener = { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            checkSafeTip(index, option)
+                        }
+                    }
+
+                    onDismissListener = {
+                        laserPeckerModel.queryDeviceState()
+                    }
+                }
+                return
+            }
+        }
+        val sFlag = laserPeckerModel.deviceSettingData.value?.sFlag
+        if (sFlag == 1) {
+            //滑台轴开关打开
+            val sConnect = laserPeckerModel.deviceStateData.value?.sConnect
+            if (sConnect != 1) {
+                //未连接r轴, 弹窗提示
                 viewHolder?.context?.messageDialog {
                     dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                     dialogMessage = _string(R.string.zflag_discontent_tips)
