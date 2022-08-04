@@ -43,6 +43,8 @@ import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import com.pixplicity.sharp.SharpDrawable
 
 /**
@@ -129,6 +131,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     if (itemIsSelected) {
                         selectedItemWith(this)
                         showBitmapSelectLayout(vh, canvasView)
+                        UMEvent.CANVAS_IMAGE.umengEventValue()
                     }
                 }
             }
@@ -143,6 +146,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     if (itemIsSelected) {
                         selectedItemWith(this)
                         showShapeSelectLayout(vh, canvasView)
+                        UMEvent.CANVAS_SHAPE.umengEventValue()
                     }
                 }
             }
@@ -180,6 +184,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                     canvasView.canvasDelegate.addDrawableRenderer(drawable)
                                 }
                             }
+                            UMEvent.CANVAS_MATERIAL.umengEventValue()
                         }
                     }
                 }
@@ -188,6 +193,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemEnable = true
                 itemClick = {
                     toast("功能开发中...")
+                    UMEvent.CANVAS_DOODLE.umengEventValue()
                 }
                 drawCanvasRight()
             }
@@ -1034,6 +1040,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handlePrint(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                 }
             }
             CanvasControlItem()() {
@@ -1042,6 +1049,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleGCode(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                 }
             }
             CanvasControlItem()() {
@@ -1050,6 +1058,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                 }
             }
             CanvasControlItem()() {
@@ -1058,6 +1067,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleDithering(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                 }
             }
             CanvasControlItem()() {
@@ -1066,6 +1076,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleGrey(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                 }
             }
             CanvasControlItem()() {
@@ -1074,6 +1085,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleSeal(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
                 }
             }
         }

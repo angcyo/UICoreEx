@@ -11,5 +11,7 @@ dependencies {
     api project(allModule.dialog2)
     api project(allModule.canvas)
 
+    compileOnly project(allModule.umeng_lp)
+
     api 'com.angcyo:opencv:hingin-SNAPSHOT'
 }

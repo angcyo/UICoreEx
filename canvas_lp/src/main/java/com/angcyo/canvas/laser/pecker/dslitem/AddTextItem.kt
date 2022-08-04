@@ -8,6 +8,8 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -37,6 +39,7 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentIt
                         //canvasView.addTextRenderer("$inputText")
                         //canvasView.addPictureTextRenderer("$inputText")
                         canvasView.addPictureTextRender("$inputText")
+                        UMEvent.CANVAS_TEXT.umengEventValue()
                     }
                     false
                 }
