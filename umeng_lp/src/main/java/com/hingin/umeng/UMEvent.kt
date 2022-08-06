@@ -8,6 +8,9 @@ object UMEvent {
 
     //region ---origin---
 
+    /**搜索设备事件*/
+    const val SEARCH_DEVICE = "search_device"
+
     /**连接设备事件*/
     const val CONNECT_DEVICE = "connect_device"
 
@@ -104,6 +107,9 @@ object UMEvent {
 
     /**RN-新手教程事件*/
     const val RN_COURSE = "rn_course"
+
+    /**用户注册事件*/
+    const val USER_REGISTER = "user_register"
 
     //endregion ---rn---
 

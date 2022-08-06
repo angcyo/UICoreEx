@@ -5,11 +5,15 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.ble.BluetoothSearchListDialogConfig
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.feasycom.common.bean.FscDevice
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 蓝牙设备连接的item
@@ -35,6 +39,16 @@ class BluetoothConnectItem : DslAdapterItem() {
                 fscApi.disconnect(itemFscDevice)
             } else {
                 fscApi.connect(itemFscDevice, false, true)
+
+                //连接后, 搜索结束
+                UMEvent.SEARCH_DEVICE.umengEventValue {
+                    val nowTime = nowTime()
+                    put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+                    put(
+                        UMEvent.KEY_DURATION,
+                        (nowTime - BluetoothSearchListDialogConfig.last_search_time).toString()
+                    )
+                }
             }
         }
     }

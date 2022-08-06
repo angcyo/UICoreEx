@@ -14,10 +14,13 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.nowTime
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * SPP模式蓝牙搜索列表界面
@@ -25,6 +28,10 @@ import com.angcyo.widget.recycler.renderDslAdapter
  * @since 2022/05/26
  */
 class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConfig(context) {
+
+    companion object {
+        var last_search_time: Long = 0
+    }
 
     /**连接成功后, 是否关闭界面*/
     var connectedDismiss: Boolean = false
@@ -103,6 +110,12 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                     }
                 }
                 startScan()
+
+                //开始扫描的时间
+                UMEvent.SEARCH_DEVICE.umengEventValue {
+                    last_search_time = nowTime()
+                    put(UMEvent.KEY_START_TIME, last_search_time.toString())
+                }
             }
         }
 
