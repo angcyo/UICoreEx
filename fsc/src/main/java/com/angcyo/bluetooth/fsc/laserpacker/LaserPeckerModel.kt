@@ -15,7 +15,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
@@ -117,7 +116,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**滑台是否打开, 需要先打开设置, 再连接上 */
     fun isSOpen(): Boolean {
-        return deviceSettingData.value?.sFlag == 1 && deviceStateData.value?.sConnect == 1
+        return deviceSettingData.value?.sFlag == 1 && (deviceStateData.value?.sConnect == 1 || isDebug())
     }
 
     /**空闲模式*/
