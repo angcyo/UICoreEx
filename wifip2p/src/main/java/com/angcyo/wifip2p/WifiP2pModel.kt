@@ -1,6 +1,7 @@
 package com.angcyo.wifip2p
 
 import android.net.wifi.p2p.WifiP2pDevice
+import android.net.wifi.p2p.WifiP2pGroup
 import android.net.wifi.p2p.WifiP2pInfo
 import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,8 @@ import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 import com.angcyo.wifip2p.data.ConnectStateWrap
+import com.angcyo.wifip2p.data.ConnectStateWrap.Companion.STATE_CONNECT_SUCCESS
+import com.angcyo.wifip2p.data.ProgressInfo
 import com.angcyo.wifip2p.data.WifiP2pDeviceWrap
 
 /**
@@ -96,6 +99,28 @@ class WifiP2pModel : ViewModel() {
         return ConnectStateWrap(0, device)
     }
 
+    /**断开连接状态*/
+    fun disconnectState() {
+        updateConnectState(ConnectStateWrap.STATE_CONNECT_FAILURE)
+        //connectStateData.postValue(null)
+    }
+
+    /**是否连上了wifi直连网络*/
+    fun isConnectWifiP2p(): Boolean {
+        return connectStateData.value?.state == STATE_CONNECT_SUCCESS &&
+                connectStateData.value?.deviceWrap?.wifiP2pInfo != null
+    }
+
+    /**是否是服务主机*/
+    fun isHost(): Boolean = connectWifiP2pInfoData.value?.isGroupOwner == true
+
+    /**更新连接状态*/
+    fun updateConnectState(state: Int) {
+        connectStateData.value?.deviceWrap?.let {
+            updateConnectState(it, state)
+        }
+    }
+
     /**更新连接状态
      * [STATE_CONNECT_START]
      * [STATE_CONNECT_SUCCESS]
@@ -105,6 +130,9 @@ class WifiP2pModel : ViewModel() {
         val stateWrap = connectState(device)
         stateWrap.state = state
         stateWrap.deviceWrap = device
+        if (state != STATE_CONNECT_SUCCESS) {
+            stateWrap.deviceWrap.wifiP2pInfo = null
+        }
         connectStateData.postValue(stateWrap)
     }
 
@@ -118,7 +146,7 @@ class WifiP2pModel : ViewModel() {
             if (wifiP2pInfo == null) {
                 updateConnectState(it, ConnectStateWrap.STATE_CONNECT_FAILURE)
             } else {
-                updateConnectState(it, ConnectStateWrap.STATE_CONNECT_SUCCESS)
+                updateConnectState(it, STATE_CONNECT_SUCCESS)
             }
             //停止扫描
             isDiscoverData.postValue(false)
@@ -127,4 +155,12 @@ class WifiP2pModel : ViewModel() {
 
     /**自身设备信息监听*/
     val selfWifiP2pDeviceData = vmDataNull<WifiP2pDevice>()
+
+    /**进度通知*/
+    val progressData = vmDataOnce<ProgressInfo>()
+
+    /**群组信息
+     * [android.net.wifi.p2p.WifiP2pGroup.getClientList] 客户端数据
+     * */
+    val wifiP2pGroupData = vmDataNull<WifiP2pGroup>()
 }

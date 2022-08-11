@@ -17,9 +17,11 @@ import android.os.Looper
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.component.MainExecutor
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.wifip2p.data.ConnectStateWrap
+import com.angcyo.wifip2p.data.ConnectStateWrap.Companion.STATE_CONNECT_FAILURE
 import com.angcyo.wifip2p.data.ServiceData
 import com.angcyo.wifip2p.data.WifiP2pDeviceWrap
 import com.angcyo.wifip2p.task.WifiP2pReceiveRunnable
@@ -241,6 +243,7 @@ class WifiP2p {
 
     /**停止服务*/
     fun stopService() {
+        cancelConnect()
         wifiP2pReceiveRunnable?.cancel()
         wifiP2pReceiveRunnable = null
         _channel?.let {
@@ -434,6 +437,13 @@ class WifiP2p {
 
     //region ---Connect---
 
+    /**连接超时设置*/
+    var connectTimeout: Long = 10_000
+
+    val timeoutRunnable = Runnable {
+        cancelConnect()
+    }
+
     /**3.连接设备*/
     fun connectDevice(deviceWrap: WifiP2pDeviceWrap, action: WifiP2pConfig.() -> Unit = {}) {
         val connectState = wifiP2pModel.connectState(deviceWrap)
@@ -460,13 +470,16 @@ class WifiP2p {
             override fun onFailure(reason: Int) {
                 L.e("Failed to connect to device:${config.deviceAddress}->$reason")
                 wifiP2pModel.updateConnectState(deviceWrap, ConnectStateWrap.STATE_CONNECT_FAILURE)
+                MainExecutor.handler.removeCallbacks(timeoutRunnable)
             }
         })
         wifiP2pModel.updateConnectState(deviceWrap, ConnectStateWrap.STATE_CONNECT_START)
+        MainExecutor.handler.postDelayed(timeoutRunnable, connectTimeout)
     }
 
-    /**取消正在进行的连接*/
+    /**取消正在进行的连接, 并且断开已经存在的连接*/
     fun cancelConnect() {
+        MainExecutor.handler.removeCallbacks(timeoutRunnable)
         manager?.cancelConnect(_channel, object : ActionListener {
             override fun onSuccess() {
                 L.v("Attempting to cancel connect.")
@@ -476,6 +489,8 @@ class WifiP2p {
                 L.v("Failed to cancel connect, the device may not have been trying to connect: $reason")
             }
         })
+        //断开连接状态
+        wifiP2pModel.disconnectState()
     }
 
     //endregion ---Connect---
@@ -538,10 +553,14 @@ class WifiP2p {
                 }
                 WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                     // WiFi P2P连接发生变化
+
+                    //
+                    MainExecutor.handler.removeCallbacks(timeoutRunnable)
+
                     val networkInfo = intent.getParcelableExtra<NetworkInfo>(EXTRA_NETWORK_INFO)
                     val wifiP2pInfo = intent.getParcelableExtra<WifiP2pInfo>(EXTRA_WIFI_P2P_INFO)
                     val wifiP2pGroup = intent.getParcelableExtra<WifiP2pGroup>(EXTRA_WIFI_P2P_GROUP)
-                    L.i("${networkInfo?.typeName}->$networkInfo\n$wifiP2pInfo\n$wifiP2pGroup")
+                    L.i("${networkInfo?.typeName}->$networkInfo\n\n$wifiP2pInfo\n\n$wifiP2pGroup")
 
                     wifiP2pInfo?.groupOwnerAddress?.hostAddress
                     wifiP2pGroup?.clientList?.size
@@ -549,6 +568,7 @@ class WifiP2p {
                     manager?.let {
                         if (networkInfo?.isConnected == true && networkInfo.typeName == "WIFI_P2P") {
                             it.requestConnectionInfo(_channel, connectionInfoListener)//api14
+                            wifiP2pModel.wifiP2pGroupData.postValue(wifiP2pGroup)
                             if (Debug.isDebuggerConnected()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     it.requestNetworkInfo(_channel!!) {//api29
@@ -562,7 +582,10 @@ class WifiP2p {
                             wifiP2pModel.updateConnectWifiP2pInfo(wifiP2pInfo)
                         } else {
                             L.d("Not connected to another device.")
+                            wifiP2pModel.wifiP2pGroupData.postValue(null)
                             wifiP2pModel.updateConnectWifiP2pInfo(null)
+                            wifiP2pModel.updateConnectState(STATE_CONNECT_FAILURE)
+
                         }
                     }
                 }

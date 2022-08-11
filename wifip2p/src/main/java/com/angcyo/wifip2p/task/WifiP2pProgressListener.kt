@@ -1,6 +1,7 @@
 package com.angcyo.wifip2p.task
 
 import androidx.annotation.WorkerThread
+import com.angcyo.library.component.Speed
 
 /**
  * 传输进度监听
@@ -26,9 +27,9 @@ interface WifiP2pProgressListener {
      * [speed] 每秒传输的字节数
      * [size] 总长度, -1表示未获取到长度*/
     @WorkerThread
-    fun onProgress(progress: Int, speed: Long, size: Long)
+    fun onProgress(progress: Int, speed: Speed, size: Long)
 
-    /**传输完成
+    /**传输完成, 发送或者接收
      * [exception]异常结束时的信息
      * [FINISH_CANCEL]
      * [FINISH_SUCCESS]

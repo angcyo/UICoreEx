@@ -73,10 +73,14 @@ class WifiP2pReceiveRunnable : Runnable {
             L.e("初始化失败")
         } else {
             while (!isCancel) {
-                val socket = serverSocket.accept()
-                if (!isCancel) {
-                    L.i("客户端IP地址:" + socket.remoteSocketAddress)
-                    receiveListener?.onAccept(socket)
+                try {
+                    val socket = serverSocket.accept()
+                    if (!isCancel) {
+                        L.i("客户端IP地址:" + socket.remoteSocketAddress)
+                        receiveListener?.onAccept(socket)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
             L.i("...WifiP2p Socket Server执行结束.")

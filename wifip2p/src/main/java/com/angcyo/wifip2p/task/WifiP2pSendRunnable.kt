@@ -1,8 +1,11 @@
 package com.angcyo.wifip2p.task
 
+import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.component.Speed
 import com.angcyo.library.ex.fileSizeString
+import com.angcyo.wifip2p.WifiP2pModel
+import com.angcyo.wifip2p.data.ProgressInfo
 import com.angcyo.wifip2p.task.WifiP2pProgressListener.Companion.FINISH_CANCEL
 import com.angcyo.wifip2p.task.WifiP2pProgressListener.Companion.FINISH_ERROR
 import com.angcyo.wifip2p.task.WifiP2pProgressListener.Companion.FINISH_SUCCESS
@@ -16,6 +19,8 @@ import java.net.Socket
  * @since 2022/08/09
  */
 class WifiP2pSendRunnable(
+    /**设备的mac地址*/
+    val deviceAddress: String?,
     /**Ip地址*/
     val serviceAddress: String,
     /**服务端口*/
@@ -32,6 +37,8 @@ class WifiP2pSendRunnable(
     /**速率计算*/
     val speed = Speed()
 
+    val wifiP2pModel = vmApp<WifiP2pModel>()
+
     override fun run() {
         val socket = Socket()
         try {
@@ -47,28 +54,47 @@ class WifiP2pSendRunnable(
             val buffer = ByteArray(WifiP2pReceiveRunnable.BUFFER_SIZE) //buffer
             var len: Int
 
+            wifiP2pModel.progressData.postValue(
+                ProgressInfo(deviceAddress, 0, 0, speed, null)
+            )
+
             L.d("Connected, transferring data:${size.fileSizeString()}")
             while (inputStream.read(buffer).also { len = it } != -1 && !isCancel) {
                 outputStream.write(buffer, 0, len)
-                speed.update(len.toLong())
                 total += len.toLong()
-                val progress = (total * 100 / size).toInt()
-                L.i("发送进度：${progress}% ${speed.speed.fileSizeString()}/s")
-                wifiP2pProgressListener?.onProgress(progress, speed.speed, size)
+                if (speed.update(len.toLong(), size)) {
+                    //控制回调速度
+                    val progress = (total * 100 / size).toInt()
+                    L.i("发送进度：${progress}% ${speed.speed.fileSizeString()}/s")
+                    wifiP2pProgressListener?.onProgress(progress, speed, size)
+
+                    wifiP2pModel.progressData.postValue(
+                        ProgressInfo(deviceAddress, 0, progress, speed, null)
+                    )
+                }
             }
 
+            inputStream.close()
             outputStream.flush()
             outputStream.close()
             L.d("Successfully sent data.")
 
             if (!isCancel) {
-                wifiP2pProgressListener?.onProgress(100, speed.speed, size)//this
+                wifiP2pProgressListener?.onProgress(100, speed, size)//this
                 wifiP2pProgressListener?.onFinish(FINISH_SUCCESS, null)
+
+                wifiP2pModel.progressData.postValue(
+                    ProgressInfo(deviceAddress, FINISH_SUCCESS, 100, speed, null)
+                )
             }
         } catch (ex: Exception) {
             L.d("An error occurred while sending data to a device.")
             ex.printStackTrace()
             wifiP2pProgressListener?.onFinish(FINISH_ERROR, ex)
+
+            wifiP2pModel.progressData.postValue(
+                ProgressInfo(deviceAddress, FINISH_ERROR, -1, speed, ex)
+            )
         } finally {
             try {
                 socket.close()
@@ -82,6 +108,10 @@ class WifiP2pSendRunnable(
     fun cancel() {
         isCancel = true
         wifiP2pProgressListener?.onFinish(FINISH_CANCEL, null)
+
+        wifiP2pModel.progressData.postValue(
+            ProgressInfo(deviceAddress, FINISH_CANCEL, -1, speed, null)
+        )
     }
 
     /**开始发送数据*/
