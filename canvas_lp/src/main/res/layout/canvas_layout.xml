@@ -233,6 +233,13 @@
             android:text="+SVG" />
 
         <com.angcyo.widget.DslButton
+            android:id="@+id/add_image_svg"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+图片SVG" />
+
+        <com.angcyo.widget.DslButton
             android:id="@+id/add_gcode"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
