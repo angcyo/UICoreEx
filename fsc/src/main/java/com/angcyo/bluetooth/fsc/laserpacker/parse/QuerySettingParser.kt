@@ -16,6 +16,7 @@ import com.angcyo.library.ex.toHexString
  * @since 2022/03/25
  */
 data class QuerySettingParser(
+    var func: Byte = 0, //功能码
     //1为自由模式开，0关，默认为0。
     var free: Int = 0,
     //工作提示音,1为打开提示音，0为关，默认为0。
@@ -46,8 +47,6 @@ data class QuerySettingParser(
     //一键打印使能开关，1为开，0为关。
     var keyPrint: Int = 0,
     var state: Int = 0,
-    //当前雕刻激光类型选择，0为450nm; 1为1064nm。（L3MAX切换光源用）
-    var lType: Int = LaserPeckerHelper.LASER_TYPE_BLUE.toInt(),
     //Safe_code：为安全码，占用了4个字节，Data1为高字节。
     var safeCode: Int = 0,
     //Admin：为用户帐号占用40
@@ -73,7 +72,7 @@ data class QuerySettingParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
-                offset(1)//偏移功能码
+                func = readByte()//偏移功能码
                 free = readInt(1)
                 buzzer = readInt(1)
                 view = readInt(1)
@@ -85,12 +84,11 @@ data class QuerySettingParser(
                 keyView = readInt(1)
                 irDst = readInt(1)
                 keyPrint = readInt(1)
-                state = readInt(1)
-                lType = readInt(1)
                 rFlag = readInt(1)
                 sFlag = readInt(1)
                 dir = readInt(1)
                 gcodePower = readInt(1)
+                state = readInt(1)
             }
             this
         } catch (e: Exception) {

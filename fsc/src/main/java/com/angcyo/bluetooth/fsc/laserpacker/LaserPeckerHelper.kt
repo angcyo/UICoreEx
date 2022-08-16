@@ -522,13 +522,14 @@ object LaserPeckerHelper {
     }
 
     /**初始化设备设置数据*/
-    fun initDeviceSetting() {
+    fun initDeviceSetting(end: IReceiveBeanAction? = null) {
         sendCommand(QueryCmd.settingState) { bean, error ->
             bean?.let {
                 it.parse<QuerySettingParser>()?.let {
                     vmApp<LaserPeckerModel>().updateDeviceSettingState(it)
                 }
             }
+            end?.invoke(bean, error)
         }
     }
 

@@ -355,7 +355,7 @@ object EngraveHelper {
         val engraveModel = vmApp<EngraveModel>()
 
         //物理尺寸
-        val diameter = if (laserPeckerModel.haveExDevice()) {
+        val diameter = if (!laserPeckerModel.haveExDevice()) {
             0
         } else {
             val diameterPixel = engraveModel.engraveOptionInfoData.value!!.diameterPixel

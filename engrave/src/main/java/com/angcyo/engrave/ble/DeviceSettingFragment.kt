@@ -3,6 +3,7 @@ package com.angcyo.engrave.ble
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -24,6 +25,8 @@ import com.angcyo.library.ex._string
  */
 class DeviceSettingFragment : BaseDslFragment() {
 
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
+
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_model)
     }
@@ -36,11 +39,18 @@ class DeviceSettingFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
 
-        renderData()
+        laserPeckerModel.deviceSettingData.observe {
+            it?.let {
+                renderData()
+            }
+        }
+
+        //读取设置
+        LaserPeckerHelper.initDeviceSetting()
     }
 
     fun renderData() {
-        val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
+        val settingParser = laserPeckerModel.deviceSettingData.value
         settingParser?.functionSetting()
 
         renderDslAdapter(reset = true) {
