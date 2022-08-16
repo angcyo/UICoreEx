@@ -3,6 +3,7 @@ package com.angcyo.server
 import android.content.Context
 import android.content.Intent
 import com.angcyo.core.component.DebugFragment
+import com.angcyo.core.coreApp
 import com.angcyo.library.component.DslNotify
 import com.angcyo.server.file.bindFileServer
 
@@ -34,7 +35,8 @@ object DslAndServer {
         DebugFragment.addDebugAction {
             name = "FileServer"
             action = {
-                it.bindFileServer()
+                coreApp().bindFileServer()
+                //(RBackground.lastActivityRef?.get() as? LifecycleOwner ?: it)
             }
         }
     }

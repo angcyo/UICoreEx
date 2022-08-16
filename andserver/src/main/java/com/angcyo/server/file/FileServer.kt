@@ -1,6 +1,7 @@
 package com.angcyo.server.file
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -44,6 +45,7 @@ fun LifecycleOwner.bindFileServer() {
             val context: Context? = when (source) {
                 is Fragment -> source.context
                 is Activity -> source
+                is Application -> source
                 else -> null
             }
 
