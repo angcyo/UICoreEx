@@ -30,13 +30,13 @@ import com.angcyo.canvas.utils.addDrawableRenderer
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
+import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
-import com.angcyo.library.toast
 import com.angcyo.picker.dslSinglePickerImage
 import com.angcyo.qrcode.createBarCode
 import com.angcyo.qrcode.createQRCode
@@ -192,8 +192,10 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             AddDoodleItem()() {
                 itemEnable = true
                 itemClick = {
-                    toast("功能开发中...")
                     UMEvent.CANVAS_DOODLE.umengEventValue()
+                    fragment.context?.doodleDialog {
+
+                    }
                 }
                 drawCanvasRight()
             }

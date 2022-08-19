@@ -8,6 +8,9 @@ dependencies {
     implementation project(allModule.qrcode)
     implementation project(allModule.component)
 
+    //涂鸦
+    implementation project(allModule.doodle)
+
     api project(allModule.dialog2)
     api project(allModule.canvas)
 
