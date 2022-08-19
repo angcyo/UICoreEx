@@ -2,8 +2,10 @@ apply from: allGradle.libBase
 
 dependencies {
     implementation project(allModule.library)
+    implementation project(allModule.viewmodel)
+    implementation project(allModule.core)
 
     //https://github.com/TooTallNate/Java-WebSocket
     //https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    api 'org.java-websocket:Java-WebSocket:1.5.3'
 }

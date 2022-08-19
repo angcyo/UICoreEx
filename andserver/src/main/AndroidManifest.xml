@@ -10,7 +10,7 @@
 
     <application>
         <service
-            android:name=".file.FileServer"
+            android:name=".file.FileServerService"
             android:enabled="true"
             android:exported="false" />
     </application>

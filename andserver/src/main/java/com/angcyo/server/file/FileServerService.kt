@@ -22,7 +22,7 @@ import com.angcyo.server.DslAndServer
  * @date 2021/09/22
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class FileServer : AndServerService() {
+class FileServerService : AndServerService() {
 
     init {
         notifyName = "FileServer"
@@ -38,7 +38,7 @@ class FileServer : AndServerService() {
     }
 }
 
-/**自动启动和停止[FileServer]*/
+/**自动启动和停止[FileServerService]*/
 fun LifecycleOwner.bindFileServer() {
     lifecycle.addObserver(object : LifecycleEventObserver {
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -56,7 +56,7 @@ fun LifecycleOwner.bindFileServer() {
                     else -> Unit
                 }
             } else {
-                L.w("无效的context类型, 无法启动[FileServer]")
+                L.w("无效的context类型, 无法启动[FileServerService]")
             }
         }
     })
@@ -64,10 +64,10 @@ fun LifecycleOwner.bindFileServer() {
 
 /**开始一个文件服务, 用来访问app外部文件目录*/
 fun Context.startFileServer() {
-    DslAndServer.startServer(this, FileServer::class.java)
+    DslAndServer.startServer(this, FileServerService::class.java)
 }
 
 /**停止文件服务*/
 fun Context.stopFileServer() {
-    DslAndServer.stopServer(this, FileServer::class.java)
+    DslAndServer.stopServer(this, FileServerService::class.java)
 }

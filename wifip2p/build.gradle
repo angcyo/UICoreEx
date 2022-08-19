@@ -4,6 +4,6 @@ apply plugin: 'kotlin-parcelize'
 
 dependencies {
     implementation project(allModule.library)
-    implementation project(allModule.core)
     implementation project(allModule.viewmodel)
+    implementation project(allModule.core)
 }
