@@ -25,7 +25,7 @@ import com.yanzhenjie.andserver.http.ResponseBody
  */
 
 @RequestMapping("/do")
-@RestController
+@RestController("acc")
 class DoController {
 
     /**执行指定的action*/

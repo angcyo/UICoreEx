@@ -27,6 +27,7 @@ class FileServerService : AndServerService() {
     init {
         notifyName = "FileServer"
         notifyChannelName = "FileServer"
+        group = "file"
     }
 
     override fun initServer() {

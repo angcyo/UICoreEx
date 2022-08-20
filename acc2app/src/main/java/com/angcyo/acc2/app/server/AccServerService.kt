@@ -17,10 +17,11 @@ import com.angcyo.server.DslAndServer
  * @date 2021/07/05
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class AccServer : AndServerService() {
+class AccServerService : AndServerService() {
 
     init {
         notifyName = "AccServer"
+        group = "acc"
     }
 
     override fun initServer() {
@@ -32,7 +33,7 @@ class AccServer : AndServerService() {
     }
 }
 
-/**自动启动和停止[AccServer]*/
+/**自动启动和停止[AccServerService]*/
 fun LifecycleOwner.bindAccServer() {
     lifecycle.addObserver(object : LifecycleEventObserver {
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -56,9 +57,9 @@ fun LifecycleOwner.bindAccServer() {
 }
 
 fun Context.startAccServer() {
-    DslAndServer.startServer(this, AccServer::class.java)
+    DslAndServer.startServer(this, AccServerService::class.java)
 }
 
 fun Context.stopAccServer() {
-    DslAndServer.stopServer(this, AccServer::class.java)
+    DslAndServer.stopServer(this, AccServerService::class.java)
 }

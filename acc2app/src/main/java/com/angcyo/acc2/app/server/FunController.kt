@@ -19,7 +19,7 @@ import com.yanzhenjie.andserver.http.ResponseBody
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 
-@RestController
+@RestController("acc")
 class FunController {
 
     /*

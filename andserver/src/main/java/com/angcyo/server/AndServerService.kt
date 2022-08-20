@@ -49,6 +49,9 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     /**通知的名称*/
     var notifyName: String = ""
 
+    /**Server的group*/
+    var group = "default"
+
     init {
         notifyName = "AndServer"
     }
@@ -88,7 +91,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
 
     /**初始化服务*/
     open fun initServer() {
-        _server = AndServer.webServer(this)
+        _server = AndServer.webServer(this, group)
             .port(serverPort)
             .timeout(10, TimeUnit.SECONDS)
             .listener(this)

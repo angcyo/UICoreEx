@@ -25,7 +25,7 @@ import kotlin.math.max
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 
-@RestController
+@RestController("acc")
 class AccController {
 
     /**接收客户端发过来的消息*/

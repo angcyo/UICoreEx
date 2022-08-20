@@ -1,6 +1,7 @@
 package com.angcyo.server
 
 import android.content.Context
+import com.angcyo.server.website.FaviconWebsite
 import com.yanzhenjie.andserver.annotation.Config
 import com.yanzhenjie.andserver.framework.config.Multipart
 import com.yanzhenjie.andserver.framework.config.WebConfig
@@ -8,6 +9,8 @@ import java.io.File
 
 
 /**
+ * [@Config] 只能实现[WebConfig]才有效
+ * [com.yanzhenjie.andserver.register.OnRegister]
  *
  * Email:angcyo@126.com
  * @author angcyo

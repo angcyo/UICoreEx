@@ -2,19 +2,24 @@ package com.angcyo.server.file
 
 import android.content.Context
 import com.angcyo.library.libFolderPath
+import com.angcyo.server.website.FaviconWebsite
+import com.angcyo.server.website.LogWSWebsite
 import com.yanzhenjie.andserver.annotation.Config
 import com.yanzhenjie.andserver.framework.config.WebConfig
 import com.yanzhenjie.andserver.framework.website.FileBrowser
 
 /**
  * 继承此类, 实现文件浏览服务
+ *
+ * [com.yanzhenjie.andserver.register.OnRegister]
+ *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2021/09/22
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-@Config
+@Config("file")
 open class FileWebConfig : WebConfig {
 
     companion object {
@@ -31,6 +36,8 @@ open class FileWebConfig : WebConfig {
         // 添加一个文件浏览器网站
         if (enable) {
             //delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
+            delegate.addWebsite(LogWSWebsite())
+            delegate.addWebsite(FaviconWebsite())
             delegate.addWebsite(FileBrowser(fileWebPath))
         }
     }

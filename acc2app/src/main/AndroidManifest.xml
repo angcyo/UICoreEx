@@ -46,7 +46,7 @@
 
     <application>
         <service
-            android:name=".server.AccServer"
+            android:name=".server.AccServerService"
             android:exported="false" />
     </application>
 
