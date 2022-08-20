@@ -5,7 +5,7 @@
 
     <application>
         <service
-            android:name=".LogServerService"
+            android:name=".service.LogServerService"
             android:enabled="true"
             android:exported="false" />
     </application>

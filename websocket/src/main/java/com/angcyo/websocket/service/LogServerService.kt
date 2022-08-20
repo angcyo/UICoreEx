@@ -1,4 +1,4 @@
-package com.angcyo.websocket
+package com.angcyo.websocket.service
 
 import android.app.Activity
 import android.app.Application

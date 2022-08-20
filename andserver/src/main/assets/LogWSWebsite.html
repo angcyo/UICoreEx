@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+</head>
+<body>
+启动中...
+</body>
+<script>
+    let address = '{ADDRESS}'
+    window.addEventListener('load', (event) => {
+      print("准备连接:" + address)
+      connect(address)
+    })
+
+    function connect(ws) {
+      let socket = new WebSocket(ws)
+      socket.addEventListener('open', (event) => {
+        print('连接成功!')
+      })
+      socket.addEventListener('error', (event) => {
+        print('准备重连...')
+        console.log('WebSocket error: ', event)
+        setTimeout(() => {
+          connect(ws)
+        }, 2_000)
+      })
+      socket.addEventListener('message', (event) => {
+        print(event.data)
+      })
+    }
+
+    function print(data) {
+      document.write(data)
+      document.write('<br>')
+      document.write('<br>')
+      let body = document.querySelector('body')
+      body.scrollTop = body.scrollHeight
+    }
+
+  </script>
+</html>

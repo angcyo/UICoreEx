@@ -1,5 +1,8 @@
 package com.angcyo.server.website
 
+import com.angcyo.library.app
+import com.angcyo.library.component.NetUtils
+import com.angcyo.library.ex.readAssets
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
 import com.yanzhenjie.andserver.http.HttpRequest
@@ -8,6 +11,8 @@ import com.yanzhenjie.andserver.http.ResponseBody
 import com.yanzhenjie.andserver.util.MediaType
 
 /**
+ * http://192.168.2.103:9200/ws
+ *
  * 实时输出log
  * [com.angcyo.websocket.LogServerService]
  * Email:angcyo@126.com
@@ -23,7 +28,10 @@ class LogWSWebsite : BasicWebsite() {
     }
 
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
-        return StringBody("<h3>test</h3>", MediaType.TEXT_HTML)
+        var html = app().readAssets("LogWSWebsite.html")
+        val address = NetUtils.localIPAddress ?: "localhost"
+        html = html?.replace("{ADDRESS}", "ws:/$address:9300")
+        return StringBody(html, MediaType.TEXT_HTML)
     }
 
 }
