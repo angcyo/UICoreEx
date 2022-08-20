@@ -69,7 +69,7 @@ class MessageNotifyModel : LifecycleViewModel() {
     }
 
     /**新消息*/
-    val newMessageObserver = Observer<MessageInfoBean> { messageInfoBean ->
+    val newMessageObserver = Observer<MessageInfoBean?> { messageInfoBean ->
 
         if (closeMessageNotify) {
             return@Observer

@@ -194,7 +194,9 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemClick = {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
                     fragment.context?.doodleDialog {
-
+                        onDoodleResultAction = {
+                            canvasView.addPictureBitmapRenderer(it)
+                        }
                     }
                 }
                 drawCanvasRight()
