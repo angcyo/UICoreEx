@@ -2,6 +2,7 @@ package com.angcyo.server.website
 
 import com.angcyo.library.app
 import com.angcyo.library.component.NetUtils
+import com.angcyo.library.component.Port
 import com.angcyo.library.ex.readAssets
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
@@ -30,7 +31,8 @@ class LogWSWebsite : BasicWebsite() {
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         var html = app().readAssets("LogWSWebsite.html")
         val address = NetUtils.localIPAddress ?: "localhost"
-        html = html?.replace("{ADDRESS}", "ws:/$address:9300")
+        val port = Port.generatePort(9300)
+        html = html?.replace("{ADDRESS}", "ws:/$address:${port - 1}")
         return StringBody(html, MediaType.TEXT_HTML)
     }
 

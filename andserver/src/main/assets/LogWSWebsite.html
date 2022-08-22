@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh">
-<head>
+<html lang="zh-CN">
+  <head>
     <meta charset="UTF-8">
     <title>WebSocket</title>
-</head>
-<body>
-启动中...
-</body>
-<script>
+  </head>
+  <body>
+    <span style="color:#1f2633">启动中...</span>
+  </body>
+  <script>
     let address = '{ADDRESS}'
     window.addEventListener('load', (event) => {
       print("准备连接:" + address)
@@ -31,8 +31,23 @@
       })
     }
 
-    function print(data) {
-      document.write(data)
+    let tagReg = /(\[.*\])/
+
+    function print(log) {
+
+      let match = log.match(tagReg)
+      let tag = undefined
+
+      if (match) {
+        tag = match[0]
+      }
+
+      if (tag) {
+        document.write(`<span style="color:#9ea6b8">${tag}</span>`)
+        log = log.replace(tag, '')
+      }
+      document.write(`<span style="color:#1f2633">${log}</span>`)
+
       document.write('<br>')
       document.write('<br>')
       let body = document.querySelector('body')
