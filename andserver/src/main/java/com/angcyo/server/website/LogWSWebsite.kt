@@ -10,6 +10,7 @@ import com.yanzhenjie.andserver.http.HttpRequest
 import com.yanzhenjie.andserver.http.HttpResponse
 import com.yanzhenjie.andserver.http.ResponseBody
 import com.yanzhenjie.andserver.util.MediaType
+import kotlin.math.max
 
 /**
  * http://192.168.2.103:9200/ws
@@ -31,7 +32,8 @@ class LogWSWebsite : BasicWebsite() {
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         var html = app().readAssets("LogWSWebsite.html")
         val address = NetUtils.localIPAddress ?: "localhost"
-        val port = Port.generatePort(9300)
+        val def = 9300
+        val port = max(def, Port.generatePort(def))
         html = html?.replace("{ADDRESS}", "ws:/$address:${port - 1}")
         return StringBody(html, MediaType.TEXT_HTML)
     }
