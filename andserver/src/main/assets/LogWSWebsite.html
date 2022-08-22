@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <title>WebSocket</title>
+    <style>
+        .tag {
+            color: #9ea6b8;
+        }
+
+        .log {
+            color: #1f2633;
+        }
+    </style>
   </head>
   <body>
     <span style="color:#1f2633">启动中...</span>
+    <p id="container"></p>
   </body>
   <script>
-    let address = '{ADDRESS}'
+    let address = '{ADDRESS}'//'ws://192.168.31.152:9300'
     window.addEventListener('load', (event) => {
       print("准备连接:" + address)
       connect(address)
@@ -42,16 +52,17 @@
         tag = match[0]
       }
 
+      let container = document.getElementById("container")
       if (tag) {
-        document.write(`<span style="color:#9ea6b8">${tag}</span>`)
+        container.innerHTML += `<span class="tag">${tag}</span>`
         log = log.replace(tag, '')
       }
-      document.write(`<span style="color:#1f2633">${log}</span>`)
+      container.innerHTML += `<span class="log">${log}</span>`
 
-      document.write('<br>')
-      document.write('<br>')
-      let body = document.querySelector('body')
-      body.scrollTop = body.scrollHeight
+      container.innerHTML += '<br>'
+      container.innerHTML += '<br>'
+
+      window.scrollTo(0, document.body.scrollHeight)
     }
 
   </script>
