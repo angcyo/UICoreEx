@@ -15,7 +15,7 @@ import com.angcyo.library.L
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/08/19
  */
-class LogServerService : WSService() {
+class LogWSService : WSService() {
 
     init {
         notifyName = "LogServer"
@@ -30,8 +30,8 @@ class LogServerService : WSService() {
     }
 }
 
-/**自动启动和停止[LogServerService]*/
-fun LifecycleOwner.bindLogServer() {
+/**自动启动和停止[LogWSService]*/
+fun LifecycleOwner.bindLogWSServer() {
     lifecycle.addObserver(object : LifecycleEventObserver {
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
             val context: Context? = when (source) {
@@ -43,8 +43,8 @@ fun LifecycleOwner.bindLogServer() {
 
             if (context != null) {
                 when (event) {
-                    Lifecycle.Event.ON_CREATE -> context.startLogServer()
-                    Lifecycle.Event.ON_DESTROY -> context.stopLogServer()
+                    Lifecycle.Event.ON_CREATE -> context.startLogWSServer()
+                    Lifecycle.Event.ON_DESTROY -> context.stopLogWSServer()
                     else -> Unit
                 }
             } else {
@@ -55,8 +55,8 @@ fun LifecycleOwner.bindLogServer() {
 }
 
 /**开始一个文件服务, 用来访问app外部文件目录*/
-fun Context.startLogServer() {
-    val intent = Intent(this, LogServerService::class.java)
+fun Context.startLogWSServer() {
+    val intent = Intent(this, LogWSService::class.java)
     try {
         startService(intent)
     } catch (e: Exception) {
@@ -65,7 +65,7 @@ fun Context.startLogServer() {
 }
 
 /**停止文件服务*/
-fun Context.stopLogServer() {
-    val intent = Intent(this, LogServerService::class.java)
+fun Context.stopLogWSServer() {
+    val intent = Intent(this, LogWSService::class.java)
     stopService(intent)
 }

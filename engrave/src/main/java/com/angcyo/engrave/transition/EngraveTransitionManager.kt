@@ -1,8 +1,12 @@
 package com.angcyo.engrave.transition
 
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.utils.toDataModeStr
+import com.angcyo.canvas.utils.toDataTypeStr
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.toEngraveTypeStr
+import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 
 /**
@@ -32,14 +36,25 @@ class EngraveTransitionManager {
     fun transitionReadyData(renderer: BaseItemRenderer<*>?): EngraveReadyInfo? {
         val itemRenderer = renderer ?: return null
         var result: EngraveReadyInfo? = null
-        transitionList.forEach {
-            result = it.doTransitionReadyData(itemRenderer)
+
+        for (transition in transitionList) {
+            result = transition.doTransitionReadyData(itemRenderer)
             if (result != null) {
-                return@forEach
+                break
             }
         }
+
         if (result?.engraveData == null) {
             result?.engraveData = EngraveDataInfo()
+        }
+        if (result == null) {
+            L.w("无法处理的Item:${renderer}")
+        } else {
+            L.i(
+                "预处理Item数据->",
+                result.dataType.toDataTypeStr(),
+                result.dataMode.toDataModeStr()
+            )
         }
         return result
     }
@@ -51,11 +66,21 @@ class EngraveTransitionManager {
         engraveReadyInfo: EngraveReadyInfo
     ) {
         val itemRenderer = renderer ?: return
-        transitionList.forEach {
-            val result = it.doTransitionEngraveData(itemRenderer, engraveReadyInfo)
+
+        for (transition in transitionList) {
+            val result = transition.doTransitionEngraveData(itemRenderer, engraveReadyInfo)
             if (result) {
-                return@forEach
+                break
             }
+        }
+
+        engraveReadyInfo.engraveData?.let {
+            L.i(
+                "处理Item数据->",
+                engraveReadyInfo.dataType.toDataTypeStr(),
+                engraveReadyInfo.dataMode.toDataModeStr(),
+                engraveReadyInfo.engraveData?.engraveDataType?.toEngraveTypeStr()
+            )
         }
     }
 

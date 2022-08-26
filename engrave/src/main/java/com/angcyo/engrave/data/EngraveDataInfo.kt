@@ -1,6 +1,12 @@
 package com.angcyo.engrave.data
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_BITMAP
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_BITMAP_CROP
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_BITMAP_DITHERING
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_BITMAP_PATH
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_GCODE
+import com.angcyo.engrave.data.EngraveDataInfo.Companion.ENGRAVE_TYPE_PATH
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 
 /**
@@ -74,6 +80,11 @@ data class EngraveDataInfo(
          *
          * 图片白色像素不打印打印, 色值:255  byte:-1
          * 图片黑色像素打印,      色值:0    byte:0
+         *
+         * 色值决定机器的功率, 色值越大功率越大.
+         * 但是设备进行了取反操作, 所有上层0,机器取反就是255
+         * 机器打纸的时候, 才会取反
+         * 机器打金属的时候, 不取反
          * */
         const val ENGRAVE_TYPE_BITMAP = 0x10
 
@@ -127,4 +138,14 @@ data class EngraveDataInfo(
         lines = entity.lines
         return this
     }
+}
+
+fun Int.toEngraveTypeStr() = when (this) {
+    ENGRAVE_TYPE_BITMAP -> "雕刻灰度数据"
+    ENGRAVE_TYPE_GCODE -> "雕刻GCode数据"
+    ENGRAVE_TYPE_PATH -> "雕刻路径数据"
+    ENGRAVE_TYPE_BITMAP_PATH -> "雕刻图片路径数据"
+    ENGRAVE_TYPE_BITMAP_CROP -> "雕刻图片裁剪数据"
+    ENGRAVE_TYPE_BITMAP_DITHERING -> "雕刻抖动数据"
+    else -> "EngraveType-${this}"
 }

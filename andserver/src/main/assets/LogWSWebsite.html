@@ -55,11 +55,12 @@
       let container = document.getElementById("container")
       if (tag) {
         container.innerHTML += `<span class="tag">${tag}</span>`
+        container.innerHTML += '<br>'
         log = log.replace(tag, '')
       }
       container.innerHTML += `<span class="log">${log}</span>`
-
       container.innerHTML += '<br>'
+
       container.innerHTML += '<br>'
 
       window.scrollTo(0, document.body.scrollHeight)

@@ -251,11 +251,18 @@
             android:text="pvRect" />
 
         <com.angcyo.widget.DslButton
-            android:id="@+id/preproccess_button"
+            android:id="@+id/pre_proccess_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="数据预处理" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/log_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="log" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/test_button"

@@ -1,14 +1,19 @@
 package com.angcyo.engrave.transition
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.toEngraveBitmap
+import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.toBitmap
+import okhttp3.internal.and
 
 /**
  * Bitmap数据转换, 什么item要处理成Bitmap数据
@@ -17,6 +22,94 @@ import com.angcyo.library.ex.toBitmap
  */
 class BitmapTransition : IEngraveTransition {
 
+    companion object {
+
+        /**[bitmap] 图片转路径数据
+         * [threshold] 颜色阈值, 此值以下的色值视为黑色0
+         * */
+        fun handleBitmapPath(bitmap: Bitmap, threshold: Int): List<BitmapPath> {
+            val result = mutableListOf<BitmapPath>()
+
+            var lastBitmapPath: BitmapPath? = null
+            var isLTR = true
+
+            //追加一段路径
+            fun appendPath(ltr: Boolean) {
+                lastBitmapPath?.apply {
+                    len++
+                    result.add(this)
+                    lastBitmapPath = null
+                    isLTR = ltr
+                }
+            }
+
+            val width = bitmap.width
+            val height = bitmap.height
+
+            for (y in 0 until height) {
+                val ltr = isLTR
+                for (x in 0 until width) {
+                    //一行
+                    val wIndex = if (ltr) x else width - x - 1
+                    val color = bitmap.getPixel(wIndex, y)
+                    val channelColor = Color.red(color)
+
+                    if (channelColor <= threshold) {
+                        //00, 黑色纸上雕刻, 金属不雕刻
+                        if (lastBitmapPath == null) {
+                            lastBitmapPath = BitmapPath(wIndex, y, 0, ltr)
+                        }
+                        lastBitmapPath?.apply {
+                            len++
+                        }
+                    } else {
+                        appendPath(!ltr)
+                    }
+                }
+                //收尾
+                appendPath(!ltr)
+            }
+            return result
+        }
+
+        /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
+         * [threshold] 颜色阈值, 此值以下的色值视为黑色0
+         * 白色1 黑色0
+         * */
+        fun handleBitmapByte(bitmap: Bitmap, threshold: Int): ByteArray {
+            val width = bitmap.width
+            val height = bitmap.height
+
+            var byte: Byte = 0 //1个字节8位
+            var bit = 0
+            return byteWriter {
+                for (y in 0 until height) {
+                    bit = 7
+                    for (x in 0 until width) {
+                        //一行
+                        val color = bitmap.getPixel(x, y)
+                        val channelColor = Color.red(color)
+
+                        if (channelColor <= threshold) {
+                            //00, 黑色纸上雕刻, 金属不雕刻
+                            byte = (byte and (0b1 shl bit)).toByte()
+                        }
+                        bit--
+                        if (bit == 0) {
+                            //8位
+                            write(byte)
+                            bit = 7
+                        }
+                    }
+                    //
+                    if (bit != 7) {
+                        write(byte)
+                    }
+                }
+            }
+        }
+    }
+
     override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
         val item = renderer.getRendererItem() ?: return null
         //走到这里的数据, 都处理成Bitmap
@@ -24,6 +117,7 @@ class BitmapTransition : IEngraveTransition {
 
         result.itemUuid = item.uuid
         result.dataType = item.dataType
+        result.dataMode = item.dataMode
         if (result.dataMode > 0) {
             result.dataMode = result.dataMode
         } else {
@@ -73,6 +167,7 @@ class BitmapTransition : IEngraveTransition {
             engraveReadyInfo.engraveData?.px ?: LaserPeckerHelper.DEFAULT_PX
         )
 
+        //bitmap转bytes
         _handleBitmapData(engraveReadyInfo)
 
         return true
@@ -114,26 +209,50 @@ class BitmapTransition : IEngraveTransition {
         val engraveData = engraveReadyInfo.engraveData ?: return
         val bitmap = engraveReadyInfo.dataBitmap ?: return
 
+        //2:保存一份可视化的数据/原始数据
         //mode
         when (engraveReadyInfo.dataMode) {
-            CanvasConstant.DATA_MODE_BLACK_WHITE, CanvasConstant.DATA_MODE_DITHERING -> {
+            CanvasConstant.DATA_MODE_BLACK_WHITE, CanvasConstant.DATA_MODE_PRINT, CanvasConstant.DATA_MODE_SEAL -> {
+                //黑白算法/版画/印章 都用路径数据传输
+                engraveData.engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_BITMAP_PATH
 
+                //图片转路径数据
+                val listBitmapPath = handleBitmapPath(bitmap, 128)
+                engraveData.lines = listBitmapPath.size
+                engraveData.data = byteWriter {
+                    listBitmapPath.forEach {
+                        write(it.x, 2)
+                        write(it.y, 2)
+                        write(it.len, 2)
+                    }
+                }
+                saveEngraveData(engraveData.index, bitmap, "png")
             }
             CanvasConstant.DATA_MODE_GREY -> {
+                //灰度数据
+                engraveData.engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_BITMAP
 
+                //雕刻的数据, 红色通道的灰度雕刻数据
+                val data = bitmap.engraveColorBytes()
+                engraveData.data = data
+                val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
+                saveEngraveData(engraveData.index, channelBitmap, "png")
+            }
+            //CanvasConstant.DATA_MODE_DITHERING
+            else -> {
+                //抖动数据使用位压缩数据传输
+                //默认情况下都按照抖动数据处理, 更快的数据传输速率
+                engraveData.engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_BITMAP_DITHERING
+
+                //白色1 黑色0
+                val data = handleBitmapByte(bitmap, 128)
+                engraveData.data = data
+                saveEngraveData(engraveData.index, bitmap, "png")
             }
         }
 
-        //雕刻的数据
-        val data = bitmap.engraveColorBytes()
-        engraveData.data = data
-
         //1:保存一份byte数据
-        engraveReadyInfo.dataPath = saveEngraveData(engraveData.index, data)//数据路径
-
-        //2:保存一份可视化的数据/原始数据
-        val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
-        saveEngraveData(engraveData.index, channelBitmap, "png")
+        engraveReadyInfo.dataPath = saveEngraveData(engraveData.index, engraveData.data)//数据路径
 
         //3:保存一份用来历史文档预览的数据
         engraveReadyInfo.previewDataPath = saveEngraveData("${engraveData.index}.p", bitmap, "png")

@@ -2,7 +2,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Path
 import com.angcyo.canvas.CanvasView
-import com.angcyo.canvas.utils.addDrawableRenderer
+import com.angcyo.canvas.utils.addPictureDrawableRenderer
 import com.angcyo.canvas.utils.addPictureShapeRenderer
 import com.angcyo.library.ex._drawable
 
@@ -18,7 +18,7 @@ class ShapeItem(val canvasView: CanvasView) : CanvasControlItem() {
         itemClick = {
             if (shapePath == null) {
                 _drawable(itemIco)?.let {
-                    canvasView.canvasDelegate.addDrawableRenderer(it)
+                    canvasView.canvasDelegate.addPictureDrawableRenderer(it)
                 }
             } else {
                 shapePath?.let {
