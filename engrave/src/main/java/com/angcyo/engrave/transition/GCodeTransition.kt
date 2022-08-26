@@ -2,6 +2,7 @@ package com.angcyo.engrave.transition
 
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.PictureShapeItem
@@ -10,7 +11,6 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getGCodeText
 import com.angcyo.canvas.utils.getPathList
-import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
@@ -36,6 +36,8 @@ class GCodeTransition : IEngraveTransition {
         //init
         fun initReadyInfo() {
             result?.apply {
+                initReadyEngraveData(renderer, this)
+
                 this.itemUuid = item.uuid
                 this.dataType = item.dataType
                 this.dataMode = CanvasConstant.DATA_MODE_GCODE
@@ -102,9 +104,8 @@ class GCodeTransition : IEngraveTransition {
 
         //init
         fun initEngraveData() {
-            initReadyEngraveData(renderer, engraveReadyInfo)
             engraveReadyInfo.engraveData?.apply {
-                engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_GCODE
+                engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
             }
         }
 
@@ -217,7 +218,7 @@ class GCodeTransition : IEngraveTransition {
             val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
             val data = pathGCodeText.toByteArray()
             engraveReadyInfo.engraveData?.apply {
-                engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_GCODE
+                engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
                 lines = gCodeLines
                 this.data = data
 

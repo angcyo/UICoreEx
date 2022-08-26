@@ -1,11 +1,11 @@
 package com.angcyo.engrave.transition
 
+import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.toDataModeStr
 import com.angcyo.canvas.utils.toDataTypeStr
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.data.toEngraveTypeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 

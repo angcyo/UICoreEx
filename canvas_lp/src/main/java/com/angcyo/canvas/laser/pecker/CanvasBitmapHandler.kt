@@ -16,7 +16,7 @@ import com.angcyo.library.utils.fileName
 import com.angcyo.opencv.OpenCV
 
 /**
- * 图片编辑处理
+ * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/15
  */
@@ -57,7 +57,7 @@ object CanvasBitmapHandler {
                                     if (preview) Strategy.preview else Strategy.normal,
                                     keepBounds = beforeBounds,
                                     holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
-                                )
+                                )?.dataMode = CanvasConstant.DATA_MODE_PRINT
                             }
                         }
                     } else if (!preview) {
@@ -69,7 +69,7 @@ object CanvasBitmapHandler {
                                 Strategy.normal,
                                 keepBounds = beforeBounds,
                                 holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
-                            )
+                            )?.dataMode = CanvasConstant.DATA_MODE_PRINT
                         }
                     }
                 }
@@ -141,7 +141,7 @@ object CanvasBitmapHandler {
                                         CanvasDataHandleOperate.KEY_GCODE to it.first,
                                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
                                     ),
-                                )
+                                )?.dataMode = CanvasConstant.DATA_MODE_GCODE
                             }
                         }
                     } else if (!preview) {
@@ -156,7 +156,7 @@ object CanvasBitmapHandler {
                                     CanvasDataHandleOperate.KEY_GCODE to it.first,
                                     CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
                                 ),
-                            )
+                            )?.dataMode = CanvasConstant.DATA_MODE_GCODE
                         }
                     }
                 }
@@ -211,7 +211,7 @@ object CanvasBitmapHandler {
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
                                     )
-                                )
+                                )?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
                             }
                         }
                     } else if (!preview) {
@@ -224,7 +224,7 @@ object CanvasBitmapHandler {
                                 holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
                                 )
-                            )
+                            )?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
                         }
                     }
                 }
@@ -279,7 +279,7 @@ object CanvasBitmapHandler {
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
                                     )
-                                )
+                                )?.dataMode = CanvasConstant.DATA_MODE_DITHERING
                             }
                         }
                     } else if (!preview) {
@@ -293,7 +293,7 @@ object CanvasBitmapHandler {
                                 holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
                                 )
-                            )
+                            )?.dataMode = CanvasConstant.DATA_MODE_DITHERING
                         }
                     }
                 }
@@ -316,7 +316,7 @@ object CanvasBitmapHandler {
                     holdData = hashMapOf(
                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GREY
                     )
-                )
+                )?.dataMode = CanvasConstant.DATA_MODE_GREY
             }
         }
     }
@@ -360,7 +360,7 @@ object CanvasBitmapHandler {
                                     holdData = hashMapOf(
                                         CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
                                     )
-                                )
+                                )?.dataMode = CanvasConstant.DATA_MODE_SEAL
                             }
                         }
                     } else if (!preview) {
@@ -373,7 +373,7 @@ object CanvasBitmapHandler {
                                 holdData = hashMapOf(
                                     CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
                                 )
-                            )
+                            )?.dataMode = CanvasConstant.DATA_MODE_SEAL
                         }
                     }
                 }

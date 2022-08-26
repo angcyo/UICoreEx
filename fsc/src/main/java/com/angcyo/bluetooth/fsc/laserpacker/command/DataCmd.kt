@@ -32,6 +32,34 @@ data class DataCmd(
         /**雕刻文件名称占用字节数量*/
         const val DEFAULT_NAME_BYTE_COUNT = 28
 
+
+        /**雕刻图片数据类型.
+         *
+         * 图片白色像素不打印打印, 色值:255  byte:-1
+         * 图片黑色像素打印,      色值:0    byte:0
+         *
+         * 色值决定机器的功率, 色值越大功率越大.
+         * 但是设备进行了取反操作, 所有上层0,机器取反就是255
+         * 机器打纸的时候, 才会取反
+         * 机器打金属的时候, 不取反
+         * */
+        const val ENGRAVE_TYPE_BITMAP = 0x10
+
+        /**GCode数据类型*/
+        const val ENGRAVE_TYPE_GCODE = 0x20
+
+        /**路径数据*/
+        const val ENGRAVE_TYPE_PATH = 0x30
+
+        /**图片转路径数据格式*/
+        const val ENGRAVE_TYPE_BITMAP_PATH = 0x40
+
+        /**图片裁剪数据类型*/
+        const val ENGRAVE_TYPE_BITMAP_CROP = 0x50
+
+        /**图片抖动数据类型*/
+        const val ENGRAVE_TYPE_BITMAP_DITHERING = 0x60
+
         /**
          * [index] 雕刻文件索引, 下位机用来查找并打印. 32位 最大值[4294967295]
          * [bitmapData] 图片数据
@@ -49,19 +77,19 @@ data class DataCmd(
          * */
         fun bitmapData(
             index: Int,
-            bitmapData: ByteArray?,
-            bitmapWidth: Int,
-            bitmapHeight: Int,
             minX: Int = 0, //图片最小坐标(X,Y)。2字节
             minY: Int = 0,
+            bitmapWidth: Int,
+            bitmapHeight: Int,
             px: Byte = DEFAULT_PX,
             name: String?,
+            bitmapData: ByteArray?,
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
                 //0x10时图片数据
-                write(0x10)
+                write(ENGRAVE_TYPE_BITMAP)
 
                 //图片的宽,2字节
                 write(bitmapWidth and 0xff00 shr 8 and 0xff) //高8位
@@ -107,6 +135,8 @@ data class DataCmd(
         }
 
         /**GCode数据
+         * [index] 数据索引
+         * [name] 文件名
          * [lines] GCode数据行数
          * [x] GCode起始坐标, 相对于坐标原点
          * [y] GCode起始坐标, 相对于坐标原点
@@ -127,7 +157,7 @@ data class DataCmd(
             //数据头
             val head = byteWriter {
                 //0x20时为GCODE数据
-                write(0x20)
+                write(ENGRAVE_TYPE_GCODE)
 
                 //宽,2字节
                 write(width and 0xff00 shr 8 and 0xff) //高8位
@@ -179,6 +209,139 @@ data class DataCmd(
             //数据
             val data = byteWriter {
                 write(gcodeData)
+            }
+            return DataCmd(head, data, logBuilder.toString())
+        }
+
+        /**图片转路径数据
+         * [index] 数据索引
+         * [name] 文件名
+         * [lines] 路径的线段数量
+         * [x] [y] 图片的起始坐标, 相对于坐标原点, 2字节
+         * [width] [height] 图片的宽高, 2字节
+         * */
+        fun bitmapPathData(
+            index: Int,
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            px: Byte,
+            name: String?,
+            lines: Int,
+            bytes: ByteArray?,
+        ): DataCmd {
+            val logBuilder = StringBuilder()
+            //数据头
+            val head = byteWriter {
+                //0x40时为图片路径数据
+                write(ENGRAVE_TYPE_BITMAP_PATH)
+
+                //宽,2字节
+                write(width, 2)
+                //高,2字节
+                write(height, 2)
+
+                //数据索引，占用4个字节
+                write(index, 4)
+
+                //线段数 低16位
+                val lLines = lines and 0xffff
+                write(lLines, 2)
+
+                write(px)
+                write(x, 2)
+                write(y, 2)
+
+                //线段数 高16位
+                val hLines = (lines shr 16) and 0xffff
+                write(hLines, 2)
+
+                //塞满34个
+                padLength(DEFAULT_NAME_BYTE_START)
+                //第21个字节开始 共36个字节的文件名
+                val nameBytes =
+                    (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
+                write(0x00) //写入文件结束字节
+
+                //垫满
+                padLength(64) //需要64个字节
+
+                //日志
+                logBuilder.append("0x40 BitmapPath->")
+                logBuilder.append(" index:$index")
+                logBuilder.append(" lines:$lines")
+                logBuilder.append(" name:$name")
+                logBuilder.append(" w:$width")
+                logBuilder.append(" h:$height")
+                logBuilder.append(" x:$x")
+                logBuilder.append(" y:$y")
+            }
+            //数据
+            val data = byteWriter {
+                write(bytes)
+            }
+            return DataCmd(head, data, logBuilder.toString())
+        }
+
+        /**图片抖动数据, 按位压缩后的数据
+         * [index] 数据索引
+         * [name] 文件名
+         * [x] [y] 图片的起始坐标, 相对于坐标原点, 2字节
+         * [width] [height] 图片的宽高, 2字节
+         * */
+        fun bitmapDitheringData(
+            index: Int,
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            px: Byte,
+            name: String?,
+            bytes: ByteArray?,
+        ): DataCmd {
+            val logBuilder = StringBuilder()
+            //数据头
+            val head = byteWriter {
+                //0x60时为图片抖动数据
+                write(ENGRAVE_TYPE_BITMAP_DITHERING)
+
+                //宽,2字节
+                write(width, 2)
+                //高,2字节
+                write(height, 2)
+
+                //数据索引，占用4个字节
+                write(index, 4)
+
+                write(px)
+                write(x, 2)
+                write(y, 2)
+
+                //塞满34个
+                padLength(DEFAULT_NAME_BYTE_START)
+                //第21个字节开始 共36个字节的文件名
+                val nameBytes =
+                    (name ?: "Default").toByteArray().trimAndPad(DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
+                write(0x00) //写入文件结束字节
+
+                //垫满
+                padLength(64) //需要64个字节
+
+                //日志
+                logBuilder.append("0x60 BitmapDithering->")
+                logBuilder.append(" index:$index")
+                logBuilder.append(" name:$name")
+                logBuilder.append(" w:$width")
+                logBuilder.append(" h:$height")
+                logBuilder.append(" x:$x")
+                logBuilder.append(" y:$y")
+            }
+            //数据
+            val data = byteWriter {
+                write(bytes)
             }
             return DataCmd(head, data, logBuilder.toString())
         }
@@ -237,4 +400,14 @@ fun String.trimEngraveName(): String {
     return toByteArray(Charsets.UTF_8)
         .trimAndPad(DataCmd.DEFAULT_NAME_BYTE_COUNT, false)
         .toString(Charsets.UTF_8)
+}
+
+fun Int.toEngraveTypeStr() = when (this) {
+    DataCmd.ENGRAVE_TYPE_BITMAP -> "雕刻灰度数据"
+    DataCmd.ENGRAVE_TYPE_GCODE -> "雕刻GCode数据"
+    DataCmd.ENGRAVE_TYPE_PATH -> "雕刻路径数据"
+    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "雕刻图片路径数据"
+    DataCmd.ENGRAVE_TYPE_BITMAP_CROP -> "雕刻图片裁剪数据"
+    DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING -> "雕刻抖动数据"
+    else -> "EngraveType-${this}"
 }

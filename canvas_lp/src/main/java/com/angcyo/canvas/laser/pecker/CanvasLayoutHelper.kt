@@ -32,8 +32,6 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
-import com.angcyo.library.model.loadPath
-import com.angcyo.picker.dslSinglePickerImage
 import com.angcyo.qrcode.createBarCode
 import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
@@ -357,15 +355,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
 
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
-                if (itemRenderer is BitmapItemRenderer) {
-                    fragment.dslSinglePickerImage {
-                        it?.firstOrNull()?.let { media ->
-                            media.loadPath()?.toBitmap()?.apply {
-                                itemRenderer.updateBitmap(this)
-                            }
-                        }
-                    }
-                } else if (itemRenderer is PictureTextItemRenderer) {
+                if (itemRenderer is PictureTextItemRenderer) {
                     val renderItem = itemRenderer._rendererItem
                     if (renderItem is PictureTextItem) {
                         fragment.context?.inputDialog {
@@ -576,8 +566,6 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 //vh.showControlLayout(false)
                 result = false
             }
-        } else if (itemRenderer is BitmapItemRenderer) {
-            renderBitmapControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is SelectGroupRenderer) {
             renderGroupControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is DrawableItemRenderer) {

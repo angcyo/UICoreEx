@@ -28,6 +28,7 @@ interface IEngraveTransition {
 
     /**初始化一个雕刻数据*/
     fun initReadyEngraveData(renderer: BaseItemRenderer<*>, engraveReadyInfo: EngraveReadyInfo) {
+        //索引
         val item = renderer.getRendererItem()
         var index = item?.engraveIndex
         if (index == null) {
@@ -38,9 +39,11 @@ interface IEngraveTransition {
         if (engraveReadyInfo.engraveData == null) {
             engraveReadyInfo.engraveData = EngraveDataInfo()
         }
+        //雕刻数据
         engraveReadyInfo.engraveData?.apply {
             this.dataType = engraveReadyInfo.dataType
             this.index = item?.engraveIndex
+            this.name = item?.itemLayerName?.toString()
         }
     }
 

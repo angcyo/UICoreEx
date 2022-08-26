@@ -354,34 +354,11 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 if (it.isIntoFileMode()) {
                     //成功进入大数据模式
 
+                    engraveModel.engraveOptionInfoData.value?.x = engraveData.x
+                    engraveModel.engraveOptionInfoData.value?.y = engraveData.y
+
                     //数据类型封装
-                    val dataCmd: DataCmd? = when (engraveData.engraveDataType) {
-                        EngraveDataInfo.ENGRAVE_TYPE_BITMAP -> {
-                            engraveModel.engraveOptionInfoData.value?.x = engraveData.x
-                            engraveModel.engraveOptionInfoData.value?.y = engraveData.y
-                            DataCmd.bitmapData(
-                                index,
-                                engraveData.data,
-                                engraveData.width,
-                                engraveData.height,
-                                engraveData.x,
-                                engraveData.y,
-                                engraveData.px,
-                                engraveData.name,
-                            )
-                        }
-                        EngraveDataInfo.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
-                            index,
-                            engraveData.x,
-                            engraveData.y,
-                            engraveData.width,
-                            engraveData.height,
-                            engraveData.name,
-                            engraveData.lines,
-                            engraveData.data,
-                        )
-                        else -> null
-                    }
+                    val dataCmd: DataCmd? = EngraveHelper.getEngraveDataCmd(engraveData)
 
                     //开始发送数据
                     if (dataCmd != null) {
