@@ -5,12 +5,11 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.angcyo.canvas.items.BaseItem
+import com.angcyo.canvas.TypefaceInfo
 import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
-import com.angcyo.canvas.items.renderer.TextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
 import com.angcyo.component.getFile
 import com.angcyo.dialog.TargetWindow
@@ -92,25 +91,8 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 }
             }
 
-            //系统默认字体
-            //typefaceItem("normal", Typeface.DEFAULT)
-            //typefaceItem("sans", Typeface.SANS_SERIF)
-            fontList.add(TypefaceInfo("serif", Typeface.SERIF))
-            fontList.add(
-                TypefaceInfo("Default-Normal", Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
-            )
-            fontList.add(
-                TypefaceInfo("Default-Bold", Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
-            )
-            fontList.add(
-                TypefaceInfo("Default-Italic", Typeface.create(Typeface.DEFAULT, Typeface.ITALIC))
-            )
-            fontList.add(
-                TypefaceInfo(
-                    "Default-Bold-Italic",
-                    Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
-                )
-            )
+            //默认的字体列表
+            fontList.addAll(PictureTextItem.DEFAULT_TYPEFACE_LIST)
         }
 
         /**导入字体*/
@@ -221,7 +203,7 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
             displayName = name
             previewText = _string(R.string.canvas_font_text)
             typeface = type
-            itemIsSelected = (itemRenderer?.getRendererItem() as? BaseItem)?.paint?.typeface == type
+            itemIsSelected = (itemRenderer as? BaseItemRenderer)?.paint?.typeface == type
             if (line) {
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
             }
@@ -254,15 +236,8 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
     //更新字体
     fun updatePaintTypeface(typeface: Typeface?) {
         val renderer = itemRenderer
-        if (renderer is TextItemRenderer) {
-            renderer.updatePaintTypeface(typeface)
-        } else if (renderer is PictureTextItemRenderer) {
-            renderer.updatePaintTypeface(typeface)
-        } else if (renderer is PictureItemRenderer) {
-            val renderItem = renderer._rendererItem
-            if (renderItem is PictureTextItem) {
-                renderer.updateTextTypeface(typeface)
-            }
+        if (renderer is PictureTextItemRenderer) {
+            renderer.updateTextTypeface(typeface)
         }
     }
 }

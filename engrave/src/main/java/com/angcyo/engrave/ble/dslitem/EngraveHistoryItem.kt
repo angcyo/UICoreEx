@@ -56,7 +56,7 @@ class EngraveHistoryItem : DslAdapterItem() {
 
         labelDesList.add(LabelDesData(_string(R.string.file_name), engraveHistoryEntity?.name.or()))
 
-        val mode = engraveHistoryEntity?.optionMode.toModeString()
+        val mode = engraveHistoryEntity?.dataMode.toModeString()
         labelDesList.add(LabelDesData(_string(R.string.print_file_name), mode))
 
         labelDesList.add(

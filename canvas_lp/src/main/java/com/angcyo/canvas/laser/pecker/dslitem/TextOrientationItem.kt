@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.widget.LinearLayout
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
 
@@ -19,7 +20,7 @@ class TextOrientationItem : CanvasControlItem() {
         itemSingleSelectMutex = true
         itemClick = {
             itemRenderer?.let { renderer ->
-                if (renderer is PictureItemRenderer) {
+                if (renderer is PictureTextItemRenderer) {
                     val renderItem = renderer.getRendererItem()
                     if (renderItem is PictureTextItem) {
                         renderer.updateTextOrientation(itemOrientation)

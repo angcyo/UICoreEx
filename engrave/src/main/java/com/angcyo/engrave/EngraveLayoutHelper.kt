@@ -18,8 +18,9 @@ import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.engrave.dslitem.*
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
 import com.angcyo.http.rx.runRx
 import com.angcyo.item.DslNestedGridRecyclerItem
@@ -43,12 +44,15 @@ import kotlin.math.roundToInt
  */
 class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
+    /**雕刻数据转换管理*/
+    val engraveTransitionManager = EngraveTransitionManager()
+
     /**雕刻对象*/
     var renderer: BaseItemRenderer<*>? = null
         set(value) {
             field = value
             if (value != null) {
-                engraveReadyDataInfo = null
+                engraveReadyInfo = null
             }
         }
 
@@ -58,7 +62,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     var dslAdapter: DslAdapter? = null
 
     /**雕刻需要准备的数据*/
-    var engraveReadyDataInfo: EngraveReadyDataInfo? = null
+    var engraveReadyInfo: EngraveReadyInfo? = null
 
     init {
         iViewLayoutId = R.layout.canvas_engrave_layout
@@ -96,7 +100,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     }
                     engraveModel.updateEngraveReadyDataInfo {
                         //更新打印次数
-                        engraveReadyDataInfo?.printTimes = it.printTimes
+                        engraveReadyInfo?.printTimes = it.printTimes
                     }
                     engraveModel.updateEngraveProgress(progress)
                     checkDeviceState()
@@ -157,11 +161,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**更新雕刻数据的索引*/
     fun updateEngraveDataIndex(dataInfo: EngraveDataInfo?) {
-        dataInfo?.index = EngraveHelper.generateEngraveIndex()
+        dataInfo?.index = EngraveTransitionManager.generateEngraveIndex()
         renderer?.getRendererItem()?.engraveIndex = dataInfo?.index
     }
 
-    /**初始化布局*/
+    /**初始化布局
+     * [onIViewShow]*/
     fun initLayout() {
         //init
         viewHolder?.throttleClick(R.id.close_layout_view) {
@@ -178,9 +183,9 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         //close按钮
         showCloseLayout()
 
-        if (engraveReadyDataInfo == null) {
+        if (engraveReadyInfo == null) {
             //未指定需要雕刻的数据, 则从Render中获取需要雕刻的数据
-            engraveReadyDataInfo = EngraveHelper.generateEngraveReadyDataInfo(renderer)
+            engraveReadyInfo = engraveTransitionManager.transitionReadyData(renderer)
         }
 
         //engrave
@@ -268,7 +273,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**处理雕刻数据*/
     @AnyThread
-    fun showHandleEngraveItem(engraveReadyDataInfo: EngraveReadyDataInfo) {
+    fun showHandleEngraveItem(engraveReadyInfo: EngraveReadyInfo) {
         dslAdapter?.clearAllItems()
         updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips)) {
             itemEnableProgressFlowMode = true
@@ -279,28 +284,28 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             runRx({
                 if (renderer == null) {
                     //此时可能来自历史文档的数据
-                    val dataPathFile = engraveReadyDataInfo.dataPath?.file()
+                    val dataPathFile = engraveReadyInfo.dataPath?.file()
                     if (dataPathFile?.exists() == true) {
-                        engraveReadyDataInfo.engraveData?.data = dataPathFile.readBytes()
+                        engraveReadyInfo.engraveData?.data = dataPathFile.readBytes()
                     }
                 } else {
-                    EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
+                    engraveTransitionManager.transitionEngraveData(renderer, engraveReadyInfo)
                 }
-                engraveReadyDataInfo.engraveData
+                engraveReadyInfo.engraveData
             }) { dataInfo ->
                 if (dataInfo?.data == null) {
                     showEngraveError("data exception!")
                     "雕刻数据处理结果为null".writeErrorLog()
                 } else {
-                    sendEngraveData(engraveReadyDataInfo)
+                    sendEngraveData(engraveReadyInfo)
                 }
             }
         }
 
-        val index = engraveReadyDataInfo.engraveData?.index
+        val index = engraveReadyInfo.engraveData?.index
         if (index == null) {
             //需要重新发送数据
-            updateEngraveDataIndex(engraveReadyDataInfo.engraveData)
+            updateEngraveDataIndex(engraveReadyInfo.engraveData)
             needHandleEngraveData()
         } else {
             //检查数据索引是否存在
@@ -310,10 +315,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 if (have) {
                     //已经存在数据, 更新数据配置即可. 直接显示雕刻相关item
                     if (renderer != null) {
-                        //重写解析一下, 但是数据不需要发送给机器
-                        EngraveHelper.handleEngraveData(renderer, engraveReadyDataInfo)
+                        //重新解析一下, 但是数据不需要发送给机器
+                        engraveTransitionManager.transitionEngraveData(renderer, engraveReadyInfo)
                     }
-                    engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
+                    engraveModel.setEngraveReadyDataInfo(engraveReadyInfo)
                     showStartEngraveItem()
                 } else {
                     needHandleEngraveData()
@@ -324,8 +329,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**发送雕刻数据*/
     @AnyThread
-    fun sendEngraveData(engraveReadyDataInfo: EngraveReadyDataInfo) {
-        val engraveData = engraveReadyDataInfo.engraveData
+    fun sendEngraveData(engraveReadyInfo: EngraveReadyInfo) {
+        val engraveData = engraveReadyInfo.engraveData
         if (engraveData == null) {
             showEngraveError("data exception")
             "无需要发送的雕刻数据".writeErrorLog()
@@ -339,7 +344,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         }
 
         showCloseLayout(false)//传输中不允许关闭
-        engraveModel.setEngraveReadyDataInfo(engraveReadyDataInfo)
+        engraveModel.setEngraveReadyDataInfo(engraveReadyInfo)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer)) {
             itemEnableProgressFlowMode = true
         }
@@ -350,8 +355,8 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     //成功进入大数据模式
 
                     //数据类型封装
-                    val dataCmd: DataCmd? = when (engraveData.dataType) {
-                        EngraveDataInfo.TYPE_BITMAP -> {
+                    val dataCmd: DataCmd? = when (engraveData.engraveDataType) {
+                        EngraveDataInfo.ENGRAVE_TYPE_BITMAP -> {
                             engraveModel.engraveOptionInfoData.value?.x = engraveData.x
                             engraveModel.engraveOptionInfoData.value?.y = engraveData.y
                             DataCmd.bitmapData(
@@ -365,7 +370,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                                 engraveData.name,
                             )
                         }
-                        EngraveDataInfo.TYPE_GCODE -> DataCmd.gcodeData(
+                        EngraveDataInfo.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
                             index,
                             engraveData.x,
                             engraveData.y,
@@ -527,10 +532,10 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**显示雕刻数据处理前选项相关的item*/
     fun showEngraveOptionItem() {
-        val dataInfo = engraveReadyDataInfo?.engraveData
-        if (dataInfo != null && engraveReadyDataInfo?.historyEntity != null) {
+        val dataInfo = engraveReadyInfo?.engraveData
+        if (dataInfo != null && engraveReadyInfo?.historyEntity != null) {
             //来自历史文档的雕刻数据
-            showHandleEngraveItem(engraveReadyDataInfo!!)
+            showHandleEngraveItem(engraveReadyInfo!!)
             return
         }
 
@@ -545,16 +550,16 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     itemEngraveDataInfo = dataInfo
                 }*/
                 EngraveDataNameItem()() {
-                    itemEngraveReadyDataInfo = engraveReadyDataInfo
+                    itemEngraveReadyInfo = engraveReadyInfo
                 }
                 /*EngraveDataModeItem()() {
                     itemEngraveDataInfo = dataInfo
                 }*/
-                if (engraveReadyDataInfo?.optionSupportPxList.isNullOrEmpty().not()) {
+                if (engraveReadyInfo?.dataSupportPxList.isNullOrEmpty().not()) {
                     val defPx = dataInfo.px
                     EngraveDataPxItem()() {
                         itemEngraveDataInfo = dataInfo
-                        itemPxList = engraveReadyDataInfo?.optionSupportPxList
+                        itemPxList = engraveReadyInfo?.dataSupportPxList
 
                         observeItemChange {
                             //当px改变之后, 需要更新数据索引
@@ -569,7 +574,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                         if (!checkItemThrowable()) {
                             //next
                             renderer?.getRendererItem()?.itemLayerName = dataInfo.name
-                            showHandleEngraveItem(engraveReadyDataInfo!!)
+                            showHandleEngraveItem(engraveReadyInfo!!)
                         }
                     }
                 }
@@ -585,7 +590,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             updateEngraveProgress(0, _string(R.string.print_v2_package_printing), time = -1)
             EngravingItem()() {
                 againAction = {
-                    if (engraveReadyDataInfo == null) {
+                    if (engraveReadyInfo == null) {
                         //恢复的数据
                         hide()
                     } else {

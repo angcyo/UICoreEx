@@ -1,7 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.dsladapter.renderEmptyItem
-import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.engrave.dslitem.EngraveDataNextItem
 import com.angcyo.engrave.dslitem.EngraveDataPreviewItem
 import com.angcyo.item.form.checkItemThrowable
@@ -20,7 +20,7 @@ import com.angcyo.library.ex._string
 class EngraveBeforeLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**目标数据*/
-    var engraveReadyDataInfo: EngraveReadyDataInfo? = null
+    var engraveReadyInfo: EngraveReadyInfo? = null
 
     /**预览*/
     var onPreviewAction: ClickAction? = null
@@ -35,10 +35,10 @@ class EngraveBeforeLayoutHelper : BaseEngraveLayoutHelper() {
     override fun onIViewCreate() {
         super.onIViewCreate()
         renderDslAdapter {
-            engraveReadyDataInfo?.let { dataInfo ->
+            engraveReadyInfo?.let { dataInfo ->
                 //效果预览
                 EngraveDataPreviewItem()() {
-                    itemEngraveReadyDataInfo = dataInfo
+                    itemEngraveReadyInfo = dataInfo
                 }
                 //文件名
                 /*EngraveDataNameItem()() {

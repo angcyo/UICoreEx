@@ -41,7 +41,7 @@ class AddImageItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentI
                             media.loadPath()?.apply {
                                 //canvasView.addDrawableRenderer(toBitmap())
                                 //canvasView.addBitmapRenderer(toBitmap())
-                                canvasView.addPictureBitmapRenderer(toBitmap()!!)
+                                canvasView.canvasDelegate.addPictureBitmapRenderer(toBitmap()!!)
                             }
                         }
                     }
@@ -53,7 +53,8 @@ class AddImageItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentI
                         L.i("${path}->${newPath}")
 
                         //压缩后
-                        newPath.toBitmap()?.let { canvasView.addPictureBitmapRenderer(it) }
+                        newPath.toBitmap()
+                            ?.let { canvasView.canvasDelegate.addPictureBitmapRenderer(it) }
                     }
                 }
             }

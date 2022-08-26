@@ -20,7 +20,7 @@ class EngraveDialogConfig(context: Context? = null) : BaseDialogConfig(context) 
     val engraveLayoutHelper = EngraveLayoutHelper()
 
     init {
-        amount = 0f
+        dimAmount = 0f
         dialogLayoutId = R.layout.canvas_engrave_layout
     }
 

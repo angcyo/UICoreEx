@@ -22,10 +22,11 @@ import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toast
 import com.angcyo.objectbox.deleteEntity
@@ -34,7 +35,6 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity_
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.page
-import com.angcyo.library.ex.*
 
 /**
  * 历史文档界面
@@ -97,7 +97,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
         }
     }
 
-    var _readyDataInfo: EngraveReadyDataInfo? = null
+    var _readyDataInfo: EngraveReadyInfo? = null
     var _engraveOption: EngraveOptionInfo? = null
 
     override fun onLoadData() {
@@ -187,7 +187,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
                 //数据不存在, 需要重新发送数据
                 selectHistoryEntity(bean)
                 engraveBeforeLayoutHelper.iViewTitle = bean.name
-                engraveBeforeLayoutHelper.engraveReadyDataInfo = _readyDataInfo
+                engraveBeforeLayoutHelper.engraveReadyInfo = _readyDataInfo
                 engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
             }
         }
@@ -196,8 +196,11 @@ class EngraveHistoryFragment : BaseDslFragment() {
     /**准备数据*/
     fun selectHistoryEntity(entity: EngraveHistoryEntity) {
         //准备雕刻数据
-        val readyDataInfo = EngraveReadyDataInfo(entity, EngraveDataInfo().updateFromEntity(entity))
-        readyDataInfo.optionMode = entity.optionMode
+        val readyDataInfo = EngraveReadyInfo()
+        readyDataInfo.historyEntity = entity
+        readyDataInfo.engraveData = EngraveDataInfo().updateFromEntity(entity)
+
+        readyDataInfo.dataMode = entity.dataMode ?: 0
         readyDataInfo.dataPath = entity.dataPath
         readyDataInfo.previewDataPath = entity.previewDataPath
         _readyDataInfo = readyDataInfo
@@ -235,7 +238,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
     fun toEngrave() {
         vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
 
-        engraveLayoutHelper.engraveReadyDataInfo = _readyDataInfo
+        engraveLayoutHelper.engraveReadyInfo = _readyDataInfo
         engraveLayoutHelper.showIn(this)
     }
 

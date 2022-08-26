@@ -40,7 +40,7 @@ class TextAlignItem : CanvasControlItem() {
         if (itemRenderer is PictureItemRenderer) {
             val renderItem = itemRenderer?.getRendererItem()
             if (renderItem is PictureTextItem) {
-                itemIsSelected = renderItem.paint.textAlign == itemAlign
+                itemIsSelected = itemRenderer?.paint?.textAlign == itemAlign
             }
         }
 

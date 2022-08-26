@@ -11,7 +11,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveItemInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngravePreviewInfo
-import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.isMain
@@ -46,7 +46,7 @@ class EngraveModel : ViewModel(), IViewModel {
     )
 
     /**当前正在雕刻的数据*/
-    val engraveReadyInfoData = vmDataNull<EngraveReadyDataInfo>()
+    val engraveReadyInfoData = vmDataNull<EngraveReadyInfo>()
 
     /**用来通知item的雕刻进度*/
     val engraveItemData = vmDataOnce<EngraveItemInfo>()
@@ -61,7 +61,7 @@ class EngraveModel : ViewModel(), IViewModel {
 
     /**设置需要雕刻的数据*/
     @AnyThread
-    fun setEngraveReadyDataInfo(info: EngraveReadyDataInfo) {
+    fun setEngraveReadyDataInfo(info: EngraveReadyInfo) {
         if (isMain()) {
             engraveReadyInfoData.value = info
         } else {
@@ -71,7 +71,7 @@ class EngraveModel : ViewModel(), IViewModel {
 
     /**更新雕刻数据信息*/
     @AnyThread
-    fun updateEngraveReadyDataInfo(block: EngraveReadyDataInfo.() -> Unit) {
+    fun updateEngraveReadyDataInfo(block: EngraveReadyInfo.() -> Unit) {
         engraveReadyInfoData.value?.let {
             it.block()
             setEngraveReadyDataInfo(it)
@@ -100,7 +100,7 @@ class EngraveModel : ViewModel(), IViewModel {
                 engraveData?.updateToEntity(entity)
                 engraveOptionInfoData.value?.updateToEntity(entity)
 
-                entity.optionMode = optionMode
+                entity.dataMode = dataMode
                 entity.dataPath = dataPath
                 entity.previewDataPath = previewDataPath
                 entity.startEngraveTime = startEngraveTime
@@ -188,7 +188,7 @@ class EngraveModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateEngraveProgress(progress: Int) {
         engraveReadyInfoData.value?.let {
-            val uuid = if (progress < 0) null else it.rendererItemUuid
+            val uuid = if (progress < 0) null else it.itemUuid
             engraveItemData.postValue(EngraveItemInfo(uuid, progress))
         }
     }

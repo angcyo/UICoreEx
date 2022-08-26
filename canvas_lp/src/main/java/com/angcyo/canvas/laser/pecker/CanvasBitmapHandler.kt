@@ -56,7 +56,7 @@ object CanvasBitmapHandler {
                                     it,
                                     if (preview) Strategy.preview else Strategy.normal,
                                     keepBounds = beforeBounds,
-                                    holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_PRINT)
+                                    holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
                                 )
                             }
                         }
@@ -68,7 +68,7 @@ object CanvasBitmapHandler {
                                 it,
                                 Strategy.normal,
                                 keepBounds = beforeBounds,
-                                holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_PRINT)
+                                holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
                             )
                         }
                     }
@@ -139,7 +139,7 @@ object CanvasBitmapHandler {
                                     beforeBounds.rotate(boundsRotate, result = RectF()),
                                     hashMapOf(
                                         CanvasDataHandleOperate.KEY_GCODE to it.first,
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_GCODE
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
                                     ),
                                 )
                             }
@@ -154,7 +154,7 @@ object CanvasBitmapHandler {
                                 beforeBounds.rotate(boundsRotate, result = RectF()),
                                 hashMapOf(
                                     CanvasDataHandleOperate.KEY_GCODE to it.first,
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_GCODE
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
                                 ),
                             )
                         }
@@ -209,7 +209,7 @@ object CanvasBitmapHandler {
                                     if (preview) Strategy.preview else Strategy.normal,
                                     keepBounds = beforeBounds,
                                     holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_BLACK_WHITE
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
                                     )
                                 )
                             }
@@ -222,7 +222,7 @@ object CanvasBitmapHandler {
                                 it, Strategy.normal,
                                 keepBounds = beforeBounds,
                                 holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_BLACK_WHITE
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
                                 )
                             )
                         }
@@ -277,7 +277,7 @@ object CanvasBitmapHandler {
                                     if (preview) Strategy.preview else Strategy.normal,
                                     keepBounds = beforeBounds,
                                     holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_DITHERING
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
                                     )
                                 )
                             }
@@ -291,7 +291,7 @@ object CanvasBitmapHandler {
                                 Strategy.normal,
                                 keepBounds = beforeBounds,
                                 holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_DITHERING
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
                                 )
                             )
                         }
@@ -314,7 +314,7 @@ object CanvasBitmapHandler {
                     it,
                     keepBounds = beforeBounds,
                     holdData = hashMapOf(
-                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_GREY
+                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GREY
                     )
                 )
             }
@@ -358,7 +358,7 @@ object CanvasBitmapHandler {
                                     if (preview) Strategy.preview else Strategy.normal,
                                     keepBounds = beforeBounds,
                                     holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_SEAL
+                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
                                     )
                                 )
                             }
@@ -371,7 +371,7 @@ object CanvasBitmapHandler {
                                 it, Strategy.normal,
                                 keepBounds = beforeBounds,
                                 holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.BITMAP_MODE_SEAL
+                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
                                 )
                             )
                         }

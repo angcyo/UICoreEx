@@ -23,11 +23,7 @@ import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.*
 import com.angcyo.canvas.items.renderer.*
 import com.angcyo.canvas.laser.pecker.dslitem.*
-import com.angcyo.canvas.laser.pecker.dslitem.ShapeItem
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.ShapesHelper
-import com.angcyo.canvas.utils.addDrawableRenderer
-import com.angcyo.canvas.utils.addPictureBitmapRenderer
+import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.doodle.ui.doodleDialog
@@ -96,6 +92,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         adapter.render {
             hookUpdateDepend()
 
+            //
             CanvasControlItem()() {
                 itemIco = R.drawable.canvas_undo_ico
                 itemText = _string(R.string.canvas_undo)
@@ -118,6 +115,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 }
             }
 
+            //
             AddTextItem(canvasView)()
             CanvasControlItem()() {
                 itemIco = R.drawable.canvas_image_ico
@@ -165,23 +163,15 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                 }
                                 is GCodeDrawable -> {
                                     //gcode
-                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
-                                        .setHoldData(
-                                            CanvasDataHandleOperate.KEY_GCODE,
-                                            drawable.gCodeData
-                                        )
+                                    canvasView.canvasDelegate.addPictureDrawableRenderer(drawable)
                                 }
                                 is SharpDrawable -> {
                                     //svg
-                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
-                                        .setHoldData(
-                                            CanvasDataHandleOperate.KEY_SVG,
-                                            drawable.pathList
-                                        )
+                                    canvasView.canvasDelegate.addPictureSharpRenderer(drawable)
                                 }
                                 else -> {
                                     //other
-                                    canvasView.canvasDelegate.addDrawableRenderer(drawable)
+                                    canvasView.canvasDelegate.addPictureDrawableRenderer(drawable)
                                 }
                             }
                             UMEvent.CANVAS_MATERIAL.umengEventValue()
@@ -195,7 +185,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
                     fragment.context?.doodleDialog {
                         onDoodleResultAction = {
-                            canvasView.addPictureBitmapRenderer(it)
+                            canvasView.canvasDelegate.addPictureBitmapRenderer(it)
                         }
                     }
                 }
@@ -289,7 +279,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
     }
 
     /**输入条码*/
-    fun inputBarcode(canvasView: CanvasView?, itemRenderer: PictureItemRenderer?) {
+    fun inputBarcode(canvasView: CanvasView?, itemRenderer: PictureBitmapItemRenderer?) {
         fragment.context?.inputDialog {
             dialogTitle = _string(R.string.canvas_barcode)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
@@ -301,8 +291,8 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     //添加条码
                     if (inputText.isNotEmpty()) {
                         inputText.createBarCode()?.let {
-                            canvasView?.addPictureBitmapRenderer(it)?.apply {
-                                tag = "barcode"
+                            canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                dataType = CanvasConstant.DATA_TYPE_BARCODE
                                 data = inputText
                             }
                         }
@@ -327,7 +317,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
     }
 
     /**输入二维码*/
-    fun inputQrCode(canvasView: CanvasView?, itemRenderer: PictureItemRenderer?) {
+    fun inputQrCode(canvasView: CanvasView?, itemRenderer: PictureBitmapItemRenderer?) {
         fragment.context?.inputDialog {
             dialogTitle = _string(R.string.canvas_qrcode)
             maxInputLength = AddTextItem.MAX_INPUT_LENGTH
@@ -336,8 +326,8 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 if (itemRenderer == null) {
                     if (inputText.isNotEmpty()) {
                         inputText.createQRCode()?.let {
-                            canvasView?.addPictureBitmapRenderer(it)?.apply {
-                                tag = "qrcode"
+                            canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                dataType = CanvasConstant.DATA_TYPE_QRCODE
                                 data = inputText
                             }
                         }
@@ -367,31 +357,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
 
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
-                if (itemRenderer is TextItemRenderer) {
-                    fragment.context?.inputDialog {
-                        inputViewHeight = 100 * dpi
-                        defaultInputString = itemRenderer._rendererItem?.text
-                        maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-                        onInputResult = { dialog, inputText ->
-                            if (inputText.isNotEmpty()) {
-                                itemRenderer.updateText("$inputText")
-                            }
-                            false
-                        }
-                    }
-                } else if (itemRenderer is PictureTextItemRenderer) {
-                    fragment.context?.inputDialog {
-                        inputViewHeight = 100 * dpi
-                        defaultInputString = itemRenderer._rendererItem?.text
-                        maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-                        onInputResult = { dialog, inputText ->
-                            if (inputText.isNotEmpty()) {
-                                itemRenderer.updateText("$inputText")
-                            }
-                            false
-                        }
-                    }
-                } else if (itemRenderer is BitmapItemRenderer) {
+                if (itemRenderer is BitmapItemRenderer) {
                     fragment.dslSinglePickerImage {
                         it?.firstOrNull()?.let { media ->
                             media.loadPath()?.toBitmap()?.apply {
@@ -399,7 +365,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                             }
                         }
                     }
-                } else if (itemRenderer is PictureItemRenderer) {
+                } else if (itemRenderer is PictureTextItemRenderer) {
                     val renderItem = itemRenderer._rendererItem
                     if (renderItem is PictureTextItem) {
                         fragment.context?.inputDialog {
@@ -414,15 +380,22 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                 false
                             }
                         }
-                    } else if (renderItem is PictureBitmapItem) {
-                        if (renderItem.tag == "barcode") {
-                            //条形码
-                            inputBarcode(canvasView, itemRenderer)
-                        } else if (renderItem.tag == "qrcode") {
-                            //二维码
-                            inputQrCode(canvasView, itemRenderer)
-                        } else {
-                            //图片
+                    }
+                } else if (itemRenderer is PictureBitmapItemRenderer) {
+                    val renderItem = itemRenderer._rendererItem
+                    if (renderItem is PictureBitmapItem) {
+                        when (renderItem.dataType) {
+                            CanvasConstant.DATA_TYPE_BARCODE -> {
+                                //条形码
+                                inputBarcode(canvasView, itemRenderer)
+                            }
+                            CanvasConstant.DATA_TYPE_QRCODE -> {
+                                //二维码
+                                inputQrCode(canvasView, itemRenderer)
+                            }
+                            else -> {
+                                //图片
+                            }
                         }
                     }
                 }
@@ -589,15 +562,13 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         itemRenderer: IItemRenderer<*>
     ): Boolean {
         var result = true
-        if (itemRenderer is TextItemRenderer || itemRenderer is PictureTextItemRenderer) {
+        if (itemRenderer is PictureTextItemRenderer) {
             //选中TextItemRenderer时的控制菜单
-            renderTextControlLayoutOld(vh, canvasView, itemRenderer)
+            renderTextControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is PictureItemRenderer) {
             val renderItem = itemRenderer._rendererItem
-            if (renderItem is PictureTextItem) {
-                //选中TextItemRenderer时的控制菜单
-                renderTextControlLayout(vh, canvasView, itemRenderer)
-            } else if (renderItem is PictureShapeItem) {
+            if (renderItem is PictureShapeItem || renderItem is PictureSharpItem) {
+                //shape or sharp
                 renderShapeControlLayout(vh, canvasView, itemRenderer)
             } else if (renderItem is PictureBitmapItem) {
                 renderBitmapControlLayout(vh, canvasView, itemRenderer)
@@ -627,7 +598,6 @@ class CanvasLayoutHelper(val fragment: Fragment) {
     fun showShapeSelectLayout(vh: DslViewHolder, canvasView: CanvasView) {
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-            ShapeLineItem(canvasView)()
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_line_ico
                 itemText = _string(R.string.canvas_line)
@@ -721,105 +691,6 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
                 updateAllItem()
-            }
-        }
-    }
-
-    /**文本属性控制item*/
-    fun renderTextControlLayoutOld(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        itemRenderer: IItemRenderer<*>
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-            this + TextSolidStyleItem(itemRenderer, canvasView)
-
-            this + CanvasTextStyleItem(
-                itemRenderer,
-                PictureTextItem.TEXT_STYLE_BOLD,
-                R.drawable.canvas_text_bold_style_ico,
-                canvasView
-            )
-            this + CanvasTextStyleItem(
-                itemRenderer,
-                PictureTextItem.TEXT_STYLE_ITALIC,
-                R.drawable.canvas_text_italic_style_ico,
-                canvasView
-            )
-            this + CanvasTextStyleItem(
-                itemRenderer,
-                PictureTextItem.TEXT_STYLE_UNDER_LINE,
-                R.drawable.canvas_text_under_line_style_ico,
-                canvasView
-            )
-            this + CanvasTextStyleItem(
-                itemRenderer,
-                PictureTextItem.TEXT_STYLE_DELETE_LINE,
-                R.drawable.canvas_text_delete_line_style_ico,
-                canvasView
-            )
-
-            TextFontItem()() {
-                itemClick = {
-                    showFontSelectLayout(this, it, itemRenderer)
-                }
-            }
-
-            CanvasIconItem()() {
-                itemIco = R.drawable.canvas_text_style_standard_ico
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        val renderItem = itemRenderer._rendererItem
-                        if (renderItem is PictureTextItem) {
-                            itemRenderer.updateTextOrientation(LinearLayout.HORIZONTAL)
-                        }
-                    }
-                }
-            }
-            CanvasIconItem()() {
-                itemIco = R.drawable.canvas_text_style_vertical_ico
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        val renderItem = itemRenderer._rendererItem
-                        if (renderItem is PictureTextItem) {
-                            itemRenderer.updateTextOrientation(LinearLayout.VERTICAL)
-                        }
-                    }
-                }
-            }
-            CanvasIconItem()() {
-                itemIco = R.drawable.canvas_text_style_align_left_ico
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        val renderItem = itemRenderer._rendererItem
-                        if (renderItem is PictureTextItem) {
-                            itemRenderer.updatePaintAlign(Paint.Align.LEFT)
-                        }
-                    }
-                }
-            }
-            CanvasIconItem()() {
-                itemIco = R.drawable.canvas_text_style_align_center_ico
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        val renderItem = itemRenderer._rendererItem
-                        if (renderItem is PictureTextItem) {
-                            itemRenderer.updatePaintAlign(Paint.Align.CENTER)
-                        }
-                    }
-                }
-            }
-            CanvasIconItem()() {
-                itemIco = R.drawable.canvas_text_style_align_right_ico
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        val renderItem = itemRenderer._rendererItem
-                        if (renderItem is PictureTextItem) {
-                            itemRenderer.updatePaintAlign(Paint.Align.RIGHT)
-                        }
-                    }
-                }
             }
         }
     }

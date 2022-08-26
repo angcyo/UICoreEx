@@ -40,7 +40,7 @@ class TextStrokeStyleItem : CanvasControlItem() {
         if (itemRenderer is PictureItemRenderer) {
             val renderItem = itemRenderer?.getRendererItem()
             if (renderItem is PictureTextItem) {
-                itemIsSelected = renderItem.paint.style == itemStyle
+                itemIsSelected = itemRenderer?.paint?.style == itemStyle
             }
         }
 

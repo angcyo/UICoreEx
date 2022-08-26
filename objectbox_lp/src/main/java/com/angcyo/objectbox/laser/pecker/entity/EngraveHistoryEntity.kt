@@ -24,7 +24,16 @@ data class EngraveHistoryEntity(
 
     /**[com.angcyo.engrave.data.EngraveDataInfo]*/
 
-    var dataType: Int = -1, //雕刻的数据类型
+    /**发给机器的数据类型*/
+    var engraveDataType: Int = -1,
+
+    /**数据的类型
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_BITMAP]
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_SVG]
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_GCODE]
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_PATH]
+     * */
+    var dataType: Int = -1,
     var width: Int = -1,
     var height: Int = -1,
     var x: Int = -1,
@@ -40,7 +49,12 @@ data class EngraveHistoryEntity(
 
     /**[com.angcyo.engrave.data.EngraveReadyDataInfo]*/
 
-    var optionMode: Int? = null, //数据操作的模式
+    /**数据操作的模式
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GREY]
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
+     * */
+    var dataMode: Int? = null, //数据操作的模式
 
     var dataPath: String? = null,
     var previewDataPath: String? = null,

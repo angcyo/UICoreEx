@@ -8,7 +8,7 @@ data class EngraveItemInfo(
 
     /**正在雕刻的uuid, 或者正在预览的item
      * [com.angcyo.canvas.items.BaseItem.uuid]
-     * [com.angcyo.engrave.data.EngraveReadyDataInfo.rendererItemUuid]
+     * [com.angcyo.engrave.data.EngraveReadyInfo.itemUuid]
      * */
     var uuid: String? = null,
 

@@ -2,15 +2,12 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
 import com.angcyo.canvas.CanvasView
-import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
-import com.angcyo.canvas.items.renderer.TextItemRenderer
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.color
 import com.angcyo.library.ex.toColorInt
-import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.clickIt
 
@@ -38,8 +35,8 @@ class TextSolidStyleItem(
         val strokeView = itemHolder.img(R.id.text_stroke_view)
         val solidView = itemHolder.img(R.id.text_solid_view)
 
-        if (renderer is TextItemRenderer) {
-            val isStroke = renderer._rendererItem?.paint?.style == Paint.Style.STROKE
+        if (renderer is PictureTextItemRenderer) {
+            val isStroke = renderer.paint.style == Paint.Style.STROKE
             strokeView?.apply {
                 val drawable =
                     drawable.color(if (isStroke) "#282828".toColorInt() else "#b3b7ba".toColorInt())
@@ -58,53 +55,6 @@ class TextSolidStyleItem(
                 clickIt {
                     renderer.updatePaintStyle(Paint.Style.FILL)
                     updateAdapterItem()
-                }
-            }
-        } else if (renderer is PictureTextItemRenderer) {
-            val isStroke = renderer._rendererItem?.paint?.style == Paint.Style.STROKE
-            strokeView?.apply {
-                val drawable =
-                    drawable.color(if (isStroke) "#282828".toColorInt() else "#b3b7ba".toColorInt())
-                setImageDrawable(drawable)
-
-                clickIt {
-                    renderer.updatePaintStyle(Paint.Style.STROKE)
-                    updateAdapterItem()
-                }
-            }
-            solidView?.apply {
-                val drawable =
-                    drawable.color(if (!isStroke) "#282828".toColorInt() else "#b3b7ba".toColorInt())
-                setImageDrawable(drawable)
-
-                clickIt {
-                    renderer.updatePaintStyle(Paint.Style.FILL)
-                    updateAdapterItem()
-                }
-            }
-        } else if (renderer is PictureItemRenderer) {
-            val renderItem = renderer._rendererItem
-            if (renderItem is PictureTextItem) {
-                val isStroke = renderItem.paint.style == Paint.Style.STROKE
-                strokeView?.apply {
-                    val drawable =
-                        drawable.color(if (isStroke) "#282828".toColorInt() else "#b3b7ba".toColorInt())
-                    setImageDrawable(drawable)
-
-                    clickIt {
-                        renderer.updatePaintStyle(Paint.Style.STROKE)
-                        updateAdapterItem()
-                    }
-                }
-                solidView?.apply {
-                    val drawable =
-                        drawable.color(if (!isStroke) "#282828".toColorInt() else "#b3b7ba".toColorInt())
-                    setImageDrawable(drawable)
-
-                    clickIt {
-                        renderer.updatePaintStyle(Paint.Style.FILL)
-                        updateAdapterItem()
-                    }
                 }
             }
         }

@@ -2,7 +2,7 @@ package com.angcyo.engrave.dslitem
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveReadyDataInfo
+import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.widget.DslViewHolder
 import com.github.chrisbanes.photoview.PhotoView
@@ -17,7 +17,7 @@ import com.github.chrisbanes.photoview.PhotoView
 class EngraveDataPreviewItem : DslAdapterItem() {
 
     /**待雕刻的数据*/
-    var itemEngraveReadyDataInfo: EngraveReadyDataInfo? = null
+    var itemEngraveReadyInfo: EngraveReadyInfo? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_data_preview
@@ -31,14 +31,14 @@ class EngraveDataPreviewItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        var bitmap = itemEngraveReadyDataInfo?.optionBitmap
+        var bitmap = itemEngraveReadyInfo?.dataBitmap
         if (bitmap == null) {
-            bitmap = itemEngraveReadyDataInfo?.previewDataPath?.toBitmap()
-            itemEngraveReadyDataInfo?.optionBitmap = bitmap
+            bitmap = itemEngraveReadyInfo?.previewDataPath?.toBitmap()
+            itemEngraveReadyInfo?.dataBitmap = bitmap
         }
 
         itemHolder.v<PhotoView>(R.id.lib_image_view)
-            ?.setImageBitmap(itemEngraveReadyDataInfo?.optionBitmap)
+            ?.setImageBitmap(itemEngraveReadyInfo?.dataBitmap)
     }
 
 }

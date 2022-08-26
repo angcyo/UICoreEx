@@ -38,7 +38,7 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentIt
                     if (inputText.isNotEmpty()) {
                         //canvasView.addTextRenderer("$inputText")
                         //canvasView.addPictureTextRenderer("$inputText")
-                        canvasView.addPictureTextRender("$inputText")
+                        canvasView.canvasDelegate.addPictureTextRender("$inputText")
                         UMEvent.CANVAS_TEXT.umengEventValue()
                     }
                     false

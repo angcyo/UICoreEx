@@ -18,12 +18,12 @@ fun Long?.toEngraveTime() = this?.toElapsedTime(
 
 /**模式字符串*/
 fun Int?.toModeString() = when (this) {
-    CanvasConstant.BITMAP_MODE_PRINT -> _string(R.string.canvas_prints)
-    CanvasConstant.BITMAP_MODE_GCODE -> _string(R.string.canvas_gcode)
-    CanvasConstant.BITMAP_MODE_BLACK_WHITE -> _string(R.string.canvas_black_white)
-    CanvasConstant.BITMAP_MODE_DITHERING -> _string(R.string.canvas_dithering)
-    CanvasConstant.BITMAP_MODE_GREY -> _string(R.string.canvas_grey)
-    CanvasConstant.BITMAP_MODE_SEAL -> _string(R.string.canvas_seal)
+    CanvasConstant.DATA_MODE_PRINT -> _string(R.string.canvas_prints)
+    CanvasConstant.DATA_MODE_GCODE -> _string(R.string.canvas_gcode)
+    CanvasConstant.DATA_MODE_BLACK_WHITE -> _string(R.string.canvas_black_white)
+    CanvasConstant.DATA_MODE_DITHERING -> _string(R.string.canvas_dithering)
+    CanvasConstant.DATA_MODE_GREY -> _string(R.string.canvas_grey)
+    CanvasConstant.DATA_MODE_SEAL -> _string(R.string.canvas_seal)
     else -> null
 }
 

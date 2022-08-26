@@ -48,7 +48,7 @@
     },
     {
       "id": "3:2716962251255545080",
-      "lastPropertyId": "24:8504189286920846919",
+      "lastPropertyId": "26:1177296091065105628",
       "name": "EngraveHistoryEntity",
       "properties": [
         {
@@ -100,11 +100,6 @@
         {
           "id": "10:925872378522898674",
           "name": "lines",
-          "type": 5
-        },
-        {
-          "id": "11:2838291095304470660",
-          "name": "optionMode",
           "type": 5
         },
         {
@@ -171,6 +166,16 @@
           "id": "24:8504189286920846919",
           "name": "diameter",
           "type": 7
+        },
+        {
+          "id": "25:1410660897806817147",
+          "name": "engraveDataType",
+          "type": 5
+        },
+        {
+          "id": "26:1177296091065105628",
+          "name": "dataMode",
+          "type": 5
         }
       ],
       "relations": []
@@ -238,7 +243,9 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    2838291095304470660
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

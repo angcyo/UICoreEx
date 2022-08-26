@@ -2,6 +2,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.have
 import com.angcyo.widget.DslViewHolder
@@ -19,7 +20,7 @@ class TextStyleItem : CanvasControlItem() {
     init {
         itemClick = {
             itemRenderer?.let { renderer ->
-                if (renderer is PictureItemRenderer) {
+                if (renderer is PictureTextItemRenderer) {
                     val renderItem = renderer.getRendererItem()
                     if (renderItem is PictureTextItem) {
                         renderer.enableTextStyle(itemStyle, !itemIsSelected)
