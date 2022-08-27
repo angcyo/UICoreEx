@@ -125,7 +125,7 @@ object EngraveHelper {
         engraveModel.apply {
             //先执行
             updateEngravePreviewInfo {
-                itemUuid = itemRenderer.getRendererItem()?.uuid
+                itemUuid = itemRenderer.getRendererRenderItem()?.uuid
 
                 if (QuerySettingParser.USE_FOUR_POINTS_PREVIEW //开启了4点预览
                     && !laserPeckerModel.haveExDevice() //没有外置设备连接
@@ -136,7 +136,7 @@ object EngraveHelper {
                 }
             }
             //后执行
-            updateEngravePreviewUuid(itemRenderer.getRendererItem()?.uuid)
+            updateEngravePreviewUuid(itemRenderer.getRendererRenderItem()?.uuid)
         }
 
         val diameter = getDiameter()

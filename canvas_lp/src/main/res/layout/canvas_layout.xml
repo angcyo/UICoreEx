@@ -251,7 +251,7 @@
             android:text="pvRect" />
 
         <com.angcyo.widget.DslButton
-            android:id="@+id/pre_proccess_button"
+            android:id="@+id/pre_process_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

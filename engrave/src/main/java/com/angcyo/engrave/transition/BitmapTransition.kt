@@ -8,11 +8,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
+import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.ex.toBitmap
 import kotlin.experimental.or
 
 /**
@@ -116,7 +116,7 @@ class BitmapTransition : IEngraveTransition {
     }
 
     override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
-        val item = renderer.getRendererItem() ?: return null
+        val item = renderer.getRendererRenderItem() ?: return null
         //走到这里的数据, 都处理成Bitmap
         val result = EngraveReadyInfo()
 
@@ -154,7 +154,7 @@ class BitmapTransition : IEngraveTransition {
 
         //其他方式, 使用图片雕刻
         val bounds = renderer.getRotateBounds()
-        val bitmap = renderer.preview()?.toBitmap() ?: return false
+        val bitmap = renderer.getEngraveBitmap() ?: return false
 
         //init
         initEngraveData()

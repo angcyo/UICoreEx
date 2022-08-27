@@ -288,7 +288,7 @@ class CanvasEditControlItem : DslAdapterItem() {
         var showColorView = false
         var color: Int = Color.TRANSPARENT //颜色
         if (renderer is BaseItemRenderer<*>) {
-            val item = renderer.getRendererItem()
+            val item = renderer.getRendererRenderItem()
             if (item is PictureTextItem || item is PictureShapeItem) {
                 showColorView = true
                 color = renderer.paint.color

@@ -21,7 +21,7 @@ class TextStyleItem : CanvasControlItem() {
         itemClick = {
             itemRenderer?.let { renderer ->
                 if (renderer is PictureTextItemRenderer) {
-                    val renderItem = renderer.getRendererItem()
+                    val renderItem = renderer.getRendererRenderItem()
                     if (renderItem is PictureTextItem) {
                         renderer.enableTextStyle(itemStyle, !itemIsSelected)
                         updateAdapterItem()
@@ -38,7 +38,7 @@ class TextStyleItem : CanvasControlItem() {
         payloads: List<Any>
     ) {
         if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer?.getRendererItem()
+            val renderItem = itemRenderer?.getRendererRenderItem()
             if (renderItem is PictureTextItem) {
                 itemIsSelected = renderItem.textStyle.have(itemStyle)
             }

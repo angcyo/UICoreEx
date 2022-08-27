@@ -153,7 +153,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
 
                 itemClick = {
                     fragment.context?.canvasMaterialWindow(it) {
-                        onDrawableAction = { drawable ->
+                        onDrawableAction = { data, drawable ->
                             when (drawable) {
                                 is BitmapDrawable -> {
                                     //bitmap
@@ -161,11 +161,17 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                                 }
                                 is GCodeDrawable -> {
                                     //gcode
-                                    canvasView.canvasDelegate.addPictureDrawableRenderer(drawable)
+                                    canvasView.canvasDelegate.addPictureGCodeRenderer(
+                                        data as String,
+                                        drawable
+                                    )
                                 }
                                 is SharpDrawable -> {
                                     //svg
-                                    canvasView.canvasDelegate.addPictureSharpRenderer(drawable)
+                                    canvasView.canvasDelegate.addPictureSharpRenderer(
+                                        data as String,
+                                        drawable
+                                    )
                                 }
                                 else -> {
                                     //other
@@ -231,7 +237,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 itemClick = {
                     canvasView.canvasDelegate.getSelectedRenderer()?.let { renderer ->
                         if (renderer is PictureItemRenderer) {
-                            renderer.getRendererItem()?.let { item ->
+                            renderer.getRendererRenderItem()?.let { item ->
                                 if (item is PictureShapeItem) {
                                     fragment.loadingAsync({
                                         item.shapePath?.let { path ->
@@ -277,13 +283,16 @@ class CanvasLayoutHelper(val fragment: Fragment) {
     }
 
     /**输入条码*/
-    fun inputBarcode(canvasView: CanvasView?, itemRenderer: PictureBitmapItemRenderer?) {
+    fun inputBarcode(
+        canvasView: CanvasView?,
+        itemRenderer: PictureItemRenderer<PictureBitmapItem>?
+    ) {
         fragment.context?.inputDialog {
             dialogTitle = _string(R.string.canvas_barcode)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             digits = _string(R.string.lib_barcode_digits)
             maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-            defaultInputString = itemRenderer?._rendererItem?.data as CharSequence?
+            defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
             onInputResult = { dialog, inputText ->
                 if (itemRenderer == null) {
                     //添加条码
@@ -297,14 +306,14 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 } else {
                     //修改条码
-                    val renderItem = itemRenderer._rendererItem
+                    val renderItem = itemRenderer.rendererItem
                     if (inputText.isNotEmpty()) {
                         inputText.createBarCode()?.let {
                             if (renderItem is PictureBitmapItem) {
                                 renderItem.originBitmap = it
                             }
                             renderItem?.data = inputText
-                            itemRenderer.updateItemBitmap(it)
+                            itemRenderer.requestRendererItemUpdate()
                         }
                     }
                 }
@@ -315,11 +324,14 @@ class CanvasLayoutHelper(val fragment: Fragment) {
     }
 
     /**输入二维码*/
-    fun inputQrCode(canvasView: CanvasView?, itemRenderer: PictureBitmapItemRenderer?) {
+    fun inputQrCode(
+        canvasView: CanvasView?,
+        itemRenderer: PictureItemRenderer<PictureBitmapItem>?
+    ) {
         fragment.context?.inputDialog {
             dialogTitle = _string(R.string.canvas_qrcode)
             maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-            defaultInputString = itemRenderer?._rendererItem?.data as CharSequence?
+            defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
             onInputResult = { dialog, inputText ->
                 if (itemRenderer == null) {
                     if (inputText.isNotEmpty()) {
@@ -331,14 +343,14 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                         }
                     }
                 } else {
-                    val renderItem = itemRenderer._rendererItem
+                    val renderItem = itemRenderer.rendererItem
                     if (inputText.isNotEmpty()) {
                         inputText.createQRCode()?.let {
                             if (renderItem is PictureBitmapItem) {
                                 renderItem.originBitmap = it
                             }
                             renderItem?.data = inputText
-                            itemRenderer.updateItemBitmap(it)
+                            itemRenderer.requestRendererItemUpdate()
                         }
                     }
                 }
@@ -356,7 +368,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
                 if (itemRenderer is PictureTextItemRenderer) {
-                    val renderItem = itemRenderer._rendererItem
+                    val renderItem = itemRenderer.rendererItem
                     if (renderItem is PictureTextItem) {
                         fragment.context?.inputDialog {
                             inputViewHeight = 100 * dpi
@@ -371,17 +383,18 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                             }
                         }
                     }
-                } else if (itemRenderer is PictureBitmapItemRenderer) {
-                    val renderItem = itemRenderer._rendererItem
+                } else if (itemRenderer is PictureItemRenderer) {
+                    val renderItem = itemRenderer.rendererItem
                     if (renderItem is PictureBitmapItem) {
+                        val renderer = itemRenderer as PictureItemRenderer<PictureBitmapItem>
                         when (renderItem.dataType) {
                             CanvasConstant.DATA_TYPE_BARCODE -> {
                                 //条形码
-                                inputBarcode(canvasView, itemRenderer)
+                                inputBarcode(canvasView, renderer)
                             }
                             CanvasConstant.DATA_TYPE_QRCODE -> {
                                 //二维码
-                                inputQrCode(canvasView, itemRenderer)
+                                inputQrCode(canvasView, renderer)
                             }
                             else -> {
                                 //图片
@@ -556,7 +569,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             //选中TextItemRenderer时的控制菜单
             renderTextControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer._rendererItem
+            val renderItem = itemRenderer.rendererItem
             if (renderItem is PictureShapeItem || renderItem is PictureSharpItem) {
                 //shape or sharp
                 renderShapeControlLayout(vh, canvasView, itemRenderer)
@@ -569,7 +582,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         } else if (itemRenderer is SelectGroupRenderer) {
             renderGroupControlLayout(vh, canvasView, itemRenderer)
         } else if (itemRenderer is DrawableItemRenderer) {
-            val itemDrawable = (itemRenderer.getRendererItem() as? DrawableItem)?.drawable
+            val itemDrawable = (itemRenderer.getRendererRenderItem() as? DrawableItem)?.drawable
             if (itemDrawable is SharpDrawable) {
                 renderSVGControlLayout(vh, canvasView, itemRenderer)
             } else {
@@ -895,6 +908,13 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         canvasView: CanvasView,
         renderer: IItemRenderer<*>
     ) {
+        if (renderer !is PictureItemRenderer<*>) {
+            return
+        }
+        if (renderer.getRendererRenderItem() !is PictureBitmapItem) {
+            return
+        }
+        val renderer = renderer as PictureItemRenderer<PictureBitmapItem>
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
             CanvasControlItem()() {

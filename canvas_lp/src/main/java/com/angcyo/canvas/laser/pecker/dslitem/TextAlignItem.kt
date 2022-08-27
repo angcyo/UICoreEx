@@ -20,7 +20,7 @@ class TextAlignItem : CanvasControlItem() {
         itemClick = {
             itemRenderer?.let { renderer ->
                 if (renderer is PictureItemRenderer) {
-                    val renderItem = renderer.getRendererItem()
+                    val renderItem = renderer.getRendererRenderItem()
                     if (renderItem is PictureTextItem) {
                         renderer.updatePaintAlign(itemAlign)
                         updateAdapterItem()
@@ -38,7 +38,7 @@ class TextAlignItem : CanvasControlItem() {
     ) {
 
         if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer?.getRendererItem()
+            val renderItem = itemRenderer?.getRendererRenderItem()
             if (renderItem is PictureTextItem) {
                 itemIsSelected = itemRenderer?.paint?.textAlign == itemAlign
             }

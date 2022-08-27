@@ -29,7 +29,7 @@ interface IEngraveTransition {
     /**初始化一个雕刻数据*/
     fun initReadyEngraveData(renderer: BaseItemRenderer<*>, engraveReadyInfo: EngraveReadyInfo) {
         //索引
-        val item = renderer.getRendererItem()
+        val item = renderer.getRendererRenderItem()
         var index = item?.engraveIndex
         if (index == null) {
             index = EngraveTransitionManager.generateEngraveIndex()

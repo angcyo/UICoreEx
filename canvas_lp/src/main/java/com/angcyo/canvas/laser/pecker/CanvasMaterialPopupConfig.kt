@@ -22,7 +22,7 @@ import com.angcyo.widget.recycler.renderDslAdapter
 class CanvasMaterialPopupConfig : ShadowAnchorPopupConfig() {
 
     /**回调*/
-    var onDrawableAction: (drawable: Drawable) -> Unit = { }
+    var onDrawableAction: (data: Any, drawable: Drawable) -> Unit = { _, _ -> }
 
     init {
         contentLayoutId = R.layout.canvas_material_layout
@@ -37,14 +37,17 @@ class CanvasMaterialPopupConfig : ShadowAnchorPopupConfig() {
                 CanvasMaterialItem()() {
                     //0.75sw
                     val size = (_screenWidth * 0.75f / 4).toInt()
-                    itemDrawable = loadAssetsSvgPath("svg/$it", viewWidth = size, viewHeight = size)
+                    val pair = loadAssetsSvgPath("svg/$it", viewWidth = size, viewHeight = size)
+                    itemDrawable = pair?.second
 //                    itemDrawable = loadAssetsSvg("svg/$it")
 
                     //网格线
                     initItemGapStyle(_dimen(R.dimen.lib_line))
 
                     itemClick = {
-                        itemDrawable?.let(onDrawableAction)
+                        itemDrawable?.apply {
+                            onDrawableAction(pair!!.first!!, this)
+                        }
                         hide()
                     }
                 }

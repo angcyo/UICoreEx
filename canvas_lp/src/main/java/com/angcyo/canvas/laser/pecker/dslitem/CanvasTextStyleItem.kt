@@ -29,7 +29,7 @@ class CanvasTextStyleItem(
 
         itemClick = {
             if (renderer is PictureTextItemRenderer) {
-                val have = renderer._rendererItem?.textStyle?.have(textStyle) == true
+                val have = renderer.rendererItem?.textStyle?.have(textStyle) == true
                 renderer.enableTextStyle(textStyle, !have)
                 updateAdapterItem()
             }
@@ -46,7 +46,7 @@ class CanvasTextStyleItem(
 
         itemHolder.img(R.id.image_view)?.apply {
             if (renderer is PictureTextItemRenderer) {
-                val have = renderer._rendererItem?.textStyle?.have(textStyle) == true
+                val have = renderer.rendererItem?.textStyle?.have(textStyle) == true
                 val drawable =
                     _drawable(ico).color(if (have) "#282828".toColorInt() else "#b3b7ba".toColorInt())
                 setImageDrawable(drawable)

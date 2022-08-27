@@ -1,14 +1,15 @@
 package com.angcyo.canvas.laser.pecker
 
-import android.graphics.Bitmap
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.Strategy
-import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.utils.*
+import com.angcyo.canvas.items.PictureBitmapItem
+import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.toMm
 import com.angcyo.core.component.file.writeToCache
-import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
@@ -23,24 +24,28 @@ import com.angcyo.opencv.OpenCV
 object CanvasBitmapHandler {
 
     /**版画*/
-    fun handlePrint(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handlePrint(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
-        val originBitmap = renderer.getRenderBitmap()
-        val beforeBitmap = renderer.getRenderBitmap(false)
-        var result: Bitmap? = null
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
+
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
-                    beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
-                    }
+                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
-                            originBitmap?.let { bitmap ->
+                            originBitmap.let { bitmap ->
                                 OpenCV.bitmapToPrint(
                                     context,
                                     bitmap,
@@ -51,25 +56,21 @@ object CanvasBitmapHandler {
                             }
                         }) {
                             it?.let {
-                                result = it
-                                renderer.updateRenderBitmap(
-                                    it,
-                                    if (preview) Strategy.preview else Strategy.normal,
-                                    keepBounds = beforeBounds,
-                                    holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
-                                )?.dataMode = CanvasConstant.DATA_MODE_PRINT
+                                newItem = PictureBitmapItem(originBitmap, it)
+                                newItem?.dataMode = CanvasConstant.DATA_MODE_PRINT
+
+                                renderer.updateRendererItem(
+                                    newItem!!,
+                                    beforeBounds,
+                                    if (preview) Strategy.preview else Strategy.normal
+                                )
                             }
                         }
                     } else if (!preview) {
                         //使用上一次的结果
-                        result?.let {
-                            renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(
-                                it,
-                                Strategy.normal,
-                                keepBounds = beforeBounds,
-                                holdData = hashMapOf(CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_PRINT)
-                            )?.dataMode = CanvasConstant.DATA_MODE_PRINT
+                        newItem?.let {
+                            renderer.rendererItem = item
+                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -78,15 +79,19 @@ object CanvasBitmapHandler {
     }
 
     /**GCode*/
-    fun handleGCode(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handleGCode(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
-        val originBitmap = renderer.getRenderBitmap()
-        val beforeBitmap = renderer.getRenderBitmap(false)
-        val beforeDrawable = renderer.getRenderDrawable()
-
-        var result: Pair<String?, GCodeDrawable?>? = null
-        var boundsRotate = 0f //需要旋转的角度
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
+
+        var boundsRotate = 0f //需要旋转的角度
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -97,9 +102,7 @@ object CanvasBitmapHandler {
 
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
-                    beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
-                    }
+                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
@@ -108,7 +111,7 @@ object CanvasBitmapHandler {
                             if (direction == 1 || direction == 3) {
                                 boundsRotate = 90f
                             }
-                            originBitmap?.let { bitmap ->
+                            originBitmap.let { bitmap ->
                                 OpenCV.bitmapToGCode(
                                     context,
                                     bitmap,
@@ -128,35 +131,31 @@ object CanvasBitmapHandler {
                             }
                         }) {
                             it?.let {
-                                result = it
                                 it.first.writeToCache(
                                     CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
                                     fileName(suffix = ".gcode")
                                 )
-                                renderer.updateItemDrawable(
-                                    it.second,
-                                    if (preview) Strategy.preview else Strategy.normal,
+
+                                newItem = PictureBitmapItem(originBitmap, null, it.second)
+                                newItem?.data = it.first // GCode数据放这里
+                                newItem?.dataMode = CanvasConstant.DATA_MODE_GCODE
+
+                                renderer.updateRendererItem(
+                                    newItem!!,
                                     beforeBounds.rotate(boundsRotate, result = RectF()),
-                                    hashMapOf(
-                                        CanvasDataHandleOperate.KEY_GCODE to it.first,
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
-                                    ),
-                                )?.dataMode = CanvasConstant.DATA_MODE_GCODE
+                                    if (preview) Strategy.preview else Strategy.normal
+                                )
                             }
                         }
                     } else if (!preview) {
                         //使用上一次的结果
-                        result?.let {
-                            renderer.onlySetRenderDrawable(beforeDrawable)
-                            renderer.updateItemDrawable(
-                                it.second,
-                                Strategy.normal,
+                        newItem?.let {
+                            renderer.rendererItem = item
+                            renderer.updateRendererItem(
+                                it,
                                 beforeBounds.rotate(boundsRotate, result = RectF()),
-                                hashMapOf(
-                                    CanvasDataHandleOperate.KEY_GCODE to it.first,
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GCODE
-                                ),
-                            )?.dataMode = CanvasConstant.DATA_MODE_GCODE
+                                Strategy.normal
+                            )
                         }
                     }
                 }
@@ -165,13 +164,17 @@ object CanvasBitmapHandler {
     }
 
     /**黑白画*/
-    fun handleBlackWhite(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handleBlackWhite(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
-        val originBitmap = renderer.getRenderBitmap()
-        val beforeBitmap = renderer.getRenderBitmap(false)
-
-        var result: Bitmap? = null
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -179,13 +182,11 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
-                    beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
-                    }
+                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
-                            originBitmap?.let { bitmap ->
+                            originBitmap.let { bitmap ->
                                 OpenCV.bitmapToBlackWhite(
                                     bitmap,
                                     getIntOrDef(
@@ -203,28 +204,21 @@ object CanvasBitmapHandler {
                             }
                         }) {
                             it?.let {
-                                result = it
-                                renderer.updateRenderBitmap(
-                                    it,
-                                    if (preview) Strategy.preview else Strategy.normal,
-                                    keepBounds = beforeBounds,
-                                    holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
-                                    )
-                                )?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
+                                newItem = PictureBitmapItem(originBitmap, it)
+                                newItem?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
+
+                                renderer.updateRendererItem(
+                                    newItem!!,
+                                    beforeBounds,
+                                    if (preview) Strategy.preview else Strategy.normal
+                                )
                             }
                         }
                     } else if (!preview) {
                         //使用上一次的结果
-                        result?.let {
-                            renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(
-                                it, Strategy.normal,
-                                keepBounds = beforeBounds,
-                                holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_BLACK_WHITE
-                                )
-                            )?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
+                        newItem?.let {
+                            renderer.rendererItem = item
+                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -233,14 +227,17 @@ object CanvasBitmapHandler {
     }
 
     /**抖动*/
-    fun handleDithering(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handleDithering(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
-
-        val originBitmap = renderer.getRenderBitmap()
-        val beforeBitmap = renderer.getRenderBitmap(false)
-
-        var result: Bitmap? = null
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
@@ -249,13 +246,11 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig.REGULATE_BRIGHTNESS)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
-                    beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
-                    }
+                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
-                            originBitmap?.let { bitmap ->
+                            originBitmap.let { bitmap ->
                                 OpenCV.bitmapToDithering(
                                     context, bitmap,
                                     getBooleanOrDef(
@@ -271,29 +266,21 @@ object CanvasBitmapHandler {
                             }
                         }) {
                             it?.let {
-                                result = it
-                                renderer.updateRenderBitmap(
-                                    it,
-                                    if (preview) Strategy.preview else Strategy.normal,
-                                    keepBounds = beforeBounds,
-                                    holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
-                                    )
-                                )?.dataMode = CanvasConstant.DATA_MODE_DITHERING
+                                newItem = PictureBitmapItem(originBitmap, it)
+                                newItem?.dataMode = CanvasConstant.DATA_MODE_DITHERING
+
+                                renderer.updateRendererItem(
+                                    newItem!!,
+                                    beforeBounds,
+                                    if (preview) Strategy.preview else Strategy.normal
+                                )
                             }
                         }
                     } else if (!preview) {
                         //使用上一次的结果
-                        result?.let {
-                            renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(
-                                it,
-                                Strategy.normal,
-                                keepBounds = beforeBounds,
-                                holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_DITHERING
-                                )
-                            )?.dataMode = CanvasConstant.DATA_MODE_DITHERING
+                        newItem?.let {
+                            renderer.rendererItem = item
+                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -302,47 +289,55 @@ object CanvasBitmapHandler {
     }
 
     /**灰度*/
-    fun handleGrey(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handleGrey(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
+        val context = anchor.context
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
+
         owner.loadingAsync({
-            renderer.getRenderBitmap()?.let { bitmap ->
+            originBitmap.let { bitmap ->
                 OpenCV.bitmapToGrey(bitmap)
             }
         }) {
             it?.let {
-                renderer.updateRenderBitmap(
-                    it,
-                    keepBounds = beforeBounds,
-                    holdData = hashMapOf(
-                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_GREY
-                    )
-                )?.dataMode = CanvasConstant.DATA_MODE_GREY
+                newItem = PictureBitmapItem(originBitmap, it)
+                newItem?.dataMode = CanvasConstant.DATA_MODE_GREY
+
+                renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
             }
         }
     }
 
     /**印章*/
-    fun handleSeal(anchor: View, owner: LifecycleOwner, renderer: IItemRenderer<*>) {
+    fun handleSeal(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
-
-        val originBitmap = renderer.getRenderBitmap()
-        val beforeBitmap = renderer.getRenderBitmap(false)
-
-        var result: Bitmap? = null
+        val originBitmap = item.originBitmap
         val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
-                    beforeBitmap?.let {
-                        renderer.updateRenderBitmap(it, Strategy.redo, keepBounds = beforeBounds)
-                    }
+                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
                 } else {
                     if (valueChanged) {
                         owner.loadingAsync({
-                            originBitmap?.let { bitmap ->
+                            originBitmap.let { bitmap ->
                                 OpenCV.bitmapToSeal(
                                     context, bitmap,
                                     getIntOrDef(
@@ -352,28 +347,21 @@ object CanvasBitmapHandler {
                             }
                         }) {
                             it?.let {
-                                result = it
-                                renderer.updateRenderBitmap(
-                                    it,
-                                    if (preview) Strategy.preview else Strategy.normal,
-                                    keepBounds = beforeBounds,
-                                    holdData = hashMapOf(
-                                        CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
-                                    )
-                                )?.dataMode = CanvasConstant.DATA_MODE_SEAL
+                                newItem = PictureBitmapItem(originBitmap, it)
+                                newItem?.dataMode = CanvasConstant.DATA_MODE_SEAL
+
+                                renderer.updateRendererItem(
+                                    newItem!!,
+                                    beforeBounds,
+                                    if (preview) Strategy.preview else Strategy.normal
+                                )
                             }
                         }
                     } else if (!preview) {
                         //使用上一次的结果
-                        result?.let {
-                            renderer.onlySetRenderBitmap(beforeBitmap)
-                            renderer.updateRenderBitmap(
-                                it, Strategy.normal,
-                                keepBounds = beforeBounds,
-                                holdData = hashMapOf(
-                                    CanvasDataHandleOperate.KEY_DATA_MODE to CanvasConstant.DATA_MODE_SEAL
-                                )
-                            )?.dataMode = CanvasConstant.DATA_MODE_SEAL
+                        newItem?.let {
+                            renderer.rendererItem = item
+                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
                         }
                     }
                 }

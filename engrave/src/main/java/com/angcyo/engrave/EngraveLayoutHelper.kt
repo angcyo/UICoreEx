@@ -162,7 +162,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     /**更新雕刻数据的索引*/
     fun updateEngraveDataIndex(dataInfo: EngraveDataInfo?) {
         dataInfo?.index = EngraveTransitionManager.generateEngraveIndex()
-        renderer?.getRendererItem()?.engraveIndex = dataInfo?.index
+        renderer?.getRendererRenderItem()?.engraveIndex = dataInfo?.index
     }
 
     /**初始化布局
@@ -550,7 +550,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     itemClick = {
                         if (!checkItemThrowable()) {
                             //next
-                            renderer?.getRendererItem()?.itemLayerName = dataInfo.name
+                            renderer?.getRendererRenderItem()?.itemLayerName = dataInfo.name
                             showHandleEngraveItem(engraveReadyInfo!!)
                         }
                     }
