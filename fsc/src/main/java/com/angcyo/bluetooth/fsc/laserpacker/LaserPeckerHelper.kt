@@ -208,15 +208,15 @@ object LaserPeckerHelper {
                 hPhys = 100
                 isOriginCenter = center ?: false
             }
-            LIII_MAX -> {
+            LIII_MAX, LIV -> {
                 //160*160
                 wPhys = 160
                 hPhys = 160
                 isOriginCenter = center ?: false
             }
             CI -> {
-                wPhys = 300
-                hPhys = 400
+                wPhys = 390
+                hPhys = 450
                 isOriginCenter = center ?: false
             }
         }
@@ -240,25 +240,27 @@ object LaserPeckerHelper {
                     rewind()
                     val rW = 100f
                     val rH = 70f
+                    val tOffset = (rW - rH) / 2 //mm
                     val l = unit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
-                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else 0f)
+                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
                     val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
-                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH)
+                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
                     maxOvalPath(l, t, r, b, this)
                 }
                 laserTypeList = listOf(LASER_TYPE_WHITE)
             }
-            LIII_MAX -> {
+            LIII_MAX, LIV -> {
                 //最佳打印范围是椭圆
-                //160*160
+                //160*160 mm
                 limitPath.apply {
                     rewind()
                     val rW = 160f
                     val rH = 120f
+                    val tOffset = (rW - rH) / 2 //mm
                     val l = unit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
-                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else 0f)
+                    val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
                     val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
-                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH)
+                    val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
                     maxOvalPath(l, t, r, b, this)
                 }
                 laserTypeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
