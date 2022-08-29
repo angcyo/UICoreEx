@@ -320,27 +320,71 @@ object LaserPeckerHelper {
         return true
     }
 
-    /**中间一个正方形, 左右各一个半圆*/
+    /**保持有效宽高下,  4个角用曲线连接*/
     fun maxOvalPath(left: Float, top: Float, right: Float, bottom: Float, path: Path) {
         val width = right - left
         val height = bottom - top
-        if (width > height) {
-            val x1 = (width - height) / 2
-            path.moveTo(x1, bottom)
-            path.addArc(left, top, left + x1 + x1, bottom, 90f, 180f)
-            path.lineTo(left + x1 + height, top)
 
-            path.addArc(right - x1 - x1, top, right, bottom, -90f, 180f)
-            path.lineTo(left + x1, bottom)
-        } else {
-            val y1 = (height - width) / 2
-            path.moveTo(left, y1)
-            path.addArc(left, top, right, y1 + y1, 180f, 180f)
-            path.lineTo(right, bottom - y1)
+        val centerX = (left + right) / 2
+        val centerY = (top + bottom) / 2
 
-            path.addArc(left, bottom - y1 - y1, right, bottom, 0f, 180f)
-            path.lineTo(left, top + y1)
-        }
+        //一定能雕刻上的有效宽高, 在中心位置
+        val validWidth = width / 3
+        val validHeight = height / 3
+
+        //底部左右2边的点
+        val blX = centerX - validWidth / 2
+        val blY = bottom
+
+        val brX = centerX + validWidth / 2
+        val brY = bottom
+
+        //顶部左右2边的点
+        val tlX = centerX - validWidth / 2
+        val tlY = top
+
+        val trX = centerX + validWidth / 2
+        val trY = top
+
+        //左边的2个点
+        val ltX = left
+        val ltY = centerY - validHeight / 2
+
+        val lbX = left
+        val lbY = centerY + validHeight / 2
+
+        //右边的2个点
+        val rtX = right
+        val rtY = centerY - validHeight / 2
+
+        val rbX = right
+        val rbY = centerY + validHeight / 2
+
+        //
+        path.rewind()
+
+        path.moveTo(blX, blY)
+        val lbcX = left
+        val lbcY = bottom
+        path.quadTo(lbcX, lbcY, lbX, lbY)
+
+        path.lineTo(ltX, ltY)
+        val ltcX = left
+        val ltcY = top
+        path.quadTo(ltcX, ltcY, tlX, tlY)
+
+        path.lineTo(trX, trY)
+        val rtcX = right
+        val rtcY = top
+        path.quadTo(rtcX, rtcY, rtX, rtY)
+
+        path.lineTo(rbX, rbY)
+        val rbcX = right
+        val rbcY = bottom
+        path.quadTo(rbcX, rbcY, brX, brY)
+
+        path.lineTo(blX, blY)
+        path.close()
     }
 
     /**根据软件版本号, 解析成产品名称
