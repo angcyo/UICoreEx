@@ -529,9 +529,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 EngraveDataNameItem()() {
                     itemEngraveReadyInfo = engraveReadyInfo
                 }
-                /*EngraveDataModeItem()() {
-                    itemEngraveDataInfo = dataInfo
-                }*/
+                if (isDebug()) {
+                    //用来调整发送的数据类型
+                    EngraveDataModeItem()() {
+                        itemEngraveReadyInfo = engraveReadyInfo
+                    }
+                }
                 if (engraveReadyInfo?.dataSupportPxList.isNullOrEmpty().not()) {
                     val defPx = dataInfo.px
                     EngraveDataPxItem()() {

@@ -13,6 +13,12 @@ import com.angcyo.library.ex._string
 
 /**
  * 数据分辨率选择
+ *
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1K]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1_3K]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_2K]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_4K]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/01
  */

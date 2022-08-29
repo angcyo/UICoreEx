@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
+import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.trimAndPad
 
@@ -32,6 +33,7 @@ data class DataCmd(
         /**雕刻文件名称占用字节数量*/
         const val DEFAULT_NAME_BYTE_COUNT = 28
 
+        //---支持的雕刻数据类型---
 
         /**雕刻图片数据类型.
          *
@@ -49,16 +51,20 @@ data class DataCmd(
         const val ENGRAVE_TYPE_GCODE = 0x20
 
         /**路径数据*/
+        @Implementation
         const val ENGRAVE_TYPE_PATH = 0x30
 
         /**图片转路径数据格式*/
         const val ENGRAVE_TYPE_BITMAP_PATH = 0x40
 
         /**图片裁剪数据类型*/
+        @Implementation
         const val ENGRAVE_TYPE_BITMAP_CROP = 0x50
 
         /**图片抖动数据类型*/
         const val ENGRAVE_TYPE_BITMAP_DITHERING = 0x60
+
+        //---
 
         /**
          * [index] 雕刻文件索引, 下位机用来查找并打印. 32位 最大值[4294967295]
@@ -245,6 +251,14 @@ data class DataCmd(
                 //数据索引，占用4个字节
                 write(index, 4)
 
+                //线段数
+                write(lines, 4)
+
+                write(px)
+                write(x, 2)
+                write(y, 2)
+
+                /*以下是0x30数据
                 //线段数 低16位
                 val lLines = lines and 0xffff
                 write(lLines, 2)
@@ -255,7 +269,7 @@ data class DataCmd(
 
                 //线段数 高16位
                 val hLines = (lines shr 16) and 0xffff
-                write(hLines, 2)
+                write(hLines, 2)*/
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -346,6 +360,8 @@ data class DataCmd(
             return DataCmd(head, data, logBuilder.toString())
         }
 
+        //---
+
         /**纯数据*/
         fun data(data: ByteArray): DataCmd {
             //数据头
@@ -403,7 +419,7 @@ fun String.trimEngraveName(): String {
 }
 
 fun Int.toEngraveTypeStr() = when (this) {
-    DataCmd.ENGRAVE_TYPE_BITMAP -> "雕刻灰度数据"
+    DataCmd.ENGRAVE_TYPE_BITMAP -> "雕刻图片数据"
     DataCmd.ENGRAVE_TYPE_GCODE -> "雕刻GCode数据"
     DataCmd.ENGRAVE_TYPE_PATH -> "雕刻路径数据"
     DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "雕刻图片路径数据"

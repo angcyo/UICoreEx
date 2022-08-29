@@ -54,7 +54,7 @@ class BitmapTransition : IEngraveTransition {
                     val color = bitmap.getPixel(wIndex, y)
                     val channelColor = Color.red(color)
 
-                    if (channelColor <= threshold) {
+                    if (channelColor <= threshold && color != Color.TRANSPARENT) {
                         //00, 黑色纸上雕刻, 金属不雕刻
                         if (lastBitmapPath == null) {
                             lastBitmapPath = BitmapPath(wIndex, y, 0, ltr)
@@ -76,13 +76,14 @@ class BitmapTransition : IEngraveTransition {
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
          * 白色传1 黑色传0
          * */
-        fun handleBitmapByte(bitmap: Bitmap, threshold: Int): ByteArray {
+        fun handleBitmapByte(bitmap: Bitmap, threshold: Int): Pair<String, ByteArray> {
             val width = bitmap.width
             val height = bitmap.height
 
             var byte: Byte = 0 //1个字节8位
             var bit = 0
-            return byteWriter {
+            val logBuilder = StringBuilder()
+            val bytes = byteWriter {
                 for (y in 0 until height) {
                     bit = 7
                     byte = 0
@@ -94,12 +95,14 @@ class BitmapTransition : IEngraveTransition {
                         if (channelColor <= threshold) {
                             //黑色传0, 黑色纸上雕刻, 金属不雕刻
                             //byte = byte or (0b1 shl bit)
+                            logBuilder.append("0")
                         } else {
                             //白色传1
                             byte = byte or (0b1 shl bit).toByte()
+                            logBuilder.append("1")
                         }
                         bit--
-                        if (bit == 0) {
+                        if (bit < 0) {
                             //8位
                             write(byte) //写入1个字节
                             bit = 7
@@ -110,8 +113,12 @@ class BitmapTransition : IEngraveTransition {
                     if (bit != 7) {
                         write(byte)//写入1个字节
                     }
+                    if (y != height - 1) {
+                        logBuilder.appendLine()
+                    }
                 }
             }
+            return logBuilder.toString() to bytes
         }
     }
 
@@ -217,7 +224,9 @@ class BitmapTransition : IEngraveTransition {
         //2:保存一份可视化的数据/原始数据
         //mode
         when (engraveReadyInfo.dataMode) {
-            CanvasConstant.DATA_MODE_BLACK_WHITE, CanvasConstant.DATA_MODE_PRINT, CanvasConstant.DATA_MODE_SEAL -> {
+            CanvasConstant.DATA_MODE_BLACK_WHITE,
+            CanvasConstant.DATA_MODE_PRINT,
+            CanvasConstant.DATA_MODE_SEAL -> {
                 //黑白算法/版画/印章 都用路径数据传输
                 engraveData.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
 
@@ -231,7 +240,8 @@ class BitmapTransition : IEngraveTransition {
                         write(it.len, 2)
                     }
                 }
-                saveEngraveData(engraveData.index, bitmap, "png")
+                //路径数据写入日志
+                saveEngraveData(engraveData.index, "$listBitmapPath", "bp")
             }
             CanvasConstant.DATA_MODE_GREY -> {
                 //灰度数据
@@ -250,9 +260,9 @@ class BitmapTransition : IEngraveTransition {
                 engraveData.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
 
                 //白色1 黑色0
-                val data = handleBitmapByte(bitmap, 128)
-                engraveData.data = data
-                saveEngraveData(engraveData.index, bitmap, "png")
+                val pair = handleBitmapByte(bitmap, 128)
+                engraveData.data = pair.second
+                saveEngraveData(engraveData.index, pair.first, "dt")
             }
         }
 
@@ -262,4 +272,22 @@ class BitmapTransition : IEngraveTransition {
         //3:保存一份用来历史文档预览的数据
         engraveReadyInfo.previewDataPath = saveEngraveData("${engraveData.index}.p", bitmap, "png")
     }
+}
+
+/**处理模式转换成雕刻数据类型*/
+fun Int.convertDataModeToEngraveType() = when (this) {
+    CanvasConstant.DATA_MODE_BLACK_WHITE,
+    CanvasConstant.DATA_MODE_PRINT,
+    CanvasConstant.DATA_MODE_SEAL -> DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+    CanvasConstant.DATA_MODE_GREY -> DataCmd.ENGRAVE_TYPE_BITMAP
+    CanvasConstant.DATA_MODE_GCODE -> DataCmd.ENGRAVE_TYPE_GCODE
+    else -> DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+}
+
+/**处理模式转换成雕刻数据类型*/
+fun Int.convertEngraveTypeToDataMode() = when (this) {
+    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> CanvasConstant.DATA_MODE_BLACK_WHITE
+    DataCmd.ENGRAVE_TYPE_BITMAP -> CanvasConstant.DATA_MODE_GREY
+    DataCmd.ENGRAVE_TYPE_GCODE -> CanvasConstant.DATA_MODE_GCODE
+    else -> CanvasConstant.DATA_MODE_DITHERING
 }
