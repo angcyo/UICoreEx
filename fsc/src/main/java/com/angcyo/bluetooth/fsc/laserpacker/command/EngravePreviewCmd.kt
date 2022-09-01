@@ -7,6 +7,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.core.vmApp
+import com.angcyo.library.component.pool.acquireTempRect
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.RectPointF
 import com.angcyo.library.model.toPath
@@ -92,9 +95,10 @@ data class EngravePreviewCmd(
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): Pair<Rect, Boolean> {
+            val tempRect = acquireTempRectF()
             var overflow = false
             if (productInfo != null) {
-                _tempRectF.set(
+                tempRect.set(
                     x.toFloat(),
                     y.toFloat(),
                     (x + width).toFloat(),
@@ -109,7 +113,7 @@ data class EngravePreviewCmd(
                 }
 
                 if (limitPath != null) {
-                    if (!limitPath.contains(_tempRectF)) {
+                    if (!limitPath.contains(tempRect)) {
                         //溢出
                         overflow = true
                     }
@@ -166,6 +170,7 @@ data class EngravePreviewCmd(
                 }
             }*/
 
+            tempRect.release()
             return Rect(
                 previewX,
                 previewY,
@@ -604,10 +609,9 @@ data class EngravePreviewCmd(
     }
 
     /**获取预览范围矩形*/
-    fun getPreviewRange(): Rect {
-        val rect = _tempRect
-        rect.left = x
-        rect.top = y
+    fun getPreviewRange(result: Rect = acquireTempRect()): Rect {
+        result.left = x
+        result.top = y
 
         val widthBytes = ByteArray(2)
         widthBytes[0] = d1
@@ -620,9 +624,9 @@ data class EngravePreviewCmd(
         val w = widthBytes.toHexInt()
         val h = heightBytes.toHexInt()
 
-        rect.right = x + w
-        rect.bottom = y + h
-        return rect
+        result.right = x + w
+        result.bottom = y + h
+        return result
     }
 
     /**获取4点预览的值*/
