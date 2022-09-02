@@ -270,10 +270,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     keyboardBindTextView = it as? TextView
                     onNumberResultAction = { toRotate ->
-                        itemCanvasDelegate?.addChangeItemRotate(
-                            renderer,
-                            toRotate
-                        )
+                        itemCanvasDelegate?.addChangeItemRotate(renderer, toRotate)
                     }
                 }
             }
