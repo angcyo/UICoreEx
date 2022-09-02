@@ -20,6 +20,8 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 画图设置弹窗
@@ -88,6 +90,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                             MmValueUnit()
                         }
                     )
+                    if (it) {
+                        UMEvent.INCH_UNIT.umengEventValue()
+                    } else {
+                        UMEvent.MM_UNIT.umengEventValue()
+                    }
                 }
             }
             DslSwitchInfoItem()() {
@@ -113,6 +120,9 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 itemSwitchChangedAction = {
                     canvasDelegate?.smartAssistant?.enable = it
                     CanvasConstant.CANVAS_SMART_ASSISTANT = it
+                    if (it) {
+                        UMEvent.SMART_ASSISTANT.umengEventValue()
+                    }
                 }
             }
         }
