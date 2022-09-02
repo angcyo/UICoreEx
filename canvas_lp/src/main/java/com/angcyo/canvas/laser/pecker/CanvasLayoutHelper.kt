@@ -240,7 +240,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                             renderer.getRendererRenderItem()?.let { item ->
                                 if (item is PictureShapeItem) {
                                     fragment.loadingAsync({
-                                        item.shapePath?.let { path ->
+                                        item.shapePath.let { path ->
                                             CanvasDataHandleOperate.pathToGCode(
                                                 path,
                                                 renderer.getRotateBounds(),
