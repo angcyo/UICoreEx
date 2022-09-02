@@ -192,8 +192,8 @@ class CanvasEditControlItem : DslAdapterItem() {
                         RectScaleGestureHandler.rectUpdateTo(
                             newBounds,
                             newBounds,
-                            newHeight,
                             newWidth,
+                            newHeight,
                             renderer.rotate,
                             anchor.x,
                             anchor.y
