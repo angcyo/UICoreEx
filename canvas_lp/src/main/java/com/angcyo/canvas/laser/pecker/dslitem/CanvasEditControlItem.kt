@@ -16,10 +16,8 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.singleColorPickerDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
-import com.angcyo.library.ex.ADJUST_TYPE_LT
-import com.angcyo.library.ex.adjustSize
-import com.angcyo.library.ex.adjustSizeWithRotate
 import com.angcyo.library.ex.gone
+import com.angcyo.library.gesture.RectScaleGestureHandler
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.clickIt
 import com.jaredrummler.android.colorpicker.ColorPanelView
@@ -129,38 +127,35 @@ class CanvasEditControlItem : DslAdapterItem() {
                         val width =
                             itemCanvasDelegate?.getCanvasViewBox()?.valueUnit?.convertValueToPixel(
                                 toWidth
-                            ) ?: toWidth
-
-                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
-                        val from = RectF(renderer.getRotateBounds())
-                        val to = RectF(from)
-                        to.adjustSize(width, from.height(), ADJUST_TYPE_LT)
-                        val result = RectF(renderer.getBounds())
+                            ) ?: toWidth //这个宽度是外边框的宽度, 所以需要映射到真实矩形上
                         val lockRatio = itemHolder.isLockRatio()
-                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
-                            result,
-                            from,
-                            to,
-                            renderer.rotate,
-                            lockRatio
-                        )?.apply {
-                            //计算结果后
-                            val newWidth = this[0]
-                            val newHeight = this[1]
 
-                            if (newWidth != 0f && newHeight != 0f) {
-                                result.adjustSizeWithRotate(
-                                    newWidth, newHeight,
-                                    renderer.rotate,
-                                    ADJUST_TYPE_LT
-                                )
+                        val rotateBounds = renderer.getRotateBounds()
+                        val bounds = renderer.getBounds()
 
-                                itemCanvasDelegate?.addChangeItemBounds(
-                                    renderer,
-                                    result
-                                )
-                            }
+                        val scaleWidth = width / rotateBounds.width()
+
+                        val newWidth = bounds.width() * scaleWidth
+                        val newHeight = if (lockRatio) {
+                            bounds.height() * scaleWidth
+                        } else {
+                            bounds.height()
                         }
+
+                        val newBounds = RectF()
+                        newBounds.set(bounds)
+                        val anchor = renderer.getBoundsScaleAnchor()
+                        RectScaleGestureHandler.rectUpdateTo(
+                            newBounds,
+                            newBounds,
+                            newWidth,
+                            newHeight,
+                            renderer.rotate,
+                            anchor.x,
+                            anchor.y
+                        )
+
+                        itemCanvasDelegate?.addChangeItemBounds(renderer, newBounds)
                     }
                 }
             }
@@ -177,34 +172,35 @@ class CanvasEditControlItem : DslAdapterItem() {
                                 toHeight
                             ) ?: toHeight
 
-                        //当外边框高度调整时, 计算真实Bounds应该调整的宽高
-                        val from = RectF(renderer.getRotateBounds())
-                        val to = RectF(from)
-                        to.adjustSize(from.width(), height, ADJUST_TYPE_LT)
-                        val result = RectF(renderer.getBounds())
                         val lockRatio = itemHolder.isLockRatio()
-                        itemCanvasDelegate?.boundsOperateHandler?.calcBoundsWidthHeightWithFrame(
-                            result,
-                            from,
-                            to,
-                            renderer.rotate,
-                            lockRatio
-                        )?.apply {
-                            //计算结果后
-                            val newWidth = this[0]
-                            val newHeight = this[1]
 
-                            result.adjustSizeWithRotate(
-                                newWidth, newHeight,
-                                renderer.rotate,
-                                ADJUST_TYPE_LT
-                            )
+                        val rotateBounds = renderer.getRotateBounds()
+                        val bounds = renderer.getBounds()
 
-                            itemCanvasDelegate?.addChangeItemBounds(
-                                renderer,
-                                result
-                            )
+                        val scaleHeight = height / rotateBounds.height()
+
+                        val newHeight = bounds.height() * scaleHeight
+                        val newWidth = if (lockRatio) {
+                            bounds.width() * scaleHeight
+                        } else {
+                            bounds.width()
                         }
+
+                        val newBounds = RectF()
+                        newBounds.set(bounds)
+                        val anchor = renderer.getBoundsScaleAnchor()
+                        RectScaleGestureHandler.rectUpdateTo(
+                            newBounds,
+                            newBounds,
+                            newHeight,
+                            newWidth,
+                            renderer.rotate,
+                            anchor.x,
+                            anchor.y
+                        )
+
+                        itemCanvasDelegate?.addChangeItemBounds(renderer, newBounds)
+
                     }
                 }
             }
@@ -270,7 +266,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     keyboardBindTextView = it as? TextView
                     onNumberResultAction = { toRotate ->
-                        itemCanvasDelegate?.addChangeItemRotate(renderer, toRotate)
+                        itemCanvasDelegate?.addChangeItemRotate(renderer, renderer.rotate, toRotate)
                     }
                 }
             }
