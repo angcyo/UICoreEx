@@ -1,8 +1,8 @@
 package com.angcyo.engrave.dslitem
 
 import android.widget.TextView
-import com.angcyo.canvas.core.InchValueUnit
-import com.angcyo.canvas.core.MmValueUnit
+import com.angcyo.library.unit.InchValueUnit
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dsladapter.DslAdapterItem

@@ -1,7 +1,7 @@
 package com.angcyo.engrave.data
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.canvas.core.MmValueUnit
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 
 /**

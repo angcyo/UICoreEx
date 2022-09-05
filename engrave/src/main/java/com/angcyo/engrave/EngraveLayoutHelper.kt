@@ -9,7 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.core.MmValueUnit
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.dialog.messageDialog

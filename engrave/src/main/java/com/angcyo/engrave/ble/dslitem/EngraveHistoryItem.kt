@@ -1,7 +1,6 @@
 package com.angcyo.engrave.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.laserpacker.toPxDes
-import com.angcyo.canvas.core.convertPixelToValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
@@ -12,6 +11,7 @@ import com.angcyo.glide.loadImage
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
+import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.dslViewHolder

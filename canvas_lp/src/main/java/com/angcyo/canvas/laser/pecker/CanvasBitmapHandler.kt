@@ -1,5 +1,6 @@
 package com.angcyo.canvas.laser.pecker
 
+import android.graphics.Color
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -8,6 +9,7 @@ import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.createPaint
 import com.angcyo.canvas.utils.toMm
 import com.angcyo.core.component.file.writeToCache
 import com.angcyo.gcode.GCodeHelper
@@ -126,7 +128,10 @@ object CanvasBitmapHandler {
                                 ).let {
                                     val gCodeText = it.readText()
                                     it.deleteSafe()
-                                    gCodeText to GCodeHelper.parseGCode(gCodeText)
+                                    gCodeText to GCodeHelper.parseGCode(
+                                        gCodeText,
+                                        createPaint(Color.BLACK)
+                                    )
                                 }
                             }
                         }) {

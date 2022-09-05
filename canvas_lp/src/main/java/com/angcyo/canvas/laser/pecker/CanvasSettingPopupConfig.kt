@@ -3,9 +3,6 @@ package com.angcyo.canvas.laser.pecker
 import android.content.Context
 import android.view.View
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.core.InchValueUnit
-import com.angcyo.canvas.core.MmValueUnit
-import com.angcyo.canvas.core.PixelValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
@@ -18,6 +15,9 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.unit.InchValueUnit
+import com.angcyo.library.unit.MmValueUnit
+import com.angcyo.library.unit.PixelValueUnit
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent

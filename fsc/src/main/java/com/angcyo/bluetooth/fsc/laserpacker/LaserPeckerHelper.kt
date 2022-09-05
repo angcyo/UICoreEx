@@ -12,7 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.canvas.core.MmValueUnit
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack

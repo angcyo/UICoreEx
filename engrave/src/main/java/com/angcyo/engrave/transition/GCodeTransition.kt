@@ -1,10 +1,10 @@
 package com.angcyo.engrave.transition
 
+import android.graphics.Color
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.canvas.core.MmValueUnit
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureGCodeItem
@@ -13,6 +13,7 @@ import com.angcyo.canvas.items.PictureSharpItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.createPaint
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.gcode.GCodeHelper
@@ -20,6 +21,7 @@ import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.svg.StylePath
 import java.io.File
 
@@ -246,7 +248,7 @@ class GCodeTransition : IEngraveTransition {
         if (!pathGCodeText.isNullOrEmpty()) {
             //GCode数据
 
-            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
+            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText, createPaint(Color.BLACK))
             val data = pathGCodeText.toByteArray()
             engraveReadyInfo.engraveData?.apply {
                 engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
