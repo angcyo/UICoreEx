@@ -1,6 +1,5 @@
 package com.angcyo.engrave.transition
 
-import android.graphics.Color
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -13,8 +12,8 @@ import com.angcyo.canvas.items.PictureSharpItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.createPaint
 import com.angcyo.canvas.utils.getEngraveBitmap
+import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
@@ -248,7 +247,7 @@ class GCodeTransition : IEngraveTransition {
         if (!pathGCodeText.isNullOrEmpty()) {
             //GCode数据
 
-            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText, createPaint(Color.BLACK))
+            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
             val data = pathGCodeText.toByteArray()
             engraveReadyInfo.engraveData?.apply {
                 engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
