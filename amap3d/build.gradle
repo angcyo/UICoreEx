@@ -9,12 +9,15 @@ dependencies {
     // https://jcenter.bintray.com/com/amap/api/
 
     //3D 地图 https://jcenter.bintray.com/com/amap/api/3dmap/
+    //https://mvnrepository.com/artifact/com.amap.api/3dmap
     api 'com.amap.api:3dmap:7.7.0'
 
     //搜索 https://jcenter.bintray.com/com/amap/api/search/
+    //https://mvnrepository.com/artifact/com.amap.api/search
     api 'com.amap.api:search:7.7.0'
 
     //定位 https://jcenter.bintray.com/com/amap/api/location/
+    //https://mvnrepository.com/artifact/com.amap.api/location
     api 'com.amap.api:location:5.2.0'
 
     //2D 地图 https://jcenter.bintray.com/com/amap/api/map2d/

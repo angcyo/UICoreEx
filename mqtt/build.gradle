@@ -6,7 +6,9 @@ dependencies {
     implementation project(allModule.library)
 
     //https://jcenter.bintray.com/org/eclipse/paho/org.eclipse.paho.client.mqttv3/
-    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.4'
+    //https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
+    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     //https://jcenter.bintray.com/org/eclipse/paho/org.eclipse.paho.android.service/
+    //https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.android.service
     api 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 }

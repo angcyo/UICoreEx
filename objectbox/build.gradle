@@ -30,6 +30,7 @@ dependencies {
     //api "io.objectbox:objectbox-android:$objectboxVersion"
 
     //kotlin 扩展函数
+    //https://mvnrepository.com/artifact/io.objectbox/objectbox-kotlin
     api "io.objectbox:objectbox-kotlin:$objectboxVersion"
 }
 

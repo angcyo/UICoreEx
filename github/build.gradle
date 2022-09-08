@@ -1,11 +1,12 @@
 apply from: allGradle.libBase
 
 dependencies {
-    implementation project(allModule.dslitem)
     implementation project(allModule.library)
+    implementation project(allModule.dslitem)
 
     //https://jcenter.bintray.com/rouchuan/viewpagerlayoutmanager/viewpagerlayoutmanager/
     //https://github.com/leochuan/ViewPagerLayoutManager
+    //https://github.com/angcyo/ViewPagerLayoutManager
     //api 'rouchuan.viewpagerlayoutmanager:viewpagerlayoutmanager:2.0.22'
     api 'com.github.angcyo:ViewPagerLayoutManager:2.1.3'
 
@@ -16,7 +17,7 @@ dependencies {
     api 'com.github.XHGInc:FloatWindow:master-SNAPSHOT'
 
     //https://github.com/scwang90/MultiWaveHeader
-    api 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
+    api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 
     //https://mvnrepository.com/artifact/androidx.palette
     //api 'androidx.palette:palette:1.0.0'
@@ -37,6 +38,7 @@ dependencies {
     //bus 消息总线
     //https://github.com/JeremyLiao/LiveEventBus
     //https://search.maven.org/artifact/io.github.jeremyliao/live-event-bus
+    //https://mvnrepository.com/artifact/io.github.jeremyliao/live-event-bus
     api 'io.github.jeremyliao:live-event-bus-x:1.8.0'
 
     //颜色选择

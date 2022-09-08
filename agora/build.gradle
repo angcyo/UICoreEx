@@ -10,16 +10,18 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core:1.7.0'
     implementation project(allModule.library)
 
     //https://jcenter.bintray.com/io/agora/
+    //https://mvnrepository.com/artifact/io.agora.rtc
 
     /*https://docs.agora.io/cn/Video/android_video?platform=Android*/
-    /*https://jcenter.bintray.com/io/agora/rtc/full-sdk/*/
+    //https://jcenter.bintray.com/io/agora/rtc/full-sdk/
+    //https://mvnrepository.com/artifact/io.agora.rtc/full-sdk
     //≈9.5mb
     api 'io.agora.rtc:full-sdk:2.9.2'
 
+    //https://mvnrepository.com/artifact/io.agora.rtm/rtm-sdk
     //https://jcenter.bintray.com/io/agora/rtm/rtm-sdk/
     //≈2.5mb
     api 'io.agora.rtm:rtm-sdk:1.2.2'

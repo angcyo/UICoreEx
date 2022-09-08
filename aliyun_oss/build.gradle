@@ -5,5 +5,6 @@ dependencies {
 
     //https://github.com/aliyun/aliyun-oss-android-sdk
     //https://jcenter.bintray.com/com/aliyun/dpa/oss-android-sdk/
+    //https://mvnrepository.com/artifact/com.aliyun.dpa/oss-android-sdk
     api 'com.aliyun.dpa:oss-android-sdk:2.9.5'
 }

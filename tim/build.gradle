@@ -14,6 +14,7 @@ dependencies {
     //https://repo1.maven.org/maven2/com/tencent/imsdk/
 
     //https://repo1.maven.org/maven2/com/tencent/imsdk/imsdk-plus/
+    //https://mvnrepository.com/artifact/com.tencent.imsdk/imsdk-plus
     api 'com.tencent.imsdk:imsdk-plus:5.9.1872'
 
     //https://repo1.maven.org/maven2/com/tencent/tpns/

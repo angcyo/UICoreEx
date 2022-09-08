@@ -9,7 +9,10 @@ dependencies {
     //http://dl.bintray.com/umsdk/release/com/umeng/umsdk
     // 友盟统计SDK 2021-6-30
     //https://github.com/umeng/MultiFunctionAndroidMavenDemo-master/blob/master/app/build.gradle
+
+    //https://mvnrepository.com/artifact/com.umeng.umsdk/common
     api 'com.umeng.umsdk:common:9.4.0' // (必选)版本号
+    //https://mvnrepository.com/artifact/com.umeng.umsdk/asms
     api 'com.umeng.umsdk:asms:1.2.3' // asms包依赖(必选)
 
     //implementation 'com.umeng.umsdk:apm:1.1.1' // apm包依赖

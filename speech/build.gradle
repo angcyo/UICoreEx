@@ -30,5 +30,6 @@ dependencies {
     //implementation(name: 'libqcloudtts_1.3.1_release', ext: 'aar')
     implementation project(allModule.library)
 
+    //https://gitee.com/angcyo/aar
     api 'com.gitee.angcyo.aar:QQTTS:qcloudtts_1.3.1'
 }

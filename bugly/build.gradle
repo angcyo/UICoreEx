@@ -10,7 +10,9 @@ dependencies {
     //https://bugly.qq.com/v2/downloads
 
     //https://repo1.maven.org/maven2/com/tencent/bugly/
+    //https://mvnrepository.com/artifact/com.tencent.bugly/crashreport
     api 'com.tencent.bugly:crashreport:4.0.4'
+    //https://mvnrepository.com/artifact/com.tencent.bugly/nativecrashreport
     api 'com.tencent.bugly:nativecrashreport:3.9.2'
 
     //海外版本

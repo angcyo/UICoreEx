@@ -8,5 +8,6 @@ dependencies {
     //https://github.com/jhy/jsoup
     //https://jsoup.org/download
     //https://jcenter.bintray.com/org/jsoup/jsoup/
-    api 'org.jsoup:jsoup:1.13.1'
+    //https://mvnrepository.com/artifact/org.jsoup/jsoup
+    api 'org.jsoup:jsoup:1.15.3'
 }

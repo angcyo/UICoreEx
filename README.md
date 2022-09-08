@@ -1,2 +1,128 @@
 # UICoreEx
 2019-12-19
+
+```
+implementation 'com.angcyo:<xxx>:hingin-SNAPSHOT'
+```
+
+- [acc2app]() `implementation 'com.angcyo:acc2app:<version>'`
+    - core
+    - acc2
+    - dslitem
+    - download
+    - andserver
+    - dialog2
+- [agora]() `implementation 'com.angcyo:agora:<version>'`
+    - library
+    - [io.agora.rtc:full-sdk:2.9.2](https://mvnrepository.com/artifact/io.agora.rtc/full-sdk)
+    - [io.agora.rtm:rtm-sdk:1.2.2](https://mvnrepository.com/artifact/io.agora.rtm/rtm-sdk)
+- [aliyun_oss]() `implementation 'com.angcyo:aliyun_oss:<version>'`
+    - library
+    - [com.aliyun.dpa:oss-android-sdk:2.9.5](https://mvnrepository.com/artifact/com.aliyun.dpa/oss-android-sdk)
+- [amap3d]() `implementation 'com.angcyo:amap3d:<version>'`
+    - core
+    - dslitem
+    - [com.amap.api:3dmap:7.7.0](https://mvnrepository.com/artifact/com.amap.api/3dmap)
+    - [com.amap.api:search:7.7.0](https://mvnrepository.com/artifact/com.amap.api/search)
+    - [com.amap.api:location:5.2.0](https://mvnrepository.com/artifact/com.amap.api/location)
+- [andserver]() `implementation 'com.angcyo:andserver:<version>'`
+    - library
+    - http
+    - fragment
+    - core
+    - [com.yanzhenjie.andserver:api:2.1.10](https://mvnrepository.com/artifact/com.yanzhenjie.andserver/api)
+    - [javax.activation:javax.activation-api:1.2.0](https://mvnrepository.com/artifact/javax.activation/javax.activation-api)
+- [bdtrace]() `implementation 'com.angcyo:bdtrace:<version>'`
+    - library
+    - [com.gitee.angcyo.aar:BaiduTrace:BaiDuTrace_3.1.7](https://gitee.com/angcyo/aar)
+- [bluetooth]() `implementation 'com.angcyo:bluetooth:<version>'`
+    - library
+    - core
+    - [com.github.Jasonchenlijian:FastBle:2.4.0](https://github.com/Jasonchenlijian/FastBle)
+- [bmob]() `implementation 'com.angcyo:bmob:<version>'`
+    - library
+    - http
+    - viewmodel
+    - dialog
+    - [io.github.bmob:android-sdk:3.8.4](https://mvnrepository.com/artifact/io.github.bmob/android-sdk)
+- [bugly]() `implementation 'com.angcyo:bugly:<version>'`
+    - library
+    - [com.tencent.bugly:crashreport:4.0.4](https://mvnrepository.com/artifact/com.tencent.bugly/crashreport)
+    - [com.tencent.bugly:nativecrashreport:3.9.2](https://mvnrepository.com/artifact/com.tencent.bugly/nativecrashreport)
+- [game]() `implementation 'com.angcyo:game:<version>'`
+    - library
+- [github]() `implementation 'com.angcyo:github:<version>'`
+    - library
+    - dslitem
+    - [com.github.angcyo:ViewPagerLayoutManager:2.1.3](https://github.com/angcyo/ViewPagerLayoutManager)
+    - [com.github.XHGInc:FloatWindow:master-SNAPSHOT](https://github.com/XHGInc/FloatWindow)
+    - [com.scwang.wave:MultiWaveHeader:1.0.0-andx](https://github.com/scwang90/MultiWaveHeader)
+    - [androidx.palette:palette-ktx:1.0.0](https://mvnrepository.com/artifact/androidx.palette)
+    - [androidx.biometric:biometric:1.1.0](https://mvnrepository.com/artifact/androidx.biometric/biometric)
+    - [io.github.jeremyliao:live-event-bus-x:1.8.0](https://github.com/JeremyLiao/LiveEventBus)
+    - [com.github.duanhong169:colorpicker:1.1.6](https://github.com/duanhong169/ColorPicker)
+- [jpush]() `implementation 'com.angcyo:jpush:<version>'`
+    - library
+    - core
+    - [cn.jiguang.sdk:jpush:4.6.0](https://mvnrepository.com/artifact/cn.jiguang.sdk/jpush)
+    - [cn.jiguang.sdk:jcore:3.1.2](https://mvnrepository.com/artifact/cn.jiguang.sdk/jcore)
+- [jsoup]() `implementation 'com.angcyo:jsoup:<version>'`
+    - library
+    - coroutine
+    - http
+    - [org.jsoup:jsoup:1.15.3](https://github.com/jhy/jsoup)
+- [material]() `implementation 'com.angcyo:material:<version>'`
+    - [com.google.android.material:material:1.6.1](https://mvnrepository.com/artifact/com.google.android.material/material)
+- [mpchart]() `implementation 'com.angcyo:mpchart:<version>'`
+    - library
+    - dslitem
+    - [com.github.angcyo:MPAndroidChart:3.1.0.4](https://github.com/angcyo/MPAndroidChart)
+- [mqtt]() `implementation 'com.angcyo:mqtt:<version>'`
+    - library
+    - [org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.4](https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3)
+    - [org.eclipse.paho:org.eclipse.paho.android.service:1.1.1](https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.android.service)
+- [objectbox]() `implementation 'com.angcyo:objectbox:<version>'`
+    - library
+    - [io.objectbox:objectbox-kotlin:3.3.1](https://mvnrepository.com/artifact/io.objectbox/objectbox-kotlin)
+- [rabbitmq]() `implementation 'com.angcyo:rabbitmq:<version>'`
+    - library
+    - [com.rabbitmq:amqp-client:4.12.0](https://mvnrepository.com/artifact/com.rabbitmq/amqp-client)
+- [speech]() `implementation 'com.angcyo:speech:<version>'`
+    - library
+    - [com.gitee.angcyo.aar:QQTTS:qcloudtts_1.3.1](https://gitee.com/angcyo/aar)
+- [tbs]() `implementation 'com.angcyo:tbs:<version>'`
+    - library
+    - core
+    - download
+    - media
+    - image
+    - http
+    - picker
+- [tim]() `implementation 'com.angcyo:tim:<version>'`
+    - library
+    - media
+    - core
+    - dslitem
+    - glide
+    - picker
+    - amap3d
+    - [com.tencent.imsdk:imsdk-plus:5.9.1872](https://mvnrepository.com/artifact/com.tencent.imsdk/imsdk-plus)
+    - [com.tencent.tpns:xiaomi:1.2.9.2-release](https://repo1.maven.org/maven2/com/tencent/tpns/)
+    - [com.tencent.tpns:meizu:1.2.9.2-release](https://repo1.maven.org/maven2/com/tencent/tpns/)
+    - [com.tencent.tpns:oppo:1.2.9.2-release](https://repo1.maven.org/maven2/com/tencent/tpns/)
+    - [com.tencent.tpns:vivo:1.2.9.2-release](https://repo1.maven.org/maven2/com/tencent/tpns/)
+    - [com.tencent.tpns:huawei:1.2.9.2-release](https://repo1.maven.org/maven2/com/tencent/tpns/)
+    - [com.huawei.hms:push:6.3.0.300](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-app-version-0000001074227861)
+- [umeng]() `implementation 'com.angcyo:umeng:<version>'`
+    - library
+    - [com.umeng.umsdk:common:9.4.0](https://mvnrepository.com/artifact/com.umeng.umsdk/common)
+    - [com.umeng.umsdk:asms:1.2.3](https://mvnrepository.com/artifact/com.umeng.umsdk/asms)
+- [websocket]() `implementation 'com.angcyo:websocket:<version>'`
+    - library
+    - viewmodel
+    - core
+    - [org.java-websocket:Java-WebSocket:1.5.3](https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket)
+- [wifip2p]() `implementation 'com.angcyo:wifip2p:<version>'`
+    - library
+    - viewmodel
+    - core
