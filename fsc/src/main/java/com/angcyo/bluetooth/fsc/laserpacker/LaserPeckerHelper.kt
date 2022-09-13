@@ -12,7 +12,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
@@ -20,6 +19,7 @@ import com.angcyo.library.L
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
+import com.angcyo.library.unit.MmValueUnit
 
 /**
  * https://docs.qq.com/doc/DWE1MVnVOQ3RJSXZ1
@@ -592,5 +592,7 @@ fun Byte.toPxDes() = when (this) {
     else -> "~1K"
 }
 
-/**将日志写入到[ble.log]*/
-fun String.writeBleLog(): String = writeToLog("ble.log")
+/**将日志写入到[ble.log]
+ * [log] 是否还需要输出到控制台
+ * */
+fun String.writeBleLog(log: Boolean = true): String = writeToLog("ble.log", log)
