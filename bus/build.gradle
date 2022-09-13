@@ -1,0 +1,11 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+
+    //bus 消息总线
+    //https://github.com/JeremyLiao/LiveEventBus
+    //https://search.maven.org/artifact/io.github.jeremyliao/live-event-bus
+    //https://mvnrepository.com/artifact/io.github.jeremyliao/live-event-bus
+    api 'io.github.jeremyliao:live-event-bus-x:1.8.0'
+}

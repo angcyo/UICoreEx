@@ -1,4 +1,4 @@
-package com.angcyo.github.bus
+package com.angcyo.bus
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
