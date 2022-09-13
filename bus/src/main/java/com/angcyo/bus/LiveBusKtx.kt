@@ -91,6 +91,12 @@ fun <T : LiveEvent> KClass<T>.busPost(value: T?) {
 //region ------observe------
 
 //observer
+
+/**观察一个Bus事件
+ * [owner] 声明周期绑定, 如果不指定则使用Forever监听
+ * [sticky] 是否需要收到订阅之前的消息, 默认false
+ * [observer] 观察者/回调
+ * */
 fun <T> Observable<T>.doObserver(
     owner: LifecycleOwner? = null,
     sticky: Boolean = false,
