@@ -75,6 +75,9 @@ data class DataCmd(
          *       PX = 0x03 时 图片分辨率为1300*1300
          *       PX = 0x02 时 图片分辨率为2000*2000
          *       PX = 0x01 时 图片分辨率为4000*4000
+         *
+         * 缩放倍数: = DPI / 254
+         *
          * [bitmapWidth] 图片的宽高. px修正过后的数据
          * [bitmapHeight]
          *
