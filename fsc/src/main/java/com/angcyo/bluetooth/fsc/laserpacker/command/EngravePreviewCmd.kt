@@ -113,7 +113,7 @@ data class EngravePreviewCmd(
                 }
 
                 if (limitPath != null) {
-                    if (!limitPath.contains(tempRect)) {
+                    if (limitPath.overflow(tempRect)) {
                         //溢出
                         overflow = true
                     }
@@ -132,6 +132,10 @@ data class EngravePreviewCmd(
                 //超过范围, 缩成在中心的一个点
                 previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
                 previewY = (productInfo?.bounds?.height()?.toInt() ?: 0) / 2
+
+                //平移
+                previewX = LaserPeckerHelper.transformX(previewX, px)
+                previewY = LaserPeckerHelper.transformY(previewY, px)
 
                 previewWidth = 1
                 previewHeight = 1
