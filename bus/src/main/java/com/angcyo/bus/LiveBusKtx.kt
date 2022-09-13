@@ -117,7 +117,7 @@ fun <T> Observable<T>.doObserver(
     }
 }
 
-/**观察一个事件总线的消息事件
+/**观察一个事件总线的消息事件, 观察任意类型的消息
  * [owner] 声明周期提供者, 如果不传, 表示全局监听. 可能会有内存泄漏风险*/
 fun String.busObserveAny(
     owner: LifecycleOwner? = null,
@@ -129,6 +129,7 @@ fun String.busObserveAny(
     return observer
 }
 
+/**观察指定类型[type]的消息*/
 fun <T> String.busObserve(
     type: Class<T>,
     owner: LifecycleOwner? = null,
@@ -140,6 +141,7 @@ fun <T> String.busObserve(
     return observer
 }
 
+/**观察指定类型[type]的消息*/
 fun <T : Any> String.busObserve(
     type: KClass<T>,
     owner: LifecycleOwner? = null,
