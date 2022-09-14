@@ -8,6 +8,7 @@ dependencies {
 
     implementation project(allModule.fragment)
     implementation project(allModule.core)
+    compileOnly project(allModule.dslitem) //DebugFragment
 
     //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
     //apply plugin: 'com.yanzhenjie.andserver'
@@ -24,4 +25,5 @@ dependencies {
     //https://github.com/yanzhenjie/AndServer/issues/391
     //https://mvnrepository.com/artifact/javax.activation/javax.activation-api
     api 'javax.activation:javax.activation-api:1.2.0'
+
 }
