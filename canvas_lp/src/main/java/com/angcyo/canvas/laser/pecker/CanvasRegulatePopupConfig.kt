@@ -174,7 +174,8 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
                     initItem()
 
                     val start = 0.125f
-                    val def = getFloatOrDef(KEY_LINE_SPACE, start)
+                    val max = 5f
+                    val def = getFloatOrDef(KEY_LINE_SPACE, max)
 
                     itemProgressTextFormatAction = {
                         (start + (5 - start) * it._progressFraction).canvasDecimal(3)
