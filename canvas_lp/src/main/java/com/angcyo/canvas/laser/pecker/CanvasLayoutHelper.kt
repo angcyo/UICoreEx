@@ -423,8 +423,8 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 updateLayerLayout(vh)
             }
 
-            override fun onItemRenderUpdate(item: IRenderer) {
-                super.onItemRenderUpdate(item)
+            override fun onItemRenderUpdate(itemRenderer: IRenderer) {
+                super.onItemRenderUpdate(itemRenderer)
                 updateLayerLayout(vh)
             }
 
