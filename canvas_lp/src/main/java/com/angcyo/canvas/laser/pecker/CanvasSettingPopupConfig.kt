@@ -45,7 +45,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             if (isShowDebug()) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
-                    itemInfoText = "像素"
+                    itemInfoText = _string(R.string.canvas_pixel_unit)
                     itemSwitchChecked = canvasViewBox?.valueUnit is PixelValueUnit
                     drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                     itemExtendLayoutId = R.layout.canvas_extent_switch_item
