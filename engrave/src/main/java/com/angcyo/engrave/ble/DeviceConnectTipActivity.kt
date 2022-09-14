@@ -12,6 +12,7 @@ import com.angcyo.transition.dslTransition
 import com.angcyo.widget.TextPathAnimateView
 
 /**
+ * 设备自动连接后的通知提示界面
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/28
  */

@@ -1,6 +1,7 @@
 apply from: allGradle.libBase
 
 dependencies {
+    implementation project(allModule.library)
     implementation project(allModule.core)
     implementation project(allModule.glide)
     implementation project(allModule.dslitem)
