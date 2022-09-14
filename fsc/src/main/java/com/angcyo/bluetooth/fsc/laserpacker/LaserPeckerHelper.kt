@@ -334,8 +334,8 @@ object LaserPeckerHelper {
         val centerY = (top + bottom) / 2
 
         //一定能雕刻上的有效宽高, 在中心位置
-        val validWidth = width / 3
-        val validHeight = height / 3
+        val validWidth = width * 2 / 3
+        val validHeight = height * 2 / 3
 
         //底部左右2边的点
         val blX = centerX - validWidth / 2
