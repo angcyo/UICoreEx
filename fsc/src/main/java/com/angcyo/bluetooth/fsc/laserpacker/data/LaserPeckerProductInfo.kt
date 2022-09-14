@@ -40,6 +40,8 @@ data class LaserPeckerProductInfo(
     var heightPhys: Int = 0,
     /**机器物理的范围, 像素*/
     var bounds: RectF,
+    /**机器的最佳预览范围, 像素*/
+    var previewBounds: RectF,
     /**机器在移动范围内的可打印范围, 像素*/
     var limitPath: Path,
     /**Z轴限制提示框, 像素*/

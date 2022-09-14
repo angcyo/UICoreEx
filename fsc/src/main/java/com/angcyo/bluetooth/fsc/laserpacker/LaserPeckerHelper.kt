@@ -191,6 +191,7 @@ object LaserPeckerHelper {
 
         val unit = MmValueUnit()
         val bounds = RectF()
+        val previewBounds = RectF()
         var isOriginCenter = center ?: false
 
         val limitPath = Path()
@@ -229,6 +230,7 @@ object LaserPeckerHelper {
         val bottom =
             unit.convertValueToPixel(if (isOriginCenter) hPhys / 2f else hPhys.toFloat())
         bounds.set(left, top, right, bottom)
+        previewBounds.set(left, top, right, bottom)
         limitPath.addRect(bounds, Path.Direction.CW)
         zLimitPath.addRect(left, top, right, zMax, Path.Direction.CW)
 
@@ -245,6 +247,7 @@ object LaserPeckerHelper {
                     val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
                     val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
                     val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
+                    previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
                 laserTypeList = listOf(LASER_TYPE_WHITE)
@@ -261,6 +264,7 @@ object LaserPeckerHelper {
                     val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
                     val r = unit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
                     val b = unit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
+                    previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
                 laserTypeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
@@ -298,6 +302,7 @@ object LaserPeckerHelper {
             wPhys,
             hPhys,
             bounds,
+            previewBounds,
             limitPath,
             zLimitPath,
             isOriginCenter
