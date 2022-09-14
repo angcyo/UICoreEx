@@ -127,7 +127,7 @@ data class EngravePreviewCmd(
             var previewHeight = height
 
             if (overflow) {
-                //不支持负数预览, 预览数据异常
+                //预览要出范围, 缩成设备物理中心点
 
                 //超过范围, 缩成在中心的一个点
                 previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
