@@ -32,7 +32,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
 
         _vh.postDelay(2_000L) {
             _vh.tv(R.id.lib_des_view)?.text = buildString {
-                append(_string(R.string.bluetooth_ft_connected))
+                append(_string(R.string.device_connected))
                 vmApp<LaserPeckerModel>().productInfoData.value?.deviceName?.let {
                     append(" ")
                     append(it)

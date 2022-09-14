@@ -85,7 +85,7 @@ class BluetoothConnectItem : DslAdapterItem() {
             DeviceConnectState.CONNECT_STATE_SUCCESS -> {
                 itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(false)
                 itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.bluetooth_ft_connected)
+                    _string(R.string.device_connected)
             }
             DeviceConnectState.CONNECT_STATE_START -> {
                 itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(true)

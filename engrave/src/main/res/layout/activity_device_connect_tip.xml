@@ -56,7 +56,7 @@
             style="@style/LibButtonBorderStyle"
             android:layout_width="120dp"
             android:layout_height="50dp"
-            android:text="完成" />
+            android:text="@string/ui_finish" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/setting_button"
@@ -64,7 +64,7 @@
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_marginLeft="@dimen/lib_xxhdpi"
-            android:text="设置" />
+            android:text="@string/ui_setting" />
 
     </LinearLayout>
 

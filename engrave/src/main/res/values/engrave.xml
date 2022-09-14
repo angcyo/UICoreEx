@@ -86,7 +86,7 @@
     <string name="bluetooth_ft_scan_connected">BLE connected</string>
     <string name="bluetooth_ft_blue_connecting">Bluetooth Connecting</string>
     <string name="bluetooth_ft_blue_connect_act">Bluetooth Device Connection</string>
-    <string name="bluetooth_ft_connected">Connected</string>
+    <string name="device_connected">Connected</string>
 
     <string name="device_setting_tips_fourteen_8">Slab</string>
     <string name="device_setting_tips_fourteen_9">Trolley</string>
@@ -122,5 +122,8 @@
     <string name="size_safety_tips">Please verify that the laser workspace is secure</string>
     <string name="size_safety_content">Always wear protective goggles and install protective cover</string>
     <string name="print_stop">Are you sure you want to end the laser engraving?</string>
+
+    <string name="ui_finish">Finish</string>
+    <string name="ui_setting">Settings</string>
 
 </resources>

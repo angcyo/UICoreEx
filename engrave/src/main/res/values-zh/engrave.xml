@@ -11,7 +11,7 @@
     <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
 
     <string name="bluetooth_ft_blue_connect_act">蓝牙连接</string>
-    <string name="bluetooth_ft_connected">已连接</string>
+    <string name="device_connected">已连接</string>
     <string name="bluetooth_ft_blue_connecting">蓝牙正在连接...</string>
     <string name="bluetooth_ft_scan_connected">蓝牙已连接</string>
     <string name="bluetooth_lib_scan_disconnected">蓝牙已断开</string>
@@ -116,5 +116,7 @@
     <string name="size_safety_content">请务必佩戴护目镜并安装保护罩</string>
     <string name="print_stop">确定要结束镭雕吗？</string>
 
+    <string name="ui_finish">完成</string>
+    <string name="ui_setting">设置</string>
 
 </resources>
