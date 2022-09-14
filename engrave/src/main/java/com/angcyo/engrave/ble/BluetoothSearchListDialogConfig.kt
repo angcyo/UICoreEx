@@ -171,6 +171,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 fun Context.bluetoothSearchListDialog(config: BluetoothSearchListDialogConfig.() -> Unit) {
     return BluetoothSearchListDialogConfig(this).run {
         configBottomDialog(this@bluetoothSearchListDialog)
+        //dialogThemeResId = R.style.LibDialogBaseFullTheme
         config()
         show()
     }
