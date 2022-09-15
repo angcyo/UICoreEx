@@ -33,6 +33,7 @@ import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.saveEntity
 import com.angcyo.viewmodel.observe
+import com.angcyo.viewmodel.observeOnce
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -76,7 +77,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     }
 
                     //蓝牙断开后,清空设备状态
-                    vmApp<LaserPeckerModel>().apply {
+                    laserPeckerModel.apply {
                         deviceStateData.postValue(null)
                         initializeData.postValue(false)
                     }
@@ -99,8 +100,15 @@ class FscDeviceModel : LifecycleViewModel() {
                     if (deviceConnectState.isAutoConnect) {
                         //自动连接成功后, 显示连接提示
                         lastConnectTime = nowTime()
-                        (RBackground.lastActivityRef?.get() ?: app()).dslAHelper {
-                            start(DeviceConnectTipActivity::class)
+
+                        laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
+                            //等待设备信息读取结束之后才显示
+                            if (it != null) {
+                                (RBackground.lastActivityRef?.get() ?: app()).dslAHelper {
+                                    start(DeviceConnectTipActivity::class)
+                                }
+                            }
+                            it != null
                         }
                     } else {
                         toast(_string(R.string.bluetooth_ft_scan_connected))

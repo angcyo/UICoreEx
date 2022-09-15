@@ -271,6 +271,13 @@
             android:layout_height="wrap_content"
             android:text="test" />
 
+        <com.angcyo.widget.DslButton
+            android:id="@+id/tip_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tip" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/result_text_view"
             style="@style/LibBodyTextStyle"

@@ -4,68 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lib_dialog_root_layout"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:layout_margin="@dimen/lib_xhdpi"
     android:background="@drawable/dialog_white_round_common_bg_shape"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:minHeight="220dp"
+    android:padding="@dimen/lib_xhdpi"
+    tools:background="@color/transparent20">
 
-    <com.angcyo.widget.TextPathAnimateView
-        android:id="@+id/text_animate_view"
-        style="@style/LibBodyTextStyle"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/device_name_view"
+        style="@style/LibPrimaryTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/lib_des_view"
+        android:padding="@dimen/lib_xhdpi"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:r_path_animate_text="LaserPecker"
-        app:r_path_text_size="56dp" />
+        tools:text="LaserPecker-LIII888888"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_des_view"
         style="@style/LibMainTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/lib_xhdpi"
-        android:padding="@dimen/lib_xhdpi"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/control_layout"
+        android:text="@string/device_connected"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_animate_view"
-        tools:text="已连接 LaserPecker"
+        app:layout_constraintTop_toBottomOf="@id/device_name_view"
         tools:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/control_layout"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/device_image_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/lib_xhdpi"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:minHeight="150dp"
+        android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lib_des_view"
-        tools:visibility="visible">
+        tools:srcCompat="@mipmap/device_c1" />
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/finish_button"
-            style="@style/LibButtonBorderStyle"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:text="@string/ui_finish" />
+    <com.angcyo.widget.DslButton
+        android:id="@+id/finish_button"
+        style="@style/LibButtonSolidStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:layout_marginTop="@dimen/lib_xhdpi"
+        android:text="@string/ui_finish"
+        app:button_gradient_colors="@color/lib_black"
+        app:button_radius="@dimen/lib_radius_common"
+        app:button_ripple_color="@color/colorAccent"
+        app:layout_constraintTop_toBottomOf="@id/device_image_view" />
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/setting_button"
-            style="@style/LibButtonSolidStyle"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/lib_xxhdpi"
-            android:text="@string/ui_setting" />
-
-    </LinearLayout>
+    <com.angcyo.widget.DslButton
+        android:id="@+id/setting_button"
+        style="@style/LibButtonSolidStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/lib_xhdpi"
+        android:text="@string/ui_setting"
+        android:textColor="@color/colorPrimary"
+        app:button_enable_background_style="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finish_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

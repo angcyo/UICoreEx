@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="DeviceConnectTipTheme" parent="LibDialogActivity">
+        <!--<item name="android:navigationBarColor">@color/lib_white</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>-->
+    </style>
+</resources>

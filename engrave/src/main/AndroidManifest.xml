@@ -8,7 +8,8 @@
             android:enabled="true"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:launchMode="singleTask"
             android:noHistory="true"
-            android:theme="@style/LibDialogActivity" />
+            android:theme="@style/DeviceConnectTipTheme" />
     </application>
 </manifest>
