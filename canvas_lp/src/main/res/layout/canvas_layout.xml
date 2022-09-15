@@ -335,12 +335,29 @@
 
     </LinearLayout>
 
+    <!--撤销回退, 动态添加-->
+    <LinearLayout
+        android:id="@+id/undo_wrap_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:background="@drawable/doodle_property_shape"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/canvas_bottom_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_height="60dp"
+        tools:layout_width="80dp" />
+
     <!--图层选择层-->
     <LinearLayout
         android:id="@+id/canvas_layer_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginBottom="-6dp"
+        android:elevation="3dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/canvas_bottom_layout"
         app:layout_constraintRight_toRightOf="parent"

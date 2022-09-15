@@ -15,7 +15,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/18
  */
-class AddTextItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentItem {
+class AddTextItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragmentItem {
 
     override var itemFragment: Fragment? = null
 

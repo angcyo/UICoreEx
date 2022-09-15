@@ -132,7 +132,7 @@ class FscDeviceModel : LifecycleViewModel() {
             override fun onActivityLifecycleChanged(activity: Activity, state: String) {
                 super.onActivityLifecycleChanged(activity, state)
                 if (state == RBackground.RESUMED) {
-                    if (QuerySettingParser.AUTO_CONNECT_DEVICE) {
+                    if (QuerySettingParser.AUTO_CONNECT_DEVICE && !bleApiModel.haveDeviceConnected() /*无设备连接*/) {
                         //需要自动连接设备
                         val nowTime = nowTime()
                         if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {

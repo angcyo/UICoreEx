@@ -11,14 +11,14 @@
     android:paddingVertical="@dimen/lib_sdpi">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_view"
+        android:id="@+id/lib_image_view"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:scaleType="fitCenter"
         tools:src="@drawable/canvas_text_ico" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/text_view"
+        android:id="@+id/lib_text_view"
         style="@style/LibSubTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -4,12 +4,11 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex.color
-import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -71,7 +70,7 @@ open class CanvasIconItem : DslAdapterItem() {
                 this
             }
         }
-        itemHolder.img(R.id.image_view)?.setImageDrawable(drawable)
+        itemHolder.img(R.id.lib_image_view)?.setImageDrawable(drawable)
     }
 
 }

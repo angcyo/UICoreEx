@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.canvas.CanvasDelegate
@@ -30,12 +29,14 @@ import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.EngraveHelper
+import com.angcyo.fragment.AbsFragment
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.qrcode.createBarCode
 import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -46,13 +47,33 @@ import com.pixplicity.sharp.SharpDrawable
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/09
  */
-class CanvasLayoutHelper(val fragment: Fragment) {
+class CanvasLayoutHelper(val fragment: AbsFragment) {
 
     /**当前选中的[DslAdapterItem], 用来实现底部控制按钮互斥操作*/
     var _selectedCanvasItem: DslAdapterItem? = null
 
-    var _undoCanvasItem: CanvasControlItem? = null
-    var _redoCanvasItem: CanvasControlItem? = null
+    var _canvasView: CanvasView? = null
+
+    var _undoCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
+        itemIco = R.drawable.canvas_undo_ico
+        itemText = _string(R.string.canvas_undo)
+        itemEnable = false
+
+        _undoCanvasItem = this
+        itemClick = {
+            _canvasView?.canvasDelegate?.getCanvasUndoManager()?.undo()
+        }
+    }
+    var _redoCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
+        itemIco = R.drawable.canvas_redo_ico
+        itemText = _string(R.string.canvas_redo)
+        itemEnable = false
+
+        _redoCanvasItem = this
+        itemClick = {
+            _canvasView?.canvasDelegate?.getCanvasUndoManager()?.redo()
+        }
+    }
 
     /**图层item*/
     var _layerCanvasItem: DslAdapterItem? = null
@@ -88,35 +109,11 @@ class CanvasLayoutHelper(val fragment: Fragment) {
 
     /**绑定画图支持的功能列表*/
     fun bindItems(vh: DslViewHolder, canvasView: CanvasView, adapter: DslAdapter) {
+        _canvasView = canvasView
         adapter.render {
             hookUpdateDepend()
-
             //
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_undo_ico
-                itemText = _string(R.string.canvas_undo)
-                itemEnable = false
-
-                _undoCanvasItem = this
-                itemClick = {
-                    canvasView.canvasDelegate.getCanvasUndoManager().undo()
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_redo_ico
-                itemText = _string(R.string.canvas_redo)
-                drawCanvasRight()
-                itemEnable = false
-
-                _redoCanvasItem = this
-                itemClick = {
-                    canvasView.canvasDelegate.getCanvasUndoManager().redo()
-                }
-            }
-
-            //
-            AddTextItem(canvasView)()
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_image_ico
                 itemText = _string(R.string.canvas_image)
 
@@ -132,22 +129,8 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
             }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_shapes_ico
-                itemText = _string(R.string.canvas_shapes)
-                itemClick = {
-                    vh.showControlLayout(canvasView, !itemIsSelected)
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
-
-                    if (itemIsSelected) {
-                        selectedItemWith(this)
-                        showShapeSelectLayout(vh, canvasView)
-                        UMEvent.CANVAS_SHAPE.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem()() {
+            AddTextItem(canvasView)()
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_material_ico
                 itemText = _string(R.string.canvas_material)
                 itemEnable = true
@@ -184,7 +167,24 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
             }
-            AddDoodleItem()() {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_shapes_ico
+                itemText = _string(R.string.canvas_shapes)
+                itemClick = {
+                    vh.showControlLayout(canvasView, !itemIsSelected)
+                    itemIsSelected = !itemIsSelected
+                    updateAdapterItem()
+
+                    if (itemIsSelected) {
+                        selectedItemWith(this)
+                        showShapeSelectLayout(vh, canvasView)
+                        UMEvent.CANVAS_SHAPE.umengEventValue()
+                    }
+                }
+            }
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_doodle_ico
+                itemText = _string(R.string.canvas_doodle)
                 itemEnable = true
                 itemClick = {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
@@ -196,8 +196,8 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                 }
                 drawCanvasRight()
             }
-
-            CanvasControlItem()() {
+            //
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_edit_ico
                 itemText = _string(R.string.canvas_edit)
                 itemEnable = true
@@ -216,7 +216,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 _layerCanvasItem = this
                 itemIco = R.drawable.canvas_layer_ico
                 itemText = _string(R.string.canvas_layer)
@@ -231,7 +231,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_actions_ico
                 itemText = _string(R.string.canvas_operate)
                 itemEnable = true
@@ -257,7 +257,7 @@ class CanvasLayoutHelper(val fragment: Fragment) {
                     }
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_setting_ico
                 itemText = _string(R.string.canvas_setting)
                 itemEnable = true
@@ -280,6 +280,10 @@ class CanvasLayoutHelper(val fragment: Fragment) {
             }
         }
 
+        //
+        _updateUndoLayout(vh)
+
+        //
         initCanvasListener(vh, canvasView)
     }
 
@@ -499,20 +503,19 @@ class CanvasLayoutHelper(val fragment: Fragment) {
 
             override fun onCanvasUndoChanged(undoManager: CanvasUndoManager) {
                 super.onCanvasUndoChanged(undoManager)
-                _undoCanvasItem?.apply {
+                _undoCanvasItem.apply {
                     itemEnable = undoManager.canUndo()
                     if (isShowDebug()) {
                         itemTextSuperscript = "${undoManager.undoStack.size()}"
                     }
-                    updateAdapterItem()
                 }
-                _redoCanvasItem?.apply {
+                _redoCanvasItem.apply {
                     itemEnable = undoManager.canRedo()
                     if (isShowDebug()) {
                         itemTextSuperscript = "${undoManager.redoStack.size()}"
                     }
-                    updateAdapterItem()
                 }
+                _updateUndoLayout()
             }
 
             override fun onCanvasInterceptTouchEvent(
@@ -1192,4 +1195,15 @@ class CanvasLayoutHelper(val fragment: Fragment) {
         }
     }
     //</editor-fold desc="群组控制">
+
+    //<editor-fold desc="Undo">
+
+    /**undo redo*/
+    fun _updateUndoLayout(viewHolder: DslViewHolder = fragment._vh) {
+        viewHolder.group(R.id.undo_wrap_layout)
+            ?.resetDslItem(listOf(_undoCanvasItem, _redoCanvasItem))
+    }
+
+    //</editor-fold desc="Undo">
+
 }

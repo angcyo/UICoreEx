@@ -30,7 +30,7 @@ open class CanvasControlItem : CanvasIconItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.text_view)?.apply {
+        itemHolder.tv(R.id.lib_text_view)?.apply {
             text = span {
                 append(itemText)
                 append(itemTextSuperscript) {
