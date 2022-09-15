@@ -1,12 +1,12 @@
 <resources>
-    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
+    <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光类型</string>
     <string name="laser_type_white">白光</string>
     <string name="laser_type_blue">蓝光</string>
     <string name="object_diameter">物体直径</string>
 
-    <string name="bluetooth_ft_mtu_no_device_connected">Unconnected device</string>
+    <string name="blue_no_device_connected">Unconnected device</string>
     <string name="zflag_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
 
     <string name="print_v2_package_preview_over">Quit Preview</string>
@@ -82,10 +82,10 @@
 
     <string name="work_time">Processing Time</string>
     <string name="print_times">Pass</string>
-    <string name="bluetooth_lib_scan_disconnected">BLE disconnect</string>
-    <string name="bluetooth_ft_scan_connected">BLE connected</string>
-    <string name="bluetooth_ft_blue_connecting">Bluetooth Connecting</string>
-    <string name="bluetooth_ft_blue_connect_act">Bluetooth Device Connection</string>
+    <string name="blue_disconnected">BLE disconnect</string>
+    <string name="blue_connected">BLE connected</string>
+    <string name="blue_connecting">Bluetooth Connecting</string>
+    <string name="blue_connect">Bluetooth Device Connection</string>
     <string name="device_connected">Connected</string>
 
     <string name="device_setting_tips_fourteen_8">Slab</string>

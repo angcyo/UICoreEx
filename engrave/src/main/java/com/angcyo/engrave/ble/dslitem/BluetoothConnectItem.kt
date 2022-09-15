@@ -101,7 +101,7 @@ class BluetoothConnectItem : DslAdapterItem() {
                     setLoadingRes(R.drawable.ic_loading_svg, true)
                 }
                 itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.bluetooth_ft_blue_connecting)
+                    _string(R.string.blue_connecting)
             }
             DeviceConnectState.CONNECT_STATE_DISCONNECT_START -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
@@ -109,7 +109,7 @@ class BluetoothConnectItem : DslAdapterItem() {
                     setLoadingRes(R.drawable.ic_loading_svg, true)
                 }
                 itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.bluetooth_ft_blue_disconnecting)
+                    _string(R.string.blue_disconnecting)
             }
             /*DeviceConnectState.CONNECT_STATE_DISCONNECT -> {
                 itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(false)
@@ -119,7 +119,7 @@ class BluetoothConnectItem : DslAdapterItem() {
             else -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.visible(false)
                 itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.bluetooth_ft_mtu_no_device_connected)
+                    _string(R.string.blue_no_device_connected)
             }
         }
     }

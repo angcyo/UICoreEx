@@ -202,7 +202,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
     val previewOverflowStateInfo = StateLayoutInfo(_string(R.string.preview_out_of_range))
 
     //设备连接状态
-    val connectStateInfo = StateLayoutInfo(_string(R.string.bluetooth_ft_mtu_no_device_connected))
+    val connectStateInfo = StateLayoutInfo(_string(R.string.blue_no_device_connected))
 
     //endregion ---内部操作---
 

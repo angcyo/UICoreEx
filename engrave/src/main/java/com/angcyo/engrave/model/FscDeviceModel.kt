@@ -73,7 +73,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         lastState == DeviceConnectState.CONNECT_STATE_DISCONNECT_START
                     ) {
                         //蓝牙设备断开
-                        toast(_string(R.string.bluetooth_lib_scan_disconnected))
+                        toast(_string(R.string.blue_disconnected))
                     }
 
                     //蓝牙断开后,清空设备状态
@@ -111,7 +111,7 @@ class FscDeviceModel : LifecycleViewModel() {
                             it != null
                         }
                     } else {
-                        toast(_string(R.string.bluetooth_ft_scan_connected))
+                        toast(_string(R.string.blue_connected))
                     }
 
                     //

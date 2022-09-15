@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bluetooth_ft_blue_disconnecting">正在断开...</string>
+    <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光类型</string>
     <string name="laser_type_white">白光</string>
     <string name="laser_type_blue">蓝光</string>
     <string name="object_diameter">物体直径</string>
 
-    <string name="bluetooth_ft_mtu_no_device_connected">未连接设备</string>
+    <string name="blue_no_device_connected">未连接设备</string>
     <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
 
-    <string name="bluetooth_ft_blue_connect_act">蓝牙连接</string>
+    <string name="blue_connect">蓝牙连接</string>
     <string name="device_connected">已连接</string>
-    <string name="bluetooth_ft_blue_connecting">蓝牙正在连接...</string>
-    <string name="bluetooth_ft_scan_connected">蓝牙已连接</string>
-    <string name="bluetooth_lib_scan_disconnected">蓝牙已断开</string>
+    <string name="blue_connecting">蓝牙正在连接...</string>
+    <string name="blue_connected">蓝牙已连接</string>
+    <string name="blue_disconnected">蓝牙已断开</string>
 
     <string name="preview_center">显示中心</string>
     <string name="preview_continue">继续预览</string>
