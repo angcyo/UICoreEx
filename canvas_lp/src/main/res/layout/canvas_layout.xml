@@ -341,7 +341,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/lib_xhdpi"
-        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
         android:background="@drawable/doodle_property_shape"
         android:elevation="2dp"
         android:gravity="center_vertical"

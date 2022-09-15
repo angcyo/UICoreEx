@@ -113,22 +113,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         adapter.render {
             hookUpdateDepend()
             //
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_image_ico
-                itemText = _string(R.string.canvas_image)
-
-                itemClick = {
-                    vh.showControlLayout(canvasView, !itemIsSelected)
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
-
-                    if (itemIsSelected) {
-                        selectedItemWith(this)
-                        showBitmapSelectLayout(vh, canvasView)
-                        UMEvent.CANVAS_IMAGE.umengEventValue()
-                    }
-                }
-            }
+            AddImageItem(canvasView)()
             AddTextItem(canvasView)()
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_material_ico
@@ -923,55 +908,49 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         val renderer = renderer as PictureItemRenderer<PictureBitmapItem>
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handlePrint(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleGCode(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleDithering(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_grey
                 itemText = _string(R.string.canvas_grey)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleGrey(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                 }
             }
-            CanvasControlItem()() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
-                itemTintColor = false
                 itemClick = {
                     CanvasBitmapHandler.handleSeal(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()

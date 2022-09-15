@@ -18,12 +18,14 @@ import com.angcyo.library.libCacheFile
 import com.angcyo.library.model.loadPath
 import com.angcyo.library.utils.fileNameUUID
 import com.angcyo.picker.dslSinglePickerImage
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/18
  */
-class AddImageItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentItem {
+class AddImageItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragmentItem {
 
     override var itemFragment: Fragment? = null
 
@@ -58,6 +60,7 @@ class AddImageItem(val canvasView: CanvasView) : CanvasControlItem(), IFragmentI
                     }
                 }
             }
+            UMEvent.CANVAS_IMAGE.umengEventValue()
         }
     }
 }
