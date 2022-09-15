@@ -12,12 +12,10 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.*
+import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
-import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -59,6 +57,12 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
         //扫描
         dialogViewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
+
+            renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
+                itemHolder.click(R.id.contact_me_view) {
+                    toast("Features under development...")
+                }
+            }
 
             val list = apiModel.connectDeviceListData.value
             if (list.isNullOrEmpty()) {
@@ -122,8 +126,16 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
         //蓝牙状态监听
         apiModel.bleStateData.observe(this) {
             //loading
-            dialogViewHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)
-                ?.loading(it == BLUETOOTH_STATE_SCANNING)
+            dialogViewHolder.view(R.id.lib_loading_view)?.apply {
+                if (it == BLUETOOTH_STATE_SCANNING) {
+                    //animate().rotationBy(360f).setDuration(240).start()
+                    rotateAnimation(duration = 1000, config = {
+                        infinite()
+                    })
+                } else {
+                    cancelAnimator()
+                }
+            }
 
             //radar
             dialogViewHolder.v<RadarScanLoadingView>(R.id.radar_scan_loading_view)

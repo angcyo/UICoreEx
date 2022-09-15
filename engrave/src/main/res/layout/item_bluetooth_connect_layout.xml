@@ -1,81 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/lib_bg_selector"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:paddingStart="10dp"
-    android:paddingTop="5dp"
-    android:paddingEnd="10dp">
+    android:paddingHorizontal="@dimen/lib_xhdpi"
+    android:paddingVertical="@dimen/lib_ldpi">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="10dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="5dp">
+        android:background="@drawable/bluetooth_connect_bg_selector"
+        android:padding="@dimen/lib_xhdpi">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/device_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/device_bg_shape"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/device_l1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/device_name_view"
+            style="@style/LibTitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:src="@drawable/bluetooth_connect_selector" />
+            android:layout_marginLeft="@dimen/lib_hdpi"
+            android:textColor="@color/lib_main_to_theme_colors"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/device_flag_view"
+            app:layout_constraintLeft_toRightOf="@id/device_image_view"
+            app:layout_constraintTop_toTopOf="@id/device_image_view"
+            tools:text="LaserPecker-III105B94" />
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/device_flag_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:textSize="18sp">
+            android:textColor="@color/bluetooth_text_color_selector"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/device_image_view"
+            app:layout_constraintLeft_toLeftOf="@id/device_name_view"
+            app:layout_constraintTop_toBottomOf="@id/device_name_view"
+            tools:text="未连接设备" />
 
-            <TextView
-                android:id="@+id/device_name_view"
-                style="@style/LibTitleTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/lib_main_to_theme_colors"
-                android:textSize="14sp"
-                tools:text="LaserPecker-III105B94\nDC:OD:30:00:18:CD" />
-
-            <TextView
-                android:id="@+id/device_flag_view"
-                style="@style/LibTitleTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/lib_main_to_theme_colors"
-                android:textSize="12sp"
-                tools:text="未连接设备" />
-
-        </LinearLayout>
-
-        <com.angcyo.widget.loading.TGStrokeLoadingView
+        <com.angcyo.widget.image.ImageLoadingView
             android:id="@+id/lib_loading_view"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="right|center_vertical"
             android:visibility="gone"
-            app:r_loading_bg_color="@color/canvas_ico_dark"
-            app:r_loading_bg_stroke_width="3dp"
-            app:r_loading_color="@color/canvas_ico_dark"
-            app:r_loading_offset="6dp"
-            app:r_loading_width="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_loading_svg"
             tools:visibility="visible" />
 
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/canvas_line" />
-
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

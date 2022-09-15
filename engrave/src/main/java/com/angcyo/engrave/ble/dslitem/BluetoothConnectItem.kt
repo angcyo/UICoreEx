@@ -6,11 +6,12 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.BluetoothSearchListDialogConfig
+import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.loading.TGStrokeLoadingView
+import com.angcyo.widget.image.ImageLoadingView
 import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -74,26 +75,39 @@ class BluetoothConnectItem : DslAdapterItem() {
         itemHolder.selected(itemIsSelected)
 
         itemHolder.tv(R.id.device_name_view)?.text = buildString {
-            appendLine(itemFscDevice?.name)
-            append(itemFscDevice?.address)
+            append(itemFscDevice?.name)
+            //append(itemFscDevice?.address)
             if (itemShowRssi) {
                 append(" ${itemFscDevice?.rssi}")
             }
         }
 
+        //image
+        itemHolder.img(R.id.device_image_view)
+            ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(itemFscDevice?.name))
+
         when (connectState) {
             DeviceConnectState.CONNECT_STATE_SUCCESS -> {
-                itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(false)
+                itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
+                    visible(true)
+                    setLoadingRes(R.drawable.dialog_confirm_svg, false)
+                }
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.device_connected)
             }
             DeviceConnectState.CONNECT_STATE_START -> {
-                itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(true)
+                itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
+                    visible(true)
+                    setLoadingRes(R.drawable.ic_loading_svg, true)
+                }
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.bluetooth_ft_blue_connecting)
             }
             DeviceConnectState.CONNECT_STATE_DISCONNECT_START -> {
-                itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(true)
+                itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
+                    visible(true)
+                    setLoadingRes(R.drawable.ic_loading_svg, true)
+                }
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.bluetooth_ft_blue_disconnecting)
             }
@@ -103,7 +117,7 @@ class BluetoothConnectItem : DslAdapterItem() {
                     _string(R.string.bluetooth_lib_scan_disconnected)
             }*/
             else -> {
-                itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(false)
+                itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.visible(false)
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.bluetooth_ft_mtu_no_device_connected)
             }

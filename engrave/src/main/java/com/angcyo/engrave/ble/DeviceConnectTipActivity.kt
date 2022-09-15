@@ -16,6 +16,20 @@ import com.angcyo.engrave.R
  */
 class DeviceConnectTipActivity : BaseDialogActivity() {
 
+    companion object {
+
+        /**根据设备名, 获取设备对应的图片资源
+         * [name] 设备名, 或者蓝牙名都支持
+         * */
+        fun getDeviceImageRes(name: String?): Int = when {
+            name == LaserPeckerHelper.CI || name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true -> R.mipmap.device_c1
+            name == LaserPeckerHelper.LIII || name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true -> R.mipmap.device_l3
+            name == LaserPeckerHelper.LII || name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-II") == true -> R.mipmap.device_l2
+            name == LaserPeckerHelper.LI || name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true -> R.mipmap.device_l1
+            else -> R.mipmap.device_l1
+        }
+    }
+
     init {
         activityLayoutId = R.layout.activity_device_connect_tip
         dialogGravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
@@ -27,15 +41,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         vmApp<LaserPeckerModel>().productInfoData.value?.apply {
             _vh.tv(R.id.device_name_view)?.text = deviceName
             //设备图
-            _vh.img(R.id.device_image_view)?.setImageResource(
-                when (name) {
-                    LaserPeckerHelper.CI -> R.mipmap.device_c1
-                    LaserPeckerHelper.LIII -> R.mipmap.device_l3
-                    LaserPeckerHelper.LII -> R.mipmap.device_l2
-                    LaserPeckerHelper.LI -> R.mipmap.device_l1
-                    else -> R.mipmap.device_l1
-                }
-            )
+            _vh.img(R.id.device_image_view)?.setImageResource(getDeviceImageRes(name))
         }
 
         _vh.click(R.id.finish_button) {

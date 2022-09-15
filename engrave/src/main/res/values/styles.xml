@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+
+    <color name="text_sub_color">#929292</color>
+    <color name="bluetooth_bg_color">#F9F9F9</color>
+    <color name="device_bg_color">#ECECEC</color>
 
     <style name="DeviceConnectTipTheme" parent="LibDialogActivity">
         <!--<item name="android:navigationBarColor">@color/lib_white</item>

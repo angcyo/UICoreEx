@@ -15,20 +15,14 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/dialog_item_height">
 
-        <com.angcyo.widget.DslButton
-            android:id="@+id/negative_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/lib_bg_selector"
-            android:minHeight="@dimen/dialog_item_height"
-            android:paddingLeft="@dimen/lib_xhdpi"
-            android:paddingRight="@dimen/lib_xhdpi"
-            android:textColor="@color/text_place_color"
-            tools:text="取消" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dialog_negative_button"
+            style="@style/LibDialogIcoItemStyle"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/dialog_back" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_view"
+            android:id="@+id/dialog_title_view"
             style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,26 +31,13 @@
             android:textStyle="bold"
             tools:text="标题" />
 
-        <com.angcyo.widget.loading.TGStrokeLoadingView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/lib_loading_view"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="@style/LibDialogIcoItemStyle"
             android:layout_gravity="right|center_vertical"
-            android:background="@drawable/lib_bg_selector"
-            android:padding="12dp"
-            app:r_loading_bg_color="@color/canvas_ico_dark"
-            app:r_loading_bg_stroke_width="3dp"
-            app:r_loading_color="@color/canvas_ico_dark"
-            app:r_loading_offset="6dp"
-            app:r_loading_width="3dp" />
+            app:srcCompat="@drawable/ic_refresh_svg" />
 
     </FrameLayout>
-
-    <View
-        android:id="@+id/title_line_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/lib_line_px"
-        android:background="@color/dialog_line" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -73,6 +54,10 @@
             style="@style/LibRecyclerViewStyleBase"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/dialog_title_line_view"
+            style="@style/LibDialogTitleShadowStyle" />
 
     </FrameLayout>
 </com.angcyo.widget.layout.RLinearLayout>

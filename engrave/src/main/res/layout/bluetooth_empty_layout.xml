@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/circle_bg_shape"
+        android:padding="30dp"
+        app:layout_constraintBottom_toTopOf="@id/wrap_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_question_svg" />
+
+    <LinearLayout
+        android:id="@+id/wrap_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/contact_me_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lib_image_view">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibPrimaryTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/device_not_found"
+            android:textColor="@color/lib_main_to_theme_colors" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_des_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_hdpi"
+            android:gravity="center"
+            android:text="@string/device_not_found_des" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/contact_me_view"
+        style="@style/LibDesTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:text="@string/contact_me"
+        android:textColor="@color/lib_main_to_theme_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/lib_image_view"
+        app:layout_constraintRight_toRightOf="@id/lib_image_view"
+        app:layout_constraintTop_toBottomOf="@id/wrap_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
