@@ -3,10 +3,13 @@ package com.angcyo.engrave.ble
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.core.component.fileSelector
+import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
@@ -16,6 +19,8 @@ import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.utils.FileUtils
 
 
 /**
@@ -214,6 +219,23 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = QuerySettingParser.AUTO_CONNECT_DEVICE
                 itemSwitchChangedAction = {
                     QuerySettingParser.AUTO_CONNECT_DEVICE = it
+                }
+            }
+            //
+            if (isDebug()) {
+                DslLastDeviceInfoItem()() {
+                    itemClick = {
+                        dslFHelper {
+                            fileSelector({
+                                showFileMd5 = true
+                                showFileMenu = true
+                                showHideFile = true
+                                targetPath =
+                                    FileUtils.appRootExternalFolder().absolutePath
+                                        ?: storageDirectory
+                            })
+                        }
+                    }
                 }
             }
         }

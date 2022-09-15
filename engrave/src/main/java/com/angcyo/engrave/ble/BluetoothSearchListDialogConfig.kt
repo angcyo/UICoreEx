@@ -14,6 +14,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
+import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
@@ -124,7 +125,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
         }
 
         //蓝牙状态监听
-        apiModel.bleStateData.observe(this) {
+        apiModel.bleStateData.observe(this, allowBackward = false) {
             //loading
             dialogViewHolder.view(R.id.lib_loading_view)?.apply {
                 if (it == BLUETOOTH_STATE_SCANNING) {

@@ -818,6 +818,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
         } else {
             val cacheDeviceState = connectDeviceList.find { it.device.address == bleDevice.address }
             cacheDeviceState?.let {
+                if (it.state == CONNECT_STATE_DISCONNECT_START) {
+                    //强制断开连接
+                    connectStateData.value = wrapStateDevice(bleDevice) {
+                        this.state = CONNECT_STATE_DISCONNECT
+                    }
+                }
                 connectDeviceList.remove(it)
                 _notifyConnectDeviceChanged()
             }
