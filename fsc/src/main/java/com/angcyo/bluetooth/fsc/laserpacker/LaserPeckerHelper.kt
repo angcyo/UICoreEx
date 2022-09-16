@@ -560,6 +560,7 @@ object LaserPeckerHelper {
             }
         }.start {
             laserPeckerModel.initializeData.postValue(it == null)
+            laserPeckerModel.initializeOnceData.postValue(it == null)
             if (it == null) {
                 //初始化完成
                 end(it)
