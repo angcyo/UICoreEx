@@ -30,6 +30,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PR
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.app
@@ -803,7 +804,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (bleDevice == null) {
             return
         }
-        pendingDisconnectList.add(bleDevice.address)
+        val address = bleDevice.address
+        pendingDisconnectList.add(address)
         _checkDisconnectTimeout()
         if (isConnectState(bleDevice)) {
             connectStateData.value = wrapStateDevice(bleDevice) {
@@ -813,10 +815,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 isActiveDisConnected = true
                 isAutoConnect = false
             }
-            stopSend(bleDevice.address)
-            fscApi.disconnect(bleDevice.address)
+            stopSend(address)
+            fscApi.disconnect(address)
+            "主动断开蓝牙:$address".writeBleLog()
         } else {
-            val cacheDeviceState = connectDeviceList.find { it.device.address == bleDevice.address }
+            val cacheDeviceState = connectDeviceList.find { it.device.address == address }
             cacheDeviceState?.let {
                 if (it.state == CONNECT_STATE_DISCONNECT_START) {
                     //强制断开连接
