@@ -1,16 +1,15 @@
 package com.angcyo.canvas.laser.pecker
 
+import android.graphics.BitmapFactory
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.parseGCode
-import com.angcyo.canvas.utils.toMm
+import com.angcyo.canvas.utils.*
 import com.angcyo.core.component.file.writeToCache
+import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
@@ -368,5 +367,31 @@ object CanvasBitmapHandler {
                 }
             }
         }
+    }
+
+    /**图片剪裁*/
+    fun handleCrop(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: PictureItemRenderer<PictureBitmapItem>
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
+        val context = anchor.context
+        val originBitmap = item.originBitmap
+        val beforeBounds = RectF(renderer.getBounds())
+
+        var newItem: PictureBitmapItem? = null
+        anchor.context.cropDialog {
+            cropBitmap = originBitmap
+            onCropResultAction = {
+                it?.let {
+                    newItem = PictureBitmapItem(originBitmap, it)
+                    newItem?.dataMode = CanvasConstant.DATA_MODE_GREY
+
+                    renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                }
+            }
+        }
+
     }
 }

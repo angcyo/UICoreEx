@@ -74,6 +74,9 @@ object UMEvent {
     /**创作图片-印章*/
     const val CANVAS_IMAGE_SEAL = "canvas_image_seal"
 
+    /**创作图片-剪裁*/
+    const val CANVAS_IMAGE_CROP = "canvas_image_crop"
+
     //endregion ---origin---
 
     //region ---rn---

@@ -10,6 +10,8 @@ dependencies {
 
     //涂鸦
     implementation project(allModule.doodle)
+    //剪裁
+    implementation project(allModule.crop)
 
     api project(allModule.dialog2)
     api project(allModule.canvas)

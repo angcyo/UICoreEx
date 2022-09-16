@@ -897,15 +897,15 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     fun renderBitmapControlLayout(
         vh: DslViewHolder,
         canvasView: CanvasView,
-        renderer: IItemRenderer<*>
+        itemRenderer: IItemRenderer<*>
     ) {
-        if (renderer !is PictureItemRenderer<*>) {
+        if (itemRenderer !is PictureItemRenderer<*>) {
             return
         }
-        if (renderer.getRendererRenderItem() !is PictureBitmapItem) {
+        if (itemRenderer.getRendererRenderItem() !is PictureBitmapItem) {
             return
         }
-        val renderer = renderer as PictureItemRenderer<PictureBitmapItem>
+        val renderer = itemRenderer as PictureItemRenderer<PictureBitmapItem>
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
             CanvasControlItem2()() {
@@ -954,6 +954,14 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemClick = {
                     CanvasBitmapHandler.handleSeal(it, fragment, renderer)
                     UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
+                }
+            }
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_crop
+                itemText = _string(R.string.canvas_crop)
+                itemClick = {
+                    CanvasBitmapHandler.handleCrop(it, fragment, renderer)
+                    UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
                 }
             }
         }
