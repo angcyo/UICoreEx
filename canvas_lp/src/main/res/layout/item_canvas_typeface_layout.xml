@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="@dimen/lib_xhdpi"
+            android:paddingRight="@dimen/lib_xhdpi"
             tools:text="normal" />
 
         <androidx.appcompat.widget.AppCompatImageView

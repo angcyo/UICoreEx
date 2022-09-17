@@ -1,7 +1,7 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
@@ -10,6 +10,7 @@ import com.angcyo.widget.span.span
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/18
  */
+@Deprecated("2022-9-17 调整ui")
 open class CanvasControlItem : CanvasIconItem() {
 
     /**文本*/

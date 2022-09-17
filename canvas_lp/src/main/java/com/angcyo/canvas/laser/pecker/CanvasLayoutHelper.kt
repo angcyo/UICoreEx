@@ -5,7 +5,6 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -631,55 +630,118 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     ) {
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-            TextStrokeStyleItem()() {
-                itemIco = R.drawable.canvas_text_style_solid
-                itemText = _string(R.string.canvas_solid)
-                itemStyle = Paint.Style.FILL
-                itemRenderer = renderer
-            }
-            TextStrokeStyleItem()() {
-                itemIco = R.drawable.canvas_text_style_stroke
-                itemText = _string(R.string.canvas_hollow)
-                itemStyle = Paint.Style.STROKE
-                itemRenderer = renderer
-                drawCanvasRight()
-            }
 
-            TextStyleItem()() {
-                itemIco = R.drawable.canvas_text_bold_style_ico
-                itemText = _string(R.string.canvas_bold)
-                itemStyle = PictureTextItem.TEXT_STYLE_BOLD
+            //字体
+            TypefaceSelectItem()() {
                 itemRenderer = renderer
-            }
-            TextStyleItem()() {
-                itemIco = R.drawable.canvas_text_italic_style_ico
-                itemText = _string(R.string.canvas_italic)
-                itemStyle = PictureTextItem.TEXT_STYLE_ITALIC
-                itemRenderer = renderer
-            }
-            TextStyleItem()() {
-                itemIco = R.drawable.canvas_text_under_line_style_ico
-                itemText = _string(R.string.canvas_under_line)
-                itemStyle = PictureTextItem.TEXT_STYLE_UNDER_LINE
-                itemRenderer = renderer
-            }
-            TextStyleItem()() {
-                itemIco = R.drawable.canvas_text_delete_line_style_ico
-                itemText = _string(R.string.canvas_delete_line)
-                itemStyle = PictureTextItem.TEXT_STYLE_DELETE_LINE
-                itemRenderer = renderer
-                drawCanvasRight()
-            }
-
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_text_font_ico
-                itemText = _string(R.string.canvas_font)
-                itemClick = {
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
+                itemClick = { anchor ->
+                    updateItemSelected(!itemIsSelected)
 
                     if (itemIsSelected) {
-                        showFontSelectLayout(this, it, renderer)
+                        anchor.context.canvasFontWindow(anchor) {
+                            itemRenderer = renderer
+                            onDismiss = {
+                                updateItemSelected(false)
+                                false
+                            }
+                        }
+                    }
+                }
+            }
+            //样式
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_text_style
+                itemText = _string(R.string.canvas_style)
+                itemClick = { anchor ->
+                    updateItemSelected(!itemIsSelected)
+
+                    if (itemIsSelected) {
+                        UMEvent.CANVAS_SHAPE.umengEventValue()
+
+                        anchor.context.menuPopupWindow(anchor) {
+                            renderAdapterAction = {
+                                //
+                                TextStrokeStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_style_solid
+                                    itemText = _string(R.string.canvas_solid)
+                                    itemStyle = Paint.Style.FILL
+                                    itemRenderer = renderer
+                                }
+                                TextStrokeStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_style_stroke
+                                    itemText = _string(R.string.canvas_hollow)
+                                    itemStyle = Paint.Style.STROKE
+                                    itemRenderer = renderer
+                                }
+                                //
+                                TextStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_bold_style_ico
+                                    itemText = _string(R.string.canvas_bold)
+                                    itemStyle = PictureTextItem.TEXT_STYLE_BOLD
+                                    itemRenderer = renderer
+                                }
+                                TextStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_italic_style_ico
+                                    itemText = _string(R.string.canvas_italic)
+                                    itemStyle = PictureTextItem.TEXT_STYLE_ITALIC
+                                    itemRenderer = renderer
+                                }
+                                TextStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_under_line_style_ico
+                                    itemText = _string(R.string.canvas_under_line)
+                                    itemStyle = PictureTextItem.TEXT_STYLE_UNDER_LINE
+                                    itemRenderer = renderer
+                                }
+                                TextStyleItem()() {
+                                    itemIco = R.drawable.canvas_text_delete_line_style_ico
+                                    itemText = _string(R.string.canvas_delete_line)
+                                    itemStyle = PictureTextItem.TEXT_STYLE_DELETE_LINE
+                                    itemRenderer = renderer
+                                }
+                            }
+                            onDismiss = {
+                                updateItemSelected(false)
+                                false
+                            }
+                        }
+                    }
+                }
+            }
+            //对齐
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_text_align
+                itemText = _string(R.string.canvas_align)
+                itemClick = { anchor ->
+                    updateItemSelected(!itemIsSelected)
+
+                    if (itemIsSelected) {
+                        UMEvent.CANVAS_SHAPE.umengEventValue()
+                        anchor.context.menuPopupWindow(anchor) {
+                            renderAdapterAction = {
+                                TextAlignItem()() {
+                                    itemIco = R.drawable.canvas_text_style_align_left_ico
+                                    itemText = _string(R.string.canvas_align_left)
+                                    itemAlign = Paint.Align.LEFT
+                                    itemRenderer = renderer
+                                }
+                                TextAlignItem()() {
+                                    itemIco = R.drawable.canvas_text_style_align_center_ico
+                                    itemText = _string(R.string.canvas_align_center)
+                                    itemAlign = Paint.Align.CENTER
+                                    itemRenderer = renderer
+                                }
+                                TextAlignItem()() {
+                                    itemIco = R.drawable.canvas_text_style_align_right_ico
+                                    itemText = _string(R.string.canvas_align_right)
+                                    itemAlign = Paint.Align.RIGHT
+                                    itemRenderer = renderer
+                                }
+                            }
+                            onDismiss = {
+                                updateItemSelected(false)
+                                false
+                            }
+                        }
                     }
                 }
                 drawCanvasRight()
@@ -697,41 +759,6 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemOrientation = LinearLayout.VERTICAL
                 itemRenderer = renderer
                 drawCanvasRight()
-            }
-
-            TextAlignItem()() {
-                itemIco = R.drawable.canvas_text_style_align_left_ico
-                itemText = _string(R.string.canvas_align_left)
-                itemAlign = Paint.Align.LEFT
-                itemRenderer = renderer
-            }
-            TextAlignItem()() {
-                itemIco = R.drawable.canvas_text_style_align_center_ico
-                itemText = _string(R.string.canvas_align_center)
-                itemAlign = Paint.Align.CENTER
-                itemRenderer = renderer
-            }
-            TextAlignItem()() {
-                itemIco = R.drawable.canvas_text_style_align_right_ico
-                itemText = _string(R.string.canvas_align_right)
-                itemAlign = Paint.Align.RIGHT
-                itemRenderer = renderer
-            }
-        }
-    }
-
-    /**显示字体选择布局*/
-    fun showFontSelectLayout(
-        dslAdapterItem: DslAdapterItem,
-        anchor: View,
-        renderer: IItemRenderer<*>
-    ) {
-        anchor.context.canvasFontWindow(anchor) {
-            itemRenderer = renderer
-            onDismiss = {
-                dslAdapterItem.itemIsSelected = false
-                dslAdapterItem.updateAdapterItem()
-                false
             }
         }
     }
@@ -1019,13 +1046,11 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                                 itemArrange = CanvasDelegate.ARRANGE_FORWARD
                                 itemRenderer = renderer
                                 itemCanvasDelegate = canvasView.canvasDelegate
-                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                             }
                             CanvasArrangeItem()() {
                                 itemArrange = CanvasDelegate.ARRANGE_BACKWARD
                                 itemRenderer = renderer
                                 itemCanvasDelegate = canvasView.canvasDelegate
-                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                             }
                             CanvasArrangeItem()() {
                                 itemArrange = CanvasDelegate.ARRANGE_FRONT
@@ -1037,7 +1062,6 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                                 itemArrange = CanvasDelegate.ARRANGE_BACK
                                 itemRenderer = renderer
                                 itemCanvasDelegate = canvasView.canvasDelegate
-                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                             }
                         }
                     }

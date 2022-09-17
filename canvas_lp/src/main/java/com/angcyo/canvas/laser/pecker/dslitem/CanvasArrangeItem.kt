@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
@@ -48,6 +49,9 @@ class CanvasArrangeItem : CanvasControlItem2() {
                 itemCanvasDelegate?.arrange(it, itemArrange, Strategy.normal)
             }
         }
+
+        //点击后自动关闭pop
+        itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
     }
 
     override fun onItemBind(
