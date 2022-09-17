@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.component.getPhoto
@@ -25,7 +24,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/18
  */
-class AddImageItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragmentItem {
+class AddImageItem : CanvasControlItem2(), IFragmentItem {
 
     override var itemFragment: Fragment? = null
 
@@ -38,17 +37,17 @@ class AddImageItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragment
         itemClick = {
             (itemFragmentManager ?: itemFragment?.parentFragmentManager)?.apply {
                 if (isDebugType() && Library.CLICK_COUNT++ % 2 == 0) {
-                    canvasView.context.dslSinglePickerImage(this) {
+                    it.context.dslSinglePickerImage(this) {
                         it?.firstOrNull()?.let { media ->
                             media.loadPath()?.apply {
                                 //canvasView.addDrawableRenderer(toBitmap())
                                 //canvasView.addBitmapRenderer(toBitmap())
-                                canvasView.canvasDelegate.addPictureBitmapRenderer(toBitmap()!!)
+                                itemCanvasDelegate?.addPictureBitmapRenderer(toBitmap()!!)
                             }
                         }
                     }
                 } else {
-                    canvasView.context.getPhoto(this) {
+                    it.context.getPhoto(this) {
                         val path = libCacheFile(fileNameUUID(".png")).absolutePath
                         it?.save(path)
                         val newPath = path.luban()
@@ -56,7 +55,7 @@ class AddImageItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragment
 
                         //压缩后
                         newPath.toBitmap()
-                            ?.let { canvasView.canvasDelegate.addPictureBitmapRenderer(it) }
+                            ?.let { itemCanvasDelegate?.addPictureBitmapRenderer(it) }
                     }
                 }
             }

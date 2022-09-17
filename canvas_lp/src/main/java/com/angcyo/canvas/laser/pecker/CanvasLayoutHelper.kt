@@ -3,7 +3,6 @@ package com.angcyo.canvas.laser.pecker
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
-import android.text.InputType
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -24,7 +23,6 @@ import com.angcyo.canvas.items.renderer.*
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
-import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.doodle.ui.doodleDialog
@@ -34,8 +32,6 @@ import com.angcyo.engrave.EngraveHelper
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
-import com.angcyo.qrcode.createBarCode
-import com.angcyo.qrcode.createQRCode
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
@@ -115,15 +111,19 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         adapter.render {
             hookUpdateDepend()
             //
-            AddImageItem(canvasView)()
-            AddTextItem(canvasView)()
+            AddImageItem()() {
+                itemCanvasDelegate = canvasView.canvasDelegate
+            }
+            AddTextItem()() {
+                itemCanvasDelegate = canvasView.canvasDelegate
+            }
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_material_ico
                 itemText = _string(R.string.canvas_material)
                 itemEnable = true
 
                 itemClick = {
-                    fragment.context?.canvasMaterialWindow(it) {
+                    fragment.context.canvasMaterialWindow(it) {
                         onDrawableAction = { data, drawable ->
                             when (drawable) {
                                 is BitmapDrawable -> {
@@ -274,84 +274,6 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         initCanvasListener(vh, canvasView)
     }
 
-    /**输入条码*/
-    fun inputBarcode(
-        canvasView: CanvasView?,
-        itemRenderer: PictureItemRenderer<PictureBitmapItem>?
-    ) {
-        fragment.context?.inputDialog {
-            dialogTitle = _string(R.string.canvas_barcode)
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-            digits = _string(R.string.lib_barcode_digits)
-            maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-            defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
-            onInputResult = { dialog, inputText ->
-                if (itemRenderer == null) {
-                    //添加条码
-                    if (inputText.isNotEmpty()) {
-                        inputText.createBarCode()?.let {
-                            canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                dataType = CanvasConstant.DATA_TYPE_BARCODE
-                                data = inputText
-                            }
-                        }
-                    }
-                } else {
-                    //修改条码
-                    val renderItem = itemRenderer.rendererItem
-                    if (inputText.isNotEmpty()) {
-                        inputText.createBarCode()?.let {
-                            if (renderItem is PictureBitmapItem) {
-                                renderItem.originBitmap = it
-                            }
-                            renderItem?.data = inputText
-                            itemRenderer.requestRendererItemUpdate()
-                        }
-                    }
-                }
-
-                false
-            }
-        }
-    }
-
-    /**输入二维码*/
-    fun inputQrCode(
-        canvasView: CanvasView?,
-        itemRenderer: PictureItemRenderer<PictureBitmapItem>?
-    ) {
-        fragment.context?.inputDialog {
-            dialogTitle = _string(R.string.canvas_qrcode)
-            maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-            defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
-            onInputResult = { dialog, inputText ->
-                if (itemRenderer == null) {
-                    if (inputText.isNotEmpty()) {
-                        inputText.createQRCode()?.let {
-                            canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                dataType = CanvasConstant.DATA_TYPE_QRCODE
-                                data = inputText
-                            }
-                        }
-                    }
-                } else {
-                    val renderItem = itemRenderer.rendererItem
-                    if (inputText.isNotEmpty()) {
-                        inputText.createQRCode()?.let {
-                            if (renderItem is PictureBitmapItem) {
-                                renderItem.originBitmap = it
-                            }
-                            renderItem?.data = inputText
-                            itemRenderer.requestRendererItemUpdate()
-                        }
-                    }
-                }
-                false
-            }
-        }
-
-    }
-
     /**事件监听*/
     fun initCanvasListener(vh: DslViewHolder, canvasView: CanvasView) {
         //事件监听
@@ -361,7 +283,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 super.onDoubleTapItem(itemRenderer)
                 if (itemRenderer is PictureTextItemRenderer) {
                     val renderItem = itemRenderer.rendererItem
-                    if (renderItem is PictureTextItem) {
+                    /*if (renderItem is PictureTextItem) {
                         fragment.context?.inputDialog {
                             inputViewHeight = 100 * dpi
                             defaultInputString = renderItem.text
@@ -374,7 +296,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                                 false
                             }
                         }
-                    }
+                    }*/
                 } else if (itemRenderer is PictureItemRenderer) {
                     val renderItem = itemRenderer.rendererItem
                     if (renderItem is PictureBitmapItem) {
@@ -382,11 +304,11 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                         when (renderItem.dataType) {
                             CanvasConstant.DATA_TYPE_BARCODE -> {
                                 //条形码
-                                inputBarcode(canvasView, renderer)
+                                AddTextItem.inputBarcode(canvasView, renderer)
                             }
                             CanvasConstant.DATA_TYPE_QRCODE -> {
                                 //二维码
-                                inputQrCode(canvasView, renderer)
+                                AddTextItem.inputQrCode(canvasView, renderer)
                             }
                             else -> {
                                 //图片
@@ -646,22 +568,25 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     }
 
     /**显示图片选择布局*/
+    @Deprecated("2022-9-17 合并在Text对话框中")
     fun showBitmapSelectLayout(vh: DslViewHolder, canvasView: CanvasView) {
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-            AddImageItem(canvasView)()
+            AddImageItem()() {
+                itemCanvasDelegate = canvasView.canvasDelegate
+            }
             CanvasControlItem()() {
                 itemIco = R.drawable.canvas_barcode_ico
                 itemText = _string(R.string.canvas_barcode)
                 itemClick = {
-                    inputBarcode(canvasView, null)
+                    AddTextItem.inputBarcode(canvasView, null)
                 }
             }
             CanvasControlItem()() {
                 itemIco = R.drawable.canvas_qrcode_ico
                 itemText = _string(R.string.canvas_qrcode)
                 itemClick = {
-                    inputQrCode(canvasView, null)
+                    AddTextItem.inputQrCode(canvasView, null)
                 }
             }
         }

@@ -2,12 +2,17 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.items.PictureBitmapItem
+import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.canvas.laser.pecker.addTextDialog
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.canvas.utils.addPictureTextRender
-import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.dpi
+import com.angcyo.qrcode.createBarCode
+import com.angcyo.qrcode.createQRCode
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -15,26 +20,98 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/18
  */
-class AddTextItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragmentItem {
-
-    override var itemFragment: Fragment? = null
+class AddTextItem : CanvasControlItem2(), IFragmentItem {
 
     companion object {
-        const val MAX_INPUT_LENGTH = 30
 
-        const val KEY_ADD_TEXT = "canvas_add_text"
+        /**输入条码*/
+        fun inputBarcode(
+            canvasView: CanvasView?,
+            itemRenderer: PictureItemRenderer<PictureBitmapItem>?
+        ) {
+            /*fragment.context?.inputDialog {
+                dialogTitle = _string(R.string.canvas_barcode)
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                digits = _string(R.string.lib_barcode_digits)
+                maxInputLength = AddTextItem.MAX_INPUT_LENGTH
+                defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
+                onInputResult = { dialog, inputText ->
+                    if (itemRenderer == null) {
+                        //添加条码
+                        if (inputText.isNotEmpty()) {
+                            inputText.createBarCode()?.let {
+                                canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                    dataType = CanvasConstant.DATA_TYPE_BARCODE
+                                    data = inputText
+                                }
+                            }
+                        }
+                    } else {
+                        //修改条码
+                        val renderItem = itemRenderer.rendererItem
+                        if (inputText.isNotEmpty()) {
+                            inputText.createBarCode()?.let {
+                                if (renderItem is PictureBitmapItem) {
+                                    renderItem.originBitmap = it
+                                }
+                                renderItem?.data = inputText
+                                itemRenderer.requestRendererItemUpdate()
+                            }
+                        }
+                    }
+
+                    false
+                }
+            }*/
+        }
+
+        /**输入二维码*/
+        fun inputQrCode(
+            canvasView: CanvasView?,
+            itemRenderer: PictureItemRenderer<PictureBitmapItem>?
+        ) {
+            /*fragment.context?.inputDialog {
+                dialogTitle = _string(R.string.canvas_qrcode)
+                maxInputLength = AddTextItem.MAX_INPUT_LENGTH
+                defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
+                onInputResult = { dialog, inputText ->
+                    if (itemRenderer == null) {
+                        if (inputText.isNotEmpty()) {
+                            inputText.createQRCode()?.let {
+                                canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                    dataType = CanvasConstant.DATA_TYPE_QRCODE
+                                    data = inputText
+                                }
+                            }
+                        }
+                    } else {
+                        val renderItem = itemRenderer.rendererItem
+                        if (inputText.isNotEmpty()) {
+                            inputText.createQRCode()?.let {
+                                if (renderItem is PictureBitmapItem) {
+                                    renderItem.originBitmap = it
+                                }
+                                renderItem?.data = inputText
+                                itemRenderer.requestRendererItemUpdate()
+                            }
+                        }
+                    }
+                    false
+                }
+            }*/
+
+        }
     }
+
+    override var itemFragment: Fragment? = null
 
     init {
         itemIco = R.drawable.canvas_text_ico
         itemText = _string(R.string.canvas_text)
 
         itemClick = {
-            itemFragment?.context?.inputDialog {
-                inputViewHeight = 100 * dpi
-                maxInputLength = MAX_INPUT_LENGTH
-                inputHistoryHawkKey = KEY_ADD_TEXT
-                onInputResult = { dialog, inputText ->
+            itemFragment?.context?.addTextDialog {
+                /*onInputResult = { dialog, inputText ->
                     if (inputText.isNotEmpty()) {
                         //canvasView.addTextRenderer("$inputText")
                         //canvasView.addPictureTextRenderer("$inputText")
@@ -42,6 +119,30 @@ class AddTextItem(val canvasView: CanvasView) : CanvasControlItem2(), IFragmentI
                         UMEvent.CANVAS_TEXT.umengEventValue()
                     }
                     false
+                }*/
+                onAddTextAction = { inputText, type ->
+                    when (type) {
+                        CanvasConstant.DATA_TYPE_QRCODE -> {
+                            inputText.createQRCode()?.let {
+                                itemCanvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                    dataType = CanvasConstant.DATA_TYPE_QRCODE
+                                    data = inputText
+                                }
+                            }
+                        }
+                        CanvasConstant.DATA_TYPE_BARCODE -> {
+                            inputText.createBarCode()?.let {
+                                itemCanvasDelegate?.addPictureBitmapRenderer(it)?.apply {
+                                    dataType = CanvasConstant.DATA_TYPE_BARCODE
+                                    data = inputText
+                                }
+                            }
+                        }
+                        else -> {
+                            itemCanvasDelegate?.addPictureTextRender("$inputText")
+                            UMEvent.CANVAS_TEXT.umengEventValue()
+                        }
+                    }
                 }
             }
         }
