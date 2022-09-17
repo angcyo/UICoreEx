@@ -8,6 +8,7 @@ dependencies {
     implementation project(allModule.glide)
     implementation project(allModule.picker)
     implementation project(allModule.amap3d)
+    implementation project(allModule.record)
 
     //https://repo1.maven.org/maven2/
 
