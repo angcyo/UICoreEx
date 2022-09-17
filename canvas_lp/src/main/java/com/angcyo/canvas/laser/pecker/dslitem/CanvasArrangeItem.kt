@@ -2,10 +2,9 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
-import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -13,7 +12,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/19
  */
-class CanvasArrangeItem : CanvasControlItem() {
+class CanvasArrangeItem : CanvasControlItem2() {
 
     /**安排方式*/
     var itemArrange: Int = 0
@@ -40,7 +39,9 @@ class CanvasArrangeItem : CanvasControlItem() {
         }
 
     init {
-        itemPaddingTop = _dimen(R.dimen.lib_xhdpi)
+        //itemPaddingTop = _dimen(R.dimen.lib_xhdpi)
+
+        itemLayoutId = R.layout.item_canvas_icon_horizontal_layout
 
         itemClick = {
             itemRenderer?.let {

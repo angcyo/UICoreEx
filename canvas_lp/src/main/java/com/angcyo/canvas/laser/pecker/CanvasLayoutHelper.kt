@@ -25,6 +25,8 @@ import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
+import com.angcyo.dialog.popup.MenuPopupConfig
+import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -445,7 +447,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
             override fun onItemSortChanged(itemList: List<BaseItemRenderer<*>>) {
                 super.onItemSortChanged(itemList)
-                updateControlLayout(vh, canvasView)
+                //updateControlLayout(vh, canvasView)
                 updateLayerControlLayout(vh, canvasView)
             }
 
@@ -1081,25 +1083,40 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             }
 
             //图层排序
-            CanvasArrangeItem()() {
-                itemArrange = CanvasDelegate.ARRANGE_FORWARD
-                itemRenderer = renderer
-                itemCanvasDelegate = canvasView.canvasDelegate
-            }
-            CanvasArrangeItem()() {
-                itemArrange = CanvasDelegate.ARRANGE_BACKWARD
-                itemRenderer = renderer
-                itemCanvasDelegate = canvasView.canvasDelegate
-            }
-            CanvasArrangeItem()() {
-                itemArrange = CanvasDelegate.ARRANGE_FRONT
-                itemRenderer = renderer
-                itemCanvasDelegate = canvasView.canvasDelegate
-            }
-            CanvasArrangeItem()() {
-                itemArrange = CanvasDelegate.ARRANGE_BACK
-                itemRenderer = renderer
-                itemCanvasDelegate = canvasView.canvasDelegate
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_layer_sort
+                itemText = _string(R.string.canvas_sort)
+                itemEnable = true
+                itemClick = {
+                    fragment.context.menuPopupWindow(it) {
+                        renderAdapterAction = {
+                            CanvasArrangeItem()() {
+                                itemArrange = CanvasDelegate.ARRANGE_FORWARD
+                                itemRenderer = renderer
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                            }
+                            CanvasArrangeItem()() {
+                                itemArrange = CanvasDelegate.ARRANGE_BACKWARD
+                                itemRenderer = renderer
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                            }
+                            CanvasArrangeItem()() {
+                                itemArrange = CanvasDelegate.ARRANGE_FRONT
+                                itemRenderer = renderer
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                            }
+                            CanvasArrangeItem()() {
+                                itemArrange = CanvasDelegate.ARRANGE_BACK
+                                itemRenderer = renderer
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                            }
+                        }
+                    }
+                }
             }
         }
     }

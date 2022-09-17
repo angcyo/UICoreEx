@@ -23,6 +23,7 @@ import com.angcyo.widget.base.clickIt
 import com.jaredrummler.android.colorpicker.ColorPanelView
 
 /**
+ * 编辑控制item, 其他item动态添加
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/14
  */
