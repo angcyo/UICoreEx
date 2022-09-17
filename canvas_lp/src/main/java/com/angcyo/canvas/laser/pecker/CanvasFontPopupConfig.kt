@@ -2,31 +2,29 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.graphics.Typeface
-import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.canvas.TypefaceInfo
-import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
+import com.angcyo.canvas.utils.FontManager
 import com.angcyo.component.getFile
 import com.angcyo.dialog.TargetWindow
-import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
+import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
-import com.angcyo.library.app
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.toast
-import com.angcyo.library.utils.filePath
-import com.angcyo.library.utils.folderPath
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.recycler.scrollToFirst
-import java.io.File
+import com.angcyo.widget.tab
 
 /**
  * 画图字体选择
@@ -45,119 +43,47 @@ import java.io.File
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/16
  */
-class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
-
-    companion object {
-
-        /**默认的字体文件夹名称*/
-        const val DEFAULT_FONT_FOLDER_NAME = "fonts"
-
-        /**字体列表*/
-        val fontList = mutableListOf<TypefaceInfo>()
-
-        /**初始化字体列表*/
-        fun initFontList() {
-            fontList.clear()
-
-            //字体文件夹
-            val fontFolder = folderPath(DEFAULT_FONT_FOLDER_NAME)
-
-            //自定义的字体
-            fontFolder.file().eachFile { file ->
-                try {
-                    if (file.name.isFontType()) {
-                        val typeface = Typeface.createFromFile(file)
-                        fontList.add(
-                            TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
-                        )
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            //旧版本字体目录
-            val oldFontFolder = File(app().getExternalFilesDir("laserpecker"), "font")
-            oldFontFolder.eachFile { file ->
-                try {
-                    if (file.name.isFontType()) {
-                        val typeface = Typeface.createFromFile(file)
-                        fontList.add(
-                            TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
-                        )
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            //默认的字体列表
-            fontList.addAll(PictureTextItem.DEFAULT_TYPEFACE_LIST)
-        }
-
-        /**导入字体*/
-        fun importFont(uri: Uri?): TypefaceInfo? {
-            if (uri == null) {
-                return null
-            }
-            return importFont(uri.saveToFolder())
-        }
-
-        /**导入字体*/
-        fun importFont(path: String?): TypefaceInfo? {
-            try {
-                if (fontList.isEmpty()) {
-                    initFontList()
-                }
-                if (path.isFontType()) {
-                    val file = File(path!!)
-
-                    val typeface = Typeface.createFromFile(file)
-                    file.copyTo(filePath(DEFAULT_FONT_FOLDER_NAME, file.name))
-
-                    val typefaceInfo =
-                        TypefaceInfo(file.name.noExtName(), typeface, file.absolutePath)
-
-                    val find = fontList.find { it.name == typefaceInfo.name }
-                    if (find == null) {
-                        fontList.add(0, typefaceInfo)
-                    } else {
-                        //字体已存在
-                        typefaceInfo.isRepeat = true
-                    }
-
-                    return typefaceInfo
-                }
-                return null
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
-            }
-        }
-    }
+class CanvasFontPopupConfig : MenuPopupConfig() {
 
     /**操作的渲染项*/
     var itemRenderer: IItemRenderer<*>? = null
 
     init {
-        contentLayoutId = R.layout.canvas_font_layout
-        triangleMinMargin = 24 * dpi
-        yoff = -10 * dpi
+        popupLayoutId = R.layout.canvas_font_layout
     }
 
-    override fun initContentLayout(window: TargetWindow, viewHolder: DslViewHolder) {
-        super.initContentLayout(window, viewHolder)
+    override fun initLayout(window: TargetWindow, viewHolder: DslViewHolder) {
+        super.initLayout(window, viewHolder)
 
-        if (fontList.isEmpty()) {
-            initFontList()
-        }
-
-        //字体列表
-        viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
-            fontList.forEach {
-                typefaceItem(it)
+        val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
+        tabLayout?.apply {
+            observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
+                if (!reselect) {
+                    when (toIndex) {
+                        1 -> {
+                            //系统字体
+                            renderAdapterFontList(FontManager.getSystemFontList())
+                        }
+                        2 -> {
+                            //自定义
+                            renderAdapterFontList(FontManager.getCustomFontList())
+                        }
+                        else -> {
+                            //推荐
+                            renderAdapterFontList(FontManager.getPrimaryFontList())
+                        }
+                    }
+                }
             }
+            /*setCurrentItem(
+                when (dataType) {
+                    CanvasConstant.DATA_TYPE_QRCODE -> 1
+                    CanvasConstant.DATA_TYPE_BARCODE -> 2
+                    else -> 0
+                }
+            )*/
         }
+
         //导入字体
         viewHolder.click(R.id.import_view) {
             val context = viewHolder.context
@@ -165,18 +91,23 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 context.supportFragmentManager.getFile("*/*") {
                     if (it != null) {
                         try {
-                            val typefaceInfo: TypefaceInfo? = importFont(it)
+                            val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(it)
                             if (typefaceInfo != null) {
                                 //ui
                                 if (!typefaceInfo.isRepeat) {
-                                    viewHolder.rv(R.id.lib_recycler_view)
-                                        ?.renderDslAdapter(true, false) {
-                                            typefaceItem(typefaceInfo, index = 0)
-                                            onDispatchUpdatesOnce {
-                                                viewHolder.rv(R.id.lib_recycler_view)
-                                                    ?.scrollToFirst()
+                                    if (tabLayout?.currentItemIndex == 2) {
+                                        viewHolder.rv(R.id.lib_recycler_view)
+                                            ?.renderDslAdapter(true, false) {
+                                                typefaceItem(typefaceInfo, index = 0)
+                                                onDispatchUpdatesOnce {
+                                                    viewHolder.rv(R.id.lib_recycler_view)
+                                                        ?.scrollToFirst()
+                                                }
                                             }
-                                        }
+                                    } else {
+                                        //
+                                        tabLayout?.setCurrentItem(2)
+                                    }
                                 } else {
                                     toast(_string(R.string.canvas_font_exist))
                                 }
@@ -191,6 +122,14 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                 }
             } else {
                 toast(_string(R.string.canvas_cannot_import))
+            }
+        }
+    }
+
+    fun renderAdapterFontList(list: List<TypefaceInfo>) {
+        _recyclerView?.renderDslAdapter {
+            list.forEach {
+                typefaceItem(it)
             }
         }
     }
@@ -215,20 +154,23 @@ class CanvasFontPopupConfig : ShadowAnchorPopupConfig() {
                     updateAdapterItem()
                 }
             }
-            itemLongClick = {
-                //长按删除字体
-                if (info.filePath.isFileExist()) {
-                    it.context.actionPopupWindow(it) {
-                        addAction(_string(R.string.canvas_delete_font)) { window, view ->
-                            fontList.remove(info)
-                            info.filePath?.file()?.delete()
-                            render {
-                                removeAdapterItem()
+            if (info.isCustom) {
+                //自定义字体才支持删除
+                itemLongClick = {
+                    //长按删除字体
+                    if (info.filePath.isFileExist()) {
+                        it.context.actionPopupWindow(it) {
+                            addAction(_string(R.string.canvas_delete_font)) { window, view ->
+                                if (FontManager.deleteCustomFont(info)) {
+                                    render {
+                                        removeAdapterItem()
+                                    }
+                                }
                             }
                         }
                     }
+                    true
                 }
-                true
             }
         }
     }

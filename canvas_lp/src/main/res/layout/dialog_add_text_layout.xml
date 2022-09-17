@@ -69,7 +69,6 @@
             android:gravity="center"
             android:text="@string/canvas_barcode" />
 
-
     </com.angcyo.tablayout.DslTabLayout>
 
     <!--内容-->
