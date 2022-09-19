@@ -10,7 +10,7 @@ import com.angcyo.library.ex._drawable
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/04/22
  */
-class ShapeItem(val canvasView: CanvasView) : CanvasControlItem() {
+class ShapeItem(val canvasView: CanvasView) : CanvasControlItem2() {
 
     var shapePath: Path? = null
 

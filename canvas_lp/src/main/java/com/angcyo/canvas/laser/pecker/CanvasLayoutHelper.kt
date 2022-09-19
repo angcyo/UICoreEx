@@ -520,39 +520,19 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 shapePath = ShapesHelper.linePath()
             }
             ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_circle_ico
-                itemText = _string(R.string.canvas_circle)
+                itemIco = R.drawable.canvas_shape_oval_ico
+                itemText = _string(R.string.canvas_oval)
                 shapePath = ShapesHelper.circlePath()
             }
             ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_triangle_ico
-                itemText = _string(R.string.canvas_triangle)
-                shapePath = ShapesHelper.trianglePath()
-            }
-            ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_square_ico
-                itemText = _string(R.string.canvas_square)
+                itemIco = R.drawable.canvas_shape_rectangle_ico
+                itemText = _string(R.string.canvas_rectangle)
                 shapePath = ShapesHelper.squarePath()
             }
             ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_pentagon_ico
-                itemText = _string(R.string.canvas_pentagon)
-                shapePath = ShapesHelper.pentagonPath()
-            }
-            ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_hexagon_ico
-                itemText = _string(R.string.canvas_hexagon)
-                shapePath = ShapesHelper.hexagonPath()
-            }
-            ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_octagon_ico
-                itemText = _string(R.string.canvas_octagon)
-                shapePath = ShapesHelper.octagonPath()
-            }
-            ShapeItem(canvasView)() {
-                itemIco = R.drawable.canvas_shape_rhombus_ico
-                itemText = _string(R.string.canvas_rhombus)
-                shapePath = ShapesHelper.rhombusPath()
+                itemIco = R.drawable.canvas_shape_polygon_ico
+                itemText = _string(R.string.canvas_polygon)
+                shapePath = ShapesHelper.trianglePath()
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_pentagram_ico
