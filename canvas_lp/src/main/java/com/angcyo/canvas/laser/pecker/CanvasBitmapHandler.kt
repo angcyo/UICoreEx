@@ -1,13 +1,15 @@
 package com.angcyo.canvas.laser.pecker
 
-import android.graphics.BitmapFactory
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.utils.*
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.parseGCode
+import com.angcyo.canvas.utils.toMm
 import com.angcyo.core.component.file.writeToCache
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
@@ -27,7 +29,8 @@ object CanvasBitmapHandler {
     fun handlePrint(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -38,6 +41,8 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
+            onPopupDismissAction = onDismissAction
+
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
@@ -82,7 +87,8 @@ object CanvasBitmapHandler {
     fun handleGCode(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -95,6 +101,8 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
+            onPopupDismissAction = onDismissAction
+
             addRegulate(CanvasRegulatePopupConfig.REGULATE_LINE_SPACE)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_ANGLE)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_DIRECTION)
@@ -167,7 +175,8 @@ object CanvasBitmapHandler {
     fun handleBlackWhite(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -178,6 +187,8 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
+            onPopupDismissAction = onDismissAction
+
             addRegulate(CanvasRegulatePopupConfig.REGULATE_INVERT)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
@@ -230,7 +241,8 @@ object CanvasBitmapHandler {
     fun handleDithering(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -241,6 +253,8 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
+            onPopupDismissAction = onDismissAction
+
             addRegulate(CanvasRegulatePopupConfig.REGULATE_INVERT)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_CONTRAST)
             addRegulate(CanvasRegulatePopupConfig.REGULATE_BRIGHTNESS)
@@ -319,7 +333,8 @@ object CanvasBitmapHandler {
     fun handleSeal(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -330,6 +345,8 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow(anchor) {
             itemRenderer = renderer
+            onPopupDismissAction = onDismissAction
+
             addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
             onApplyAction = { preview, cancel, valueChanged ->
                 if (cancel) {
@@ -373,7 +390,8 @@ object CanvasBitmapHandler {
     fun handleCrop(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: PictureItemRenderer<PictureBitmapItem>,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() ?: return
         val context = anchor.context
@@ -383,6 +401,10 @@ object CanvasBitmapHandler {
         var newItem: PictureBitmapItem? = null
         anchor.context.cropDialog {
             cropBitmap = originBitmap
+            onDismissListener = {
+                onDismissAction()
+            }
+
             onCropResultAction = {
                 it?.let {
                     newItem = PictureBitmapItem(originBitmap, it)

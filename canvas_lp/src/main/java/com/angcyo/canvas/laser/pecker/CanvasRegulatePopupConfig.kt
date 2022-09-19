@@ -78,6 +78,9 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
 
         }
 
+    /**窗口销毁*/
+    var onPopupDismissAction: () -> Unit = {}
+
     //抖动处理
     val livePreviewRunnable = Runnable {
         onApplyAction(true, false, true)
@@ -96,6 +99,7 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
         //取消
         onDismiss = {
             onApplyAction(false, true, false)
+            onPopupDismissAction()
             false
         }
     }
@@ -238,6 +242,7 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
             onApplyAction(false, false, _itemValueChanged)
             _itemValueChanged = false
             onDismiss = { false } //重置
+            onPopupDismissAction()
             if (window is PopupWindow) {
                 window.dismiss()
             }
