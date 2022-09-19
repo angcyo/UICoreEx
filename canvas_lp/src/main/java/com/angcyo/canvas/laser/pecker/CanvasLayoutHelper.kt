@@ -666,9 +666,11 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 drawCanvasRight()
             }
             //曲线
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_text_curve
-                itemText = _string(R.string.canvas_curve)
+            if (isDebug()) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_text_curve
+                    itemText = _string(R.string.canvas_curve)
+                }
             }
 
             TextOrientationItem()() {
