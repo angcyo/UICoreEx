@@ -8,7 +8,7 @@
     android:background="@drawable/lib_bg_selector"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/lib_xxhdpi"
+    android:paddingHorizontal="@dimen/lib_padding_left"
     android:paddingVertical="@dimen/lib_hdpi">
 
     <androidx.appcompat.widget.AppCompatImageView

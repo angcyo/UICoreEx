@@ -6,7 +6,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
- * 字体选择Item
+ * 字体选择触发Item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/17
  */

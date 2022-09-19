@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.graphics.Paint
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
 
@@ -11,11 +12,13 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/10
  */
-class TextAlignItem : CanvasControlItem() {
+class TextAlignItem : CanvasControlItem2() {
 
     var itemAlign: Paint.Align = Paint.Align.LEFT
 
     init {
+        itemLayoutId = R.layout.item_canvas_icon_horizontal_layout
+
         itemSingleSelectMutex = true
         itemClick = {
             itemRenderer?.let { renderer ->

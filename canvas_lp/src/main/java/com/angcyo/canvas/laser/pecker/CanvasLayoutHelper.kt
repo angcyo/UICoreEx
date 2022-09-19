@@ -17,7 +17,10 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.*
+import com.angcyo.canvas.items.DrawableItem
+import com.angcyo.canvas.items.PictureBitmapItem
+import com.angcyo.canvas.items.PictureShapeItem
+import com.angcyo.canvas.items.PictureSharpItem
 import com.angcyo.canvas.items.renderer.*
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
@@ -615,8 +618,8 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
     fun DslAdapterItem.drawCanvasRight(
         insertRight: Int = _dimen(R.dimen.lib_line_px),
-        offsetTop: Int = _dimen(R.dimen.lib_xhdpi),
-        offsetBottom: Int = _dimen(R.dimen.lib_xhdpi),
+        offsetTop: Int = _dimen(R.dimen.lib_drawable_padding),
+        offsetBottom: Int = _dimen(R.dimen.lib_drawable_padding),
         color: Int = _color(R.color.canvas_dark_gray)
     ) {
         drawRight(insertRight, offsetTop, offsetBottom, color)
@@ -649,102 +652,23 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 }
             }
             //样式
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_text_style
-                itemText = _string(R.string.canvas_style)
-                itemClick = { anchor ->
-                    updateItemSelected(!itemIsSelected)
-
-                    if (itemIsSelected) {
-                        UMEvent.CANVAS_SHAPE.umengEventValue()
-
-                        anchor.context.menuPopupWindow(anchor) {
-                            renderAdapterAction = {
-                                //
-                                TextStrokeStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_style_solid
-                                    itemText = _string(R.string.canvas_solid)
-                                    itemStyle = Paint.Style.FILL
-                                    itemRenderer = renderer
-                                }
-                                TextStrokeStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_style_stroke
-                                    itemText = _string(R.string.canvas_hollow)
-                                    itemStyle = Paint.Style.STROKE
-                                    itemRenderer = renderer
-                                }
-                                //
-                                TextStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_bold_style_ico
-                                    itemText = _string(R.string.canvas_bold)
-                                    itemStyle = PictureTextItem.TEXT_STYLE_BOLD
-                                    itemRenderer = renderer
-                                }
-                                TextStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_italic_style_ico
-                                    itemText = _string(R.string.canvas_italic)
-                                    itemStyle = PictureTextItem.TEXT_STYLE_ITALIC
-                                    itemRenderer = renderer
-                                }
-                                TextStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_under_line_style_ico
-                                    itemText = _string(R.string.canvas_under_line)
-                                    itemStyle = PictureTextItem.TEXT_STYLE_UNDER_LINE
-                                    itemRenderer = renderer
-                                }
-                                TextStyleItem()() {
-                                    itemIco = R.drawable.canvas_text_delete_line_style_ico
-                                    itemText = _string(R.string.canvas_delete_line)
-                                    itemStyle = PictureTextItem.TEXT_STYLE_DELETE_LINE
-                                    itemRenderer = renderer
-                                }
-                            }
-                            onDismiss = {
-                                updateItemSelected(false)
-                                false
-                            }
-                        }
-                    }
-                }
+            TextStyleSelectItem()() {
+                itemRenderer = renderer
             }
             //对齐
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_text_align
-                itemText = _string(R.string.canvas_align)
-                itemClick = { anchor ->
-                    updateItemSelected(!itemIsSelected)
-
-                    if (itemIsSelected) {
-                        UMEvent.CANVAS_SHAPE.umengEventValue()
-                        anchor.context.menuPopupWindow(anchor) {
-                            renderAdapterAction = {
-                                TextAlignItem()() {
-                                    itemIco = R.drawable.canvas_text_style_align_left_ico
-                                    itemText = _string(R.string.canvas_align_left)
-                                    itemAlign = Paint.Align.LEFT
-                                    itemRenderer = renderer
-                                }
-                                TextAlignItem()() {
-                                    itemIco = R.drawable.canvas_text_style_align_center_ico
-                                    itemText = _string(R.string.canvas_align_center)
-                                    itemAlign = Paint.Align.CENTER
-                                    itemRenderer = renderer
-                                }
-                                TextAlignItem()() {
-                                    itemIco = R.drawable.canvas_text_style_align_right_ico
-                                    itemText = _string(R.string.canvas_align_right)
-                                    itemAlign = Paint.Align.RIGHT
-                                    itemRenderer = renderer
-                                }
-                            }
-                            onDismiss = {
-                                updateItemSelected(false)
-                                false
-                            }
-                        }
-                    }
-                }
+            TextAlignSelectItem()() {
+                itemRenderer = renderer
                 drawCanvasRight()
+            }
+            //属性调整
+            TextPropertyControlItem()() {
+                itemRenderer = renderer
+                drawCanvasRight()
+            }
+            //曲线
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_text_curve
+                itemText = _string(R.string.canvas_curve)
             }
 
             TextOrientationItem()() {
@@ -759,6 +683,18 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemOrientation = LinearLayout.VERTICAL
                 itemRenderer = renderer
                 drawCanvasRight()
+            }
+
+            //紧凑
+            if (isDebug() && renderer is PictureTextItemRenderer) {
+                CanvasControlItem2()() {
+                    itemText = "紧凑"
+                    itemIsSelected = renderer.getRendererRenderItem()?.isCompactText == true
+                    itemClick = {
+                        updateItemSelected(!itemIsSelected)
+                        renderer.updateTextCompact(itemIsSelected)
+                    }
+                }
             }
         }
     }

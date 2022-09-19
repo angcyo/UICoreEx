@@ -53,7 +53,6 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_hdpi"
         android:background="@drawable/lib_keyboard_number_increment_selector"
         android:ellipsize="none"
         android:gravity="center"
@@ -61,9 +60,9 @@
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
         app:layout_constraintBottom_toTopOf="@id/width_label_view"
-        app:layout_constraintLeft_toRightOf="@id/item_drawable_line_view"
+        app:layout_constraintLeft_toLeftOf="@id/width_label_view"
+        app:layout_constraintRight_toRightOf="@id/width_label_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginLeft="@dimen/lib_xhdpi"
         tools:text="0.0123456" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -71,13 +70,16 @@
         style="@style/LibPlaceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
         android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_width"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/item_width_view"
-        app:layout_constraintRight_toRightOf="@id/item_width_view"
-        app:layout_constraintTop_toBottomOf="@id/item_width_view" />
+        app:layout_constraintLeft_toRightOf="@id/item_drawable_line_view"
+        app:layout_constraintTop_toBottomOf="@id/item_width_view"
+        tools:layout_width="100dp" />
 
     <!--锁-->
 
@@ -88,7 +90,7 @@
         android:layout_marginLeft="@dimen/lib_ldpi"
         android:background="@color/canvas_gray"
         app:layout_constraintBottom_toBottomOf="@id/item_width_view"
-        app:layout_constraintLeft_toRightOf="@id/item_width_view"
+        app:layout_constraintLeft_toRightOf="@id/width_label_view"
         app:layout_constraintTop_toTopOf="@id/item_width_view" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -111,7 +113,6 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_ldpi"
         android:background="@drawable/lib_keyboard_number_increment_selector"
         android:ellipsize="none"
         android:gravity="center"
@@ -119,7 +120,8 @@
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
         app:layout_constraintBottom_toTopOf="@id/width_label_view"
-        app:layout_constraintLeft_toRightOf="@id/lock_line_view"
+        app:layout_constraintLeft_toLeftOf="@id/height_label_view"
+        app:layout_constraintRight_toRightOf="@id/height_label_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0.0123456" />
 
@@ -128,13 +130,16 @@
         style="@style/LibPlaceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
         android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_height"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/item_height_view"
-        app:layout_constraintRight_toRightOf="@id/item_height_view"
-        app:layout_constraintTop_toBottomOf="@id/item_height_view" />
+        app:layout_constraintLeft_toRightOf="@id/lock_line_view"
+        app:layout_constraintTop_toBottomOf="@id/item_height_view"
+        tools:layout_width="100dp" />
 
     <!--旋转-->
 
@@ -151,7 +156,8 @@
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
         app:layout_constraintBottom_toTopOf="@id/width_label_view"
-        app:layout_constraintLeft_toRightOf="@id/item_height_view"
+        app:layout_constraintLeft_toLeftOf="@id/rotate_label_view"
+        app:layout_constraintRight_toRightOf="@id/rotate_label_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0.0123456" />
 
@@ -160,17 +166,21 @@
         style="@style/LibPlaceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
         android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_rotate"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/item_rotate_view"
-        app:layout_constraintRight_toRightOf="@id/item_rotate_view"
-        app:layout_constraintTop_toBottomOf="@id/item_rotate_view" />
+        app:layout_constraintLeft_toRightOf="@id/height_label_view"
+        app:layout_constraintTop_toBottomOf="@id/item_rotate_view"
+        tools:layout_width="100dp" />
 
     <!--x轴-->
 
     <View
+        android:id="@+id/rotate_line_view"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginLeft="10dp"
@@ -178,7 +188,7 @@
         android:layout_marginBottom="@dimen/lib_hdpi"
         android:background="@color/canvas_dark_gray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/item_rotate_view"
+        app:layout_constraintLeft_toRightOf="@id/rotate_label_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -194,7 +204,8 @@
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
         app:layout_constraintBottom_toTopOf="@id/width_label_view"
-        app:layout_constraintLeft_toRightOf="@id/item_rotate_view"
+        app:layout_constraintLeft_toLeftOf="@id/axis_x_label_view"
+        app:layout_constraintRight_toRightOf="@id/axis_x_label_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0.0123456" />
 
@@ -203,13 +214,16 @@
         style="@style/LibPlaceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
         android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_axis_x"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/item_axis_x_view"
-        app:layout_constraintRight_toRightOf="@id/item_axis_x_view"
-        app:layout_constraintTop_toBottomOf="@id/item_axis_x_view" />
+        app:layout_constraintLeft_toRightOf="@id/rotate_line_view"
+        app:layout_constraintTop_toBottomOf="@id/item_axis_x_view"
+        tools:layout_width="100dp" />
 
     <!--y轴-->
 
@@ -226,7 +240,8 @@
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
         app:layout_constraintBottom_toTopOf="@id/width_label_view"
-        app:layout_constraintLeft_toRightOf="@id/item_axis_x_view"
+        app:layout_constraintLeft_toLeftOf="@id/axis_y_label_view"
+        app:layout_constraintRight_toRightOf="@id/axis_y_label_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0.0123456" />
 
@@ -235,24 +250,15 @@
         style="@style/LibPlaceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
         android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_axis_y"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/item_axis_y_view"
-        app:layout_constraintRight_toRightOf="@id/item_axis_y_view"
-        app:layout_constraintTop_toBottomOf="@id/item_axis_y_view" />
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="@dimen/lib_hdpi"
-        android:layout_marginBottom="@dimen/lib_hdpi"
-        android:background="@color/canvas_dark_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/item_axis_y_view"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toRightOf="@id/axis_x_label_view"
+        app:layout_constraintTop_toBottomOf="@id/item_axis_y_view"
+        tools:layout_width="100dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
