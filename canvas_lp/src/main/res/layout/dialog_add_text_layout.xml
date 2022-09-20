@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/lib_hdpi"
-        android:minHeight="40dp">
+        android:minHeight="35dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/LibBodyTextStyle"
