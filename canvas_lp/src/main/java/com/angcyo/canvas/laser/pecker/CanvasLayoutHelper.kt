@@ -1,12 +1,10 @@
 package com.angcyo.canvas.laser.pecker
 
-import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.canvas.CanvasDelegate
@@ -17,16 +15,22 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.DrawableItem
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.PictureSharpItem
-import com.angcyo.canvas.items.renderer.*
+import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.drawCanvasRight
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderCommonEditItems
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItems
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItems
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
-import com.angcyo.dialog.popup.MenuPopupConfig
-import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -48,6 +52,10 @@ import com.pixplicity.sharp.SharpDrawable
  * @since 2022/05/09
  */
 class CanvasLayoutHelper(val fragment: AbsFragment) {
+
+    companion object {
+        const val TAG_EDIT_ITEM = "tag_edit_item"
+    }
 
     /**当前选中的[DslAdapterItem], 用来实现底部控制按钮互斥操作*/
     var _selectedCanvasItem: DslAdapterItem? = null
@@ -91,20 +99,28 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
     /**取消正在选中的项状态*/
     fun cancelSelectedItem() {
-        if (_selectedCanvasItem?.itemIsSelected == true) {
-            _selectedCanvasItem?.itemIsSelected = false
-            _selectedCanvasItem?.updateAdapterItem()
-        }
+        _selectedCanvasItem?.updateItemSelected(false)
         _selectedCanvasItem = null
     }
 
-    /**选中一个新的Item, 并取消之前选中的*/
-    fun selectedItemWith(item: DslAdapterItem) {
+    /**选中一个新的Item, 并取消之前选中的.
+     * 互斥操作逻辑*/
+    fun selectedItemWith(vh: DslViewHolder, canvasView: CanvasView, item: DslAdapterItem?) {
         if (_selectedCanvasItem == item) {
             return
         }
         cancelSelectedItem()
         _selectedCanvasItem = item
+
+        //取消选中后, 恢复是否需要编辑
+        if (item == null) {
+            val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
+            if (itemRenderer == null) {
+                vh.showControlLayout(canvasView, false, false)
+            } else {
+                vh.showControlLayout(canvasView, true, true)
+            }
+        }
     }
 
     /**绑定画图支持的功能列表*/
@@ -160,14 +176,15 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemIco = R.drawable.canvas_shapes_ico
                 itemText = _string(R.string.canvas_shapes)
                 itemClick = {
-                    vh.showControlLayout(canvasView, !itemIsSelected)
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
+                    updateItemSelected(!itemIsSelected)
 
                     if (itemIsSelected) {
-                        selectedItemWith(this)
+                        vh.showControlLayout(canvasView, false, true)
+                        selectedItemWith(vh, canvasView, this)
                         showShapeSelectLayout(vh, canvasView)
                         UMEvent.CANVAS_SHAPE.umengEventValue()
+                    } else {
+                        selectedItemWith(vh, canvasView, null)
                     }
                 }
             }
@@ -177,7 +194,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemEnable = true
                 itemClick = {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
-                    fragment.context?.doodleDialog {
+                    fragment.context.doodleDialog {
                         onDoodleResultAction = {
                             canvasView.canvasDelegate.addPictureBitmapRenderer(it)
                         }
@@ -190,19 +207,13 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemIco = R.drawable.canvas_edit_ico
                 itemText = _string(R.string.canvas_edit)
                 itemEnable = true
+                itemTag = TAG_EDIT_ITEM
                 itemClick = {
-                    vh.showControlLayout(canvasView, !itemIsSelected)
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
-
+                    updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        selectedItemWith(this)
-                        showEditControlLayout(
-                            vh,
-                            canvasView,
-                            canvasView.canvasDelegate.getSelectedRenderer()
-                        )
+                        selectedItemWith(vh, canvasView, this)
                     }
+                    vh.showControlLayout(canvasView, itemIsSelected, itemIsSelected)
                 }
             }
             CanvasControlItem2()() {
@@ -212,33 +223,34 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemEnable = true
                 itemClick = {
                     vh.gone(R.id.canvas_layer_layout, itemIsSelected)
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
+                    updateItemSelected(!itemIsSelected)
 
                     if (itemIsSelected) {
                         updateLayerControlLayout(vh, canvasView)
                     }
                 }
             }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_actions_ico
-                itemText = _string(R.string.canvas_operate)
-                itemEnable = true
-                itemClick = {
-                    canvasView.canvasDelegate.getSelectedRenderer()?.let { renderer ->
-                        if (renderer is PictureItemRenderer) {
-                            renderer.getRendererRenderItem()?.let { item ->
-                                if (item is PictureShapeItem) {
-                                    fragment.loadingAsync({
-                                        item.shapePath.let { path ->
-                                            CanvasDataHandleOperate.pathToGCode(
-                                                path,
-                                                renderer.getRotateBounds(),
-                                                renderer.rotate
-                                            )
+            if (isDebug()) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_actions_ico
+                    itemText = _string(R.string.canvas_operate)
+                    itemEnable = true
+                    itemClick = {
+                        canvasView.canvasDelegate.getSelectedRenderer()?.let { renderer ->
+                            if (renderer is PictureItemRenderer) {
+                                renderer.getRendererRenderItem()?.let { item ->
+                                    if (item is PictureShapeItem) {
+                                        fragment.loadingAsync({
+                                            item.shapePath.let { path ->
+                                                CanvasDataHandleOperate.pathToGCode(
+                                                    path,
+                                                    renderer.getRotateBounds(),
+                                                    renderer.rotate
+                                                )
+                                            }
+                                        }) {
+                                            //no op
                                         }
-                                    }) {
-                                        //no op
                                     }
                                 }
                             }
@@ -252,8 +264,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemEnable = true
 
                 itemClick = {
-                    itemIsSelected = !itemIsSelected
-                    updateAdapterItem()
+                    updateItemSelected(!itemIsSelected)
 
                     if (itemIsSelected) {
                         it.context.canvasSettingWindow(it) {
@@ -378,7 +389,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             override fun onClearSelectItem(itemRenderer: IItemRenderer<*>) {
                 super.onClearSelectItem(itemRenderer)
                 cancelSelectedItem()
-                vh.showControlLayout(canvasView, false)
+                vh.showControlLayout(canvasView, false, false)
                 updateLayerLayout(vh)
             }
 
@@ -398,9 +409,6 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
                 //更新图层
                 updateLayerLayout(vh)
-
-                //显示对应的控制Item布局, 没有则隐藏布局
-                vh.showControlLayout(canvasView, false)
 
                 //预览选中的元素边框
                 val peckerModel = vmApp<LaserPeckerModel>()
@@ -446,22 +454,29 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         })
     }
 
-    /**隐藏控制布局*/
-    fun DslViewHolder.showControlLayout(canvasView: CanvasView, visible: Boolean = true) {
-        if (!visible) {
-            //如果要隐藏控制布局时, 判断是否已经选中了item
-            val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
-            if (itemRenderer != null && showSelectedItemControlLayout(
-                    this,
-                    canvasView,
-                    itemRenderer
-                )
-            ) {
-                //被处理
-                return
-            }
-        }
+    /**隐藏/显示编辑控制布局
+     * [canvasView]
+     * [needEdit] 是否需要渲染编辑item
+     * [visible] 隐藏/显示
+     * */
+    fun DslViewHolder.showControlLayout(
+        canvasView: CanvasView,
+        needEdit: Boolean = true,
+        visible: Boolean = true
+    ) {
+        val itemRecyclerView = v<RecyclerView>(R.id.canvas_item_view)
+        val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
+        editItem?.updateItemSelected(visible && needEdit)
 
+        if (visible) {
+            if (needEdit) {
+                //显示编辑控制布局
+                val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
+                renderSelectedItemEditControlLayout(this, canvasView, itemRenderer)
+            }
+        } else {
+            //隐藏编辑控制
+        }
         dslTransition(itemView as ViewGroup) {
             onCaptureStartValues = {
                 //invisible(R.id.canvas_control_layout)
@@ -474,39 +489,43 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
     /**根据选中的item, 显示对应的控制布局
      * @return 表示是否处理了*/
-    fun showSelectedItemControlLayout(
+    fun renderSelectedItemEditControlLayout(
         vh: DslViewHolder,
         canvasView: CanvasView,
-        itemRenderer: IItemRenderer<*>
+        itemRenderer: BaseItemRenderer<*>?
     ): Boolean {
         var result = true
-        if (itemRenderer is PictureTextItemRenderer) {
-            //选中TextItemRenderer时的控制菜单
-            renderTextControlLayout(vh, canvasView, itemRenderer)
-        } else if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer.rendererItem
-            if (renderItem is PictureShapeItem || renderItem is PictureSharpItem) {
-                //shape or sharp
-                renderShapeControlLayout(vh, canvasView, itemRenderer)
-            } else if (renderItem is PictureBitmapItem) {
-                renderBitmapControlLayout(vh, canvasView, itemRenderer)
+        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
+            hookUpdateDepend()
+
+            if (itemRenderer is PictureTextItemRenderer) {
+                //选中TextItemRenderer时的控制菜单
+                renderTextEditItems(itemRenderer)
+            } else if (itemRenderer is PictureItemRenderer) {
+                val renderItem = itemRenderer.rendererItem
+                if (renderItem is PictureShapeItem || renderItem is PictureSharpItem) {
+                    //shape or sharp
+                    renderShapeEditItems(itemRenderer)
+                } else if (renderItem is PictureBitmapItem) {
+                    renderImageEditItems(
+                        fragment,
+                        itemRenderer as PictureItemRenderer<PictureBitmapItem>
+                    )
+                } else {
+                    //vh.showControlLayout(false)
+                    result = false
+                }
+            } else if (itemRenderer is SelectGroupRenderer) {
+                renderGroupEditItems(itemRenderer)
             } else {
                 //vh.showControlLayout(false)
                 result = false
             }
-        } else if (itemRenderer is SelectGroupRenderer) {
-            renderGroupControlLayout(vh, canvasView, itemRenderer)
-        } else if (itemRenderer is DrawableItemRenderer) {
-            val itemDrawable = (itemRenderer.getRendererRenderItem() as? DrawableItem)?.drawable
-            if (itemDrawable is SharpDrawable) {
-                renderSVGControlLayout(vh, canvasView, itemRenderer)
-            } else {
-                result = false
-            }
-        } else {
-            //vh.showControlLayout(false)
-            result = false
+
+            //
+            renderCommonEditItems(canvasView, fragment, itemRenderer)
         }
+
         return result
     }
 
@@ -596,282 +615,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         }
     }
 
-    fun DslAdapterItem.drawCanvasRight(
-        insertRight: Int = _dimen(R.dimen.lib_line_px),
-        offsetTop: Int = _dimen(R.dimen.lib_drawable_padding),
-        offsetBottom: Int = _dimen(R.dimen.lib_drawable_padding),
-        color: Int = _color(R.color.canvas_dark_gray)
-    ) {
-        drawRight(insertRight, offsetTop, offsetBottom, color)
-    }
-
-    /**统一样式的item*/
-    fun renderTextControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        renderer: BaseItemRenderer<*>
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-
-            //字体
-            TypefaceSelectItem()() {
-                itemRenderer = renderer
-                itemClick = { anchor ->
-                    updateItemSelected(!itemIsSelected)
-
-                    if (itemIsSelected) {
-                        anchor.context.canvasFontWindow(anchor) {
-                            itemRenderer = renderer
-                            onDismiss = {
-                                updateItemSelected(false)
-                                false
-                            }
-                        }
-                    }
-                }
-            }
-            //样式
-            TextStyleSelectItem()() {
-                itemRenderer = renderer
-            }
-            //对齐
-            TextAlignSelectItem()() {
-                itemRenderer = renderer
-                drawCanvasRight()
-            }
-            //属性调整
-            TextPropertyControlItem()() {
-                itemRenderer = renderer
-                drawCanvasRight()
-            }
-            //曲线
-            if (isDebug()) {
-                CanvasControlItem2()() {
-                    itemIco = R.drawable.canvas_text_curve
-                    itemText = _string(R.string.canvas_curve)
-                }
-            }
-
-            TextOrientationItem()() {
-                itemIco = R.drawable.canvas_text_style_standard_ico
-                itemText = _string(R.string.canvas_standard)
-                itemOrientation = LinearLayout.HORIZONTAL
-                itemRenderer = renderer
-            }
-            TextOrientationItem()() {
-                itemIco = R.drawable.canvas_text_style_vertical_ico
-                itemText = _string(R.string.canvas_vertical)
-                itemOrientation = LinearLayout.VERTICAL
-                itemRenderer = renderer
-                drawCanvasRight()
-            }
-
-            //紧凑
-            if (isDebug() && renderer is PictureTextItemRenderer) {
-                CanvasControlItem2()() {
-                    itemText = "紧凑"
-                    itemIsSelected = renderer.getRendererRenderItem()?.isCompactText == true
-                    itemClick = {
-                        updateItemSelected(!itemIsSelected)
-                        renderer.updateTextCompact(itemIsSelected)
-                    }
-                }
-            }
-        }
-    }
-
     //</editor-fold desc="文本属性控制">
-
-    //<editor-fold desc="形状控制">
-
-    /**形状属性控制item*/
-    fun  renderShapeControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        itemRenderer: IItemRenderer<*>
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_stroke_ico
-                itemText = _string(R.string.canvas_stroke)
-                itemTintColor = false
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        itemRenderer.updatePaintStyle(Paint.Style.STROKE)
-                    }
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_fill_ico
-                itemText = _string(R.string.canvas_fill)
-                itemTintColor = false
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        itemRenderer.updatePaintStyle(Paint.Style.FILL)
-                    }
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_stroke_fill_ico
-                itemText = _string(R.string.canvas_fill_stroke)
-                itemTintColor = true
-                itemClick = {
-                    if (itemRenderer is PictureItemRenderer) {
-                        itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
-                    }
-                }
-            }
-        }
-    }
-
-    /**SVG属性控制item*/
-    fun renderSVGControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        itemRenderer: DrawableItemRenderer<*>
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_stroke_ico
-                itemText = _string(R.string.canvas_stroke)
-                itemTintColor = false
-                itemClick = {
-                    itemRenderer.updatePaintStyle(Paint.Style.STROKE)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_fill_ico
-                itemText = _string(R.string.canvas_fill)
-                itemTintColor = false
-                itemClick = {
-                    itemRenderer.updatePaintStyle(Paint.Style.FILL)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_style_stroke_fill_ico
-                itemText = _string(R.string.canvas_fill_stroke)
-                itemTintColor = true
-                itemClick = {
-                    itemRenderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
-                }
-            }
-        }
-    }
-
-    //</editor-fold desc="形状控制">
-
-    //<editor-fold desc="图片控制">
-
-    /**图片属性控制item*/
-    fun renderBitmapControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        itemRenderer: IItemRenderer<*>
-    ) {
-        if (itemRenderer !is PictureItemRenderer<*>) {
-            return
-        }
-        if (itemRenderer.getRendererRenderItem() !is PictureBitmapItem) {
-            return
-        }
-        val renderer = itemRenderer as PictureItemRenderer<PictureBitmapItem>
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_prints
-                itemText = _string(R.string.canvas_prints)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_gcode
-                itemText = _string(R.string.canvas_gcode)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_black_white
-                itemText = _string(R.string.canvas_black_white)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_BW.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_dithering
-                itemText = _string(R.string.canvas_dithering)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleDithering(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
-                    }
-                }
-            }
-            if (isDebug()) {
-                CanvasControlItem2()() {
-                    itemIco = R.drawable.canvas_bitmap_grey
-                    itemText = _string(R.string.canvas_grey)
-                    itemClick = {
-                        CanvasBitmapHandler.handleGrey(it, fragment, renderer)
-                        UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_seal
-                itemText = _string(R.string.canvas_seal)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleSeal(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
-                    }
-                }
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_crop
-                itemText = _string(R.string.canvas_crop)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleCrop(it, fragment, renderer) {
-                            updateItemSelected(false)
-                        }
-                        UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
-                    }
-                }
-            }
-        }
-    }
-
-    //</editor-fold desc="图片控制">
 
     //<editor-fold desc="图层控制">
 
@@ -966,138 +710,6 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     }
 
     //</editor-fold desc="图层控制">
-
-    //<editor-fold desc="编辑控制">
-
-    /**编辑控制*/
-    fun showEditControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        renderer: BaseItemRenderer<*>?
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-
-            //坐标编辑
-            CanvasEditControlItem()() {
-                itemRenderer = renderer
-                itemCanvasDelegate = canvasView.canvasDelegate
-            }
-
-            //图层排序
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_layer_sort
-                itemText = _string(R.string.canvas_sort)
-                itemEnable = true
-                itemClick = {
-                    fragment.context.menuPopupWindow(it) {
-                        renderAdapterAction = {
-                            CanvasArrangeItem()() {
-                                itemArrange = CanvasDelegate.ARRANGE_FORWARD
-                                itemRenderer = renderer
-                                itemCanvasDelegate = canvasView.canvasDelegate
-                            }
-                            CanvasArrangeItem()() {
-                                itemArrange = CanvasDelegate.ARRANGE_BACKWARD
-                                itemRenderer = renderer
-                                itemCanvasDelegate = canvasView.canvasDelegate
-                            }
-                            CanvasArrangeItem()() {
-                                itemArrange = CanvasDelegate.ARRANGE_FRONT
-                                itemRenderer = renderer
-                                itemCanvasDelegate = canvasView.canvasDelegate
-                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
-                            }
-                            CanvasArrangeItem()() {
-                                itemArrange = CanvasDelegate.ARRANGE_BACK
-                                itemRenderer = renderer
-                                itemCanvasDelegate = canvasView.canvasDelegate
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    //</editor-fold desc="编辑控制">
-
-    //<editor-fold desc="群组控制">
-
-    /**群组控制*/
-    fun renderGroupControlLayout(
-        vh: DslViewHolder,
-        canvasView: CanvasView,
-        renderer: SelectGroupRenderer
-    ) {
-        vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
-            hookUpdateDepend()
-            //
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_left_ico
-                itemText = _string(R.string.canvas_align_left)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.LEFT)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_right_ico
-                itemText = _string(R.string.canvas_align_right)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.RIGHT)
-                }
-                drawCanvasRight()
-            }
-
-            //
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_top_ico
-                itemText = _string(R.string.canvas_align_top)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.TOP)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_bottom_ico
-                itemText = _string(R.string.canvas_align_bottom)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.BOTTOM)
-                }
-                drawCanvasRight()
-            }
-
-            //
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_horizontal_ico
-                itemText = _string(R.string.canvas_align_horizontal)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.CENTER_HORIZONTAL)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_vertical_ico
-                itemText = _string(R.string.canvas_align_vertical)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.CENTER_VERTICAL)
-                }
-            }
-            CanvasControlItem()() {
-                itemIco = R.drawable.canvas_align_center_ico
-                itemText = _string(R.string.canvas_align_center)
-                itemRenderer = renderer
-                itemClick = {
-                    renderer.updateAlign(Gravity.CENTER)
-                }
-            }
-        }
-    }
-    //</editor-fold desc="群组控制">
 
     //<editor-fold desc="Undo">
 

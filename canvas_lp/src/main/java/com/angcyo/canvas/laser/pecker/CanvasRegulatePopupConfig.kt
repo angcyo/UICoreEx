@@ -18,6 +18,7 @@ import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemText
+import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -29,6 +30,7 @@ import com.angcyo.widget.recycler.renderDslAdapter
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/16
  */
+@Deprecated("2022-9-20 请使用新ui")
 class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
 
     companion object {
@@ -298,6 +300,7 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
 
 /**Dsl
  * 画布图片编辑属性弹窗*/
+@DSL
 fun Context.canvasRegulateWindow(anchor: View?, config: CanvasRegulatePopupConfig.() -> Unit): Any {
     val popupConfig = CanvasRegulatePopupConfig()
     popupConfig.anchor = anchor
