@@ -45,7 +45,7 @@
 
     <com.angcyo.tablayout.DslTabLayout
         android:id="@+id/lib_tab_layout"
-        style="@style/LibTabSegmentStyle"
+        style="@style/LibTabSegmentSolidStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/lib_hdpi"
