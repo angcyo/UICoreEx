@@ -62,7 +62,13 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
     /**操作的渲染对象*/
     var itemRenderer: IItemRenderer<*>? = null
 
-    /**需要调整的项目, 需要啥就添加对应的项*/
+    /**需要调整的项目, 需要啥就添加对应的项
+     * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.REGULATE_INVERT]
+     * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.REGULATE_THRESHOLD]
+     * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.REGULATE_LINE_SPACE]
+     * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.REGULATE_DIRECTION]
+     * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.REGULATE_ANGLE]
+     * */
     val regulateList = mutableListOf<Int>()
 
     /**保存修改后的属性*/
@@ -301,9 +307,13 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
 /**Dsl
  * 画布图片编辑属性弹窗*/
 @DSL
-fun Context.canvasRegulateWindow(anchor: View?, config: CanvasRegulatePopupConfig.() -> Unit): Any {
+fun Context.canvasRegulateWindow(
+    anchor: View?,
+    config: CanvasRegulatePopupConfig.() -> Unit
+): TargetWindow {
     val popupConfig = CanvasRegulatePopupConfig()
     popupConfig.anchor = anchor
+    //popupConfig.addRegulate()
     popupConfig.config()
     return popupConfig.show(this)
 }

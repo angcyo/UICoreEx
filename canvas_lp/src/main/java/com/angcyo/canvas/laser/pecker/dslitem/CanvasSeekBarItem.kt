@@ -1,7 +1,7 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
@@ -13,6 +13,10 @@ import com.angcyo.widget.progress.DslSeekBar
  * @since 2022/05/16
  */
 class CanvasSeekBarItem : DslSeekBarInfoItem() {
+
+    init {
+        itemExtendLayoutId = R.layout.dsl_extent_seek_little_item
+    }
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
