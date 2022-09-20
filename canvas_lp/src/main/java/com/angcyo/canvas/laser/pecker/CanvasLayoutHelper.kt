@@ -686,7 +686,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     //<editor-fold desc="形状控制">
 
     /**形状属性控制item*/
-    fun renderShapeControlLayout(
+    fun  renderShapeControlLayout(
         vh: DslViewHolder,
         canvasView: CanvasView,
         itemRenderer: IItemRenderer<*>
