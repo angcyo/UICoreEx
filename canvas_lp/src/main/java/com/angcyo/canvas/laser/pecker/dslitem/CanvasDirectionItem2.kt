@@ -5,30 +5,28 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.TextItemConfig
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.layout.DslCheckFlowLayout
+import com.angcyo.widget.tab
 
 /**
- * GCode扫描方向
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/05/16
+ * @since 2022/09/20
  */
-@Deprecated("2022-9-20 请使用新ui")
-class CanvasDirectionItem : DslAdapterItem(), ITextItem {
+class CanvasDirectionItem2 : DslAdapterItem(), ITextItem {
 
     /**[0, 1, 2, 3]
      * [0°, 90°, 180°, 270°]*/
     var itemDirection: Int = 0
 
     /**回调*/
-    var itemSelectChangedAction: (fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean) -> Unit =
-        { fromIndex, selectIndexList, reselect, fromUser ->
+    var itemSelectChangedAction: (fromIndex: Int, toIndex: Int, reselect: Boolean, fromUser: Boolean) -> Unit =
+        { fromIndex, toIndex, reselect, fromUser ->
 
         }
 
     override var textItemConfig: TextItemConfig = TextItemConfig()
 
     init {
-        itemLayoutId = R.layout.item_canvas_direction_layout
+        itemLayoutId = R.layout.item_canvas_direction_layout2
     }
 
     override fun onItemBind(
@@ -39,13 +37,13 @@ class CanvasDirectionItem : DslAdapterItem(), ITextItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.v<DslCheckFlowLayout>(R.id.check_layout)?.apply {
-            selectIndex(itemDirection)
-            onSelectChanged { fromIndex, selectIndexList, reselect, fromUser ->
+        itemHolder.tab(R.id.lib_tab_layout)?.apply {
+            setCurrentItem(itemDirection)
+            observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (fromUser) {
                     itemChanging = true
                 }
-                itemSelectChangedAction(fromIndex, selectIndexList, reselect, fromUser)
+                itemSelectChangedAction(fromIndex, toIndex, reselect, fromUser)
             }
         }
     }

@@ -47,13 +47,40 @@ class CanvasRegulatePopupConfig : ShadowAnchorPopupConfig() {
         const val REGULATE_BRIGHTNESS = 7
 
         //属性key
+
+        @Deprecated("请使用具体的key")
         const val KEY_INVERT = "key_invert"
+
+        @Deprecated("请使用具体的key")
         const val KEY_THRESHOLD = "key_threshold"
-        const val KEY_LINE_SPACE = "key_line_space"
+
+        /**版画阈值*/
+        const val KEY_PRINT_THRESHOLD = "key_print_threshold"
+
+        /**黑白反色*/
+        const val KEY_BW_INVERT = "key_bw_invert"
+
+        /**黑白画阈值*/
+        const val KEY_BW_THRESHOLD = "key_bw_threshold"
+
+        /**印章阈值*/
+        const val KEY_SEAL_THRESHOLD = "key_seal_threshold"
+
         const val KEY_DIRECTION = "key_direction"
+        const val KEY_LINE_SPACE = "key_line_space"
         const val KEY_ANGLE = "key_angle"
+
+        /**抖动反色*/
+        const val KEY_SHAKE_INVERT = "key_shake_invert"
+
+        /**对比度*/
         const val KEY_CONTRAST = "key_contrast"
+
+        /**亮度*/
         const val KEY_BRIGHTNESS = "key_brightness"
+
+        /**单独的确定按钮*/
+        const val KEY_SUBMIT = "key_submit"
 
         //缓存
         val keepProperty = hashMapOf<String, Any?>()

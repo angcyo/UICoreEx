@@ -39,43 +39,26 @@ object CanvasBitmapHandler {
 
         var newItem: PictureBitmapItem? = null
 
-        context.canvasRegulateWindow(anchor) {
-            itemRenderer = renderer
-            onPopupDismissAction = onDismissAction
-
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
-            onApplyAction = { preview, cancel, valueChanged ->
-                if (cancel) {
-                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD)
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
                 } else {
-                    if (valueChanged) {
-                        owner.loadingAsync({
-                            originBitmap.let { bitmap ->
-                                OpenCV.bitmapToPrint(
-                                    context,
-                                    bitmap,
-                                    getIntOrDef(
-                                        CanvasRegulatePopupConfig.KEY_THRESHOLD, 240
-                                    )
-                                )
-                            }
-                        }) {
-                            it?.let {
-                                newItem = PictureBitmapItem(originBitmap, it)
-                                newItem?.dataMode = CanvasConstant.DATA_MODE_PRINT
-
-                                renderer.updateRendererItem(
-                                    newItem!!,
-                                    beforeBounds,
-                                    if (preview) Strategy.preview else Strategy.normal
-                                )
-                            }
+                    owner.loadingAsync({
+                        originBitmap.let { bitmap ->
+                            OpenCV.bitmapToPrint(
+                                context,
+                                bitmap,
+                                getIntOrDef(CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD, 240)
+                            )
                         }
-                    } else if (!preview) {
-                        //使用上一次的结果
-                        newItem?.let {
-                            renderer.rendererItem = item
-                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
+                    }) {
+                        it?.let {
+                            newItem = PictureBitmapItem(originBitmap, it)
+                            newItem?.dataMode = CanvasConstant.DATA_MODE_PRINT
+
+                            renderer.updateRendererItem(newItem!!, beforeBounds)
                         }
                     }
                 }
@@ -99,68 +82,53 @@ object CanvasBitmapHandler {
 
         var boundsRotate = 0f //需要旋转的角度
 
-        context.canvasRegulateWindow(anchor) {
-            itemRenderer = renderer
-            onPopupDismissAction = onDismissAction
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_LINE_SPACE)
+            addRegulate(CanvasRegulatePopupConfig.KEY_ANGLE)
+            addRegulate(CanvasRegulatePopupConfig.KEY_DIRECTION)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
 
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_LINE_SPACE)
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_ANGLE)
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_DIRECTION)
-            livePreview = false
-
-            onApplyAction = { preview, cancel, valueChanged ->
-                if (cancel) {
-                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
                 } else {
-                    if (valueChanged) {
-                        owner.loadingAsync({
-                            val direction = getIntOrDef(CanvasRegulatePopupConfig.KEY_DIRECTION, 0)
-                            //keepBounds = direction == 0 || direction == 2
-                            if (direction == 1 || direction == 3) {
-                                boundsRotate = 90f
-                            }
-                            originBitmap.let { bitmap ->
-                                OpenCV.bitmapToGCode(
-                                    context,
-                                    bitmap,
-                                    (bitmap.width / 2).toMm().toDouble(),
-                                    lineSpace = getFloatOrDef(
-                                        CanvasRegulatePopupConfig.KEY_LINE_SPACE, 0.125f
-                                    ).toDouble(),
-                                    direction = direction,
-                                    angle = getFloatOrDef(
-                                        CanvasRegulatePopupConfig.KEY_ANGLE, 0f
-                                    ).toDouble()
-                                ).let {
-                                    val gCodeText = it.readText()
-                                    it.deleteSafe()
-                                    gCodeText to GCodeHelper.parseGCode(gCodeText)
-                                }
-                            }
-                        }) {
-                            it?.let {
-                                it.first.writeToCache(
-                                    CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
-                                    fileName(suffix = ".gcode")
-                                )
-
-                                newItem = PictureBitmapItem(originBitmap, null, it.second)
-                                newItem?.data = it.first // GCode数据放这里
-                                newItem?.dataMode = CanvasConstant.DATA_MODE_GCODE
-
-                                renderer.updateRendererItem(
-                                    newItem!!,
-                                    beforeBounds.rotate(boundsRotate, result = RectF()),
-                                    if (preview) Strategy.preview else Strategy.normal
-                                )
+                    owner.loadingAsync({
+                        val direction = getIntOrDef(CanvasRegulatePopupConfig.KEY_DIRECTION, 0)
+                        //keepBounds = direction == 0 || direction == 2
+                        if (direction == 1 || direction == 3) {
+                            boundsRotate = 90f
+                        }
+                        originBitmap.let { bitmap ->
+                            OpenCV.bitmapToGCode(
+                                context,
+                                bitmap,
+                                (bitmap.width / 2).toMm().toDouble(),
+                                lineSpace = getFloatOrDef(
+                                    CanvasRegulatePopupConfig.KEY_LINE_SPACE, 0.125f
+                                ).toDouble(),
+                                direction = direction,
+                                angle = getFloatOrDef(
+                                    CanvasRegulatePopupConfig.KEY_ANGLE, 0f
+                                ).toDouble()
+                            ).let {
+                                val gCodeText = it.readText()
+                                it.deleteSafe()
+                                gCodeText to GCodeHelper.parseGCode(gCodeText)
                             }
                         }
-                    } else if (!preview) {
-                        //使用上一次的结果
-                        newItem?.let {
-                            renderer.rendererItem = item
+                    }) {
+                        it?.let {
+                            it.first.writeToCache(
+                                CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
+                                fileName(suffix = ".gcode")
+                            )
+
+                            newItem = PictureBitmapItem(originBitmap, null, it.second)
+                            newItem?.data = it.first // GCode数据放这里
+                            newItem?.dataMode = CanvasConstant.DATA_MODE_GCODE
+
                             renderer.updateRendererItem(
-                                it,
+                                newItem!!,
                                 beforeBounds.rotate(boundsRotate, result = RectF()),
                                 Strategy.normal
                             )
@@ -185,51 +153,34 @@ object CanvasBitmapHandler {
 
         var newItem: PictureBitmapItem? = null
 
-        context.canvasRegulateWindow(anchor) {
-            itemRenderer = renderer
-            onPopupDismissAction = onDismissAction
-
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_INVERT)
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
-            onApplyAction = { preview, cancel, valueChanged ->
-                if (cancel) {
-                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_BW_INVERT)
+            addRegulate(CanvasRegulatePopupConfig.KEY_BW_THRESHOLD)
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
                 } else {
-                    if (valueChanged) {
-                        owner.loadingAsync({
-                            originBitmap.let { bitmap ->
-                                OpenCV.bitmapToBlackWhite(
-                                    bitmap,
-                                    getIntOrDef(
-                                        CanvasRegulatePopupConfig.KEY_THRESHOLD, 240
-                                    ),
-                                    if (getBooleanOrDef(
-                                            CanvasRegulatePopupConfig.KEY_INVERT, false
-                                        )
-                                    ) {
-                                        1
-                                    } else {
-                                        0
-                                    }
-                                )
-                            }
-                        }) {
-                            it?.let {
-                                newItem = PictureBitmapItem(originBitmap, it)
-                                newItem?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-
-                                renderer.updateRendererItem(
-                                    newItem!!,
-                                    beforeBounds,
-                                    if (preview) Strategy.preview else Strategy.normal
-                                )
-                            }
+                    owner.loadingAsync({
+                        originBitmap.let { bitmap ->
+                            OpenCV.bitmapToBlackWhite(
+                                bitmap,
+                                getIntOrDef(CanvasRegulatePopupConfig.KEY_BW_THRESHOLD, 240),
+                                if (getBooleanOrDef(
+                                        CanvasRegulatePopupConfig.KEY_BW_INVERT, false
+                                    )
+                                ) {
+                                    1
+                                } else {
+                                    0
+                                }
+                            )
                         }
-                    } else if (!preview) {
-                        //使用上一次的结果
-                        newItem?.let {
-                            renderer.rendererItem = item
-                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
+                    }) {
+                        it?.let {
+                            newItem = PictureBitmapItem(originBitmap, it)
+                            newItem?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
+
+                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -251,50 +202,36 @@ object CanvasBitmapHandler {
 
         var newItem: PictureBitmapItem? = null
 
-        context.canvasRegulateWindow(anchor) {
-            itemRenderer = renderer
-            onPopupDismissAction = onDismissAction
-
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_INVERT)
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_CONTRAST)
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_BRIGHTNESS)
-            onApplyAction = { preview, cancel, valueChanged ->
-                if (cancel) {
-                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT)
+            addRegulate(CanvasRegulatePopupConfig.KEY_CONTRAST)
+            addRegulate(CanvasRegulatePopupConfig.KEY_BRIGHTNESS)
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
                 } else {
-                    if (valueChanged) {
-                        owner.loadingAsync({
-                            originBitmap.let { bitmap ->
-                                OpenCV.bitmapToDithering(
-                                    context, bitmap,
-                                    getBooleanOrDef(
-                                        CanvasRegulatePopupConfig.KEY_INVERT, false
-                                    ),
-                                    getFloatOrDef(
-                                        CanvasRegulatePopupConfig.KEY_CONTRAST, 0f
-                                    ).toDouble(),
-                                    getFloatOrDef(
-                                        CanvasRegulatePopupConfig.KEY_BRIGHTNESS, 0f
-                                    ).toDouble(),
-                                )
-                            }
-                        }) {
-                            it?.let {
-                                newItem = PictureBitmapItem(originBitmap, it)
-                                newItem?.dataMode = CanvasConstant.DATA_MODE_DITHERING
-
-                                renderer.updateRendererItem(
-                                    newItem!!,
-                                    beforeBounds,
-                                    if (preview) Strategy.preview else Strategy.normal
-                                )
-                            }
+                    owner.loadingAsync({
+                        originBitmap.let { bitmap ->
+                            OpenCV.bitmapToDithering(
+                                context,
+                                bitmap,
+                                getBooleanOrDef(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, false),
+                                getFloatOrDef(
+                                    CanvasRegulatePopupConfig.KEY_CONTRAST,
+                                    0f
+                                ).toDouble(),
+                                getFloatOrDef(
+                                    CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
+                                    0f
+                                ).toDouble(),
+                            )
                         }
-                    } else if (!preview) {
-                        //使用上一次的结果
-                        newItem?.let {
-                            renderer.rendererItem = item
-                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
+                    }) {
+                        it?.let {
+                            newItem = PictureBitmapItem(originBitmap, it)
+                            newItem?.dataMode = CanvasConstant.DATA_MODE_DITHERING
+
+                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -343,42 +280,26 @@ object CanvasBitmapHandler {
 
         var newItem: PictureBitmapItem? = null
 
-        context.canvasRegulateWindow(anchor) {
-            itemRenderer = renderer
-            onPopupDismissAction = onDismissAction
-
-            addRegulate(CanvasRegulatePopupConfig.REGULATE_THRESHOLD)
-            onApplyAction = { preview, cancel, valueChanged ->
-                if (cancel) {
-                    renderer.updateRendererItem(item, beforeBounds, Strategy.redo)
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD)
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
                 } else {
-                    if (valueChanged) {
-                        owner.loadingAsync({
-                            originBitmap.let { bitmap ->
-                                OpenCV.bitmapToSeal(
-                                    context, bitmap,
-                                    getIntOrDef(
-                                        CanvasRegulatePopupConfig.KEY_THRESHOLD, 240
-                                    )
-                                )
-                            }
-                        }) {
-                            it?.let {
-                                newItem = PictureBitmapItem(originBitmap, it)
-                                newItem?.dataMode = CanvasConstant.DATA_MODE_SEAL
-
-                                renderer.updateRendererItem(
-                                    newItem!!,
-                                    beforeBounds,
-                                    if (preview) Strategy.preview else Strategy.normal
-                                )
-                            }
+                    owner.loadingAsync({
+                        originBitmap.let { bitmap ->
+                            OpenCV.bitmapToSeal(
+                                context,
+                                bitmap,
+                                getIntOrDef(CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD, 240)
+                            )
                         }
-                    } else if (!preview) {
-                        //使用上一次的结果
-                        newItem?.let {
-                            renderer.rendererItem = item
-                            renderer.updateRendererItem(it, beforeBounds, Strategy.normal)
+                    }) {
+                        it?.let {
+                            newItem = PictureBitmapItem(originBitmap, it)
+                            newItem?.dataMode = CanvasConstant.DATA_MODE_SEAL
+
+                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
                         }
                     }
                 }
@@ -414,6 +335,5 @@ object CanvasBitmapHandler {
                 }
             }
         }
-
     }
 }

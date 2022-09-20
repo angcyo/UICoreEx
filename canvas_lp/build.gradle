@@ -3,7 +3,6 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.dslitem)
     implementation project(allModule.dialog)
-    implementation project(allModule.picker)
     implementation project(allModule.engrave)
     implementation project(allModule.qrcode)
     implementation project(allModule.component)
@@ -12,11 +11,14 @@ dependencies {
     implementation project(allModule.doodle)
     //剪裁
     implementation project(allModule.crop)
+    //选择图片
+    compileOnly project(allModule.picker)
 
     api project(allModule.dialog2)
     api project(allModule.canvas)
 
     compileOnly project(allModule.umeng_lp)
 
+    //图片算法
     api 'com.angcyo:opencv:hingin-SNAPSHOT'
 }
