@@ -21,7 +21,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
     companion object {
         const val MAX_INPUT_LENGTH = 30
 
-        const val KEY_ADD_TEXT = "canvas_add_text"
+        const val KEY_ADD_TEXT = "key_canvas_add_text"
     }
 
     /**
@@ -53,7 +53,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
-
+        dialogViewHolder.visible(R.id.lib_flow_layout, true)
         dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
             observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (!reselect) {
@@ -94,7 +94,6 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
     override fun initControlLayout(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initControlLayout(dialog, dialogViewHolder)
     }
-
 }
 
 @DSL
