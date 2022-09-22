@@ -1,5 +1,6 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._string
@@ -27,7 +28,12 @@ class TypefaceSelectItem : CanvasControlItem2() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(R.id.typeface_view)?.apply {
-            typeface = itemRenderer?.paint?.typeface
+            val renderer = itemRenderer
+            typeface = if (renderer is DataItemRenderer) {
+                renderer.dataTextItem?.textPaint?.typeface
+            } else {
+                renderer?.paint?.typeface
+            }
         }
     }
 

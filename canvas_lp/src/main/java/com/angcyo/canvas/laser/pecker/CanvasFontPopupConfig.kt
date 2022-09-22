@@ -5,7 +5,9 @@ import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.canvas.TypefaceInfo
+import com.angcyo.canvas.items.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
@@ -142,7 +144,11 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
             displayName = name
             previewText = _string(R.string.canvas_font_text)
             typeface = type
-            itemIsSelected = (itemRenderer as? BaseItemRenderer)?.paint?.typeface == type
+            itemIsSelected = if (itemRenderer is DataItemRenderer) {
+                (itemRenderer?.getRendererRenderItem() as? DataTextItem)?.textPaint?.typeface == type
+            } else {
+                (itemRenderer as? BaseItemRenderer)?.paint?.typeface == type
+            }
             if (line) {
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
             }
@@ -180,6 +186,8 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         val renderer = itemRenderer
         if (renderer is PictureTextItemRenderer) {
             renderer.updateTextTypeface(typeface)
+        } else if (renderer is DataItemRenderer) {
+            renderer.dataTextItem?.updateTextTypeface(typeface, renderer)
         }
     }
 }

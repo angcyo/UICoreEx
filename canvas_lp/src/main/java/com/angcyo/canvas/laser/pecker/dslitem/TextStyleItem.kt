@@ -1,6 +1,8 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
+import com.angcyo.canvas.data.textStyle
 import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.R
@@ -30,9 +32,11 @@ class TextStyleItem : CanvasControlItem2() {
                     val renderItem = renderer.getRendererRenderItem()
                     if (renderItem is PictureTextItem) {
                         renderer.enableTextStyle(itemStyle, !itemIsSelected)
-                        updateAdapterItem()
                     }
+                } else if (renderer is DataItemRenderer) {
+                    renderer.dataTextItem?.updateTextStyle(itemStyle, !itemIsSelected, renderer)
                 }
+                updateAdapterItem()
             }
         }
 
@@ -46,11 +50,15 @@ class TextStyleItem : CanvasControlItem2() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer?.getRendererRenderItem()
+        val renderer = itemRenderer
+        if (renderer is PictureItemRenderer) {
+            val renderItem = renderer.getRendererRenderItem()
             if (renderItem is PictureTextItem) {
                 itemIsSelected = renderItem.textStyle.have(itemStyle)
             }
+        } else if (renderer is DataItemRenderer) {
+            itemIsSelected =
+                renderer.getRendererRenderItem()?.dataBean?.textStyle()?.have(itemStyle) == true
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

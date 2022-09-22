@@ -6,11 +6,9 @@ import android.widget.LinearLayout
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
@@ -134,7 +132,7 @@ object CanvasEditLayoutHelper {
 
     //region ---文本---
 
-    fun DslAdapter.renderTextEditItems(renderer: BaseItemRenderer<*>) {
+    fun DslAdapter.renderTextEditItems(renderer: DataItemRenderer) {
         //字体
         TypefaceSelectItem()() {
             itemRenderer = renderer
@@ -189,13 +187,14 @@ object CanvasEditLayoutHelper {
         }
 
         //紧凑
-        if (isDebug() && renderer is PictureTextItemRenderer) {
+        if (isDebug()) {
             CanvasControlItem2()() {
                 itemText = "紧凑"
-                itemIsSelected = renderer.getRendererRenderItem()?.isCompactText == true
+                itemIsSelected = renderer.getRendererRenderItem()?.dataBean?.isCompactText == true
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
-                    renderer.updateTextCompact(itemIsSelected)
+
+                    renderer.dataTextItem?.updateTextCompact(itemIsSelected, renderer)
                 }
             }
         }

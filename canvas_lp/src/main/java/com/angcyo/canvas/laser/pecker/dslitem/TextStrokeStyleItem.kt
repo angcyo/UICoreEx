@@ -2,6 +2,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
 import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.popup.MenuPopupConfig
@@ -30,9 +31,11 @@ class TextStrokeStyleItem : CanvasControlItem2() {
                     val renderItem = renderer.getRendererRenderItem()
                     if (renderItem is PictureTextItem) {
                         renderer.updatePaintStyle(itemStyle)
-                        updateAdapterItem()
                     }
+                } else if (renderer is DataItemRenderer) {
+                    renderer.dataTextItem?.updatePaintStyle(itemStyle, renderer)
                 }
+                updateAdapterItem()
             }
         }
 
@@ -46,12 +49,14 @@ class TextStrokeStyleItem : CanvasControlItem2() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-
-        if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer?.getRendererRenderItem()
+        val renderer = itemRenderer
+        if (renderer is PictureItemRenderer) {
+            val renderItem = renderer.getRendererRenderItem()
             if (renderItem is PictureTextItem) {
-                itemIsSelected = itemRenderer?.paint?.style == itemStyle
+                itemIsSelected = renderer.paint.style == itemStyle
             }
+        } else if (renderer is DataItemRenderer) {
+            itemIsSelected = renderer.dataTextItem?.textPaint?.style == itemStyle
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

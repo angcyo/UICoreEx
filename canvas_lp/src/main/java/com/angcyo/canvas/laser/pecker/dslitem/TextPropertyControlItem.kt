@@ -2,8 +2,8 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.widget.TextView
 import com.angcyo.canvas.core.IRenderer
-import com.angcyo.canvas.items.PictureTextItem
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
+import com.angcyo.canvas.data.toPixel
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
@@ -49,18 +49,14 @@ class TextPropertyControlItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         val renderer = itemRenderer
-        if (renderer is PictureTextItemRenderer) {
-
+        if (renderer is DataItemRenderer) {
+            val dataItem = renderer.getRendererRenderItem()
             itemHolder.tv(R.id.item_paint_size_view)?.text =
-                itemPointValueUnit.convertPixelToValueUnit(renderer.paint.textSize)
-
-            val renderItem = renderer.getRendererRenderItem()
-            if (renderItem is PictureTextItem) {
-                itemHolder.tv(R.id.item_word_space_view)?.text =
-                    renderItem.wordSpacing.canvasDecimal(2)
-                itemHolder.tv(R.id.item_line_space_view)?.text =
-                    renderItem.lineSpacing.canvasDecimal(2)
-            }
+                itemPointValueUnit.convertPixelToValueUnit(dataItem?.dataBean?.fontSize.toPixel())
+            itemHolder.tv(R.id.item_word_space_view)?.text =
+                dataItem?.dataBean?.charSpacing.toPixel().canvasDecimal(2)
+            itemHolder.tv(R.id.item_line_space_view)?.text =
+                dataItem?.dataBean?.lineSpacing.toPixel().canvasDecimal(2)
 
             bindPaintSize(itemHolder, renderer)
             bindWordSpace(itemHolder, renderer)
@@ -73,7 +69,7 @@ class TextPropertyControlItem : DslAdapterItem() {
     }
 
     /**字号*/
-    fun bindPaintSize(itemHolder: DslViewHolder, renderer: PictureTextItemRenderer) {
+    fun bindPaintSize(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
         itemHolder.click(R.id.item_paint_size_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
@@ -81,35 +77,35 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onNumberResultAction = { number ->
                     val size = clamp(number, TEXT_MIN_SIZE, TEXT_MAX_SIZE)
                     val pixel = itemPointValueUnit.convertValueToPixel(size)
-                    renderer.updateTextSize(pixel)
+                    renderer.dataTextItem?.updateTextSize(pixel, renderer)
                 }
             }
         }
     }
 
     /**字间距*/
-    fun bindWordSpace(itemHolder: DslViewHolder, renderer: PictureTextItemRenderer) {
+    fun bindWordSpace(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
         itemHolder.click(R.id.item_word_space_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = min(number, TEXT_MAX_SIZE)
-                    renderer.updateTextWordSpacing(size)
+                    renderer.dataTextItem?.updateTextWordSpacing(size, renderer)
                 }
             }
         }
     }
 
     /**行间距*/
-    fun bindLineSpace(itemHolder: DslViewHolder, renderer: PictureTextItemRenderer) {
+    fun bindLineSpace(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
         itemHolder.click(R.id.item_line_space_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = min(number, TEXT_MAX_SIZE)
-                    renderer.updateTextLineSpacing(size)
+                    renderer.dataTextItem?.updateTextLineSpacing(size, renderer)
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
+import com.angcyo.canvas.data.toAlignString
 import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
@@ -26,9 +28,11 @@ class TextAlignItem : CanvasControlItem2() {
                     val renderItem = renderer.getRendererRenderItem()
                     if (renderItem is PictureTextItem) {
                         renderer.updatePaintAlign(itemAlign)
-                        updateAdapterItem()
                     }
+                } else if (renderer is DataItemRenderer) {
+                    renderer.dataTextItem?.updatePaintAlign(itemAlign, renderer)
                 }
+                updateAdapterItem()
             }
         }
     }
@@ -39,12 +43,15 @@ class TextAlignItem : CanvasControlItem2() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-
-        if (itemRenderer is PictureItemRenderer) {
-            val renderItem = itemRenderer?.getRendererRenderItem()
+        val renderer = itemRenderer
+        if (renderer is PictureItemRenderer) {
+            val renderItem = renderer.getRendererRenderItem()
             if (renderItem is PictureTextItem) {
-                itemIsSelected = itemRenderer?.paint?.textAlign == itemAlign
+                itemIsSelected = renderer.paint.textAlign == itemAlign
             }
+        } else if (renderer is DataItemRenderer) {
+            itemIsSelected =
+                renderer.getRendererRenderItem()?.dataBean?.textAlign == itemAlign.toAlignString()
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
