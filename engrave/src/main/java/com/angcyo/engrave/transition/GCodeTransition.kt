@@ -186,7 +186,7 @@ class GCodeTransition : IEngraveTransition {
                 stylePath.style = renderer.paint.style
 
                 val path = Path()
-                item.transformPath(renderer, item.shapePath, path)
+                //item.transformPath(renderer, item.shapePath, path)
 
                 stylePath.set(path)
                 val gCodeFile = CanvasDataHandleOperate.pathToGCode(stylePath)

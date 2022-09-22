@@ -52,6 +52,9 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
     /**是否实时监听改变*/
     var realTimeApply: Boolean = true
 
+    /**首次加载是否需要应用*/
+    var firstApply: Boolean = true
+
     /**应用属性实现方法的回调
      * [dismiss] 是否销毁了弹窗*/
     var onApplyAction: (dismiss: Boolean) -> Unit = {}
@@ -171,8 +174,10 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
         }
 
-        //首次触发
-        checkValueChangedRunnable()
+        if (firstApply) {
+            //首次触发
+            checkValueChangedRunnable()
+        }
     }
 
     /**渲染阈值*/
@@ -272,6 +277,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
         regulateList.add(key)
         if (key == CanvasRegulatePopupConfig.KEY_SUBMIT) {
             realTimeApply = false
+            firstApply = false
         }
     }
 

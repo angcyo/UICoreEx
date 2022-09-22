@@ -278,6 +278,20 @@
             android:layout_height="wrap_content"
             android:text="tip" />
 
+        <com.angcyo.widget.DslButton
+            android:id="@+id/save_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="save" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/open_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="open" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/result_text_view"
             style="@style/LibBodyTextStyle"

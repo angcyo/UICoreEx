@@ -8,6 +8,7 @@ import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
@@ -37,7 +38,7 @@ object CanvasEditLayoutHelper {
     /**渲染图片编辑控制items*/
     fun DslAdapter.renderImageEditItems(
         fragment: AbsFragment,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: DataItemRenderer
     ) {
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_bitmap_prints

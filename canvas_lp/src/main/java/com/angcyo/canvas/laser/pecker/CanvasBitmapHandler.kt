@@ -3,9 +3,8 @@ package com.angcyo.canvas.laser.pecker
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
-import com.angcyo.canvas.Strategy
-import com.angcyo.canvas.items.PictureBitmapItem
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.DataBitmapItem
+import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
@@ -15,6 +14,7 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
+import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.utils.fileName
 import com.angcyo.opencv.OpenCV
 
@@ -29,15 +29,12 @@ object CanvasBitmapHandler {
     fun handlePrint(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
+        val originBitmap = item.originBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD)
@@ -47,18 +44,23 @@ object CanvasBitmapHandler {
                 } else {
                     owner.loadingAsync({
                         originBitmap.let { bitmap ->
+                            item.dataBean.printsThreshold = getIntOrDef(
+                                CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
+                                item.dataBean.printsThreshold.toInt()
+                            ).toFloat()
                             OpenCV.bitmapToPrint(
                                 context,
                                 bitmap,
-                                getIntOrDef(CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD, 240)
+                                item.dataBean.printsThreshold.toInt()
                             )
                         }
                     }) {
                         it?.let {
-                            newItem = PictureBitmapItem(originBitmap, it)
-                            newItem?.dataMode = CanvasConstant.DATA_MODE_PRINT
-
-                            renderer.updateRendererItem(newItem!!, beforeBounds)
+                            item.updateBitmapByMode(
+                                it.toBase64Data(),
+                                CanvasConstant.DATA_MODE_PRINT,
+                                renderer
+                            )
                         }
                     }
                 }
@@ -70,15 +72,13 @@ object CanvasBitmapHandler {
     fun handleGCode(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
+        val originBitmap = item.originBitmap!!
         val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
 
         var boundsRotate = 0f //需要旋转的角度
 
@@ -93,23 +93,35 @@ object CanvasBitmapHandler {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
-                        val direction = getIntOrDef(CanvasRegulatePopupConfig.KEY_DIRECTION, 0)
-                        //keepBounds = direction == 0 || direction == 2
+                        val direction = getIntOrDef(
+                            CanvasRegulatePopupConfig.KEY_DIRECTION,
+                            item.dataBean.gcodeDirection
+                        )
                         if (direction == 1 || direction == 3) {
                             boundsRotate = 90f
                         }
+                        item.dataBean.gcodeDirection = direction
+
+                        val lineSpace = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_LINE_SPACE,
+                            item.dataBean.gcodeLineSpace
+                        )
+                        item.dataBean.gcodeLineSpace = lineSpace
+
+                        val angle = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_ANGLE,
+                            item.dataBean.gcodeAngle
+                        )
+                        item.dataBean.gcodeAngle = angle
+
                         originBitmap.let { bitmap ->
                             OpenCV.bitmapToGCode(
                                 context,
                                 bitmap,
                                 (bitmap.width / 2).toMm().toDouble(),
-                                lineSpace = getFloatOrDef(
-                                    CanvasRegulatePopupConfig.KEY_LINE_SPACE, 0.125f
-                                ).toDouble(),
+                                lineSpace = lineSpace.toDouble(),
                                 direction = direction,
-                                angle = getFloatOrDef(
-                                    CanvasRegulatePopupConfig.KEY_ANGLE, 0f
-                                ).toDouble()
+                                angle = angle.toDouble()
                             ).let {
                                 val gCodeText = it.readText()
                                 it.deleteSafe()
@@ -122,15 +134,13 @@ object CanvasBitmapHandler {
                                 CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
                                 fileName(suffix = ".gcode")
                             )
-
-                            newItem = PictureBitmapItem(originBitmap, null, it.second)
-                            newItem?.data = it.first // GCode数据放这里
-                            newItem?.dataMode = CanvasConstant.DATA_MODE_GCODE
-
-                            renderer.updateRendererItem(
-                                newItem!!,
-                                beforeBounds.rotate(boundsRotate, result = RectF()),
-                                Strategy.normal
+                            beforeBounds.rotate(boundsRotate)
+                            item.updateBitmapByMode(
+                                it.first,
+                                CanvasConstant.DATA_MODE_GCODE,
+                                renderer,
+                                beforeBounds.width(),
+                                beforeBounds.height()
                             )
                         }
                     }
@@ -143,15 +153,12 @@ object CanvasBitmapHandler {
     fun handleBlackWhite(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
+        val originBitmap = item.originBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_BW_INVERT)
@@ -162,25 +169,29 @@ object CanvasBitmapHandler {
                 } else {
                     owner.loadingAsync({
                         originBitmap.let { bitmap ->
+
+                            item.dataBean.blackThreshold = getIntOrDef(
+                                CanvasRegulatePopupConfig.KEY_BW_THRESHOLD,
+                                item.dataBean.blackThreshold.toInt()
+                            ).toFloat()
+
+                            item.dataBean.inverse = getBooleanOrDef(
+                                CanvasRegulatePopupConfig.KEY_BW_INVERT, item.dataBean.inverse
+                            )
+
                             OpenCV.bitmapToBlackWhite(
                                 bitmap,
-                                getIntOrDef(CanvasRegulatePopupConfig.KEY_BW_THRESHOLD, 240),
-                                if (getBooleanOrDef(
-                                        CanvasRegulatePopupConfig.KEY_BW_INVERT, false
-                                    )
-                                ) {
-                                    1
-                                } else {
-                                    0
-                                }
+                                item.dataBean.blackThreshold.toInt(),
+                                if (item.dataBean.inverse) 1 else 0
                             )
                         }
                     }) {
                         it?.let {
-                            newItem = PictureBitmapItem(originBitmap, it)
-                            newItem?.dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-
-                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                            item.updateBitmapByMode(
+                                it.toBase64Data(),
+                                CanvasConstant.DATA_MODE_BLACK_WHITE,
+                                renderer
+                            )
                         }
                     }
                 }
@@ -192,15 +203,12 @@ object CanvasBitmapHandler {
     fun handleDithering(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
+        val originBitmap = item.originBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT)
@@ -212,26 +220,36 @@ object CanvasBitmapHandler {
                 } else {
                     owner.loadingAsync({
                         originBitmap.let { bitmap ->
+                            item.dataBean.inverse = getBooleanOrDef(
+                                CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
+                                item.dataBean.inverse
+                            )
+
+                            item.dataBean.contrast = getFloatOrDef(
+                                CanvasRegulatePopupConfig.KEY_CONTRAST,
+                                item.dataBean.contrast
+                            )
+
+                            item.dataBean.brightness = getFloatOrDef(
+                                CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
+                                item.dataBean.brightness
+                            )
+
                             OpenCV.bitmapToDithering(
                                 context,
                                 bitmap,
-                                getBooleanOrDef(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, false),
-                                getFloatOrDef(
-                                    CanvasRegulatePopupConfig.KEY_CONTRAST,
-                                    0f
-                                ).toDouble(),
-                                getFloatOrDef(
-                                    CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
-                                    0f
-                                ).toDouble(),
+                                item.dataBean.inverse,
+                                item.dataBean.contrast.toDouble(),
+                                item.dataBean.brightness.toDouble(),
                             )
                         }
                     }) {
                         it?.let {
-                            newItem = PictureBitmapItem(originBitmap, it)
-                            newItem?.dataMode = CanvasConstant.DATA_MODE_DITHERING
-
-                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                            item.updateBitmapByMode(
+                                it.toBase64Data(),
+                                CanvasConstant.DATA_MODE_DITHERING,
+                                renderer
+                            )
                         }
                     }
                 }
@@ -243,14 +261,11 @@ object CanvasBitmapHandler {
     fun handleGrey(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>
+        renderer: DataItemRenderer
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
+        val originBitmap = item.originBitmap!!
 
         owner.loadingAsync({
             originBitmap.let { bitmap ->
@@ -258,10 +273,11 @@ object CanvasBitmapHandler {
             }
         }) {
             it?.let {
-                newItem = PictureBitmapItem(originBitmap, it)
-                newItem?.dataMode = CanvasConstant.DATA_MODE_GREY
-
-                renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                item.updateBitmapByMode(
+                    it.toBase64Data(),
+                    CanvasConstant.DATA_MODE_GREY,
+                    renderer
+                )
             }
         }
     }
@@ -270,15 +286,12 @@ object CanvasBitmapHandler {
     fun handleSeal(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
-
-        var newItem: PictureBitmapItem? = null
+        val originBitmap = item.originBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD)
@@ -287,19 +300,24 @@ object CanvasBitmapHandler {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
+                        item.dataBean.sealThreshold = getIntOrDef(
+                            CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD,
+                            item.dataBean.sealThreshold.toInt()
+                        ).toFloat()
                         originBitmap.let { bitmap ->
                             OpenCV.bitmapToSeal(
                                 context,
                                 bitmap,
-                                getIntOrDef(CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD, 240)
+                                item.dataBean.sealThreshold.toInt()
                             )
                         }
                     }) {
                         it?.let {
-                            newItem = PictureBitmapItem(originBitmap, it)
-                            newItem?.dataMode = CanvasConstant.DATA_MODE_SEAL
-
-                            renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                            item.updateBitmapByMode(
+                                it.toBase64Data(),
+                                CanvasConstant.DATA_MODE_SEAL,
+                                renderer
+                            )
                         }
                     }
                 }
@@ -311,15 +329,13 @@ object CanvasBitmapHandler {
     fun handleCrop(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: PictureItemRenderer<PictureBitmapItem>,
+        renderer: DataItemRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        val item = renderer.getRendererRenderItem() ?: return
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
         val originBitmap = item.originBitmap
-        val beforeBounds = RectF(renderer.getBounds())
 
-        var newItem: PictureBitmapItem? = null
         anchor.context.cropDialog {
             cropBitmap = originBitmap
             onDismissListener = {
@@ -328,10 +344,11 @@ object CanvasBitmapHandler {
 
             onCropResultAction = {
                 it?.let {
-                    newItem = PictureBitmapItem(originBitmap, it)
-                    newItem?.dataMode = CanvasConstant.DATA_MODE_GREY
-
-                    renderer.updateRendererItem(newItem!!, beforeBounds, Strategy.normal)
+                    item.updateBitmapByMode(
+                        it.toBase64Data(),
+                        CanvasConstant.DATA_MODE_GREY,
+                        renderer
+                    )
                 }
             }
         }

@@ -2,8 +2,9 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.angcyo.canvas.graphics.addBitmapRender
 import com.angcyo.canvas.laser.pecker.R
-import com.angcyo.canvas.utils.addPictureBitmapRenderer
+import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.component.getPhoto
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -39,23 +40,28 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                 if (isDebugType() && Library.CLICK_COUNT++ % 2 == 0) {
                     it.context.dslSinglePickerImage(this) {
                         it?.firstOrNull()?.let { media ->
-                            media.loadPath()?.apply {
-                                //canvasView.addDrawableRenderer(toBitmap())
-                                //canvasView.addBitmapRenderer(toBitmap())
-                                itemCanvasDelegate?.addPictureBitmapRenderer(toBitmap()!!)
-                            }
+                            itemFragment?.loadingAsync({
+                                media.loadPath()?.apply {
+                                    //canvasView.addDrawableRenderer(toBitmap())
+                                    //canvasView.addBitmapRenderer(toBitmap())
+                                    itemCanvasDelegate?.addBitmapRender(toBitmap())
+                                }
+                            })
                         }
                     }
                 } else {
-                    it.context.getPhoto(this) {
-                        val path = libCacheFile(fileNameUUID(".png")).absolutePath
-                        it?.save(path)
-                        val newPath = path.luban()
-                        L.i("${path}->${newPath}")
+                    it.context.getPhoto(this) { bitmap ->
+                        bitmap?.let {
+                            itemFragment?.loadingAsync({
+                                val path = libCacheFile(fileNameUUID(".png")).absolutePath
+                                bitmap.save(path)
+                                val newPath = path.luban()
+                                L.i("${path}->${newPath}")
 
-                        //压缩后
-                        newPath.toBitmap()
-                            ?.let { itemCanvasDelegate?.addPictureBitmapRenderer(it) }
+                                //压缩后
+                                itemCanvasDelegate?.addBitmapRender(newPath.toBitmap())
+                            })
+                        }
                     }
                 }
             }

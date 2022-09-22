@@ -3,16 +3,24 @@ package com.angcyo.canvas.laser.pecker
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.net.Uri
 import androidx.activity.result.ActivityResultCaller
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.data.CanvasDataBean
+import com.angcyo.canvas.data.ItemDataBean
+import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loading2
 import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
+import com.angcyo.http.base.fromJson
+import com.angcyo.http.base.listType
 import com.angcyo.library.L
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.readString
 import com.angcyo.library.ex.setBgDrawable
 import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.toastQQ
@@ -102,4 +110,32 @@ fun Context.strokeLoading2(
     }
 
     return dialog
+}
+
+//---打开文件---
+
+/**异步加载, 带ui*/
+fun CanvasDelegate.openFile(owner: LifecycleOwner, uri: Uri) {
+    owner.loadingAsync({
+        uri.readString()?.let { data ->
+            openFile(data)
+        }
+    })
+}
+
+/**异步加载, 带ui*/
+fun CanvasDelegate.openFile(owner: LifecycleOwner, data: String) {
+    owner.loadingAsync({
+        openFile(data)
+    })
+}
+
+/**直接加载*/
+fun CanvasDelegate.openFile(data: String) {
+    val bean = data.fromJson<CanvasDataBean>()
+    bean?.data?.fromJson<List<ItemDataBean>>(listType(ItemDataBean::class.java))?.let { items ->
+        items.forEach { itemData ->
+            GraphicsHelper.renderItemData(this, itemData)
+        }
+    }
 }

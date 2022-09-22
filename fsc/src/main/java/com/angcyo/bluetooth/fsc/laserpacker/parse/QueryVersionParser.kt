@@ -19,10 +19,12 @@ data class QueryVersionParser(
     //3000 - 3199为内部测试版本
     //3200 - 3299 PC端调试版
     //3300 - 3399 为用户测试版
+    //例如:370
     var softwareVersion: Int = 0,
     //硬件版号前3字节表示生产日期，最后字节为版本号。
     //L1硬件版本19050800 ，190508 表示版本生成日期 00表示V0.0版
     //L1P硬件版本19111110 ，191111表示版本生成日期 10表示V1.0版
+    //例如:20061830
     var hardwareVersion: Int = 0,
     var custom: Int = -1,
     var state: Int = 0,

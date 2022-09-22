@@ -17,17 +17,11 @@ import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
-import com.angcyo.canvas.items.PictureSharpItem
-import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
+import com.angcyo.canvas.items.renderer.*
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.drawCanvasRight
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderCommonEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItems
-import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
-import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
@@ -498,22 +492,10 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
 
-            if (itemRenderer is PictureTextItemRenderer) {
-                //选中TextItemRenderer时的控制菜单
-                renderTextEditItems(itemRenderer)
-            } else if (itemRenderer is PictureItemRenderer) {
-                val renderItem = itemRenderer.rendererItem
-                if (renderItem is PictureShapeItem || renderItem is PictureSharpItem) {
-                    //shape or sharp
-                    renderShapeEditItems(itemRenderer)
-                } else if (renderItem is PictureBitmapItem) {
-                    renderImageEditItems(
-                        fragment,
-                        itemRenderer as PictureItemRenderer<PictureBitmapItem>
-                    )
-                } else {
-                    //vh.showControlLayout(false)
-                    result = false
+            if (itemRenderer is DataItemRenderer) {
+                val dataBean = itemRenderer.rendererItem?.dataBean
+                when (dataBean?.mtype) {
+                    CanvasConstant.DATA_TYPE_BITMAP -> renderImageEditItems(fragment, itemRenderer)
                 }
             } else if (itemRenderer is SelectGroupRenderer) {
                 renderGroupEditItems(itemRenderer)
