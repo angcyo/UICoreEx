@@ -1,7 +1,6 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
-import com.angcyo.canvas.data.toAlignString
 import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.renderer.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
@@ -50,8 +49,7 @@ class TextAlignItem : CanvasControlItem2() {
                 itemIsSelected = renderer.paint.textAlign == itemAlign
             }
         } else if (renderer is DataItemRenderer) {
-            itemIsSelected =
-                renderer.getRendererRenderItem()?.dataBean?.textAlign == itemAlign.toAlignString()
+            itemIsSelected = renderer.dataTextItem?.textPaint?.textAlign == itemAlign
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
