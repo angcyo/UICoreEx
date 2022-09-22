@@ -115,27 +115,27 @@ fun Context.strokeLoading2(
 //---打开文件---
 
 /**异步加载, 带ui*/
-fun CanvasDelegate.openFile(owner: LifecycleOwner, uri: Uri) {
+fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, uri: Uri) {
     owner.loadingAsync({
         uri.readString()?.let { data ->
-            openFile(data)
+            openCanvasFile(data)
         }
     })
 }
 
 /**异步加载, 带ui*/
-fun CanvasDelegate.openFile(owner: LifecycleOwner, data: String) {
+fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, data: String) {
     owner.loadingAsync({
-        openFile(data)
+        openCanvasFile(data)
     })
 }
 
 /**直接加载*/
-fun CanvasDelegate.openFile(data: String) {
+fun CanvasDelegate.openCanvasFile(data: String) {
     val bean = data.fromJson<CanvasDataBean>()
     bean?.data?.fromJson<List<ItemDataBean>>(listType(ItemDataBean::class.java))?.let { items ->
         items.forEach { itemData ->
-            GraphicsHelper.renderItemData(this, itemData)
+            GraphicsHelper.renderItemData(this, itemData, false)
         }
     }
 }

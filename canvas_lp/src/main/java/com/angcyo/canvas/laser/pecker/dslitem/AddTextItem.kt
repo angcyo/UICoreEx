@@ -2,17 +2,16 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.graphics.addBarTextRender
+import com.angcyo.canvas.graphics.addQRTextRender
+import com.angcyo.canvas.graphics.addTextRender
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addTextDialog
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.addPictureBitmapRenderer
-import com.angcyo.canvas.utils.addPictureTextRender
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
-import com.angcyo.qrcode.createBarCode
-import com.angcyo.qrcode.createQRCode
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -123,23 +122,13 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
                 onAddTextAction = { inputText, type ->
                     when (type) {
                         CanvasConstant.DATA_TYPE_QRCODE -> {
-                            inputText.createQRCode()?.let {
-                                itemCanvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                    dataType = CanvasConstant.DATA_TYPE_QRCODE
-                                    data = inputText
-                                }
-                            }
+                            itemCanvasDelegate?.addQRTextRender(inputText)
                         }
                         CanvasConstant.DATA_TYPE_BARCODE -> {
-                            inputText.createBarCode()?.let {
-                                itemCanvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                    dataType = CanvasConstant.DATA_TYPE_BARCODE
-                                    data = inputText
-                                }
-                            }
+                            itemCanvasDelegate?.addBarTextRender(inputText)
                         }
                         else -> {
-                            itemCanvasDelegate?.addPictureTextRender("$inputText")
+                            itemCanvasDelegate?.addTextRender(inputText)
                             UMEvent.CANVAS_TEXT.umengEventValue()
                         }
                     }

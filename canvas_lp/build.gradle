@@ -4,7 +4,6 @@ dependencies {
     implementation project(allModule.dslitem)
     implementation project(allModule.dialog)
     implementation project(allModule.engrave)
-    implementation project(allModule.qrcode)
     implementation project(allModule.component)
 
     //涂鸦
