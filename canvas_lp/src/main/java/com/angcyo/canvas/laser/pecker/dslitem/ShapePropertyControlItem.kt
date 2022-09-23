@@ -138,7 +138,6 @@ class ShapePropertyControlItem : DslAdapterItem() {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@ShapePropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
-                removeKeyboardStyle(STYLE_DECIMAL)
                 onNumberResultAction = { number ->
                     val size = clamp(
                         valueUit.convertValueToPixel(number),
