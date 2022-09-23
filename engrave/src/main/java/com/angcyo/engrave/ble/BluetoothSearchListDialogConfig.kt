@@ -84,7 +84,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                 //监听蓝牙设备发现
                 bleDeviceData.observe(this@BluetoothSearchListDialogConfig) { device ->
                     device?.let {
-                        render {
+                        render(false) {
 
                             //移除旧的item
 
