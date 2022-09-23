@@ -15,7 +15,7 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.graphics.addLineRender
+import com.angcyo.canvas.graphics.*
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.data.DataItemRenderer
@@ -44,7 +44,6 @@ import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
-import com.pixplicity.sharp.Sharp
 import com.pixplicity.sharp.SharpDrawable
 
 /**
@@ -537,29 +536,37 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_oval_ico
                 itemText = _string(R.string.canvas_oval)
-                shapePath = ShapesHelper.circlePath()
+                itemClick = {
+                    canvasView.canvasDelegate.addOvalRender()
+                }
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_rectangle_ico
                 itemText = _string(R.string.canvas_rectangle)
-                shapePath = ShapesHelper.squarePath()
+                itemClick = {
+                    canvasView.canvasDelegate.addRectRender()
+                }
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_polygon_ico
                 itemText = _string(R.string.canvas_polygon)
-                shapePath = ShapesHelper.trianglePath()
+                itemClick = {
+                    canvasView.canvasDelegate.addPolygonRender()
+                }
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_pentagram_ico
                 itemText = _string(R.string.canvas_pentagram)
-                shapePath = ShapesHelper.pentagramPath()
+                itemClick = {
+                    canvasView.canvasDelegate.addPentagramRender()
+                }
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_love_ico
                 itemText = _string(R.string.canvas_love)
-                //shapePath = ShapesHelper.lovePath()
-                shapePath =
-                    Sharp.loadPath("M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402")
+                itemClick = {
+                    canvasView.canvasDelegate.addLoveRender()
+                }
             }
         }
     }
