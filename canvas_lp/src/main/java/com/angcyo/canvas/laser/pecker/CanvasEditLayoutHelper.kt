@@ -367,7 +367,7 @@ object CanvasEditLayoutHelper {
     }
 
     fun DslAdapterItem.drawCanvasRight(
-        insertRight: Int = _dimen(R.dimen.lib_line_px),
+        insertRight: Int = _dimen(R.dimen.lib_line),
         offsetTop: Int = _dimen(R.dimen.lib_drawable_padding),
         offsetBottom: Int = _dimen(R.dimen.lib_drawable_padding),
         color: Int = _color(R.color.canvas_dark_gray)
