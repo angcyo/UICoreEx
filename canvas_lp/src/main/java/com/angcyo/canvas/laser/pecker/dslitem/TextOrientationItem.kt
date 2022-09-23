@@ -2,7 +2,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.widget.LinearLayout
 import com.angcyo.canvas.items.PictureTextItem
-import com.angcyo.canvas.items.renderer.DataItemRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.dsladapter.DslAdapterItem

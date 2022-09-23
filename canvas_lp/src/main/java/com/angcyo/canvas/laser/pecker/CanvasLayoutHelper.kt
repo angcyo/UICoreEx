@@ -15,9 +15,14 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.graphics.addLineRender
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
-import com.angcyo.canvas.items.renderer.*
+import com.angcyo.canvas.items.data.DataItemRenderer
+import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.drawCanvasRight
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderCommonEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItems
@@ -136,7 +141,12 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemEnable = true
 
                 itemClick = {
+                    updateItemSelected(!itemIsSelected)
                     fragment.context.canvasMaterialWindow(it) {
+                        onDismiss = {
+                            updateItemSelected(false)
+                            false
+                        }
                         onDrawableAction = { data, drawable ->
                             when (drawable) {
                                 is BitmapDrawable -> {
@@ -520,7 +530,9 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_line_ico
                 itemText = _string(R.string.canvas_line)
-                shapePath = ShapesHelper.linePath()
+                itemClick = {
+                    canvasView.canvasDelegate.addLineRender()
+                }
             }
             ShapeItem(canvasView)() {
                 itemIco = R.drawable.canvas_shape_oval_ico

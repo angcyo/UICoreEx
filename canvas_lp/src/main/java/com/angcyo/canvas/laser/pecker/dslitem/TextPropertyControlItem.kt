@@ -3,7 +3,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.widget.TextView
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.data.toPixel
-import com.angcyo.canvas.items.renderer.DataItemRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow

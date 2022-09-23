@@ -1,6 +1,6 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
-import com.angcyo.canvas.items.renderer.DataItemRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._string

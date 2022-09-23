@@ -2,7 +2,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.data.textStyle
 import com.angcyo.canvas.items.PictureTextItem
-import com.angcyo.canvas.items.renderer.DataItemRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.PictureItemRenderer
 import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.R
