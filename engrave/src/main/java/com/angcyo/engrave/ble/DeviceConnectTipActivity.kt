@@ -28,6 +28,11 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
             name == LaserPeckerHelper.LI || name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true -> R.mipmap.device_l1
             else -> R.mipmap.device_l1
         }
+
+        /**格式化蓝牙名称*/
+        fun formatDeviceName(name: String?): String? {
+            return name
+        }
     }
 
     init {

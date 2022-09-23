@@ -6,11 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/layout_canvas_device_tip" />
+
     <com.angcyo.canvas.CanvasView
         android:id="@+id/canvas_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1" />
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/device_tip_wrap_layout" />
 
     <LinearLayout
         android:id="@+id/canvas_device_state_wrap_layout"

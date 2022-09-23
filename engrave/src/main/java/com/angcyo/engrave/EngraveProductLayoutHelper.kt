@@ -2,13 +2,17 @@ package com.angcyo.engrave
 
 import android.graphics.Color
 import android.view.ViewGroup
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
+import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
+import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.component.StateLayoutInfo
@@ -17,6 +21,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.alphaRatio
 import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.removeFromParent
+import com.angcyo.library.toast
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
@@ -101,12 +106,14 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                 }
 
                 //有设备连接
-                stateLayoutManager.removeState(connectStateInfo)
+                //stateLayoutManager.removeState(connectStateInfo)
+                showDeviceTip(viewHolder)
             }.elseNull {
                 dangerWarningView?.removeFromParent()
 
                 //无设备连接
-                stateLayoutManager.updateState(connectStateInfo)
+                //stateLayoutManager.updateState(connectStateInfo)
+                showDeviceTip(viewHolder)
             }
         }
 
@@ -189,6 +196,34 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         dangerWarningView?.firstDrawable<DangerWarningDrawable>()?.warnColor = color
         if (dangerWarningView?.parent == null) {
             rootLayout.addView(dangerWarningView, -1, -1)
+        }
+    }
+
+    /**显示连接的提示*/
+    fun showDeviceTip(viewHolder: DslViewHolder) {
+        if (laserPeckerModel.deviceStateData.value == null) {
+            //无设备连接
+            viewHolder.img(R.id.device_image_view)
+                ?.setImageResource(R.drawable.canvas_device_warn_svg)
+            viewHolder.tv(R.id.device_name_view)?.text = _string(R.string.blue_no_device_connected)
+        } else {
+            val name =
+                DeviceConnectTipActivity.formatDeviceName(laserPeckerModel.productInfoData.value?.deviceName)
+            viewHolder.img(R.id.device_image_view)
+                ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(name))
+            viewHolder.tv(R.id.device_name_view)?.text = name
+        }
+        //显示蓝牙界面
+        viewHolder.click(R.id.device_tip_wrap_layout) {
+            fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                if (allGranted) {
+                    fragment.fContext().bluetoothSearchListDialog {
+                        connectedDismiss = true
+                    }
+                } else {
+                    toast("cancel")
+                }
+            }
         }
     }
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/device_tip_wrap_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/lib_bg_selector"
+    android:minWidth="@dimen/lib_min_item_height"
+    android:paddingHorizontal="@dimen/lib_xhdpi"
+    android:paddingVertical="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/device_image_view"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/canvas_device_warn_svg" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/device_name_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:text="@string/blue_no_device_connected"
+        app:layout_constraintBottom_toBottomOf="@id/device_image_view"
+        app:layout_constraintLeft_toRightOf="@id/device_image_view"
+        app:layout_constraintTop_toTopOf="@id/device_image_view" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/lib_next" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
