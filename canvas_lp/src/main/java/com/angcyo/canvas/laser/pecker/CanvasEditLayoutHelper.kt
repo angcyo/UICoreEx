@@ -6,10 +6,10 @@ import android.widget.LinearLayout
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.DslAdapter
@@ -204,29 +204,44 @@ object CanvasEditLayoutHelper {
 
     //region ---形状---
 
-    fun DslAdapter.renderShapeEditItems(renderer: PictureItemRenderer<*>) {
+    fun DslAdapter.renderShapeEditItems(renderer: DataItemRenderer) {
+        val type = renderer.dataItem?.dataBean?.mtype
+        if (type == CanvasConstant.DATA_TYPE_RECT ||
+            type == CanvasConstant.DATA_TYPE_POLYGON ||
+            type == CanvasConstant.DATA_TYPE_PENTAGRAM
+        ) {
+            //多边形/星星
+            //属性调整
+            ShapePropertyControlItem()() {
+                itemRenderer = renderer
+            }
+        }
+
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_style_stroke_ico
             itemText = _string(R.string.canvas_stroke)
             itemClick = {
-                renderer.updatePaintStyle(Paint.Style.STROKE)
+                renderer.dataItem?.updatePaintStyle(Paint.Style.STROKE, renderer)
             }
         }
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_style_fill_ico
             itemText = _string(R.string.canvas_fill)
+            drawCanvasRight()
             itemClick = {
-                renderer.updatePaintStyle(Paint.Style.FILL)
+                renderer.dataItem?.updatePaintStyle(Paint.Style.FILL, renderer)
             }
         }
+        /*//有切割图层之后, 就不能出现这个了
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_style_stroke_fill_ico
             itemText = _string(R.string.canvas_fill_stroke)
             itemClick = {
-                renderer.updatePaintStyle(Paint.Style.FILL_AND_STROKE)
+                renderer.dataItem?.updatePaintStyle(Paint.Style.FILL_AND_STROKE, renderer)
             }
-        }
+        }*/
     }
+
     //endregion ---形状---
 
     //region ---Path---

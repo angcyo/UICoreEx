@@ -27,6 +27,7 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.drawCanvasRight
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderCommonEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItems
+import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.*
@@ -507,6 +508,12 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 when (dataBean?.mtype) {
                     CanvasConstant.DATA_TYPE_BITMAP -> renderImageEditItems(fragment, itemRenderer)
                     CanvasConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
+                    CanvasConstant.DATA_TYPE_LINE,
+                    CanvasConstant.DATA_TYPE_OVAL,
+                    CanvasConstant.DATA_TYPE_RECT,
+                    CanvasConstant.DATA_TYPE_POLYGON,
+                    CanvasConstant.DATA_TYPE_PENTAGRAM,
+                    CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(itemRenderer)
                 }
             } else if (itemRenderer is SelectGroupRenderer) {
                 renderGroupEditItems(itemRenderer)

@@ -76,6 +76,7 @@ class CanvasEditControlItem : DslAdapterItem() {
 
             //如果是线, 只支持调整宽度
             itemHolder.enable(R.id.item_height_view, !renderer.isLineShape())
+            itemHolder.enable(R.id.item_lock_view, !renderer.isLineShape())
 
             //xy坐标
             _tempPoint.set(renderRotateBounds.left, renderRotateBounds.top)

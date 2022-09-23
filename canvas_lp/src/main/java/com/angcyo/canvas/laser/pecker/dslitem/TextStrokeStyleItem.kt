@@ -33,7 +33,7 @@ class TextStrokeStyleItem : CanvasControlItem2() {
                         renderer.updatePaintStyle(itemStyle)
                     }
                 } else if (renderer is DataItemRenderer) {
-                    renderer.dataTextItem?.updatePaintStyle(itemStyle, renderer)
+                    renderer.dataItem?.updatePaintStyle(itemStyle, renderer)
                 }
                 updateAdapterItem()
             }
