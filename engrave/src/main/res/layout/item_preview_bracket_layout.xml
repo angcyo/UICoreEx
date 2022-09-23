@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/lib_xhdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/bracket_height_label_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/bracket_height_label"
+        app:layout_constraintBottom_toBottomOf="@id/bracket_height_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bracket_height_view" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/bracket_height_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_marginRight="@dimen/lib_xhdpi"
+        android:layout_weight="1"
+        android:background="@drawable/lib_bottom_line_selector"
+        android:gravity="center"
+        android:minHeight="@dimen/lib_min_item_height"
+        app:layout_constraintLeft_toRightOf="@id/bracket_height_label_view"
+        app:layout_constraintRight_toLeftOf="@id/unit_label_view"
+        tools:text="1" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_label_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="inch"
+        app:layout_constraintBottom_toBottomOf="@id/bracket_height_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bracket_height_view" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bracket_up_view"
+        style="@style/LibTitleIcoStyle"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/lib_xhdpi"
+        android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/bracket_down_view"
+        app:layout_constraintTop_toBottomOf="@id/bracket_height_view"
+        app:srcCompat="@drawable/dialog_back_svg" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bracket_down_view"
+        style="@style/LibTitleIcoStyle"
+        android:layout_width="0dp"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/bracket_up_view"
+        app:layout_constraintRight_toLeftOf="@id/bracket_stop_view"
+        app:layout_constraintTop_toTopOf="@id/bracket_up_view"
+        app:srcCompat="@drawable/dialog_back_svg" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bracket_stop_view"
+        style="@style/LibTitleIcoStyle"
+        android:layout_width="0dp"
+        android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/bracket_down_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bracket_up_view"
+        app:srcCompat="@drawable/dialog_back_svg" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

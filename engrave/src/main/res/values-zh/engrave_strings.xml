@@ -122,4 +122,7 @@
     <string name="device_not_found_des">请确保你的机器在待连接状态</string>
     <string name="contact_me">联系客服</string>
 
+    <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
+    <string name="bracket_height_label">升降高度</string>
+
 </resources>
