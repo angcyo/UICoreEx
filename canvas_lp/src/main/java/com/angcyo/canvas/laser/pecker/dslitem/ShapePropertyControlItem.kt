@@ -13,6 +13,7 @@ import com.angcyo.item.keyboard.NumberKeyboardPopupConfig.Companion.STYLE_DECIMA
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.dp
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -29,13 +30,12 @@ class ShapePropertyControlItem : DslAdapterItem() {
         const val SHAPE_MIN_SIDE = 3
         const val SHAPE_MAX_SIDE = 50
 
-        /**最小/最大的圆角
-         * [com.angcyo.canvas.data.ItemDataBean.side]*/
+        /**最小/最大的圆角像素*/
         @Pixel
-        val SHAPE_MIN_CORNER = 0f
+        const val SHAPE_MIN_CORNER = 0f
 
         @Pixel
-        val SHAPE_MAX_CORNER = 50f.toPixel()
+        val SHAPE_MAX_CORNER = 50 * dp
     }
 
     var itemRenderer: IRenderer? = null
@@ -58,9 +58,10 @@ class ShapePropertyControlItem : DslAdapterItem() {
             itemHolder.tv(R.id.item_side_count_view)?.text = "${dataItem?.dataBean?.side ?: 3}"
             itemHolder.tv(R.id.item_depth_view)?.text = "${dataItem?.dataBean?.depth ?: 40}"
             //
+            val valueUit = renderer.canvasViewBox.valueUnit
             val cornerPixel = dataItem?.dataBean?.rx?.toPixel() ?: 0f
             itemHolder.tv(R.id.item_corner_view)?.text =
-                renderer.canvasViewBox.valueUnit.convertPixelToValue(cornerPixel).canvasDecimal(2)
+                valueUit.convertPixelToValue(cornerPixel).canvasDecimal(2)
 
             //边数
             if (renderer.dataItem?.dataBean?.mtype == CanvasConstant.DATA_TYPE_POLYGON ||
@@ -132,14 +133,18 @@ class ShapePropertyControlItem : DslAdapterItem() {
 
     /**圆角*/
     fun bindCorner(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
-        val canvasViewBox = renderer.canvasViewBox
+        val valueUit = renderer.canvasViewBox.valueUnit
         itemHolder.click(R.id.item_corner_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@ShapePropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
+                removeKeyboardStyle(STYLE_DECIMAL)
                 onNumberResultAction = { number ->
-                    val sizePixel = canvasViewBox.valueUnit.convertValueToPixel(number)
-                    val size = clamp(sizePixel, SHAPE_MIN_CORNER, SHAPE_MAX_CORNER) //pixel
+                    val size = clamp(
+                        valueUit.convertValueToPixel(number),
+                        SHAPE_MIN_CORNER,
+                        SHAPE_MAX_CORNER
+                    ) //pixel
                     renderer.dataShapeItem?.updateCorner(size, renderer)
                 }
             }

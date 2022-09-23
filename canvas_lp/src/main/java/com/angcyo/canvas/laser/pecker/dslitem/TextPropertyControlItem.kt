@@ -53,10 +53,16 @@ class TextPropertyControlItem : DslAdapterItem() {
             val dataItem = renderer.getRendererRenderItem()
             itemHolder.tv(R.id.item_paint_size_view)?.text =
                 itemPointValueUnit.convertPixelToValueUnit(dataItem?.dataBean?.fontSize.toPixel())
+
+            val valueUit = renderer.canvasViewBox.valueUnit
             itemHolder.tv(R.id.item_word_space_view)?.text =
-                dataItem?.dataBean?.charSpacing.toPixel().canvasDecimal(2)
+                valueUit.convertPixelToValue(dataItem?.dataBean?.charSpacing.toPixel())
+                    .canvasDecimal(2)
+            //dataItem?.dataBean?.charSpacing.toPixel().canvasDecimal(2)
             itemHolder.tv(R.id.item_line_space_view)?.text =
-                dataItem?.dataBean?.lineSpacing.toPixel().canvasDecimal(2)
+                valueUit.convertPixelToValue(dataItem?.dataBean?.lineSpacing.toPixel())
+                    .canvasDecimal(2)
+            //dataItem?.dataBean?.lineSpacing.toPixel().canvasDecimal(2)
 
             bindPaintSize(itemHolder, renderer)
             bindWordSpace(itemHolder, renderer)
@@ -85,12 +91,13 @@ class TextPropertyControlItem : DslAdapterItem() {
 
     /**字间距*/
     fun bindWordSpace(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
+        val valueUit = renderer.canvasViewBox.valueUnit
         itemHolder.click(R.id.item_word_space_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(number, TEXT_MAX_SIZE)
+                    val size = min(valueUit.convertValueToPixel(number), TEXT_MAX_SIZE)
                     renderer.dataTextItem?.updateTextWordSpacing(size, renderer)
                 }
             }
@@ -99,12 +106,13 @@ class TextPropertyControlItem : DslAdapterItem() {
 
     /**行间距*/
     fun bindLineSpace(itemHolder: DslViewHolder, renderer: DataItemRenderer) {
+        val valueUit = renderer.canvasViewBox.valueUnit
         itemHolder.click(R.id.item_line_space_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(number, TEXT_MAX_SIZE)
+                    val size = min(valueUit.convertValueToPixel(number), TEXT_MAX_SIZE)
                     renderer.dataTextItem?.updateTextLineSpacing(size, renderer)
                 }
             }
