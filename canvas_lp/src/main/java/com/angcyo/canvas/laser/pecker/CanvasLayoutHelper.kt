@@ -30,7 +30,9 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
-import com.angcyo.canvas.utils.*
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
@@ -129,11 +131,12 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         adapter.render {
             hookUpdateDepend()
             //
+            val canvasDelegate = canvasView.canvasDelegate
             AddImageItem()() {
-                itemCanvasDelegate = canvasView.canvasDelegate
+                itemCanvasDelegate = canvasDelegate
             }
             AddTextItem()() {
-                itemCanvasDelegate = canvasView.canvasDelegate
+                itemCanvasDelegate = canvasDelegate
             }
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_material_ico
@@ -149,27 +152,15 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                         }
                         onDrawableAction = { data, drawable ->
                             when (drawable) {
-                                is BitmapDrawable -> {
-                                    //bitmap
-                                    canvasView.canvasDelegate.addPictureBitmapRenderer(drawable.bitmap)
-                                }
-                                is GCodeDrawable -> {
-                                    //gcode
-                                    canvasView.canvasDelegate.addPictureGCodeRenderer(
-                                        data as String,
-                                        drawable
-                                    )
-                                }
-                                is SharpDrawable -> {
-                                    //svg
-                                    canvasView.canvasDelegate.addPictureSharpRenderer(
-                                        data as String,
-                                        drawable
-                                    )
-                                }
+                                //bitmap
+                                is BitmapDrawable -> canvasDelegate.addBitmapRender(drawable.bitmap)
+                                //gcode
+                                is GCodeDrawable -> canvasDelegate.addGCodeRender(data as String)
+                                //svg
+                                is SharpDrawable -> canvasDelegate.addSvgRender(data as String)
+                                //other
                                 else -> {
-                                    //other
-                                    canvasView.canvasDelegate.addPictureDrawableRenderer(drawable)
+                                    canvasDelegate.addBitmapRender(drawable.toBitmap())
                                 }
                             }
                             UMEvent.CANVAS_MATERIAL.umengEventValue()
@@ -201,7 +192,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
                     fragment.context.doodleDialog {
                         onDoodleResultAction = {
-                            canvasView.canvasDelegate.addPictureBitmapRenderer(it)
+                            canvasDelegate.addPictureBitmapRenderer(it)
                         }
                     }
                 }
@@ -241,7 +232,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                     itemText = _string(R.string.canvas_operate)
                     itemEnable = true
                     itemClick = {
-                        canvasView.canvasDelegate.getSelectedRenderer()?.let { renderer ->
+                        canvasDelegate.getSelectedRenderer()?.let { renderer ->
                             if (renderer is PictureItemRenderer) {
                                 renderer.getRendererRenderItem()?.let { item ->
                                     if (item is PictureShapeItem) {
@@ -273,7 +264,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
                     if (itemIsSelected) {
                         it.context.canvasSettingWindow(it) {
-                            canvasDelegate = canvasView.canvasDelegate
+                            this.canvasDelegate = canvasDelegate
                             onDismiss = {
                                 itemIsSelected = false
                                 updateAdapterItem()
