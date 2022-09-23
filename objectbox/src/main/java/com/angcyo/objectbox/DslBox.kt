@@ -124,7 +124,7 @@ class DslBox {
                 try {
                     val boxStore: BoxStore = buildStore(context, _pName, storeBuilder)
                     boxStoreMap.put(_pName, boxStore)
-                    L.w("数据库:${BoxStore.getVersionNative()}" + " 路径:" + _pName + "->" + dbDirectory.absolutePath)
+                    L.w("数据库:${_dbName} ${BoxStore.getVersionNative()} 路径:${_pName} -> ${dbDirectory.absolutePath}")
                 } catch (e: DbException) {
                     //e.printStackTrace();
                     //io.objectbox.exception.DbException, 数据库初始化异常.一般是迁移导致的,改变了字段的数据类型
