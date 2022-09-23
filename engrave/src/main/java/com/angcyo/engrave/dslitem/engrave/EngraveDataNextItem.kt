@@ -1,23 +1,23 @@
-package com.angcyo.engrave.dslitem
+package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.item.DslButtonItem
 import com.angcyo.library.ex.ClickAction
-
 import com.angcyo.widget.DslViewHolder
 
 /**
- * 雕刻确定item
+ * 雕刻前, 下一步按钮item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/06/02
+ * @since 2022/07/02
  */
-class EngraveConfirmItem : DslAdapterItem() {
+class EngraveDataNextItem : DslButtonItem() {
 
-    /**雕刻回调*/
-    var engraveAction: ClickAction? = null
+    /**开始预览*/
+    var itemPreviewAction: ClickAction? = null
 
     init {
-        itemLayoutId = R.layout.item_engrave_confirm_layout
+        itemLayoutId = R.layout.item_engrave_data_next
     }
 
     override fun onItemBind(
@@ -28,8 +28,8 @@ class EngraveConfirmItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.throttleClick(R.id.lib_button) {
-            engraveAction?.invoke(it)
-        }
+        itemHolder.visible(R.id.lib_preview_button, itemPreviewAction != null)
+        itemHolder.click(R.id.lib_preview_button, itemPreviewAction)
     }
+
 }

@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.core.vmApp
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.pool.acquireTempRect
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -370,7 +371,7 @@ data class EngravePreviewCmd(
          * 返回:  AA BB 08 02 06 00 01 00 00 00 09
          *       AA BB 08 02 06 00 00 00 00 00 08
          * */
-        fun previewBracketUp(step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketUp(@MM step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x03 //0x01 //0x02
@@ -386,7 +387,7 @@ data class EngravePreviewCmd(
 
         /**支架降
          * [step] 步长1mm*/
-        fun previewBracketDown(step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketDown(@MM step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x02 //0x00 //0x03

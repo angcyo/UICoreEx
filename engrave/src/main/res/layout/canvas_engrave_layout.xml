@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/engrave_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,32 +20,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/canvas_top_round_shape">
+        android:background="@drawable/canvas_top_round_shape2">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/close_layout_view"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="@dimen/lib_xhdpi"
-            android:background="@drawable/lib_remove_circle_shape"
-            android:padding="6dp"
-            android:visibility="invisible"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:background="@drawable/lib_bg2_selector"
+            android:minHeight="@dimen/lib_icon_title_size"
+            android:paddingVertical="@dimen/lib_hdpi"
+            android:text="@string/ui_quit"
+            app:drawableLeftCompat="@drawable/lib_arrow_left_svg"
+            app:layout_constraintBottom_toBottomOf="@id/lib_title_view"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/lib_iview_close"
-            app:tint="@color/lib_white"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@id/lib_title_view" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_title_view"
             style="@style/LibTitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="@dimen/lib_xhdpi"
             android:text="@string/print_setting"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/engrave_setting_view"
+            style="@style/LibTitleIcoStyle"
+            android:layout_marginRight="@dimen/lib_xhdpi"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/lib_title_view"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/lib_title_view"
+            app:srcCompat="@drawable/engrave_setting_svg" />
+
+        <!--阴影-->
+        <View
+            android:id="@+id/dialog_title_line_view"
+            style="@style/LibDialogTitleShadowStyle"
+            app:layout_constraintTop_toBottomOf="@id/lib_title_view" />
 
         <com.angcyo.widget.recycler.DslRecyclerView
             android:id="@+id/lib_recycler_view"
@@ -54,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lib_title_view"
+            app:layout_constraintTop_toBottomOf="@id/dialog_title_line_view"
             app:r_layout_manager="v" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

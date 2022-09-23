@@ -13,7 +13,7 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.engrave.ble.toZModeString
 import com.angcyo.engrave.data.PreviewBoundsInfo
-import com.angcyo.engrave.dslitem.EngraveOptionDiameterItem
+import com.angcyo.engrave.dslitem.engrave.EngraveOptionDiameterItem
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.ClickAction
@@ -141,7 +141,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 }
             }
         }
-        viewHolder?.v<TouchCompatImageView>(R.id.bracket_up_view)?.touchAction = { view, event ->
+        /*viewHolder?.v<TouchCompatImageView>(R.id.bracket_up_view)?.touchAction = { view, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 view.disableParentInterceptTouchEvent()
                 view.longFeedback()
@@ -167,16 +167,15 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 bracketStopCmd()
             }
         }
+        //click
+        viewHolder?.click(R.id.bracket_stop_view) {
+            bracketStopCmd()
+        }*/
         //物理尺寸
         val rOpen = laserPeckerModel.isROpen()
         viewHolder?.visible(R.id.diameter_wrap_layout, rOpen)
         if (rOpen) {
             engraveOptionDiameterItem.bindInRootView(viewHolder?.view(R.id.diameter_wrap_layout))
-        }
-
-        //click
-        viewHolder?.click(R.id.bracket_stop_view) {
-            bracketStopCmd()
         }
         viewHolder?.throttleClick(R.id.close_layout_view) {
             hide()
