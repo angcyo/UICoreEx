@@ -135,7 +135,7 @@ fun CanvasDelegate.openCanvasFile(data: String) {
     val bean = data.fromJson<CanvasDataBean>()
     bean?.data?.fromJson<List<ItemDataBean>>(listType(ItemDataBean::class.java))?.let { items ->
         items.forEach { itemData ->
-            GraphicsHelper.renderItemData(this, itemData, false)
+            GraphicsHelper.renderItemDataBean(this, itemData, false)
         }
     }
 }
