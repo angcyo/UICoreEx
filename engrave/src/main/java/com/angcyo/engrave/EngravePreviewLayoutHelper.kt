@@ -2,9 +2,8 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.queryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.dsladapter.renderLineItem
-import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.dslitem.engrave.EngraveOptionDiameterItem
 import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
 import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
@@ -12,9 +11,11 @@ import com.angcyo.engrave.dslitem.preview.PreviewControlItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.item.DslBlackButtonItem
+import com.angcyo.item.DslLineItem
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -24,14 +25,6 @@ import com.hingin.umeng.umengEventValue
  * @since 2022/06/01
  */
 class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngraveLayoutHelper() {
-
-    /**强制指定预览信息, 用于历史文档数据
-     *
-     * 预览的范围, 如果为null. 则从[canvasDelegate]中获取
-     *
-     * 如果需要实时更新预览,可以调用[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
-     * */
-    var previewBoundsInfo: PreviewBoundsInfo? = null
 
     /**下一步回调*/
     var onNextAction: ClickAction? = null
@@ -48,8 +41,10 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     @CallPoint
     fun bindDeviceState() {
         //模式改变监听, 改变按钮的文本
-        /*laserPeckerModel.deviceStateData.observe(this) {
+        laserPeckerModel.deviceStateData.observe(this) {
+            _dslAdapter?.updateAllItem()
 
+/*
             //雕刻模式提示
             viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())
             if (laserPeckerModel.isZOpen()) {
@@ -97,8 +92,8 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 }
             } else {
                 loopCheckDeviceState = false
-            }
-        }*/
+            }*/
+        }
     }
 
     override fun onIViewCreate() {
@@ -110,22 +105,15 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         super.onIViewShow()
         //init
 
-        renderDslAdapter {
-            //
-            PreviewTipItem()()
-            PreviewBrightnessItem()()
-            PreviewBracketItem()() {
-                itemValueUnit = CanvasConstant.valueUnit
-            }
-            renderLineItem()
-            PreviewControlItem()()
-            DslBlackButtonItem()() {
-                itemButtonText = _string(R.string.ui_next)
-            }
-        }
-
         //close按钮
         showCloseView()
+
+        if (laserPeckerModel.haveExDevice()) {
+            //如果有外置设备, 则需要先设置外置设备信息, 才能开始预览
+            renderPreviewItems()
+        } else {
+            renderPreviewItems()
+        }
 
         /*viewHolder?.v<DslSeekBar>(R.id.brightness_seek_bar)?.apply {
             setProgress((HawkKeys.lastPwrProgress * 100).toInt())
@@ -234,6 +222,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         //cmd
         //startPreviewCmd(canvasDelegate, true, false)
 
+
         //
         UMEvent.PREVIEW.umengEventValue()
     }
@@ -244,7 +233,32 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
             //关闭界面时, 如果在预览状态, 则退出预览
             ExitCmd().enqueue()
-            laserPeckerModel.queryDeviceState()
+            queryDeviceState()
+        }
+    }
+
+    /**渲染预览界面界面*/
+    fun renderPreviewItems() {
+        renderDslAdapter {
+            //
+            PreviewTipItem()()
+            PreviewBrightnessItem()()
+            if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+                //C1没有升降支架
+            } else {
+                PreviewBracketItem()() {
+                    itemValueUnit = CanvasConstant.valueUnit
+                }
+            }
+            DslLineItem()() {
+                itemHeight = 30 * dpi
+            }
+            PreviewControlItem()()
+            DslBlackButtonItem()() {
+                itemButtonText = _string(R.string.ui_next)
+            }
+            previewModel.startPreview(canvasDelegate, true, false)
+            queryDeviceState()
         }
     }
 }

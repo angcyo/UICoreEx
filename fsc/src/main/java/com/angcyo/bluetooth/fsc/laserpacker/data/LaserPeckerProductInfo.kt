@@ -6,6 +6,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 
 /**
  * 物理产品的一些配置信息
+ *
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
@@ -90,6 +93,11 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LIV]
      * */
     fun isLIV(): Boolean = isLIIIMax()
+
+    /**CI
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CI]
+     * */
+    fun isCI(): Boolean = name == LaserPeckerHelper.CI
 }
 
 

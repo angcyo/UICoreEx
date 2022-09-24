@@ -6,10 +6,9 @@ import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.HawkKeys
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.item.style.ITextItem
 import com.angcyo.item.style.TextItemConfig
@@ -77,7 +76,7 @@ class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
                 onNumberResultAction = { number ->
                     val value = CanvasConstant.valueUnit.convertValueToPixel(number)
                     itemEngraveOptionInfo?.diameterPixel = value
-                    HawkKeys.lastDiameterPixel = value
+                    HawkEngraveKeys.lastDiameterPixel = value
 
                     //通知item改变
                     itemChanging = true

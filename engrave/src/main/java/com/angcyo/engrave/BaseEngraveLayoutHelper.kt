@@ -6,6 +6,7 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex._drawable
@@ -26,6 +27,9 @@ abstract class BaseEngraveLayoutHelper : BaseRecyclerIView() {
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
+
+    //预览模式
+    val previewModel = vmApp<PreviewModel>()
 
     /**是否循环检测设备状态*/
     var loopCheckDeviceState: Boolean = false

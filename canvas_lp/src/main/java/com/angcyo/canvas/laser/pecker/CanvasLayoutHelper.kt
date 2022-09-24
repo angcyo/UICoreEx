@@ -37,7 +37,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave.EngraveHelper
+import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
@@ -366,7 +366,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 ) {
                     //设备正在预览模式, 更新预览
                     if (itemRenderer is BaseItemRenderer<*>) {
-                        EngraveHelper.sendPreviewRange(itemRenderer, false, true)
+                        vmApp<PreviewModel>().startPreview(canvasView.canvasDelegate, true, false)
                     }
                 }
             }
@@ -411,7 +411,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
                     //设备正在预览模式, 更新预览
                     if (itemRenderer is BaseItemRenderer<*>) {
-                        EngraveHelper.sendPreviewRange(itemRenderer, false, true)
+                        vmApp<PreviewModel>().startPreview(canvasView.canvasDelegate, true, false)
                     }
                 }
             }

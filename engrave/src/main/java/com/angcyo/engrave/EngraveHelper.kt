@@ -1,15 +1,12 @@
 package com.angcyo.engrave
 
-import androidx.annotation.MainThread
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
-import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.EngraveDataInfo
-import com.angcyo.engrave.data.HawkKeys
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.unit.MmValueUnit
@@ -96,47 +93,6 @@ object EngraveHelper {
             (mm * 100).toInt()
         }
         return diameter
-    }
-
-    /**发送预览范围指令
-     * [itemRenderer] 需要预览的*/
-    @MainThread
-    fun sendPreviewRange(
-        itemRenderer: BaseItemRenderer<*>,
-        updateState: Boolean,
-        async: Boolean,
-        zPause: Boolean = false
-    ) {
-        val laserPeckerModel = vmApp<LaserPeckerModel>()
-        val engraveModel = vmApp<EngraveModel>()
-
-        engraveModel.apply {
-            //先执行
-            updateEngravePreviewInfo {
-                itemUuid = itemRenderer.getRendererRenderItem()?.uuid
-
-                if (QuerySettingParser.USE_FOUR_POINTS_PREVIEW //开启了4点预览
-                    && !laserPeckerModel.haveExDevice() //没有外置设备连接
-                ) {
-                    rotate = itemRenderer.rotate
-                } else {
-                    rotate = null
-                }
-            }
-            //后执行
-            updateEngravePreviewUuid(itemRenderer.getRendererRenderItem()?.uuid)
-        }
-
-        val diameter = getDiameter()
-
-        laserPeckerModel.sendUpdatePreviewRange(
-            itemRenderer.getBounds(),
-            itemRenderer.getRotateBounds(),
-            itemRenderer.rotate,
-            HawkKeys.lastPwrProgress,
-            updateState, async, zPause,
-            diameter
-        )
     }
 
     //<editor-fold desc="material">
@@ -2613,8 +2569,8 @@ object EngraveHelper {
         //自定义, 自动记住了上一次的值
         val custom = MaterialEntity()
         custom.resId = R.string.material_custom
-        custom.power = HawkKeys.lastPower
-        custom.depth = HawkKeys.lastDepth
+        custom.power = HawkEngraveKeys.lastPower
+        custom.depth = HawkEngraveKeys.lastDepth
         result.add(0, custom)
         return result
     }

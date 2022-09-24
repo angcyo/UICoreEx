@@ -20,7 +20,7 @@
     <string name="preview_continue">继续预览</string>
     <string name="print_v2_package_preview_over">结束预览</string>
     <string name="laser_brightness">激光亮度</string>
-    <string name="print_v2_package_previewing">预览中…</string>
+    <string name="previewing">预览中…</string>
     <string name="print_setting">镭雕设置</string>
     <string name="print_v2_package_size_setting">文件设置</string>
     <string name="print_v2_package_transfer">文件传输中…</string>
@@ -125,5 +125,9 @@
     <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
     <string name="bracket_height_label">升降高度</string>
     <string name="bracket_not_connect">支架未连接</string>
+
+    <string name="range_preview">范围预览</string>
+    <string name="center_preview">显示中心点</string>
+    <string name="pause_preview">暂停预览</string>
 
 </resources>

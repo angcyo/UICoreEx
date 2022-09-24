@@ -54,16 +54,9 @@ data class QuerySettingParser(
 ) : IPacketParser<QuerySettingParser>, ICommand {
 
     companion object {
-
-        /**自动连接设备状态存储*/
-        var AUTO_CONNECT_DEVICE: Boolean by HawkPropertyValue<Any, Boolean>(true)
-
         /**第三轴模式状态存储
          * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceSettingState] 在此会初始化*/
         var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
-
-        /**是否使用4点预览*/
-        var USE_FOUR_POINTS_PREVIEW: Boolean by HawkPropertyValue<Any, Boolean>(false)
     }
 
     //解析数据

@@ -23,7 +23,6 @@ import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
@@ -219,7 +218,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
     /**开始预览*/
     fun toPreview() {
-        engravePreviewLayoutHelper.showPreviewSafetyTips(fContext()) {
+        /*engravePreviewLayoutHelper.showPreviewSafetyTips(fContext()) {
             _readyDataInfo?.historyEntity?.let {
                 engravePreviewLayoutHelper.previewBoundsInfo = PreviewBoundsInfo(
                     RectF(
@@ -231,7 +230,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
                 )
                 engravePreviewLayoutHelper.showIn(this)
             }
-        }
+        }*/
     }
 
     /**去雕刻*/

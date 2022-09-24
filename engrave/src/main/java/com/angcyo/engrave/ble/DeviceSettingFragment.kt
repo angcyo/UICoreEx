@@ -15,6 +15,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.style.*
@@ -216,9 +217,9 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemLabel = _string(R.string.device_setting_blue_connect_auto)
                 initItem()
 
-                itemSwitchChecked = QuerySettingParser.AUTO_CONNECT_DEVICE
+                itemSwitchChecked = HawkEngraveKeys.AUTO_CONNECT_DEVICE
                 itemSwitchChangedAction = {
-                    QuerySettingParser.AUTO_CONNECT_DEVICE = it
+                    HawkEngraveKeys.AUTO_CONNECT_DEVICE = it
                 }
             }
             //

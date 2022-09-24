@@ -13,7 +13,7 @@ import com.angcyo.canvas.data.toPixel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkKeys
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
@@ -57,7 +57,7 @@ class PreviewBracketItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val heightPixel = HawkKeys.lastBracketHeight.toPixel()
+        val heightPixel = HawkEngraveKeys.lastBracketHeight.toPixel()
         val valueUnit = itemValueUnit ?: mmUnit
         val value = valueUnit.convertPixelToValue(heightPixel)
 
@@ -76,7 +76,7 @@ class PreviewBracketItem : DslAdapterItem() {
                     val numberPixel = valueUnit.convertValueToPixel(number)
                     var size = numberPixel.toMm()
                     size = clamp(size, 1f, BRACKET_MAX_STEP.toFloat())
-                    HawkKeys.lastBracketHeight = size
+                    HawkEngraveKeys.lastBracketHeight = size
                 }
             }
         }
@@ -93,16 +93,9 @@ class PreviewBracketItem : DslAdapterItem() {
 
     //
 
-    /**z轴滚动预览*/
-    fun zContinuePreviewCmd() {
-        val cmd = EngravePreviewCmd.previewZContinue()
-        cmd.enqueue()
-        laserPeckerModel.queryDeviceState()
-    }
-
     /**支架上升*/
     fun bracketUpCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketUp(HawkKeys.lastBracketHeight.toInt())
+        val cmd = EngravePreviewCmd.previewBracketUp(HawkEngraveKeys.lastBracketHeight.toInt())
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))
@@ -113,7 +106,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架下降*/
     fun bracketDownCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketDown(HawkKeys.lastBracketHeight.toInt())
+        val cmd = EngravePreviewCmd.previewBracketDown(HawkEngraveKeys.lastBracketHeight.toInt())
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))

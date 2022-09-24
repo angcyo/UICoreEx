@@ -1,12 +1,10 @@
 package com.angcyo.engrave.model
 
 import androidx.annotation.AnyThread
-import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
 import com.angcyo.library.ex._string
@@ -35,10 +33,10 @@ class EngraveModel : ViewModel(), IViewModel {
     val engraveOptionInfoData = vmData(
         EngraveOptionInfo(
             _string(R.string.material_custom),
-            HawkKeys.lastPower.toByte(),
-            HawkKeys.lastDepth.toByte(),
+            HawkEngraveKeys.lastPower.toByte(),
+            HawkEngraveKeys.lastDepth.toByte(),
             1,
-            diameterPixel = HawkKeys.lastDiameterPixel
+            diameterPixel = HawkEngraveKeys.lastDiameterPixel
         )
     )
 
@@ -48,13 +46,8 @@ class EngraveModel : ViewModel(), IViewModel {
     /**用来通知item的雕刻进度*/
     val engraveItemData = vmDataOnce<EngraveItemInfo>()
 
-    /**用来通知正在预览的item*/
-    val engravePreviewItemData = vmDataOnce<EngraveItemInfo>()
-
-    /**正在预览的信息
-     * [com.angcyo.engrave.EngravePreviewLayoutHelper.bindDeviceState] 清空数据
-     * */
-    val engravePreviewInfoData = vmDataNull<EngravePreviewInfo>()
+    /**用来通知正在预览的item, 然后从[engravePreviewInfoData]中获取相应的数据*/
+    val engraveItemInfoData = vmDataOnce<EngraveItemInfo>()
 
     /**设置需要雕刻的数据*/
     @AnyThread
@@ -190,25 +183,14 @@ class EngraveModel : ViewModel(), IViewModel {
         }
     }
 
-    /**更新预览的item*/
+    /**通知正在预览的item*/
     @AnyThread
     fun updateEngravePreviewUuid(uuid: String?) {
-        engravePreviewItemData.postValue(
-            EngraveItemInfo(uuid, engravePreviewItemData.value?.progress ?: -1)
+        engraveItemInfoData.postValue(
+            EngraveItemInfo(uuid, engraveItemInfoData.value?.progress ?: -1)
         )
     }
 
     /**恢复的状态*/
     fun isRestore() = engraveReadyInfoData.value == null
-
-    /**更新正在预览的信息*/
-    @MainThread
-    fun updateEngravePreviewInfo(action: EngravePreviewInfo.() -> Unit) {
-        if (engravePreviewInfoData.value == null) {
-            engravePreviewInfoData.setValue(EngravePreviewInfo().apply(action))
-        } else {
-            engravePreviewInfoData.setValue(engravePreviewInfoData.value!!.apply(action))
-        }
-    }
-
 }

@@ -7,7 +7,6 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -15,6 +14,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.L
@@ -132,7 +132,7 @@ class FscDeviceModel : LifecycleViewModel() {
             override fun onActivityLifecycleChanged(activity: Activity, state: String) {
                 super.onActivityLifecycleChanged(activity, state)
                 if (state == RBackground.RESUMED) {
-                    if (QuerySettingParser.AUTO_CONNECT_DEVICE && !bleApiModel.haveDeviceConnected() /*无设备连接*/) {
+                    if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !bleApiModel.haveDeviceConnected() /*无设备连接*/) {
                         //需要自动连接设备
                         val nowTime = nowTime()
                         if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {

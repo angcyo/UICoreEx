@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
+import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.ex.isDebug
@@ -161,9 +162,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**发送更新预览范围指令, 支持Z轴判断
      * [bounds] 未旋转的矩形
-     * [rotateBounds] 旋转后的矩形, 与[bounds]可以相同
+     * [rotateBounds] [bounds]旋转后的矩形, 真实需要雕刻的范围
      * [rotate] [bounds]需要旋转的角度, 如果设置了, 则自动开启4点预览
-     * [updateState] 是否要发送更新状态指令
      * [zPause] 是否需要第三轴暂停预览
      * [async] 是否是异步指令
      * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
@@ -173,7 +173,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         rotateBounds: RectF,
         rotate: Float?,
         pwrProgress: Float,
-        updateState: Boolean,
         async: Boolean,
         zPause: Boolean = false,
         diameter: Int = 0,
@@ -191,10 +190,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                 pwrProgress
             )
         } else {
-            if (QuerySettingParser.USE_FOUR_POINTS_PREVIEW //开启了4点预览
-                && !haveExDevice() //没有外置设备连接
-                && rotate != null //4点预览
-            ) {
+            if (rotate != null) {
                 //需要4点预览
                 EngravePreviewCmd.previewFourPoint(bounds.toFourPoint(rotate), pwrProgress)
             } else {
@@ -213,9 +209,20 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
         cmd.enqueue(flag, address, progress, action)
-        if (updateState) {
-            queryDeviceState()
-        }
+    }
+
+    /**中心点预览指令*/
+    fun previewShowCenter(
+        bounds: RectF, pwrProgress: Float, async: Boolean,
+        address: String? = null,
+        progress: ISendProgressAction = {},
+        action: IReceiveBeanAction = { _, _ -> }
+    ) {
+        val cmd = EngravePreviewCmd.previewShowCenter(pwrProgress, bounds)
+        //send
+        val flag =
+            if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+        cmd.enqueue(flag, address, progress, action)
     }
 
     /**查询设备状态*/
@@ -234,4 +241,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="Command">
+}
+
+/**静态方法*/
+fun queryDeviceState(flag: Int = CommandQueueHelper.FLAG_ASYNC) {
+    vmApp<LaserPeckerModel>().queryDeviceState(flag)
 }

@@ -17,7 +17,7 @@ import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.data.HawkKeys
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
@@ -412,7 +412,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             }
 
             if (showDiameter) {
-                engraveOptionInfo?.diameterPixel = HawkKeys.lastDiameterPixel
+                engraveOptionInfo?.diameterPixel = HawkEngraveKeys.lastDiameterPixel
                 EngraveOptionDiameterItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
                 }

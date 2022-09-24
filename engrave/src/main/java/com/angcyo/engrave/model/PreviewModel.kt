@@ -1,0 +1,153 @@
+package com.angcyo.engrave.model
+
+import android.graphics.RectF
+import androidx.annotation.AnyThread
+import androidx.lifecycle.ViewModel
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.core.vmApp
+import com.angcyo.engrave.EngraveHelper
+import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.viewmodel.vmDataNull
+
+/**
+ * 预览数据存储
+ * @author <a href="mailto:angcyo@126.com">angcyo</a>
+ * @since 2022/09/24
+ */
+class PreviewModel : ViewModel() {
+
+    /**当前正在预览的信息, 退出预览模式时, 需要清空数据
+     * [com.angcyo.engrave.EngravePreviewLayoutHelper.bindDeviceState] 清空数据
+     * */
+    val previewInfoData = vmDataNull<PreviewInfo?>()
+
+    val engraveModel = vmApp<EngraveModel>()
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+    /**刷新预览, 根据当前的状态, 择优发送指令
+     * 在改变激光强度之后调用*/
+    @AnyThread
+    fun refreshPreview(async: Boolean, zPause: Boolean) {
+        if (HawkEngraveKeys.isRectCenterPreview) {
+            //矩形中心点预览
+            rectCenterPreview(async, zPause)
+        } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
+            previewShowCenter(async)
+        } else if (laserPeckerModel.isEngravePreviewMode()) {
+            refreshPreviewBounds(async, zPause)
+        }
+    }
+
+    /**刷新预览*/
+    @AnyThread
+    fun refreshPreviewBounds(async: Boolean, zPause: Boolean) {
+        previewInfoData.value?.let {
+            updatePreviewBounds(it, async, zPause)
+        }
+    }
+
+    /**矩形中心点预览*/
+    @AnyThread
+    fun rectCenterPreview(async: Boolean, zPause: Boolean) {
+        previewInfoData.value?.let {
+            val centerX = it.originBounds.centerX()
+            val centerY = it.originBounds.centerY()
+            val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
+            val diameter = EngraveHelper.getDiameter()
+            laserPeckerModel.sendUpdatePreviewRange(
+                bounds,
+                bounds,
+                null,
+                HawkEngraveKeys.lastPwrProgress,
+                async,
+                zPause,
+                diameter
+            )
+        }
+    }
+
+    /**中心点预览指令*/
+    @AnyThread
+    fun previewShowCenter(async: Boolean) {
+        previewInfoData.value?.let {
+            laserPeckerModel.previewShowCenter(
+                it.originBounds,
+                HawkEngraveKeys.lastPwrProgress,
+                async
+            )
+        }
+    }
+
+    /**更新机器的预览范围
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
+     * [zPause] 是否需要第三轴暂停预览
+     * [async] 是否是异步指令
+     *
+     * 发送指令之后, 可能需要重新发送查询指令
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.queryDeviceState]
+     * */
+    @AnyThread
+    fun updatePreviewBounds(info: PreviewInfo?, async: Boolean, zPause: Boolean) {
+        previewInfoData.postValue(info)
+
+        if (info == null) {
+            //是否需要停止预览?
+        } else {
+            val diameter = EngraveHelper.getDiameter()
+            laserPeckerModel.sendUpdatePreviewRange(
+                info.originBounds,
+                info.rotateBounds,
+                info.rotate,
+                HawkEngraveKeys.lastPwrProgress,
+                async,
+                zPause,
+                diameter
+            )
+        }
+    }
+
+    /**开始预览, 发送预览指令, 获取到预览范围后调用[updatePreviewBounds] */
+    fun startPreview(canvasDelegate: CanvasDelegate?, async: Boolean, zPause: Boolean) {
+        if (canvasDelegate == null) {
+            //没有在创作页面, 则考虑是否是强行设置的预览范围
+            val info = previewInfoData.value
+            if (info != null) {
+                updatePreviewBounds(info, async, zPause)
+            }
+        } else {
+            val selectedRenderer = canvasDelegate.getSelectedRenderer()
+
+            //是否要使用4点预览
+            val openPointsPreview = HawkEngraveKeys.USE_FOUR_POINTS_PREVIEW //开启了4点预览
+                    && !laserPeckerModel.haveExDevice() //没有外置设备连接
+
+            if (selectedRenderer == null) {
+                //没有选中的元素, 则考虑预览设备的最佳尺寸范围
+                laserPeckerModel.productInfoData.value?.previewBounds?.let {
+                    updatePreviewBounds(PreviewInfo(RectF(it), RectF(it)), async, zPause)
+                }
+            } else {
+                val itemUuid = selectedRenderer.getRendererRenderItem()?.uuid
+
+                //先执行, 设置预览的信息
+                val info = PreviewInfo(
+                    selectedRenderer.getBounds(),
+                    selectedRenderer.getRotateBounds(),
+                    if (openPointsPreview) {
+                        selectedRenderer.rotate
+                    } else {
+                        null
+                    },
+                    itemUuid
+                )
+                updatePreviewBounds(info, async, zPause)
+
+                //后执行, 通知预览
+                engraveModel.updateEngravePreviewUuid(itemUuid)
+            }
+        }
+    }
+
+}

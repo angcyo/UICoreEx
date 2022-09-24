@@ -2,15 +2,13 @@ package com.angcyo.engrave.dslitem.preview
 
 import android.view.MotionEvent
 import android.view.View
-import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.PopupTipConfig
 import com.angcyo.dialog.popup.popupTipWindow
 import com.angcyo.drawable.BubbleDrawable
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkKeys
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.interceptParentTouchEvent
 import com.angcyo.widget.DslViewHolder
@@ -48,20 +46,12 @@ class PreviewBrightnessItem : BasePreviewItem() {
 
         itemHolder.v<DslSeekBar>(R.id.lib_seek_view)?.apply {
             progressTextFormatAction = itemProgressTextFormatAction
-            setProgress((HawkKeys.lastPwrProgress * 100).toInt(), animDuration = 0)
+            setProgress((HawkEngraveKeys.lastPwrProgress * 100).toInt(), animDuration = 0)
             config {
                 onSeekChanged = { value, fraction, fromUser ->
-                    HawkKeys.lastPwrProgress = fraction
-                    if (laserPeckerModel.isEngravePreviewMode()) {
-                        startPreviewCmd(false, true)
-                    } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
-                        showPreviewCenterCmd(false)
-                    } else if (laserPeckerModel.isIdleMode()) {
-                        //空闲模式, 继续预览
-                        startPreviewCmd(true, true)
-                    } else {
-                        ExitCmd().enqueue()
-                        laserPeckerModel.queryDeviceState()
+                    if (!isTouchDown && fromUser) {
+                        HawkEngraveKeys.lastPwrProgress = fraction
+                        previewModel.refreshPreview(true, false)
                     }
                 }
             }

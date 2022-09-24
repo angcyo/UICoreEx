@@ -14,6 +14,7 @@ import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
@@ -38,6 +39,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
+    val previewModel = vmApp<PreviewModel>()
 
     //雕刻提示
     var dangerWarningView: DangerWarningView? = null
@@ -128,11 +130,12 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }
 
         //监听正在预览的item
-        engraveModel.engravePreviewItemData.observe(fragment, allowBackward = false) { info ->
+        engraveModel.engraveItemInfoData.observe(fragment, allowBackward = false) { info ->
             info?.let {
                 canvasView?.canvasDelegate?.progressRenderer?.let {
                     it.borderRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
-                    it.drawRotateBorder = engraveModel.engravePreviewInfoData.value?.rotate != null
+                    //是否激活绘制旋转后的边框
+                    it.drawRotateBorder = previewModel.previewInfoData.value?.rotate != null
                 }
             }
         }

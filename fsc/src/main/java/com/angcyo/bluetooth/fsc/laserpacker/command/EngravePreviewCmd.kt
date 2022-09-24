@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import android.graphics.Rect
+import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
@@ -415,9 +416,33 @@ data class EngravePreviewCmd(
 
         /**显示中心, 中心点预览
          * [pwrProgress] [0~1f] 预览光功率
+         * [bounds] C1使用的参数
          * */
-        fun previewShowCenter(pwrProgress: Float): EngravePreviewCmd {
+        fun previewShowCenter(pwrProgress: Float, bounds: RectF): EngravePreviewCmd {
+            val pair = adjustBitmapRange(
+                bounds.left.toInt(),
+                bounds.top.toInt(),
+                bounds.width().toInt(),
+                bounds.height().toInt(),
+                DEFAULT_PX,
+                vmApp<LaserPeckerModel>().productInfoData.value
+            )
+            vmApp<LaserPeckerModel>().overflowRectData.postValue(pair.second)
             return EngravePreviewCmd(0x07).apply {
+
+                val widthBytes = pair.first.width().toHexString(4).toHexByteArray()
+                val heightBytes = pair.first.height().toHexString(4).toHexByteArray()
+
+                px = DEFAULT_PX
+
+                d1 = widthBytes[0]
+                d2 = widthBytes[1]
+                d3 = heightBytes[0]
+                d4 = heightBytes[1]
+
+                x = pair.first.left
+                y = pair.first.top
+
                 updatePWR(pwrProgress)
             }
         }
@@ -483,7 +508,7 @@ data class EngravePreviewCmd(
                     val name = nameBytes.toHexString(false)
                     append(name)
                 }
-                0x02.toByte() -> {
+                0x02.toByte(), 0x07.toByte() /*中心点预览*/ -> {
                     //表示范围预览，name内容为长宽。
                     //先宽
                     val widthBytes = ByteArray(2)
@@ -602,7 +627,7 @@ data class EngravePreviewCmd(
                     }
                 }
             }
-            0x07.toByte() -> append("显示中心")
+            0x07.toByte() -> append("显示中心:${getPreviewRange()}")
             0x08.toByte() -> {
                 append(" 4点预览")
                 val rectPoint = getFourPoint()
