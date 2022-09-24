@@ -95,7 +95,7 @@
 
     <string name="ui_slip_menu_history">History Documents</string>
     <string name="ui_slip_menu_model">Mode Settings</string>
-    <string name="ui_edit_main_next">Next</string>
+    <string name="ui_next">Next</string>
 
     <string name="device_setting_act_model_warning_tone">Working Beep</string>
     <string name="device_setting_act_des_sound">Warning beep description: there will be a warning beep when starting and finishing work.</string>
@@ -132,5 +132,6 @@
 
     <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
     <string name="bracket_height_label">升降高度</string>
+    <string name="bracket_not_connect">支架未连接</string>
 
 </resources>

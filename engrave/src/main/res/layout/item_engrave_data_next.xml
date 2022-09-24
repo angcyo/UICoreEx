@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/lib_xhdpi"
         android:layout_marginTop="@dimen/lib_xhdpi"
-        android:text="@string/ui_edit_main_next"
+        android:text="@string/ui_next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/lib_preview_button"
         app:layout_constraintRight_toRightOf="parent"

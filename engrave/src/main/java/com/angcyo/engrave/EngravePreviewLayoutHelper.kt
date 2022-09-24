@@ -1,30 +1,20 @@
 package com.angcyo.engrave
 
-import android.view.MotionEvent
-import com.angcyo.bluetooth.fsc.CommandQueueHelper
-import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
-import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.engrave.ble.toZModeString
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.dsladapter.renderLineItem
 import com.angcyo.engrave.data.PreviewBoundsInfo
 import com.angcyo.engrave.dslitem.engrave.EngraveOptionDiameterItem
+import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
+import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
+import com.angcyo.engrave.dslitem.preview.PreviewControlItem
+import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.fragment.AbsLifecycleFragment
+import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.disableParentInterceptTouchEvent
-import com.angcyo.library.ex.longFeedback
-import com.angcyo.library.toast
-import com.angcyo.widget.base.bindInRootView
-import com.angcyo.widget.image.TouchCompatImageView
-import com.angcyo.widget.progress.DslSeekBar
-import com.angcyo.widget.span.span
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -34,9 +24,6 @@ import com.hingin.umeng.umengEventValue
  * @since 2022/06/01
  */
 class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngraveLayoutHelper() {
-
-    /**支架的最大移动步长*/
-    val BRACKET_MAX_STEP: Int = 65535//130, 65535
 
     /**强制指定预览信息, 用于历史文档数据
      *
@@ -61,7 +48,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     @CallPoint
     fun bindDeviceState() {
         //模式改变监听, 改变按钮的文本
-        laserPeckerModel.deviceStateData.observe(this) {
+        /*laserPeckerModel.deviceStateData.observe(this) {
 
             //雕刻模式提示
             viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())
@@ -111,7 +98,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             } else {
                 loopCheckDeviceState = false
             }
-        }
+        }*/
     }
 
     override fun onIViewCreate() {
@@ -122,11 +109,29 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
     override fun onIViewShow() {
         super.onIViewShow()
         //init
-        viewHolder?.v<DslSeekBar>(R.id.brightness_seek_bar)?.apply {
-            setProgress((EngraveHelper.lastPwrProgress * 100).toInt())
+
+        renderDslAdapter {
+            //
+            PreviewTipItem()()
+            PreviewBrightnessItem()()
+            PreviewBracketItem()() {
+                itemValueUnit = CanvasConstant.valueUnit
+            }
+            renderLineItem()
+            PreviewControlItem()()
+            DslBlackButtonItem()() {
+                itemButtonText = _string(R.string.ui_next)
+            }
+        }
+
+        //close按钮
+        showCloseView()
+
+        /*viewHolder?.v<DslSeekBar>(R.id.brightness_seek_bar)?.apply {
+            setProgress((HawkKeys.lastPwrProgress * 100).toInt())
             config {
                 onSeekChanged = { value, fraction, fromUser ->
-                    EngraveHelper.lastPwrProgress = fraction
+                    HawkKeys.lastPwrProgress = fraction
                     if (laserPeckerModel.isEngravePreviewMode()) {
                         startPreviewCmd(canvasDelegate, false, true)
                     } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
@@ -140,7 +145,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                     }
                 }
             }
-        }
+        }*/
         /*viewHolder?.v<TouchCompatImageView>(R.id.bracket_up_view)?.touchAction = { view, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 view.disableParentInterceptTouchEvent()
@@ -173,7 +178,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         }*/
         //物理尺寸
         val rOpen = laserPeckerModel.isROpen()
-        viewHolder?.visible(R.id.diameter_wrap_layout, rOpen)
+        /*viewHolder?.visible(R.id.diameter_wrap_layout, rOpen)
         if (rOpen) {
             engraveOptionDiameterItem.bindInRootView(viewHolder?.view(R.id.diameter_wrap_layout))
         }
@@ -199,7 +204,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             } else if (laserPeckerModel.deviceStateData.value?.isModeIdle() == true) {
                 //空闲模式中
                 startPreviewCmd(canvasDelegate, true, false)
-            } else if (laserPeckerModel.haveExDevice() /*&& laserPeckerModel.isEngravePreviewPause() 这个状态会有延迟*/) {
+            } else if (laserPeckerModel.haveExDevice() *//*&& laserPeckerModel.isEngravePreviewPause() 这个状态会有延迟*//*) {
                 if (laserPeckerModel.isEngravePreviewZ()) {
                     //第三轴滚动中, 则需要暂停滚动
                     loopCheckDeviceState = false
@@ -214,20 +219,20 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
                 //结束预览
                 hide()
             }
-        }
+        }*/
         val isRestoreState = canvasDelegate?.getSelectedRenderer() == null
 
         //next
-        viewHolder?.visible(R.id.brightness_layout, !isRestoreState)
+        /*viewHolder?.visible(R.id.brightness_layout, !isRestoreState)
         viewHolder?.visible(R.id.centre_button, !isRestoreState)
         viewHolder?.visible(R.id.next_button, onNextAction != null && !isRestoreState)
 
         viewHolder?.click(R.id.next_button) {
             onNextAction?.invoke(it)
-        }
+        }*/
 
         //cmd
-        startPreviewCmd(canvasDelegate, true, false)
+        //startPreviewCmd(canvasDelegate, true, false)
 
         //
         UMEvent.PREVIEW.umengEventValue()
@@ -239,110 +244,7 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
         if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
             //关闭界面时, 如果在预览状态, 则退出预览
             ExitCmd().enqueue()
-            queryDeviceStateCmd()
+            laserPeckerModel.queryDeviceState()
         }
     }
-
-    //region ------command------
-
-    /**查询设备状态*/
-    fun queryDeviceStateCmd() {
-        laserPeckerModel.queryDeviceState()
-    }
-
-    /**开始预览*/
-    fun startPreviewCmd(
-        canvasDelegate: CanvasDelegate?,
-        updateState: Boolean,
-        async: Boolean,
-        zPause: Boolean = false
-    ) {
-        val selectedRenderer = canvasDelegate?.getSelectedRenderer()
-
-        if (previewBoundsInfo == null) {
-            //没有强制指定的预览信息
-
-            if (selectedRenderer != null) {
-                EngraveHelper.sendPreviewRange(selectedRenderer, updateState, async, zPause)
-            } else {
-                if (engraveModel.isRestore().not()) {
-                    toast("No preview elements!")
-                }
-                if (updateState) {
-                    queryDeviceStateCmd()
-                }
-            }
-        } else {
-            previewBoundsInfo?.apply {
-                laserPeckerModel.sendUpdatePreviewRange(
-                    originRectF,
-                    originRectF,
-                    originRotate,
-                    EngraveHelper.lastPwrProgress,
-                    updateState,
-                    async,
-                    zPause,
-                    EngraveHelper.getDiameter()
-                )
-            }
-        }
-    }
-
-    /**停止预览*/
-    fun stopPreviewCmd() {
-        val cmd = EngravePreviewCmd.previewStop()
-        cmd.enqueue()
-        queryDeviceStateCmd()
-    }
-
-    /**z轴滚动预览*/
-    fun zContinuePreviewCmd() {
-        val cmd = EngravePreviewCmd.previewZContinue()
-        cmd.enqueue()
-        queryDeviceStateCmd()
-    }
-
-    /**支架上升*/
-    fun bracketUpCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketUp(BRACKET_MAX_STEP)
-        cmd.enqueue { bean, error ->
-            if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
-                toast("支架未连接")
-            }
-            action?.invoke(bean, error)
-        }
-    }
-
-    /**支架下降*/
-    fun bracketDownCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketDown(BRACKET_MAX_STEP)
-        cmd.enqueue { bean, error ->
-            if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
-                toast("支架未连接")
-            }
-            action?.invoke(bean, error)
-        }
-    }
-
-    /**停止支架*/
-    fun bracketStopCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketStop()
-        cmd.enqueue { bean, error ->
-            if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
-                toast("支架未连接")
-            }
-            action?.invoke(bean, error)
-        }
-    }
-
-    /**显示中心*/
-    fun showPreviewCenterCmd(updateState: Boolean) {
-        val cmd = EngravePreviewCmd.previewShowCenter(EngraveHelper.lastPwrProgress)
-        cmd.enqueue(CommandQueueHelper.FLAG_ASYNC)
-        if (updateState) {
-            queryDeviceStateCmd()
-        }
-    }
-
-    //endregion
 }

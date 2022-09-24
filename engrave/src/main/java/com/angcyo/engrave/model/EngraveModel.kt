@@ -8,10 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveItemInfo
-import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.EngravePreviewInfo
-import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.*
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.isMain
@@ -38,10 +35,10 @@ class EngraveModel : ViewModel(), IViewModel {
     val engraveOptionInfoData = vmData(
         EngraveOptionInfo(
             _string(R.string.material_custom),
-            EngraveHelper.lastPower.toByte(),
-            EngraveHelper.lastDepth.toByte(),
+            HawkKeys.lastPower.toByte(),
+            HawkKeys.lastDepth.toByte(),
             1,
-            diameterPixel = EngraveHelper.lastDiameterPixel
+            diameterPixel = HawkKeys.lastDiameterPixel
         )
     )
 

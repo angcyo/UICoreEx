@@ -5,14 +5,14 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
-import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.EngraveDataInfo
+import com.angcyo.engrave.data.HawkKeys
 import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex.toHexInt
+import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 
 /**
@@ -21,18 +21,6 @@ import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
  * @since 2022/06/21
  */
 object EngraveHelper {
-
-    /**最后一次预览光功率设置 [0~1f]*/
-    var lastPwrProgress: Float by HawkPropertyValue<Any, Float>(0.5f)
-
-    /**最后一次功率*/
-    var lastPower: Int by HawkPropertyValue<Any, Int>(100)
-
-    /**最后一次深度*/
-    var lastDepth: Int by HawkPropertyValue<Any, Int>(10)
-
-    /**最后一次的物理尺寸, 像素*/
-    var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
     /**根据雕刻数据, 返回数据指令*/
     fun getEngraveDataCmd(engraveData: EngraveDataInfo): DataCmd? {
@@ -145,7 +133,7 @@ object EngraveHelper {
             itemRenderer.getBounds(),
             itemRenderer.getRotateBounds(),
             itemRenderer.rotate,
-            lastPwrProgress,
+            HawkKeys.lastPwrProgress,
             updateState, async, zPause,
             diameter
         )
@@ -2625,8 +2613,8 @@ object EngraveHelper {
         //自定义, 自动记住了上一次的值
         val custom = MaterialEntity()
         custom.resId = R.string.material_custom
-        custom.power = lastPower
-        custom.depth = lastDepth
+        custom.power = HawkKeys.lastPower
+        custom.depth = HawkKeys.lastDepth
         result.add(0, custom)
         return result
     }

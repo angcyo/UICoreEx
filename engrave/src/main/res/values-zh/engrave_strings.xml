@@ -110,7 +110,7 @@
     <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
 
     <string name="print_v2_package_edit_name">文件命名</string>
-    <string name="ui_edit_main_next">下一步</string>
+    <string name="ui_next">下一步</string>
 
     <string name="size_safety_tips">请确认激光工作区安全</string>
     <string name="size_safety_content">请务必佩戴护目镜并安装保护罩</string>
@@ -124,5 +124,6 @@
 
     <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
     <string name="bracket_height_label">升降高度</string>
+    <string name="bracket_not_connect">支架未连接</string>
 
 </resources>

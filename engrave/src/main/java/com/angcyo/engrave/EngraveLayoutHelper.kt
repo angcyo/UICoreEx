@@ -9,16 +9,15 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.dialog.messageDialog
-import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderEmptyItem
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.HawkKeys
 import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
@@ -30,8 +29,7 @@ import com.angcyo.item.style.renderNestedAdapter
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
-import com.angcyo.widget.recycler.noItemChangeAnim
-import com.angcyo.widget.recycler.renderDslAdapter
+import com.angcyo.library.unit.MmValueUnit
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 import kotlin.math.max
@@ -58,8 +56,6 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**进度item*/
     val engraveProgressItem = EngraveProgressItem()
-
-    var dslAdapter: DslAdapter? = null
 
     /**雕刻需要准备的数据*/
     var engraveReadyInfo: EngraveReadyInfo? = null
@@ -143,7 +139,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                     )
                 }
                 //更新界面
-                dslAdapter?.updateItem { it is EngravingItem }
+                _dslAdapter?.updateItem { it is EngravingItem }
             }
         }
     }
@@ -169,19 +165,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
      * [onIViewShow]*/
     fun initLayout() {
         //init
-        viewHolder?.throttleClick(R.id.close_layout_view) {
-            hide()
-        }
-
-        viewHolder?.rv(R.id.lib_recycler_view)?.apply {
-            noItemChangeAnim()
-            renderDslAdapter {
-                dslAdapter = this
-            }
+        renderDslAdapter {
+            //
         }
 
         //close按钮
-        showCloseLayout()
+        showCloseView()
 
         if (engraveReadyInfo == null) {
             //未指定需要雕刻的数据, 则从Render中获取需要雕刻的数据
@@ -208,21 +197,12 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         return (1..max).toList()
     }
 
-    /**显示关闭按钮*/
-    @AnyThread
-    fun showCloseLayout(show: Boolean = true) {
-        cancelable = show
-        doMain {
-            viewHolder?.visible(R.id.close_layout_view, show)
-        }
-    }
-
     //region ---Engrave---
 
     /**显示错误提示*/
     @AnyThread
     fun showEngraveError(error: String?) {
-        dslAdapter?.render {
+        _dslAdapter?.render {
             this + engraveProgressItem.apply {
                 itemUpdateFlag = true
                 itemProgress = 0
@@ -230,7 +210,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
                 itemTime = null
             }
         }
-        showCloseLayout()
+        showCloseView()
     }
 
     /**更新显示进度提示*/
@@ -242,7 +222,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         autoInsert: Boolean = true, //自动插入到界面
         action: EngraveProgressItem .() -> Unit = {}
     ) {
-        dslAdapter?.apply {
+        _dslAdapter?.apply {
             engraveProgressItem.apply {
                 itemUpdateFlag = true
                 itemProgress = progress
@@ -274,7 +254,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
     /**处理雕刻数据*/
     @AnyThread
     fun showHandleEngraveItem(engraveReadyInfo: EngraveReadyInfo) {
-        dslAdapter?.clearAllItems()
+        _dslAdapter?.clearAllItems()
         updateEngraveProgress(100, _string(R.string.v4_bmp_edit_tips)) {
             itemEnableProgressFlowMode = true
         }
@@ -343,7 +323,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             return
         }
 
-        showCloseLayout(false)//传输中不允许关闭
+        showCloseView(false)//传输中不允许关闭
         engraveModel.setEngraveReadyDataInfo(engraveReadyInfo)
         updateEngraveProgress(0, _string(R.string.print_v2_package_transfer)) {
             itemEnableProgressFlowMode = true
@@ -404,7 +384,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**显示开始雕刻相关的item*/
     fun showStartEngraveItem() {
-        showCloseLayout()
+        showCloseView()
 
         val engraveOptionInfo = engraveModel.engraveOptionInfoData.value
         val engraveReadyInfo = engraveModel.engraveReadyInfoData.value
@@ -412,7 +392,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
         //材质列表
         val materialList = EngraveHelper.getProductMaterialList()
 
-        dslAdapter?.render {
+        _dslAdapter?.render {
             clearAllItems()
 
             //物体直径, 这里应该判断z轴设备的类型, 决定是否显示物理直径
@@ -432,7 +412,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             }
 
             if (showDiameter) {
-                engraveOptionInfo?.diameterPixel = EngraveHelper.lastDiameterPixel
+                engraveOptionInfo?.diameterPixel = HawkKeys.lastDiameterPixel
                 EngraveOptionDiameterItem()() {
                     itemEngraveOptionInfo = engraveOptionInfo
                 }
@@ -516,7 +496,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
             return
         }
 
-        dslAdapter?.render {
+        _dslAdapter?.render {
             clearAllItems()
 
             if (dataInfo == null) {
@@ -565,7 +545,7 @@ class EngraveLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**显示雕刻中相关的item*/
     fun showEngravingItem() {
-        dslAdapter?.render {
+        _dslAdapter?.render {
             clearAllItems()
             updateEngraveProgress(0, _string(R.string.print_v2_package_printing), time = -1)
             EngravingItem()() {

@@ -23,7 +23,7 @@
         android:background="@drawable/canvas_top_round_shape2">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/close_layout_view"
+            android:id="@+id/lib_close_view"
             style="@style/LibTitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasButtonItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem2
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
@@ -14,6 +13,7 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
@@ -143,7 +143,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
             }
             //确认按钮
             if (regulateList.contains(CanvasRegulatePopupConfig.KEY_SUBMIT)) {
-                CanvasButtonItem()() {
+                DslBlackButtonItem()() {
                     itemButtonText = _string(R.string.dialog_positive)
                     itemClick = {
                         onApplyAction(false)
