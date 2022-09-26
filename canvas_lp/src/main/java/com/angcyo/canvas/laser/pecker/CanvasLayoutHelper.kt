@@ -37,8 +37,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave.model.PreviewModel
-import com.angcyo.fragment.AbsFragment
+import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex.*
 import com.angcyo.transition.dslTransition
@@ -53,7 +52,7 @@ import com.pixplicity.sharp.SharpDrawable
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/09
  */
-class CanvasLayoutHelper(val fragment: AbsFragment) {
+class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     companion object {
         const val TAG_EDIT_ITEM = "tag_edit_item"
@@ -93,7 +92,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
         observeItemUpdateDepend {
             adapterItems.forEach {
                 if (it is IFragmentItem) {
-                    it.itemFragment = fragment
+                    it.itemFragment = engraveCanvasFragment.fragment
                 }
             }
         }
@@ -145,7 +144,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
 
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
-                    fragment.context.canvasMaterialWindow(it) {
+                    engraveCanvasFragment.fragment.context.canvasMaterialWindow(it) {
                         onDismiss = {
                             updateItemSelected(false)
                             false
@@ -190,7 +189,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                 itemEnable = true
                 itemClick = {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
-                    fragment.context.doodleDialog {
+                    engraveCanvasFragment.fragment.context.doodleDialog {
                         onDoodleResultAction = {
                             canvasDelegate.addPictureBitmapRenderer(it)
                         }
@@ -236,7 +235,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                             if (renderer is PictureItemRenderer) {
                                 renderer.getRendererRenderItem()?.let { item ->
                                     if (item is PictureShapeItem) {
-                                        fragment.loadingAsync({
+                                        engraveCanvasFragment.fragment.loadingAsync({
                                             item.shapePath.let { path ->
                                                 CanvasDataHandleOperate.pathToGCode(
                                                     path,
@@ -365,9 +364,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                     itemRenderer == canvasView.canvasDelegate.getSelectedRenderer()
                 ) {
                     //设备正在预览模式, 更新预览
-                    if (itemRenderer is BaseItemRenderer<*>) {
-                        vmApp<PreviewModel>().startPreview(canvasView.canvasDelegate, true, false)
-                    }
+                    engraveCanvasFragment.engravePreviewLayoutHelper.updatePreview()
                 }
             }
 
@@ -390,7 +387,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             }
 
             override fun onSelectedItem(
-                itemRenderer: IItemRenderer<*>,
+                itemRenderer: IItemRenderer<*>?,
                 oldItemRenderer: IItemRenderer<*>?
             ) {
                 super.onSelectedItem(itemRenderer, oldItemRenderer)
@@ -398,21 +395,21 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
                     //重复选择
                     return
                 }
-                cancelSelectedItem()
+                if (itemRenderer != null) {
+                    cancelSelectedItem()
 
-                //显示控制布局
-                vh.showControlLayout(canvasView)
+                    //显示控制布局
+                    vh.showControlLayout(canvasView)
 
-                //更新图层
-                updateLayerLayout(vh)
+                    //更新图层
+                    updateLayerLayout(vh)
+                }
 
                 //预览选中的元素边框
                 val peckerModel = vmApp<LaserPeckerModel>()
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
                     //设备正在预览模式, 更新预览
-                    if (itemRenderer is BaseItemRenderer<*>) {
-                        vmApp<PreviewModel>().startPreview(canvasView.canvasDelegate, true, false)
-                    }
+                    engraveCanvasFragment.engravePreviewLayoutHelper.updatePreview()
                 }
             }
 
@@ -497,13 +494,18 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             if (itemRenderer is DataItemRenderer) {
                 val dataBean = itemRenderer.rendererItem?.dataBean
                 when (dataBean?.mtype) {
-                    CanvasConstant.DATA_TYPE_BITMAP -> renderImageEditItems(fragment, itemRenderer)
+                    CanvasConstant.DATA_TYPE_BITMAP -> renderImageEditItems(
+                        engraveCanvasFragment.fragment,
+                        itemRenderer
+                    )
                     CanvasConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
                     CanvasConstant.DATA_TYPE_LINE,
                     CanvasConstant.DATA_TYPE_OVAL,
                     CanvasConstant.DATA_TYPE_RECT,
                     CanvasConstant.DATA_TYPE_POLYGON,
                     CanvasConstant.DATA_TYPE_PENTAGRAM,
+                    CanvasConstant.DATA_TYPE_SVG,
+                    CanvasConstant.DATA_TYPE_GCODE,
                     CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(itemRenderer)
                 }
             } else if (itemRenderer is SelectGroupRenderer) {
@@ -514,7 +516,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
             }
 
             //
-            renderCommonEditItems(canvasView, fragment, itemRenderer)
+            renderCommonEditItems(canvasView, engraveCanvasFragment.fragment, itemRenderer)
         }
 
         return result
@@ -715,7 +717,7 @@ class CanvasLayoutHelper(val fragment: AbsFragment) {
     //<editor-fold desc="Undo">
 
     /**undo redo*/
-    fun _updateUndoLayout(viewHolder: DslViewHolder = fragment._vh) {
+    fun _updateUndoLayout(viewHolder: DslViewHolder = engraveCanvasFragment.fragment._vh) {
         viewHolder.group(R.id.undo_wrap_layout)
             ?.resetDslItem(listOf(_undoCanvasItem, _redoCanvasItem))
     }

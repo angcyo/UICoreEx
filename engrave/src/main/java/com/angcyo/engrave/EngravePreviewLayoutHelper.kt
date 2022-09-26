@@ -9,6 +9,7 @@ import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
 import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.engrave.dslitem.preview.PreviewControlItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslLineItem
@@ -257,8 +258,20 @@ class EngravePreviewLayoutHelper(val fragment: AbsLifecycleFragment) : BaseEngra
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.ui_next)
             }
-            previewModel.startPreview(canvasDelegate, true, false)
+            updatePreview()
             queryDeviceState()
+        }
+    }
+
+    //
+
+    /**更新预览, 比如元素选择改变后/大小改变后*/
+    fun updatePreview(async: Boolean = true, zPause: Boolean = false) {
+        val delegate = canvasDelegate
+        if (delegate == null) {
+        } else {
+            val previewInfo = PreviewModel.createPreviewInfo(delegate)
+            previewModel.startOrRefreshPreview(previewInfo, async, zPause)
         }
     }
 }
