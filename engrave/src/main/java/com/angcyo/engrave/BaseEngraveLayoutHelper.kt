@@ -21,6 +21,8 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
             ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
             ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
+            ENGRAVE_FLOW_ENGRAVING -> renderEngraving()
+            ENGRAVE_FLOW_FINISH -> renderEngraveFinish()
             else -> super.renderFlowItems()
         }
     }
@@ -151,9 +153,59 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                             }
                         }
                     }*/
-
+                    engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                    renderFlowItems()
                 }
             }
+        }
+    }
+
+    /**渲染雕刻中的界面*/
+    fun renderEngraving() {
+        updateIViewTitle(_string(R.string.engraving))
+        engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+        showCloseView(false)
+        renderDslAdapter {
+            PreviewTipItem()() {
+                itemTip = _string(R.string.engrave_move_state_tips)
+            }
+            EngraveProgressItem()() {
+
+            }
+            EngravingInfoItem()() {
+
+            }
+            EngravingControlItem()() {
+                itemStopAction = {
+                    engraveFlow = ENGRAVE_FLOW_FINISH
+                    renderFlowItems()
+                }
+            }
+        }
+    }
+
+    /**渲染雕刻中的界面*/
+    fun renderEngraveFinish() {
+        updateIViewTitle(_string(R.string.engrave_finish))
+        engraveBackFlow = 0
+        showCloseView(true, _string(R.string.back_creation))
+        renderDslAdapter {
+            EngraveFinishTopItem()() {
+                itemText = "材质:angcyo 材质:angcyo 材质:angcyo"
+            }
+            EngraveLabelItem()() {
+                itemText = _string(R.string.engrave_layer_bitmap)
+            }
+            EngraveFinishInfoItem()()
+            EngraveLabelItem()() {
+                itemText = _string(R.string.engrave_layer_fill)
+            }
+            EngraveFinishInfoItem()()
+            EngraveLabelItem()() {
+                itemText = _string(R.string.engrave_layer_line)
+            }
+            EngraveFinishInfoItem()()
+            EngraveFinishControlItem()()
         }
     }
 

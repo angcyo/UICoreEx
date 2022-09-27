@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/lib_xhdpi"
         android:layout_marginTop="@dimen/lib_xhdpi"
-        android:text="@string/v3_bmp_setting_preview"
+        android:text="@string/start_preview"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -147,64 +147,8 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
         }*/
     }
 
-    //region ---Engrave---
-/*
-    */
-    /**显示错误提示*//*
-    @AnyThread
-    fun showEngraveError(error: String?) {
-        _dslAdapter?.render {
-            this + engraveProgressItem.apply {
-                itemUpdateFlag = true
-                itemProgress = 0
-                itemTip = error
-                itemTime = null
-            }
-        }
-        showCloseView()
-    }
-
-    */
-    /**更新显示进度提示*//*
-    @AnyThread
-    fun updateEngraveProgress(
-        progress: Int = engraveProgressItem.itemProgress,
-        tip: CharSequence? = engraveProgressItem.itemTip,
-        time: Long? = engraveProgressItem.itemTime,
-        autoInsert: Boolean = true, //自动插入到界面
-        action: EngraveProgressItem .() -> Unit = {}
-    ) {
-        _dslAdapter?.apply {
-            engraveProgressItem.apply {
-                itemUpdateFlag = true
-                itemProgress = progress
-                itemTip = tip
-                itemTime = time
-                itemProgressAnimDuration = 0 //取消进度动画
-
-                //dsl
-                action()
-            }
-
-            //update
-            if (adapterItems.contains(engraveProgressItem)) {
-                doMain {
-                    engraveProgressItem.updateAdapterItem()
-                }
-            } else if (autoInsert) {
-                render {
-                    insertItem(0, engraveProgressItem)
-                }
-            }
-        }
-    }
-
-    //endregion
-
-    //region ---Handle---
-
-    */
-    /**处理雕刻数据*//*
+    /**处理雕刻数据*/
+    /*
     @AnyThread
     fun showHandleEngraveItem(engraveReadyInfo: EngraveReadyInfo) {
         _dslAdapter?.clearAllItems()
@@ -495,25 +439,6 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
                     }
                 }
                 renderEmptyItem(_dimen(R.dimen.lib_xxhdpi))
-            }
-        }
-    }
-
-    */
-    /**显示雕刻中相关的item*//*
-    fun showEngravingItem() {
-        _dslAdapter?.render {
-            clearAllItems()
-            updateEngraveProgress(0, _string(R.string.print_v2_package_printing), time = -1)
-            EngravingItem()() {
-                againAction = {
-                    if (engraveReadyInfo == null) {
-                        //恢复的数据
-                        hide()
-                    } else {
-                        showStartEngraveItem()
-                    }
-                }
             }
         }
     }

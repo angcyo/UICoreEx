@@ -13,20 +13,20 @@
     <string name="previewing">In preview …</string>
     <string name="print_v2_package_edit_name">File Naming</string>
     <string name="transmitting">File in transit</string>
-    <string name="print_v2_package_printing">Laser engraving</string>
+    <string name="engraving">Laser engraving</string>
     <string name="print_v2_package_print_state">Paused</string>
     <string name="print_v2_package_print_over">Ended laser engraving</string>
-    <string name="print_v2_package_Laser_pause">Pause</string>
-    <string name="print_v2_package_Laser_stop">Quit</string>
-    <string name="print_v2_package_Laser_continue">Resume</string>
-    <string name="print_v2_package_Laser_again">Repeat</string>
+    <string name="engrave_pause">Pause</string>
+    <string name="engrave_finish">Engrave finish</string>
+    <string name="engrave_continue">Resume</string>
+    <string name="engrave_again">Repeat</string>
     <string name="print_v2_package_Laser_home">Back Home</string>
     <string name="print_v2_package_size_setting">File Settings</string>
     <string name="print_setting">Laser Settings</string>
 
-    <string name="v3_bmp_setting_preview">Start Preview</string>
+    <string name="start_preview">Start Preview</string>
 
-    <string name="v3_print_state_tips">Do Not Move The Device</string>
+    <string name="engrave_move_state_tips">Do Not Move The Device</string>
 
     <string name="print_file_name">Mode</string>
     <string name="print_range">Size</string>
@@ -143,5 +143,8 @@
     <string name="engrave_layer_bitmap">图片</string>
     <string name="engrave_layer_fill">填充</string>
     <string name="engrave_layer_line">线条</string>
+    <string name="back_creation">返回创作</string>
+    <string name="progress">进度</string>
+    <string name="share_community">分享到社区</string>
 
 </resources>

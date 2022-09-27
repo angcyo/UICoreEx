@@ -166,7 +166,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
                         }
                     }
                     addDialogItem {
-                        itemText = _string(R.string.v3_bmp_setting_preview)
+                        itemText = _string(R.string.start_preview)
                         itemClick = {
                             toPreview()
                         }
