@@ -399,7 +399,8 @@
     <!--内容动态层-->
     <com.angcyo.widget.layout.DslSoftInputLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="4dp">
 
         <FrameLayout
             android:id="@+id/lib_content_overlay_wrap_layout"
