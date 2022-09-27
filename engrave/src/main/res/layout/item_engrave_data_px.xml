@@ -5,10 +5,8 @@
     android:id="@+id/lib_item_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/lib_hdpi"
-    android:layout_marginTop="@dimen/lib_hdpi"
-    android:background="@drawable/engrave_stroke_selector"
-    android:padding="@dimen/lib_padding_right">
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_sdpi">
 
     <com.angcyo.widget.text.DslTextView
         android:id="@+id/lib_text_view"
@@ -16,23 +14,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/lib_padding_right"
+        android:text="@string/resolution_ratio"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="方向" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.angcyo.widget.layout.DslCheckFlowLayout
-        android:id="@+id/lib_flow_layout"
+    <com.angcyo.tablayout.DslTabLayout
+        android:id="@+id/lib_tab_layout"
+        style="@style/LibTabSegmentSolidStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingRight="@dimen/lib_padding_left"
+        android:minHeight="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/lib_text_view"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
-        app:r_flow_item_vertical_space="@dimen/lib_hdpi" />
+        app:tab_preview_item_layout_id="@layout/lib_segment_layout"
+        tools:layout_height="40dp"
+        tools:tab_default_index="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

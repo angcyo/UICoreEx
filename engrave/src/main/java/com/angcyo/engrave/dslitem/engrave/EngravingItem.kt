@@ -112,7 +112,7 @@ class EngravingItem : DslAdapterItem() {
             //分辨率: 1k
             labelDesList.add(
                 LabelDesData(
-                    _string(R.string.tv_01),
+                    _string(R.string.resolution_ratio),
                     engraveModel.engraveReadyInfoData.value?.engraveData?.px?.toPxDes()
                 )
             )

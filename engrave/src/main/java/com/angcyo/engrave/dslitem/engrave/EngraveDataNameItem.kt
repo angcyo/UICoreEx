@@ -8,6 +8,7 @@ import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.item.style.EditItemConfig
 import com.angcyo.item.style.IEditItem
 import com.angcyo.item.style.itemEditText
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.byteSize
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -26,7 +27,9 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
             itemEditText = value?.engraveData?.name
         }
 
-    override var editItemConfig: EditItemConfig = EditItemConfig()
+    override var editItemConfig: EditItemConfig = EditItemConfig().apply {
+        itemEditTextStyle.hint = _string(R.string.filename_hint)
+    }
 
     init {
         itemLayoutId = R.layout.item_engrave_data_name
@@ -74,7 +77,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
-        super.onItemChangeListener(item)
+        //super.onItemChangeListener(item)
     }
 
 }

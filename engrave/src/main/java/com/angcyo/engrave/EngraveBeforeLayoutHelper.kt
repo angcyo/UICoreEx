@@ -17,7 +17,7 @@ import com.angcyo.library.ex._string
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/06
  */
-class EngraveBeforeLayoutHelper : BaseEngraveLayoutHelper() {
+class EngraveBeforeLayoutHelper : BaseFlowLayoutHelper() {
 
     /**目标数据*/
     var engraveReadyInfo: EngraveReadyInfo? = null

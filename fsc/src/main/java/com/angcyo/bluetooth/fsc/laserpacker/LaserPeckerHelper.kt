@@ -239,9 +239,10 @@ object LaserPeckerHelper {
             LIII -> {
                 //最佳打印范围是椭圆
                 limitPath.apply {
+                    //2022-9-27 试产版范围：90x60，量产版范围：100x75
                     rewind()
                     val rW = 100f
-                    val rH = 70f
+                    val rH = 75f
                     val tOffset = (rW - rH) / 2 //mm
                     val l = unit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
                     val t = unit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
@@ -271,13 +272,11 @@ object LaserPeckerHelper {
             }
         }
 
-        //像素分辨率支持
+        //像素分辨率支持, 都支持1k
         pxList.add(PxInfo(PX_1K, wPhys * 10, hPhys * 10, PX_1K.toPxDes()))
 
         when (name) {
-            LI, LI_PRO -> {
-                //pxList.add(PxInfo(0x04, 1000, 1000, "1K"))
-            }
+            LI, LI_PRO -> Unit
             LI_Z, LI_Z_PRO, LII -> {
                 pxList.add(PxInfo(PX_1_3K, wPhys * 13, hPhys * 13, PX_1_3K.toPxDes()))
                 pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))

@@ -80,7 +80,7 @@ data class PxInfo(
         return (pxHeight * scale).toInt()
     }
 
-    override fun toText(): CharSequence? = des
+    override fun toText(): CharSequence = des
 
-    override fun toValue(): Any? = px
+    override fun toValue(): Any = px
 }

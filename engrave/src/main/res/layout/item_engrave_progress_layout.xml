@@ -25,7 +25,7 @@
         app:layout_constraintLeft_toLeftOf="@id/lib_progress_bar"
         app:layout_constraintRight_toRightOf="@id/lib_progress_bar"
         app:layout_constraintTop_toTopOf="@id/lib_progress_bar"
-        tools:text="@string/print_v2_package_transfer" />
+        tools:text="@string/transmitting" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_time_view"

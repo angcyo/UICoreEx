@@ -14,7 +14,7 @@
     <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
     <string name="previewing">In preview …</string>
     <string name="print_v2_package_edit_name">File Naming</string>
-    <string name="print_v2_package_transfer">File in transit…</string>
+    <string name="transmitting">File in transit…</string>
     <string name="print_v2_package_printing">Laser engraving</string>
     <string name="print_v2_package_print_state">Paused</string>
     <string name="print_v2_package_print_over">Ended laser engraving</string>
@@ -74,7 +74,7 @@
 
     <string name="preview_center">Show Center Point</string>
     <string name="preview_continue">Continue Preview</string>
-    <string name="tv_01">Resolution</string>
+    <string name="resolution_ratio">Resolution</string>
 
     <string name="tips_fourteen_12">Time</string>
     <string name="laser_brightness">Brightness of laser beam</string>
@@ -137,5 +137,7 @@
     <string name="range_preview">范围预览</string>
     <string name="center_preview">显示中心点</string>
     <string name="pause_preview">暂停预览</string>
+    <string name="preview_parameter_setting">参数设置</string>
+    <string name="filename_hint">最多输入28个字节</string>
 
 </resources>

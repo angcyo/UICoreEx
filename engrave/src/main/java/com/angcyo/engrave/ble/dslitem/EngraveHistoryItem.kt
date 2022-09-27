@@ -92,7 +92,7 @@ class EngraveHistoryItem : DslAdapterItem() {
         val pxDes = engraveHistoryEntity?.px?.toPxDes()
         labelDesList.add(
             LabelDesData(
-                _string(R.string.tv_01),
+                _string(R.string.resolution_ratio),
                 pxDes
             )
         )

@@ -1,43 +1,16 @@
 package com.angcyo.engrave
 
-import android.view.ViewGroup
-import androidx.annotation.AnyThread
-import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.*
-import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
-import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.core.component.file.writeErrorLog
-import com.angcyo.dialog.messageDialog
-import com.angcyo.dsladapter.renderEmptyItem
-import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.http.rx.doMain
-import com.angcyo.http.rx.runRx
-import com.angcyo.item.DslNestedGridRecyclerItem
-import com.angcyo.item.form.checkItemThrowable
-import com.angcyo.item.style.itemLabelText
-import com.angcyo.item.style.renderNestedAdapter
-import com.angcyo.library.L
 import com.angcyo.library.ex.*
-import com.angcyo.library.toast
-import com.angcyo.library.unit.MmValueUnit
-import com.hingin.umeng.UMEvent
-import com.hingin.umeng.umengEventValue
-import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * 雕刻布局相关操作
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
-class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
+class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
 
     /**雕刻数据转换管理*/
     val engraveTransitionManager = EngraveTransitionManager()
@@ -60,7 +33,7 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
     var engraveReadyInfo: EngraveReadyInfo? = null*/
 
     init {
-        iViewLayoutId = R.layout.canvas_engrave_layout
+        iViewLayoutId = R.layout.canvas_engrave_flow_layout
     }
 
     /**监听设备状态, 并做出相应*/
@@ -181,7 +154,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
     //region ---Engrave---
 /*
-    *//**显示错误提示*//*
+    */
+    /**显示错误提示*//*
     @AnyThread
     fun showEngraveError(error: String?) {
         _dslAdapter?.render {
@@ -195,7 +169,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         showCloseView()
     }
 
-    *//**更新显示进度提示*//*
+    */
+    /**更新显示进度提示*//*
     @AnyThread
     fun updateEngraveProgress(
         progress: Int = engraveProgressItem.itemProgress,
@@ -233,7 +208,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
     //region ---Handle---
 
-    *//**处理雕刻数据*//*
+    */
+    /**处理雕刻数据*//*
     @AnyThread
     fun showHandleEngraveItem(engraveReadyInfo: EngraveReadyInfo) {
         _dslAdapter?.clearAllItems()
@@ -289,7 +265,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    *//**发送雕刻数据*//*
+    */
+    /**发送雕刻数据*//*
     @AnyThread
     fun sendEngraveData(engraveReadyInfo: EngraveReadyInfo) {
         val engraveData = engraveReadyInfo.engraveData
@@ -364,7 +341,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    *//**显示开始雕刻相关的item*//*
+    */
+    /**显示开始雕刻相关的item*//*
     fun showStartEngraveItem() {
         showCloseView()
 
@@ -469,7 +447,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         laserPeckerModel.queryDeviceState()
     }
 
-    *//**显示雕刻数据处理前选项相关的item*//*
+    */
+    /**显示雕刻数据处理前选项相关的item*//*
     fun showEngraveOptionItem() {
         val dataInfo = engraveReadyInfo?.engraveData
         if (dataInfo != null && engraveReadyInfo?.historyEntity != null) {
@@ -525,7 +504,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    *//**显示雕刻中相关的item*//*
+    */
+    /**显示雕刻中相关的item*//*
     fun showEngravingItem() {
         _dslAdapter?.render {
             clearAllItems()
@@ -545,7 +525,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
     //endregion
 
-    *//**检查开始雕刻
+    */
+    /**检查开始雕刻
      * [index] 需要雕刻的数据索引
      * [option] 需要雕刻的数据选项*//*
     fun checkStartEngrave(index: Int, option: EngraveOptionInfo) {
@@ -627,7 +608,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         checkSafeTip(index, option)
     }
 
-    *//**安全提示弹窗*//*
+    */
+    /**安全提示弹窗*//*
     fun checkSafeTip(index: Int, option: EngraveOptionInfo) {
         //安全提示弹窗
         viewHolder?.context?.messageDialog {
@@ -643,7 +625,8 @@ class EngraveFlowLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    *//**开始雕刻, 发送雕刻指令*//*
+    */
+    /**开始雕刻, 发送雕刻指令*//*
     fun _startEngrave(index: Int, option: EngraveOptionInfo) {
         EngraveCmd(
             index,

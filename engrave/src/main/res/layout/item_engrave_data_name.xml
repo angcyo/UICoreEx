@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/lib_hdpi"
-    android:layout_marginTop="@dimen/lib_hdpi"
-    android:background="@drawable/engrave_stroke_selector"
     android:paddingHorizontal="@dimen/lib_padding_right"
     android:paddingVertical="@dimen/lib_sdpi">
 

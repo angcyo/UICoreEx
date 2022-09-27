@@ -1,197 +1,61 @@
 package com.angcyo.engrave
 
-import android.content.Context
-import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.queryDeviceState
-import com.angcyo.core.vmApp
-import com.angcyo.dialog.messageDialog
-import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.engrave.model.PreviewModel
-import com.angcyo.iview.BaseRecyclerIView
-import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.component._delay
-import com.angcyo.library.ex._drawable
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.engrave.dslitem.EngraveDividerItem
+import com.angcyo.engrave.dslitem.engrave.EngraveDataNameItem
+import com.angcyo.engrave.dslitem.engrave.EngraveDataPxItem
+import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
 
 /**
- * 雕刻相关布局助手
+ * 雕刻item布局渲染
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/06/07
+ * @since 2022/09/27
  */
-abstract class BaseEngraveLayoutHelper : BaseRecyclerIView() {
+abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
-    companion object {
-        /**雕刻流程: 预览前的配置*/
-        const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = 0x01
-
-        /**雕刻流程: 预览中*/
-        const val ENGRAVE_FLOW_PREVIEW = 0x02
-
-        /**雕刻流程: 雕刻前的配置*/
-        const val ENGRAVE_FLOW_ENGRAVE_BEFORE_CONFIG = 0x10
-
-        /**雕刻流程: 雕刻数据传输中...*/
-        const val ENGRAVE_FLOW_ENGRAVE_TRANSFER = 0x20
-
-        /**雕刻流程: 雕刻中...*/
-        const val ENGRAVE_FLOW_ENGRAVING = 0x40
-
-        /**雕刻流程: 雕刻完成.*/
-        const val ENGRAVE_FLOW_ENGRAVE_FINISH = 0x80
-    }
-
-    /**当前处于那个雕刻流程*/
-    var engraveFlow: Int = 0
-        set(value) {
-            val old = field
-            field = value
-            onEngraveFlowChanged(old, value)
+    override fun renderFlowItems() {
+        when (engraveFlow) {
+            ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
+            ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
+            else -> super.renderFlowItems()
         }
-
-    /**雕刻绑定的界面*/
-    var engraveCanvasFragment: IEngraveCanvasFragment? = null
-
-    //产品模式
-    val laserPeckerModel = vmApp<LaserPeckerModel>()
-
-    //雕刻模式
-    val engraveModel = vmApp<EngraveModel>()
-
-    //预览模式
-    val previewModel = vmApp<PreviewModel>()
-
-    /**是否循环检测设备状态*/
-    var loopCheckDeviceState: Boolean = false
-
-    //
-
-    override fun onIViewCreate() {
-        super.onIViewCreate()
-        bindDeviceState()
-    }
-
-    override fun onIViewShow() {
-        super.onIViewShow()
-        renderFlowItems()
-    }
-
-    override fun onIViewRemove() {
-        super.onIViewRemove()
-        loopCheckDeviceState = false
-        if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
-            //在预览界面
-            if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
-                //关闭界面时, 如果在预览状态, 则退出预览
-                ExitCmd().enqueue()
-                queryDeviceState()
-            }
-        }
-    }
-
-    /**雕刻模式改变通知*/
-    var onEngraveFlowChangedAction: (from: Int, to: Int) -> Unit = { _, _ ->
-
-    }
-
-    /**雕刻模式改变通知*/
-    open fun onEngraveFlowChanged(from: Int, to: Int) {
-        onEngraveFlowChangedAction(from, to)
     }
 
     //
 
-    @CallPoint
-    open fun bindDeviceState() {
-        //模式改变监听, 改变按钮的文本
-        laserPeckerModel.deviceStateData.observe(this) {
-            _dslAdapter?.updateAllItem()
+    /**渲染传输数据配置界面*/
+    fun renderTransferConfig() {
+        updateIViewTitle(_string(R.string.print_setting))
+        engraveBackFlow = ENGRAVE_FLOW_PREVIEW
+        showCloseView(true, _string(R.string.ui_back))
 
-/*
-            //雕刻模式提示
-            viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())
-            if (laserPeckerModel.isZOpen()) {
-                viewHolder?.tv(R.id.preview_text_view)?.text = span {
-                    append(_string(R.string.device_setting_tips_fourteen_11))
-                    append(QuerySettingParser.Z_MODEL.toZModeString())
-                }
+        renderDslAdapter {
+            EngraveDataNameItem()() {
+                //itemEngraveReadyInfo = engraveReadyInfo
             }
-
-            if (it?.isModeEngravePreview() == false) {
-                //非预览模式
-                engraveModel.updateEngravePreviewUuid(null)
-                engraveModel.engravePreviewInfoData.postValue(null)
+            EngraveDataPxItem()() {
+                //itemEngraveDataInfo = dataInfo
+                itemPxList = LaserPeckerHelper.findProductSupportPxList()
             }
-
-            if (it != null) {
-                val mode = it.mode
-                viewHolder?.enable(R.id.centre_button, true)
-                if (mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
-                    //雕刻预览中
-                    if (engraveModel.isRestore() && canvasDelegate?.getSelectedRenderer() == null) {
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.print_v2_package_preview_over)
-                    } else if (it.workState == 0x07) {
-                        //显示中心模式
-                        viewHolder?.enable(R.id.centre_button, false)
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.preview_continue)
-                    } else if (laserPeckerModel.haveExDevice()) {
-                        if (it.workState == 0x05) {
-                            //Z轴滚动预览中
-                            viewHolder?.tv(R.id.preview_button)?.text =
-                                _string(R.string.preview_scroll_pause)
-                        } else {
-                            viewHolder?.tv(R.id.preview_button)?.text =
-                                _string(R.string.preview_scroll_continue)
-                        }
-                    } else {
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.print_v2_package_preview_over)
-                    }
-                } else if (mode == QueryStateParser.WORK_MODE_IDLE) {
-                    loopCheckDeviceState = false
-                    viewHolder?.tv(R.id.preview_button)?.text = _string(R.string.preview_continue)
-                }
-            } else {
-                loopCheckDeviceState = false
-            }*/
-        }
-    }
-
-    /**根据不同的流程, 渲染不同的界面*/
-    open fun renderFlowItems() {
-
-    }
-
-    /**持续检查工作作态*/
-    fun checkDeviceState() {
-        _delay(1_000) {
-            //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState() { bean, error ->
-                if (error != null || loopCheckDeviceState) {
-                    //出现了错误, 继续查询
-                    checkDeviceState()
+            EngraveDividerItem()()
+            DslBlackButtonItem()() {
+                itemButtonText = _string(R.string.ui_next)
+                itemClick = {
+                    //下一步, 数据传输界面
+                    engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+                    renderFlowItems()
                 }
             }
         }
     }
 
-    /**显示预览安全提示框*/
-    fun showPreviewSafetyTips(context: Context, action: () -> Unit) {
-        context.messageDialog {
-            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-            dialogTitle = _string(R.string.size_safety_tips)
-            dialogMessage = _string(R.string.size_safety_content)
-            negativeButtonText = _string(R.string.dialog_negative)
-
-            positiveButton { dialog, dialogViewHolder ->
-                dialog.dismiss()
-                action()
-            }
-        }
+    /**渲染传输中的界面*/
+    fun renderTransmitting() {
+        updateIViewTitle(_string(R.string.transmitting))
+        showCloseView(false)
     }
 
     //
+
 }

@@ -23,7 +23,7 @@
     <string name="previewing">预览中…</string>
     <string name="print_setting">镭雕设置</string>
     <string name="print_v2_package_size_setting">文件设置</string>
-    <string name="print_v2_package_transfer">文件传输中…</string>
+    <string name="transmitting">文件传输中…</string>
     <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
     <string name="estimated_remaining_time">预计剩余时间:</string>
     <string name="print_v2_package_Laser_start">开始镭雕</string>
@@ -40,7 +40,7 @@
     <string name="custom_power">功率</string>
     <string name="custom_speed">深度</string>
     <string name="print_times">次数</string>
-    <string name="tv_01">分辨率</string>
+    <string name="resolution_ratio">分辨率</string>
     <string name="tips_fourteen_12">时间</string>
     <string name="work_time">加工时间</string>
     <string name="print_v2_package_Laser_again">再雕一次</string>
@@ -129,5 +129,7 @@
     <string name="range_preview">范围预览</string>
     <string name="center_preview">显示中心点</string>
     <string name="pause_preview">暂停预览</string>
+    <string name="preview_parameter_setting">参数设置</string>
+    <string name="filename_hint">最多输入28个字节</string>
 
 </resources>
