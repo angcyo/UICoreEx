@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/lib_padding_left"
+    android:paddingTop="@dimen/lib_hdpi"
+    android:paddingRight="@dimen/lib_padding_left"
+    android:paddingBottom="@dimen/lib_hdpi">
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/lib_button"
+        style="@style/DefaultButtonMinStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minHeight="45dp"
+        android:paddingHorizontal="@dimen/lib_xxhdpi"
+        android:text="@string/stop_transfer"
+        android:textColor="@color/text_general_color"
+        app:button_gradient_colors="#00000000" />
+
+</FrameLayout>

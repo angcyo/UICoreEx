@@ -2,6 +2,8 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.engrave.dslitem.EngraveDividerItem
+import com.angcyo.engrave.dslitem.engrave.DataStopTransferItem
+import com.angcyo.engrave.dslitem.engrave.DataTransmittingItem
 import com.angcyo.engrave.dslitem.engrave.EngraveDataNameItem
 import com.angcyo.engrave.dslitem.engrave.EngraveDataPxItem
 import com.angcyo.item.DslBlackButtonItem
@@ -54,6 +56,18 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
     fun renderTransmitting() {
         updateIViewTitle(_string(R.string.transmitting))
         showCloseView(false)
+
+        renderDslAdapter {
+            DataTransmittingItem()() {
+                itemProgress = 50
+            }
+            DataStopTransferItem()() {
+                itemClick = {
+                    //结束文件传输
+                    
+                }
+            }
+        }
     }
 
     //

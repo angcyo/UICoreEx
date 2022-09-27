@@ -23,7 +23,7 @@
     <string name="previewing">预览中…</string>
     <string name="print_setting">镭雕设置</string>
     <string name="print_v2_package_size_setting">文件设置</string>
-    <string name="transmitting">文件传输中…</string>
+    <string name="transmitting">文件传输中</string>
     <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
     <string name="estimated_remaining_time">预计剩余时间:</string>
     <string name="print_v2_package_Laser_start">开始镭雕</string>
@@ -131,5 +131,6 @@
     <string name="pause_preview">暂停预览</string>
     <string name="preview_parameter_setting">参数设置</string>
     <string name="filename_hint">最多输入28个字节</string>
+    <string name="stop_transfer">结束传输</string>
 
 </resources>

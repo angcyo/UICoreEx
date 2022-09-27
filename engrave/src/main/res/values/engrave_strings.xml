@@ -14,7 +14,7 @@
     <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
     <string name="previewing">In preview …</string>
     <string name="print_v2_package_edit_name">File Naming</string>
-    <string name="transmitting">File in transit…</string>
+    <string name="transmitting">File in transit</string>
     <string name="print_v2_package_printing">Laser engraving</string>
     <string name="print_v2_package_print_state">Paused</string>
     <string name="print_v2_package_print_over">Ended laser engraving</string>
@@ -139,5 +139,6 @@
     <string name="pause_preview">暂停预览</string>
     <string name="preview_parameter_setting">参数设置</string>
     <string name="filename_hint">最多输入28个字节</string>
+    <string name="stop_transfer">结束传输</string>
 
 </resources>
