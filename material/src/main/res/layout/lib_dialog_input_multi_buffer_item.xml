@@ -8,7 +8,7 @@
     android:paddingVertical="@dimen/lib_hdpi">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/lib_buffer_input_layout"
+        android:id="@+id/lib_text_input_layout"
         style="@style/LibTextInputLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

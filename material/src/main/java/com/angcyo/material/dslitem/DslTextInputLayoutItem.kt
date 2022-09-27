@@ -31,7 +31,7 @@ class DslTextInputLayoutItem : DslBaseEditItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-        /*itemHolder.v<BufferTextInputLayout>(R.id.lib_buffer_input_layout)?.apply {
+        /*itemHolder.v<TextInputLayout>(R.id.lib_text_input_layout)?.apply {
             hint = itemEditHint
             counterMaxLength = itemMaxInputLength
         }*/
