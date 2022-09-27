@@ -172,7 +172,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
                         }
                     }
                     addDialogItem {
-                        itemText = _string(R.string.print_v2_package_Laser_start)
+                        itemText = _string(R.string.start_engrave)
                         itemClick = {
                             toEngrave()
                         }

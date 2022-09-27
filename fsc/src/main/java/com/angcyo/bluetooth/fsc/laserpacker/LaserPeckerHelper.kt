@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
@@ -18,6 +19,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.flow
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexString
 
@@ -184,7 +186,11 @@ object LaserPeckerHelper {
         val name = parseProductName(softwareVersion)
 
         //激光类型, 默认是蓝光
-        var laserTypeList: List<Byte> = listOf(LASER_TYPE_BLUE)
+        //蓝光
+        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, _string(R.string.laser_type_blue))
+        //白光
+        val whiteInfo = LaserTypeInfo(LASER_TYPE_WHITE, 1064, _string(R.string.laser_type_white))
+        var laserTypeList: List<LaserTypeInfo> = listOf(blueInfo)
 
         //所有支持的分辨率
         val pxList: MutableList<PxInfo> = mutableListOf()
@@ -251,7 +257,7 @@ object LaserPeckerHelper {
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
-                laserTypeList = listOf(LASER_TYPE_WHITE)
+                laserTypeList = listOf(whiteInfo)
             }
             LIII_MAX, LIV -> {
                 //最佳打印范围是椭圆
@@ -268,7 +274,7 @@ object LaserPeckerHelper {
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
-                laserTypeList = listOf(LASER_TYPE_BLUE, LASER_TYPE_WHITE)
+                laserTypeList = listOf(blueInfo, whiteInfo)
             }
         }
 
@@ -419,6 +425,15 @@ object LaserPeckerHelper {
     fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
         vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.let {
+            result.addAll(it)
+        }
+        return result
+    }
+
+    /**返回设备支持的光源列表*/
+    fun findProductSupportLaserTypeList(): List<LaserTypeInfo> {
+        val result = mutableListOf<LaserTypeInfo>()
+        vmApp<LaserPeckerModel>().productInfoData.value?.laserTypeList?.let {
             result.addAll(it)
         }
         return result

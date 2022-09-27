@@ -158,12 +158,12 @@ class FscDeviceModel : LifecycleViewModel() {
                 } else if (product.isLIII()) {
                     EngraveHelper.initL3MaterialList()
                 }
-                vmApp<EngraveModel>().engraveOptionInfoData.value?.let { option ->
-                    if (product.typeList.isNotEmpty() && !product.typeList.contains(option.type)) {
+                /*vmApp<EngraveModel>().engraveOptionInfoData.value?.let { option ->
+                    if (product.laserTypeList.isNotEmpty() && !product.laserTypeList.contains(option.type)) {
                         //当前设备不支持选中的激光类型, 则调整一下
-                        option.type = product.typeList.first()
+                        option.type = product.laserTypeList.first()
                     }
-                }
+                }*/
             }
         }
 

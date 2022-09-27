@@ -147,11 +147,6 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
         }*/
     }
 
-    /**生成百分比数值列表*/
-    fun percentList(max: Int = 100): List<Int> {
-        return (1..max).toList()
-    }
-
     //region ---Engrave---
 /*
     */

@@ -3,8 +3,9 @@ package com.angcyo.engrave.dslitem.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.item.DslSegmentSolidTabItem
+import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.library.ex._string
 
 /**
  * 数据分辨率选择
@@ -17,7 +18,7 @@ import com.angcyo.item.style.itemCurrentIndex
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/01
  */
-class EngraveDataPxItem : DslSegmentSolidTabItem() {
+class EngraveDataPxItem : EngraveSegmentScrollItem() {
 
     /**待雕刻的数据*/
     /*var itemEngraveDataInfo: EngraveDataInfo? = null
@@ -37,7 +38,7 @@ class EngraveDataPxItem : DslSegmentSolidTabItem() {
         }
 
     init {
-        itemLayoutId = R.layout.item_engrave_data_px
+        itemText = _string(R.string.resolution_ratio)
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

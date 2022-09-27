@@ -35,7 +35,7 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_WHITE]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE]
      * */
-    var typeList: List<Byte> = listOf(LaserPeckerHelper.LASER_TYPE_BLUE),
+    var laserTypeList: List<LaserTypeInfo> = listOf(),
     /**设备支持的分辨率
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var pxList: List<PxInfo> = emptyList(),

@@ -2,9 +2,7 @@
 <resources>
     <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
-    <string name="laser_type">激光类型</string>
-    <string name="laser_type_white">白光</string>
-    <string name="laser_type_blue">蓝光</string>
+    <string name="laser_type">激光光源</string>
     <string name="object_diameter">物体直径</string>
 
     <string name="blue_no_device_connected">未连接设备</string>
@@ -26,7 +24,7 @@
     <string name="transmitting">文件传输中</string>
     <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
     <string name="estimated_remaining_time">预计剩余时间:</string>
-    <string name="print_v2_package_Laser_start">开始镭雕</string>
+    <string name="start_engrave">开始镭雕</string>
     <string name="print_v2_package_Laser_pause">暂停镭雕</string>
     <string name="print_v2_package_Laser_stop">结束镭雕</string>
     <string name="print_v2_package_Laser_continue">继续镭雕</string>
@@ -132,5 +130,10 @@
     <string name="preview_parameter_setting">参数设置</string>
     <string name="filename_hint">最多输入28个字节</string>
     <string name="stop_transfer">结束传输</string>
+    <string name="engrave_tip">请勿在高反光材质上雕刻</string>
+    <string name="engrave_layer_config">雕刻图层</string>
+    <string name="engrave_layer_bitmap">图片</string>
+    <string name="engrave_layer_fill">填充</string>
+    <string name="engrave_layer_line">线条</string>
 
 </resources>

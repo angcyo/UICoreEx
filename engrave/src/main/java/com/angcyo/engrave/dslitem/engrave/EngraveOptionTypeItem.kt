@@ -31,7 +31,7 @@ class EngraveOptionTypeItem : DslCheckFlowItem() {
     init {
         itemText = "${_string(R.string.laser_type)}:"
         itemLayoutId = R.layout.item_engrave_data_px
-        itemCheckItems = vmApp<LaserPeckerModel>().productInfoData.value?.typeList ?: emptyList()
+        itemCheckItems = vmApp<LaserPeckerModel>().productInfoData.value?.laserTypeList ?: emptyList()
         checkGroupItemConfig.itemCheckItemToText = {
             if (it == LaserPeckerHelper.LASER_TYPE_WHITE) {
                 _string(R.string.laser_type_white)
