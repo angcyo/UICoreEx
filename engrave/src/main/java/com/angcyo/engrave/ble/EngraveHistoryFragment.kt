@@ -1,7 +1,6 @@
 package com.angcyo.engrave.ble
 
 import android.graphics.Color
-import android.graphics.RectF
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
@@ -46,15 +45,15 @@ class EngraveHistoryFragment : BaseDslFragment() {
     val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper()
 
     /**雕刻布局*/
-    val engraveLayoutHelper = EngraveLayoutHelper()
+    val engraveFlowLayoutHelper = EngraveFlowLayoutHelper()
 
-    /**雕刻预览布局*/
+/*    *//**雕刻预览布局*//*
     val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this).apply {
         //next
         onNextAction = {
             toEngrave()
         }
-    }
+    }*/
 
     /**产品布局*/
     val engraveProductLayoutHelper = EngraveProductLayoutHelper(this)
@@ -237,8 +236,8 @@ class EngraveHistoryFragment : BaseDslFragment() {
     fun toEngrave() {
         vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
 
-        engraveLayoutHelper.engraveReadyInfo = _readyDataInfo
-        engraveLayoutHelper.showIn(this)
+/*        engraveFlowLayoutHelper.engraveReadyInfo = _readyDataInfo
+        engraveFlowLayoutHelper.showIn(this)*/
     }
 
 }

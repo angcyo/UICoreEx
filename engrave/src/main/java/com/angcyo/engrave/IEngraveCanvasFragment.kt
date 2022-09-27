@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.fragment.AbsFragment
 
 /**
@@ -12,10 +13,10 @@ interface IEngraveCanvasFragment {
     /**界面*/
     val fragment: AbsFragment
 
-    /**雕刻预览布局*/
-    val engravePreviewLayoutHelper: EngravePreviewLayoutHelper
+    /**创作界面*/
+    val canvasDelegate: CanvasDelegate?
 
-    /**雕刻布局*/
-    val engraveLayoutHelper: EngraveLayoutHelper
+    /**雕刻流程布局*/
+    val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
 
 }

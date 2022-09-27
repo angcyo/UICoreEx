@@ -79,7 +79,8 @@ data class QueryStateParser(
     var rConnect: Int = 0,
     //滑台连接状态, 0未连接, 1连接
     var sConnect: Int = 0,
-    var stateTime: Long = nowTime() //app数据时间
+    var stateTime: Long = nowTime(), //app数据时间
+    var deviceAddress: String? = null, //app数据, 当前数据的设备地址
 ) : IPacketParser<QueryStateParser> {
 
     companion object {

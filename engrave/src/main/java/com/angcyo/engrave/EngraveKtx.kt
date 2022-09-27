@@ -6,6 +6,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toElapsedTime
 
 /**
+ * 扩展
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/20
  */

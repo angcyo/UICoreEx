@@ -48,11 +48,15 @@ class PreviewBrightnessItem : BasePreviewItem() {
             progressTextFormatAction = itemProgressTextFormatAction
             setProgress((HawkEngraveKeys.lastPwrProgress * 100).toInt(), animDuration = 0)
             config {
-                onSeekChanged = { value, fraction, fromUser ->
+                /*onSeekChanged = { value, fraction, fromUser ->
                     if (!isTouchDown && fromUser) {
                         HawkEngraveKeys.lastPwrProgress = fraction
                         previewModel.refreshPreview(true, false)
                     }
+                }*/
+                onSeekTouchEnd = { value, fraction ->
+                    HawkEngraveKeys.lastPwrProgress = fraction
+                    previewModel.refreshPreview(true, false)
                 }
             }
         }

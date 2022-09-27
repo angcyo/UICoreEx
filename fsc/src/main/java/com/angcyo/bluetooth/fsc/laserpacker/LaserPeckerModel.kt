@@ -41,6 +41,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * */
     val deviceStateData: MutableHoldLiveData<QueryStateParser?> = vmHoldDataNull()
 
+    /**设备状态切换记录*/
+    val deviceStateStackData = vmData(mutableListOf<QueryStateParser>())
+
     /**设备设置状态
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
      * */
@@ -81,7 +84,28 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     @AnyThread
     fun updateDeviceState(queryStateParser: QueryStateParser) {
+        queryStateParser.deviceAddress = LaserPeckerHelper.initDeviceAddress
         L.i("设备状态:$queryStateParser".writeBleLog())
+
+        //记录设备状态改变
+        val stackList = deviceStateStackData.value
+        val lastState = stackList!!.lastOrNull()
+        if (lastState?.deviceAddress != queryStateParser.deviceAddress) {
+            //设备不一样
+            stackList.clear()
+            stackList.add(queryStateParser)
+            deviceStateStackData.postValue(stackList)
+        } else {
+            //相同设备, 状态不一样才记录
+            if (lastState?.mode != queryStateParser.mode &&
+                lastState?.workState != queryStateParser.workState
+            ) {
+                stackList.add(queryStateParser)
+                deviceStateStackData.postValue(stackList)
+            }
+        }
+
+        //
         if (queryStateParser.error != 0) {
             doMain {
                 toast(queryStateParser.error.toErrorStateString())

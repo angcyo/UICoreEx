@@ -364,7 +364,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     itemRenderer == canvasView.canvasDelegate.getSelectedRenderer()
                 ) {
                     //设备正在预览模式, 更新预览
-                    engraveCanvasFragment.engravePreviewLayoutHelper.updatePreview()
+                    engraveCanvasFragment.engraveFlowLayoutHelper.updatePreview()
                 }
             }
 
@@ -409,7 +409,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 val peckerModel = vmApp<LaserPeckerModel>()
                 if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
                     //设备正在预览模式, 更新预览
-                    engraveCanvasFragment.engravePreviewLayoutHelper.updatePreview()
+                    engraveCanvasFragment.engraveFlowLayoutHelper.updatePreview()
                 }
             }
 
