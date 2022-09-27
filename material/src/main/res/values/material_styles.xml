@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--org.buffer.android.buffertextinputlayout.BufferTextInputLayout-->
+    <!--com.google.android.material.textfield.TextInputLayout-->
+    <style name="LibTextInputLayoutStyle" parent="LibBodyTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="hintAnimationEnabled">true</item>
+        <item name="hintEnabled">true</item>
+        <item name="errorEnabled">false</item>
+        <item name="counterEnabled">false</item>
+        <item name="counterMaxLength">-1</item>
+    </style>
+</resources>

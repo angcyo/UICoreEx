@@ -9,7 +9,6 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.github.biometric.delegate.androidxlegacy.AndroidXBiometricAuth
 import com.angcyo.github.biometric.delegate.legacy.LegacyBiometricAuth
-import com.angcyo.github.biometric.delegate.marshmallow.MarshmallowBiometricAuth
 import com.angcyo.github.biometric.delegate.pie.PieBiometricAuth
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -76,7 +75,8 @@ interface BiometricAuth {
                 versionCode >= Build.VERSION_CODES.M -> if (useAndroidXBiometricPrompt) {
                     AndroidXBiometricAuth(activity)
                 } else {
-                    MarshmallowBiometricAuth(activity)
+                    //MarshmallowBiometricAuth(activity)
+                    LegacyBiometricAuth()
                 }
                 else -> LegacyBiometricAuth()
             }

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/engrave_preview_layout"
+    android:id="@+id/engrave_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:clickable="true"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent">
+    android:clickable="true">
 
     <!--阴影-->
     <View
@@ -44,7 +41,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="@dimen/lib_xhdpi"
-            android:text="@string/previewing"
+            android:text="@string/print_setting"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
