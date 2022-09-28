@@ -40,5 +40,8 @@ dependencies {
 
     //颜色选择
     //https://github.com/duanhong169/ColorPicker
-    api 'com.github.duanhong169:colorpicker:1.1.6'
+    //api 'com.github.duanhong169:colorpicker:1.1.6'
+    api 'com.github.angcyo:ColorPicker:1.1.6.1'
+    //implementation 'com.github.angcyo:CheckerboardDrawable:1.0.2.1'
+
 }
