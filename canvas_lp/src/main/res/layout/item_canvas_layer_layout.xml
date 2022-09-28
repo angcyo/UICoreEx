@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/lib_bg_selector"
+    tools:background="@drawable/lib_tran_circle_shape"
     tools:layout_width="200dp">
 
     <View
@@ -18,81 +19,41 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/layer_name_view"
-        style="@style/LibBodyTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/lib_hdpi"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/control_layout"
-        tools:text="图层名称图层名称图层名称图层名称" />
-
-    <LinearLayout
-        android:id="@+id/control_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/layer_name_view"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/layer_name_view">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/layer_visible_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/lib_bg2_selector"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/canvas_layer_visible" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/layer_delete_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/lib_bg2_selector"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/canvas_layer_delete"
-            app:tint="#242526" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/layer_sort_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/lib_bg2_selector"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/canvas_layer_sort"
-            app:tint="#242526" />
-
-    </LinearLayout>
-
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/layer_item_invisible_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="6dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
+        app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
+        app:srcCompat="@drawable/canvas_invisible_svg" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_drawable_view"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="@dimen/lib_hdpi"
-        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:id="@+id/layer_item_drawable_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layer_name_view"
-        tools:srcCompat="@drawable/canvas_layer_hide" />
+        app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
+        app:layout_constraintLeft_toRightOf="@id/layer_item_invisible_view"
+        app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
+        tools:srcCompat="@drawable/canvas_placeholder_svg" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_name_view"
+        android:id="@+id/layer_item_name_view"
         style="@style/LibBodyTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/lib_hdpi"
-        app:layout_constraintBottom_toBottomOf="@id/item_drawable_view"
-        app:layout_constraintLeft_toRightOf="@id/item_drawable_view"
+        android:minHeight="35dp"
+        android:paddingVertical="@dimen/lib_hdpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/layer_item_drawable_view"
         app:layout_constraintRight_toLeftOf="@id/lib_check_view"
-        app:layout_constraintTop_toTopOf="@id/item_drawable_view"
-        tools:text="绘制项目名称绘制项目名称绘制项目名称绘制项目名称" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="绘制项目" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_check_view"
@@ -100,10 +61,22 @@
         android:layout_height="30dp"
         android:background="@drawable/lib_bg2_selector"
         android:padding="@dimen/lib_hdpi"
-        app:layout_constraintBottom_toBottomOf="@id/item_name_view"
-        app:layout_constraintRight_toRightOf="@id/control_layout"
-        app:layout_constraintTop_toTopOf="@id/item_name_view"
-        app:srcCompat="@drawable/lib_check_selector" />
+        app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
+        app:layout_constraintRight_toLeftOf="@id/layer_item_sort_view"
+        app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
+        app:srcCompat="@drawable/canvas_check_selector" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/layer_item_sort_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="6dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/canvas_layer_sort" />
 
     <View
         android:layout_width="0dp"

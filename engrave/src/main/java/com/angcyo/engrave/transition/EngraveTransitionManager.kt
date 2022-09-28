@@ -1,6 +1,8 @@
 package com.angcyo.engrave.transition
 
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
+import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
@@ -34,6 +36,27 @@ class EngraveTransitionManager {
             EngraveLayerInfo(DATA_MODE_BLACK_WHITE, _string(R.string.engrave_layer_fill)),
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
+
+        /**根据雕刻图层, 获取对应的渲染器*/
+        fun getRendererList(
+            canvasDelegate: CanvasDelegate,
+            layerInfo: EngraveLayerInfo
+        ): List<BaseItemRenderer<*>> {
+            val rendererList = mutableListOf<BaseItemRenderer<*>>()
+            val selectList = canvasDelegate.getSelectedRendererList()
+            if (selectList.isEmpty()) {
+                rendererList.addAll(canvasDelegate.itemsRendererList)
+            } else {
+                rendererList.addAll(selectList)
+            }
+            return rendererList.filter { it.isVisible() }.filter {
+                if (it is DataItemRenderer) {
+                    it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                } else {
+                    false
+                }
+            }
+        }
     }
 
     /**数据转换器*/

@@ -31,7 +31,7 @@
         app:layout_constraintLeft_toRightOf="@id/item_color_view"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginLeft="0dp"
-        tools:srcCompat="@drawable/canvas_layer_hide"
+        tools:srcCompat="@drawable/canvas_placeholder_svg"
         tools:visibility="visible" />
 
     <View

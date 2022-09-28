@@ -4,10 +4,12 @@ import android.graphics.drawable.Drawable
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.library.ex._drawable
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dialog.inputDialog
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -23,15 +25,13 @@ class CanvasLayerItem : DslAdapterItem() {
     var itemRenderer: BaseItemRenderer<*>? = null
 
     /**排序事件*/
-    var itemSortAction: (DslViewHolder) -> Unit = {}
+    var itemSortAction: ((DslViewHolder) -> Unit)? = null
 
     //endregion ---core---
 
     //region ---计算属性---
 
     val itemLayerHide: Boolean get() = itemRenderer?.isVisible() == false
-
-    val itemLayerName: CharSequence? get() = itemRenderer?.getName()
 
     val itemItemDrawable: Drawable? get() = itemRenderer?.getRendererRenderItem()?.itemLayerDrawable
 
@@ -55,6 +55,26 @@ class CanvasLayerItem : DslAdapterItem() {
                 }
             }
         }
+
+        //长按重命名
+        itemLongClick = {
+            if (itemRenderer is DataItemRenderer) {
+                it.context.inputDialog {
+                    dialogTitle = _string(R.string.canvas_rename)
+                    defaultInputString =
+                        (itemRenderer as? DataItemRenderer)?.dataItem?.dataBean?.name
+                    onInputResult = { dialog, inputText ->
+                        (itemRenderer as? DataItemRenderer)?.dataItem?.dataBean?.name =
+                            "$inputText"
+                        itemRenderer?.let {
+                            itemCanvasDelegate?.dispatchItemVisibleChanged(it, it.isVisible())
+                        }
+                        false
+                    }
+                }
+            }
+            true
+        }
     }
 
     override fun onItemBind(
@@ -65,46 +85,31 @@ class CanvasLayerItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val selectedRenderer = itemCanvasDelegate?.getSelectedRenderer()
-        if (selectedRenderer is SelectGroupRenderer) {
-            itemRenderer?.let {
-                itemIsSelected = selectedRenderer.selectItemList.contains(it)
-            }
-            itemHolder.visible(R.id.background_view, false)
-        } else {
-            itemIsSelected = itemRenderer == selectedRenderer
-            itemHolder.visible(R.id.background_view, itemIsSelected)
-        }
+        //高亮选中的item
+        itemIsSelected =
+            itemCanvasDelegate?.getSelectedRendererList()?.contains(itemRenderer) == true
 
-        itemHolder.tv(R.id.layer_name_view)?.text = itemLayerName
-        if (itemLayerHide) {
-            itemHolder.img(R.id.layer_visible_view)
-                ?.setImageDrawable(_drawable(R.drawable.canvas_layer_hide))
-        } else {
-            itemHolder.img(R.id.layer_visible_view)
-                ?.setImageDrawable(_drawable(R.drawable.canvas_layer_visible))
-        }
+        itemHolder.visible(R.id.background_view, itemIsSelected)
+        itemHolder.visible(R.id.layer_item_sort_view, itemSortAction != null)
 
-        itemHolder.tv(R.id.item_name_view)?.text = itemItemName
-        itemHolder.img(R.id.item_drawable_view)
+        //可见性
+        itemHolder.invisible(R.id.layer_item_invisible_view, !itemLayerHide)
+
+        //item 名称
+        itemHolder.tv(R.id.layer_item_name_view)?.text = itemItemName
+        itemHolder.img(R.id.layer_item_drawable_view)
             ?.setImageDrawable(itemItemDrawable ?: itemRenderer?.preview())
 
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
 
         //事件
-        itemHolder.click(R.id.layer_visible_view) {
-            itemRenderer?.setVisible(itemLayerHide)
-            itemCanvasDelegate?.refresh()
-            updateAdapterItem()
-        }
-        itemHolder.click(R.id.layer_delete_view) {
-            itemRenderer?.let {
-                itemCanvasDelegate?.removeItemRenderer(it, Strategy.normal)
-            }
-        }
-        itemHolder.click(R.id.layer_sort_view) {
+        itemHolder.click(R.id.layer_item_sort_view) {
             //排序
-            itemSortAction(itemHolder)
+            itemSortAction?.invoke(itemHolder)
+        }
+        itemHolder.click(R.id.layer_item_invisible_view) {
+            //可见
+            itemRenderer?.setVisible(true, Strategy.preview)
         }
 
         itemHolder.click(R.id.lib_check_view) {

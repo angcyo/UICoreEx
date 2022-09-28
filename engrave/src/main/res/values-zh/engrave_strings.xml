@@ -138,5 +138,8 @@
     <string name="back_creation">返回创作</string>
     <string name="progress">进度</string>
     <string name="share_community">分享到社区</string>
+    <string name="canvas_normal_layer">正常图层</string>
+    <string name="canvas_engrave_layer">雕刻图层</string>
+    <string name="canvas_rename">重命名</string>
 
 </resources>
