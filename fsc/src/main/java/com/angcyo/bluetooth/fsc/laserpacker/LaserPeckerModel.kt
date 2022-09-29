@@ -268,6 +268,10 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 }
 
 /**静态方法*/
-fun queryDeviceState(flag: Int = CommandQueueHelper.FLAG_ASYNC) {
+fun asyncQueryDeviceState(flag: Int = CommandQueueHelper.FLAG_ASYNC) {
+    vmApp<LaserPeckerModel>().queryDeviceState(flag)
+}
+
+fun syncQueryDeviceState(flag: Int = CommandQueueHelper.FLAG_NORMAL) {
     vmApp<LaserPeckerModel>().queryDeviceState(flag)
 }

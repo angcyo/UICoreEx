@@ -141,5 +141,7 @@
     <string name="canvas_normal_layer">正常图层</string>
     <string name="canvas_engrave_layer">雕刻图层</string>
     <string name="canvas_rename">重命名</string>
+    <string name="retry">重试</string>
+    <string name="data_exception">数据传输失败</string>
 
 </resources>

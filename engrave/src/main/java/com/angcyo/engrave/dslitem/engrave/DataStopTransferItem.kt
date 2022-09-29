@@ -1,7 +1,9 @@
 package com.angcyo.engrave.dslitem.engrave
 
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.model.TransferModel
 import com.angcyo.item.BaseButtonItem
 import com.angcyo.widget.DslViewHolder
 
@@ -11,6 +13,9 @@ import com.angcyo.widget.DslViewHolder
  * @since 2022/09/27
  */
 class DataStopTransferItem : BaseButtonItem() {
+
+    /**数据传输是否有异常*/
+    var itemException: Throwable? = null
 
     init {
         itemLayoutId = R.layout.item_data_stop_transfer_layout
@@ -23,6 +28,13 @@ class DataStopTransferItem : BaseButtonItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+
+        itemHolder.visible(R.id.error_text_view, itemException != null)
+        itemHolder.visible(R.id.lib_retry_button, itemException != null)
+
+        itemHolder.click(R.id.lib_retry_button) {
+            vmApp<TransferModel>().retryTransfer()
+        }
     }
 
 }

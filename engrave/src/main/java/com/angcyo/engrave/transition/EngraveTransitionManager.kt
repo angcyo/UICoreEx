@@ -9,7 +9,6 @@ import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
-import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
@@ -28,6 +27,11 @@ class EngraveTransitionManager {
         /**生成一个雕刻需要用到的文件索引*/
         fun generateEngraveIndex(): Int {
             return (System.currentTimeMillis() / 1000).toInt()
+        }
+
+        /**生成一个雕刻的文件名*/
+        fun generateEngraveName(): String {
+            return "filename-${HawkEngraveKeys.lastEngraveCount + 1}"
         }
 
         /**图层, 以及图层数据*/

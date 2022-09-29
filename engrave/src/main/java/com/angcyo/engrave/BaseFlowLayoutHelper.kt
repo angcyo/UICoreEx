@@ -4,7 +4,7 @@ import android.content.Context
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.queryDeviceState
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
@@ -92,7 +92,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
                 //关闭界面时, 如果在预览状态, 则退出预览
                 ExitCmd().enqueue()
-                queryDeviceState()
+                syncQueryDeviceState()
             }
         }
     }
@@ -183,13 +183,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     /**持续检查工作作态*/
-    fun checkDeviceState() {
+    fun delayCheckDeviceState() {
         _delay(1_000) {
             //延迟1秒后, 继续查询状态
             laserPeckerModel.queryDeviceState() { bean, error ->
                 if (error != null || loopCheckDeviceState) {
                     //出现了错误, 继续查询
-                    checkDeviceState()
+                    delayCheckDeviceState()
                 }
             }
         }

@@ -54,7 +54,7 @@ interface ICommand {
      * */
     fun toHexCommandString(): String = ""
 
-    /**获取指令超时时长*/
+    /**获取指令超时时长, 毫秒*/
     fun getReceiveTimeout(): Long = DEFAULT_RECEIVE_TIMEOUT
 
     /**转换成日志*/

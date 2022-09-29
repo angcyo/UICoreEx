@@ -6,6 +6,10 @@ import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.trimAndPad
 
 /**
+ *
+ * [com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd]
+ * 数据传输指令, 需要先进入文件传输模式
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
@@ -392,7 +396,7 @@ data class DataCmd(
     }
 
     override fun getReceiveTimeout(): Long {
-        return 30 * 60 * 1_000 //10分钟
+        return 30 * 60 * 1_000 //30分钟
     }
 
     override fun equals(other: Any?): Boolean {

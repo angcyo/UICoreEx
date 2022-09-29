@@ -2,7 +2,6 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.command.*
 import com.angcyo.engrave.dslitem.engrave.*
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.library.ex.*
 
 /**
@@ -11,9 +10,6 @@ import com.angcyo.library.ex.*
  * @since 2022/05/30
  */
 class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
-
-    /**雕刻数据转换管理*/
-    val engraveTransitionManager = EngraveTransitionManager()
 
 /*    */
     /**雕刻对象*//*

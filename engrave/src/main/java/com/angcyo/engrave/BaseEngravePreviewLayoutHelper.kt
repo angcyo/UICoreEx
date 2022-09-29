@@ -1,6 +1,6 @@
 package com.angcyo.engrave
 
-import com.angcyo.bluetooth.fsc.laserpacker.queryDeviceState
+import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
@@ -61,7 +61,7 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }
             }
             updatePreview()
-            queryDeviceState()
+            asyncQueryDeviceState()
         }
     }
 

@@ -1,6 +1,9 @@
 package com.angcyo.engrave
 
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.engrave.dslitem.EngraveDividerItem
@@ -13,6 +16,7 @@ import com.angcyo.engrave.model.TransferModel
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
+import com.angcyo.viewmodel.observe
 
 /**
  * 雕刻item布局渲染
@@ -20,6 +24,9 @@ import com.angcyo.library.ex._string
  * @since 2022/09/27
  */
 abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
+
+    //数据传输模式
+    val transferModel = vmApp<TransferModel>()
 
     override fun renderFlowItems() {
         when (engraveFlow) {
@@ -32,8 +39,17 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    //数据传输模式
-    val transferModel = vmApp<TransferModel>()
+    override fun bindDeviceState() {
+        super.bindDeviceState()
+        transferModel.transferStateData.observe(this, allowBackward = false) {
+            it?.apply {
+                //数据传输进度通知
+                if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
+                    renderFlowItems()
+                }
+            }
+        }
+    }
 
     /**生成百分比数值列表*/
     fun percentList(max: Int = 100): List<Int> {
@@ -64,11 +80,17 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 itemButtonText = _string(R.string.ui_next)
                 itemClick = {
                     //下一步, 数据传输界面
+                    //让设备进入空闲模式
+                    //进入空闲模式
+                    ExitCmd().enqueue()
+                    syncQueryDeviceState()
+
                     engraveFlow = ENGRAVE_FLOW_TRANSMITTING
                     renderFlowItems()
 
                     val canvasDelegate = engraveCanvasFragment?.canvasDelegate
                     if (canvasDelegate == null) {
+                        //不是画布上的数据, 可能是恢复的数据
                     } else {
                         transferModel.startCreateData(transferDataConfigInfo, canvasDelegate)
                     }
@@ -82,15 +104,23 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         updateIViewTitle(_string(R.string.transmitting))
         showCloseView(false)
 
-        renderDslAdapter {
-            DataTransmittingItem()() {
-                itemProgress = 50
-            }
-            DataStopTransferItem()() {
-                itemClick = {
-                    //结束文件传输
-                    engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
-                    renderFlowItems()
+        val taskStateData = transferModel.transferStateData.value
+        if (taskStateData?.isFinish == true) {
+            //文件传输完成
+            engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+            renderFlowItems()
+        } else {
+            renderDslAdapter {
+                DataTransmittingItem()() {
+                    itemProgress = taskStateData?.progress ?: 0
+                }
+                DataStopTransferItem()() {
+                    itemException = taskStateData?.error
+                    itemClick = {
+                        vmApp<TransferModel>().stopTransfer()
+                        engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                        renderFlowItems()
+                    }
                 }
             }
         }
