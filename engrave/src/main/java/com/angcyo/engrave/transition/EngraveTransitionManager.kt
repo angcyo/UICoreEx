@@ -37,10 +37,11 @@ class EngraveTransitionManager {
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
 
-        /**根据雕刻图层, 获取对应的渲染器*/
+        /**根据雕刻图层, 获取对应的渲染器
+         * [layerInfo] 为空时, 表示所有*/
         fun getRendererList(
             canvasDelegate: CanvasDelegate,
-            layerInfo: EngraveLayerInfo
+            layerInfo: EngraveLayerInfo?
         ): List<BaseItemRenderer<*>> {
             val rendererList = mutableListOf<BaseItemRenderer<*>>()
             val selectList = canvasDelegate.getSelectedRendererList()
@@ -51,7 +52,11 @@ class EngraveTransitionManager {
             }
             return rendererList.filter { it.isVisible() }.filter {
                 if (it is DataItemRenderer) {
-                    it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                    if (layerInfo == null) {
+                        true
+                    } else {
+                        it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                    }
                 } else {
                     false
                 }
