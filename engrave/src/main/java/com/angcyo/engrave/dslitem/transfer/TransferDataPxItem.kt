@@ -1,8 +1,10 @@
-package com.angcyo.engrave.dslitem.engrave
+package com.angcyo.engrave.dslitem.transfer
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.library.ex._string
@@ -18,17 +20,16 @@ import com.angcyo.library.ex._string
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/01
  */
-class EngraveDataPxItem : EngraveSegmentScrollItem() {
+class TransferDataPxItem : EngraveSegmentScrollItem() {
 
-    /**待雕刻的数据*/
-    /*var itemEngraveDataInfo: EngraveDataInfo? = null
+    /**数据配置信息*/
+    var itemTransferDataConfigInfo: TransferDataConfigInfo? = null
         set(value) {
             field = value
-            LaserPeckerHelper.findPxInfo(value?.px)?.let {
-                //默认选中
-                itemCheckedItems = mutableListOf(it)
-            }
-        }*/
+            val index = itemPxList?.indexOfFirst { it.px == value?.px }
+            //默认选中
+            itemCurrentIndex = index ?: 0
+        }
 
     /**分辨率列表*/
     var itemPxList: List<PxInfo>? = null
@@ -42,12 +43,9 @@ class EngraveDataPxItem : EngraveSegmentScrollItem() {
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
-        super.onItemChangeListener(item)
-        /*val selected = itemCheckedItems.first()
-        itemEngraveDataInfo?.apply {
-            px = (selected as PxInfo).px
-        }*/
-        itemCurrentIndex
+        //super.onItemChangeListener(item)
+        val px = itemPxList?.get(itemCurrentIndex)?.px ?: LaserPeckerHelper.DEFAULT_PX
+        itemTransferDataConfigInfo?.px = px
     }
 
 }

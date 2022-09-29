@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.result.ActivityResultCaller
 import androidx.fragment.app.Fragment
@@ -10,7 +11,11 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasDataBean
 import com.angcyo.canvas.data.ItemDataBean
+import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_THRESHOLD_SPACE
 import com.angcyo.canvas.graphics.GraphicsHelper
+import com.angcyo.canvas.graphics.addBitmapRender
+import com.angcyo.canvas.items.data.DataItemRenderer
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
 import com.angcyo.dialog.hideLoading
@@ -19,11 +24,9 @@ import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.library.L
-import com.angcyo.library.ex.dp
-import com.angcyo.library.ex.readString
-import com.angcyo.library.ex.setBgDrawable
-import com.angcyo.library.ex.toColorInt
+import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
+import com.angcyo.opencv.OpenCV
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -137,5 +140,18 @@ fun CanvasDelegate.openCanvasFile(data: String) {
         items.forEach { itemData ->
             GraphicsHelper.renderItemDataBean(this, itemData, false)
         }
+    }
+}
+
+/**添加一个黑白算法处理过的图片*/
+fun CanvasDelegate.addBlackWhiteBitmapRender(bitmap: Bitmap?): DataItemRenderer? {
+    bitmap ?: return null
+    return addBitmapRender(bitmap) {
+        imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+        src = OpenCV.bitmapToBlackWhite(
+            bitmap,
+            DEFAULT_THRESHOLD_SPACE.toInt(),
+            0
+        ).toBase64Data()
     }
 }

@@ -15,15 +15,7 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.graphics.addBitmapRender
-import com.angcyo.canvas.graphics.addGCodeRender
-import com.angcyo.canvas.graphics.addLineRender
-import com.angcyo.canvas.graphics.addLoveRender
-import com.angcyo.canvas.graphics.addOvalRender
-import com.angcyo.canvas.graphics.addPentagramRender
-import com.angcyo.canvas.graphics.addPolygonRender
-import com.angcyo.canvas.graphics.addRectRender
-import com.angcyo.canvas.graphics.addSvgRender
+import com.angcyo.canvas.graphics.*
 import com.angcyo.canvas.items.PictureBitmapItem
 import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.data.DataItemRenderer
@@ -43,25 +35,12 @@ import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
-import com.angcyo.dsladapter.DragCallbackHelper
-import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.DslAdapterStatusItem
-import com.angcyo.dsladapter._dslAdapter
-import com.angcyo.dsladapter.eachItem
-import com.angcyo.dsladapter.findItemByTag
+import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isShowDebug
-import com.angcyo.library.ex.longFeedback
-import com.angcyo.library.ex.resetAll
-import com.angcyo.library.ex.size
-import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.*
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
@@ -175,14 +154,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         onDrawableAction = { data, drawable ->
                             when (drawable) {
                                 //bitmap
-                                is BitmapDrawable -> canvasDelegate.addBitmapRender(drawable.bitmap)
+                                is BitmapDrawable -> canvasDelegate.addBlackWhiteBitmapRender(
+                                    drawable.bitmap
+                                )
                                 //gcode
                                 is GCodeDrawable -> canvasDelegate.addGCodeRender(data as String)
                                 //svg
                                 is SharpDrawable -> canvasDelegate.addSvgRender(data as String)
                                 //other
                                 else -> {
-                                    canvasDelegate.addBitmapRender(drawable.toBitmap())
+                                    canvasDelegate.addBlackWhiteBitmapRender(drawable.toBitmap())
                                 }
                             }
                             UMEvent.CANVAS_MATERIAL.umengEventValue()
@@ -307,6 +288,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**事件监听*/
     fun initCanvasListener(vh: DslViewHolder, canvasView: CanvasView) {
+        canvasView.keepScreenOn = true
         //事件监听
         canvasView.canvasDelegate.canvasListenerList.add(object : ICanvasListener {
 

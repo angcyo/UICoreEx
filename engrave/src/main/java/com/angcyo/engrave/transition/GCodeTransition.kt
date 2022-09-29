@@ -1,27 +1,26 @@
 package com.angcyo.engrave.transition
 
+import android.graphics.Bitmap
 import android.graphics.Path
-import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.items.PictureBitmapItem
-import com.angcyo.canvas.items.PictureGCodeItem
-import com.angcyo.canvas.items.PictureShapeItem
-import com.angcyo.canvas.items.PictureSharpItem
+import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
+import com.angcyo.canvas.data.toMm
+import com.angcyo.canvas.items.data.DataBitmapItem
+import com.angcyo.canvas.items.data.DataItemRenderer
+import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
-import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.TransferDataConfigInfo
+import com.angcyo.engrave.data.TransferDataInfo
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.app
 import com.angcyo.library.ex.lines
-import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.toBitmap
-import com.angcyo.library.unit.MmValueUnit
-import com.angcyo.svg.StylePath
+import com.angcyo.opencv.OpenCV
 import java.io.File
 
 /**
@@ -30,6 +29,7 @@ import java.io.File
  * @since 2022/08/22
  */
 class GCodeTransition : IEngraveTransition {
+/*
 
     override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
         val item = renderer.getRendererRenderItem() ?: return null
@@ -229,12 +229,107 @@ class GCodeTransition : IEngraveTransition {
 
         return false
     }
+*/
 
+    override fun doTransitionTransferData(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo
+    ): TransferDataInfo? {
+        if (renderer is DataItemRenderer) {
+            val dataItem = renderer.dataItem
+            val dataBean = dataItem?.dataBean
+            if (getDataMode(dataBean, transferDataConfigInfo) == CanvasConstant.DATA_MODE_GCODE) {
+                //需要处理成GCode数据
+                if (dataItem is DataPathItem) {
+                    val pathList = dataItem.dataPathList
+                    return _transitionPathTransferData(renderer, transferDataConfigInfo, pathList)
+                } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
+                    //图片元素, 路径转GCode算法
+                    val gCodeDrawable = dataItem.gCodeDrawable
+                    return _transitionPathTransferData(
+                        renderer,
+                        transferDataConfigInfo,
+                        listOf(gCodeDrawable!!.gCodePath)
+                    )
+                } else {
+                    //其他元素, 使用图片转GCode算法
+                    val bitmap = renderer.getEngraveBitmap()
+                    bitmap?.let {
+                        return _transitionBitmapTransferData(
+                            renderer,
+                            transferDataConfigInfo,
+                            bitmap
+                        )
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    fun _transitionPathTransferData(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo,
+        pathList: List<Path>
+    ): TransferDataInfo {
+        val gCodeFile = CanvasDataHandleOperate.pathToGCode(
+            pathList,
+            renderer.getBounds(),
+            renderer.rotate
+        )
+        return _handleGCodeTransferDataInfo(renderer, transferDataConfigInfo, gCodeFile)
+    }
+
+    fun _transitionBitmapTransferData(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo,
+        bitmap: Bitmap
+    ): TransferDataInfo {
+        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
+        val gCodeFile = OpenCV.bitmapToGCode(
+            app(),
+            pxBitmap,
+            (bitmap.width / 2).toMm().toDouble(),
+            lineSpace = DEFAULT_LINE_SPACE.toDouble(),
+            direction = 0,
+            angle = 0.0
+        )
+        return _handleGCodeTransferDataInfo(renderer, transferDataConfigInfo, gCodeFile)
+    }
+
+    fun _handleGCodeTransferDataInfo(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo,
+        gCodeFile: File
+    ): TransferDataInfo {
+        val transferDataInfo =
+            TransferDataInfo(index = EngraveTransitionManager.generateEngraveIndex())
+        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
+        initTransferDataInfo(renderer, transferDataConfigInfo, transferDataInfo)
+        transferDataInfo.lines = gCodeFile.lines()
+
+        val pathGCodeText = gCodeFile.readText()
+        transferDataInfo.data = pathGCodeText.toByteArray()
+
+        //2:保存一份GCode文本数据/原始数据
+        saveEngraveData(transferDataInfo.index, pathGCodeText, "gcode")
+
+        val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
+
+        //3:保存一份GCode的图片数据/预览数据
+        val bitmap = gCodeDrawable?.toBitmap()
+        saveEngraveData("${transferDataInfo.index}.p", bitmap, "png")
+
+        return transferDataInfo
+    }
+
+/*
+    */
     /**
      * [engraveReadyInfo] 需要赋值的数据对象
      * [gCodeFile] gcode数据文件对象
      * [rotateBounds] itemRenderer旋转后的矩形坐标, px坐标, 内部自行转换成mm
-     * */
+     * *//*
     fun _handleGCodeEngraveDataInfo(
         engraveReadyInfo: EngraveReadyInfo,
         gCodeFile: File,
@@ -277,5 +372,5 @@ class GCodeTransition : IEngraveTransition {
                 engraveReadyInfo.previewDataPath = saveEngraveData("${index}.p", bitmap, "png")
             }
         }
-    }
+    }*/
 }

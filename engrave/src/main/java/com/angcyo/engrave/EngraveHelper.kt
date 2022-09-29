@@ -2,10 +2,8 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.data.EngraveDataInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex.toHexInt
@@ -18,61 +16,6 @@ import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
  * @since 2022/06/21
  */
 object EngraveHelper {
-
-    /**根据雕刻数据, 返回数据指令*/
-    fun getEngraveDataCmd(engraveData: EngraveDataInfo): DataCmd? {
-        val bytes = engraveData.data
-        if (bytes == null || bytes.isEmpty()) {
-            return null
-        }
-
-        //数据类型封装
-        val dataCmd: DataCmd = when (engraveData.engraveDataType) {
-            DataCmd.ENGRAVE_TYPE_BITMAP -> DataCmd.bitmapData(
-                engraveData.index!!,
-                engraveData.x,
-                engraveData.y,
-                engraveData.width,
-                engraveData.height,
-                engraveData.px,
-                engraveData.name,
-                bytes,
-            )
-            DataCmd.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
-                engraveData.index!!,
-                engraveData.x,
-                engraveData.y,
-                engraveData.width,
-                engraveData.height,
-                engraveData.name,
-                engraveData.lines,
-                bytes
-            )
-            DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
-                engraveData.index!!,
-                engraveData.x,
-                engraveData.y,
-                engraveData.width,
-                engraveData.height,
-                engraveData.px,
-                engraveData.name,
-                engraveData.lines,
-                bytes,
-            )
-            //DataCmd.ENGRAVE_TYPE_BITMAP_PATH ->
-            else -> DataCmd.bitmapDitheringData(
-                engraveData.index!!,
-                engraveData.x,
-                engraveData.y,
-                engraveData.width,
-                engraveData.height,
-                engraveData.px,
-                engraveData.name,
-                bytes
-            )
-        }
-        return dataCmd
-    }
 
     fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
         return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1

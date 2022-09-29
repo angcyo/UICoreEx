@@ -1,10 +1,15 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.core.vmApp
+import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
+import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
+import com.angcyo.engrave.model.TransferModel
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
@@ -27,12 +32,18 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
+    //数据传输模式
+    val transferModel = vmApp<TransferModel>()
+
     /**生成百分比数值列表*/
     fun percentList(max: Int = 100): List<Int> {
         return (1..max).toList()
     }
 
     //
+
+    /**数据配置信息*/
+    var transferDataConfigInfo: TransferDataConfigInfo = TransferDataConfigInfo()
 
     /**渲染传输数据配置界面*/
     fun renderTransferConfig() {
@@ -41,12 +52,12 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         showCloseView(true, _string(R.string.ui_back))
 
         renderDslAdapter {
-            EngraveDataNameItem()() {
-                //itemEngraveReadyInfo = engraveReadyInfo
+            TransferDataNameItem()() {
+                itemTransferDataConfigInfo = transferDataConfigInfo
             }
-            EngraveDataPxItem()() {
-                //itemEngraveDataInfo = dataInfo
+            TransferDataPxItem()() {
                 itemPxList = LaserPeckerHelper.findProductSupportPxList()
+                itemTransferDataConfigInfo = transferDataConfigInfo
             }
             EngraveDividerItem()()
             DslBlackButtonItem()() {
@@ -55,6 +66,12 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                     //下一步, 数据传输界面
                     engraveFlow = ENGRAVE_FLOW_TRANSMITTING
                     renderFlowItems()
+
+                    val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+                    if (canvasDelegate == null) {
+                    } else {
+                        transferModel.startCreateData(transferDataConfigInfo, canvasDelegate)
+                    }
                 }
             }
         }

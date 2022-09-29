@@ -2,8 +2,8 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.angcyo.canvas.graphics.addBitmapRender
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
 import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.component.getPhoto
 import com.angcyo.component.luban.luban
@@ -44,7 +44,7 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                                 media.loadPath()?.apply {
                                     //canvasView.addDrawableRenderer(toBitmap())
                                     //canvasView.addBitmapRenderer(toBitmap())
-                                    itemCanvasDelegate?.addBitmapRender(toBitmap())
+                                    itemCanvasDelegate?.addBlackWhiteBitmapRender(toBitmap())
                                 }
                             })
                         }
@@ -59,7 +59,7 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                                 L.i("${path}->${newPath}")
 
                                 //压缩后
-                                itemCanvasDelegate?.addBitmapRender(newPath.toBitmap())
+                                itemCanvasDelegate?.addBlackWhiteBitmapRender(newPath.toBitmap())
                             })
                         }
                     }

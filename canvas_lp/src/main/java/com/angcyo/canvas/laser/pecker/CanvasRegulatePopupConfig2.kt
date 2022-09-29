@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem2
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
@@ -30,10 +31,6 @@ import com.angcyo.widget.recycler.DslRecyclerView
  * @since 2022/09/20
  */
 class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
-
-    companion object {
-
-    }
 
     /**需要调整的项目, 需要啥就添加对应的项
      * [com.angcyo.canvas.laser.pecker.CanvasRegulatePopupConfig.KEY_INVERT]
@@ -92,22 +89,23 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
                     val start = 0.125f
                     val max = 5f
-                    val def = getFloatOrDef(CanvasRegulatePopupConfig.KEY_LINE_SPACE, max)
+                    val def =
+                        getFloatOrDef(CanvasRegulatePopupConfig.KEY_LINE_SPACE, DEFAULT_LINE_SPACE)
 
                     itemProgressTextFormatAction = {
-                        (start + (5 - start) * it._progressFraction).canvasDecimal(3)
+                        (start + (max - start) * it._progressFraction).canvasDecimal(3)
                     }
 
                     property[CanvasRegulatePopupConfig.KEY_LINE_SPACE] = def
                     itemSeekProgress = if (def == start) {
                         0
                     } else {
-                        ((def / (5 - start)) * 100).toInt()
+                        ((def / (max - start)) * 100).toInt()
                     }
 
                     itemSeekTouchEnd = { value, fraction ->
                         property[CanvasRegulatePopupConfig.KEY_LINE_SPACE] =
-                            start + (5 - start) * fraction
+                            start + (max - start) * fraction
                     }
                 }
             }

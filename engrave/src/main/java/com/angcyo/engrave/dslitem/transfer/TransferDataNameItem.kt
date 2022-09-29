@@ -1,10 +1,10 @@
-package com.angcyo.engrave.dslitem.engrave
+package com.angcyo.engrave.dslitem.transfer
 
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.item.style.EditItemConfig
 import com.angcyo.item.style.IEditItem
 import com.angcyo.item.style.itemEditText
@@ -14,17 +14,17 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
- * 雕刻名字输入item
+ * 传输数据名字输入item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/01
  */
-class EngraveDataNameItem : DslAdapterItem(), IEditItem {
+class TransferDataNameItem : DslAdapterItem(), IEditItem {
 
-    /**待雕刻的数据*/
-    var itemEngraveReadyInfo: EngraveReadyInfo? = null
+    /**数据配置信息*/
+    var itemTransferDataConfigInfo: TransferDataConfigInfo? = null
         set(value) {
             field = value
-            itemEditText = value?.engraveData?.name
+            itemEditText = value?.name
         }
 
     override var editItemConfig: EditItemConfig = EditItemConfig().apply {
@@ -69,7 +69,7 @@ class EngraveDataNameItem : DslAdapterItem(), IEditItem {
                     foregroundColor = Color.RED
                 } else {
                     itemThrowable = null
-                    itemEngraveReadyInfo?.engraveData?.name = text.toString()
+                    itemTransferDataConfigInfo?.name = text.toString()
                 }
             }
             append("/${DataCmd.DEFAULT_NAME_BYTE_COUNT} bytes")

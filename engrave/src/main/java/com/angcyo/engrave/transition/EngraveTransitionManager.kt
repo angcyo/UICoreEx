@@ -1,21 +1,21 @@
 package com.angcyo.engrave.transition
 
-import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
+import androidx.annotation.WorkerThread
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
-import com.angcyo.canvas.utils.toDataModeStr
-import com.angcyo.canvas.utils.toDataTypeStr
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveDataInfo
-import com.angcyo.engrave.data.EngraveLayerInfo
-import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.*
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.size
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 雕刻数据相关处理
@@ -37,7 +37,7 @@ class EngraveTransitionManager {
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
 
-        /**根据雕刻图层, 获取对应的渲染器
+        /**根据雕刻图层, 获取对应选中的渲染器
          * [layerInfo] 为空时, 表示所有*/
         fun getRendererList(
             canvasDelegate: CanvasDelegate,
@@ -72,7 +72,9 @@ class EngraveTransitionManager {
         transitionList.add(BitmapTransition())
     }
 
-    /**将[renderer]转换成雕刻预备的数据 */
+/*
+    */
+    /**将[renderer]转换成雕刻预备的数据 *//*
     @CallPoint
     fun transitionReadyData(renderer: BaseItemRenderer<*>?): EngraveReadyInfo? {
         val itemRenderer = renderer ?: return null
@@ -99,8 +101,10 @@ class EngraveTransitionManager {
         }
         return result
     }
-
-    /**真正的雕刻数据处理*/
+    */
+/*
+    */
+    /**真正的雕刻数据处理*//*
     @CallPoint
     fun transitionEngraveData(
         renderer: BaseItemRenderer<*>?,
@@ -123,6 +127,104 @@ class EngraveTransitionManager {
                 engraveReadyInfo.engraveData?.engraveDataType?.toEngraveTypeStr()
             )
         }
+    }*/
+
+    /**相同类型的[TransferDataInfo]会合并在一起*/
+    @CallPoint
+    @WorkerThread
+    fun transitionTransferData(
+        canvasDelegate: CanvasDelegate,
+        transferDataConfigInfo: TransferDataConfigInfo
+    ): List<TransferTaskData> {
+        val result = mutableListOf<TransferTaskData>()
+        engraveLayerList.forEach { engraveLayerInfo ->
+            val dataList = mutableListOf<TransferDataInfo>()
+            getRendererList(canvasDelegate, engraveLayerInfo).forEach { renderer ->
+                transitionTransferData(renderer, transferDataConfigInfo)?.let { transferDataInfo ->
+                    dataList.add(transferDataInfo)
+                }
+            }
+            if (dataList.isNotEmpty()) {
+                if (dataList.size() == 1) {
+                    //只有1条数据, 不需要合并
+                    result.add(TransferTaskData(engraveLayerInfo, dataList))
+                } else {
+                    //多条数据
+                    if (engraveLayerInfo.mode == DATA_MODE_GCODE) {
+                        //GCode 数据合并
+                        val gcodeTransferDataInfo = _mergeTransferData(dataList)
+                        result.add(
+                            TransferTaskData(engraveLayerInfo, listOf(gcodeTransferDataInfo))
+                        )
+                    } else if (engraveLayerInfo.mode == DATA_MODE_BLACK_WHITE) {
+                        //线段数据合并
+                        val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
+                        result.add(
+                            TransferTaskData(engraveLayerInfo, listOf(bitmapPathTransferDataInfo))
+                        )
+                    } else {
+                        //抖动数据不需要合并
+                        result.add(TransferTaskData(engraveLayerInfo, dataList))
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    /**将[renderer]转换成传输给机器的数据,
+     * 内部有耗时转换操作, 建议在子线程处理*/
+    @CallPoint
+    @WorkerThread
+    fun transitionTransferData(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo
+    ): TransferDataInfo? {
+        var result: TransferDataInfo? = null
+
+        for (transition in transitionList) {
+            result = transition.doTransitionTransferData(renderer, transferDataConfigInfo)
+            if (result != null) {
+                break
+            }
+        }
+
+        return result
+    }
+
+    //
+
+    /**合并数据*/
+    fun _mergeTransferData(dataList: List<TransferDataInfo>): TransferDataInfo {
+        val resultTransferDataInfo = TransferDataInfo(index = generateEngraveIndex())
+        resultTransferDataInfo.data = byteWriter {
+            dataList.forEach {
+                write(it.data)
+            }
+        }
+        val first = dataList.first()
+        resultTransferDataInfo.engraveDataType = first.engraveDataType
+        resultTransferDataInfo.px = first.px
+        resultTransferDataInfo.name = first.name
+        resultTransferDataInfo.x = first.x
+        resultTransferDataInfo.y = first.y
+
+        var right = first.x + first.width
+        var bottom = first.y + first.height
+        var lines = 0
+        dataList.forEach {
+            resultTransferDataInfo.x = min(resultTransferDataInfo.x, it.x)
+            resultTransferDataInfo.y = min(resultTransferDataInfo.y, it.y)
+            right = max(right, it.x + it.width)
+            bottom = max(bottom, it.y + it.height)
+            lines += it.lines
+        }
+
+        resultTransferDataInfo.lines = lines
+        resultTransferDataInfo.width = right - resultTransferDataInfo.x
+        resultTransferDataInfo.height = bottom - resultTransferDataInfo.y
+
+        return resultTransferDataInfo
     }
 
 }

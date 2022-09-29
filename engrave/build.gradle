@@ -16,6 +16,9 @@ dependencies {
 
     //https://github.com/chrisbanes/PhotoView/
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    //图片算法
+    api 'com.angcyo:opencv:hingin-SNAPSHOT'
 }
 
 apply from: allGradle.libfscaar

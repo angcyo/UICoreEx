@@ -5,6 +5,7 @@ import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
@@ -12,6 +13,8 @@ import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.data.EngraveReadyInfo
+import com.angcyo.engrave.data.TransferDataConfigInfo
+import com.angcyo.engrave.data.TransferDataInfo
 import com.angcyo.library.component.byteWriter
 import kotlin.experimental.or
 
@@ -121,6 +124,7 @@ class BitmapTransition : IEngraveTransition {
             return logBuilder.toString() to bytes
         }
     }
+/*
 
     override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
         val item = renderer.getRendererRenderItem() ?: return null
@@ -183,6 +187,70 @@ class BitmapTransition : IEngraveTransition {
         _handleBitmapData(engraveReadyInfo)
 
         return true
+    }
+*/
+
+    override fun doTransitionTransferData(
+        renderer: BaseItemRenderer<*>,
+        transferDataConfigInfo: TransferDataConfigInfo
+    ): TransferDataInfo? {
+        if (renderer is DataItemRenderer) {
+            val dataItem = renderer.dataItem
+            val dataBean = dataItem?.dataBean
+            if (dataBean != null) {
+                val bitmap = renderer.getEngraveBitmap()
+                if (bitmap != null) {
+                    val dataMode = getDataMode(dataBean, transferDataConfigInfo)
+                    val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
+                    val transferDataInfo =
+                        TransferDataInfo(index = EngraveTransitionManager.generateEngraveIndex())
+
+                    //保存一份预览的图片数据
+                    saveEngraveData("${transferDataInfo.index}.p", pxBitmap, "png")
+
+                    if (dataMode == CanvasConstant.DATA_MODE_BLACK_WHITE) {
+                        //黑白数据, 发送线段数据
+                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+                        val listBitmapPath = handleBitmapPath(pxBitmap, 128)
+                        transferDataInfo.data = byteWriter {
+                            listBitmapPath.forEach {
+                                write(it.x, 2)
+                                write(it.y, 2)
+                                write(it.len, 2)
+                            }
+                        }
+                        transferDataInfo.lines = listBitmapPath.size
+
+                        //路径数据写入日志
+                        saveEngraveData(transferDataInfo.index, "$listBitmapPath", "bp")
+                    } else if (dataMode == CanvasConstant.DATA_MODE_GREY) {
+                        //色阶数据, 红色通道的灰度雕刻数据
+                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
+                        val data = pxBitmap.engraveColorBytes()
+                        transferDataInfo.data = data
+                        val channelBitmap = data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
+                        saveEngraveData(transferDataInfo.index, channelBitmap, "png")
+                    } else {
+                        //抖动数据
+                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+                        //白色1 黑色0
+                        val pair = handleBitmapByte(pxBitmap, 128)
+                        transferDataInfo.data = pair.second
+
+                        //路径数据写入日志
+                        saveEngraveData(transferDataInfo.index, pair.first, "dt")
+                    }
+
+                    initTransferDataInfo(renderer, transferDataConfigInfo, transferDataInfo)
+                    //注意这里要覆盖宽/高
+                    transferDataInfo.width = pxBitmap.width
+                    transferDataInfo.height = pxBitmap.height
+
+                    return transferDataInfo
+                }
+            }
+        }
+        return null
     }
 
     /**处理图片数据的坐标*/
