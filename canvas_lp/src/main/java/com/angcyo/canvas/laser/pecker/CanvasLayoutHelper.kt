@@ -37,14 +37,7 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
-import com.angcyo.canvas.laser.pecker.dslitem.AddImageItem
-import com.angcyo.canvas.laser.pecker.dslitem.AddTextItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasArrangeItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasControlItem2
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasEditControlItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasLayerItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasLayerNameItem
-import com.angcyo.canvas.laser.pecker.dslitem.ShapeItem
+import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.addPictureBitmapRenderer
@@ -436,6 +429,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     //更新图层
                     updateLayerLayout(vh, canvasView)
                 }
+                if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
+                    updateLayerListLayout(vh, canvasView)
+                }
 
                 //预览选中的元素边框
                 val peckerModel = vmApp<LaserPeckerModel>()
@@ -642,15 +638,20 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     fun removeLayerItem(vh: DslViewHolder, canvasView: CanvasView, item: IRenderer) {
         if (vh.isVisible(R.id.canvas_layer_layout)) {
             vh.rv(R.id.canvas_layer_view)?._dslAdapter?.apply {
-                render {
-                    eachItem { index, dslAdapterItem ->
-                        if (dslAdapterItem is CanvasLayerItem && dslAdapterItem.itemRenderer == item) {
-                            dslAdapterItem.removeAdapterItem()
+                val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
+                if (tabIndex == 0) {
+                    render {
+                        eachItem { index, dslAdapterItem ->
+                            if (dslAdapterItem is CanvasLayerItem && dslAdapterItem.itemRenderer == item) {
+                                dslAdapterItem.removeAdapterItem()
+                            }
+                        }
+                        if (canvasView.canvasDelegate.itemsRendererList.isEmpty()) {
+                            setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_EMPTY)
                         }
                     }
-                    if (canvasView.canvasDelegate.itemsRendererList.isEmpty()) {
-                        setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_EMPTY)
-                    }
+                } else {
+                    updateLayerListLayout(vh, canvasView)
                 }
             }
         }
@@ -728,7 +729,6 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                             itemRenderer = renderer
 
                             itemSortAction = {
-                                it.itemView.longFeedback()
                                 _layerDragHelper?.startDrag(it)
                             }
                         }
@@ -749,17 +749,20 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     EngraveTransitionManager.engraveLayerList.forEach {
                         CanvasLayerNameItem()() {
                             itemGroupExtend = true
+                            itemChanging = true
                             itemLayerInfo = it
 
-                            val itemList =
-                                EngraveTransitionManager.getRendererList(canvasDelegate, it)
-                                    .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
-                                        CanvasLayerItem().apply {
-                                            itemCanvasDelegate = canvasDelegate
-                                            itemRenderer = renderer
+                            itemLoadSubList = {
+                                val itemList =
+                                    EngraveTransitionManager.getRendererList(canvasDelegate, it)
+                                        .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
+                                            CanvasBaseLayerItem().apply {
+                                                itemCanvasDelegate = canvasDelegate
+                                                itemRenderer = renderer
+                                            }
                                         }
-                                    }
-                            itemSubList.resetAll(itemList)
+                                itemSubList.resetAll(itemList)
+                            }
                         }
                     }
                 }

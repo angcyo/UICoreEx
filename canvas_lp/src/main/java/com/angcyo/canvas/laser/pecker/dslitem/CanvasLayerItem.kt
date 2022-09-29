@@ -1,11 +1,8 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
-import android.graphics.drawable.Drawable
-import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -17,27 +14,14 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/09
  */
-class CanvasLayerItem : DslAdapterItem() {
+class CanvasLayerItem : CanvasBaseLayerItem() {
 
     //region ---core---
-
-    var itemCanvasDelegate: CanvasDelegate? = null
-    var itemRenderer: BaseItemRenderer<*>? = null
 
     /**排序事件*/
     var itemSortAction: ((DslViewHolder) -> Unit)? = null
 
     //endregion ---core---
-
-    //region ---计算属性---
-
-    val itemLayerHide: Boolean get() = itemRenderer?.isVisible() == false
-
-    val itemItemDrawable: Drawable? get() = itemRenderer?.getRendererRenderItem()?.itemLayerDrawable
-
-    val itemItemName: CharSequence? get() = itemRenderer?.getRendererRenderItem()?.itemLayerName
-
-    //endregion ---计算属性---
 
     init {
         itemLayoutId = R.layout.item_canvas_layer_layout
@@ -95,15 +79,10 @@ class CanvasLayerItem : DslAdapterItem() {
         //可见性
         itemHolder.invisible(R.id.layer_item_invisible_view, !itemLayerHide)
 
-        //item 名称
-        itemHolder.tv(R.id.layer_item_name_view)?.text = itemItemName
-        itemHolder.img(R.id.layer_item_drawable_view)
-            ?.setImageDrawable(itemItemDrawable ?: itemRenderer?.preview())
-
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
 
         //事件
-        itemHolder.click(R.id.layer_item_sort_view) {
+        itemHolder.longClick(R.id.layer_item_sort_view) {
             //排序
             itemSortAction?.invoke(itemHolder)
         }

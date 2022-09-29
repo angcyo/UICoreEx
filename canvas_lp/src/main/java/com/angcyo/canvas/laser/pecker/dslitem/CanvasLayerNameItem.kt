@@ -3,7 +3,9 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.view.View
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.containsPayload
 import com.angcyo.engrave.data.EngraveLayerInfo
+import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -33,23 +35,16 @@ class CanvasLayerNameItem : DslAdapterItem() {
 
         //箭头角度控制
         val imageView = itemHolder.v<View>(R.id.lib_image_view)
-        imageView?.apply {
-            rotation = if (itemGroupExtend) {
-                -90f
-            } else {
-                -180f
-            }
+        if (!payloads.containsPayload(PAYLOAD_UPDATE_EXTEND)) {
+            imageView?.rotation = if (itemGroupExtend) -90f else -180f
         }
 
-        itemHolder.tv(R.id.lib_text_view)?.text = itemLayerInfo?.label
+        itemHolder.tv(R.id.lib_text_view)?.text = "${itemLayerInfo?.label} (${itemSubList.size()})"
 
         //展开or关闭动画控制
         itemHolder.clickItem {
             imageView?.apply {
-                animate()
-                    .setDuration(300)
-                    .rotation(if (itemGroupExtend) -90f else -180f)
-                    .start()
+                animate().setDuration(300).rotation(if (itemGroupExtend) -180f else -90f).start()
             }
             itemGroupExtend = !itemGroupExtend
         }

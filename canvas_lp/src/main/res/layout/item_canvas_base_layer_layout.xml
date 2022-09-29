@@ -4,20 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/lib_bg_selector"
     tools:background="@drawable/lib_tran_circle_shape"
     tools:layout_width="200dp">
-
-    <View
-        android:id="@+id/background_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/lib_bg_press"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/layer_item_invisible_view"
@@ -26,7 +14,7 @@
         android:background="@drawable/lib_bg2_selector"
         android:padding="6dp"
         android:scaleType="fitCenter"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
         app:srcCompat="@drawable/canvas_invisible_svg" />
@@ -47,35 +35,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/lib_hdpi"
+        android:layout_marginRight="@dimen/lib_hdpi"
         android:minHeight="35dp"
         android:paddingVertical="@dimen/lib_hdpi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/layer_item_drawable_view"
-        app:layout_constraintRight_toLeftOf="@id/lib_check_view"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="绘制项目" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/lib_check_view"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/lib_bg2_selector"
-        android:padding="@dimen/lib_hdpi"
-        app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
-        app:layout_constraintRight_toLeftOf="@id/layer_item_sort_view"
-        app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
-        app:srcCompat="@drawable/canvas_check_selector" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/layer_item_sort_view"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/lib_bg2_selector"
-        android:padding="6dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/canvas_layer_sort" />
-    
+        tools:text="绘制项目绘制项目绘制项目绘制项目绘制项目" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
