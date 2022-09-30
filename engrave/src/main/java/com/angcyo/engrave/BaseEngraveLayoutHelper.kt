@@ -5,6 +5,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.data.EngraveConfigInfo
+import com.angcyo.engrave.data.EngraveDataParam
 import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -12,10 +14,15 @@ import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
+import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.item.DslBlackButtonItem
+import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.library.L
 import com.angcyo.library.ex._string
+import com.angcyo.library.toast
 import com.angcyo.viewmodel.observe
 
 /**
@@ -39,12 +46,33 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
+    /**雕刻状态*/
+    var engraveState: EngraveModel.EngraveState? = null
+
     override fun bindDeviceState() {
         super.bindDeviceState()
+        //
         transferModel.transferStateData.observe(this, allowBackward = false) {
             it?.apply {
                 //数据传输进度通知
+                if (it.isFinish) {
+                    engraveConfigInfo = transferModel.taskEngraveConfigInfo
+                    selectLayerMode = engraveConfigInfo?.getLayerList()?.firstOrNull()?.mode ?: 0
+                }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
+                    renderFlowItems()
+                }
+            }
+        }
+        //
+        engraveModel.engraveStateData.observe(this, allowBackward = false) {
+            it?.apply {
+                if (engraveFlow == ENGRAVE_FLOW_ENGRAVING) {
+                    engraveState = it
+                    if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
+                        //雕刻完成
+                        engraveFlow = ENGRAVE_FLOW_FINISH
+                    }
                     renderFlowItems()
                 }
             }
@@ -58,8 +86,29 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
     //
 
-    /**数据配置信息*/
-    var transferDataConfigInfo: TransferDataConfigInfo = TransferDataConfigInfo()
+    /**数据配置信息, 在进入页面之前初始化*/
+    lateinit var transferDataConfigInfo: TransferDataConfigInfo
+
+    /**雕刻参数配置信息, 进入对应页面前初始化*/
+    var engraveConfigInfo: EngraveConfigInfo? = null
+
+    /**当前选中的图层模式*/
+    var selectLayerMode: Int = 0
+
+    override fun onEngraveFlowChanged(from: Int, to: Int) {
+        super.onEngraveFlowChanged(from, to)
+        if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
+            if (!::transferDataConfigInfo.isInitialized) {
+                transferDataConfigInfo = TransferDataConfigInfo()
+            }
+        } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
+            /*if (!::engraveConfigInfo.isInitialized) {
+                engraveConfigInfo = EngraveConfigInfo()
+            }*/
+        }
+    }
+
+    //
 
     /**渲染传输数据配置界面*/
     fun renderTransferConfig() {
@@ -109,6 +158,8 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             //文件传输完成
             engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
             renderFlowItems()
+            //退出打印模式, 进入空闲模式
+            ExitCmd().enqueue()
         } else {
             renderDslAdapter {
                 DataTransmittingItem()() {
@@ -134,6 +185,10 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         engraveBackFlow = ENGRAVE_FLOW_PREVIEW
         showCloseView(true, _string(R.string.ui_back))
 
+        val engraveConfigInfo = engraveConfigInfo ?: return
+        val engraveDataParam =
+            engraveConfigInfo.getEngraveDataByLayerMode(selectLayerMode) ?: return
+
         //材质列表
         val materialList = EngraveHelper.getProductMaterialList()
 
@@ -145,47 +200,47 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_material)
                 itemWheelList = materialList
-                /*val material =
-                    engraveOptionInfo?.material ?: _string(R.string.material_custom)
-                val index = materialList.indexOfFirst { it.toText() == material }
-                if (index == -1) {
-                    engraveOptionInfo?.material =
-                        materialList.getOrNull(0)?.toText()?.toString()
-                            ?: _string(R.string.material_custom)
-                }
-                itemSelectedIndex = max(0, index)
-                itemTag = EngraveOptionInfo::material.name
-                itemEngraveOptionInfo = engraveOptionInfo*/
+                itemTag = EngraveDataParam::materialName.name
+                itemSelectedIndex = 0
             }
-            EngraveSegmentScrollItem()() {
-                itemText = _string(R.string.laser_type)
-                itemSegmentList = LaserPeckerHelper.findProductSupportLaserTypeList()
+            if (laserPeckerModel.productInfoData.value?.isLIV() == true) {
+                EngraveSegmentScrollItem()() {
+                    itemText = _string(R.string.laser_type)
+                    itemSegmentList = LaserPeckerHelper.findProductSupportLaserTypeList()
+                }
             }
             EngraveLayerConfigItem()() {
+                val layerList = engraveConfigInfo.getLayerList()
+                itemSegmentList = layerList
+                itemCurrentIndex = selectLayerMode
+                observeItemChange {
+                    selectLayerMode = layerList[itemCurrentIndex].mode
+                    renderFlowItems()
+                }
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_power)
                 itemWheelList = percentList()
-                /*itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.power)
-                itemTag = EngraveOptionInfo::power.name
-                itemEngraveOptionInfo = engraveOptionInfo*/
+                itemTag = EngraveDataParam::power.name
+                itemEngraveDataParam = engraveDataParam
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveDataParam.power)
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.custom_speed)
                 itemWheelList = percentList()
-                /*itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.depth)
-                itemTag = EngraveOptionInfo::depth.name
-                itemEngraveOptionInfo = engraveOptionInfo*/
+                itemTag = EngraveDataParam::depth.name
+                itemEngraveDataParam = engraveDataParam
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveDataParam.depth)
             }
             EngraveOptionWheelItem()() {
                 itemLabelText = _string(R.string.print_times)
                 itemWheelList = percentList(255)
-                /*itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveOptionInfo?.time)
-                itemTag = EngraveOptionInfo::time.name
-                itemEngraveOptionInfo = engraveOptionInfo*/
+                itemTag = EngraveDataParam::time.name
+                itemEngraveDataParam = engraveDataParam
+                itemSelectedIndex =
+                    EngraveHelper.findOptionIndex(itemWheelList, engraveDataParam.time)
             }
             EngraveConfirmItem()() {
                 itemClick = {
@@ -200,8 +255,12 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                             }
                         }
                     }*/
+                    L.i(engraveConfigInfo)
                     engraveFlow = ENGRAVE_FLOW_ENGRAVING
                     renderFlowItems()
+
+                    //开始雕刻
+                    engraveModel.startEngrave(engraveConfigInfo)
                 }
             }
         }
@@ -212,20 +271,31 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         updateIViewTitle(_string(R.string.engraving))
         engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
         showCloseView(false)
+
+        val engraveState = engraveState ?: return
+
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
             }
             EngraveProgressItem()() {
-
+                itemEngraveState = engraveState
             }
             EngravingInfoItem()() {
-
+                itemEngraveState = engraveState
             }
             EngravingControlItem()() {
+                itemEngraveState = engraveState
+                itemPauseAction = { isPause ->
+                    if (isPause) {
+                        engraveModel.continueEngrave()
+                    } else {
+                        engraveModel.pauseEngrave()
+                    }
+                }
                 itemStopAction = {
-                    engraveFlow = ENGRAVE_FLOW_FINISH
-                    renderFlowItems()
+                    //停止雕刻, 直接完成
+                    engraveModel.stopEngrave()
                 }
             }
         }
@@ -238,21 +308,31 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         showCloseView(true, _string(R.string.back_creation))
         renderDslAdapter {
             EngraveFinishTopItem()() {
-                itemText = "材质:angcyo 材质:angcyo 材质:angcyo"
+                itemEngraveConfigInfo = engraveConfigInfo
             }
-            EngraveLabelItem()() {
-                itemText = _string(R.string.engrave_layer_bitmap)
+            //
+            engraveConfigInfo?.engraveDataParamList?.forEach { engraveDataParam ->
+                val layerInfo =
+                    EngraveTransitionManager.engraveLayerList.find { it.mode == engraveDataParam.layerMode }
+
+                EngraveLabelItem()() {
+                    itemText = layerInfo?.label
+                }
+                EngraveFinishInfoItem()() {
+                    itemEngraveDataParam = engraveDataParam
+                }
             }
-            EngraveFinishInfoItem()()
-            EngraveLabelItem()() {
-                itemText = _string(R.string.engrave_layer_fill)
+            //
+            EngraveFinishControlItem()() {
+                itemShareAction = {
+                    toast("功能开发中...")
+                }
+                itemAgainAction = {
+                    //再次雕刻, 回退到参数配置页面
+                    engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+                    renderFlowItems()
+                }
             }
-            EngraveFinishInfoItem()()
-            EngraveLabelItem()() {
-                itemText = _string(R.string.engrave_layer_line)
-            }
-            EngraveFinishInfoItem()()
-            EngraveFinishControlItem()()
         }
     }
 

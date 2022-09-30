@@ -1,8 +1,15 @@
 package com.angcyo.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.EngraveConfigInfo
+import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.engrave.toEngraveTime
+import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻完成信息item
@@ -11,8 +18,10 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveFinishTopItem : DslAdapterItem() {
 
-    /**文本信息*/
-    var itemText: CharSequence? = null
+    /**雕刻配置信息*/
+    var itemEngraveConfigInfo: EngraveConfigInfo? = null
+
+    val engraveMode = vmApp<EngraveModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_top_layout
@@ -26,7 +35,26 @@ class EngraveFinishTopItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.lib_text_view)?.text = itemText
+        val engraveDataParam = itemEngraveConfigInfo?.engraveDataParamList?.firstOrNull()
+        itemHolder.tv(R.id.lib_text_view)?.text = span {
+            append(_string(R.string.custom_material))
+            append(":")
+            append(engraveDataParam?.materialName)
+
+            append(" ")
+            append(_string(R.string.resolution_ratio))
+            append(":")
+            val pxInfo = LaserPeckerHelper.findPxInfo(engraveDataParam?.dataList?.firstOrNull()?.px)
+            append(pxInfo?.des)
+
+            append(" ")
+            append(_string(R.string.work_time))
+            append(":")
+            val startEngraveTime = engraveMode._engraveTask?.startTime ?: 0
+            val endEngraveTime = engraveMode._engraveTask?.finishTime ?: 0
+            val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
+            append(engraveTime)
+        }
     }
 
 }

@@ -9,7 +9,6 @@ import com.angcyo.item.BaseButtonItem
  * @since 2022/06/02
  */
 class EngraveConfirmItem : BaseButtonItem() {
-
     init {
         itemLayoutId = R.layout.item_engrave_confirm_layout
     }

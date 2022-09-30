@@ -165,6 +165,6 @@ class PreviewModel : ViewModel() {
         }
 
         //后执行, 通知预览
-        engraveModel.updateEngravePreviewUuid(info?.itemUuid)
+        //engraveModel.updateEngravePreviewUuid(info?.itemUuid)
     }
 }

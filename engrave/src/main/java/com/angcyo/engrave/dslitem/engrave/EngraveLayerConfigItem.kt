@@ -3,7 +3,6 @@ package com.angcyo.engrave.dslitem.engrave
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.library.ex._string
 
 /**
@@ -15,7 +14,6 @@ class EngraveLayerConfigItem : EngraveSegmentScrollItem() {
 
     init {
         itemText = _string(R.string.engrave_layer_config)
-        itemSegmentList = EngraveTransitionManager.engraveLayerList
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

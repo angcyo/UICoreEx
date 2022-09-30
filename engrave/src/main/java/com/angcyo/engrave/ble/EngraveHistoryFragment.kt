@@ -234,7 +234,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
     /**去雕刻*/
     fun toEngrave() {
-        vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
+        //vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
 
 /*        engraveFlowLayoutHelper.engraveReadyInfo = _readyDataInfo
         engraveFlowLayoutHelper.showIn(this)*/

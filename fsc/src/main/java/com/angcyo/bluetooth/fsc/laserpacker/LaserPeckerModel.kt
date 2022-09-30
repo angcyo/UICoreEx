@@ -107,6 +107,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
         //
         if (queryStateParser.error != 0) {
+            //查询到设备异常
             doMain {
                 toast(queryStateParser.error.toErrorStateString())
             }
@@ -268,10 +269,16 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 }
 
 /**静态方法*/
-fun asyncQueryDeviceState(flag: Int = CommandQueueHelper.FLAG_ASYNC) {
-    vmApp<LaserPeckerModel>().queryDeviceState(flag)
+fun asyncQueryDeviceState(
+    flag: Int = CommandQueueHelper.FLAG_ASYNC,
+    block: IReceiveBeanAction = { _, _ -> }
+) {
+    vmApp<LaserPeckerModel>().queryDeviceState(flag, block)
 }
 
-fun syncQueryDeviceState(flag: Int = CommandQueueHelper.FLAG_NORMAL) {
-    vmApp<LaserPeckerModel>().queryDeviceState(flag)
+fun syncQueryDeviceState(
+    flag: Int = CommandQueueHelper.FLAG_NORMAL,
+    block: IReceiveBeanAction = { _, _ -> }
+) {
+    vmApp<LaserPeckerModel>().queryDeviceState(flag, block)
 }

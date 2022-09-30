@@ -542,34 +542,5 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
     }
 
     */
-    /**开始雕刻, 发送雕刻指令*//*
-    fun _startEngrave(index: Int, option: EngraveOptionInfo) {
-        EngraveCmd(
-            index,
-            option.power,
-            option.depth,
-            option.state,
-            option.x,
-            option.y,
-            max(1, option.time.toHexInt()).toByte(),
-            option.type,
-            0x09,
-            (MmValueUnit().convertPixelToValue(option.diameterPixel) * 100).roundToInt()
-        ).enqueue { bean, error ->
-            L.w("开始雕刻:${bean?.parse<MiniReceiveParser>()}")
-
-            if (error == null) {
-                engraveModel.startEngrave()
-                showEngravingItem()
-                laserPeckerModel.queryDeviceState()
-
-                UMEvent.ENGRAVE.umengEventValue {
-                    put(UMEvent.KEY_START_TIME, nowTime().toString())
-                }
-            } else {
-                "雕刻失败:$error".writeErrorLog()
-            }
-        }
-    }*/
 
 }

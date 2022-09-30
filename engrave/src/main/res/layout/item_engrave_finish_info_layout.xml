@@ -14,6 +14,6 @@
         app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
         app:r_flow_item_vertical_space="@dimen/lib_hdpi"
         app:r_flow_max_line_child_count="3"
-        app:r_flow_preview_item_layout_id="@layout/dsl_solid_tag_item" />
+        app:r_flow_preview_item_layout_id="@layout/dsl_tag_item" />
 
 </FrameLayout>

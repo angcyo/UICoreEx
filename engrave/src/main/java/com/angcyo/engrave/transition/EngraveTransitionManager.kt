@@ -41,6 +41,9 @@ class EngraveTransitionManager {
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
 
+        /**获取图层*/
+        fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.mode == mode }
+
         /**根据雕刻图层, 获取对应选中的渲染器
          * [layerInfo] 为空时, 表示所有*/
         fun getRendererList(
@@ -133,7 +136,8 @@ class EngraveTransitionManager {
         }
     }*/
 
-    /**相同类型的[TransferDataInfo]会合并在一起*/
+    /**相同类型的[TransferDataInfo]会合并在一起, 会根据列表顺序, 生成对应顺序的数据
+     * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]*/
     @CallPoint
     @WorkerThread
     fun transitionTransferData(

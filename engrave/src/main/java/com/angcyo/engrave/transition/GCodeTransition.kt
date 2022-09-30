@@ -286,13 +286,20 @@ class GCodeTransition : IEngraveTransition {
         bitmap: Bitmap
     ): TransferDataInfo {
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
-        val gCodeFile = OpenCV.bitmapToGCode(
+        var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,
-            (bitmap.width / 2).toMm().toDouble(),
+            (pxBitmap.width / 2).toMm().toDouble(),
             lineSpace = DEFAULT_LINE_SPACE.toDouble(),
             direction = 0,
             angle = 0.0
+        )
+        val gCodeText = gCodeFile.readText()
+        //GCode数据
+        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
+            gCodeText,
+            renderer.getBounds(),
+            renderer.rotate
         )
         return _handleGCodeTransferDataInfo(renderer, transferDataConfigInfo, gCodeFile)
     }

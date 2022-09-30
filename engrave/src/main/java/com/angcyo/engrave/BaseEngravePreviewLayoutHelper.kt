@@ -28,6 +28,13 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         }
     }
 
+    override fun onEngraveFlowChanged(from: Int, to: Int) {
+        super.onEngraveFlowChanged(from, to)
+        if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
+            //预览前的第三轴配置信息
+        }
+    }
+
     //
 
     /**渲染预览界面界面*/

@@ -4,24 +4,26 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
-import com.angcyo.engrave.data.TransferDataConfigInfo
-import com.angcyo.engrave.data.TransferDataInfo
-import com.angcyo.engrave.data.TransferTaskData
-import com.angcyo.engrave.data.TransferTaskStateData
+import com.angcyo.engrave.R
+import com.angcyo.engrave.data.*
 import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.FailException
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.str
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -99,11 +101,17 @@ class TransferModel : ViewModel() {
     /**传输状态数据*/
     val transferStateData = vmDataNull<TransferTaskStateData?>()
 
+    /**自动生成的雕刻参数配置信息
+     * [com.angcyo.engrave.model.TransferModel.createEngraveConfigInfo]
+     * */
+    var taskEngraveConfigInfo: EngraveConfigInfo? = null
+
     //
 
     var taskDataCacheList: List<TransferTaskData>? = null
 
     /**开始创建机器需要的数据*/
+    @CallPoint
     @WorkerThread
     fun startCreateData(
         transferDataConfigInfo: TransferDataConfigInfo,
@@ -128,6 +136,7 @@ class TransferModel : ViewModel() {
 
     /**重新传输*/
     @AnyThread
+    @CallPoint
     fun retryTransfer() {
         _isCancelTransfer = false
         if (!taskDataCacheList.isNullOrEmpty()) {
@@ -140,6 +149,7 @@ class TransferModel : ViewModel() {
     var _isCancelTransfer = false
 
     /**停止传输*/
+    @CallPoint
     fun stopTransfer() {
         transferStateData.postValue(null)
         _isCancelTransfer = true
@@ -150,10 +160,45 @@ class TransferModel : ViewModel() {
     }
 
     /**完成传输*/
+    @CallPoint
     fun finishTransfer() {
+        _transferTask?.let {
+            createEngraveConfigInfo(it)
+        }
         _isCancelTransfer = false
         _transferTask = null
         transferStateData.postValue(TransferTaskStateData(100, null, true))
+    }
+
+    /**根据数据, 创建对应点雕刻配置参数信息*/
+    fun createEngraveConfigInfo(task: TransferTask) {
+        if (task.count <= 0) {
+            taskEngraveConfigInfo = null
+            return
+        }
+        //分配一个材质
+        val material = MaterialEntity().apply {
+            resId = R.string.material_custom
+            power = HawkEngraveKeys.lastPower
+            depth = HawkEngraveKeys.lastDepth
+        }
+        val engraveConfigInfo = EngraveConfigInfo()
+        task.list.forEach {
+            //engraveConfigInfo.layerParamMap[it.layerInfo] = EngraveParam(it.layerInfo)
+            val param = EngraveDataParam(
+                it.layerInfo.mode,
+                material.toText().str(),
+                it.transferDataList
+            ).apply {
+                power = material.power
+                depth = material.depth
+                //激光光源
+                type = LaserPeckerHelper.findProductSupportLaserTypeList().firstOrNull()?.type
+                    ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            }
+            engraveConfigInfo.engraveDataParamList.add(param)
+        }
+        taskEngraveConfigInfo = engraveConfigInfo
     }
 
     //
@@ -192,7 +237,7 @@ class TransferModel : ViewModel() {
                                     task.index++
                                     _transferDataNext()
                                 } else {
-                                    dataCmd.enqueue(null, {
+                                    dataCmd.enqueue(progress = {
                                         //进度
                                         val progress = calcTransferProgress(
                                             it.sendPacketPercentage,
@@ -255,9 +300,13 @@ class TransferModel : ViewModel() {
         return clamp(result, 0, 100)
     }
 
+    //待发送的数据任务
     data class TransferTask(
+        //总共需要发送的数据量
         val count: Int,
+        //当前发送的索引
         var index: Int,
+        //每个图层下的所有数据
         val list: List<TransferTaskData>
     )
 

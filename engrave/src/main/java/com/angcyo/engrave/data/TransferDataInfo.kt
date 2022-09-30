@@ -18,9 +18,6 @@ data class TransferDataInfo(
      * */
     var engraveDataType: Int = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING,
 
-    /**数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库*/
-    var data: ByteArray? = null,
-
     //--图片/GCode数据相关属性, px修正过后的
 
     /**
@@ -58,4 +55,16 @@ data class TransferDataInfo(
      * 路径数据的总线段数
      * */
     var lines: Int = -1,
-)
+
+
+    //---雕刻指令后赋值
+
+    /**当前雕刻的次数*/
+    var printTimes: Int = 1,
+) {
+
+    //---放在这里声明的变量, 不会被toString引用---
+
+    /**数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库*/
+    var data: ByteArray? = null
+}

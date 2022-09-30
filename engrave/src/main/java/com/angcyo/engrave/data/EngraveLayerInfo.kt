@@ -22,4 +22,19 @@ data class EngraveLayerInfo(
 ) : IToText, IToValue {
     override fun toText(): CharSequence = label
     override fun toValue(): Any = mode
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as EngraveLayerInfo
+
+        if (mode != other.mode) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return mode
+    }
+
 }

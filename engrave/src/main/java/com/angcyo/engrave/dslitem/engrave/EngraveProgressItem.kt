@@ -2,6 +2,8 @@ package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.widget.EngraveProgressView
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
@@ -13,8 +15,8 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveProgressItem : DslAdapterItem() {
 
-    /**[0~100]*/
-    var itemProgress: Int = 50
+    /**雕刻的信息*/
+    var itemEngraveState: EngraveModel.EngraveState? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_progress_layout
@@ -29,9 +31,12 @@ class EngraveProgressItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.lib_text_view)?.text = "${_string(R.string.progress)}:"
+        val layerInfo =
+            EngraveTransitionManager.getEngraveLayer(itemEngraveState?.engraveDataParam?.layerMode)
+        itemHolder.tv(R.id.engrave_layer_view)?.text = layerInfo?.toText()
 
         itemHolder.v<EngraveProgressView>(R.id.engrave_progress_view)?.apply {
-            progressValue = itemProgress
+            progressValue = itemEngraveState?.progress ?: 0
         }
     }
 }

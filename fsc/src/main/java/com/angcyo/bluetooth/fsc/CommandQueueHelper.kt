@@ -195,17 +195,6 @@ fun List<ICommand>.enqueue(address: String? = null) {
 
 /**指令入队*/
 fun ICommand.enqueue(
-    address: String? = null,
-    progress: ISendProgressAction = {},
-    action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
-        error?.let { toast(it.message) }
-    }
-) {
-    enqueue(FLAG_NORMAL, address, progress, action)
-}
-
-/**指令入队*/
-fun ICommand.enqueue(
     flag: Int = FLAG_NORMAL,
     address: String? = null,
     progress: ISendProgressAction = {},

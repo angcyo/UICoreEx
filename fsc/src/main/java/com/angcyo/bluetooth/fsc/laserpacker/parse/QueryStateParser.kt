@@ -63,7 +63,7 @@ data class QueryStateParser(
     var custom: Int = -1,
     //Z轴连接状态, 0未连接, 1连接
     var zConnect: Int = 0,
-    //当前图片打印的次数
+    //当前图片打印的次数,从1开始
     var printTimes: Int = 0,
     //设备与水平面的平角
     var angle: Int = 0,

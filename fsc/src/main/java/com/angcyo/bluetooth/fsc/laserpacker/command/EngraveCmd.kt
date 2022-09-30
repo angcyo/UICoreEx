@@ -2,10 +2,6 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
-import com.angcyo.library.ex.padHexString
-import com.angcyo.library.ex.removeAll
-import com.angcyo.library.ex.toByteArray
-import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.*
 
 /**
@@ -33,6 +29,8 @@ data class EngraveCmd(
     val custom: Byte = 0x0,
     //雕刻物体直径, 如果是mm单位, 还需要乘以100
     val diameter: Int = 0,//雕刻物体直径（L4旋转轴生效），2字节,obj_d  = d * 100; d为物体实际尺寸单位为mm;
+    //雕刻精度档位分：1至5档，它与系统加减速对应（C1新增）
+    val precision: Int = 1,
 ) : ICommand {
 
     companion object {
@@ -57,7 +55,7 @@ data class EngraveCmd(
     override fun commandFunc(): Byte = 0x01
 
     override fun toHexCommandString(): String {
-        val dataLength = 0x13 //18 //数据长度
+        val dataLength = 0x14 //18 //数据长度
         val data = buildString {
             append(commandFunc().toHexString())
             append(state.toHexString())
@@ -71,6 +69,7 @@ data class EngraveCmd(
             append(time.toHexString())
             append(type.toHexString())
             append(diameter.toByteArray(2).toHexString(false))
+            append(precision.toHexString())
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
         val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
@@ -80,7 +79,7 @@ data class EngraveCmd(
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
         when (state) {
-            0x01.toByte() -> append(" 开始雕刻:文件:$index 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type 直径:${diameter}")
+            0x01.toByte() -> append(" 开始雕刻:文件:$index 激光强度:$laser 深度:$depth 次数:$time state:$state x:$x y:$y type:$type 直径:${diameter} 精度档位:${precision}")
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")

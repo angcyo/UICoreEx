@@ -59,7 +59,7 @@ data class MaterialEntity(
 
     ) : IToText {
 
-    override fun toText(): CharSequence? {
+    override fun toText(): CharSequence {
         return name ?: _string(resId)
     }
 

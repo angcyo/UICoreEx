@@ -2,12 +2,11 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex.toHexInt
-import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 
 /**
@@ -17,22 +16,18 @@ import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
  */
 object EngraveHelper {
 
-    fun findOptionIndex(list: List<Any>?, value: Byte?): Int {
-        return list?.indexOfFirst { it.toString().toInt() == value?.toHexInt() } ?: -1
+    fun findOptionIndex(list: List<Any>?, value: Int?): Int {
+        return list?.indexOfFirst { it.toString().toInt() == value } ?: -1
     }
 
     /**获取物理尺寸的值*/
     fun getDiameter(): Int {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
-        val engraveModel = vmApp<EngraveModel>()
-
         //物理尺寸
         val diameter = if (!laserPeckerModel.haveExDevice()) {
             0
         } else {
-            val diameterPixel = engraveModel.engraveOptionInfoData.value!!.diameterPixel
-            val mmValueUnit = MmValueUnit()
-            val mm = mmValueUnit.convertPixelToValue(diameterPixel)
+            val mm = mmUnit.convertPixelToValue(HawkEngraveKeys.lastDiameterPixel)
             (mm * 100).toInt()
         }
         return diameter
@@ -2471,12 +2466,9 @@ object EngraveHelper {
     /**默认参数*/
     fun getProductMaterialList(): List<MaterialEntity> {
         val productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
-        val dataMode: Int = vmApp<EngraveModel>().engraveReadyInfoData.value?.dataMode
-            ?: CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白
-        val px: Byte = vmApp<EngraveModel>().engraveReadyInfoData.value?.engraveData?.px
-            ?: LaserPeckerHelper.DEFAULT_PX
-        val type: Byte = vmApp<EngraveModel>().engraveOptionInfoData.value?.type
-            ?: LaserPeckerHelper.LASER_TYPE_BLUE
+        val dataMode: Int = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白
+        val px: Byte = LaserPeckerHelper.DEFAULT_PX
+        val type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE
         return getProductMaterialList(productName, dataMode, px, type)
     }
 

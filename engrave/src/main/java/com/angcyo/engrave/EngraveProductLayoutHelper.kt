@@ -119,7 +119,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
             }
         }
 
-        //监听item雕刻进度
+        /*//监听item雕刻进度
         engraveModel.engraveItemData.observe(fragment, allowBackward = false) { info ->
             info?.let {
                 canvasView?.canvasDelegate?.progressRenderer?.let {
@@ -138,7 +138,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                     it.drawRotateBorder = previewModel.previewInfoData.value?.rotate != null
                 }
             }
-        }
+        }*/
 
         //监听范围预览
         laserPeckerModel.overflowRectData.observe(fragment, allowBackward = false) {

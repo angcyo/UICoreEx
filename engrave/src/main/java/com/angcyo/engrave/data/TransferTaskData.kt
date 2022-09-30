@@ -8,5 +8,6 @@ package com.angcyo.engrave.data
 data class TransferTaskData(
     /**雕刻图层信息*/
     val layerInfo: EngraveLayerInfo,
+    /**图层对应的数据, 有些图层会合并数据/有些不会*/
     val transferDataList: List<TransferDataInfo>
 )
