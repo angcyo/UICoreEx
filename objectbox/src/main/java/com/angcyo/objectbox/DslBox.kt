@@ -427,6 +427,18 @@ inline fun <reified T> Collection<T>.saveAllEntity(
     boxOf(T::class.java, packageName).put(this)
 }
 
+/**先通过查询条件查找满足条件的实体, 如果不存在则创建新的*/
+inline fun <reified T> T.updateOrCreateEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    query: QueryBuilder<T>.() -> Unit,
+    update: T.() -> Unit
+): Long {
+    val box = boxOf(T::class.java, packageName)
+    val entity = box.query(query).findFirst() ?: T::class.java.newInstance()
+    entity.update()
+    return box.put(entity)
+}
+
 //endregion ---save---
 
 /**

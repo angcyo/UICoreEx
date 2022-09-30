@@ -6,6 +6,8 @@ import com.angcyo.objectbox.boxOf
 import com.angcyo.objectbox.boxStoreOf
 import io.objectbox.Box
 import io.objectbox.BoxStore
+import io.objectbox.kotlin.query
+import io.objectbox.query.QueryBuilder
 import kotlin.reflect.KClass
 
 /**
@@ -36,4 +38,14 @@ fun <T> lpBoxOf(entityClass: Class<T>, action: Box<T>.() -> Unit = {}): Box<T> {
 
 fun <T : Any> lpBoxOf(entityClass: KClass<T>, action: Box<T>.() -> Unit = {}): Box<T> {
     return boxOf(entityClass, LPBox.PACKAGE_NAME, action)
+}
+
+inline fun <reified T> T.lpUpdateOrCreateEntity(
+    query: QueryBuilder<T>.() -> Unit,
+    update: T.() -> Unit
+): Long {
+    val box = boxOf(T::class.java, LPBox.PACKAGE_NAME)
+    val entity = box.query(query).findFirst() ?: T::class.java.newInstance()
+    entity.update()
+    return box.put(entity)
 }
