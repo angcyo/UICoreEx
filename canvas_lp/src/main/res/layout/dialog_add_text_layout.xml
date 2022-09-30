@@ -49,7 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/lib_hdpi"
-        android:minHeight="35dp">
+        android:minHeight="35dp"
+        app:tab_item_is_equ_width="true">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/LibBodyTextStyle"
