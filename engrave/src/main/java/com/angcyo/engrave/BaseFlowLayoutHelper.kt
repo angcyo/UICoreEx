@@ -95,6 +95,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 syncQueryDeviceState()
             }
         }
+        //界面移除, 回归默认
+        engraveFlow = 0
     }
 
     override fun hide(end: (() -> Unit)?) {
