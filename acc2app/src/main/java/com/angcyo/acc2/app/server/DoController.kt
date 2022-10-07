@@ -6,6 +6,7 @@ import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.FindBean
 import com.angcyo.acc2.bean.HandleBean
 import com.angcyo.acc2.bean.TaskBean
+import com.angcyo.acc2.control.AccControl
 import com.angcyo.acc2.control.ControlContext
 import com.angcyo.acc2.parse.HandleResult
 import com.angcyo.acc2.parse.toLog
@@ -34,15 +35,19 @@ class DoController {
         //Task.control.accSchedule.startTargetAction(bean, true)
 
         val actionBean = bean.init()
+        val control = Task.control
 
         val controlContext = ControlContext().apply {
-            control = Task.control
-            action = actionBean
+            this.control = control
+            this.action = actionBean
         }
 
         val handleActionResult = HandleResult()
 
-        Task.control.accSchedule.runActionInner(
+        //dynamic
+        AccControl.initActionDynamic(control, actionBean)
+
+        control.accSchedule.runActionInner(
             controlContext,
             actionBean,
             null,
