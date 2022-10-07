@@ -40,6 +40,10 @@ class UM {
             MobclickAgent.onEvent(context, eventId)
         }
 
+        fun event(eventId: String, value: String, context: Context = app()) {
+            MobclickAgent.onEvent(context, eventId, value)
+        }
+
         /**计数事件
          * [eventId] 为当前统计的事件ID。
          * [map] 对当前事件的参数描述，定义为“参数名:参数值”的HashMap“<键-值>对”。
