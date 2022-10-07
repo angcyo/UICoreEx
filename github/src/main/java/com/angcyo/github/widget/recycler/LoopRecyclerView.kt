@@ -29,7 +29,7 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
     var snapByOne: Boolean = true
 
     val enableLoop: Boolean
-        get() = adapter?.itemCount ?: 0 > 1
+        get() = (adapter?.itemCount ?: 0) > 1
 
     init {
         val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.LoopRecyclerView)

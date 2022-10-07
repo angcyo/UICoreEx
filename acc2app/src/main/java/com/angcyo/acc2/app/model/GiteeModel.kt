@@ -151,7 +151,7 @@ class GiteeModel : LifecycleViewModel() {
         initConfig()
 
         //dynamic
-        AccControl.initAllHandleCls(control, this)
+        AccControl.initAllActionAndHandleCls(control, this)
 
         return this
     }
