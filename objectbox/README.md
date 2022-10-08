@@ -114,7 +114,9 @@ long id = user.id;
 
 https://docs.objectbox.io/advanced/custom-types
 
-```
+https://docs.objectbox.io/advanced/custom-types#objectbox-supported-types
+
+```java
 boolean, Boolean
 int, Integer
 short, Short
@@ -125,11 +127,40 @@ byte, Byte
 char, Character
 byte[]
 String
-Date // Time with millisecond precision.
+// Stored as time (long) with millisecond precision.
+java.util.Date
 
-// As of 3.0.0-alpha2 the following work out of the box:
 String[]
-@Type(DateNano) long, Long // Time with nanosecond precision.
+List<String>
+
+Map<String, String>
+
+// Stored as time (long) with nanosecond precision.
+@Type(DatabaseType.DateNano) long, Long 
+```
+
+```kotlin
+// The nullable variants are supported as well.
+Boolean
+Int
+Short
+Long
+Float
+Double
+Byte
+Char
+ByteArray
+String
+// Stored as time (Long) with millisecond precision.
+java.util.Date
+
+Array<String>
+MutableList<String>
+
+MutableMap<String, String>
+
+// Stored as time (Long) with nanosecond precision.
+@Type(DatabaseType.DateNano) Long?
 ```
 
 https://docs.objectbox.io/advanced/custom-types#list-array-types
