@@ -1,6 +1,7 @@
 package com.angcyo.acc2.app.component
 
 import android.graphics.Color
+import android.os.Build
 import android.widget.Toast
 import com.angcyo.acc2.app.saveAccLog
 import com.angcyo.acc2.control.isControlPause
@@ -9,11 +10,14 @@ import com.angcyo.acc2.control.toControlStateStr
 import com.angcyo.acc2.core.AccNodeLog
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.R
+import com.angcyo.core.component.addGistFile
+import com.angcyo.core.component.pushToGist
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.*
 import com.angcyo.library.component.MainExecutor
 import com.angcyo.library.ex.*
+import com.angcyo.library.utils.Device
 import com.angcyo.widget.span.span
 
 
@@ -180,10 +184,23 @@ object AccWindow {
                     }
                     reset()
                     getAccessibilityWindowLog().apply {
-                        val logPath = saveAccLog()
-                        //直接分享文件
-                        logPath?.file()?.shareFile()
-                        onSaveWindowLog?.invoke(toString())
+                        val log = toString()
+                        val logPath = log.saveAccLog()
+                        /*//直接分享文件
+                        logPath?.file()?.shareFile()*/
+                        pushToGist("${nowTimeString()}/${Build.MODEL}/catch") {
+                            val info = buildString {
+                                //屏幕信息, 设备信息
+                                app().let {
+                                    Device.screenInfo(it, this)
+                                    appendln()
+                                    Device.deviceInfo(it, this)
+                                }
+                            }
+                            addGistFile("device info", info)
+                            addGistFile("node info", log)
+                        }
+                        onSaveWindowLog?.invoke(log)
                     }
                 }
             }
