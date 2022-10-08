@@ -7,6 +7,8 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.canvas.data.toMm
+import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -150,6 +152,11 @@ class FscDeviceModel : LifecycleViewModel() {
         //监听设备变化
         laserPeckerModel.productInfoData.observe(this) {
             it?.let { product ->
+
+                //
+                GraphicsHelper._minLeft = product.previewBounds.left.toMm()
+                GraphicsHelper._minTop = product.previewBounds.top.toMm()
+
                 //材质列表初始化, 按需初始化, 节省内存
                 if (product.isLI()) {
                     EngraveHelper.initL1MaterialList()
