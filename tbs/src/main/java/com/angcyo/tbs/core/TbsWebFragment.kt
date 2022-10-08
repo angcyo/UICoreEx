@@ -38,7 +38,9 @@ import com.angcyo.tbs.core.inner.TbsWeb
 import com.angcyo.tbs.core.inner.TbsWebView
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.bar
-import com.angcyo.widget.base.*
+import com.angcyo.widget.base.appendDslItem
+import com.angcyo.widget.base.setSingleLineMode
+import com.angcyo.widget.base.updateMarginParams
 import com.angcyo.widget.span.span
 import com.tencent.smtt.sdk.QbSdk
 import com.tencent.smtt.sdk.TbsReaderView
@@ -357,14 +359,9 @@ open class TbsWebFragment : BaseTitleFragment() {
                         dialogViewHolder.click(R.id.lib_open_button) {
                             dialog.dismiss()
                             dslAHelper {
-                                start(
-                                    url.urlIntent(
-                                        ComponentName(
-                                            activityInfo.packageName,
-                                            activityInfo.name
-                                        )
-                                    )
-                                )
+                                val componentName =
+                                    ComponentName(activityInfo.packageName, activityInfo.name)
+                                start(url.urlIntent(componentName))
                             }
                         }
                     }

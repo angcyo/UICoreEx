@@ -25,7 +25,10 @@ open class TbsWebActivity : BaseAppCompatActivity() {
 
     override fun onHandleIntent(intent: Intent, fromNewIntent: Boolean) {
         super.onHandleIntent(intent, fromNewIntent)
+        parseTbsWebConfig(intent, fromNewIntent)
+    }
 
+    open fun parseTbsWebConfig(intent: Intent, fromNewIntent: Boolean) {
         //https://developer.android.google.cn/guide/topics/search
 
         var searchUri: Uri? = null

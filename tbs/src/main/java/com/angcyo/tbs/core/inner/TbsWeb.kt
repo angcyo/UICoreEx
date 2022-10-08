@@ -1,19 +1,21 @@
 package com.angcyo.tbs.core.inner
 
 import com.angcyo.library.component.Web
+import com.angcyo.library.component.Web.CUSTOM_UA
+import com.angcyo.library.component.Web.UA_EXTEND
 import com.tencent.smtt.sdk.CookieSyncManager
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 
 /**
+ * [com.angcyo.tbs.core.inner.TbsWeb]
+ * [com.angcyo.library.component.Web]
  *
  * Email:angcyo@126.com
  * @author angcyo
  * @date 2020/03/01
  */
 object TbsWeb {
-
-    var UA_EXTEND = " angcyo"
 
     /**初始化*/
     fun initWebView(webView: WebView) {
@@ -49,7 +51,7 @@ object TbsWeb {
         webSetting.mediaPlaybackRequiresUserGesture = true//this
 
         //UA设置
-        webSetting.setUserAgent(webSetting.userAgentString + UA_EXTEND)
+        webSetting.setUserAgent((CUSTOM_UA ?: webSetting.userAgentString) + UA_EXTEND)
 
         CookieSyncManager.createInstance(webView.context)
         CookieSyncManager.getInstance().sync()
