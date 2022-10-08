@@ -205,8 +205,14 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             }
             if (laserPeckerModel.productInfoData.value?.isLIV() == true) {
                 EngraveSegmentScrollItem()() {
+                    val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
                     itemText = _string(R.string.laser_type)
-                    itemSegmentList = LaserPeckerHelper.findProductSupportLaserTypeList()
+                    itemSegmentList = typeList
+                    itemCurrentIndex = typeList.indexOfFirst { it.type == engraveDataParam.type }
+                    observeItemChange {
+                        engraveDataParam.type = typeList[itemCurrentIndex].type
+                        renderFlowItems()
+                    }
                 }
             }
             EngraveLayerConfigItem()() {
