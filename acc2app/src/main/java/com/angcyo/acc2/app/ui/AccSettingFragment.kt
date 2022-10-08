@@ -109,6 +109,7 @@ open class AccSettingFragment : AccAppDslFragment() {
         }
     }
 
+    /**[com.angcyo.library.ex.AppExKt.getCanUsedState]*/
     open fun killApp(state: Int) {
 
         if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {
