@@ -180,7 +180,9 @@ object AccWindow {
                     }
                     reset()
                     getAccessibilityWindowLog().apply {
-                        saveAccLog()
+                        val logPath = saveAccLog()
+                        //直接分享文件
+                        logPath?.file()?.shareFile()
                         onSaveWindowLog?.invoke(toString())
                     }
                 }
