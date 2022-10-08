@@ -286,6 +286,7 @@ class GCodeTransition : IEngraveTransition {
         bitmap: Bitmap
     ): TransferDataInfo {
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
+        saveEngraveData("${transferDataConfigInfo.name}.r", bitmap, "png")
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,
