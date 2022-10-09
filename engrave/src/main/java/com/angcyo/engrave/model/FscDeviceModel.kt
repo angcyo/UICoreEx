@@ -93,10 +93,9 @@ class FscDeviceModel : LifecycleViewModel() {
                     )
 
                     //入库
-                    DeviceConnectEntity().apply {
+                    DeviceConnectEntity::class.saveEntity(LPBox.PACKAGE_NAME) {
                         deviceAddress = deviceConnectState.device.address
                         deviceName = deviceConnectState.device.name
-                        saveEntity(LPBox.PACKAGE_NAME)
                     }
 
                     if (deviceConnectState.isAutoConnect) {
