@@ -419,6 +419,18 @@ inline fun <reified T> T.saveEntity(
     return boxOf(T::class.java, packageName).put(this)
 }
 
+/**保存实例*/
+inline fun <reified T : Any> KClass<T>.saveEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    update: T.() -> Unit
+): Long {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    val entity = cls.newInstance()
+    entity.update()
+    return box.put(entity)
+}
+
 /**批量保存或者更新
  * id不为0时, 就是更新*/
 inline fun <reified T> Collection<T>.saveAllEntity(
@@ -428,13 +440,14 @@ inline fun <reified T> Collection<T>.saveAllEntity(
 }
 
 /**先通过查询条件查找满足条件的实体, 如果不存在则创建新的*/
-inline fun <reified T> T.updateOrCreateEntity(
+inline fun <reified T : Any> KClass<T>.updateOrCreateEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
     query: QueryBuilder<T>.() -> Unit,
     update: T.() -> Unit
 ): Long {
-    val box = boxOf(T::class.java, packageName)
-    val entity = box.query(query).findFirst() ?: T::class.java.newInstance()
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    val entity = box.query(query).findFirst() ?: cls.newInstance()
     entity.update()
     return box.put(entity)
 }

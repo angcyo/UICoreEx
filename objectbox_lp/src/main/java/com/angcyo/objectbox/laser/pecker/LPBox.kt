@@ -4,9 +4,9 @@ import android.content.Context
 import com.angcyo.objectbox.DslBox
 import com.angcyo.objectbox.boxOf
 import com.angcyo.objectbox.boxStoreOf
+import com.angcyo.objectbox.updateOrCreateEntity
 import io.objectbox.Box
 import io.objectbox.BoxStore
-import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
 import kotlin.reflect.KClass
 
@@ -40,12 +40,9 @@ fun <T : Any> lpBoxOf(entityClass: KClass<T>, action: Box<T>.() -> Unit = {}): B
     return boxOf(entityClass, LPBox.PACKAGE_NAME, action)
 }
 
-inline fun <reified T> T.lpUpdateOrCreateEntity(
+inline fun <reified T : Any> KClass<T>.lpUpdateOrCreateEntity(
     query: QueryBuilder<T>.() -> Unit,
     update: T.() -> Unit
 ): Long {
-    val box = boxOf(T::class.java, LPBox.PACKAGE_NAME)
-    val entity = box.query(query).findFirst() ?: T::class.java.newInstance()
-    entity.update()
-    return box.put(entity)
+    return updateOrCreateEntity(LPBox.PACKAGE_NAME, query, update)
 }
