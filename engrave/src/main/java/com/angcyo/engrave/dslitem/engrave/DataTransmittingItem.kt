@@ -27,6 +27,6 @@ class DataTransmittingItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.v<DslProgressBar>(R.id.lib_progress_bar)?.setProgress(itemProgress, 0, 0)
+        itemHolder.v<DslProgressBar>(R.id.lib_progress_bar)?.setProgress(itemProgress)
     }
 }

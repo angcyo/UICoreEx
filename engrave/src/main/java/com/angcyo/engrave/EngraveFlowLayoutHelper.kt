@@ -510,22 +510,4 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
     }
 
     */
-    /**安全提示弹窗*//*
-    fun checkSafeTip(index: Int, option: EngraveOptionInfo) {
-        //安全提示弹窗
-        viewHolder?.context?.messageDialog {
-            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-            dialogTitle = _string(R.string.size_safety_tips)
-            dialogMessage = _string(R.string.size_safety_content)
-            negativeButtonText = _string(R.string.dialog_negative)
-
-            positiveButton { dialog, dialogViewHolder ->
-                dialog.dismiss()
-                _startEngrave(index, option)
-            }
-        }
-    }
-
-    */
-
 }

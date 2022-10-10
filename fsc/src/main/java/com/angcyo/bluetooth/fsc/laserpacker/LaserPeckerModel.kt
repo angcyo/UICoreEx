@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
@@ -62,7 +63,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     val initializeOnceData = vmDataOnce(false)
 
     /**预览的时候, 矩形是否溢出了*/
-    val overflowRectData = vmData(false)
+    val overflowInfoData = vmDataNull<OverflowInfo>()
 
     /**更新设备模式*/
     @AnyThread
@@ -207,7 +208,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     ) {
         val cmd = if (zPause) {
             //外接设备暂停预览
-            EngravePreviewCmd.previewZRange(
+            EngravePreviewCmd.adjustPreviewZRangeCmd(
                 rotateBounds.left.toInt(),
                 rotateBounds.top.toInt(),
                 rotateBounds.width().toInt(),
@@ -217,9 +218,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         } else {
             if (rotate != null) {
                 //需要4点预览
-                EngravePreviewCmd.previewFourPoint(bounds.toFourPoint(rotate), pwrProgress)
+                EngravePreviewCmd.adjustPreviewFourPointCmd(bounds.toFourPoint(rotate), pwrProgress)
             } else {
-                EngravePreviewCmd.previewRange(
+                EngravePreviewCmd.adjustPreviewRangeCmd(
                     rotateBounds.left.toInt(),
                     rotateBounds.top.toInt(),
                     rotateBounds.width().toInt(),
@@ -243,7 +244,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
-        val cmd = EngravePreviewCmd.previewShowCenter(pwrProgress, bounds)
+        val cmd = EngravePreviewCmd.previewShowCenterCmd(pwrProgress, bounds)
         //send
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL

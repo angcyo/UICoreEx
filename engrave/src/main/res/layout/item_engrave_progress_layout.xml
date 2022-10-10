@@ -8,7 +8,7 @@
     android:paddingHorizontal="@dimen/lib_padding_right"
     android:paddingVertical="@dimen/lib_sdpi">
 
-    <com.angcyo.widget.text.DslTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_text_view"
         style="@style/LibBodyTextStyle"
         android:layout_width="wrap_content"

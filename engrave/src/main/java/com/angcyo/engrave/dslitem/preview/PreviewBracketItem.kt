@@ -95,7 +95,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架上升*/
     fun bracketUpCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketUp(HawkEngraveKeys.lastBracketHeight.toInt())
+        val cmd = EngravePreviewCmd.previewBracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))
@@ -106,7 +106,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架下降*/
     fun bracketDownCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketDown(HawkEngraveKeys.lastBracketHeight.toInt())
+        val cmd = EngravePreviewCmd.previewBracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))
@@ -117,7 +117,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**停止支架*/
     fun bracketStopCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketStop()
+        val cmd = EngravePreviewCmd.previewBracketStopCmd()
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))

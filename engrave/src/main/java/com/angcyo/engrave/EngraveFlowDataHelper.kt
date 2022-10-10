@@ -311,7 +311,7 @@ object EngraveFlowDataHelper {
                 current += (it.printTimes - 1) * 100 + it.progress
             }
         }
-        val progress = clamp((current * 1f / sum).toInt(), 0, 100)
+        val progress = clamp((current * 1f / sum * 100).toInt(), 0, 100)
         return progress
     }
 

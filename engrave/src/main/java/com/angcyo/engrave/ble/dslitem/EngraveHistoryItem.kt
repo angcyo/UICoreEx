@@ -4,33 +4,29 @@ import com.angcyo.bluetooth.fsc.laserpacker.toPxDes
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.LabelDesData
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.toModeString
 import com.angcyo.glide.loadImage
+import com.angcyo.item.DslTagGroupItem
+import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.dslViewHolder
-import com.angcyo.widget.base.resetChild
-import com.angcyo.widget.flow
 
 /**
  * 雕刻历史item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/05
  */
-class EngraveHistoryItem : DslAdapterItem() {
+class EngraveHistoryItem : DslTagGroupItem() {
 
     var engraveHistoryEntity: EngraveHistoryEntity? = null
 
     val valueUnit = CanvasConstant.valueUnit
 
-    //所有需要提示的数据
-    val labelDesList = mutableListOf<LabelDesData>()
 
     init {
         itemLayoutId = R.layout.item_engrave_history_layout
@@ -46,66 +42,6 @@ class EngraveHistoryItem : DslAdapterItem() {
 
         itemHolder.img(R.id.lib_image_view)?.loadImage(engraveHistoryEntity?.previewDataPath)
 
-        labelDesList.clear()
-
-        if (isDebug()) {
-            labelDesList.add(
-                LabelDesData("编号", "${engraveHistoryEntity?.index}")
-            )
-        }
-
-        labelDesList.add(LabelDesData(_string(R.string.file_name), engraveHistoryEntity?.name.or()))
-
-        val mode = engraveHistoryEntity?.dataMode.toModeString()
-        labelDesList.add(LabelDesData(_string(R.string.print_file_name), mode))
-
-        labelDesList.add(
-            LabelDesData(
-                _string(R.string.print_range),
-                "${valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.width?.toFloat())}x${
-                    valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.height?.toFloat())
-                }"
-            )
-        )
-
-        labelDesList.add(
-            LabelDesData(
-                _string(R.string.custom_material),
-                engraveHistoryEntity?.material
-            )
-        )
-
-        labelDesList.add(
-            LabelDesData(
-                _string(R.string.custom_power),
-                "${engraveHistoryEntity?.power}%"
-            )
-        )
-
-        labelDesList.add(
-            LabelDesData(
-                _string(R.string.custom_speed),
-                "${engraveHistoryEntity?.depth}%"
-            )
-        )
-
-        val pxDes = engraveHistoryEntity?.px?.toPxDes()
-        labelDesList.add(
-            LabelDesData(
-                _string(R.string.resolution_ratio),
-                pxDes
-            )
-        )
-
-        if ((engraveHistoryEntity?.duration ?: 0) > 0) {
-            labelDesList.add(
-                LabelDesData(
-                    _string(R.string.print_time),
-                    engraveHistoryEntity?.duration?.toEngraveTime()
-                )
-            )
-        }
-
         /*
         //暂时不显示
         val zMode = engraveHistoryEntity?.zMode ?: -1
@@ -114,12 +50,6 @@ class EngraveHistoryItem : DslAdapterItem() {
             append(_string(R.string.device_setting_tips_fourteen_11))
             append(zMode.toZModeString())
         } */
-
-        itemHolder.flow(R.id.lib_flow_layout)
-            ?.resetChild(labelDesList, R.layout.dsl_solid_tag_item) { itemView, item, itemIndex ->
-                itemView.dslViewHolder().tv(R.id.lib_label_view)?.text = item.label
-                itemView.dslViewHolder().tv(R.id.lib_des_view)?.text = item.des
-            }
 
         /*itemHolder.tv(R.id.lib_text_view)?.text = span {
             append("${_string(R.string.file_name)} ${engraveHistoryEntity?.name.or()}")
@@ -165,6 +95,47 @@ class EngraveHistoryItem : DslAdapterItem() {
                 append(zMode.toZModeString())
             }*//*
         }*/
+    }
+
+    override fun initLabelDesList() {
+        renderLabelDesList {
+
+            if (isDebug()) {
+                add(LabelDesData("编号", "${engraveHistoryEntity?.index}"))
+            }
+
+            add(LabelDesData(_string(R.string.file_name), engraveHistoryEntity?.name.or()))
+
+            val mode = engraveHistoryEntity?.dataMode.toModeString()
+            add(LabelDesData(_string(R.string.print_file_name), mode))
+
+            add(
+                LabelDesData(
+                    _string(R.string.print_range),
+                    "${valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.width?.toFloat())}x${
+                        valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.height?.toFloat())
+                    }"
+                )
+            )
+
+            add(LabelDesData(_string(R.string.custom_material), engraveHistoryEntity?.material))
+
+            add(LabelDesData(_string(R.string.custom_power), "${engraveHistoryEntity?.power}%"))
+
+            add(LabelDesData(_string(R.string.custom_speed), "${engraveHistoryEntity?.depth}%"))
+
+            val pxDes = engraveHistoryEntity?.px?.toPxDes()
+            add(LabelDesData(_string(R.string.resolution_ratio), pxDes))
+
+            if ((engraveHistoryEntity?.duration ?: 0) > 0) {
+                add(
+                    LabelDesData(
+                        _string(R.string.print_time),
+                        engraveHistoryEntity?.duration?.toEngraveTime()
+                    )
+                )
+            }
+        }
     }
 
 }

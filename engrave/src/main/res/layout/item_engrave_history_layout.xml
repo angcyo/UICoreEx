@@ -28,17 +28,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:r_flow_item_horizontal_space="@dimen/lib_dpi"
-        app:r_flow_item_vertical_space="@dimen/lib_dpi">
-
-        <!--<include layout="@layout/dsl_solid_tag_item" />
-
-        <include layout="@layout/dsl_solid_tag_item" />
-
-        <include layout="@layout/dsl_solid_tag_item" />
-
-        <include layout="@layout/dsl_solid_tag_item" />-->
-
-    </com.angcyo.widget.layout.DslFlowLayout>
+        app:r_flow_item_vertical_space="@dimen/lib_dpi"
+        app:r_flow_preview_item_layout_id="@layout/dsl_solid_tag_item" />
 
     <!--<androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_text_view"

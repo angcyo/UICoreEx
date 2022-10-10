@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -14,7 +13,6 @@ import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
-import com.angcyo.engrave.data.EngraveReadyInfo
 import com.angcyo.library.component.byteWriter
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -263,94 +261,6 @@ class BitmapTransition : IEngraveTransition {
             }
         }
         return null
-    }
-
-    /**处理图片数据的坐标*/
-    fun _handleBitmapPx(engraveReadyInfo: EngraveReadyInfo, px: Byte) {
-        val engraveData = engraveReadyInfo.engraveData ?: return
-        var bitmap = engraveReadyInfo.dataBitmap ?: return
-
-        //先保存原始图片的宽高
-        val width = bitmap.width
-        val height = bitmap.height
-
-        //根据px缩放图片
-        bitmap = LaserPeckerHelper.bitmapScale(bitmap, px)
-        //scale
-        engraveReadyInfo.dataBitmap = bitmap
-
-        //根据px, 修正坐标
-        val x = engraveReadyInfo.dataX
-        val y = engraveReadyInfo.dataY
-        val rect = EngravePreviewCmd.adjustBitmapRange(x, y, width, height, px).first
-
-        //雕刻的宽高使用图片本身的宽高, 否则如果宽高和数据不一致,会导致图片打印出来是倾斜的效果
-        val engraveWidth = bitmap.width
-        val engraveHeight = bitmap.height
-
-        //雕刻数据坐标
-        engraveData.x = rect.left
-        engraveData.y = rect.top
-        engraveData.width = engraveWidth
-        engraveData.height = engraveHeight
-        engraveData.px = px
-    }
-
-    /**处理图片数据*/
-    fun _handleBitmapData(engraveReadyInfo: EngraveReadyInfo) {
-        val engraveData = engraveReadyInfo.engraveData ?: return
-        val bitmap = engraveReadyInfo.dataBitmap ?: return
-
-        //2:保存一份可视化的数据/原始数据
-        //mode
-        when (engraveReadyInfo.dataMode) {
-            CanvasConstant.DATA_MODE_BLACK_WHITE,
-            CanvasConstant.DATA_MODE_PRINT,
-            CanvasConstant.DATA_MODE_SEAL -> {
-                //黑白算法/版画/印章 都用路径数据传输
-                engraveData.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
-
-                //图片转路径数据
-                val listBitmapPath = handleBitmapPath(bitmap, 128)
-                engraveData.lines = listBitmapPath.size
-                engraveData.data = byteWriter {
-                    listBitmapPath.forEach {
-                        write(it.x, 2)
-                        write(it.y, 2)
-                        write(it.len, 2)
-                    }
-                }
-                //路径数据写入日志
-                saveEngraveData(engraveData.index, "$listBitmapPath", "bp")
-            }
-            CanvasConstant.DATA_MODE_GREY -> {
-                //灰度数据
-                engraveData.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
-
-                //雕刻的数据, 红色通道的灰度雕刻数据
-                val data = bitmap.engraveColorBytes()
-                engraveData.data = data
-                val channelBitmap = data.toEngraveBitmap(bitmap.width, bitmap.height)
-                saveEngraveData(engraveData.index, channelBitmap, "png")
-            }
-            //CanvasConstant.DATA_MODE_DITHERING
-            else -> {
-                //抖动数据使用位压缩数据传输
-                //默认情况下都按照抖动数据处理, 更快的数据传输速率
-                engraveData.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
-
-                //白色1 黑色0
-                val pair = handleBitmapByte(bitmap, 128)
-                engraveData.data = pair.second
-                saveEngraveData(engraveData.index, pair.first, "dt")
-            }
-        }
-
-        //1:保存一份byte数据
-        engraveReadyInfo.dataPath = saveEngraveData(engraveData.index, engraveData.data)//数据路径
-
-        //3:保存一份用来历史文档预览的数据
-        engraveReadyInfo.previewDataPath = saveEngraveData("${engraveData.index}.p", bitmap, "png")
     }
 }
 

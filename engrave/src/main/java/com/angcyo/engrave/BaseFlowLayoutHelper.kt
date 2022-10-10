@@ -15,6 +15,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.uuid
 
 /**
@@ -81,6 +82,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     override fun onIViewCreate() {
         super.onIViewCreate()
         bindDeviceState()
+
+        if (isDebugType()) {
+            //重新刷新界面
+            viewHolder?.click(R.id.lib_title_view) {
+                renderFlowItems()
+            }
+        }
     }
 
     override fun onIViewShow() {
@@ -224,7 +232,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
-    //
+
+    //---
 }
 
 /**是否进入了雕刻流程*/

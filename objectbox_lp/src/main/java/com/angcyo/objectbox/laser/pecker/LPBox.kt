@@ -18,7 +18,7 @@ object LPBox {
 
     /**数据库初始化*/
     fun init(context: Context) {
-        DslBox.init(context, PACKAGE_NAME, "LaserPecker")
+        DslBox.init(context, PACKAGE_NAME, "LaserPecker", false)
     }
 }
 

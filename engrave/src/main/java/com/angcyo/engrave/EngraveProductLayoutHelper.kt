@@ -90,7 +90,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
 
             if (it?.isModeEngravePreview() != true) {
                 //停止预览后, 清除状态
-                laserPeckerModel.overflowRectData.postValue(null)
+                laserPeckerModel.overflowInfoData.postValue(null)
             }
 
             //警示提示动画
@@ -141,8 +141,13 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }*/
 
         //监听范围预览
-        laserPeckerModel.overflowRectData.observe(fragment, allowBackward = false) {
-            if (it == true) {
+        laserPeckerModel.overflowInfoData.observe(fragment, allowBackward = false) {
+            if (it != null && (it.isOverflowBounds || it.isOverflowLimit)) {
+                previewOverflowStateInfo.text = if (it.isOverflowBounds) {
+                    _string(R.string.out_of_bounds)
+                } else {
+                    _string(R.string.out_of_limit)
+                }
                 stateLayoutManager.updateState(previewOverflowStateInfo)
             } else {
                 stateLayoutManager.removeState(previewOverflowStateInfo)
@@ -237,10 +242,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
     val engraveStateInfo = StateLayoutInfo()
 
     //预览超范围状态信息
-    val previewOverflowStateInfo = StateLayoutInfo(_string(R.string.preview_out_of_range))
-
-    //设备连接状态
-    val connectStateInfo = StateLayoutInfo(_string(R.string.blue_no_device_connected))
+    val previewOverflowStateInfo = StateLayoutInfo()
 
     //endregion ---内部操作---
 

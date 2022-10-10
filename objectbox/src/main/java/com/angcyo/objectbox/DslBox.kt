@@ -47,6 +47,12 @@ class DslBox {
         /**默认的包名*/
         var default_package_name: String? = null
 
+        /**调试特性*/
+        var DEBUG_FLAGS = DebugFlags.LOG_QUERIES or
+                DebugFlags.LOG_QUERY_PARAMETERS or
+                DebugFlags.LOG_TRANSACTIONS_READ or
+                DebugFlags.LOG_TRANSACTIONS_WRITE
+
         /**
          * [packageName] 数据库的包名. [MyObjectBox]所在的路径
          * [dbName] 数据库的名字 [io.objectbox.BoxStoreBuilder.DEFAULT_NAME]
@@ -113,12 +119,7 @@ class DslBox {
                 storeBuilder.name(_dbName)
 
                 if (debug) {
-                    storeBuilder.debugFlags(
-                        DebugFlags.LOG_QUERIES or
-                                DebugFlags.LOG_QUERY_PARAMETERS or
-                                DebugFlags.LOG_TRANSACTIONS_READ or
-                                DebugFlags.LOG_TRANSACTIONS_WRITE
-                    )
+                    storeBuilder.debugFlags(DEBUG_FLAGS)
                     storeBuilder.debugRelations()
                 }
 

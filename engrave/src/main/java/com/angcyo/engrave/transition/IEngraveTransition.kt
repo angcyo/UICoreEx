@@ -13,27 +13,18 @@ import com.angcyo.library.utils.FileTextData
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 
-/**雕刻数据转换
+/**雕刻数据转换, 将界面渲染的数据, 转换成机器的雕刻数据
+ *
+ * 数据转换配置信息
+ * [com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity]
+ *
+ * 输出的数据信息
+ * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/08/22
  */
 interface IEngraveTransition {
-
-/*
-    */
-    /**开始转换需要准备的数据
-     * 返回[null], 表示未处理
-     * *//*
-    fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo?
-
-    */
-    /**开始转换需要雕刻的数据
-     * 返回[false], 表示未处理
-     * *//*
-    fun doTransitionEngraveData(
-        renderer: BaseItemRenderer<*>,
-        engraveReadyInfo: EngraveReadyInfo
-    ): Boolean*/
 
     /**数据处理的模式
      * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
@@ -70,6 +61,7 @@ interface IEngraveTransition {
 
         //雕刻数据坐标
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
+            //mm单位
             transferDataEntity.x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
             transferDataEntity.y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
             transferDataEntity.width =
@@ -77,6 +69,7 @@ interface IEngraveTransition {
             transferDataEntity.height =
                 (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).toInt()
         } else {
+            //px单位
             transferDataEntity.x = rotateBounds.left.toInt()
             transferDataEntity.y = rotateBounds.top.toInt()
             transferDataEntity.width = rotateBounds.width().toInt()
@@ -88,42 +81,16 @@ interface IEngraveTransition {
             transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_PATH
         ) {
             //抖动的数据
-            val rect = EngravePreviewCmd.adjustBitmapRange(
-                transferDataEntity.x,
-                transferDataEntity.y,
-                transferDataEntity.width,
-                transferDataEntity.height,
+            val rect = EngravePreviewCmd.adjustRectRange(
+                rotateBounds,
                 transferConfigEntity.px
-            ).first
+            ).resultRect!!
             transferDataEntity.x = rect.left
             transferDataEntity.y = rect.top
             transferDataEntity.width = rect.width()
             transferDataEntity.height = rect.height()
         }
     }
-
-/*
-    */
-    /**初始化一个雕刻数据*//*
-    fun initReadyEngraveData(renderer: BaseItemRenderer<*>, engraveReadyInfo: EngraveReadyInfo) {
-        //索引
-        val item = renderer.getRendererRenderItem()
-        var index = item?.engraveIndex
-        if (index == null) {
-            index = EngraveTransitionManager.generateEngraveIndex()
-            item?.engraveIndex = index
-        }
-        //init
-        if (engraveReadyInfo.engraveData == null) {
-            engraveReadyInfo.engraveData = EngraveDataInfo()
-        }
-        //雕刻数据
-        engraveReadyInfo.engraveData?.apply {
-            this.dataType = engraveReadyInfo.dataType
-            this.index = item?.engraveIndex
-            this.name = item?.itemLayerName?.toString()
-        }
-    }*/
 
     /**保存雕刻数据到文件
      * [fileName] 需要保存的文件名, 无扩展

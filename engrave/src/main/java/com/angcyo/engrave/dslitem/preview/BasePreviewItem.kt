@@ -30,7 +30,7 @@ abstract class BasePreviewItem : DslAdapterItem() {
 
     /**z轴滚动预览*/
     fun zContinuePreviewCmd() {
-        val cmd = EngravePreviewCmd.previewZContinue()
+        val cmd = EngravePreviewCmd.previewZContinueCmd()
         cmd.enqueue()
         queryDeviceStateCmd()
     }

@@ -19,6 +19,7 @@ import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.FailException
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
@@ -174,7 +175,11 @@ class TransferModel : ViewModel() {
         val taskId: String? = _transferTask?.taskId
         _isCancelTransfer = false
         _transferTask = null
-        transferStateData.postValue(TransferTaskStateData(taskId, 100, null, true))
+        L.i("数据传输任务完成:${taskId}")
+        doMain {
+            transferStateData.value = TransferTaskStateData(taskId, 100, null, true)
+            transferStateData.postValue(null)//清空
+        }
     }
 
     //
@@ -190,93 +195,98 @@ class TransferModel : ViewModel() {
         _transferDataNext()
     }
 
+    @WorkerThread
     fun _transferDataNext() {
-        _transferTask?.let { task ->
-            if (task.index >= task.count) {
-                //传输完成
-                finishTransfer()
-            } else {
-                val transferDataEntity = task.entityList.getOrNull(task.index)
-                if (transferDataEntity == null) {
+        doBack(true) {
+            _transferTask?.let { task ->
+                if (task.index >= task.count) {
+                    //传输完成
                     finishTransfer()
                 } else {
-                    L.i("开始传输数据:[${task.index}/${task.count}]")
-                    val fileModeCmd = FileModeCmd(transferDataEntity.bytes()?.size ?: 0)
-                    fileModeCmd.enqueue { bean, error ->
-                        error?.let {
-                            it.toString().writeErrorLog()
-                            transferStateData.postValue(
-                                TransferTaskStateData(
-                                    task.taskId,
-                                    transferStateData.value?.progress ?: 0,
-                                    FailException(error)
-                                )
-                            )
-                        }
-                        bean?.parse<FileTransferParser>()?.let {
-                            if (it.isIntoFileMode()) {
-                                //成功进入大数据模式
-                                val dataCmd = getTransferDataCmd(transferDataEntity)
-                                if (dataCmd == null) {
-                                    task.index++
-                                    _transferDataNext()
-                                } else {
-                                    dataCmd.enqueue(progress = {
-                                        //进度
-                                        val progress = calcTransferProgress(
-                                            it.sendPacketPercentage,
-                                            task.index,
-                                            task.count
-                                        )
-                                        transferStateData.postValue(
-                                            TransferTaskStateData(task.taskId, progress)
-                                        )
-                                    }) { bean, error ->
-                                        val result = bean?.parse<FileTransferParser>()
-                                        L.w("传输结束:$result $error")
-                                        result?.let {
-                                            if (result.isFileTransferSuccess()) {
-                                                //文件传输完成
-                                                task.index++
-                                                transferDataEntity.isTransfer = true
-                                                _transferDataNext()
-                                            } else {
-                                                "数据接收未完成".writeErrorLog()
-                                                transferStateData.postValue(
-                                                    TransferTaskStateData(
-                                                        task.taskId,
-                                                        transferStateData.value?.progress ?: 0,
-                                                        DataException()
-                                                    )
-                                                )
-                                            }
-                                        }
-                                        if (result == null) {
-                                            "发送数据失败".writeErrorLog()
-                                            transferStateData.postValue(
-                                                TransferTaskStateData(
-                                                    task.taskId,
-                                                    transferStateData.value?.progress ?: 0,
-                                                    FailException()
-                                                )
-                                            )
-                                        }
-                                    }
-                                    //end data cmd
-                                }
-                                //end parse
-                            } else {
-                                "未成功进入数据传输模式".writeErrorLog()
+                    val transferDataEntity = task.entityList.getOrNull(task.index)
+                    if (transferDataEntity == null) {
+                        finishTransfer()
+                    } else {
+                        L.i("开始传输数据:[${task.index}/${task.count}]")
+                        val fileModeCmd = FileModeCmd(transferDataEntity.bytes()?.size ?: 0)
+                        fileModeCmd.enqueue { bean, error ->
+                            error?.let {
+                                it.toString().writeErrorLog()
                                 transferStateData.postValue(
                                     TransferTaskStateData(
                                         task.taskId,
                                         transferStateData.value?.progress ?: 0,
-                                        FailException()
+                                        FailException(error)
                                     )
                                 )
                             }
+                            bean?.parse<FileTransferParser>()?.let {
+                                if (it.isIntoFileMode()) {
+                                    //成功进入大数据模式
+                                    val dataCmd = getTransferDataCmd(transferDataEntity)
+                                    if (dataCmd == null) {
+                                        task.index++
+                                        _transferDataNext()
+                                    } else {
+                                        dataCmd.enqueue(progress = {
+                                            //进度
+                                            val progress = calcTransferProgress(
+                                                it.sendPacketPercentage,
+                                                task.index,
+                                                task.count
+                                            )
+                                            doMain {
+                                                //及时回调
+                                                transferStateData.value =
+                                                    TransferTaskStateData(task.taskId, progress)
+                                            }
+                                        }) { bean, error ->
+                                            val result = bean?.parse<FileTransferParser>()
+                                            L.w("传输结束:$result $error")
+                                            result?.let {
+                                                if (result.isFileTransferSuccess()) {
+                                                    //文件传输完成
+                                                    task.index++
+                                                    transferDataEntity.isTransfer = true
+                                                    _transferDataNext()
+                                                } else {
+                                                    "数据接收未完成".writeErrorLog()
+                                                    transferStateData.postValue(
+                                                        TransferTaskStateData(
+                                                            task.taskId,
+                                                            transferStateData.value?.progress ?: 0,
+                                                            DataException()
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                            if (result == null) {
+                                                "发送数据失败".writeErrorLog()
+                                                transferStateData.postValue(
+                                                    TransferTaskStateData(
+                                                        task.taskId,
+                                                        transferStateData.value?.progress ?: 0,
+                                                        FailException()
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        //end data cmd
+                                    }
+                                    //end parse
+                                } else {
+                                    "未成功进入数据传输模式".writeErrorLog()
+                                    transferStateData.postValue(
+                                        TransferTaskStateData(
+                                            task.taskId,
+                                            transferStateData.value?.progress ?: 0,
+                                            FailException()
+                                        )
+                                    )
+                                }
+                            }
+                            //end file mode cmd
                         }
-                        //end file mode cmd
                     }
                 }
             }

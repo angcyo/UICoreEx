@@ -1,12 +1,15 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
+import androidx.annotation.Px
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.pool.acquireTempRect
@@ -41,7 +44,7 @@ data class EngravePreviewCmd(
     // Data10-11为第三个角点坐标；
     // Data12-13为第四个角点坐标；
     val state: Byte,
-    //val name: Int = 0x0,//为将打印文件名。 文件编号 4字节
+    //val index: Int = 0x0,//为将打印文件名。 文件编号 4字节
     var d1: Byte = 0,
     var d2: Byte = 0,
     var d3: Byte = 0,
@@ -72,10 +75,42 @@ data class EngravePreviewCmd(
 
     companion object {
 
+        fun getLimitPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
+            val peckerModel = vmApp<LaserPeckerModel>()
+            val limitPath = if (peckerModel.isZOpen()) {
+                productInfo?.zLimitPath
+            } else if (peckerModel.isROpen()) {
+                productInfo?.zLimitPath
+            } else if (peckerModel.isSOpen()) {
+                productInfo?.zLimitPath
+            } else {
+                productInfo?.limitPath
+            }
+            return limitPath
+        }
+
+        fun getBoundsPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
+            val peckerModel = vmApp<LaserPeckerModel>()
+            val boundsPath = if (peckerModel.isZOpen()) {
+                productInfo?.zLimitPath
+            } else if (peckerModel.isROpen()) {
+                productInfo?.zLimitPath
+            } else if (peckerModel.isSOpen()) {
+                productInfo?.zLimitPath
+            } else if (productInfo != null) {
+                Path().apply {
+                    addRect(productInfo.bounds, Path.Direction.CW)
+                }
+            } else {
+                null
+            }
+            return boundsPath
+        }
+
         /**预览flash内存中的图片
-         * [name] 文件编号*/
-        fun previewFlashBitmap(name: Int): EngravePreviewCmd {
-            val bytes = name.toHexString(8).toHexByteArray()
+         * [index] 文件索引*/
+        fun previewFlashBitmapCmd(index: Int): EngravePreviewCmd {
+            val bytes = index.toHexString(8).toHexByteArray()
             return EngravePreviewCmd(0x01).apply {
                 d1 = bytes[0]
                 d2 = bytes[1]
@@ -84,52 +119,54 @@ data class EngravePreviewCmd(
             }
         }
 
+        /**[adjustRectRange]*/
+        fun adjustRectRange(
+            rect: RectF,
+            px: Byte = DEFAULT_PX,
+            productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
+        ): OverflowInfo {
+            return adjustRectRange(
+                rect.left,
+                rect.top,
+                rect.width(),
+                rect.height(),
+                px,
+                productInfo
+            )
+        }
+
         /**修正预览的范围, 返回的是[px]调整过后的坐标
          * 会包含是否越界标识
          * [x] [y] 在画布中的坐标 像素
          * [width] [height] 在画布中的宽高 像素
          * */
-        fun adjustBitmapRange(
-            x: Int,
-            y: Int,
-            width: Int,
-            height: Int,
+        fun adjustRectRange(
+            @Px x: Float, @Px y: Float, @Px width: Float, @Px height: Float,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): Pair<Rect, Boolean> {
+        ): OverflowInfo {
             val tempRect = acquireTempRectF()
-            var overflow = false
+            var overflowBounds = false
+            var overflowLimit = false
             if (productInfo != null) {
-                tempRect.set(
-                    x.toFloat(),
-                    y.toFloat(),
-                    (x + width).toFloat(),
-                    (y + height).toFloat()
-                )
-                val peckerModel = vmApp<LaserPeckerModel>()
-                val limitPath = if (peckerModel.haveExDevice()) {
-                    //有外接设备
-                    productInfo.zLimitPath
-                } else {
-                    productInfo.limitPath
-                }
+                tempRect.set(x, y, x + width, y + height)
 
-                if (limitPath != null) {
-                    if (limitPath.overflow(tempRect)) {
-                        //溢出
-                        overflow = true
-                    }
-                }
+                //
+                overflowBounds = getBoundsPath(productInfo)?.overflow(tempRect) == true
+
+                //
+                //溢出
+                overflowLimit = getLimitPath(productInfo)?.overflow(tempRect) == true
             }
 
-            var previewX = x
-            var previewY = y
+            var previewX: Int = x.toInt()
+            var previewY: Int = y.toInt()
 
-            var previewWidth = width
-            var previewHeight = height
+            var previewWidth: Int = width.toInt()
+            var previewHeight: Int = height.toInt()
 
-            if (overflow) {
-                //预览要出范围, 缩成设备物理中心点
+            if (overflowBounds) {
+                //预览超出了设备物理范围, 缩成设备物理中心点
 
                 //超过范围, 缩成在中心的一个点
                 previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
@@ -177,12 +214,14 @@ data class EngravePreviewCmd(
             }*/
 
             tempRect.release()
-            return Rect(
-                previewX,
-                previewY,
-                previewX + previewWidth,
-                previewY + previewHeight
-            ) to overflow
+            return OverflowInfo(
+                Rect(
+                    previewX,
+                    previewY,
+                    previewX + previewWidth,
+                    previewY + previewHeight
+                ), null, overflowBounds, overflowLimit
+            )
         }
 
         /**调整4点坐标, 并标识是否溢出*/
@@ -190,23 +229,30 @@ data class EngravePreviewCmd(
             rectPoint: RectPointF,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): Pair<RectPointF, Boolean> {
-            var overflow = false
+        ): OverflowInfo {
+            var overflowLimit = false
+            var overflowBounds = false
             if (productInfo != null) {
-                val peckerModel = vmApp<LaserPeckerModel>()
-                val limitPath = if (peckerModel.haveExDevice()) {
-                    //有外接设备
-                    productInfo.zLimitPath
-                } else {
-                    productInfo.limitPath
-                }
 
+                val rectPath = rectPoint.toPath()
+                overflowLimit = getLimitPath(productInfo)?.overflow(rectPath) == true
+                overflowBounds = getBoundsPath(productInfo)?.overflow(rectPath) == true
+
+                /*val limitPath = getLimitPath(productInfo)
                 if (limitPath != null) {
                     if (!limitPath.contains(rectPoint.toPath())) {
                         //溢出
-                        overflow = true
+                        overflowLimit = true
                     }
                 }
+
+                val boundsPath = getBoundsPath(productInfo)
+                if (boundsPath != null) {
+                    if (!boundsPath.contains(rectPoint.toPath())) {
+                        //溢出
+                        overflowBounds = true
+                    }
+                }*/
             }
 
             val result = RectPointF(originRotate = rectPoint.originRotate)
@@ -230,37 +276,42 @@ data class EngravePreviewCmd(
             result.rightBottom.y =
                 LaserPeckerHelper.transformY(rectPoint.rightBottom.y.toInt(), px).toFloat()
 
-            return result to overflow
+            return OverflowInfo(null, result, overflowBounds, overflowLimit)
         }
 
         /**根据[px]和[productInfo]调整预览的范围
          * [pwrProgress] [0~1f] 预览光功率
          * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
          * */
-        fun previewRange(
-            x: Int,
-            y: Int,
-            width: Int,
-            height: Int,
+        fun adjustPreviewRangeCmd(
+            @Px x: Int, @Px y: Int, @Px width: Int, @Px height: Int,
             pwrProgress: Float,
+            @MM
             diameter: Int,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            val pair = adjustBitmapRange(x, y, width, height, px, productInfo)
-            vmApp<LaserPeckerModel>().overflowRectData.postValue(pair.second)
-            return previewRangeCmd(pair.first, pwrProgress, diameter, px)
+            val overflowInfo = adjustRectRange(
+                x.toFloat(),
+                y.toFloat(),
+                width.toFloat(),
+                height.toFloat(),
+                px,
+                productInfo
+            )
+            vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            return _previewRangeCmd(overflowInfo.resultRect!!, pwrProgress, diameter, px)
         }
 
         /**表示范围预览
          * [rect] 经过[px]处理过的像素*/
-        fun previewRangeCmd(
+        fun _previewRangeCmd(
             rect: Rect,
             pwrProgress: Float,
-            diameter: Int,
+            @MM diameter: Int,
             px: Byte = DEFAULT_PX
         ): EngravePreviewCmd {
-            return previewRangeCmd(
+            return _previewRangeCmd(
                 rect.left,
                 rect.top,
                 rect.width(),
@@ -271,12 +322,10 @@ data class EngravePreviewCmd(
             )
         }
 
-        fun previewRangeCmd(
-            x: Int,
-            y: Int,
-            width: Int,
-            height: Int,
+        fun _previewRangeCmd(
+            @Px x: Int, @Px y: Int, @Px width: Int, @Px height: Int,
             pwrProgress: Float,
+            @MM
             diameter: Int,  //物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
             px: Byte = DEFAULT_PX
         ): EngravePreviewCmd {
@@ -300,20 +349,20 @@ data class EngravePreviewCmd(
 
         /**表示范围预览, 4点预览
          * [rect] 经过[px]处理过的像素*/
-        fun previewFourPoint(
+        fun adjustPreviewFourPointCmd(
             rectPoint: RectPointF,
             pwrProgress: Float,
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            val pair = adjustFourPoint(rectPoint, px, productInfo)
-            vmApp<LaserPeckerModel>().overflowRectData.postValue(pair.second)
+            val overflowInfo = adjustFourPoint(rectPoint, px, productInfo)
+            vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
 
-            if (pair.second) {
+            if (overflowInfo.isOverflowBounds) {
                 //溢出了, 预览一个点
-                return previewRangeCmd(
-                    pair.first.originRectF.centerX().toInt(),
-                    pair.first.originRectF.centerY().toInt(),
+                return _previewRangeCmd(
+                    overflowInfo.resultRectPoint!!.originRectF.centerX().toInt(),
+                    overflowInfo.resultRectPoint!!.originRectF.centerY().toInt(),
                     1, 1, pwrProgress, 0, px
                 )
             }
@@ -372,7 +421,7 @@ data class EngravePreviewCmd(
          * 返回:  AA BB 08 02 06 00 01 00 00 00 09
          *       AA BB 08 02 06 00 00 00 00 00 08
          * */
-        fun previewBracketUp(@MM step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketUpCmd(@MM step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x03 //0x01 //0x02
@@ -388,7 +437,7 @@ data class EngravePreviewCmd(
 
         /**支架降
          * [step] 步长1mm*/
-        fun previewBracketDown(@MM step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketDownCmd(@MM step: Int = 65535): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x02 //0x00 //0x03
@@ -403,7 +452,7 @@ data class EngravePreviewCmd(
         }
 
         /**停止支架*/
-        fun previewBracketStop(): EngravePreviewCmd {
+        fun previewBracketStopCmd(): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x04
@@ -418,20 +467,21 @@ data class EngravePreviewCmd(
          * [pwrProgress] [0~1f] 预览光功率
          * [bounds] C1使用的参数
          * */
-        fun previewShowCenter(pwrProgress: Float, bounds: RectF): EngravePreviewCmd {
-            val pair = adjustBitmapRange(
-                bounds.left.toInt(),
-                bounds.top.toInt(),
-                bounds.width().toInt(),
-                bounds.height().toInt(),
+        fun previewShowCenterCmd(pwrProgress: Float, bounds: RectF): EngravePreviewCmd {
+            val overflowInfo = adjustRectRange(
+                bounds.left,
+                bounds.top,
+                bounds.width(),
+                bounds.height(),
                 DEFAULT_PX,
                 vmApp<LaserPeckerModel>().productInfoData.value
             )
-            vmApp<LaserPeckerModel>().overflowRectData.postValue(pair.second)
+            vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            val rect = overflowInfo.resultRect!!
             return EngravePreviewCmd(0x07).apply {
 
-                val widthBytes = pair.first.width().toHexString(4).toHexByteArray()
-                val heightBytes = pair.first.height().toHexString(4).toHexByteArray()
+                val widthBytes = rect.width().toHexString(4).toHexByteArray()
+                val heightBytes = rect.height().toHexString(4).toHexByteArray()
 
                 px = DEFAULT_PX
 
@@ -440,20 +490,20 @@ data class EngravePreviewCmd(
                 d3 = heightBytes[0]
                 d4 = heightBytes[1]
 
-                x = pair.first.left
-                y = pair.first.top
+                x = rect.left
+                y = rect.top
 
                 updatePWR(pwrProgress)
             }
         }
 
         /**结束预览指令*/
-        fun previewStop(): EngravePreviewCmd {
+        fun previewStopCmd(): EngravePreviewCmd {
             return EngravePreviewCmd(0x03)
         }
 
         /**第三轴暂停预览*/
-        fun previewZRange(
+        fun adjustPreviewZRangeCmd(
             x: Int,
             y: Int,
             width: Int,
@@ -462,16 +512,23 @@ data class EngravePreviewCmd(
             px: Byte = DEFAULT_PX,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd {
-            val pair = adjustBitmapRange(x, y, width, height, px, productInfo)
-            vmApp<LaserPeckerModel>().overflowRectData.postValue(pair.second)
-            return previewZRange(pair.first, pwrProgress, px)
+            val overflowInfo = adjustRectRange(
+                x.toFloat(),
+                y.toFloat(),
+                width.toFloat(),
+                height.toFloat(),
+                px,
+                productInfo
+            )
+            vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            return _previewZRangeCmd(overflowInfo.resultRect!!, pwrProgress, px)
         }
 
         /**第三轴暂停预览, 用来拖动时更新x,t
          * [rect] 最终调整过后的坐标
          * [pwrProgress] [0~1f] 预览光功率
          * */
-        fun previewZRange(
+        fun _previewZRangeCmd(
             rect: Rect,
             pwrProgress: Float,
             px: Byte = DEFAULT_PX
@@ -484,7 +541,7 @@ data class EngravePreviewCmd(
         }
 
         /**第三轴继续预览指令, z轴滚动预览*/
-        fun previewZContinue(): EngravePreviewCmd {
+        fun previewZContinueCmd(): EngravePreviewCmd {
             return EngravePreviewCmd(0x05)
         }
     }
