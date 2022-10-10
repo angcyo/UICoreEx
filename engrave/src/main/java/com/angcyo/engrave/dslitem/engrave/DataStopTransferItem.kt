@@ -33,7 +33,7 @@ class DataStopTransferItem : BaseButtonItem() {
         itemHolder.visible(R.id.lib_retry_button, itemException != null)
 
         itemHolder.click(R.id.lib_retry_button) {
-            vmApp<TransferModel>().retryTransfer()
+            vmApp<TransferModel>().retryTransfer(false)
         }
     }
 

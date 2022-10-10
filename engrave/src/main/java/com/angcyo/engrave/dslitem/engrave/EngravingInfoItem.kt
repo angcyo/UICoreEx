@@ -1,11 +1,11 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.LabelDesData
-import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
@@ -22,10 +22,8 @@ import com.angcyo.widget.flow
  */
 open class EngravingInfoItem : DslAdapterItem() {
 
-    /**雕刻的信息*/
-    var itemEngraveState: EngraveModel.EngraveState? = null
-
-    val engraveMode = vmApp<EngraveModel>()
+    /**雕刻任务id*/
+    var itemTaskId: String? = null
 
     //所有需要提示的数据
     val _labelDesList = mutableListOf<LabelDesData>()
@@ -57,39 +55,43 @@ open class EngravingInfoItem : DslAdapterItem() {
     }
 
     open fun onCreateLabelList() {
-        itemEngraveState?.let { engraveState ->
-            val engraveDataParam = engraveState.engraveDataParam
-            val engraveData = engraveDataParam.dataList.first()
+        val engraveTaskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
+        val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
+        val engraveDataEntity = EngraveFlowDataHelper.getEngraveDataEntity(itemTaskId)
+
+        engraveConfigEntity?.let {
+            val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity.materialCode)
 
             //材质:
             _labelDesList.add(
-                LabelDesData(_string(R.string.custom_material), engraveDataParam.materialName)
+                LabelDesData(_string(R.string.custom_material), materialEntity.toText())
             )
             //分辨率: 1k
-            val findPxInfo = LaserPeckerHelper.findPxInfo(engraveData.px)
+            val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.px)
             _labelDesList.add(
                 LabelDesData(_string(R.string.resolution_ratio), findPxInfo?.des.or())
             )
 
             //功率:
             _labelDesList.add(
-                LabelDesData(_string(R.string.custom_power), "${engraveDataParam.power}%")
+                LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%")
             )
 
             //深度:
             _labelDesList.add(
-                LabelDesData(_string(R.string.custom_speed), "${engraveDataParam.depth}%")
+                LabelDesData(_string(R.string.custom_speed), "${engraveConfigEntity.depth}%")
             )
 
             //雕刻次数
-            val times = engraveDataParam.time
-            val printTimes = engraveState.printTimes
+            val times = engraveConfigEntity.time
+            val printTimes = engraveDataEntity?.printTimes
             _labelDesList.add(
                 LabelDesData(_string(R.string.print_times), "${printTimes}/${times}")
             )
 
             //加工时间
-            val startEngraveTime = engraveMode._engraveTask?.startTime ?: 0
+            val startEngraveTime = engraveTaskEntity?.startTime ?: 0
             val engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
             _labelDesList.add(LabelDesData(_string(R.string.work_time), engraveTime))
         }

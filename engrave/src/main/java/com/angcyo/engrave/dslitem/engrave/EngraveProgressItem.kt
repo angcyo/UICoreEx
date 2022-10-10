@@ -1,12 +1,14 @@
 package com.angcyo.engrave.dslitem.engrave
 
+import android.view.Gravity
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.widget.EngraveProgressView
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻进度item, 多图层的雕刻进度
@@ -15,8 +17,8 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveProgressItem : DslAdapterItem() {
 
-    /**雕刻的信息*/
-    var itemEngraveState: EngraveModel.EngraveState? = null
+    /**雕刻任务id*/
+    var itemTaskId: String? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_progress_layout
@@ -31,12 +33,23 @@ class EngraveProgressItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.lib_text_view)?.text = "${_string(R.string.progress)}:"
-        val layerInfo =
-            EngraveTransitionManager.getEngraveLayer(itemEngraveState?.engraveDataParam?.layerMode)
-        itemHolder.tv(R.id.engrave_layer_view)?.text = layerInfo?.toText()
+        itemHolder.tv(R.id.engrave_layer_view)?.text = span {
+            val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
+            engraveLayerList.forEach {
+                drawable {
+                    showText = it.toText()
+                    spanWeight = 1f / engraveLayerList.size() - 0.001f
+                    textGravity = Gravity.CENTER
+                }
+            }
+        }
+
+        /*val engraveLayerInfo = EngraveFlowDataHelper.getCurrentEngraveLayer(itemTaskId)
+        itemHolder.tv(R.id.engrave_layer_view)?.text = engraveLayerInfo?.toText()*/
 
         itemHolder.v<EngraveProgressView>(R.id.engrave_progress_view)?.apply {
-            progressValue = itemEngraveState?.progress ?: 0
+            val progress = EngraveFlowDataHelper.calcEngraveProgress(itemTaskId)
+            progressValue = progress
         }
     }
 }

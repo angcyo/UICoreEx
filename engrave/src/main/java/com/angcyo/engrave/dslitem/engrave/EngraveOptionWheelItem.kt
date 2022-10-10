@@ -4,8 +4,10 @@ import android.content.Context
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveDataParam
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -15,8 +17,8 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveOptionWheelItem : DslLabelWheelItem() {
 
-    /**数据*/
-    var itemEngraveDataParam: EngraveDataParam? = null
+    /**参数配置实体*/
+    var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_option_layout
@@ -24,8 +26,8 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
         itemWheelSelector = { dialog, index, item ->
             //赋值操作
             when (itemTag) {
-                EngraveDataParam::materialName.name -> {
-                    //当切换了材质
+                MaterialEntity::name.name -> {
+                    //当切换了材质, 需要同时更新其他图层配置的材质信息和功率/深度等信息
                     /*itemEngraveDataParam?.apply {
                         val materialEntity = itemWheelList?.get(index) as? MaterialEntity
                         material = materialEntity?.toText()?.toString() ?: material
@@ -36,21 +38,31 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                         _updatePowerDepthItem()
                     }*/
                 }
-                EngraveDataParam::power.name -> {
-                    itemEngraveDataParam?.apply {
+                MaterialEntity::power.name -> {
+                    itemEngraveConfigEntity?.apply {
                         power = getSelectedInt(index, power)
                         HawkEngraveKeys.lastPower = power
+                        lpSaveEntity()
                     }
                 }
-                EngraveDataParam::depth.name -> {
-                    itemEngraveDataParam?.apply {
+                MaterialEntity::depth.name -> {
+                    itemEngraveConfigEntity?.apply {
                         depth = getSelectedInt(index, depth)
                         HawkEngraveKeys.lastDepth = depth
+                        lpSaveEntity()
                     }
                 }
-                EngraveDataParam::time.name -> {
-                    itemEngraveDataParam?.apply {
+                EngraveConfigEntity::time.name -> {
+                    itemEngraveConfigEntity?.apply {
                         time = getSelectedInt(index, time)
+                        lpSaveEntity()
+                    }
+                }
+                EngraveConfigEntity::precision.name -> {
+                    itemEngraveConfigEntity?.apply {
+                        precision = getSelectedInt(index, precision)
+                        HawkEngraveKeys.lastPrecision = precision
+                        lpSaveEntity()
                     }
                 }
             }
@@ -65,7 +77,7 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
         payloads: List<Any>
     ) {
         itemWheelUnit = when (itemTag) {
-            EngraveDataParam::power.name, EngraveDataParam::depth.name -> "%"
+            MaterialEntity::power.name, MaterialEntity::depth.name -> "%"
             else -> null
         }
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

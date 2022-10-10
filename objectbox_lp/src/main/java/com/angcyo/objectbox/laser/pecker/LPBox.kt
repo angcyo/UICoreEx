@@ -1,10 +1,7 @@
 package com.angcyo.objectbox.laser.pecker
 
 import android.content.Context
-import com.angcyo.objectbox.DslBox
-import com.angcyo.objectbox.boxOf
-import com.angcyo.objectbox.boxStoreOf
-import com.angcyo.objectbox.updateOrCreateEntity
+import com.angcyo.objectbox.*
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.query.QueryBuilder
@@ -23,6 +20,10 @@ object LPBox {
     fun init(context: Context) {
         DslBox.init(context, PACKAGE_NAME, "LaserPecker")
     }
+}
+
+inline fun <reified T> T.lpSaveEntity(): Long {
+    return saveEntity(LPBox.PACKAGE_NAME)
 }
 
 /**快速获取[BoxStore]

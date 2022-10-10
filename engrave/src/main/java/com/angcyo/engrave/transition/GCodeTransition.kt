@@ -14,12 +14,14 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
-import com.angcyo.engrave.data.TransferDataConfigInfo
-import com.angcyo.engrave.data.TransferDataInfo
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import com.angcyo.opencv.OpenCV
 import java.io.File
 
@@ -231,24 +233,26 @@ class GCodeTransition : IEngraveTransition {
     }
 */
 
+    /**将可视化数据处理成机器需要的GCode数据
+     * [CanvasConstant.DATA_MODE_GCODE]*/
     override fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo
-    ): TransferDataInfo? {
+        transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity? {
         if (renderer is DataItemRenderer) {
             val dataItem = renderer.dataItem
             val dataBean = dataItem?.dataBean
-            if (getDataMode(dataBean, transferDataConfigInfo) == CanvasConstant.DATA_MODE_GCODE) {
+            if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
                 //需要处理成GCode数据
                 if (dataItem is DataPathItem) {
                     val pathList = dataItem.dataPathList
-                    return _transitionPathTransferData(renderer, transferDataConfigInfo, pathList)
+                    return _transitionPathTransferData(renderer, transferConfigEntity, pathList)
                 } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
                     //图片元素, 路径转GCode算法
                     val gCodeDrawable = dataItem.gCodeDrawable
                     return _transitionPathTransferData(
                         renderer,
-                        transferDataConfigInfo,
+                        transferConfigEntity,
                         listOf(gCodeDrawable!!.gCodePath)
                     )
                 } else {
@@ -257,7 +261,7 @@ class GCodeTransition : IEngraveTransition {
                     bitmap?.let {
                         return _transitionBitmapTransferData(
                             renderer,
-                            transferDataConfigInfo,
+                            transferConfigEntity,
                             bitmap
                         )
                     }
@@ -267,26 +271,33 @@ class GCodeTransition : IEngraveTransition {
         return null
     }
 
+    /**Path路径转GCode*/
+    @Private
     fun _transitionPathTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo,
+        transferConfigEntity: TransferConfigEntity,
         pathList: List<Path>
-    ): TransferDataInfo {
+    ): TransferDataEntity {
         val gCodeFile = CanvasDataHandleOperate.pathToGCode(
             pathList,
             renderer.getBounds(),
             renderer.rotate
         )
-        return _handleGCodeTransferDataInfo(renderer, transferDataConfigInfo, gCodeFile)
+        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+            //1: 存一份原始可视化数据
+            val bitmap = renderer.getEngraveBitmap()
+            saveEngraveData("$index", bitmap, "png")
+        }
     }
 
+    /**Bitmap转GCode*/
+    @Private
     fun _transitionBitmapTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo,
+        transferConfigEntity: TransferConfigEntity,
         bitmap: Bitmap
-    ): TransferDataInfo {
-        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
-        saveEngraveData("${transferDataConfigInfo.name}.r", bitmap, "png")
+    ): TransferDataEntity {
+        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.px)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,
@@ -302,83 +313,37 @@ class GCodeTransition : IEngraveTransition {
             renderer.getBounds(),
             renderer.rotate
         )
-        return _handleGCodeTransferDataInfo(renderer, transferDataConfigInfo, gCodeFile)
+        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+            //1: 存一份原始可视化数据
+            saveEngraveData("$index", pxBitmap, "png")
+        }
     }
 
-    fun _handleGCodeTransferDataInfo(
+    /**GCode数据处理*/
+    @Private
+    fun _handleGCodeTransferDataEntity(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo,
+        transferConfigEntity: TransferConfigEntity,
         gCodeFile: File
-    ): TransferDataInfo {
-        val transferDataInfo =
-            TransferDataInfo(index = EngraveTransitionManager.generateEngraveIndex())
-        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
-        initTransferDataInfo(renderer, transferDataConfigInfo, transferDataInfo)
-        transferDataInfo.lines = gCodeFile.lines()
+    ): TransferDataEntity {
+        val transferDataEntity =
+            TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
+        transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
+        initTransferDataEntity(renderer, transferConfigEntity, transferDataEntity)
+        transferDataEntity.lines = gCodeFile.lines()
 
         val pathGCodeText = gCodeFile.readText()
-        transferDataInfo.data = pathGCodeText.toByteArray()
+        transferDataEntity.data = pathGCodeText.toByteArray().toTransferData()
 
         //2:保存一份GCode文本数据/原始数据
-        saveEngraveData(transferDataInfo.index, pathGCodeText, "gcode")
+        saveEngraveData(transferDataEntity.index, pathGCodeText, "gcode")
 
         val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
 
-        //3:保存一份GCode的图片数据/预览数据
-        val bitmap = gCodeDrawable?.toBitmap()
-        saveEngraveData("${transferDataInfo.index}.p", bitmap, "png")
+        //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
+        val previewBitmap = gCodeDrawable?.toBitmap()
+        saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
 
-        return transferDataInfo
+        return transferDataEntity
     }
-
-/*
-    */
-    /**
-     * [engraveReadyInfo] 需要赋值的数据对象
-     * [gCodeFile] gcode数据文件对象
-     * [rotateBounds] itemRenderer旋转后的矩形坐标, px坐标, 内部自行转换成mm
-     * *//*
-    fun _handleGCodeEngraveDataInfo(
-        engraveReadyInfo: EngraveReadyInfo,
-        gCodeFile: File,
-        rotateBounds: RectF
-    ) {
-        val pathGCodeText = gCodeFile.readText()
-        val gCodeLines = gCodeFile.lines()
-        gCodeFile.deleteSafe()
-
-        if (!pathGCodeText.isNullOrEmpty()) {
-            //GCode数据
-
-            val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
-            val data = pathGCodeText.toByteArray()
-            engraveReadyInfo.engraveData?.apply {
-                engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
-                lines = gCodeLines
-                this.data = data
-
-                val mmValueUnit = MmValueUnit()
-                x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
-                y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
-                width = (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).toInt()
-                height = (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).toInt()
-                px = LaserPeckerHelper.DEFAULT_PX
-
-                //val gCodeBound = gCodeDrawable?.gCodeBound
-                //width = gCodeBound?.width()?.toInt() ?: 0
-                //height = gCodeBound?.height()?.toInt() ?: 0
-
-                //1:保存一份byte数据
-                engraveReadyInfo.dataPath = saveEngraveData(index, data)//数据路径
-
-                //2:保存一份GCode文本数据/原始数据
-                saveEngraveData(index, pathGCodeText, "gcode")
-
-                //3:保存一份GCode的图片数据/预览数据
-                val bitmap = gCodeDrawable?.toBitmap()
-                engraveReadyInfo.dataBitmap = bitmap
-                engraveReadyInfo.previewDataPath = saveEngraveData("${index}.p", bitmap, "png")
-            }
-        }
-    }*/
 }

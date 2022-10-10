@@ -181,22 +181,7 @@ class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
             updateEngraveDataIndex(engraveReadyInfo.engraveData)
             needHandleEngraveData()
         } else {
-            //检查数据索引是否存在
-            QueryCmd.fileList.enqueue { bean, error ->
-                val have =
-                    bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
-                if (have) {
-                    //已经存在数据, 更新数据配置即可. 直接显示雕刻相关item
-                    if (renderer != null) {
-                        //重新解析一下, 但是数据不需要发送给机器
-                        engraveTransitionManager.transitionEngraveData(renderer, engraveReadyInfo)
-                    }
-                    engraveModel.setEngraveReadyDataInfo(engraveReadyInfo)
-                    showStartEngraveItem()
-                } else {
-                    needHandleEngraveData()
-                }
-            }
+
         }
     }
 

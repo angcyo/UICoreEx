@@ -25,7 +25,7 @@
     <com.angcyo.widget.DslButton
         android:id="@+id/lib_retry_button"
         style="@style/LibButtonBlackSolidStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/lib_xhdpi"
@@ -36,13 +36,13 @@
     <com.angcyo.widget.DslButton
         android:id="@+id/lib_button"
         style="@style/DefaultButtonMinStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:minHeight="45dp"
         android:paddingHorizontal="@dimen/lib_xxhdpi"
         android:text="@string/stop_transfer"
         android:textColor="@color/text_general_color"
-        app:button_gradient_colors="#00000000" />
+        app:button_normal_gradient_colors="#00000000" />
 
 </LinearLayout>

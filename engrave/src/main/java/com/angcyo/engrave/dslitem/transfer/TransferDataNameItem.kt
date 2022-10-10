@@ -4,12 +4,12 @@ import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.item.style.EditItemConfig
 import com.angcyo.item.style.IEditItem
 import com.angcyo.item.style.itemEditText
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.byteSize
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
@@ -21,7 +21,7 @@ import com.angcyo.widget.span.span
 class TransferDataNameItem : DslAdapterItem(), IEditItem {
 
     /**数据配置信息*/
-    var itemTransferDataConfigInfo: TransferDataConfigInfo? = null
+    var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
             itemEditText = value?.name
@@ -69,11 +69,13 @@ class TransferDataNameItem : DslAdapterItem(), IEditItem {
                     foregroundColor = Color.RED
                 } else {
                     itemThrowable = null
-                    itemTransferDataConfigInfo?.name = text.toString()
+                    itemTransferConfigEntity?.name = text.toString()
                 }
             }
             append("/${DataCmd.DEFAULT_NAME_BYTE_COUNT} bytes")
         }
+        //
+        itemTransferConfigEntity?.name = text.toString()
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
+import com.angcyo.library.annotation.DSL
 import com.angcyo.library.app
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.Page
@@ -310,6 +311,7 @@ fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
 
 /**
  * box.query(User_.name.equal("Jane") and (User_.age.less(12) or User_.status.equal("child")))
+ * [io.objectbox.query.QueryBuilder.apply]
  * */
 fun <T> Box<T>.findAll(
     queryCondition: QueryCondition<T>? = null,
@@ -317,6 +319,25 @@ fun <T> Box<T>.findAll(
 ): List<T> {
     val builder = if (queryCondition == null) query() else query(queryCondition)
     return builder.apply(block).build().find()
+}
+
+/**获取所有记录*/
+inline fun <reified T : Any> KClass<T>.findAll(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val cls = this.java
+    return boxOf(cls, packageName).findAll(null, block)
+}
+
+/**查找第一个*/
+inline fun <reified T : Any> KClass<T>.findFirst(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): T? {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    return box.findFirst(block)
 }
 
 /**获取第一条记录*/
@@ -333,7 +354,7 @@ fun <T> Box<T>.findFirst(
 }
 
 /**获取最后[limit]条记录*/
-fun <T> Box<T>.findLast(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {}): List<T> {
+fun <T> Box<T>.findLastList(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     val count = count()
     if (count <= 0) {
         //Invalid offset (-1): must be zero or positive
@@ -342,7 +363,7 @@ fun <T> Box<T>.findLast(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {})
     return query(block).find(max(count - limit, 0), limit)
 }
 
-fun <T> Box<T>.findLast(
+fun <T> Box<T>.findLastList(
     limit: Long = 1,
     queryCondition: QueryCondition<T>? = null,
     block: QueryBuilder<T>.() -> Unit = {}
@@ -356,18 +377,32 @@ fun <T> Box<T>.findLast(
     return builder.apply(block).build().find(max(count - limit, 0), limit)
 }
 
-/**获取所有记录*/
-inline fun <reified T> allEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-): List<T> {
-    return boxOf(T::class.java, packageName).all
+/**查找最后一个元素*/
+inline fun <reified T : Any> KClass<T>.findLast(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): T? {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    return box.findLastList(1, null, block).lastOrNull()
 }
 
-fun <T : Any> allEntity(
-    entityClass: KClass<T>,
+inline fun <reified T : Any> KClass<T>.findLastList(
+    limit: Long = 1,
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    return box.findLastList(limit, null, block)
+}
+
+/**获取所有记录*/
+inline fun <reified T : Any> KClass<T>.allEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
 ): List<T> {
-    return boxOf(entityClass.java, packageName).all
+    val cls = this.java
+    return boxOf(cls, packageName).all
 }
 
 /**分页查找
@@ -387,10 +422,20 @@ fun <T> Box<T>.page(
     return builder.apply(block).build().find(offset.toLong(), limit.toLong())
 }
 
+inline fun <reified T : Any> KClass<T>.page(
+    page: Page,
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val cls = this.java
+    return boxOf(cls, packageName).page(page, null, block)
+}
+
 //endregion ---query find---
 
 //region ---remove---
 
+/**删除所有*/
 fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return findAll(block).apply { this@removeAll.remove(this) }
 }
@@ -403,6 +448,13 @@ fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
 inline fun <reified T> T.deleteEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
 ): Boolean {
+    return boxOf(T::class.java, packageName).remove(this)
+}
+
+/**删除所有*/
+inline fun <reified T> Collection<T>.deleteAllEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+) {
     return boxOf(T::class.java, packageName).remove(this)
 }
 
@@ -420,6 +472,7 @@ inline fun <reified T> T.saveEntity(
 }
 
 /**保存实例*/
+@DSL
 inline fun <reified T : Any> KClass<T>.saveEntity(
     packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
     update: T.() -> Unit
@@ -429,6 +482,28 @@ inline fun <reified T : Any> KClass<T>.saveEntity(
     val entity = cls.newInstance()
     entity.update()
     return box.put(entity)
+}
+
+/**查询一个实体, 如果不存在, 则创建一个实体
+ * [init] 创建实体时的初始化回调
+ * [query] 查询条件
+ * */
+@DSL
+inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
+    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    init: T.() -> Unit = {},
+    query: QueryBuilder<T>.() -> Unit,
+): T {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    val find = box.query(query).findFirst()
+    if (find == null) {
+        val entity = cls.newInstance()
+        entity.init()
+        box.put(entity)
+        return entity
+    }
+    return find
 }
 
 /**批量保存或者更新

@@ -6,6 +6,8 @@ package com.angcyo.engrave.data
  * @since 2022/09/29
  */
 data class TransferTaskStateData(
+    /**任务id*/
+    val taskId: String?,
     /**传输总进度[0~100]*/
     val progress: Int = 0,
     /**传输是否有异常信息*/

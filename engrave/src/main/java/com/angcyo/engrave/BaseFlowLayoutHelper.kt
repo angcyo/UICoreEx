@@ -15,6 +15,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.uuid
 
 /**
  * 雕刻流程相关布局基类
@@ -53,6 +54,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             field = value
             onEngraveFlowChanged(old, value)
         }
+
+    /**流程任务id, 建议每次显示页面时都创建一个新的任务id*/
+    var flowTaskId: String? = uuid()
 
     /**当前[engraveFlow]能够回退到的模式*/
     var engraveBackFlow: Int = 0
@@ -97,6 +101,14 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
         //界面移除, 回归默认
         engraveFlow = 0
+    }
+
+    /**回退*/
+    fun back() {
+        if (engraveBackFlow > 0) {
+            engraveFlow = engraveBackFlow
+            renderFlowItems()
+        }
     }
 
     override fun hide(end: (() -> Unit)?) {

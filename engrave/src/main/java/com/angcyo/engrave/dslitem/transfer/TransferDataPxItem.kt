@@ -4,10 +4,10 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.TransferDataConfigInfo
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.library.ex._string
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 
 /**
  * 数据分辨率选择
@@ -23,7 +23,7 @@ import com.angcyo.library.ex._string
 class TransferDataPxItem : EngraveSegmentScrollItem() {
 
     /**数据配置信息*/
-    var itemTransferDataConfigInfo: TransferDataConfigInfo? = null
+    var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
             val index = itemPxList?.indexOfFirst { it.px == value?.px }
@@ -45,7 +45,7 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
         val px = itemPxList?.get(itemCurrentIndex)?.px ?: LaserPeckerHelper.DEFAULT_PX
-        itemTransferDataConfigInfo?.px = px
+        itemTransferConfigEntity?.px = px
     }
 
 }

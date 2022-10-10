@@ -182,7 +182,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "9:8571243668196448558",
+      "lastPropertyId": "10:6564749569250734994",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -230,12 +230,301 @@
           "id": "9:8571243668196448558",
           "name": "type",
           "type": 5
+        },
+        {
+          "id": "10:6564749569250734994",
+          "name": "code",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:8576643246115528772",
+      "lastPropertyId": "6:8798062743815394318",
+      "name": "TransferConfigEntity",
+      "properties": [
+        {
+          "id": "1:3608031323385974760",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1244449825685988466",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:4894193381900797504",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:3436443603844460576",
+          "name": "px",
+          "type": 2
+        },
+        {
+          "id": "5:7069185484473102999",
+          "name": "mergeData",
+          "type": 1
+        },
+        {
+          "id": "6:8798062743815394318",
+          "name": "dataMode",
+          "type": 5
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:8152904460033212959",
+      "lastPropertyId": "9:3075746864543323178",
+      "name": "EngraveConfigEntity",
+      "properties": [
+        {
+          "id": "1:6408629588108277376",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:181527204137660697",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:3953808129668500876",
+          "name": "layerMode",
+          "type": 5
+        },
+        {
+          "id": "4:4334594785228585443",
+          "name": "materialCode",
+          "type": 9
+        },
+        {
+          "id": "5:4319795445554692220",
+          "name": "type",
+          "type": 2
+        },
+        {
+          "id": "6:203763403262293226",
+          "name": "precision",
+          "type": 5
+        },
+        {
+          "id": "7:3030929753131574452",
+          "name": "power",
+          "type": 5
+        },
+        {
+          "id": "8:3175636508655237711",
+          "name": "depth",
+          "type": 5
+        },
+        {
+          "id": "9:3075746864543323178",
+          "name": "time",
+          "type": 5
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:6688223120819802683",
+      "lastPropertyId": "3:5456714934385824938",
+      "name": "PreviewConfigEntity",
+      "properties": [
+        {
+          "id": "1:1626088241824731181",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7581009075389517171",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:5456714934385824938",
+          "name": "diameterPixel",
+          "type": 7
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "8:692696925785217455",
+      "lastPropertyId": "14:380067980881479608",
+      "name": "TransferDataEntity",
+      "properties": [
+        {
+          "id": "1:8242043789184827467",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:9046925363650213083",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:6354807431234432423",
+          "name": "data",
+          "type": 9
+        },
+        {
+          "id": "4:1793853680839818381",
+          "name": "engraveDataType",
+          "type": 5
+        },
+        {
+          "id": "5:8239233068794772327",
+          "name": "width",
+          "type": 5
+        },
+        {
+          "id": "6:3595069560037920559",
+          "name": "height",
+          "type": 5
+        },
+        {
+          "id": "7:862006248060441695",
+          "name": "x",
+          "type": 5
+        },
+        {
+          "id": "8:6649454637747808737",
+          "name": "y",
+          "type": 5
+        },
+        {
+          "id": "9:1120358512436187857",
+          "name": "px",
+          "type": 2
+        },
+        {
+          "id": "10:622230581581523001",
+          "name": "index",
+          "type": 5
+        },
+        {
+          "id": "11:761134388809695173",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "12:527195488859742332",
+          "name": "lines",
+          "type": 5
+        },
+        {
+          "id": "13:8234033442103949848",
+          "name": "layerMode",
+          "type": 5
+        },
+        {
+          "id": "14:380067980881479608",
+          "name": "isTransfer",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "9:7843989811447012242",
+      "lastPropertyId": "7:5950277634928254295",
+      "name": "EngraveDataEntity",
+      "properties": [
+        {
+          "id": "1:4019107474500247402",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2686641758321310799",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:2880822111484553991",
+          "name": "index",
+          "type": 5
+        },
+        {
+          "id": "4:4934477518860884779",
+          "name": "printTimes",
+          "type": 5
+        },
+        {
+          "id": "5:650104807519448756",
+          "name": "progress",
+          "type": 5
+        },
+        {
+          "id": "6:967482318494277922",
+          "name": "startTime",
+          "type": 6
+        },
+        {
+          "id": "7:5950277634928254295",
+          "name": "finishTime",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "10:6125483051008058143",
+      "lastPropertyId": "7:223407961696996081",
+      "name": "EngraveTaskEntity",
+      "properties": [
+        {
+          "id": "1:4409863360410118821",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1096573852844681434",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "3:8543660245400551323",
+          "name": "dataIndexList",
+          "type": 30
+        },
+        {
+          "id": "4:4955597375662468243",
+          "name": "state",
+          "type": 5
+        },
+        {
+          "id": "5:5675819172538831251",
+          "name": "startTime",
+          "type": 6
+        },
+        {
+          "id": "6:8795277539027913099",
+          "name": "finishTime",
+          "type": 6
+        },
+        {
+          "id": "7:223407961696996081",
+          "name": "currentIndex",
+          "type": 5
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "4:3649377060527503412",
+  "lastEntityId": "10:6125483051008058143",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

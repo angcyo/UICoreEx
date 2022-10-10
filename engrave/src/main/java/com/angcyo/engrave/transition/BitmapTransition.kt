@@ -1,7 +1,9 @@
 package com.angcyo.engrave.transition
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
@@ -13,9 +15,10 @@ import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.data.TransferDataConfigInfo
-import com.angcyo.engrave.data.TransferDataInfo
 import com.angcyo.library.component.byteWriter
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import kotlin.experimental.or
 
 /**
@@ -75,6 +78,34 @@ class BitmapTransition : IEngraveTransition {
             return result
         }
 
+        /**反向转成图片*/
+        fun List<BitmapPath>.toEngraveBitmap(width: Int, height: Int): Bitmap {
+            val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(result)
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                this.style = Paint.Style.FILL
+                strokeWidth = 1f
+                strokeJoin = Paint.Join.ROUND
+                strokeCap = Paint.Cap.ROUND
+            }
+            forEach { bp ->
+                val y: Float = bp.y.toFloat()
+                val left: Float
+                val right: Float
+                if (bp.ltr) {
+                    //左到右
+                    left = bp.x.toFloat()
+                    right = left + bp.len
+                } else {
+                    //右到左
+                    right = bp.x.toFloat()
+                    left = right - bp.len
+                }
+                canvas.drawLine(left, y, right, y, paint)
+            }
+            return result
+        }
+
         /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
          * 白色传1 黑色传0
@@ -123,130 +154,111 @@ class BitmapTransition : IEngraveTransition {
             }
             return logBuilder.toString() to bytes
         }
-    }
-/*
 
-    override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
-        val item = renderer.getRendererRenderItem() ?: return null
-        //走到这里的数据, 都处理成Bitmap
-        val result = EngraveReadyInfo()
-
-        //
-        initReadyEngraveData(renderer, result)
-
-        result.itemUuid = item.uuid
-        result.dataType = item.dataType
-        result.dataMode = item.dataMode
-        if (result.dataMode > 0) {
-            result.dataMode = result.dataMode
-        } else {
-            result.dataMode = CanvasConstant.DATA_MODE_GREY
-        }
-
-        //px list
-        result.dataSupportPxList = LaserPeckerHelper.findProductSupportPxList()
-
-        //
-        result.dataSupportModeList
-
-        return result
-    }
-
-    override fun doTransitionEngraveData(
-        renderer: BaseItemRenderer<*>,
-        engraveReadyInfo: EngraveReadyInfo
-    ): Boolean {
-        //init
-        fun initEngraveData() {
-            engraveReadyInfo.engraveData?.apply {
-                engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
+        /**将抖动数据 00011110001010 描述字符串, 转换成可视化图片*/
+        fun String.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
+            val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(result)
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                this.style = Paint.Style.FILL
+                strokeWidth = 1f
+                strokeJoin = Paint.Join.ROUND
+                strokeCap = Paint.Cap.ROUND
             }
+            var x = 0f
+            var y = 0f
+            lines().forEach { line ->
+                x = 0f
+                line.forEach { char ->
+                    if (char == '1') {
+                        //1绘制
+                        canvas.drawCircle(x, y, 1f, paint)//绘制圆点
+                    }
+                    x++
+                }
+                y++
+            }
+            return result
         }
-
-        //其他方式, 使用图片雕刻
-        val bounds = renderer.getRotateBounds()
-        val bitmap = renderer.getEngraveBitmap() ?: return false
-
-        //init
-        initEngraveData()
-
-        val x = bounds.left.toInt()
-        val y = bounds.top.toInt()
-
-        engraveReadyInfo.dataBitmap = bitmap
-        engraveReadyInfo.dataX = x
-        engraveReadyInfo.dataY = y
-
-        //engraveReadyInfo.engraveData?.engraveDataType = EngraveDataInfo.ENGRAVE_TYPE_BITMAP
-        _handleBitmapPx(
-            engraveReadyInfo,
-            engraveReadyInfo.engraveData?.px ?: LaserPeckerHelper.DEFAULT_PX
-        )
-
-        //bitmap转bytes
-        _handleBitmapData(engraveReadyInfo)
-
-        return true
     }
-*/
 
+    /**将可视化数据处理成机器需要的线段数据或抖动数据
+     * [CanvasConstant.DATA_MODE_BLACK_WHITE] 线段数据
+     * [CanvasConstant.DATA_MODE_DITHERING] 抖动数据
+     * */
     override fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo
-    ): TransferDataInfo? {
+        transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity? {
         if (renderer is DataItemRenderer) {
             val dataItem = renderer.dataItem
             val dataBean = dataItem?.dataBean
             if (dataBean != null) {
                 val bitmap = renderer.getEngraveBitmap()
                 if (bitmap != null) {
-                    val dataMode = getDataMode(dataBean, transferDataConfigInfo)
-                    val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferDataConfigInfo.px)
-                    val transferDataInfo =
-                        TransferDataInfo(index = EngraveTransitionManager.generateEngraveIndex())
+                    val dataMode = getDataMode(dataBean, transferConfigEntity)
+                    val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.px)
+                    val transferDataEntity =
+                        TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
 
-                    //保存一份预览的图片数据
-                    saveEngraveData("${transferDataInfo.index}.p", pxBitmap, "png")
+                    //1:保存一份原始可视化数据
+                    saveEngraveData("${transferDataEntity.index}", pxBitmap, "png")
 
-                    if (dataMode == CanvasConstant.DATA_MODE_BLACK_WHITE) {
+                    when (dataMode) {
                         //黑白数据, 发送线段数据
-                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
-                        val listBitmapPath = handleBitmapPath(pxBitmap, 128)
-                        transferDataInfo.data = byteWriter {
-                            listBitmapPath.forEach {
-                                write(it.x, 2)
-                                write(it.y, 2)
-                                write(it.len, 2)
+                        CanvasConstant.DATA_MODE_BLACK_WHITE -> {
+                            transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+                            val listBitmapPath = handleBitmapPath(pxBitmap, 128)
+                            val bytes = byteWriter {
+                                listBitmapPath.forEach {
+                                    write(it.x, 2)
+                                    write(it.y, 2)
+                                    write(it.len, 2)
+                                }
                             }
+                            transferDataEntity.data = bytes.toTransferData()
+                            transferDataEntity.lines = listBitmapPath.size
+
+                            //2:路径数据写入日志
+                            saveEngraveData(transferDataEntity.index, "$listBitmapPath", "bp")
+                            //3:保存一份数据的预览图
+                            val previewBitmap =
+                                listBitmapPath.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
+                            saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
                         }
-                        transferDataInfo.lines = listBitmapPath.size
-
-                        //路径数据写入日志
-                        saveEngraveData(transferDataInfo.index, "$listBitmapPath", "bp")
-                    } else if (dataMode == CanvasConstant.DATA_MODE_GREY) {
                         //色阶数据, 红色通道的灰度雕刻数据
-                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
-                        val data = pxBitmap.engraveColorBytes()
-                        transferDataInfo.data = data
-                        val channelBitmap = data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
-                        saveEngraveData(transferDataInfo.index, channelBitmap, "png")
-                    } else {
+                        CanvasConstant.DATA_MODE_GREY -> {
+                            transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
+                            val data = pxBitmap.engraveColorBytes()
+                            transferDataEntity.data = data.toTransferData()
+                            val previewBitmap =
+                                data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
+                            //3:数据的预览图片
+                            saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+                        }
                         //抖动数据
-                        transferDataInfo.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
-                        //白色1 黑色0
-                        val pair = handleBitmapByte(pxBitmap, 128)
-                        transferDataInfo.data = pair.second
+                        else -> {
+                            transferDataEntity.engraveDataType =
+                                DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+                            //白色1 黑色0
+                            val pair = handleBitmapByte(pxBitmap, 128)
+                            transferDataEntity.data = pair.second.toTransferData()
 
-                        //路径数据写入日志
-                        saveEngraveData(transferDataInfo.index, pair.first, "dt")
+                            //路径数据写入日志
+                            saveEngraveData(transferDataEntity.index, pair.first, "dt")
+                            //3:保存一份数据的预览图
+                            val previewBitmap =
+                                pair.first.toEngraveDitheringBitmap(pxBitmap.width, pxBitmap.height)
+                            saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+                        }
                     }
 
-                    initTransferDataInfo(renderer, transferDataConfigInfo, transferDataInfo)
+                    initTransferDataEntity(renderer, transferConfigEntity, transferDataEntity)
                     //注意这里要覆盖宽/高
-                    transferDataInfo.width = pxBitmap.width
-                    transferDataInfo.height = pxBitmap.height
+                    transferDataEntity.width = pxBitmap.width
+                    transferDataEntity.height = pxBitmap.height
 
-                    return transferDataInfo
+                    return transferDataEntity
                 }
             }
         }

@@ -20,8 +20,11 @@ data class EngraveLayerInfo(
     /**界面显示的标签*/
     val label: CharSequence
 ) : IToText, IToValue {
+
     override fun toText(): CharSequence = label
+
     override fun toValue(): Any = mode
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

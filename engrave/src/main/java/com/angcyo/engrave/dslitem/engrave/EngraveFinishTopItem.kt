@@ -3,8 +3,9 @@ package com.angcyo.engrave.dslitem.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveConfigInfo
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.library.ex._string
@@ -18,8 +19,8 @@ import com.angcyo.widget.span.span
  */
 class EngraveFinishTopItem : DslAdapterItem() {
 
-    /**雕刻配置信息*/
-    var itemEngraveConfigInfo: EngraveConfigInfo? = null
+    /**雕刻任务id, 通过id可以查询到各种信息*/
+    var itemTaskId: String? = null
 
     val engraveMode = vmApp<EngraveModel>()
 
@@ -35,23 +36,28 @@ class EngraveFinishTopItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val engraveDataParam = itemEngraveConfigInfo?.engraveDataParamList?.firstOrNull()
+        val taskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
+        val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+        val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity?.materialCode)
+
+        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
+
         itemHolder.tv(R.id.lib_text_view)?.text = span {
             append(_string(R.string.custom_material))
             append(":")
-            append(engraveDataParam?.materialName)
+            append(materialEntity.toText())
 
             append(" ")
             append(_string(R.string.resolution_ratio))
             append(":")
-            val pxInfo = LaserPeckerHelper.findPxInfo(engraveDataParam?.dataList?.firstOrNull()?.px)
+            val pxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.px)
             append(pxInfo?.des)
 
             append(" ")
             append(_string(R.string.work_time))
             append(":")
-            val startEngraveTime = engraveMode._engraveTask?.startTime ?: 0
-            val endEngraveTime = engraveMode._engraveTask?.finishTime ?: 0
+            val startEngraveTime = taskEntity?.startTime ?: 0
+            val endEngraveTime = taskEntity?.finishTime ?: 0
             val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
             append(engraveTime)
         }

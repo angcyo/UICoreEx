@@ -1,8 +1,8 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveDataParam
 import com.angcyo.engrave.data.LabelDesData
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
@@ -14,8 +14,8 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveFinishInfoItem : EngravingInfoItem() {
 
-    /**雕刻参数信息*/
-    var itemEngraveDataParam: EngraveDataParam? = null
+    /**雕刻图层模式*/
+    var itemLayerMode: Int = -1
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_info_layout
@@ -32,20 +32,29 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
     }
 
     override fun onCreateLabelList() {
-        itemEngraveDataParam?.let { engraveDataParam ->
+        val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+        val transferDataEntityList =
+            EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerMode)
+
+        engraveConfigEntity?.let {
             //功率:
             _labelDesList.add(
-                LabelDesData(_string(R.string.custom_power), "${engraveDataParam.power}%")
+                LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%")
             )
 
             //深度:
             _labelDesList.add(
-                LabelDesData(_string(R.string.custom_speed), "${engraveDataParam.depth}%")
+                LabelDesData(_string(R.string.custom_speed), "${engraveConfigEntity.depth}%")
             )
 
             //雕刻次数
-            val times = engraveDataParam.time
-            val printTimes = engraveDataParam.dataList.first().printTimes
+            val transferDataEntity = transferDataEntityList.firstOrNull()
+            val times = engraveConfigEntity.time
+            val engraveDataEntity = EngraveFlowDataHelper.getEngraveDataEntity(
+                itemTaskId,
+                transferDataEntity?.index ?: 0
+            )
+            val printTimes = engraveDataEntity?.printTimes
             _labelDesList.add(
                 LabelDesData(_string(R.string.print_times), "${printTimes}/${times}")
             )

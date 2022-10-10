@@ -13,6 +13,11 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.toTransferData
+import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
 
@@ -142,42 +147,45 @@ class EngraveTransitionManager {
     @WorkerThread
     fun transitionTransferData(
         canvasDelegate: CanvasDelegate,
-        transferDataConfigInfo: TransferDataConfigInfo
-    ): List<TransferTaskData> {
-        val result = mutableListOf<TransferTaskData>()
+        transferConfigEntity: TransferConfigEntity
+    ): List<TransferDataEntity> {
+        val resultDataList = mutableListOf<TransferDataEntity>()
         engraveLayerList.forEach { engraveLayerInfo ->
-            val dataList = mutableListOf<TransferDataInfo>()
+            val dataList = mutableListOf<TransferDataEntity>()
             getRendererList(canvasDelegate, engraveLayerInfo).forEach { renderer ->
-                transitionTransferData(renderer, transferDataConfigInfo)?.let { transferDataInfo ->
-                    dataList.add(transferDataInfo)
+                //开始将[renderer]转换成数据
+                transitionTransferData(renderer, transferConfigEntity)?.let { transferDataEntity ->
+                    transferDataEntity.layerMode = engraveLayerInfo.mode
+                    dataList.add(transferDataEntity)
                 }
             }
             if (dataList.isNotEmpty()) {
-                if (dataList.size() == 1) {
+                if (!transferConfigEntity.mergeData || dataList.size() == 1) {
                     //只有1条数据, 不需要合并
-                    result.add(TransferTaskData(engraveLayerInfo, dataList))
+                    resultDataList.addAll(dataList)
                 } else {
                     //多条数据
-                    if (engraveLayerInfo.mode == DATA_MODE_GCODE) {
-                        //GCode 数据合并
-                        val gcodeTransferDataInfo = _mergeTransferData(dataList)
-                        result.add(
-                            TransferTaskData(engraveLayerInfo, listOf(gcodeTransferDataInfo))
-                        )
-                    } else if (engraveLayerInfo.mode == DATA_MODE_BLACK_WHITE) {
-                        //线段数据合并
-                        val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
-                        result.add(
-                            TransferTaskData(engraveLayerInfo, listOf(bitmapPathTransferDataInfo))
-                        )
-                    } else {
-                        //抖动数据不需要合并
-                        result.add(TransferTaskData(engraveLayerInfo, dataList))
+                    when (engraveLayerInfo.mode) {
+                        DATA_MODE_GCODE -> {
+                            //GCode 数据合并
+                            val gcodeTransferDataInfo = _mergeTransferData(dataList)
+                            resultDataList.add(gcodeTransferDataInfo)
+                        }
+                        DATA_MODE_BLACK_WHITE -> {
+                            //线段数据合并
+                            val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
+                            resultDataList.add(bitmapPathTransferDataInfo)
+                        }
+                        else -> {
+                            //抖动数据不需要合并
+                            resultDataList.addAll(dataList)
+                        }
                     }
                 }
             }
         }
-        return result
+        resultDataList.saveAllEntity(LPBox.PACKAGE_NAME)//入库
+        return resultDataList
     }
 
     /**将[renderer]转换成传输给机器的数据,
@@ -186,12 +194,12 @@ class EngraveTransitionManager {
     @WorkerThread
     fun transitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo
-    ): TransferDataInfo? {
-        var result: TransferDataInfo? = null
+        transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity? {
+        var result: TransferDataEntity? = null
 
         for (transition in transitionList) {
-            result = transition.doTransitionTransferData(renderer, transferDataConfigInfo)
+            result = transition.doTransitionTransferData(renderer, transferConfigEntity)
             if (result != null) {
                 break
             }
@@ -203,14 +211,19 @@ class EngraveTransitionManager {
     //
 
     /**合并数据*/
-    fun _mergeTransferData(dataList: List<TransferDataInfo>): TransferDataInfo {
-        val resultTransferDataInfo = TransferDataInfo(index = generateEngraveIndex())
+    fun _mergeTransferData(dataList: List<TransferDataEntity>): TransferDataEntity {
+        val resultTransferDataInfo = TransferDataEntity(index = generateEngraveIndex())
+
         resultTransferDataInfo.data = byteWriter {
             dataList.forEach {
-                write(it.data)
+                write(it.bytes())
             }
-        }
+        }.toTransferData()
         val first = dataList.first()
+
+        resultTransferDataInfo.taskId = first.taskId
+        resultTransferDataInfo.layerMode = first.layerMode
+
         resultTransferDataInfo.engraveDataType = first.engraveDataType
         resultTransferDataInfo.px = first.px
         resultTransferDataInfo.name = first.name

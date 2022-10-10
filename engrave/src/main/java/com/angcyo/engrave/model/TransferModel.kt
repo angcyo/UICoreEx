@@ -4,14 +4,15 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
-import com.angcyo.engrave.R
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
@@ -22,8 +23,8 @@ import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.size
-import com.angcyo.library.ex.str
-import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.deleteAllEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -36,58 +37,58 @@ class TransferModel : ViewModel() {
     companion object {
 
         /**根据雕刻数据, 返回数据指令*/
-        fun getTransferDataCmd(transferDataInfo: TransferDataInfo): DataCmd? {
-            val bytes = transferDataInfo.data
+        fun getTransferDataCmd(transferDataEntity: TransferDataEntity): DataCmd? {
+            val bytes = transferDataEntity.bytes()
             if (bytes == null || bytes.isEmpty()) {
                 return null
             }
 
             //数据类型封装
-            val dataCmd: DataCmd = when (transferDataInfo.engraveDataType) {
+            val dataCmd: DataCmd = when (transferDataEntity.engraveDataType) {
                 //0x10 图片数据
                 DataCmd.ENGRAVE_TYPE_BITMAP -> DataCmd.bitmapData(
-                    transferDataInfo.index,
-                    transferDataInfo.x,
-                    transferDataInfo.y,
-                    transferDataInfo.width,
-                    transferDataInfo.height,
-                    transferDataInfo.px,
-                    transferDataInfo.name,
+                    transferDataEntity.index,
+                    transferDataEntity.x,
+                    transferDataEntity.y,
+                    transferDataEntity.width,
+                    transferDataEntity.height,
+                    transferDataEntity.px,
+                    transferDataEntity.name,
                     bytes,
                 )
                 //0x20 GCode数据
                 DataCmd.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
-                    transferDataInfo.index,
-                    transferDataInfo.x,
-                    transferDataInfo.y,
-                    transferDataInfo.width,
-                    transferDataInfo.height,
-                    transferDataInfo.name,
-                    transferDataInfo.lines,
+                    transferDataEntity.index,
+                    transferDataEntity.x,
+                    transferDataEntity.y,
+                    transferDataEntity.width,
+                    transferDataEntity.height,
+                    transferDataEntity.name,
+                    transferDataEntity.lines,
                     bytes
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
-                    transferDataInfo.index,
-                    transferDataInfo.x,
-                    transferDataInfo.y,
-                    transferDataInfo.width,
-                    transferDataInfo.height,
-                    transferDataInfo.px,
-                    transferDataInfo.name,
-                    transferDataInfo.lines,
+                    transferDataEntity.index,
+                    transferDataEntity.x,
+                    transferDataEntity.y,
+                    transferDataEntity.width,
+                    transferDataEntity.height,
+                    transferDataEntity.px,
+                    transferDataEntity.name,
+                    transferDataEntity.lines,
                     bytes,
                 )
                 //0x60 抖动数据, 二进制位
                 //DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ->
                 else -> DataCmd.bitmapDitheringData(
-                    transferDataInfo.index,
-                    transferDataInfo.x,
-                    transferDataInfo.y,
-                    transferDataInfo.width,
-                    transferDataInfo.height,
-                    transferDataInfo.px,
-                    transferDataInfo.name,
+                    transferDataEntity.index,
+                    transferDataEntity.x,
+                    transferDataEntity.y,
+                    transferDataEntity.width,
+                    transferDataEntity.height,
+                    transferDataEntity.px,
+                    transferDataEntity.name,
                     bytes
                 )
             }
@@ -101,48 +102,55 @@ class TransferModel : ViewModel() {
     /**传输状态数据*/
     val transferStateData = vmDataNull<TransferTaskStateData?>()
 
-    /**自动生成的雕刻参数配置信息
-     * [com.angcyo.engrave.model.TransferModel.createEngraveConfigInfo]
-     * */
-    var taskEngraveConfigInfo: EngraveConfigInfo? = null
-
     //
 
-    var taskDataCacheList: List<TransferTaskData>? = null
-
-    /**开始创建机器需要的数据*/
+    /**开始创建机器需要的传输数据*/
     @CallPoint
     @WorkerThread
-    fun startCreateData(
-        transferDataConfigInfo: TransferDataConfigInfo,
+    fun startCreateTransferData(
+        taskId: String?,
         canvasDelegate: CanvasDelegate
     ) {
         _isCancelTransfer = false
         doBack {
-            transferStateData.postValue(TransferTaskStateData(0, null))
-            val taskDataList = engraveTransitionManager.transitionTransferData(
+            transferStateData.postValue(TransferTaskStateData(taskId, 0, null))
+            val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
+            val dataEntityList = engraveTransitionManager.transitionTransferData(
                 canvasDelegate,
-                transferDataConfigInfo
+                transferConfigEntity
             )
-            taskDataCacheList = taskDataList
-            if (taskDataList.isEmpty()) {
-                transferStateData.postValue(TransferTaskStateData(0, EmptyException()))
+            if (dataEntityList.isEmpty()) {
+                transferStateData.postValue(TransferTaskStateData(taskId, 0, EmptyException()))
             } else {
                 //开始传输数据
-                _startTransferDataTask(taskDataList)
+                _startTransferDataTask(taskId, dataEntityList)
             }
         }
     }
 
-    /**重新传输*/
+    /**重新传输
+     * [all] 是否全部重新传输, 否则只传输未成功的数据
+     * */
     @AnyThread
     @CallPoint
-    fun retryTransfer() {
+    fun retryTransfer(all: Boolean) {
+        val taskId: String? = _transferTask?.taskId
+        val transferDataEntityList = _transferTask?.entityList
         _isCancelTransfer = false
-        if (!taskDataCacheList.isNullOrEmpty()) {
-            _startTransferDataTask(taskDataCacheList!!)
+        if (!transferDataEntityList.isNullOrEmpty()) {
+            val transferList = mutableListOf<TransferDataEntity>()
+            if (all) {
+                transferDataEntityList.deleteAllEntity()
+                transferList.addAll(transferDataEntityList)
+            } else {
+                transferDataEntityList.filterTo(transferList) { !it.isTransfer }
+            }
+            //开始传输数据
+            _startTransferDataTask(taskId, transferList)
         } else {
-            transferStateData.postValue(TransferTaskStateData(0, EmptyException()))
+            transferStateData.postValue(
+                TransferTaskStateData(taskId, 0, EmptyException())
+            )
         }
     }
 
@@ -159,46 +167,14 @@ class TransferModel : ViewModel() {
         //CommandQueueHelper.clearCommand()
     }
 
-    /**完成传输*/
+    /**完成传输
+     * [createEngraveConfigInfo]*/
     @CallPoint
     fun finishTransfer() {
-        _transferTask?.let {
-            createEngraveConfigInfo(it)
-        }
+        val taskId: String? = _transferTask?.taskId
         _isCancelTransfer = false
         _transferTask = null
-        transferStateData.postValue(TransferTaskStateData(100, null, true))
-    }
-
-    /**根据数据, 创建对应点雕刻配置参数信息*/
-    fun createEngraveConfigInfo(task: TransferTask) {
-        if (task.count <= 0) {
-            taskEngraveConfigInfo = null
-            return
-        }
-        //分配一个材质
-        val material = MaterialEntity().apply {
-            resId = R.string.material_custom
-            power = HawkEngraveKeys.lastPower
-            depth = HawkEngraveKeys.lastDepth
-        }
-        val engraveConfigInfo = EngraveConfigInfo()
-        task.list.forEach {
-            //engraveConfigInfo.layerParamMap[it.layerInfo] = EngraveParam(it.layerInfo)
-            val param = EngraveDataParam(
-                it.layerInfo.mode,
-                material.toText().str(),
-                it.transferDataList
-            ).apply {
-                power = material.power
-                depth = material.depth
-                //激光光源
-                type = LaserPeckerHelper.findProductSupportLaserTypeList().firstOrNull()?.type
-                    ?: LaserPeckerHelper.LASER_TYPE_BLUE
-            }
-            engraveConfigInfo.engraveDataParamList.add(param)
-        }
-        taskEngraveConfigInfo = engraveConfigInfo
+        transferStateData.postValue(TransferTaskStateData(taskId, 100, null, true))
     }
 
     //
@@ -206,10 +182,10 @@ class TransferModel : ViewModel() {
     var _transferTask: TransferTask? = null
 
     /**开始传输数据*/
-    fun _startTransferDataTask(list: List<TransferTaskData>) {
+    fun _startTransferDataTask(taskId: String?, list: List<TransferDataEntity>) {
         //最大传输文件数
-        val maxCount = list.sumOf { it.transferDataList.size() }
-        _transferTask = TransferTask(maxCount, 0, list)
+        val maxCount = list.size()
+        _transferTask = TransferTask(taskId, maxCount, 0, list)
 
         _transferDataNext()
     }
@@ -220,19 +196,27 @@ class TransferModel : ViewModel() {
                 //传输完成
                 finishTransfer()
             } else {
-                val allData = mutableListOf<TransferDataInfo>()
-                task.list.forEach { allData.addAll(it.transferDataList) }
-                val transferDataInfo = allData.getOrNull(task.index)
-                if (transferDataInfo == null) {
+                val transferDataEntity = task.entityList.getOrNull(task.index)
+                if (transferDataEntity == null) {
                     finishTransfer()
                 } else {
                     L.i("开始传输数据:[${task.index}/${task.count}]")
-                    val fileModeCmd = FileModeCmd(transferDataInfo.data?.size ?: 0)
+                    val fileModeCmd = FileModeCmd(transferDataEntity.bytes()?.size ?: 0)
                     fileModeCmd.enqueue { bean, error ->
+                        error?.let {
+                            it.toString().writeErrorLog()
+                            transferStateData.postValue(
+                                TransferTaskStateData(
+                                    task.taskId,
+                                    transferStateData.value?.progress ?: 0,
+                                    FailException(error)
+                                )
+                            )
+                        }
                         bean?.parse<FileTransferParser>()?.let {
                             if (it.isIntoFileMode()) {
                                 //成功进入大数据模式
-                                val dataCmd = getTransferDataCmd(transferDataInfo)
+                                val dataCmd = getTransferDataCmd(transferDataEntity)
                                 if (dataCmd == null) {
                                     task.index++
                                     _transferDataNext()
@@ -244,7 +228,9 @@ class TransferModel : ViewModel() {
                                             task.index,
                                             task.count
                                         )
-                                        transferStateData.postValue(TransferTaskStateData(progress))
+                                        transferStateData.postValue(
+                                            TransferTaskStateData(task.taskId, progress)
+                                        )
                                     }) { bean, error ->
                                         val result = bean?.parse<FileTransferParser>()
                                         L.w("传输结束:$result $error")
@@ -252,11 +238,13 @@ class TransferModel : ViewModel() {
                                             if (result.isFileTransferSuccess()) {
                                                 //文件传输完成
                                                 task.index++
+                                                transferDataEntity.isTransfer = true
                                                 _transferDataNext()
                                             } else {
                                                 "数据接收未完成".writeErrorLog()
                                                 transferStateData.postValue(
                                                     TransferTaskStateData(
+                                                        task.taskId,
                                                         transferStateData.value?.progress ?: 0,
                                                         DataException()
                                                     )
@@ -267,6 +255,7 @@ class TransferModel : ViewModel() {
                                             "发送数据失败".writeErrorLog()
                                             transferStateData.postValue(
                                                 TransferTaskStateData(
+                                                    task.taskId,
                                                     transferStateData.value?.progress ?: 0,
                                                     FailException()
                                                 )
@@ -280,6 +269,7 @@ class TransferModel : ViewModel() {
                                 "未成功进入数据传输模式".writeErrorLog()
                                 transferStateData.postValue(
                                     TransferTaskStateData(
+                                        task.taskId,
                                         transferStateData.value?.progress ?: 0,
                                         FailException()
                                     )
@@ -293,6 +283,16 @@ class TransferModel : ViewModel() {
         }
     }
 
+    /**检查文件索引是否存在*/
+    fun checkIndex(index: Int, action: (Boolean) -> Unit) {
+        //检查数据索引是否存在
+        QueryCmd.fileList.enqueue { bean, error ->
+            val have =
+                bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
+            action(have)
+        }
+    }
+
     /**计算进度*/
     fun calcTransferProgress(indexProgress: Int, index: Int, count: Int): Int {
         val part = 100f / count
@@ -302,12 +302,14 @@ class TransferModel : ViewModel() {
 
     //待发送的数据任务
     data class TransferTask(
+        //任务id
+        val taskId: String?,
         //总共需要发送的数据量
         val count: Int,
         //当前发送的索引
         var index: Int,
-        //每个图层下的所有数据
-        val list: List<TransferTaskData>
+        //任务所有要传输的数据, 每个图层下的所有数据
+        val entityList: List<TransferDataEntity>
     )
 
 }

@@ -8,10 +8,10 @@ import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.writeTo
-import com.angcyo.engrave.data.TransferDataConfigInfo
-import com.angcyo.engrave.data.TransferDataInfo
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.generateEngraveIndex
 import com.angcyo.library.utils.FileTextData
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 
 /**雕刻数据转换
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -40,63 +40,65 @@ interface IEngraveTransition {
      * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
      * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
      * */
-    fun getDataMode(bean: ItemDataBean?, transferDataConfigInfo: TransferDataConfigInfo): Int {
-        return bean?._dataMode ?: 0
+    fun getDataMode(bean: ItemDataBean?, transferConfigEntity: TransferConfigEntity): Int {
+        return transferConfigEntity.dataMode ?: (bean?._dataMode ?: 0)
     }
 
     /**将[renderer]转换成传输给机器的数据*/
     fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo
-    ): TransferDataInfo?
+        transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity?
 
     /**一些通用配置属性初始化*/
-    fun initTransferDataInfo(
+    fun initTransferDataEntity(
         renderer: BaseItemRenderer<*>,
-        transferDataConfigInfo: TransferDataConfigInfo,
-        transferDataInfo: TransferDataInfo
+        transferConfigEntity: TransferConfigEntity,
+        transferDataEntity: TransferDataEntity
     ) {
+        transferDataEntity.taskId = transferConfigEntity.taskId
+
         val mmValueUnit = mmUnit
         val rotateBounds = renderer.getRotateBounds()
-        transferDataInfo.px = transferDataConfigInfo.px
-        transferDataInfo.name = transferDataConfigInfo.name
+        transferDataEntity.px = transferConfigEntity.px
+        transferDataEntity.name = transferConfigEntity.name
 
-        if (transferDataInfo.index <= 0) {
+        if (transferDataEntity.index <= 0) {
             //文件索引
-            transferDataInfo.index = generateEngraveIndex()
+            transferDataEntity.index = generateEngraveIndex()
         }
 
         //雕刻数据坐标
-        if (transferDataInfo.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
-            transferDataInfo.x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
-            transferDataInfo.y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
-            transferDataInfo.width =
+        if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
+            transferDataEntity.x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
+            transferDataEntity.y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
+            transferDataEntity.width =
                 (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).toInt()
-            transferDataInfo.height =
+            transferDataEntity.height =
                 (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).toInt()
         } else {
-            transferDataInfo.x = rotateBounds.left.toInt()
-            transferDataInfo.y = rotateBounds.top.toInt()
-            transferDataInfo.width = rotateBounds.width().toInt()
-            transferDataInfo.height = rotateBounds.height().toInt()
+            transferDataEntity.x = rotateBounds.left.toInt()
+            transferDataEntity.y = rotateBounds.top.toInt()
+            transferDataEntity.width = rotateBounds.width().toInt()
+            transferDataEntity.height = rotateBounds.height().toInt()
         }
 
-        if (transferDataInfo.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ||
-            transferDataInfo.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP ||
-            transferDataInfo.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+        if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ||
+            transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP ||
+            transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_PATH
         ) {
             //抖动的数据
             val rect = EngravePreviewCmd.adjustBitmapRange(
-                transferDataInfo.x,
-                transferDataInfo.y,
-                transferDataInfo.width,
-                transferDataInfo.height,
-                transferDataConfigInfo.px
+                transferDataEntity.x,
+                transferDataEntity.y,
+                transferDataEntity.width,
+                transferDataEntity.height,
+                transferConfigEntity.px
             ).first
-            transferDataInfo.x = rect.left
-            transferDataInfo.y = rect.top
-            transferDataInfo.width = rect.width()
-            transferDataInfo.height = rect.height()
+            transferDataEntity.x = rect.left
+            transferDataEntity.y = rect.top
+            transferDataEntity.width = rect.width()
+            transferDataEntity.height = rect.height()
         }
     }
 

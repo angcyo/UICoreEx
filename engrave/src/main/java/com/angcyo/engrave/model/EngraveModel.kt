@@ -1,6 +1,5 @@
 package com.angcyo.engrave.model
 
-import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
@@ -11,16 +10,22 @@ import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.*
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.Private
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.size
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
+import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.IViewModel
-import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 import kotlin.math.max
@@ -46,11 +51,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
-    /**雕刻状态数据*/
-    val engraveStateData = vmDataNull<EngraveState>()
+    /**雕刻状态通知*/
+    val engraveStateData = vmDataOnce<EngraveTaskEntity>()
 
     //缓存
-    var _engraveTask: EngraveTask? = null
+    var _engraveTaskEntity: EngraveTaskEntity? = null
 
     //是否要监听设备的雕刻状态
     var _listenerEngraveState: Boolean = false
@@ -68,14 +73,18 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
                             put(
                                 UMEvent.KEY_DURATION,
-                                (nowTime - _engraveTask!!.startTime).toString()
+                                (nowTime - _engraveTaskEntity!!.startTime).toString()
                             )
                         }
                         engraveNext()
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
                         val progress = clamp(queryState.rate, 0, 100)
-                        _updateEngraveProgress(queryState.printTimes, progress)
+                        EngraveFlowDataHelper.updateEngraveProgress(
+                            queryState.index,
+                            queryState.printTimes,
+                            progress
+                        )
                     } else if (queryState.isEngravePause()) {
                         //
                     } else {
@@ -89,22 +98,34 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**开始雕刻*/
     @CallPoint
-    fun startEngrave(engraveConfigInfo: EngraveConfigInfo) {
-        val task = EngraveTask(engraveConfigInfo)
-        task.count = engraveConfigInfo.engraveDataParamList.sumOf { it.dataList.size() }
-        _engraveTask = task
-
-        //
-        againEngrave()
+    fun startEngrave(taskId: String?) {
+        val task = EngraveFlowDataHelper.generateEngraveTask(taskId)
+        _startEngraveTask(task)
     }
 
     /**再雕一次*/
     @CallPoint
-    fun againEngrave() {
-        _engraveTask?.let {
-            it.startTime = nowTime()
-            it.current = -1
+    fun againEngrave(taskId: String?) {
+        val task = EngraveFlowDataHelper.getEngraveTask(taskId)
+        task?.let {
+            //clear
+            EngraveFlowDataHelper.againEngrave(it.taskId)
+            _startEngraveTask(it)
+        }
+    }
 
+    @Private
+    fun _startEngraveTask(task: EngraveTaskEntity) {
+        task.let {
+            it.startTime = nowTime()
+            it.finishTime = -1
+            it.currentIndex = -1
+            it.state = ENGRAVE_STATE_START
+            it.lpSaveEntity()
+
+            _engraveTaskEntity = task
+
+            //
             engraveNext()
 
             //loop
@@ -115,22 +136,53 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**雕刻下一个*/
     @CallPoint
     fun engraveNext() {
-        _engraveTask?.let { task ->
+        _engraveTaskEntity?.let { task ->
             _listenerEngraveState = true
-            task.current++
-            if (task.current >= task.count) {
+            val taskId = task.taskId
+
+            if (task.currentIndex > 0) {
+                //之前的雕刻索引
+                EngraveFlowDataHelper.finishEngrave(task.currentIndex)
+            }
+
+            val nextIndex = EngraveFlowDataHelper.getNextEngraveIndex(taskId)
+
+            if (nextIndex == null) {
                 //雕刻完成
                 finishEngrave()
             } else {
-                val paramAndData = task.engraveConfigInfo.getEngraveParamAndData(task.current)
-                if (paramAndData == null) {
+                //开始雕刻
+                val engraveDataEntity =
+                    EngraveFlowDataHelper.generateEngraveData(taskId, nextIndex)
+                engraveDataEntity.printTimes = 1
+                engraveDataEntity.progress = 0
+                engraveDataEntity.startTime = nowTime()
+                engraveDataEntity.finishTime = -1
+                engraveDataEntity.lpSaveEntity()
+
+                val transferDataEntity = EngraveFlowDataHelper.getTransferData(taskId, nextIndex)
+                if (transferDataEntity == null) {
+                    //需要雕刻的数据不存在,则直接完成
+                    engraveDataEntity.progress = 100
+                    engraveDataEntity.lpSaveEntity()
                     engraveNext()
                 } else {
-                    val engraveState = EngraveState(paramAndData, ENGRAVE_STATE_START)
+                    //雕刻配置数据
+                    val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(taskId)
+                    val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(
+                        taskId,
+                        transferDataEntity.layerMode
+                    )
                     doMain {
-                        engraveStateData.value = engraveState
-                        _updateEngraveProgress(1, 0)
-                        _startEngraveCmd(engraveState.engraveDataParam)
+                        task.currentIndex = nextIndex
+                        engraveStateData.value = task
+                        task.lpSaveEntity()
+
+                        _startEngraveCmd(
+                            previewConfigEntity,
+                            transferDataEntity,
+                            engraveConfigEntity
+                        )
                     }
                 }
             }
@@ -141,10 +193,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     @CallPoint
     fun finishEngrave() {
         _listenerEngraveState = false
-        _engraveTask?.finishTime = nowTime()
-        val engraveState = engraveStateData.value ?: return
+        val engraveState = _engraveTaskEntity ?: return
+        engraveState.currentIndex = -1
+        engraveState.finishTime = nowTime()
         engraveState.state = ENGRAVE_STATE_FINISH
-        engraveState.progress = 100
+        engraveState.lpSaveEntity()
 
         //雕刻次数+1
         HawkEngraveKeys.lastEngraveCount++
@@ -154,77 +207,52 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**暂停雕刻*/
     fun pauseEngrave() {
-        val engraveState = engraveStateData.value ?: return
+        val engraveState = _engraveTaskEntity ?: return
         engraveState.state = ENGRAVE_STATE_PAUSE
+        engraveState.lpSaveEntity()
         engraveStateData.postValue(engraveState)
         EngraveCmd.pauseEngrave().enqueue()
     }
 
     /**继续雕刻*/
     fun continueEngrave() {
-        val engraveState = engraveStateData.value ?: return
+        val engraveState = _engraveTaskEntity ?: return
         engraveState.state = ENGRAVE_STATE_START
+        engraveState.lpSaveEntity()
         engraveStateData.postValue(engraveState)
         EngraveCmd.continueEngrave().enqueue()
     }
 
     /**停止雕刻*/
     fun stopEngrave() {
+        finishEngrave()
         EngraveCmd.stopEngrave().enqueue()
         ExitCmd().enqueue()
     }
 
     //---
 
-    /**更新雕刻进度
-     * [printTimes] 当前元素的第几次雕刻
-     * [progress] 当前的雕刻进度[0~100]
+    /**开始雕刻, 发送雕刻指令
+     * [transferDataEntity] 需要雕刻的数据实体
+     * [engraveConfigEntity] 雕刻的参数实体
      * */
-    @AnyThread
-    fun _updateEngraveProgress(printTimes: Int, progress: Int) {
-        val engraveState = engraveStateData.value ?: return
-        _engraveTask?.let { task ->
-            val totalProgress = task.engraveConfigInfo.getTotalProgress()
-            val index = engraveState.engraveDataParam.dataList.first().index
-            var currentProgress = task.engraveConfigInfo.getBeforeTotalProgress(index)
-            currentProgress += (printTimes - 1) * 100 + progress
-
-            //雕刻进度
-            val engraveProgress = (currentProgress / totalProgress) * 100
-            L.i("当前雕刻总进度:${engraveProgress}")
-
-            engraveState.printTimes = printTimes
-            engraveState.progress = engraveProgress
-
-            //记录当前雕刻的次数
-            task.engraveConfigInfo.engraveDataParamList.forEach {
-                it.dataList.forEach {
-                    if (it.index == index) {
-                        it.printTimes = printTimes
-                    }
-                }
-            }
-
-            //post
-            engraveStateData.postValue(engraveState)
-        }
-    }
-
-    /**开始雕刻, 发送雕刻指令*/
-    fun _startEngraveCmd(engraveDataParam: EngraveDataParam) {
-        val dataInfo = engraveDataParam.dataList.first()
+    fun _startEngraveCmd(
+        previewConfigEntity: PreviewConfigEntity,
+        transferDataEntity: TransferDataEntity,
+        engraveConfigEntity: EngraveConfigEntity
+    ) {
         EngraveCmd(
-            dataInfo.index,
-            engraveDataParam.power.toByte(),
-            engraveDataParam.depth.toByte(),
+            transferDataEntity.index,
+            engraveConfigEntity.power.toByte(),
+            engraveConfigEntity.depth.toByte(),
             0x01,
-            dataInfo.x,
-            dataInfo.y,
-            max(1, engraveDataParam.time).toByte(),
-            engraveDataParam.type,
+            transferDataEntity.x,
+            transferDataEntity.y,
+            max(1, engraveConfigEntity.time).toByte(),
+            engraveConfigEntity.type,
             0x09,
-            (mmUnit.convertPixelToValue(engraveDataParam.diameterPixel) * 100).roundToInt(),
-            engraveDataParam.precision
+            (mmUnit.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt(),
+            engraveConfigEntity.precision
         ).enqueue { bean, error ->
             L.w("雕刻返回:${bean?.parse<MiniReceiveParser>()}")
 
@@ -409,45 +437,4 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     */
     /**恢复的状态*//*
     fun isRestore() = engraveReadyInfoData.value == null*/
-
-    //雕刻状态
-    data class EngraveState(
-        /**当前雕刻的参数
-         * 当前的[dataList]至多有1条数据
-         * */
-        var engraveDataParam: EngraveDataParam,
-        /**
-         * 雕刻的状态
-         * [ENGRAVE_STATE_START]
-         * [ENGRAVE_STATE_PAUSE]
-         * [ENGRAVE_STATE_FINISH]
-         * */
-        var state: Int = 0,
-
-        /**第几次雕刻*/
-        var printTimes: Int = 1,
-
-        /**当前的雕刻, 在整个任务中的进度*/
-        var progress: Int = 0,
-    )
-
-    //待雕刻的任务
-    data class EngraveTask(
-
-        /**雕刻的数据和参数*/
-        val engraveConfigInfo: EngraveConfigInfo,
-
-        /**任务开始的时间, 毫秒*/
-        var startTime: Long = nowTime(),
-
-        /**任务完成的时间, 毫秒*/
-        var finishTime: Long = nowTime(),
-
-        /**当前雕刻的序列*/
-        var current: Int = 0,
-
-        /**总共雕刻的数据数量*/
-        var count: Int = 0,
-    )
-
 }

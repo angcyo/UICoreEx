@@ -2501,13 +2501,24 @@ object EngraveHelper {
                 match
             }
         }
-        //自定义, 自动记住了上一次的值
-        val custom = MaterialEntity()
-        custom.resId = R.string.material_custom
-        custom.power = HawkEngraveKeys.lastPower
-        custom.depth = HawkEngraveKeys.lastDepth
-        result.add(0, custom)
+        result.add(0, createCustomMaterial())
         return result
+    }
+
+    /**创建一个自定义的材质*/
+    fun createCustomMaterial(): MaterialEntity {
+        //自定义, 自动记住了上一次的值
+        return MaterialEntity().apply {
+            code = "custom"
+            resId = R.string.material_custom
+            power = HawkEngraveKeys.lastPower
+            depth = HawkEngraveKeys.lastDepth
+        }
+    }
+
+    /**获取一个材质*/
+    fun getMaterial(code: String?): MaterialEntity {
+        return materialList.find { it.code == code } ?: createCustomMaterial()
     }
 
     //</editor-fold desc="material">

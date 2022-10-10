@@ -1,6 +1,7 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
@@ -13,8 +14,8 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngravingControlItem : DslAdapterItem() {
 
-    /**雕刻状态*/
-    var itemEngraveState: EngraveModel.EngraveState? = null
+    /**雕刻任务id*/
+    var itemTaskId: String? = null
 
     var itemPauseAction: (isPause: Boolean) -> Unit = {}
 
@@ -32,7 +33,9 @@ class EngravingControlItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val isPause = itemEngraveState?.state == EngraveModel.ENGRAVE_STATE_PAUSE
+        val taskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
+
+        val isPause = taskEntity?.state == EngraveModel.ENGRAVE_STATE_PAUSE
         itemHolder.tv(R.id.pause_button)?.text = if (isPause) {
             _string(R.string.engrave_continue)
         } else {

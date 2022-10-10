@@ -28,6 +28,9 @@ object HawkEngraveKeys {
     /**最后一次的物理尺寸, 像素*/
     var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
+    /**最后一次的加速级别*/
+    var lastPrecision: Int by HawkPropertyValue<Any, Int>(1)
+
     /**持久化当前雕刻的次数, 用来生成文件名*/
     var lastEngraveCount: Int by HawkPropertyValue<Any, Int>(0)
 

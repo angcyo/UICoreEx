@@ -29,7 +29,7 @@ import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toast
 import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.appFolderPath
-import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.findLastList
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
@@ -138,7 +138,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         val nowTime = nowTime()
                         if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {
                             //1分钟
-                            lpBoxOf(DeviceConnectEntity::class).findLast().lastOrNull()?.let {
+                            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()?.let {
                                 L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
                                 bleApiModel.connect(it.deviceAddress, it.deviceName, true)
                             }

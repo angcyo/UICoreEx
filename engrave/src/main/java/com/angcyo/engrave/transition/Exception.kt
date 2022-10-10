@@ -6,10 +6,10 @@ package com.angcyo.engrave.transition
  */
 
 /**传输数据为空*/
-class EmptyException : Exception()
+class EmptyException(cause: Throwable? = null) : Exception(cause)
 
 /**传输数据异常*/
-class DataException : Exception()
+class DataException(cause: Throwable? = null) : Exception(cause)
 
 /**传输失败*/
-class FailException : Exception()
+class FailException(cause: Throwable? = null) : Exception(cause)

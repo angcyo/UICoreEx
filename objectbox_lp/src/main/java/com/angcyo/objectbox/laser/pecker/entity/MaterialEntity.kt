@@ -2,6 +2,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.extend.IToText
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -19,6 +20,9 @@ import io.objectbox.annotation.Id
 @Entity
 data class MaterialEntity(
     @Id var entityId: Long = 0L,
+
+    /**材质的代码, 唯一标识代码*/
+    var code: String = uuid(),
 
     /**材质资源的id, 用来界面显示*/
     var resId: Int = 0,
