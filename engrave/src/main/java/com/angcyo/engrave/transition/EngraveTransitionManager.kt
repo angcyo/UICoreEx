@@ -20,6 +20,7 @@ import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.random.Random.Default.nextInt
 
 /**
  * 雕刻数据相关处理
@@ -29,9 +30,16 @@ import kotlin.math.min
 class EngraveTransitionManager {
 
     companion object {
-        /**生成一个雕刻需要用到的文件索引*/
+
+        /**生成一个雕刻需要用到的文件索引
+         * 4个字节 最大 4_294_967_295
+         * */
         fun generateEngraveIndex(): Int {
-            return (System.currentTimeMillis() / 1000).toInt()
+            val millis = System.currentTimeMillis() //13位毫秒
+            val s = millis / 1000 //10位秒
+            val m = millis % 1000 //毫秒
+            val r = nextInt(0, m.toInt()) //随机数
+            return (s + m + r).toInt()
         }
 
         /**生成一个雕刻的文件名*/
@@ -83,63 +91,6 @@ class EngraveTransitionManager {
         transitionList.add(GCodeTransition())
         transitionList.add(BitmapTransition())
     }
-
-/*
-    */
-    /**将[renderer]转换成雕刻预备的数据 *//*
-    @CallPoint
-    fun transitionReadyData(renderer: BaseItemRenderer<*>?): EngraveReadyInfo? {
-        val itemRenderer = renderer ?: return null
-        var result: EngraveReadyInfo? = null
-
-        for (transition in transitionList) {
-            result = transition.doTransitionReadyData(itemRenderer)
-            if (result != null) {
-                break
-            }
-        }
-
-        if (result?.engraveData == null) {
-            result?.engraveData = EngraveDataInfo()
-        }
-        if (result == null) {
-            L.w("无法处理的Item:${renderer}")
-        } else {
-            L.i(
-                "预处理Item数据->",
-                result.dataType.toDataTypeStr(),
-                result.dataMode.toDataModeStr()
-            )
-        }
-        return result
-    }
-    */
-/*
-    */
-    /**真正的雕刻数据处理*//*
-    @CallPoint
-    fun transitionEngraveData(
-        renderer: BaseItemRenderer<*>?,
-        engraveReadyInfo: EngraveReadyInfo
-    ) {
-        val itemRenderer = renderer ?: return
-
-        for (transition in transitionList) {
-            val result = transition.doTransitionEngraveData(itemRenderer, engraveReadyInfo)
-            if (result) {
-                break
-            }
-        }
-
-        engraveReadyInfo.engraveData?.let {
-            L.i(
-                "处理Item数据->",
-                engraveReadyInfo.dataType.toDataTypeStr(),
-                engraveReadyInfo.dataMode.toDataModeStr(),
-                engraveReadyInfo.engraveData?.engraveDataType?.toEngraveTypeStr()
-            )
-        }
-    }*/
 
     /**相同类型的[TransferDataInfo]会合并在一起, 会根据列表顺序, 生成对应顺序的数据
      * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]*/
