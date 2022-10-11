@@ -19,9 +19,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.flow
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.toHexByteArray
-import com.angcyo.library.ex.toHexString
+import com.angcyo.library.ex.*
 
 /**
  * https://docs.qq.com/doc/DWE1MVnVOQ3RJSXZ1
@@ -81,21 +79,48 @@ object LaserPeckerHelper {
     const val DEFAULT_RECEIVE_TIMEOUT = 3_000L
 
     //设备支持的分辨率
+    @Deprecated("请使用dpi")
     const val PX_4K: Byte = 0x01
+
+    @Deprecated("请使用dpi")
     const val PX_2K: Byte = 0x02
+
+    @Deprecated("请使用dpi")
     const val PX_1_3K: Byte = 0x03
+
+    @Deprecated("请使用dpi")
     const val PX_1K: Byte = 0x04
+
+    @Deprecated("请使用dpi")
     const val PX_0_8K: Byte = 0x05
 
-    //默认的分辨率
-    const val DEFAULT_PX: Byte = PX_1K //1k
+    //推荐DPI:
+
+    /**[PX_0_8K]*/
+    const val DPI_158 = 158.75f
+
+    /**[PX_1K]*/
+    const val DPI_254 = 254f
+
+    /**[PX_1_3K]*/
+    const val DPI_317 = 317.5f
+    const val DPI_423 = 423.33333f
+
+    /**[PX_2K]*/
+    const val DPI_508 = 508f
+    const val DPI_635 = 635f
+
+    const val DPI_846 = 846.66666f
+
+    /**[PX_4K]*/
+    const val DPI_1270 = 1270f
 
     //雕刻激光类型选择
     const val LASER_TYPE_WHITE = 0x01.toByte() //1为1064nm激光 (白光-雕)
 
     const val LASER_TYPE_BLUE = 0x00.toByte() //0为450nm激光 (蓝光-烧)
 
-    /**2米, mm单位
+    /**2米, mm单位, Z轴最大的Y坐标
      * 2m = 2000mm*/
     const val Z_MAX_Y = 2_00_0
 
@@ -137,41 +162,24 @@ object LaserPeckerHelper {
     }
 
     /**查找[PxInfo]*/
-    fun findPxInfo(px: Byte?): PxInfo? =
-        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.find { it.px == px }
-
-    /**根据选中的分辨率, 转换输入的大小*/
-    fun transformWidth(value: Int, px: Byte): Int {
-        return findPxInfo(px)?.transformWidth(value) ?: value
-    }
-
-    fun transformHeight(value: Int, px: Byte): Int {
-        return findPxInfo(px)?.transformHeight(value) ?: value
-    }
-
-    /**根据选中的分辨率, 转换图片起始x坐标*/
-    fun transformX(x: Int, px: Byte): Int {
-        return findPxInfo(px)?.transformX(x) ?: x
-    }
-
-    fun transformY(y: Int, px: Byte): Int {
-        return findPxInfo(px)?.transformY(y) ?: y
-    }
+    fun findPxInfo(dpi: Float?): PxInfo = PxInfo(dpi ?: DPI_254)
 
     /**缩放图片到[px]指定的宽高*/
     fun bitmapScale(
         bitmap: Bitmap,
-        px: Byte,
+        dpi: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Bitmap {
+
         val productWidth = productInfo?.bounds?.width()?.toInt() ?: bitmap.width
         val productHeight = productInfo?.bounds?.height()?.toInt() ?: bitmap.height
 
         val scaleWidth = bitmap.width * 1f / productWidth
         val scaleHeight = bitmap.height * 1f / productHeight
 
-        val width = findPxInfo(px)?.pxWidth ?: productWidth
-        val height = findPxInfo(px)?.pxHeight ?: productHeight
+        val pxInfo = findPxInfo(dpi)
+        val width = pxInfo.devicePxWidth(productInfo)
+        val height = pxInfo.devicePxHeight(productInfo)
 
         val newWidth = (width * scaleWidth).toInt()
         val newHeight = (height * scaleHeight).toInt()
@@ -278,23 +286,36 @@ object LaserPeckerHelper {
             }
         }
 
-        //像素分辨率支持, 都支持1k
-        pxList.add(PxInfo(PX_1K, wPhys * 10, hPhys * 10, PX_1K.toPxDes()))
-
         when (name) {
-            LI, LI_PRO -> Unit
+            //LI, LI_PRO -> Unit
             LI_Z, LI_Z_PRO, LII -> {
-                pxList.add(PxInfo(PX_1_3K, wPhys * 13, hPhys * 13, PX_1_3K.toPxDes()))
-                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
+                pxList.add(PxInfo(DPI_317))
+                pxList.add(PxInfo(DPI_508))
             }
             LIII -> {
-                pxList.add(PxInfo(PX_1_3K, wPhys * 13, hPhys * 13, PX_1_3K.toPxDes()))
-                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
-                pxList.add(PxInfo(PX_4K, wPhys * 40, hPhys * 40, PX_4K.toPxDes()))
+                pxList.add(PxInfo(DPI_254))
+                pxList.add(PxInfo(DPI_317))
+                pxList.add(PxInfo(DPI_508))
+                pxList.add(PxInfo(DPI_1270))
             }
             LIV -> {
-                pxList.add(PxInfo(PX_2K, wPhys * 20, hPhys * 20, PX_2K.toPxDes()))
-                pxList.add(PxInfo(PX_4K, wPhys * 40, hPhys * 40, PX_4K.toPxDes()))
+                if (isDebugType()) {
+                    pxList.add(PxInfo(DPI_158))
+                }
+                pxList.add(PxInfo(DPI_254))
+                if (isDebugType()) {
+                    pxList.add(PxInfo(DPI_317))
+                    pxList.add(PxInfo(DPI_423))
+                }
+                pxList.add(PxInfo(DPI_508))
+                if (isDebugType()) {
+                    pxList.add(PxInfo(DPI_635))
+                    pxList.add(PxInfo(DPI_846))
+                }
+                pxList.add(PxInfo(DPI_1270))
+            }
+            else -> {
+                pxList.add(PxInfo(DPI_254))
             }
         }
 
@@ -332,6 +353,11 @@ object LaserPeckerHelper {
 
     /**保持有效宽高下,  4个角用曲线连接*/
     fun maxOvalPath(left: Float, top: Float, right: Float, bottom: Float, path: Path) {
+        val left = left.floor()
+        val top = top.floor()
+        val right = right.ceil()
+        val bottom = bottom.ceil()
+
         val width = right - left
         val height = bottom - top
 
@@ -600,16 +626,6 @@ object LaserPeckerHelper {
     }
 
     //</editor-fold desc="packet">
-}
-
-/**分辨率转描述字符串*/
-fun Byte.toPxDes() = when (this) {
-    LaserPeckerHelper.PX_4K -> "4K"
-    LaserPeckerHelper.PX_2K -> "2K"
-    LaserPeckerHelper.PX_1_3K -> "1.3K"
-    LaserPeckerHelper.PX_1K -> "1K"
-    LaserPeckerHelper.PX_0_8K -> "0.8K"
-    else -> "~1K"
 }
 
 /**将日志写入到[ble.log]

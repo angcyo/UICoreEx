@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
+import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
+import com.angcyo.bluetooth.fsc.laserpacker.data.toOldPxByte
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.trimAndPad
@@ -94,7 +95,7 @@ data class DataCmd(
             minY: Int = 0,
             bitmapWidth: Int,
             bitmapHeight: Int,
-            px: Byte = DEFAULT_PX,
+            dpi: Float,
             name: String?,
             bitmapData: ByteArray?,
         ): DataCmd {
@@ -117,9 +118,12 @@ data class DataCmd(
                 //图片索引，占用4个字节
                 write(index, 4)
 
-                write(px)
+                write(dpi.toOldPxByte())
                 write(minX, 2)
                 write(minY, 2)
+
+                //dpi,占用2个字节
+                write(dpi.toDpiInt(), 2)
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -165,6 +169,7 @@ data class DataCmd(
             name: String?,
             lines: Int,
             gcodeData: ByteArray?,
+            dpi: Float,
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -197,6 +202,9 @@ data class DataCmd(
                 write(y and 0xff00 shr 8 and 0xff) //高8位
                 //图片的高低8位
                 write(y and 0xff) //低8位
+
+                //dpi,占用2个字节
+                write(dpi.toDpiInt(), 2)
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -239,10 +247,10 @@ data class DataCmd(
             y: Int,
             width: Int,
             height: Int,
-            px: Byte,
             name: String?,
             lines: Int,
             bytes: ByteArray?,
+            dpi: Float,
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -261,9 +269,12 @@ data class DataCmd(
                 //线段数
                 write(lines, 4)
 
-                write(px)
+                write(dpi.toOldPxByte())
                 write(x, 2)
                 write(y, 2)
+
+                //dpi,占用2个字节
+                write(dpi.toDpiInt(), 2)
 
                 /*以下是0x30数据
                 //线段数 低16位
@@ -318,9 +329,9 @@ data class DataCmd(
             y: Int,
             width: Int,
             height: Int,
-            px: Byte,
             name: String?,
             bytes: ByteArray?,
+            dpi: Float,
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -336,9 +347,12 @@ data class DataCmd(
                 //数据索引，占用4个字节
                 write(index, 4)
 
-                write(px)
+                write(dpi.toOldPxByte())
                 write(x, 2)
                 write(y, 2)
+
+                //dpi,占用2个字节
+                write(dpi.toDpiInt(), 2)
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)

@@ -37,8 +37,8 @@ class EngraveFinishTopItem : DslTagGroupItem() {
         renderLabelDesList {
             add(LabelDesData("${_string(R.string.custom_material)}:", materialEntity.toText()))
 
-            val pxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.px)
-            add(LabelDesData("${_string(R.string.resolution_ratio)}:", pxInfo?.des))
+            val pxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
+            add(LabelDesData("${_string(R.string.resolution_ratio)}:", pxInfo.des))
 
             val startEngraveTime = taskEntity?.startTime ?: 0
             val endEngraveTime = taskEntity?.finishTime ?: 0

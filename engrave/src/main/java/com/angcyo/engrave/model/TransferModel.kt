@@ -53,7 +53,7 @@ class TransferModel : ViewModel() {
                     transferDataEntity.y,
                     transferDataEntity.width,
                     transferDataEntity.height,
-                    transferDataEntity.px,
+                    transferDataEntity.dpi,
                     transferDataEntity.name,
                     bytes,
                 )
@@ -66,7 +66,8 @@ class TransferModel : ViewModel() {
                     transferDataEntity.height,
                     transferDataEntity.name,
                     transferDataEntity.lines,
-                    bytes
+                    bytes,
+                    transferDataEntity.dpi
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
@@ -75,10 +76,10 @@ class TransferModel : ViewModel() {
                     transferDataEntity.y,
                     transferDataEntity.width,
                     transferDataEntity.height,
-                    transferDataEntity.px,
                     transferDataEntity.name,
                     transferDataEntity.lines,
                     bytes,
+                    transferDataEntity.dpi,
                 )
                 //0x60 抖动数据, 二进制位
                 //DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ->
@@ -88,9 +89,9 @@ class TransferModel : ViewModel() {
                     transferDataEntity.y,
                     transferDataEntity.width,
                     transferDataEntity.height,
-                    transferDataEntity.px,
                     transferDataEntity.name,
-                    bytes
+                    bytes,
+                    transferDataEntity.dpi,
                 )
             }
             return dataCmd

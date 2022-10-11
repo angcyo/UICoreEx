@@ -56,7 +56,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -65,7 +65,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -74,7 +74,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 15
@@ -84,7 +84,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -93,7 +93,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 65
@@ -102,7 +102,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -113,7 +113,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -122,7 +122,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -131,7 +131,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 15
@@ -141,7 +141,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -150,7 +150,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 75
@@ -159,7 +159,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 45
@@ -170,7 +170,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 70
@@ -179,7 +179,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 50
@@ -188,7 +188,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 30
@@ -198,7 +198,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -207,7 +207,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -216,7 +216,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -227,7 +227,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -236,7 +236,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -245,7 +245,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -255,7 +255,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 80
@@ -264,7 +264,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 50
@@ -273,7 +273,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 40
@@ -284,7 +284,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -293,7 +293,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -302,7 +302,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -312,7 +312,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -321,7 +321,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -330,7 +330,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 40
@@ -341,7 +341,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 40
@@ -350,7 +350,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 30
@@ -359,7 +359,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 20
@@ -369,7 +369,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 30
@@ -378,7 +378,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 20
@@ -387,7 +387,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 15
@@ -398,7 +398,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 60
@@ -407,7 +407,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 50
@@ -416,7 +416,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 40
@@ -426,7 +426,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 70
@@ -435,7 +435,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 50
@@ -444,7 +444,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 30
@@ -455,7 +455,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 70
@@ -464,7 +464,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 50
@@ -473,7 +473,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 30
@@ -483,7 +483,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -492,7 +492,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -501,7 +501,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -512,7 +512,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 20
@@ -521,7 +521,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 15
@@ -530,7 +530,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 10
@@ -540,7 +540,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 45
@@ -549,7 +549,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 35
@@ -558,7 +558,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 20
@@ -569,7 +569,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 80
@@ -578,7 +578,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 50
@@ -587,7 +587,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 40
@@ -597,7 +597,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -606,7 +606,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 90
@@ -615,7 +615,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 60
@@ -626,7 +626,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 10
@@ -635,7 +635,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 5
@@ -644,7 +644,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 3
@@ -654,7 +654,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 20
@@ -663,7 +663,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 15
@@ -672,7 +672,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 60
             depth = 10
@@ -683,7 +683,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -692,7 +692,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -701,7 +701,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -711,7 +711,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -720,7 +720,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 90
@@ -729,7 +729,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L1
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -748,7 +748,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -757,7 +757,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 2
@@ -766,7 +766,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -776,7 +776,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -785,7 +785,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 15
@@ -794,7 +794,7 @@ object EngraveHelper {
             resId = R.string.material_hbz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -805,7 +805,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -814,7 +814,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 2
@@ -823,7 +823,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -833,7 +833,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -842,7 +842,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 15
@@ -851,7 +851,7 @@ object EngraveHelper {
             resId = R.string.material_wlz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -862,7 +862,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -871,7 +871,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 2
@@ -880,7 +880,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -890,7 +890,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 5
@@ -899,7 +899,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 5
@@ -908,7 +908,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 5
@@ -919,7 +919,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -928,7 +928,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -937,7 +937,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -947,7 +947,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 40
@@ -956,7 +956,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -965,7 +965,7 @@ object EngraveHelper {
             resId = R.string.material_zz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 20
@@ -976,7 +976,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -985,7 +985,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -994,7 +994,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -1004,7 +1004,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 30
@@ -1013,7 +1013,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 20
@@ -1022,7 +1022,7 @@ object EngraveHelper {
             resId = R.string.material_mz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1033,7 +1033,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1042,7 +1042,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 1
@@ -1051,7 +1051,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 1
@@ -1061,7 +1061,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 1
@@ -1070,7 +1070,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 1
@@ -1079,7 +1079,7 @@ object EngraveHelper {
             resId = R.string.material_rm
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 30
             depth = 1
@@ -1090,7 +1090,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 2
@@ -1099,7 +1099,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 2
@@ -1108,7 +1108,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 2
@@ -1118,7 +1118,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1127,7 +1127,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1136,7 +1136,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1147,7 +1147,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 2
@@ -1156,7 +1156,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 45
             depth = 2
@@ -1165,7 +1165,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 25
             depth = 2
@@ -1175,7 +1175,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 15
@@ -1184,7 +1184,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1193,7 +1193,7 @@ object EngraveHelper {
             resId = R.string.material_bl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 1
@@ -1204,7 +1204,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1213,7 +1213,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 1
@@ -1222,7 +1222,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 1
@@ -1232,7 +1232,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1241,7 +1241,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1250,7 +1250,7 @@ object EngraveHelper {
             resId = R.string.material_mzb
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1261,7 +1261,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 2
@@ -1270,7 +1270,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 80
             depth = 2
@@ -1279,7 +1279,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 2
@@ -1289,7 +1289,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 90
             depth = 20
@@ -1298,7 +1298,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 15
@@ -1307,7 +1307,7 @@ object EngraveHelper {
             resId = R.string.material_btmykl
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 10
@@ -1318,7 +1318,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 1
@@ -1327,7 +1327,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 40
             depth = 1
@@ -1336,7 +1336,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 20
             depth = 1
@@ -1346,7 +1346,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1355,7 +1355,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1364,7 +1364,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 1
@@ -1375,7 +1375,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1384,7 +1384,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1393,7 +1393,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -1403,7 +1403,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -1412,7 +1412,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -1421,7 +1421,7 @@ object EngraveHelper {
             resId = R.string.material_gp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -1432,7 +1432,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1441,7 +1441,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1450,7 +1450,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 3
@@ -1460,7 +1460,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1469,7 +1469,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 80
@@ -1478,7 +1478,7 @@ object EngraveHelper {
             resId = R.string.material_klg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -1489,7 +1489,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1498,7 +1498,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1507,7 +1507,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -1517,7 +1517,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1526,7 +1526,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1535,7 +1535,7 @@ object EngraveHelper {
             resId = R.string.material_st
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1546,7 +1546,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1555,7 +1555,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1564,7 +1564,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1574,7 +1574,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1583,7 +1583,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 60
@@ -1592,7 +1592,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1603,7 +1603,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1612,7 +1612,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1621,7 +1621,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 5
@@ -1631,7 +1631,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -1640,7 +1640,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -1649,7 +1649,7 @@ object EngraveHelper {
             resId = R.string.material_tzp
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 50
@@ -1660,7 +1660,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 1
@@ -1669,7 +1669,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 70
             depth = 1
@@ -1678,7 +1678,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 50
             depth = 1
@@ -1688,7 +1688,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1697,7 +1697,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1706,7 +1706,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 10
@@ -1717,7 +1717,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1726,7 +1726,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1735,7 +1735,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1745,7 +1745,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1754,7 +1754,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1_3K.toHexInt()
+            //px = LaserPeckerHelper.PX_1_3K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1763,7 +1763,7 @@ object EngraveHelper {
             resId = R.string.material_bxg
             product = L2
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_BLUE.toHexInt()
             power = 100
             depth = 100
@@ -1783,7 +1783,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 20
@@ -1792,7 +1792,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 10
@@ -1801,7 +1801,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 3
@@ -1811,7 +1811,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 30
@@ -1820,7 +1820,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 10
@@ -1829,7 +1829,7 @@ object EngraveHelper {
             resId = R.string.material_gmyz
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 5
@@ -1840,7 +1840,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -1849,7 +1849,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 1
@@ -1858,7 +1858,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 40
             depth = 1
@@ -1868,7 +1868,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -1877,7 +1877,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -1886,7 +1886,7 @@ object EngraveHelper {
             resId = R.string.material_gj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 10
@@ -1897,7 +1897,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -1906,7 +1906,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 1
@@ -1915,7 +1915,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 40
             depth = 1
@@ -1925,7 +1925,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -1934,7 +1934,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 80
             depth = 15
@@ -1943,7 +1943,7 @@ object EngraveHelper {
             resId = R.string.material_sl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 80
             depth = 5
@@ -1954,7 +1954,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -1963,7 +1963,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 3
@@ -1972,7 +1972,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 1
@@ -1982,7 +1982,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -1991,7 +1991,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 80
             depth = 10
@@ -2000,7 +2000,7 @@ object EngraveHelper {
             resId = R.string.material_qmzb
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 80
             depth = 5
@@ -2011,7 +2011,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2020,7 +2020,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -2029,7 +2029,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 1
@@ -2039,7 +2039,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2048,7 +2048,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -2057,7 +2057,7 @@ object EngraveHelper {
             resId = R.string.material_yhjs
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 6
@@ -2068,7 +2068,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 50
@@ -2077,7 +2077,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2086,7 +2086,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -2096,7 +2096,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 100
@@ -2105,7 +2105,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 100
@@ -2114,7 +2114,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2125,7 +2125,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 50
@@ -2134,7 +2134,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2143,7 +2143,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -2153,7 +2153,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 100
@@ -2162,7 +2162,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 100
@@ -2171,7 +2171,7 @@ object EngraveHelper {
             resId = R.string.material_lsbxg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2182,7 +2182,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -2191,7 +2191,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 10
@@ -2200,7 +2200,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 1
@@ -2210,7 +2210,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2219,7 +2219,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -2228,7 +2228,7 @@ object EngraveHelper {
             resId = R.string.material_tong
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 10
@@ -2239,7 +2239,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2248,7 +2248,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2257,7 +2257,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 3
@@ -2267,7 +2267,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 100
@@ -2276,7 +2276,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 60
@@ -2285,7 +2285,7 @@ object EngraveHelper {
             resId = R.string.material_lhj
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2296,7 +2296,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 40
@@ -2305,7 +2305,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 20
@@ -2314,7 +2314,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -2324,7 +2324,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 80
@@ -2333,7 +2333,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 40
@@ -2342,7 +2342,7 @@ object EngraveHelper {
             resId = R.string.material_ykl
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 15
@@ -2353,7 +2353,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 70
             depth = 25
@@ -2362,7 +2362,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 70
             depth = 5
@@ -2371,7 +2371,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 60
             depth = 1
@@ -2381,7 +2381,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 70
             depth = 50
@@ -2390,7 +2390,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 70
             depth = 20
@@ -2399,7 +2399,7 @@ object EngraveHelper {
             resId = R.string.material_qtc
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 70
             depth = 10
@@ -2410,7 +2410,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 30
@@ -2419,7 +2419,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 15
@@ -2428,7 +2428,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_BLACK_WHITE
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 5
@@ -2438,7 +2438,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_1K.toHexInt()
+            //px = LaserPeckerHelper.PX_1K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 80
@@ -2447,7 +2447,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_2K.toHexInt()
+            //px = LaserPeckerHelper.PX_2K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 25
@@ -2456,7 +2456,7 @@ object EngraveHelper {
             resId = R.string.material_pg
             product = L3
             dataMode = CanvasConstant.DATA_MODE_GREY
-            px = LaserPeckerHelper.PX_4K.toHexInt()
+            //px = LaserPeckerHelper.PX_4K.toHexInt()
             type = LaserPeckerHelper.LASER_TYPE_WHITE.toHexInt()
             power = 100
             depth = 10
@@ -2467,9 +2467,9 @@ object EngraveHelper {
     fun getProductMaterialList(): List<MaterialEntity> {
         val productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
         val dataMode: Int = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白
-        val px: Byte = LaserPeckerHelper.DEFAULT_PX
+        val dpi = LaserPeckerHelper.DPI_254
         val type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE
-        return getProductMaterialList(productName, dataMode, px, type)
+        return getProductMaterialList(productName, dataMode, dpi, type)
     }
 
     /**获取推荐的材质列表
@@ -2481,14 +2481,14 @@ object EngraveHelper {
     fun getProductMaterialList(
         productName: String?,
         dataMode: Int, /*默认黑白*/
-        px: Byte,
+        dpi: Float,
         type: Byte
     ): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         productName?.let {
             materialList.filterTo(result) { entity ->
                 var match = entity.product == productName &&
-                        entity.px.toByte() == px &&
+                        entity.dpi == dpi &&
                         entity.type.toByte() == type
                 match =
                     if (dataMode == CanvasConstant.DATA_MODE_GREY || dataMode == CanvasConstant.DATA_MODE_DITHERING) {

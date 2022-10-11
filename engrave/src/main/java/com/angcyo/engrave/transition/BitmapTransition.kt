@@ -222,7 +222,7 @@ class BitmapTransition : IEngraveTransition {
                 val bitmap = renderer.getEngraveBitmap()
                 if (bitmap != null) {
                     val dataMode = getDataMode(dataBean, transferConfigEntity)
-                    val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.px)
+                    val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
                     val transferDataEntity =
                         TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
 
@@ -318,22 +318,4 @@ class BitmapTransition : IEngraveTransition {
         }
         return null
     }
-}
-
-/**处理模式转换成雕刻数据类型*/
-fun Int.convertDataModeToEngraveType() = when (this) {
-    CanvasConstant.DATA_MODE_BLACK_WHITE,
-    CanvasConstant.DATA_MODE_PRINT,
-    CanvasConstant.DATA_MODE_SEAL -> DataCmd.ENGRAVE_TYPE_BITMAP_PATH
-    CanvasConstant.DATA_MODE_GREY -> DataCmd.ENGRAVE_TYPE_BITMAP
-    CanvasConstant.DATA_MODE_GCODE -> DataCmd.ENGRAVE_TYPE_GCODE
-    else -> DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
-}
-
-/**处理模式转换成雕刻数据类型*/
-fun Int.convertEngraveTypeToDataMode() = when (this) {
-    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> CanvasConstant.DATA_MODE_BLACK_WHITE
-    DataCmd.ENGRAVE_TYPE_BITMAP -> CanvasConstant.DATA_MODE_GREY
-    DataCmd.ENGRAVE_TYPE_GCODE -> CanvasConstant.DATA_MODE_GCODE
-    else -> CanvasConstant.DATA_MODE_DITHERING
 }

@@ -7,11 +7,13 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.BluetoothSearchListDialogConfig
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.image.ImageLoadingView
+import com.angcyo.widget.span.span
 import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -74,11 +76,13 @@ class BluetoothConnectItem : DslAdapterItem() {
 
         itemHolder.selected(itemIsSelected)
 
-        itemHolder.tv(R.id.device_name_view)?.text = buildString {
+        itemHolder.tv(R.id.device_name_view)?.text = span {
             append(itemFscDevice?.name)
             //append(itemFscDevice?.address)
             if (itemShowRssi) {
-                append(" ${itemFscDevice?.rssi}")
+                append(" ${itemFscDevice?.rssi}") {
+                    foregroundColor = _color(R.color.text_sub_color)
+                }
             }
         }
 

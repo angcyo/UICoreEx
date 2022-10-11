@@ -39,7 +39,7 @@ object EngraveFlowDataHelper {
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
             name = EngraveTransitionManager.generateEngraveName()
-            px = LaserPeckerHelper.DEFAULT_PX
+            dpi = LaserPeckerHelper.DPI_254
             mergeData = true
             dataMode = null
         }) {

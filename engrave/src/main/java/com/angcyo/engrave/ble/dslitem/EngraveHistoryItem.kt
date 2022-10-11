@@ -1,10 +1,8 @@
 package com.angcyo.engrave.ble.dslitem
 
-import com.angcyo.bluetooth.fsc.laserpacker.toPxDes
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.toModeString
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
@@ -124,7 +122,7 @@ class EngraveHistoryItem : DslTagGroupItem() {
 
             add(LabelDesData(_string(R.string.custom_speed), "${engraveHistoryEntity?.depth}%"))
 
-            val pxDes = engraveHistoryEntity?.px?.toPxDes()
+            /*val pxDes = engraveHistoryEntity?.px?.toPxDes()
             add(LabelDesData(_string(R.string.resolution_ratio), pxDes))
 
             if ((engraveHistoryEntity?.duration ?: 0) > 0) {
@@ -134,7 +132,7 @@ class EngraveHistoryItem : DslTagGroupItem() {
                         engraveHistoryEntity?.duration?.toEngraveTime()
                     )
                 )
-            }
+            }*/
         }
     }
 

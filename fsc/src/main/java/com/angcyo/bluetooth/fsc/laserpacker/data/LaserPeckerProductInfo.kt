@@ -42,13 +42,13 @@ data class LaserPeckerProductInfo(
     /**物理尺寸宽高, mm单位*/
     var widthPhys: Int = 0,
     var heightPhys: Int = 0,
-    /**机器物理的范围, 像素*/
+    /**机器物理的范围, 像素, 在手机上的像素*/
     var bounds: RectF,
-    /**机器的最佳预览范围, 像素*/
+    /**机器的最佳预览范围, 像素, 在手机上的像素*/
     var previewBounds: RectF,
-    /**机器在移动范围内的可打印范围, 像素*/
+    /**机器在移动范围内的可打印范围, 像素, 在手机上的像素*/
     var limitPath: Path,
-    /**Z轴限制提示框, 像素*/
+    /**Z轴限制提示框, 像素, 在手机上的像素*/
     var zLimitPath: Path? = null,
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/

@@ -182,7 +182,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "10:6564749569250734994",
+      "lastPropertyId": "11:3237754149843921779",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -212,11 +212,6 @@
           "type": 5
         },
         {
-          "id": "6:7331769955861319310",
-          "name": "px",
-          "type": 5
-        },
-        {
           "id": "7:1140505630177632808",
           "name": "power",
           "type": 5
@@ -235,13 +230,18 @@
           "id": "10:6564749569250734994",
           "name": "code",
           "type": 9
+        },
+        {
+          "id": "11:3237754149843921779",
+          "name": "dpi",
+          "type": 7
         }
       ],
       "relations": []
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "7:7109569317690271732",
+      "lastPropertyId": "8:3009380007793216686",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -261,11 +261,6 @@
           "type": 9
         },
         {
-          "id": "4:3436443603844460576",
-          "name": "px",
-          "type": 2
-        },
-        {
           "id": "5:7069185484473102999",
           "name": "mergeData",
           "type": 1
@@ -279,6 +274,11 @@
           "id": "7:7109569317690271732",
           "name": "mergeBpData",
           "type": 1
+        },
+        {
+          "id": "8:3009380007793216686",
+          "name": "dpi",
+          "type": 7
         }
       ],
       "relations": []
@@ -363,7 +363,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "14:380067980881479608",
+      "lastPropertyId": "15:4183476418365389301",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -408,11 +408,6 @@
           "type": 5
         },
         {
-          "id": "9:1120358512436187857",
-          "name": "px",
-          "type": 2
-        },
-        {
           "id": "10:622230581581523001",
           "name": "index",
           "type": 5
@@ -436,6 +431,11 @@
           "id": "14:380067980881479608",
           "name": "isTransfer",
           "type": 1
+        },
+        {
+          "id": "15:4183476418365389301",
+          "name": "dpi",
+          "type": 7
         }
       ],
       "relations": []
@@ -538,7 +538,10 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    2838291095304470660
+    2838291095304470660,
+    7331769955861319310,
+    3436443603844460576,
+    1120358512436187857
   ],
   "retiredRelationUids": [],
   "version": 1

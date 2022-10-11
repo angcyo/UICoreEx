@@ -17,14 +17,11 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
-import com.angcyo.engrave.*
+import com.angcyo.engrave.EngraveFlowLayoutHelper
+import com.angcyo.engrave.EngraveProductLayoutHelper
+import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
-import com.angcyo.engrave.data.EngraveDataInfo
-import com.angcyo.engrave.data.EngraveOptionInfo
-import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toast
 import com.angcyo.objectbox.deleteEntity
@@ -42,12 +39,13 @@ import com.angcyo.objectbox.page
 class EngraveHistoryFragment : BaseDslFragment() {
 
     /**前布局*/
-    val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper()
+    /*val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper()*/
 
     /**雕刻布局*/
     val engraveFlowLayoutHelper = EngraveFlowLayoutHelper()
 
-/*    *//**雕刻预览布局*//*
+/*    */
+    /**雕刻预览布局*//*
     val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this).apply {
         //next
         onNextAction = {
@@ -78,14 +76,14 @@ class EngraveHistoryFragment : BaseDslFragment() {
         engraveProductLayoutHelper.bindCanvasView(_vh, group, null)
 
         //开始预览
-        engraveBeforeLayoutHelper.onPreviewAction = {
+        /*engraveBeforeLayoutHelper.onPreviewAction = {
             toPreview()
         }
         //开始雕刻
         engraveBeforeLayoutHelper.onNextAction = {
             //更新雕刻参数
             toEngrave()
-        }
+        }*/
         //监听雕刻状态, 结束后刷新数据
         val peckerModel = vmApp<LaserPeckerModel>()
         peckerModel.deviceStateData.observe {
@@ -95,8 +93,6 @@ class EngraveHistoryFragment : BaseDslFragment() {
         }
     }
 
-    var _readyDataInfo: EngraveReadyInfo? = null
-    var _engraveOption: EngraveOptionInfo? = null
 
     override fun onLoadData() {
         super.onLoadData()
@@ -184,9 +180,9 @@ class EngraveHistoryFragment : BaseDslFragment() {
             itemClick = {
                 //数据不存在, 需要重新发送数据
                 selectHistoryEntity(bean)
-                engraveBeforeLayoutHelper.iViewTitle = bean.name
+                /*engraveBeforeLayoutHelper.iViewTitle = bean.name
                 engraveBeforeLayoutHelper.engraveReadyInfo = _readyDataInfo
-                engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)
+                engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)*/
             }
         }
     }
@@ -194,9 +190,9 @@ class EngraveHistoryFragment : BaseDslFragment() {
     /**准备数据*/
     fun selectHistoryEntity(entity: EngraveHistoryEntity) {
         //准备雕刻数据
-        val readyDataInfo = EngraveReadyInfo()
+        /*val readyDataInfo = EngraveReadyInfo()
         readyDataInfo.historyEntity = entity
-        readyDataInfo.engraveData = EngraveDataInfo().updateFromEntity(entity)
+        //readyDataInfo.engraveData = EngraveDataInfo().updateFromEntity(entity)
 
         readyDataInfo.dataMode = entity.dataMode ?: 0
         readyDataInfo.dataPath = entity.dataPath
@@ -212,7 +208,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
             entity.x,
             entity.y,
             entity.type
-        )
+        )*/
     }
 
     /**开始预览*/

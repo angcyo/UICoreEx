@@ -61,7 +61,8 @@ data class TransferDataEntity(
     var x: Int = -1,
     var y: Int = -1,
 
-    var px: Byte = 0,
+    /**分辨率*/
+    var dpi: Float = -1f,
 
     //---
 

@@ -41,7 +41,7 @@ data class MaterialEntity(
     var dataMode: Int = 3,
 
     /**分辨率*/
-    var px: Int = 0,
+    var dpi: Float = -1f,
 
     /**对应的激光类型, 蓝光/白光
      * [LaserPeckerHelper.LASER_TYPE_WHITE]

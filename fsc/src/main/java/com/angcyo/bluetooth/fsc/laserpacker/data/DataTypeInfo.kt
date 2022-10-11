@@ -14,7 +14,7 @@ import com.angcyo.library.extend.IToValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/08/29
  */
-data class EngraveTypeInfo(
+data class DataTypeInfo(
     /**数据类型*/
     val type: Int,
     /**显示的标签*/

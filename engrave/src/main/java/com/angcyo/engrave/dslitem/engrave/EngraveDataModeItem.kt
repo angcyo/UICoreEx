@@ -1,17 +1,15 @@
 package com.angcyo.engrave.dslitem.engrave
 
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.bluetooth.fsc.laserpacker.data.EngraveTypeInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.DataTypeInfo
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveReadyInfo
-import com.angcyo.engrave.transition.convertDataModeToEngraveType
-import com.angcyo.engrave.transition.convertEngraveTypeToDataMode
 import com.angcyo.item.DslCheckFlowItem
 import com.angcyo.item.style.itemCheckItems
 import com.angcyo.item.style.itemCheckedItems
 import com.angcyo.item.style.itemText
 import com.angcyo.library.ex._string
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 
 /**
  * 雕刻数据模式调整item, 用来决定雕刻的数据
@@ -28,17 +26,17 @@ class EngraveDataModeItem : DslCheckFlowItem() {
 
     /**数据模式列表*/
     var itemTypeList = mutableListOf(
-        EngraveTypeInfo(DataCmd.ENGRAVE_TYPE_BITMAP, "图片"),
-        EngraveTypeInfo(DataCmd.ENGRAVE_TYPE_BITMAP_PATH, "路径"),
-        EngraveTypeInfo(DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING, "抖动"),
-        EngraveTypeInfo(DataCmd.ENGRAVE_TYPE_GCODE, "GCode")
+        DataTypeInfo(CanvasConstant.DATA_MODE_GREY, "图片"),
+        DataTypeInfo(CanvasConstant.DATA_MODE_BLACK_WHITE, "路径"),
+        DataTypeInfo(CanvasConstant.DATA_MODE_DITHERING, "抖动"),
+        DataTypeInfo(CanvasConstant.DATA_MODE_GCODE, "GCode")
     )
 
     /**待雕刻的准备数据*/
-    var itemEngraveReadyInfo: EngraveReadyInfo? = null
+    var itemEngraveReadyInfo: TransferConfigEntity? = null
         set(value) {
             field = value
-            itemTypeList.find { it.type == value?.dataMode?.convertDataModeToEngraveType() }?.let {
+            itemTypeList.find { it.type == value?.dataMode }?.let {
                 //默认选中
                 itemCheckedItems = mutableListOf(it)
             }
@@ -55,7 +53,7 @@ class EngraveDataModeItem : DslCheckFlowItem() {
         super.onItemChangeListener(item)
         val selected = itemCheckedItems.first()
         itemEngraveReadyInfo?.apply {
-            dataMode = (selected as EngraveTypeInfo).type.convertEngraveTypeToDataMode()
+            dataMode = (selected as DataTypeInfo).type
         }
     }
 

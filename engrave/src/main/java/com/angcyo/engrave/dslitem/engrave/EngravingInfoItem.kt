@@ -9,7 +9,6 @@ import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.or
 
 /**
  * 雕刻信息展示的item
@@ -38,8 +37,8 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 //材质:
                 add(LabelDesData(_string(R.string.custom_material), materialEntity.toText()))
                 //分辨率: 1k
-                val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.px)
-                add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo?.des.or()))
+                val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
+                add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
 
                 //功率:
                 add(LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%"))

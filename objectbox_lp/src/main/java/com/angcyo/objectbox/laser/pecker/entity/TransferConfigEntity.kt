@@ -28,10 +28,11 @@ data class TransferConfigEntity(
      * */
     var name: String = "",
 
-    /**数据需要处理的分辨率
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX]
-     * */
-    var px: Byte = 0,
+    /**
+     * 每英寸内像素点的个数
+     * 设备基准值: 254, 像素点间距0.1mm 最小能达到:0.0125 8倍
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]*/
+    var dpi: Float = -1f,
 
     //---
 

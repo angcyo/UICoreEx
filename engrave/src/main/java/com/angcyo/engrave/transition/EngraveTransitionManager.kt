@@ -239,7 +239,7 @@ class EngraveTransitionManager {
         resultTransferDataInfo.layerMode = first.layerMode
 
         resultTransferDataInfo.engraveDataType = first.engraveDataType
-        resultTransferDataInfo.px = first.px
+        resultTransferDataInfo.dpi = first.dpi
         resultTransferDataInfo.name = first.name
         resultTransferDataInfo.x = first.x
         resultTransferDataInfo.y = first.y

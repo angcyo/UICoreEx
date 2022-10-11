@@ -7,7 +7,6 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.EngraveOptionInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.item.style.ITextItem
@@ -22,9 +21,12 @@ import com.angcyo.widget.base.bindInRootView
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/14
  */
+/*
 class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
 
-    /**雕刻选项*/
+    */
+/**雕刻选项*//*
+
     var itemEngraveOptionInfo: EngraveOptionInfo? = null
 
     override var textItemConfig: TextItemConfig = TextItemConfig()
@@ -56,7 +58,9 @@ class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
         bindDiameter(itemHolder)
     }
 
-    /**绑定事件*/
+    */
+/**绑定事件*//*
+
     fun bindDiameter(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.diameter_text_view) {
             if (!itemHolder.isInRecyclerView()) {
@@ -84,4 +88,4 @@ class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
             }
         }
     }
-}
+}*/

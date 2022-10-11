@@ -1,8 +1,18 @@
 package com.angcyo.bluetooth.fsc.laserpacker.data
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_PX
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_1270
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_158
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_317
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_508
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_0_8K
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1K
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1_3K
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_2K
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_4K
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
+import com.angcyo.library.ex.decimal
+import com.angcyo.library.ex.floor
 import com.angcyo.library.extend.IToText
 import com.angcyo.library.extend.IToValue
 
@@ -18,7 +28,7 @@ import com.angcyo.library.extend.IToValue
  * @since 2022/06/01
  */
 data class PxInfo(
-    //当PX为以下值时对应图片分辨率：
+    /*//当PX为以下值时对应图片分辨率：
     //PX = 0x05 时 图片分辨率为800*800
     //PX = 0x04 时 图片分辨率为1000*1000
     //PX = 0x03 时 图片分辨率为1300*1300
@@ -27,10 +37,44 @@ data class PxInfo(
     val px: Byte = DEFAULT_PX,
     //对应分辨率的宽高
     val pxWidth: Int,
-    val pxHeight: Int,
-    //显示的界面上的描述
-    val des: String,
+    val pxHeight: Int,*/
+
+    /**每英寸内像素点的个数
+     * 设备基准值: 254, 像素点间距0.1mm 最小能达到:0.0125 8倍
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_158]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_317]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_423]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_508]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_635]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_846]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_1270]
+     * */
+    val dpi: Float
 ) : IToText, IToValue {
+
+    /**dpi对应的数据需要缩放的比例*/
+    val dpiScale: Float = dpi.toDpiScale()
+
+    /**显示的界面上的描述*/
+    val des: String = dpi.toPxDes()
+
+    override fun toText(): CharSequence = des
+
+    override fun toValue(): Int = dpi.toDpiInt()
+
+    /**设备dpi对应的像素宽度*/
+    fun devicePxWidth(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Float {
+        val deviceWidthPx = ((productInfo?.widthPhys ?: 100) / 0.1).floor()
+        return (deviceWidthPx * dpiScale).toFloat()
+    }
+
+    /**设备dpi对应的像素高度*/
+    fun devicePxHeight(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Float {
+        val deviceHeightPx = ((productInfo?.heightPhys ?: 100) / 0.1).floor()
+        return (deviceHeightPx * dpiScale).toFloat()
+    }
 
     /**宽度值转换*/
     fun transformWidth(
@@ -41,7 +85,7 @@ data class PxInfo(
             return width
         }
         val scale = width * 1f / productInfo.bounds.width() //实际尺寸对应的比例
-        return (pxWidth * scale).toInt() //缩放转换
+        return (devicePxWidth(productInfo) * scale).toInt() //缩放转换
     }
 
     /**高度值转换*/
@@ -53,7 +97,7 @@ data class PxInfo(
             return height
         }
         val scale = height * 1f / productInfo.bounds.height()
-        return (pxHeight * scale).toInt()
+        return (devicePxHeight(productInfo) * scale).toInt()
     }
 
     /**X坐标转换*/
@@ -65,7 +109,7 @@ data class PxInfo(
             return x
         }
         val scale = (x - productInfo.bounds.left) * 1f / productInfo.bounds.width() //x方向的实际缩放比例
-        return (pxWidth * scale).toInt()
+        return (devicePxWidth(productInfo) * scale).toInt()
     }
 
     /**Y坐标转换*/
@@ -77,10 +121,42 @@ data class PxInfo(
             return y
         }
         val scale = (y - productInfo.bounds.top) * 1f / productInfo.bounds.height() //y方向的实际缩放比例
-        return (pxHeight * scale).toInt()
+        return (devicePxHeight(productInfo) * scale).toInt()
     }
 
-    override fun toText(): CharSequence = des
+}
 
-    override fun toValue(): Any = px
+/**缩放比*/
+fun Float.toDpiScale() = this / 254
+
+fun Float.toDpiInt() = floor().toInt()
+
+/**dpi转描述字符串*/
+fun Float.toPxDes(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): String {
+    val scale = toDpiScale()
+    val scaleFloor = scale.floor()
+
+    val px = ((productInfo?.widthPhys ?: 100) / 0.1).floor()
+    val sk = scale * px / 1000
+    val sFK = (scaleFloor * px / 1000).floor()
+
+    if (sk == sFK) {
+        return "${sFK.toInt()}K"
+    }
+    return "${sk.decimal(1)}K"
+}
+
+/**将dpi, 转换成原来的px单位数据
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_158]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_317]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_508]
+ * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_1270]
+ * */
+fun Float.toOldPxByte(): Byte = when (this) {
+    DPI_158 -> PX_0_8K
+    DPI_317 -> PX_1_3K
+    DPI_508 -> PX_2K
+    DPI_1270 -> PX_4K
+    else -> PX_1K
 }

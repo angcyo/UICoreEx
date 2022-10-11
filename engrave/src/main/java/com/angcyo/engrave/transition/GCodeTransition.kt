@@ -114,7 +114,7 @@ class GCodeTransition : IEngraveTransition {
     ): TransferDataEntity {
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
-        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.px)
+        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,

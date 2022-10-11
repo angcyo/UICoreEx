@@ -102,7 +102,7 @@ interface IEngraveTransition {
         transferDataEntity.taskId = transferConfigEntity.taskId
 
         val mmValueUnit = mmUnit
-        transferDataEntity.px = transferConfigEntity.px
+        transferDataEntity.dpi = transferConfigEntity.dpi
         transferDataEntity.name = transferConfigEntity.name
 
         if (transferDataEntity.index <= 0) {
@@ -134,7 +134,7 @@ interface IEngraveTransition {
             //抖动的数据
             val rect = EngravePreviewCmd.adjustRectRange(
                 rotateBounds,
-                transferConfigEntity.px
+                transferConfigEntity.dpi
             ).resultRect!!
             transferDataEntity.x = rect.left
             transferDataEntity.y = rect.top

@@ -26,7 +26,7 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
-            val index = itemPxList?.indexOfFirst { it.px == value?.px }
+            val index = itemPxList?.indexOfFirst { it.dpi == value?.dpi }
             //默认选中
             itemCurrentIndex = index ?: 0
         }
@@ -44,8 +44,8 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
-        val px = itemPxList?.get(itemCurrentIndex)?.px ?: LaserPeckerHelper.DEFAULT_PX
-        itemTransferConfigEntity?.px = px
+        val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
+        itemTransferConfigEntity?.dpi = dpi
     }
 
 }
