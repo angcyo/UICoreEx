@@ -14,6 +14,8 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
+import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
+import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
@@ -31,213 +33,13 @@ import java.io.File
  * @since 2022/08/22
  */
 class GCodeTransition : IEngraveTransition {
-/*
-
-    override fun doTransitionReadyData(renderer: BaseItemRenderer<*>): EngraveReadyInfo? {
-        val item = renderer.getRendererRenderItem() ?: return null
-        val dataType = item.dataType
-
-        var result: EngraveReadyInfo? = null
-
-        //init
-        fun initReadyInfo() {
-            result?.apply {
-                initReadyEngraveData(renderer, this)
-
-                this.itemUuid = item.uuid
-                this.dataType = item.dataType
-                this.dataMode = CanvasConstant.DATA_MODE_GCODE
-
-                dataSupportModeList
-                dataSupportPxList
-            }
-        }
-
-        //
-        if (dataType == CanvasConstant.DATA_TYPE_SVG ||
-            dataType == CanvasConstant.DATA_TYPE_GCODE ||
-            dataType == CanvasConstant.DATA_TYPE_PATH
-        ) {
-            //GCode数据
-            result = EngraveReadyInfo()
-            initReadyInfo()
-            return result
-        }
-
-        //
-        if (item is PictureGCodeItem) {
-            val gCodeText = item.gCode
-            if (gCodeText.isNotEmpty()) {
-                //GCode数据
-                result = EngraveReadyInfo()
-                initReadyInfo()
-                return result
-            }
-        }
-
-        //
-
-        //group
-        if (dataType == CanvasConstant.DATA_TYPE_GROUP) {
-            if (renderer is SelectGroupRenderer) {
-                renderer.selectItemList
-
-                var allGCodeItem = true
-                for (itemRenderer in renderer.selectItemList) {
-                    val readyInfo = doTransitionReadyData(itemRenderer)
-                    if (readyInfo?.dataMode == CanvasConstant.DATA_MODE_GCODE) {
-                        allGCodeItem = true
-                    } else {
-                        allGCodeItem = false
-                        break
-                    }
-                }
-                if (allGCodeItem) {
-                    //全部都是gcode数据
-                    result = EngraveReadyInfo()
-                    initReadyInfo()
-                    return result
-                }
-            }
-        }
-
-        return null
-    }
-
-    override fun doTransitionEngraveData(
-        renderer: BaseItemRenderer<*>,
-        engraveReadyInfo: EngraveReadyInfo
-    ): Boolean {
-        val item = renderer.getRendererRenderItem()
-
-        //init
-        fun initEngraveData() {
-            engraveReadyInfo.engraveData?.apply {
-                engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
-            }
-        }
-
-        if (engraveReadyInfo.dataMode == CanvasConstant.DATA_MODE_GCODE) {
-
-            //GCode
-            if (item is PictureGCodeItem) {
-                val gCodeText = item.gCode
-                if (gCodeText.isNotEmpty()) {
-                    initEngraveData()
-                    //GCode数据
-                    val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
-                        gCodeText,
-                        renderer.getBounds(),
-                        renderer.rotate
-                    )
-                    _handleGCodeEngraveDataInfo(
-                        engraveReadyInfo,
-                        gCodeFile,
-                        renderer.getRotateBounds()
-                    )
-                    return true
-                }
-            }
-
-            //bitmap gcode
-            if (item is PictureBitmapItem) {
-                val gCodeText = item.data
-                if (gCodeText is String) {
-                    if (gCodeText.isNotEmpty()) {
-                        initEngraveData()
-                        //GCode数据
-                        val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
-                            gCodeText,
-                            renderer.getBounds(),
-                            renderer.rotate
-                        )
-                        _handleGCodeEngraveDataInfo(
-                            engraveReadyInfo,
-                            gCodeFile,
-                            renderer.getRotateBounds()
-                        )
-                        return true
-                    }
-                }
-            }
-
-            //SVG
-            if (item is PictureSharpItem) {
-                val svgPathList = item.sharpDrawable.pathList
-                if (!svgPathList.isNullOrEmpty()) {
-                    initEngraveData()
-                    //path路径
-                    val gCodeFile = CanvasDataHandleOperate.pathToGCode(
-                        svgPathList,
-                        renderer.getBounds(),
-                        renderer.rotate
-                    )
-                    _handleGCodeEngraveDataInfo(
-                        engraveReadyInfo,
-                        gCodeFile,
-                        renderer.getRotateBounds()
-                    )
-                    return true
-                }
-            }
-
-            //path
-            if (item is PictureShapeItem) {
-                initEngraveData()
-                val stylePath = StylePath()
-                stylePath.style = renderer.paint.style
-
-                val path = Path()
-                //item.transformPath(renderer, item.shapePath, path)
-
-                stylePath.set(path)
-                val gCodeFile = CanvasDataHandleOperate.pathToGCode(stylePath)
-                _handleGCodeEngraveDataInfo(
-                    engraveReadyInfo,
-                    gCodeFile,
-                    renderer.getRotateBounds()
-                )
-                return true
-            }
-
-            //group
-            if (renderer is SelectGroupRenderer) {
-
-            }
-
-            //other
-            //使用bitmap转gcode
-            val bitmap = renderer.getEngraveBitmap()
-            if (bitmap != null) {
-                initEngraveData()
-                var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(bitmap)
-                val gCodeString = gCodeFile.readText()
-                gCodeFile.deleteSafe()
-                if (!gCodeString.isNullOrEmpty()) {
-                    //GCode数据
-                    gCodeFile = CanvasDataHandleOperate.gCodeTranslation(
-                        gCodeString,
-                        renderer.getRotateBounds()
-                    )
-                    _handleGCodeEngraveDataInfo(
-                        engraveReadyInfo,
-                        gCodeFile,
-                        renderer.getRotateBounds()
-                    )
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-*/
 
     /**将可视化数据处理成机器需要的GCode数据
      * [CanvasConstant.DATA_MODE_GCODE]*/
     override fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        param: TransitionParam
     ): TransferDataEntity? {
         if (renderer is DataItemRenderer) {
             val dataItem = renderer.dataItem
@@ -246,14 +48,20 @@ class GCodeTransition : IEngraveTransition {
                 //需要处理成GCode数据
                 if (dataItem is DataPathItem) {
                     val pathList = dataItem.dataPathList
-                    return _transitionPathTransferData(renderer, transferConfigEntity, pathList)
+                    return _transitionPathTransferData(
+                        renderer,
+                        transferConfigEntity,
+                        pathList,
+                        param
+                    )
                 } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
                     //图片元素, 路径转GCode算法
                     val gCodeDrawable = dataItem.gCodeDrawable
                     return _transitionPathTransferData(
                         renderer,
                         transferConfigEntity,
-                        listOf(gCodeDrawable!!.gCodePath)
+                        listOf(gCodeDrawable!!.gCodePath),
+                        param
                     )
                 } else {
                     //其他元素, 使用图片转GCode算法
@@ -262,7 +70,8 @@ class GCodeTransition : IEngraveTransition {
                         return _transitionBitmapTransferData(
                             renderer,
                             transferConfigEntity,
-                            bitmap
+                            bitmap,
+                            param
                         )
                     }
                 }
@@ -276,12 +85,17 @@ class GCodeTransition : IEngraveTransition {
     fun _transitionPathTransferData(
         renderer: BaseItemRenderer<*>,
         transferConfigEntity: TransferConfigEntity,
-        pathList: List<Path>
+        pathList: List<Path>,
+        param: TransitionParam
     ): TransferDataEntity {
+        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val gCodeFile = CanvasDataHandleOperate.pathToGCode(
             pathList,
             renderer.getBounds(),
-            renderer.rotate
+            renderer.rotate,
+            isFirst = isFirst,
+            isFinish = isFinish
         )
         return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
             //1: 存一份原始可视化数据
@@ -295,8 +109,11 @@ class GCodeTransition : IEngraveTransition {
     fun _transitionBitmapTransferData(
         renderer: BaseItemRenderer<*>,
         transferConfigEntity: TransferConfigEntity,
-        bitmap: Bitmap
+        bitmap: Bitmap,
+        param: TransitionParam
     ): TransferDataEntity {
+        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.px)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),

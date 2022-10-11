@@ -1,14 +1,19 @@
 package com.angcyo.engrave.transition
 
 import android.graphics.Bitmap
+import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.data.ItemDataBean
 import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.generateEngraveIndex
+import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.Private
 import com.angcyo.library.utils.FileTextData
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -26,31 +31,77 @@ import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
  */
 interface IEngraveTransition {
 
-    /**数据处理的模式
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
-     * */
-    fun getDataMode(bean: ItemDataBean?, transferConfigEntity: TransferConfigEntity): Int {
-        return transferConfigEntity.dataMode ?: (bean?._dataMode ?: 0)
+    companion object {
+        /**保存雕刻数据到文件
+         * [fileName] 需要保存的文件名, 无扩展
+         * [suffix] 文件后缀, 扩展名
+         * [data]
+         *   [String]
+         *   [ByteArray]
+         *   [Bitmap]
+         *   [File]
+         * ]*/
+        fun saveEngraveData(
+            fileName: Any?,
+            data: FileTextData?,
+            suffix: String = "engrave"
+        ): String? {
+            //将雕刻数据写入文件
+            return data.writeTo(
+                CanvasDataHandleOperate.ENGRAVE_CACHE_FILE_FOLDER,
+                "${fileName}.${suffix}",
+                false
+            )
+        }
+
+        /**数据需要处理成什么格式, 丢给机器雕刻
+         * [getDataMode]*/
+        fun getDataMode(
+            renderer: BaseItemRenderer<*>?,
+            transferConfigEntity: TransferConfigEntity
+        ): Int {
+            if (renderer is DataItemRenderer) {
+                return getDataMode(
+                    renderer.getRendererRenderItem()?.dataBean,
+                    transferConfigEntity
+                )
+            }
+            return transferConfigEntity.dataMode ?: CanvasConstant.DATA_MODE_DITHERING
+        }
+
+        /**数据处理的模式
+         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
+         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
+         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
+         * */
+        fun getDataMode(
+            bean: ItemDataBean?,
+            transferConfigEntity: TransferConfigEntity
+        ): Int {
+            return transferConfigEntity.dataMode ?: (bean?._dataMode
+                ?: CanvasConstant.DATA_MODE_DITHERING)
+        }
     }
 
     /**将[renderer]转换成传输给机器的数据*/
+    @CallPoint
     fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        param: TransitionParam
     ): TransferDataEntity?
 
     /**一些通用配置属性初始化*/
+    @Private
     fun initTransferDataEntity(
         renderer: BaseItemRenderer<*>,
         transferConfigEntity: TransferConfigEntity,
-        transferDataEntity: TransferDataEntity
+        transferDataEntity: TransferDataEntity,
+        rotateBounds: RectF = renderer.getRotateBounds()
     ) {
         transferDataEntity.taskId = transferConfigEntity.taskId
 
         val mmValueUnit = mmUnit
-        val rotateBounds = renderer.getRotateBounds()
         transferDataEntity.px = transferConfigEntity.px
         transferDataEntity.name = transferConfigEntity.name
 
@@ -90,22 +141,5 @@ interface IEngraveTransition {
             transferDataEntity.width = rect.width()
             transferDataEntity.height = rect.height()
         }
-    }
-
-    /**保存雕刻数据到文件
-     * [fileName] 需要保存的文件名, 无扩展
-     * [suffix] 文件后缀, 扩展名
-     * [data]
-     *   [String]
-     *   [ByteArray]
-     *   [Bitmap]
-     * ]*/
-    fun saveEngraveData(fileName: Any?, data: FileTextData?, suffix: String = "engrave"): String? {
-        //将雕刻数据写入文件
-        return data.writeTo(
-            CanvasDataHandleOperate.ENGRAVE_CACHE_FILE_FOLDER,
-            "${fileName}.${suffix}",
-            false
-        )
     }
 }

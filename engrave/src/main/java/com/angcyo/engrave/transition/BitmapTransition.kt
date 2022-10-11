@@ -13,7 +13,11 @@ import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
+import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
+import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.toTransferData
@@ -30,8 +34,16 @@ class BitmapTransition : IEngraveTransition {
 
         /**[bitmap] 图片转路径数据
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
+         *
+         * [offsetLeft] 坐标偏移量
+         * [offsetTop] 坐标偏移量
          * */
-        fun handleBitmapPath(bitmap: Bitmap, threshold: Int): List<BitmapPath> {
+        fun handleBitmapPath(
+            bitmap: Bitmap,
+            threshold: Int,
+            offsetLeft: Int = 0,
+            offsetTop: Int = 0
+        ): List<BitmapPath> {
             val result = mutableListOf<BitmapPath>()
 
             var lastBitmapPath: BitmapPath? = null
@@ -61,7 +73,7 @@ class BitmapTransition : IEngraveTransition {
                     if (channelColor <= threshold && color != Color.TRANSPARENT) {
                         //00, 黑色纸上雕刻, 金属不雕刻
                         if (lastBitmapPath == null) {
-                            lastBitmapPath = BitmapPath(wIndex, y, 0, ltr)
+                            lastBitmapPath = BitmapPath(wIndex + offsetLeft, y + offsetTop, 0, ltr)
                         }
                         lastBitmapPath?.apply {
                             len++
@@ -76,8 +88,16 @@ class BitmapTransition : IEngraveTransition {
             return result
         }
 
-        /**反向转成图片*/
-        fun List<BitmapPath>.toEngraveBitmap(width: Int, height: Int): Bitmap {
+        /**反向转成图片
+         * [width] 图片真实的宽高, 不需要加上偏移
+         * [offsetLeft] 线段数据的偏移量, 绘制时会减去此值
+         * */
+        fun List<BitmapPath>.toEngraveBitmap(
+            width: Int,
+            height: Int,
+            offsetLeft: Int = 0,
+            offsetTop: Int = 0
+        ): Bitmap {
             val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(result)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -99,7 +119,13 @@ class BitmapTransition : IEngraveTransition {
                     right = bp.x.toFloat()
                     left = right - bp.len
                 }
-                canvas.drawLine(left, y, right, y, paint)
+                canvas.drawLine(
+                    left - offsetLeft,
+                    y - offsetTop,
+                    right - offsetLeft,
+                    y - offsetTop,
+                    paint
+                )
             }
             return result
         }
@@ -186,7 +212,8 @@ class BitmapTransition : IEngraveTransition {
      * */
     override fun doTransitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        param: TransitionParam
     ): TransferDataEntity? {
         if (renderer is DataItemRenderer) {
             val dataItem = renderer.dataItem
@@ -202,11 +229,35 @@ class BitmapTransition : IEngraveTransition {
                     //1:保存一份原始可视化数据
                     saveEngraveData("${transferDataEntity.index}", pxBitmap, "png")
 
+                    var offsetLeft = 0
+                    var offsetTop = 0
+
+                    val rotateBounds = acquireTempRectF()
+                    rotateBounds.set(renderer.getRotateBounds())
                     when (dataMode) {
                         //黑白数据, 发送线段数据
                         CanvasConstant.DATA_MODE_BLACK_WHITE -> {
                             transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
-                            val listBitmapPath = handleBitmapPath(pxBitmap, 128)
+                            //
+                            val needMerge =
+                                transferConfigEntity.mergeData && transferConfigEntity.mergeBpData
+                            offsetLeft = if (needMerge) {
+                                rotateBounds.left - (param.startBounds?.left ?: rotateBounds.left)
+                            } else {
+                                0
+                            }.toInt()
+                            offsetTop = if (needMerge) {
+                                rotateBounds.top - (param.startBounds?.top ?: rotateBounds.top)
+                            } else {
+                                0
+                            }.toInt()
+                            val listBitmapPath = handleBitmapPath(
+                                pxBitmap,
+                                128,
+                                offsetLeft,
+                                offsetTop
+                            )
+                            //
                             val bytes = byteWriter {
                                 listBitmapPath.forEach {
                                     write(it.x, 2)
@@ -220,8 +271,12 @@ class BitmapTransition : IEngraveTransition {
                             //2:路径数据写入日志
                             saveEngraveData(transferDataEntity.index, "$listBitmapPath", "bp")
                             //3:保存一份数据的预览图
-                            val previewBitmap =
-                                listBitmapPath.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
+                            val previewBitmap = listBitmapPath.toEngraveBitmap(
+                                pxBitmap.width,
+                                pxBitmap.height,
+                                offsetLeft,
+                                offsetTop
+                            )
                             saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
                         }
                         //色阶数据, 红色通道的灰度雕刻数据
@@ -256,6 +311,7 @@ class BitmapTransition : IEngraveTransition {
                     transferDataEntity.width = pxBitmap.width
                     transferDataEntity.height = pxBitmap.height
 
+                    rotateBounds.release()
                     return transferDataEntity
                 }
             }

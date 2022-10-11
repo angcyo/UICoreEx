@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toElapsedTime
@@ -32,4 +33,24 @@ fun Int?.toModeString() = when (this) {
 fun Byte?.toLaserTypeString() = when (this) {
     LaserPeckerHelper.LASER_TYPE_WHITE -> _string(R.string.laser_type_white)
     else -> _string(R.string.laser_type_blue)
+}
+
+/**将数据模式转换成雕刻类型
+ * 数据模式:
+ * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
+ * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
+ * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
+ * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GREY]
+ *
+ * 雕刻类型:
+ * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
+ * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
+ * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
+ * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP]
+ * */
+fun Int.toEngraveTypeOfDataMode() = when (this) {
+    CanvasConstant.DATA_MODE_BLACK_WHITE -> DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+    CanvasConstant.DATA_MODE_GCODE -> DataCmd.ENGRAVE_TYPE_GCODE
+    CanvasConstant.DATA_MODE_GREY -> DataCmd.ENGRAVE_TYPE_BITMAP
+    else -> DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
 }

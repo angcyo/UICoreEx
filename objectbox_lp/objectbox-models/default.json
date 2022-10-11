@@ -241,7 +241,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "6:8798062743815394318",
+      "lastPropertyId": "7:7109569317690271732",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -274,6 +274,11 @@
           "id": "6:8798062743815394318",
           "name": "dataMode",
           "type": 5
+        },
+        {
+          "id": "7:7109569317690271732",
+          "name": "mergeBpData",
+          "type": 1
         }
       ],
       "relations": []

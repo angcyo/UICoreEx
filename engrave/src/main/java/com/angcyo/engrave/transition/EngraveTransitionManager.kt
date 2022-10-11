@@ -1,6 +1,8 @@
 package com.angcyo.engrave.transition
 
+import android.graphics.RectF
 import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -9,6 +11,7 @@ import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
+import com.angcyo.engrave.toEngraveTypeOfDataMode
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
@@ -57,6 +60,49 @@ class EngraveTransitionManager {
         /**获取图层*/
         fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.mode == mode }
 
+        /**获取一个转换需要的额外参数, 在需要合并数据时需要
+         * [rendererList] 需要是一个图层下的所有渲染器, 不能混合
+         * */
+        fun getTransitionParam(
+            rendererList: List<BaseItemRenderer<*>>,
+            transferConfigEntity: TransferConfigEntity
+        ): TransitionParam {
+            var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
+            val lastIndex = rendererList.lastIndex
+
+            var bpMinLeft: Float? = null
+            var bpMinTop: Float? = null
+
+            var gCodeStartRenderer: BaseItemRenderer<*>? = null
+            var gCodeEndRenderer: BaseItemRenderer<*>? = null
+
+            rendererList.forEachIndexed { index, baseItemRenderer ->
+                dataEngraveType =
+                    IEngraveTransition.getDataMode(baseItemRenderer, transferConfigEntity)
+                        .toEngraveTypeOfDataMode()
+                if (dataEngraveType == DataCmd.ENGRAVE_TYPE_BITMAP_PATH) {
+                    //线段数据, 需要计算出数据左上角的坐标
+                    val rotateBounds = baseItemRenderer.getRotateBounds()
+                    bpMinLeft = min(bpMinLeft ?: rotateBounds.left, rotateBounds.left)
+                    bpMinTop = min(bpMinTop ?: rotateBounds.top, rotateBounds.top)
+                } else if (dataEngraveType == DataCmd.ENGRAVE_TYPE_GCODE) {
+                    //GCode数据需要计算出首尾是哪个渲染器
+                    if (index == 0) {
+                        gCodeStartRenderer = baseItemRenderer
+                    }
+                    if (index == lastIndex) {
+                        gCodeEndRenderer = baseItemRenderer
+                    }
+                }
+            }
+            val param = TransitionParam(
+                RectF(bpMinLeft ?: 0f, bpMinTop ?: 0f, 0f, 0f),
+                gCodeStartRenderer,
+                gCodeEndRenderer
+            )
+            return param
+        }
+
         /**根据雕刻图层, 获取对应选中的渲染器
          * [layerInfo] 为空时, 表示所有*/
         fun getRendererList(
@@ -84,6 +130,8 @@ class EngraveTransitionManager {
         }
     }
 
+    //---
+
     /**数据转换器*/
     private val transitionList = mutableListOf<IEngraveTransition>()
 
@@ -103,10 +151,18 @@ class EngraveTransitionManager {
         val resultDataList = mutableListOf<TransferDataEntity>()
         engraveLayerList.forEach { engraveLayerInfo ->
             val dataList = mutableListOf<TransferDataEntity>()
-            getRendererList(canvasDelegate, engraveLayerInfo).forEach { renderer ->
+            val rendererList = getRendererList(canvasDelegate, engraveLayerInfo)
+            val param = getTransitionParam(rendererList, transferConfigEntity)
+            var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
+            rendererList.forEach { renderer ->
                 //开始将[renderer]转换成数据
-                transitionTransferData(renderer, transferConfigEntity)?.let { transferDataEntity ->
+                transitionTransferData(
+                    renderer,
+                    transferConfigEntity,
+                    param
+                )?.let { transferDataEntity ->
                     transferDataEntity.layerMode = engraveLayerInfo.mode
+                    dataEngraveType = transferDataEntity.engraveDataType
                     dataList.add(transferDataEntity)
                 }
             }
@@ -116,18 +172,24 @@ class EngraveTransitionManager {
                     resultDataList.addAll(dataList)
                 } else {
                     //多条数据
-                    when (engraveLayerInfo.mode) {
-                        DATA_MODE_GCODE -> {
+                    when (dataEngraveType) {
+                        DataCmd.ENGRAVE_TYPE_GCODE -> {
                             //GCode 数据合并
                             val gcodeTransferDataInfo = _mergeTransferData(dataList)
                             resultDataList.add(gcodeTransferDataInfo)
                         }
-                        DATA_MODE_BLACK_WHITE -> {
+                        DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> {
                             //线段数据合并
-                            val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
-                            resultDataList.add(bitmapPathTransferDataInfo)
+                            if (transferConfigEntity.mergeBpData) {
+                                val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
+                                resultDataList.add(bitmapPathTransferDataInfo)
+                            } else {
+                                //不合并线段数据
+                                resultDataList.addAll(dataList)
+                            }
                         }
                         else -> {
+                            DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
                             //抖动数据不需要合并
                             resultDataList.addAll(dataList)
                         }
@@ -145,12 +207,13 @@ class EngraveTransitionManager {
     @WorkerThread
     fun transitionTransferData(
         renderer: BaseItemRenderer<*>,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        param: TransitionParam
     ): TransferDataEntity? {
         var result: TransferDataEntity? = null
 
         for (transition in transitionList) {
-            result = transition.doTransitionTransferData(renderer, transferConfigEntity)
+            result = transition.doTransitionTransferData(renderer, transferConfigEntity, param)
             if (result != null) {
                 break
             }
