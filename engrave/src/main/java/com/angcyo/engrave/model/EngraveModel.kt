@@ -73,7 +73,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
                             put(
                                 UMEvent.KEY_DURATION,
-                                (nowTime - _engraveTaskEntity!!.startTime).toString()
+                                (nowTime - (_engraveTaskEntity?.startTime ?: 0)).toString()
                             )
                         }
                         engraveNext()
@@ -193,16 +193,16 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     @CallPoint
     fun finishEngrave() {
         _listenerEngraveState = false
-        val engraveState = _engraveTaskEntity ?: return
-        engraveState.currentIndex = -1
-        engraveState.finishTime = nowTime()
-        engraveState.state = ENGRAVE_STATE_FINISH
-        engraveState.lpSaveEntity()
+        val engraveTaskEntity = _engraveTaskEntity ?: return
+        engraveTaskEntity.currentIndex = -1
+        engraveTaskEntity.finishTime = nowTime()
+        engraveTaskEntity.state = ENGRAVE_STATE_FINISH
+        engraveTaskEntity.lpSaveEntity()
 
         //雕刻次数+1
         HawkEngraveKeys.lastEngraveCount++
         //post
-        engraveStateData.postValue(engraveState)
+        engraveStateData.postValue(engraveTaskEntity)
     }
 
     /**暂停雕刻*/
