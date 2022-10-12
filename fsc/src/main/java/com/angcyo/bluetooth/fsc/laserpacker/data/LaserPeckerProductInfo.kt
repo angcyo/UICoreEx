@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.data
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.library.annotation.MM
 
 /**
  * 物理产品的一些配置信息
@@ -40,7 +41,9 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var pxList: List<PxInfo> = emptyList(),
     /**物理尺寸宽高, mm单位*/
+    @MM
     var widthPhys: Int = 0,
+    @MM
     var heightPhys: Int = 0,
     /**机器物理的范围, 像素, 在手机上的像素*/
     var bounds: RectF,

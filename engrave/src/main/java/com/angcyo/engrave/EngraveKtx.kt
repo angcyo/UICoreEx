@@ -54,3 +54,12 @@ fun Int.toEngraveTypeOfDataMode() = when (this) {
     CanvasConstant.DATA_MODE_GREY -> DataCmd.ENGRAVE_TYPE_BITMAP
     else -> DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
 }
+
+/**将雕刻类型字符串化*/
+fun Int.toEngraveDataTypeStr() = when (this) {
+    DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING -> "抖动"
+    DataCmd.ENGRAVE_TYPE_GCODE -> "GCode"
+    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "图片线段"
+    DataCmd.ENGRAVE_TYPE_BITMAP -> "图片"
+    else -> "未知"
+}

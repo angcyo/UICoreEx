@@ -260,11 +260,13 @@ class DslBox {
     }
 }
 
+fun defaultBoxStore() = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
+
 //region ---Box BoxStore---
 
 /**快速获取[BoxStore]*/
 fun boxStoreOf(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     action: BoxStore.() -> Unit = {}
 ): BoxStore {
     val boxStore = getBoxStore(packageName)
@@ -285,7 +287,7 @@ fun boxStoreOf(
  * */
 fun <T> boxOf(
     entityClass: Class<T>,
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     action: Box<T>.() -> Unit = {}
 ): Box<T> {
     val box = getBox(packageName, entityClass)
@@ -295,7 +297,7 @@ fun <T> boxOf(
 
 fun <T : Any> boxOf(
     entityClass: KClass<T>,
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     action: Box<T>.() -> Unit = {}
 ): Box<T> {
     return boxOf(entityClass.java, packageName, action)
@@ -304,6 +306,21 @@ fun <T : Any> boxOf(
 //endregion ---Box BoxStore---
 
 //region ---query find---
+
+/**返回所有记录的数量*/
+inline fun <reified T : Any> KClass<T>.count(packageName: String = defaultBoxStore()): Long {
+    val cls = this.java
+    return boxOf(cls, packageName).count()
+}
+
+/**返回查询的数量*/
+inline fun <reified T : Any> KClass<T>.countBy(
+    packageName: String = defaultBoxStore(),
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): Long {
+    val cls = this.java
+    return boxOf(cls, packageName).query(block).count()
+}
 
 /**获取所有记录*/
 fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
@@ -324,7 +341,7 @@ fun <T> Box<T>.findAll(
 
 /**获取所有记录*/
 inline fun <reified T : Any> KClass<T>.findAll(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
 ): List<T> {
     val cls = this.java
@@ -333,7 +350,7 @@ inline fun <reified T : Any> KClass<T>.findAll(
 
 /**查找第一个*/
 inline fun <reified T : Any> KClass<T>.findFirst(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
 ): T? {
     val cls = this.java
@@ -380,7 +397,7 @@ fun <T> Box<T>.findLastList(
 
 /**查找最后一个元素*/
 inline fun <reified T : Any> KClass<T>.findLast(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
 ): T? {
     val cls = this.java
@@ -390,7 +407,7 @@ inline fun <reified T : Any> KClass<T>.findLast(
 
 inline fun <reified T : Any> KClass<T>.findLastList(
     limit: Long = 1,
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
 ): List<T> {
     val cls = this.java
@@ -399,9 +416,7 @@ inline fun <reified T : Any> KClass<T>.findLastList(
 }
 
 /**获取所有记录*/
-inline fun <reified T : Any> KClass<T>.allEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-): List<T> {
+inline fun <reified T : Any> KClass<T>.allEntity(packageName: String = defaultBoxStore()): List<T> {
     val cls = this.java
     return boxOf(cls, packageName).all
 }
@@ -425,7 +440,7 @@ fun <T> Box<T>.page(
 
 inline fun <reified T : Any> KClass<T>.page(
     page: Page,
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
 ): List<T> {
     val cls = this.java
@@ -446,16 +461,12 @@ fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
 }
 
 /**删除一条记录*/
-inline fun <reified T> T.deleteEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-): Boolean {
+inline fun <reified T> T.deleteEntity(packageName: String = defaultBoxStore()): Boolean {
     return boxOf(T::class.java, packageName).remove(this)
 }
 
 /**删除所有*/
-inline fun <reified T> Collection<T>.deleteAllEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-) {
+inline fun <reified T> Collection<T>.deleteAllEntity(packageName: String = defaultBoxStore()) {
     return boxOf(T::class.java, packageName).remove(this)
 }
 
@@ -466,16 +477,14 @@ inline fun <reified T> Collection<T>.deleteAllEntity(
 /**保存实体, 保存成功之后, [entityId]会自动赋值
  * id不为0时, 就是更新
  * 返回Entity的id*/
-inline fun <reified T> T.saveEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-): Long {
+inline fun <reified T> T.saveEntity(packageName: String = defaultBoxStore()): Long {
     return boxOf(T::class.java, packageName).put(this)
 }
 
 /**保存实例*/
 @DSL
 inline fun <reified T : Any> KClass<T>.saveEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     update: T.() -> Unit
 ): Long {
     val cls = this.java
@@ -491,7 +500,7 @@ inline fun <reified T : Any> KClass<T>.saveEntity(
  * */
 @DSL
 inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     init: T.() -> Unit = {},
     query: QueryBuilder<T>.() -> Unit,
 ): T {
@@ -509,15 +518,13 @@ inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
 
 /**批量保存或者更新
  * id不为0时, 就是更新*/
-inline fun <reified T> Collection<T>.saveAllEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME
-) {
+inline fun <reified T> Collection<T>.saveAllEntity(packageName: String = defaultBoxStore()) {
     boxOf(T::class.java, packageName).put(this)
 }
 
 /**先通过查询条件查找满足条件的实体, 如果不存在则创建新的*/
 inline fun <reified T : Any> KClass<T>.updateOrCreateEntity(
-    packageName: String = default_package_name ?: BuildConfig.LIBRARY_PACKAGE_NAME,
+    packageName: String = defaultBoxStore(),
     query: QueryBuilder<T>.() -> Unit,
     update: T.() -> Unit
 ): Long {

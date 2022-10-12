@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
 import com.angcyo.core.component.file.writeErrorLog
@@ -12,6 +13,7 @@ import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.*
+import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -241,6 +243,19 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         transferDataEntity: TransferDataEntity,
         engraveConfigEntity: EngraveConfigEntity
     ) {
+        val diameter =
+            (mmUnit.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
+        buildString {
+            append("开始雕刻:[${transferDataEntity.taskId}]")
+            append(" ${transferDataEntity.index}")
+            append(" type:${engraveConfigEntity.type.toLaserTypeString()}")
+            append(" power:${engraveConfigEntity.power}")
+            append(" depth:${engraveConfigEntity.depth}")
+            append(" time:${engraveConfigEntity.time}")
+            append(" diameter:${diameter}")
+            append(" precision:${engraveConfigEntity.precision}")
+        }.writeEngraveLog()
+
         EngraveCmd(
             transferDataEntity.index,
             engraveConfigEntity.power.toByte(),
@@ -251,7 +266,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             max(1, engraveConfigEntity.time).toByte(),
             engraveConfigEntity.type,
             0x09,
-            (mmUnit.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt(),
+            diameter,
             engraveConfigEntity.precision
         ).enqueue { bean, error ->
             L.w("雕刻返回:${bean?.parse<MiniReceiveParser>()}")

@@ -6,12 +6,11 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
-import com.angcyo.objectbox.findAll
-import com.angcyo.objectbox.findFirst
+import com.angcyo.library.ex.uuid
+import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.*
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
-import com.angcyo.objectbox.queryOrCreateEntity
 
 /**
  * 雕刻流程数据相关处理类
@@ -19,6 +18,35 @@ import com.angcyo.objectbox.queryOrCreateEntity
  * @since 2022/10/09
  */
 object EngraveFlowDataHelper {
+
+    //---
+
+    /**
+     * 如果之前的任务id[oldTaskId],已经有数据传输了, 则重新生成一个新的任务id, 否则不变
+     * [PreviewConfigEntity] 和 [TransferConfigEntity] 需要使用上一次保存的信息
+     * */
+    fun generateTaskId(oldTaskId: String?): String {
+        val oldCount = TransferDataEntity::class.countBy(LPBox.PACKAGE_NAME) {
+            apply(TransferDataEntity_.taskId.equal("$oldTaskId"))
+        }
+
+        if (oldTaskId != null && oldCount <= 0) {
+            return oldTaskId
+        }
+
+        val taskId = uuid()
+        PreviewConfigEntity::class.findLast(LPBox.PACKAGE_NAME)?.apply {
+            entityId = 0//重新存储
+            this.taskId = taskId
+            lpSaveEntity()
+        } ?: generatePreviewConfig(taskId)
+        TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME)?.apply {
+            entityId = 0//重新存储
+            this.taskId = taskId
+            lpSaveEntity()
+        } ?: generateTransferConfig(taskId)
+        return taskId
+    }
 
     //---预览相关---
 

@@ -9,11 +9,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
+import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.*
+import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -229,6 +231,15 @@ class TransferModel : ViewModel() {
                                         task.index++
                                         _transferDataNext()
                                     } else {
+                                        buildString {
+                                            append("开始传输:[${transferDataEntity.taskId}]")
+                                            append(" ${transferDataEntity.index}")
+                                            append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
+                                            append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
+                                            append(" width:${transferDataEntity.width} height:${transferDataEntity.height}")
+                                            append(" lines:${transferDataEntity.lines}")
+                                        }.writeEngraveLog()
+
                                         dataCmd.enqueue(progress = {
                                             //进度
                                             val progress = calcTransferProgress(

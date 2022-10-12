@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_2K
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_4K
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.decimal
 import com.angcyo.library.ex.floor
 import com.angcyo.library.extend.IToText
@@ -51,14 +52,18 @@ data class PxInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_846]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_1270]
      * */
-    val dpi: Float
+    val dpi: Float,
+    /**最大的物理尺寸
+     * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo.widthPhys]*/
+    @MM
+    val physSize: Int,
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
     val dpiScale: Float = dpi.toDpiScale()
 
     /**显示的界面上的描述*/
-    val des: String = dpi.toPxDes()
+    val des: String = dpi.toPxDes(physSize)
 
     override fun toText(): CharSequence = des
 
@@ -132,13 +137,20 @@ fun Float.toDpiScale() = this / 254
 fun Float.toDpiInt() = floor().toInt()
 
 /**dpi转描述字符串*/
-fun Float.toPxDes(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): String {
+fun Float.toPxDes(
+    @MM
+    physSize: Int = vmApp<LaserPeckerModel>().productInfoData.value?.widthPhys ?: 100
+): String {
     val scale = toDpiScale()
     val scaleFloor = scale.floor()
 
-    val px = ((productInfo?.widthPhys ?: 100) / 0.1).floor()
-    val sk = scale * px / 1000
-    val sFK = (scaleFloor * px / 1000).floor()
+    //总共有这么多像素点
+    val physSizePx = physSize / 0.1
+
+    //包含小数的写法
+    val sk = physSizePx * scale / 1000
+    //不包含小数的写法
+    val sFK = (physSizePx * scaleFloor / 1000).floor()
 
     if (sk == sFK) {
         return "${sFK.toInt()}K"

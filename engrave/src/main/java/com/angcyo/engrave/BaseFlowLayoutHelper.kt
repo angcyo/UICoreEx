@@ -232,8 +232,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
-
     //---
+
 }
 
 /**是否进入了雕刻流程*/

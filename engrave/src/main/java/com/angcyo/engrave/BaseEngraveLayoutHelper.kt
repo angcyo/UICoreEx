@@ -88,7 +88,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
-
+            flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
 
         }

@@ -162,7 +162,8 @@ object LaserPeckerHelper {
     }
 
     /**查找[PxInfo]*/
-    fun findPxInfo(dpi: Float?): PxInfo = PxInfo(dpi ?: DPI_254)
+    fun findPxInfo(dpi: Float?): PxInfo =
+        PxInfo(dpi ?: DPI_254, vmApp<LaserPeckerModel>().productInfoData.value?.widthPhys ?: 100)
 
     /**缩放图片到[px]指定的宽高*/
     fun bitmapScale(
@@ -289,33 +290,33 @@ object LaserPeckerHelper {
         when (name) {
             //LI, LI_PRO -> Unit
             LI_Z, LI_Z_PRO, LII -> {
-                pxList.add(PxInfo(DPI_317))
-                pxList.add(PxInfo(DPI_508))
+                pxList.add(PxInfo(DPI_317, wPhys))
+                pxList.add(PxInfo(DPI_508, wPhys))
             }
             LIII -> {
-                pxList.add(PxInfo(DPI_254))
-                pxList.add(PxInfo(DPI_317))
-                pxList.add(PxInfo(DPI_508))
-                pxList.add(PxInfo(DPI_1270))
+                pxList.add(PxInfo(DPI_254, wPhys))
+                pxList.add(PxInfo(DPI_317, wPhys))
+                pxList.add(PxInfo(DPI_508, wPhys))
+                pxList.add(PxInfo(DPI_1270, wPhys))
             }
             LIV -> {
                 if (isDebugType()) {
-                    pxList.add(PxInfo(DPI_158))
+                    pxList.add(PxInfo(DPI_158, wPhys))
                 }
-                pxList.add(PxInfo(DPI_254))
+                pxList.add(PxInfo(DPI_254, wPhys))
                 if (isDebugType()) {
-                    pxList.add(PxInfo(DPI_317))
-                    pxList.add(PxInfo(DPI_423))
+                    pxList.add(PxInfo(DPI_317, wPhys))
+                    pxList.add(PxInfo(DPI_423, wPhys))
                 }
-                pxList.add(PxInfo(DPI_508))
+                pxList.add(PxInfo(DPI_508, wPhys))
                 if (isDebugType()) {
-                    pxList.add(PxInfo(DPI_635))
-                    pxList.add(PxInfo(DPI_846))
+                    pxList.add(PxInfo(DPI_635, wPhys))
+                    pxList.add(PxInfo(DPI_846, wPhys))
                 }
-                pxList.add(PxInfo(DPI_1270))
+                pxList.add(PxInfo(DPI_1270, wPhys))
             }
             else -> {
-                pxList.add(PxInfo(DPI_254))
+                pxList.add(PxInfo(DPI_254, wPhys))
             }
         }
 
@@ -630,5 +631,9 @@ object LaserPeckerHelper {
 
 /**将日志写入到[ble.log]
  * [log] 是否还需要输出到控制台
+ * [String.writeErrorLog]
  * */
 fun String.writeBleLog(log: Boolean = true): String = writeToLog("ble.log", log)
+
+/**写入雕刻日志, 记录数据传输的索引及信息和雕刻的索引及信息*/
+fun String.writeEngraveLog(log: Boolean = false): String = writeToLog("engrave.log", log)
