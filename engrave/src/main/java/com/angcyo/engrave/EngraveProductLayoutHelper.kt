@@ -17,7 +17,6 @@ import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
-import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
 import com.angcyo.library.ex._string
@@ -34,7 +33,7 @@ import com.angcyo.widget.loading.DangerWarningView
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/11
  */
-class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
+class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -54,12 +53,12 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         stateLayoutManager.group = viewHolder.group(R.id.canvas_device_state_wrap_layout)
 
         //监听产品信息
-        laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
+        laserPeckerModel.productInfoData.observe(engraveCanvasFragment.fragment) { productInfo ->
             _showProductLimit(canvasView, productInfo)
         }
 
         //监听Z轴
-        laserPeckerModel.deviceSettingData.observe(fragment) {
+        laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
             val before = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
             if (before != it?.zFlag) {
                 //z轴开关改变后, 检查是否要限制z轴限制
@@ -68,7 +67,7 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }
 
         //监听设备状态
-        laserPeckerModel.deviceStateData.observe(fragment) {
+        laserPeckerModel.deviceStateData.observe(engraveCanvasFragment.fragment) {
 
             val before = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
             if (before != it?.zConnect) {
@@ -143,7 +142,10 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }*/
 
         //监听范围预览
-        laserPeckerModel.overflowInfoData.observe(fragment, allowBackward = false) {
+        laserPeckerModel.overflowInfoData.observe(
+            engraveCanvasFragment.fragment,
+            allowBackward = false
+        ) {
             if (it != null && (it.isOverflowBounds || it.isOverflowLimit)) {
                 previewOverflowStateInfo.text = if (it.isOverflowBounds) {
                     _string(R.string.out_of_bounds)
@@ -225,20 +227,26 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
         }
         //显示蓝牙界面
         viewHolder.click(R.id.device_tip_wrap_layout) {
-            fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                if (allGranted) {
-                    fragment.fContext().bluetoothSearchListDialog {
-                        connectedDismiss = true
+            if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+                return@click
+            } else {
+                engraveCanvasFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                    if (allGranted) {
+                        engraveCanvasFragment.fragment.fContext().bluetoothSearchListDialog {
+                            connectedDismiss = true
+                        }
+                    } else {
+                        toast("cancel")
                     }
-                } else {
-                    toast("cancel")
                 }
             }
         }
         //显示设备设置界面
         viewHolder.click(R.id.device_setting_view) {
-            if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
-                fragment.dslAHelper {
+            if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+                return@click
+            } else if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
+                engraveCanvasFragment.fragment.dslAHelper {
                     start(DeviceSettingFragment::class.java)
                 }
             } else {

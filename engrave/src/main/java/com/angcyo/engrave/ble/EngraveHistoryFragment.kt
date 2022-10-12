@@ -12,13 +12,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.fragment.BaseDslFragment
-import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.engrave.EngraveFlowLayoutHelper
-import com.angcyo.engrave.EngraveProductLayoutHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.library.ex._string
@@ -54,7 +52,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
     }*/
 
     /**产品布局*/
-    val engraveProductLayoutHelper = EngraveProductLayoutHelper(this)
+    //val engraveProductLayoutHelper = EngraveProductLayoutHelper(this)
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_history)
@@ -73,7 +71,7 @@ class EngraveHistoryFragment : BaseDslFragment() {
         //product _vh.group(R.id.lib_content_wrap_layout) ?:
         //lib_content_overlay_wrap_layout
         val group = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
-        engraveProductLayoutHelper.bindCanvasView(_vh, group, null)
+        //engraveProductLayoutHelper.bindCanvasView(_vh, group, null)
 
         //开始预览
         /*engraveBeforeLayoutHelper.onPreviewAction = {
