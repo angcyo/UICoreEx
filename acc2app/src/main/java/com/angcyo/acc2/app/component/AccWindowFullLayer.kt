@@ -31,8 +31,8 @@ object AccWindowFullLayer : ILayer() {
             width = -1
             height = _contentHeight //_contentHeight //-1
             flags = wmLayoutParams.flags or
-                /*WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or*/
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    /*WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or*/
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         }
     }
 
