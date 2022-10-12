@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/lib_xxhdpi"
+        app:layout_constraintBottom_toTopOf="@id/file_name_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/typeface_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:padding="@dimen/lib_xhdpi"
+            android:text="@string/canvas_font_text"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_view"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:scaleType="centerInside"
+            android:text="@string/canvas_font_text"
+            android:visibility="gone"
+            tools:background="@color/transparent20"
+            tools:srcCompat="@drawable/canvas_device_warn_svg"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/file_name_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:minHeight="40dp"
+        android:padding="@dimen/lib_xhdpi"
+        app:layout_constraintBottom_toTopOf="@id/control_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/preview_layout"
+        tools:text="@string/canvas_font_text" />
+
+    <LinearLayout
+        android:id="@+id/control_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/file_name_view">
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/open_button"
+            style="@style/LibButtonSolidStyle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="@dimen/lib_xhdpi"
+            android:layout_marginTop="@dimen/lib_xhdpi"
+            android:text="@string/canvas_open"
+            app:button_gradient_colors="@color/lib_black"
+            app:button_radius="@dimen/lib_radius_common"
+            app:button_ripple_color="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@id/device_image_view" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/cancel_button"
+            style="@style/LibButtonSolidStyle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/lib_xhdpi"
+            android:text="@string/canvas_cancel"
+            android:textColor="@color/colorPrimary"
+            app:button_gradient_colors=""
+            app:button_press_solid_color="#01000000"
+            app:button_radius="@dimen/lib_radius_common"
+            app:button_ripple_color="@color/colorAccent"
+            app:button_solid_color="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/finish_button" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

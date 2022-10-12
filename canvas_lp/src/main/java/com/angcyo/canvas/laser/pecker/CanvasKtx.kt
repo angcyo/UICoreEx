@@ -13,7 +13,9 @@ import com.angcyo.canvas.data.CanvasDataBean
 import com.angcyo.canvas.data.ItemDataBean
 import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_THRESHOLD_SPACE
 import com.angcyo.canvas.graphics.GraphicsHelper
-import com.angcyo.canvas.graphics.addBitmapRender
+import com.angcyo.canvas.graphics.toBitmapItemData
+import com.angcyo.canvas.graphics.toGCodeItemData
+import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.coroutine.launchLifecycle
@@ -143,15 +145,36 @@ fun CanvasDelegate.openCanvasFile(data: String) {
     }
 }
 
-/**添加一个黑白算法处理过的图片*/
-fun CanvasDelegate.addBlackWhiteBitmapRender(bitmap: Bitmap?): DataItemRenderer? {
-    bitmap ?: return null
-    return addBitmapRender(bitmap) {
+/**处理路径对应的数据, 解析成[ItemDataBean]*/
+fun String?.toItemDataBean(): ItemDataBean? {
+    val path = this ?: return null
+    if (path.endsWith(CanvasConstant.GCODE_EXT)) {
+        val text = path.file().readText()
+        return text.toGCodeItemData()
+    } else if (path.endsWith(CanvasConstant.SVG_EXT)) {
+        val text = path.file().readText()
+        return text.toSvgItemData()
+    } else if (path.isImageType()) {
+        val bitmap = path.toBitmap()
+        return bitmap.toBlackWhiteBitmapItemData()
+    }
+    return null
+}
+
+fun Bitmap?.toBlackWhiteBitmapItemData(): ItemDataBean? {
+    return toBitmapItemData {
         imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
         src = OpenCV.bitmapToBlackWhite(
-            bitmap,
+            this@toBlackWhiteBitmapItemData!!,
             DEFAULT_THRESHOLD_SPACE.toInt(),
             0
         ).toBase64Data()
     }
+}
+
+/**添加一个黑白算法处理过的图片*/
+fun CanvasDelegate.addBlackWhiteBitmapRender(bitmap: Bitmap?): DataItemRenderer? {
+    bitmap ?: return null
+    val bean = bitmap.toBlackWhiteBitmapItemData() ?: return null
+    return GraphicsHelper.addRenderItemDataBean(this, bean)
 }

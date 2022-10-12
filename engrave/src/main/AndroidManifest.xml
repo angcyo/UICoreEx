@@ -2,6 +2,7 @@
     package="com.angcyo.engrave">
 
     <application>
+
         <!--连接提示-->
         <activity
             android:name=".ble.DeviceConnectTipActivity"
@@ -11,5 +12,20 @@
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/DeviceConnectTipTheme" />
+
+        <!--固件升级-->
+        <activity
+            android:name=".firmware.FirmwareUpdateActivity"
+            android:exported="false">
+
+            <!-- <intent-filter>
+                 <action android:name="android.intent.action.VIEW" />
+                 <category android:name="android.intent.category.DEFAULT" />
+
+                 <data android:scheme="file" />
+                 <data android:scheme="content" />
+                 <data android:mimeType="*/*" />
+             </intent-filter>-->
+        </activity>
     </application>
 </manifest>
