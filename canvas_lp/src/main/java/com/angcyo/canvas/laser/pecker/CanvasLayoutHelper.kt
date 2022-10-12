@@ -229,7 +229,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     }
                 }
             }
-            if (isDebug()) {
+            if (isDebugType()) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_actions_ico
                     itemText = _string(R.string.canvas_operate)
