@@ -300,16 +300,16 @@ object LaserPeckerHelper {
                 pxList.add(PxInfo(DPI_1270, wPhys))
             }
             LIV -> {
-                if (isDebugType()) {
+                if (isDebug()) {
                     pxList.add(PxInfo(DPI_158, wPhys))
                 }
                 pxList.add(PxInfo(DPI_254, wPhys))
-                if (isDebugType()) {
+                if (isDebug()) {
                     pxList.add(PxInfo(DPI_317, wPhys))
                     pxList.add(PxInfo(DPI_423, wPhys))
                 }
                 pxList.add(PxInfo(DPI_508, wPhys))
-                if (isDebugType()) {
+                if (isDebug()) {
                     pxList.add(PxInfo(DPI_635, wPhys))
                     pxList.add(PxInfo(DPI_846, wPhys))
                 }
