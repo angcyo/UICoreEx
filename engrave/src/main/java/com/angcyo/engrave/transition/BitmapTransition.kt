@@ -50,9 +50,11 @@ class BitmapTransition : IEngraveTransition {
             var isLTR = true
 
             //追加一段路径
-            fun appendPath(ltr: Boolean) {
+            fun appendPath(ltr: Boolean, isEnd: Boolean) {
                 lastBitmapPath?.apply {
-                    len++
+                    if (!isEnd) {
+                        len++
+                    }
                     result.add(this)
                     lastBitmapPath = null
                     isLTR = ltr
@@ -79,11 +81,11 @@ class BitmapTransition : IEngraveTransition {
                             len++
                         }
                     } else {
-                        appendPath(!ltr)
+                        appendPath(!ltr, false)
                     }
                 }
                 //收尾
-                appendPath(!ltr)
+                appendPath(!ltr, true)
             }
             return result
         }
