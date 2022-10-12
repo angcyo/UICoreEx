@@ -21,7 +21,7 @@ class EngraveFinishTopItem : DslTagGroupItem() {
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_top_layout
-        itemTagLayoutId = R.layout.dsl_tag_item
+        itemTagLayoutId = R.layout.dsl_tag_item_vertical
     }
 
     override fun initLabelDesList() {
