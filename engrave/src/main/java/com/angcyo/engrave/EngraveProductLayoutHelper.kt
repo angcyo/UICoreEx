@@ -2,6 +2,7 @@ package com.angcyo.engrave
 
 import android.graphics.Color
 import android.view.ViewGroup
+import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -12,6 +13,7 @@ import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
@@ -231,6 +233,16 @@ class EngraveProductLayoutHelper(val fragment: AbsLifecycleFragment) {
                 } else {
                     toast("cancel")
                 }
+            }
+        }
+        //显示设备设置界面
+        viewHolder.click(R.id.device_setting_view) {
+            if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
+                fragment.dslAHelper {
+                    start(DeviceSettingFragment::class.java)
+                }
+            } else {
+                viewHolder.clickCallView(R.id.device_tip_wrap_layout)
             }
         }
     }

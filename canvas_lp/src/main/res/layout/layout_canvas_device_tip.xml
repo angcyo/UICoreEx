@@ -29,11 +29,14 @@
         app:layout_constraintTop_toTopOf="@id/device_image_view" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:id="@+id/device_setting_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="@dimen/lib_sdpi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/lib_next" />
+        app:srcCompat="@drawable/canvas_setting_ico" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
