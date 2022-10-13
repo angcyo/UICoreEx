@@ -11,11 +11,8 @@ import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
-import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.FontManager
+import com.angcyo.canvas.utils.*
 import com.angcyo.canvas.utils.FontManager.toTypeface
-import com.angcyo.canvas.utils.parseGCode
-import com.angcyo.canvas.utils.parseSvg
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
@@ -79,7 +76,10 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     /**处理文件路径*/
     fun handleFilePath(adapter: DslAdapter?, path: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
-        if (path.endsWith(CanvasConstant.GCODE_EXT)) {
+        if (path.endsWith(CanvasConstant.GCODE_EXT) ||
+            (path.endsWith(CanvasConstant.TXT_EXT) && path.file().readText()
+                ?.isGCodeContent() == true)
+        ) {
             //gcode
             adapter?.render {
                 clearAllItems()
@@ -100,7 +100,10 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.endsWith(CanvasConstant.SVG_EXT)) {
+        } else if (path.endsWith(CanvasConstant.SVG_EXT) ||
+            (path.endsWith(CanvasConstant.TXT_EXT) && path.file().readText()
+                ?.isSvgContent() == true)
+        ) {
             //svg
             adapter?.render {
                 clearAllItems()
