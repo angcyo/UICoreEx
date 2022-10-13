@@ -36,7 +36,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @since 2022/05/20
  */
 
-/**异步加载, 带loading dialog*/
+/**异步加载, 带loading dialog
+ * [LifecycleOwner]
+ * */
 fun <T> LifecycleOwner.loadingAsync(block: () -> T?, action: (T?) -> Unit = {}) {
     val context = this
     if (context is ActivityResultCaller) {

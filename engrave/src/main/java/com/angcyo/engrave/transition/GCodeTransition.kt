@@ -101,13 +101,13 @@ class GCodeTransition : IEngraveTransition {
         param: TransitionParam
     ): TransferDataEntity {
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
-        val gCodeFile = CanvasDataHandleOperate.pathToGCode(
+        val isLast = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
             pathList,
             renderer.getBounds(),
             renderer.rotate,
-            isFirst = isFirst,
-            isFinish = isFinish
+            writeFirst = isFirst,
+            writeLast = isLast
         )
         return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
             //1: 存一份原始可视化数据
@@ -125,7 +125,7 @@ class GCodeTransition : IEngraveTransition {
         param: TransitionParam
     ): TransferDataEntity {
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isLast = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),

@@ -241,8 +241,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                                     if (item is PictureShapeItem) {
                                         engraveCanvasFragment.fragment.loadingAsync({
                                             item.shapePath.let { path ->
-                                                CanvasDataHandleOperate.pathToGCode(
-                                                    path,
+                                                CanvasDataHandleOperate.pathStrokeToGCode(
+                                                    listOf(path),
                                                     renderer.getRotateBounds(),
                                                     renderer.rotate
                                                 )
