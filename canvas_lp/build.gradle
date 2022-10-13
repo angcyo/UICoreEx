@@ -17,4 +17,7 @@ dependencies {
     api project(allModule.canvas)
 
     compileOnly project(allModule.umeng_lp)
+
+    //图片算法
+    api 'com.angcyo:opencv:hingin-SNAPSHOT'
 }
