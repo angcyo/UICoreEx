@@ -157,6 +157,8 @@ fun String?.toItemDataBean(): ItemDataBean? {
     } else if (path.isImageType()) {
         val bitmap = path.toBitmap()
         return bitmap.toBlackWhiteBitmapItemData()
+    } else {
+        L.w("无法处理的文件路径:${path}")
     }
     return null
 }

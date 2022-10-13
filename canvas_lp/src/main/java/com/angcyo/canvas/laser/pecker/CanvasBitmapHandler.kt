@@ -15,7 +15,7 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.ex.toBase64Data
-import com.angcyo.library.utils.fileName
+import com.angcyo.library.utils.fileNameTime
 import com.angcyo.opencv.OpenCV
 
 /**
@@ -132,7 +132,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             it.first.writeToCache(
                                 CanvasDataHandleOperate.GCODE_CACHE_FILE_FOLDER,
-                                fileName(suffix = ".gcode")
+                                fileNameTime(suffix = ".gcode")
                             )
                             beforeBounds.rotate(boundsRotate)
                             item.updateBitmapByMode(

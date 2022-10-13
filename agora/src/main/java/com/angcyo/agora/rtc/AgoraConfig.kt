@@ -1,7 +1,7 @@
 package com.angcyo.agora.rtc
 
 import com.angcyo.library.utils.FileUtils
-import com.angcyo.library.utils.fileName
+import com.angcyo.library.utils.fileNameTime
 import io.agora.rtc.Constants
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.BeautyOptions
@@ -23,7 +23,7 @@ data class AgoraConfig(
     //本地日志文件
     var logFilePath: String? = FileUtils.appRootExternalFolderFile(
         folder = "agora",
-        name = "agora" + fileName("yyyy-MM-dd", ".log")
+        name = "agora" + fileNameTime("yyyy-MM-dd", ".log")
     )?.absolutePath,
 
     //日志文件大小
