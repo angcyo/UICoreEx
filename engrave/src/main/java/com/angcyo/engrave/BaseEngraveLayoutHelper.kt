@@ -3,7 +3,6 @@ package com.angcyo.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -120,10 +119,6 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                         //下一步, 数据传输界面
 
                         transferConfigEntity.lpSaveEntity()
-
-                        //让设备进入空闲模式
-                        ExitCmd().enqueue()
-                        syncQueryDeviceState()
 
                         engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
                         engraveFlow = ENGRAVE_FLOW_TRANSMITTING

@@ -1,6 +1,9 @@
 package com.angcyo.engrave
 
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
@@ -63,6 +66,11 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 itemButtonText = _string(R.string.ui_next)
                 itemClick = {
                     //下一步, 数据配置界面
+
+                    //让设备进入空闲模式
+                    ExitCmd().enqueue()
+                    syncQueryDeviceState()
+
                     engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
                     renderFlowItems()
                 }

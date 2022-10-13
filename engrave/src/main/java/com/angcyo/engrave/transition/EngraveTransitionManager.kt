@@ -12,7 +12,10 @@ import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
 import com.angcyo.canvas.utils.sort
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
+import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.toEngraveTypeOfDataMode
+import com.angcyo.library.L
+import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
@@ -178,6 +181,8 @@ class EngraveTransitionManager {
             var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
             rendererList.forEach { renderer ->
                 //开始将[renderer]转换成数据
+                LTime.tick()
+                L.i("开始转换数据->${transferConfigEntity.name}")
                 transitionTransferData(
                     renderer,
                     transferConfigEntity,
@@ -187,6 +192,7 @@ class EngraveTransitionManager {
                     dataEngraveType = transferDataEntity.engraveDataType
                     dataList.add(transferDataEntity)
                 }
+                L.i("转换耗时->${LTime.time()} ${dataEngraveType.toEngraveDataTypeStr()}")
             }
             if (dataList.isNotEmpty()) {
                 if (!transferConfigEntity.mergeData || dataList.size() == 1) {
