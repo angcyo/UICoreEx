@@ -9,6 +9,7 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
+import com.angcyo.canvas.utils.sort
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.toEngraveTypeOfDataMode
@@ -104,10 +105,13 @@ class EngraveTransitionManager {
         }
 
         /**根据雕刻图层, 获取对应选中的渲染器
-         * [layerInfo] 为空时, 表示所有*/
+         * [layerInfo] 为空时, 表示所有
+         * [sort] 是否要排序, 排序规则离左上角越近的优先
+         * */
         fun getRendererList(
             canvasDelegate: CanvasDelegate,
-            layerInfo: EngraveLayerInfo?
+            layerInfo: EngraveLayerInfo?,
+            sort: Boolean = false
         ): List<BaseItemRenderer<*>> {
             val rendererList = mutableListOf<BaseItemRenderer<*>>()
             val selectList = canvasDelegate.getSelectedRendererList()
@@ -116,7 +120,8 @@ class EngraveTransitionManager {
             } else {
                 rendererList.addAll(selectList)
             }
-            return rendererList.filter { it.isVisible() }.filter {
+
+            val resultList = rendererList.filter { it.isVisible() }.filter {
                 if (it is DataItemRenderer) {
                     if (layerInfo == null) {
                         true
@@ -126,6 +131,12 @@ class EngraveTransitionManager {
                 } else {
                     false
                 }
+            }
+
+            return if (sort) {
+                resultList.sort()
+            } else {
+                resultList
             }
         }
     }
@@ -151,7 +162,7 @@ class EngraveTransitionManager {
         val resultDataList = mutableListOf<TransferDataEntity>()
         engraveLayerList.forEach { engraveLayerInfo ->
             val dataList = mutableListOf<TransferDataEntity>()
-            val rendererList = getRendererList(canvasDelegate, engraveLayerInfo)
+            val rendererList = getRendererList(canvasDelegate, engraveLayerInfo, true)
             val param = getTransitionParam(rendererList, transferConfigEntity)
             var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
             rendererList.forEach { renderer ->
