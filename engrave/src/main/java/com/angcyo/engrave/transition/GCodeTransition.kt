@@ -2,6 +2,7 @@ package com.angcyo.engrave.transition
 
 import android.graphics.Bitmap
 import android.graphics.Path
+import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
@@ -46,7 +47,18 @@ class GCodeTransition : IEngraveTransition {
             val dataBean = dataItem?.dataBean
             if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
                 //需要处理成GCode数据
-                if (dataItem is DataPathItem) {
+                /*if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE) {
+                    //线条转GCode使用图片的方式
+                    val bitmap = renderer.getEngraveBitmap()
+                    bitmap?.let {
+                        return _transitionBitmapTransferData2(
+                            renderer,
+                            transferConfigEntity,
+                            bitmap,
+                            param
+                        )
+                    }
+                } else */if (dataItem is DataPathItem) {
                     val pathList = dataItem.dataPathList
                     return _transitionPathTransferData(
                         renderer,
@@ -130,6 +142,39 @@ class GCodeTransition : IEngraveTransition {
             renderer.getBounds(),
             renderer.rotate
         )
+        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+            //1: 存一份原始可视化数据
+            saveEngraveData("$index", pxBitmap, "png")
+        }
+    }
+
+    /**Bitmap转GCode*/
+    @Private
+    fun _transitionBitmapTransferData2(
+        renderer: BaseItemRenderer<*>,
+        transferConfigEntity: TransferConfigEntity,
+        bitmap: Bitmap,
+        param: TransitionParam
+    ): TransferDataEntity {
+        val bounds = renderer.getBounds()
+        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val scanGravity = if (bounds.width() > bounds.height()) {
+            //宽图
+            Gravity.TOP
+        } else {
+            Gravity.LEFT
+        }
+        var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(
+            pxBitmap,
+            scanGravity,
+            isFirst = isFirst,
+            isFinish = isFinish
+        )
+        val gCodeText = gCodeFile.readText()
+        //GCode数据
+        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, bounds, 0f)
         return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
             //1: 存一份原始可视化数据
             saveEngraveData("$index", pxBitmap, "png")

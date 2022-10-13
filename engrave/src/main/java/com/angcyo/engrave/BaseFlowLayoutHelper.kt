@@ -98,6 +98,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     override fun onIViewRemove() {
         super.onIViewRemove()
+        //重新分配一个id
+        flowTaskId = uuid()
         loopCheckDeviceState = false
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面

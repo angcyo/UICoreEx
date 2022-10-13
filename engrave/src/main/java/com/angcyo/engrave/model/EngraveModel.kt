@@ -203,6 +203,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //雕刻次数+1
         HawkEngraveKeys.lastEngraveCount++
+
         //post
         engraveStateData.postValue(engraveTaskEntity)
     }

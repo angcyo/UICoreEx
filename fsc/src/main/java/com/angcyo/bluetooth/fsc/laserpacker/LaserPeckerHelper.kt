@@ -171,20 +171,29 @@ object LaserPeckerHelper {
         dpi: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Bitmap {
+        val bitmapWidth = bitmap.width
+        val bitmapHeight = bitmap.height
 
-        val productWidth = productInfo?.bounds?.width()?.toInt() ?: bitmap.width
-        val productHeight = productInfo?.bounds?.height()?.toInt() ?: bitmap.height
+        val productWidth = productInfo?.bounds?.width()?.toInt() ?: bitmapWidth
+        val productHeight = productInfo?.bounds?.height()?.toInt() ?: bitmapHeight
 
-        val scaleWidth = bitmap.width * 1f / productWidth
-        val scaleHeight = bitmap.height * 1f / productHeight
+        var newWidth = bitmapWidth
+        var newHeight = bitmapHeight
 
         val pxInfo = findPxInfo(dpi)
-        val width = pxInfo.devicePxWidth(productInfo)
-        val height = pxInfo.devicePxHeight(productInfo)
+        if (bitmapWidth > 1) {
+            val scaleWidth = bitmapWidth * 1f / productWidth
+            val width = pxInfo.devicePxWidth(productInfo)
+            newWidth = (width * scaleWidth).toInt()
+        }
 
-        val newWidth = (width * scaleWidth).toInt()
-        val newHeight = (height * scaleHeight).toInt()
+        if (bitmapHeight > 1) {
+            val scaleHeight = bitmapHeight * 1f / productHeight
+            val height = pxInfo.devicePxHeight(productInfo)
+            newHeight = (height * scaleHeight).toInt()
+        }
 
+        //图片缩放到指定宽高
         return bitmap.scale(newWidth, newHeight)
     }
 
