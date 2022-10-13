@@ -16,11 +16,13 @@ import com.angcyo.engrave.toEngraveTypeOfDataMode
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.size
+import com.angcyo.library.utils.filePath
+import com.angcyo.library.utils.writeToFile
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
-import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
@@ -34,6 +36,15 @@ class EngraveTransitionManager {
 
     companion object {
 
+        /**雕刻传输数据缓存文件的文件夹*/
+        const val ENGRAVE_TRANSFER_FILE_FOLDER = "transfer"
+
+        fun ByteArray.toTransferData() = toString(Charsets.ISO_8859_1)
+
+        /**将字节数据写入到文件*/
+        fun ByteArray.toTransferDataPath(name: String) =
+            writeToFile(filePath(ENGRAVE_TRANSFER_FILE_FOLDER, name).file())
+
         /**生成一个雕刻需要用到的文件索引
          * 4个字节 最大 4_294_967_295
          * */
@@ -43,7 +54,7 @@ class EngraveTransitionManager {
             val m = millis % 1000 //毫秒
             val r = nextInt(0, m.toInt()) //随机数
             return (s + m + r).toInt()*/
-            return (millis and 0xe_fff_ffff).toInt()
+            return (millis and 0xfff_ffff).toInt()
         }
 
         /**生成一个雕刻的文件名*/
@@ -239,11 +250,11 @@ class EngraveTransitionManager {
     fun _mergeTransferData(dataList: List<TransferDataEntity>): TransferDataEntity {
         val resultTransferDataInfo = TransferDataEntity(index = generateEngraveIndex())
 
-        resultTransferDataInfo.data = byteWriter {
+        resultTransferDataInfo.dataPath = byteWriter {
             dataList.forEach {
                 write(it.bytes())
             }
-        }.toTransferData()
+        }.toTransferDataPath("${resultTransferDataInfo.index}")
         val first = dataList.first()
 
         resultTransferDataInfo.taskId = first.taskId

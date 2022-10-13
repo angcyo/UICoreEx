@@ -1,6 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
+import com.angcyo.library.ex.file
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -15,6 +16,7 @@ import io.objectbox.annotation.Id
 @Keep
 @Entity
 data class TransferDataEntity(
+
     @Id var entityId: Long = 0L,
 
     /**当前雕刻任务的id*/
@@ -31,7 +33,10 @@ data class TransferDataEntity(
      * "".toByteArray(Charsets.ISO_8859_1).toString(Charsets.ISO_8859_1)
      * ```
      * */
-    var data: String? = null,
+    //var data: String? = null,
+
+    /**数据路径, 直接存储数据数据库会炸裂, 所以这里存储数据文本的路径*/
+    var dataPath: String? = null,
 
     /**下位机雕刻的数据类型
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
@@ -92,7 +97,6 @@ data class TransferDataEntity(
     var isTransfer: Boolean = false
 
 ) {
-    fun bytes(): ByteArray? = data?.toByteArray(Charsets.ISO_8859_1)
+    /**获取字节数据*/
+    fun bytes(): ByteArray? = dataPath?.file()?.readBytes()
 }
-
-fun ByteArray.toTransferData() = toString(Charsets.ISO_8859_1)

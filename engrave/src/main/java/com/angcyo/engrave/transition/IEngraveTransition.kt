@@ -11,7 +11,6 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.writeTo
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.generateEngraveIndex
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.utils.FileTextData
@@ -104,12 +103,7 @@ interface IEngraveTransition {
         val mmValueUnit = mmUnit
         transferDataEntity.dpi = transferConfigEntity.dpi
         transferDataEntity.name = transferConfigEntity.name
-
-        if (transferDataEntity.index <= 0) {
-            //文件索引
-            transferDataEntity.index = generateEngraveIndex()
-        }
-
+        
         //雕刻数据坐标
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
             //mm单位

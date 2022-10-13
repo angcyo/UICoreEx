@@ -13,6 +13,7 @@ import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
+import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.library.component.byteWriter
@@ -20,7 +21,6 @@ import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
-import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import kotlin.experimental.or
 
 /**
@@ -267,7 +267,8 @@ class BitmapTransition : IEngraveTransition {
                                     write(it.len, 2)
                                 }
                             }
-                            transferDataEntity.data = bytes.toTransferData()
+                            transferDataEntity.dataPath =
+                                bytes.toTransferDataPath("${transferDataEntity.index}")
                             transferDataEntity.lines = listBitmapPath.size
 
                             //2:路径数据写入日志
@@ -285,7 +286,8 @@ class BitmapTransition : IEngraveTransition {
                         CanvasConstant.DATA_MODE_GREY -> {
                             transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
                             val data = pxBitmap.engraveColorBytes()
-                            transferDataEntity.data = data.toTransferData()
+                            transferDataEntity.dataPath =
+                                data.toTransferDataPath("${transferDataEntity.index}")
                             val previewBitmap =
                                 data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
                             //3:数据的预览图片
@@ -297,8 +299,8 @@ class BitmapTransition : IEngraveTransition {
                                 DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
                             //白色1 黑色0
                             val pair = handleBitmapByte(pxBitmap, 128)
-                            transferDataEntity.data = pair.second.toTransferData()
-
+                            transferDataEntity.dataPath =
+                                pair.second.toTransferDataPath("${transferDataEntity.index}")
                             //路径数据写入日志
                             saveEngraveData(transferDataEntity.index, pair.first, "dt")
                             //3:保存一份数据的预览图

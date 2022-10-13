@@ -14,6 +14,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
+import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.gcode.GCodeHelper
@@ -23,7 +24,6 @@ import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
-import com.angcyo.objectbox.laser.pecker.entity.toTransferData
 import com.angcyo.opencv.OpenCV
 import java.io.File
 
@@ -150,7 +150,8 @@ class GCodeTransition : IEngraveTransition {
         transferDataEntity.lines = gCodeFile.lines()
 
         val pathGCodeText = gCodeFile.readText()
-        transferDataEntity.data = pathGCodeText.toByteArray().toTransferData()
+        transferDataEntity.dataPath =
+            pathGCodeText.toByteArray().toTransferDataPath("${transferDataEntity.index}")
 
         //2:保存一份GCode文本数据/原始数据
         saveEngraveData(transferDataEntity.index, pathGCodeText, "gcode")
