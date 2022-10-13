@@ -43,7 +43,7 @@ data class FileModeCmd(
     override fun commandFunc(): Byte = 0x05
 
     /**给足时间接收数据*/
-    override fun getReceiveTimeout(): Long = 10_000
+    override fun getReceiveTimeout(): Long = 60_000
 
     /**返回:
      * 2022-05-30 18:39:15.348
