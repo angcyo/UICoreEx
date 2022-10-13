@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.data.toPaintStyle
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
@@ -214,19 +215,33 @@ object CanvasEditLayoutHelper {
             }
         }
 
+        var strokeControlItem: DslAdapterItem? = null
+        var fillControlItem: DslAdapterItem? = null
+
+        val paintStyle = renderer.dataItem?.dataBean?.paintStyle?.toPaintStyle()
         CanvasControlItem2()() {
+            strokeControlItem = this
             itemIco = R.drawable.canvas_style_stroke_ico
             itemText = _string(R.string.canvas_stroke)
+            itemIsSelected = paintStyle == Paint.Style.STROKE
             itemClick = {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.STROKE, renderer)
+                fillControlItem?.itemIsSelected = false
+                itemIsSelected = true
+                updateAllItem()
             }
         }
         CanvasControlItem2()() {
+            fillControlItem = this
             itemIco = R.drawable.canvas_style_fill_ico
             itemText = _string(R.string.canvas_fill)
             drawCanvasRight()
+            itemIsSelected = paintStyle == Paint.Style.FILL
             itemClick = {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.FILL, renderer)
+                strokeControlItem?.itemIsSelected = false
+                itemIsSelected = true
+                updateAllItem()
             }
         }
         /*//有切割图层之后, 就不能出现这个了
