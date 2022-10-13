@@ -1,6 +1,5 @@
 package com.angcyo.engrave.firmware
 
-import android.content.Intent
 import android.os.Bundle
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
@@ -19,9 +18,4 @@ class FirmwareUpdateActivity : BaseAppCompatActivity() {
             restore(FirmwareUpdateFragment::class)
         }
     }
-
-    override fun onHandleIntent(intent: Intent, fromNewIntent: Boolean) {
-        super.onHandleIntent(intent, fromNewIntent)
-    }
-
 }
