@@ -33,6 +33,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_ST
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.app
 import com.angcyo.library.ex.baseConfig
 import com.angcyo.library.ex.isDebug
@@ -90,6 +91,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             get() = FscSppCentralApiImp.getInstance()
 
         /**初始化方法*/
+        @CallPoint
         fun init(application: Context = app(), debug: Boolean = isDebug()) {
             FscBleCentralApiImp.getInstance(application).apply {
                 initialize()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.app
 import com.angcyo.library.ex.*
@@ -57,6 +58,7 @@ class DslBox {
          * [packageName] 数据库的包名. [MyObjectBox]所在的路径
          * [dbName] 数据库的名字 [io.objectbox.BoxStoreBuilder.DEFAULT_NAME]
          * */
+        @CallPoint
         fun init(
             context: Context = app(),
             packageName: String? = default_package_name,
