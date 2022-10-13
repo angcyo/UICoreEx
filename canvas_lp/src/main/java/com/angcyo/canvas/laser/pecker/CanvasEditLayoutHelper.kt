@@ -17,10 +17,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.fragment.AbsFragment
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.*
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -165,7 +162,7 @@ object CanvasEditLayoutHelper {
             drawCanvasRight()
         }
         //曲线
-        if (isDebug()) {
+        if (isDebugType()) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_text_curve
                 itemText = _string(R.string.canvas_curve)
@@ -187,7 +184,7 @@ object CanvasEditLayoutHelper {
         }
 
         //紧凑
-        if (isDebug()) {
+        if (isDebugType()) {
             CanvasControlItem2()() {
                 itemText = "紧凑"
                 itemIsSelected = renderer.getRendererRenderItem()?.dataBean?.isCompactText == true
