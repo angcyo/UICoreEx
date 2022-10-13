@@ -2,7 +2,6 @@
 <resources>
     <string name="canvas_open_label">使用UICoreDemo打开</string>
     <string name="canvas_open">打开</string>
-    <string name="canvas_cancel">取消</string>
     <string name="font_import_fail">字体导入失败</string>
     <string name="font_import_success">字体导入成功</string>
 </resources>

@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="@dimen/lib_xhdpi"
-            android:text="@string/canvas_cancel"
+            android:text="@string/dialog_negative"
             android:textColor="@color/colorPrimary"
             app:button_gradient_colors=""
             app:button_press_solid_color="#01000000"
