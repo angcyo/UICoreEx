@@ -20,5 +20,5 @@ dependencies {
 
     //图片算法
     api 'com.angcyo:opencv:hingin-SNAPSHOT'
-    api 'com.angcyo:imageProcess:hingin-SNAPSHOT'
+    api 'com.angcyo:imageProcess:1014'
 }

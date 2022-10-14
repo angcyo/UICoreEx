@@ -4,13 +4,15 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.dslFHelper
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
+import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.component.fileSelector
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
+import com.angcyo.core.fragment.lightStyle
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
@@ -35,6 +37,12 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_model)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        fragmentConfig.showTitleLineView = true
+        fragmentConfig.lightStyle()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
@@ -68,7 +76,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.buzzer == 1
                 itemSwitchChangedAction = {
                     settingParser?.buzzer = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -79,7 +87,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.safe == 1
                 itemSwitchChangedAction = {
                     settingParser?.safe = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -90,7 +98,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.free == 1
                 itemSwitchChangedAction = {
                     settingParser?.free = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -101,7 +109,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.gcodeView == 1
                 itemSwitchChangedAction = {
                     settingParser?.gcodeView = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -112,7 +120,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChangedAction = {
                     settingParser?.clearFlag()
                     settingParser?.zFlag = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                     renderData()
                 }
             }
@@ -141,7 +149,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                         val index = selectIndexList.first()
                         QuerySettingParser.Z_MODEL = index //确切的模式
                         settingParser?.zDir = if (index == 2) 1 else 0
-                        settingParser?.sendCommand()
+                        settingParser?.updateSetting()
                     }
             }
             DslPropertySwitchItem()() {
@@ -153,7 +161,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChangedAction = {
                     settingParser?.clearFlag()
                     settingParser?.rFlag = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                     renderData()
                 }
             }
@@ -166,7 +174,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChangedAction = {
                     settingParser?.clearFlag()
                     settingParser?.sFlag = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                     renderData()
                 }
             }
@@ -179,7 +187,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.dir == 1
                 itemSwitchChangedAction = {
                     settingParser?.dir = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -190,7 +198,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.keyView == 1
                 itemSwitchChangedAction = {
                     settingParser?.keyView = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -201,7 +209,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.keyPrint == 1
                 itemSwitchChangedAction = {
                     settingParser?.keyPrint = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -212,7 +220,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = settingParser?.irDst == 1
                 itemSwitchChangedAction = {
                     settingParser?.irDst = if (it) 1 else 0
-                    settingParser?.sendCommand()
+                    settingParser?.updateSetting()
                 }
             }
             DslPropertySwitchItem()() {
@@ -246,6 +254,15 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     fun DslAdapterItem.initItem() {
         drawBottom()
+    }
+
+    fun QuerySettingParser.updateSetting() {
+        //sendCommand()
+        enqueue()
+        asyncQueryDeviceState { bean, error ->
+            laserPeckerModel.updateSettingOnceData.postValue(true)
+        }
+        //LaserPeckerHelper.initDeviceSetting()
     }
 
 }

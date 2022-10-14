@@ -16,7 +16,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
-import com.angcyo.library.ex.isDebug
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
@@ -61,6 +60,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**初始化指令是否成功通知*/
     val initializeOnceData = vmDataOnce(false)
+
+    /**通知, 设备的设置是否发生了改变*/
+    val updateSettingOnceData = vmDataOnce(false)
 
     /**预览的时候, 矩形是否溢出了*/
     val overflowInfoData = vmDataNull<OverflowInfo>()
@@ -137,17 +139,17 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {
-        return deviceSettingData.value?.zFlag == 1 && deviceStateData.value?.zConnect == 1
+        return deviceSettingData.value?.zFlag == 1 //&& (deviceStateData.value?.zConnect == 1 || isDebug())
     }
 
     /**旋转轴是否打开, 需要先打开设置, 再连接上 */
     fun isROpen(): Boolean {
-        return deviceSettingData.value?.rFlag == 1 && (deviceStateData.value?.rConnect == 1 || isDebug())
+        return deviceSettingData.value?.rFlag == 1 //&& (deviceStateData.value?.rConnect == 1 || isDebug())
     }
 
     /**滑台是否打开, 需要先打开设置, 再连接上 */
     fun isSOpen(): Boolean {
-        return deviceSettingData.value?.sFlag == 1 && (deviceStateData.value?.sConnect == 1 || isDebug())
+        return deviceSettingData.value?.sFlag == 1 //&& (deviceStateData.value?.sConnect == 1 || isDebug())
     }
 
     /**空闲模式*/

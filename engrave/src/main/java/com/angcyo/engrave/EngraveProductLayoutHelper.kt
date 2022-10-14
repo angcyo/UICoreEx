@@ -58,6 +58,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             _showProductLimit(canvasView, productInfo)
         }
 
+        //蓝牙设置改变后回调
+        laserPeckerModel.updateSettingOnceData.observe(engraveCanvasFragment.fragment) {
+            if (it == true) {
+                _showZRSLimit(canvasView)
+            }
+        }
+
         //监听Z轴/R轴/S轴设置状态
         laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
             val beforeZ = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
@@ -71,13 +78,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
         //监听设备状态, Z/R/S连接状态
         laserPeckerModel.deviceStateData.observe(engraveCanvasFragment.fragment) {
-            val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
-            val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
-            val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
-            if (beforeZ != it?.zConnect || beforeR != it.rConnect || beforeS != it.sConnect) {
-                //z轴连接状态改变后, 检查是否要限制z轴限制
-                _showZRSLimit(canvasView)
-            }
+            /* val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
+             val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
+             val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
+             if (beforeZ != it?.zConnect || beforeR != it.rConnect || beforeS != it.sConnect) {
+                 //z轴连接状态改变后, 检查是否要限制z轴限制
+                 _showZRSLimit(canvasView)
+             }*/
 
             //设备模式提示
             val stateString = it?.toDeviceStateString()
