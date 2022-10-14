@@ -40,6 +40,7 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.ex.*
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
@@ -784,8 +785,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**undo redo*/
     fun _updateUndoLayout(viewHolder: DslViewHolder = engraveCanvasFragment.fragment._vh) {
-        viewHolder.group(R.id.undo_wrap_layout)
-            ?.resetDslItem(listOf(_undoCanvasItem, _redoCanvasItem))
+        doMain {
+            viewHolder.group(R.id.undo_wrap_layout)
+                ?.resetDslItem(listOf(_undoCanvasItem, _redoCanvasItem))
+        }
     }
 
     //</editor-fold desc="Undo">

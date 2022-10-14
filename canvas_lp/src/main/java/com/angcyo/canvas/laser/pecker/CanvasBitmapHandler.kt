@@ -11,12 +11,14 @@ import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.component.file.writeToCache
 import com.angcyo.crop.ui.cropDialog
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.opencv.OpenCV
+import com.hingin.rn.image.ImageProcess
 
 /**
  * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
@@ -34,18 +36,18 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD)
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
-                        originBitmap.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             item.dataBean.printsThreshold = getIntOrDef(
-                                CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
+                                CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD,
                                 item.dataBean.printsThreshold.toInt()
                             ).toFloat()
                             OpenCV.bitmapToPrint(
@@ -77,16 +79,16 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
         val beforeBounds = RectF(renderer.getBounds())
 
         var boundsRotate = 0f //需要旋转的角度
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_LINE_SPACE)
-            addRegulate(CanvasRegulatePopupConfig.KEY_ANGLE)
-            addRegulate(CanvasRegulatePopupConfig.KEY_DIRECTION)
-            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_LINE_SPACE)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
 
             onApplyAction = { dismiss ->
                 if (dismiss) {
@@ -94,7 +96,7 @@ object CanvasBitmapHandler {
                 } else {
                     owner.loadingAsync({
                         val direction = getIntOrDef(
-                            CanvasRegulatePopupConfig.KEY_DIRECTION,
+                            CanvasRegulatePopupConfig2.KEY_DIRECTION,
                             item.dataBean.gcodeDirection
                         )
                         if (direction == 1 || direction == 3) {
@@ -103,18 +105,18 @@ object CanvasBitmapHandler {
                         item.dataBean.gcodeDirection = direction
 
                         val lineSpace = getFloatOrDef(
-                            CanvasRegulatePopupConfig.KEY_LINE_SPACE,
+                            CanvasRegulatePopupConfig2.KEY_LINE_SPACE,
                             item.dataBean.gcodeLineSpace
                         )
                         item.dataBean.gcodeLineSpace = lineSpace
 
                         val angle = getFloatOrDef(
-                            CanvasRegulatePopupConfig.KEY_ANGLE,
+                            CanvasRegulatePopupConfig2.KEY_ANGLE,
                             item.dataBean.gcodeAngle
                         )
                         item.dataBean.gcodeAngle = angle
 
-                        originBitmap.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             OpenCV.bitmapToGCode(
                                 context,
                                 bitmap,
@@ -158,25 +160,25 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_BW_INVERT)
-            addRegulate(CanvasRegulatePopupConfig.KEY_BW_THRESHOLD)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_BW_INVERT)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_BW_THRESHOLD)
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
-                        originBitmap.let { bitmap ->
+                        operateBitmap.let { bitmap ->
 
                             item.dataBean.blackThreshold = getIntOrDef(
-                                CanvasRegulatePopupConfig.KEY_BW_THRESHOLD,
+                                CanvasRegulatePopupConfig2.KEY_BW_THRESHOLD,
                                 item.dataBean.blackThreshold.toInt()
                             ).toFloat()
 
                             item.dataBean.inverse = getBooleanOrDef(
-                                CanvasRegulatePopupConfig.KEY_BW_INVERT, item.dataBean.inverse
+                                CanvasRegulatePopupConfig2.KEY_BW_INVERT, item.dataBean.inverse
                             )
 
                             OpenCV.bitmapToBlackWhite(
@@ -208,30 +210,30 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT)
-            addRegulate(CanvasRegulatePopupConfig.KEY_CONTRAST)
-            addRegulate(CanvasRegulatePopupConfig.KEY_BRIGHTNESS)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS)
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
-                        originBitmap.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             item.dataBean.inverse = getBooleanOrDef(
-                                CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
+                                CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT,
                                 item.dataBean.inverse
                             )
 
                             item.dataBean.contrast = getFloatOrDef(
-                                CanvasRegulatePopupConfig.KEY_CONTRAST,
+                                CanvasRegulatePopupConfig2.KEY_CONTRAST,
                                 item.dataBean.contrast
                             )
 
                             item.dataBean.brightness = getFloatOrDef(
-                                CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
+                                CanvasRegulatePopupConfig2.KEY_BRIGHTNESS,
                                 item.dataBean.brightness
                             )
 
@@ -265,10 +267,10 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
 
         owner.loadingAsync({
-            originBitmap.let { bitmap ->
+            operateBitmap.let { bitmap ->
                 OpenCV.bitmapToGrey(bitmap)
             }
         }) {
@@ -291,20 +293,20 @@ object CanvasBitmapHandler {
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
-        val originBitmap = item.originBitmap!!
+        val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD)
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
                         item.dataBean.sealThreshold = getIntOrDef(
-                            CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD,
+                            CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD,
                             item.dataBean.sealThreshold.toInt()
                         ).toFloat()
-                        originBitmap.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             OpenCV.bitmapToSeal(
                                 context,
                                 bitmap,
@@ -344,11 +346,79 @@ object CanvasBitmapHandler {
 
             onCropResultAction = {
                 it?.let {
-                    item.updateBitmapByMode(
-                        it.toBase64Data(),
-                        CanvasConstant.DATA_MODE_GREY,
-                        renderer
+                    owner.loadingAsync({
+                        //剪切完之后, 默认背白处理
+                        val filter = it.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
+                        item.updateBitmapOriginal(
+                            it.toBase64Data(),
+                            filter,
+                            CanvasConstant.DATA_MODE_BLACK_WHITE,
+                            renderer
+                        )
+                    })
+                }
+            }
+        }
+    }
+
+    /**图片扭曲*/
+    fun handleMesh(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: DataItemRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
+        val context = anchor.context
+        val originBitmap = item.originBitmap
+
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig2.KEY_MESH_SHAPE)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
+
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
+                } else {
+                    val minDiameter = getFloatOrDef(
+                        CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER,
+                        HawkEngraveKeys.lastMinDiameterPixel
                     )
+                    val maxDiameter = getFloatOrDef(
+                        CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER,
+                        HawkEngraveKeys.lastDiameterPixel
+                    )
+                    // "CONE" 圆锥
+                    // "BALL" 球体
+                    val shape = getStringOrDef(
+                        CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
+                        CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
+                    )
+                    owner.loadingAsync({
+                        originBitmap?.let {
+                            ImageProcess.imageMesh(
+                                originBitmap,
+                                minDiameter,
+                                maxDiameter,
+                                shape
+                            )
+                        }
+                    }) {
+                        it?.let {
+                            owner.loadingAsync({
+                                //剪切完之后, 默认背白处理
+                                val filter =
+                                    it.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
+                                item.updateBitmapMesh(
+                                    filter,
+                                    CanvasConstant.DATA_MODE_BLACK_WHITE,
+                                    shape, minDiameter, maxDiameter, renderer
+                                )
+                            })
+                        }
+                    }
                 }
             }
         }

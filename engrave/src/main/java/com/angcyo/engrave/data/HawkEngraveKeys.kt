@@ -25,8 +25,12 @@ object HawkEngraveKeys {
     /**最后一次深度*/
     var lastDepth: Int by HawkPropertyValue<Any, Int>(10)
 
-    /**最后一次的物理尺寸, 像素*/
+    /**最后一次的物理尺寸, 像素
+     *长径, 大直径*/
     var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
+
+    /**短径, 小直径*/
+    var lastMinDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
     /**最后一次的加速级别*/
     var lastPrecision: Int by HawkPropertyValue<Any, Int>(1)

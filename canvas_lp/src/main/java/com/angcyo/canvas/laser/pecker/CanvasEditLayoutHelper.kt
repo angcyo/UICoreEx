@@ -124,6 +124,21 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
+        //扭曲
+        CanvasControlItem2()() {
+            itemIco = R.drawable.canvas_actions_ico
+            itemText = _string(R.string.canvas_mesh)
+            itemClick = {
+                updateItemSelected(!itemIsSelected)
+                if (itemIsSelected) {
+                    CanvasBitmapHandler.handleMesh(it, fragment, renderer) {
+                        updateItemSelected(false)
+                    }
+                    UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
+                }
+            }
+            drawCanvasRight()
+        }
     }
 
     //endregion ---图片---
@@ -264,7 +279,7 @@ object CanvasEditLayoutHelper {
 
     fun DslAdapter.renderGroupEditItems(renderer: SelectGroupRenderer) {
         //
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_left_ico
             itemText = _string(R.string.canvas_align_left)
             itemRenderer = renderer
@@ -272,7 +287,7 @@ object CanvasEditLayoutHelper {
                 renderer.updateAlign(Gravity.LEFT)
             }
         }
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_right_ico
             itemText = _string(R.string.canvas_align_right)
             itemRenderer = renderer
@@ -283,7 +298,7 @@ object CanvasEditLayoutHelper {
         }
 
         //
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_top_ico
             itemText = _string(R.string.canvas_align_top)
             itemRenderer = renderer
@@ -291,7 +306,7 @@ object CanvasEditLayoutHelper {
                 renderer.updateAlign(Gravity.TOP)
             }
         }
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_bottom_ico
             itemText = _string(R.string.canvas_align_bottom)
             itemRenderer = renderer
@@ -302,7 +317,7 @@ object CanvasEditLayoutHelper {
         }
 
         //
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_horizontal_ico
             itemText = _string(R.string.canvas_align_horizontal)
             itemRenderer = renderer
@@ -310,7 +325,7 @@ object CanvasEditLayoutHelper {
                 renderer.updateAlign(Gravity.CENTER_HORIZONTAL)
             }
         }
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_vertical_ico
             itemText = _string(R.string.canvas_align_vertical)
             itemRenderer = renderer
@@ -318,7 +333,7 @@ object CanvasEditLayoutHelper {
                 renderer.updateAlign(Gravity.CENTER_VERTICAL)
             }
         }
-        CanvasControlItem()() {
+        CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_center_ico
             itemText = _string(R.string.canvas_align_center)
             itemRenderer = renderer

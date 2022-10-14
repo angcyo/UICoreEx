@@ -53,6 +53,10 @@ data class LaserPeckerProductInfo(
     var limitPath: Path,
     /**Z轴限制提示框, 像素, 在手机上的像素*/
     var zLimitPath: Path? = null,
+    /**旋转轴,最大提示框*/
+    var rLimitPath: Path? = null,
+    /**滑台,最大提示框*/
+    var sLimitPath: Path? = null,
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,

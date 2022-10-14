@@ -13,6 +13,7 @@ import com.angcyo.widget.DslViewHolder
  */
 open class EngraveSegmentScrollItem : DslSegmentSolidTabItem() {
 
+    /**描述文本*/
     var itemText: CharSequence? = null
 
     init {

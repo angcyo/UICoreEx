@@ -213,7 +213,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 //C1 加速级别选择
                 EngraveOptionWheelItem()() {
                     itemTag = EngraveConfigEntity::precision.name
-                    itemLabelText = "加速级别"
+                    itemLabelText = _string(R.string.engrave_precision)
                     itemWheelList = percentList(5)
                     itemSelectedIndex =
                         EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.precision)

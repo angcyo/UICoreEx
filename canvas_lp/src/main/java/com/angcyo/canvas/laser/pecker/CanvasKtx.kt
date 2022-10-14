@@ -165,14 +165,19 @@ fun String?.toItemDataBean(): ItemDataBean? {
     return null
 }
 
+fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int): String? {
+    this ?: return null
+    return OpenCV.bitmapToBlackWhite(
+        this,
+        bmpThreshold,
+        0
+    ).toBase64Data()
+}
+
 fun Bitmap?.toBlackWhiteBitmapItemData(): ItemDataBean? {
     return toBitmapItemData {
         imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
-        src = OpenCV.bitmapToBlackWhite(
-            this@toBlackWhiteBitmapItemData!!,
-            DEFAULT_THRESHOLD_SPACE.toInt(),
-            0
-        ).toBase64Data()
+        src = this@toBlackWhiteBitmapItemData?.toBlackWhiteBitmap(DEFAULT_THRESHOLD_SPACE.toInt())
     }
 }
 

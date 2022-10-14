@@ -77,6 +77,9 @@ object UMEvent {
     /**创作图片-剪裁*/
     const val CANVAS_IMAGE_CROP = "canvas_image_crop"
 
+    /**创作图片-扭曲*/
+    const val CANVAS_IMAGE_MESH = "canvas_image_mesh"
+
     //endregion ---origin---
 
     //region ---rn---

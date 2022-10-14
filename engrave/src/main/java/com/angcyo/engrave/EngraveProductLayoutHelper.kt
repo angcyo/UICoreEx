@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import android.graphics.Color
+import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
@@ -57,22 +58,25 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             _showProductLimit(canvasView, productInfo)
         }
 
-        //监听Z轴
+        //监听Z轴/R轴/S轴设置状态
         laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
-            val before = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
-            if (before != it?.zFlag) {
+            val beforeZ = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
+            val beforeR = laserPeckerModel.deviceSettingData.beforeValue?.rFlag ?: 0
+            val beforeS = laserPeckerModel.deviceSettingData.beforeValue?.sFlag ?: 0
+            if (beforeZ != it?.zFlag || beforeR != it.rFlag || beforeS != it.sFlag) {
                 //z轴开关改变后, 检查是否要限制z轴限制
-                _showZLimit(canvasView)
+                _showZRSLimit(canvasView)
             }
         }
 
-        //监听设备状态
+        //监听设备状态, Z/R/S连接状态
         laserPeckerModel.deviceStateData.observe(engraveCanvasFragment.fragment) {
-
-            val before = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
-            if (before != it?.zConnect) {
+            val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
+            val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
+            val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
+            if (beforeZ != it?.zConnect || beforeR != it.rConnect || beforeS != it.sConnect) {
                 //z轴连接状态改变后, 检查是否要限制z轴限制
-                _showZLimit(canvasView)
+                _showZRSLimit(canvasView)
             }
 
             //设备模式提示
@@ -178,19 +182,35 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         }
     }
 
-    /**显示Z轴限制框*/
-    fun _showZLimit(canvasView: CanvasView?) {
+    /**显示Z/R/S轴限制框*/
+    fun _showZRSLimit(canvasView: CanvasView?) {
         if (canvasView == null) {
             return
         }
         val productInfo = laserPeckerModel.productInfoData.value
         val zLimitPath = productInfo?.zLimitPath
-        if (laserPeckerModel.isZOpen() && productInfo != null && zLimitPath != null) {
-            //Z轴连接
+        val rLimitPath = productInfo?.rLimitPath
+        val sLimitPath = productInfo?.sLimitPath
+
+        var limitPath: Path? = null
+        if (productInfo != null) {
+            if (laserPeckerModel.isZOpen() && zLimitPath != null) {
+                //Z轴连接
+                limitPath = zLimitPath
+            } else if (laserPeckerModel.isROpen() && rLimitPath != null) {
+                //R轴连接
+                limitPath = rLimitPath
+            } else if (laserPeckerModel.isSOpen() && sLimitPath != null) {
+                //S轴连接
+                limitPath = sLimitPath
+            }
+        }
+
+        if (productInfo != null && limitPath != null) {
             //追加显示Z轴显示框
             canvasView.canvasDelegate.limitRenderer.apply {
                 updateLimit {
-                    addPath(zLimitPath)
+                    addPath(limitPath)
                 }
                 limitBounds = productInfo.bounds
             }
@@ -226,9 +246,9 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             viewHolder.tv(R.id.device_name_view)?.text = name
         }
         //显示蓝牙界面
-        viewHolder.click(R.id.device_tip_wrap_layout) {
+        viewHolder.throttleClick(R.id.device_tip_wrap_layout) {
             if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
-                return@click
+                return@throttleClick
             } else {
                 engraveCanvasFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
                     if (allGranted) {
@@ -242,9 +262,9 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             }
         }
         //显示设备设置界面
-        viewHolder.click(R.id.device_setting_view) {
+        viewHolder.throttleClick(R.id.device_setting_view) {
             if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
-                return@click
+                return@throttleClick
             } else if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
                 engraveCanvasFragment.fragment.dslAHelper {
                     start(DeviceSettingFragment::class.java)
