@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Path
 import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.data.toMm
@@ -15,6 +16,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
@@ -102,12 +104,14 @@ class GCodeTransition : IEngraveTransition {
     ): TransferDataEntity {
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isLast = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
         val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
             pathList,
             renderer.getBounds(),
             renderer.rotate,
             writeFirst = isFirst,
-            writeLast = isLast
+            writeLast = isLast,
+            autoCnc = autoCnc
         )
         return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
             //1: 存一份原始可视化数据
