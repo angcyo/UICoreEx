@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.core.component.dslPermissions
@@ -20,14 +21,12 @@ import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.alphaRatio
-import com.angcyo.library.ex.elseNull
-import com.angcyo.library.ex.removeFromParent
+import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
+import com.angcyo.widget.span.span
 
 /**
  * 监听产品信息, 并做出一些界面响应
@@ -64,7 +63,14 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 _showZRSLimit(canvasView)
             }
         }
+        //设备初始化后回调
+        laserPeckerModel.initializeOnceData.observe(engraveCanvasFragment.fragment) {
+            if (it == true) {
+                _showZRSLimit(canvasView)
+            }
+        }
 
+/*
         //监听Z轴/R轴/S轴设置状态
         laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
             val beforeZ = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
@@ -75,6 +81,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 _showZRSLimit(canvasView)
             }
         }
+*/
 
         //监听设备状态, Z/R/S连接状态
         laserPeckerModel.deviceStateData.observe(engraveCanvasFragment.fragment) {
@@ -121,13 +128,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
                 //有设备连接
                 //stateLayoutManager.removeState(connectStateInfo)
-                showDeviceTip(viewHolder)
+                initDeviceConnectTipLayout(viewHolder)
             }.elseNull {
                 dangerWarningView?.removeFromParent()
 
                 //无设备连接
                 //stateLayoutManager.updateState(connectStateInfo)
-                showDeviceTip(viewHolder)
+                initDeviceConnectTipLayout(viewHolder)
             }
         }
 
@@ -238,8 +245,8 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         }
     }
 
-    /**显示连接的提示*/
-    fun showDeviceTip(viewHolder: DslViewHolder) {
+    /**显示连接的设备信息提示*/
+    fun initDeviceConnectTipLayout(viewHolder: DslViewHolder) {
         if (laserPeckerModel.deviceStateData.value == null) {
             //无设备连接
             viewHolder.img(R.id.device_image_view)
@@ -250,7 +257,17 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 DeviceConnectTipActivity.formatDeviceName(laserPeckerModel.productInfoData.value?.deviceName)
             viewHolder.img(R.id.device_image_view)
                 ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(name))
-            viewHolder.tv(R.id.device_name_view)?.text = name
+            viewHolder.tv(R.id.device_name_view)?.text = span {
+                append(name)
+                laserPeckerModel.productInfoData.value?.let {
+                    if (it.version > 0) {
+                        append(" ${it.version.toLaserPeckerVersionName()}") {
+                            foregroundColor = _color(R.color.text_sub_color)
+                            relativeSizeScale = 0.7f
+                        }
+                    }
+                }
+            }
         }
         //显示蓝牙界面
         viewHolder.throttleClick(R.id.device_tip_wrap_layout) {

@@ -76,8 +76,10 @@ class BluetoothConnectItem : DslAdapterItem() {
 
         itemHolder.selected(itemIsSelected)
 
+        //device
+        val deviceName = DeviceConnectTipActivity.formatDeviceName(itemFscDevice?.name)
         itemHolder.tv(R.id.device_name_view)?.text = span {
-            append(itemFscDevice?.name)
+            append(deviceName)
             //append(itemFscDevice?.address)
             if (itemShowRssi) {
                 append(" ${itemFscDevice?.rssi}") {
@@ -85,10 +87,9 @@ class BluetoothConnectItem : DslAdapterItem() {
                 }
             }
         }
-
         //image
         itemHolder.img(R.id.device_image_view)
-            ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(itemFscDevice?.name))
+            ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(deviceName))
 
         when (connectState) {
             DeviceConnectState.CONNECT_STATE_SUCCESS -> {
