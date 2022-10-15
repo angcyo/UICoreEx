@@ -42,7 +42,7 @@ fun <T : Any> lpBoxOf(entityClass: KClass<T>, action: Box<T>.() -> Unit = {}): B
 }
 
 inline fun <reified T : Any> KClass<T>.lpUpdateOrCreateEntity(
-    query: QueryBuilder<T>.() -> Unit,
+    noinline query: QueryBuilder<T>.() -> Unit,
     update: T.() -> Unit
 ): Long {
     return updateOrCreateEntity(LPBox.PACKAGE_NAME, query, update)

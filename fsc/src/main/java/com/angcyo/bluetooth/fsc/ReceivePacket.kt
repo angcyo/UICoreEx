@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc
 
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.library.annotation.ReadOnly
 
 /**
  * 发送的数据详情, 和接收的数据详情.
@@ -9,6 +10,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/25
  */
+
+@ReadOnly
 class ReceivePacket {
 
     /**设备地址*/
@@ -30,6 +33,9 @@ class ReceivePacket {
 
     /**发送完成的时间, 毫秒*/
     var sendFinishTime: Long = -1
+
+    /**发送速率, byte/s*/
+    var sendSpeed: Float = -1f
 
     /**预计的剩余时间, 毫秒*/
     var remainingTime: Long = -1

@@ -11,6 +11,7 @@ import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.*
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.objectbox.laser.pecker.lpUpdateOrCreateEntity
 
 /**
  * 雕刻流程数据相关处理类
@@ -19,7 +20,7 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  */
 object EngraveFlowDataHelper {
 
-    //---
+    //region ---task---
 
     /**
      * 如果之前的任务id[oldTaskId],已经有数据传输了, 则重新生成一个新的任务id, 否则不变
@@ -48,7 +49,68 @@ object EngraveFlowDataHelper {
         return taskId
     }
 
-    //---预览相关---
+    /**获取一个传输监视记录*/
+    fun getTransferMonitor(taskId: String?): TransferMonitorEntity? {
+        return TransferMonitorEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }
+    }
+
+    /**开始创建传输的数据*/
+    fun startCreateTransferData(taskId: String?) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            this.taskId = taskId
+            dataMakeStartTime = nowTime()
+            dataMakeFinishTime = -1
+        }
+    }
+
+    /**完成创建传输的数据*/
+    fun finishCreateTransferData(taskId: String?) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            dataMakeFinishTime = nowTime()
+        }
+    }
+
+    /**开始传输数据*/
+    fun startTransferData(taskId: String?, list: List<TransferDataEntity>) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            dataTransferStartTime = nowTime()
+            dataTransferFinishTime = -1
+
+            //数据大小
+            dataTransferSize = list.sumOf { it.bytesSize() }
+        }
+    }
+
+    /**更新数据传输进度和速率*/
+    fun updateTransferDataProgress(taskId: String?, progress: Int, speed: Float) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            dataTransferProgress = progress
+            dataTransferSpeed = speed
+        }
+    }
+
+    /**完成传输数据*/
+    fun finishTransferData(taskId: String?) {
+        TransferMonitorEntity::class.lpUpdateOrCreateEntity({
+            apply(TransferMonitorEntity_.taskId.equal("$taskId"))
+        }) {
+            dataTransferFinishTime = nowTime()
+        }
+    }
+
+    //endregion ---task---
+
+    //region ---预览相关---
 
     /**构建一个预览配置信息*/
     fun generatePreviewConfig(taskId: String?): PreviewConfigEntity {
@@ -60,7 +122,9 @@ object EngraveFlowDataHelper {
         }
     }
 
-    //---传输/数据相关---
+    //endregion ---预览相关---
+
+    //region ---传输/数据相关---
 
     /**获取生成数据需要的配置信息*/
     fun generateTransferConfig(taskId: String?): TransferConfigEntity {
@@ -109,7 +173,9 @@ object EngraveFlowDataHelper {
         }
     }
 
-    //---雕刻相关---
+    //endregion ---传输/数据相关---
+
+    //region ---雕刻相关---
 
     /**获取当前任务有多少个图层需要雕刻*/
     fun getEngraveLayerList(taskId: String?): List<EngraveLayerInfo> {
@@ -342,5 +408,7 @@ object EngraveFlowDataHelper {
         val progress = clamp((current * 1f / sum * 100).toInt(), 0, 100)
         return progress
     }
+
+    //endregion ---雕刻相关---
 
 }

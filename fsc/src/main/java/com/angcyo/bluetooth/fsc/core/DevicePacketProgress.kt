@@ -20,5 +20,20 @@ data class DevicePacketProgress(
     var finishTime: Long = -1,
     /**是否暂停了*/
     var isPause: Boolean = false,
-)
+) {
+
+    /**计算发送的速率 bytes/s
+     * -1 表示还在统计*/
+    fun calcSpeed(endTime: Long = finishTime): Float {
+        return if (startTime > 0) {
+            if (endTime > startTime) {
+                return sendBytesSize * 1f / (endTime - startTime) * 1000
+            } else {
+                -1f
+            }
+        } else {
+            -1f
+        }
+    }
+}
 

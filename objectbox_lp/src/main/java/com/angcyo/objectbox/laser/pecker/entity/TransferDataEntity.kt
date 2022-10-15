@@ -99,4 +99,7 @@ data class TransferDataEntity(
 ) {
     /**获取字节数据*/
     fun bytes(): ByteArray? = dataPath?.file()?.readBytes()
+
+    /**文件数据大小/字节byte*/
+    fun bytesSize(): Long = dataPath?.file()?.length() ?: 0
 }

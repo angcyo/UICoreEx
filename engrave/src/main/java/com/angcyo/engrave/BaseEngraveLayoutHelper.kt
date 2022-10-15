@@ -17,11 +17,14 @@ import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.observe
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻item布局渲染
@@ -93,7 +96,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    //
+    //region ---数据配置---
 
     /**渲染传输数据配置界面*/
     fun renderTransferConfig() {
@@ -120,21 +123,26 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
 
                         transferConfigEntity.lpSaveEntity()
 
-                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
-                        renderFlowItems()
-
                         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
                         if (canvasDelegate == null) {
                             //不是画布上的数据, 可能是恢复的数据
                         } else {
                             transferModel.startCreateTransferData(flowTaskId, canvasDelegate)
                         }
+
+                        //last
+                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+                        renderFlowItems()
                     }
                 }
             }
         }
     }
+
+    //endregion ---数据配置---
+
+    //region ---数据传输中---
 
     /**渲染传输中的界面*/
     fun renderTransmitting() {
@@ -153,6 +161,39 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 DataTransmittingItem()() {
                     itemProgress = taskStateData?.progress ?: 0
                 }
+                if (isDebug()) {
+                    val monitorEntity = EngraveFlowDataHelper.getTransferMonitor(flowTaskId)
+                    if (monitorEntity != null) {
+                        PreviewTipItem()() {
+                            itemTip = span {
+                                if (monitorEntity.dataMakeStartTime > 0) {
+                                    if (monitorEntity.dataMakeFinishTime > 0) {
+                                        append("生成耗时:${monitorEntity.dataMakeDuration()} ")
+                                    } else {
+                                        append("生成中... ")
+                                    }
+                                }
+                                if (monitorEntity.dataTransferSize > 0) {
+                                    append(" 大小:${monitorEntity.dataSize()} ")
+                                }
+                                if (monitorEntity.dataTransferStartTime > 0) {
+                                    appendln()
+                                    append("传输耗时:")
+                                    if (monitorEntity.dataTransferFinishTime > 0) {
+                                        append("${monitorEntity.dataTransferDuration()} ")
+                                    } else {
+                                        append("${monitorEntity.dataTransferDuration(nowTime())} ")
+                                    }
+                                    if (monitorEntity.dataTransferSpeed > 0) {
+                                        append(" 速率:${monitorEntity.speedString()} ")
+                                    } else {
+                                        append(" 传输中... ")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 DataStopTransferItem()() {
                     itemException = taskStateData?.error
                     itemClick = {
@@ -165,7 +206,9 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
-    //
+    //endregion ---数据传输中---
+
+    //region ---雕刻参数配置---
 
     /**渲染雕刻配置界面*/
     fun renderEngraveConfig() {
@@ -280,6 +323,10 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         }
     }
 
+    //endregion ---雕刻参数配置---
+
+    //region ---雕刻中---
+
     /**渲染雕刻中的界面*/
     fun renderEngraving() {
         updateIViewTitle(_string(R.string.engraving))
@@ -312,6 +359,10 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             }
         }
     }
+
+    //endregion ---雕刻中---
+
+    //region ---雕刻完成---
 
     /**渲染雕刻完成的界面*/
     fun renderEngraveFinish() {
@@ -349,5 +400,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             }
         }
     }
+
+    //endregion ---雕刻完成---
 
 }

@@ -214,6 +214,7 @@ class WaitReceivePacket(
                 val speed = packetProgress.sendBytesSize * 1f / (nowTime - sendStartTime)
                 //剩余需要发送的字节大小
                 val remainingSize = sendPacket.size - packetProgress.sendBytesSize
+                sendSpeed = speed * 1000
                 remainingTime = (remainingSize / speed).roundToLong()
                 //listener.onPacketProgress(this) //need?
             }

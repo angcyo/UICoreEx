@@ -64,17 +64,13 @@
 
     <com.angcyo.widget.DslButton
         android:id="@+id/setting_button"
-        style="@style/LibButtonSolidStyle"
+        style="@style/LibButtonTransparentSolidStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="@dimen/lib_xhdpi"
         android:text="@string/ui_setting"
         android:textColor="@color/colorPrimary"
-        app:button_gradient_colors=""
-        app:button_press_solid_color="#01000000"
         app:button_radius="@dimen/lib_radius_common"
-        app:button_ripple_color="@color/colorAccent"
-        app:button_solid_color="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/finish_button" />
 

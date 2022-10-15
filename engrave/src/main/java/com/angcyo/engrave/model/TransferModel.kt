@@ -118,6 +118,7 @@ class TransferModel : ViewModel() {
         stopTransfer()
         val transferTask = TransferTask(taskId)
         _transferTask = transferTask
+        EngraveFlowDataHelper.startCreateTransferData(taskId)
         doBack {
             transferStateData.postValue(TransferTaskStateData(taskId, -1, null))
             val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
@@ -125,6 +126,7 @@ class TransferModel : ViewModel() {
                 canvasDelegate,
                 transferConfigEntity
             )
+            EngraveFlowDataHelper.finishCreateTransferData(taskId)
             if (!transferTask.isCancel) {
                 if (dataEntityList.isEmpty()) {
                     transferStateData.postValue(TransferTaskStateData(taskId, 0, EmptyException()))
@@ -182,6 +184,7 @@ class TransferModel : ViewModel() {
         _transferTask?.isFinish = true
         _transferTask = null
         L.i("数据传输任务完成:${taskId}")
+        EngraveFlowDataHelper.finishTransferData(taskId)
         doMain {
             transferStateData.value = TransferTaskStateData(taskId, 100, null, true)
             transferStateData.postValue(null)//清空
@@ -201,6 +204,9 @@ class TransferModel : ViewModel() {
         transferTask?.entityList = list
         transferTask?.isFinish = false
         transferTask?.isCancel = false
+
+        //
+        EngraveFlowDataHelper.startTransferData(transferTask?.taskId, list)
 
         //开始传输
         transferStateData.postValue(TransferTaskStateData(transferTask?.taskId, 0, null))
@@ -261,6 +267,11 @@ class TransferModel : ViewModel() {
                                                     it.sendPacketPercentage,
                                                     task.index,
                                                     task.count
+                                                )
+                                                EngraveFlowDataHelper.updateTransferDataProgress(
+                                                    task.taskId,
+                                                    progress,
+                                                    it.sendSpeed
                                                 )
                                                 doMain {
                                                     //及时回调

@@ -305,6 +305,16 @@ fun <T : Any> boxOf(
     return boxOf(entityClass.java, packageName, action)
 }
 
+inline fun <reified T : Any> KClass<T>.box(
+    packageName: String = defaultBoxStore(),
+    action: Box<T>.() -> Unit = {}
+): Box<T> {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    box.action()
+    return box
+}
+
 //endregion ---Box BoxStore---
 
 //region ---query find---
@@ -375,7 +385,7 @@ fun <T> Box<T>.findFirst(
 
 /**获取最后[limit]条记录*/
 fun <T> Box<T>.findLastList(limit: Long = 1, block: QueryBuilder<T>.() -> Unit = {}): List<T> {
-    val count = count()
+    val count = query(block).count()
     if (count <= 0) {
         //Invalid offset (-1): must be zero or positive
         return emptyList()
@@ -388,7 +398,8 @@ fun <T> Box<T>.findLastList(
     queryCondition: QueryCondition<T>? = null,
     block: QueryBuilder<T>.() -> Unit = {}
 ): List<T> {
-    val count = count()
+    val countBuilder = if (queryCondition == null) query() else query(queryCondition)
+    val count = countBuilder.apply(block).build().count() //先查数量
     if (count <= 0) {
         //Invalid offset (-1): must be zero or positive
         return emptyList()
@@ -504,7 +515,7 @@ inline fun <reified T : Any> KClass<T>.saveEntity(
 inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
     packageName: String = defaultBoxStore(),
     init: T.() -> Unit = {},
-    query: QueryBuilder<T>.() -> Unit,
+    noinline query: QueryBuilder<T>.() -> Unit,
 ): T {
     val cls = this.java
     val box = boxOf(cls, packageName)
@@ -527,7 +538,7 @@ inline fun <reified T> Collection<T>.saveAllEntity(packageName: String = default
 /**先通过查询条件查找满足条件的实体, 如果不存在则创建新的*/
 inline fun <reified T : Any> KClass<T>.updateOrCreateEntity(
     packageName: String = defaultBoxStore(),
-    query: QueryBuilder<T>.() -> Unit,
+    noinline query: QueryBuilder<T>.() -> Unit,
     update: T.() -> Unit
 ): Long {
     val cls = this.java

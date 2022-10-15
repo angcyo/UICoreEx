@@ -527,9 +527,63 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "11:7833260621013857816",
+      "lastPropertyId": "10:5042152964890805673",
+      "name": "TransferMonitorEntity",
+      "properties": [
+        {
+          "id": "1:8988021729607495085",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5889267508670414019",
+          "name": "taskId",
+          "type": 9
+        },
+        {
+          "id": "4:1376641939791304421",
+          "name": "dataMakeStartTime",
+          "type": 6
+        },
+        {
+          "id": "5:4489062507405403487",
+          "name": "dataMakeFinishTime",
+          "type": 6
+        },
+        {
+          "id": "6:923859794434748919",
+          "name": "dataTransferStartTime",
+          "type": 6
+        },
+        {
+          "id": "7:7302205120565267082",
+          "name": "dataTransferFinishTime",
+          "type": 6
+        },
+        {
+          "id": "8:1985710584954463007",
+          "name": "dataTransferSize",
+          "type": 6
+        },
+        {
+          "id": "9:7203050747091418196",
+          "name": "dataTransferProgress",
+          "type": 5
+        },
+        {
+          "id": "10:5042152964890805673",
+          "name": "dataTransferSpeed",
+          "type": 7
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "10:6125483051008058143",
+  "lastEntityId": "11:7833260621013857816",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -542,7 +596,8 @@
     7331769955861319310,
     3436443603844460576,
     1120358512436187857,
-    6354807431234432423
+    6354807431234432423,
+    5502025800730445366
   ],
   "retiredRelationUids": [],
   "version": 1
