@@ -170,16 +170,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                     setVisible(true, Strategy.preview)
                     borderRectRotate = info.rotate
                     borderColor = PREVIEW_COLOR
-                    borderRect = canvasDelegate.getCanvasViewBox()
-                        .coordinateSystemRectToViewRect(
-                            if (info.rotate == null) {
-                                //非4点预览
-                                info.rotateBounds
-                            } else {
-                                //4点预览
-                                info.originBounds
-                            }
-                        )
+                    borderRect = if (info.rotate == null) {
+                        //非4点预览
+                        info.rotateBounds
+                    } else {
+                        //4点预览
+                        info.originBounds
+                    }
                 }
             }
         }
