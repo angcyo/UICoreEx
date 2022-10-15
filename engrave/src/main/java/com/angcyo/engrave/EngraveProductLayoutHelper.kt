@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
@@ -35,11 +36,21 @@ import com.angcyo.widget.span.span
  */
 class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
+    companion object {
+        /**预览的提示颜色和蚂蚁线的颜色*/
+        const val PREVIEW_COLOR = Color.BLUE
+
+        /**雕刻颜色*/
+        const val ENGRAVE_COLOR = Color.RED
+    }
+
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
+
+    //预览模式
     val previewModel = vmApp<PreviewModel>()
 
     //雕刻提示
@@ -48,23 +59,24 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
     /**绑定布局*/
     @CanvasEntryPoint
     fun bindCanvasView(viewHolder: DslViewHolder, rootLayout: ViewGroup, canvasView: CanvasView?) {
+        val fragment = engraveCanvasFragment.fragment
 
         //状态管理
         stateLayoutManager.group = viewHolder.group(R.id.canvas_device_state_wrap_layout)
 
         //监听产品信息
-        laserPeckerModel.productInfoData.observe(engraveCanvasFragment.fragment) { productInfo ->
+        laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
             _showProductLimit(canvasView, productInfo)
         }
 
         //蓝牙设置改变后回调
-        laserPeckerModel.updateSettingOnceData.observe(engraveCanvasFragment.fragment) {
+        laserPeckerModel.updateSettingOnceData.observe(fragment) {
             if (it == true) {
                 _showZRSLimit(canvasView)
             }
         }
         //设备初始化后回调
-        laserPeckerModel.initializeOnceData.observe(engraveCanvasFragment.fragment) {
+        laserPeckerModel.initializeOnceData.observe(fragment) {
             if (it == true) {
                 _showZRSLimit(canvasView)
             }
@@ -84,7 +96,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 */
 
         //监听设备状态, Z/R/S连接状态
-        laserPeckerModel.deviceStateData.observe(engraveCanvasFragment.fragment) {
+        laserPeckerModel.deviceStateData.observe(fragment) {
             /* val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
              val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
              val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
@@ -117,10 +129,10 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 //提示
                 if (it.isModeEngravePreview()) {
                     //预览模式
-                    showDangerWaring(rootLayout, Color.BLUE.alphaRatio(0.4f))
+                    showDangerWaring(rootLayout, PREVIEW_COLOR.alphaRatio(0.4f))
                 } else if (it.isModeEngrave()) {
                     //雕刻模式
-                    showDangerWaring(rootLayout, Color.RED.alphaRatio(0.4f))
+                    showDangerWaring(rootLayout, ENGRAVE_COLOR.alphaRatio(0.4f))
                 } else {
                     //空闲
                     dangerWarningView?.removeFromParent()
@@ -146,24 +158,34 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                     it.progress = info.progress
                 }
             }
-        }
-
-        //监听正在预览的item
-        engraveModel.engraveItemInfoData.observe(fragment, allowBackward = false) { info ->
-            info?.let {
-                canvasView?.canvasDelegate?.progressRenderer?.let {
-                    it.borderRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
-                    //是否激活绘制旋转后的边框
-                    it.drawRotateBorder = previewModel.previewInfoData.value?.rotate != null
-                }
-            }
         }*/
 
+        //监听正在预览的矩形
+        previewModel.previewInfoData.observe(fragment, allowBackward = false) { info ->
+            val canvasDelegate = canvasView?.canvasDelegate
+            if (info == null) {
+                canvasDelegate?.progressRenderer?.setVisible(false, Strategy.preview)
+            } else {
+                canvasDelegate?.progressRenderer?.apply {
+                    setVisible(true, Strategy.preview)
+                    borderRectRotate = info.rotate
+                    borderColor = PREVIEW_COLOR
+                    borderRect = canvasDelegate.getCanvasViewBox()
+                        .coordinateSystemRectToViewRect(
+                            if (info.rotate == null) {
+                                //非4点预览
+                                info.rotateBounds
+                            } else {
+                                //4点预览
+                                info.originBounds
+                            }
+                        )
+                }
+            }
+        }
+
         //监听范围预览
-        laserPeckerModel.overflowInfoData.observe(
-            engraveCanvasFragment.fragment,
-            allowBackward = false
-        ) {
+        laserPeckerModel.overflowInfoData.observe(fragment, allowBackward = false) {
             if (it != null && (it.isOverflowBounds || it.isOverflowLimit)) {
                 previewOverflowStateInfo.text = if (it.isOverflowBounds) {
                     _string(R.string.out_of_bounds)

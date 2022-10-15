@@ -2,9 +2,9 @@ package com.angcyo.engrave.model
 
 import android.graphics.RectF
 import androidx.annotation.AnyThread
-import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -16,7 +16,7 @@ import com.angcyo.viewmodel.vmDataNull
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/24
  */
-class PreviewModel : ViewModel() {
+class PreviewModel : LifecycleViewModel() {
 
     companion object {
 
@@ -61,6 +61,18 @@ class PreviewModel : ViewModel() {
 
     val engraveModel = vmApp<EngraveModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+    init {
+        //监听设备状态
+        laserPeckerModel.deviceStateData.observe(this) { queryState ->
+            if (queryState?.isModeEngravePreview() == true) {
+                //no op
+            } else {
+                //非预览模式, 清空预览数据
+                previewInfoData.postValue(null)
+            }
+        }
+    }
 
     /**刷新预览, 根据当前的状态, 择优发送指令
      * 在改变激光强度之后调用*/
