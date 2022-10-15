@@ -4,10 +4,10 @@ import android.view.Gravity
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.widget.EngraveProgressView
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.span.span
 
 /**
@@ -47,9 +47,14 @@ class EngraveProgressItem : DslAdapterItem() {
         /*val engraveLayerInfo = EngraveFlowDataHelper.getCurrentEngraveLayer(itemTaskId)
         itemHolder.tv(R.id.engrave_layer_view)?.text = engraveLayerInfo?.toText()*/
 
-        itemHolder.v<EngraveProgressView>(R.id.engrave_progress_view)?.apply {
+        /*itemHolder.v<EngraveProgressView>(R.id.engrave_progress_view)?.apply {
             val progress = EngraveFlowDataHelper.calcEngraveProgress(itemTaskId)
             progressValue = progress
+        }*/
+
+        itemHolder.v<DslProgressBar>(R.id.engrave_progress_view)?.apply {
+            val progress = EngraveFlowDataHelper.calcEngraveProgress(itemTaskId)
+            setProgress(progress)
         }
     }
 }

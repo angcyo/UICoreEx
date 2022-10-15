@@ -642,7 +642,7 @@ data class EngravePreviewCmd(
             }
             else -> append("Unknown")
         }
-        append(" x:$x y:$y px:$px pwr:$pwr")
+        append(" x:$x y:$y px:$px pwr:$pwr diameter:${diameter}")
     }
 
     /**获取预览范围矩形*/
