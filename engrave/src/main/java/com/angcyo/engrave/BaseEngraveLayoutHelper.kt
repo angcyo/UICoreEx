@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.EngraveHelper.percentList
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
@@ -75,11 +76,6 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 }
             }
         }
-    }
-
-    /**生成百分比数值列表*/
-    fun percentList(max: Int = 100): List<Int> {
-        return (1..max).toList()
     }
 
     //
@@ -275,7 +271,10 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 }
             }
             //功率/深度
-            EngraveOptionWheelItem()() {
+            EngravePropertyItem()() {
+                itemEngraveConfigEntity = engraveConfigEntity
+            }
+            /*EngraveOptionWheelItem()() {
                 itemTag = MaterialEntity::power.name
                 itemLabelText = _string(R.string.custom_power)
                 itemWheelList = percentList()
@@ -299,7 +298,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 itemEngraveConfigEntity = engraveConfigEntity
                 itemSelectedIndex =
                     EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.time)
-            }
+            }*/
             EngraveConfirmItem()() {
                 itemClick = {
                     //开始雕刻

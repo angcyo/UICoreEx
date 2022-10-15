@@ -5,7 +5,7 @@
     style="@style/LibBodyTextStyle"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:minWidth="50dp"
+    android:minWidth="80dp"
     android:minHeight="40dp"
-    android:paddingHorizontal="@dimen/lib_xxhdpi"
+    android:paddingHorizontal="@dimen/lib_xhdpi"
     tools:text="首页" />

@@ -33,6 +33,11 @@ object EngraveHelper {
         return diameter
     }
 
+    /**生成百分比数值列表*/
+    fun percentList(max: Int = 100): List<Int> {
+        return (1..max).toList()
+    }
+
     //<editor-fold desc="material">
 
     /**材质列表*/

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/lib_hdpi"
+    android:paddingLeft="80dp"
+    android:paddingRight="@dimen/lib_padding_right">
+
+    <com.angcyo.widget.layout.DslFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:r_flow_equ_width="true"
+        app:r_flow_item_horizontal_space="@dimen/lib_xhdpi"
+        app:r_flow_item_vertical_space="@dimen/lib_xhdpi"
+        app:r_flow_max_line_count="3">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/power_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/lib_solid_tag_selector"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/lib_spacing_extra"
+            android:padding="@dimen/lib_hdpi"
+            tools:text="功率\n99%" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/speed_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/lib_solid_tag_selector"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/lib_spacing_extra"
+            android:padding="@dimen/lib_hdpi"
+            tools:text="深度\n99%" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tims_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/lib_solid_tag_selector"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/lib_spacing_extra"
+            android:padding="@dimen/lib_hdpi"
+            tools:text="次数\n99" />
+
+
+    </com.angcyo.widget.layout.DslFlowLayout>
+
+</FrameLayout>
