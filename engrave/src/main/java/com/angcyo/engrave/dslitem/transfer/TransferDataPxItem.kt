@@ -8,6 +8,8 @@ import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.tablayout.DslTabLayout
+import com.angcyo.widget.DslViewHolder
 
 /**
  * 数据分辨率选择
@@ -40,6 +42,18 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
 
     init {
         itemText = _string(R.string.resolution_ratio)
+    }
+
+    override fun onItemBind(
+        itemHolder: DslViewHolder,
+        itemPosition: Int,
+        adapterItem: DslAdapterItem,
+        payloads: List<Any>
+    ) {
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        itemHolder.v<DslTabLayout>(tabLayoutItemConfig.itemTabLayoutViewId)?.apply {
+            itemEquWidthCount = -1
+        }
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
