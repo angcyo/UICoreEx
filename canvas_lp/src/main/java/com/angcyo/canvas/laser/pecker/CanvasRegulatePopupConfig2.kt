@@ -39,18 +39,6 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
     companion object {
 
-        const val REGULATE_INVERT = 1
-        const val REGULATE_THRESHOLD = 2
-        const val REGULATE_LINE_SPACE = 3
-        const val REGULATE_DIRECTION = 4
-        const val REGULATE_ANGLE = 5
-
-        //对比度
-        const val REGULATE_CONTRAST = 6
-
-        //亮度
-        const val REGULATE_BRIGHTNESS = 7
-
         //属性key
 
         @Deprecated("请使用具体的key")
@@ -121,7 +109,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
     val regulateList = mutableListOf<String>()
 
     /**保存修改后的属性, 用来恢复*/
-    var property = CanvasRegulatePopupConfig2.keepProperty
+    var property = keepProperty
 
     /**是否实时监听改变*/
     var realTimeApply: Boolean = true
