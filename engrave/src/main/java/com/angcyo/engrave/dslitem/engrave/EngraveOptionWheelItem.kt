@@ -12,6 +12,10 @@ import com.angcyo.widget.DslViewHolder
 
 /**
  * 雕刻参数选项item
+ *
+ * 3合1 item
+ * [com.angcyo.engrave.dslitem.engrave.EngravePropertyItem]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/02
  */

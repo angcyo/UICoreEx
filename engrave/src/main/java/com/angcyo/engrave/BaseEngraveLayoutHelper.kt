@@ -9,6 +9,8 @@ import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.engrave.dslitem.transfer.DataStopTransferItem
+import com.angcyo.engrave.dslitem.transfer.DataTransmittingItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.engrave.model.EngraveModel

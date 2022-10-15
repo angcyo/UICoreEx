@@ -7,6 +7,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveHelper.findOptionIndex
 import com.angcyo.engrave.EngraveHelper.percentList
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -17,6 +18,9 @@ import com.angcyo.widget.span.span
 
 /**
  * 雕刻属性item, 包含功率/深度/次数
+ *
+ * [com.angcyo.engrave.dslitem.engrave.EngraveOptionWheelItem]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/15
  */
@@ -85,7 +89,11 @@ class EngravePropertyItem : DslAdapterItem() {
                 wheelUnit = "%"
 
                 wheelItemSelectorAction = { dialog, index, item ->
-                    itemEngraveConfigEntity?.power = getSelectedInt(index, power)
+                    getSelectedInt(index, power).let {
+                        itemEngraveConfigEntity?.power = it
+                        HawkEngraveKeys.lastPower = it
+                    }
+
                     itemChanging = true
                     false
                 }
@@ -99,7 +107,10 @@ class EngravePropertyItem : DslAdapterItem() {
                 wheelUnit = "%"
 
                 wheelItemSelectorAction = { dialog, index, item ->
-                    itemEngraveConfigEntity?.depth = getSelectedInt(index, depth)
+                    getSelectedInt(index, depth).let {
+                        itemEngraveConfigEntity?.depth = it
+                        HawkEngraveKeys.lastDepth = it
+                    }
                     itemChanging = true
                     false
                 }
