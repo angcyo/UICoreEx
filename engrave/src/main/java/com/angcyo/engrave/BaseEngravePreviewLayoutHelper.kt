@@ -4,12 +4,8 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.engrave.dslitem.EngraveDividerItem
-import com.angcyo.engrave.dslitem.preview.PreviewBracketItem
-import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
-import com.angcyo.engrave.dslitem.preview.PreviewControlItem
-import com.angcyo.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.engrave.dslitem.preview.*
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
@@ -38,7 +34,7 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         }
     }
 
-    //
+    //region ---预览界面/支架控制---
 
     /**渲染预览界面界面*/
     fun renderPreviewItems() {
@@ -49,15 +45,24 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             UMEvent.PREVIEW.umengEventValue()
         }
+
+        val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(flowTaskId)
+
         renderDslAdapter {
             //
             PreviewTipItem()()
-            PreviewBrightnessItem()()
+            PreviewBrightnessItem()() {
+                itemPreviewConfigEntity = previewConfigEntity
+            }
             if (laserPeckerModel.productInfoData.value?.isCI() == true) {
                 //C1没有升降支架
             } else {
-                PreviewBracketItem()() {
-                    itemValueUnit = CanvasConstant.valueUnit
+                PreviewBracketItem()()
+            }
+            if (laserPeckerModel.isROpen()) {
+                //物理直径
+                PreviewDiameterItem()() {
+                    itemPreviewConfigEntity = previewConfigEntity
                 }
             }
             EngraveDividerItem()()
@@ -80,7 +85,7 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         }
     }
 
-    //
+    //endregion ---预览界面/支架控制---
 
     /**更新预览, 比如元素选择改变后/大小改变后*/
     fun updatePreview(async: Boolean = true, zPause: Boolean = false) {

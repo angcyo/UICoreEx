@@ -339,7 +339,7 @@
     },
     {
       "id": "7:6688223120819802683",
-      "lastPropertyId": "3:5456714934385824938",
+      "lastPropertyId": "4:3318397583815322618",
       "name": "PreviewConfigEntity",
       "properties": [
         {
@@ -356,6 +356,11 @@
         {
           "id": "3:5456714934385824938",
           "name": "diameterPixel",
+          "type": 7
+        },
+        {
+          "id": "4:3318397583815322618",
+          "name": "pwrProgress",
           "type": 7
         }
       ],

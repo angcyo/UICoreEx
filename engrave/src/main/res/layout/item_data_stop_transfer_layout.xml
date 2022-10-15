@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lib_item_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,6 +42,7 @@
         android:minHeight="@dimen/lib_item_min_height"
         android:paddingHorizontal="@dimen/lib_xxhdpi"
         android:text="@string/stop_transfer"
-        android:textColor="@color/text_general_color" />
+        android:textColor="@color/text_general_color"
+        app:button_radius="@dimen/lib_radius_common" />
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.interceptParentTouchEvent
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.progress.DslSeekBar
@@ -46,7 +47,9 @@ class PreviewBrightnessItem : BasePreviewItem() {
 
         itemHolder.v<DslSeekBar>(R.id.lib_seek_view)?.apply {
             progressTextFormatAction = itemProgressTextFormatAction
-            setProgress((HawkEngraveKeys.lastPwrProgress * 100).toInt(), animDuration = 0)
+            val pwrProgress =
+                itemPreviewConfigEntity?.pwrProgress ?: HawkEngraveKeys.lastPwrProgress
+            setProgress((pwrProgress * 100).toInt(), animDuration = 0)
             config {
                 /*onSeekChanged = { value, fraction, fromUser ->
                     if (!isTouchDown && fromUser) {
@@ -55,7 +58,10 @@ class PreviewBrightnessItem : BasePreviewItem() {
                     }
                 }*/
                 onSeekTouchEnd = { value, fraction ->
+                    itemPreviewConfigEntity?.pwrProgress = fraction
+                    itemPreviewConfigEntity?.lpSaveEntity()
                     HawkEngraveKeys.lastPwrProgress = fraction
+                    //通知机器
                     previewModel.refreshPreview(true, false)
                 }
             }

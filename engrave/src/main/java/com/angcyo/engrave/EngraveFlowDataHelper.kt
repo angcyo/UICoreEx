@@ -112,10 +112,11 @@ object EngraveFlowDataHelper {
 
     //region ---预览相关---
 
-    /**构建一个预览配置信息*/
+    /**构建或者获取一个预览配置信息*/
     fun generatePreviewConfig(taskId: String?): PreviewConfigEntity {
         return PreviewConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
+            pwrProgress = HawkEngraveKeys.lastPwrProgress
             diameterPixel = HawkEngraveKeys.lastDiameterPixel
         }) {
             apply(PreviewConfigEntity_.taskId.equal("$taskId"))
@@ -126,7 +127,7 @@ object EngraveFlowDataHelper {
 
     //region ---传输/数据相关---
 
-    /**获取生成数据需要的配置信息*/
+    /**构建或者获取生成数据需要的配置信息*/
     fun generateTransferConfig(taskId: String?): TransferConfigEntity {
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
@@ -224,7 +225,7 @@ object EngraveFlowDataHelper {
         return engraveConfigEntity
     }
 
-    /**获取对应雕刻图层的雕刻配置信息*/
+    /**构建或者获取对应雕刻图层的雕刻配置信息*/
     fun generateEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
@@ -257,7 +258,7 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**获取一个雕刻任务实体*/
+    /**构建或者获取一个雕刻任务实体*/
     fun generateEngraveTask(taskId: String?): EngraveTaskEntity {
         return EngraveTaskEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId

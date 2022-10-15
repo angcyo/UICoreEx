@@ -24,13 +24,16 @@ data class PreviewConfigEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**[com.angcyo.engrave.data.HawkEngraveKeys.getLastPwrProgress]
+     * 预览光功率设置 [0~1f]*/
+    var pwrProgress: Float = -1f,
+
     //---L4专属---
 
     /**雕刻物体直径, 这里用像素作为单位
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
-     *
-     * [com.angcyo.engrave.data.EngraveDataInfo.width]
-     * [com.angcyo.engrave.data.EngraveDataInfo.height]
+     * [com.angcyo.engrave.data.HawkEngraveKeys.lastDiameterPixel]
+     * [com.angcyo.engrave.data.HawkEngraveKeys.lastMinDiameterPixel]
      * */
     @Px
     var diameterPixel: Float = -1f,

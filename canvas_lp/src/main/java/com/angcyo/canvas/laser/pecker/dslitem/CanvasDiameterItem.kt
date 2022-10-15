@@ -3,11 +3,11 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.widget.TextView
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.CanvasConstant.valueUnit
-import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -45,14 +45,15 @@ class CanvasDiameterItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.perimeter_unit_view)?.text = valueUnit.getUnit()
-        itemHolder.tv(R.id.diameter_unit_view)?.text = valueUnit.getUnit()
+        val unit = valueUnit
+        itemHolder.tv(R.id.perimeter_unit_view)?.text = unit.getUnit()
+        itemHolder.tv(R.id.diameter_unit_view)?.text = unit.getUnit()
 
         itemHolder.tv(R.id.diameter_label_view)?.text = itemDiameterLabel
         itemHolder.tv(R.id.diameter_text_view)?.text =
-            valueUnit.convertPixelToValue(itemDiameter).canvasDecimal()
+            unit.convertPixelToValue(itemDiameter).unitDecimal()
         itemHolder.tv(R.id.perimeter_text_view)?.text =
-            valueUnit.convertPixelToValue(itemDiameter.toPerimeter()).canvasDecimal()
+            unit.convertPixelToValue(itemDiameter.toPerimeter()).unitDecimal()
 
         //
         bindPerimeter(itemHolder)
@@ -65,6 +66,7 @@ class CanvasDiameterItem : DslAdapterItem() {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@CanvasDiameterItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
                     val x = valueUnit.convertValueToPixel(value)
                     itemDiameter = x.toDiameter()
@@ -79,6 +81,7 @@ class CanvasDiameterItem : DslAdapterItem() {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@CanvasDiameterItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
                     val x = valueUnit.convertValueToPixel(value)
                     itemDiameter = x

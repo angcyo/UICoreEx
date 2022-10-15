@@ -7,9 +7,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
 import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.data.toPixel
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
@@ -19,7 +19,6 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.toast
-import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
 
@@ -39,9 +38,6 @@ class PreviewBracketItem : DslAdapterItem() {
         val BRACKET_MAX_STEP: Int = 65535//130, 65535
     }
 
-    /**单位*/
-    var itemValueUnit: IValueUnit? = null
-
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
@@ -58,7 +54,7 @@ class PreviewBracketItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         val heightPixel = HawkEngraveKeys.lastBracketHeight.toPixel()
-        val valueUnit = itemValueUnit ?: mmUnit
+        val valueUnit = CanvasConstant.valueUnit
         val value = valueUnit.convertPixelToValue(heightPixel)
 
         itemHolder.tv(R.id.bracket_height_view)?.text = value.unitDecimal()
@@ -72,6 +68,7 @@ class PreviewBracketItem : DslAdapterItem() {
                     false
                 }
                 keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { number ->
                     val numberPixel = valueUnit.convertValueToPixel(number)
                     var size = numberPixel.toMm()

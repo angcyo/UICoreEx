@@ -1,38 +1,24 @@
-package com.angcyo.engrave.dslitem.engrave
+package com.angcyo.engrave.dslitem.preview
 
 import android.widget.TextView
-import com.angcyo.library.unit.InchValueUnit
-import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
-import com.angcyo.item.style.ITextItem
-import com.angcyo.item.style.TextItemConfig
-import com.angcyo.item.style.itemText
-import com.angcyo.library.ex._string
+import com.angcyo.library.unit.unitDecimal
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.bindInRootView
 
 /**
  * 雕刻物理直径item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/14
  */
-/*
-class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
 
-    */
-/**雕刻选项*//*
-
-    var itemEngraveOptionInfo: EngraveOptionInfo? = null
-
-    override var textItemConfig: TextItemConfig = TextItemConfig()
+class PreviewDiameterItem : BasePreviewItem() {
 
     init {
-        itemText = "${_string(R.string.object_diameter)}:"
         itemLayoutId = R.layout.item_engrave_data_diameter
     }
 
@@ -45,47 +31,38 @@ class EngraveOptionDiameterItem : DslAdapterItem(), ITextItem {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         val valueUnit = CanvasConstant.valueUnit
-        itemHolder.tv(R.id.diameter_text_view)?.text = itemEngraveOptionInfo?.diameterPixel?.run {
-            valueUnit.convertPixelToValue(this).canvasDecimal(2)
-        } ?: "0"
+        val diameterPixel =
+            itemPreviewConfigEntity?.diameterPixel ?: HawkEngraveKeys.lastDiameterPixel
+        val diameterValue = valueUnit.convertPixelToValue(diameterPixel)
 
-        itemHolder.tv(R.id.diameter_unit_view)?.text = when (valueUnit) {
-            is InchValueUnit -> "in"
-            is MmValueUnit -> "mm"
-            else -> "pixel"
-        }
+        itemHolder.tv(R.id.diameter_text_view)?.text = diameterValue.unitDecimal(2)
+        itemHolder.tv(R.id.diameter_unit_view)?.text = valueUnit.getUnit()
 
         bindDiameter(itemHolder)
     }
 
-    */
-/**绑定事件*//*
-
+    /**绑定事件, 物理直径输入*/
     fun bindDiameter(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.diameter_text_view) {
-            if (!itemHolder.isInRecyclerView()) {
-                bindInRootView(itemHolder.itemView)
-            }
-
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = {
                     if (itemHolder.isInRecyclerView()) {
                         updateAdapterItem()
-                    } else {
-                        bindInRootView(itemHolder.itemView)
                     }
                     false
                 }
                 keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { number ->
                     val value = CanvasConstant.valueUnit.convertValueToPixel(number)
-                    itemEngraveOptionInfo?.diameterPixel = value
+                    itemPreviewConfigEntity?.diameterPixel = value
+                    itemPreviewConfigEntity?.lpSaveEntity()
                     HawkEngraveKeys.lastDiameterPixel = value
 
-                    //通知item改变
-                    itemChanging = true
+                    //通知机器
+                    previewModel.refreshPreview(true, false)
                 }
             }
         }
     }
-}*/
+}
