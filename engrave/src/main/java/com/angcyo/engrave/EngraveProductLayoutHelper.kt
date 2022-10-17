@@ -216,14 +216,14 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
     }
 
     fun _updateProductLimit(canvasView: CanvasView, productInfo: LaserPeckerProductInfo) {
+        //最佳预览尺寸用蓝色提示
+        canvasView.canvasDelegate.showAndResetLimitBounds(productInfo.limitPath) {
+            limitStrokeColor = PREVIEW_COLOR
+        }
         //物理尺寸用红色提示
-        canvasView.canvasDelegate.showAndResetLimitBounds(productInfo.bounds.toPath()) {
+        canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
             isPrimary = true
             limitStrokeColor = ENGRAVE_COLOR
-        }
-        //最佳预览尺寸用蓝色提示
-        canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.limitPath) {
-            limitStrokeColor = PREVIEW_COLOR
         }
     }
 
@@ -253,13 +253,12 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
         if (productInfo != null && limitPath != null) {
             //追加显示Z轴显示框
-
-            canvasView.canvasDelegate.showAndResetLimitBounds(productInfo.bounds.toPath()) {
+            canvasView.canvasDelegate.showAndResetLimitBounds(limitPath) {
+                limitStrokeColor = ENGRAVE_COLOR
+            }
+            canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
                 isPrimary = true
                 enableRender = false
-            }
-            canvasView.canvasDelegate.addAndShowLimitBounds(limitPath) {
-                limitStrokeColor = ENGRAVE_COLOR
             }
         } else {
             _showProductLimit(canvasView, productInfo)
