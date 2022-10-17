@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/lib_hdpi"
         android:minHeight="35dp"
+        app:tab_border_item_background_solid_disable_color="@color/canvas_ico_disable"
         app:tab_item_is_equ_width="true">
 
         <androidx.appcompat.widget.AppCompatTextView

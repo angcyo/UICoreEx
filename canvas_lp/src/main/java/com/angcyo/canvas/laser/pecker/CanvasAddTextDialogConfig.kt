@@ -19,7 +19,7 @@ import com.angcyo.widget.tab
 class CanvasAddTextDialogConfig : InputDialogConfig() {
 
     companion object {
-        const val MAX_INPUT_LENGTH = 30
+        const val MAX_INPUT_LENGTH = 100
 
         const val KEY_ADD_TEXT = "key_canvas_add_text"
     }
@@ -92,7 +92,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                 }
             )
             //激活
-            isEnabled = canSwitchType
+            itemEnableSelector = canSwitchType
         }
     }
 

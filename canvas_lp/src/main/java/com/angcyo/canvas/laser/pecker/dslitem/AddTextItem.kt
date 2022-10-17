@@ -3,13 +3,10 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.graphics.GraphicsHelper
-import com.angcyo.canvas.graphics.addBarTextRender
-import com.angcyo.canvas.graphics.addQRTextRender
 import com.angcyo.canvas.graphics.addTextRender
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addTextDialog
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
@@ -32,6 +29,7 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
                 canSwitchType = false
                 onAddTextAction = { inputText, type ->
                     dataBean.text = "$inputText"
+                    dataBean.mtype = type
                     GraphicsHelper.updateRenderItem(itemRenderer, dataBean)
                 }
             }
@@ -47,18 +45,8 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
         itemClick = {
             itemFragment?.context?.addTextDialog {
                 onAddTextAction = { inputText, type ->
-                    when (type) {
-                        CanvasConstant.DATA_TYPE_QRCODE -> {
-                            itemCanvasDelegate?.addQRTextRender(inputText)
-                        }
-                        CanvasConstant.DATA_TYPE_BARCODE -> {
-                            itemCanvasDelegate?.addBarTextRender(inputText)
-                        }
-                        else -> {
-                            itemCanvasDelegate?.addTextRender(inputText)
-                            UMEvent.CANVAS_TEXT.umengEventValue()
-                        }
-                    }
+                    itemCanvasDelegate?.addTextRender(inputText, type)
+                    UMEvent.CANVAS_TEXT.umengEventValue()
                 }
             }
         }
