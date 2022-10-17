@@ -58,6 +58,8 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
         super.initDialogView(dialog, dialogViewHolder)
         dialogViewHolder.visible(R.id.lib_flow_layout, true)
         dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
+            //是否激活切换
+            itemEnableSelector = canSwitchType
             observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (!reselect) {
                     when (toIndex) {
@@ -91,8 +93,6 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                     else -> 0
                 }
             )
-            //激活
-            itemEnableSelector = canSwitchType
         }
     }
 
