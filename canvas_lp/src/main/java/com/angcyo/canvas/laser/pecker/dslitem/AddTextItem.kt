@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
-import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.addTextRender
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
@@ -28,9 +27,7 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
                 defaultInputString = dataBean.text
                 canSwitchType = false
                 onAddTextAction = { inputText, type ->
-                    dataBean.text = "$inputText"
-                    dataBean.mtype = type
-                    GraphicsHelper.updateRenderItem(itemRenderer, dataBean)
+                    itemRenderer.dataTextItem?.updateText("$inputText", type, itemRenderer)
                 }
             }
         }
