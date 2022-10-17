@@ -12,7 +12,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.component.fileSelector
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
-import com.angcyo.core.fragment.lightStyle
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
@@ -37,12 +36,8 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_model)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+        fragmentConfig.isLightStyle = true
         fragmentConfig.showTitleLineView = true
-        fragmentConfig.lightStyle()
-        super.onCreate(savedInstanceState)
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
