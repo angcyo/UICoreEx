@@ -169,11 +169,13 @@ class GCodeTransition : IEngraveTransition {
         } else {
             Gravity.LEFT
         }
+        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
         var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(
             pxBitmap,
             scanGravity,
             isFirst = isFirst,
-            isFinish = isFinish
+            isFinish = isFinish,
+            autoCnc = autoCnc
         )
         val gCodeText = gCodeFile.readText()
         //GCode数据
