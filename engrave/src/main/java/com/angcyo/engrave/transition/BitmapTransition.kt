@@ -10,7 +10,6 @@ import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
-import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath

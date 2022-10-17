@@ -6,8 +6,7 @@ import android.graphics.RectF
 import android.widget.TextView
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
-import com.angcyo.canvas.items.PictureShapeItem
-import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.canvasDecimal
@@ -282,12 +281,12 @@ class CanvasEditControlItem : DslAdapterItem() {
         //是否需要显示颜色控件
         var showColorView = false
         var color: Int = Color.TRANSPARENT //颜色
-        if (renderer is BaseItemRenderer<*>) {
+        if (renderer is DataItemRenderer) {
             val item = renderer.getRendererRenderItem()
-            if (item is PictureTextItem || item is PictureShapeItem) {
+            /*if (item is PictureTextItem || item is PictureShapeItem) {
                 showColorView = true
                 color = renderer.paint.color
-            }
+            }*/
         }
 
         //init

@@ -1,10 +1,8 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.data.textStyle
-import com.angcyo.canvas.items.PictureTextItem
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
+import com.angcyo.canvas.items.data.DataTextItem.Companion.TEXT_STYLE_NONE
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapterItem
@@ -21,19 +19,14 @@ import com.angcyo.widget.DslViewHolder
  */
 class TextStyleItem : CanvasControlItem2() {
 
-    var itemStyle: Int = PictureTextItem.TEXT_STYLE_NONE
+    var itemStyle: Int = TEXT_STYLE_NONE
 
     init {
         itemLayoutId = R.layout.item_canvas_icon_horizontal_layout
 
         itemClick = {
             itemRenderer?.let { renderer ->
-                if (renderer is PictureTextItemRenderer) {
-                    val renderItem = renderer.getRendererRenderItem()
-                    if (renderItem is PictureTextItem) {
-                        renderer.enableTextStyle(itemStyle, !itemIsSelected)
-                    }
-                } else if (renderer is DataItemRenderer) {
+                if (renderer is DataItemRenderer) {
                     renderer.dataTextItem?.updateTextStyle(itemStyle, !itemIsSelected, renderer)
                 }
                 updateAdapterItem()
@@ -51,12 +44,7 @@ class TextStyleItem : CanvasControlItem2() {
         payloads: List<Any>
     ) {
         val renderer = itemRenderer
-        if (renderer is PictureItemRenderer) {
-            val renderItem = renderer.getRendererRenderItem()
-            if (renderItem is PictureTextItem) {
-                itemIsSelected = renderItem.textStyle.have(itemStyle)
-            }
-        } else if (renderer is DataItemRenderer) {
+        if (renderer is DataItemRenderer) {
             itemIsSelected =
                 renderer.getRendererRenderItem()?.dataBean?.textStyle()?.have(itemStyle) == true
         }

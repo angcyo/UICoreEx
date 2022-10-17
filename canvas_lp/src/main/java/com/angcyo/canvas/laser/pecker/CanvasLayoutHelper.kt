@@ -16,13 +16,9 @@ import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.graphics.*
-import com.angcyo.canvas.items.PictureBitmapItem
-import com.angcyo.canvas.items.PictureShapeItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.drawCanvasRight
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderCommonEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItems
@@ -31,8 +27,6 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.addPictureBitmapRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
@@ -196,7 +190,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
                     engraveCanvasFragment.fragment.context.doodleDialog {
                         onDoodleResultAction = {
-                            canvasDelegate.addPictureBitmapRenderer(it)
+                            val bean = it.toBlackWhiteBitmapItemData()
+                            GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
                         }
                     }
                 }
@@ -237,23 +232,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     itemEnable = true
                     itemClick = {
                         canvasDelegate.getSelectedRenderer()?.let { renderer ->
-                            if (renderer is PictureItemRenderer) {
-                                renderer.getRendererRenderItem()?.let { item ->
-                                    if (item is PictureShapeItem) {
-                                        engraveCanvasFragment.fragment.loadingAsync({
-                                            item.shapePath.let { path ->
-                                                CanvasDataHandleOperate.pathStrokeToGCode(
-                                                    listOf(path),
-                                                    renderer.getRotateBounds(),
-                                                    renderer.rotate
-                                                )
-                                            }
-                                        }) {
-                                            //no op
-                                        }
-                                    }
-                                }
-                            }
+
                         }
                     }
                 }
@@ -295,41 +274,14 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
-                if (itemRenderer is PictureTextItemRenderer) {
-                    val renderItem = itemRenderer.rendererItem
-                    /*if (renderItem is PictureTextItem) {
-                        fragment.context?.inputDialog {
-                            inputViewHeight = 100 * dpi
-                            defaultInputString = renderItem.text
-                            maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-                            inputHistoryHawkKey = AddTextItem.KEY_ADD_TEXT
-                            onInputResult = { dialog, inputText ->
-                                if (inputText.isNotEmpty()) {
-                                    itemRenderer.updateItemText("$inputText")
-                                }
-                                false
-                            }
-                        }
-                    }*/
-                } else if (itemRenderer is PictureItemRenderer) {
-                    val renderItem = itemRenderer.rendererItem
-                    if (renderItem is PictureBitmapItem) {
-                        val renderer = itemRenderer as PictureItemRenderer<PictureBitmapItem>
-                        when (renderItem.dataType) {
-                            CanvasConstant.DATA_TYPE_BARCODE -> {
-                                //条形码
-                                AddTextItem.inputBarcode(canvasView, renderer)
-                            }
-
-                            CanvasConstant.DATA_TYPE_QRCODE -> {
-                                //二维码
-                                AddTextItem.inputQrCode(canvasView, renderer)
-                            }
-
-                            else -> {
-                                //图片
-                            }
-                        }
+                if (itemRenderer is DataItemRenderer) {
+                    val dataBean = itemRenderer.dataItem?.dataBean
+                    val type = dataBean?.mtype
+                    if (type == CanvasConstant.DATA_TYPE_QRCODE ||
+                        type == CanvasConstant.DATA_TYPE_BARCODE ||
+                        type == CanvasConstant.DATA_TYPE_TEXT
+                    ) {
+                        AddTextItem.amendInputText(canvasView, itemRenderer)
                     }
                 }
             }
@@ -538,42 +490,42 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     fun showShapeSelectLayout(vh: DslViewHolder, canvasView: CanvasView) {
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_line_ico
                 itemText = _string(R.string.canvas_line)
                 itemClick = {
                     canvasView.canvasDelegate.addLineRender()
                 }
             }
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_oval_ico
                 itemText = _string(R.string.canvas_oval)
                 itemClick = {
                     canvasView.canvasDelegate.addOvalRender()
                 }
             }
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_rectangle_ico
                 itemText = _string(R.string.canvas_rectangle)
                 itemClick = {
                     canvasView.canvasDelegate.addRectRender()
                 }
             }
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_polygon_ico
                 itemText = _string(R.string.canvas_polygon)
                 itemClick = {
                     canvasView.canvasDelegate.addPolygonRender()
                 }
             }
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_pentagram_ico
                 itemText = _string(R.string.canvas_pentagram)
                 itemClick = {
                     canvasView.canvasDelegate.addPentagramRender()
                 }
             }
-            ShapeItem(canvasView)() {
+            CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shape_love_ico
                 itemText = _string(R.string.canvas_love)
                 itemClick = {

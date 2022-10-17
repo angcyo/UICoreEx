@@ -35,6 +35,9 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
 
     }
 
+    /**是否可以切换类型*/
+    var canSwitchType: Boolean = true
+
     /**选中的数据类型*/
     var dataType: Int = CanvasConstant.DATA_TYPE_TEXT
 
@@ -88,6 +91,8 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                     else -> 0
                 }
             )
+            //激活
+            isEnabled = canSwitchType
         }
     }
 

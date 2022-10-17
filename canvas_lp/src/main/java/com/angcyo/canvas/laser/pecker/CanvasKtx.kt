@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasDataBean
 import com.angcyo.canvas.data.ItemDataBean
-import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_THRESHOLD_SPACE
+import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_THRESHOLD
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.toBitmapItemData
 import com.angcyo.canvas.graphics.toGCodeItemData
@@ -177,7 +177,7 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int): String? {
 fun Bitmap?.toBlackWhiteBitmapItemData(): ItemDataBean? {
     return toBitmapItemData {
         imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
-        src = this@toBlackWhiteBitmapItemData?.toBlackWhiteBitmap(DEFAULT_THRESHOLD_SPACE.toInt())
+        src = this@toBlackWhiteBitmapItemData?.toBlackWhiteBitmap(DEFAULT_THRESHOLD.toInt())
     }
 }
 

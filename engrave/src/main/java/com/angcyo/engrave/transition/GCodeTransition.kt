@@ -14,7 +14,6 @@ import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.getEngraveBitmap
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
@@ -49,7 +48,7 @@ class GCodeTransition : IEngraveTransition {
             val dataBean = dataItem?.dataBean
             if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
                 //需要处理成GCode数据
-                /*if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE) {
+                if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
                     //线条转GCode使用图片的方式
                     val bitmap = renderer.getEngraveBitmap()
                     bitmap?.let {
@@ -60,7 +59,7 @@ class GCodeTransition : IEngraveTransition {
                             param
                         )
                     }
-                } else */if (dataItem is DataPathItem) {
+                } else if (dataItem is DataPathItem) {
                     val pathList = dataItem.dataPathList
                     return _transitionPathTransferData(
                         renderer,

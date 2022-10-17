@@ -111,19 +111,6 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_crop
-            itemText = _string(R.string.canvas_crop)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleCrop(it, fragment, renderer) {
-                        updateItemSelected(false)
-                    }
-                    UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
-                }
-            }
-        }
         //扭曲
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_actions_ico
@@ -135,6 +122,21 @@ object CanvasEditLayoutHelper {
                         updateItemSelected(false)
                     }
                     UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
+                }
+            }
+            drawCanvasRight()
+        }
+        //剪裁用的是原图
+        CanvasControlItem2()() {
+            itemIco = R.drawable.canvas_bitmap_crop
+            itemText = _string(R.string.canvas_crop)
+            itemClick = {
+                updateItemSelected(!itemIsSelected)
+                if (itemIsSelected) {
+                    CanvasBitmapHandler.handleCrop(it, fragment, renderer) {
+                        updateItemSelected(false)
+                    }
+                    UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
                 }
             }
             drawCanvasRight()

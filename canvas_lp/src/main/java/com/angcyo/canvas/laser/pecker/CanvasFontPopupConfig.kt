@@ -5,11 +5,10 @@ import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.canvas.TypefaceInfo
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.items.renderer.PictureTextItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
 import com.angcyo.canvas.utils.FontManager
 import com.angcyo.component.getFile
@@ -184,9 +183,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
     //更新字体
     fun updatePaintTypeface(typeface: Typeface?) {
         val renderer = itemRenderer
-        if (renderer is PictureTextItemRenderer) {
-            renderer.updateTextTypeface(typeface)
-        } else if (renderer is DataItemRenderer) {
+        if (renderer is DataItemRenderer) {
             renderer.dataTextItem?.updateTextTypeface(typeface, renderer)
         }
     }

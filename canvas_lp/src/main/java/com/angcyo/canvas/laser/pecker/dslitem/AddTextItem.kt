@@ -2,11 +2,11 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.addBarTextRender
 import com.angcyo.canvas.graphics.addQRTextRender
 import com.angcyo.canvas.graphics.addTextRender
-import com.angcyo.canvas.items.PictureBitmapItem
-import com.angcyo.canvas.items.renderer.PictureItemRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addTextDialog
 import com.angcyo.canvas.utils.CanvasConstant
@@ -23,82 +23,18 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
 
     companion object {
 
-        /**输入条码*/
-        fun inputBarcode(
-            canvasView: CanvasView?,
-            itemRenderer: PictureItemRenderer<PictureBitmapItem>?
-        ) {
-            /*fragment.context?.inputDialog {
-                dialogTitle = _string(R.string.canvas_barcode)
-                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                digits = _string(R.string.lib_barcode_digits)
-                maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-                defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
-                onInputResult = { dialog, inputText ->
-                    if (itemRenderer == null) {
-                        //添加条码
-                        if (inputText.isNotEmpty()) {
-                            inputText.createBarCode()?.let {
-                                canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                    dataType = CanvasConstant.DATA_TYPE_BARCODE
-                                    data = inputText
-                                }
-                            }
-                        }
-                    } else {
-                        //修改条码
-                        val renderItem = itemRenderer.rendererItem
-                        if (inputText.isNotEmpty()) {
-                            inputText.createBarCode()?.let {
-                                if (renderItem is PictureBitmapItem) {
-                                    renderItem.originBitmap = it
-                                }
-                                renderItem?.data = inputText
-                                itemRenderer.requestRendererItemUpdate()
-                            }
-                        }
-                    }
-
-                    false
+        /**修改条码/二维码/文本内容*/
+        fun amendInputText(canvasView: CanvasView?, itemRenderer: DataItemRenderer) {
+            val dataBean = itemRenderer.dataItem?.dataBean ?: return
+            canvasView?.context?.addTextDialog {
+                dataType = dataBean.mtype
+                defaultInputString = dataBean.text
+                canSwitchType = false
+                onAddTextAction = { inputText, type ->
+                    dataBean.text = "$inputText"
+                    GraphicsHelper.updateRenderItem(itemRenderer, dataBean)
                 }
-            }*/
-        }
-
-        /**输入二维码*/
-        fun inputQrCode(
-            canvasView: CanvasView?,
-            itemRenderer: PictureItemRenderer<PictureBitmapItem>?
-        ) {
-            /*fragment.context?.inputDialog {
-                dialogTitle = _string(R.string.canvas_qrcode)
-                maxInputLength = AddTextItem.MAX_INPUT_LENGTH
-                defaultInputString = itemRenderer?.rendererItem?.data as CharSequence?
-                onInputResult = { dialog, inputText ->
-                    if (itemRenderer == null) {
-                        if (inputText.isNotEmpty()) {
-                            inputText.createQRCode()?.let {
-                                canvasView?.canvasDelegate?.addPictureBitmapRenderer(it)?.apply {
-                                    dataType = CanvasConstant.DATA_TYPE_QRCODE
-                                    data = inputText
-                                }
-                            }
-                        }
-                    } else {
-                        val renderItem = itemRenderer.rendererItem
-                        if (inputText.isNotEmpty()) {
-                            inputText.createQRCode()?.let {
-                                if (renderItem is PictureBitmapItem) {
-                                    renderItem.originBitmap = it
-                                }
-                                renderItem?.data = inputText
-                                itemRenderer.requestRendererItemUpdate()
-                            }
-                        }
-                    }
-                    false
-                }
-            }*/
-
+            }
         }
     }
 
@@ -110,15 +46,6 @@ class AddTextItem : CanvasControlItem2(), IFragmentItem {
 
         itemClick = {
             itemFragment?.context?.addTextDialog {
-                /*onInputResult = { dialog, inputText ->
-                    if (inputText.isNotEmpty()) {
-                        //canvasView.addTextRenderer("$inputText")
-                        //canvasView.addPictureTextRenderer("$inputText")
-                        canvasView.canvasDelegate.addPictureTextRender("$inputText")
-                        UMEvent.CANVAS_TEXT.umengEventValue()
-                    }
-                    false
-                }*/
                 onAddTextAction = { inputText, type ->
                     when (type) {
                         CanvasConstant.DATA_TYPE_QRCODE -> {

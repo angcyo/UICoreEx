@@ -1,7 +1,7 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
-import com.angcyo.canvas.items.PictureTextItem
+import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.updateItemSelected
@@ -45,25 +45,25 @@ class TextStyleSelectItem : CanvasControlItem2() {
                         TextStyleItem()() {
                             itemIco = R.drawable.canvas_text_bold_style_ico
                             itemText = _string(R.string.canvas_bold)
-                            itemStyle = PictureTextItem.TEXT_STYLE_BOLD
+                            itemStyle = DataTextItem.TEXT_STYLE_BOLD
                             itemRenderer = renderer
                         }
                         TextStyleItem()() {
                             itemIco = R.drawable.canvas_text_italic_style_ico
                             itemText = _string(R.string.canvas_italic)
-                            itemStyle = PictureTextItem.TEXT_STYLE_ITALIC
+                            itemStyle = DataTextItem.TEXT_STYLE_ITALIC
                             itemRenderer = renderer
                         }
                         TextStyleItem()() {
                             itemIco = R.drawable.canvas_text_under_line_style_ico
                             itemText = _string(R.string.canvas_under_line)
-                            itemStyle = PictureTextItem.TEXT_STYLE_UNDER_LINE
+                            itemStyle = DataTextItem.TEXT_STYLE_UNDER_LINE
                             itemRenderer = renderer
                         }
                         TextStyleItem()() {
                             itemIco = R.drawable.canvas_text_delete_line_style_ico
                             itemText = _string(R.string.canvas_delete_line)
-                            itemStyle = PictureTextItem.TEXT_STYLE_DELETE_LINE
+                            itemStyle = DataTextItem.TEXT_STYLE_DELETE_LINE
                             itemRenderer = renderer
                         }
                     }
