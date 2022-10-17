@@ -10,7 +10,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/10
  */
-class TextOrientationItem : CanvasControlItem() {
+class TextOrientationItem : CanvasControlItem2() {
 
     var itemOrientation: Int = LinearLayout.HORIZONTAL
 
