@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.angcyo.base.requestSdCardPermission
 import com.angcyo.canvas.TypefaceInfo
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
@@ -60,6 +61,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         tabLayout?.apply {
             observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (!reselect) {
+                    viewHolder.visible(R.id.sync_font_button, toIndex == 2)
                     when (toIndex) {
                         1 -> {
                             //系统字体
@@ -123,6 +125,21 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
                 }
             } else {
                 toast(_string(R.string.canvas_cannot_import))
+            }
+        }
+
+        //同步SD上的字体
+        viewHolder.click(R.id.sync_font_button) {
+            viewHolder.context.requestSdCardPermission {
+                if (it) {
+                    FontManager.customFontFolderList.firstOrNull()?.let { folder ->
+                        FontManager.backupFontTo(folder)
+                        FontManager.loadCustomFont(folder)
+                        renderAdapterFontList(FontManager.getCustomFontList())
+
+                        toast("Success")
+                    }
+                }
             }
         }
     }

@@ -13,12 +13,15 @@ import kotlin.reflect.KClass
  */
 object LPBox {
 
+    /**数据库文件夹名*/
+    const val DB_NAME = "LaserPecker"
+
     /**数据库的包名, [BoxStore]存储的地方*/
     const val PACKAGE_NAME = BuildConfig.LIBRARY_PACKAGE_NAME
 
     /**数据库初始化*/
     fun init(context: Context) {
-        DslBox.init(context, PACKAGE_NAME, "LaserPecker", false)
+        DslBox.init(context, PACKAGE_NAME, DB_NAME, false)
     }
 }
 

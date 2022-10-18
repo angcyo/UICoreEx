@@ -11,4 +11,5 @@
     <string name="canvas_rotation_axis">旋转轴</string>
     <string name="canvas_cone">圆锥</string>
     <string name="canvas_ball">球体</string>
+    <string name="canvas_sync_font">备份/同步字体</string>
 </resources>
