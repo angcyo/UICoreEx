@@ -5,7 +5,7 @@ import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.data.ItemDataBean
-import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
+import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -100,7 +100,7 @@ interface IEngraveTransition {
     ) {
         transferDataEntity.taskId = transferConfigEntity.taskId
 
-        val mmValueUnit = mmUnit
+        val mmValueUnit = MM_UNIT
         transferDataEntity.dpi = transferConfigEntity.dpi
         transferDataEntity.name = transferConfigEntity.name
         

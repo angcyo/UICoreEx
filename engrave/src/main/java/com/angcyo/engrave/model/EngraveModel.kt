@@ -7,7 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
+import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -245,7 +245,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         engraveConfigEntity: EngraveConfigEntity
     ) {
         val diameter =
-            (mmUnit.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
+            (MM_UNIT.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
         buildString {
             append("开始雕刻:[${transferDataEntity.taskId}]")
             append(" ${transferDataEntity.index}")

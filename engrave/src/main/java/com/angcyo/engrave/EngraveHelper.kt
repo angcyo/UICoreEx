@@ -2,7 +2,7 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
+import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -27,7 +27,7 @@ object EngraveHelper {
         val diameter = if (!laserPeckerModel.haveExDevice()) {
             0
         } else {
-            val mm = mmUnit.convertPixelToValue(HawkEngraveKeys.lastDiameterPixel)
+            val mm = MM_UNIT.convertPixelToValue(HawkEngraveKeys.lastDiameterPixel)
             (mm * 100).toInt()
         }
         return diameter

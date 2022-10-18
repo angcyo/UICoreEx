@@ -13,7 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.canvas.data.ItemDataBean.Companion.mmUnit
+import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
@@ -225,7 +225,7 @@ object LaserPeckerHelper {
         //所有支持的分辨率
         val pxList: MutableList<PxInfo> = mutableListOf()
 
-        val mmValueUnit = mmUnit
+        val mmValueUnit = MM_UNIT
         val bounds = RectF()
         val previewBounds = RectF()
         var isOriginCenter = center ?: false
