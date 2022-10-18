@@ -1,5 +1,6 @@
 package com.angcyo.engrave.data
 
+import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
@@ -10,6 +11,8 @@ import com.angcyo.library.component.HawkPropertyValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/24
  */
+
+@Keep
 object HawkEngraveKeys {
 
     /**最后一次设置的支架升降高度*/
