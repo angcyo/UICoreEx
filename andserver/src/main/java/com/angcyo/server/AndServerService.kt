@@ -44,7 +44,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var notifyChannelName = DEFAULT_CHANNEL_NAME
 
     /**通知图标*/
-    var notifyIcon = DEFAULT_NOTIFY_ICON
+    var notifyIcon = DEFAULT_NOTIFY_ICON!!
 
     /**通知的名称*/
     var notifyName: String = ""

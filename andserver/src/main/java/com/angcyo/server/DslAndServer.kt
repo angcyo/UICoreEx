@@ -29,7 +29,8 @@ object DslAndServer {
     var DEFAULT_CHANNEL_NAME = "AndServer"
 
     /**通知图标*/
-    var DEFAULT_NOTIFY_ICON = DslNotify.DEFAULT_NOTIFY_ICON
+    var DEFAULT_NOTIFY_ICON: Int? = null
+        get() = field ?: DslNotify.DEFAULT_NOTIFY_ICON
 
     init {
         DebugFragment.addDebugAction {

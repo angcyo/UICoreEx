@@ -31,7 +31,7 @@ class FaviconWebsite : BasicWebsite() {
     }
 
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
-        val drawable = _drawable(DslAndServer.DEFAULT_NOTIFY_ICON)
+        val drawable = _drawable(DslAndServer.DEFAULT_NOTIFY_ICON!!)
         val bitmap = drawable?.toBitmap()
         val bytes = bitmap?.toBytes()
         val inputStream: InputStream? = bytes?.toInputStream()
