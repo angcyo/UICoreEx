@@ -5,13 +5,11 @@ import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.base.requestSdCardPermission
-import com.angcyo.canvas.TypefaceInfo
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
-import com.angcyo.canvas.utils.FontManager
 import com.angcyo.component.getFile
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
@@ -19,9 +17,11 @@ import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
+import com.angcyo.library.component.FontManager
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter

@@ -12,7 +12,6 @@ import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
 import com.angcyo.canvas.utils.*
-import com.angcyo.canvas.utils.FontManager.toTypeface
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
@@ -22,6 +21,8 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.library.component.FontManager
+import com.angcyo.library.component.FontManager.toTypeface
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.putData
