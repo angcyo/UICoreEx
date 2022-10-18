@@ -8,35 +8,5 @@
     android:paddingVertical="@dimen/lib_ldpi"
     app:r_flow_equ_width="true"
     app:r_flow_item_horizontal_space="@dimen/lib_xhdpi"
-    app:r_flow_item_vertical_space="@dimen/lib_xhdpi">
-
-    <!--动态添加-->
-
-    <!-- <androidx.appcompat.widget.AppCompatTextView
-         style="@style/LibBodyTextStyle"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
-         android:gravity="center"
-         android:minHeight="@dimen/lib_normal_item_height"
-         android:text="范围预览" />
-
-     <androidx.appcompat.widget.AppCompatTextView
-         style="@style/LibBodyTextStyle"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
-         android:gravity="center"
-         android:minHeight="@dimen/lib_normal_item_height"
-         android:text="范围预览" />
-
-     <androidx.appcompat.widget.AppCompatTextView
-         style="@style/LibBodyTextStyle"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:background="@drawable/lib_theme_horizontal_gradient_check_selector"
-         android:gravity="center"
-         android:minHeight="@dimen/lib_normal_item_height"
-         android:text="范围预览" />-->
-
-</com.angcyo.widget.layout.DslFlowLayout>
+    app:r_flow_item_vertical_space="@dimen/lib_xhdpi"
+    app:r_flow_preview_item_layout_id="@layout/layout_preview_control_view" />
