@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.angcyo.base.dslAHelper
-import com.angcyo.canvas.data.ItemDataBean
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.vmDataOnce
@@ -26,12 +25,15 @@ class CanvasOpenModel : ViewModel() {
         var OPEN_ACTIVITY_FRAGMENT_CLASS: Class<out Fragment>? = null
     }
 
-    /**需要打开的数据*/
-    val openPendingData = vmDataOnce<ItemDataBean?>()
+    /**需要打开的数据
+     * 支持[com.angcyo.canvas.data.ItemDataBean]
+     * 支持[com.angcyo.canvas.data.CanvasDataBean]
+     * */
+    val openPendingData = vmDataOnce<CanvasOpenFileType?>()
 
     /**使用创作打开一个图片/GCode/SVG*/
     @CallPoint
-    fun open(context: Context, bean: ItemDataBean?): Boolean {
+    fun open(context: Context, bean: CanvasOpenFileType?): Boolean {
         bean ?: return false
         openPendingData.postValue(bean)
         return if (openPendingData.hasObservers()) {
@@ -59,3 +61,5 @@ class CanvasOpenModel : ViewModel() {
         }
     }
 }
+
+typealias CanvasOpenFileType = Any

@@ -11,6 +11,7 @@ import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
+import com.angcyo.canvas.laser.pecker.toCanvasDataBean
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
@@ -25,6 +26,7 @@ import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
+import com.angcyo.library.getAppIcon
 import com.angcyo.putData
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -77,7 +79,34 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     /**处理文件路径*/
     fun handleFilePath(adapter: DslAdapter?, path: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
-        if (path.endsWith(CanvasConstant.GCODE_EXT) ||
+        if (path.endsWith(CanvasConstant.PROJECT_EXT)) {
+            //工程文件
+            val text = path.file().readText()
+            val canvasBean = text?.toCanvasDataBean()
+
+            if (canvasBean != null) {
+                adapter?.render {
+                    clearAllItems()
+                    CanvasOpenPreviewItem()() {
+                        itemFilePath = path
+                        itemShowName = canvasBean.file_name
+                        itemDrawable =
+                            canvasBean.preview_img?.toBitmapOfBase64()?.toDrawable(resources)
+                                ?: getAppIcon()
+
+                        openAction = {
+                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, canvasBean)
+                            finish()
+                        }
+
+                        cancelAction = {
+                            finish()
+                        }
+                    }
+                }
+                return true
+            }
+        } else if (path.endsWith(CanvasConstant.GCODE_EXT) ||
             (path.endsWith(CanvasConstant.TXT_EXT) && path.file().readText()
                 ?.isGCodeContent() == true)
         ) {

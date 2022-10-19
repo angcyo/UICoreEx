@@ -18,6 +18,9 @@ import com.angcyo.widget.DslViewHolder
 
 class CanvasOpenPreviewItem : DslAdapterItem() {
 
+    /**需要显示的名字, 如果为null, 则从[itemFilePath]中获取*/
+    var itemShowName: String? = null
+
     /**文件路径*/
     var itemFilePath: String? = null
 
@@ -44,7 +47,7 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.file_name_view)?.text = itemFilePath?.lastName()
+        itemHolder.tv(R.id.file_name_view)?.text = itemShowName ?: itemFilePath?.lastName()
 
         //
         itemTypeface?.let {
