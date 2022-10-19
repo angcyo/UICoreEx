@@ -188,13 +188,13 @@ object CanvasEditLayoutHelper {
         }
 
         TextOrientationItem()() {
-            itemIco = R.drawable.canvas_text_style_standard_ico
+            itemIco = R.drawable.canvas_text_standard_ico
             itemText = _string(R.string.canvas_standard)
             itemOrientation = LinearLayout.HORIZONTAL
             itemRenderer = renderer
         }
         TextOrientationItem()() {
-            itemIco = R.drawable.canvas_text_style_vertical_ico
+            itemIco = R.drawable.canvas_text_vertical_ico
             itemText = _string(R.string.canvas_vertical)
             itemOrientation = LinearLayout.VERTICAL
             itemRenderer = renderer
@@ -205,6 +205,7 @@ object CanvasEditLayoutHelper {
         if (isDebugType()) {
             CanvasControlItem2()() {
                 itemText = "紧凑"
+                itemIco = R.drawable.canvas_text_style
                 itemIsSelected = renderer.getRendererRenderItem()?.dataBean?.isCompactText == true
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
