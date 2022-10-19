@@ -258,7 +258,7 @@ data class EngravePreviewCmd(
             diameter: Int,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): EngravePreviewCmd {
+        ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(
                 x.toFloat(),
                 y.toFloat(),
@@ -268,6 +268,10 @@ data class EngravePreviewCmd(
                 productInfo
             )
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            if (overflowInfo.isOverflowBounds) {
+                //超出物理范围, 不发送指令
+                return null
+            }
             return _previewRangeCmd(overflowInfo.resultRect!!, pwrProgress, diameter, dpi)
         }
 
@@ -322,17 +326,19 @@ data class EngravePreviewCmd(
             pwrProgress: Float,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): EngravePreviewCmd {
+        ): EngravePreviewCmd? {
             val overflowInfo = adjustFourPoint(rectPoint, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
 
             if (overflowInfo.isOverflowBounds) {
                 //溢出了, 预览一个点
-                return _previewRangeCmd(
+                /*return _previewRangeCmd(
                     overflowInfo.resultRectPoint!!.originRectF.centerX().toInt(),
                     overflowInfo.resultRectPoint!!.originRectF.centerY().toInt(),
                     1, 1, pwrProgress, 0, dpi
-                )
+                )*/
+                //超出物理范围, 不发送指令
+                return null
             }
 
             //注意4点顺序
@@ -462,7 +468,7 @@ data class EngravePreviewCmd(
             pwrProgress: Float,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-        ): EngravePreviewCmd {
+        ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(
                 x.toFloat(),
                 y.toFloat(),
@@ -472,6 +478,10 @@ data class EngravePreviewCmd(
                 productInfo
             )
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            if (overflowInfo.isOverflowBounds) {
+                //超出物理范围, 不发送指令
+                return null
+            }
             return _previewZRangeCmd(overflowInfo.resultRect!!, pwrProgress, dpi)
         }
 

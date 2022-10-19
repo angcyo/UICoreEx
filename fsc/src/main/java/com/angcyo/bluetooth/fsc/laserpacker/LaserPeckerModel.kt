@@ -236,7 +236,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         //send
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
-        cmd.enqueue(flag, address, progress, action)
+        cmd?.enqueue(flag, address, progress, action)
     }
 
     /**中心点预览指令*/
