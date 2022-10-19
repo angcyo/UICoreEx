@@ -157,4 +157,7 @@
     <string name="firmware_upgrade">Firmware Upgrade</string>
     <string name="engrave_precision">加速级别</string>
 
+    <string name="engrave_warn">警告</string>
+    <string name="engrave_overflow_bounds_message">元素超出设备范围,无法雕刻!</string>
+
 </resources>

@@ -3,7 +3,9 @@ package com.angcyo.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.EngraveHelper.percentList
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -15,6 +17,7 @@ import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
@@ -116,7 +119,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.ui_next)
                 itemClick = {
-                    if (!checkItemThrowable()) {
+                    if (!checkItemThrowable() && !checkOverflowBounds()) {
                         //下一步, 数据传输界面
 
                         transferConfigEntity.lpSaveEntity()
@@ -136,6 +139,29 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                 }
             }
         }
+    }
+
+    /**检查是否有元素超出物理雕刻范围
+     * @return true 表示有超出范围的元素*/
+    fun checkOverflowBounds(): Boolean {
+        val canvasDelegate = engraveCanvasFragment?.canvasDelegate ?: return false
+        val rendererList = EngraveTransitionManager.getRendererList(canvasDelegate, null, true)
+        var result = false
+        for (renderer in rendererList) {
+            if (renderer.getRotateBounds().isOverflowProductBounds()) {
+                result = true
+                break
+            }
+        }
+
+        if (result) {
+            engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(R.string.engrave_overflow_bounds_message)
+            }
+        }
+
+        return result
     }
 
     //endregion ---数据配置---
