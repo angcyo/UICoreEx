@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.data.CanvasDataBean
 import com.angcyo.canvas.data.ItemDataBean
 import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_THRESHOLD
@@ -122,30 +123,57 @@ fun Context.strokeLoading2(
 //---打开文件---
 
 /**异步加载, 带ui*/
-fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, uri: Uri) {
+fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, uri: Uri, clearOld: Boolean = true) {
     owner.loadingAsync({
         uri.readString()?.let { data ->
-            openCanvasFile(data)
+            openCanvasFile(data, clearOld)
         }
     })
 }
 
 /**异步加载, 带ui*/
-fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, data: String) {
+fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, data: String, clearOld: Boolean = true) {
     owner.loadingAsync({
-        openCanvasFile(data)
+        openCanvasFile(data, clearOld)
     })
 }
 
-/**直接加载*/
-fun CanvasDelegate.openCanvasFile(data: String) {
-    val bean = data.fromJson<CanvasDataBean>()
-    bean?.data?.fromJson<List<ItemDataBean>>(listType(ItemDataBean::class.java))?.let { items ->
-        items.forEach { itemData ->
-            GraphicsHelper.renderItemDataBean(this, itemData, false)
-        }
+/**异步加载, 带ui*/
+fun CanvasDelegate.openCanvasFile(
+    owner: LifecycleOwner,
+    dataBean: CanvasDataBean?,
+    clearOld: Boolean = true
+) {
+    dataBean?.let {
+        owner.loadingAsync({
+            openCanvasFile(dataBean, clearOld)
+        })
     }
 }
+
+/**直接加载*/
+fun CanvasDelegate.openCanvasFile(data: String, clearOld: Boolean = true) =
+    openCanvasFile(data.toCanvasDataBean(), clearOld)
+
+/**直接加载*/
+fun CanvasDelegate.openCanvasFile(dataBean: CanvasDataBean?, clearOld: Boolean = true): Boolean {
+    if (clearOld) {
+        removeAllItemRenderer(Strategy.preview)
+        undoManager.clear()
+    }
+    val result = dataBean?.data?.toCanvasItemList()?.let { items ->
+        items.forEach { itemData ->
+            GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.preview)
+        }
+    } != null
+    return result
+}
+
+//---
+
+fun String.toCanvasDataBean() = fromJson<CanvasDataBean>()
+
+fun String.toCanvasItemList() = fromJson<List<ItemDataBean>>(listType(ItemDataBean::class.java))
 
 /**处理路径对应的数据, 解析成[ItemDataBean]*/
 fun String?.toItemDataBean(): ItemDataBean? {
