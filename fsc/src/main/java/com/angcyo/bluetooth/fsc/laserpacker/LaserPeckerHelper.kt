@@ -5,6 +5,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import androidx.core.graphics.scale
 import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -662,6 +663,9 @@ object LaserPeckerHelper {
 
     //</editor-fold desc="packet">
 }
+
+/**当前矩形, 是否超出了设备物理雕刻范围*/
+fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).isOverflowBounds
 
 /**将日志写入到[ble.log]
  * [log] 是否还需要输出到控制台

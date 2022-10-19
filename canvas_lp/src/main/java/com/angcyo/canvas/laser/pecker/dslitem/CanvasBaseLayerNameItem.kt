@@ -1,10 +1,13 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.drawable.Drawable
+import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -29,6 +32,9 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
 
     val itemItemName: CharSequence? get() = itemRenderer?.getRendererRenderItem()?.itemLayerName
 
+    /**当前的[itemRenderer]范围是否超出设备物理尺寸*/
+    val isOverflowBounds: Boolean get() = itemRenderer?.getRotateBounds().isOverflowProductBounds()
+
     //endregion ---计算属性---
 
     init {
@@ -47,6 +53,14 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
         itemHolder.tv(R.id.layer_item_name_view)?.text = itemItemName
         itemHolder.img(R.id.layer_item_drawable_view)
             ?.setImageDrawable(itemItemDrawable ?: itemRenderer?.preview())
+
+        itemHolder.visible(R.id.layer_item_warn_view, isOverflowBounds)
+        itemHolder.click(R.id.layer_item_warn_view) {
+            it.context.messageDialog {
+                dialogTitle = _string(R.string.canvas_warn)
+                dialogMessage = _string(R.string.canvas_overflow_bounds_message)
+            }
+        }
     }
 
 }

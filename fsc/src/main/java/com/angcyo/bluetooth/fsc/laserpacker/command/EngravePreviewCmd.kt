@@ -120,10 +120,11 @@ data class EngravePreviewCmd(
 
         /**[adjustRectRange]*/
         fun adjustRectRange(
-            rect: RectF,
+            rect: RectF?,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): OverflowInfo {
+            rect ?: return OverflowInfo()
             return adjustRectRange(
                 rect.left,
                 rect.top,
