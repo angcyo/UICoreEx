@@ -80,6 +80,38 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             _canvasView?.canvasDelegate?.getCanvasUndoManager()?.redo()
         }
     }
+    var _materialCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
+        itemIco = R.drawable.canvas_material_ico
+        itemText = _string(R.string.canvas_material)
+        itemEnable = true
+
+        itemClick = {
+            updateItemSelected(!itemIsSelected)
+            engraveCanvasFragment.fragment.context.canvasMaterialWindow(it) {
+                onDismiss = {
+                    updateItemSelected(false)
+                    false
+                }
+                onDrawableAction = { data, drawable ->
+                    when (drawable) {
+                        //bitmap
+                        is BitmapDrawable -> itemCanvasDelegate?.addBlackWhiteBitmapRender(
+                            drawable.bitmap
+                        )
+                        //gcode
+                        is GCodeDrawable -> itemCanvasDelegate?.addGCodeRender(data as String)
+                        //svg
+                        is SharpDrawable -> itemCanvasDelegate?.addSvgRender(data as String)
+                        //other
+                        else -> {
+                            itemCanvasDelegate?.addBlackWhiteBitmapRender(drawable.toBitmap())
+                        }
+                    }
+                    UMEvent.CANVAS_MATERIAL.umengEventValue()
+                }
+            }
+        }
+    }
 
     /**图层item*/
     var _layerCanvasItem: DslAdapterItem? = null
@@ -134,37 +166,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             AddTextItem()() {
                 itemCanvasDelegate = canvasDelegate
             }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_material_ico
-                itemText = _string(R.string.canvas_material)
-                itemEnable = true
-
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    engraveCanvasFragment.fragment.context.canvasMaterialWindow(it) {
-                        onDismiss = {
-                            updateItemSelected(false)
-                            false
-                        }
-                        onDrawableAction = { data, drawable ->
-                            when (drawable) {
-                                //bitmap
-                                is BitmapDrawable -> canvasDelegate.addBlackWhiteBitmapRender(
-                                    drawable.bitmap
-                                )
-                                //gcode
-                                is GCodeDrawable -> canvasDelegate.addGCodeRender(data as String)
-                                //svg
-                                is SharpDrawable -> canvasDelegate.addSvgRender(data as String)
-                                //other
-                                else -> {
-                                    canvasDelegate.addBlackWhiteBitmapRender(drawable.toBitmap())
-                                }
-                            }
-                            UMEvent.CANVAS_MATERIAL.umengEventValue()
-                        }
-                    }
-                }
+            //素材
+            _materialCanvasItem() {
+                itemCanvasDelegate = canvasDelegate
             }
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_shapes_ico
