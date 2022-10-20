@@ -41,6 +41,9 @@ object HawkEngraveKeys {
     /**持久化当前雕刻的次数, 用来生成文件名*/
     var lastEngraveCount: Int by HawkPropertyValue<Any, Int>(0)
 
+    /**保存工程的次数*/
+    var lastProjectCount: Int by HawkPropertyValue<Any, Int>(0)
+
     //
 
     /**自动连接设备状态存储*/
