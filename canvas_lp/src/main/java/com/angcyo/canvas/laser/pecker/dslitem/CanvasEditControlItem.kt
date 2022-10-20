@@ -63,15 +63,16 @@ class CanvasEditControlItem : DslAdapterItem() {
 
             val canvasViewBox = canvasDelegate.getCanvasViewBox()
             //宽高
+            val bounds = renderer.getBounds()
             val rotateBounds = renderer.getRotateBounds()
             val renderRotateBounds = renderer.getRenderRotateBounds()
-            val width =
-                canvasViewBox.valueUnit.convertPixelToValue(rotateBounds.width()).canvasDecimal(2)
-            val height =
-                canvasViewBox.valueUnit.convertPixelToValue(rotateBounds.height()).canvasDecimal(2)
+            val widthValue =
+                canvasViewBox.valueUnit.convertPixelToValue(bounds.width()).canvasDecimal(2)
+            val heightValue =
+                canvasViewBox.valueUnit.convertPixelToValue(bounds.height()).canvasDecimal(2)
 
-            itemHolder.tv(R.id.item_width_view)?.text = width
-            itemHolder.tv(R.id.item_height_view)?.text = height
+            itemHolder.tv(R.id.item_width_view)?.text = widthValue
+            itemHolder.tv(R.id.item_height_view)?.text = heightValue
 
             //如果是线, 只支持调整宽度
             itemHolder.enable(R.id.item_height_view, !renderer.isLineShape())
@@ -131,12 +132,23 @@ class CanvasEditControlItem : DslAdapterItem() {
                             ) ?: toWidth //这个宽度是外边框的宽度, 所以需要映射到真实矩形上
                         val lockRatio = itemHolder.isLockRatio()
 
-                        val rotateBounds = renderer.getRotateBounds()
+                        //1
+                        /*val rotateBounds = renderer.getRotateBounds()
                         val bounds = renderer.getBounds()
 
                         val scaleWidth = width / rotateBounds.width()
 
                         val newWidth = bounds.width() * scaleWidth
+                        val newHeight = if (lockRatio) {
+                            bounds.height() * scaleWidth
+                        } else {
+                            bounds.height()
+                        }*/
+
+                        //2
+                        val bounds = renderer.getBounds()
+                        val newWidth = width
+                        val scaleWidth = newWidth / bounds.width()
                         val newHeight = if (lockRatio) {
                             bounds.height() * scaleWidth
                         } else {
@@ -175,7 +187,8 @@ class CanvasEditControlItem : DslAdapterItem() {
 
                         val lockRatio = itemHolder.isLockRatio()
 
-                        val rotateBounds = renderer.getRotateBounds()
+                        //1
+                        /*val rotateBounds = renderer.getRotateBounds()
                         val bounds = renderer.getBounds()
 
                         val scaleHeight = height / rotateBounds.height()
@@ -183,6 +196,16 @@ class CanvasEditControlItem : DslAdapterItem() {
                         val newHeight = bounds.height() * scaleHeight
                         val newWidth = if (lockRatio) {
                             bounds.width() * scaleHeight
+                        } else {
+                            bounds.width()
+                        }*/
+
+                        //2
+                        val bounds = renderer.getBounds()
+                        val newHeight = height
+                        val scaleScale = newHeight / bounds.height()
+                        val newWidth = if (lockRatio) {
+                            bounds.width() * scaleScale
                         } else {
                             bounds.width()
                         }
