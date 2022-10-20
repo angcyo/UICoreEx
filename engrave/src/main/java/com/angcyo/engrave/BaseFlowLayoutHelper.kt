@@ -12,6 +12,7 @@ import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
@@ -27,6 +28,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     companion object {
         /**雕刻流程: 预览前的配置*/
+        @Implementation
         const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = 0x01
 
         /**雕刻流程: 预览中*/

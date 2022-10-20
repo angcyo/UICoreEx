@@ -2,7 +2,6 @@ package com.angcyo.engrave.dslitem.preview
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library.component.scaleDrawable
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
@@ -43,8 +42,9 @@ class PreviewControlItem : BasePreviewItem() {
         ) { viewHolder, item ->
             if (!item.selected) {
                 //范围预览
-                HawkEngraveKeys.isRectCenterPreview = false
-                previewModel.refreshPreviewBounds(true, false)
+                previewModel.updatePreview {
+                    isCenterPreview = false
+                }
                 item.selected = true
                 centerPreviewItem?.selected = false
                 resetControlLayout(viewHolder)
@@ -59,12 +59,8 @@ class PreviewControlItem : BasePreviewItem() {
             false
         ) { viewHolder, item ->
             if (!item.selected) {
-                if (HawkEngraveKeys.needRectCenterPreview()) {
-                    //矩形中心点预览
-                    HawkEngraveKeys.isRectCenterPreview = true
-                    previewModel.rectCenterPreview(true, false)
-                } else {
-                    previewModel.previewShowCenter(true)
+                previewModel.updatePreview {
+                    isCenterPreview = true
                 }
                 item.selected = true
                 rangePreviewItem?.selected = false
@@ -79,12 +75,10 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.preview_pause_svg,
             false
         ) { viewHolder, item ->
-            if (item.selected) {
-                //已经是第三轴暂停预览, 则第三轴继续预览
-                zContinuePreviewCmd()
-            } else {
-                //需要第三轴暂停预览
-                previewModel.refreshPreviewBounds(true, true)
+            previewModel.updatePreview {
+                isCenterPreview = false
+                //z轴需要处于的状态
+                isZPause = !item.selected
             }
             item.selected = !item.selected
             viewHolder.selected(item.selected)
@@ -115,8 +109,9 @@ class PreviewControlItem : BasePreviewItem() {
 
         //
         val deviceStateData = laserPeckerModel.deviceStateData.value
+        val previewInfoData = previewModel.previewInfoData.value
         if (deviceStateData?.isModeEngravePreview() == true) {
-            if (deviceStateData.workState == 0x07 || HawkEngraveKeys.isRectCenterPreview) {
+            if (deviceStateData.workState == 0x07 || previewInfoData?.isCenterPreview == true) {
                 //显示中心点
                 centerPreviewItem?.selected = true
             } else {

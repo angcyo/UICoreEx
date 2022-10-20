@@ -168,14 +168,14 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             } else {
                 canvasDelegate?.progressRenderer?.apply {
                     setVisible(true, Strategy.preview)
-                    borderRectRotate = info.rotate
                     borderColor = PREVIEW_COLOR
-                    borderRect = if (info.rotate == null) {
-                        //非4点预览
-                        info.rotateBounds
-                    } else {
+                    if (info.isFourPointPreview) {
                         //4点预览
-                        info.originBounds
+                        borderRect = info.originBounds
+                        borderRectRotate = info.rotate
+                    } else {
+                        //非4点预览
+                        borderRect = info.rotateBounds
                     }
                 }
             }

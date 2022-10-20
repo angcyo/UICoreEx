@@ -62,7 +62,7 @@ class PreviewBrightnessItem : BasePreviewItem() {
                     itemPreviewConfigEntity?.lpSaveEntity()
                     HawkEngraveKeys.lastPwrProgress = fraction
                     //通知机器
-                    previewModel.refreshPreview(true, false)
+                    previewModel.refreshPreview(true)
                 }
             }
         }

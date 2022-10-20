@@ -241,16 +241,17 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**中心点预览指令*/
     fun previewShowCenter(
-        bounds: RectF, pwrProgress: Float, async: Boolean,
+        bounds: RectF?, pwrProgress: Float, async: Boolean,
         address: String? = null,
         progress: ISendProgressAction = {},
         action: IReceiveBeanAction = { _, _ -> }
     ) {
+        bounds ?: return
         val cmd = EngravePreviewCmd.previewShowCenterCmd(pwrProgress, bounds)
         //send
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
-        cmd.enqueue(flag, address, progress, action)
+        cmd?.enqueue(flag, address, progress, action)
     }
 
     /**查询设备状态*/

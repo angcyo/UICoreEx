@@ -60,7 +60,7 @@ class PreviewDiameterItem : BasePreviewItem() {
                     HawkEngraveKeys.lastDiameterPixel = value
 
                     //通知机器
-                    previewModel.refreshPreview(true, false)
+                    previewModel.refreshPreview()
                 }
             }
         }

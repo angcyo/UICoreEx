@@ -342,10 +342,11 @@ data class EngravePreviewCmd(
             }
 
             //注意4点顺序
-            val x1 = rectPoint.leftTop
-            val x2 = rectPoint.rightTop
-            val x3 = rectPoint.rightBottom
-            val x4 = rectPoint.leftBottom
+            val resultRectPoint = overflowInfo.resultRectPoint ?: return null
+            val x1 = resultRectPoint.leftTop
+            val x2 = resultRectPoint.rightTop
+            val x3 = resultRectPoint.rightBottom
+            val x4 = resultRectPoint.leftBottom
 
             val x1xBytes = x1.x.toInt().toHexString(4).toHexByteArray()
             val x1yBytes = x1.y.toInt().toHexString(4).toHexByteArray()
@@ -426,7 +427,7 @@ data class EngravePreviewCmd(
          * [pwrProgress] [0~1f] 预览光功率
          * [bounds] C1使用的参数
          * */
-        fun previewShowCenterCmd(pwrProgress: Float, bounds: RectF): EngravePreviewCmd {
+        fun previewShowCenterCmd(pwrProgress: Float, bounds: RectF): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(
                 bounds.left,
                 bounds.top,
@@ -436,6 +437,9 @@ data class EngravePreviewCmd(
                 vmApp<LaserPeckerModel>().productInfoData.value
             )
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
+            if (overflowInfo.isOverflowBounds) {
+                return null
+            }
             val rect = overflowInfo.resultRect!!
             return EngravePreviewCmd(0x07).apply {
 

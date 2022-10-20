@@ -1,8 +1,7 @@
 package com.angcyo.engrave.data
 
 import androidx.annotation.Keep
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.core.vmApp
+import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.HawkPropertyValue
 
@@ -55,19 +54,6 @@ object HawkEngraveKeys {
     //
 
     /**中心点预览的时候, 是否使用矩形的中心点坐标*/
+    @FunctionConfig("物理中心点预览开关")
     var enableRectCenterPreview: Boolean by HawkPropertyValue<Any, Boolean>(true)
-
-    /**当前是否进入了矩形中心点预览模式*/
-    var isRectCenterPreview: Boolean by HawkPropertyValue<Any, Boolean>(false)
-
-    /**是否需要进入矩形中心点预览
-     * C1 不支持, C1中心点预览还是 0x07 指令
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd]
-     * */
-    fun needRectCenterPreview(): Boolean {
-        if (vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true) {
-            return false
-        }
-        return enableRectCenterPreview
-    }
 }

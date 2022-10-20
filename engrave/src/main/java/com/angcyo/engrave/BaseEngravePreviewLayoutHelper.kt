@@ -31,6 +31,9 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         super.onEngraveFlowChanged(from, to)
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             //预览前的第三轴配置信息
+        } else if (to == ENGRAVE_FLOW_PREVIEW) {
+            //预览界面, 创建预览信息, 并开始预览
+            previewModel.startPreview(PreviewModel.createPreviewInfo(engraveCanvasFragment?.canvasDelegate))
         }
     }
 
@@ -80,21 +83,9 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     renderFlowItems()
                 }
             }
-            updatePreview()
             asyncQueryDeviceState()
         }
     }
 
     //endregion ---预览界面/支架控制---
-
-    /**更新预览, 比如元素选择改变后/大小改变后*/
-    fun updatePreview(async: Boolean = true, zPause: Boolean = false) {
-        val delegate = engraveCanvasFragment?.canvasDelegate
-        if (delegate == null) {
-        } else {
-            val previewInfo = PreviewModel.createPreviewInfo(delegate)
-            previewModel.startOrRefreshPreview(previewInfo, async, zPause)
-        }
-    }
-
 }

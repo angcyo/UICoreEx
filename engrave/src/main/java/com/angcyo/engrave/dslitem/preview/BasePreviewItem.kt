@@ -1,8 +1,6 @@
 package com.angcyo.engrave.dslitem.preview
 
-import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.model.EngraveModel
@@ -30,12 +28,5 @@ abstract class BasePreviewItem : DslAdapterItem() {
     /**查询设备状态*/
     fun queryDeviceStateCmd() {
         laserPeckerModel.queryDeviceState()
-    }
-
-    /**z轴滚动预览*/
-    fun zContinuePreviewCmd() {
-        val cmd = EngravePreviewCmd.previewZContinueCmd()
-        cmd.enqueue()
-        queryDeviceStateCmd()
     }
 }

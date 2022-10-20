@@ -2,13 +2,19 @@ package com.angcyo.engrave.model
 
 import android.graphics.RectF
 import androidx.annotation.AnyThread
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.core.IRenderer
+import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.library.annotation.Private
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -20,35 +26,60 @@ class PreviewModel : LifecycleViewModel() {
 
     companion object {
 
+        /**获取设备当前正在预览的信息, 如果不在预览模式, 则返回null*/
+        /*fun getDevicePreviewInfo(): PreviewInfo? {
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
+            val stateParser = laserPeckerModel.deviceStateData.value
+            if (stateParser?.isModeEngravePreview() == true) {
+                //设备在预览模式
+
+                val previewInfo = PreviewInfo()
+
+                //第三轴的flag状态
+                val haveExDevice = laserPeckerModel.haveExDevice()
+                when (stateParser.workState) {
+                    //矢量预览
+                    0x01 -> Unit
+                    //范围预览
+                    0x02 -> {
+
+                    }
+                }
+            }
+            return null
+        }*/
+
         /**创建一个预览信息*/
-        fun createPreviewInfo(canvasDelegate: CanvasDelegate): PreviewInfo? {
+        fun createPreviewInfo(canvasDelegate: CanvasDelegate?): PreviewInfo? {
+            canvasDelegate ?: return null
             val laserPeckerModel = vmApp<LaserPeckerModel>()
             val selectedRenderer = canvasDelegate.getSelectedRenderer()
+
+            val result = PreviewInfo()
+            result.rotate = selectedRenderer?.rotate
 
             //是否要使用4点预览
             val openPointsPreview = HawkEngraveKeys.USE_FOUR_POINTS_PREVIEW //开启了4点预览
                     && !laserPeckerModel.haveExDevice() //没有外置设备连接
+            result.isFourPointPreview = openPointsPreview
+
+            if (laserPeckerModel.haveExDevice()) {
+                result.isZPause = true//有外设的情况下, z轴优先暂停滚动
+            } else {
+                result.isZPause = null
+            }
 
             if (selectedRenderer == null) {
                 //没有选中的元素, 则考虑预览设备的最佳尺寸范围
                 laserPeckerModel.productInfoData.value?.previewBounds?.let {
-                    return PreviewInfo(RectF(it), RectF(it))
+                    result.originBounds = RectF(it)
+                    result.rotateBounds = RectF(it)
+                    return result
                 }
             } else {
-                val itemUuid = selectedRenderer.getRendererRenderItem()?.uuid
-
-                //先执行, 设置预览的信息
-                val info = PreviewInfo(
-                    selectedRenderer.getBounds(),
-                    selectedRenderer.getRotateBounds(),
-                    if (openPointsPreview) {
-                        selectedRenderer.rotate
-                    } else {
-                        null
-                    },
-                    itemUuid
-                )
-                return info
+                result.originBounds = RectF(selectedRenderer.getBounds())
+                result.rotateBounds = RectF(selectedRenderer.getRotateBounds())
+                return result
             }
             return null
         }
@@ -74,109 +105,158 @@ class PreviewModel : LifecycleViewModel() {
         }
     }
 
-    /**刷新预览, 根据当前的状态, 择优发送指令
-     * 在改变激光强度之后调用*/
+    /**开始预览*/
     @AnyThread
-    fun refreshPreview(async: Boolean, zPause: Boolean): Boolean {
-        if (HawkEngraveKeys.isRectCenterPreview) {
-            //矩形中心点预览
-            rectCenterPreview(async, zPause)
-            return true
-        } else if (laserPeckerModel.isEngravePreviewShowCenterMode()) {
-            previewShowCenter(async)
-            return true
-        } else if (laserPeckerModel.isEngravePreviewMode()) {
-            refreshPreviewBounds(async, zPause)
-            return true
-        }
-        return false
-    }
-
-    /**开始或者刷新预览, 并且发送通知
-     * 保持当前的预览模式不变, 更新预览的bounds等信息
-     * 保持: 中心点预览 or 范围预览
-     * */
-    @AnyThread
-    fun startOrRefreshPreview(previewInfo: PreviewInfo?, async: Boolean, zPause: Boolean) {
+    fun startPreview(previewInfo: PreviewInfo?, async: Boolean = true) {
         previewInfoData.postValue(previewInfo)
-        if (HawkEngraveKeys.isRectCenterPreview) {
-            //矩形中心点预览
-            rectCenterPreview(async, zPause)
-        } else if (laserPeckerModel.isEngravePreviewMode() || !refreshPreview(async, zPause)) {
-            //开始预览
-            previewBounds(previewInfo, async, zPause)
+        previewInfo?.let {
+            val originBounds = previewInfo.originBounds
+            val zPause = it.isZPause
+            if (zPause == null) {
+                //非第三轴预览模式下
+                if (previewInfo.isCenterPreview) {
+                    //需要中心点预览
+                    if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+                        //C1设备显示中心点
+                        _previewShowCenter(originBounds, async)
+                    } else {
+                        if (HawkEngraveKeys.enableRectCenterPreview) {
+                            //矩形中心点预览
+                            originBounds?.let {
+                                val centerX = originBounds.centerX()
+                                val centerY = originBounds.centerY()
+                                val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
+                                if (previewInfo.isFourPointPreview) {
+                                    _previewRangeRect(bounds, bounds, 0f, async)
+                                } else {
+                                    _previewRangeRect(bounds, null, null, async)
+                                }
+                            }
+                        } else {
+                            //设备中心点
+                            _previewShowCenter(originBounds, async)
+                        }
+                    }
+                } else {
+                    //需要范围预览
+                    if (previewInfo.isFourPointPreview && previewInfo.rotate != null) {
+                        //4点预览
+                        _previewRangeRect(
+                            originBounds,
+                            previewInfo.rotateBounds,
+                            previewInfo.rotate,
+                            async
+                        )
+                    } else {
+                        _previewRangeRect(
+                            originBounds,
+                            previewInfo.rotateBounds,
+                            null,//关闭4点预览
+                            async
+                        )
+                    }
+                }
+            } else {
+                //第三轴预览模式
+                if (zPause) {
+                    //第三轴处于暂停状态, 则继续预览
+                    //第三轴继续预览
+                    _zContinuePreview(async)
+                } else {
+                    _previewRangeRect(
+                        originBounds,
+                        previewInfo.rotateBounds,
+                        null,
+                        async,
+                        true
+                    )
+                }
+            }
         }
     }
 
-    /**刷新预览范围*/
-    @AnyThread
-    fun refreshPreviewBounds(async: Boolean, zPause: Boolean) {
-        previewInfoData.value?.let {
-            previewBounds(it, async, zPause)
-        }
+    /**发送预览中心点指令*/
+    @Private
+    fun _previewShowCenter(bounds: RectF?, async: Boolean) {
+        laserPeckerModel.previewShowCenter(bounds, HawkEngraveKeys.lastPwrProgress, async)
     }
 
-    /**矩形中心点预览*/
-    @AnyThread
-    fun rectCenterPreview(async: Boolean, zPause: Boolean) {
-        previewInfoData.value?.let {
-            val centerX = it.originBounds.centerX()
-            val centerY = it.originBounds.centerY()
-            val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
-            val diameter = EngraveHelper.getDiameter()
-            laserPeckerModel.sendUpdatePreviewRange(
-                bounds,
-                bounds,
-                null,
-                HawkEngraveKeys.lastPwrProgress,
-                async,
-                zPause,
-                diameter
-            )
-        }
-    }
-
-    /**中心点预览指令*/
-    @AnyThread
-    fun previewShowCenter(async: Boolean) {
-        previewInfoData.value?.let {
-            laserPeckerModel.previewShowCenter(
-                it.originBounds,
-                HawkEngraveKeys.lastPwrProgress,
-                async
-            )
-        }
-    }
-
-    /**更新机器的预览范围
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.sendUpdatePreviewRange]
-     * [zPause] 是否需要第三轴暂停预览
-     * [async] 是否是异步指令
-     *
-     * 发送指令之后, 可能需要重新发送查询指令
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.queryDeviceState]
+    /**发送预览中心点指令
+     * [rotate] [bounds]需要旋转的角度, 如果设置了, 则自动开启4点预览
      * */
+    @Private
+    fun _previewRangeRect(
+        bounds: RectF?,
+        rotateBounds: RectF?,
+        rotate: Float?,
+        async: Boolean,
+        zPause: Boolean = false,
+    ) {
+        bounds ?: return
+        laserPeckerModel.sendUpdatePreviewRange(
+            bounds,
+            rotateBounds ?: bounds,
+            rotate,
+            HawkEngraveKeys.lastPwrProgress,
+            async,
+            zPause,
+            EngraveHelper.getDiameter()
+        )
+    }
+
+    /**z轴滚动预览*/
+    @Private
+    fun _zContinuePreview(async: Boolean = true) {
+        val cmd = EngravePreviewCmd.previewZContinueCmd()
+        val flag =
+            if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+        cmd.enqueue(flag)
+    }
+
+    /**刷新预览, 根据当前的状态, 择优发送指令*/
     @AnyThread
-    fun previewBounds(info: PreviewInfo?, async: Boolean, zPause: Boolean) {
-        previewInfoData.postValue(info)
-
-        //发送指令
-        if (info == null) {
-            //是否需要停止预览?
-        } else {
-            val diameter = EngraveHelper.getDiameter()
-            laserPeckerModel.sendUpdatePreviewRange(
-                info.originBounds,
-                info.rotateBounds,
-                info.rotate,
-                HawkEngraveKeys.lastPwrProgress,
-                async,
-                zPause,
-                diameter
-            )
+    fun refreshPreview(async: Boolean = true) {
+        previewInfoData.value?.let {
+            startPreview(it, async)
         }
+    }
 
-        //后执行, 通知预览
-        //engraveModel.updateEngravePreviewUuid(info?.itemUuid)
+    /**更新预览的操作, 并且重新发送预览指定*/
+    @AnyThread
+    fun updatePreview(async: Boolean = true, action: PreviewInfo.() -> Unit) {
+        previewInfoData.value?.let {
+            //是否要使用4点预览
+            val openPointsPreview = HawkEngraveKeys.USE_FOUR_POINTS_PREVIEW //开启了4点预览
+                    && !laserPeckerModel.haveExDevice() //没有外置设备连接
+            it.isFourPointPreview = openPointsPreview
+
+            if (laserPeckerModel.haveExDevice()) {
+                it.isZPause = true//有外设的情况下, z轴优先暂停滚动
+            } else {
+                it.isZPause = null
+            }
+
+            it.action()
+            startPreview(it, async)
+        }
+    }
+
+    /**使用[itemRenderer]更新预览操作
+     * [updatePreview]*/
+    @AnyThread
+    fun updatePreview(itemRenderer: IRenderer?, async: Boolean = true) {
+        updatePreview(async) {
+            if (itemRenderer == null) {
+                rotate = null
+                laserPeckerModel.productInfoData.value?.previewBounds?.let {
+                    originBounds = RectF(it)
+                    rotateBounds = RectF(it)
+                }
+            } else if (itemRenderer is BaseItemRenderer<*>) {
+                rotate = itemRenderer.rotate
+                originBounds = RectF(itemRenderer.getBounds())
+                rotateBounds = RectF(itemRenderer.getRotateBounds())
+            }
+        }
     }
 }
