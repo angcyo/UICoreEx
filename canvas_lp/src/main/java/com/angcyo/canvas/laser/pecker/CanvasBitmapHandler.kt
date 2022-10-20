@@ -133,7 +133,7 @@ object CanvasBitmapHandler {
                     }) {
                         it?.let {
                             it.first.writeToCache(
-                                CanvasDataHandleOperate.VECTOR_CACHE_FILE_FOLDER,
+                                CanvasConstant.VECTOR_FILE_FOLDER,
                                 fileNameTime(suffix = ".gcode")
                             )
                             beforeBounds.rotate(boundsRotate)

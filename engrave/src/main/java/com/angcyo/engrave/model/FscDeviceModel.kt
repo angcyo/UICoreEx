@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.graphics.GraphicsHelper
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -183,7 +184,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
         //雕刻目录
         DebugFragment.DEBUG_ACTION_LIST.add(
-            DebugAction("engrave", appFolderPath(CanvasDataHandleOperate.ENGRAVE_CACHE_FILE_FOLDER))
+            DebugAction("engrave", appFolderPath(CanvasConstant.ENGRAVE_FILE_FOLDER))
         )
 
         //设备主动退出工作模式

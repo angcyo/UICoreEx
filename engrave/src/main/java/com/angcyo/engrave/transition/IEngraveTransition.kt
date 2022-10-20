@@ -47,7 +47,7 @@ interface IEngraveTransition {
         ): String? {
             //将雕刻数据写入文件
             return data.writeTo(
-                CanvasDataHandleOperate.ENGRAVE_CACHE_FILE_FOLDER,
+                CanvasConstant.ENGRAVE_FILE_FOLDER,
                 "${fileName}.${suffix}",
                 false
             )
