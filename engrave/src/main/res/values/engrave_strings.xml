@@ -171,5 +171,6 @@
 
     <string name="engrave_warn">警告</string>
     <string name="engrave_overflow_bounds_message">元素超出设备范围,无法雕刻!</string>
+    <string name="engrave_perimeter">周长</string>
 
 </resources>

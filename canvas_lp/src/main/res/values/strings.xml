@@ -5,7 +5,6 @@
     <string name="font_import_fail">字体导入失败</string>
     <string name="font_import_success">字体导入成功</string>
 
-    <string name="canvas_perimeter">周长</string>
     <string name="canvas_min_diameter">小直径</string>
     <string name="canvas_max_diameter">大直径</string>
     <string name="canvas_rotation_axis">旋转轴</string>

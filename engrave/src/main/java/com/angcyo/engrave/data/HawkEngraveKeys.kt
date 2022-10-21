@@ -3,6 +3,7 @@ package com.angcyo.engrave.data
 import androidx.annotation.Keep
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
 
 /**
@@ -29,6 +30,7 @@ object HawkEngraveKeys {
 
     /**最后一次的物理尺寸, 像素
      *长径, 大直径*/
+    @Pixel
     var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
     /**短径, 小直径*/

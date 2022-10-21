@@ -1,51 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lib_item_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/lib_xhdpi"
-    android:paddingVertical="@dimen/lib_ldpi">
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_hdpi">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/diameter_label_view"
-        style="@style/LibBodyTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/object_diameter"
-        app:layout_constraintBottom_toBottomOf="@id/diameter_text_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/diameter_text_view" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/diameter_text_view"
-        style="@style/LibBodyTextStyle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:background="@drawable/lib_bottom_line_selector"
-        android:gravity="center"
-        android:paddingVertical="@dimen/lib_sdpi"
-        app:layout_constraintLeft_toRightOf="@id/diameter_label_view"
-        app:layout_constraintRight_toLeftOf="@id/diameter_unit_view"
-        tools:text="1" />
+        android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/diameter_unit_view"
-        style="@style/LibBodyTextStyle"
-        android:layout_width="wrap_content"
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/perimeter_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/engrave_perimeter" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/perimeter_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/perimeter_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:padding="@dimen/lib_hdpi"
+        app:srcCompat="@drawable/engrave_left_right_svg" />
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@id/diameter_text_view"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/diameter_text_view"
-        tools:text="inch" />
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/diameter_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/object_diameter" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/diameter_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/diameter_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+</LinearLayout>

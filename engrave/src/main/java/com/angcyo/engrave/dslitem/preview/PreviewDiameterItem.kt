@@ -1,12 +1,13 @@
 package com.angcyo.engrave.dslitem.preview
 
-import android.widget.TextView
-import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.item.keyboard.keyboardNumberWindow
-import com.angcyo.library.unit.unitDecimal
+import com.angcyo.engrave.dslitem.BaseDiameterItem
+import com.angcyo.engrave.model.PreviewModel
+import com.angcyo.library.ex._string
+import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
 
@@ -16,10 +17,16 @@ import com.angcyo.widget.DslViewHolder
  * @since 2022/07/14
  */
 
-class PreviewDiameterItem : BasePreviewItem() {
+class PreviewDiameterItem : BaseDiameterItem() {
+
+    /**参数配置实体*/
+    var itemPreviewConfigEntity: PreviewConfigEntity? = null
+
+    //预览模式
+    val previewModel = vmApp<PreviewModel>()
 
     init {
-        itemLayoutId = R.layout.item_engrave_data_diameter
+        itemDiameterLabel = _string(R.string.object_diameter)
     }
 
     override fun onItemBind(
@@ -28,41 +35,20 @@ class PreviewDiameterItem : BasePreviewItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-
-        val valueUnit = CanvasConstant.valueUnit
         val diameterPixel =
             itemPreviewConfigEntity?.diameterPixel ?: HawkEngraveKeys.lastDiameterPixel
-        val diameterValue = valueUnit.convertPixelToValue(diameterPixel)
-
-        itemHolder.tv(R.id.diameter_text_view)?.text = diameterValue.unitDecimal(2)
-        itemHolder.tv(R.id.diameter_unit_view)?.text = valueUnit.getUnit()
-
-        bindDiameter(itemHolder)
+        itemDiameter = diameterPixel
+        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 
-    /**绑定事件, 物理直径输入*/
-    fun bindDiameter(itemHolder: DslViewHolder) {
-        itemHolder.click(R.id.diameter_text_view) {
-            itemHolder.context.keyboardNumberWindow(it) {
-                onDismiss = {
-                    if (itemHolder.isInRecyclerView()) {
-                        updateAdapterItem()
-                    }
-                    false
-                }
-                keyboardBindTextView = it as? TextView
-                bindPendingDelay = -1 //关闭限流输入
-                onNumberResultAction = { number ->
-                    val value = CanvasConstant.valueUnit.convertValueToPixel(number)
-                    itemPreviewConfigEntity?.diameterPixel = value
-                    itemPreviewConfigEntity?.lpSaveEntity()
-                    HawkEngraveKeys.lastDiameterPixel = value
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        super.onItemChangeListener(item)
+        HawkEngraveKeys.lastDiameterPixel = itemDiameter
 
-                    //通知机器
-                    previewModel.refreshPreview()
-                }
-            }
-        }
+        itemPreviewConfigEntity?.diameterPixel = itemDiameter
+        itemPreviewConfigEntity?.lpSaveEntity()
+
+        //通知机器
+        previewModel.refreshPreview()
     }
 }

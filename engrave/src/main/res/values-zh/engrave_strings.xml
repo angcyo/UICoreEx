@@ -160,5 +160,6 @@
     <string name="start_update">开始升级</string>
     <string name="firmware_upgrade">固件升级</string>
     <string name="engrave_precision">加速级别</string>
+    <string name="engrave_perimeter">周长</string>
 
 </resources>
