@@ -107,6 +107,14 @@
     <string name="device_setting_tips_fourteen_3">Support the parameter setting of engraving scene
         on the surface of regular cuboid and cylinder objects (size limit: the width of cuboid is
         within 100mm, the length is within 5m, and the circumference of cylinder cross section is within 5m)</string>
+    <string name="device_ex_r_label">旋转轴</string>
+    <string name="device_ex_r_des">--</string>
+    <string name="device_ex_s_label">滑台</string>
+    <string name="device_ex_s_des">--</string>
+    <string name="device_ex_direction_label">正转</string>
+    <string name="device_ex_direction_des">旋转轴/滑台 正转或者反转</string>
+    <string name="device_direction_forward">正转</string>
+    <string name="device_direction_reversal">反转</string>
     <string name="device_setting_txt_3">Touch Buttons</string>
     <string name="device_setting_txt_4">This switch controls the enabling and disabling of preview and stop touch buttons on the main unit</string>
     <string name="button_infra_red_title">Red Light Stay</string>

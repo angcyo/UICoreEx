@@ -54,6 +54,9 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         renderDslAdapter {
             //
             PreviewTipItem()()
+            if (laserPeckerModel.haveExDevice()) {
+                PreviewExDeviceTipItem()()
+            }
             PreviewBrightnessItem()() {
                 itemPreviewConfigEntity = previewConfigEntity
             }

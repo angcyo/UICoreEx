@@ -148,8 +148,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
             }
             DslPropertySwitchItem()() {
-                itemLabel = "旋转轴" //_string(R.string.device_setting_act_model_preview_g_code)
-                itemDes = "--"      //_string(R.string.device_setting_act_des_preview_g_code)
+                itemLabel = _string(R.string.device_ex_r_label)
+                itemDes = _string(R.string.device_ex_r_des)
                 initItem()
 
                 itemSwitchChecked = settingParser?.rFlag == 1
@@ -161,8 +161,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             DslPropertySwitchItem()() {
-                itemLabel = "滑台" //_string(R.string.device_setting_act_model_preview_g_code)
-                itemDes = "--"      //_string(R.string.device_setting_act_des_preview_g_code)
+                itemLabel = _string(R.string.device_ex_s_label)
+                itemDes = _string(R.string.device_ex_s_des)
                 initItem()
 
                 itemSwitchChecked = settingParser?.sFlag == 1
@@ -174,9 +174,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             DslPropertySwitchItem()() {
-                itemLabel = "正转" //_string(R.string.device_setting_act_model_preview_g_code)
-                itemDes =
-                    "旋转轴/滑台 正转或者反转"      //_string(R.string.device_setting_act_des_preview_g_code)
+                itemLabel = _string(R.string.device_ex_direction_label)
+                itemDes = _string(R.string.device_ex_direction_des)
                 initItem()
 
                 itemSwitchChecked = settingParser?.dir == 1

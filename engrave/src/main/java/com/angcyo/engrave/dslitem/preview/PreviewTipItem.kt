@@ -14,7 +14,7 @@ import com.angcyo.widget.base._textColor
  * @date 2022/09/23
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
-class PreviewTipItem : DslAdapterItem() {
+open class PreviewTipItem : DslAdapterItem() {
 
     /**提示语*/
     var itemTip: CharSequence? = null
