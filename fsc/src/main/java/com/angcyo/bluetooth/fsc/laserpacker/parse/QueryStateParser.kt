@@ -188,8 +188,8 @@ fun QueryStateParser.toDeviceStateString(): String? {
             when (workState) {
                 0x01 -> builder.append("图片")
                 0x02 -> builder.append("范围")
-                0x04 -> builder.append("第三轴暂停")
-                0x05 -> builder.append("第三轴继续")
+                0x04 -> builder.append("第三轴暂停预览")
+                0x05 -> builder.append("第三轴继续预览")
                 0x06 -> builder.append("支架调整")
                 0x07 -> builder.append("显示中心")
                 0x08 -> builder.append("4点范围")
@@ -226,5 +226,6 @@ fun Int.toErrorStateString() = when (this) {
     7 -> _string(R.string.ex_tips_seven)
     8 -> _string(R.string.ex_tips_eight)
     9 -> _string(R.string.ex_tips_nine)
-    else -> _string(R.string.ex_tips_six)
+    10 -> _string(R.string.ex_tips_ten)
+    else -> null
 }

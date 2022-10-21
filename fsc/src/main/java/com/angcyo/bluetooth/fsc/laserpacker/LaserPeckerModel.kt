@@ -109,10 +109,10 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         }
 
         //
-        if (queryStateParser.error != 0) {
+        queryStateParser.error.toErrorStateString()?.let {
             //查询到设备异常
             doMain {
-                toast(queryStateParser.error.toErrorStateString())
+                toast(it)
             }
         }
         deviceStateData.postValue(queryStateParser)

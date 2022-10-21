@@ -29,4 +29,8 @@ data class PreviewInfo(
     /**第三轴是否处于暂停状态
      * null 表示不处于第三轴预览状态*/
     var isZPause: Boolean? = null,
+
+    /**是否开始了预览
+     * [isZPause] 只有开始了预览, 才能直接发送z轴暂停/继续滚动指令*/
+    var isStartPreview: Boolean = false
 )

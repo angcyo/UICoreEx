@@ -106,7 +106,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面
             if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
-                //关闭界面时, 如果在预览状态, 则退出预览
+                //关闭界面时, 如果在预览状态, 则退出预览, 并清除预览信息
+                previewModel.previewInfoData.value = null
                 ExitCmd().enqueue()
                 syncQueryDeviceState()
             }

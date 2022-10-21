@@ -14,6 +14,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.Private
 import com.angcyo.viewmodel.vmDataNull
 
@@ -52,36 +53,54 @@ class PreviewModel : LifecycleViewModel() {
         /**创建一个预览信息*/
         fun createPreviewInfo(canvasDelegate: CanvasDelegate?): PreviewInfo? {
             canvasDelegate ?: return null
-            val laserPeckerModel = vmApp<LaserPeckerModel>()
             val selectedRenderer = canvasDelegate.getSelectedRenderer()
 
             val result = PreviewInfo()
             result.rotate = selectedRenderer?.rotate
 
+            defaultPreviewInfo(result)
+            updatePreviewInfo(result, selectedRenderer)
+            return result
+        }
+
+        /**一些默认初始化*/
+        fun defaultPreviewInfo(info: PreviewInfo) {
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
             //是否要使用4点预览
             val openPointsPreview = HawkEngraveKeys.USE_FOUR_POINTS_PREVIEW //开启了4点预览
                     && !laserPeckerModel.haveExDevice() //没有外置设备连接
-            result.isFourPointPreview = openPointsPreview
+            info.isFourPointPreview = openPointsPreview
 
             if (laserPeckerModel.haveExDevice()) {
-                result.isZPause = true//有外设的情况下, z轴优先暂停滚动
+                info.isZPause = true//有外设的情况下, z轴优先暂停滚动
             } else {
-                result.isZPause = null
+                info.isZPause = null
             }
+        }
 
-            if (selectedRenderer == null) {
-                //没有选中的元素, 则考虑预览设备的最佳尺寸范围
-                laserPeckerModel.productInfoData.value?.previewBounds?.let {
-                    result.originBounds = RectF(it)
-                    result.rotateBounds = RectF(it)
-                    return result
+        /**渲染初始化*/
+        fun updatePreviewInfo(info: PreviewInfo, itemRenderer: IRenderer?) {
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
+            info.apply {
+                if (itemRenderer == null) {
+                    rotate = null
+                    val productInfo = laserPeckerModel.productInfoData.value
+                    val bounds = if (laserPeckerModel.haveExDevice()) {
+                        //有外设的情况下, 使用物理范围
+                        productInfo?.bounds
+                    } else {
+                        productInfo?.previewBounds
+                    }
+                    bounds?.let {
+                        originBounds = RectF(it)
+                        rotateBounds = RectF(it)
+                    }
+                } else if (itemRenderer is BaseItemRenderer<*>) {
+                    rotate = itemRenderer.rotate
+                    originBounds = RectF(itemRenderer.getBounds())
+                    rotateBounds = RectF(itemRenderer.getRotateBounds())
                 }
-            } else {
-                result.originBounds = RectF(selectedRenderer.getBounds())
-                result.rotateBounds = RectF(selectedRenderer.getRotateBounds())
-                return result
             }
-            return null
         }
     }
 
@@ -100,7 +119,7 @@ class PreviewModel : LifecycleViewModel() {
                 //no op
             } else {
                 //非预览模式, 清空预览数据
-                previewInfoData.postValue(null)
+                previewInfoData.value = null
             }
         }
     }
@@ -108,10 +127,12 @@ class PreviewModel : LifecycleViewModel() {
     /**开始预览*/
     @AnyThread
     fun startPreview(previewInfo: PreviewInfo?, async: Boolean = true) {
-        previewInfoData.postValue(previewInfo)
+        doMain {
+            previewInfoData.setValue(previewInfo)
+        }
         previewInfo?.let {
             val originBounds = previewInfo.originBounds
-            val zPause = it.isZPause
+            val zPause = previewInfo.isZPause
             if (zPause == null) {
                 //非第三轴预览模式下
                 if (previewInfo.isCenterPreview) {
@@ -158,18 +179,30 @@ class PreviewModel : LifecycleViewModel() {
                 }
             } else {
                 //第三轴预览模式
-                if (zPause) {
-                    //第三轴处于暂停状态, 则继续预览
-                    //第三轴继续预览
-                    _zContinuePreview(async)
+                if (previewInfo.isStartPreview) {
+                    if (zPause) {
+                        //第三轴需要处于暂停状态
+                        _previewRangeRect(
+                            originBounds,
+                            previewInfo.rotateBounds,
+                            null,
+                            async,
+                            true
+                        )
+                    } else {
+                        //第三轴继续预览
+                        _zContinuePreview(async)
+                    }
                 } else {
+                    //没有开始预览则需要新进入预览状态
                     _previewRangeRect(
                         originBounds,
                         previewInfo.rotateBounds,
-                        null,
-                        async,
-                        true
+                        null,//关闭4点预览
+                        async
                     )
+                    previewInfo.isStartPreview = true
+                    previewInfo.isZPause = true
                 }
             }
         }
@@ -225,17 +258,7 @@ class PreviewModel : LifecycleViewModel() {
     @AnyThread
     fun updatePreview(async: Boolean = true, action: PreviewInfo.() -> Unit) {
         previewInfoData.value?.let {
-            //是否要使用4点预览
-            val openPointsPreview = HawkEngraveKeys.USE_FOUR_POINTS_PREVIEW //开启了4点预览
-                    && !laserPeckerModel.haveExDevice() //没有外置设备连接
-            it.isFourPointPreview = openPointsPreview
-
-            if (laserPeckerModel.haveExDevice()) {
-                it.isZPause = true//有外设的情况下, z轴优先暂停滚动
-            } else {
-                it.isZPause = null
-            }
-
+            defaultPreviewInfo(it)
             it.action()
             startPreview(it, async)
         }
@@ -246,17 +269,7 @@ class PreviewModel : LifecycleViewModel() {
     @AnyThread
     fun updatePreview(itemRenderer: IRenderer?, async: Boolean = true) {
         updatePreview(async) {
-            if (itemRenderer == null) {
-                rotate = null
-                laserPeckerModel.productInfoData.value?.previewBounds?.let {
-                    originBounds = RectF(it)
-                    rotateBounds = RectF(it)
-                }
-            } else if (itemRenderer is BaseItemRenderer<*>) {
-                rotate = itemRenderer.rotate
-                originBounds = RectF(itemRenderer.getBounds())
-                rotateBounds = RectF(itemRenderer.getRotateBounds())
-            }
+            updatePreviewInfo(this, itemRenderer)
         }
     }
 }

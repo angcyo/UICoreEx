@@ -23,19 +23,22 @@ import com.angcyo.widget.span.span
 class PreviewControlItem : BasePreviewItem() {
 
     /**预览范围*/
-    var rangePreviewItem: ControlTextItem? = null
+    var rangePreviewItem: ControlTextItemInfo? = null
 
     /**中心点预览*/
-    var centerPreviewItem: ControlTextItem? = null
+    var centerPreviewItem: ControlTextItemInfo? = null
 
-    /**暂停预览*/
-    var pausePreviewItem: ControlTextItem? = null
+    /**第三轴暂停预览*/
+    var pausePreviewItem: ControlTextItemInfo? = null
+
+    /**第三轴继续预览*/
+    var continuePreviewItem: ControlTextItemInfo? = null
 
     init {
         itemLayoutId = R.layout.item_preview_control_layout
 
         //预览范围
-        rangePreviewItem = ControlTextItem(
+        rangePreviewItem = ControlTextItemInfo(
             _string(R.string.range_preview),
             R.drawable.preview_range_svg,
             false
@@ -53,7 +56,7 @@ class PreviewControlItem : BasePreviewItem() {
         }
 
         //中心点预览
-        centerPreviewItem = ControlTextItem(
+        centerPreviewItem = ControlTextItemInfo(
             _string(R.string.center_preview),
             R.drawable.preview_center_svg,
             false
@@ -69,24 +72,36 @@ class PreviewControlItem : BasePreviewItem() {
             }
         }
 
-        //暂停预览
-        pausePreviewItem = ControlTextItem(
+        //第三轴暂停预览
+        pausePreviewItem = ControlTextItemInfo(
             _string(R.string.pause_preview),
+            R.drawable.bracket_stop_svg,
+            false
+        ) { viewHolder, item ->
+            previewModel.updatePreview {
+                isCenterPreview = false
+                //z轴需要处于的状态
+                isZPause = true
+            }
+            queryDeviceStateCmd()
+        }
+
+        //第三轴继续预览
+        continuePreviewItem = ControlTextItemInfo(
+            _string(R.string.continue_preview),
             R.drawable.preview_pause_svg,
             false
         ) { viewHolder, item ->
             previewModel.updatePreview {
                 isCenterPreview = false
                 //z轴需要处于的状态
-                isZPause = !item.selected
+                isZPause = false
             }
-            item.selected = !item.selected
-            viewHolder.selected(item.selected)
             queryDeviceStateCmd()
         }
     }
 
-    val itemList = mutableListOf<ControlTextItem>()
+    val itemList = mutableListOf<ControlTextItemInfo>()
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
@@ -97,34 +112,22 @@ class PreviewControlItem : BasePreviewItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemList.clear()
-        itemList.add(rangePreviewItem!!)
-        itemList.add(centerPreviewItem!!)
+
         if (laserPeckerModel.haveExDevice()) {
             itemList.add(pausePreviewItem!!)
+            itemList.add(continuePreviewItem!!)
+        } else {
+            itemList.add(rangePreviewItem!!)
+            itemList.add(centerPreviewItem!!)
         }
-        //
-        rangePreviewItem?.selected = false
-        centerPreviewItem?.selected = false
-        pausePreviewItem?.selected = false
 
         //
         val deviceStateData = laserPeckerModel.deviceStateData.value
         val previewInfoData = previewModel.previewInfoData.value
-        if (deviceStateData?.isModeEngravePreview() == true) {
-            if (deviceStateData.workState == 0x07 || previewInfoData?.isCenterPreview == true) {
-                //显示中心点
-                centerPreviewItem?.selected = true
-            } else {
-                rangePreviewItem?.selected = true
-            }
 
-            if (deviceStateData.workState == 0x05) {
-                //第三轴继续预览
-            } else if (deviceStateData.workState == 0x04) {
-                //第三轴暂停预览
-                pausePreviewItem?.selected = true
-            }
-        }
+        //
+        centerPreviewItem?.selected = previewInfoData?.isCenterPreview == true
+        rangePreviewItem?.selected = centerPreviewItem?.selected == false //互斥
 
         //
         resetControlLayout(itemHolder)
@@ -146,6 +149,7 @@ class PreviewControlItem : BasePreviewItem() {
                     selected(item.selected)
                     //上屏
                     clickItem {
+                        //这里用this or itemHolder
                         item.clickAction(itemHolder, item)
                     }
                 }
@@ -154,11 +158,11 @@ class PreviewControlItem : BasePreviewItem() {
     }
 
     /**数据结构*/
-    data class ControlTextItem(
+    data class ControlTextItemInfo(
         val label: String,
         val ico: Int = -1,
         var selected: Boolean = false,
-        val clickAction: (DslViewHolder, ControlTextItem) -> Unit
+        val clickAction: (DslViewHolder, ControlTextItemInfo) -> Unit
     )
 
 }
