@@ -5,7 +5,8 @@
     <string name="object_diameter">物体直径</string>
 
     <string name="blue_no_device_connected">Unconnected device</string>
-    <string name="zflag_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
+    <string name="device_ex_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
+    <string name="engrave_ex_discontent_tips">检查到第三轴配件未连接，是否继续?</string>
 
     <string name="print_v2_package_preview_over">Quit Preview</string>
     <string name="start_engrave">Start</string>

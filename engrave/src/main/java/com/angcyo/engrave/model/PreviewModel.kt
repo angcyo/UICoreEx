@@ -87,7 +87,8 @@ class PreviewModel : LifecycleViewModel() {
                     val productInfo = laserPeckerModel.productInfoData.value
                     val bounds = if (laserPeckerModel.haveExDevice()) {
                         //有外设的情况下, 使用物理范围
-                        productInfo?.bounds
+                        //productInfo?.bounds
+                        productInfo?.previewBounds
                     } else {
                         productInfo?.previewBounds
                     }

@@ -80,7 +80,7 @@ data class EngravePreviewCmd(
                 productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
                 productInfo?.zLimitPath
-            } else if (peckerModel.isSOpen()) {
+            } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
                 productInfo?.zLimitPath
             } else {
                 productInfo?.limitPath
@@ -94,7 +94,7 @@ data class EngravePreviewCmd(
                 productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
                 productInfo?.zLimitPath
-            } else if (peckerModel.isSOpen()) {
+            } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
                 productInfo?.zLimitPath
             } else if (productInfo != null) {
                 Path().apply {

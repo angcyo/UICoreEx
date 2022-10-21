@@ -34,6 +34,7 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         } else if (to == ENGRAVE_FLOW_PREVIEW) {
             //预览界面, 创建预览信息, 并开始预览
             previewModel.startPreview(PreviewModel.createPreviewInfo(engraveCanvasFragment?.canvasDelegate))
+            previewExDeviceNoConnectTip()
         }
     }
 
@@ -54,7 +55,7 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
         renderDslAdapter {
             //
             PreviewTipItem()()
-            if (laserPeckerModel.haveExDevice()) {
+            if (laserPeckerModel.needShowExDeviceTip()) {
                 PreviewExDeviceTipItem()()
             }
             PreviewBrightnessItem()() {

@@ -137,6 +137,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**是否连接了扩展设备*/
     fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
 
+    /**是否需要显示外设提示*/
+    fun needShowExDeviceTip(): Boolean = haveExDevice() || isSRepMode()
+
     /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {
         return deviceSettingData.value?.zFlag == 1 //&& (deviceStateData.value?.zConnect == 1 || isDebug())
@@ -150,6 +153,11 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**滑台是否打开, 需要先打开设置, 再连接上 */
     fun isSOpen(): Boolean {
         return deviceSettingData.value?.sFlag == 1 //&& (deviceStateData.value?.sConnect == 1 || isDebug())
+    }
+
+    /**滑台多文件雕刻模式*/
+    fun isSRepMode(): Boolean {
+        return deviceSettingData.value?.sRep == 1
     }
 
     /**空闲模式*/

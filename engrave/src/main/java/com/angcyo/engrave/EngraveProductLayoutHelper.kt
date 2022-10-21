@@ -245,7 +245,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             } else if (laserPeckerModel.isROpen() && rLimitPath != null) {
                 //R轴连接
                 limitPath = rLimitPath
-            } else if (laserPeckerModel.isSOpen() && sLimitPath != null) {
+            } else if ((laserPeckerModel.isSOpen() || laserPeckerModel.isSRepMode()) && sLimitPath != null) {
                 //S轴连接
                 limitPath = sLimitPath
             }

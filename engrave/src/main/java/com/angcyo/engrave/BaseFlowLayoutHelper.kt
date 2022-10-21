@@ -151,56 +151,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         //模式改变监听, 改变按钮的文本
         laserPeckerModel.deviceStateData.observe(this) {
             _dslAdapter?.updateAllItem()
-
-/*
-            //雕刻模式提示
-            viewHolder?.visible(R.id.preview_text_view, laserPeckerModel.isZOpen())
-            if (laserPeckerModel.isZOpen()) {
-                viewHolder?.tv(R.id.preview_text_view)?.text = span {
-                    append(_string(R.string.device_setting_tips_fourteen_11))
-                    append(QuerySettingParser.Z_MODEL.toZModeString())
-                }
-            }
-
-            if (it?.isModeEngravePreview() == false) {
-                //非预览模式
-                engraveModel.updateEngravePreviewUuid(null)
-                engraveModel.engravePreviewInfoData.postValue(null)
-            }
-
-            if (it != null) {
-                val mode = it.mode
-                viewHolder?.enable(R.id.centre_button, true)
-                if (mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
-                    //雕刻预览中
-                    if (engraveModel.isRestore() && canvasDelegate?.getSelectedRenderer() == null) {
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.print_v2_package_preview_over)
-                    } else if (it.workState == 0x07) {
-                        //显示中心模式
-                        viewHolder?.enable(R.id.centre_button, false)
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.preview_continue)
-                    } else if (laserPeckerModel.haveExDevice()) {
-                        if (it.workState == 0x05) {
-                            //Z轴滚动预览中
-                            viewHolder?.tv(R.id.preview_button)?.text =
-                                _string(R.string.preview_scroll_pause)
-                        } else {
-                            viewHolder?.tv(R.id.preview_button)?.text =
-                                _string(R.string.preview_scroll_continue)
-                        }
-                    } else {
-                        viewHolder?.tv(R.id.preview_button)?.text =
-                            _string(R.string.print_v2_package_preview_over)
-                    }
-                } else if (mode == QueryStateParser.WORK_MODE_IDLE) {
-                    loopCheckDeviceState = false
-                    viewHolder?.tv(R.id.preview_button)?.text = _string(R.string.preview_continue)
-                }
-            } else {
-                loopCheckDeviceState = false
-            }*/
         }
     }
 
@@ -223,8 +173,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     /**显示预览安全提示框*/
-    fun showPreviewSafetyTips(context: Context, action: () -> Unit) {
-        context.messageDialog {
+    fun showSafetyTips(context: Context?, action: () -> Unit) {
+        context?.messageDialog {
             dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
             dialogTitle = _string(R.string.size_safety_tips)
             dialogMessage = _string(R.string.size_safety_content)
@@ -237,7 +187,76 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
+    /**第三轴未连接连接*/
+    fun exDeviceNoConnectType(): Int {
+        var noConnectType = 0
+        if (laserPeckerModel.needShowExDeviceTip()) {
+            val stateParser = laserPeckerModel.deviceStateData.value
+            if (laserPeckerModel.isZOpen()) {
+                val connect = stateParser?.zConnect == 1
+                if (!connect) {
+                    //z轴没有连接, 但是开启了z轴flag
+                    noConnectType = 1
+                }
+            } else if (laserPeckerModel.isSOpen() || laserPeckerModel.isSRepMode()) {
+                val connect = stateParser?.sConnect == 1
+                if (!connect) {
+                    noConnectType = 2
+                }
+            } else if (laserPeckerModel.isROpen()) {
+                val connect = stateParser?.rConnect == 1
+                if (!connect) {
+                    noConnectType = 3
+                }
+            }
+        }
+        return noConnectType
+    }
+
+    /**预览时, 第三轴的连接状态提示*/
+    fun previewExDeviceNoConnectTip() {
+        val noConnectType = exDeviceNoConnectType()
+        if (noConnectType > 0) {
+            engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+                dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+                dialogMessage = _string(R.string.device_ex_discontent_tips)
+
+                onDismissListener = {
+                    laserPeckerModel.queryDeviceState()
+                }
+            }
+        }
+    }
+
     //---
+
+    /**检查扩展设备是否处于连接状态*/
+    fun checkExDevice(action: () -> Unit) {
+        val messageType = exDeviceNoConnectType()
+        if (messageType > 0) {
+            viewHolder?.context?.messageDialog {
+                dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
+                dialogMessage = _string(R.string.engrave_ex_discontent_tips)
+
+                negativeButtonText = _string(R.string.dialog_negative)
+                positiveButtonListener = { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                }
+
+                positiveButtonText = _string(R.string.dialog_continue)
+                positiveButtonListener = { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                    action()
+                }
+
+                onDismissListener = {
+                    laserPeckerModel.queryDeviceState()
+                }
+            }
+        } else {
+            action()
+        }
+    }
 
 }
 

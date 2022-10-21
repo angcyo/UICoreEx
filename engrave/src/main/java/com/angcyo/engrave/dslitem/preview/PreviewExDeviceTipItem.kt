@@ -52,6 +52,15 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                         _string(R.string.device_direction_reversal)
                 )
             }
+            //滑台多文件雕刻模式
+            laserPeckerModel.isSRepMode() -> span {
+                append(_string(R.string.device_s_batch_engrave_label))
+                append(":")
+                append(
+                    if (isForward) _string(R.string.device_direction_forward) else
+                        _string(R.string.device_direction_reversal)
+                )
+            }
             else -> null
         }
     }

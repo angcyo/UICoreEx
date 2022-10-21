@@ -6,7 +6,8 @@
     <string name="object_diameter">物体直径</string>
 
     <string name="blue_no_device_connected">未连接设备</string>
-    <string name="zflag_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
+    <string name="device_ex_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
+    <string name="engrave_ex_discontent_tips">检查到第三轴配件未连接，是否继续?</string>
 
     <string name="blue_connect">蓝牙连接</string>
     <string name="device_connected">已连接</string>

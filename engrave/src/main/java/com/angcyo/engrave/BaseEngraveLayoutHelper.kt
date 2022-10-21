@@ -10,6 +10,7 @@ import com.angcyo.engrave.EngraveHelper.percentList
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
+import com.angcyo.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave.dslitem.transfer.DataStopTransferItem
 import com.angcyo.engrave.dslitem.transfer.DataTransmittingItem
@@ -253,6 +254,9 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_tip)
             }
+            if (laserPeckerModel.needShowExDeviceTip()) {
+                PreviewExDeviceTipItem()()
+            }
             //材质选择
             EngraveOptionWheelItem()() {
                 itemTag = MaterialEntity::name.name
@@ -340,11 +344,15 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
                             }
                         }
                     }*/
-                    engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                    renderFlowItems()
+                    checkExDevice {
+                        showSafetyTips(it.context) {
+                            engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                            renderFlowItems()
 
-                    //开始雕刻
-                    engraveModel.startEngrave(taskId)
+                            //开始雕刻
+                            engraveModel.startEngrave(taskId)
+                        }
+                    }
                 }
             }
         }
@@ -363,6 +371,9 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
+            }
+            if (laserPeckerModel.needShowExDeviceTip()) {
+                PreviewExDeviceTipItem()()
             }
             EngraveProgressItem()() {
                 itemTaskId = flowTaskId
