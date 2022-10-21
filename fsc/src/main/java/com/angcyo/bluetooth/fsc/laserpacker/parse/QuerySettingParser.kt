@@ -38,6 +38,8 @@ data class QuerySettingParser(
     var sFlag: Int = 0,
     //旋转轴方向控制，0为反转，1为正转。
     var dir: Int = 0,
+    //滑台多文件雕刻模式，0为关，1为开。
+    var sRep: Int = 0,
     //gcode激光功率值选择位，0从app输入值取值，1从gcode指令中取值。
     var gcodePower: Int = 0,
     //触摸按键启动预览使能位，1为开启，0为关闭。
@@ -81,6 +83,7 @@ data class QuerySettingParser(
                 sFlag = readInt(1)
                 dir = readInt(1)
                 gcodePower = readInt(1)
+                sRep = readInt(1)
                 state = readInt(1)
             }
             this
@@ -95,7 +98,7 @@ data class QuerySettingParser(
 
     //转换成指令
     override fun toHexCommandString(): String {
-        var dataLength = 0x0E  //数据长度
+        var dataLength = 0x0F  //数据长度
         val data = buildString {
             append(commandFunc().toHexString())
 
@@ -107,7 +110,7 @@ data class QuerySettingParser(
                 //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
-                dataLength = 0x12
+                dataLength = 0x13
 
                 //1为自由模式，为0时安全模式。
                 append(free.toHexString())
@@ -134,6 +137,7 @@ data class QuerySettingParser(
                 append(sFlag.toHexString())
                 append(dir.toHexString())
                 append(gcodePower.toHexString())
+                append(sRep.toHexString())
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
@@ -161,5 +165,6 @@ data class QuerySettingParser(
         zFlag = 0
         rFlag = 0
         sFlag = 0
+        sRep = 0
     }
 }

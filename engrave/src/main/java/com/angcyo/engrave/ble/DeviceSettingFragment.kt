@@ -107,6 +107,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     settingParser?.updateSetting()
                 }
             }
+            //第三轴
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_tips_fourteen_2)
                 itemDes = _string(R.string.device_setting_tips_fourteen_3)
@@ -147,6 +148,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.updateSetting()
                     }
             }
+            //旋转轴
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_ex_r_label)
                 itemDes = _string(R.string.device_ex_r_des)
@@ -160,6 +162,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     renderData()
                 }
             }
+            //滑台
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_ex_s_label)
                 itemDes = _string(R.string.device_ex_s_des)
@@ -173,6 +176,21 @@ class DeviceSettingFragment : BaseDslFragment() {
                     renderData()
                 }
             }
+            //滑台批量雕刻
+            DslPropertySwitchItem()() {
+                itemLabel = _string(R.string.device_s_batch_engrave_label)
+                itemDes = _string(R.string.device_s_batch_engrave_des)
+                initItem()
+
+                itemSwitchChecked = settingParser?.sRep == 1
+                itemSwitchChangedAction = {
+                    settingParser?.clearFlag()
+                    settingParser?.sRep = if (it) 1 else 0
+                    settingParser?.updateSetting()
+                    renderData()
+                }
+            }
+            //正转
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_ex_direction_label)
                 itemDes = _string(R.string.device_ex_direction_des)
