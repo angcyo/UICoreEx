@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/lib_xhdpi"
         android:layout_weight="1"
-        android:text="@string/engrave_finish"
+        android:text="@string/engrave_stop"
         android:textColor="@color/text_general_color"
         app:button_gradient_colors="@color/bg_primary_color" />
 

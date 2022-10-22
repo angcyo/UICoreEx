@@ -19,6 +19,7 @@
     <string name="print_v2_package_print_over">Ended laser engraving</string>
     <string name="engrave_pause">Pause</string>
     <string name="engrave_finish">Engrave finish</string>
+    <string name="engrave_stop">Stop</string>
     <string name="engrave_continue">Resume</string>
     <string name="engrave_again">Repeat</string>
     <string name="print_v2_package_Laser_home">Back Home</string>
@@ -173,4 +174,6 @@
     <string name="engrave_overflow_bounds_message">元素超出设备范围,无法雕刻!</string>
     <string name="engrave_perimeter">周长</string>
 
+    <string name="device_engrave_ing_title">当前设备正在工作中</string>
+    <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
 </resources>

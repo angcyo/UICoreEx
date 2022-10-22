@@ -149,9 +149,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     @CallPoint
     open fun bindDeviceState() {
         //模式改变监听, 改变预览控制按钮的文本
-        /*laserPeckerModel.deviceStateData.observe(this) {
-            _dslAdapter?.updateAllItem()
-        }*/
+        laserPeckerModel.deviceStateData.observe(this) {
+            if (it?.isModeEngrave() == true) {
+                //雕刻模式下, 需要刷新雕刻进度和雕刻时间
+                _dslAdapter?.updateAllItem()
+            }
+        }
 
         //预览信息改变时, 刷新路径预览
         previewModel.previewInfoData.observe(this) {
@@ -163,7 +166,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**根据不同的流程, 渲染不同的界面*/
     open fun renderFlowItems() {
-
+        //no op
     }
 
     /**持续检查工作作态*/
@@ -263,6 +266,33 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         } else {
             action()
         }
+    }
+
+    //---
+
+    /**检查设备状态, 返回设备是否可以开始预览.
+     * 主要检测当前设备是否正在雕刻中
+     * */
+    fun checkStartPreview(): Boolean {
+        if (laserPeckerModel.deviceStateData.value?.isModeEngrave() == true) {
+            engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+                dialogTitle = _string(R.string.device_engrave_ing_title)
+                dialogMessage = _string(R.string.device_engrave_ing_des)
+
+                positiveButtonText = _string(R.string.engrave_stop)
+                positiveButtonListener = { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                    ExitCmd().enqueue()
+                    syncQueryDeviceState()
+                }
+
+                negativeButton(_string(R.string.dialog_negative)) { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                }
+            }
+            return false
+        }
+        return true
     }
 
 }

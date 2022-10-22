@@ -28,6 +28,7 @@
     <string name="start_engrave">开始镭雕</string>
     <string name="engrave_pause">暂停镭雕</string>
     <string name="engrave_finish">镭雕结束</string>
+    <string name="engrave_stop">结束镭雕</string>
     <string name="engrave_continue">继续镭雕</string>
     <string name="start_preview">开始预览</string>
     <string name="engraving">镭雕中</string>
@@ -161,5 +162,8 @@
     <string name="firmware_upgrade">固件升级</string>
     <string name="engrave_precision">加速级别</string>
     <string name="engrave_perimeter">周长</string>
+
+    <string name="device_engrave_ing_title">当前设备正在工作中</string>
+    <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
 
 </resources>
