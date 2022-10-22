@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
+import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.CanvasProjectBean
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.data.toCanvasProjectItemList
@@ -21,8 +22,12 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.component.batchHandle
 import com.angcyo.library.ex.uuid
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.objectbox.saveAllEntity
 import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
 
 /**
  * 自动雕刻Model, 可以通过数据直接雕刻
@@ -31,18 +36,41 @@ import com.angcyo.viewmodel.vmDataNull
  */
 class AutoEngraveModel : LifecycleViewModel() {
 
+    companion object {
+        /**正常*/
+        const val STATE_NORMAL = 0
+
+        /**正在创建数据*/
+        const val STATE_CREATE = 1
+
+        /**正在传输数据*/
+        const val STATE_TRANSFER = 2
+
+        /**正在雕刻*/
+        const val STATE_ENGRAVE = 3
+    }
+
     /**自动雕刻任务*/
     val autoEngraveTaskData = vmDataNull<AutoEngraveTask?>()
+
+    /**任务状态提示*/
+    val autoEngraveTaskOnceData = vmDataOnce<AutoEngraveTask?>()
 
     /**传输状态数据*/
     val autoTransferStateData = vmDataNull<TransferTaskStateData?>()
 
     val engraveModel = vmApp<EngraveModel>()
 
+    /**需要自动雕刻的数据
+     * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
+     * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+     * */
+    val engravePendingData = vmDataOnce<CanvasOpenDataType?>()
+
     //region---数据和传输---
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(projectBean: CanvasProjectBean) {
+    fun startAutoEngrave(projectBean: CanvasProjectBean): AutoEngraveTask {
         val task = AutoEngraveTask(uuid(), projectBean)
         val itemList = projectBean.data?.toCanvasProjectItemList()
         task._projectItemList = itemList
@@ -50,7 +78,10 @@ class AutoEngraveModel : LifecycleViewModel() {
             task.isFinish = true
             task.error = EmptyException()//空数据异常
         } else {
-            startCreateData(itemList) {
+            task.state = STATE_CREATE
+            startCreateData(task.taskId, itemList) {
+                //com.angcyo.engrave.transition.EngraveTransitionManager.transitionTransferData
+                it.saveAllEntity(LPBox.PACKAGE_NAME)//入库, 关键
                 task._transferDataList = it
                 if (!task.isCancel) {
                     task.index = 0
@@ -60,17 +91,21 @@ class AutoEngraveModel : LifecycleViewModel() {
             }
         }
         autoEngraveTaskData.postValue(task)
+        autoEngraveTaskOnceData.postValue(task)
+        return task
     }
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(itemList: List<CanvasProjectItemBean>?) {
+    fun startAutoEngrave(itemList: List<CanvasProjectItemBean>?): AutoEngraveTask {
         val task = AutoEngraveTask(uuid(), null)
         task._projectItemList = itemList
         if (itemList.isNullOrEmpty()) {
             task.isFinish = true
             task.error = EmptyException()//空数据异常
         } else {
-            startCreateData(itemList) {
+            startCreateData(task.taskId, itemList) {
+                //com.angcyo.engrave.transition.EngraveTransitionManager.transitionTransferData
+                it.saveAllEntity(LPBox.PACKAGE_NAME)//入库, 关键
                 task._transferDataList = it
                 if (!task.isCancel) {
                     task.index = 0
@@ -80,6 +115,7 @@ class AutoEngraveModel : LifecycleViewModel() {
             }
         }
         autoEngraveTaskData.postValue(task)
+        return task
     }
 
     //endregion---数据和传输---
@@ -88,13 +124,14 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始批量创建数据*/
     fun startCreateData(
+        taskId: String,
         itemBeanList: List<CanvasProjectItemBean>,
         action: (List<TransferDataEntity>) -> Unit = {}
     ) {
         doBack {
             val result = mutableListOf<TransferDataEntity>()
             itemBeanList.batchHandle({ handle ->
-                startCreateData(this) {
+                startCreateData(taskId, this) {
                     it?.let { result.add(it) }
                     handle.next()
                 }
@@ -106,11 +143,11 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始创建数据*/
     fun startCreateData(
+        taskId: String,
         itemBean: CanvasProjectItemBean,
         action: (TransferDataEntity?) -> Unit = {}
     ) {
         doBack(true) {
-            val taskId = uuid()
             val transferConfig = EngraveFlowDataHelper.generateTransferConfig(taskId)
             val transferDataEntity = EngraveTransitionManager().transitionTransferData(
                 itemBean,
@@ -123,6 +160,8 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始传输数据*/
     fun startTransferData(task: AutoEngraveTask) {
+        task.state = STATE_TRANSFER
+        autoEngraveTaskOnceData.postValue(task)
         (task._transferDataList ?: emptyList()).batchHandle({ handle ->
             if (task.isCancel) {
                 handle.isCancel = true
@@ -140,6 +179,7 @@ class AutoEngraveModel : LifecycleViewModel() {
                 }
             }
         }) {
+            autoEngraveTaskOnceData.postValue(task)
             if (!task.isCancel) {
                 startEngrave(task)
             }
@@ -209,6 +249,7 @@ class AutoEngraveModel : LifecycleViewModel() {
                                     if (result.isFileTransferSuccess()) {
                                         //文件传输完成
                                         transferDataEntity.isTransfer = true
+                                        transferDataEntity.lpSaveEntity()
                                         finishAction(null)
                                     } else {
                                         "数据接收未完成".writeErrorLog()
@@ -264,6 +305,8 @@ class AutoEngraveModel : LifecycleViewModel() {
         if (task.isCancel || task.isFinish) {
             return
         }
+        task.state = STATE_ENGRAVE
+        autoEngraveTaskOnceData.postValue(task)
         engraveModel.startEngrave(task.taskId)
     }
 
@@ -275,6 +318,14 @@ class AutoEngraveModel : LifecycleViewModel() {
         val taskId: String,
         /**需要雕刻的数据, 工程数据. 里面包含子数据*/
         val projectBean: CanvasProjectBean?,
+
+        /**任务当前的状态
+         * [STATE_NORMAL]
+         * [STATE_CREATE]
+         * [STATE_TRANSFER]
+         * [STATE_ENGRAVE]
+         * */
+        var state: Int = STATE_NORMAL,
 
         //---
 

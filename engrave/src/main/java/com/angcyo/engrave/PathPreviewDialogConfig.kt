@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
@@ -20,6 +19,7 @@ import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.widget.DslViewHolder
@@ -40,6 +40,8 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     var projectItemBean: CanvasProjectItemBean? = null
 
     var previewInfo: PreviewInfo? = null
+
+    val uuid = uuid()
 
     init {
         dialogLayoutId = R.layout.dialog_path_preview_layout
@@ -94,7 +96,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                     loadEnd(bean, null)
                     return@enqueue
                 }
-                autoEngraveModel.startCreateData(itemBean) { transferDataEntity ->
+                autoEngraveModel.startCreateData(uuid, itemBean) { transferDataEntity ->
                     if (transferDataEntity == null) {
                         toast("data exception!")
                         loadEnd(transferDataEntity, null)

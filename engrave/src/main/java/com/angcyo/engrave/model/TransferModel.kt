@@ -28,6 +28,7 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.size
 import com.angcyo.objectbox.deleteAllEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -310,6 +311,7 @@ class TransferModel : ViewModel() {
                                                         //文件传输完成
                                                         task.index++
                                                         transferDataEntity.isTransfer = true
+                                                        transferDataEntity.lpSaveEntity()
                                                         _transferDataNext(transferTask)
                                                     } else {
                                                         "数据接收未完成".writeErrorLog()

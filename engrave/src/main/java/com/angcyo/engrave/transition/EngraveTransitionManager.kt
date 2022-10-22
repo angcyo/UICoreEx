@@ -228,7 +228,9 @@ class EngraveTransitionManager {
                 }
             }
         }
-        resultDataList.saveAllEntity(LPBox.PACKAGE_NAME)//入库
+        //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
+        //[com.angcyo.engrave.EngraveFlowDataHelper.getTransferDataList]
+        resultDataList.saveAllEntity(LPBox.PACKAGE_NAME)
         return resultDataList
     }
 
@@ -250,6 +252,8 @@ class EngraveTransitionManager {
                 break
             }
         }
+
+        //result?.layerMode //?
 
         return result
     }

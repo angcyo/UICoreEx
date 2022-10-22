@@ -147,7 +147,8 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**获取当前任务, 所有传输了的数据, 通常这些数据都是需要雕刻的*/
+    /**获取当前任务, 所有传输了的数据, 通常这些数据都是需要雕刻的
+     * [TransferDataEntity] 需要提前入库*/
     fun getTransferDataList(taskId: String?): List<TransferDataEntity> {
         return TransferDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(TransferDataEntity_.taskId.equal("$taskId"))

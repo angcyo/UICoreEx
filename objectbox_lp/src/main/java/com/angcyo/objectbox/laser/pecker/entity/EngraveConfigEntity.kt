@@ -22,8 +22,11 @@ data class EngraveConfigEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
-    /**当前的配置, 属于那个图层
-     * [com.angcyo.engrave.data.EngraveLayerInfo]*/
+    /**当前的配置, 属于那个图层.
+     * [com.angcyo.engrave.data.EngraveLayerInfo]
+     *
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.layerMode]
+     * */
     var layerMode: Int = -1,
 
     /**材质标识
