@@ -1,5 +1,6 @@
 package com.angcyo.server.website
 
+import androidx.annotation.WorkerThread
 import com.angcyo.library.ex.*
 import com.angcyo.server.DslAndServer
 import com.yanzhenjie.andserver.framework.body.StreamBody
@@ -25,11 +26,13 @@ import java.io.InputStream
 
 class FaviconWebsite : BasicWebsite() {
 
+    @WorkerThread
     override fun intercept(request: HttpRequest): Boolean {
         val httpPath = request.path
         return httpPath == "/favicon.ico" && request.getHeader("Accept").isImageMimeType()
     }
 
+    @WorkerThread
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         val drawable = _drawable(DslAndServer.DEFAULT_NOTIFY_ICON!!)
         val bitmap = drawable?.toBitmap()

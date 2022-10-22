@@ -1,5 +1,6 @@
 package com.angcyo.server.website
 
+import androidx.annotation.WorkerThread
 import com.angcyo.library.app
 import com.angcyo.library.component.NetUtils
 import com.angcyo.library.component.Port
@@ -24,11 +25,13 @@ import kotlin.math.max
  */
 class LogWSWebsite : BasicWebsite() {
 
+    @WorkerThread
     override fun intercept(request: HttpRequest): Boolean {
         val httpPath = request.path
         return httpPath == "/ws"
     }
 
+    @WorkerThread
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         var html = app().readAssets("LogWSWebsite.html")
         val address = NetUtils.localIPAddress ?: "localhost"

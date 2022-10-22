@@ -6,6 +6,7 @@ import com.angcyo.server.website.FaviconWebsite
 import com.angcyo.server.website.LogWSWebsite
 import com.yanzhenjie.andserver.annotation.Config
 import com.yanzhenjie.andserver.framework.config.WebConfig
+import com.yanzhenjie.andserver.framework.website.BasicWebsite
 import com.yanzhenjie.andserver.framework.website.FileBrowser
 
 /**
@@ -20,25 +21,26 @@ import com.yanzhenjie.andserver.framework.website.FileBrowser
  */
 
 @Config("file")
-open class FileWebConfig : WebConfig {
+class FileWebConfig : WebConfig {
 
     companion object {
-
-        /**是否激活文件服务*/
-        var enable = true
 
         /**文件服务路径
          * FileUtils.appRootExternalFolder().absolutePath*/
         var fileWebPath = libFolderPath("")
+
+        /**额外的网站配置*/
+        val fileWebsiteList = mutableListOf<BasicWebsite>()
     }
 
     override fun onConfig(context: Context, delegate: WebConfig.Delegate) {
-        // 添加一个文件浏览器网站
-        if (enable) {
-            //delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
-            delegate.addWebsite(LogWSWebsite())
-            delegate.addWebsite(FaviconWebsite())
-            delegate.addWebsite(FileBrowser(fileWebPath))
+        delegate.addWebsite(FaviconWebsite())
+        delegate.addWebsite(LogWSWebsite())
+        fileWebsiteList.forEach {
+            delegate.addWebsite(it)
         }
+        // 添加一个文件浏览器网站
+        delegate.addWebsite(FileBrowser(fileWebPath))
+        //delegate.addWebsite(FileBrowser(FileUtils.appRootExternalFolder().absolutePath))
     }
 }

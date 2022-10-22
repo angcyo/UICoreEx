@@ -49,7 +49,12 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     /**通知的名称*/
     var notifyName: String = ""
 
-    /**Server的group*/
+    /**Server的group
+     *
+     * 可以通过
+     * [com.yanzhenjie.andserver.annotation.Config]
+     * 注解声明
+     * */
     var group = "default"
 
     init {
