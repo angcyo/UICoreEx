@@ -142,7 +142,9 @@ class PreviewControlItem : BasePreviewItem() {
             itemList.add(rangePreviewItem!!)
             itemList.add(centerPreviewItem!!)
 
-            if (laserPeckerModel.deviceSettingData.value?.gcodeView == 1 &&
+            if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+                //C1不支持此操作
+            } else if (laserPeckerModel.deviceSettingData.value?.gcodeView == 1 &&
                 previewInfoData?.itemDataBean?._dataMode == CanvasConstant.DATA_MODE_GCODE
             ) {
                 //开启了向量预览, 并且GCode数据模式下, 才有路径预览

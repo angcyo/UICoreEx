@@ -62,4 +62,8 @@ class CanvasOpenModel : ViewModel() {
     }
 }
 
+/**
+ * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
+ * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+ * */
 typealias CanvasOpenFileType = Any

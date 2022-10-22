@@ -62,6 +62,8 @@ class DeviceSettingFragment : BaseDslFragment() {
         val settingParser = laserPeckerModel.deviceSettingData.value
         settingParser?.functionSetting()
 
+        val productInfo = laserPeckerModel.productInfoData.value
+
         renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_act_model_warning_tone)
@@ -97,15 +99,19 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //GCode预览
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
-                itemDes = _string(R.string.device_setting_act_des_preview_g_code)
-                initItem()
+            if (productInfo?.isCI() == true) {
+                //C1不支持矢量雕刻
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
+                    itemDes = _string(R.string.device_setting_act_des_preview_g_code)
+                    initItem()
 
-                itemSwitchChecked = settingParser?.gcodeView == 1
-                itemSwitchChangedAction = {
-                    settingParser?.gcodeView = if (it) 1 else 0
-                    settingParser?.updateSetting()
+                    itemSwitchChecked = settingParser?.gcodeView == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.gcodeView = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
             //第三轴
@@ -164,43 +170,55 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_ex_s_label)
-                itemDes = _string(R.string.device_ex_s_des)
-                initItem()
+            if (productInfo?.isCI() == true) {
 
-                itemSwitchChecked = settingParser?.sFlag == 1
-                itemSwitchChangedAction = {
-                    settingParser?.clearFlag()
-                    settingParser?.sFlag = if (it) 1 else 0
-                    settingParser?.updateSetting()
-                    renderData()
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_ex_s_label)
+                    itemDes = _string(R.string.device_ex_s_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.sFlag == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.clearFlag()
+                        settingParser?.sFlag = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                        renderData()
+                    }
                 }
             }
             //滑台批量雕刻
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_s_batch_engrave_label)
-                itemDes = _string(R.string.device_s_batch_engrave_des)
-                initItem()
+            if (productInfo?.isCI() == true) {
 
-                itemSwitchChecked = settingParser?.sRep == 1
-                itemSwitchChangedAction = {
-                    settingParser?.clearFlag()
-                    settingParser?.sRep = if (it) 1 else 0
-                    settingParser?.updateSetting()
-                    renderData()
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_s_batch_engrave_label)
+                    itemDes = _string(R.string.device_s_batch_engrave_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.sRep == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.clearFlag()
+                        settingParser?.sRep = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                        renderData()
+                    }
                 }
             }
             //正转
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_ex_direction_label)
-                itemDes = _string(R.string.device_ex_direction_des)
-                initItem()
+            if (productInfo?.isCI() == true) {
 
-                itemSwitchChecked = settingParser?.dir == 1
-                itemSwitchChangedAction = {
-                    settingParser?.dir = if (it) 1 else 0
-                    settingParser?.updateSetting()
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_ex_direction_label)
+                    itemDes = _string(R.string.device_ex_direction_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.dir == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.dir = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
             DslPropertySwitchItem()() {
