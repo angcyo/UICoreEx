@@ -14,6 +14,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.toLaserTypeString
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -246,15 +247,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     ) {
         val diameter =
             (MM_UNIT.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
+
+
         buildString {
             append("开始雕刻:[${transferDataEntity.taskId}]")
-            append(" ${transferDataEntity.index}")
+            append(" layer:${EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)?.label}")
             append(" type:${engraveConfigEntity.type.toLaserTypeString()}")
-            append(" power:${engraveConfigEntity.power}")
-            append(" depth:${engraveConfigEntity.depth}")
-            append(" time:${engraveConfigEntity.time}")
-            append(" diameter:${diameter}")
-            append(" precision:${engraveConfigEntity.precision}")
+            append(" $transferDataEntity")
         }.writeEngraveLog()
 
         EngraveCmd(
