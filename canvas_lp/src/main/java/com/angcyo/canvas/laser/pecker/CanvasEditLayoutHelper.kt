@@ -238,20 +238,16 @@ object CanvasEditLayoutHelper {
 
         val paintStyle = renderer.dataItem?.dataBean?.paintStyle?.toPaintStyle()
 
-        if (type == CanvasConstant.DATA_TYPE_LINE && !isDebugType()) {
-            //线不支持描边
-        } else {
-            CanvasControlItem2()() {
-                strokeControlItem = this
-                itemIco = R.drawable.canvas_style_stroke_ico
-                itemText = _string(R.string.canvas_stroke)
-                itemIsSelected = paintStyle == Paint.Style.STROKE
-                itemClick = {
-                    renderer.dataItem?.updatePaintStyle(Paint.Style.STROKE, renderer)
-                    fillControlItem?.itemIsSelected = false
-                    itemIsSelected = true
-                    updateAllItem()
-                }
+        CanvasControlItem2()() {
+            strokeControlItem = this
+            itemIco = R.drawable.canvas_style_stroke_ico
+            itemText = _string(R.string.canvas_stroke)
+            itemIsSelected = paintStyle == Paint.Style.STROKE
+            itemClick = {
+                renderer.dataItem?.updatePaintStyle(Paint.Style.STROKE, renderer)
+                fillControlItem?.itemIsSelected = false
+                itemIsSelected = true
+                updateAllItem()
             }
         }
         CanvasControlItem2()() {

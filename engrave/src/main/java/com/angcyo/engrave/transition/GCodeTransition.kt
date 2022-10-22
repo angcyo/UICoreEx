@@ -21,6 +21,7 @@ import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveDat
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
+import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -167,6 +168,7 @@ class GCodeTransition : IEngraveTransition {
         param: TransitionParam
     ): TransferDataEntity {
         val bounds = engraveProvider.getEngraveBounds()
+        val rotateBounds = engraveProvider.getEngraveRotateBounds()
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
@@ -186,8 +188,9 @@ class GCodeTransition : IEngraveTransition {
             autoCnc = autoCnc
         )
         val gCodeText = gCodeFile.readText()
-        //GCode数据
-        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, bounds, 0f)
+        gCodeFile.deleteSafe()
+        //GCode数据, 此时的GCode只需要平移
+        gCodeFile = CanvasDataHandleOperate.gCodeTranslation(gCodeText, rotateBounds)
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
