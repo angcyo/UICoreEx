@@ -42,9 +42,10 @@ dependencies {
 //apply from: allGradle.objectBrowser
 
 //debug release
-//apply from: 'https://gitee.com/angcyo/gradle/raw/master/objectBrowser.gradle'
+//apply from: "$gradleHost/master/objectBrowser.gradle"
 
 //debug pretest release
-//apply from: 'https://gitee.com/angcyo/gradle/raw/master/objectBrowser3.gradle'
+//apply from: "$gradleHost/master/objectBrowser3.gradle"
+
 
 

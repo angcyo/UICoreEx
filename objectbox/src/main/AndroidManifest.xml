@@ -1,6 +1,6 @@
 <manifest package="com.angcyo.objectbox">
 
-    <!--https://docs.objectbox.io/data-browser-->
+    <!-- https://docs.objectbox.io/data-browser -->
     <!--
     &lt;!&ndash; Required to provide the web interface &ndash;&gt;
     <uses-permission android:name="android.permission.INTERNET" />
