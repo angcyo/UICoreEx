@@ -1,0 +1,7 @@
+apply from: allGradle.urlFile
+
+dependencies {
+    compileOnly urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-abtest-v1.0.0.aar', 'umeng-abtest-v1.0.0.aar')
+    compileOnly urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-apm-armeabi-v1.4.2.aar', 'umeng-apm-armeabi-v1.4.2.aar')
+    compileOnly urlFile('https://gitcode.net/angcyo/file/-/raw/master/aar/UMeng/umeng-asms-armeabi-v1.4.1.aar', 'umeng-asms-armeabi-v1.4.1.aar')
+}
