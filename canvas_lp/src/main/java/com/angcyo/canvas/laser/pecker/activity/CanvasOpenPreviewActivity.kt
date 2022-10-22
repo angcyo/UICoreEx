@@ -5,19 +5,19 @@ import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
+import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.laser.pecker.R
-import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
-import com.angcyo.canvas.laser.pecker.toCanvasDataBean
 import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
 import com.angcyo.engrave.firmware.FirmwareUpdateFragment
+import com.angcyo.engrave.loadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
 import com.angcyo.http.rx.doBack
@@ -82,7 +82,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         if (path.endsWith(CanvasConstant.PROJECT_EXT)) {
             //工程文件
             val text = path.file().readText()
-            val canvasBean = text?.toCanvasDataBean()
+            val canvasBean = text?.toCanvasProjectBean()
 
             if (canvasBean != null) {
                 adapter?.render {

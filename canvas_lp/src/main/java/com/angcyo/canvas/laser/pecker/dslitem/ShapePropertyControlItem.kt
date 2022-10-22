@@ -26,7 +26,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
 
     companion object {
         /**最小/最大的边数
-         * [com.angcyo.canvas.data.ItemDataBean.side]*/
+         * [com.angcyo.canvas.data.CanvasProjectItemBean.side]*/
         const val SHAPE_MIN_SIDE = 3
         const val SHAPE_MAX_SIDE = 50
 

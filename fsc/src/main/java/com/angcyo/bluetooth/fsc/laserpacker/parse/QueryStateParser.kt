@@ -176,24 +176,21 @@ fun QueryStateParser.toDeviceStateString(): String? {
 
     when (mode) {
         QueryStateParser.WORK_MODE_ENGRAVE -> {
-            builder.append("镭雕")
             when (workState) {
-                0x03 -> builder.append("结束")
-                0x04 -> builder.append("暂停")
-                else -> builder.append("中")
+                0x03 -> builder.append(_string(R.string.engrave_state_stop))
+                0x04 -> builder.append(_string(R.string.engrave_state_pause))
+                else -> builder.append(_string(R.string.engrave_state_ing))
             }
         }
         QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW -> {
-            builder.append("预览")
             when (workState) {
-                0x01 -> builder.append("图片")
-                0x02 -> builder.append("范围")
-                0x04 -> builder.append("第三轴暂停预览")
-                0x05 -> builder.append("第三轴继续预览")
-                0x06 -> builder.append("支架调整")
-                0x07 -> builder.append("显示中心")
-                0x08 -> builder.append("4点范围")
-                else -> builder.append("中")
+                0x01 -> builder.append(_string(R.string.preview_state_gcode))
+                0x02 -> builder.append(_string(R.string.preview_state_range))
+                0x04 -> builder.append(_string(R.string.preview_state_z_pause))
+                0x05 -> builder.append(_string(R.string.preview_state_z_continue))
+                0x06 -> builder.append(_string(R.string.preview_state_bracket))
+                0x07 -> builder.append(_string(R.string.preview_state_center))
+                0x08 -> builder.append(_string(R.string.preview_state_points))
             }
         }
         QueryStateParser.WORK_MODE_FOCUSING -> builder.append("调焦模式")

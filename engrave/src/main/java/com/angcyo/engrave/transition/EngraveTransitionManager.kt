@@ -4,6 +4,9 @@ import android.graphics.RectF
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.canvas.graphics.GraphicsHelper
+import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
@@ -234,20 +237,36 @@ class EngraveTransitionManager {
     @CallPoint
     @WorkerThread
     fun transitionTransferData(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         param: TransitionParam
     ): TransferDataEntity? {
         var result: TransferDataEntity? = null
 
         for (transition in transitionList) {
-            result = transition.doTransitionTransferData(renderer, transferConfigEntity, param)
+            result =
+                transition.doTransitionTransferData(engraveProvider, transferConfigEntity, param)
             if (result != null) {
                 break
             }
         }
 
         return result
+    }
+
+    /**将[itemDataBean]转换成传输给机器的数据,
+     * 内部有耗时转换操作, 建议在子线程处理
+     * [transitionTransferData]
+     * */
+    @CallPoint
+    @WorkerThread
+    fun transitionTransferData(
+        itemDataBean: CanvasProjectItemBean,
+        transferConfigEntity: TransferConfigEntity,
+        param: TransitionParam
+    ): TransferDataEntity? {
+        val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean) ?: return null
+        return transitionTransferData(renderItem, transferConfigEntity, param)
     }
 
     //

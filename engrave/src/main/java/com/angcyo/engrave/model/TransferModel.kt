@@ -39,6 +39,13 @@ class TransferModel : ViewModel() {
 
     companion object {
 
+        /**计算进度*/
+        fun calcTransferProgress(indexProgress: Int, index: Int, count: Int): Int {
+            val part = 100f / count
+            val result = (index * part + part * indexProgress / 100).toInt()
+            return clamp(result, 0, 100)
+        }
+
         /**根据雕刻数据, 返回数据指令*/
         fun getTransferDataCmd(transferDataEntity: TransferDataEntity): DataCmd? {
             val bytes = transferDataEntity.bytes()
@@ -126,6 +133,23 @@ class TransferModel : ViewModel() {
                 canvasDelegate,
                 transferConfigEntity
             )
+            startCreateTransferData(taskId, dataEntityList)
+        }
+    }
+
+    /**开始创建机器需要的传输数据*/
+    @CallPoint
+    @WorkerThread
+    fun startCreateTransferData(
+        taskId: String?,
+        dataEntityList: List<TransferDataEntity>
+    ) {
+        stopTransfer()
+        val transferTask = TransferTask(taskId)
+        _transferTask = transferTask
+        EngraveFlowDataHelper.startCreateTransferData(taskId)
+        doBack {
+            transferStateData.postValue(TransferTaskStateData(taskId, -1, null))
             EngraveFlowDataHelper.finishCreateTransferData(taskId)
             if (!transferTask.isCancel) {
                 if (dataEntityList.isEmpty()) {
@@ -341,13 +365,6 @@ class TransferModel : ViewModel() {
                 bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
             action(have)
         }
-    }
-
-    /**计算进度*/
-    fun calcTransferProgress(indexProgress: Int, index: Int, count: Int): Int {
-        val part = 100f / count
-        val result = (index * part + part * indexProgress / 100).toInt()
-        return clamp(result, 0, 100)
     }
 
     //待发送的数据任务

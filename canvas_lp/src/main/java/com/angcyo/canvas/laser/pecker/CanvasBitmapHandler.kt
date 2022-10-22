@@ -7,11 +7,11 @@ import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.component.file.writeToCache
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.loadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate

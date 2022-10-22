@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -82,6 +83,10 @@ class PreviewModel : LifecycleViewModel() {
         fun updatePreviewInfo(info: PreviewInfo, itemRenderer: IRenderer?) {
             val laserPeckerModel = vmApp<LaserPeckerModel>()
             info.apply {
+                itemDataBean = null
+                if (itemRenderer is DataItemRenderer) {
+                    itemDataBean = itemRenderer.rendererItem?.dataBean
+                }
                 if (itemRenderer == null) {
                     rotate = null
                     val productInfo = laserPeckerModel.productInfoData.value

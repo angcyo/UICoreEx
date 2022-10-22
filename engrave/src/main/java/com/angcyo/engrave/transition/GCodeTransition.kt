@@ -6,12 +6,11 @@ import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
+import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.data.toMm
+import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataBitmapItem
-import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataPathItem
-import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
@@ -39,54 +38,52 @@ class GCodeTransition : IEngraveTransition {
     /**将可视化数据处理成机器需要的GCode数据
      * [CanvasConstant.DATA_MODE_GCODE]*/
     override fun doTransitionTransferData(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         param: TransitionParam
     ): TransferDataEntity? {
-        if (renderer is DataItemRenderer) {
-            val dataItem = renderer.dataItem
-            val dataBean = dataItem?.dataBean
-            if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
-                //需要处理成GCode数据
-                if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
-                    //线条转GCode使用图片的方式
-                    val bitmap = renderer.getEngraveBitmap()
-                    bitmap?.let {
-                        return _transitionBitmapTransferData2(
-                            renderer,
-                            transferConfigEntity,
-                            bitmap,
-                            param
-                        )
-                    }
-                } else if (dataItem is DataPathItem) {
-                    val pathList = dataItem.dataPathList
-                    return _transitionPathTransferData(
-                        renderer,
+        val dataItem = engraveProvider.getEngraveDataItem()
+        val dataBean = dataItem?.dataBean
+        if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
+            //需要处理成GCode数据
+            if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
+                //线条转GCode使用图片的方式
+                val bitmap = engraveProvider.getEngraveBitmap()
+                bitmap?.let {
+                    return _transitionBitmapTransferData2(
+                        engraveProvider,
                         transferConfigEntity,
-                        pathList,
+                        bitmap,
                         param
                     )
-                } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
-                    //图片元素, 路径转GCode算法
-                    val gCodeDrawable = dataItem.gCodeDrawable
-                    return _transitionPathTransferData(
-                        renderer,
+                }
+            } else if (dataItem is DataPathItem) {
+                val pathList = dataItem.dataPathList
+                return _transitionPathTransferData(
+                    engraveProvider,
+                    transferConfigEntity,
+                    pathList,
+                    param
+                )
+            } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
+                //图片元素, 路径转GCode算法
+                val gCodeDrawable = dataItem.gCodeDrawable
+                return _transitionPathTransferData(
+                    engraveProvider,
+                    transferConfigEntity,
+                    listOf(gCodeDrawable!!.gCodePath),
+                    param
+                )
+            } else {
+                //其他元素, 使用图片转GCode算法
+                val bitmap = engraveProvider.getEngraveBitmap()
+                bitmap?.let {
+                    return _transitionBitmapTransferData(
+                        engraveProvider,
                         transferConfigEntity,
-                        listOf(gCodeDrawable!!.gCodePath),
+                        bitmap,
                         param
                     )
-                } else {
-                    //其他元素, 使用图片转GCode算法
-                    val bitmap = renderer.getEngraveBitmap()
-                    bitmap?.let {
-                        return _transitionBitmapTransferData(
-                            renderer,
-                            transferConfigEntity,
-                            bitmap,
-                            param
-                        )
-                    }
                 }
             }
         }
@@ -96,25 +93,30 @@ class GCodeTransition : IEngraveTransition {
     /**Path路径转GCode*/
     @Private
     fun _transitionPathTransferData(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         pathList: List<Path>,
         param: TransitionParam
     ): TransferDataEntity {
+        val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isLast = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
         val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
             pathList,
-            renderer.getBounds(),
-            renderer.rotate,
+            engraveProvider.getEngraveBounds(),
+            engraveProvider._rotate,
             writeFirst = isFirst,
-            writeLast = isLast,
+            writeLast = isFinish,
             autoCnc = autoCnc
         )
-        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+        return _handleGCodeTransferDataEntity(
+            engraveProvider,
+            transferConfigEntity,
+            gCodeFile
+        ).apply {
             //1: 存一份原始可视化数据
-            val bitmap = renderer.getEngraveBitmap()
+            val bitmap = engraveProvider.getEngraveBitmap()
             saveEngraveData("$index", bitmap, "png")
         }
     }
@@ -122,13 +124,14 @@ class GCodeTransition : IEngraveTransition {
     /**Bitmap转GCode*/
     @Private
     fun _transitionBitmapTransferData(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         bitmap: Bitmap,
         param: TransitionParam
     ): TransferDataEntity {
+        val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isLast = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
@@ -142,10 +145,14 @@ class GCodeTransition : IEngraveTransition {
         //GCode数据
         gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
             gCodeText,
-            renderer.getBounds(),
-            renderer.rotate
+            engraveProvider.getEngraveBounds(),
+            engraveProvider._rotate
         )
-        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+        return _handleGCodeTransferDataEntity(
+            engraveProvider,
+            transferConfigEntity,
+            gCodeFile
+        ).apply {
             //1: 存一份原始可视化数据
             saveEngraveData("$index", pxBitmap, "png")
         }
@@ -154,12 +161,13 @@ class GCodeTransition : IEngraveTransition {
     /**Bitmap转GCode*/
     @Private
     fun _transitionBitmapTransferData2(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         bitmap: Bitmap,
         param: TransitionParam
     ): TransferDataEntity {
-        val bounds = renderer.getBounds()
+        val bounds = engraveProvider.getEngraveBounds()
+        val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
@@ -180,7 +188,11 @@ class GCodeTransition : IEngraveTransition {
         val gCodeText = gCodeFile.readText()
         //GCode数据
         gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, bounds, 0f)
-        return _handleGCodeTransferDataEntity(renderer, transferConfigEntity, gCodeFile).apply {
+        return _handleGCodeTransferDataEntity(
+            engraveProvider,
+            transferConfigEntity,
+            gCodeFile
+        ).apply {
             //1: 存一份原始可视化数据
             saveEngraveData("$index", pxBitmap, "png")
         }
@@ -189,14 +201,14 @@ class GCodeTransition : IEngraveTransition {
     /**GCode数据处理*/
     @Private
     fun _handleGCodeTransferDataEntity(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         gCodeFile: File
     ): TransferDataEntity {
         val transferDataEntity =
             TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
-        initTransferDataEntity(renderer, transferConfigEntity, transferDataEntity)
+        initTransferDataEntity(engraveProvider, transferConfigEntity, transferDataEntity)
         transferDataEntity.lines = gCodeFile.lines()
 
         val pathGCodeText = gCodeFile.readText()

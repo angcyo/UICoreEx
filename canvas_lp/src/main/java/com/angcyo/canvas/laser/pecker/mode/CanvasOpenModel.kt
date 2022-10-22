@@ -26,8 +26,8 @@ class CanvasOpenModel : ViewModel() {
     }
 
     /**需要打开的数据
-     * 支持[com.angcyo.canvas.data.ItemDataBean]
-     * 支持[com.angcyo.canvas.data.CanvasDataBean]
+     * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
+     * 支持[com.angcyo.canvas.data.CanvasProjectBean]
      * */
     val openPendingData = vmDataOnce<CanvasOpenFileType?>()
 

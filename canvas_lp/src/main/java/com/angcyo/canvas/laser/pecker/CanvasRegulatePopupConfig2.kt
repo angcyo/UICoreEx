@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import com.angcyo.canvas.data.ItemDataBean.Companion.DEFAULT_LINE_SPACE
+import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.laser.pecker.data.MeshShapeInfo
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasDiameterItem
 import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem2

@@ -148,9 +148,16 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     @CallPoint
     open fun bindDeviceState() {
-        //模式改变监听, 改变按钮的文本
-        laserPeckerModel.deviceStateData.observe(this) {
+        //模式改变监听, 改变预览控制按钮的文本
+        /*laserPeckerModel.deviceStateData.observe(this) {
             _dslAdapter?.updateAllItem()
+        }*/
+
+        //预览信息改变时, 刷新路径预览
+        previewModel.previewInfoData.observe(this) {
+            if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
+                _dslAdapter?.updateAllItem()
+            }
         }
     }
 

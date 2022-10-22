@@ -119,7 +119,7 @@ class EngravePropertyItem : DslAdapterItem() {
         itemHolder.click(R.id.tims_view) {
             context.wheelDialog {
                 dialogTitle = timesLabel
-                wheelItems = percentList(255)
+                wheelItems = percentList(50)//2022-10-21
                 wheelSelectedIndex = findOptionIndex(wheelItems, time)
 
                 wheelItemSelectorAction = { dialog, index, item ->

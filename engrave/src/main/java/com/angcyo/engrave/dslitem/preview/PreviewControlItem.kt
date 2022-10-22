@@ -1,8 +1,10 @@
 package com.angcyo.engrave.dslitem.preview
 
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.component.scaleDrawable
+import com.angcyo.library.ex.Action1
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -33,6 +35,12 @@ class PreviewControlItem : BasePreviewItem() {
 
     /**第三轴继续预览*/
     var continuePreviewItem: ControlTextItemInfo? = null
+
+    /**路径预览, 只在GCode数据时有效*/
+    var pathPreviewItem: ControlTextItemInfo? = null
+
+    /**路径预览回调*/
+    var itemPathPreviewClick: Action1? = null
 
     init {
         itemLayoutId = R.layout.item_preview_control_layout
@@ -99,6 +107,17 @@ class PreviewControlItem : BasePreviewItem() {
             }
             queryDeviceStateCmd()
         }
+
+        //路径预览
+        pathPreviewItem = ControlTextItemInfo(
+            _string(R.string.device_setting_act_model_preview_g_code),
+            R.drawable.preview_path_svg,
+            false
+        ) { viewHolder, item ->
+            //进入路径预览
+            val previewInfoData = previewModel.previewInfoData.value
+            itemPathPreviewClick?.invoke(previewInfoData?.itemDataBean)
+        }
     }
 
     val itemList = mutableListOf<ControlTextItemInfo>()
@@ -111,19 +130,25 @@ class PreviewControlItem : BasePreviewItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemList.clear()
+        //
+        val previewInfoData = previewModel.previewInfoData.value
+        val deviceStateData = laserPeckerModel.deviceStateData.value
 
+        itemList.clear()
         if (laserPeckerModel.haveExDevice()) {
             itemList.add(pausePreviewItem!!)
             itemList.add(continuePreviewItem!!)
         } else {
             itemList.add(rangePreviewItem!!)
             itemList.add(centerPreviewItem!!)
-        }
 
-        //
-        val deviceStateData = laserPeckerModel.deviceStateData.value
-        val previewInfoData = previewModel.previewInfoData.value
+            if (laserPeckerModel.deviceSettingData.value?.gcodeView == 1 &&
+                previewInfoData?.itemDataBean?._dataMode == CanvasConstant.DATA_MODE_GCODE
+            ) {
+                //开启了向量预览, 并且GCode数据模式下, 才有路径预览
+                itemList.add(pathPreviewItem!!)
+            }
+        }
 
         //
         centerPreviewItem?.selected = previewInfoData?.isCenterPreview == true

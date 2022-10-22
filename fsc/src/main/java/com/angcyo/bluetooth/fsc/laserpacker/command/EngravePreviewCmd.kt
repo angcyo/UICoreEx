@@ -108,13 +108,15 @@ data class EngravePreviewCmd(
 
         /**预览flash内存中的图片
          * [index] 文件索引*/
-        fun previewFlashBitmapCmd(index: Int): EngravePreviewCmd {
+        fun previewFlashBitmapCmd(index: Int, pwrProgress: Float): EngravePreviewCmd {
             val bytes = index.toHexString(8).toHexByteArray()
             return EngravePreviewCmd(0x01).apply {
                 d1 = bytes[0]
                 d2 = bytes[1]
                 d3 = bytes[2]
                 d4 = bytes[3]
+
+                updatePWR(pwrProgress)
             }
         }
 

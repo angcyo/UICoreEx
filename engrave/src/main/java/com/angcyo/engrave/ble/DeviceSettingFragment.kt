@@ -96,6 +96,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     settingParser?.updateSetting()
                 }
             }
+            //GCode预览
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
                 itemDes = _string(R.string.device_setting_act_des_preview_g_code)

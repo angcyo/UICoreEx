@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
-import com.angcyo.canvas.data.ItemDataBean
-import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
+import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
+import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
@@ -74,7 +74,7 @@ interface IEngraveTransition {
          * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
          * */
         fun getDataMode(
-            bean: ItemDataBean?,
+            bean: CanvasProjectItemBean?,
             transferConfigEntity: TransferConfigEntity
         ): Int {
             return transferConfigEntity.dataMode ?: (bean?._dataMode
@@ -82,10 +82,10 @@ interface IEngraveTransition {
         }
     }
 
-    /**将[renderer]转换成传输给机器的数据*/
+    /**将[engraveProvider]转换成传输给机器的数据*/
     @CallPoint
     fun doTransitionTransferData(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         param: TransitionParam
     ): TransferDataEntity?
@@ -93,17 +93,17 @@ interface IEngraveTransition {
     /**一些通用配置属性初始化*/
     @Private
     fun initTransferDataEntity(
-        renderer: BaseItemRenderer<*>,
+        engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         transferDataEntity: TransferDataEntity,
-        rotateBounds: RectF = renderer.getRotateBounds()
+        rotateBounds: RectF = engraveProvider.getEngraveRotateBounds()
     ) {
         transferDataEntity.taskId = transferConfigEntity.taskId
 
         val mmValueUnit = MM_UNIT
         transferDataEntity.dpi = transferConfigEntity.dpi
         transferDataEntity.name = transferConfigEntity.name
-        
+
         //雕刻数据坐标
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
             //mm单位

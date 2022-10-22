@@ -1,6 +1,7 @@
 package com.angcyo.engrave.data
 
 import android.graphics.RectF
+import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.library.annotation.Pixel
 
 /**
@@ -32,5 +33,10 @@ data class PreviewInfo(
 
     /**是否开始了预览
      * [isZPause] 只有开始了预览, 才能直接发送z轴暂停/继续滚动指令*/
-    var isStartPreview: Boolean = false
+    var isStartPreview: Boolean = false,
+
+    //---
+
+    /**预览的数据, 如果有,用于实现路径预览*/
+    var itemDataBean: CanvasProjectItemBean? = null
 )

@@ -144,7 +144,7 @@ object CommandQueueHelper {
                 e.printStackTrace()
             }
         }) { bean, error ->
-            L.i("指令返回:${command.hashCode()}->${bean?.parse<MiniReceiveParser>()} $error".writeBleLog())
+            "指令返回:${command.hashCode()}->${bean?.parse<MiniReceiveParser>()} $error".writeBleLog()
             //
             if (next) {
                 next()

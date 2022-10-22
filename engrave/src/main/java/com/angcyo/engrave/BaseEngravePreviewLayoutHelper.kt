@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.preview.*
 import com.angcyo.engrave.model.PreviewModel
@@ -73,7 +74,11 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }
             }
             EngraveDividerItem()()
-            PreviewControlItem()()
+            PreviewControlItem()() {
+                itemPathPreviewClick = {
+                    startPathPreview(it as? CanvasProjectItemBean)
+                }
+            }
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.ui_next)
                 itemClick = {
@@ -88,6 +93,14 @@ abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }
             }
             asyncQueryDeviceState()
+        }
+    }
+
+    /**开始路径预览流程*/
+    fun startPathPreview(projectDataBean: CanvasProjectItemBean?) {
+        projectDataBean ?: return
+        viewHolder?.context?.pathPreviewDialog(projectDataBean) {
+            
         }
     }
 

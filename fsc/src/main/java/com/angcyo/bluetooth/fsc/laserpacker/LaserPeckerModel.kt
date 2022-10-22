@@ -280,7 +280,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     //</editor-fold desc="Command">
 }
 
-/**静态方法*/
+/**静态方法, 异步查询设备状态*/
 fun asyncQueryDeviceState(
     flag: Int = CommandQueueHelper.FLAG_ASYNC,
     block: IReceiveBeanAction = { _, _ -> }
@@ -288,6 +288,7 @@ fun asyncQueryDeviceState(
     vmApp<LaserPeckerModel>().queryDeviceState(flag, block)
 }
 
+/**同步查询设备状态*/
 fun syncQueryDeviceState(
     flag: Int = CommandQueueHelper.FLAG_NORMAL,
     block: IReceiveBeanAction = { _, _ -> }

@@ -337,7 +337,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                     initialColor = color
                     colorPickerResultAction = { dialog, color ->
                         if (renderer is BaseItemRenderer<*>) {
-                            renderer.updatePaintColor(color)
+                            //renderer.updatePaintColor(color)
 
                             //自举更新
                             updateAdapterItem()

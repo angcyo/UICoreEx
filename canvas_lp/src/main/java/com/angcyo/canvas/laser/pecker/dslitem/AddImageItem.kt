@@ -4,10 +4,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
-import com.angcyo.canvas.laser.pecker.loadingAsync
 import com.angcyo.component.getPhoto
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.engrave.loadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.Library
 import com.angcyo.library.ex._string

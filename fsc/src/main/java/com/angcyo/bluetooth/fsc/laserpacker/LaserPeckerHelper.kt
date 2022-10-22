@@ -14,11 +14,10 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.canvas.data.ItemDataBean.Companion.MM_UNIT
+import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
-import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
@@ -547,7 +546,7 @@ object LaserPeckerHelper {
         progress: ISendProgressAction? = null,
         action: IReceiveBeanAction?
     ): WaitReceivePacket {
-        L.i("发送指令:$address->${command.hashCode()} ${command.toCommandLogString()}".writeBleLog())
+        "发送指令:$address->${command.hashCode()} ${command.toCommandLogString()}".writeBleLog()
         return waitCmdReturn(
             api,
             address,
