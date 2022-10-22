@@ -78,7 +78,7 @@ fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolea
 //---
 
 /**处理文件路径对应的数据, 解析成[CanvasProjectItemBean]*/
-fun String?.toCanvasProjectItemBean(): CanvasProjectItemBean? {
+fun String?.toCanvasProjectItemBeanOfFile(): CanvasProjectItemBean? {
     val path = this ?: return null
     if (path.endsWith(CanvasConstant.GCODE_EXT)) {
         val text = path.file().readText()
