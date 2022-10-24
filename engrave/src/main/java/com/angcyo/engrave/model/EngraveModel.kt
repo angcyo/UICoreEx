@@ -88,6 +88,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             queryState.printTimes,
                             progress
                         )
+                        _engraveTaskEntity?.let {
+                            it.progress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
+                            it.lpSaveEntity()
+                            engraveStateData.postValue(it)
+                        }
                     } else if (queryState.isEngravePause()) {
                         //
                     } else {

@@ -39,6 +39,9 @@ data class EngraveTaskEntity(
      * */
     var state: Int = 0,
 
+    /**雕刻总进度[0~100]*/
+    var progress: Int = 0,
+
     /**任务开始的时间, 毫秒*/
     var startTime: Long = -1,
 

@@ -15,8 +15,10 @@ import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
+import com.angcyo.engrave.model.TransferModel
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.uuid
@@ -33,6 +35,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
     /**自动雕刻模式*/
     val autoEngraveModel = vmApp<AutoEngraveModel>()
+    val transferModel = vmApp<TransferModel>()
     val previewModel = vmApp<PreviewModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
@@ -99,10 +102,10 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                 autoEngraveModel.startCreateData(uuid, itemBean) { transferDataEntity ->
                     if (transferDataEntity == null) {
                         toast("data exception!")
-                        loadEnd(transferDataEntity, null)
+                        loadEnd(null, null)
                     } else {
                         //开始传输数据
-                        autoEngraveModel.startTransferData(null, transferDataEntity) {
+                        transferModel.transferData(TransferState(uuid), transferDataEntity) {
                             loadEnd(transferDataEntity, null)
                             if (it != null) {
                                 toast("transfer data exception!")

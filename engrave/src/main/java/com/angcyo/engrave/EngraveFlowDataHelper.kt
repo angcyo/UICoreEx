@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -76,7 +77,7 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**开始传输数据*/
+    /**开始传输数据, 用于记录时间和总数据大小*/
     fun startTransferData(taskId: String?, list: List<TransferDataEntity>) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
@@ -165,6 +166,16 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**根据任务id[taskId], 获取一个未传输完成的数据, 如果有*/
+    fun getNeedTransferData(taskId: String?): TransferDataEntity? {
+        return TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+            apply(
+                TransferDataEntity_.taskId.equal("$taskId")
+                    .and(TransferDataEntity_.isTransfer.equal(false))
+            )
+        }
+    }
+
     /**获取图层下的所有传输数据*/
     fun getLayerTransferData(taskId: String?, layerMode: Int): List<TransferDataEntity> {
         return TransferDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
@@ -235,17 +246,33 @@ object EngraveFlowDataHelper {
             val customMaterial = EngraveHelper.createCustomMaterial()
             materialCode = customMaterial.code
 
-            type = LaserPeckerHelper.LASER_TYPE_BLUE
-            precision = HawkEngraveKeys.lastPrecision
-
             power = customMaterial.power
             depth = customMaterial.depth
             time = 1
+
+            type = LaserPeckerHelper.LASER_TYPE_BLUE
+            precision = HawkEngraveKeys.lastPrecision
         }) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
                     .and(EngraveConfigEntity_.layerMode.equal(layerMode))
             )
+        }
+    }
+
+    /**构建一个雕刻参数信息从[CanvasProjectItemBean]*/
+    fun generateEngraveConfig(
+        taskId: String?,
+        itemBean: CanvasProjectItemBean
+    ): EngraveConfigEntity {
+        val layerMode = itemBean._dataMode ?: -1
+        return generateEngraveConfig(taskId, layerMode).apply {
+            power = itemBean.printPower ?: HawkEngraveKeys.lastPower
+            depth = itemBean.printDepth ?: HawkEngraveKeys.lastDepth
+            time = itemBean.printCount ?: 1
+
+            type = itemBean.printType ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
         }
     }
 

@@ -1,33 +1,21 @@
 package com.angcyo.engrave.model
 
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
-import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
-import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
-import com.angcyo.bluetooth.fsc.parse
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.CanvasProjectBean
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.data.toCanvasProjectItemList
-import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.data.TransferTaskStateData
-import com.angcyo.engrave.model.TransferModel.Companion.calcTransferProgress
-import com.angcyo.engrave.toEngraveDataTypeStr
-import com.angcyo.engrave.transition.DataException
+import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.engrave.transition.FailException
 import com.angcyo.http.rx.doBack
-import com.angcyo.http.rx.doMain
-import com.angcyo.library.L
 import com.angcyo.library.component.batchHandle
-import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
-import com.angcyo.objectbox.laser.pecker.lpSaveEntity
-import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.observe
 import com.angcyo.viewmodel.vmDataOnce
 
 /**
@@ -52,66 +40,103 @@ class AutoEngraveModel : LifecycleViewModel() {
     }
 
     /**自动雕刻任务*/
-    val autoEngraveTaskData = vmDataNull<AutoEngraveTask?>()
+    var _autoEngraveTask: AutoEngraveTask? = null
 
     /**任务状态提示*/
     val autoEngraveTaskOnceData = vmDataOnce<AutoEngraveTask?>()
 
-    /**传输状态数据*/
-    val autoTransferStateData = vmDataNull<TransferTaskStateData?>()
+    val transferModel = vmApp<TransferModel>()
 
     val engraveModel = vmApp<EngraveModel>()
 
     /**需要自动雕刻的数据
      * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
      * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+     *
+     * [com.angcyo.engrave.auto.AutoEngraveActivity] 监听处理
      * */
     val engravePendingData = vmDataOnce<CanvasOpenDataType?>()
+
+    init {
+        //传输监听
+        transferModel.transferStateOnceData.observe(this, allowBackward = false) {
+            val autoEngraveTask = _autoEngraveTask
+            if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
+                //传输状态监听
+                autoEngraveTask.progress = it.progress
+                if (it.state == TransferState.TRANSFER_STATE_FINISH) {
+                    //传输完成开始雕刻
+                    ExitCmd().enqueue { bean, error ->
+                        if (error == null) {
+                            //进入空闲模式, 才能开始雕刻
+                            startEngrave(autoEngraveTask)
+                        } else {
+                            autoEngraveTask.isFinish = it.error != null
+                            autoEngraveTask.error = it.error
+                            autoEngraveTaskOnceData.postValue(autoEngraveTask)
+                        }
+                    }
+                } else {
+                    autoEngraveTask.isFinish = it.error != null
+                    autoEngraveTask.error = it.error
+                    autoEngraveTaskOnceData.postValue(autoEngraveTask)
+                }
+            }
+        }
+        //雕刻监听
+        engraveModel.engraveStateData.observe(this, allowBackward = false) {
+            val autoEngraveTask = _autoEngraveTask
+            if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
+                autoEngraveTask.progress = it.progress
+                if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
+                    //雕刻完成
+                    autoEngraveTask.progress = 100
+                    autoEngraveTask.isFinish = true
+                    autoEngraveTask.state = TransferState.TRANSFER_STATE_NORMAL
+                    autoEngraveTaskOnceData.postValue(autoEngraveTask)
+                }
+                autoEngraveTaskOnceData.postValue(autoEngraveTask)
+            }
+        }
+    }
 
     //region---数据和传输---
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(projectBean: CanvasProjectBean): AutoEngraveTask {
-        val task = AutoEngraveTask(uuid(), projectBean)
+    fun startAutoEngrave(taskId: String, projectBean: CanvasProjectBean): AutoEngraveTask {
+        val task = AutoEngraveTask(taskId, projectBean)
+        _autoEngraveTask = task
         val itemList = projectBean.data?.toCanvasProjectItemList()
-        task._projectItemList = itemList
         if (itemList.isNullOrEmpty()) {
             task.isFinish = true
             task.error = EmptyException()//空数据异常
         } else {
             task.state = STATE_CREATE
             startCreateData(task.taskId, itemList) {
-                task._transferDataList = it
-                if (!task.isCancel) {
-                    task.index = 0
-                    task.count = it.size
-                    startTransferData(task)
-                }
+                task.state = STATE_TRANSFER
+                autoEngraveTaskOnceData.postValue(task)
+                transferModel.startTransferData(task.taskId)
             }
         }
-        autoEngraveTaskData.postValue(task)
         autoEngraveTaskOnceData.postValue(task)
         return task
     }
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(itemList: List<CanvasProjectItemBean>?): AutoEngraveTask {
-        val task = AutoEngraveTask(uuid(), null)
-        task._projectItemList = itemList
+    fun startAutoEngrave(taskId: String, itemList: List<CanvasProjectItemBean>?): AutoEngraveTask {
+        val task = AutoEngraveTask(taskId, null)
+        _autoEngraveTask = task
         if (itemList.isNullOrEmpty()) {
             task.isFinish = true
             task.error = EmptyException()//空数据异常
         } else {
             startCreateData(task.taskId, itemList) {
-                task._transferDataList = it
-                if (!task.isCancel) {
-                    task.index = 0
-                    task.count = it.size
-                    startTransferData(task)
-                }
+                task.state = STATE_TRANSFER
+                autoEngraveTaskOnceData.postValue(task)
+                transferModel.startTransferData(task.taskId)
             }
         }
-        autoEngraveTaskData.postValue(task)
+        autoEngraveTaskOnceData.postValue(task)
         return task
     }
 
@@ -145,154 +170,16 @@ class AutoEngraveModel : LifecycleViewModel() {
         action: (TransferDataEntity?) -> Unit = {}
     ) {
         doBack(true) {
-            val transferConfig = EngraveFlowDataHelper.generateTransferConfig(taskId)
+            val transferConfig = EngraveFlowDataHelper.generateTransferConfig(taskId)//创建数据配置
+            itemBean._cacheBitmap = true//开启图片缓存
             val transferDataEntity = EngraveTransitionManager().transitionTransferData(
                 itemBean,
                 transferConfig
-            )
+            )//入库传输的数据
+            EngraveFlowDataHelper.generateEngraveConfig(taskId, itemBean)//创建雕刻参数信息
             action(transferDataEntity)
         }
     }
-
-    /**开始传输数据*/
-    fun startTransferData(task: AutoEngraveTask) {
-        task.state = STATE_TRANSFER
-        autoEngraveTaskOnceData.postValue(task)
-        (task._transferDataList ?: emptyList()).batchHandle({ data ->
-            if (task.isCancel) {
-                isCancel = true
-                next()
-            } else {
-                //传输一条数据
-                startTransferData(task, data) { throwable ->
-                    if (throwable == null) {
-                        task.index++
-                    } else {
-                        task.isCancel = true
-                        error = throwable
-                    }
-                    next()
-                }
-            }
-        }) {
-            autoEngraveTaskOnceData.postValue(task)
-            if (!task.isCancel) {
-                startEngrave(task)
-            }
-        }
-    }
-
-    /**开始传输数据*/
-    fun startTransferData(
-        task: AutoEngraveTask?,
-        transferDataEntity: TransferDataEntity,
-        finishAction: (Throwable?) -> Unit = {}
-    ) {
-        L.i("开始传输数据:[${transferDataEntity.index}]")
-        val taskId = task?.taskId ?: transferDataEntity.taskId
-        val fileModeCmd = FileModeCmd(transferDataEntity.bytes()?.size ?: 0)
-        fileModeCmd.enqueue { bean, error ->
-            error?.let {
-                it.toString().writeErrorLog()
-                autoTransferStateData.postValue(
-                    TransferTaskStateData(
-                        taskId,
-                        autoTransferStateData.value?.progress ?: 0,
-                        FailException(error)
-                    )
-                )
-            }
-            if (task != null && (task.isFinish || task.isCancel)) {
-                L.w("数据传输被取消:${taskId}")
-                finishAction(null)
-            } else {
-                bean?.parse<FileTransferParser>()?.let {
-                    if (it.isIntoFileMode()) {
-                        //成功进入大数据模式
-                        val dataCmd = TransferModel.getTransferDataCmd(transferDataEntity)
-                        if (dataCmd == null) {
-                            finishAction(null)
-                        } else {
-                            buildString {
-                                append("开始传输:[${taskId}]")
-                                append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
-                                append(" $transferDataEntity")
-                            }.writeEngraveLog(true)
-
-                            dataCmd.enqueue(progress = {
-                                //进度
-                                if (task != null) {
-                                    val progress = calcTransferProgress(
-                                        it.sendPacketPercentage,
-                                        task.index,
-                                        task.count
-                                    )
-                                    EngraveFlowDataHelper.updateTransferDataProgress(
-                                        taskId,
-                                        progress,
-                                        it.sendSpeed
-                                    )
-                                    doMain {
-                                        //及时回调
-                                        autoTransferStateData.value =
-                                            TransferTaskStateData(taskId, progress)
-                                    }
-                                }
-                            }) { bean, error ->
-                                val result = bean?.parse<FileTransferParser>()
-                                L.w("传输结束:$result $error")
-                                result?.let {
-                                    if (result.isFileTransferSuccess()) {
-                                        //文件传输完成
-                                        transferDataEntity.isTransfer = true
-                                        transferDataEntity.lpSaveEntity()
-                                        finishAction(null)
-                                    } else {
-                                        "数据接收未完成".writeErrorLog()
-                                        autoTransferStateData.postValue(
-                                            TransferTaskStateData(
-                                                taskId,
-                                                autoTransferStateData.value?.progress
-                                                    ?: 0,
-                                                DataException()
-                                            )
-                                        )
-                                        finishAction(DataException())
-                                    }
-                                }
-                                if (result == null) {
-                                    "发送数据失败".writeErrorLog()
-                                    autoTransferStateData.postValue(
-                                        TransferTaskStateData(
-                                            taskId,
-                                            autoTransferStateData.value?.progress ?: 0,
-                                            FailException()
-                                        )
-                                    )
-                                    finishAction(FailException())
-                                }
-                            }
-                            //end data cmd
-                        }
-                        //end parse
-                    } else {
-                        "未成功进入数据传输模式".writeErrorLog()
-                        autoTransferStateData.postValue(
-                            TransferTaskStateData(
-                                taskId,
-                                autoTransferStateData.value?.progress ?: 0,
-                                FailException()
-                            )
-                        )
-                        finishAction(FailException())
-                    }
-                }
-            }
-            //end file mode cmd
-        }
-    }
-
-    //endregion---数据和传输---
 
     //region---雕刻---
 
@@ -301,6 +188,7 @@ class AutoEngraveModel : LifecycleViewModel() {
         if (task.isCancel || task.isFinish) {
             return
         }
+        task.progress = 0
         task.state = STATE_ENGRAVE
         autoEngraveTaskOnceData.postValue(task)
         engraveModel.startEngrave(task.taskId)
@@ -323,19 +211,8 @@ class AutoEngraveModel : LifecycleViewModel() {
          * */
         var state: Int = STATE_NORMAL,
 
-        //---
-
-        //总共需要发送的数据量
-        var count: Int = 0,
-
-        //当前发送的索引
-        var index: Int = 0,
-
-        /**[projectBean]解析出来的数据*/
-        var _projectItemList: List<CanvasProjectItemBean>? = null,
-
-        /**[_projectItemList]生成需要传输的数据*/
-        var _transferDataList: List<TransferDataEntity>? = null,
+        /**当前状态的进度*/
+        var progress: Int = -1,
 
         //---
 

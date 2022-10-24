@@ -167,9 +167,9 @@ class EngraveTransitionManager {
     private val transitionList = mutableListOf<IEngraveTransition>()
 
     init {
+        transitionList.add(RawTransition())
         transitionList.add(GCodeTransition())
         transitionList.add(BitmapTransition())
-        transitionList.add(RawTransition())
     }
 
     /**相同类型的[TransferDataInfo]会合并在一起, 会根据列表顺序, 生成对应顺序的数据

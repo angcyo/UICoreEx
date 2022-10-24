@@ -17,13 +17,16 @@ import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
+import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.toBitmapOfBase64
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppIcon
 import com.angcyo.library.toast
+import com.angcyo.viewmodel.observe
 import com.angcyo.widget.recycler.renderDslAdapter
 
 /**
@@ -47,6 +50,8 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
 
     /**已经创建的雕刻任务*/
     var _autoEngraveTask: AutoEngraveModel.AutoEngraveTask? = null
+
+    var taskId = uuid()
 
     init {
         activityLayoutId = R.layout.activity_open_preview_layout
@@ -75,6 +80,31 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     renderLayout(adapter, data)
 
                     checkStartEngrave()
+                }
+            }
+        }
+
+        //监听
+        autoEngraveModel.autoEngraveTaskOnceData.observe(
+            this,
+            allowBackward = false
+        ) { autoEngraveTask ->
+            autoEngraveTask?.let {
+                adapter?.updateItem {
+                    if (it is AutoEngraveItem) {
+                        it.itemAutoEngraveTask = autoEngraveTask
+                        true
+                    } else {
+                        false
+                    }
+                }
+                if (it.isFinish) {
+                    if (it.error == null) {
+                        toast("雕刻完成")
+                    } else {
+                        toast(it.error?.message)
+                    }
+                    finish()
                 }
             }
         }
@@ -109,9 +139,9 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
     fun startEngrave() {
         val data = _engraveData
         if (data is CanvasProjectBean) {
-            _autoEngraveTask = autoEngraveModel.startAutoEngrave(data)
+            _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, data)
         } else if (data is CanvasProjectItemBean) {
-            _autoEngraveTask = autoEngraveModel.startAutoEngrave(listOf(data))
+            _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, listOf(data))
         }
     }
 
@@ -129,8 +159,6 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     bitmap = GraphicsHelper.parseRenderItemFrom(data)?.getEngraveBitmap()
                 }
                 itemDrawable = bitmap?.toDrawable(resources) ?: getAppIcon()
-
-                itemTip = "准备..."
 
                 itemPauseAction = { isPause ->
                     if (isPause) {

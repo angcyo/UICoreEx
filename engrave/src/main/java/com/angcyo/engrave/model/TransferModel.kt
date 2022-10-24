@@ -14,7 +14,7 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.data.*
+import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
@@ -25,11 +25,11 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
-import com.angcyo.library.ex.size
-import com.angcyo.objectbox.deleteAllEntity
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
-import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.objectbox.saveAllEntity
+import com.angcyo.viewmodel.vmDataOnce
 
 /**
  * 数据传输模式
@@ -41,7 +41,10 @@ class TransferModel : ViewModel() {
     companion object {
 
         /**计算进度*/
-        fun calcTransferProgress(indexProgress: Int, index: Int, count: Int): Int {
+        fun calcTransferProgress(taskId: String?, indexProgress: Int): Int {
+            val list = EngraveFlowDataHelper.getTransferDataList(taskId)
+            val count = list.count()
+            val index = list.sumOf { if (it.isTransfer) 0 else 1L }
             val part = 100f / count
             val result = (index * part + part * indexProgress / 100).toInt()
             return clamp(result, 0, 100)
@@ -111,54 +114,54 @@ class TransferModel : ViewModel() {
     /**雕刻数据转换管理*/
     val engraveTransitionManager = EngraveTransitionManager()
 
-    /**传输状态数据*/
-    val transferStateData = vmDataNull<TransferTaskStateData?>()
+    /**当前任务的状态通知*/
+    val transferStateOnceData = vmDataOnce<TransferState>()
+
+    /**缓存*/
+    var _transferState: TransferState? = null
 
     //
 
     /**开始创建机器需要的传输数据*/
     @CallPoint
-    @WorkerThread
-    fun startCreateTransferData(
-        taskId: String?,
-        canvasDelegate: CanvasDelegate
-    ) {
+    @AnyThread
+    fun startCreateTransferData(taskId: String?, canvasDelegate: CanvasDelegate) {
         stopTransfer()
-        val transferTask = TransferTask(taskId)
-        _transferTask = transferTask
-        EngraveFlowDataHelper.startCreateTransferData(taskId)
         doBack {
-            transferStateData.postValue(TransferTaskStateData(taskId, -1, null))
+            //传输状态, 开始创建数据
+            val transferState = TransferState(taskId, progress = -1)
+            EngraveFlowDataHelper.startCreateTransferData(taskId)
+            transferStateOnceData.postValue(_transferState)
             val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
             val dataEntityList = engraveTransitionManager.transitionTransferData(
                 canvasDelegate,
                 transferConfigEntity
-            )
-            startCreateTransferData(taskId, dataEntityList)
+            )//数据已入库, 可以直接在数据库中查询
+            EngraveFlowDataHelper.finishCreateTransferData(taskId)
+            startTransferData(transferState.taskId)
         }
     }
 
-    /**开始创建机器需要的传输数据*/
+    /**开始传输机器需要的数据*/
     @CallPoint
-    @WorkerThread
-    fun startCreateTransferData(
-        taskId: String?,
-        dataEntityList: List<TransferDataEntity>
-    ) {
+    @AnyThread
+    fun startTransferData(taskId: String?) {
         stopTransfer()
-        val transferTask = TransferTask(taskId)
-        _transferTask = transferTask
-        EngraveFlowDataHelper.startCreateTransferData(taskId)
+        val transferState = TransferState(taskId, TransferState.TRANSFER_STATE_NORMAL, 0)
+        _transferState = transferState
         doBack {
-            transferStateData.postValue(TransferTaskStateData(taskId, -1, null))
-            EngraveFlowDataHelper.finishCreateTransferData(taskId)
-            if (!transferTask.isCancel) {
-                if (dataEntityList.isEmpty()) {
-                    transferStateData.postValue(TransferTaskStateData(taskId, 0, EmptyException()))
-                } else {
-                    //开始传输数据
-                    _startTransferDataTask(transferTask, dataEntityList)
-                }
+            val list = EngraveFlowDataHelper.getTransferDataList(taskId)
+            EngraveFlowDataHelper.startTransferData(taskId, list)//检测数据
+
+            if (list.isEmpty()) {
+                //需要传输的数据为空
+                transferState.state = TransferState.TRANSFER_STATE_FINISH
+                transferState.error = EmptyException()
+                transferStateOnceData.postValue(transferState)
+            } else {
+                //开始传输
+                transferStateOnceData.postValue(transferState)
+                _transferNext(transferState)
             }
         }
     }
@@ -169,193 +172,166 @@ class TransferModel : ViewModel() {
     @AnyThread
     @CallPoint
     fun retryTransfer(all: Boolean) {
-        val taskId: String? = _transferTask?.taskId
-        val transferDataEntityList = _transferTask?.entityList
-        if (!transferDataEntityList.isNullOrEmpty()) {
-            val transferList = mutableListOf<TransferDataEntity>()
+        val transferState = _transferState ?: return
+        val taskId = transferState.taskId
+        val transferDataEntityList = EngraveFlowDataHelper.getTransferDataList(taskId)
+        if (transferDataEntityList.isNotEmpty()) {
             if (all) {
-                transferDataEntityList.deleteAllEntity()
-                transferList.addAll(transferDataEntityList)
-            } else {
-                transferDataEntityList.filterTo(transferList) { !it.isTransfer }
+                //需要重新传输所有数据
+                transferDataEntityList.forEach { it.isTransfer = false }
+                transferDataEntityList.saveAllEntity(LPBox.PACKAGE_NAME)
             }
             //开始传输数据
-            val transferTask = TransferTask(taskId)
-            _transferTask = transferTask
-            _startTransferDataTask(transferTask, transferList)
+            startTransferData(taskId)
         } else {
-            transferStateData.postValue(
-                TransferTaskStateData(taskId, 0, EmptyException())
-            )
+            transferState.state = TransferState.TRANSFER_STATE_FINISH
+            transferState.error = EmptyException()
+            transferStateOnceData.postValue(transferState)
         }
     }
 
-    /**停止传输*/
+    /**停止当前的传输*/
     @CallPoint
     fun stopTransfer() {
-        transferStateData.postValue(null)
-        _transferTask?.isCancel = true
-        _transferTask = null
-
+        _transferState?.state = TransferState.TRANSFER_STATE_CANCEL
+        transferStateOnceData.postValue(_transferState)
         //need?
         //CommandQueueHelper.clearCommand()
     }
 
-    /**完成传输
-     * [createEngraveConfigInfo]*/
-    @CallPoint
-    fun finishTransfer() {
-        val taskId: String? = _transferTask?.taskId
-        _transferTask?.isFinish = true
-        _transferTask = null
-        L.i("数据传输任务完成:${taskId}")
-        EngraveFlowDataHelper.finishTransferData(taskId)
-        doMain {
-            transferStateData.value = TransferTaskStateData(taskId, 100, null, true)
-            transferStateData.postValue(null)//清空
-        }
-    }
-
     //
 
-    var _transferTask: TransferTask? = null
-
-    /**开始传输数据*/
-    fun _startTransferDataTask(transferTask: TransferTask?, list: List<TransferDataEntity>) {
-        //最大传输文件数
-        val maxCount = list.size()
-        transferTask?.index = 0
-        transferTask?.count = maxCount
-        transferTask?.entityList = list
-        transferTask?.isFinish = false
-        transferTask?.isCancel = false
-
-        //
-        EngraveFlowDataHelper.startTransferData(transferTask?.taskId, list)
-
-        //开始传输
-        transferStateData.postValue(TransferTaskStateData(transferTask?.taskId, 0, null))
-        _transferDataNext(transferTask)
+    @WorkerThread
+    fun _transferNext(transferState: TransferState) {
+        val taskId: String? = transferState.taskId
+        val transferDataEntity = EngraveFlowDataHelper.getNeedTransferData(taskId)
+        if (transferDataEntity == null) {
+            //全部传输完成
+            transferState.state = TransferState.TRANSFER_STATE_FINISH
+            transferState.progress = 100
+            transferStateOnceData.postValue(transferState)
+            EngraveFlowDataHelper.finishTransferData(taskId)
+            L.i("数据传输任务完成:${taskId}")
+        } else {
+            //需要传输数据
+            if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                //状态正常
+                transferData(transferState, transferDataEntity)
+            }
+        }
     }
 
-    @WorkerThread
-    fun _transferDataNext(transferTask: TransferTask?) {
-        if (transferTask?.isFinish == true || transferTask?.isCancel == true) {
+    /**传输数据
+     * [action] 成功或者失败的回调*/
+    fun transferData(
+        transferState: TransferState,
+        transferDataEntity: TransferDataEntity,
+        action: (Throwable?) -> Unit = {}
+    ) {
+        val taskId = transferDataEntity.taskId
+        L.i("开始传输数据:[$taskId][${transferDataEntity.index}]")
+        val size = transferDataEntity.bytes()?.size ?: 0
+        if (size <= 0) {
+            "传输空数据".writeErrorLog()
+            transferState.state = TransferState.TRANSFER_STATE_FINISH
+            transferState.error = EmptyException()
+            transferStateOnceData.postValue(transferState)
+
+            action(transferState.error)
             return
         }
-        doBack(true) {
-            _transferTask?.let { task ->
-                if (task.index >= task.count) {
-                    //传输完成
-                    finishTransfer()
-                } else {
-                    val transferDataEntity = task.entityList.getOrNull(task.index)
-                    if (transferDataEntity == null) {
-                        finishTransfer()
-                    } else {
-                        L.i("开始传输数据:[${task.index}/${task.count}]")
-                        val fileModeCmd = FileModeCmd(transferDataEntity.bytes()?.size ?: 0)
-                        fileModeCmd.enqueue { bean, error ->
-                            error?.let {
-                                it.toString().writeErrorLog()
-                                transferStateData.postValue(
-                                    TransferTaskStateData(
-                                        task.taskId,
-                                        transferStateData.value?.progress ?: 0,
-                                        FailException(error)
-                                    )
-                                )
-                            }
-                            if (transferTask?.isFinish == true || transferTask?.isCancel == true) {
-                                L.w("数据传输被取消:${transferTask.taskId}")
-                            } else {
-                                bean?.parse<FileTransferParser>()?.let {
-                                    if (it.isIntoFileMode()) {
-                                        //成功进入大数据模式
-                                        val dataCmd = getTransferDataCmd(transferDataEntity)
-                                        if (dataCmd == null) {
-                                            task.index++
-                                            _transferDataNext(transferTask)
-                                        } else {
-                                            buildString {
-                                                append("开始传输:[${transferDataEntity.taskId}]")
-                                                append(" ${transferDataEntity.index}")
-                                                append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
-                                                append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
-                                                append(" width:${transferDataEntity.width} height:${transferDataEntity.height}")
-                                                append(" lines:${transferDataEntity.lines}")
-                                            }.writeEngraveLog()
+        val fileModeCmd = FileModeCmd(size)
+        fileModeCmd.enqueue { bean, error ->
+            error?.let {
+                it.toString().writeErrorLog()
+                transferState.state = TransferState.TRANSFER_STATE_FINISH
+                transferState.error = FailException(error)
+                transferStateOnceData.postValue(transferState)
 
-                                            dataCmd.enqueue(progress = {
-                                                //进度
-                                                val progress = calcTransferProgress(
-                                                    it.sendPacketPercentage,
-                                                    task.index,
-                                                    task.count
-                                                )
-                                                EngraveFlowDataHelper.updateTransferDataProgress(
-                                                    task.taskId,
-                                                    progress,
-                                                    it.sendSpeed
-                                                )
-                                                doMain {
-                                                    //及时回调
-                                                    transferStateData.value =
-                                                        TransferTaskStateData(task.taskId, progress)
-                                                }
-                                            }) { bean, error ->
-                                                val result = bean?.parse<FileTransferParser>()
-                                                L.w("传输结束:$result $error")
-                                                result?.let {
-                                                    if (result.isFileTransferSuccess()) {
-                                                        //文件传输完成
-                                                        task.index++
-                                                        transferDataEntity.isTransfer = true
-                                                        transferDataEntity.lpSaveEntity()
-                                                        _transferDataNext(transferTask)
-                                                    } else {
-                                                        "数据接收未完成".writeErrorLog()
-                                                        transferStateData.postValue(
-                                                            TransferTaskStateData(
-                                                                task.taskId,
-                                                                transferStateData.value?.progress
-                                                                    ?: 0,
-                                                                DataException()
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                                if (result == null) {
-                                                    "发送数据失败".writeErrorLog()
-                                                    transferStateData.postValue(
-                                                        TransferTaskStateData(
-                                                            task.taskId,
-                                                            transferStateData.value?.progress ?: 0,
-                                                            FailException()
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                            //end data cmd
-                                        }
-                                        //end parse
-                                    } else {
-                                        "未成功进入数据传输模式".writeErrorLog()
-                                        transferStateData.postValue(
-                                            TransferTaskStateData(
-                                                task.taskId,
-                                                transferStateData.value?.progress ?: 0,
-                                                FailException()
-                                            )
-                                        )
+                action(transferState.error)
+            }
+            if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                //传输指令
+                bean?.parse<FileTransferParser>()?.let {
+                    if (it.isIntoFileMode()) {
+                        //成功进入大数据模式
+                        val dataCmd = getTransferDataCmd(transferDataEntity)
+                        if (dataCmd == null) {
+                            //无效的数据, !!!
+                            transferDataEntity.isTransfer = true
+                            transferDataEntity.lpSaveEntity()
+                            _transferNext(transferState)
+
+                            action(transferState.error)
+                        } else {
+                            buildString {
+                                append("开始传输:[${taskId}]")
+                                append(" ${transferDataEntity.index}")
+                                append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
+                                append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
+                                append(" width:${transferDataEntity.width} height:${transferDataEntity.height}")
+                                append(" lines:${transferDataEntity.lines}")
+                            }.writeEngraveLog()
+
+                            dataCmd.enqueue(progress = {
+                                //进度
+                                val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
+                                EngraveFlowDataHelper.updateTransferDataProgress(
+                                    taskId,
+                                    progress,
+                                    it.sendSpeed
+                                )
+                                doMain {
+                                    //及时回调
+                                    transferState.progress = progress
+                                    transferStateOnceData.value = transferState
+                                }
+                            }) { bean, error ->
+                                val result = bean?.parse<FileTransferParser>()
+                                L.w("传输结束:$result $error Success:${result?.isFileTransferSuccess()}")
+                                result?.let {
+                                    if (result.isFileTransferSuccess()) {
+                                        //文件传输完成
+                                        transferDataEntity.isTransfer = true
+                                        transferDataEntity.lpSaveEntity()
+                                        _transferNext(transferState)
+
+                                        action(null)
+                                    } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                                        "数据接收未完成".writeErrorLog()
+                                        transferState.state =
+                                            TransferState.TRANSFER_STATE_FINISH
+                                        transferState.error = DataException()
+                                        transferStateOnceData.postValue(transferState)
+
+                                        action(transferState.error)
                                     }
                                 }
+                                if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                                    "发送数据失败".writeErrorLog()
+                                    transferState.state =
+                                        TransferState.TRANSFER_STATE_FINISH
+                                    transferState.error = FailException()
+                                    transferStateOnceData.postValue(transferState)
+
+                                    action(transferState.error)
+                                }
                             }
-                            //end file mode cmd
+                            //end data cmd
                         }
+                        //end parse
+                    } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                        "未成功进入数据传输模式".writeErrorLog()
+                        transferState.state = TransferState.TRANSFER_STATE_FINISH
+                        transferState.error = FailException()
+                        transferStateOnceData.postValue(transferState)
+
+                        action(transferState.error)
                     }
                 }
+                //end传输指令
             }
+            //end file mode cmd
         }
     }
 
@@ -368,21 +344,4 @@ class TransferModel : ViewModel() {
             action(have)
         }
     }
-
-    //待发送的数据任务
-    data class TransferTask(
-        //任务id
-        val taskId: String?,
-        //总共需要发送的数据量
-        var count: Int = 0,
-        //当前发送的索引
-        var index: Int = 0,
-        //任务所有要传输的数据, 每个图层下的所有数据
-        var entityList: List<TransferDataEntity> = emptyList(),
-        /**是否完成了*/
-        var isFinish: Boolean = false,
-        /**是否取消了发送*/
-        var isCancel: Boolean = false
-    )
-
 }

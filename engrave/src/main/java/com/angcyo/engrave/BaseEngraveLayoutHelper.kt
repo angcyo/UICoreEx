@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.EngraveHelper.percentList
+import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
@@ -57,10 +58,10 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
     override fun bindDeviceState() {
         super.bindDeviceState()
         //
-        transferModel.transferStateData.observe(this, allowBackward = false) {
+        transferModel.transferStateOnceData.observe(this, allowBackward = false) {
             it?.apply {
                 //数据传输进度通知
-                if (it.isFinish) {
+                if (it.error == null && it.state == TransferState.TRANSFER_STATE_FINISH) {
                     //默认选中第1个雕刻图层
                     selectLayerMode =
                         EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.mode ?: 0
@@ -94,7 +95,7 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
-
+            //no op
         }
     }
 
@@ -174,8 +175,8 @@ abstract class BaseEngraveLayoutHelper : BaseEngravePreviewLayoutHelper() {
         updateIViewTitle(_string(R.string.transmitting))
         showCloseView(false)
 
-        val taskStateData = transferModel.transferStateData.value
-        if (taskStateData?.isFinish == true) {
+        val taskStateData = transferModel.transferStateOnceData.value
+        if (taskStateData?.error == null && taskStateData?.state == TransferState.TRANSFER_STATE_FINISH) {
             //文件传输完成
             engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
             renderFlowItems()

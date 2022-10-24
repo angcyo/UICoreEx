@@ -7,6 +7,7 @@ import com.angcyo.canvas.data.toCanvasProjectItemBean
 import com.angcyo.canvas.data.toTypeNameString
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.model.AutoEngraveModel
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toBytes
@@ -56,9 +57,11 @@ class AutoEngraveWebsite : BasicWebsite() {
         }
 
         //open
-        vmApp<AutoEngraveModel>().engravePendingData.postValue(engraveData)
-        lastContext.dslAHelper {
-            start(AutoEngraveActivity::class)
+        doMain {
+            vmApp<AutoEngraveModel>().engravePendingData.postValue(engraveData)
+            lastContext.dslAHelper {
+                start(AutoEngraveActivity::class)
+            }
         }
 
         //result
