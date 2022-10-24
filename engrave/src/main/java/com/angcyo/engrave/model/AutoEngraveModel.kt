@@ -127,10 +127,10 @@ class AutoEngraveModel : LifecycleViewModel() {
     ) {
         doBack {
             val result = mutableListOf<TransferDataEntity>()
-            itemBeanList.batchHandle({ handle ->
-                startCreateData(taskId, this) {
+            itemBeanList.batchHandle({ data ->
+                startCreateData(taskId, data) {
                     it?.let { result.add(it) }
-                    handle.next()
+                    next()
                 }
             }) {
                 action(result)
@@ -158,20 +158,20 @@ class AutoEngraveModel : LifecycleViewModel() {
     fun startTransferData(task: AutoEngraveTask) {
         task.state = STATE_TRANSFER
         autoEngraveTaskOnceData.postValue(task)
-        (task._transferDataList ?: emptyList()).batchHandle({ handle ->
+        (task._transferDataList ?: emptyList()).batchHandle({ data ->
             if (task.isCancel) {
-                handle.isCancel = true
-                handle.next()
+                isCancel = true
+                next()
             } else {
                 //传输一条数据
-                startTransferData(task, this) { error ->
-                    if (error == null) {
+                startTransferData(task, data) { throwable ->
+                    if (throwable == null) {
                         task.index++
                     } else {
                         task.isCancel = true
-                        handle.error = error
+                        error = throwable
                     }
-                    handle.next()
+                    next()
                 }
             }
         }) {
