@@ -90,14 +90,4 @@
         android:layout_weight="1"
         app:r_layout_manager="v" />
 
-    <com.angcyo.widget.DslButton
-        android:id="@+id/sync_font_button"
-        style="@style/LibButtonBlackSolidStyle"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/lib_item_min_height"
-        android:layout_margin="@dimen/lib_xhdpi"
-        android:text="@string/canvas_sync_font"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
 </com.angcyo.widget.layout.RLinearLayout>
