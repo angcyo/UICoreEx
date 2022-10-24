@@ -2,8 +2,10 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Build
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.angcyo.base.requestSdCardPermission
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -90,35 +92,12 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         viewHolder.click(R.id.import_view) {
             val context = viewHolder.context
             if (context is FragmentActivity) {
-                context.supportFragmentManager.getFile("*/*") {
-                    if (it != null) {
-                        try {
-                            val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(it)
-                            if (typefaceInfo != null) {
-                                //ui
-                                if (!typefaceInfo.isRepeat) {
-                                    if (tabLayout?.currentItemIndex == 2) {
-                                        viewHolder.rv(R.id.lib_recycler_view)
-                                            ?.renderDslAdapter(true, false) {
-                                                typefaceItem(typefaceInfo, index = 0)
-                                                onDispatchUpdatesOnce {
-                                                    viewHolder.rv(R.id.lib_recycler_view)
-                                                        ?.scrollToFirst()
-                                                }
-                                            }
-                                    } else {
-                                        //
-                                        tabLayout?.setCurrentItem(2)
-                                    }
-                                } else {
-                                    toast(_string(R.string.canvas_font_exist))
-                                }
-                            } else {
-                                error("is not font.")
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            toast(_string(R.string.canvas_invalid_font))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    selectFont(context, viewHolder)
+                } else {
+                    context.requestSdCardPermission {
+                        if (it) {
+                            selectFont(context, viewHolder)
                         }
                     }
                 }
@@ -142,6 +121,42 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
                 }
             }
         }*/
+    }
+
+    fun selectFont(context: FragmentActivity, viewHolder: DslViewHolder) {
+        val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
+        context.supportFragmentManager.getFile("*/*") {
+            if (it != null) {
+                try {
+                    val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(it)
+                    if (typefaceInfo != null) {
+                        //ui
+                        if (!typefaceInfo.isRepeat) {
+                            if (tabLayout?.currentItemIndex == 2) {
+                                viewHolder.rv(R.id.lib_recycler_view)
+                                    ?.renderDslAdapter(true, false) {
+                                        typefaceItem(typefaceInfo, index = 0)
+                                        onDispatchUpdatesOnce {
+                                            viewHolder.rv(R.id.lib_recycler_view)
+                                                ?.scrollToFirst()
+                                        }
+                                    }
+                            } else {
+                                //
+                                tabLayout?.setCurrentItem(2)
+                            }
+                        } else {
+                            toast(_string(R.string.canvas_font_exist))
+                        }
+                    } else {
+                        error("is not font.")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    toast(_string(R.string.canvas_invalid_font))
+                }
+            }
+        }
     }
 
     fun renderAdapterFontList(list: List<TypefaceInfo>) {
