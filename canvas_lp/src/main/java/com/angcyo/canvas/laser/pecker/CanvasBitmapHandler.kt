@@ -134,6 +134,7 @@ object CanvasBitmapHandler {
                     }) {
                         it?.let {
                             it.first.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+                            beforeBounds.rotate(boundsRotate)
                             it.second?.gCodeBound?.let {
                                 val gcodeWidth = it.width()
                                 val gcodeHeight = it.height()
@@ -150,7 +151,6 @@ object CanvasBitmapHandler {
                                 }
                                 beforeBounds.setWidthHeight(newWidth, newHeight, true)
                             }
-                            beforeBounds.rotate(boundsRotate)
                             item.updateBitmapByMode(
                                 it.first,
                                 CanvasConstant.DATA_MODE_GCODE,

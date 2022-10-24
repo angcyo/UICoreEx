@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.base.requestSdCardPermission
@@ -92,13 +91,9 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         viewHolder.click(R.id.import_view) {
             val context = viewHolder.context
             if (context is FragmentActivity) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    selectFont(context, viewHolder)
-                } else {
-                    context.requestSdCardPermission {
-                        if (it) {
-                            selectFont(context, viewHolder)
-                        }
+                context.requestSdCardPermission {
+                    if (it) {
+                        selectFont(context, viewHolder)
                     }
                 }
             } else {
