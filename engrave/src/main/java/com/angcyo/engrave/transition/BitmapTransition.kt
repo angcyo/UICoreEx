@@ -11,7 +11,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.engrave.data.BitmapPath
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
+import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.library.component.byteWriter
@@ -213,7 +213,7 @@ class BitmapTransition : IEngraveTransition {
     override fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity? {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
@@ -222,8 +222,8 @@ class BitmapTransition : IEngraveTransition {
             if (bitmap != null) {
                 val dataMode = getDataMode(dataBean, transferConfigEntity)
                 val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-                val transferDataEntity =
-                    TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
+                val transferDataEntity = TransferDataEntity()
+                transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
 
                 //1:保存一份原始可视化数据
                 saveEngraveData("${transferDataEntity.index}", pxBitmap, "png")
@@ -241,12 +241,12 @@ class BitmapTransition : IEngraveTransition {
                         val needMerge =
                             transferConfigEntity.mergeData && transferConfigEntity.mergeBpData
                         offsetLeft = if (needMerge) {
-                            rotateBounds.left - (param.startBounds?.left ?: rotateBounds.left)
+                            rotateBounds.left - (param?.startBounds?.left ?: rotateBounds.left)
                         } else {
                             0
                         }.toInt()
                         offsetTop = if (needMerge) {
-                            rotateBounds.top - (param.startBounds?.top ?: rotateBounds.top)
+                            rotateBounds.top - (param?.startBounds?.top ?: rotateBounds.top)
                         } else {
                             0
                         }.toInt()
@@ -265,7 +265,7 @@ class BitmapTransition : IEngraveTransition {
                             }
                         }
                         transferDataEntity.dataPath =
-                            bytes.toTransferDataPath("${transferDataEntity.index}")
+                            bytes.writeTransferDataPath("${transferDataEntity.index}")
                         transferDataEntity.lines = listBitmapPath.size
 
                         //2:路径数据写入日志
@@ -284,7 +284,7 @@ class BitmapTransition : IEngraveTransition {
                         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
                         val data = pxBitmap.engraveColorBytes()
                         transferDataEntity.dataPath =
-                            data.toTransferDataPath("${transferDataEntity.index}")
+                            data.writeTransferDataPath("${transferDataEntity.index}")
                         val previewBitmap =
                             data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
                         //3:数据的预览图片
@@ -297,7 +297,7 @@ class BitmapTransition : IEngraveTransition {
                         //白色1 黑色0
                         val pair = handleBitmapByte(pxBitmap, 128)
                         transferDataEntity.dataPath =
-                            pair.second.toTransferDataPath("${transferDataEntity.index}")
+                            pair.second.writeTransferDataPath("${transferDataEntity.index}")
                         //路径数据写入日志
                         saveEngraveData(transferDataEntity.index, pair.first, "dt")
                         //3:保存一份数据的预览图

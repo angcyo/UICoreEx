@@ -19,7 +19,6 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.engrave.loadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
-import com.angcyo.opencv.OpenCV
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -95,13 +94,15 @@ fun String?.toCanvasProjectItemBeanOfFile(): CanvasProjectItemBean? {
     return null
 }
 
-fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int): String? {
+/**转成黑白图片*/
+fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): String? {
     this ?: return null
-    return OpenCV.bitmapToBlackWhite(
+    /*return OpenCV.bitmapToBlackWhite(
         this,
         bmpThreshold,
-        0
-    ).toBase64Data()
+        if (invert) 1 else 0
+    ).toBase64Data()*/
+    return toBlackWhiteHandle(bmpThreshold, invert).toBase64Data()
 }
 
 fun Bitmap?.toBlackWhiteBitmapItemData(): CanvasProjectItemBean? {

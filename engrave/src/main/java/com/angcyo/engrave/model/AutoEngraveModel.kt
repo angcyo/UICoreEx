@@ -16,16 +16,17 @@ import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.TransferTaskStateData
 import com.angcyo.engrave.model.TransferModel.Companion.calcTransferProgress
 import com.angcyo.engrave.toEngraveDataTypeStr
-import com.angcyo.engrave.transition.*
+import com.angcyo.engrave.transition.DataException
+import com.angcyo.engrave.transition.EmptyException
+import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.engrave.transition.FailException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.component.batchHandle
 import com.angcyo.library.ex.uuid
-import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
-import com.angcyo.objectbox.saveAllEntity
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
 
@@ -80,8 +81,6 @@ class AutoEngraveModel : LifecycleViewModel() {
         } else {
             task.state = STATE_CREATE
             startCreateData(task.taskId, itemList) {
-                //com.angcyo.engrave.transition.EngraveTransitionManager.transitionTransferData
-                it.saveAllEntity(LPBox.PACKAGE_NAME)//入库, 关键
                 task._transferDataList = it
                 if (!task.isCancel) {
                     task.index = 0
@@ -104,8 +103,6 @@ class AutoEngraveModel : LifecycleViewModel() {
             task.error = EmptyException()//空数据异常
         } else {
             startCreateData(task.taskId, itemList) {
-                //com.angcyo.engrave.transition.EngraveTransitionManager.transitionTransferData
-                it.saveAllEntity(LPBox.PACKAGE_NAME)//入库, 关键
                 task._transferDataList = it
                 if (!task.isCancel) {
                     task.index = 0
@@ -151,8 +148,7 @@ class AutoEngraveModel : LifecycleViewModel() {
             val transferConfig = EngraveFlowDataHelper.generateTransferConfig(taskId)
             val transferDataEntity = EngraveTransitionManager().transitionTransferData(
                 itemBean,
-                transferConfig,
-                TransitionParam()
+                transferConfig
             )
             action(transferDataEntity)
         }

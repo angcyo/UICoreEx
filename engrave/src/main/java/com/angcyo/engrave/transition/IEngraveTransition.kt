@@ -82,13 +82,19 @@ interface IEngraveTransition {
         }
     }
 
+    //region---core---
+
     /**将[engraveProvider]转换成传输给机器的数据*/
     @CallPoint
     fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity?
+
+    //endregion---core---
+
+    //region---private---
 
     /**一些通用配置属性初始化*/
     @Private
@@ -135,5 +141,13 @@ interface IEngraveTransition {
             transferDataEntity.width = rect.width()
             transferDataEntity.height = rect.height()
         }
+
+        //图层模式赋值, 和数据模式本质是一样的, 外部可以修改赋值
+        //[com.angcyo.engrave.data.EngraveLayerInfo]
+        engraveProvider.getEngraveDataItem()?.dataBean?._dataMode?.let {
+            transferDataEntity.layerMode = it
+        }
     }
+
+    //endregion---private---
 }

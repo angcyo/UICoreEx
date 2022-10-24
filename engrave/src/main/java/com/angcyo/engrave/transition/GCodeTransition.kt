@@ -15,7 +15,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath
+import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.gcode.GCodeHelper
@@ -41,7 +41,7 @@ class GCodeTransition : IEngraveTransition {
     override fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity? {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
@@ -97,11 +97,11 @@ class GCodeTransition : IEngraveTransition {
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         pathList: List<Path>,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity {
         val renderer = engraveProvider.getEngraveRenderer()
-        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
         val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
             pathList,
@@ -128,11 +128,11 @@ class GCodeTransition : IEngraveTransition {
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         bitmap: Bitmap,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity {
         val renderer = engraveProvider.getEngraveRenderer()
-        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
@@ -165,13 +165,13 @@ class GCodeTransition : IEngraveTransition {
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
         bitmap: Bitmap,
-        param: TransitionParam
+        param: TransitionParam?
     ): TransferDataEntity {
         val bounds = engraveProvider.getEngraveBounds()
         val rotateBounds = engraveProvider.getEngraveRotateBounds()
         val renderer = engraveProvider.getEngraveRenderer()
-        val isFirst = param.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
-        val isFinish = param.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         val scanGravity = if (bounds.width() > bounds.height()) {
             //宽图
@@ -208,15 +208,16 @@ class GCodeTransition : IEngraveTransition {
         transferConfigEntity: TransferConfigEntity,
         gCodeFile: File
     ): TransferDataEntity {
-        val transferDataEntity =
-            TransferDataEntity(index = EngraveTransitionManager.generateEngraveIndex())
+        val transferDataEntity = TransferDataEntity()
+        transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
+
         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
         initTransferDataEntity(engraveProvider, transferConfigEntity, transferDataEntity)
         transferDataEntity.lines = gCodeFile.lines()
 
         val pathGCodeText = gCodeFile.readText()
         transferDataEntity.dataPath =
-            pathGCodeText.toByteArray().toTransferDataPath("${transferDataEntity.index}")
+            pathGCodeText.toByteArray().writeTransferDataPath("${transferDataEntity.index}")
 
         //2:保存一份GCode文本数据/原始数据
         saveEngraveData(transferDataEntity.index, pathGCodeText, "gcode")

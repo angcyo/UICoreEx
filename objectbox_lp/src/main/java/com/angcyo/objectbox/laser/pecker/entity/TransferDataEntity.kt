@@ -35,7 +35,8 @@ data class TransferDataEntity(
      * */
     //var data: String? = null,
 
-    /**数据路径, 直接存储数据数据库会炸裂, 所以这里存储数据文本的路径*/
+    /**数据路径, 直接存储数据数据库会炸裂, 所以这里存储数据文本的路径
+     * [com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath]*/
     var dataPath: String? = null,
 
     /**下位机雕刻的数据类型
@@ -91,6 +92,8 @@ data class TransferDataEntity(
      * [com.angcyo.engrave.data.EngraveLayerInfo]
      *
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerMode]
+     *
+     * [com.angcyo.engrave.transition.EngraveTransitionManager.Companion.engraveLayerList]
      * */
     var layerMode: Int = -1,
 

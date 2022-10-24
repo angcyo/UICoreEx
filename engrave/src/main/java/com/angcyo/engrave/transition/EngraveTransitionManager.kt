@@ -29,6 +29,7 @@ import com.angcyo.library.utils.writeToFile
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
@@ -45,11 +46,13 @@ class EngraveTransitionManager {
         /**雕刻传输数据缓存文件的文件夹*/
         const val ENGRAVE_TRANSFER_FILE_FOLDER = "transfer"
 
+        fun String.toTransferData() = toByteArray(Charsets.ISO_8859_1)
+
         fun ByteArray.toTransferData() = toString(Charsets.ISO_8859_1)
 
         /**将字节数据写入到文件*/
-        fun ByteArray.toTransferDataPath(name: String) =
-            writeToFile(filePath(ENGRAVE_TRANSFER_FILE_FOLDER, name).file())
+        fun ByteArray.writeTransferDataPath(fileName: String) =
+            writeToFile(filePath(ENGRAVE_TRANSFER_FILE_FOLDER, fileName).file())
 
         /**生成一个雕刻需要用到的文件索引
          * 4个字节 最大 4_294_967_295
@@ -166,6 +169,7 @@ class EngraveTransitionManager {
     init {
         transitionList.add(GCodeTransition())
         transitionList.add(BitmapTransition())
+        transitionList.add(RawTransition())
     }
 
     /**相同类型的[TransferDataInfo]会合并在一起, 会根据列表顺序, 生成对应顺序的数据
@@ -186,7 +190,7 @@ class EngraveTransitionManager {
                 //开始将[renderer]转换成数据
                 LTime.tick()
                 L.i("开始转换数据->${transferConfigEntity.name}")
-                transitionTransferData(
+                doTransitionTransferData(
                     renderer,
                     transferConfigEntity,
                     param
@@ -234,14 +238,32 @@ class EngraveTransitionManager {
         return resultDataList
     }
 
+    /**将[itemDataBean]转换成传输给机器的数据,
+     * 内部有耗时转换操作, 建议在子线程处理
+     * [doTransitionTransferData]
+     * */
+    @CallPoint
+    @WorkerThread
+    fun transitionTransferData(
+        itemDataBean: CanvasProjectItemBean,
+        transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity? {
+        val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean) ?: return null
+        val transferDataEntity =
+            doTransitionTransferData(renderItem, transferConfigEntity, null)
+        //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
+        transferDataEntity.lpSaveEntity()
+        return transferDataEntity
+    }
+
     /**将[renderer]转换成传输给机器的数据,
      * 内部有耗时转换操作, 建议在子线程处理*/
     @CallPoint
     @WorkerThread
-    fun transitionTransferData(
+    fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,
         transferConfigEntity: TransferConfigEntity,
-        param: TransitionParam
+        param: TransitionParam? = null
     ): TransferDataEntity? {
         var result: TransferDataEntity? = null
 
@@ -258,22 +280,7 @@ class EngraveTransitionManager {
         return result
     }
 
-    /**将[itemDataBean]转换成传输给机器的数据,
-     * 内部有耗时转换操作, 建议在子线程处理
-     * [transitionTransferData]
-     * */
-    @CallPoint
-    @WorkerThread
-    fun transitionTransferData(
-        itemDataBean: CanvasProjectItemBean,
-        transferConfigEntity: TransferConfigEntity,
-        param: TransitionParam
-    ): TransferDataEntity? {
-        val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean) ?: return null
-        return transitionTransferData(renderItem, transferConfigEntity, param)
-    }
-
-    //
+    //---
 
     /**合并数据*/
     fun _mergeTransferData(dataList: List<TransferDataEntity>): TransferDataEntity {
@@ -283,7 +290,7 @@ class EngraveTransitionManager {
             dataList.forEach {
                 write(it.bytes())
             }
-        }.toTransferDataPath("${resultTransferDataInfo.index}")
+        }.writeTransferDataPath("${resultTransferDataInfo.index}")
         val first = dataList.first()
 
         resultTransferDataInfo.taskId = first.taskId
