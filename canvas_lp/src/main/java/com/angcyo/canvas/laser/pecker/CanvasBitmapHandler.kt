@@ -7,16 +7,17 @@ import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
-import com.angcyo.core.component.file.writeToCache
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.loadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
+import com.angcyo.library.ex.setWidthHeight
 import com.angcyo.library.ex.toBase64Data
-import com.angcyo.library.utils.fileNameTime
+import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.hingin.rn.image.ImageProcess
 
@@ -120,7 +121,7 @@ object CanvasBitmapHandler {
                             OpenCV.bitmapToGCode(
                                 context,
                                 bitmap,
-                                (bitmap.width / 2).toMm().toDouble(),
+                                (beforeBounds.width() / 2).toMm().toDouble(),
                                 lineSpace = lineSpace.toDouble(),
                                 direction = direction,
                                 angle = angle.toDouble()
@@ -132,10 +133,23 @@ object CanvasBitmapHandler {
                         }
                     }) {
                         it?.let {
-                            it.first.writeToCache(
-                                CanvasConstant.VECTOR_FILE_FOLDER,
-                                fileNameTime(suffix = ".gcode")
-                            )
+                            it.first.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+                            it.second?.gCodeBound?.let {
+                                val gcodeWidth = it.width()
+                                val gcodeHeight = it.height()
+                                var newWidth = gcodeWidth
+                                var newHeight = gcodeHeight
+                                if (gcodeWidth > gcodeHeight) {
+                                    val scale = beforeBounds.width() / gcodeWidth
+                                    newWidth = gcodeWidth * scale
+                                    newHeight = gcodeHeight * scale
+                                } else {
+                                    val scale = beforeBounds.height() / gcodeHeight
+                                    newWidth = gcodeWidth * scale
+                                    newHeight = gcodeHeight * scale
+                                }
+                                beforeBounds.setWidthHeight(newWidth, newHeight, true)
+                            }
                             beforeBounds.rotate(boundsRotate)
                             item.updateBitmapByMode(
                                 it.first,

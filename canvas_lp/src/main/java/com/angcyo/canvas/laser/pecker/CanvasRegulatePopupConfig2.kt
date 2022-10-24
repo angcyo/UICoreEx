@@ -152,7 +152,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                     itemInfoText = _string(R.string.canvas_line_space) //0.125-5
                     initItem()
 
-                    val start = 0.125f
+                    val start = 0.1f //0.125f
                     val max = 5f
                     val def = getFloatOrDef(KEY_LINE_SPACE, DEFAULT_LINE_SPACE)
 
@@ -168,8 +168,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                     }
 
                     itemSeekTouchEnd = { value, fraction ->
-                        property[KEY_LINE_SPACE] =
-                            start + (max - start) * fraction
+                        property[KEY_LINE_SPACE] = start + (max - start) * fraction
                     }
                 }
             }
