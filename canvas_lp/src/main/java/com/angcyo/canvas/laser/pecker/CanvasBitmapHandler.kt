@@ -351,6 +351,7 @@ object CanvasBitmapHandler {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
         val originBitmap = item.originBitmap
+        //val beforeBounds = RectF(renderer.getBounds())
 
         anchor.context.cropDialog {
             cropBitmap = originBitmap
@@ -358,16 +359,18 @@ object CanvasBitmapHandler {
                 onDismissAction()
             }
 
-            onCropResultAction = {
-                it?.let {
+            onCropResultAction = { result ->
+                result?.let {
                     owner.loadingAsync({
-                        //剪切完之后, 默认背白处理
-                        val filter = it.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
+                        //剪切完之后, 默认黑白处理
+                        val filter = result.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
                         item.updateBitmapOriginal(
-                            it.toBase64Data(),
+                            result.toBase64Data(),
                             filter,
                             CanvasConstant.DATA_MODE_BLACK_WHITE,
-                            renderer
+                            renderer,
+                            result.width.toFloat(),
+                            result.height.toFloat(),
                         )
                     })
                 }
