@@ -139,11 +139,11 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
         adapter.apply {
             //版画阈值
             if (regulateList.contains(KEY_PRINT_THRESHOLD)) {
-                renderThresholdItem(KEY_PRINT_THRESHOLD)
+                renderThresholdItem(KEY_PRINT_THRESHOLD, HawkEngraveKeys.lastPrintThreshold)
             }
             //印章阈值
             if (regulateList.contains(KEY_SEAL_THRESHOLD)) {
-                renderThresholdItem(KEY_SEAL_THRESHOLD)
+                renderThresholdItem(KEY_SEAL_THRESHOLD, HawkEngraveKeys.lastSealThreshold)
             }
 
             //GCode
@@ -208,7 +208,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                 renderInvertItem(KEY_BW_INVERT)
             }
             if (regulateList.contains(KEY_BW_THRESHOLD)) {
-                renderThresholdItem(KEY_BW_THRESHOLD)
+                renderThresholdItem(KEY_BW_THRESHOLD, HawkEngraveKeys.lastBWThreshold)
             }
 
             //抖动
@@ -315,7 +315,14 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                 property[key] = def
 
                 itemSeekTouchEnd = { value, fraction ->
-                    property[key] = 255f * fraction
+                    val threshold = 255f * fraction
+                    property[key] = threshold
+
+                    when (key) {
+                        KEY_PRINT_THRESHOLD -> HawkEngraveKeys.lastPrintThreshold = threshold
+                        KEY_SEAL_THRESHOLD -> HawkEngraveKeys.lastSealThreshold = threshold
+                        KEY_BW_THRESHOLD -> HawkEngraveKeys.lastBWThreshold = threshold
+                    }
                 }
             }
         }

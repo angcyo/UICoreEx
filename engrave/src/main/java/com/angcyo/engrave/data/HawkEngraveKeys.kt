@@ -1,6 +1,7 @@
 package com.angcyo.engrave.data
 
 import androidx.annotation.Keep
+import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -44,6 +45,17 @@ object HawkEngraveKeys {
 
     /**保存工程的次数*/
     var lastProjectCount: Int by HawkPropertyValue<Any, Int>(0)
+
+    //
+
+    /**版画阈值*/
+    var lastPrintThreshold: Float by HawkPropertyValue<Any, Float>(CanvasProjectItemBean.DEFAULT_THRESHOLD)
+
+    /**印章阈值*/
+    var lastSealThreshold: Float by HawkPropertyValue<Any, Float>(CanvasProjectItemBean.DEFAULT_THRESHOLD)
+
+    /**黑白阈值*/
+    var lastBWThreshold: Float by HawkPropertyValue<Any, Float>(CanvasProjectItemBean.DEFAULT_THRESHOLD)
 
     //
 

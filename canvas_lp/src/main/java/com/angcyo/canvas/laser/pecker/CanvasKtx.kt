@@ -7,7 +7,6 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.data.CanvasProjectBean
 import com.angcyo.canvas.data.CanvasProjectItemBean
-import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_THRESHOLD
 import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.data.toCanvasProjectItemList
 import com.angcyo.canvas.graphics.GraphicsHelper
@@ -16,6 +15,7 @@ import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.loadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
@@ -106,9 +106,11 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
 }
 
 fun Bitmap?.toBlackWhiteBitmapItemData(): CanvasProjectItemBean? {
+    val bitmap = this ?: return null
     return toBitmapItemData {
         imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
-        src = this@toBlackWhiteBitmapItemData?.toBlackWhiteBitmap(DEFAULT_THRESHOLD.toInt())
+        blackThreshold = HawkEngraveKeys.lastBWThreshold
+        src = bitmap.toBlackWhiteBitmap(HawkEngraveKeys.lastBWThreshold.toInt())
     }
 }
 
