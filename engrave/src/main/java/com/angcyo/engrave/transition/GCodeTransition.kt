@@ -189,8 +189,8 @@ class GCodeTransition : IEngraveTransition {
         )
         val gCodeText = gCodeFile.readText()
         gCodeFile.deleteSafe()
-        //GCode数据, 此时的GCode只需要平移
-        gCodeFile = CanvasDataHandleOperate.gCodeTranslation(gCodeText, rotateBounds)
+        //GCode数据, 这里必须使用旋转后的bounds进行调整
+        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f)
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
