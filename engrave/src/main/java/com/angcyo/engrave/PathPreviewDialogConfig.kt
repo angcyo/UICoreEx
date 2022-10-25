@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.graphics.GraphicsHelper
@@ -24,6 +25,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -50,11 +52,16 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         dialogLayoutId = R.layout.dialog_path_preview_layout
         previewInfo = previewModel.previewInfoData.value
 
-        /*laserPeckerModel.deviceStateData.observe(this, allowBackward = false) {
-            if (it != null && it.isModeEngravePreview()) {
-
+        laserPeckerModel.deviceStateData.observe(this, allowBackward = false) {
+            if (it != null) {
+                if (it.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && it.workState == 0x01) {
+                    //向量预览中...
+                    _dialogViewHolder?.gone(R.id.start_button)
+                } else {
+                    _dialogViewHolder?.visible(R.id.start_button)
+                }
             }
-        }*/
+        }
     }
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
