@@ -117,13 +117,15 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                             if (it != null) {
                                 toast("transfer data exception!")
                             } else {
-                                _transferDataEntity = transferDataEntity
-                                _isPathPreview = true
-                                EngravePreviewCmd.previewFlashBitmapCmd(
-                                    transferDataEntity.index,
-                                    HawkEngraveKeys.lastPwrProgress
-                                ).enqueue()
-                                delayCheckDeviceState()
+                                ExitCmd().enqueue { bean, error ->
+                                    _transferDataEntity = transferDataEntity
+                                    _isPathPreview = true
+                                    EngravePreviewCmd.previewFlashBitmapCmd(
+                                        transferDataEntity.index,
+                                        HawkEngraveKeys.lastPwrProgress
+                                    ).enqueue()
+                                    delayCheckDeviceState()
+                                }
                             }
                         }
                     }
