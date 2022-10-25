@@ -11,9 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.*
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
@@ -21,6 +19,11 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
+import com.angcyo.objectbox.findFirst
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
+import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 
 /**
  * https://docs.qq.com/doc/DWE1MVnVOQ3RJSXZ1
@@ -546,7 +549,16 @@ object LaserPeckerHelper {
         progress: ISendProgressAction? = null,
         action: IReceiveBeanAction?
     ): WaitReceivePacket {
-        "发送指令:$address->${command.hashCode()} ${command.toCommandLogString()}".writeBleLog()
+        val uuid = command.uuid
+        val commandLogString = command.toCommandLogString()
+        "发送指令:$address->$uuid $commandLogString".writeBleLog()
+        CommandEntity().apply {
+            this.uuid = uuid
+            this.command = command.toHexCommandString().removeAll()
+            des = commandLogString
+            sendTime = nowTime()
+            lpSaveEntity()
+        }
         return waitCmdReturn(
             api,
             address,
@@ -555,27 +567,39 @@ object LaserPeckerHelper {
             command.commandFunc(),
             true,
             command.getReceiveTimeout(), //数据返回超时时长
-            progress,
-            action
-        )
+            progress
+        ) { bean, error ->
+            val log = "${bean?.parse<MiniReceiveParser>() ?: error}"
+            "指令返回:${uuid}->${log}".writeBleLog()
+            CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                apply(CommandEntity_.uuid.equal(uuid))
+            }?.apply {
+                resultTime = nowTime()
+                result = "${bean?.receivePacket?.toHexString(false) ?: ""} ${error ?: ""}"
+                lpSaveEntity()
+            }
+            action?.invoke(bean, error)
+        }
     }
 
     /**发送一条指令, 未连接设备时, 返回空 [ICommand]
      * [command] 需要发送的指令
      * [address] 设备地址, 如果不传, 则使用最后一台连接的设备
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.ICommandKt.sendCommand]
      * */
     fun sendCommand(
         command: ICommand,
         address: String? = null,
         progress: ISendProgressAction? = null,
-        action: IReceiveBeanAction?
+        action: IReceiveBeanAction? = null
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
         var deviceAddress = address
         if (deviceAddress.isNullOrEmpty()) {
             val deviceState = apiModel.connectDeviceListData.value?.lastOrNull()
             if (deviceState == null) {
-                action?.invoke(null, IllegalArgumentException("未连接设备"))
+                action?.invoke(null, NoDeviceException(_string(R.string.blue_no_device_connected)))
                 return null
             }
             deviceAddress = deviceState.device.address

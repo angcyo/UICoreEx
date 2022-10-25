@@ -24,7 +24,7 @@ data class FirmwareUpdateCmd(
     /**固件版本号, 2字节*/
     val version: Int,
     val custom: Byte = 0x00,
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
         /**固件更新指令*/

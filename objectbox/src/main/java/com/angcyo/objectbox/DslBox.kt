@@ -235,6 +235,8 @@ class DslBox {
                 ?: throw NullPointerException("$packageName 未初始化[ObjectBox], 请先调用[DslBox.init()]")
         }
 
+        //java.lang.IllegalArgumentException: class com.angcyo.objectbox.laser.pecker.entity.CommandEntity
+        // is not a known entity. Please add it and trigger generation again.
         fun <T> getBox(packageName: String, entityClass: Class<T>): Box<T> {
             return getBoxStore(packageName).boxFor(entityClass)
         }

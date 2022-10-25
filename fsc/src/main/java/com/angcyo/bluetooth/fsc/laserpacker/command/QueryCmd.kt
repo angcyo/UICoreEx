@@ -19,7 +19,7 @@ data class QueryCmd(
     // 3:表示查询版本
     val state: Byte,
     val custom: Byte = 0 //自定义的数据
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/lib_hdpi"
+    android:layout_marginVertical="@dimen/lib_ldpi"
+    android:background="@drawable/lib_bg_selector">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/lib_hdpi">
+
+        <com.angcyo.widget.edit.DslEditText
+            android:id="@+id/lib_edit_view"
+            style="@style/LibEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textWebEmailAddress"
+            android:minHeight="@dimen/lib_min_item_height"
+            tools:text="aabbaabb" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintTop_toBottomOf="@id/lib_edit_view"
+            tools:text="aabbaabb" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/trim_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_hdpi"
+            android:text="剔除指令"
+            app:layout_constraintTop_toBottomOf="@id/lib_text_view" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/pad_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_hdpi"
+            android:layout_marginTop="@dimen/lib_hdpi"
+            android:text="补齐指令"
+            app:layout_constraintLeft_toRightOf="@id/trim_button"
+            app:layout_constraintTop_toBottomOf="@id/lib_text_view" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/send_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_hdpi"
+            android:text="发送指令"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lib_text_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

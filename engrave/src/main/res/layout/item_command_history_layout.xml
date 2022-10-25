@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/lib_hdpi"
+    android:layout_marginVertical="@dimen/lib_ldpi">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lib_bg_selector"
+        android:padding="@dimen/lib_hdpi">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/time_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="时间" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/command_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/time_view"
+            tools:text="指令" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/result_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/command_view"
+            tools:text="返回" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

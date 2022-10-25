@@ -4,8 +4,6 @@ import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
-import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
-import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.library.L
 import com.angcyo.library.ex.className
 import com.angcyo.library.ex.have
@@ -144,7 +142,6 @@ object CommandQueueHelper {
                 e.printStackTrace()
             }
         }) { bean, error ->
-            "指令返回:${command.hashCode()}->${bean?.parse<MiniReceiveParser>()} $error".writeBleLog()
             //
             if (next) {
                 next()

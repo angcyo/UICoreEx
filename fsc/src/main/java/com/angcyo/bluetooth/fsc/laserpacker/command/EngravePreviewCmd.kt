@@ -70,7 +70,7 @@ data class EngravePreviewCmd(
     //Data12-13为第四个角点坐标
     var d12: Int = 0, // 2字节
     var d13: Int = 0, // 2字节
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
 

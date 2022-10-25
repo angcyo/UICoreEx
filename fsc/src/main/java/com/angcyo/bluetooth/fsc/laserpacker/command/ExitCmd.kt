@@ -13,7 +13,7 @@ import com.angcyo.library.ex.toHexString
  */
 data class ExitCmd(
     val custom: Byte = 0 //自定义的数据
-) : ICommand {
+) : BaseCommand() {
 
     //功能码
     override fun commandFunc(): Byte = 0xff.toByte()

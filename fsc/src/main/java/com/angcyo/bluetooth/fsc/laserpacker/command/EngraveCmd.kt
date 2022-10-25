@@ -31,7 +31,7 @@ data class EngraveCmd(
     val diameter: Int = 0,//雕刻物体直径（L4旋转轴生效），2字节,obj_d  = d * 100; d为物体实际尺寸单位为mm;
     //雕刻精度档位分：1至5档，它与系统加减速对应（C1新增）
     val precision: Int = 1,
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
 

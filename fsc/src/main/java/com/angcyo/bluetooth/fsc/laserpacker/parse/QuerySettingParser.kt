@@ -2,7 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
-import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
+import com.angcyo.bluetooth.fsc.laserpacker.command.BaseCommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.reader
@@ -53,7 +53,7 @@ data class QuerySettingParser(
     var safeCode: Int = 0,
     //Admin：为用户帐号占用40
     var admin: Int = 0,
-) : IPacketParser<QuerySettingParser>, ICommand {
+) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
         /**第三轴模式状态存储

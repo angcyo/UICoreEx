@@ -28,7 +28,7 @@ data class FileModeCmd(
     //State = 0x06时为擦除单个文件, data为指定文件索引。
     val state: Byte = 0x1,
     val custom: Byte = 0 //自定义的数据
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
 

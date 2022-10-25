@@ -11,12 +11,14 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
+            android:screenOrientation="portrait"
             android:theme="@style/DeviceConnectTipTheme" />
 
         <!--固件升级-->
         <activity
             android:name=".firmware.FirmwareUpdateActivity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter>
                  <action android:name="android.intent.action.VIEW" />
@@ -27,5 +29,11 @@
                  <data android:mimeType="*/*" />
              </intent-filter>-->
         </activity>
+
+        <!--指令列表-->
+        <activity
+            android:name=".ble.CommandActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

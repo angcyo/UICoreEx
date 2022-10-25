@@ -9,6 +9,7 @@ dependencies {
     //implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
 
     compileOnly project(allModule.canvas)
+    compileOnly project(allModule.objectbox_lp) //数据库
 }
 
 //库中使用, 2022-10-25 3.4.4 废弃

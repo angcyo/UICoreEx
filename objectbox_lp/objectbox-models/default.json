@@ -591,9 +591,53 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:1283913521419266299",
+      "lastPropertyId": "7:7217022909913505481",
+      "name": "CommandEntity",
+      "properties": [
+        {
+          "id": "1:5918448964477020100",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8551483792808560226",
+          "name": "uuid",
+          "type": 9
+        },
+        {
+          "id": "3:8131612515105627859",
+          "name": "command",
+          "type": 9
+        },
+        {
+          "id": "4:827799060563472416",
+          "name": "des",
+          "type": 9
+        },
+        {
+          "id": "5:6183841832227027381",
+          "name": "result",
+          "type": 9
+        },
+        {
+          "id": "6:7887718319909734616",
+          "name": "sendTime",
+          "type": 6
+        },
+        {
+          "id": "7:7217022909913505481",
+          "name": "resultTime",
+          "type": 6
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "11:7833260621013857816",
+  "lastEntityId": "12:1283913521419266299",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

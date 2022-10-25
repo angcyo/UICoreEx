@@ -29,5 +29,6 @@
     <string name="engrave_state_stop">镭雕结束</string>
     <string name="engrave_state_ing">镭雕中</string>
 
+    <string name="blue_no_device_connected">未连接设备</string>
 
 </resources>

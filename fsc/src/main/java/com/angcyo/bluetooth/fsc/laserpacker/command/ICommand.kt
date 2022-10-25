@@ -33,6 +33,9 @@ import com.angcyo.library.toast
  */
 interface ICommand {
 
+    /**指令唯一标识符*/
+    val uuid: String
+
     /**优先调用此方法, 如果为空, 则使用[toHexCommandString]*/
     fun toByteArray(): ByteArray = toHexCommandString().toHexByteArray()
 

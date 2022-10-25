@@ -28,7 +28,7 @@ data class DataCmd(
 
     /**数据指令日志信息*/
     var log: String? = null
-) : ICommand {
+) : BaseCommand() {
 
     companion object {
 
