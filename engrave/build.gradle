@@ -21,4 +21,4 @@ dependencies {
     compileOnly 'com.angcyo:opencv:hingin-SNAPSHOT'
 }
 
-apply from: allGradle.libfscaar
+//apply from: allGradle.libfscaar

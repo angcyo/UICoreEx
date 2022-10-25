@@ -11,5 +11,5 @@ dependencies {
     compileOnly project(allModule.canvas)
 }
 
-//库中使用
-apply from: allGradle.libfscaar
+//库中使用, 2022-10-25 3.4.4 废弃
+//apply from: allGradle.libfscaar
