@@ -349,12 +349,14 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         }
                     }*/
                     checkExDevice {
-                        showSafetyTips(it.context) {
-                            engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                            renderFlowItems()
+                        showFocalDistance(it.context) {
+                            showSafetyTips(it.context) {
+                                engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                renderFlowItems()
 
-                            //开始雕刻
-                            engraveModel.startEngrave(taskId)
+                                //开始雕刻
+                                engraveModel.startEngrave(taskId)
+                            }
                         }
                     }
                 }

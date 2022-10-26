@@ -124,7 +124,7 @@
     <string name="send_file">发送文件</string>
 
     <string name="size_safety_tips">请确认激光工作区安全</string>
-    <string name="size_safety_content">请务必佩戴护目镜并安装保护罩</string>
+    <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
     <string name="print_stop">确定要结束镭雕吗？</string>
 
     <string name="ui_finish">完成</string>
@@ -166,5 +166,7 @@
 
     <string name="device_engrave_ing_title">当前设备正在工作中</string>
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
+
+    <string name="focal_distance_tip">请确认焦距</string>
 
 </resources>

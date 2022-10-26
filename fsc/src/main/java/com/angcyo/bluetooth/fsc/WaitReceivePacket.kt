@@ -207,15 +207,23 @@ class WaitReceivePacket(
                     this.sendStartTime = System.currentTimeMillis()
                 }
             }
+
             receivePacket?.apply {
                 sendPacketCount++
                 val nowTime = System.currentTimeMillis()
-                //每毫秒发送的字节数量
-                val speed = packetProgress.sendBytesSize * 1f / (nowTime - sendStartTime)
-                //剩余需要发送的字节大小
-                val remainingSize = sendPacket.size - packetProgress.sendBytesSize
-                sendSpeed = speed * 1000
-                remainingTime = (remainingSize / speed).roundToLong()
+                val duration = nowTime - sendStartTime
+                val sendSize = packetProgress.sendBytesSize * 1f
+                if (duration > 0) {
+                    //每毫秒发送的字节数量
+                    val speed = sendSize / duration
+                    //剩余需要发送的字节大小
+                    val remainingSize = sendPacket.size - packetProgress.sendBytesSize
+                    sendSpeed = speed * 1000
+                    remainingTime = (remainingSize / speed).roundToLong()
+                } else {
+                    sendSpeed = sendSize
+                    remainingTime = 0
+                }
                 //listener.onPacketProgress(this) //need?
             }
         }

@@ -178,4 +178,7 @@
 
     <string name="device_engrave_ing_title">当前设备正在工作中</string>
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
+
+    <string name="focal_distance_tip">请确认焦距</string>
+
 </resources>

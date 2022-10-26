@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.iview.BaseRecyclerIView
@@ -18,6 +19,7 @@ import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.uuid
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻流程相关布局基类
@@ -182,11 +184,28 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
+    /**显示焦距提示*/
+    fun showFocalDistance(context: Context?, action: () -> Unit) {
+        context?.messageDialog {
+            dialogMessageLargeDrawable = _drawable(DeviceConnectTipActivity.getDeviceImageRes())
+            dialogTitle = _string(R.string.focal_distance_tip)
+            negativeButtonText = _string(R.string.dialog_negative)
+
+            positiveButton { dialog, dialogViewHolder ->
+                dialog.dismiss()
+                action()
+            }
+        }
+    }
+
     /**显示预览安全提示框*/
     fun showSafetyTips(context: Context?, action: () -> Unit) {
         context?.messageDialog {
-            dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-            dialogTitle = _string(R.string.size_safety_tips)
+            dialogTitle = span {
+                appendImage(_drawable(R.mipmap.safe_tips))
+                appendln()
+                append(_string(R.string.engrave_warn))
+            }
             dialogMessage = _string(R.string.size_safety_content)
             negativeButtonText = _string(R.string.dialog_negative)
 
