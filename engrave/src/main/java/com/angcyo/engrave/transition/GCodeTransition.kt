@@ -79,6 +79,7 @@ class GCodeTransition : IEngraveTransition {
                 //其他元素, 使用图片转GCode算法
                 val bitmap = engraveProvider.getEngraveBitmap()
                 bitmap?.let {
+                    //此图片已经缩放并且旋转了
                     return _transitionBitmapTransferData(
                         engraveProvider,
                         transferConfigEntity,
@@ -130,6 +131,8 @@ class GCodeTransition : IEngraveTransition {
         bitmap: Bitmap,
         param: TransitionParam?
     ): TransferDataEntity {
+        val bounds = engraveProvider.getEngraveBounds()
+        val rotateBounds = engraveProvider.getEngraveRotateBounds()
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
@@ -137,18 +140,14 @@ class GCodeTransition : IEngraveTransition {
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,
-            (pxBitmap.width / 2).toMm().toDouble(),
+            (rotateBounds.width() / 2).toMm().toDouble(),
             lineSpace = DEFAULT_LINE_SPACE.toDouble(),
             direction = 0,
             angle = 0.0
         )
         val gCodeText = gCodeFile.readText()
         //GCode数据
-        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
-            gCodeText,
-            engraveProvider.getEngraveBounds(),
-            engraveProvider._rotate
-        )
+        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f)
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
