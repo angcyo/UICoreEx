@@ -19,6 +19,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
+import com.angcyo.library.utils.LogFile
 import com.angcyo.objectbox.findFirst
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
@@ -694,7 +695,7 @@ fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).i
  * [log] 是否还需要输出到控制台
  * [String.writeErrorLog]
  * */
-fun String.writeBleLog(log: Boolean = true): String = writeToLog("ble.log", log)
+fun String.writeBleLog(log: Boolean = true): String = writeToLog(LogFile.ble, log)
 
 /**写入雕刻日志, 记录数据传输的索引及信息和雕刻的索引及信息*/
-fun String.writeEngraveLog(log: Boolean = false): String = writeToLog("engrave.log", log)
+fun String.writeEngraveLog(log: Boolean = false): String = writeToLog(LogFile.engrave, log)

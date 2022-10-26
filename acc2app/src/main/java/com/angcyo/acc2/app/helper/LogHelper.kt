@@ -12,10 +12,7 @@ import com.angcyo.core.component.gistBodyBuilder
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.library.ex.*
-import com.angcyo.library.utils.Constant
-import com.angcyo.library.utils.Device
-import com.angcyo.library.utils.FileUtils
-import com.angcyo.library.utils.logFilePath
+import com.angcyo.library.utils.*
 import java.io.File
 
 /**
@@ -98,7 +95,7 @@ object LogHelper {
                 itemText = "分享log日志"
                 itemClick = {
                     DEFAULT_FILE_PRINT_PATH?.file()?.apply {
-                        uploadFileToGist("l.log", this)
+                        uploadFileToGist(LogFile.l, this)
                         shareFile(it.context, toast = true)
                     }
                     _dialog?.dismiss()

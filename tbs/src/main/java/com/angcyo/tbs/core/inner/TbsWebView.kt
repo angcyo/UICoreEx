@@ -20,10 +20,7 @@ import com.angcyo.library.ex.encode
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.model.AppBean
-import com.angcyo.library.utils.Constant
-import com.angcyo.library.utils.getMember
-import com.angcyo.library.utils.logFilePath
-import com.angcyo.library.utils.writeTo
+import com.angcyo.library.utils.*
 import com.hjhrq1991.library.tbs.TbsBridgeWebView
 import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension
 import com.tencent.smtt.export.external.interfaces.*
@@ -489,10 +486,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
 
     /**写入web log*/
     open fun appendWebLog(log: String) {
-        "${nowTimeString()} $log \n".writeTo(
-            Constant.LOG_FOLDER_NAME.logFilePath("webview.log"),
-            true
-        )
+        "${nowTimeString()} $log \n".writeTo(LogFile.webview.toLogFilePath(), true)
     }
 
     //</editor-fold desc="初始化相关">
