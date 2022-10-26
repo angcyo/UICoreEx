@@ -62,4 +62,10 @@ data class EngraveConfigEntity(
 
     /**打印次数, 最大255*/
     var time: Int = 1,
-)
+) {
+    fun toEngravingSpeed(): Int {
+        val max = 5
+        val current = precision
+        return ((max - current + 1) * 1f / max * 100).toInt()
+    }
+}

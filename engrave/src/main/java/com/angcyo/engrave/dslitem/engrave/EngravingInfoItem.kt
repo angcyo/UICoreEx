@@ -1,6 +1,8 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
@@ -19,6 +21,8 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
     /**雕刻任务id*/
     var itemTaskId: String? = null
+
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_info_layout
@@ -39,6 +43,22 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 //分辨率: 1k
                 val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
                 add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
+
+                //雕刻精度
+                if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+                    add(
+                        LabelDesData(
+                            _string(R.string.engrave_speed),
+                            "${engraveConfigEntity.toEngravingSpeed()}%"
+                        )
+                    )
+                    add(
+                        LabelDesData(
+                            _string(R.string.engrave_precision),
+                            "${engraveConfigEntity.precision}"
+                        )
+                    )
+                }
 
                 //功率:
                 add(LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%"))

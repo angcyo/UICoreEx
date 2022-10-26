@@ -1,6 +1,8 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
@@ -18,6 +20,8 @@ class EngraveFinishTopItem : DslTagGroupItem() {
 
     /**雕刻任务id, 通过id可以查询到各种信息*/
     var itemTaskId: String? = null
+
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_top_layout
@@ -44,6 +48,22 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             val endEngraveTime = taskEntity?.finishTime ?: 0
             val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
             add(LabelDesData("${_string(R.string.work_time)}:", engraveTime))
+
+            //雕刻精度
+            if (engraveConfigEntity != null && laserPeckerModel.productInfoData.value?.isCI() == true) {
+                add(
+                    LabelDesData(
+                        _string(R.string.engrave_speed),
+                        "${engraveConfigEntity.toEngravingSpeed()}%"
+                    )
+                )
+                add(
+                    LabelDesData(
+                        _string(R.string.engrave_precision),
+                        "${engraveConfigEntity.precision}"
+                    )
+                )
+            }
         }
     }
 
