@@ -6,14 +6,15 @@
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/lib_hdpi"
     android:paddingLeft="80dp"
-    android:paddingRight="@dimen/lib_padding_right">
+    android:paddingRight="@dimen/lib_padding_right"
+    tools:background="@color/transparent20">
 
     <com.angcyo.widget.layout.DslFlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:r_flow_equ_width="true"
-        app:r_flow_item_horizontal_space="@dimen/lib_xhdpi"
-        app:r_flow_item_vertical_space="@dimen/lib_xhdpi"
+        app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
+        app:r_flow_item_vertical_space="@dimen/lib_hdpi"
         app:r_flow_max_line_count="3">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -24,7 +25,7 @@
             android:background="@drawable/lib_solid_tag_selector"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
-            android:padding="@dimen/lib_hdpi"
+            android:paddingVertical="@dimen/lib_hdpi"
             tools:text="功率\n99%" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -35,7 +36,7 @@
             android:background="@drawable/lib_solid_tag_selector"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
-            android:padding="@dimen/lib_hdpi"
+            android:paddingVertical="@dimen/lib_hdpi"
             tools:text="深度\n99%" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -46,7 +47,7 @@
             android:background="@drawable/lib_solid_tag_selector"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
-            android:padding="@dimen/lib_hdpi"
+            android:paddingVertical="@dimen/lib_hdpi"
             tools:text="次数\n99" />
 
 
