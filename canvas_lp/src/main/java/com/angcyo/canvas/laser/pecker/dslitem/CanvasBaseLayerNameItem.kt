@@ -57,7 +57,7 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
         itemHolder.visible(R.id.layer_item_warn_view, isOverflowBounds)
         itemHolder.click(R.id.layer_item_warn_view) {
             it.context.messageDialog {
-                dialogTitle = _string(R.string.engrave_warn)
+                dialogTitle = _string(R.string.engrave_bounds_warn)
                 dialogMessage = _string(R.string.engrave_overflow_bounds_message)
             }
         }

@@ -171,7 +171,8 @@
     <string name="engrave_precision">加速级别</string>
 
     <string name="engrave_warn">警告</string>
-    <string name="engrave_overflow_bounds_message">元素超出设备范围,无法雕刻!</string>
+    <string name="engrave_bounds_warn">元素超出雕刻区域</string>
+    <string name="engrave_overflow_bounds_message">超出区域无法雕刻，请将元素拖入调整到红色边框内</string>
     <string name="engrave_perimeter">周长</string>
 
     <string name="device_engrave_ing_title">当前设备正在工作中</string>
