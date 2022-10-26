@@ -18,7 +18,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/26
  */
-abstract class BaseEngravePreviewLayoutHelper : BaseFlowLayoutHelper() {
+abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     override fun renderFlowItems() {
         when (engraveFlow) {
