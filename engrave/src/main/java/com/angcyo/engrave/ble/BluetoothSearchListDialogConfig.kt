@@ -13,7 +13,6 @@ import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.ex.*
-import com.angcyo.library.toast
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.RadarScanLoadingView
@@ -29,7 +28,12 @@ import com.hingin.umeng.umengEventValue
 class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConfig(context) {
 
     companion object {
+
+        /**最后一次搜索的时间*/
         var last_search_time: Long = 0
+
+        /**联系客服*/
+        var ON_CONTACT_ME_ACTION: Action? = null
     }
 
     /**连接成功后, 是否关闭界面*/
@@ -39,6 +43,12 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
     var showRssi: Boolean = isDebugType()
 
     val apiModel = vmApp<FscBleApiModel>()
+
+    /**联系客服*/
+    var onContactMeAction = {
+        //toast("Features under development...")
+        ON_CONTACT_ME_ACTION?.invoke()
+    }
 
     init {
         dialogLayoutId = R.layout.dialog_bluetooth_search_list_layout
@@ -61,7 +71,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
             renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
                 itemHolder.click(R.id.contact_me_view) {
-                    toast("Features under development...")
+                    onContactMeAction()
                 }
             }
 
