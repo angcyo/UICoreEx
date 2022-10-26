@@ -21,7 +21,7 @@
     <string name="laser_brightness">激光亮度</string>
     <string name="previewing">预览中…</string>
     <string name="print_setting">镭雕设置</string>
-    <string name="print_v2_package_size_setting">文件设置</string>
+    <string name="file_setting">文件设置</string>
     <string name="transmitting">文件传输中</string>
     <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
     <string name="estimated_remaining_time">预计剩余时间:</string>
@@ -121,6 +121,7 @@
 
     <string name="print_v2_package_edit_name">文件命名</string>
     <string name="ui_next">下一步</string>
+    <string name="send_file">发送文件</string>
 
     <string name="size_safety_tips">请确认激光工作区安全</string>
     <string name="size_safety_content">请务必佩戴护目镜并安装保护罩</string>

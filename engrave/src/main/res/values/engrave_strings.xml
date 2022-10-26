@@ -23,7 +23,7 @@
     <string name="engrave_continue">Resume</string>
     <string name="engrave_again">Repeat</string>
     <string name="print_v2_package_Laser_home">Back Home</string>
-    <string name="print_v2_package_size_setting">File Settings</string>
+    <string name="file_setting">File Settings</string>
     <string name="print_setting">Laser Settings</string>
 
     <string name="start_preview">Start Preview</string>
@@ -96,6 +96,7 @@
     <string name="ui_slip_menu_history">History Documents</string>
     <string name="ui_slip_menu_model">Mode Settings</string>
     <string name="ui_next">Next</string>
+    <string name="send_file">Send File</string>
 
     <string name="device_setting_act_model_warning_tone">Working Beep</string>
     <string name="device_setting_act_des_sound">Warning beep description: there will be a warning beep when starting and finishing work.</string>

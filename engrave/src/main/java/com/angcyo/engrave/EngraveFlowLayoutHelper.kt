@@ -106,7 +106,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     /**渲染传输数据配置界面*/
     fun renderTransferConfig() {
-        updateIViewTitle(_string(R.string.print_setting))
+        updateIViewTitle(_string(R.string.file_setting))
         engraveBackFlow = ENGRAVE_FLOW_PREVIEW
         showCloseView(true, _string(R.string.ui_back))
 
@@ -122,7 +122,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             EngraveDividerItem()()
             DslBlackButtonItem()() {
-                itemButtonText = _string(R.string.ui_next)
+                itemButtonText = _string(R.string.send_file)
                 itemClick = {
                     if (!checkItemThrowable() && !checkOverflowBounds()) {
                         //下一步, 数据传输界面
