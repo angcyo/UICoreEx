@@ -19,7 +19,8 @@ import com.angcyo.library.component.appBean
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.Device
-import com.angcyo.library.utils.logFilePath
+import com.angcyo.library.utils.logFileName
+import com.angcyo.library.utils.toLogFilePath
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import kotlin.math.max
@@ -75,7 +76,7 @@ class AppAnalyzeItem : DslAdapterItem() {
 
         //网络日志
         itemHolder.throttleClick(R.id.http_log_button) {
-            _loadFilePath = Constant.HTTP_FOLDER_NAME.logFilePath()
+            _loadFilePath = logFileName().toLogFilePath(Constant.HTTP_FOLDER_NAME)
 
             if (httpLog == null) {
                 runRx({

@@ -82,7 +82,7 @@ object LogHelper {
                 //itemTextGravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
                 itemText = "分享http日志"
                 itemClick = {
-                    Constant.HTTP_FOLDER_NAME.logFilePath().file().apply {
+                    logFileName().toLogFilePath(Constant.HTTP_FOLDER_NAME).file().apply {
                         uploadFileToGist("http.log", this)
                         shareFile(it.context, toast = true)
                     }

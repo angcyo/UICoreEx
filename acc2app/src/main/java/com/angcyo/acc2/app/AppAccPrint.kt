@@ -16,7 +16,8 @@ import com.angcyo.library.ex.des
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.wrapLog
 import com.angcyo.library.utils.FileUtils
-import com.angcyo.library.utils.logFilePath
+import com.angcyo.library.utils.logFileName
+import com.angcyo.library.utils.toLogFilePath
 
 /**
  *
@@ -34,7 +35,7 @@ class AppAccPrint(accControl: AccControl) : AccPrint(accControl) {
         var accLogFileName = "acc.log"
 
         /**catch的日志文件路径*/
-        fun logCatchPath() = accLogFolderName.logFilePath()
+        fun logCatchPath() = logFileName().toLogFilePath(accLogFolderName)
 
         /**acc的日志文件路径*/
         fun logPath() =
