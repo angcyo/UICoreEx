@@ -6,10 +6,7 @@ import android.os.Looper
 import android.view.View
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.laser.pecker.data.MeshShapeInfo
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasDiameterItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasDirectionItem2
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasSeekBarItem
-import com.angcyo.canvas.laser.pecker.dslitem.CanvasSwitchItem
+import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
@@ -330,7 +327,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
     /**渲染反色*/
     fun DslAdapter.renderInvertItem(key: String, defValue: Boolean = false) {
-        CanvasSwitchItem()() {
+        CanvasInvertSwitchItem()() {
             itemInfoText = _string(R.string.canvas_invert)
             initItem()
             property[key] = getBooleanOrDef(key, defValue)

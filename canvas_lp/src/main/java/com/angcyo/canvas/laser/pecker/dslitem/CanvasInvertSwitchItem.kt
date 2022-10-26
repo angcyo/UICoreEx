@@ -1,17 +1,20 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.canvas.laser.pecker.invertHelpDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.github.SwitchButton
-import com.angcyo.item.DslSwitchInfoItem
-import com.angcyo.library.ex._color
 import com.angcyo.widget.DslViewHolder
 
 /**
+ * 反色开关, 以及反色说明
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/05/16
+ * @since 2022/10/26
  */
-open class CanvasSwitchItem : DslSwitchInfoItem() {
+class CanvasInvertSwitchItem : CanvasSwitchItem() {
+
+    init {
+        itemLayoutId = R.layout.item_canvas_invert_switch_layout
+    }
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
@@ -21,13 +24,10 @@ open class CanvasSwitchItem : DslSwitchInfoItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.v<SwitchButton>(R.id.lib_switch_view)?.apply {
-            checkedColor = _color(R.color.canvas_primary)
+        //反色提示
+        itemHolder.click(R.id.invert_help_view) {
+            it.context.invertHelpDialog()
         }
-    }
-
-    override fun onItemChangeListener(item: DslAdapterItem) {
-        //super.onItemChangeListener(item)
     }
 
 }

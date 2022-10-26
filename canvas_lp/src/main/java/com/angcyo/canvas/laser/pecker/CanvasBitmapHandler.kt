@@ -13,13 +13,11 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.loadingAsync
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.library.ex.deleteSafe
-import com.angcyo.library.ex.rotate
-import com.angcyo.library.ex.setWidthHeight
-import com.angcyo.library.ex.toBase64Data
+import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.hingin.rn.image.ImageProcess
+import kotlin.io.readText
 
 /**
  * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
@@ -195,10 +193,14 @@ object CanvasBitmapHandler {
                                 CanvasRegulatePopupConfig2.KEY_BW_INVERT, item.dataBean.inverse
                             )
 
-                            OpenCV.bitmapToBlackWhite(
+                            /*OpenCV.bitmapToBlackWhite(
                                 bitmap,
                                 item.dataBean.blackThreshold.toInt(),
                                 if (item.dataBean.inverse) 1 else 0
+                            )*/
+                            bitmap.toBlackWhiteHandle(
+                                item.dataBean.blackThreshold.toInt(),
+                                item.dataBean.inverse
                             )
                         }
                     }) {
