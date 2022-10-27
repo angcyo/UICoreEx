@@ -283,70 +283,64 @@ object CanvasEditLayoutHelper {
 
     //region ---Group---
 
-    fun DslAdapter.renderGroupEditItems(renderer: SelectGroupRenderer) {
-        //
+    fun DslAdapter.renderGroupEditItems(fragment: AbsFragment, renderer: SelectGroupRenderer) {
+        //对齐
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_left_ico
-            itemText = _string(R.string.canvas_align_left)
-            itemRenderer = renderer
+            itemText = _string(R.string.canvas_align)
+            itemEnable = true
             itemClick = {
-                renderer.updateAlign(Gravity.LEFT)
-            }
-        }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_right_ico
-            itemText = _string(R.string.canvas_align_right)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.RIGHT)
-            }
-            drawCanvasRight()
-        }
+                fragment.context.menuPopupWindow(it) {
+                    renderAdapterAction = {
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_left_ico
+                            itemText = _string(R.string.canvas_align_left)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.LEFT
+                        }
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_right_ico
+                            itemText = _string(R.string.canvas_align_right)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.RIGHT
+                        }
 
-        //
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_top_ico
-            itemText = _string(R.string.canvas_align_top)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.TOP)
-            }
-        }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_bottom_ico
-            itemText = _string(R.string.canvas_align_bottom)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.BOTTOM)
-            }
-            drawCanvasRight()
-        }
+                        //
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_top_ico
+                            itemText = _string(R.string.canvas_align_top)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.TOP
+                        }
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_bottom_ico
+                            itemText = _string(R.string.canvas_align_bottom)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.BOTTOM
+                        }
 
-        //
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_horizontal_ico
-            itemText = _string(R.string.canvas_align_horizontal)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.CENTER_HORIZONTAL)
+                        //
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_horizontal_ico
+                            itemText = _string(R.string.canvas_align_horizontal)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.CENTER_HORIZONTAL
+                        }
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_vertical_ico
+                            itemText = _string(R.string.canvas_align_vertical)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.CENTER_VERTICAL
+                        }
+                        CanvasAlignItem()() {
+                            itemIco = R.drawable.canvas_align_center_ico
+                            itemText = _string(R.string.canvas_align_center)
+                            itemRenderer = renderer
+                            itemAlign = Gravity.CENTER
+                        }
+                    }
+                }
             }
-        }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_vertical_ico
-            itemText = _string(R.string.canvas_align_vertical)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.CENTER_VERTICAL)
-            }
-        }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_align_center_ico
-            itemText = _string(R.string.canvas_align_center)
-            itemRenderer = renderer
-            itemClick = {
-                renderer.updateAlign(Gravity.CENTER)
-            }
-            drawCanvasRight()
         }
     }
 

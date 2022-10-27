@@ -481,7 +481,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(itemRenderer)
                 }
             } else if (itemRenderer is SelectGroupRenderer) {
-                renderGroupEditItems(itemRenderer)
+                renderGroupEditItems(engraveCanvasFragment.fragment, itemRenderer)
             } else {
                 //vh.showControlLayout(false)
                 result = false
