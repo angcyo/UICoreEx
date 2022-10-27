@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
 import com.angcyo.bluetooth.fsc.laserpacker.data.toOldPxByte
 import com.angcyo.library.annotation.Implementation
+import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.trimAndPad
 
@@ -88,6 +89,8 @@ data class DataCmd(
          *
          * [minX] 图片的x,y坐标. px修正过后的数据
          * [name] 下位机用来显示的文件名, 真正的文件名. 最大36个字节, 再补充一个1字节0的数据
+         *
+         * 0x10时图片数据
          * */
         fun bitmapData(
             index: Int,
@@ -119,11 +122,13 @@ data class DataCmd(
                 write(index, 4)
 
                 write(dpi.toOldPxByte())
-                write(minX, 2)
-                write(minY, 2)
+                write(minX, 2) //d3
+                write(minY, 2) //d4
 
                 //dpi,占用2个字节
-                write(dpi.toDpiInt(), 2)
+                write(dpi.toDpiInt(), 2) //d5
+
+                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -159,6 +164,8 @@ data class DataCmd(
          * [y] GCode起始坐标, 相对于坐标原点
          * [width] GCode的宽度2字节
          * [height] GCode的高度2字节
+         *
+         * 0x20时为GCODE数据
          * */
         fun gcodeData(
             index: Int,
@@ -204,7 +211,9 @@ data class DataCmd(
                 write(y and 0xff) //低8位
 
                 //dpi,占用2个字节
-                write(dpi.toDpiInt(), 2)
+                write(dpi.toDpiInt(), 2) //d5
+
+                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -240,6 +249,8 @@ data class DataCmd(
          * [lines] 路径的线段数量
          * [x] [y] 图片的起始坐标, 相对于坐标原点, 2字节
          * [width] [height] 图片的宽高, 2字节
+         *
+         * 0x40时为图片路径数据
          * */
         fun bitmapPathData(
             index: Int,
@@ -274,7 +285,9 @@ data class DataCmd(
                 write(y, 2)
 
                 //dpi,占用2个字节
-                write(dpi.toDpiInt(), 2)
+                write(dpi.toDpiInt(), 2) //d5
+
+                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 /*以下是0x30数据
                 //线段数 低16位
@@ -322,6 +335,8 @@ data class DataCmd(
          * [name] 文件名
          * [x] [y] 图片的起始坐标, 相对于坐标原点, 2字节
          * [width] [height] 图片的宽高, 2字节
+         *
+         * 0x60时为图片抖动数据
          * */
         fun bitmapDitheringData(
             index: Int,
@@ -352,7 +367,9 @@ data class DataCmd(
                 write(y, 2)
 
                 //dpi,占用2个字节
-                write(dpi.toDpiInt(), 2)
+                write(dpi.toDpiInt(), 2) //d5
+
+                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
