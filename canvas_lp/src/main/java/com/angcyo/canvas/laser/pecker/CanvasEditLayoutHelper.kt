@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker
 import android.graphics.Paint
 import android.view.Gravity
 import android.widget.LinearLayout
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
@@ -11,6 +12,7 @@ import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.DslAdapter
@@ -344,6 +346,7 @@ object CanvasEditLayoutHelper {
             itemClick = {
                 renderer.updateAlign(Gravity.CENTER)
             }
+            drawCanvasRight()
         }
     }
 
@@ -356,6 +359,19 @@ object CanvasEditLayoutHelper {
         fragment: AbsFragment,
         renderer: BaseItemRenderer<*>?
     ) {
+        vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds?.let { bounds ->
+            //设备居中
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_align_center_ico
+                itemText = _string(R.string.canvas_bounds_center)
+                itemRenderer = renderer
+                itemClick = {
+                    renderer?.alignInBounds(bounds)
+                }
+                drawCanvasRight()
+            }
+        }
+
         //坐标编辑
         CanvasEditControlItem()() {
             itemRenderer = renderer
