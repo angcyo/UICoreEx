@@ -288,7 +288,7 @@ object CanvasEditLayoutHelper {
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_left_ico
             itemText = _string(R.string.canvas_align)
-            itemEnable = true
+            itemEnable = renderer.selectItemList.size >= 2//2个以上的元素才支持对齐
             itemClick = {
                 fragment.context.menuPopupWindow(it) {
                     renderAdapterAction = {
@@ -337,6 +337,31 @@ object CanvasEditLayoutHelper {
                             itemText = _string(R.string.canvas_align_center)
                             itemRenderer = renderer
                             itemAlign = Gravity.CENTER
+                        }
+                    }
+                }
+            }
+        }
+
+        //分布
+        CanvasControlItem2()() {
+            itemIco = R.drawable.canvas_flat_horizontal_svg
+            itemText = _string(R.string.canvas_flat)
+            itemEnable = renderer.selectItemList.size >= 3//3个以上的元素才支持分布
+            itemClick = {
+                fragment.context.menuPopupWindow(it) {
+                    renderAdapterAction = {
+                        CanvasFlatItem()() {
+                            itemIco = R.drawable.canvas_flat_horizontal_svg
+                            itemText = _string(R.string.canvas_flat_horizontal)
+                            itemRenderer = renderer
+                            itemFlat = LinearLayout.HORIZONTAL
+                        }
+                        CanvasFlatItem()() {
+                            itemIco = R.drawable.canvas_flat_vertical_svg
+                            itemText = _string(R.string.canvas_flat_vertical)
+                            itemRenderer = renderer
+                            itemFlat = LinearLayout.VERTICAL
                         }
                     }
                 }
