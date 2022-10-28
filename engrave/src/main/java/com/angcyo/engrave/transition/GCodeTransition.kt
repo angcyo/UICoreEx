@@ -12,6 +12,7 @@ import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_GCODE
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
@@ -46,8 +47,17 @@ class GCodeTransition : IEngraveTransition {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
         if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
+
             //需要处理成GCode数据
-            if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
+            if (dataBean?.mtype == DATA_TYPE_GCODE && !dataBean.data.isNullOrEmpty()) {
+                //如果是原始的GCode数据
+                return _transitionGCodeTransferData(
+                    engraveProvider,
+                    transferConfigEntity,
+                    dataBean.data!!,
+                    param
+                )
+            } else if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
                 //线条转GCode使用图片的方式
                 val bitmap = engraveProvider.getEngraveBitmap()
                 bitmap?.let {
@@ -65,7 +75,7 @@ class GCodeTransition : IEngraveTransition {
                     transferConfigEntity,
                     pathList,
                     param
-                )
+                )//这种方式生成的GCode,会丢失原先G2,G3指令
             } else if (dataItem is DataBitmapItem && dataItem.gCodeDrawable != null) {
                 //图片元素, 路径转GCode算法
                 val gCodeDrawable = dataItem.gCodeDrawable
@@ -112,6 +122,36 @@ class GCodeTransition : IEngraveTransition {
             writeLast = isFinish,
             autoCnc = autoCnc
         )
+        return _handleGCodeTransferDataEntity(
+            engraveProvider,
+            transferConfigEntity,
+            gCodeFile
+        ).apply {
+            //1: 存一份原始可视化数据
+            val bitmap = engraveProvider.getEngraveBitmap()
+            saveEngraveData("$index", bitmap, "png")
+        }
+    }
+
+    /**GCode原始数据旋转/缩放*/
+    @Private
+    fun _transitionGCodeTransferData(
+        engraveProvider: IEngraveProvider,
+        transferConfigEntity: TransferConfigEntity,
+        gcode: String,
+        param: TransitionParam?
+    ): TransferDataEntity {
+        val renderer = engraveProvider.getEngraveRenderer()
+        val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
+        val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
+
+        val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
+            gcode,
+            engraveProvider.getEngraveBounds(),
+            engraveProvider._rotate
+        )
+
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
