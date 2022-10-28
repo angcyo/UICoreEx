@@ -1,12 +1,12 @@
 <resources>
-    <string name="blue_disconnecting">正在断开...</string>
-    <string name="canvas_operate">操作</string>
-    <string name="laser_type">激光光源</string>
-    <string name="object_diameter">物体直径</string>
+    <string name="blue_disconnecting">Disconnecting...</string>
+    <string name="canvas_operate">Operate</string>
+    <string name="laser_type">Laser source</string>
+    <string name="object_diameter">Diameter</string>
 
     <string name="blue_no_device_connected">Unconnected device</string>
     <string name="device_ex_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
-    <string name="engrave_ex_discontent_tips">检查到第三轴配件未连接，是否继续?</string>
+    <string name="engrave_ex_discontent_tips">Check that the third shaft fitting is not connected. Do you want to continue?</string>
 
     <string name="print_v2_package_preview_over">Quit Preview</string>
     <string name="start_engrave">Start</string>
@@ -110,15 +110,15 @@
     <string name="device_setting_tips_fourteen_3">Support the parameter setting of engraving scene
         on the surface of regular cuboid and cylinder objects (size limit: the width of cuboid is
         within 100mm, the length is within 5m, and the circumference of cylinder cross section is within 5m)</string>
-    <string name="device_ex_r_label">旋转轴</string>
+    <string name="device_ex_r_label">Rotation axis</string>
     <string name="device_ex_r_des">--</string>
-    <string name="device_ex_s_label">滑台</string>
+    <string name="device_ex_s_label">Slide</string>
     <string name="device_ex_s_des">--</string>
-    <string name="device_ex_direction_label">正转</string>
-    <string name="device_ex_direction_des">旋转轴/滑台 正转或者反转</string>
-    <string name="device_direction_forward">正转</string>
-    <string name="device_direction_reversal">反转</string>
-    <string name="device_s_batch_engrave_label">滑台多文件雕刻模式</string>
+    <string name="device_ex_direction_label">Forward</string>
+    <string name="device_ex_direction_des">The rotary shaft sliding table is turning or reversing</string>
+    <string name="device_direction_forward">Forward</string>
+    <string name="device_direction_reversal">Reverse</string>
+    <string name="device_s_batch_engrave_label">Slide table multi-file carving mode</string>
     <string name="device_s_batch_engrave_des">--</string>
     <string name="device_setting_txt_3">Touch Buttons</string>
     <string name="device_setting_txt_4">This switch controls the enabling and disabling of preview and stop touch buttons on the main unit</string>
@@ -138,48 +138,48 @@
 
     <string name="ui_finish">Finish</string>
     <string name="ui_setting">Settings</string>
-    <string name="device_not_found">找不到你的设备</string>
-    <string name="device_not_found_des">请确保你的机器在待连接状态</string>
-    <string name="contact_me">联系客服</string>
-    <string name="ui_quit">退出</string>
+    <string name="device_not_found">Device not Found</string>
+    <string name="device_not_found_des">Please make sure your machine is in the waiting state</string>
+    <string name="contact_me">Contact customer</string>
+    <string name="ui_quit">Quit</string>
 
-    <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
-    <string name="bracket_height_label">升降高度</string>
-    <string name="bracket_not_connect">支架未连接</string>
+    <string name="preview_drag_tip">Drag the element position in the red border to achieve the dynamic preview effect of the laser projection box</string>
+    <string name="bracket_height_label">Lifting height</string>
+    <string name="bracket_not_connect">Support is not connected</string>
 
-    <string name="range_preview">范围预览</string>
-    <string name="center_preview">显示中心点</string>
-    <string name="pause_preview">暂停滚动预览</string>
-    <string name="continue_preview">继续滚动预览</string>
-    <string name="preview_parameter_setting">参数设置</string>
-    <string name="filename_hint">最多输入28个字节</string>
-    <string name="stop_transfer">结束传输</string>
-    <string name="engrave_tip">请勿在高反光材质上雕刻</string>
-    <string name="engrave_layer_config">雕刻图层</string>
-    <string name="engrave_layer_bitmap">图片</string>
-    <string name="engrave_layer_fill">填充</string>
-    <string name="engrave_layer_line">线条</string>
-    <string name="back_creation">返回创作</string>
-    <string name="progress">进度</string>
-    <string name="share_community">分享到社区</string>
-    <string name="canvas_normal_layer">正常图层</string>
-    <string name="canvas_engrave_layer">雕刻图层</string>
-    <string name="canvas_rename">重命名</string>
-    <string name="retry">retry</string>
-    <string name="data_exception">数据传输失败</string>
+    <string name="range_preview">Scope preview</string>
+    <string name="center_preview">Display center point</string>
+    <string name="pause_preview">Pause Scroll preview</string>
+    <string name="continue_preview">Continue Scroll preview</string>
+    <string name="preview_parameter_setting">Parameter Settings</string>
+    <string name="filename_hint">A maximum of 28 bytes can be entered</string>
+    <string name="stop_transfer">End transmission</string>
+    <string name="engrave_tip">Do not carve on highly reflective materials</string>
+    <string name="engrave_layer_config">Carving layer</string>
+    <string name="engrave_layer_bitmap">Picture</string>
+    <string name="engrave_layer_fill">Fill</string>
+    <string name="engrave_layer_line">Line</string>
+    <string name="back_creation">Returns creation</string>
+    <string name="progress">Progress</string>
+    <string name="share_community">Share community</string>
+    <string name="canvas_normal_layer">Normal layer</string>
+    <string name="canvas_engrave_layer">Carving layer</string>
+    <string name="canvas_rename">Rename</string>
+    <string name="retry">Retry</string>
+    <string name="data_exception">Data transmission failure</string>
 
     <string name="select_device">Select Device</string>
     <string name="start_update">Start Update</string>
     <string name="firmware_upgrade">Firmware Upgrade</string>
 
-    <string name="engrave_warn">警告</string>
-    <string name="engrave_bounds_warn">元素超出雕刻区域</string>
-    <string name="engrave_overflow_bounds_message">超出区域无法雕刻，请将元素拖入调整到红色边框内</string>
-    <string name="engrave_perimeter">周长</string>
+    <string name="engrave_warn">Warning</string>
+    <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
+    <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
+    <string name="engrave_perimeter">Perimeter</string>
 
-    <string name="device_engrave_ing_title">当前设备正在工作中</string>
-    <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
+    <string name="device_engrave_ing_title">The current device is working</string>
+    <string name="device_engrave_ing_des">Do you want to end the sculpting task?</string>
 
-    <string name="focal_distance_tip">请确认焦距</string>
+    <string name="focal_distance_tip">Please confirm the focal length</string>
 
 </resources>

@@ -100,7 +100,7 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
             //GCode预览
             if (productInfo?.isCI() == true) {
-                //C1不支持矢量雕刻
+                //C1不支持矢量预览
             } else {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
@@ -206,21 +206,18 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            if (productInfo?.isCI() == true) {
+            DslPropertySwitchItem()() {
+                itemLabel = _string(R.string.device_ex_direction_label)
+                itemDes = _string(R.string.device_ex_direction_des)
+                initItem()
 
-            } else {
-                DslPropertySwitchItem()() {
-                    itemLabel = _string(R.string.device_ex_direction_label)
-                    itemDes = _string(R.string.device_ex_direction_des)
-                    initItem()
-
-                    itemSwitchChecked = settingParser?.dir == 1
-                    itemSwitchChangedAction = {
-                        settingParser?.dir = if (it) 1 else 0
-                        settingParser?.updateSetting()
-                    }
+                itemSwitchChecked = settingParser?.dir == 1
+                itemSwitchChangedAction = {
+                    settingParser?.dir = if (it) 1 else 0
+                    settingParser?.updateSetting()
                 }
             }
+
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_txt_3)
                 itemDes = _string(R.string.device_setting_txt_4)
