@@ -22,11 +22,14 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.kabeja.library.Dxf
+import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppIcon
+import com.angcyo.library.libCacheFile
 import com.angcyo.putData
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -77,8 +80,17 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     }
 
     /**处理文件路径*/
-    fun handleFilePath(adapter: DslAdapter?, path: String): Boolean {
+    @ThreadDes("耗时方法, 请在子线程中调用")
+    fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
+        var path = filePath
+        if (path.endsWith(CanvasConstant.DXF_EXT)) {
+            //dxf文件, 将dxf转成svg文件
+            val svgFile = libCacheFile("${filePath.lastName().noExtName()}.svg")
+            path = svgFile.absolutePath
+            Dxf.parse(filePath, path)
+        }
+        //
         if (path.endsWith(CanvasConstant.PROJECT_EXT)) {
             //工程文件
             val text = path.file().readText()
