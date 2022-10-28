@@ -387,14 +387,7 @@ object CanvasEditLayoutHelper {
                 itemClick = {
                     renderer?.alignInBounds(bounds)
                 }
-                drawCanvasRight()
             }
-        }
-
-        //坐标编辑
-        CanvasEditControlItem()() {
-            itemRenderer = renderer
-            itemCanvasDelegate = canvasView.canvasDelegate
         }
 
         //图层排序
@@ -402,6 +395,7 @@ object CanvasEditLayoutHelper {
             itemIco = R.drawable.canvas_layer_sort
             itemText = _string(R.string.canvas_sort)
             itemEnable = true
+            drawCanvasRight()
             itemClick = {
                 fragment.context.menuPopupWindow(it) {
                     renderAdapterAction = {
@@ -429,6 +423,12 @@ object CanvasEditLayoutHelper {
                     }
                 }
             }
+        }
+
+        //坐标编辑
+        CanvasEditControlItem()() {
+            itemRenderer = renderer
+            itemCanvasDelegate = canvasView.canvasDelegate
         }
     }
 
