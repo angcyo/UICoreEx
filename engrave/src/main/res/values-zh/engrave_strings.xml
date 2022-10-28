@@ -129,6 +129,7 @@
     <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
     <string name="print_stop">确定要结束镭雕吗？</string>
 
+    <string name="ui_quit">退出</string>
     <string name="ui_finish">完成</string>
     <string name="ui_setting">设置</string>
     <string name="device_not_found">找不到你的设备</string>
@@ -169,5 +170,6 @@
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
 
     <string name="focal_distance_tip">请确认焦距</string>
+    <string name="engrave_warn">警告</string>
 
 </resources>
