@@ -267,7 +267,8 @@ object LaserPeckerHelper {
         }
 
         //bounds
-        val left = mmValueUnit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f)
+        val left =
+            mmValueUnit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f)
         val top = mmValueUnit.convertValueToPixel(if (isOriginCenter) -hPhys / 2f else 0f)
         val right =
             mmValueUnit.convertValueToPixel(if (isOriginCenter) wPhys / 2f else wPhys.toFloat())
@@ -392,16 +393,16 @@ object LaserPeckerHelper {
 
     /**保持有效宽高下,  4个角用曲线连接*/
     fun maxOvalPath(left: Float, top: Float, right: Float, bottom: Float, path: Path) {
-        val left = left.floor()
-        val top = top.floor()
-        val right = right.ceil()
-        val bottom = bottom.ceil()
+        val l = left.floor()
+        val t = top.floor()
+        val r = right.ceil()
+        val b = bottom.ceil()
 
-        val width = right - left
-        val height = bottom - top
+        val width = r - l
+        val height = b - t
 
-        val centerX = (left + right) / 2
-        val centerY = (top + bottom) / 2
+        val centerX = (l + r) / 2
+        val centerY = (t + b) / 2
 
         //一定能雕刻上的有效宽高, 在中心位置
         val validWidth = width * 2 / 3
@@ -409,53 +410,53 @@ object LaserPeckerHelper {
 
         //底部左右2边的点
         val blX = centerX - validWidth / 2
-        val blY = bottom
+        val blY = b
 
         val brX = centerX + validWidth / 2
-        val brY = bottom
+        val brY = b
 
         //顶部左右2边的点
         val tlX = centerX - validWidth / 2
-        val tlY = top
+        val tlY = t
 
         val trX = centerX + validWidth / 2
-        val trY = top
+        val trY = t
 
         //左边的2个点
-        val ltX = left
+        val ltX = l
         val ltY = centerY - validHeight / 2
 
-        val lbX = left
+        val lbX = l
         val lbY = centerY + validHeight / 2
 
         //右边的2个点
-        val rtX = right
+        val rtX = r
         val rtY = centerY - validHeight / 2
 
-        val rbX = right
+        val rbX = r
         val rbY = centerY + validHeight / 2
 
         //
         path.rewind()
 
         path.moveTo(blX, blY)
-        val lbcX = left
-        val lbcY = bottom
+        val lbcX = l
+        val lbcY = b
         path.quadTo(lbcX, lbcY, lbX, lbY)
 
         path.lineTo(ltX, ltY)
-        val ltcX = left
-        val ltcY = top
+        val ltcX = l
+        val ltcY = t
         path.quadTo(ltcX, ltcY, tlX, tlY)
 
         path.lineTo(trX, trY)
-        val rtcX = right
-        val rtcY = top
+        val rtcX = r
+        val rtcY = t
         path.quadTo(rtcX, rtcY, rtX, rtY)
 
         path.lineTo(rbX, rbY)
-        val rbcX = right
-        val rbcY = bottom
+        val rbcX = r
+        val rbcY = b
         path.quadTo(rbcX, rbcY, brX, brY)
 
         path.lineTo(blX, blY)

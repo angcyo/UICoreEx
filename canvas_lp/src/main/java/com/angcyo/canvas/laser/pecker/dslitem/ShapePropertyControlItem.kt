@@ -140,7 +140,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = clamp(
-                        valueUit.convertValueToPixel(number),
+                        valueUit.convertValueToPixel(number).toFloat(),
                         SHAPE_MIN_CORNER,
                         SHAPE_MAX_CORNER
                     ) //pixel

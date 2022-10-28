@@ -24,6 +24,12 @@ abstract class BaseDiameterItem : DslAdapterItem() {
 
         /**周长转直径*/
         fun Float.toDiameter(): Float = (this / Math.PI).toFloat()
+
+        /**直径转周长*/
+        fun Double.toPerimeter(): Double = Math.PI * this
+
+        /**周长转直径*/
+        fun Double.toDiameter(): Double = this / Math.PI
     }
 
     /**直径的label*/
