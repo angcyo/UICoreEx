@@ -35,7 +35,8 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
     init {
         contentLayoutId = R.layout.canvas_setting_layout
         triangleMinMargin = 24 * dpi
-        yoff = -10 * dpi
+        //yoff = -10 * dpi
+        offsetY = -10 * dpi
     }
 
     override fun initContentLayout(window: TargetWindow, viewHolder: DslViewHolder) {
