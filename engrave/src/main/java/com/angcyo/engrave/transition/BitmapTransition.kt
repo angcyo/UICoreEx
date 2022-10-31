@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.graphics.IEngraveProvider
@@ -17,6 +18,7 @@ import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveDat
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
+import com.angcyo.library.ex.toGrayInt
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import kotlin.experimental.or
@@ -35,12 +37,17 @@ class BitmapTransition : IEngraveTransition {
          *
          * [offsetLeft] 坐标偏移量
          * [offsetTop] 坐标偏移量
+         *
+         * [orientation] 像素扫描的方向
+         *
+         * [Bitmap.eachPixel]
          * */
         fun handleBitmapPath(
             bitmap: Bitmap,
             threshold: Int,
             offsetLeft: Int = 0,
-            offsetTop: Int = 0
+            offsetTop: Int = 0,
+            orientation: Int = LinearLayout.HORIZONTAL
         ): List<BitmapPath> {
             val result = mutableListOf<BitmapPath>()
 
@@ -59,31 +66,52 @@ class BitmapTransition : IEngraveTransition {
                 }
             }
 
+            //判断色值
+            fun handleColor(x: Int, y: Int, color: Int, ltr: Boolean) {
+                val gray = color.toGrayInt()
+                if (gray <= threshold && color != Color.TRANSPARENT) {
+                    //00, 黑色纸上雕刻, 金属不雕刻
+                    if (lastBitmapPath == null) {
+                        lastBitmapPath =
+                            BitmapPath(x + offsetLeft, y + offsetTop, 0, ltr, orientation)
+                    }
+                    lastBitmapPath?.apply {
+                        len++
+                    }
+                } else {
+                    appendPath(!ltr, false)
+                }
+            }
+
             val width = bitmap.width
             val height = bitmap.height
 
-            for (y in 0 until height) {
-                val ltr = isLTR
+            if (orientation == LinearLayout.VERTICAL) {
+                //纵向枚举, 从左往右, 从上到下
                 for (x in 0 until width) {
-                    //一行
-                    val wIndex = if (ltr) x else width - x - 1
-                    val color = bitmap.getPixel(wIndex, y)
-                    val channelColor = Color.red(color)
-
-                    if (channelColor <= threshold && color != Color.TRANSPARENT) {
-                        //00, 黑色纸上雕刻, 金属不雕刻
-                        if (lastBitmapPath == null) {
-                            lastBitmapPath = BitmapPath(wIndex + offsetLeft, y + offsetTop, 0, ltr)
-                        }
-                        lastBitmapPath?.apply {
-                            len++
-                        }
-                    } else {
-                        appendPath(!ltr, false)
+                    val ltr = isLTR
+                    for (y in 0 until height) {
+                        //一列
+                        val hIndex = if (ltr) y else height - y - 1
+                        val color = bitmap.getPixel(x, hIndex)
+                        handleColor(x, hIndex, color, ltr)
                     }
+                    //收尾
+                    appendPath(!ltr, true)
                 }
-                //收尾
-                appendPath(!ltr, true)
+            } else {
+                //横向枚举, 从上往下, 从左到右
+                for (y in 0 until height) {
+                    val ltr = isLTR
+                    for (x in 0 until width) {
+                        //一行
+                        val wIndex = if (ltr) x else width - x - 1
+                        val color = bitmap.getPixel(wIndex, y)
+                        handleColor(wIndex, y, color, ltr)
+                    }
+                    //收尾
+                    appendPath(!ltr, true)
+                }
             }
             return result
         }
@@ -107,25 +135,47 @@ class BitmapTransition : IEngraveTransition {
                 strokeCap = Paint.Cap.ROUND
             }
             forEach { bp ->
-                val y: Float = bp.y.toFloat()
-                val left: Float
-                val right: Float
-                if (bp.ltr) {
-                    //左到右
-                    left = bp.x.toFloat()
-                    right = left + bp.len
+                if (bp.orientation == LinearLayout.VERTICAL) {
+                    val x: Float = bp.x.toFloat()
+                    val top: Float
+                    val bottom: Float
+                    if (bp.ltr) {
+                        //上到下
+                        top = bp.y.toFloat()
+                        bottom = top + bp.len
+                    } else {
+                        //下到上
+                        bottom = bp.y.toFloat()
+                        top = bottom - bp.len
+                    }
+                    canvas.drawLine(
+                        x - offsetLeft,
+                        top - offsetTop,
+                        x - offsetLeft,
+                        bottom - offsetTop,
+                        paint
+                    )
                 } else {
-                    //右到左
-                    right = bp.x.toFloat()
-                    left = right - bp.len
+                    val y: Float = bp.y.toFloat()
+                    val left: Float
+                    val right: Float
+                    if (bp.ltr) {
+                        //左到右
+                        left = bp.x.toFloat()
+                        right = left + bp.len
+                    } else {
+                        //右到左
+                        right = bp.x.toFloat()
+                        left = right - bp.len
+                    }
+                    canvas.drawLine(
+                        left - offsetLeft,
+                        y - offsetTop,
+                        right - offsetLeft,
+                        y - offsetTop,
+                        paint
+                    )
                 }
-                canvas.drawLine(
-                    left - offsetLeft,
-                    y - offsetTop,
-                    right - offsetLeft,
-                    y - offsetTop,
-                    paint
-                )
             }
             return result
         }
@@ -254,7 +304,7 @@ class BitmapTransition : IEngraveTransition {
                             pxBitmap,
                             128,
                             offsetLeft,
-                            offsetTop
+                            offsetTop,
                         )
                         //
                         val bytes = byteWriter {

@@ -57,54 +57,64 @@ class TransferModel : ViewModel() {
                 return null
             }
 
+            val index = transferDataEntity.index
+            val x = transferDataEntity.x
+            val y = transferDataEntity.y
+            val width = transferDataEntity.width
+            val height = transferDataEntity.height
+            val dpi = transferDataEntity.dpi
+            val name = transferDataEntity.name
+
+            val lines = transferDataEntity.lines
+
             //数据类型封装
             val dataCmd: DataCmd = when (transferDataEntity.engraveDataType) {
                 //0x10 图片数据
                 DataCmd.ENGRAVE_TYPE_BITMAP -> DataCmd.bitmapData(
-                    transferDataEntity.index,
-                    transferDataEntity.x,
-                    transferDataEntity.y,
-                    transferDataEntity.width,
-                    transferDataEntity.height,
-                    transferDataEntity.dpi,
-                    transferDataEntity.name,
-                    bytes,
+                    index,
+                    x,
+                    y,
+                    width,
+                    height,
+                    dpi,
+                    name,
+                    bytes
                 )
                 //0x20 GCode数据
                 DataCmd.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
-                    transferDataEntity.index,
-                    transferDataEntity.x,
-                    transferDataEntity.y,
-                    transferDataEntity.width,
-                    transferDataEntity.height,
-                    transferDataEntity.name,
-                    transferDataEntity.lines,
+                    index,
+                    x,
+                    y,
+                    width,
+                    height,
+                    name,
+                    lines,
                     bytes,
-                    transferDataEntity.dpi
+                    dpi
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
-                    transferDataEntity.index,
-                    transferDataEntity.x,
-                    transferDataEntity.y,
-                    transferDataEntity.width,
-                    transferDataEntity.height,
-                    transferDataEntity.name,
-                    transferDataEntity.lines,
+                    index,
+                    x,
+                    y,
+                    width,
+                    height,
+                    name,
+                    lines,
                     bytes,
-                    transferDataEntity.dpi,
+                    dpi,
                 )
                 //0x60 抖动数据, 二进制位
                 //DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ->
                 else -> DataCmd.bitmapDitheringData(
-                    transferDataEntity.index,
-                    transferDataEntity.x,
-                    transferDataEntity.y,
-                    transferDataEntity.width,
-                    transferDataEntity.height,
-                    transferDataEntity.name,
+                    index,
+                    x,
+                    y,
+                    width,
+                    height,
+                    name,
                     bytes,
-                    transferDataEntity.dpi,
+                    dpi,
                 )
             }
             return dataCmd
