@@ -175,7 +175,7 @@
     <string name="engrave_warn">Warning</string>
     <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
     <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
-    <string name="engrave_perimeter">Perimeter</string>
+    <string name="engrave_perimeter">P</string>
 
     <string name="device_engrave_ing_title">The current device is working</string>
     <string name="device_engrave_ing_des">Do you want to end the sculpting task?</string>
