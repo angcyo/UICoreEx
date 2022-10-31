@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.data.TransferState
@@ -124,7 +125,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.send_file)
                 itemClick = {
-                    if (!checkItemThrowable() && !checkOverflowBounds()) {
+                    if (!checkItemThrowable() && !checkOverflowBounds() && checkTransferData()) {
                         //下一步, 数据传输界面
 
                         transferConfigEntity.lpSaveEntity()
@@ -160,13 +161,41 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         }
 
         if (result) {
-            engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+            val fContext = engraveCanvasFragment?.fragment?.fContext()
+            fContext?.messageDialog {
                 dialogTitle = _string(R.string.engrave_warn)
                 dialogMessage = _string(R.string.engrave_overflow_bounds_message)
             }
         }
 
         return result
+    }
+
+    /**检查传输的数据是否合法
+     *
+     * @return true 数据合法, 允许雕刻*/
+    fun checkTransferData(): Boolean {
+        val isC1 = laserPeckerModel.productInfoData.value?.isCI() == true
+        val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+        if (canvasDelegate != null && isC1 && laserPeckerModel.isZOpen()) {
+            //C1的第三轴模式下, 不允许雕刻GCode数据
+            val gCodeLayer =
+                EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+            if (gCodeLayer != null) {
+                val rendererList =
+                    EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
+                if (rendererList.isNotEmpty()) {
+                    //不允许雕刻GCode
+                    val fContext = engraveCanvasFragment?.fragment?.fContext()
+                    fContext?.messageDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
+                    }
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     //endregion ---数据配置---
