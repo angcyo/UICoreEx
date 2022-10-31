@@ -77,7 +77,7 @@
     <string name="resolution_ratio">Resolution</string>
 
     <string name="tips_fourteen_12">Time</string>
-    <string name="laser_brightness">Brightness of laser beam</string>
+    <string name="laser_brightness">Brightness</string>
     <string name="v4_bmp_edit_tips">Image data processing, please wait</string>
 
     <string name="work_time">Processing Time</string>
