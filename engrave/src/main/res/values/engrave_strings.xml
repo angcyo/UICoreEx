@@ -12,7 +12,7 @@
     <string name="start_engrave">Start</string>
     <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
     <string name="previewing">In preview …</string>
-    <string name="print_v2_package_edit_name">File Naming</string>
+    <string name="engrave_file_name">Filename</string>
     <string name="transmitting">File in transit</string>
     <string name="engraving">Laser engraving</string>
     <string name="print_v2_package_print_state">Paused</string>
@@ -80,7 +80,7 @@
     <string name="laser_brightness">Brightness</string>
     <string name="v4_bmp_edit_tips">Image data processing, please wait</string>
 
-    <string name="work_time">Processing Time</string>
+    <string name="work_time">Duration</string>
     <string name="print_times">Pass</string>
     <string name="blue_disconnected">BLE disconnect</string>
     <string name="blue_connected">BLE connected</string>
@@ -129,7 +129,7 @@
     <string name="device_setting_blue_connect_auto">Automatic Bluetooth Connection</string>
     <string name="preview_scroll_continue">Scroll Preview</string>
     <string name="preview_scroll_pause">Pause Scroll</string>
-    <string name="engrave_speed">Engrave Speed</string>
+    <string name="engrave_speed">Velocity</string>
     <string name="engrave_precision">Precision</string>
 
     <string name="size_safety_tips">Please verify that the laser workspace is secure</string>
@@ -159,9 +159,9 @@
     <string name="engrave_layer_bitmap">Picture</string>
     <string name="engrave_layer_fill">Fill</string>
     <string name="engrave_layer_line">Line</string>
-    <string name="back_creation">Returns creation</string>
+    <string name="back_creation">Creation</string>
     <string name="progress">Progress</string>
-    <string name="share_community">Share community</string>
+    <string name="share_community">Share</string>
     <string name="canvas_normal_layer">Normal layer</string>
     <string name="canvas_engrave_layer">Carving layer</string>
     <string name="canvas_rename">Rename</string>
