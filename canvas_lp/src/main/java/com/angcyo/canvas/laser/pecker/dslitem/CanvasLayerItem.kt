@@ -45,14 +45,17 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
             if (itemRenderer is DataItemRenderer) {
                 it.context.inputDialog {
                     dialogTitle = _string(R.string.canvas_rename)
-                    defaultInputString =
-                        (itemRenderer as? DataItemRenderer)?.dataItem?.dataBean?.name
+                    maxInputLength = 10
+                    defaultInputString = itemItemName
                     onInputResult = { dialog, inputText ->
-                        (itemRenderer as? DataItemRenderer)?.dataItem?.dataBean?.name =
-                            "$inputText"
+                        (itemRenderer as? DataItemRenderer)?.dataItem?.apply {
+                            dataBean.name = "$inputText"
+                            itemLayerName = dataBean.name
+                        }
                         itemRenderer?.let {
                             itemCanvasDelegate?.dispatchItemVisibleChanged(it, it.isVisible())
                         }
+                        updateAdapterItem()
                         false
                     }
                 }
