@@ -114,6 +114,8 @@
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">Slide</string>
     <string name="device_ex_s_des">--</string>
+    <string name="device_ex_car_label">Mobile platform</string>
+    <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Forward</string>
     <string name="device_ex_direction_des">The rotary shaft sliding table is turning or reversing</string>
     <string name="device_direction_forward">Forward</string>

@@ -53,6 +53,8 @@ data class QuerySettingParser(
     var safeCode: Int = 0,
     //Admin：为用户帐号占用40
     var admin: Int = 0,
+    //CAR_flag：C1小车, 移动平台模式开关，0为关，1为开。
+    var carFlag: Int = 0,
 ) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
@@ -84,6 +86,7 @@ data class QuerySettingParser(
                 dir = readInt(1)
                 gcodePower = readInt(1)
                 sRep = readInt(1)
+                carFlag = readInt(1)
                 state = readInt(1)
             }
             this
@@ -138,6 +141,7 @@ data class QuerySettingParser(
                 append(dir.toHexString())
                 append(gcodePower.toHexString())
                 append(sRep.toHexString())
+                append(carFlag.toHexString())
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和
@@ -162,9 +166,11 @@ data class QuerySettingParser(
 
     /**清理设备标识*/
     fun clearFlag() {
+        //互斥标识
         zFlag = 0
         rFlag = 0
         sFlag = 0
         sRep = 0
+        carFlag = 0
     }
 }

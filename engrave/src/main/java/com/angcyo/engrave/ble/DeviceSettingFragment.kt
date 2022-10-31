@@ -23,6 +23,7 @@ import com.angcyo.item.style.*
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.utils.FileUtils
+import kotlin.math.max
 
 
 /**
@@ -63,6 +64,7 @@ class DeviceSettingFragment : BaseDslFragment() {
         settingParser?.functionSetting()
 
         val productInfo = laserPeckerModel.productInfoData.value
+        val isC1 = productInfo?.isCI() == true
 
         renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
@@ -99,7 +101,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //GCode预览
-            if (productInfo?.isCI() == true) {
+            if (isC1) {
                 //C1不支持矢量预览
             } else {
                 DslPropertySwitchItem()() {
@@ -132,14 +134,23 @@ class DeviceSettingFragment : BaseDslFragment() {
                 initItem()
 
                 //平板 //小车 //圆柱
-                itemSegmentList = listOf(
-                    _string(R.string.device_setting_tips_fourteen_8),
-                    _string(R.string.device_setting_tips_fourteen_9),
-                    _string(R.string.device_setting_tips_fourteen_10)
-                )
+                if (isC1) {
+                    //C1没有小车模式
+                    itemSegmentList = listOf(
+                        _string(R.string.device_setting_tips_fourteen_8),
+                        _string(R.string.device_setting_tips_fourteen_10)
+                    )
+                } else {
+                    itemSegmentList = listOf(
+                        _string(R.string.device_setting_tips_fourteen_8),
+                        _string(R.string.device_setting_tips_fourteen_9),
+                        _string(R.string.device_setting_tips_fourteen_10)
+                    )
+                }
+                val maxIndex = itemSegmentList.lastIndex
 
                 //zDir 0为打直板，1为打印圆柱。
-                val zDirIndex = if (settingParser?.zDir == 1) 2 else 0
+                val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
                 itemCurrentIndex =
                     if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
                         //平板和小车都对应的 0
@@ -170,7 +181,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (productInfo?.isCI() == true) {
+            if (isC1) {
 
             } else {
                 DslPropertySwitchItem()() {
@@ -188,7 +199,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (productInfo?.isCI() == true) {
+            if (isC1) {
 
             } else {
                 DslPropertySwitchItem()() {
@@ -217,6 +228,24 @@ class DeviceSettingFragment : BaseDslFragment() {
                     settingParser?.updateSetting()
                 }
             }
+            //C1 移动平台雕刻模式
+            if (isC1) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_ex_car_label)
+                    itemDes = _string(R.string.device_ex_car_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.carFlag == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.clearFlag()
+                        settingParser?.carFlag = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                        renderData()
+                    }
+                }
+            }
+
+            //---
 
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_txt_3)

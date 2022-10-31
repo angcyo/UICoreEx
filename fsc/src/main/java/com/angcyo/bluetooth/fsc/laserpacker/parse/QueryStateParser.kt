@@ -70,15 +70,19 @@ data class QueryStateParser(
     //雕刻模块识别位（C1专用位）
     //0 5W激光
     //1 10W激光
-    //2 单色笔模式
-    //3 刀切割模式
-    //4 彩绘模式
-    //5 CNC模式
+    //2 20W激光
+    //3 1064激光
+    //4 单色笔模式
+    //5 彩色笔模式
+    //6 刀切割模式
+    //7 CNC模式
     var moduleState: Int = -1,
     //旋转轴连接状态, 0未连接, 1连接
     var rConnect: Int = 0,
     //滑台连接状态, 0未连接, 1连接
     var sConnect: Int = 0,
+    //C1 移动平台连接状态, 0未连接, 1连接
+    var carConnect: Int = 0,
     var stateTime: Long = nowTime(), //app数据时间
     var deviceAddress: String? = null, //app数据, 当前数据的设备地址
 ) : IPacketParser<QueryStateParser> {
@@ -134,6 +138,9 @@ data class QueryStateParser(
                 printTimes = readInt(1)
                 angle = readInt(1)
                 moduleState = readInt(1)
+                rConnect = readInt(1)
+                sConnect = readInt(1)
+                carConnect = readInt(1)
             }
             this
         } catch (e: Exception) {
