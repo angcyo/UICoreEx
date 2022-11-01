@@ -74,6 +74,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceModelData.postValue(model)
     }
 
+    /**更新设备版本, 设备信息*/
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
         L.i("设备版本:$queryVersionParser".writeBleLog())
@@ -86,6 +87,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceVersionData.postValue(queryVersionParser)
     }
 
+    /**设备状态*/
     @AnyThread
     fun updateDeviceState(queryStateParser: QueryStateParser) {
         queryStateParser.deviceAddress = LaserPeckerHelper.initDeviceAddress

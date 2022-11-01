@@ -21,6 +21,7 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
 
     init {
         dialogLayoutId = R.layout.dialog_module_calibration_layout
+        cancelable = false
     }
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {

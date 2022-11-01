@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.CanvasEntryPoint
+import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
@@ -67,6 +68,15 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
             _showProductLimit(canvasView, productInfo)
+
+            //设置限定符
+            if (productInfo == null) {
+                GraphicsHelper.POSITION_CUT_LEFT = 30f
+                GraphicsHelper.POSITION_CUT_TOP = GraphicsHelper.POSITION_CUT_LEFT * 5
+            } else {
+                GraphicsHelper.POSITION_CUT_LEFT = productInfo.widthPhys / 2f
+                GraphicsHelper.POSITION_CUT_TOP = productInfo.heightPhys / 2f
+            }
         }
 
         //蓝牙设置改变后回调
