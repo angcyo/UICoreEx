@@ -35,6 +35,7 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
             EngravePreviewCmd.startCalibrationCmd().enqueue { bean, error ->
                 if (error == null) {
                     dialogViewHolder.invisible(R.id.start_button)
+                    dialogViewHolder.visible(R.id.finish_button)
                 }
             }
         }
