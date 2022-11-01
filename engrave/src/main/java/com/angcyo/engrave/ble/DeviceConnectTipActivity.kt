@@ -26,6 +26,9 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
                 name == LaserPeckerHelper.CI ||
                         name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true ||
                         name?.startsWith("C1") == true -> R.mipmap.device_c1
+                name == LaserPeckerHelper.LIV ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-IV") == true ||
+                        name?.startsWith("L4") == true -> R.mipmap.device_l4
                 name == LaserPeckerHelper.LIII ||
                         name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true ||
                         name?.startsWith("L3") == true -> R.mipmap.device_l3
