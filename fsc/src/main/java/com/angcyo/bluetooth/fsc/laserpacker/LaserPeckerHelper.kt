@@ -140,6 +140,11 @@ object LaserPeckerHelper {
     @MM
     const val S_MAX_Y = 300
 
+    /**C1移动平台/小车模式
+     * 5米*/
+    @MM
+    const val CAR_MAX_Y = 5_00_0
+
     //<editor-fold desc="operate">
 
     /**移除所有空格*/
@@ -238,10 +243,12 @@ object LaserPeckerHelper {
         val zLimitPath = Path()
         val rLimitPath = Path()
         val sLimitPath = Path()
+        val carLimitPath = Path()
 
         val zMax = mmValueUnit.convertValueToPixel(Z_MAX_Y.toFloat())
         val rMax = mmValueUnit.convertValueToPixel(R_MAX_Y.toFloat())
         val sMax = mmValueUnit.convertValueToPixel(S_MAX_Y.toFloat())
+        val carMax = mmValueUnit.convertValueToPixel(CAR_MAX_Y.toFloat())
 
         //物理尺寸宽高mm单位
         var wPhys = 0
@@ -260,8 +267,8 @@ object LaserPeckerHelper {
                 isOriginCenter = center ?: false
             }
             CI -> {
-                wPhys = 390
-                hPhys = 450
+                wPhys = 400
+                hPhys = 420
                 isOriginCenter = center ?: false
             }
         }
@@ -281,6 +288,11 @@ object LaserPeckerHelper {
         zLimitPath.addRect(left, top, right, zMax, Path.Direction.CW)
         rLimitPath.addRect(left, top, right, rMax, Path.Direction.CW)
         sLimitPath.addRect(left, top, right, sMax, Path.Direction.CW)
+        //C1移动平台模式限制大小
+        val carWPhys = wPhys - 50
+        val carRight =
+            mmValueUnit.convertValueToPixel(if (isOriginCenter) carWPhys / 2f else carWPhys.toFloat())
+        carLimitPath.addRect(left, top, carRight, carMax, Path.Direction.CW)
 
         //最佳预览范围设置
         when (name) {
@@ -367,12 +379,14 @@ object LaserPeckerHelper {
             hPhys,
             bounds,
             previewBounds,
-            limitPath,
-            zLimitPath,
-            rLimitPath,
-            sLimitPath,
-            isOriginCenter
-        )
+            limitPath
+        ).apply {
+            this.zLimitPath = zLimitPath
+            this.rLimitPath = rLimitPath
+            this.sLimitPath = sLimitPath
+            this.carLimitPath = carLimitPath
+            this.isOriginCenter = isOriginCenter
+        }
     }
 
     /**切换设备中心点

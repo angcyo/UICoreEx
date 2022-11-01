@@ -74,28 +74,38 @@ data class EngravePreviewCmd(
 
     companion object {
 
+        /**获取最佳限制框的path*/
         fun getLimitPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val limitPath = if (peckerModel.isZOpen()) {
+                //Z轴打开
                 productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
-                productInfo?.zLimitPath
+                //R轴打开
+                productInfo?.rLimitPath
             } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
-                productInfo?.zLimitPath
+                //S轴打开
+                productInfo?.sLimitPath
+            } else if (peckerModel.isCarOpen()) {
+                //C1平台移动模式
+                productInfo?.carLimitPath
             } else {
                 productInfo?.limitPath
             }
             return limitPath
         }
 
+        /**获取最大物理的path*/
         fun getBoundsPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val boundsPath = if (peckerModel.isZOpen()) {
                 productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
-                productInfo?.zLimitPath
+                productInfo?.rLimitPath
             } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
-                productInfo?.zLimitPath
+                productInfo?.sLimitPath
+            } else if (peckerModel.isCarOpen()) {
+                productInfo?.carLimitPath
             } else if (productInfo != null) {
                 Path().apply {
                     addRect(productInfo.bounds, Path.Direction.CW)

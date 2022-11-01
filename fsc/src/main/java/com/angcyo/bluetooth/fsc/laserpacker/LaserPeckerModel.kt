@@ -16,7 +16,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
 import com.angcyo.viewmodel.*
@@ -162,7 +161,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**C1 移动平台雕刻 */
     fun isCarOpen(): Boolean {
-        return deviceSettingData.value?.carFlag == 1 || isDebugType() //&& (deviceStateData.value?.carConnect == 1 || isDebug())
+        return deviceSettingData.value?.carFlag == 1 //&& (deviceStateData.value?.carConnect == 1 || isDebug())
     }
 
     /**滑台多文件雕刻模式*/

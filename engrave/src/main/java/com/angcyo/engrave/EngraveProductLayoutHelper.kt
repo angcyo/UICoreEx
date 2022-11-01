@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
@@ -243,23 +244,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             return
         }
         val productInfo = laserPeckerModel.productInfoData.value
-        val zLimitPath = productInfo?.zLimitPath
-        val rLimitPath = productInfo?.rLimitPath
-        val sLimitPath = productInfo?.sLimitPath
-
-        var limitPath: Path? = null
-        if (productInfo != null) {
-            if (laserPeckerModel.isZOpen() && zLimitPath != null) {
-                //Z轴连接
-                limitPath = zLimitPath
-            } else if (laserPeckerModel.isROpen() && rLimitPath != null) {
-                //R轴连接
-                limitPath = rLimitPath
-            } else if ((laserPeckerModel.isSOpen() || laserPeckerModel.isSRepMode()) && sLimitPath != null) {
-                //S轴连接
-                limitPath = sLimitPath
-            }
-        }
+        val limitPath: Path? = EngravePreviewCmd.getLimitPath(productInfo)
 
         if (productInfo != null && limitPath != null) {
             //追加显示Z轴显示框

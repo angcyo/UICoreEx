@@ -49,7 +49,10 @@ data class LaserPeckerProductInfo(
     var bounds: RectF,
     /**机器的最佳预览范围, 像素, 在手机上的像素*/
     var previewBounds: RectF,
-    /**机器在移动范围内的可打印范围, 像素, 在手机上的像素*/
+    /**机器在移动范围内的可打印范围, 像素, 在手机上的像素
+     * [com.angcyo.engrave.EngraveProductLayoutHelper._showZRSLimit]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getLimitPath]
+     * */
     var limitPath: Path,
     /**Z轴限制提示框, 像素, 在手机上的像素*/
     var zLimitPath: Path? = null,
@@ -57,6 +60,8 @@ data class LaserPeckerProductInfo(
     var rLimitPath: Path? = null,
     /**滑台,最大提示框*/
     var sLimitPath: Path? = null,
+    /**C1平台移动/小车模式,最大提示框*/
+    var carLimitPath: Path? = null,
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,
