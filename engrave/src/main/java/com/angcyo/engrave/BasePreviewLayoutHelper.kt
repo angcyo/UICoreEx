@@ -56,6 +56,10 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         renderDslAdapter {
             //
             PreviewTipItem()()
+            if (!laserPeckerModel.isC1()) {
+                //非C1显示, 设备水平角度
+                DeviceAngleItem()()
+            }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
@@ -67,7 +71,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     itemPreviewConfigEntity = previewConfigEntity
                 }
             }
-            if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+            if (laserPeckerModel.isC1()) {
                 //C1没有升降支架
             } else {
                 PreviewBracketItem()()

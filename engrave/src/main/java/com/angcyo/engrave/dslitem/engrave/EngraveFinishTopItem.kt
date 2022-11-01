@@ -50,7 +50,7 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             add(LabelDesData("${_string(R.string.work_time)}:", engraveTime))
 
             //雕刻精度
-            if (engraveConfigEntity != null && laserPeckerModel.productInfoData.value?.isCI() == true) {
+            if (engraveConfigEntity != null && laserPeckerModel.isC1()) {
                 add(
                     LabelDesData(
                         _string(R.string.engrave_speed),

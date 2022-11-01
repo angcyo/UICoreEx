@@ -177,6 +177,10 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     //---
 
+    fun isC1() = productInfoData.value?.isCI() == true
+
+    //---
+
     /**空闲模式*/
     fun isIdleMode(): Boolean {
         val deviceState = deviceStateData.value

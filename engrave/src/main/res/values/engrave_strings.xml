@@ -190,4 +190,6 @@
 
     <string name="focal_distance_tip">Please confirm the focal length</string>
 
+    <string name="device_angle">Device angle</string>
+
 </resources>

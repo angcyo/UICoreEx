@@ -11,6 +11,7 @@ import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
+import com.angcyo.engrave.dslitem.preview.DeviceAngleItem
 import com.angcyo.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave.dslitem.transfer.DataStopTransferItem
@@ -175,7 +176,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
      *
      * @return true 数据合法, 允许雕刻*/
     fun checkTransferData(): Boolean {
-        val isC1 = laserPeckerModel.productInfoData.value?.isCI() == true
+        val isC1 = laserPeckerModel.isC1()
         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
         if (canvasDelegate != null && isC1) {
             if (laserPeckerModel.isZOpen()) {
@@ -310,6 +311,10 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_tip)
             }
+            if (!laserPeckerModel.isC1()) {
+                //非C1显示, 设备水平角度
+                DeviceAngleItem()()
+            }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
@@ -336,7 +341,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
             }
-            if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+            if (laserPeckerModel.isC1()) {
                 //C1 加速级别选择
                 EngraveOptionWheelItem()() {
                     itemTag = EngraveConfigEntity::precision.name
@@ -429,6 +434,10 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
+            }
+            if (!laserPeckerModel.isC1()) {
+                //非C1显示, 设备水平角度
+                DeviceAngleItem()()
             }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()

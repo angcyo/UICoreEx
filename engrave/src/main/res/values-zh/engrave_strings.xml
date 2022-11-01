@@ -180,4 +180,6 @@
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="engrave_warn">警告</string>
 
+    <string name="device_angle">设备水平角度</string>
+
 </resources>

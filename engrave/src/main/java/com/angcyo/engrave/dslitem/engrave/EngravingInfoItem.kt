@@ -45,7 +45,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
 
                 //雕刻精度
-                if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+                if (laserPeckerModel.isC1()) {
                     add(
                         LabelDesData(
                             _string(R.string.engrave_speed),

@@ -142,7 +142,7 @@ class PreviewControlItem : BasePreviewItem() {
             itemList.add(rangePreviewItem!!)
             itemList.add(centerPreviewItem!!)
 
-            if (laserPeckerModel.productInfoData.value?.isCI() == true) {
+            if (laserPeckerModel.isC1()) {
                 //C1不支持此操作
             } else if (laserPeckerModel.deviceSettingData.value?.gcodeView == 1 &&
                 previewInfoData?.itemDataBean?._dataMode == CanvasConstant.DATA_MODE_GCODE

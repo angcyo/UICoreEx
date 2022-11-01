@@ -113,7 +113,7 @@ class GCodeTransition : IEngraveTransition {
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
-        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
+        val autoCnc = vmApp<LaserPeckerModel>().isC1()
         val gCodeFile = CanvasDataHandleOperate.pathStrokeToGCode(
             pathList,
             engraveProvider.getEngraveBounds(),
@@ -144,7 +144,7 @@ class GCodeTransition : IEngraveTransition {
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
-        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
+        val autoCnc = vmApp<LaserPeckerModel>().isC1()
 
         val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
             gcode,
@@ -218,7 +218,7 @@ class GCodeTransition : IEngraveTransition {
         } else {
             Gravity.LEFT
         }
-        val autoCnc = vmApp<LaserPeckerModel>().productInfoData.value?.isCI() == true
+        val autoCnc = vmApp<LaserPeckerModel>().isC1()
         var gCodeFile = CanvasDataHandleOperate.bitmapToGCode(
             pxBitmap,
             scanGravity,
