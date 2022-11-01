@@ -62,6 +62,8 @@ data class LaserPeckerProductInfo(
     var sLimitPath: Path? = null,
     /**C1平台移动/小车模式,最大提示框*/
     var carLimitPath: Path? = null,
+    /**C1平台移动/小车模式,最大预览范围*/
+    var carPreviewBounds: RectF? = null,
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,

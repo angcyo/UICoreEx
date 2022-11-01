@@ -237,6 +237,7 @@ object LaserPeckerHelper {
         val mmValueUnit = MM_UNIT
         val bounds = RectF()
         val previewBounds = RectF()
+        val carPreviewBounds = RectF()
         var isOriginCenter = center ?: false
 
         val limitPath = Path()
@@ -293,6 +294,7 @@ object LaserPeckerHelper {
         val carRight =
             mmValueUnit.convertValueToPixel(if (isOriginCenter) carWPhys / 2f else carWPhys.toFloat())
         carLimitPath.addRect(left, top, carRight, carMax, Path.Direction.CW)
+        carPreviewBounds.set(left, top, carRight, bottom)
 
         //最佳预览范围设置
         when (name) {
@@ -381,11 +383,12 @@ object LaserPeckerHelper {
             previewBounds,
             limitPath
         ).apply {
+            this.isOriginCenter = isOriginCenter
             this.zLimitPath = zLimitPath
             this.rLimitPath = rLimitPath
             this.sLimitPath = sLimitPath
             this.carLimitPath = carLimitPath
-            this.isOriginCenter = isOriginCenter
+            this.carPreviewBounds = carPreviewBounds
         }
     }
 

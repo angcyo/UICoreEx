@@ -90,7 +90,10 @@ class PreviewModel : LifecycleViewModel() {
                 if (itemRenderer == null) {
                     rotate = null
                     val productInfo = laserPeckerModel.productInfoData.value
-                    val bounds = if (laserPeckerModel.haveExDevice()) {
+                    val bounds = if (laserPeckerModel.isCarOpen()) {
+                        //小车模式下
+                        productInfo?.carPreviewBounds
+                    } else if (laserPeckerModel.haveExDevice()) {
                         //有外设的情况下, 使用物理范围
                         //productInfo?.bounds
                         productInfo?.previewBounds

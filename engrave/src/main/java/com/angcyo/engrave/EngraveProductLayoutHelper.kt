@@ -230,6 +230,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         //最佳预览尺寸用蓝色提示
         canvasView.canvasDelegate.showAndResetLimitBounds(productInfo.limitPath) {
             limitStrokeColor = PREVIEW_COLOR
+            isPrimary = false
         }
         //物理尺寸用红色提示
         canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
@@ -244,12 +245,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             return
         }
         val productInfo = laserPeckerModel.productInfoData.value
-        val limitPath: Path? = EngravePreviewCmd.getLimitPath(productInfo)
+        val limitPath: Path? = EngravePreviewCmd.getLimitPath(productInfo, false)
 
         if (productInfo != null && limitPath != null) {
             //追加显示Z轴显示框
             canvasView.canvasDelegate.showAndResetLimitBounds(limitPath) {
                 limitStrokeColor = ENGRAVE_COLOR
+                isPrimary = false
             }
             canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
                 isPrimary = true

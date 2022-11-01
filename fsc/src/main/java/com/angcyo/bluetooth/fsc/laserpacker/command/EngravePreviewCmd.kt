@@ -75,7 +75,10 @@ data class EngravePreviewCmd(
     companion object {
 
         /**获取最佳限制框的path*/
-        fun getLimitPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
+        fun getLimitPath(
+            productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value,
+            includeLimitPath: Boolean = true,
+        ): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val limitPath = if (peckerModel.isZOpen()) {
                 //Z轴打开
@@ -89,8 +92,10 @@ data class EngravePreviewCmd(
             } else if (peckerModel.isCarOpen()) {
                 //C1平台移动模式
                 productInfo?.carLimitPath
-            } else {
+            } else if (includeLimitPath) {
                 productInfo?.limitPath
+            } else {
+                null
             }
             return limitPath
         }
