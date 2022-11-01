@@ -17,10 +17,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
-import com.angcyo.item.style.itemCurrentIndex
-import com.angcyo.item.style.itemInfoText
-import com.angcyo.item.style.itemSwitchChangedAction
-import com.angcyo.item.style.itemText
+import com.angcyo.item.style.*
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -56,9 +53,17 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
         /**印章阈值*/
         const val KEY_SEAL_THRESHOLD = "key_seal_threshold"
 
+        /**GCode旋转方向*/
         const val KEY_DIRECTION = "key_direction"
+
+        /**GCode线距*/
         const val KEY_LINE_SPACE = "key_line_space"
+
+        /**GCode线的角度*/
         const val KEY_ANGLE = "key_angle"
+
+        /**GCode是否要轮廓*/
+        const val KEY_OUTLINE = "key_outline"
 
         /**抖动反色*/
         const val KEY_SHAKE_INVERT = "key_shake_invert"
@@ -144,6 +149,21 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
             }
 
             //GCode
+            if (regulateList.contains(KEY_OUTLINE)) {
+                CanvasSwitchItem()() {
+                    itemInfoText = _string(R.string.canvas_outline) //轮廓
+                    initItem()
+
+                    val def = getBooleanOrDef(KEY_OUTLINE, true)
+                    property[KEY_OUTLINE] = def
+                    itemSwitchChecked = def
+
+                    itemSwitchChangedAction = {
+                        property[KEY_OUTLINE] = it
+                    }
+                }
+            }
+
             if (regulateList.contains(KEY_LINE_SPACE)) {
                 CanvasSeekBarItem()() {
                     itemInfoText = _string(R.string.canvas_line_space) //0.125-5
@@ -330,7 +350,10 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
         CanvasInvertSwitchItem()() {
             itemInfoText = _string(R.string.canvas_invert)
             initItem()
-            property[key] = getBooleanOrDef(key, defValue)
+
+            val def = getBooleanOrDef(key, defValue)
+            property[key] = def
+            itemSwitchChecked = def
 
             itemSwitchChangedAction = {
                 property[key] = it

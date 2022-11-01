@@ -84,6 +84,7 @@ object CanvasBitmapHandler {
         var boundsRotate = 0f //需要旋转的角度
 
         context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig2.KEY_OUTLINE)
             addRegulate(CanvasRegulatePopupConfig2.KEY_LINE_SPACE)
             addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE)
             addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION)
@@ -94,6 +95,7 @@ object CanvasBitmapHandler {
                     onDismissAction()
                 } else {
                     owner.loadingAsync({
+                        //direction
                         val direction = getIntOrDef(
                             CanvasRegulatePopupConfig2.KEY_DIRECTION,
                             item.dataBean.gcodeDirection
@@ -103,17 +105,26 @@ object CanvasBitmapHandler {
                         }
                         item.dataBean.gcodeDirection = direction
 
+                        //lineSpace
                         val lineSpace = getFloatOrDef(
                             CanvasRegulatePopupConfig2.KEY_LINE_SPACE,
                             item.dataBean.gcodeLineSpace
                         )
                         item.dataBean.gcodeLineSpace = lineSpace
 
+                        //angle
                         val angle = getFloatOrDef(
                             CanvasRegulatePopupConfig2.KEY_ANGLE,
                             item.dataBean.gcodeAngle
                         )
                         item.dataBean.gcodeAngle = angle
+
+                        //outline
+                        val outline = getBooleanOrDef(
+                            CanvasRegulatePopupConfig2.KEY_OUTLINE,
+                            item.dataBean.gcodeOutline
+                        )
+                        item.dataBean.gcodeOutline = outline
 
                         operateBitmap.let { bitmap ->
                             OpenCV.bitmapToGCode(
@@ -122,7 +133,8 @@ object CanvasBitmapHandler {
                                 (beforeBounds.width() / 2).toMm().toDouble(),
                                 lineSpace = lineSpace.toDouble(),
                                 direction = direction,
-                                angle = angle.toDouble()
+                                angle = angle.toDouble(),
+                                type = if (outline) 1 else 3
                             ).let {
                                 val gCodeText = it.readText()
                                 it.deleteSafe()
