@@ -135,11 +135,13 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceSettingData.postValue(querySettingParser)
     }
 
+    //---
+
     /**是否连接了扩展设备*/
     fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
 
     /**是否需要显示外设提示*/
-    fun needShowExDeviceTip(): Boolean = haveExDevice() || isSRepMode()
+    fun needShowExDeviceTipItem(): Boolean = haveExDevice() || isSRepMode() || isPenMode()
 
     /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {
@@ -165,6 +167,13 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun isSRepMode(): Boolean {
         return deviceSettingData.value?.sRep == 1
     }
+
+    /**是否是C1的握笔模块*/
+    fun isPenMode(): Boolean {
+        return deviceStateData.value?.moduleState == 4
+    }
+
+    //---
 
     /**空闲模式*/
     fun isIdleMode(): Boolean {

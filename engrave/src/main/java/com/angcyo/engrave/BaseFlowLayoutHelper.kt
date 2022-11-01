@@ -219,7 +219,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**第三轴未连接连接*/
     fun exDeviceNoConnectType(): Int {
         var noConnectType = 0
-        if (laserPeckerModel.needShowExDeviceTip()) {
+        if (laserPeckerModel.needShowExDeviceTipItem()) {
             val stateParser = laserPeckerModel.deviceStateData.value
             if (laserPeckerModel.isZOpen()) {
                 val connect = stateParser?.zConnect == 1

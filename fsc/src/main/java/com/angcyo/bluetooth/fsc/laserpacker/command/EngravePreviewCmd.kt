@@ -511,6 +511,24 @@ data class EngravePreviewCmd(
         fun previewZContinueCmd(): EngravePreviewCmd {
             return EngravePreviewCmd(0x05)
         }
+
+        //--
+
+        /**0x09 对笔控制：data1:0x01为对笔，0x02为对笔完成。（C1产品）
+         * 开始校准指令*/
+        fun startCalibrationCmd(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x09).apply {
+                d1 = 0x01
+            }
+        }
+
+        /**0x09 对笔控制：data1:0x01为对笔，0x02为对笔完成。（C1产品）
+         * 完成校准指令*/
+        fun finishCalibrationCmd(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x09).apply {
+                d1 = 0x02
+            }
+        }
     }
 
     //功能码
@@ -656,6 +674,11 @@ data class EngravePreviewCmd(
                 append(" 4点预览")
                 val rectPoint = getFourPoint()
                 append(" lt:${rectPoint.leftTop} rt:${rectPoint.rightTop} rb:${rectPoint.rightBottom} lb:${rectPoint.leftBottom}")
+            }
+            0x09.toByte() -> when (d1) {
+                0x01.toByte() -> append("开始对笔")
+                0x02.toByte() -> append("完成对笔")
+                else -> append("对笔控制")
             }
             else -> append("Unknown")
         }

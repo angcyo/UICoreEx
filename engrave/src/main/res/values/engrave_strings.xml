@@ -122,6 +122,12 @@
     <string name="device_direction_reversal">Reverse</string>
     <string name="device_s_batch_engrave_label">Slide table multi-file carving mode</string>
     <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_ex_engrave_module">Carving module</string>
+    <string name="device_ex_pen_engrave_label">Brush model</string>
+    <string name="device_module_calibration_label">Module calibration</string>
+    <string name="device_module_calibration_des">Please lock your module after calibration</string>
+    <string name="start_calibration">Start calibration</string>
+    <string name="finish_calibration">Finish calibration</string>
     <string name="device_setting_txt_3">Touch Buttons</string>
     <string name="device_setting_txt_4">This switch controls the enabling and disabling of preview and stop touch buttons on the main unit</string>
     <string name="button_infra_red_title">Red Light Stay</string>

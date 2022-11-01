@@ -56,11 +56,16 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         renderDslAdapter {
             //
             PreviewTipItem()()
-            if (laserPeckerModel.needShowExDeviceTip()) {
+            if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
-            PreviewBrightnessItem()() {
-                itemPreviewConfigEntity = previewConfigEntity
+            if (laserPeckerModel.isPenMode()) {
+                //握笔模式, 不支持亮度调节, 握笔校准
+                ModuleCalibrationItem()()
+            } else {
+                PreviewBrightnessItem()() {
+                    itemPreviewConfigEntity = previewConfigEntity
+                }
             }
             if (laserPeckerModel.productInfoData.value?.isCI() == true) {
                 //C1没有升降支架
@@ -100,7 +105,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     fun startPathPreview(projectDataBean: CanvasProjectItemBean?) {
         projectDataBean ?: return
         viewHolder?.context?.pathPreviewDialog(projectDataBean) {
-            
+
         }
     }
 

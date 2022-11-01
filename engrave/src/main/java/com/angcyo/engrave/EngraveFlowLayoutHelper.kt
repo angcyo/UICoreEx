@@ -177,21 +177,44 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     fun checkTransferData(): Boolean {
         val isC1 = laserPeckerModel.productInfoData.value?.isCI() == true
         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
-        if (canvasDelegate != null && isC1 && laserPeckerModel.isZOpen()) {
-            //C1的第三轴模式下, 不允许雕刻GCode数据
-            val gCodeLayer =
-                EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
-            if (gCodeLayer != null) {
-                val rendererList =
-                    EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
-                if (rendererList.isNotEmpty()) {
-                    //不允许雕刻GCode
-                    val fContext = engraveCanvasFragment?.fragment?.fContext()
-                    fContext?.messageDialog {
-                        dialogTitle = _string(R.string.engrave_warn)
-                        dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
+        if (canvasDelegate != null && isC1) {
+            if (laserPeckerModel.isZOpen()) {
+                //C1的第三轴模式下, 不允许雕刻GCode数据
+                val gCodeLayer =
+                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                if (gCodeLayer != null) {
+                    val rendererList =
+                        EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
+                    if (rendererList.isNotEmpty()) {
+                        //不允许雕刻GCode
+                        val fContext = engraveCanvasFragment?.fragment?.fContext()
+                        fContext?.messageDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
+                        }
+                        return false
                     }
-                    return false
+                }
+            }
+            if (laserPeckerModel.isPenMode()) {
+                //C1的握笔模式下, 只允许雕刻GCode数据
+                val gCodeLayer =
+                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                if (gCodeLayer != null) {
+                    val notGCodeRendererList = EngraveTransitionManager.getRendererListNot(
+                        canvasDelegate,
+                        gCodeLayer,
+                        false
+                    )
+                    if (notGCodeRendererList.isNotEmpty()) {
+                        //不允许雕刻非GCode数据
+                        val fContext = engraveCanvasFragment?.fragment?.fContext()
+                        fContext?.messageDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = "当前模式下, 不允许雕刻非\"${gCodeLayer.label}\"数据"
+                        }
+                        return false
+                    }
                 }
             }
         }
@@ -287,7 +310,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_tip)
             }
-            if (laserPeckerModel.needShowExDeviceTip()) {
+            if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
             //材质选择
@@ -407,7 +430,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
             }
-            if (laserPeckerModel.needShowExDeviceTip()) {
+            if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
             EngraveProgressItem()() {

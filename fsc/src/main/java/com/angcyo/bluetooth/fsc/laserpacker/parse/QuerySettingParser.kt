@@ -101,7 +101,7 @@ data class QuerySettingParser(
 
     //转换成指令
     override fun toHexCommandString(): String {
-        var dataLength = 0x0F  //数据长度
+        var dataLength = 0x0F  //数据长度, 指由功能码开始到较验和一共包含的字节数
         val data = buildString {
             append(commandFunc().toHexString())
 
@@ -113,7 +113,7 @@ data class QuerySettingParser(
                 //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
-                dataLength = 0x13
+                dataLength = 0x14 //数据长度
 
                 //1为自由模式，为0时安全模式。
                 append(free.toHexString())

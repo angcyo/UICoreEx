@@ -159,6 +159,41 @@ class EngraveTransitionManager {
                 resultList
             }
         }
+
+        /**获取不是指定雕刻图层的渲染器*/
+        fun getRendererListNot(
+            canvasDelegate: CanvasDelegate,
+            layerInfo: EngraveLayerInfo?,
+            sort: Boolean = false
+        ): List<BaseItemRenderer<*>> {
+            val rendererList = mutableListOf<BaseItemRenderer<*>>()
+            val selectList = canvasDelegate.getSelectedRendererList()
+            if (selectList.isEmpty()) {
+                rendererList.addAll(canvasDelegate.itemsRendererList)
+            } else {
+                rendererList.addAll(selectList)
+            }
+
+            val layerList = rendererList.filter { it.isVisible() }.filter {
+                if (it is DataItemRenderer) {
+                    if (layerInfo == null) {
+                        true
+                    } else {
+                        it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                    }
+                } else {
+                    false
+                }
+            }
+
+            rendererList.removeAll(layerList)
+
+            return if (sort) {
+                rendererList.sort()
+            } else {
+                rendererList
+            }
+        }
     }
 
     //---
