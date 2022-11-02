@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="safety_tips">安全提示</string>
+    <string name="device_exception">设备异常</string>
+    <string name="ex_tips_one">请进入模式设定，开启[自由模式]</string>
+    <string name="ex_tips_two">紧急停止! 范围越界。请使用激光调节中的自动调整重置激光焦点的位置后再重试。</string>
+    <string name="ex_tips_three">紧急停止! 激光工作温度过高</string>
+    <string name="ex_tips_four">紧急停止! 机器可能遭到撞击或摇晃</string>
+    <string name="ex_tips_five">紧急停止! 超声波传感器检测到有物体进入雕刻范围</string>
+    <string name="ex_tips_six">紧急停止! 数据错误</string>
+    <string name="ex_tips_seven">紧急停止! 文件编号查询错误</string>
+    <string name="ex_tips_eight">紧急停止! 陀螺仪自检错误</string>
+    <string name="ex_tips_nine">紧急停止! flash自检错误</string>
+    <string name="ex_tips_ten">紧急停止! 尺寸异常</string>
+
+    <string name="laser_type_white">白光</string>
+    <string name="laser_type_blue">蓝光</string>
+
+    <string name="preview_state_gcode">预览向量图</string>
+    <string name="preview_state_range">预览范围</string>
+    <string name="preview_state_z_pause">第三轴暂停预览</string>
+    <string name="preview_state_z_continue">第三轴继续预览</string>
+    <string name="preview_state_center">预览显示中心</string>
+    <string name="preview_state_points">4点范围预览</string>
+    <string name="preview_state_bracket">支架调整</string>
+
+    <string name="engrave_state_pause">镭雕暂停</string>
+    <string name="engrave_state_stop">镭雕结束</string>
+    <string name="engrave_state_ing">镭雕中</string>
+
+    <string name="blue_no_device_connected">未连接设备</string>
+
+</resources>
