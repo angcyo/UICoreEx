@@ -33,6 +33,23 @@ import kotlin.math.max
  */
 class DeviceSettingFragment : BaseDslFragment() {
 
+    companion object {
+
+        fun getZDirSegmentList() = if (vmApp<LaserPeckerModel>().isC1()) {
+            //C1只有圆柱模式
+            listOf(
+                _string(R.string.device_setting_tips_fourteen_10)
+            )
+        } else {
+            listOf(
+                _string(R.string.device_setting_tips_fourteen_8),
+                _string(R.string.device_setting_tips_fourteen_9),
+                _string(R.string.device_setting_tips_fourteen_10)
+            )
+        }
+
+    }
+
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     init {
@@ -134,19 +151,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 initItem()
 
                 //平板 //小车 //圆柱
-                if (isC1) {
-                    //C1没有小车模式
-                    itemSegmentList = listOf(
-                        _string(R.string.device_setting_tips_fourteen_8),
-                        _string(R.string.device_setting_tips_fourteen_10)
-                    )
-                } else {
-                    itemSegmentList = listOf(
-                        _string(R.string.device_setting_tips_fourteen_8),
-                        _string(R.string.device_setting_tips_fourteen_9),
-                        _string(R.string.device_setting_tips_fourteen_10)
-                    )
-                }
+                itemSegmentList = getZDirSegmentList()
                 val maxIndex = itemSegmentList.lastIndex
 
                 //zDir 0为打直板，1为打印圆柱。

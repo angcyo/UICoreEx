@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
@@ -37,11 +38,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
             //第三轴
             laserPeckerModel.isZOpen() -> span {
                 append(_string(R.string.device_setting_tips_fourteen_2))
-                val list = listOf(
-                    _string(R.string.device_setting_tips_fourteen_8),
-                    _string(R.string.device_setting_tips_fourteen_9),
-                    _string(R.string.device_setting_tips_fourteen_10)
-                )
+                val list = DeviceSettingFragment.getZDirSegmentList()
                 append(":")
                 append(list[max(0, QuerySettingParser.Z_MODEL)])
             }
