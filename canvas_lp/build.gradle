@@ -19,6 +19,6 @@ dependencies {
     compileOnly project(allModule.umeng_lp)
 
     //图片算法
-    api 'com.angcyo:opencv:hingin-SNAPSHOT'
+    api 'com.angcyo:opencv:1101'
     api 'com.angcyo:imageProcess:1014'
 }

@@ -183,7 +183,8 @@ class GCodeTransition : IEngraveTransition {
             (rotateBounds.width() / 2).toMm().toDouble(),
             lineSpace = DEFAULT_LINE_SPACE.toDouble(),
             direction = 0,
-            angle = 0.0
+            angle = 0.0,
+            type = 2 //只获取轮廓
         )
         val gCodeText = gCodeFile.readText()
         //GCode数据

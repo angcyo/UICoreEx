@@ -18,7 +18,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     //图片算法, 这里只编译, 在canvas_lp中依赖
-    compileOnly 'com.angcyo:opencv:hingin-SNAPSHOT'
+    compileOnly 'com.angcyo:opencv:1101'
 }
 
 //apply from: allGradle.libfscaar
