@@ -10,11 +10,11 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
- * 设备水平角度
+ * 设备信息提示, 水平角度
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/11/01
  */
-class DeviceAngleItem : PreviewTipItem() {
+class DeviceInfoTipItem : PreviewTipItem() {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()

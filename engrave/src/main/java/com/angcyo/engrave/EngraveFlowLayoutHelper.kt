@@ -11,7 +11,7 @@ import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
-import com.angcyo.engrave.dslitem.preview.DeviceAngleItem
+import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave.dslitem.transfer.DataStopTransferItem
@@ -313,7 +313,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
-                DeviceAngleItem()()
+                DeviceInfoTipItem()()
             }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
@@ -437,7 +437,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
-                DeviceAngleItem()()
+                DeviceInfoTipItem()()
             }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
