@@ -73,9 +73,9 @@ class PreviewModel : LifecycleViewModel() {
             info.isFourPointPreview = openPointsPreview
 
             if (laserPeckerModel.haveExDevice()) {
-                info.isZPause = true//有外设的情况下, z轴优先暂停滚动
+                info.zState = PreviewInfo.Z_STATE_PAUSE//有外设的情况下, z轴优先暂停滚动
             } else {
-                info.isZPause = null
+                info.zState = null
             }
         }
 
@@ -141,7 +141,7 @@ class PreviewModel : LifecycleViewModel() {
         }
         previewInfo?.let {
             val originBounds = previewInfo.originBounds
-            val zPause = previewInfo.isZPause
+            val zPause = previewInfo.zState
             if (zPause == null) {
                 //非第三轴预览模式下
                 if (previewInfo.isCenterPreview) {
@@ -189,7 +189,7 @@ class PreviewModel : LifecycleViewModel() {
             } else {
                 //第三轴预览模式
                 if (previewInfo.isStartPreview) {
-                    if (zPause) {
+                    if (zPause == PreviewInfo.Z_STATE_PAUSE) {
                         //第三轴需要处于暂停状态
                         _previewRangeRect(
                             originBounds,
@@ -198,6 +198,9 @@ class PreviewModel : LifecycleViewModel() {
                             async,
                             true
                         )
+                    } else if (zPause == PreviewInfo.Z_STATE_SCROLL) {
+                        //C1 专属第三轴滚动
+                        _zScrollPreview(async)
                     } else {
                         //第三轴继续预览
                         _zContinuePreview(async)
@@ -211,7 +214,7 @@ class PreviewModel : LifecycleViewModel() {
                         async
                     )
                     previewInfo.isStartPreview = true
-                    previewInfo.isZPause = true
+                    previewInfo.zState = PreviewInfo.Z_STATE_PAUSE
                 }
             }
         }
@@ -246,10 +249,19 @@ class PreviewModel : LifecycleViewModel() {
         )
     }
 
-    /**z轴滚动预览*/
+    /**z轴继续滚动预览*/
     @Private
     fun _zContinuePreview(async: Boolean = true) {
         val cmd = EngravePreviewCmd.previewZContinueCmd()
+        val flag =
+            if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+        cmd.enqueue(flag)
+    }
+
+    /**C1专属 z轴滚动预览*/
+    @Private
+    fun _zScrollPreview(async: Boolean = true) {
+        val cmd = EngravePreviewCmd.previewZScrollCmd()
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
         cmd.enqueue(flag)

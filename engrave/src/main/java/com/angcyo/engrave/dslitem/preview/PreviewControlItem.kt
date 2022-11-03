@@ -3,6 +3,7 @@ package com.angcyo.engrave.dslitem.preview
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.library.component.scaleDrawable
 import com.angcyo.library.ex.Action1
 import com.angcyo.library.ex._drawable
@@ -35,6 +36,9 @@ class PreviewControlItem : BasePreviewItem() {
 
     /**第三轴继续预览*/
     var continuePreviewItem: ControlTextItemInfo? = null
+
+    /**C1 第三轴滚动*/
+    var scrollPreviewItem: ControlTextItemInfo? = null
 
     /**路径预览, 只在GCode数据时有效*/
     var pathPreviewItem: ControlTextItemInfo? = null
@@ -89,7 +93,7 @@ class PreviewControlItem : BasePreviewItem() {
             previewModel.updatePreview {
                 isCenterPreview = false
                 //z轴需要处于的状态
-                isZPause = true
+                zState = PreviewInfo.Z_STATE_PAUSE
             }
             queryDeviceStateCmd()
         }
@@ -103,7 +107,21 @@ class PreviewControlItem : BasePreviewItem() {
             previewModel.updatePreview {
                 isCenterPreview = false
                 //z轴需要处于的状态
-                isZPause = false
+                zState = PreviewInfo.Z_STATE_CONTINUE
+            }
+            queryDeviceStateCmd()
+        }
+
+        //C1 第三轴滚动
+        scrollPreviewItem = ControlTextItemInfo(
+            _string(R.string.scroll_preview),
+            R.drawable.scroll_preview_svg,
+            false
+        ) { viewHolder, item ->
+            previewModel.updatePreview {
+                isCenterPreview = false
+                //z轴需要处于的状态
+                zState = PreviewInfo.Z_STATE_SCROLL
             }
             queryDeviceStateCmd()
         }
@@ -138,6 +156,11 @@ class PreviewControlItem : BasePreviewItem() {
         if (laserPeckerModel.haveExDevice()) {
             itemList.add(pausePreviewItem!!)
             itemList.add(continuePreviewItem!!)
+
+            if (laserPeckerModel.isC1()) {
+                //C1专属 第三轴滚动
+                itemList.add(scrollPreviewItem!!)
+            }
         } else {
             itemList.add(rangePreviewItem!!)
             itemList.add(centerPreviewItem!!)
@@ -175,7 +198,7 @@ class PreviewControlItem : BasePreviewItem() {
                     }
                     selected(item.selected)
                     //上屏
-                    clickItem {
+                    throttleClickItem {
                         //这里用this or itemHolder
                         item.clickAction(itemHolder, item)
                     }

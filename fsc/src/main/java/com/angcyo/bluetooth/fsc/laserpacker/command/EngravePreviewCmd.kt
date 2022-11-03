@@ -527,6 +527,11 @@ data class EngravePreviewCmd(
             return EngravePreviewCmd(0x05)
         }
 
+        /**C1专属, 第三轴继续预览指令, z轴滚动预览*/
+        fun previewZScrollCmd(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x0A)
+        }
+
         //--
 
         /**0x09 对笔控制：data1:0x01为对笔，0x02为对笔完成。（C1产品）
