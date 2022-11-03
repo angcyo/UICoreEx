@@ -243,7 +243,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                 rotateBounds.top.toInt(),
                 rotateBounds.width().toInt(),
                 rotateBounds.height().toInt(),
-                pwrProgress
+                pwrProgress,
+                diameter
             )
         } else {
             if (rotate != null) {

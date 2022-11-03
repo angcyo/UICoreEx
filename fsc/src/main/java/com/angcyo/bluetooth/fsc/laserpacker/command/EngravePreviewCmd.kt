@@ -487,6 +487,8 @@ data class EngravePreviewCmd(
             width: Int,
             height: Int,
             pwrProgress: Float,
+            @MM
+            diameter: Int,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
@@ -503,7 +505,7 @@ data class EngravePreviewCmd(
                 //超出物理范围, 不发送指令
                 return null
             }
-            return _previewZRangeCmd(overflowInfo.resultRect!!, pwrProgress, dpi)
+            return _previewZRangeCmd(overflowInfo.resultRect!!, pwrProgress, diameter, dpi)
         }
 
         /**第三轴暂停预览, 用来拖动时更新x,t
@@ -513,11 +515,26 @@ data class EngravePreviewCmd(
         fun _previewZRangeCmd(
             rect: Rect,
             pwrProgress: Float,
+            @MM
+            diameter: Int,
             dpi: Float = LaserPeckerHelper.DPI_254
         ): EngravePreviewCmd {
+
+            val widthBytes = rect.width().toHexString(4).toHexByteArray()
+            val heightBytes = rect.height().toHexString(4).toHexByteArray()
+
             return EngravePreviewCmd(0x04).apply {
+
+                d1 = widthBytes[0]
+                d2 = widthBytes[1]
+                d3 = heightBytes[0]
+                d4 = heightBytes[1]
+
                 x = rect.left
                 y = rect.top
+
+                this.diameter = diameter
+
                 updatePWR(pwrProgress)
             }
         }
@@ -659,12 +676,16 @@ data class EngravePreviewCmd(
                 append(" ${nameBytes.toHexInt()}")
             }
             0x02.toByte() -> {
-                append("范围预览")
+                append("范围预览:")
                 val rect = getPreviewRange()
-                append(" $rect 直径:$diameter")
+                append("$rect 直径:$diameter")
             }
             0x03.toByte() -> append("结束预览")
-            0x04.toByte() -> append("第三轴暂停预览")
+            0x04.toByte() -> {
+                append("第三轴暂停预览:")
+                val rect = getPreviewRange()
+                append("$rect 直径:$diameter")
+            }
             0x05.toByte() -> append("第三轴继续预览")
             0x06.toByte() -> {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
