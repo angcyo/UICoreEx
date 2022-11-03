@@ -178,9 +178,9 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     fun checkTransferData(): Boolean {
         val isC1 = laserPeckerModel.isC1()
         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
-        if (canvasDelegate != null && isC1) {
+        if (canvasDelegate != null) {
             if (laserPeckerModel.isZOpen()) {
-                //C1的第三轴模式下, 不允许雕刻GCode数据
+                //所有设备的第三轴模式下, 不允许雕刻GCode数据
                 val gCodeLayer =
                     EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {
@@ -197,7 +197,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
             }
-            if (laserPeckerModel.isPenMode()) {
+            if (isC1 && laserPeckerModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
                 val gCodeLayer =
                     EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
