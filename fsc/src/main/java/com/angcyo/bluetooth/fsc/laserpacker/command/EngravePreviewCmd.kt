@@ -476,8 +476,10 @@ data class EngravePreviewCmd(
         }
 
         /**结束预览指令*/
-        fun previewStopCmd(): EngravePreviewCmd {
-            return EngravePreviewCmd(0x03)
+        fun previewStopCmd(pwrProgress: Float): EngravePreviewCmd {
+            return EngravePreviewCmd(0x03).apply {
+                updatePWR(pwrProgress)
+            }
         }
 
         /**第三轴暂停预览*/
@@ -523,13 +525,17 @@ data class EngravePreviewCmd(
         }
 
         /**第三轴继续预览指令, z轴滚动预览*/
-        fun previewZContinueCmd(): EngravePreviewCmd {
-            return EngravePreviewCmd(0x05)
+        fun previewZContinueCmd(pwrProgress: Float): EngravePreviewCmd {
+            return EngravePreviewCmd(0x05).apply {
+                updatePWR(pwrProgress)
+            }
         }
 
         /**C1专属, 第三轴继续预览指令, z轴滚动预览*/
-        fun previewZScrollCmd(): EngravePreviewCmd {
-            return EngravePreviewCmd(0x0A)
+        fun previewZScrollCmd(pwrProgress: Float): EngravePreviewCmd {
+            return EngravePreviewCmd(0x0A).apply {
+                updatePWR(pwrProgress)
+            }
         }
 
         //--

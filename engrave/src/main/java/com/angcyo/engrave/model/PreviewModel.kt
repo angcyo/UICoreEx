@@ -252,7 +252,7 @@ class PreviewModel : LifecycleViewModel() {
     /**z轴继续滚动预览*/
     @Private
     fun _zContinuePreview(async: Boolean = true) {
-        val cmd = EngravePreviewCmd.previewZContinueCmd()
+        val cmd = EngravePreviewCmd.previewZContinueCmd(HawkEngraveKeys.lastPwrProgress)
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
         cmd.enqueue(flag)
@@ -261,7 +261,7 @@ class PreviewModel : LifecycleViewModel() {
     /**C1专属 z轴滚动预览*/
     @Private
     fun _zScrollPreview(async: Boolean = true) {
-        val cmd = EngravePreviewCmd.previewZScrollCmd()
+        val cmd = EngravePreviewCmd.previewZScrollCmd(HawkEngraveKeys.lastPwrProgress)
         val flag =
             if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
         cmd.enqueue(flag)
