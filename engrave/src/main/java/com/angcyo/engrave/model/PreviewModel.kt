@@ -291,6 +291,13 @@ class PreviewModel : LifecycleViewModel() {
     fun updatePreview(itemRenderer: IRenderer?, async: Boolean = true) {
         updatePreview(async) {
             updatePreviewInfo(this, itemRenderer)
+
+            //有外设的情况下, z轴优先暂停滚动
+            zState = if (laserPeckerModel.haveExDevice()) {
+                PreviewInfo.Z_STATE_PAUSE
+            } else {
+                zState // def
+            }
         }
     }
 }
