@@ -14,21 +14,22 @@
     <string name="ex_tips_nine">紧急停止! flash自检错误</string>
     <string name="ex_tips_ten">紧急停止! 尺寸异常</string>
 
-    <string name="laser_type_white">白光</string>
-    <string name="laser_type_blue">蓝光</string>
+    <string name="laser_type_white">White</string>
+    <string name="laser_type_blue">Blue</string>
 
-    <string name="preview_state_gcode">预览向量图</string>
-    <string name="preview_state_range">预览范围</string>
-    <string name="preview_state_z_pause">第三轴暂停预览</string>
-    <string name="preview_state_z_continue">第三轴继续预览</string>
-    <string name="preview_state_center">预览显示中心</string>
-    <string name="preview_state_points">4点范围预览</string>
-    <string name="preview_state_bracket">支架调整</string>
+    <string name="preview_state_gcode">Preview gcode</string>
+    <string name="preview_state_range">Scope Preview</string>
+    <string name="preview_state_z_pause">Pause roll</string>
+    <string name="preview_state_z_continue">Continue roll</string>
+    <string name="preview_state_z_scroll">Scroll roll</string>
+    <string name="preview_state_center">Display Center</string>
+    <string name="preview_state_points">4 point range preview</string>
+    <string name="preview_state_bracket">Bracket</string>
 
-    <string name="engrave_state_pause">镭雕暂停</string>
-    <string name="engrave_state_stop">镭雕结束</string>
-    <string name="engrave_state_ing">镭雕中</string>
+    <string name="engrave_state_pause">Engrave pause</string>
+    <string name="engrave_state_stop">Engrave finish</string>
+    <string name="engrave_state_ing">Carving</string>
 
-    <string name="blue_no_device_connected">未连接设备</string>
+    <string name="blue_no_device_connected">No device is connected</string>
 
 </resources>

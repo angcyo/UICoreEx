@@ -198,6 +198,7 @@ fun QueryStateParser.toDeviceStateString(): String? {
                 0x06 -> builder.append(_string(R.string.preview_state_bracket))
                 0x07 -> builder.append(_string(R.string.preview_state_center))
                 0x08 -> builder.append(_string(R.string.preview_state_points))
+                0x0A -> builder.append(_string(R.string.preview_state_z_scroll))
             }
         }
         QueryStateParser.WORK_MODE_FOCUSING -> builder.append("调焦模式")

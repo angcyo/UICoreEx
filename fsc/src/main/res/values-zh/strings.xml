@@ -19,8 +19,9 @@
 
     <string name="preview_state_gcode">预览向量图</string>
     <string name="preview_state_range">预览范围</string>
-    <string name="preview_state_z_pause">第三轴暂停预览</string>
-    <string name="preview_state_z_continue">第三轴继续预览</string>
+    <string name="preview_state_z_pause">第三轴暂停</string>
+    <string name="preview_state_z_continue">第三轴继续</string>
+    <string name="preview_state_z_scroll">第三轴滚动</string>
     <string name="preview_state_center">预览显示中心</string>
     <string name="preview_state_points">4点范围预览</string>
     <string name="preview_state_bracket">支架调整</string>
