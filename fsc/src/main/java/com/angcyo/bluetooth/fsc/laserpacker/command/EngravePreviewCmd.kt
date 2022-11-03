@@ -476,10 +476,8 @@ data class EngravePreviewCmd(
         }
 
         /**结束预览指令*/
-        fun previewStopCmd(pwrProgress: Float): EngravePreviewCmd {
-            return EngravePreviewCmd(0x03).apply {
-                updatePWR(pwrProgress)
-            }
+        fun previewStopCmd(): EngravePreviewCmd {
+            return EngravePreviewCmd(0x03)
         }
 
         /**第三轴暂停预览*/
