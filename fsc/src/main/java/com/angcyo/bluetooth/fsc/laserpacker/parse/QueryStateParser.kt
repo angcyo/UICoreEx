@@ -120,6 +120,7 @@ data class QueryStateParser(
     //解析数据
     override fun parse(packet: ByteArray): QueryStateParser? {
         return try {
+            //AABB 17 00 06 000000000000000000000000000100010000000008
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
