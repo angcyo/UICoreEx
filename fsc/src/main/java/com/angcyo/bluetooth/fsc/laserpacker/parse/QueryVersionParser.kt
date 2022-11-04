@@ -53,9 +53,12 @@ data class QueryVersionParser(
     }
 }
 
-/**357 -> V3.5.7*/
-fun Int.toLaserPeckerVersionName(): String = buildString {
-    val version = this@toLaserPeckerVersionName
+/**固件版本号*/
+fun Long.toFirmwareVersionString() = buildString {
+    val version = this@toFirmwareVersionString
     append("V")
     append("$version".split("").connect("."))
 }
+
+/**357 -> V3.5.7*/
+fun Int.toLaserPeckerVersionName(): String = toLong().toFirmwareVersionString()

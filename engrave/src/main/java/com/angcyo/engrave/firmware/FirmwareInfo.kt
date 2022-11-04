@@ -1,8 +1,12 @@
 package com.angcyo.engrave.firmware
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.engrave.firmware.FirmwareUpdateFragment.Companion.FIRMWARE_EXT
+import com.angcyo.http.base.fromJson
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.lastName
+import com.angcyo.library.ex.toByteInt
+import com.angcyo.library.ex.toHexString
 
 /**
  * 待升级的固件信息
@@ -21,7 +25,9 @@ data class FirmwareInfo(
     /**版本号*/
     val version: Int,
     /**文件数据*/
-    val data: ByteArray
+    val data: ByteArray,
+    /**bin文件自带的数据信息*/
+    val lpBin: LPBinBean? = null
 )
 
 /**从路径中获取固件版本*/
@@ -56,5 +62,25 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
 
 /**文件路径转成固件信息*/
 fun String.toFirmwareInfo(): FirmwareInfo {
-    return FirmwareInfo(this, lastName(), getFirmwareVersion(), file().readBytes())
+    val bytes = file().readBytes()
+    val size = bytes.size
+    val lengthBytes = bytes.slice(size - 4 until size)
+    val length = lengthBytes.toByteArray().toByteInt()//数据总长度
+    //val int2 = lengthBytes.toByteArray().toHexInt()
+    var lpBinBean: LPBinBean? = null
+
+    val startIndex = size - length
+    if (startIndex > 0) {
+        val headBytes = bytes.slice(startIndex until startIndex + 2)
+        val head = headBytes.toByteArray().toHexString(false)
+
+        if (head == LaserPeckerHelper.PACKET_HEAD) {
+            //真实的lp数据结构
+            val dataBytes = bytes.slice(startIndex + 2 until size - 4)
+            val data = dataBytes.toByteArray().toString(Charsets.UTF_8)
+            lpBinBean = data.fromJson<LPBinBean>()
+        }
+    }
+    val firmwareVersion = lpBinBean?.v ?: getFirmwareVersion()
+    return FirmwareInfo(this, lastName(), firmwareVersion.toInt(), bytes, lpBinBean)
 }

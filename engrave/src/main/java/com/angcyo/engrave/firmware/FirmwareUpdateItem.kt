@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toFirmwareVersionString
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.normalDialog
@@ -14,7 +15,9 @@ import com.angcyo.dsladapter.UpdateAdapterProperty
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.toTime
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -52,8 +55,26 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
+        val lpBin = itemFirmwareInfo?.lpBin
         itemHolder.tv(R.id.lib_text_view)?.text = span {
-            append(itemFirmwareInfo?.name)
+            val name = if (lpBin == null) {
+                itemFirmwareInfo?.name
+            } else {
+                lpBin.n ?: itemFirmwareInfo?.name
+            }
+            append(name)
+            lpBin?.let {
+                appendln()
+                append("固件版本:${it.v.toFirmwareVersionString()}")
+                if (it.t > 0) {
+                    appendln()
+                    append("固件时间:${it.t.toTime("yyyy-MM-dd HH:mm:ss")}")
+                }
+                if (!it.d.isNullOrEmpty()) {
+                    appendln()
+                    append(it.d)
+                }
+            }
             if (apiModel.haveDeviceConnected()) {
                 peckerModel.deviceVersionData.value?.softwareVersionName?.let {
                     appendln()
@@ -90,7 +111,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 itemFirmwareInfo?.let { info ->
                     if (peckerModel.deviceVersionData.value?.softwareVersion == info.version) {
                         itemHolder.context.normalDialog {
-                            dialogTitle = "警告"
+                            dialogTitle = _string(R.string.engrave_warn)
                             dialogMessage = "相同版本的固件, 是否继续升级?"
                             positiveButtonListener = { dialog, dialogViewHolder ->
                                 dialog.dismiss()
