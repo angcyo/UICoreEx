@@ -65,10 +65,10 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             append(name)
             lpBin?.let {
                 appendln()
-                append("固件版本:${it.v.toFirmwareVersionString()}")
+                append("${_string(R.string.firmware_version)}:${it.v.toFirmwareVersionString()}")
                 if (it.t > 0) {
                     appendln()
-                    append("固件时间:${it.t.toTime("yyyy-MM-dd HH:mm:ss")}")
+                    append("${_string(R.string.firmware_time)}:${it.t.toTime("yyyy-MM-dd HH:mm:ss")}")
                 }
                 if (!it.d.isNullOrEmpty()) {
                     appendln()
@@ -78,12 +78,12 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             if (apiModel.haveDeviceConnected()) {
                 peckerModel.deviceVersionData.value?.softwareVersionName?.let {
                     appendln()
-                    append("当前版本:$it")
+                    append("${_string(R.string.device_firmware_version)}:$it")
                 }
             }
             if (itemIsFinish) {
                 appendln()
-                append("升级完成!")
+                append(_string(R.string.upgrade_completed))
             }
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)

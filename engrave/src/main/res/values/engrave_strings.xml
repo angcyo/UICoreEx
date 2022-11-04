@@ -193,4 +193,8 @@
 
     <string name="device_angle">Device angle</string>
 
+    <string name="device_firmware_version">Device firmware version</string>
+    <string name="firmware_version">Firmware version</string>
+    <string name="firmware_time">Firmware time</string>
+    <string name="upgrade_completed">Upgrade completed!</string>
 </resources>

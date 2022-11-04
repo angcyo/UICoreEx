@@ -183,4 +183,8 @@
 
     <string name="device_angle">设备水平角度</string>
 
+    <string name="device_firmware_version">设备固件版本</string>
+    <string name="firmware_version">固件版本</string>
+    <string name="firmware_time">固件时间</string>
+    <string name="upgrade_completed">升级完成!</string>
 </resources>
