@@ -64,22 +64,28 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
 fun String.toFirmwareInfo(): FirmwareInfo {
     val bytes = file().readBytes()
     val size = bytes.size
-    val lengthBytes = bytes.slice(size - 4 until size)
-    val length = lengthBytes.toByteArray().toByteInt()//数据总长度
-    //val int2 = lengthBytes.toByteArray().toHexInt()
     var lpBinBean: LPBinBean? = null
 
-    val startIndex = size - length
-    if (startIndex > 0) {
-        val headBytes = bytes.slice(startIndex until startIndex + 2)
-        val head = headBytes.toByteArray().toHexString(false)
+    try {
+        val lengthBytes = bytes.slice(size - 4 until size)
+        val length = lengthBytes.toByteArray().toByteInt()//数据总长度
+        if (length > 0) {
+            //val int2 = lengthBytes.toByteArray().toHexInt()
+            val startIndex = size - length
+            if (startIndex > 0) {
+                val headBytes = bytes.slice(startIndex until startIndex + 2)
+                val head = headBytes.toByteArray().toHexString(false)
 
-        if (head == LaserPeckerHelper.PACKET_HEAD) {
-            //真实的lp数据结构
-            val dataBytes = bytes.slice(startIndex + 2 until size - 4)
-            val data = dataBytes.toByteArray().toString(Charsets.UTF_8)
-            lpBinBean = data.fromJson<LPBinBean>()
+                if (head == LaserPeckerHelper.PACKET_HEAD) {
+                    //真实的lp数据结构
+                    val dataBytes = bytes.slice(startIndex + 2 until size - 4)
+                    val data = dataBytes.toByteArray().toString(Charsets.UTF_8)
+                    lpBinBean = data.fromJson<LPBinBean>()
+                }
+            }
         }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
     val firmwareVersion = lpBinBean?.v ?: getFirmwareVersion()
     return FirmwareInfo(this, lastName(), firmwareVersion.toInt(), bytes, lpBinBean)
