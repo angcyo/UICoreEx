@@ -130,7 +130,7 @@ class EngraveTransitionManager {
          * */
         fun getRendererList(
             canvasDelegate: CanvasDelegate,
-            layerInfo: EngraveLayerInfo?,
+            layerInfo: EngraveLayerInfo? = null,
             sort: Boolean = false
         ): List<BaseItemRenderer<*>> {
             val rendererList = mutableListOf<BaseItemRenderer<*>>()

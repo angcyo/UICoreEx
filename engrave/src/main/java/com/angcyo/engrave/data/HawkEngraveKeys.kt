@@ -70,4 +70,7 @@ object HawkEngraveKeys {
     /**中心点预览的时候, 是否使用矩形的中心点坐标*/
     @FunctionConfig("物理中心点预览开关")
     var enableRectCenterPreview: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    /**最大允许雕刻的item数量*/
+    var maxEngraveItemCountLimit: Int by HawkPropertyValue<Any, Int>(10)
 }

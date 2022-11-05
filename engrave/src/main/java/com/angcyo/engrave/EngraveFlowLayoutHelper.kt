@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -28,6 +29,7 @@ import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.size
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
@@ -176,9 +178,20 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
      *
      * @return true 数据合法, 允许雕刻*/
     fun checkTransferData(): Boolean {
-        val isC1 = laserPeckerModel.isC1()
         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
         if (canvasDelegate != null) {
+            val isC1 = laserPeckerModel.isC1()
+            val fContext = engraveCanvasFragment?.fragment?.fContext()
+
+            val allRendererList = EngraveTransitionManager.getRendererList(canvasDelegate)
+            if (allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit) {
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = "雕刻数量已达上限, 最大${HawkEngraveKeys.maxEngraveItemCountLimit}个."
+                }
+                return false
+            }
+
             if (laserPeckerModel.isZOpen()) {
                 //所有设备的第三轴模式下, 不允许雕刻GCode数据
                 val gCodeLayer =
@@ -188,7 +201,6 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
                     if (rendererList.isNotEmpty()) {
                         //不允许雕刻GCode
-                        val fContext = engraveCanvasFragment?.fragment?.fContext()
                         fContext?.messageDialog {
                             dialogTitle = _string(R.string.engrave_warn)
                             dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
@@ -209,7 +221,6 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     )
                     if (notGCodeRendererList.isNotEmpty()) {
                         //不允许雕刻非GCode数据
-                        val fContext = engraveCanvasFragment?.fragment?.fContext()
                         fContext?.messageDialog {
                             dialogTitle = _string(R.string.engrave_warn)
                             dialogMessage = "当前模式下, 不允许雕刻非\"${gCodeLayer.label}\"数据"
