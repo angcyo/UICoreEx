@@ -138,9 +138,12 @@ class FscDeviceModel : LifecycleViewModel() {
                         val nowTime = nowTime()
                         if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {
                             //1分钟
-                            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()?.let {
-                                L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
-                                bleApiModel.connect(it.deviceAddress, it.deviceName, true)
+                            if (FscBleApiModel.haveBluetoothPermission()) {
+                                lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                                    ?.let {
+                                        L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
+                                        bleApiModel.connect(it.deviceAddress, it.deviceName, true)
+                                    }
                             }
                         }
                     }

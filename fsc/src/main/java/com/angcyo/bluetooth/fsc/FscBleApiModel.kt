@@ -35,10 +35,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.app
-import com.angcyo.library.ex.baseConfig
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.toHexString
+import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.MutableOnceLiveData
 import com.angcyo.viewmodel.vmData
@@ -166,6 +163,10 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             return result
         }
+
+        /**返回是否有蓝牙的相关权限*/
+        fun haveBluetoothPermission(context: Context = app()): Boolean =
+            context.havePermission(bluetoothPermissionList())
     }
 
     //<editor-fold desc="Callbacks Init">
