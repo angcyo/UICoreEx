@@ -22,6 +22,7 @@ import com.yanzhenjie.andserver.util.MediaType
 import java.io.InputStream
 
 /**
+ * 自动雕刻支持[com.angcyo.canvas.data.CanvasProjectBean] 和 [com.angcyo.canvas.data.CanvasProjectItemBean] body json 数据格式
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/22
  */
@@ -39,21 +40,25 @@ class AutoEngraveWebsite : BasicWebsite() {
         var engraveData: CanvasOpenDataType? = null
         val projectBean = bodyString.toCanvasProjectBean()
         var name = "Untitled"
-        if (projectBean?.data.isNullOrEmpty()) {
-            //非工程数据
+
+        val fileName = projectBean?.file_name
+        if (!fileName.isNullOrEmpty() && !projectBean.data.isNullOrEmpty()) {
+            //是工程数据结构
+            engraveData = projectBean
+            name = fileName
+        } else {
+            //可能是com.angcyo.canvas.data.CanvasProjectItemBean数据
             val projectItemBean = bodyString.toCanvasProjectItemBean()
             if (projectItemBean != null && projectItemBean.mtype != -1) {
                 //单个的item数据
                 engraveData = projectItemBean
                 name = projectItemBean.name ?: projectItemBean.mtype.toTypeNameString()
             }
-        } else {
-            engraveData = projectBean
-            name = projectBean?.file_name ?: "Untitled"
         }
 
+        //error
         if (engraveData == null) {
-            throw IllegalArgumentException("无效的数据")
+            throw IllegalArgumentException("无效的数据, body可是[CanvasProjectBean](必须包含file_name字段)和[CanvasProjectItemBean]的json字符串")
         }
 
         //open
