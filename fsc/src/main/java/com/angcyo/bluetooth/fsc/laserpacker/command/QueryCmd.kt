@@ -42,6 +42,11 @@ data class QueryCmd(
         /**查询安全码和用户账号*/
         val safeCode: QueryCmd
             get() = QueryCmd(0x04)
+
+        /**查询日志
+         * AABB080006000000000006*/
+        val log: QueryCmd
+            get() = QueryCmd(0x06)
     }
 
     //功能码
@@ -69,6 +74,7 @@ data class QueryCmd(
                 0x02.toByte() -> "设置状态"
                 0x03.toByte() -> "版本信息"
                 0x04.toByte() -> "用户账号"
+                0x06.toByte() -> "日志"
                 else -> "Unknown"
             }
         )

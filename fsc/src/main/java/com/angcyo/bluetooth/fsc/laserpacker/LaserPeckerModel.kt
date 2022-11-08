@@ -9,10 +9,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
-import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
+import com.angcyo.bluetooth.fsc.laserpacker.parse.*
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
@@ -110,11 +108,18 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             }
         }
 
-        //
+        //设备错误码
         queryStateParser.error.toErrorStateString()?.let {
             //查询到设备异常
             doMain {
                 toast(it)
+            }
+
+            //查询错误日志
+            QueryCmd.log.enqueue { bean, error ->
+                if (error == null) {
+                    bean?.parse<QueryLogParser>()?.log?.writeErrorLog()
+                }
             }
         }
         deviceStateData.postValue(queryStateParser)
