@@ -563,7 +563,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             return false
         }
         val cacheDevice = connectDeviceList.find { it.device == device }
-        return if (fscApi.isConnected(address)) {
+        return if (cacheDevice?.state != CONNECT_STATE_DISCONNECT && fscApi.isConnected(address)) {
             if (resetConnectState && cacheDevice == null) {
                 connectStateData.value = wrapStateDevice(device) {
                     this.state = CONNECT_STATE_SUCCESS
@@ -716,10 +716,6 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**当前设备的连接状态*/
     fun connectState(bleDevice: FscDevice?): Int {
-        if (pendingDisconnectList.contains(bleDevice?.address)) {
-            //正在断开连接
-            return CONNECT_STATE_DISCONNECT_START
-        }
         val find = connectDeviceList.find { it.device == bleDevice }
         if (find == null) {
             if (isConnected(bleDevice)) {
@@ -780,12 +776,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //断开其他设备
             disconnectAll()
         }
+        connectDeviceList.removeAll { it.device == device }//移除缓存
         connectStateData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
             connectTime = nowTime()
             connectedTime = 0L
             disconnectTime = 0L
             this.isAutoConnect = isAutoConnect
+            isActiveDisConnected = false
+            exception = null
         }
         fscApi.connect(device.address)
     }
@@ -802,8 +801,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
-    /**断开连接*/
-    fun disconnect(bleDevice: FscDevice?) {
+    /**断开连接
+     * [isActiveDisConnected] 是否是主动断开的蓝牙连接*/
+    fun disconnect(bleDevice: FscDevice?, isActiveDisConnected: Boolean = true) {
         if (bleDevice == null) {
             return
         }
@@ -815,7 +815,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 state = CONNECT_STATE_DISCONNECT_START
                 gatt = null
                 disconnectTime = nowTime()
-                isActiveDisConnected = true
+                this.isActiveDisConnected = isActiveDisConnected
                 isAutoConnect = false
             }
             stopSend(address)
@@ -830,7 +830,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                         this.state = CONNECT_STATE_DISCONNECT
                     }
                 }
-                connectDeviceList.remove(it)
+                //connectDeviceList.remove(deviceState)//断开成功不移除状态
                 _notifyConnectDeviceChanged()
             }
         }
@@ -843,7 +843,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         list.forEach { deviceState ->
             if (deviceState.state == CONNECT_STATE_DISCONNECT_START && nowTime() - deviceState.disconnectTime > 1_000) {
                 //断开超时
-                connectDeviceList.remove(deviceState)
+                //connectDeviceList.remove(deviceState)//断开成功不移除状态
                 pendingDisconnectList.remove(deviceState.device.address)
                 connectStateData.value = wrapStateDevice(deviceState.device) {
                     state = CONNECT_STATE_DISCONNECT
@@ -921,14 +921,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     @UiThread
     fun _peripheralDisconnected(address: String, gatt: BluetoothGatt?) {
+        //fscApi.clearDevice(address)//?
         val cacheDeviceState = connectDeviceList.find { it.device.address == address }
         cacheDeviceState?.let { deviceState ->
-            pendingDisconnectList.remove(deviceState.device.address)
-            connectDeviceList.remove(deviceState)
-            connectStateData.value = wrapStateDevice(deviceState.device) {
+            val wrapStateDevice = wrapStateDevice(deviceState.device) {
                 state = CONNECT_STATE_DISCONNECT
                 this.gatt = gatt
             }
+            pendingDisconnectList.remove(deviceState.device.address)
+            //connectDeviceList.remove(deviceState)//断开成功不移除状态
+            connectStateData.value = wrapStateDevice
             _notifyConnectDeviceChanged()
         }
     }

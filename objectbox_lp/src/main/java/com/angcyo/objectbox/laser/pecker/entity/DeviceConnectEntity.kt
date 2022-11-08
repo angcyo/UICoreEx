@@ -24,4 +24,7 @@ data class DeviceConnectEntity(
 
     /**设备的蓝牙名称*/
     var deviceName: String? = null,
+
+    /**主动断开的时间, 用来判断取消自动连接的时间*/
+    var disconnectTime: Long? = null,
 )

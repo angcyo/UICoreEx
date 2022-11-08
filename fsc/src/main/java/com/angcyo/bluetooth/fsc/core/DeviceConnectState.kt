@@ -16,7 +16,9 @@ data class DeviceConnectState(
     var gatt: BluetoothGatt? = null,
     var type: ConnectType? = null,
     var exception: Exception? = null,
+    /**是否是主动断开*/
     var isActiveDisConnected: Boolean = false, //主动断开连接
+    /**是否是自动连接*/
     var isAutoConnect: Boolean = false, //自动连接, 用来弹出连接成功后的界面
     var connectTime: Long = 0L, //触发连接的时间, 13位时间戳, 毫秒
     var connectedTime: Long = 0L, //连接上的时间, 13位时间戳, 毫秒

@@ -59,7 +59,9 @@ class BluetoothConnectItem : DslAdapterItem() {
     override fun onSetItemSelected(select: Boolean) {
         super.onSetItemSelected(select)
         if (!select) {
-            fscApi.disconnect(itemFscDevice)
+            if (itemSelectMutexFromItem != this) {
+                fscApi.disconnect(itemFscDevice)
+            }
         }
     }
 
