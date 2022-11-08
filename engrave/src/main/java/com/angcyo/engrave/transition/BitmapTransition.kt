@@ -198,9 +198,10 @@ class BitmapTransition : IEngraveTransition {
                     for (x in 0 until width) {
                         //一行
                         val color = bitmap.getPixel(x, y)
-                        val channelColor = Color.red(color)
+                        //val channelColor = Color.red(color)
+                        val grayInt = color.toGrayInt()
 
-                        if (channelColor <= threshold) {
+                        if (grayInt <= threshold) {
                             //黑色传0, 黑色纸上雕刻, 金属不雕刻
                             //byte = byte or (0b1 shl bit)
                             logBuilder.append("0")
@@ -229,7 +230,7 @@ class BitmapTransition : IEngraveTransition {
             return logBuilder.toString() to bytes
         }
 
-        /**将抖动数据 00011110001010 描述字符串, 转换成可视化图片*/
+        /**将抖动数据 00011110001010\n00011110001010 描述字符串, 转换成可视化图片*/
         fun String.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
             val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(result)
