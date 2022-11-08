@@ -9,6 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.library.L
+import com.angcyo.library.app
+import com.angcyo.library.getAppName
 
 /**
  * 用来输出[L]日志的[WebSocket]服务
@@ -18,7 +20,7 @@ import com.angcyo.library.L
 class LogWSService : WSService() {
 
     init {
-        notifyName = "LogServer"
+        notifyName = "${app().getAppName()}-LogServer"
         notifyChannelName = "LogServer"
     }
 
