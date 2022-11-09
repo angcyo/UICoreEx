@@ -33,6 +33,7 @@ class AutoEngraveWebsite : BasicWebsite() {
     }
 
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
+        response.addHeader("Access-Control-Allow-Origin", "*")
         val bodyString = request.body?.string()
         if (bodyString.isNullOrEmpty()) {
             throw IllegalArgumentException("无效的请求体")

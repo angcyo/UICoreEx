@@ -113,9 +113,16 @@ class AutoEngraveModel : LifecycleViewModel() {
         } else {
             task.state = STATE_CREATE
             startCreateData(task.taskId, itemList) {
-                task.state = STATE_TRANSFER
-                autoEngraveTaskOnceData.postValue(task)
-                transferModel.startTransferData(task.taskId)
+                if (it.isEmpty()) {
+                    task.state = STATE_NORMAL
+                    task.isFinish = true
+                    task.error = EmptyException()//空数据异常
+                    autoEngraveTaskOnceData.postValue(task)
+                } else {
+                    task.state = STATE_TRANSFER
+                    autoEngraveTaskOnceData.postValue(task)
+                    transferModel.startTransferData(task.taskId)
+                }
             }
         }
         autoEngraveTaskOnceData.postValue(task)
@@ -131,9 +138,16 @@ class AutoEngraveModel : LifecycleViewModel() {
             task.error = EmptyException()//空数据异常
         } else {
             startCreateData(task.taskId, itemList) {
-                task.state = STATE_TRANSFER
-                autoEngraveTaskOnceData.postValue(task)
-                transferModel.startTransferData(task.taskId)
+                if (it.isEmpty()) {
+                    task.state = STATE_NORMAL
+                    task.isFinish = true
+                    task.error = EmptyException()//空数据异常
+                    autoEngraveTaskOnceData.postValue(task)
+                } else {
+                    task.state = STATE_TRANSFER
+                    autoEngraveTaskOnceData.postValue(task)
+                    transferModel.startTransferData(task.taskId)
+                }
             }
         }
         autoEngraveTaskOnceData.postValue(task)

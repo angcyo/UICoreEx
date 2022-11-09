@@ -91,20 +91,20 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
             this,
             allowBackward = false
         ) { autoEngraveTask ->
-            autoEngraveTask?.let {
-                adapter?.updateItem {
-                    if (it is AutoEngraveItem) {
-                        it.itemAutoEngraveTask = autoEngraveTask
+            autoEngraveTask?.let { task ->
+                adapter?.updateItem { item ->
+                    if (item is AutoEngraveItem) {
+                        item.itemAutoEngraveTask = autoEngraveTask
                         true
                     } else {
                         false
                     }
                 }
-                if (it.isFinish) {
-                    if (it.error == null) {
+                if (task.isFinish) {
+                    if (task.error == null) {
                         toast("雕刻完成")
                     } else {
-                        toast(it.error?.message)
+                        toast(task.error?.message)
                     }
                     finish()
                 }
