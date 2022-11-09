@@ -148,7 +148,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                     }
                 }.elseNull {
                     itemIsUpdating = false
-                    toast("data exception!")
+                    toast(_string(R.string.data_exception))
                 }
             } else {
                 itemHolder.clickCallView(R.id.device_button)
@@ -214,7 +214,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                     listenerFinish()
                 }.elseNull {
                     itemIsUpdating = false
-                    toast("data exception!")
+                    toast(_string(R.string.data_exception))
                 }
             }
     }

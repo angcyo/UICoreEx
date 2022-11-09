@@ -17,8 +17,10 @@ import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
+import com.angcyo.library.getAppString
 import com.angcyo.library.utils.LogFile
 import com.angcyo.objectbox.findFirst
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -701,6 +703,16 @@ object LaserPeckerHelper {
             }
             end?.invoke(bean, error)
         }
+    }
+
+    /**当前的固件版本, 是否支持使用app*/
+    fun isSupportFirmware(): Boolean {
+        val productInfo = vmApp<LaserPeckerModel>().productInfoData.value ?: return true
+        val lpSupportFirmware = getAppString("lp_support_firmware")
+        if (lpSupportFirmware.isNullOrEmpty()) {
+            return true
+        }
+        return VersionMatcher.matches(productInfo.softwareVersion, lpSupportFirmware)
     }
 
     //</editor-fold desc="packet">

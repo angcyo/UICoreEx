@@ -19,7 +19,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/lib_xhdpi"
         android:gravity="center"
-        android:text="@string/data_exception"
+        android:text="@string/transfer_data_exception"
         android:textColor="@color/error" />
 
     <com.angcyo.widget.DslButton

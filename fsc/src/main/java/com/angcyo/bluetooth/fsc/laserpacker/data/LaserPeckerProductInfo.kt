@@ -71,7 +71,7 @@ data class LaserPeckerProductInfo(
     //---
     var deviceName: String? = null, //蓝牙设备名称
     var deviceAddress: String? = null, //蓝牙设备地址
-    /**等同于[version]*/
+    /**固件版本号, 等同于[version]*/
     var softwareVersion: Int = -1,
     var hardwareVersion: Int = -1,
 ) {

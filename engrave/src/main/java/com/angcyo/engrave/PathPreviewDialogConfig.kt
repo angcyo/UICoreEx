@@ -22,6 +22,7 @@ import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.model.TransferModel
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -108,14 +109,14 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                 }
                 autoEngraveModel.startCreateData(uuid, itemBean) { transferDataEntity ->
                     if (transferDataEntity == null) {
-                        toast("data exception!")
+                        toast(_string(R.string.data_exception))
                         loadEnd(null, null)
                     } else {
                         //开始传输数据
                         transferModel.transferData(TransferState(uuid), transferDataEntity) {
                             loadEnd(transferDataEntity, null)
                             if (it != null) {
-                                toast("transfer data exception!")
+                                toast(_string(R.string.transfer_data_exception))
                             } else {
                                 ExitCmd().enqueue { bean, error ->
                                     _transferDataEntity = transferDataEntity

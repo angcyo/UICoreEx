@@ -7,6 +7,7 @@ import com.angcyo.engrave.model.TransferModel
 import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.item.BaseButtonItem
+import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -35,9 +36,9 @@ class DataStopTransferItem : BaseButtonItem() {
         itemHolder.visible(R.id.lib_retry_button, itemException != null)
 
         if (itemException is EmptyException) {
-            itemHolder.tv(R.id.error_text_view)?.text = "No data needs to be transmitted!"
+            itemHolder.tv(R.id.error_text_view)?.text = _string(R.string.no_data_transfer)
         } else if (itemException is DataException) {
-            itemHolder.tv(R.id.error_text_view)?.text = "data exception!"
+            itemHolder.tv(R.id.error_text_view)?.text = _string(R.string.data_exception)
         }
 
         itemHolder.click(R.id.lib_retry_button) {

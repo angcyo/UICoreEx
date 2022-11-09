@@ -175,13 +175,12 @@
     <string name="canvas_engrave_layer">Carving layer</string>
     <string name="canvas_rename">Rename</string>
     <string name="retry">Retry</string>
-    <string name="data_exception">Data transmission failure</string>
+    <string name="transfer_data_exception">Data transmission failure</string>
 
     <string name="select_device">Select Device</string>
     <string name="start_upgrade">Start Update</string>
     <string name="firmware_upgrade">Firmware Upgrade</string>
 
-    <string name="engrave_warn">Warning</string>
     <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
     <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
     <string name="engrave_perimeter">P</string>
@@ -190,7 +189,9 @@
     <string name="device_engrave_ing_des">Do you want to end the sculpting task?</string>
 
     <string name="focal_distance_tip">Please confirm the focal length</string>
-
+    <string name="engrave_warn">Warning</string>
+    <string name="no_data_transfer">No data needs to be transmitted!</string>
+    <string name="data_exception">Data exception!</string>
     <string name="device_angle">Device angle</string>
 
     <string name="device_firmware_version">Device firmware version</string>

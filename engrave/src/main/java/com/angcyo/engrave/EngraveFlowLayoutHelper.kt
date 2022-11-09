@@ -2,8 +2,10 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
@@ -178,12 +180,27 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
      *
      * @return true 数据合法, 允许雕刻*/
     fun checkTransferData(): Boolean {
+        val fContext = engraveCanvasFragment?.fragment?.fContext()
+        if (!LaserPeckerHelper.isSupportFirmware()) {
+            val version = vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion
+            fContext?.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = "不支持的固件版本${version?.toLaserPeckerVersionName()}, 请先更新固件后使用."
+            }
+            return false
+        }
+
         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
         if (canvasDelegate != null) {
-            val isC1 = laserPeckerModel.isC1()
-            val fContext = engraveCanvasFragment?.fragment?.fContext()
-
             val allRendererList = EngraveTransitionManager.getRendererList(canvasDelegate)
+            if (allRendererList.isEmpty()) {
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = _string(R.string.no_data_transfer)
+                }
+                return false
+            }
+
             if (allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit) {
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
@@ -209,6 +226,8 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
             }
+
+            val isC1 = laserPeckerModel.isC1()
             if (isC1 && laserPeckerModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
                 val gCodeLayer =
