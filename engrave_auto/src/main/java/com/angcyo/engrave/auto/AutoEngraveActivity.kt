@@ -79,7 +79,9 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     _engraveData = it
                     renderLayout(adapter, data)
 
-                    checkStartEngrave()
+                    if (needAutoStart()) {
+                        checkStartEngrave()
+                    }
                 }
             }
         }
@@ -143,6 +145,23 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
         } else if (data is CanvasProjectItemBean) {
             _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, listOf(data))
         }
+    }
+
+    /**是否需要自动开始*/
+    fun needAutoStart(): Boolean {
+        val data = _engraveData
+        if (data is CanvasProjectBean) {
+            if (data._debug == true) {
+                //调试模式下, 不自动开始
+                return false
+            }
+        } else if (data is CanvasProjectItemBean) {
+            if (data._debug == true) {
+                //调试模式下, 不自动开始
+                return false
+            }
+        }
+        return true
     }
 
     /**渲染界面*/
