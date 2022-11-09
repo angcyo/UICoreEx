@@ -184,13 +184,14 @@ class BitmapTransition : IEngraveTransition {
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
          * 白色传1 黑色传0
          * */
-        fun handleBitmapByte(bitmap: Bitmap, threshold: Int): Pair<String, ByteArray> {
+        fun handleBitmapByte(bitmap: Bitmap, threshold: Int): Pair<List<String>, ByteArray> {
             val width = bitmap.width
             val height = bitmap.height
 
             var byte: Byte = 0 //1个字节8位
             var bit = 0
-            val logBuilder = StringBuilder()
+            val logList = mutableListOf<String>()
+            val lineBuilder = StringBuilder()
             val bytes = byteWriter {
                 for (y in 0 until height) {
                     bit = 7
@@ -204,11 +205,11 @@ class BitmapTransition : IEngraveTransition {
                         if (grayInt <= threshold) {
                             //黑色传0, 黑色纸上雕刻, 金属不雕刻
                             //byte = byte or (0b1 shl bit)
-                            logBuilder.append("0")
+                            lineBuilder.append("0")
                         } else {
                             //白色传1
                             byte = byte or (0b1 shl bit).toByte()
-                            logBuilder.append("1")
+                            lineBuilder.append("1")
                         }
                         bit--
                         if (bit < 0) {
@@ -218,20 +219,26 @@ class BitmapTransition : IEngraveTransition {
                             byte = 0
                         }
                     }
+
                     //
                     if (bit != 7) {
                         write(byte)//写入1个字节
                     }
-                    if (y != height - 1) {
-                        logBuilder.appendLine()
-                    }
+                    //
+                    logList.add(lineBuilder.toString())
+                    lineBuilder.clear()
                 }
             }
-            return logBuilder.toString() to bytes
+            return logList to bytes
         }
 
         /**将抖动数据 00011110001010\n00011110001010 描述字符串, 转换成可视化图片*/
         fun String.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
+            return lines().toEngraveDitheringBitmap(width, height)
+        }
+
+        /**将抖动数据 00011110001010\n00011110001010 描述字符串, 转换成可视化图片*/
+        fun List<String>.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
             val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(result)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -242,7 +249,7 @@ class BitmapTransition : IEngraveTransition {
             }
             var x = 0f
             var y = 0f
-            lines().forEach { line ->
+            forEach { line ->
                 x = 0f
                 line.forEach { char ->
                     if (char == '1') {
