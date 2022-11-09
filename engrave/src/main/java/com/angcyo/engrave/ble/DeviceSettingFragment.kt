@@ -82,6 +82,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         val productInfo = laserPeckerModel.productInfoData.value
         val isC1 = productInfo?.isCI() == true
+        val isC1CarFlag = isC1 && settingParser?.carFlag == 1
 
         renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
@@ -134,59 +135,67 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //第三轴
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_tips_fourteen_2)
-                itemDes = _string(R.string.device_setting_tips_fourteen_3)
+            if (isC1CarFlag) {
+                //自动进入了移动平台模式
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_tips_fourteen_2)
+                    itemDes = _string(R.string.device_setting_tips_fourteen_3)
 
-                itemSwitchChecked = settingParser?.zFlag == 1
-                itemSwitchChangedAction = {
-                    settingParser?.clearFlag()
-                    settingParser?.zFlag = if (it) 1 else 0
-                    settingParser?.updateSetting()
-                    renderData()
+                    itemSwitchChecked = settingParser?.zFlag == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.clearFlag()
+                        settingParser?.zFlag = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                        renderData()
+                    }
+                }
+                DslSegmentTabItem()() {
+                    itemLayoutId = R.layout.device_z_dir_segment_tab_item
+                    initItem()
+
+                    //平板 //小车 //圆柱
+                    itemSegmentList = getZDirSegmentList()
+                    val maxIndex = itemSegmentList.lastIndex
+
+                    //zDir 0为打直板，1为打印圆柱。
+                    val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
+                    itemCurrentIndex =
+                        if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
+                            //平板和小车都对应的 0
+                            QuerySettingParser.Z_MODEL
+                        } else {
+                            zDirIndex
+                        }
+                    itemSelectIndexChangeAction =
+                        { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
+                            val index = selectIndexList.first()
+                            QuerySettingParser.Z_MODEL = index //确切的模式
+                            settingParser?.zDir = if (index == 2) 1 else 0
+                            settingParser?.updateSetting()
+                        }
                 }
             }
-            DslSegmentTabItem()() {
-                itemLayoutId = R.layout.device_z_dir_segment_tab_item
-                initItem()
-
-                //平板 //小车 //圆柱
-                itemSegmentList = getZDirSegmentList()
-                val maxIndex = itemSegmentList.lastIndex
-
-                //zDir 0为打直板，1为打印圆柱。
-                val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
-                itemCurrentIndex =
-                    if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
-                        //平板和小车都对应的 0
-                        QuerySettingParser.Z_MODEL
-                    } else {
-                        zDirIndex
-                    }
-                itemSelectIndexChangeAction =
-                    { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
-                        val index = selectIndexList.first()
-                        QuerySettingParser.Z_MODEL = index //确切的模式
-                        settingParser?.zDir = if (index == 2) 1 else 0
-                        settingParser?.updateSetting()
-                    }
-            }
             //旋转轴
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_ex_r_label)
-                itemDes = _string(R.string.device_ex_r_des)
-                initItem()
+            if (isC1CarFlag) {
+                //自动进入了移动平台模式
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_ex_r_label)
+                    itemDes = _string(R.string.device_ex_r_des)
+                    initItem()
 
-                itemSwitchChecked = settingParser?.rFlag == 1
-                itemSwitchChangedAction = {
-                    settingParser?.clearFlag()
-                    settingParser?.rFlag = if (it) 1 else 0
-                    settingParser?.updateSetting()
-                    renderData()
+                    itemSwitchChecked = settingParser?.rFlag == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.clearFlag()
+                        settingParser?.rFlag = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                        renderData()
+                    }
                 }
             }
             //滑台
-            if (isC1) {
+            if (isC1 || isC1CarFlag) {
 
             } else {
                 DslPropertySwitchItem()() {
@@ -204,7 +213,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (isC1) {
+            if (isC1 || isC1CarFlag) {
 
             } else {
                 DslPropertySwitchItem()() {
@@ -222,20 +231,25 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_ex_direction_label)
-                itemDes = _string(R.string.device_ex_direction_des)
-                initItem()
+            if (isC1CarFlag) {
+                //自动进入了移动平台模式
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_ex_direction_label)
+                    itemDes = _string(R.string.device_ex_direction_des)
+                    initItem()
 
-                itemSwitchChecked = settingParser?.dir == 1
-                itemSwitchChangedAction = {
-                    settingParser?.dir = if (it) 1 else 0
-                    settingParser?.updateSetting()
+                    itemSwitchChecked = settingParser?.dir == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.dir = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
             //C1 移动平台雕刻模式
             if (isC1) {
-                DslPropertySwitchItem()() {
+                //2022-11-9 不需要显示, 设备自动设置, 不允许关闭
+                /*DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_car_label)
                     itemDes = _string(R.string.device_ex_car_des)
                     initItem()
@@ -247,7 +261,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.updateSetting()
                         renderData()
                     }
-                }
+                }*/
             }
 
             //---
