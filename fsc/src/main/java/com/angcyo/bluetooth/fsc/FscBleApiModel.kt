@@ -790,12 +790,12 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     /**断开所有连接的设备*/
-    fun disconnectAll() {
+    fun disconnectAll(isActiveDisConnected: Boolean = false) {
         if (connectDeviceList.isNotEmpty()) {
             val list = connectDeviceList.toList()
             list.forEach {
                 if (it.state == CONNECT_STATE_START || it.state == CONNECT_STATE_SUCCESS) {
-                    disconnect(it.device)
+                    disconnect(it.device, isActiveDisConnected)
                 }
             }
         }
@@ -820,7 +820,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             stopSend(address)
             fscApi.disconnect(address)
-            "主动断开蓝牙:$address".writeBleLog()
+            "断开蓝牙[主动${isActiveDisConnected.toDC()}]:$address".writeBleLog()
         } else {
             val cacheDeviceState = connectDeviceList.find { it.device.address == address }
             cacheDeviceState?.let {

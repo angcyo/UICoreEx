@@ -62,7 +62,7 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
 
 /**文件路径转成固件信息*/
 fun String.toFirmwareInfo(): FirmwareInfo {
-    val bytes = file().readBytes()
+    var bytes = file().readBytes()
     val size = bytes.size
     var lpBinBean: LPBinBean? = null
 
@@ -81,6 +81,9 @@ fun String.toFirmwareInfo(): FirmwareInfo {
                     val dataBytes = bytes.slice(startIndex + 2 until size - 4)
                     val data = dataBytes.toByteArray().toString(Charsets.UTF_8)
                     lpBinBean = data.fromJson<LPBinBean>()
+
+                    //截取固件真实的数据内容
+                    bytes = bytes.slice(0 until startIndex).toByteArray()
                 }
             }
         }

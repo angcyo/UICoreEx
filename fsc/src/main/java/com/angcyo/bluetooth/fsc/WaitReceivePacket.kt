@@ -87,7 +87,7 @@ class WaitReceivePacket(
         _isSend = true
     }
 
-    /**结束*/
+    /**结束数据接收监听*/
     fun end() {
         _isFinish = true
         handle.removeCallbacks(_timeOutRunnable)

@@ -4,22 +4,24 @@ import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toFirmwareVersionString
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.normalDialog
+import com.angcyo.drawable.loading.BaseTGLoadingDrawable
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.UpdateAdapterProperty
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.elseNull
-import com.angcyo.library.ex.toTime
+import com.angcyo.library.L
+import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.loading.TGStrokeLoadingView
 import com.angcyo.widget.span.span
 
 /**
@@ -36,6 +38,9 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
     /**是否正在升级中*/
     var itemIsUpdating: Boolean by UpdateAdapterProperty(false)
 
+    /**进度*/
+    var itemUpdateProgress: Int by UpdateAdapterProperty(0)
+
     /**是否升级完成*/
     var itemIsFinish: Boolean by UpdateAdapterProperty(false)
 
@@ -43,8 +48,23 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
     val apiModel = vmApp<FscBleApiModel>()
 
+    /**开始的时间*/
+    var _startTime: Long = -1
+
+    /**完成的时间*/
+    var _finishTime: Long = -1
+
     init {
         itemLayoutId = R.layout.item_firmware_update
+    }
+
+    /**重置状态*/
+    fun reset() {
+        _startTime = -1
+        _finishTime = -1
+        itemIsFinish = false
+        itemIsUpdating = false
+        itemUpdateProgress = 0
     }
 
     override fun onItemBind(
@@ -63,6 +83,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 lpBin.n ?: itemFirmwareInfo?.name
             }
             append(name)
+
             lpBin?.let {
                 appendln()
                 append("${_string(R.string.firmware_version)}:${it.v.toFirmwareVersionString()}")
@@ -75,6 +96,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                     append(it.d)
                 }
             }
+
             if (apiModel.haveDeviceConnected()) {
                 peckerModel.deviceVersionData.value?.softwareVersionName?.let {
                     appendln()
@@ -84,24 +106,27 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             if (itemIsFinish) {
                 appendln()
                 append(_string(R.string.upgrade_completed))
+
+                appendln()
+                append("${_string(R.string.upgrade_duration)}:${(_finishTime - _startTime).toElapsedTime()}")
             }
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
         itemHolder.gone(R.id.device_button, itemIsFinish || itemIsUpdating)
         itemHolder.gone(R.id.start_button, itemIsFinish || itemIsUpdating)
 
+        if (itemIsUpdating) {
+            //进度
+            itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)
+                ?.firstDrawable<BaseTGLoadingDrawable>()?.apply {
+                    isIndeterminate = itemUpdateProgress <= 0
+                    progress = itemUpdateProgress
+                }
+        }
+
         //设备连接
         itemHolder.click(R.id.device_button) {
-            itemFragment?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                if (allGranted) {
-                    //vmApp<FscBleApiModel>().connect("DC:0D:30:10:05:E7")
-                    itemHolder.context.bluetoothSearchListDialog {
-                        connectedDismiss = true
-                    }
-                } else {
-                    toast("蓝牙权限被禁用!")
-                }
-            }
+            searchDeviceList()
         }
 
         //开始升级
@@ -131,6 +156,22 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
         }
     }
 
+    /**搜索设备*/
+    fun searchDeviceList() {
+        itemFragment?.apply {
+            dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                if (allGranted) {
+                    //vmApp<FscBleApiModel>().connect("DC:0D:30:10:05:E7")
+                    context?.bluetoothSearchListDialog {
+                        connectedDismiss = true
+                    }
+                } else {
+                    toast("蓝牙权限被禁用!")
+                }
+            }
+        }
+    }
+
     override fun onItemViewRecycled(itemHolder: DslViewHolder, itemPosition: Int) {
         super.onItemViewRecycled(itemHolder, itemPosition)
         _waitReceivePacket?.end()
@@ -140,13 +181,19 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
     /**监听是否接收数据完成, 数据接收完成设备自动重启*/
     fun listenerFinish() {
-        _waitReceivePacket = listenerReceivePacket { receivePacket, bean, error ->
+        _waitReceivePacket = listenerReceivePacket(progress = {
+            //进度
+            itemUpdateProgress = it.sendPacketPercentage
+            L.w("进度:$itemUpdateProgress")
+        }) { receivePacket, bean, error ->
             val isFinish = bean?.parse<FirmwareUpdateParser>()?.isUpdateFinish() == true
             if (isFinish || (error != null && error !is ReceiveCancelException)) {
                 receivePacket.isCancel = true
             }
             if (isFinish) {
-                itemIsFinish = isFinish
+                itemIsFinish = true
+                itemIsUpdating = false
+                _finishTime = nowTime()
                 //断开蓝牙设备
                 apiModel.disconnectAll()
             }
@@ -155,13 +202,15 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
     /**开始更新*/
     fun startUpdate(info: FirmwareInfo) {
+        itemIsFinish = false
         itemIsUpdating = true
+        _startTime = nowTime()
+        ExitCmd().enqueue()//先进入空闲模式
         FirmwareUpdateCmd.update(info.data.size, info.version)
             .enqueue { bean, error ->
                 bean?.parse<FirmwareUpdateParser>()?.let {
                     //进入模式成功, 开始发送数据
-                    DataCmd.data(info.data)
-                        .enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                    DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
                     listenerFinish()
                 }.elseNull {
                     itemIsUpdating = false
