@@ -63,8 +63,8 @@ data class EngraveCmd(
             append(clamp((101 - depth), 1, 100).toHexString()) //打印速度
             //append(name.toHexString(8))
             append(index.toByteArray(4).toHexString(false))
-            append(x.toHexString(4))
-            append(y.toHexString(4))
+            append(kotlin.math.max(x, 0).toHexString(4))
+            append(kotlin.math.max(y, 0).toHexString(4))
             append(custom.toHexString())
             append(time.toHexString())
             append(type.toHexString())
