@@ -32,6 +32,7 @@ import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
+import com.angcyo.engrave.loadingAsync
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
@@ -194,8 +195,11 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     UMEvent.CANVAS_DOODLE.umengEventValue()
                     engraveCanvasFragment.fragment.context.doodleDialog {
                         onDoodleResultAction = {
-                            val bean = it.toBlackWhiteBitmapItemData()
-                            GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
+                            engraveCanvasFragment.fragment.loadingAsync({
+                                //涂鸦之后, 默认黑白处理
+                                val bean = it.toBlackWhiteBitmapItemData()
+                                GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
+                            })
                         }
                     }
                 }
