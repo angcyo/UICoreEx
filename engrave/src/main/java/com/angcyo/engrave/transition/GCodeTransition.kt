@@ -1,6 +1,7 @@
 package com.angcyo.engrave.transition
 
 import android.graphics.Bitmap
+import android.graphics.Paint
 import android.graphics.Path
 import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -8,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.data.toMm
+import com.angcyo.canvas.data.toPaintStyleInt
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataPathItem
@@ -57,7 +59,9 @@ class GCodeTransition : IEngraveTransition {
                     dataBean.data!!,
                     param
                 )
-            } else if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE && dataBean.paintStyle == 1) {
+            } else if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE &&
+                dataBean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()
+            ) {
                 //线条转GCode使用图片的方式
                 val bitmap = engraveProvider.getEngraveBitmap()
                 bitmap?.let {
