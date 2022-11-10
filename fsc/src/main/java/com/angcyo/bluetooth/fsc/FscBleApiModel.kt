@@ -576,7 +576,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         } else {
             /*if (cacheDevice != null) {
                 connectStateData.value = wrapStateDevice(device) {
-                    this.state = CONNECT_STATE_DISCONNECT
+                    initDisconnected()
                 }
                 //通知连接的蓝牙设备改变
                 _notifyConnectDeviceChanged()
@@ -812,11 +812,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         _checkDisconnectTimeout()
         if (isConnectState(bleDevice)) {
             connectStateData.value = wrapStateDevice(bleDevice) {
-                state = CONNECT_STATE_DISCONNECT_START
-                gatt = null
-                disconnectTime = nowTime()
+                initDisconnectStart()
                 this.isActiveDisConnected = isActiveDisConnected
-                isAutoConnect = false
             }
             stopSend(address)
             fscApi.disconnect(address)
@@ -827,13 +824,30 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 if (it.state == CONNECT_STATE_DISCONNECT_START) {
                     //强制断开连接
                     connectStateData.value = wrapStateDevice(bleDevice) {
-                        this.state = CONNECT_STATE_DISCONNECT
+                        initDisconnected()
+                        this.isActiveDisConnected = isActiveDisConnected
                     }
                 }
                 //connectDeviceList.remove(deviceState)//断开成功不移除状态
                 _notifyConnectDeviceChanged()
             }
         }
+    }
+
+    /**开始断开蓝牙*/
+    fun DeviceConnectState.initDisconnectStart() {
+        state = CONNECT_STATE_DISCONNECT_START
+        gatt = null
+        disconnectTime = nowTime()
+        isAutoConnect = false
+    }
+
+    /**成功断开蓝牙*/
+    fun DeviceConnectState.initDisconnected() {
+        state = CONNECT_STATE_DISCONNECT
+        gatt = null
+        disconnectedTime = nowTime()
+        isAutoConnect = false
     }
 
     /**断开连接, 有时候会收不到通知.
@@ -846,11 +860,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 //connectDeviceList.remove(deviceState)//断开成功不移除状态
                 pendingDisconnectList.remove(deviceState.device.address)
                 connectStateData.value = wrapStateDevice(deviceState.device) {
-                    state = CONNECT_STATE_DISCONNECT
-                    gatt = null
-                    disconnectTime = nowTime()
+                    initDisconnected()
                     this.isActiveDisConnected = isActiveDisConnected
-                    isAutoConnect = false
                 }
                 _notifyConnectDeviceChanged()
             }
@@ -925,7 +936,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         val cacheDeviceState = connectDeviceList.find { it.device.address == address }
         cacheDeviceState?.let { deviceState ->
             val wrapStateDevice = wrapStateDevice(deviceState.device) {
-                state = CONNECT_STATE_DISCONNECT
+                initDisconnected()
                 this.gatt = gatt
             }
             pendingDisconnectList.remove(deviceState.device.address)

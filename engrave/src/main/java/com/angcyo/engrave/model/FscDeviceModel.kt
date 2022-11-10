@@ -1,7 +1,6 @@
 package com.angcyo.engrave.model
 
 import android.app.Activity
-import android.os.Debug
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
@@ -48,9 +47,6 @@ import com.hingin.umeng.umengEventValue
 class FscDeviceModel : LifecycleViewModel() {
 
     companion object {
-        /**自动连接阈值, 2次连接间隔大于此值才触发*/
-        var AUTO_CONNECT_THRESHOLD = 1 * 60 * 1_000L
-
         /**主动断开的连接, 1小时之内不自动连接*/
         var AUTO_CONNECT_DISCONNECTED_THRESHOLD = 1 * 60 * 60 * 1_000L
     }
@@ -74,7 +70,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         put(UMEvent.KEY_START_TIME, nowTime().toString())
                     }
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
-                    if (!deviceConnectState.isActiveDisConnected) {
+                    if (deviceConnectState.connectTime > 0 && !deviceConnectState.isActiveDisConnected) {
                         //蓝牙设备断开
                         toast(_string(R.string.blue_disconnected))
                     }
@@ -192,26 +188,24 @@ class FscDeviceModel : LifecycleViewModel() {
         if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !bleApiModel.haveDeviceConnected() /*无设备连接*/) {
             //需要自动连接设备
             val nowTime = nowTime()
-            if (nowTime - lastConnectTime > AUTO_CONNECT_THRESHOLD || Debug.isDebuggerConnected()) {
-                //1分钟
-                if (FscBleApiModel.haveBluetoothPermission()) {
-                    var autoConnect = true
-                    lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
-                        ?.let {
-                            val disconnectTime = it.disconnectTime
-                            if (disconnectTime != null) {
-                                //主动断开了连接
-                                if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
-                                    //不自动连接
-                                    autoConnect = false
-                                }
-                            }
-                            if (autoConnect) {
-                                L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
-                                bleApiModel.connect(it.deviceAddress, it.deviceName, true)
+            //1分钟
+            if (FscBleApiModel.haveBluetoothPermission()) {
+                var autoConnect = true
+                lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                    ?.let {
+                        val disconnectTime = it.disconnectTime
+                        if (disconnectTime != null) {
+                            //主动断开了连接
+                            if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
+                                //不自动连接
+                                autoConnect = false
                             }
                         }
-                }
+                        if (autoConnect) {
+                            L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
+                            bleApiModel.connect(it.deviceAddress, it.deviceName, true)
+                        }
+                    }
             }
         }
     }

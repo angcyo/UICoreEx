@@ -23,6 +23,7 @@ data class DeviceConnectState(
     var connectTime: Long = 0L, //触发连接的时间, 13位时间戳, 毫秒
     var connectedTime: Long = 0L, //连接上的时间, 13位时间戳, 毫秒
     var disconnectTime: Long = 0L, //断开请求的开始时间, 13位时间戳, 毫秒
+    var disconnectedTime: Long = 0L, //断开的时间, 13位时间戳, 毫秒
 ) {
     companion object {
         const val CONNECT_STATE_NORMAL = 0
