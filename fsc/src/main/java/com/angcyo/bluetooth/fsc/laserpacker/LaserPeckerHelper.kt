@@ -17,6 +17,7 @@ import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
@@ -708,11 +709,21 @@ object LaserPeckerHelper {
     /**当前的固件版本, 是否支持使用app*/
     fun isSupportFirmware(): Boolean {
         val productInfo = vmApp<LaserPeckerModel>().productInfoData.value ?: return true
-        val lpSupportFirmware = getAppString("lp_support_firmware")
+        val version = productInfo.softwareVersion //固件版本
+
+        var lpSupportFirmware = LibHawkKeys.lpSupportFirmware
+        if (!lpSupportFirmware.isNullOrBlank()) {
+            if (VersionMatcher.matches(version, lpSupportFirmware)) {
+                //强制配置的固件版本支持信息
+                return true
+            }
+        }
+
+        lpSupportFirmware = getAppString("lp_support_firmware")
         if (lpSupportFirmware.isNullOrEmpty()) {
             return true
         }
-        return VersionMatcher.matches(productInfo.softwareVersion, lpSupportFirmware)
+        return VersionMatcher.matches(version, lpSupportFirmware)
     }
 
     //</editor-fold desc="packet">
