@@ -112,7 +112,10 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             }
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
-        itemHolder.gone(R.id.device_button, itemIsFinish || itemIsUpdating)
+        itemHolder.gone(
+            R.id.device_button,
+            apiModel.haveDeviceConnected() || itemIsFinish || itemIsUpdating
+        )
         itemHolder.gone(R.id.start_button, itemIsFinish || itemIsUpdating)
 
         if (itemIsUpdating) {
