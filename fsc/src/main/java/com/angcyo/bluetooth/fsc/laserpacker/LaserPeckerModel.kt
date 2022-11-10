@@ -244,10 +244,10 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         val cmd = if (zPause) {
             //外接设备暂停预览
             EngravePreviewCmd.adjustPreviewZRangeCmd(
-                rotateBounds.left.toInt(),
-                rotateBounds.top.toInt(),
-                rotateBounds.width().toInt(),
-                rotateBounds.height().toInt(),
+                rotateBounds.left,
+                rotateBounds.top,
+                rotateBounds.width(),
+                rotateBounds.height(),
                 pwrProgress,
                 diameter
             )
@@ -257,10 +257,10 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                 EngravePreviewCmd.adjustPreviewFourPointCmd(bounds.toFourPoint(rotate), pwrProgress)
             } else {
                 EngravePreviewCmd.adjustPreviewRangeCmd(
-                    rotateBounds.left.toInt(),
-                    rotateBounds.top.toInt(),
-                    rotateBounds.width().toInt(),
-                    rotateBounds.height().toInt(),
+                    rotateBounds.left,
+                    rotateBounds.top,
+                    rotateBounds.width(),
+                    rotateBounds.height(),
                     pwrProgress,
                     diameter
                 )

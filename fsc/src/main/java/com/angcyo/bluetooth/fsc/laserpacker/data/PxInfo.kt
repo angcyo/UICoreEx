@@ -83,50 +83,50 @@ data class PxInfo(
 
     /**宽度值转换*/
     fun transformWidth(
-        width: Int,
+        width: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
+    ): Float {
         if (productInfo == null) {
             return width
         }
-        val scale = width * 1f / productInfo.bounds.width() //实际尺寸对应的比例
-        return (devicePxWidth(productInfo) * scale).toInt() //缩放转换
+        val scale = width / productInfo.bounds.width() //实际尺寸对应的比例
+        return devicePxWidth(productInfo) * scale //缩放转换
     }
 
     /**高度值转换*/
     fun transformHeight(
-        height: Int,
+        height: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
+    ): Float {
         if (productInfo == null) {
             return height
         }
-        val scale = height * 1f / productInfo.bounds.height()
-        return (devicePxHeight(productInfo) * scale).toInt()
+        val scale = height / productInfo.bounds.height()
+        return devicePxHeight(productInfo) * scale
     }
 
     /**X坐标转换*/
     fun transformX(
-        x: Int,
+        x: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
+    ): Float {
         if (productInfo == null) {
             return x
         }
-        val scale = (x - productInfo.bounds.left) * 1f / productInfo.bounds.width() //x方向的实际缩放比例
-        return (devicePxWidth(productInfo) * scale).toInt()
+        val scale = (x - productInfo.bounds.left) / productInfo.bounds.width() //x方向的实际缩放比例
+        return devicePxWidth(productInfo) * scale
     }
 
     /**Y坐标转换*/
     fun transformY(
-        y: Int,
+        y: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
-    ): Int {
+    ): Float {
         if (productInfo == null) {
             return y
         }
-        val scale = (y - productInfo.bounds.top) * 1f / productInfo.bounds.height() //y方向的实际缩放比例
-        return (devicePxHeight(productInfo) * scale).toInt()
+        val scale = (y - productInfo.bounds.top) / productInfo.bounds.height() //y方向的实际缩放比例
+        return devicePxHeight(productInfo) * scale
     }
 
 }

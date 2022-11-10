@@ -17,6 +17,7 @@ import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.RectPointF
 import com.angcyo.library.model.toPath
+import kotlin.math.roundToInt
 
 /**
  * 雕刻/打印预览指令
@@ -177,26 +178,26 @@ data class EngravePreviewCmd(
                 overflowLimit = getLimitPath(productInfo)?.overflow(tempRect) == true
             }
 
-            var previewX: Int = x.toInt()
-            var previewY: Int = y.toInt()
+            var previewX = x
+            var previewY = y
 
-            var previewWidth: Int = width.toInt()
-            var previewHeight: Int = height.toInt()
+            var previewWidth = width
+            var previewHeight = height
 
             val pxInfo = LaserPeckerHelper.findPxInfo(dpi)
             if (overflowBounds) {
                 //预览超出了设备物理范围, 缩成设备物理中心点
 
                 //超过范围, 缩成在中心的一个点
-                previewX = (productInfo?.bounds?.width()?.toInt() ?: 0) / 2
-                previewY = (productInfo?.bounds?.height()?.toInt() ?: 0) / 2
+                previewX = (productInfo?.bounds?.width() ?: 0f) / 2
+                previewY = (productInfo?.bounds?.height() ?: 0f) / 2
 
                 //平移
                 previewX = pxInfo.transformX(previewX)
                 previewY = pxInfo.transformY(previewY)
 
-                previewWidth = 1
-                previewHeight = 1
+                previewWidth = 1f
+                previewHeight = 1f
             } else {
                 previewX = pxInfo.transformX(previewX)
                 previewY = pxInfo.transformY(previewY)
@@ -206,14 +207,13 @@ data class EngravePreviewCmd(
             }
 
             tempRect.release()
-            return OverflowInfo(
-                Rect(
-                    previewX,
-                    previewY,
-                    previewX + previewWidth,
-                    previewY + previewHeight
-                ), null, overflowBounds, overflowLimit
-            )
+            val rect = Rect().apply {
+                left = previewX.floor().toInt()
+                top = previewY.floor().toInt()
+                right = left + previewWidth.roundToInt()
+                bottom = top + previewHeight.roundToInt()
+            }
+            return OverflowInfo(rect, null, overflowBounds, overflowLimit)
         }
 
         /**调整4点坐标, 并标识是否溢出*/
@@ -251,15 +251,15 @@ data class EngravePreviewCmd(
             result.originRectF.set(rectPoint.originRectF)
 
             val pxInfo = LaserPeckerHelper.findPxInfo(dpi)
-            result.leftTop.x = pxInfo.transformX(rectPoint.leftTop.x.toInt()).toFloat()
-            result.leftBottom.x = pxInfo.transformX(rectPoint.leftBottom.x.toInt()).toFloat()
-            result.rightTop.x = pxInfo.transformX(rectPoint.rightTop.x.toInt()).toFloat()
-            result.rightBottom.x = pxInfo.transformX(rectPoint.rightBottom.x.toInt()).toFloat()
+            result.leftTop.x = pxInfo.transformX(rectPoint.leftTop.x)
+            result.leftBottom.x = pxInfo.transformX(rectPoint.leftBottom.x)
+            result.rightTop.x = pxInfo.transformX(rectPoint.rightTop.x)
+            result.rightBottom.x = pxInfo.transformX(rectPoint.rightBottom.x)
 
-            result.leftTop.y = pxInfo.transformY(rectPoint.leftTop.y.toInt()).toFloat()
-            result.leftBottom.y = pxInfo.transformY(rectPoint.leftBottom.y.toInt()).toFloat()
-            result.rightTop.y = pxInfo.transformY(rectPoint.rightTop.y.toInt()).toFloat()
-            result.rightBottom.y = pxInfo.transformY(rectPoint.rightBottom.y.toInt()).toFloat()
+            result.leftTop.y = pxInfo.transformY(rectPoint.leftTop.y)
+            result.leftBottom.y = pxInfo.transformY(rectPoint.leftBottom.y)
+            result.rightTop.y = pxInfo.transformY(rectPoint.rightTop.y)
+            result.rightBottom.y = pxInfo.transformY(rectPoint.rightBottom.y)
 
             return OverflowInfo(null, result, overflowBounds, overflowLimit)
         }
@@ -269,21 +269,14 @@ data class EngravePreviewCmd(
          * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
          * */
         fun adjustPreviewRangeCmd(
-            @Px x: Int, @Px y: Int, @Px width: Int, @Px height: Int,
+            @Px x: Float, @Px y: Float, @Px width: Float, @Px height: Float,
             pwrProgress: Float,
             @MM
             diameter: Int,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
-            val overflowInfo = adjustRectRange(
-                x.toFloat(),
-                y.toFloat(),
-                width.toFloat(),
-                height.toFloat(),
-                dpi,
-                productInfo
-            )
+            val overflowInfo = adjustRectRange(x, y, width, height, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
             if (overflowInfo.isOverflowBounds) {
                 //超出物理范围, 不发送指令
@@ -350,7 +343,7 @@ data class EngravePreviewCmd(
             if (overflowInfo.isOverflowBounds) {
                 //溢出了, 预览一个点
                 /*return _previewRangeCmd(
-                    overflowInfo.resultRectPoint!!.originRectF.centerX().toInt(),
+                    overflowInfo.resultRectPoint!!.originRectF.centerX(),
                     overflowInfo.resultRectPoint!!.originRectF.centerY().toInt(),
                     1, 1, pwrProgress, 0, dpi
                 )*/
@@ -482,24 +475,17 @@ data class EngravePreviewCmd(
 
         /**第三轴暂停预览*/
         fun adjustPreviewZRangeCmd(
-            x: Int,
-            y: Int,
-            width: Int,
-            height: Int,
+            x: Float,
+            y: Float,
+            width: Float,
+            height: Float,
             pwrProgress: Float,
             @MM
             diameter: Int,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
-            val overflowInfo = adjustRectRange(
-                x.toFloat(),
-                y.toFloat(),
-                width.toFloat(),
-                height.toFloat(),
-                dpi,
-                productInfo
-            )
+            val overflowInfo = adjustRectRange(x, y, width, height, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
             if (overflowInfo.isOverflowBounds) {
                 //超出物理范围, 不发送指令
@@ -678,13 +664,13 @@ data class EngravePreviewCmd(
             0x02.toByte() -> {
                 append("范围预览:")
                 val rect = getPreviewRange()
-                append("$rect 直径:$diameter")
+                append("$rect w:${rect.width()} h:${rect.height()} 直径:$diameter")
             }
             0x03.toByte() -> append("结束预览")
             0x04.toByte() -> {
                 append("第三轴暂停预览:")
                 val rect = getPreviewRange()
-                append("$rect 直径:$diameter")
+                append("$rect w:${rect.width()} h:${rect.height()} 直径:$diameter")
             }
             0x05.toByte() -> append("第三轴继续预览")
             0x06.toByte() -> {
@@ -714,7 +700,10 @@ data class EngravePreviewCmd(
                     }
                 }
             }
-            0x07.toByte() -> append("显示中心:${getPreviewRange()}")
+            0x07.toByte() -> {
+                val rect = getPreviewRange()
+                append("显示中心:${rect} cx:${rect.centerX()} cy:${rect.centerY()}")
+            }
             0x08.toByte() -> {
                 append(" 4点预览")
                 val rectPoint = getFourPoint()
