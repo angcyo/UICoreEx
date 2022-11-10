@@ -101,9 +101,9 @@ class DslJsoup : CoroutineScope {
 
     /**执行*/
     fun doIt() {
-        scope.launchSafe(Dispatchers.Main + CoroutineErrorHandler {
+        scope.launchSafe(Dispatchers.Main + CoroutineErrorHandler { context, exception ->
             scope.launchSafe {
-                onErrorAction(it)
+                onErrorAction(exception)
             }
         }) {
             onBack {
