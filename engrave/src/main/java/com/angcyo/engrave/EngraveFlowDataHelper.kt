@@ -273,6 +273,8 @@ object EngraveFlowDataHelper {
 
             type = itemBean.printType ?: LaserPeckerHelper.LASER_TYPE_BLUE
             precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
+
+            lpSaveEntity()
         }
     }
 
