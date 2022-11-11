@@ -113,9 +113,7 @@ class DslTbs {
 
                 try {
                     QbSdk.getMiniQBVersion(appContext).apply {
-                        L.d("MiniQBVersion:$this".apply {
-                            writeTo()
-                        })
+                        L.d("MiniQBVersion:$this")
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
