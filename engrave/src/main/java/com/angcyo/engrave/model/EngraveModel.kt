@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
+import com.angcyo.canvas.utils.toDataModeStr
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -253,12 +254,18 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val diameter =
             (MM_UNIT.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
 
-
+        val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
             append("开始雕刻:[${transferDataEntity.taskId}]")
-            append(" layer:${EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)?.label}")
+            if (engraveLayer?.label.isNullOrBlank()) {
+                append(" mode:${engraveConfigEntity.layerMode.toDataModeStr()}")
+            } else {
+                append(" layer:${engraveLayer?.label}")
+            }
+
             append(" type:${engraveConfigEntity.type.toLaserTypeString()}")
             append(" $transferDataEntity")
+            append("\n->$engraveConfigEntity")
         }.writeEngraveLog()
 
         EngraveCmd(

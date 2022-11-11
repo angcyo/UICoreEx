@@ -276,11 +276,8 @@ class TransferModel : ViewModel() {
                         } else {
                             buildString {
                                 append("开始传输:[${taskId}]")
-                                append(" ${transferDataEntity.index}")
                                 append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
-                                append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
-                                append(" width:${transferDataEntity.width} height:${transferDataEntity.height}")
-                                append(" lines:${transferDataEntity.lines}")
+                                append(" $transferDataEntity")
                             }.writeEngraveLog()
 
                             dataCmd.enqueue(progress = {
