@@ -30,6 +30,7 @@ import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import com.angcyo.viewmodel.vmDataOnce
+import kotlin.math.max
 
 /**
  * 数据传输模式
@@ -58,8 +59,8 @@ class TransferModel : ViewModel() {
             }
 
             val index = transferDataEntity.index
-            val x = transferDataEntity.x
-            val y = transferDataEntity.y
+            val x = max(0, transferDataEntity.x)//必须>=0
+            val y = max(0, transferDataEntity.y)//必须>=0
             val width = transferDataEntity.width
             val height = transferDataEntity.height
             val dpi = transferDataEntity.dpi
