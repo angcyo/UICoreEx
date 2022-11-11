@@ -38,7 +38,7 @@ class CanvasOpenModel : ViewModel() {
         bean ?: return false
         openPendingData.postValue(bean)
         return if (openPendingData.hasObservers()) {
-            //有监听者
+            //有监听者, 需要弹出界面
             context.openApp()
             true
         } else if (OPEN_ACTIVITY_CLASS != null) {
