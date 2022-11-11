@@ -153,7 +153,9 @@ class GCodeTransition : IEngraveTransition {
         val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
             gcode,
             engraveProvider.getEngraveBounds(),
-            engraveProvider._rotate
+            engraveProvider._rotate,
+            autoCnc,
+            isFinish
         )
 
         return _handleGCodeTransferDataEntity(
@@ -180,6 +182,8 @@ class GCodeTransition : IEngraveTransition {
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
+        val autoCnc = vmApp<LaserPeckerModel>().isC1()
+
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
@@ -192,7 +196,8 @@ class GCodeTransition : IEngraveTransition {
         )
         val gCodeText = gCodeFile.readText()
         //GCode数据
-        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f)
+        gCodeFile =
+            CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f, autoCnc, isFinish)
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
@@ -234,7 +239,8 @@ class GCodeTransition : IEngraveTransition {
         val gCodeText = gCodeFile.readText()
         gCodeFile.deleteSafe()
         //GCode数据, 这里必须使用旋转后的bounds进行调整
-        gCodeFile = CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f)
+        gCodeFile =
+            CanvasDataHandleOperate.gCodeAdjust(gCodeText, rotateBounds, 0f, autoCnc, isFinish)
         return _handleGCodeTransferDataEntity(
             engraveProvider,
             transferConfigEntity,
