@@ -493,6 +493,9 @@ inline fun <reified T> Collection<T>.deleteAllEntity(packageName: String = defau
  * id不为0时, 就是更新
  * 返回Entity的id*/
 inline fun <reified T> T.saveEntity(packageName: String = defaultBoxStore()): Long {
+    if (this == null) {
+        return -1
+    }
     return boxOf(T::class.java, packageName).put(this)
 }
 

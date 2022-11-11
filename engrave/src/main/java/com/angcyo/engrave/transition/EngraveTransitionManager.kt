@@ -287,7 +287,7 @@ class EngraveTransitionManager {
         val transferDataEntity =
             doTransitionTransferData(renderItem, transferConfigEntity, null)
         //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
-        transferDataEntity.lpSaveEntity()
+        transferDataEntity?.lpSaveEntity()
         return transferDataEntity
     }
 
