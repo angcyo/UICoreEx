@@ -1,5 +1,6 @@
 package com.angcyo.engrave.firmware
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -8,8 +9,10 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toFirmwareVersionString
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.normalDialog
 import com.angcyo.drawable.loading.BaseTGLoadingDrawable
 import com.angcyo.dsladapter.DslAdapterItem
@@ -18,6 +21,7 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.library.L
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
@@ -143,11 +147,11 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                             dialogMessage = "相同版本的固件, 是否继续升级?"
                             positiveButtonListener = { dialog, dialogViewHolder ->
                                 dialog.dismiss()
-                                startUpdate(info)
+                                startUpdate(itemHolder.context, info)
                             }
                         }
                     } else {
-                        startUpdate(info)
+                        startUpdate(itemHolder.context, info)
                     }
                 }.elseNull {
                     itemIsUpdating = false
@@ -203,23 +207,42 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
         }
     }
 
+    /**检查更新的固件版本是否匹配*/
+    fun checkVersionMatch(info: FirmwareInfo): Boolean {
+        var result = true
+        peckerModel.productInfoData.value?.softwareVersion?.let {
+            result = VersionMatcher.matches(it, info.lpBin?.r)
+        }
+        return result
+    }
+
     /**开始更新*/
-    fun startUpdate(info: FirmwareInfo) {
-        itemIsFinish = false
-        itemIsUpdating = true
-        _startTime = nowTime()
-        ExitCmd().enqueue()//先进入空闲模式
-        FirmwareUpdateCmd.update(info.data.size, info.version)
-            .enqueue { bean, error ->
-                bean?.parse<FirmwareUpdateParser>()?.let {
-                    //进入模式成功, 开始发送数据
-                    DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
-                    listenerFinish()
-                }.elseNull {
-                    itemIsUpdating = false
-                    toast(_string(R.string.data_exception))
+    fun startUpdate(context: Context, info: FirmwareInfo) {
+        if (checkVersionMatch(info)) {
+            itemIsFinish = false
+            itemIsUpdating = true
+            _startTime = nowTime()
+            ExitCmd().enqueue()//先进入空闲模式
+            FirmwareUpdateCmd.update(info.data.size, info.version)
+                .enqueue { bean, error ->
+                    bean?.parse<FirmwareUpdateParser>()?.let {
+                        //进入模式成功, 开始发送数据
+                        DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                        listenerFinish()
+                    }.elseNull {
+                        itemIsUpdating = false
+                        toast(_string(R.string.data_exception))
+                    }
+                }
+        } else {
+            context.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = buildString {
+                    appendLine(_string(R.string.cannot_update_firmware_tip))
+                    append(peckerModel.productInfoData.value?.softwareVersion?.toLaserPeckerVersionName())
                 }
             }
+        }
     }
 
 }
