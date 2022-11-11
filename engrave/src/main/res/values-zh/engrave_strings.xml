@@ -190,4 +190,5 @@
     <string name="firmware_time">固件时间</string>
     <string name="upgrade_completed">升级完成!</string>
     <string name="upgrade_duration">耗时</string>
+    <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
 </resources>

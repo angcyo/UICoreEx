@@ -199,4 +199,5 @@
     <string name="firmware_time">Firmware time</string>
     <string name="upgrade_completed">Upgrade completed!</string>
     <string name="upgrade_duration">Duration</string>
+    <string name="cannot_update_firmware_tip">This firmware cannot be updated for the current device.</string>
 </resources>
