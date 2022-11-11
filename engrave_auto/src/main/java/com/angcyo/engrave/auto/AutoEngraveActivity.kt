@@ -174,7 +174,6 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     itemShowName = data.file_name ?: "Untitled"
                     bitmap = data.preview_img?.toBitmapOfBase64()
                 } else if (data is CanvasProjectItemBean) {
-                    data._enableCacheBitmap = true//激活缓存, 否则可能绘制不出图片
                     itemShowName = data.name ?: data.mtype.toTypeNameString()
                     bitmap = GraphicsHelper.parseRenderItemFrom(data)?.getEngraveBitmap()
                 }

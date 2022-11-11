@@ -185,7 +185,6 @@ class AutoEngraveModel : LifecycleViewModel() {
     ) {
         doBack(true) {
             val transferConfig = EngraveFlowDataHelper.generateTransferConfig(taskId)//创建数据配置
-            itemBean._enableCacheBitmap = true//开启图片缓存
             val transferDataEntity = EngraveTransitionManager().transitionTransferData(
                 itemBean,
                 transferConfig
