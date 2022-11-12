@@ -112,7 +112,11 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 append(_string(R.string.upgrade_completed))
 
                 appendln()
-                append("${_string(R.string.upgrade_duration)}:${(_finishTime - _startTime).toElapsedTime()}")
+                if (_startTime > 0) {
+                    append("${_string(R.string.upgrade_duration)}:${(_finishTime - _startTime).toElapsedTime()}")
+                } else {
+                    append(_finishTime.fullTime())
+                }
             }
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
