@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
 
 /**
@@ -23,7 +24,13 @@ data class QuerySafeCodeParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
-                offset(1)//偏移功能码
+
+                val func = readByte()//  offset(1)//偏移功能码
+
+                if (func != QueryCmd.workState.commandFunc()) {
+                    throw IllegalStateException("非查询指令!")
+                }
+
                 safeCode = readInt(4)
                 account = readString(40, Charsets.US_ASCII)
                 custom = readInt(1)

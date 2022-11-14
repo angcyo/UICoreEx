@@ -25,7 +25,10 @@ data class BracketParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
-                func = readByte() //偏移功能码
+                func = readByte() //功能码
+                if (func.toInt() != 0x02) {
+                    throw IllegalStateException("非支架控制指令!")
+                }
                 state = readByte()
                 custom = readByte()
                 res = readByte()

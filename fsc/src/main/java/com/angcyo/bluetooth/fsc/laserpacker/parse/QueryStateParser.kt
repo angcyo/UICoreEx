@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
@@ -124,7 +125,10 @@ data class QueryStateParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
-                offset(1)//偏移功能码
+                val func = readInt(1)//功能码
+                if (func.toByte() != QueryCmd.workState.commandFunc()) {
+                    throw IllegalStateException("非查询指令!")
+                }
                 mode = readInt(1)
                 workState = readInt(1)
                 rate = readInt(1)

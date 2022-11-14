@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
@@ -29,6 +30,9 @@ data class EngravePreviewParser(
                 offset(1)//偏移长度
                 //offset(1)//偏移功能码
                 func = readInt(1)
+                if (func.toByte() != EngravePreviewCmd(0).commandFunc()) {
+                    throw IllegalStateException("非雕刻预览指令!")
+                }
                 state = readInt(1)
                 custom = readInt(1)
                 res = readInt(1)

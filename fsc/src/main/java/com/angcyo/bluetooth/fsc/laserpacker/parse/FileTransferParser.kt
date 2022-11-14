@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
@@ -21,6 +22,9 @@ data class FileTransferParser(
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
                 func = readByte()
+                if (func != FileModeCmd(0).commandFunc()) {
+                    throw IllegalStateException("非文件模式指令!")
+                }
                 state = readByte()
                 rev = readByte()
             }

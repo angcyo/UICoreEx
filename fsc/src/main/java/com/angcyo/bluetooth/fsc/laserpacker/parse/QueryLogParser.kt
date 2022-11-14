@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
 
 /**
@@ -22,7 +23,13 @@ data class QueryLogParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 length = readInt(1)//长度
-                offset(1)//偏移功能码
+
+                val func = readByte()//  offset(1)//偏移功能码
+
+                if (func != QueryCmd.workState.commandFunc()) {
+                    throw IllegalStateException("非查询指令!")
+                }
+
                 state = readInt(1)
                 custom = readInt(1)
                 log = readString(

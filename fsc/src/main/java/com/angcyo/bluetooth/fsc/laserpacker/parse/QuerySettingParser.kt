@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.command.BaseCommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex.padHexString
@@ -70,6 +71,11 @@ data class QuerySettingParser(
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
                 func = readByte()//偏移功能码
+
+                if (func != QueryCmd.workState.commandFunc()) {
+                    throw IllegalStateException("非查询指令!")
+                }
+
                 free = readInt(1)
                 buzzer = readInt(1)
                 view = readInt(1)

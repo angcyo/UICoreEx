@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
 
 /**AABB82001E0009A67B924FEFF1000ADC0B000AE0A50002369D0003D00F0009872C000B7515000B98B6000BF395000E316C000E475F000E57AA000E660B000E7696000DA6BF000DB07F000DB0EA000991CF000B445F0000754A000076EF0000787AFFFFFFFF0009930F000996A4000997C40009984100099F4D0009A27E0009A4DE000125E0
@@ -30,7 +31,12 @@ data class QueryEngraveFileParser(
             packet.reader {
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
-                offset(1)//偏移功能码
+                val func = readByte()//  offset(1)//偏移功能码
+
+                if (func != QueryCmd.workState.commandFunc()) {
+                    throw IllegalStateException("非查询指令!")
+                }
+
                 num = readInt(1)
 
                 if (num > 0) {

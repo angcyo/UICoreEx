@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.library.component.reader
 
@@ -35,6 +36,10 @@ data class FirmwareUpdateParser(
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
                 func = readByte() //offset(1)//偏移功能码
+
+                if (func != FirmwareUpdateCmd.update(0, 0).commandFunc()) {
+                    throw IllegalStateException("非固件升级指令!")
+                }
 
                 func2 = readByte()
                 rev = readByte()
