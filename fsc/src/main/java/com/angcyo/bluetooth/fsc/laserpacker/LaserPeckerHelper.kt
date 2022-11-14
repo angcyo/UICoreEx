@@ -249,10 +249,10 @@ object LaserPeckerHelper {
         val sLimitPath = Path()
         val carLimitPath = Path()
 
-        val zMax = mmValueUnit.convertValueToPixel(Z_MAX_Y.toFloat())
-        val rMax = mmValueUnit.convertValueToPixel(R_MAX_Y.toFloat())
-        val sMax = mmValueUnit.convertValueToPixel(S_MAX_Y.toFloat())
-        val carMax = mmValueUnit.convertValueToPixel(CAR_MAX_Y.toFloat())
+        val zMax = mmValueUnit.convertValueToPixel(Z_MAX_Y.toFloat()).ceil()
+        val rMax = mmValueUnit.convertValueToPixel(R_MAX_Y.toFloat()).ceil()
+        val sMax = mmValueUnit.convertValueToPixel(S_MAX_Y.toFloat()).ceil()
+        val carMax = mmValueUnit.convertValueToPixel(CAR_MAX_Y.toFloat()).ceil()
 
         //物理尺寸宽高mm单位
         var wPhys = 0
@@ -279,12 +279,14 @@ object LaserPeckerHelper {
 
         //bounds
         val left =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f)
-        val top = mmValueUnit.convertValueToPixel(if (isOriginCenter) -hPhys / 2f else 0f)
+            mmValueUnit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f).floor()
+        val top = mmValueUnit.convertValueToPixel(if (isOriginCenter) -hPhys / 2f else 0f).floor()
         val right =
             mmValueUnit.convertValueToPixel(if (isOriginCenter) wPhys / 2f else wPhys.toFloat())
+                .ceil()
         val bottom =
             mmValueUnit.convertValueToPixel(if (isOriginCenter) hPhys / 2f else hPhys.toFloat())
+                .ceil()
         bounds.set(left, top, right, bottom)
         previewBounds.set(left, top, right, bottom)
 
@@ -310,11 +312,15 @@ object LaserPeckerHelper {
                     val rH = 75f
                     val tOffset = (rW - rH) / 2 //mm
                     val l = mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
+                        .floor()
                     val t =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
-                    val r = mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
+                            .floor()
+                    val r =
+                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW).ceil()
                     val b =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
+                            .ceil()
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
@@ -329,11 +335,15 @@ object LaserPeckerHelper {
                     val rH = 120f
                     val tOffset = (rW - rH) / 2 //mm
                     val l = mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
+                        .floor()
                     val t =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
-                    val r = mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW)
+                            .floor()
+                    val r =
+                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW).ceil()
                     val b =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
+                            .ceil()
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
