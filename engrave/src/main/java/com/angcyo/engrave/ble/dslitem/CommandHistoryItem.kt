@@ -1,8 +1,10 @@
 package com.angcyo.engrave.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.laserpacker.command.parsePacketLog
+import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
+import com.angcyo.library.ex.copy
 import com.angcyo.library.ex.fullTime
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
@@ -21,6 +23,24 @@ class CommandHistoryItem : DslAdapterItem() {
 
     init {
         itemLayoutId = R.layout.item_command_history_layout
+
+        itemLongClick = {
+            it.context.itemsDialog {
+                addDialogItem {
+                    itemText = "复制指令"
+                    itemClick = {
+                        itemCommandEntity?.des?.copy(it.context)
+                    }
+                }
+                addDialogItem {
+                    itemText = "复制返回值"
+                    itemClick = {
+                        itemCommandEntity?.result?.copy(it.context)
+                    }
+                }
+            }
+            true
+        }
     }
 
     override fun onItemBind(

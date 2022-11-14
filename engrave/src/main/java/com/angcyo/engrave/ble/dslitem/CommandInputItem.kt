@@ -86,4 +86,8 @@ class CommandInputItem : DslAdapterItem(), IEditItem {
         }
     }
 
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        //super.onItemChangeListener(item)
+    }
+
 }
