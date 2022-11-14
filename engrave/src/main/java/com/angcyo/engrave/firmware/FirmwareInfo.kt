@@ -59,6 +59,7 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
 }
 
 /**文件路径转成固件信息*/
+@Throws(FirmwareException::class)
 fun String.toFirmwareInfo(): FirmwareInfo {
     var bytes = file().readBytes()
     val size = bytes.size
