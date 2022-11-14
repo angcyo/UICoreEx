@@ -20,7 +20,7 @@ import java.util.*
 
 object CommandQueueHelper {
 
-    /**默认标识, 同步执行指令*/
+    /**默认标识, 同步执行指令, 不指定[FLAG_ASYNC]就是同步*/
     const val FLAG_NORMAL = 0x00
 
     /**标识, 清除之前的所有指令*/

@@ -3,6 +3,8 @@ package com.angcyo.engrave.model
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
+import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
+import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
@@ -252,7 +254,7 @@ class TransferModel : ViewModel() {
             return
         }
         val fileModeCmd = FileModeCmd(size)
-        fileModeCmd.enqueue { bean, error ->
+        fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             error?.let {
                 it.toString().writeErrorLog()
                 transferState.state = TransferState.TRANSFER_STATE_FINISH
