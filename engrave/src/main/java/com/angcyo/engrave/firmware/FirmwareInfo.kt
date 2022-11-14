@@ -1,12 +1,10 @@
 package com.angcyo.engrave.firmware
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.engrave.R
 import com.angcyo.engrave.firmware.FirmwareUpdateFragment.Companion.FIRMWARE_EXT
 import com.angcyo.http.base.fromJson
-import com.angcyo.library.ex.file
-import com.angcyo.library.ex.lastName
-import com.angcyo.library.ex.toByteInt
-import com.angcyo.library.ex.toHexString
+import com.angcyo.library.ex.*
 
 /**
  * 待升级的固件信息
@@ -84,9 +82,17 @@ fun String.toFirmwareInfo(): FirmwareInfo {
 
                     //截取固件真实的数据内容
                     bytes = bytes.slice(0 until startIndex).toByteArray()
+
+                    if (bytes.md5()?.lowercase() == lpBinBean?.md5) {
+                        //固件验证成功
+                    } else {
+                        throw FirmwareException(_string(R.string.firmware_corrupted))
+                    }
                 }
             }
         }
+    } catch (e: FirmwareException) {
+        throw e
     } catch (e: Exception) {
         e.printStackTrace()
     }

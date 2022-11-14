@@ -124,7 +124,10 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             R.id.device_button,
             apiModel.haveDeviceConnected() || itemIsFinish || itemIsUpdating
         )
-        itemHolder.gone(R.id.start_button, itemIsFinish || itemIsUpdating)
+        itemHolder.gone(
+            R.id.start_button,
+            itemIsFinish || itemIsUpdating || itemFirmwareInfo == null
+        )
 
         if (itemIsUpdating) {
             //进度

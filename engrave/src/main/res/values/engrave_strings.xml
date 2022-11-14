@@ -200,4 +200,7 @@
     <string name="upgrade_completed">Upgrade completed!</string>
     <string name="upgrade_duration">Duration</string>
     <string name="cannot_update_firmware_tip">This firmware cannot be updated for the current device.</string>
+
+    <string name="firmware_corrupted">The firmware has been corrupted</string>
+
 </resources>

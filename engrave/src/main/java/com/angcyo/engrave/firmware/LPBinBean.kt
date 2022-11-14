@@ -16,4 +16,6 @@ data class LPBinBean(
     val d: String?,
     /**r:升级范围[xx~xx xx~xx]*/
     val r: String?,
+    /**固件内容数据的md5*/
+    val md5: String?,
 )

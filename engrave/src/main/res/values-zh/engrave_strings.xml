@@ -191,4 +191,5 @@
     <string name="upgrade_completed">升级完成!</string>
     <string name="upgrade_duration">耗时</string>
     <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
+    <string name="firmware_corrupted">固件已被损坏</string>
 </resources>

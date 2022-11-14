@@ -5,6 +5,7 @@ import com.angcyo.base.back
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.R
 import com.angcyo.getData
 import com.angcyo.library.ex._string
@@ -59,7 +60,14 @@ class FirmwareUpdateFragment : BaseDslFragment() {
         if (info != null) {
             renderDslAdapter {
                 FirmwareUpdateItem()() {
-                    itemFirmwareInfo = info.toFirmwareInfo()
+                    try {
+                        itemFirmwareInfo = info.toFirmwareInfo()
+                    } catch (e: FirmwareException) {
+                        fContext().messageDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = e.message
+                        }
+                    }
                 }
             }
         }
