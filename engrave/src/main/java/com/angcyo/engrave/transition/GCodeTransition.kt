@@ -137,7 +137,7 @@ class GCodeTransition : IEngraveTransition {
         }
     }
 
-    /**GCode原始数据旋转/缩放*/
+    /**GCode原始数据旋转/缩放. 注意原始数据是需要偏移的*/
     @Private
     fun _transitionGCodeTransferData(
         engraveProvider: IEngraveProvider,
