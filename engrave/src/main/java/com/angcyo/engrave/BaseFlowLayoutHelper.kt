@@ -2,23 +2,26 @@ package com.angcyo.engrave
 
 import android.content.Context
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex._drawable
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.uuid
+import com.angcyo.library.ex.*
 import com.angcyo.widget.span.span
 
 /**
@@ -310,6 +313,114 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
             }
             return false
+        }
+        return true
+    }
+
+    //---
+
+    /**检查是否有元素超出物理雕刻范围
+     * @return true 表示有超出范围的元素*/
+    fun checkOverflowBounds(): Boolean {
+        val canvasDelegate = engraveCanvasFragment?.canvasDelegate ?: return false
+        val rendererList = EngraveTransitionManager.getRendererList(canvasDelegate, null, true)
+        var result = false
+        for (renderer in rendererList) {
+            if (renderer.getRotateBounds().isOverflowProductBounds()) {
+                result = true
+                break
+            }
+        }
+
+        if (result) {
+            val fContext = engraveCanvasFragment?.fragment?.fContext()
+            fContext?.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(R.string.engrave_overflow_bounds_message)
+            }
+        }
+
+        return result
+    }
+
+    /**检查传输的数据是否合法
+     *
+     * @return true 数据合法, 允许雕刻*/
+    fun checkTransferData(): Boolean {
+        val fContext = engraveCanvasFragment?.fragment?.fContext()
+        if (!LaserPeckerHelper.isSupportFirmware()) {
+            val version = vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion
+            fContext?.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(
+                    R.string.unsupported_firmware_tip,
+                    version?.toLaserPeckerVersionName() ?: "0"
+                )
+            }
+            return false
+        }
+
+        val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+        if (canvasDelegate != null) {
+            val allRendererList = EngraveTransitionManager.getRendererList(canvasDelegate)
+            if (allRendererList.isEmpty()) {
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = _string(R.string.no_data_transfer)
+                }
+                return false
+            }
+
+            if (allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit) {
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = _string(
+                        R.string.limit_engrave_count_tip,
+                        HawkEngraveKeys.maxEngraveItemCountLimit
+                    )
+                }
+                return false
+            }
+
+            if (laserPeckerModel.isZOpen()) {
+                //所有设备的第三轴模式下, 不允许雕刻GCode数据
+                val gCodeLayer =
+                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                if (gCodeLayer != null) {
+                    val rendererList =
+                        EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
+                    if (rendererList.isNotEmpty()) {
+                        //不允许雕刻GCode
+                        fContext?.messageDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
+                        }
+                        return false
+                    }
+                }
+            }
+
+            val isC1 = laserPeckerModel.isC1()
+            if (isC1 && laserPeckerModel.isPenMode()) {
+                //C1的握笔模式下, 只允许雕刻GCode数据
+                val gCodeLayer =
+                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                if (gCodeLayer != null) {
+                    val notGCodeRendererList = EngraveTransitionManager.getRendererListNot(
+                        canvasDelegate,
+                        gCodeLayer,
+                        false
+                    )
+                    if (notGCodeRendererList.isNotEmpty()) {
+                        //不允许雕刻非GCode数据
+                        fContext?.messageDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = "当前模式下, 不允许雕刻非\"${gCodeLayer.label}\"数据"
+                        }
+                        return false
+                    }
+                }
+            }
         }
         return true
     }

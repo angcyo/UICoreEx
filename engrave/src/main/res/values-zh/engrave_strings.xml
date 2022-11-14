@@ -174,6 +174,8 @@
     <string name="start_upgrade">开始升级</string>
     <string name="firmware_upgrade">固件升级</string>
     <string name="engrave_perimeter">周长</string>
+    <string name="engrave_bounds_warn">元素超出雕刻区域</string>
+    <string name="engrave_overflow_bounds_message">超出雕刻区域，请将元素拖入调整到红色边框内</string>
 
     <string name="device_engrave_ing_title">当前设备正在工作中</string>
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
@@ -192,4 +194,6 @@
     <string name="upgrade_duration">耗时</string>
     <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
     <string name="firmware_corrupted">固件已被损坏</string>
+    <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
+    <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
 </resources>

@@ -93,12 +93,16 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 itemClick = {
                     //下一步, 数据配置界面
 
-                    //让设备进入空闲模式
-                    ExitCmd().enqueue()
-                    syncQueryDeviceState()
+                    if (checkOverflowBounds() || !checkTransferData()) {
+                        //不允许雕刻
+                    } else {
+                        //让设备进入空闲模式
+                        ExitCmd().enqueue()
+                        syncQueryDeviceState()
 
-                    engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                    renderFlowItems()
+                        engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                        renderFlowItems()
+                    }
                 }
             }
             asyncQueryDeviceState()
