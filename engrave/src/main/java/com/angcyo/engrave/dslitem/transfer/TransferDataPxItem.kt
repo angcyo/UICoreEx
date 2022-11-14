@@ -52,7 +52,7 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.v<DslTabLayout>(tabLayoutItemConfig.itemTabLayoutViewId)?.apply {
-            itemEquWidthCount = -1
+            itemEquWidthCountRange = null
         }
     }
 

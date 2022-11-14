@@ -11,6 +11,7 @@ import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.visible
+import com.angcyo.library.extend.IToText
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.image.ImageLoadingView
 import com.angcyo.widget.span.span
@@ -23,7 +24,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/27
  */
-class BluetoothConnectItem : DslAdapterItem() {
+class BluetoothConnectItem : DslAdapterItem(), IToText {
 
     /**设备*/
     var itemFscDevice: FscDevice? = null
@@ -130,4 +131,7 @@ class BluetoothConnectItem : DslAdapterItem() {
             }
         }
     }
+
+    override fun toText(): CharSequence? =
+        DeviceConnectTipActivity.formatDeviceName(itemFscDevice?.name)
 }

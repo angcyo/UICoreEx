@@ -2,6 +2,7 @@ package com.angcyo.engrave.ble
 
 import android.app.Dialog
 import android.content.Context
+import android.widget.TextView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.FscBleApiModel.Companion.BLUETOOTH_STATE_SCANNING
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
@@ -12,11 +13,14 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
+import com.angcyo.item.component.SearchAdapterFilter
 import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.angcyo.widget.tab
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -50,6 +54,8 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
         ON_CONTACT_ME_ACTION?.invoke()
     }
 
+    val searchFilter = SearchAdapterFilter()
+
     init {
         dialogLayoutId = R.layout.dialog_bluetooth_search_list_layout
         dialogTitle = _string(R.string.blue_connect)
@@ -68,6 +74,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
         //扫描
         dialogViewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
+            searchFilter.init(this)
 
             renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
                 itemHolder.click(R.id.contact_me_view) {
@@ -121,6 +128,9 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                                     itemUpdateFlag = true
                                 }
                             }
+
+                            //filter
+                            checkAndShowFilterLayout(dialogViewHolder, this)
                         }
                     }
                 }
@@ -187,6 +197,48 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
     override fun onDialogDestroy(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.onDialogDestroy(dialog, dialogViewHolder)
         apiModel.stopScan()
+    }
+
+    /**当前需要过滤的固件名*/
+    var _filterName: String? = null
+
+    /**检查是否需要显示设备过滤布局, 当不同类型的设备数量大于指定数量时, 显示过滤布局*/
+    fun checkAndShowFilterLayout(dialogViewHolder: DslViewHolder, adapter: DslAdapter) {
+        val filterNameList = mutableSetOf<String>()
+        adapter.adapterItems.forEach {
+            if (it is BluetoothConnectItem) {
+                it.itemFscDevice?.let {
+                    val deviceName = DeviceConnectTipActivity.formatDeviceName(it.name)
+                    deviceName?.split("-")?.getOrNull(0)?.let {
+                        filterNameList.add(it)
+                    }
+                }
+            }
+        }
+        if (adapter.itemCount >= 3 && filterNameList.size() >= 2) {
+            //有2种设备, 并且数量很多
+            dialogViewHolder.visible(R.id.device_filter_tab_layout)
+            dialogViewHolder.tab(R.id.device_filter_tab_layout)?.apply {
+                tabDefaultIndex = filterNameList.indexOf(_filterName)
+                dslSelector.dslSelectorConfig.dslMinSelectLimit = -1
+                resetChild(
+                    filterNameList.toList(),
+                    R.layout.lib_segment_layout
+                ) { itemView, item, itemIndex ->
+                    itemView.find<TextView>(R.id.lib_text_view)?.text = item
+                }
+                observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
+                    if (fromUser) {
+                        _filterName = filterNameList.toList().getOrNull(toIndex)
+                        searchFilter.filter(_filterName)
+                    }
+                }
+            }
+        } else {
+            _filterName = null
+            searchFilter.filter(_filterName)
+            dialogViewHolder.gone(R.id.device_filter_tab_layout)
+        }
     }
 }
 
