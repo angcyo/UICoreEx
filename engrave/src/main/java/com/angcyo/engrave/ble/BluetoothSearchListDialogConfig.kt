@@ -11,8 +11,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.filter.SortAfterFilterInterceptor
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.dslitem.BluetoothConnectItem
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.component.SearchAdapterFilter
 import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.observe
@@ -54,7 +56,17 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
         ON_CONTACT_ME_ACTION?.invoke()
     }
 
-    val searchFilter = SearchAdapterFilter()
+    /**设备过滤器*/
+    val deviceFilter = SearchAdapterFilter()
+
+    /**排序过滤器*/
+    val sortFilter = SortAfterFilterInterceptor(true, false) {
+        if (it is BluetoothConnectItem) {
+            it.itemFscDevice?.rssi
+        } else {
+            0
+        }
+    }
 
     init {
         dialogLayoutId = R.layout.dialog_bluetooth_search_list_layout
@@ -74,7 +86,8 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
         //扫描
         dialogViewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
-            searchFilter.init(this)
+            deviceFilter.init(this)
+            sortFilter.install(this)
 
             renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
                 itemHolder.click(R.id.contact_me_view) {
@@ -106,7 +119,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                             //移除旧的item
 
                             val find =
-                                findItem { it is BluetoothConnectItem && it.itemFscDevice == device }
+                                findItem(false) { it is BluetoothConnectItem && it.itemFscDevice == device }
 
                             //过滤
                             if (find == null) {
@@ -215,7 +228,8 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                 }
             }
         }
-        if (adapter.itemCount >= 3 && filterNameList.size() >= 2) {
+        if (adapter.adapterItems.size() >= HawkEngraveKeys.showDeviceFilterCount && filterNameList.size() >= 2) {
+            sortFilter.isEnable = true
             //有2种设备, 并且数量很多
             dialogViewHolder.visible(R.id.device_filter_tab_layout)
             dialogViewHolder.tab(R.id.device_filter_tab_layout)?.apply {
@@ -230,13 +244,14 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
                 observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                     if (fromUser) {
                         _filterName = filterNameList.toList().getOrNull(toIndex)
-                        searchFilter.filter(_filterName)
+                        deviceFilter.filter(_filterName)
                     }
                 }
             }
         } else {
+            sortFilter.isEnable = false
             _filterName = null
-            searchFilter.filter(_filterName)
+            deviceFilter.filter(_filterName)
             dialogViewHolder.gone(R.id.device_filter_tab_layout)
         }
     }
