@@ -245,13 +245,23 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         return noConnectType
     }
 
+    fun Int.toDeviceNoConnectStr(): String = when (this) {
+        1 -> _string(R.string.device_ex_z_label)
+        2 -> _string(R.string.device_ex_s_label)
+        3 -> _string(R.string.device_ex_r_label)
+        else -> ""
+    }
+
     /**预览时, 第三轴的连接状态提示*/
     fun previewExDeviceNoConnectTip() {
         val noConnectType = exDeviceNoConnectType()
         if (noConnectType > 0) {
             engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-                dialogMessage = _string(R.string.device_ex_discontent_tips)
+                dialogMessage = _string(
+                    R.string.device_ex_discontent_tips,
+                    noConnectType.toDeviceNoConnectStr()
+                )
 
                 onDismissListener = {
                     laserPeckerModel.queryDeviceState()
@@ -264,11 +274,14 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**检查扩展设备是否处于连接状态*/
     fun checkExDevice(action: () -> Unit) {
-        val messageType = exDeviceNoConnectType()
-        if (messageType > 0) {
+        val noConnectType = exDeviceNoConnectType()
+        if (noConnectType > 0) {
             viewHolder?.context?.messageDialog {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
-                dialogMessage = _string(R.string.engrave_ex_discontent_tips)
+                dialogMessage = _string(
+                    R.string.engrave_ex_discontent_tips,
+                    noConnectType.toDeviceNoConnectStr()
+                )
 
                 negativeButtonText = _string(R.string.dialog_negative)
                 positiveButtonListener = { dialog, dialogViewHolder ->

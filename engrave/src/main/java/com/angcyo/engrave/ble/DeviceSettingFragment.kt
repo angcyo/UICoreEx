@@ -139,8 +139,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 //自动进入了移动平台模式
             } else {
                 DslPropertySwitchItem()() {
-                    itemLabel = _string(R.string.device_setting_tips_fourteen_2)
-                    itemDes = _string(R.string.device_setting_tips_fourteen_3)
+                    itemLabel = _string(R.string.device_ex_z_label)
+                    itemDes = _string(R.string.device_ex_z_des)
 
                     itemSwitchChecked = settingParser?.zFlag == 1
                     itemSwitchChangedAction = {

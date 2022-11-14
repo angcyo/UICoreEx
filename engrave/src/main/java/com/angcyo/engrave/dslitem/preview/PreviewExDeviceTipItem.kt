@@ -37,7 +37,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
         itemTip = when {
             //第三轴
             laserPeckerModel.isZOpen() -> span {
-                append(_string(R.string.device_setting_tips_fourteen_2))
+                append(_string(R.string.device_ex_z_label))
                 val list = DeviceSettingFragment.getZDirSegmentList()
                 append(":")
                 append(list[max(0, QuerySettingParser.Z_MODEL)])

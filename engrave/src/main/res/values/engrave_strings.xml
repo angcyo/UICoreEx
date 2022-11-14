@@ -5,8 +5,8 @@
     <string name="object_diameter">Diameter</string>
 
     <string name="blue_no_device_connected">Unconnected device</string>
-    <string name="device_ex_discontent_tips">The accessories of the third axis are not connected. Please connect the third axis first!</string>
-    <string name="engrave_ex_discontent_tips">Check that the third shaft fitting is not connected. Do you want to continue?</string>
+    <string name="device_ex_discontent_tips">The accessories of the %1$s are not connected. Please connect first!</string>
+    <string name="engrave_ex_discontent_tips">Check that the %1$s is not connected. Do you want to continue?</string>
 
     <string name="print_v2_package_preview_over">Quit Preview</string>
     <string name="start_engrave">Start</string>
@@ -106,8 +106,8 @@
     <string name="device_setting_act_des_free">Disclaimer consent is required in the absence of a protective cover</string>
     <string name="device_setting_act_model_preview_g_code">G-CODE Preview</string>
     <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
-    <string name="device_setting_tips_fourteen_2">The Third Axis</string>
-    <string name="device_setting_tips_fourteen_3">Support the parameter setting of engraving scene
+    <string name="device_ex_z_label">The Third Axis</string>
+    <string name="device_ex_z_des">Support the parameter setting of engraving scene
         on the surface of regular cuboid and cylinder objects (size limit: the width of cuboid is
         within 100mm, the length is within 5m, and the circumference of cylinder cross section is within 5m)</string>
     <string name="device_ex_r_label">Rotation axis</string>

@@ -6,8 +6,8 @@
     <string name="object_diameter">物体直径</string>
 
     <string name="blue_no_device_connected">未连接设备</string>
-    <string name="device_ex_discontent_tips">第三轴配件未连接，请先连接第三轴!</string>
-    <string name="engrave_ex_discontent_tips">检查到第三轴配件未连接，是否继续?</string>
+    <string name="device_ex_discontent_tips">%1$s配件未连接，请先连接!</string>
+    <string name="engrave_ex_discontent_tips">检查到%1$s配件未连接，是否继续?</string>
 
     <string name="blue_connect">蓝牙连接</string>
     <string name="device_connected">已连接</string>
@@ -101,8 +101,8 @@
     <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
     <string name="device_setting_act_model_preview_g_code">向量图预览</string>
     <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
-    <string name="device_setting_tips_fourteen_2">第三轴</string>
-    <string name="device_setting_tips_fourteen_3">支持在规则长方体和圆柱体物体表面雕刻场景的参数设置（尺寸限制:宽度限制为100mm以内，长度为5m以内，圆柱体横截面周长在5m以内）</string>
+    <string name="device_ex_z_label">第三轴</string>
+    <string name="device_ex_z_des">支持在规则长方体和圆柱体物体表面雕刻场景的参数设置（尺寸限制:宽度限制为100mm以内，长度为5m以内，圆柱体横截面周长在5m以内）</string>
     <string name="device_ex_r_label">旋转轴</string>
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">滑台</string>
