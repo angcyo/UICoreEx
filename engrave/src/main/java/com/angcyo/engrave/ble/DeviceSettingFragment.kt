@@ -13,6 +13,7 @@ import com.angcyo.core.component.fileSelector
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
+import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.R
@@ -47,6 +48,10 @@ class DeviceSettingFragment : BaseDslFragment() {
                 _string(R.string.device_setting_tips_fourteen_10)
             )
         }
+
+        /**创建固件升级item*/
+        var createFirmwareUpdateItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
+            null
 
     }
 
@@ -308,6 +313,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                     HawkEngraveKeys.AUTO_CONNECT_DEVICE = it
                 }
             }
+
+            //固件升级
+            createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+                it.initItem()
+                this + it
+            }
+
             //
             if (isDebug()) {
                 DslLastDeviceInfoItem()() {
@@ -340,18 +352,4 @@ class DeviceSettingFragment : BaseDslFragment() {
         }
         //LaserPeckerHelper.initDeviceSetting()
     }
-
 }
-
-/**将z轴的模式, 转换成可视化*/
-fun Int.toZModeString() = when (this) {
-    0 -> _string(R.string.device_setting_tips_fourteen_8)
-    1 -> _string(R.string.device_setting_tips_fourteen_9)
-    2 -> _string(R.string.device_setting_tips_fourteen_10)
-    else -> _string(R.string.device_setting_tips_fourteen_8)
-}
-
-/**将z轴模式, 转换成机器指令
- * Z_dir:  0为打直板，1为打印圆柱。
- * */
-fun Int.toZModeDir() = if (this == 2) 1 else 0
