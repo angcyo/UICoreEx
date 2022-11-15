@@ -6,6 +6,9 @@
     <color name="device_bg_color">#ECECEC</color>
 
     <style name="DeviceConnectTipTheme" parent="LibDialogActivity">
+
+        <item name="android:navigationBarColor">@color/navigation_bar_color</item>
+
         <!--<item name="android:navigationBarColor">@color/lib_white</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>-->
     </style>
