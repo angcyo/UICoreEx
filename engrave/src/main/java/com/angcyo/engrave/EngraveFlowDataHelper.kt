@@ -13,6 +13,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.*
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.laser.pecker.lpUpdateOrCreateEntity
+import kotlin.math.max
 
 /**
  * 雕刻流程数据相关处理类
@@ -97,6 +98,7 @@ object EngraveFlowDataHelper {
         }) {
             dataTransferProgress = progress
             dataTransferSpeed = speed
+            dataTransferMaxSpeed = max(speed, dataTransferMaxSpeed)
         }
     }
 
@@ -163,6 +165,14 @@ object EngraveFlowDataHelper {
                 TransferDataEntity_.taskId.equal("$taskId")
                     .and(TransferDataEntity_.index.equal(index))
             )
+        }
+    }
+
+    /**通过指定的文件索引[index], 查询对应的传输数据, 反向获取对应的任务id,
+     * 用来恢复雕刻任务*/
+    fun getTransferData(index: Int): TransferDataEntity? {
+        return TransferDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(TransferDataEntity_.index.equal(index))
         }
     }
 
@@ -302,7 +312,7 @@ object EngraveFlowDataHelper {
 
     /**获取一个雕刻任务*/
     fun getEngraveTask(taskId: String?): EngraveTaskEntity? {
-        return EngraveTaskEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+        return EngraveTaskEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(EngraveTaskEntity_.taskId.equal("$taskId"))
         }
     }
@@ -310,6 +320,13 @@ object EngraveFlowDataHelper {
     /**重新雕刻, 则需要清空数据雕刻完成的状态*/
     fun againEngrave(taskId: String?) {
         val taskEntity = getEngraveTask(taskId) ?: return
+
+        //
+        taskEntity.lastDurationProgress = -1
+        taskEntity.lastDuration = -1
+        taskEntity.lpSaveEntity()
+
+        //
         for (indexStr in taskEntity.dataIndexList ?: emptyList()) {
             val index = indexStr.toIntOrNull() ?: 0
             val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
@@ -438,6 +455,37 @@ object EngraveFlowDataHelper {
         }
         val progress = clamp((current * 1f / sum * 100).toInt(), 0, 100)
         return progress
+    }
+
+    /**计算雕刻剩余时长
+     * @return 时长毫秒, -1表示无法统计*/
+    fun calcEngraveProgressDuration(taskId: String?): Long {
+        val progress = calcEngraveProgress(taskId)
+        val taskEntity = getEngraveTask(taskId) ?: return -1
+        if (progress > 0) {
+            val nowTime = nowTime()
+            if (taskEntity.lastDuration == -1L || taskEntity.lastDurationProgress != progress) {
+                //需要计算剩余时长
+                val startTime = taskEntity.startTime
+                if (startTime > 0) {
+                    val totalTime = nowTime - startTime //总共过去的时间
+                    val duration: Long =
+                        (totalTime * 1f / progress * max(0, 100 - progress)).toLong()
+                    taskEntity.lastDurationProgress = progress
+                    taskEntity.lastDuration = duration
+                    taskEntity.lastDurationTime = nowTime
+                    taskEntity.lpSaveEntity()
+                    return duration
+                } else {
+                    return -1
+                }
+            } else {
+                //直接返回上一次的计算出来的时长
+                return taskEntity.lastDuration - (nowTime - taskEntity.lastDurationTime)
+            }
+        } else {
+            return -1
+        }
     }
 
     //endregion ---雕刻相关---

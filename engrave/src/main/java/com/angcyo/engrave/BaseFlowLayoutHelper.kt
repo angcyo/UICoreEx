@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import android.content.Context
+import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -9,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
@@ -17,6 +19,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Implementation
@@ -146,6 +149,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**雕刻模式改变通知*/
     open fun onEngraveFlowChanged(from: Int, to: Int) {
+        if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
+            loopCheckDeviceState = false
+        }
         onEngraveFlowChangedAction(from, to)
     }
 
@@ -328,6 +334,26 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             return false
         }
         return true
+    }
+
+    /**恢复雕刻状态
+     * @return true 需要恢复状态*/
+    fun checkRestoreEngrave(fragment: AbsLifecycleFragment, group: ViewGroup? = null): Boolean {
+        val stateParser = laserPeckerModel.deviceStateData.value ?: return false
+        if (stateParser.isModeEngrave()) {
+            //设备正在雕刻中, 则通过index查询是否是本机app发送的任务
+            val transferData = EngraveFlowDataHelper.getTransferData(stateParser.index)
+
+            //如果是, 恢复界面, 如果不是, 则只是弹窗提示
+            if (transferData != null && transferData.isTransfer && transferData.taskId != null) {
+                flowTaskId = transferData.taskId
+                engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                showIn(fragment, group)
+                engraveModel.restoreEngrave(transferData.taskId)
+                return true
+            }
+        }
+        return false
     }
 
     //---

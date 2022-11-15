@@ -46,12 +46,12 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
                 //雕刻精度
                 if (laserPeckerModel.isC1()) {
-                    add(
+                    /*add(
                         LabelDesData(
                             _string(R.string.engrave_speed),
                             "${engraveConfigEntity.toEngravingSpeed()}%"
                         )
-                    )
+                    )*/
                     add(
                         LabelDesData(
                             _string(R.string.engrave_precision),
@@ -75,6 +75,15 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 val startEngraveTime = engraveTaskEntity?.startTime ?: 0
                 val engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
                 add(LabelDesData(_string(R.string.work_time), engraveTime))
+
+                //剩余时长
+                val duration = EngraveFlowDataHelper.calcEngraveProgressDuration(itemTaskId)
+                if (duration > 3000) {
+                    //大于3秒才显示
+                    add(
+                        LabelDesData(_string(R.string.remaining_time), duration.toEngraveTime())
+                    )
+                }
             }
 
             /*add( LabelDesData(_string(R.string.laser_type), "") )*/

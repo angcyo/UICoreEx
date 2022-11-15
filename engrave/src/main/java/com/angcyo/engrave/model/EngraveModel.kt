@@ -13,7 +13,7 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.data.*
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
@@ -59,7 +59,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     val engraveStateData = vmDataOnce<EngraveTaskEntity>()
 
     //缓存
-    var _engraveTaskEntity: EngraveTaskEntity? = null
+    var _engraveTaskId: String? = null
+
+    /**必须要实时获取, 否则在其他地方修改了数据, 在这里还是缓存, 不会是最新的*/
+    val _engraveTaskEntity: EngraveTaskEntity?
+        get() = EngraveFlowDataHelper.getEngraveTask(_engraveTaskId)
 
     //是否要监听设备的雕刻状态
     var _listenerEngraveState: Boolean = false
@@ -125,18 +129,30 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     @Private
     fun _startEngraveTask(task: EngraveTaskEntity) {
-        task.let {
-            it.startTime = nowTime()
-            it.finishTime = -1
-            it.currentIndex = -1
-            it.state = ENGRAVE_STATE_START
-            it.lpSaveEntity()
+        task.apply {
+            startTime = nowTime()
+            finishTime = -1
+            currentIndex = -1
+            state = ENGRAVE_STATE_START
+            lpSaveEntity()
 
-            _engraveTaskEntity = task
+            _engraveTaskId = task.taskId
 
             //
             engraveNext()
 
+            //loop
+            loopCheckDeviceState()
+        }
+    }
+
+    /**恢复雕刻任务*/
+    @CallPoint
+    fun restoreEngrave(taskId: String?) {
+        val task = EngraveFlowDataHelper.getEngraveTask(taskId)
+        task?.apply {
+            _engraveTaskId = task.taskId
+            _listenerEngraveState = true
             //loop
             loopCheckDeviceState()
         }
@@ -306,162 +322,4 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
         }
     }
-
-/*
-    */
-    /**当前选中的雕刻参数*//*
-    val engraveOptionInfoData = vmData(
-        EngraveOptionInfo(
-            _string(R.string.material_custom),
-            HawkEngraveKeys.lastPower.toByte(),
-            HawkEngraveKeys.lastDepth.toByte(),
-            1,
-            diameterPixel = HawkEngraveKeys.lastDiameterPixel
-        )
-    )
-
-    */
-    /**当前正在雕刻的数据*//*
-    val engraveReadyInfoData = vmDataNull<EngraveReadyInfo>()
-
-    */
-    /**用来通知item的雕刻进度*//*
-    val engraveItemData = vmDataOnce<EngraveItemInfo>()
-
-    */
-    /**用来通知正在预览的item, 然后从[engravePreviewInfoData]中获取相应的数据*//*
-    val engraveItemInfoData = vmDataOnce<EngraveItemInfo>()
-
-    */
-    /**设置需要雕刻的数据*//*
-    @AnyThread
-    fun setEngraveReadyDataInfo(info: EngraveReadyInfo) {
-        if (isMain()) {
-            engraveReadyInfoData.value = info
-        } else {
-            engraveReadyInfoData.postValue(info)
-        }
-    }
-
-    */
-    /**更新雕刻数据信息*//*
-    @AnyThread
-    fun updateEngraveReadyDataInfo(block: EngraveReadyInfo.() -> Unit) {
-        engraveReadyInfoData.value?.let {
-            it.block()
-            setEngraveReadyDataInfo(it)
-        }
-    }
-
-    */
-    /**开始雕刻*//*
-    fun startEngrave() {
-        engraveReadyInfoData.value?.apply {
-            printTimes = 0
-            startEngraveTime = nowTime()
-
-            val laserPeckerModel = vmApp<LaserPeckerModel>()
-
-            var history: EngraveHistoryEntity? = historyEntity
-            if (history == null) {
-                lpBoxOf(EngraveHistoryEntity::class) {
-                    history = findLast(
-                        1,
-                        EngraveHistoryEntity_.index.equal(engraveData?.index ?: -1)
-                    ).lastOrNull() ?: EngraveHistoryEntity()
-                }
-            }
-            history?.let { entity ->
-                //入库
-                engraveData?.updateToEntity(entity)
-                engraveOptionInfoData.value?.updateToEntity(entity)
-
-                entity.dataMode = dataMode
-                entity.dataPath = dataPath
-                entity.previewDataPath = previewDataPath
-                entity.startEngraveTime = startEngraveTime
-                entity.printTimes = printTimes
-
-                entity.productVersion =
-                    laserPeckerModel.productInfoData.value?.version ?: entity.productVersion
-
-                if (laserPeckerModel.isZOpen()) {
-                    //z轴模式
-                    entity.zMode = QuerySettingParser.Z_MODEL
-                }
-
-                entity.saveEntity(LPBox.PACKAGE_NAME)
-            }
-
-            //hold
-            historyEntity = history
-
-            //progress
-            updateEngraveProgress(0)
-        }
-    }
-
-    */
-
-    /**更新打印次数*//*
-    fun updatePrintTimes(times: Int) {
-        engraveReadyInfoData.value?.apply {
-            printTimes = times
-            setEngraveReadyDataInfo(this)
-
-            historyEntity?.let { entity ->
-                entity.printTimes = times
-                entity.saveEntity(LPBox.PACKAGE_NAME)
-            }
-        }
-    }
-
-    */
-    /**计算雕刻剩余时间, 毫秒
-     * [rate] 打印进度百分比[0-100]*//*
-    fun calcEngraveRemainingTime(rate: Int): Long {
-        if (rate <= 0) {
-            return -1
-        } else if (rate >= 100) {
-            return 0
-        }
-
-        val startEngraveTime = engraveReadyInfoData.value?.startEngraveTime ?: -1
-        if (startEngraveTime <= 0) {
-            return -1
-        }
-
-        val time = nowTime() - startEngraveTime
-        val speed = rate * 1f / time
-
-        val sum = 100 - rate
-        if (sum <= 0) {
-            return -1
-        }
-        return (sum / speed).roundToLong()
-    }
-
-    */
-    /**更新雕刻进度
-     * [progress] 0~100*//*
-    @AnyThread
-    fun updateEngraveProgress(progress: Int) {
-        engraveReadyInfoData.value?.let {
-            val uuid = if (progress < 0) null else it.itemUuid
-            engraveItemData.postValue(EngraveItemInfo(uuid, progress))
-        }
-    }
-
-    */
-    /**通知正在预览的item*//*
-    @AnyThread
-    fun updateEngravePreviewUuid(uuid: String?) {
-        engraveItemInfoData.postValue(
-            EngraveItemInfo(uuid, engraveItemInfoData.value?.progress ?: -1)
-        )
-    }
-
-    */
-    /**恢复的状态*//*
-    fun isRestore() = engraveReadyInfoData.value == null*/
 }

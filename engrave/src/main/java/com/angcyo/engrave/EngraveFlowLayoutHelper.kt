@@ -2,14 +2,8 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
-import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
-import com.angcyo.dialog.messageDialog
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -23,7 +17,6 @@ import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.TransferModel
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
@@ -31,7 +24,6 @@ import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.size
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
@@ -182,7 +174,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                     if (monitorEntity.dataMakeFinishTime > 0) {
                                         append("生成耗时:${monitorEntity.dataMakeDuration()} ")
                                     } else {
-                                        append("生成中... ")
+                                        append("数据生成中... ")
                                     }
                                 }
                                 if (monitorEntity.dataTransferSize > 0) {
@@ -197,7 +189,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         append("${monitorEntity.dataTransferDuration(nowTime())} ")
                                     }
                                     if (monitorEntity.dataTransferSpeed > 0) {
-                                        append(" 速率:${monitorEntity.speedString()} ")
+                                        append(" 速率:${monitorEntity.speedString()} :${monitorEntity.maxSpeedString()}")
                                     } else {
                                         append(" 传输中... ")
                                     }

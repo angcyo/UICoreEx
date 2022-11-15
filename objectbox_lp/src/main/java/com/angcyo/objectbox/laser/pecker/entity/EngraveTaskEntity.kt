@@ -16,6 +16,7 @@ import io.objectbox.annotation.Id
 @Keep
 @Entity
 data class EngraveTaskEntity(
+
     @Id var entityId: Long = 0L,
 
     /**当前雕刻任务的id*/
@@ -47,4 +48,15 @@ data class EngraveTaskEntity(
 
     /**任务完成的时间, 毫秒*/
     var finishTime: Long = -1,
+
+    //---
+
+    /**最后一次统计剩余时长时记录的进度, 只有在进度有变化时才重新计算剩余时长*/
+    var lastDurationProgress: Int = -1,
+
+    /**最后一次算出来的剩余时长, 毫秒*/
+    var lastDuration: Long = -1,
+
+    /**最后一次计算时长的时间, 13位时间戳*/
+    var lastDurationTime: Long = -1,
 )

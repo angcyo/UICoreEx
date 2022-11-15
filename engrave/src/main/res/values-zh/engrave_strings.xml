@@ -24,7 +24,7 @@
     <string name="file_setting">文件设置</string>
     <string name="transmitting">文件传输中</string>
     <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
-    <string name="estimated_remaining_time">预计剩余时间:</string>
+    <string name="remaining_time">剩余时长</string>
     <string name="start_engrave">开始镭雕</string>
     <string name="engrave_pause">暂停镭雕</string>
     <string name="engrave_finish">镭雕结束</string>

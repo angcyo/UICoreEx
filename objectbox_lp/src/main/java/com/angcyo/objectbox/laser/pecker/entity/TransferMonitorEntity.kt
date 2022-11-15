@@ -2,7 +2,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
 import com.angcyo.library.ex.fileSizeString
-import com.angcyo.library.ex.toElapsedTime
+import com.angcyo.library.ex.toMinuteTime
 import com.angcyo.library.ex.toSizeString
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -41,26 +41,43 @@ data class TransferMonitorEntity(
     var dataTransferProgress: Int = 0,
     /**数据发送速率 byte/s*/
     var dataTransferSpeed: Float = -1f,
+
+    /**数据发送最高的速率 byte/s*/
+    var dataTransferMaxSpeed: Float = -1f,
 ) {
 
     /**数据大小*/
     fun dataSize(): String {
+        if (dataTransferSize < 0) {
+            return ""
+        }
         return dataTransferSize.fileSizeString()
     }
 
     /**传输速率*/
     fun speedString(): String {
+        if (dataTransferSpeed < 0) {
+            return ""
+        }
         return "${dataTransferSpeed.toLong().toSizeString()}/s"
+    }
+
+    /**最大传输速率*/
+    fun maxSpeedString(): String {
+        if (dataTransferMaxSpeed < 0) {
+            return ""
+        }
+        return "${dataTransferMaxSpeed.toLong().toSizeString()}/s"
     }
 
     /**数据生成耗时*/
     fun dataMakeDuration(): String {
-        return (dataMakeFinishTime - dataMakeStartTime).toElapsedTime(intArrayOf(1, 1))
+        return (dataMakeFinishTime - dataMakeStartTime).toMinuteTime()!!
     }
 
     /**数据传输耗时*/
     fun dataTransferDuration(endTime: Long = dataTransferFinishTime): String {
-        return (endTime - dataTransferStartTime).toElapsedTime(intArrayOf(1, 1))
+        return (endTime - dataTransferStartTime).toMinuteTime()!!
     }
 
 }

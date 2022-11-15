@@ -496,7 +496,7 @@
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "8:4789754152453567104",
+      "lastPropertyId": "11:2453161653893663178",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -539,13 +539,28 @@
           "id": "8:4789754152453567104",
           "name": "progress",
           "type": 5
+        },
+        {
+          "id": "9:59688944647340315",
+          "name": "lastDurationProgress",
+          "type": 5
+        },
+        {
+          "id": "10:648450934893846507",
+          "name": "lastDuration",
+          "type": 6
+        },
+        {
+          "id": "11:2453161653893663178",
+          "name": "lastDurationTime",
+          "type": 6
         }
       ],
       "relations": []
     },
     {
       "id": "11:7833260621013857816",
-      "lastPropertyId": "10:5042152964890805673",
+      "lastPropertyId": "11:4739151550581876079",
       "name": "TransferMonitorEntity",
       "properties": [
         {
@@ -592,6 +607,11 @@
         {
           "id": "10:5042152964890805673",
           "name": "dataTransferSpeed",
+          "type": 7
+        },
+        {
+          "id": "11:4739151550581876079",
+          "name": "dataTransferMaxSpeed",
           "type": 7
         }
       ],

@@ -98,6 +98,7 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
             DeviceConnectState.CONNECT_STATE_SUCCESS -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
+                    _rotateDegrees = 0f
                     setLoadingRes(R.drawable.dialog_confirm_svg, false)
                 }
                 itemHolder.tv(R.id.device_flag_view)?.text =

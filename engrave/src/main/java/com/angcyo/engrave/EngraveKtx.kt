@@ -110,10 +110,7 @@ fun Context.strokeLoading2(
 }
 
 /**分:秒 的时间格式*/
-fun Long?.toEngraveTime() = this?.toElapsedTime(
-    pattern = intArrayOf(-1, 1, 1),
-    units = arrayOf("", "", ":", ":", ":")
-)
+fun Long?.toEngraveTime() = this?.toMinuteTime()
 
 /**模式字符串*/
 fun Int?.toModeString() = when (this) {
