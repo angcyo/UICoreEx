@@ -76,4 +76,8 @@ object HawkEngraveKeys {
 
     /**当设备数量大于10时, 显示过滤布局*/
     var showDeviceFilterCount: Int by HawkPropertyValue<Any, Int>(10)
+
+    /**工程预览图, 输出的大小*/
+    var projectOutSize: Int by HawkPropertyValue<Any, Int>(600)
+
 }
