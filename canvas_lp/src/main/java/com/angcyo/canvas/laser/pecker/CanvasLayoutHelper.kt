@@ -61,6 +61,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     var _canvasView: CanvasView? = null
 
+    /**撤销item*/
     var _undoCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
         itemIco = R.drawable.canvas_undo_ico
         itemText = _string(R.string.canvas_undo)
@@ -71,6 +72,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             _canvasView?.canvasDelegate?.getCanvasUndoManager()?.undo()
         }
     }
+
+    /**重做item*/
     var _redoCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
         itemIco = R.drawable.canvas_redo_ico
         itemText = _string(R.string.canvas_redo)
@@ -81,6 +84,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             _canvasView?.canvasDelegate?.getCanvasUndoManager()?.redo()
         }
     }
+
+    /**素材item*/
     var _materialCanvasItem: CanvasControlItem2 = CanvasControlItem2().apply {
         itemIco = R.drawable.canvas_material_ico
         itemText = _string(R.string.canvas_material)
