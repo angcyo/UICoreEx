@@ -1,9 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import com.angcyo.bluetooth.fsc.IReceiveBeanAction
-import com.angcyo.bluetooth.fsc.ISendProgressAction
-import com.angcyo.bluetooth.fsc.ReceivePacket
-import com.angcyo.bluetooth.fsc.WaitReceivePacket
+import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.packetHeadSize
@@ -69,7 +66,12 @@ fun ICommand.sendCommand(
     address: String? = null,
     progress: ISendProgressAction? = null,
     action: IReceiveBeanAction? = { bean: ReceivePacket?, error: Exception? ->
-        error?.let { toast(it.message) }
+        error?.let {
+            if (it is ReceiveTimeOutException) {
+            } else {
+                toast(it.message)
+            }
+        }
     }
 ): WaitReceivePacket? {
     return LaserPeckerHelper.sendCommand(this, address, progress, action)

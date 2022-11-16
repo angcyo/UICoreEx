@@ -196,7 +196,12 @@ fun ICommand.enqueue(
     address: String? = null,
     progress: ISendProgressAction = {},
     action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
-        error?.let { toast(it.message) }
+        error?.let {
+            if (it is ReceiveTimeOutException) {
+            } else {
+                toast(it.message)
+            }
+        }
     }
 ) {
     CommandQueueHelper.addCommand(
