@@ -55,11 +55,8 @@ class BitmapTransition : IEngraveTransition {
             var isLTR = true
 
             //追加一段路径
-            fun appendPath(ltr: Boolean, isEnd: Boolean) {
+            fun appendPath(ltr: Boolean) {
                 lastBitmapPath?.apply {
-                    if (!isEnd) {
-                        len++
-                    }
                     result.add(this)
                     lastBitmapPath = null
                     isLTR = ltr
@@ -72,14 +69,17 @@ class BitmapTransition : IEngraveTransition {
                 if (gray <= threshold && color != Color.TRANSPARENT) {
                     //00, 黑色纸上雕刻, 金属不雕刻
                     if (lastBitmapPath == null) {
+                        //第一个点不进行len累加
                         lastBitmapPath =
                             BitmapPath(x + offsetLeft, y + offsetTop, 0, ltr, orientation)
-                    }
-                    lastBitmapPath?.apply {
-                        len++
+                    } else {
+                        //第二个点开始才进行len累加, 表示多少个线段的意思
+                        lastBitmapPath?.apply {
+                            len++
+                        }
                     }
                 } else {
-                    appendPath(!ltr, false)
+                    appendPath(!ltr)
                 }
             }
 
@@ -97,7 +97,7 @@ class BitmapTransition : IEngraveTransition {
                         handleColor(x, hIndex, color, ltr)
                     }
                     //收尾
-                    appendPath(!ltr, true)
+                    appendPath(!ltr)
                 }
             } else {
                 //横向枚举, 从上往下, 从左到右
@@ -110,7 +110,7 @@ class BitmapTransition : IEngraveTransition {
                         handleColor(wIndex, y, color, ltr)
                     }
                     //收尾
-                    appendPath(!ltr, true)
+                    appendPath(!ltr)
                 }
             }
             return result
