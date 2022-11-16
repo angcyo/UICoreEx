@@ -80,4 +80,12 @@ object HawkEngraveKeys {
     /**工程预览图, 输出的大小*/
     var projectOutSize: Int by HawkPropertyValue<Any, Int>(600)
 
+    //
+
+    /**需要关闭的功能
+     * xx_xxx
+     * [com.angcyo.canvas.laser.pecker.CanvasLayoutHelper.bindItems]
+     * */
+    var closeCanvasItemsFun: String by HawkPropertyValue<Any, String>("")
+
 }

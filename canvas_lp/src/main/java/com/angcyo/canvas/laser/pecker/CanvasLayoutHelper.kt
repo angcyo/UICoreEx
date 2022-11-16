@@ -32,6 +32,7 @@ import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.loadingAsync
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
@@ -161,56 +162,68 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**绑定画图支持的功能列表*/
     fun bindItems(vh: DslViewHolder, canvasView: CanvasView, adapter: DslAdapter) {
+        val closeCanvasItemsFun = HawkEngraveKeys.closeCanvasItemsFun
         _canvasView = canvasView
         adapter.render {
             hookUpdateDepend()
             //
             val canvasDelegate = canvasView.canvasDelegate
-            AddImageItem()() {
-                itemCanvasDelegate = canvasDelegate
-            }
-            AddTextItem()() {
-                itemCanvasDelegate = canvasDelegate
-            }
-            //素材
-            _materialCanvasItem() {
-                itemCanvasDelegate = canvasDelegate
-            }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_shapes_ico
-                itemText = _string(R.string.canvas_shapes)
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-
-                    if (itemIsSelected) {
-                        vh.showControlLayout(canvasView, false, true)
-                        selectedItemWith(vh, canvasView, this)
-                        showShapeSelectLayout(vh, canvasView)
-                        UMEvent.CANVAS_SHAPE.umengEventValue()
-                    } else {
-                        selectedItemWith(vh, canvasView, null)
-                    }
+            if (!closeCanvasItemsFun.have("image")) {
+                AddImageItem()() {
+                    itemCanvasDelegate = canvasDelegate
                 }
             }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_doodle_ico
-                itemText = _string(R.string.canvas_doodle)
-                itemEnable = true
-                itemClick = {
-                    UMEvent.CANVAS_DOODLE.umengEventValue()
-                    engraveCanvasFragment.fragment.context.doodleDialog {
-                        onDoodleResultAction = {
-                            engraveCanvasFragment.fragment.loadingAsync({
-                                //涂鸦之后, 默认黑白处理
-                                val bean = it.toBlackWhiteBitmapItemData()
-                                GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
-                            })
+            if (!closeCanvasItemsFun.have("text")) {
+                AddTextItem()() {
+                    itemCanvasDelegate = canvasDelegate
+                }
+            }
+            //素材
+            if (!closeCanvasItemsFun.have("material")) {
+                _materialCanvasItem() {
+                    itemCanvasDelegate = canvasDelegate
+                }
+            }
+            if (!closeCanvasItemsFun.have("shapes")) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_shapes_ico
+                    itemText = _string(R.string.canvas_shapes)
+                    itemClick = {
+                        updateItemSelected(!itemIsSelected)
+
+                        if (itemIsSelected) {
+                            vh.showControlLayout(canvasView, false, true)
+                            selectedItemWith(vh, canvasView, this)
+                            showShapeSelectLayout(vh, canvasView)
+                            UMEvent.CANVAS_SHAPE.umengEventValue()
+                        } else {
+                            selectedItemWith(vh, canvasView, null)
                         }
                     }
                 }
-                drawCanvasRight()
+            }
+            if (!closeCanvasItemsFun.have("doodle")) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_doodle_ico
+                    itemText = _string(R.string.canvas_doodle)
+                    itemEnable = true
+                    itemClick = {
+                        UMEvent.CANVAS_DOODLE.umengEventValue()
+                        engraveCanvasFragment.fragment.context.doodleDialog {
+                            onDoodleResultAction = {
+                                engraveCanvasFragment.fragment.loadingAsync({
+                                    //涂鸦之后, 默认黑白处理
+                                    val bean = it.toBlackWhiteBitmapItemData()
+                                    GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
+                                })
+                            }
+                        }
+                    }
+                    drawCanvasRight()
+                }
             }
             //
+
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_edit_ico
                 itemText = _string(R.string.canvas_edit)
@@ -224,47 +237,53 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     vh.showControlLayout(canvasView, itemIsSelected, itemIsSelected)
                 }
             }
-            CanvasControlItem2()() {
-                _layerCanvasItem = this
-                itemIco = R.drawable.canvas_layer_ico
-                itemText = _string(R.string.canvas_layer)
-                itemEnable = true
-                itemClick = {
-                    vh.gone(R.id.canvas_layer_layout, itemIsSelected)
-                    updateItemSelected(!itemIsSelected)
-
-                    if (itemIsSelected) {
-                        updateLayerListLayout(vh, canvasView)
-                    }
-                }
-            }
-            if (isDebugType()) {
+            if (!closeCanvasItemsFun.have("layer")) {
                 CanvasControlItem2()() {
-                    itemIco = R.drawable.canvas_actions_ico
-                    itemText = _string(R.string.canvas_operate)
+                    _layerCanvasItem = this
+                    itemIco = R.drawable.canvas_layer_ico
+                    itemText = _string(R.string.canvas_layer)
                     itemEnable = true
                     itemClick = {
-                        canvasDelegate.getSelectedRenderer()?.let { renderer ->
+                        vh.gone(R.id.canvas_layer_layout, itemIsSelected)
+                        updateItemSelected(!itemIsSelected)
 
+                        if (itemIsSelected) {
+                            updateLayerListLayout(vh, canvasView)
                         }
                     }
                 }
             }
-            CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_setting_ico
-                itemText = _string(R.string.canvas_setting)
-                itemEnable = true
+            if (isDebugType()) {
+                if (!closeCanvasItemsFun.have("operate")) {
+                    CanvasControlItem2()() {
+                        itemIco = R.drawable.canvas_actions_ico
+                        itemText = _string(R.string.canvas_operate)
+                        itemEnable = true
+                        itemClick = {
+                            canvasDelegate.getSelectedRenderer()?.let { renderer ->
 
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
+                            }
+                        }
+                    }
+                }
+            }
+            if (!closeCanvasItemsFun.have("setting")) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_setting_ico
+                    itemText = _string(R.string.canvas_setting)
+                    itemEnable = true
 
-                    if (itemIsSelected) {
-                        it.context.canvasSettingWindow(it) {
-                            this.canvasDelegate = canvasDelegate
-                            onDismiss = {
-                                itemIsSelected = false
-                                updateAdapterItem()
-                                false
+                    itemClick = {
+                        updateItemSelected(!itemIsSelected)
+
+                        if (itemIsSelected) {
+                            it.context.canvasSettingWindow(it) {
+                                this.canvasDelegate = canvasDelegate
+                                onDismiss = {
+                                    itemIsSelected = false
+                                    updateAdapterItem()
+                                    false
+                                }
                             }
                         }
                     }
