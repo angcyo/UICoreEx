@@ -8,8 +8,8 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
-import com.angcyo.library.L
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
@@ -64,9 +64,8 @@ class WaitReceivePacket(
     //超时处理
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
-            L.i("指令超时")
             end()
-            listener.onReceive(null, ReceiveTimeOutException("指令超时"))
+            listener.onReceive(null, ReceiveTimeOutException("指令超时".writeToLog()))
         }
     }
 
