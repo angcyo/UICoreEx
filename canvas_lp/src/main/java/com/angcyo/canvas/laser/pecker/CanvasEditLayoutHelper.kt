@@ -19,6 +19,7 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.library.ex.*
 import com.hingin.umeng.UMEvent
@@ -38,110 +39,127 @@ object CanvasEditLayoutHelper {
         fragment: AbsFragment,
         renderer: DataItemRenderer
     ) {
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_prints
-            itemText = _string(R.string.canvas_prints)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
-                        updateItemSelected(false)
+        val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
+        if (!closeImageEditItemsFun.have("prints")) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_prints
+                itemText = _string(R.string.canvas_prints)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                 }
             }
         }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_gcode
-            itemText = _string(R.string.canvas_gcode)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
-                        updateItemSelected(false)
+        if (!closeImageEditItemsFun.have("gcode")) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_gcode
+                itemText = _string(R.string.canvas_gcode)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                 }
             }
         }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_black_white
-            itemText = _string(R.string.canvas_black_white)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer) {
-                        updateItemSelected(false)
+        if (!closeImageEditItemsFun.have("bw")) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_black_white
+                itemText = _string(R.string.canvas_black_white)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                 }
             }
         }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_dithering
-            itemText = _string(R.string.canvas_dithering)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleDithering(it, fragment, renderer) {
-                        updateItemSelected(false)
+        if (!closeImageEditItemsFun.have("dithering")) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_dithering
+                itemText = _string(R.string.canvas_dithering)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleDithering(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                 }
             }
         }
         if (isDebug()) {
+            if (!closeImageEditItemsFun.have("grey")) {
+                CanvasControlItem2()() {
+                    itemIco = R.drawable.canvas_bitmap_grey
+                    itemText = _string(R.string.canvas_grey)
+                    itemClick = {
+                        CanvasBitmapHandler.handleGrey(it, fragment, renderer)
+                        UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
+                    }
+                }
+            }
+        }
+        if (!closeImageEditItemsFun.have("seal")) {
             CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_bitmap_grey
-                itemText = _string(R.string.canvas_grey)
+                itemIco = R.drawable.canvas_bitmap_seal
+                itemText = _string(R.string.canvas_seal)
                 itemClick = {
-                    CanvasBitmapHandler.handleGrey(it, fragment, renderer)
-                    UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleSeal(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
+                    }
                 }
             }
         }
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_seal
-            itemText = _string(R.string.canvas_seal)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleSeal(it, fragment, renderer) {
-                        updateItemSelected(false)
+        if (!closeImageEditItemsFun.have("mesh")) {
+            //扭曲
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_actions_ico
+                itemText = _string(R.string.canvas_mesh)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleMesh(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
                 }
+                drawCanvasRight()
             }
         }
-        //扭曲
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_actions_ico
-            itemText = _string(R.string.canvas_mesh)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleMesh(it, fragment, renderer) {
-                        updateItemSelected(false)
+        if (!closeImageEditItemsFun.have("crop")) {
+            //剪裁用的是原图
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_bitmap_crop
+                itemText = _string(R.string.canvas_crop)
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleCrop(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
                     }
-                    UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
                 }
+                drawCanvasRight()
             }
-            drawCanvasRight()
-        }
-        //剪裁用的是原图
-        CanvasControlItem2()() {
-            itemIco = R.drawable.canvas_bitmap_crop
-            itemText = _string(R.string.canvas_crop)
-            itemClick = {
-                updateItemSelected(!itemIsSelected)
-                if (itemIsSelected) {
-                    CanvasBitmapHandler.handleCrop(it, fragment, renderer) {
-                        updateItemSelected(false)
-                    }
-                    UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
-                }
-            }
-            drawCanvasRight()
         }
     }
 

@@ -88,4 +88,10 @@ object HawkEngraveKeys {
      * */
     var closeCanvasItemsFun: String by HawkPropertyValue<Any, String>("")
 
+    /**需要关闭的图片算法功能
+     * xx_xxx
+     * [CanvasEditLayoutHelper.renderImageEditItems]
+     * */
+    var closeImageEditItemsFun: String by HawkPropertyValue<Any, String>("")
+
 }
