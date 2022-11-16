@@ -318,14 +318,14 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            //固件升级
-            createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+            //上传日志
+            createUploadLoadItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
                 it.initItem()
                 this + it
             }
 
-            //上传日志
-            createUploadLoadItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+            //固件升级
+            createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
                 it.initItem()
                 this + it
             }
