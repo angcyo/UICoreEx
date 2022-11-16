@@ -49,7 +49,11 @@ class DeviceSettingFragment : BaseDslFragment() {
             )
         }
 
-        /**创建固件升级item*/
+        /**上传日志的item*/
+        var createUploadLoadItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
+            null
+
+        /**创建固件升级的item*/
         var createFirmwareUpdateItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
 
@@ -316,6 +320,12 @@ class DeviceSettingFragment : BaseDslFragment() {
 
             //固件升级
             createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+                it.initItem()
+                this + it
+            }
+
+            //上传日志
+            createUploadLoadItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
                 it.initItem()
                 this + it
             }
