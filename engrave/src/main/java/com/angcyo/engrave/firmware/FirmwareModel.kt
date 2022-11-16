@@ -57,7 +57,7 @@ class FirmwareModel : ViewModel() {
     /**开始升级固件*/
     @AnyThread
     fun startUpdate(firmwareInfo: FirmwareInfo) {
-        firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_UPDATE))
+        firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_UPDATE, 0))
         ExitCmd().enqueue()//先进入空闲模式
         FirmwareUpdateCmd.update(firmwareInfo.data.size, firmwareInfo.version)
             .enqueue { bean, error ->
