@@ -58,9 +58,10 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
     return builder.toString().toIntOrNull() ?: -1
 }
 
-/**文件路径转成固件信息*/
+/**文件路径转成固件信息
+ * [verifyBin] 是否验证[LPBinBean]文件格式*/
 @Throws(FirmwareException::class)
-fun String.toFirmwareInfo(verifyMd5: Boolean = true): FirmwareInfo {
+fun String.toFirmwareInfo(verifyMd5: Boolean = true, verifyBin: Boolean = false): FirmwareInfo {
     var bytes = file().readBytes()
     val size = bytes.size
     var lpBinBean: LPBinBean? = null
@@ -98,6 +99,11 @@ fun String.toFirmwareInfo(verifyMd5: Boolean = true): FirmwareInfo {
         throw e
     } catch (e: Exception) {
         e.printStackTrace()
+    }
+    if (verifyBin) {
+        if (lpBinBean == null) {
+            throw FirmwareException(_string(R.string.firmware_corrupted))
+        }
     }
     val firmwareVersion = lpBinBean?.v ?: getFirmwareVersion()
     return FirmwareInfo(this, lastName(), firmwareVersion.toInt(), bytes, lpBinBean)
