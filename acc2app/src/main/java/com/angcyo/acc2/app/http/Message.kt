@@ -118,7 +118,7 @@ object Message {
         }
 
         if (bean.codeList != null) {
-            if (bean.codeList?.contains(getAppVersionCode()) == true) {
+            if (bean.codeList?.contains(getAppVersionCode().toInt()) == true) {
 
             } else {
                 //版本不匹配
