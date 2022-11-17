@@ -1,4 +1,4 @@
-package com.angcyo.server
+package com.angcyo.server.file
 
 import com.angcyo.server.file.FileServerService
 import com.yanzhenjie.andserver.annotation.Interceptor

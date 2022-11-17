@@ -5,7 +5,6 @@ import android.content.Intent
 import com.angcyo.core.coreApp
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.component.DslNotify
-import com.angcyo.server.file.bindFileServer
 
 /**
  * https://github.com/yanzhenjie/AndServer
@@ -33,6 +32,12 @@ object DslAndServer {
         get() = field ?: DslNotify.DEFAULT_NOTIFY_ICON
 
     init {
+        DebugFragment.addDebugAction {
+            name = "AndServer"
+            action = { _, _ ->
+                coreApp().bindAndServer()
+            }
+        }
         DebugFragment.addDebugAction {
             name = "FileServer"
             action = { _, _ ->

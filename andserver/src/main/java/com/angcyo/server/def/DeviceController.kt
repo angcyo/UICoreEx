@@ -1,4 +1,4 @@
-package com.angcyo.server
+package com.angcyo.server.def
 
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.library.app

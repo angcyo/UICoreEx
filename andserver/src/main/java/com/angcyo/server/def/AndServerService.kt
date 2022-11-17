@@ -1,13 +1,15 @@
-package com.angcyo.server
+package com.angcyo.server.def
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.angcyo.library.L
+import com.angcyo.library.app
 import com.angcyo.library.component.*
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.urlIntent
+import com.angcyo.library.getAppName
 import com.angcyo.library.toastQQ
 import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
 import com.angcyo.server.DslAndServer.DEFAULT_NOTIFY_ICON
@@ -58,7 +60,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     var group = "default"
 
     init {
-        notifyName = "AndServer"
+        notifyName = "${app().getAppName()}-${notifyChannelName}"
     }
 
     //<editor-fold desc="周期回调方法">

@@ -1,4 +1,4 @@
-package com.angcyo.server
+package com.angcyo.server.def
 
 import android.graphics.Bitmap
 import com.angcyo.http.base.fromJson

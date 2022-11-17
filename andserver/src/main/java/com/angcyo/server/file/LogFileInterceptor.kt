@@ -1,8 +1,6 @@
-package com.angcyo.server
+package com.angcyo.server.file
 
 import com.angcyo.library.ex.readText
-import com.angcyo.server.file.FileServerService
-import com.angcyo.server.file.FileWebConfig
 import com.yanzhenjie.andserver.annotation.Interceptor
 import com.yanzhenjie.andserver.framework.HandlerInterceptor
 import com.yanzhenjie.andserver.framework.body.StringBody
