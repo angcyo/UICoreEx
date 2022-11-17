@@ -39,6 +39,7 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD)
+            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_PRINT
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -89,7 +90,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE)
             addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION)
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
-
+            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GCODE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -189,6 +190,8 @@ object CanvasBitmapHandler {
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig2.KEY_BW_INVERT)
             addRegulate(CanvasRegulatePopupConfig2.KEY_BW_THRESHOLD)
+            firstApply =
+                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_BLACK_WHITE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -244,6 +247,8 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT)
             addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST)
             addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS)
+            firstApply =
+                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_DITHERING
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -298,9 +303,7 @@ object CanvasBitmapHandler {
         val operateBitmap = item.operateBitmap!!
 
         owner.loadingAsync({
-            operateBitmap.let { bitmap ->
-                OpenCV.bitmapToGrey(bitmap)
-            }
+            operateBitmap.toGrayHandle()
         }) {
             it?.let {
                 item.updateBitmapByMode(
@@ -325,6 +328,7 @@ object CanvasBitmapHandler {
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD)
+            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_SEAL
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
