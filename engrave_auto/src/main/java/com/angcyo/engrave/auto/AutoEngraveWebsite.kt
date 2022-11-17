@@ -15,6 +15,7 @@ import com.angcyo.library.ex.toInputStream
 import com.yanzhenjie.andserver.framework.body.StreamBody
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
+import com.yanzhenjie.andserver.http.HttpHeaders
 import com.yanzhenjie.andserver.http.HttpRequest
 import com.yanzhenjie.andserver.http.HttpResponse
 import com.yanzhenjie.andserver.http.ResponseBody
@@ -23,6 +24,9 @@ import java.io.InputStream
 
 /**
  * 自动雕刻支持[com.angcyo.canvas.data.CanvasProjectBean] 和 [com.angcyo.canvas.data.CanvasProjectItemBean] body json 数据格式
+ *
+ * [com.angcyo.engrave.auto.AutoEngraveHelper.init]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/22
  */
@@ -33,7 +37,7 @@ class AutoEngraveWebsite : BasicWebsite() {
     }
 
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
-        response.addHeader("Access-Control-Allow-Origin", "*")
+        response.addHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
         val bodyString = request.body?.string()
         if (bodyString.isNullOrEmpty()) {
             throw IllegalArgumentException("无效的请求体")

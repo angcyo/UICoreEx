@@ -1,6 +1,7 @@
 package com.angcyo.server
 
 import com.angcyo.library.ex.readText
+import com.angcyo.server.file.FileServerService
 import com.angcyo.server.file.FileWebConfig
 import com.yanzhenjie.andserver.annotation.Interceptor
 import com.yanzhenjie.andserver.framework.HandlerInterceptor
@@ -19,7 +20,7 @@ import java.io.File
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-@Interceptor
+@Interceptor(FileServerService.GROUP_NAME)
 class LogFileInterceptor : HandlerInterceptor {
 
     companion object {

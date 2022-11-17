@@ -26,10 +26,16 @@ import com.angcyo.server.DslAndServer
  */
 class FileServerService : AndServerService() {
 
+    companion object {
+
+        /**[com.yanzhenjie.andserver.AndServer.webServer(android.content.Context, java.lang.String)]*/
+        const val GROUP_NAME = "file"
+    }
+
     init {
         notifyName = "${app().getAppName()}-FileServer"
         notifyChannelName = "FileServer"
-        group = "file"
+        group = GROUP_NAME
     }
 
     override fun initServer() {
