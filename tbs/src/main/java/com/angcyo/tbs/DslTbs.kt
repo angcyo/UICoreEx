@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import com.angcyo.DslAHelper
-import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
@@ -62,43 +61,32 @@ class DslTbs {
 
                 QbSdk.setTbsListener(object : TbsListener {
                     override fun onInstallFinish(var1: Int) {
-                        L.d("onInstallFinish $var1".apply {
-                            writeTo()
-                        })
+                        L.d("onInstallFinish $var1")
                     }
 
                     override fun onDownloadFinish(var1: Int) {
-                        L.d("onDownloadFinish $var1".apply {
-                            writeTo()
-                        })
+                        L.d("onDownloadFinish $var1")
                     }
 
                     override fun onDownloadProgress(progress: Int) {
-                        L.d("onDownloadProgress $progress".apply {
-                            writeTo()
-                        })
+                        L.d("onDownloadProgress $progress")
                     }
                 })
 
                 //浏览器服务
                 QbSdk.initX5Environment(appContext, object : QbSdk.PreInitCallback {
                     override fun onCoreInitFinished() {
-                        L.d("onCoreInitFinished".apply {
-                            writeTo()
-                        })
+                        L.d("onCoreInitFinished")
                     }
 
                     override fun onViewInitFinished(isX5Core: Boolean) {
                         DslTbs.isX5Core = isX5Core
                         //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                        L.d("onViewInitFinished,isX5Core=$isX5Core".apply {
-                            writeTo()
-                        })
+                        L.d("onViewInitFinished,isX5Core=$isX5Core")
                     }
                 })
 
                 //QbSdk.forceSysWebView()
-
 
                 //文档服务
                 //TbsFileInterfaceImpl.initEngine(appContext)
