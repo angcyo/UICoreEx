@@ -24,6 +24,22 @@ class CanvasOpenModel : ViewModel() {
 
         /** [OPEN_ACTIVITY_CLASS]内部的[Fragment], 实际上只需要[OPEN_ACTIVITY_CLASS]就可以完成处理*/
         var OPEN_ACTIVITY_FRAGMENT_CLASS: Class<out Fragment>? = null
+
+        /**启动主页*/
+        fun openCanvasActivity(context: Context) {
+            context.dslAHelper {
+                if (OPEN_ACTIVITY_FRAGMENT_CLASS == null) {
+                    //只有Activity
+                    start(OPEN_ACTIVITY_CLASS!!)
+                } else {
+                    //有Activity又有Fragment
+                    startFragment(
+                        OPEN_ACTIVITY_CLASS!!,
+                        OPEN_ACTIVITY_FRAGMENT_CLASS!!
+                    )
+                }
+            }
+        }
     }
 
     /**需要打开的数据
@@ -43,19 +59,7 @@ class CanvasOpenModel : ViewModel() {
             true
         } else if (OPEN_ACTIVITY_CLASS != null) {
             //无监听者
-            //启动主页
-            context.dslAHelper {
-                if (OPEN_ACTIVITY_FRAGMENT_CLASS == null) {
-                    //只有Activity
-                    start(OPEN_ACTIVITY_CLASS!!)
-                } else {
-                    //有Activity又有Fragment
-                    startFragment(
-                        OPEN_ACTIVITY_CLASS!!,
-                        OPEN_ACTIVITY_FRAGMENT_CLASS!!
-                    )
-                }
-            }
+            openCanvasActivity(context)
             true
         } else {
             false
