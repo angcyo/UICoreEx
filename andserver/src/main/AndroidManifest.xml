@@ -10,6 +10,10 @@
 
     <application>
         <service
+            android:name=".def.AndServerService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
             android:name=".file.FileServerService"
             android:enabled="true"
             android:exported="false" />

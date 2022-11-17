@@ -1,12 +1,7 @@
 package com.angcyo.server.file
 
-import com.angcyo.server.file.FileServerService
+import com.angcyo.server.def.DefCorsInterceptor
 import com.yanzhenjie.andserver.annotation.Interceptor
-import com.yanzhenjie.andserver.framework.HandlerInterceptor
-import com.yanzhenjie.andserver.framework.handler.RequestHandler
-import com.yanzhenjie.andserver.http.HttpHeaders
-import com.yanzhenjie.andserver.http.HttpRequest
-import com.yanzhenjie.andserver.http.HttpResponse
 
 /**
  * 跨域拦截器
@@ -19,17 +14,4 @@ import com.yanzhenjie.andserver.http.HttpResponse
  * @since 2022/11/17
  */
 @Interceptor(FileServerService.GROUP_NAME)
-class FileCorsInterceptor : HandlerInterceptor {
-    override fun onIntercept(
-        request: HttpRequest,
-        response: HttpResponse,
-        handler: RequestHandler
-    ): Boolean {
-        response.setHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
-        response.setHeader(HttpHeaders.EXPIRES, "0")
-        response.setHeader(HttpHeaders.PRAGMA, "no-cache")
-        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-store")
-        response.setHeader("Cache", "no-store")
-        return false
-    }
-}
+class FileCorsInterceptor : DefCorsInterceptor()

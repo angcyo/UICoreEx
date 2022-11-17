@@ -6,6 +6,7 @@ import android.os.IBinder
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.*
+import com.angcyo.library.ex.classHash
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.urlIntent
@@ -109,7 +110,10 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
      * Start server.
      */
     open fun startServer() {
-        _server?.startup()
+        _server?.apply {
+            startup()
+            L.i(this@AndServerService.classHash() + "已启动!")
+        }
     }
 
     /**
