@@ -25,7 +25,11 @@ class FileCorsInterceptor : HandlerInterceptor {
         response: HttpResponse,
         handler: RequestHandler
     ): Boolean {
-        response.addHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
+        response.setHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
+        response.setHeader(HttpHeaders.EXPIRES, "0")
+        response.setHeader(HttpHeaders.PRAGMA, "no-cache")
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-store")
+        response.setHeader("Cache", "no-store")
         return false
     }
 }
