@@ -30,6 +30,7 @@ import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.span.span
+import kotlin.math.max
 
 /**
  * 雕刻布局相关操作
@@ -279,7 +280,8 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngraveLayerConfigItem()() {
                 val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
                 itemSegmentList = layerList
-                itemCurrentIndex = selectLayerMode
+                itemCurrentIndex =
+                    max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
                 observeItemChange {
                     selectLayerMode = layerList[itemCurrentIndex].mode
                     renderFlowItems()
