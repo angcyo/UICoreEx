@@ -2,8 +2,10 @@ package com.angcyo.server.def
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.RectF
 import android.net.Uri
 import com.angcyo.base.dslAHelper
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.library.app
 import com.angcyo.library.component.appBean
@@ -11,11 +13,17 @@ import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.decode
 import com.angcyo.library.ex.urlIntent
+import com.angcyo.library.unit.MmValueUnit
+import com.angcyo.server.bean.GcodeAdjustBean
 import com.angcyo.server.bean.SchemeReqBean
 import com.yanzhenjie.andserver.annotation.*
 
 /**
  * 提供一些设备的基础信息
+ *
+ * [com.yanzhenjie.andserver.framework.handler.MappingAdapter]
+ * [com.angcyo.server.def.DeviceControllerAdapter]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/22
  */
@@ -58,6 +66,39 @@ class DeviceController {
                     return "未找到对应的应用"
                 }
             }
+        }
+    }
+
+    /**GCode数据调整
+     *
+     * [com.yanzhenjie.andserver.framework.handler.MappingHandler]
+     * [com.angcyo.server.def.DeviceControllerGcodeAdjustHandler]
+     * */
+    @PostMapping("/gcodeAdjust")
+    fun gcodeAdjust(@RequestBody bean: GcodeAdjustBean): String {
+        val gcode = bean.content
+        if (gcode.isNullOrBlank()) {
+            return "无效的GCode内容"
+        } else {
+            val rect = RectF()
+            val mmValueUnit = MmValueUnit()
+            val left = mmValueUnit.convertValueToPixel(bean.left)
+            val top = mmValueUnit.convertValueToPixel(bean.top)
+            val width = mmValueUnit.convertValueToPixel(bean.width)
+            val height = mmValueUnit.convertValueToPixel(bean.height)
+            rect.set(
+                left.toFloat(), top.toFloat(),
+                (left + width).toFloat(),
+                (top + height).toFloat()
+            )
+            val gCodeFile = CanvasDataHandleOperate.gCodeAdjust(
+                gcode,
+                rect,
+                bean.rotate,
+                bean.autoCnc,
+                bean.isFinish
+            )
+            return gCodeFile.readText()
         }
     }
 

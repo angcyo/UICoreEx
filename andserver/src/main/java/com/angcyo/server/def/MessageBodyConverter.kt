@@ -2,10 +2,14 @@ package com.angcyo.server.def
 
 import android.graphics.Bitmap
 import com.angcyo.http.base.fromJson
+import com.angcyo.http.base.isTextType
 import com.angcyo.http.base.toJson
 import com.angcyo.library.ex.toBytes
+import com.angcyo.library.ex.toClass
 import com.angcyo.library.ex.toInputStream
 import com.angcyo.library.ex.toText
+import com.angcyo.library.extend.IJson
+import com.angcyo.library.utils.isChildClassOf
 import com.yanzhenjie.andserver.annotation.Converter
 import com.yanzhenjie.andserver.framework.MessageConverter
 import com.yanzhenjie.andserver.framework.body.JsonBody
@@ -58,7 +62,13 @@ class MessageBodyConverter : MessageConverter {
 
     /**将输入流, 转成JavaBean*/
     override fun <T : Any?> convert(stream: InputStream, mediaType: MediaType?, type: Type?): T? {
+        val mediaString = mediaType.toString()
+        //mediaString.isJsonType()
         if (mediaType == MediaType.APPLICATION_JSON && type != null) {
+            return stream.toText().fromJson<T>(type)
+        } else if (mediaString.isTextType() && type?.toClass()
+                ?.isChildClassOf(IJson::class.java) == true
+        ) {
             return stream.toText().fromJson<T>(type)
         }
         return null
