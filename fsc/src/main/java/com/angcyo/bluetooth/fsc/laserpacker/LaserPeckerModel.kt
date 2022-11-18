@@ -147,7 +147,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
 
     /**是否需要显示外设提示*/
-    fun needShowExDeviceTipItem(): Boolean = haveExDevice() || isSRepMode() || isPenMode()
+    fun needShowExDeviceTipItem(): Boolean =
+        haveExDevice() || isSRepMode() || isPenMode() || isCarOpen()
 
     /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {

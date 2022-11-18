@@ -68,7 +68,9 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
-            _showProductLimit(canvasView, productInfo)
+            if (laserPeckerModel.initializeData.value == true) {
+                _showProductLimit(canvasView, productInfo)
+            }
 
             //设置限定符
             if (productInfo == null) {
@@ -203,6 +205,13 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 stateLayoutManager.updateState(previewOverflowStateInfo)
             } else {
                 stateLayoutManager.removeState(previewOverflowStateInfo)
+            }
+        }
+
+        //发送一次初始化成功的事件
+        laserPeckerModel.initializeData.value?.let {
+            if (it) {
+                laserPeckerModel.initializeOnceData.postValue(true)
             }
         }
     }
