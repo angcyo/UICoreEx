@@ -12,14 +12,16 @@ import com.angcyo.library.app
 import com.angcyo.library.component.appBean
 import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.component.lastContext
-import com.angcyo.library.ex.decode
-import com.angcyo.library.ex.toBitmapOfBase64
-import com.angcyo.library.ex.urlIntent
+import com.angcyo.library.ex.*
 import com.angcyo.library.unit.MmValueUnit
+import com.angcyo.library.utils.SysIntent
+import com.angcyo.library.utils.SystemBatchBean
+import com.angcyo.library.utils.getLongNumStringList
 import com.angcyo.opencv.OpenCV
 import com.angcyo.server.bean.GcodeAdjustBean
 import com.angcyo.server.bean.SchemeReqBean
 import com.yanzhenjie.andserver.annotation.*
+import kotlin.io.readText
 
 /**
  * 提供一些设备的基础信息
@@ -131,4 +133,59 @@ class DeviceController {
         }
     }
 
+    /**批量添加通讯记录*/
+    @PostMapping("/batchAddCallLogs")
+    fun batchAddCallLogs(@RequestBody body: String): String {
+        val batchBeanList = getSystemBatchBean(body)
+        if (batchBeanList.isEmpty()) {
+            return "无数据需要添加!"
+        }
+        val array = SysIntent.batchAddCallLogs(batchBeanList)
+        return buildString {
+            appendLine("${nowTimeString()} 成功:${array.size()}")
+            batchBeanList.forEach {
+                appendLine("${it.name} ${it.number}")
+            }
+        }
+    }
+
+    /**批量添加通讯录*/
+    @PostMapping("/batchAddContacts")
+    fun batchAddContacts(@RequestBody body: String): String {
+        val batchBeanList = getSystemBatchBean(body)
+        if (batchBeanList.isEmpty()) {
+            return "无数据需要添加!"
+        }
+        val array = SysIntent.batchAddContacts(batchBeanList)
+        return buildString {
+            appendLine("${nowTimeString()} 成功:${array.size()}")
+            batchBeanList.forEach {
+                appendLine("${it.name} ${it.number}")
+            }
+        }
+    }
+
+    private fun getSystemBatchBean(body: String): List<SystemBatchBean> {
+        val result = mutableListOf<SystemBatchBean>()
+        val list = body.split("\\n")
+        list.forEach { line ->
+            var name: String? = null
+            var number: String? = null
+            line.split(" ").forEach {
+                if (it.isBlank()) {
+                    //empty
+                } else if (name == null) {
+                    name = it
+                } else if (number == null) {
+                    it.getLongNumStringList()?.firstOrNull()?.let {
+                        number = it
+                    }
+                }
+            }
+            if (!name.isNullOrBlank() && !number.isNullOrBlank()) {
+                result.add(SystemBatchBean(name!!, number!!))
+            }
+        }
+        return result
+    }
 }
