@@ -142,7 +142,7 @@ class DeviceController {
         }
         val array = SysIntent.batchAddCallLogs(batchBeanList)
         return buildString {
-            appendLine("${nowTimeString()} 成功:${array.size()}")
+            appendLine("${nowTimeString()} 成功:${array.isNotEmpty().toDC()}")
             batchBeanList.forEach {
                 appendLine("${it.name} ${it.number}")
             }
@@ -158,7 +158,7 @@ class DeviceController {
         }
         val array = SysIntent.batchAddContacts(batchBeanList)
         return buildString {
-            appendLine("${nowTimeString()} 成功:${array.size()}")
+            appendLine("${nowTimeString()} 成功:${array.isNotEmpty().toDC()}")
             batchBeanList.forEach {
                 appendLine("${it.name} ${it.number}")
             }
