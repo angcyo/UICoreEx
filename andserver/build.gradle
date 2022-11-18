@@ -10,6 +10,7 @@ dependencies {
     implementation project(allModule.core)
     compileOnly project(allModule.dslitem) //DebugFragment
     compileOnly project(allModule.canvas) //gcodeAdjust
+    compileOnly project(allModule.canvas_lp) //opencv
 
     //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
     //apply plugin: 'com.yanzhenjie.andserver'

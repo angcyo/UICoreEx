@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.RectF
 import android.net.Uri
 import com.angcyo.base.dslAHelper
+import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.library.app
@@ -12,8 +13,10 @@ import com.angcyo.library.component.appBean
 import com.angcyo.library.component.dslIntentQuery
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.decode
+import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.urlIntent
 import com.angcyo.library.unit.MmValueUnit
+import com.angcyo.opencv.OpenCV
 import com.angcyo.server.bean.GcodeAdjustBean
 import com.angcyo.server.bean.SchemeReqBean
 import com.yanzhenjie.andserver.annotation.*
@@ -77,8 +80,8 @@ class DeviceController {
     @PostMapping("/gcodeAdjust")
     fun gcodeAdjust(@RequestBody bean: GcodeAdjustBean): String {
         val gcode = bean.content
-        if (gcode.isNullOrBlank()) {
-            return "无效的GCode内容"
+        return if (gcode.isNullOrBlank()) {
+            "无效的GCode内容"
         } else {
             val rect = RectF()
             val mmValueUnit = MmValueUnit()
@@ -98,7 +101,33 @@ class DeviceController {
                 bean.autoCnc,
                 bean.isFinish
             )
-            return gCodeFile.readText()
+            gCodeFile.readText()
+        }
+    }
+
+    /**图片转GCode
+     *
+     * [com.yanzhenjie.andserver.framework.handler.MappingHandler]
+     * [com.angcyo.server.def.DeviceControllerGcodeAdjustHandler]
+     * */
+    @PostMapping("/bitmapToGCode")
+    fun bitmapToGCode(@RequestBody bean: GcodeAdjustBean): String {
+        val originBitmap = bean.content?.toBitmapOfBase64()
+        return if (originBitmap == null) {
+            "无效的图片!"
+        } else {
+            val width = originBitmap.width.toMm()
+            bean.content = OpenCV.bitmapToGCode(
+                app(),
+                originBitmap,
+                (width / 2).toDouble(),
+                lineSpace = bean.gcodeLineSpace.toDouble(),
+                direction = bean.gcodeDirection,
+                angle = bean.gcodeAngle.toDouble(),
+                type = if (bean.gcodeOutline) 1 else 3,
+                isLast = bean.isFinish
+            ).readText()
+            gcodeAdjust(bean)
         }
     }
 
