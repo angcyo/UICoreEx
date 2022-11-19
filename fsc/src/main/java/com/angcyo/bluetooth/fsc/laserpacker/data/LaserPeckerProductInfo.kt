@@ -4,6 +4,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
 
 /**
  * 物理产品的一些配置信息
@@ -46,23 +47,31 @@ data class LaserPeckerProductInfo(
     @MM
     var heightPhys: Int = 0,
     /**机器物理的范围, 像素, 在手机上的像素*/
+    @Pixel
     var bounds: RectF,
     /**机器的最佳预览范围, 像素, 在手机上的像素*/
+    @Pixel
     var previewBounds: RectF,
     /**机器在移动范围内的可打印范围, 像素, 在手机上的像素
      * [com.angcyo.engrave.EngraveProductLayoutHelper._showZRSLimit]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getLimitPath]
      * */
+    @Pixel
     var limitPath: Path,
     /**Z轴限制提示框, 像素, 在手机上的像素*/
+    @Pixel
     var zLimitPath: Path? = null,
     /**旋转轴,最大提示框*/
+    @Pixel
     var rLimitPath: Path? = null,
     /**滑台,最大提示框*/
+    @Pixel
     var sLimitPath: Path? = null,
     /**C1平台移动/小车模式,最大提示框*/
+    @Pixel
     var carLimitPath: Path? = null,
     /**C1平台移动/小车模式,最大预览范围*/
+    @Pixel
     var carPreviewBounds: RectF? = null,
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
