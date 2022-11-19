@@ -148,6 +148,13 @@ object LaserPeckerHelper {
     @MM
     const val CAR_MAX_Y = 5_00_0
 
+    /**默认指令初始化配置*/
+    val initCommandFlowList = mutableListOf<Byte>().apply {
+        add(QueryCmd.settingState.state)
+        add(QueryCmd.version.state)
+        add(QueryCmd.workState.state)
+    }
+
     //<editor-fold desc="operate">
 
     /**移除所有空格*/
@@ -661,33 +668,45 @@ object LaserPeckerHelper {
         initDeviceAddress = address
         flow { chain ->
             //读取设备设置状态
-            sendCommand(address, QueryCmd.settingState) { bean, error ->
-                bean?.let {
-                    it.parse<QuerySettingParser>()?.let {
-                        laserPeckerModel.updateDeviceSettingState(it)
+            if (initCommandFlowList.contains(QueryCmd.settingState.state)) {
+                sendCommand(address, QueryCmd.settingState) { bean, error ->
+                    bean?.let {
+                        it.parse<QuerySettingParser>()?.let {
+                            laserPeckerModel.updateDeviceSettingState(it)
+                        }
                     }
+                    chain(error)
                 }
-                chain(error)
+            } else {
+                chain(null)
             }
         }.flow { chain ->
             //读取设备版本
-            sendCommand(address, QueryCmd.version) { bean, error ->
-                bean?.let {
-                    it.parse<QueryVersionParser>()?.let {
-                        laserPeckerModel.updateDeviceVersion(it)
+            if (initCommandFlowList.contains(QueryCmd.version.state)) {
+                sendCommand(address, QueryCmd.version) { bean, error ->
+                    bean?.let {
+                        it.parse<QueryVersionParser>()?.let {
+                            laserPeckerModel.updateDeviceVersion(it)
+                        }
                     }
+                    chain(error)
                 }
-                chain(error)
+            } else {
+                chain(null)
             }
         }.flow { chain ->
             //读取设备工作状态
-            sendCommand(address, QueryCmd.workState) { bean, error ->
-                bean?.let {
-                    it.parse<QueryStateParser>()?.let {
-                        laserPeckerModel.updateDeviceState(it)
+            if (initCommandFlowList.contains(QueryCmd.workState.state)) {
+                sendCommand(address, QueryCmd.workState) { bean, error ->
+                    bean?.let {
+                        it.parse<QueryStateParser>()?.let {
+                            laserPeckerModel.updateDeviceState(it)
+                        }
                     }
+                    chain(error)
                 }
-                chain(error)
+            } else {
+                chain(null)
             }
         }.start {
             laserPeckerModel.initializeData.postValue(it == null)
