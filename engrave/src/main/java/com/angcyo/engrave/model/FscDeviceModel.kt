@@ -70,8 +70,11 @@ class FscDeviceModel : LifecycleViewModel() {
                         put(UMEvent.KEY_START_TIME, nowTime().toString())
                     }
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
-                    if (deviceConnectState.connectTime > 0 && !deviceConnectState.isActiveDisConnected) {
-                        //蓝牙设备断开
+                    if (deviceConnectState.connectTime > 0 &&
+                        deviceConnectState.connectedTime > 0 &&
+                        !deviceConnectState.isActiveDisConnected
+                    ) {
+                        //连接成功过, 并且非主动断开蓝牙设备, 则toast提示
                         toast(_string(R.string.blue_disconnected))
                     }
 
