@@ -1,5 +1,6 @@
 package com.angcyo.canvas.laser.pecker
 
+import android.graphics.Color
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -52,7 +53,7 @@ object CanvasBitmapHandler {
                             ).toFloat()
                             OpenCV.bitmapToPrint(
                                 context,
-                                bitmap,
+                                bitmap.toGrayHandle(Color.WHITE),
                                 item.dataBean.printsThreshold.toInt()
                             )
                         }
@@ -272,7 +273,7 @@ object CanvasBitmapHandler {
 
                             OpenCV.bitmapToDithering(
                                 context,
-                                bitmap,
+                                bitmap.toGrayHandle(Color.WHITE),
                                 item.dataBean.inverse,
                                 item.dataBean.contrast.toDouble(),
                                 item.dataBean.brightness.toDouble(),
@@ -341,7 +342,7 @@ object CanvasBitmapHandler {
                         operateBitmap.let { bitmap ->
                             OpenCV.bitmapToSeal(
                                 context,
-                                bitmap,
+                                bitmap.toGrayHandle(Color.WHITE),
                                 item.dataBean.sealThreshold.toInt()
                             )
                         }
