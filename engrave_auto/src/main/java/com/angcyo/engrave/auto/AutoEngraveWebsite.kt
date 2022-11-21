@@ -1,6 +1,8 @@
 package com.angcyo.engrave.auto
 
 import com.angcyo.base.dslAHelper
+import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.data.toCanvasProjectItemBean
@@ -39,6 +41,7 @@ class AutoEngraveWebsite : BasicWebsite() {
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         response.addHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
         val bodyString = request.body?.string()
+
         if (bodyString.isNullOrEmpty()) {
             throw IllegalArgumentException("无效的请求体")
         }
@@ -64,6 +67,19 @@ class AutoEngraveWebsite : BasicWebsite() {
         //error
         if (engraveData == null) {
             throw IllegalArgumentException("无效的数据, body可是[CanvasProjectBean](必须包含file_name字段)和[CanvasProjectItemBean]的json字符串")
+        }
+
+        //device
+        val deviceAddress = request.parameter["device"]?.firstOrNull()?.uppercase() //需要连接的设备地址
+        if (!deviceAddress.isNullOrBlank()) {
+            vmApp<LaserPeckerModel>().productInfoData.value?.deviceAddress?.let {
+                if (it.uppercase() == deviceAddress) {
+                    //想要雕刻的设备和已连接的设备一致
+                } else {
+                    //否则直接连接设备
+                    vmApp<FscBleApiModel>().connect(deviceAddress, "AutoEngrave")
+                }
+            }
         }
 
         //open
