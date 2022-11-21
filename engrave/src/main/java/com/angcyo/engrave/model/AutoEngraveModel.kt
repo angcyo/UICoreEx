@@ -66,6 +66,8 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     val engraveModel = vmApp<EngraveModel>()
 
+    val peckerModel = vmApp<LaserPeckerModel>()
+
     /**需要自动雕刻的数据
      * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
      * 支持[com.angcyo.canvas.data.CanvasProjectBean]
@@ -118,6 +120,22 @@ class AutoEngraveModel : LifecycleViewModel() {
     }
 
     //region---数据和传输---
+
+    /**开始雕刻, 创建数据/发送数据/雕刻*/
+    fun startEngrave(taskId: String, engraveData: CanvasOpenDataType? = null) {
+        if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
+            //非空闲模式
+        } else {
+            //进入空闲模式
+            ExitCmd().enqueue()
+        }
+        if (engraveData is CanvasProjectBean) {
+            _autoEngraveTask = startAutoEngrave(taskId, engraveData)
+        } else if (engraveData is CanvasProjectItemBean) {
+            _autoEngraveTask =
+                startAutoEngrave(taskId, initLocationWithGravity(listOf(engraveData)))
+        }
+    }
 
     /**开始自动雕刻*/
     fun startAutoEngrave(taskId: String, projectBean: CanvasProjectBean): AutoEngraveTask {

@@ -115,8 +115,6 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
     /**检查开始雕刻, 比如蓝牙的连接状态*/
     fun checkStartEngrave() {
         if (fscBleApiModel.haveDeviceConnected()) {
-            //进入空闲模式
-            ExitCmd().enqueue()
             startEngrave()
         } else {
             //无设备连接,先连接设备
@@ -139,15 +137,7 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
 
     /**开始雕刻, 创建数据/发送数据/雕刻*/
     fun startEngrave() {
-        val data = _engraveData
-        if (data is CanvasProjectBean) {
-            _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, data)
-        } else if (data is CanvasProjectItemBean) {
-            _autoEngraveTask = autoEngraveModel.startAutoEngrave(
-                taskId,
-                AutoEngraveModel.initLocationWithGravity(listOf(data))
-            )
-        }
+        autoEngraveModel.startEngrave(taskId, _engraveData)
     }
 
     /**是否需要自动开始*/

@@ -14,6 +14,7 @@ import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toBytes
 import com.angcyo.library.ex.toInputStream
+import com.angcyo.library.ex.uuid
 import com.yanzhenjie.andserver.framework.body.StreamBody
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
@@ -41,6 +42,8 @@ class AutoEngraveWebsite : BasicWebsite() {
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
         response.addHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
         val bodyString = request.body?.string()
+        val showActivity =
+            request.parameter["activity"]?.firstOrNull()?.uppercase() == "TRUE" //是否需要显示界面
 
         if (bodyString.isNullOrEmpty()) {
             throw IllegalArgumentException("无效的请求体")
@@ -84,9 +87,15 @@ class AutoEngraveWebsite : BasicWebsite() {
 
         //open
         doMain {
-            vmApp<AutoEngraveModel>().engravePendingData.postValue(engraveData)
-            lastContext.dslAHelper {
-                start(AutoEngraveActivity::class)
+            if (showActivity) {
+                vmApp<AutoEngraveModel>().engravePendingData.postValue(engraveData)
+                lastContext.dslAHelper {
+                    start(AutoEngraveActivity::class)
+                }
+            } else {
+                //直接雕刻
+                val autoEngraveModel = vmApp<AutoEngraveModel>()
+                autoEngraveModel.startEngrave(uuid(), engraveData)
             }
         }
 

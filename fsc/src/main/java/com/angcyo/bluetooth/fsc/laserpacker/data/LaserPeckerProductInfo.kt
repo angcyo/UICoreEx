@@ -78,7 +78,9 @@ data class LaserPeckerProductInfo(
     var isOriginCenter: Boolean = false,
 
     //---
+    /**LaserPecker-CI001F60*/
     var deviceName: String? = null, //蓝牙设备名称
+    /**DC:0D:30:00:1F:60*/
     var deviceAddress: String? = null, //蓝牙设备地址
     /**固件版本号, 等同于[version]*/
     var softwareVersion: Int = -1,
