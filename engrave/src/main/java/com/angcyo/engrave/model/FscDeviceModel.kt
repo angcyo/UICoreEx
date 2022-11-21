@@ -212,4 +212,15 @@ class FscDeviceModel : LifecycleViewModel() {
             }
         }
     }
+
+    /**自动连接最后一次的设备, 如果有*/
+    fun autoConnectLastDevice(autoConnect: Boolean = true) {
+        if (FscBleApiModel.haveBluetoothPermission()) {
+            //有权限
+            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                ?.let {
+                    bleApiModel.connect(it.deviceAddress, it.deviceName, autoConnect)
+                }
+        }
+    }
 }
