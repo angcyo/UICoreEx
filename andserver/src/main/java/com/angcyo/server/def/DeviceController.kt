@@ -171,7 +171,12 @@ class DeviceController {
         list.forEach { line ->
             var name: String? = null
             var number: String? = null
-            line.split(" ").forEach {
+
+            if (line.contains("\\t")) {
+                line.split("\\t")
+            } else {
+                line.split(" ")
+            }.forEach {
                 if (it.isBlank()) {
                     //empty
                 } else if (name == null) {
