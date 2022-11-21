@@ -1,7 +1,6 @@
 package com.angcyo.engrave.auto
 
 import com.angcyo.base.dslAHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.data.toCanvasProjectItemBean
@@ -59,14 +58,6 @@ class AutoEngraveWebsite : BasicWebsite() {
                 //单个的item数据
                 engraveData = projectItemBean
                 name = projectItemBean.name ?: projectItemBean.mtype.toTypeNameString()
-
-                val peckerModel = vmApp<LaserPeckerModel>()
-                val productInfo = peckerModel.productInfoData.value
-                productInfo?.let {
-                    val bounds = if (peckerModel.isCarOpen()) it.carPreviewBounds
-                        ?: it.previewBounds else it.previewBounds
-                    projectItemBean.resetLocationWithGravity(bounds)
-                }
             }
         }
 

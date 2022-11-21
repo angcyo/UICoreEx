@@ -84,7 +84,9 @@ interface IEngraveTransition {
 
     //region---core---
 
-    /**将[engraveProvider]转换成传输给机器的数据*/
+    /**将[engraveProvider]转换成传输给机器的数据
+     * 请在数据返回之后, 决定是否要保存值数据库
+     * */
     @CallPoint
     fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,

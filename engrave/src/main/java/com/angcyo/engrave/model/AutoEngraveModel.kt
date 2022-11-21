@@ -1,6 +1,7 @@
 package com.angcyo.engrave.model
 
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.CanvasProjectBean
@@ -37,6 +38,22 @@ class AutoEngraveModel : LifecycleViewModel() {
 
         /**正在雕刻*/
         const val STATE_ENGRAVE = 3
+
+        /**使用[com.angcyo.canvas.data.CanvasProjectItemBean.gravity]调整坐标位置*/
+        fun initLocationWithGravity(itemList: List<CanvasProjectItemBean>?): List<CanvasProjectItemBean>? {
+            //resetLocationWithGravity
+            itemList ?: return null
+            val peckerModel = vmApp<LaserPeckerModel>()
+            val productInfo = peckerModel.productInfoData.value
+            productInfo?.let {
+                val bounds = if (peckerModel.isCarOpen()) it.carPreviewBounds
+                    ?: it.previewBounds else it.previewBounds
+                itemList.forEach {
+                    it.resetLocationWithGravity(bounds)
+                }
+            }
+            return itemList
+        }
     }
 
     /**自动雕刻任务*/
@@ -104,34 +121,18 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始自动雕刻*/
     fun startAutoEngrave(taskId: String, projectBean: CanvasProjectBean): AutoEngraveTask {
-        val task = AutoEngraveTask(taskId, projectBean)
-        _autoEngraveTask = task
         val itemList = projectBean.data?.toCanvasProjectItemList()
-        if (itemList.isNullOrEmpty()) {
-            task.isFinish = true
-            task.error = EmptyException()//空数据异常
-        } else {
-            task.state = STATE_CREATE
-            startCreateData(task.taskId, itemList) {
-                if (it.isEmpty()) {
-                    task.state = STATE_NORMAL
-                    task.isFinish = true
-                    task.error = EmptyException()//空数据异常
-                    autoEngraveTaskOnceData.postValue(task)
-                } else {
-                    task.state = STATE_TRANSFER
-                    autoEngraveTaskOnceData.postValue(task)
-                    transferModel.startTransferData(task.taskId)
-                }
-            }
-        }
-        autoEngraveTaskOnceData.postValue(task)
-        return task
+        initLocationWithGravity(itemList)
+        return startAutoEngrave(taskId, itemList, projectBean)
     }
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(taskId: String, itemList: List<CanvasProjectItemBean>?): AutoEngraveTask {
-        val task = AutoEngraveTask(taskId, null)
+    fun startAutoEngrave(
+        taskId: String,
+        itemList: List<CanvasProjectItemBean>?,
+        projectBean: CanvasProjectBean? = null,
+    ): AutoEngraveTask {
+        val task = AutoEngraveTask(taskId, projectBean)
         _autoEngraveTask = task
         if (itemList.isNullOrEmpty()) {
             task.isFinish = true

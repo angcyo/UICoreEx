@@ -143,7 +143,10 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
         if (data is CanvasProjectBean) {
             _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, data)
         } else if (data is CanvasProjectItemBean) {
-            _autoEngraveTask = autoEngraveModel.startAutoEngrave(taskId, listOf(data))
+            _autoEngraveTask = autoEngraveModel.startAutoEngrave(
+                taskId,
+                AutoEngraveModel.initLocationWithGravity(listOf(data))
+            )
         }
     }
 
