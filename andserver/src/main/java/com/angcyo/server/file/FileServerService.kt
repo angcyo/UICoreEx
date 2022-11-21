@@ -15,7 +15,7 @@ import com.angcyo.server.def.AndServerService
  * @date 2021/09/22
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
-class FileServerService : AndServerService() {
+open class FileServerService : AndServerService() {
 
     companion object {
 
