@@ -172,13 +172,14 @@ class DeviceController {
             var name: String? = null
             var number: String? = null
 
-            if (line.contains("\t")) {
+            val lineList = if (line.contains("\t")) {
                 line.split("\t")
             } else if (line.contains("\\t")) {
                 line.split("\\t")
             } else {
                 line.split(" ")
-            }.forEach {
+            }
+            lineList.forEach {
                 if (it.isBlank()) {
                     //empty
                 } else if (name == null) {
