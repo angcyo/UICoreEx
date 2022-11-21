@@ -167,7 +167,7 @@ class DeviceController {
 
     private fun getSystemBatchBean(body: String): List<SystemBatchBean> {
         val result = mutableListOf<SystemBatchBean>()
-        val list = body.split("\\n")
+        val list = body.split("\n")
         list.forEach { line ->
             var name: String? = null
             var number: String? = null
