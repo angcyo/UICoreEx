@@ -138,7 +138,7 @@ class DeviceController {
     fun batchAddCallLogs(@RequestBody body: String): String {
         val batchBeanList = getSystemBatchBean(body)
         if (batchBeanList.isEmpty()) {
-            return "无数据需要添加!"
+            return "->${nowTimeString()}\n无数据需要添加!"
         }
         val array = SysIntent.batchAddCallLogs(batchBeanList)
         return buildString {
@@ -154,7 +154,7 @@ class DeviceController {
     fun batchAddContacts(@RequestBody body: String): String {
         val batchBeanList = getSystemBatchBean(body)
         if (batchBeanList.isEmpty()) {
-            return "无数据需要添加!"
+            return "->${nowTimeString()}\n无数据需要添加!"
         }
         val array = SysIntent.batchAddContacts(batchBeanList)
         return buildString {
@@ -172,7 +172,9 @@ class DeviceController {
             var name: String? = null
             var number: String? = null
 
-            if (line.contains("\\t")) {
+            if (line.contains("\t")) {
+                line.split("\t")
+            } else if (line.contains("\\t")) {
                 line.split("\\t")
             } else {
                 line.split(" ")
