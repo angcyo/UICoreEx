@@ -636,7 +636,7 @@ object LaserPeckerHelper {
         val apiModel = vmApp<FscBleApiModel>()
         var deviceAddress = address
         if (deviceAddress.isNullOrEmpty()) {
-            val deviceState = apiModel.connectDeviceListData.value?.lastOrNull()
+            val deviceState = apiModel.lastDeviceState()
             if (deviceState == null) {
                 action?.invoke(null, NoDeviceException(_string(R.string.blue_no_device_connected)))
                 return null

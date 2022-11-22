@@ -2,7 +2,7 @@ package com.angcyo.engrave.auto
 
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.data.toCanvasProjectItemBean
@@ -15,6 +15,7 @@ import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toBytes
 import com.angcyo.library.ex.toInputStream
 import com.angcyo.library.ex.uuid
+import com.angcyo.viewmodel.observeOnce
 import com.yanzhenjie.andserver.framework.body.StreamBody
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
@@ -73,15 +74,16 @@ class AutoEngraveWebsite : BasicWebsite() {
         }
 
         //device
+        val fscBleApiModel = vmApp<FscBleApiModel>()
+        val autoEngraveModel = vmApp<AutoEngraveModel>()
         val deviceAddress = request.parameter["device"]?.firstOrNull()?.uppercase() //需要连接的设备地址
         if (!deviceAddress.isNullOrBlank()) {
-            val connectAddress =
-                vmApp<LaserPeckerModel>().productInfoData.value?.deviceAddress?.uppercase()
+            val connectAddress = fscBleApiModel.lastDeviceState()?.device?.address?.uppercase()
             if (connectAddress == deviceAddress) {
                 //想要雕刻的设备和已连接的设备一致
             } else {
                 //否则直接连接设备
-                vmApp<FscBleApiModel>().connect(deviceAddress, "AutoEngrave")
+                fscBleApiModel.connect(deviceAddress, "AutoEngrave")
             }
         }
 
@@ -94,8 +96,19 @@ class AutoEngraveWebsite : BasicWebsite() {
                 }
             } else {
                 //直接雕刻
-                val autoEngraveModel = vmApp<AutoEngraveModel>()
-                autoEngraveModel.startEngrave(uuid(), engraveData)
+                if (fscBleApiModel.haveDeviceConnected()) {
+                    autoEngraveModel.startEngrave(uuid(), engraveData)
+                } else {
+                    //等待设备连接
+                    fscBleApiModel.connectStateData.observeOnce { deviceConnectState ->
+                        if (deviceConnectState?.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
+                            autoEngraveModel.startEngrave(uuid(), engraveData)
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                }
             }
         }
 
