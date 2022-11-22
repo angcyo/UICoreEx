@@ -78,8 +78,13 @@ class FscBleApiModel : ViewModel(), IViewModel {
         const val REQUEST_CODE_ENABLE_BLUETOOTH = 0x9903
 
         /**默认情况下, 34748 bytes/s */
-        val bleApi: FscBleCentralApi
-            get() = FscBleCentralApiImp.getInstance()
+        val bleApi: FscBleCentralApi?
+            get() = try {
+                FscBleCentralApiImp.getInstance()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
 
         /**默认情况下, 36412 45544 70826 bytes/s */
         val sppApi: FscSppCentralApi
@@ -490,7 +495,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**api*/
     val fscApi: FscApi<*>
-        get() = if (useSppModel) sppApi else bleApi
+        get() = if (useSppModel) sppApi else bleApi!!
 
     /**延迟停止[Runnable]*/
     val _delayStopRunnable = Runnable {
@@ -498,7 +503,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     init {
-        bleApi.setCallbacks(bleCallback)
+        bleApi?.setCallbacks(bleCallback)
         sppApi.setCallbacks(sppCallback)
     }
 
