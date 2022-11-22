@@ -5,7 +5,7 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.ble.BluetoothSearchListDialogConfig
+import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
@@ -50,7 +50,7 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
                     put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
                     put(
                         UMEvent.KEY_DURATION,
-                        (nowTime - BluetoothSearchListDialogConfig.last_search_time).toString()
+                        (nowTime - BluetoothSearchHelper.last_search_time).toString()
                     )
                 }
             }

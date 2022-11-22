@@ -75,13 +75,13 @@ class AutoEngraveWebsite : BasicWebsite() {
         //device
         val deviceAddress = request.parameter["device"]?.firstOrNull()?.uppercase() //需要连接的设备地址
         if (!deviceAddress.isNullOrBlank()) {
-            vmApp<LaserPeckerModel>().productInfoData.value?.deviceAddress?.let {
-                if (it.uppercase() == deviceAddress) {
-                    //想要雕刻的设备和已连接的设备一致
-                } else {
-                    //否则直接连接设备
-                    vmApp<FscBleApiModel>().connect(deviceAddress, "AutoEngrave")
-                }
+            val connectAddress =
+                vmApp<LaserPeckerModel>().productInfoData.value?.deviceAddress?.uppercase()
+            if (connectAddress == deviceAddress) {
+                //想要雕刻的设备和已连接的设备一致
+            } else {
+                //否则直接连接设备
+                vmApp<FscBleApiModel>().connect(deviceAddress, "AutoEngrave")
             }
         }
 
