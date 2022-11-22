@@ -20,7 +20,7 @@ import com.yanzhenjie.andserver.framework.website.FileBrowser
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 
-@Config("file")
+@Config(FileServerService.GROUP_NAME)
 class FileWebConfig : WebConfig {
 
     companion object {
