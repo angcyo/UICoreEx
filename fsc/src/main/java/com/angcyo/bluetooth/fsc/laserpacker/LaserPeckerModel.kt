@@ -51,7 +51,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * [deviceVersionData]*/
     val productInfoData: MutableLiveData<LaserPeckerProductInfo?> = vmDataNull()
 
-    /**初始化指令是否全部成功完成
+    /**初始化指令是否全部成功完成, 蓝牙断开之后清空值
      * [com.angcyo.engrave.model.FscDeviceModel.initDevice]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]*/
     val initializeData = vmData(false)

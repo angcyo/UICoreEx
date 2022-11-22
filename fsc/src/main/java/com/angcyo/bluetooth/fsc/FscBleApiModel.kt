@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import androidx.annotation.AnyThread
+import androidx.annotation.MainThread
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.core.app.ActivityCompat
@@ -36,10 +37,7 @@ import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.app
 import com.angcyo.library.ex.*
-import com.angcyo.viewmodel.IViewModel
-import com.angcyo.viewmodel.MutableOnceLiveData
-import com.angcyo.viewmodel.vmData
-import com.angcyo.viewmodel.vmDataOnce
+import com.angcyo.viewmodel.*
 import com.feasycom.ble.controler.FscBleCentralApi
 import com.feasycom.ble.controler.FscBleCentralApiImp
 import com.feasycom.ble.controler.FscBleCentralCallbacksImp
@@ -558,6 +556,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**设备是否已连接
      * [resetConnectState] 是否要恢复连接状态*/
+    @MainThread
     fun isConnected(device: FscDevice?, resetConnectState: Boolean = false): Boolean {
         val address = device?.address
         if (address.isNullOrEmpty()) {
@@ -753,6 +752,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
      * [stopScan] 是否停止扫描
      * [isAutoConnect] 是否是自动连接
      * */
+    @MainThread
     fun connect(
         device: FscDevice?,
         isAutoConnect: Boolean = false,
@@ -804,6 +804,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**断开连接
      * [isActiveDisConnected] 是否是主动断开的蓝牙连接*/
+    @MainThread
     fun disconnect(bleDevice: FscDevice?, isActiveDisConnected: Boolean = true) {
         if (bleDevice == null) {
             return
@@ -853,6 +854,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**断开连接, 有时候会收不到通知.
      * 这里检查一下超时*/
+    @MainThread
     fun _checkDisconnectTimeout(isActiveDisConnected: Boolean = true) {
         val list = connectDeviceList.toList()
         list.forEach { deviceState ->
@@ -889,7 +891,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         fscApi.disconnect()
         connectDeviceList.clear()
         devicePacketProgressCacheList.clear()
-        bleDeviceListData.postValue(emptyList())
+        bleDeviceListData.updateValue(emptyList())
     }
 
     //</editor-fold desc="操作方法">
@@ -906,7 +908,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     fun _stopScan() {
         handle.removeCallbacks(_delayStopRunnable)
         updateBleState(BLUETOOTH_STATE_STOP)
-        bleDeviceListData.postValue(cacheScanDeviceList)
+        bleDeviceListData.updateValue(cacheScanDeviceList)
         //重置
         updateBleState(BLUETOOTH_STATE_NORMAL)
     }
@@ -921,9 +923,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 }
             }
         }
-        bleScanDeviceData.postValue(device)
+        bleScanDeviceData.updateValue(device)
         if (!cacheScanDeviceList.contains(device)) {
-            bleDeviceData.postValue(device)
+            bleDeviceData.updateValue(device)
             cacheScanDeviceList.add(device)
         }
     }
@@ -932,14 +934,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
     fun _peripheralConnected(address: String, gatt: BluetoothGatt?, type: ConnectType) {
         val cacheDeviceState = connectDeviceList.find { it.device.address == address }
         cacheDeviceState?.let { deviceState ->
-            connectStateData.postValue(wrapStateDevice(deviceState.device) {
+            val connectState = wrapStateDevice(deviceState.device) {
                 this.state = CONNECT_STATE_SUCCESS
                 this.gatt = gatt
                 this.type = type
                 this.connectedTime = nowTime()
-            })
-            //通知连接的蓝牙设备改变
+            }
+            //1:通知连接的蓝牙设备改变
             _notifyConnectDeviceChanged()
+            //2:最后通知设备状态
+            connectStateData.updateValue(connectState)
         }
     }
 
@@ -965,7 +969,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //过滤得到所有连接成功的设备
             deviceConnectState.state == CONNECT_STATE_SUCCESS
         }.apply {
-            connectDeviceListData.postValue(this)
+            connectDeviceListData.updateValue(this)
         }
         _checkDisconnectTimeout()
     }
