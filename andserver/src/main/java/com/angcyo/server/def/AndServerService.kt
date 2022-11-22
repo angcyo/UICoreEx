@@ -19,8 +19,8 @@ import com.angcyo.server.DslAndServer.DEFAULT_RETRY_COUNT
 import com.yanzhenjie.andserver.AndServer
 import com.yanzhenjie.andserver.Server
 import com.yanzhenjie.andserver.Server.ServerListener
+import java.net.BindException
 import java.net.InetAddress
-import java.net.SocketException
 import java.util.concurrent.TimeUnit
 
 
@@ -146,9 +146,7 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
 
     override fun onException(e: Exception) {
         L.e("${notifyName}异常: ${address()}")
-        e.printStackTrace()
-
-        if (e is SocketException) {
+        if (e is BindException) {
             if (_defPort < 0) {
                 _defPort = serverPort
             }
@@ -160,6 +158,8 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
                 initServer()
                 startServer()
             }
+        } else {
+            e.printStackTrace()
         }
     }
 
