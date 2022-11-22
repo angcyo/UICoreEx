@@ -75,7 +75,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
                     val x = CanvasConstant.valueUnit.convertValueToPixel(value)
-                    itemDiameter = x.toDiameter()
+                    itemDiameter = x.toDiameter().toFloat()
                 }
             }
         }
@@ -90,7 +90,7 @@ abstract class BaseDiameterItem : DslAdapterItem() {
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
                     val x = CanvasConstant.valueUnit.convertValueToPixel(value)
-                    itemDiameter = x
+                    itemDiameter = x.toFloat()
                 }
             }
         }

@@ -22,6 +22,7 @@ import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.loading.RadarScanLoadingView
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.tab
+import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -37,6 +38,9 @@ class BluetoothSearchHelper {
         /**最后一次搜索的时间*/
         var last_search_time: Long = 0
 
+        /**是否显示信号强度*/
+        var SHOW_RSSI = isDebugType()
+
         /**联系客服*/
         var ON_CONTACT_ME_ACTION: Action? = null
     }
@@ -45,7 +49,7 @@ class BluetoothSearchHelper {
     var connectedDismiss: Boolean = false
 
     /**是否显示rssi信号强度*/
-    var showRssi: Boolean = isDebugType()
+    var showRssi: Boolean = SHOW_RSSI
 
     val apiModel = vmApp<FscBleApiModel>()
 
@@ -94,11 +98,7 @@ class BluetoothSearchHelper {
                 setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
             } else {
                 list.forEach {
-                    BluetoothConnectItem()() {
-                        itemAnimateRes = R.anim.item_translate_to_left_animation
-                        itemData = it.device
-                        itemFscDevice = it.device
-                    }
+                    renderBluetoothConnectItem(it.device)
                 }
             }
 
@@ -119,12 +119,7 @@ class BluetoothSearchHelper {
                             if (find == null) {
                                 if (device.name?.startsWith(LaserPeckerHelper.PRODUCT_PREFIX) == true) {
                                     //添加新的item
-                                    BluetoothConnectItem()() {
-                                        itemAnimateRes = R.anim.item_translate_to_left_animation
-                                        itemData = device
-                                        itemFscDevice = device
-                                        itemShowRssi = showRssi
-                                    }
+                                    renderBluetoothConnectItem(device)
 
                                     autoAdapterStatus()
                                 }
@@ -197,6 +192,15 @@ class BluetoothSearchHelper {
                     }
                 }
             }
+        }
+    }
+
+    fun DslAdapter.renderBluetoothConnectItem(device: FscDevice) {
+        BluetoothConnectItem()() {
+            itemAnimateRes = R.anim.item_translate_to_left_animation
+            itemData = device
+            itemFscDevice = device
+            itemShowRssi = showRssi
         }
     }
 

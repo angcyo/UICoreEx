@@ -84,8 +84,10 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
         itemHolder.tv(R.id.device_name_view)?.text = span {
             append(deviceName)
             //append(itemFscDevice?.address)
-            if (itemShowRssi) {
-                append(" ${itemFscDevice?.rssi}") {
+
+            val rssi = itemFscDevice?.rssi ?: 0
+            if (itemShowRssi && rssi != 0) {
+                append(" $rssi") {
                     foregroundColor = _color(R.color.text_sub_color)
                 }
             }

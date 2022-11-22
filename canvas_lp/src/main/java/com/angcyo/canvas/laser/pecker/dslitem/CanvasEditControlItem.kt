@@ -147,7 +147,7 @@ class CanvasEditControlItem : DslAdapterItem() {
 
                         //2
                         val bounds = renderer.getBounds()
-                        val newWidth = width
+                        val newWidth = width.toFloat()
                         val scaleWidth = newWidth / bounds.width()
                         val newHeight = if (lockRatio) {
                             bounds.height() * scaleWidth
@@ -202,7 +202,7 @@ class CanvasEditControlItem : DslAdapterItem() {
 
                         //2
                         val bounds = renderer.getBounds()
-                        val newHeight = height
+                        val newHeight = height.toFloat()
                         val scaleScale = newHeight / bounds.height()
                         val newWidth = if (lockRatio) {
                             bounds.width() * scaleScale
@@ -247,7 +247,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                         val rotate = renderer.getRotateBounds()
                         val bounds = RectF(renderer.getBounds())
                         val dx = x - rotate.left
-                        bounds.offset(dx, 0f)
+                        bounds.offset(dx.toFloat(), 0f)
                         itemCanvasDelegate?.addChangeItemBounds(
                             renderer,
                             bounds
@@ -270,7 +270,7 @@ class CanvasEditControlItem : DslAdapterItem() {
                         val rotate = renderer.getRotateBounds()
                         val bounds = RectF(renderer.getBounds())
                         val dy = y - rotate.top
-                        bounds.offset(0f, dy)
+                        bounds.offset(0f, dy.toFloat())
                         itemCanvasDelegate?.addChangeItemBounds(
                             renderer,
                             bounds
@@ -290,7 +290,11 @@ class CanvasEditControlItem : DslAdapterItem() {
                     onDismiss = this@CanvasEditControlItem::onPopupDismiss
                     keyboardBindTextView = it as? TextView
                     onNumberResultAction = { toRotate ->
-                        itemCanvasDelegate?.addChangeItemRotate(renderer, renderer.rotate, toRotate)
+                        itemCanvasDelegate?.addChangeItemRotate(
+                            renderer,
+                            renderer.rotate,
+                            toRotate.toFloat()
+                        )
                     }
                 }
             }

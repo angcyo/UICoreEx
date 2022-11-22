@@ -187,8 +187,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         // 扫描到设备
         override fun blePeripheralFound(device: FscDevice, rssi: Int, record: ByteArray?) {
             super.blePeripheralFound(device, rssi, record)
-            device.rssi = rssi
-            _peripheralFound(device)
+            _peripheralFound(device, rssi)
         }
 
         override fun servicesFound(
@@ -314,8 +313,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         override fun sppPeripheralFound(sppDevice: FscDevice, rssi: Int) {
             super.sppPeripheralFound(sppDevice, rssi)
-            sppDevice.rssi = rssi
-            _peripheralFound(sppDevice)
+            _peripheralFound(sppDevice, rssi)
         }
 
         // 连接成功
@@ -875,7 +873,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
             val device = (bluetoothManager?.adapter
                 ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
-            FscDevice(name, address, device, -1, if (useSppModel) "SPP" else "BLE")
+            FscDevice(name, address, device, 0, if (useSppModel) "SPP" else "BLE")
         } else {
             null
         }
@@ -911,7 +909,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     @UiThread
-    fun _peripheralFound(device: FscDevice) {
+    fun _peripheralFound(device: FscDevice, rssi: Int?) {
+        rssi?.let {
+            device.rssi = rssi
+            connectDeviceListData.value?.forEach { connectState ->
+                if (connectState.device == device) {
+                    connectState.device.rssi = rssi
+                }
+            }
+        }
         bleScanDeviceData.postValue(device)
         if (!cacheScanDeviceList.contains(device)) {
             bleDeviceData.postValue(device)

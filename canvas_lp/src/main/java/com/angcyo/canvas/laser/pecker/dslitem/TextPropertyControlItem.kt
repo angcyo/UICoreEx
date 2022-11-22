@@ -81,7 +81,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = clamp(number, TEXT_MIN_SIZE, TEXT_MAX_SIZE)
+                    val size = clamp(number.toFloat(), TEXT_MIN_SIZE, TEXT_MAX_SIZE)
                     val pixel = itemPointValueUnit.convertValueToPixel(size)
                     renderer.dataTextItem?.updateTextSize(pixel, renderer)
                 }
@@ -97,7 +97,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(valueUit.convertValueToPixel(number), TEXT_MAX_SIZE)
+                    val size = min(valueUit.convertValueToPixel(number).toFloat(), TEXT_MAX_SIZE)
                     renderer.dataTextItem?.updateTextWordSpacing(size, renderer)
                 }
             }
@@ -112,7 +112,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(valueUit.convertValueToPixel(number), TEXT_MAX_SIZE)
+                    val size = min(valueUit.convertValueToPixel(number).toFloat(), TEXT_MAX_SIZE)
                     renderer.dataTextItem?.updateTextLineSpacing(size, renderer)
                 }
             }
