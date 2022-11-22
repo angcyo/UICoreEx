@@ -77,10 +77,17 @@ class FscBleApiModel : ViewModel(), IViewModel {
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
         const val REQUEST_CODE_ENABLE_BLUETOOTH = 0x9903
 
+        /**不支持ble*/
+        var NO_BLE = true
+
         /**默认情况下, 34748 bytes/s */
         val bleApi: FscBleCentralApi?
             get() = try {
-                FscBleCentralApiImp.getInstance()
+                if (NO_BLE) {
+                    null
+                } else {
+                    FscBleCentralApiImp.getInstance()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -93,13 +100,23 @@ class FscBleApiModel : ViewModel(), IViewModel {
         /**初始化方法*/
         @CallPoint
         fun init(application: Context = app(), debug: Boolean = isDebug()) {
-            FscBleCentralApiImp.getInstance(application).apply {
-                initialize()
-                isShowLog(debug)
+            try {
+                if (!NO_BLE) {
+                    FscBleCentralApiImp.getInstance(application).apply {
+                        initialize()
+                        isShowLog(debug)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            FscSppCentralApiImp.getInstance(application).apply {
-                initialize()
-                isShowLog(debug)
+            try {
+                FscSppCentralApiImp.getInstance(application).apply {
+                    initialize()
+                    isShowLog(debug)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
@@ -109,7 +126,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         /**是否开启了蓝牙*/
         fun isBlueEnable() =
-            FscBleCentralApiImp.getInstance().isEnabled || FscSppCentralApiImp.getInstance().isEnabled
+            bleApi?.isEnabled == true || FscSppCentralApiImp.getInstance().isEnabled
 
         /**GPS是否已打开*/
         fun checkGPSIsOpen(context: Context = app()): Boolean {
