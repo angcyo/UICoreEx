@@ -90,7 +90,7 @@ class AutoEngraveWebsite : BasicWebsite() {
         //open
         doMain {
             if (showActivity) {
-                vmApp<AutoEngraveModel>().engravePendingData.postValue(engraveData)
+                autoEngraveModel.engravePendingData.postValue(engraveData)
                 lastContext.dslAHelper {
                     start(AutoEngraveActivity::class)
                 }

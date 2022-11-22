@@ -14,6 +14,7 @@ import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
 import com.angcyo.library.component.batchHandle
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.observe
@@ -77,44 +78,46 @@ class AutoEngraveModel : LifecycleViewModel() {
     val engravePendingData = vmDataOnce<CanvasOpenDataType?>()
 
     init {
-        //传输监听
-        transferModel.transferStateOnceData.observe(this, allowBackward = false) {
-            val autoEngraveTask = _autoEngraveTask
-            if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
-                //传输状态监听
-                autoEngraveTask.progress = it.progress
-                if (it.state == TransferState.TRANSFER_STATE_FINISH) {
-                    //传输完成开始雕刻
-                    ExitCmd().enqueue { bean, error ->
-                        if (error == null) {
-                            //进入空闲模式, 才能开始雕刻
-                            startEngrave(autoEngraveTask)
-                        } else {
-                            autoEngraveTask.isFinish = it.error != null
-                            autoEngraveTask.error = it.error
-                            autoEngraveTaskOnceData.postValue(autoEngraveTask)
+        doMain {
+            //传输监听
+            transferModel.transferStateOnceData.observe(this, allowBackward = false) {
+                val autoEngraveTask = _autoEngraveTask
+                if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
+                    //传输状态监听
+                    autoEngraveTask.progress = it.progress
+                    if (it.state == TransferState.TRANSFER_STATE_FINISH) {
+                        //传输完成开始雕刻
+                        ExitCmd().enqueue { bean, error ->
+                            if (error == null) {
+                                //进入空闲模式, 才能开始雕刻
+                                startEngrave(autoEngraveTask)
+                            } else {
+                                autoEngraveTask.isFinish = it.error != null
+                                autoEngraveTask.error = it.error
+                                autoEngraveTaskOnceData.postValue(autoEngraveTask)
+                            }
                         }
+                    } else {
+                        autoEngraveTask.isFinish = it.error != null
+                        autoEngraveTask.error = it.error
+                        autoEngraveTaskOnceData.postValue(autoEngraveTask)
                     }
-                } else {
-                    autoEngraveTask.isFinish = it.error != null
-                    autoEngraveTask.error = it.error
-                    autoEngraveTaskOnceData.postValue(autoEngraveTask)
                 }
             }
-        }
-        //雕刻监听
-        engraveModel.engraveStateData.observe(this, allowBackward = false) {
-            val autoEngraveTask = _autoEngraveTask
-            if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
-                autoEngraveTask.progress = it.progress
-                if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
-                    //雕刻完成
-                    autoEngraveTask.progress = 100
-                    autoEngraveTask.isFinish = true
-                    autoEngraveTask.state = TransferState.TRANSFER_STATE_NORMAL
+            //雕刻监听
+            engraveModel.engraveStateData.observe(this, allowBackward = false) {
+                val autoEngraveTask = _autoEngraveTask
+                if (autoEngraveTask != null && it != null && it.taskId == autoEngraveTask.taskId) {
+                    autoEngraveTask.progress = it.progress
+                    if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
+                        //雕刻完成
+                        autoEngraveTask.progress = 100
+                        autoEngraveTask.isFinish = true
+                        autoEngraveTask.state = TransferState.TRANSFER_STATE_NORMAL
+                        autoEngraveTaskOnceData.postValue(autoEngraveTask)
+                    }
                     autoEngraveTaskOnceData.postValue(autoEngraveTask)
                 }
-                autoEngraveTaskOnceData.postValue(autoEngraveTask)
             }
         }
     }
