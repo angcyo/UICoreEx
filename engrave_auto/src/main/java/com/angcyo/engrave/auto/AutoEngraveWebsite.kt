@@ -19,7 +19,6 @@ import com.angcyo.viewmodel.observeOnce
 import com.yanzhenjie.andserver.framework.body.StreamBody
 import com.yanzhenjie.andserver.framework.body.StringBody
 import com.yanzhenjie.andserver.framework.website.BasicWebsite
-import com.yanzhenjie.andserver.http.HttpHeaders
 import com.yanzhenjie.andserver.http.HttpRequest
 import com.yanzhenjie.andserver.http.HttpResponse
 import com.yanzhenjie.andserver.http.ResponseBody
@@ -41,7 +40,6 @@ class AutoEngraveWebsite : BasicWebsite() {
     }
 
     override fun getBody(request: HttpRequest, response: HttpResponse): ResponseBody {
-        response.addHeader(HttpHeaders.Access_Control_Allow_Origin, "*")
         val bodyString = request.body?.string()
         val showActivity =
             request.parameter["activity"]?.firstOrNull()?.uppercase() == "TRUE" //是否需要显示界面
