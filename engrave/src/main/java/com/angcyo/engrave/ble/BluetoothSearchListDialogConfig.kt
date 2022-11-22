@@ -22,6 +22,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
             bluetoothSearchHelper.connectedDismiss = value
         }
 
+    /**蓝牙搜索布局助手*/
     val bluetoothSearchHelper = BluetoothSearchHelper()
 
     init {
