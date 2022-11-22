@@ -72,7 +72,7 @@ class BluetoothSearchHelper {
     fun initLayout(
         lifecycleOwner: LifecycleOwner,
         viewHolder: DslViewHolder,
-        targetWindow: TargetWindow
+        targetWindow: TargetWindow?
     ) {
         viewHolder.click(R.id.lib_loading_view) {
             toggleScan()
@@ -193,7 +193,7 @@ class BluetoothSearchHelper {
                 if (state.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
                     //读取设备版本, 移至: com.angcyo.engrave.model.FscDeviceModel.initDevice
                     if (connectedDismiss) {
-                        targetWindow.dismissWindow()
+                        targetWindow?.dismissWindow()
                     }
                 }
             }
