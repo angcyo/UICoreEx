@@ -50,6 +50,10 @@ data class EngraveTaskEntity(
      * 当只有1个文件时, 等同于[startTime]*/
     var indexStartTime: Long = -1,
 
+    /**当前索引第几次雕刻的开始的时间, 毫秒
+     * 当只雕刻一次时, 等同于[indexStartTime]*/
+    var indexPrintStartTime: Long = -1,
+
     /**任务完成的时间, 毫秒*/
     var finishTime: Long = -1,
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
@@ -305,6 +306,16 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="Command">
+}
+
+/**发送退出指令, 如果需要*/
+fun checkExitIfNeed() {
+    val queryStateParser = vmApp<LaserPeckerModel>().deviceStateData.value
+    if (queryStateParser?.isModeEngrave() == true || queryStateParser?.isModeIdle() == true) {
+    } else {
+        //进入空闲模式, 才能开始打印
+        ExitCmd().enqueue()
+    }
 }
 
 /**静态方法, 异步查询设备状态*/

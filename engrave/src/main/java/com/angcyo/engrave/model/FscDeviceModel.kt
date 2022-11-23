@@ -36,6 +36,7 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.viewmodel.observeOnce
+import com.angcyo.viewmodel.updateValue
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -81,7 +82,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     //蓝牙断开后,清空设备状态
                     laserPeckerModel.apply {
                         deviceStateData.postValue(null)
-                        initializeData.postValue(false)
+                        initializeData.updateValue(false)
                     }
 
                     if (deviceConnectState.isActiveDisConnected) {

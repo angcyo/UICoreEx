@@ -662,8 +662,14 @@ object LaserPeckerHelper {
     /**发送初始化的指令, 读取设备的基础信息
      * [name] 蓝牙设备的名称
      * [address] 蓝牙设备的地址
+     * [count] 重试的次数
      * */
-    fun sendInitCommand(name: String, address: String, end: (Throwable?) -> Unit = {}) {
+    fun sendInitCommand(
+        name: String,
+        address: String,
+        count: Int = 0,
+        end: (Throwable?) -> Unit = {}
+    ) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         initDeviceName = name
         initDeviceAddress = address
@@ -715,10 +721,10 @@ object LaserPeckerHelper {
             if (it == null) {
                 //初始化完成
                 end(it)
-            } else {
+            } else if (count < 3) {
                 //再来一次
                 doBack {
-                    sendInitCommand(name, address, end)
+                    sendInitCommand(name, address, count + 1, end)
                 }
             }
         }

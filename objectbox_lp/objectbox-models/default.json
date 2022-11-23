@@ -496,7 +496,7 @@
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "12:5775366533488714755",
+      "lastPropertyId": "13:846528269956168215",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -558,6 +558,11 @@
         {
           "id": "12:5775366533488714755",
           "name": "indexStartTime",
+          "type": 6
+        },
+        {
+          "id": "13:846528269956168215",
+          "name": "indexPrintStartTime",
           "type": 6
         }
       ],

@@ -53,6 +53,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         /**雕刻状态: 已完成*/
         const val ENGRAVE_STATE_FINISH = 3
+
+        /**最后一次雕刻的次数*/
+        var _lastEngraveTimes: Int = 1
     }
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -84,18 +87,21 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
                             put(UMEvent.KEY_DURATION, duration.toString())
                         }
-                        val duration = nowTime - (_engraveTaskEntity?.indexStartTime ?: 0)
-                        buildString {
-                            append("雕刻完成:${_engraveTaskId} ")
-                            append("index:${queryState.index} ")
-                            append("第${queryState.printTimes}次 ")
-                            append("耗时:${duration.toMsTime()}")
-                        }.writeEngraveLog(L.INFO)
+                        _logEngraveDuration(queryState, _lastEngraveTimes)
+                        _lastEngraveTimes = 1
                         //强制更新进度到100
                         updateEngraveProgress(queryState, 100)
                         engraveNext()
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
+                        if (_lastEngraveTimes != queryState.printTimes) {
+                            _logEngraveDuration(queryState, _lastEngraveTimes)
+                            _lastEngraveTimes = queryState.printTimes
+                            _engraveTaskEntity?.apply {
+                                indexPrintStartTime = nowTime()
+                                lpSaveEntity()
+                            }
+                        }
                         updateEngraveProgress(queryState, queryState.rate)
                     } else if (queryState.isEngravePause()) {
                         //
@@ -106,6 +112,18 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 }
             }
         }
+    }
+
+    /**打印一下*/
+    fun _logEngraveDuration(queryState: QueryStateParser, printTimes: Int) {
+        val nowTime = nowTime()
+        val duration = nowTime - (_engraveTaskEntity?.indexPrintStartTime ?: 0)
+        buildString {
+            append("雕刻完成:${_engraveTaskId} ")
+            append("index:${queryState.index} ")
+            append("第${printTimes}次 ")
+            append("耗时:${duration.toMsTime()}")
+        }.writeEngraveLog(L.INFO)
     }
 
     /**开始雕刻*/
@@ -136,6 +154,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             lpSaveEntity()
 
             _engraveTaskId = task.taskId
+
+            //checkExitIfNeed()
+            ExitCmd().enqueue()
 
             //
             engraveNext()
@@ -200,6 +221,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     doMain {
                         task.currentIndex = nextIndex
                         task.indexStartTime = nowTime()
+                        task.indexPrintStartTime = task.indexStartTime
                         engraveStateData.value = task
                         task.lpSaveEntity()
 

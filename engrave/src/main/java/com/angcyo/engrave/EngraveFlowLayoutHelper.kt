@@ -1,9 +1,8 @@
 package com.angcyo.engrave
 
-import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.checkExitIfNeed
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
@@ -127,6 +126,9 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     if (!checkItemThrowable() && !checkOverflowBounds() && checkTransferData()) {
                         //下一步, 数据传输界面
 
+                        //退出打印模式, 进入空闲模式
+                        checkExitIfNeed()
+
                         transferConfigEntity.lpSaveEntity()
 
                         engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
@@ -164,8 +166,6 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             //文件传输完成
             engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
             renderFlowItems()
-            //退出打印模式, 进入空闲模式
-            ExitCmd().enqueue()
         } else {
             renderDslAdapter {
                 DataTransmittingItem()() {
@@ -355,6 +355,8 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             showSafetyTips(it.context) {
                                 engraveFlow = ENGRAVE_FLOW_ENGRAVING
                                 renderFlowItems()
+
+                                checkExitIfNeed()
 
                                 //开始雕刻
                                 engraveModel.startEngrave(taskId)
