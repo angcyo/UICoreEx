@@ -366,7 +366,10 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---雕刻中---
 
-    /**渲染雕刻中的界面*/
+    /**渲染雕刻中的界面
+     * 通过设备状态改变实时刷新界面
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.deviceStateData]
+     * */
     fun renderEngraving() {
         updateIViewTitle(_string(R.string.engraving))
         engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
