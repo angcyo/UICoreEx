@@ -129,6 +129,9 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                         transferConfigEntity.lpSaveEntity()
 
+                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+
                         val canvasDelegate = engraveCanvasFragment?.canvasDelegate
                         if (canvasDelegate == null) {
                             //不是画布上的数据, 可能是恢复的数据
@@ -137,8 +140,6 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         }
 
                         //last
-                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
                         renderFlowItems()
                     }
                 }
