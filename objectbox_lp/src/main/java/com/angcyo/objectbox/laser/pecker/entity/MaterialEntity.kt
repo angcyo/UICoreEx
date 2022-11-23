@@ -52,16 +52,26 @@ data class MaterialEntity(
     //---
 
     /**功率 100% [0~100]
-     * [com.angcyo.engrave.data.EngraveOptionInfo.power]
+     * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.power]
      * */
     var power: Int = 100,
 
     /**打印深度 10% [0~100]
-     * [com.angcyo.engrave.data.EngraveOptionInfo.depth]
+     * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.depth]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.depth]
      * */
     var depth: Int = 10,
 
     ) : IToText {
+
+    companion object {
+
+        /**雕刻速度
+         * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.Companion.speedToDepth]
+         * */
+        @Keep
+        const val SPEED = "speed"
+    }
 
     override fun toText(): CharSequence {
         return name ?: _string(resId)

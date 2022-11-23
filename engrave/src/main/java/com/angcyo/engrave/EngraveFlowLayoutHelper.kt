@@ -2,6 +2,7 @@ package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.TransferState
@@ -287,9 +288,25 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     renderFlowItems()
                 }
             }
-            //功率/深度
-            EngravePropertyItem()() {
-                itemEngraveConfigEntity = engraveConfigEntity
+
+            //雕刻参数
+            if (laserPeckerModel.isPenMode()) {
+                //雕刻速度, 非雕刻深度
+                EngraveOptionWheelItem()() {
+                    itemTag = MaterialEntity.SPEED
+                    itemLabelText = _string(R.string.engrave_speed)
+                    itemWheelList = EngraveHelper.percentList()
+                    itemEngraveConfigEntity = engraveConfigEntity
+                    itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        itemWheelList,
+                        EngraveCmd.depthToSpeed(engraveConfigEntity.depth)
+                    )
+                }
+            } else {
+                //功率/深度/次数
+                EngravePropertyItem()() {
+                    itemEngraveConfigEntity = engraveConfigEntity
+                }
             }
             /*EngraveOptionWheelItem()() {
                 itemTag = MaterialEntity::power.name

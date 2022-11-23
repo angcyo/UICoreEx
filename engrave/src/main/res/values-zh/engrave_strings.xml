@@ -48,7 +48,7 @@
     <string name="preview_scroll_continue">滚动预览</string>
     <string name="preview_scroll_pause">暂停滚动</string>
     <string name="engrave_speed">雕刻速度</string>
-    <string name="engrave_precision">雕刻精度</string>
+    <string name="engrave_precision">加速级别</string>
 
     <string name="material_hbz">环保纸</string>
     <string name="material_wlz">瓦楞纸</string>

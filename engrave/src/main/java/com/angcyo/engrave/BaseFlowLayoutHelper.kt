@@ -22,7 +22,6 @@ import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.widget.span.span
@@ -35,27 +34,27 @@ import com.angcyo.widget.span.span
 abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     companion object {
-        /**雕刻流程: 预览前的配置*/
-        @Implementation
+        /**雕刻流程: 预览前的配置
+         * C1 握笔模块需要先校准对齐*/
         const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = 0x01
 
         /**雕刻流程: 预览中*/
-        const val ENGRAVE_FLOW_PREVIEW = 0x02
+        const val ENGRAVE_FLOW_PREVIEW = ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG shl 1
 
         /**数据传输之前的配置*/
-        const val ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG = 0x10
+        const val ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG = ENGRAVE_FLOW_PREVIEW shl 1
 
         /**雕刻流程: 雕刻数据传输中...*/
-        const val ENGRAVE_FLOW_TRANSMITTING = 0x20
+        const val ENGRAVE_FLOW_TRANSMITTING = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG shl 1
 
         /**雕刻流程: 雕刻前的配置*/
-        const val ENGRAVE_FLOW_BEFORE_CONFIG = 0x40
+        const val ENGRAVE_FLOW_BEFORE_CONFIG = ENGRAVE_FLOW_TRANSMITTING shl 1
 
         /**雕刻流程: 雕刻中...*/
-        const val ENGRAVE_FLOW_ENGRAVING = 0x80
+        const val ENGRAVE_FLOW_ENGRAVING = ENGRAVE_FLOW_BEFORE_CONFIG shl 1
 
         /**雕刻流程: 雕刻完成.*/
-        const val ENGRAVE_FLOW_FINISH = 0x100
+        const val ENGRAVE_FLOW_FINISH = ENGRAVE_FLOW_ENGRAVING shl 1
     }
 
     /**当前处于那个雕刻流程*/
@@ -172,6 +171,16 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
                 _dslAdapter?.updateAllItem()
             }
+        }
+    }
+
+    /**开始预览*/
+    @CallPoint
+    fun startPreview() {
+        engraveFlow = if (laserPeckerModel.isPenMode()) {
+            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
+        } else {
+            ENGRAVE_FLOW_PREVIEW
         }
     }
 

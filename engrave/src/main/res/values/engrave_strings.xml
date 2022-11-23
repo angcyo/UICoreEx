@@ -138,7 +138,7 @@
     <string name="preview_scroll_continue">Scroll Preview</string>
     <string name="preview_scroll_pause">Pause Scroll</string>
     <string name="engrave_speed">Velocity</string>
-    <string name="engrave_precision">Precision</string>
+    <string name="engrave_precision">Acceleration</string>
 
     <string name="size_safety_tips">Please verify that the laser workspace is secure</string>
     <string name="size_safety_content">Always wear protective goggles and install protective cover</string>

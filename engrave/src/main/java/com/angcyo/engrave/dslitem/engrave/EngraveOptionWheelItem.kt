@@ -1,6 +1,7 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import android.content.Context
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
@@ -56,6 +57,15 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                         lpSaveEntity()
                     }
                 }
+                MaterialEntity.SPEED -> {
+                    itemEngraveConfigEntity?.apply {
+                        depth = EngraveCmd.speedToDepth(
+                            getSelectedInt(index, EngraveCmd.depthToSpeed(depth))
+                        )
+                        HawkEngraveKeys.lastDepth = depth
+                        lpSaveEntity()
+                    }
+                }
                 EngraveConfigEntity::time.name -> {
                     itemEngraveConfigEntity?.apply {
                         time = getSelectedInt(index, time)
@@ -81,7 +91,7 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
         payloads: List<Any>
     ) {
         itemWheelUnit = when (itemTag) {
-            MaterialEntity::power.name, MaterialEntity::depth.name -> "%"
+            MaterialEntity::power.name, MaterialEntity::depth.name, MaterialEntity.SPEED -> "%"
             else -> null
         }
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

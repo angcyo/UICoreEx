@@ -21,7 +21,7 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
 
     init {
         dialogLayoutId = R.layout.dialog_module_calibration_layout
-        cancelable = false
+        cancelable = true //开始校准之后, 才不允许关闭
     }
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
@@ -36,6 +36,7 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
                 if (error == null) {
                     dialogViewHolder.invisible(R.id.start_button)
                     dialogViewHolder.visible(R.id.finish_button)
+                    cancelable = false
                 }
             }
         }

@@ -22,7 +22,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     override fun renderFlowItems() {
         when (engraveFlow) {
-            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG -> renderPreviewItems()
+            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG -> renderPreviewBeforeItems()
             ENGRAVE_FLOW_PREVIEW -> renderPreviewItems()
             else -> super.renderFlowItems()
         }
@@ -41,7 +41,31 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     //region ---预览界面/支架控制---
 
-    /**渲染预览界面界面*/
+    /**渲染预览前配置界面*/
+    fun renderPreviewBeforeItems() {
+        renderDslAdapter {
+            if (laserPeckerModel.needShowExDeviceTipItem()) {
+                PreviewExDeviceTipItem()()
+            }
+            if (laserPeckerModel.isC1()) {
+                if (laserPeckerModel.isPenMode()) {
+                    updateIViewTitle(_string(R.string.device_module_calibration_label))
+                    //握笔模式, 不支持亮度调节, 握笔校准
+                    ModuleCalibrationItem()()
+                }
+            }
+            DslBlackButtonItem()() {
+                itemButtonText = _string(R.string.ui_next)
+                itemClick = {
+                    //下一步, 雕刻预览界面
+                    engraveFlow = ENGRAVE_FLOW_PREVIEW
+                    renderFlowItems()
+                }
+            }
+        }
+    }
+
+    /**渲染预览界面*/
     fun renderPreviewItems() {
         updateIViewTitle(_string(R.string.previewing))
         engraveBackFlow = 0
@@ -65,7 +89,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             }
             if (laserPeckerModel.isPenMode()) {
                 //握笔模式, 不支持亮度调节, 握笔校准
-                ModuleCalibrationItem()()
+                //ModuleCalibrationItem()()
             } else {
                 PreviewBrightnessItem()() {
                     itemPreviewConfigEntity = previewConfigEntity
@@ -101,6 +125,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         syncQueryDeviceState()
 
                         engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                        engraveBackFlow = 0
                         renderFlowItems()
                     }
                 }

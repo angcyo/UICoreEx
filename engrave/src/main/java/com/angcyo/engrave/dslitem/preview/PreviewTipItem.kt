@@ -2,8 +2,8 @@ package com.angcyo.engrave.dslitem.preview
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.toColorInt
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base._textColor
 
@@ -20,7 +20,7 @@ open class PreviewTipItem : DslAdapterItem() {
     var itemTip: CharSequence? = null
 
     /**提示语颜色*/
-    var itemTipTextColor: Int = _color(R.color.colorAccent)
+    var itemTipTextColor: Int = "#0a84ff".toColorInt()//_color(R.color.colorAccent)
 
     init {
         itemLayoutId = R.layout.item_preview_tip_layout

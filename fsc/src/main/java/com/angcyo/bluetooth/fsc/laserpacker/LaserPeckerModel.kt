@@ -177,7 +177,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**是否是C1的握笔模块*/
     fun isPenMode(): Boolean {
-        return deviceStateData.value?.moduleState == 4
+        return deviceStateData.value?.moduleState == 4 /*|| isDebugType()*/
     }
 
     //---

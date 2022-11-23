@@ -49,6 +49,12 @@ data class EngraveCmd(
         fun stopEngrave(): EngraveCmd {
             return EngraveCmd(state = 0x03)
         }
+
+        /**深度转速度*/
+        fun depthToSpeed(depth: Int) = clamp((101 - depth), 1, 100)
+
+        /**速度转深度*/
+        fun speedToDepth(speed: Int) = 101 - clamp(speed.toInt(), 1, 100)
     }
 
     //功能码
@@ -60,7 +66,7 @@ data class EngraveCmd(
             append(commandFunc().toHexString())
             append(state.toHexString())
             append(power.toHexString())
-            append(clamp((101 - depth), 1, 100).toHexString()) //打印速度
+            append(depthToSpeed(depth.toInt()).toHexString()) //打印速度
             //append(name.toHexString(8))
             append(index.toByteArray(4).toHexString(false))
             append(kotlin.math.max(x, 0).toHexString(4))
