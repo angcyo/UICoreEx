@@ -40,7 +40,7 @@ class UM {
             MobclickAgent.onEvent(context, eventId)
         }
 
-        fun event(eventId: String, value: String, context: Context = app()) {
+        fun event(eventId: String, value: String?, context: Context = app()) {
             MobclickAgent.onEvent(context, eventId, value)
         }
 
