@@ -4,10 +4,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.model.TransferModel
-import com.angcyo.engrave.transition.DataException
-import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.item.BaseButtonItem
-import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -35,11 +32,15 @@ class DataStopTransferItem : BaseButtonItem() {
         itemHolder.visible(R.id.error_text_view, itemException != null)
         itemHolder.visible(R.id.lib_retry_button, itemException != null)
 
-        if (itemException is EmptyException) {
+        itemHolder.tv(R.id.error_text_view)?.text = itemException?.message ?: "error"
+
+        /*if (itemException is EmptyException) {
             itemHolder.tv(R.id.error_text_view)?.text = _string(R.string.no_data_transfer)
         } else if (itemException is DataException) {
             itemHolder.tv(R.id.error_text_view)?.text = _string(R.string.data_exception)
-        }
+        } else {
+            itemHolder.tv(R.id.error_text_view)?.text = itemException?.message
+        } */
 
         itemHolder.click(R.id.lib_retry_button) {
             vmApp<TransferModel>().retryTransfer(false)

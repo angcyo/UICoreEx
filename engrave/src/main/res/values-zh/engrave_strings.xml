@@ -168,7 +168,6 @@
     <string name="canvas_engrave_layer">雕刻图层</string>
     <string name="canvas_rename">重命名</string>
     <string name="retry">重试</string>
-    <string name="transfer_data_exception">数据传输失败</string>
 
     <string name="select_device">选择设备</string>
     <string name="start_upgrade">开始升级</string>
@@ -183,7 +182,9 @@
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="engrave_warn">警告</string>
     <string name="no_data_transfer">无数据需要传输!</string>
+    <string name="out_of_data_transfer">数据过大!</string>
     <string name="data_exception">数据异常!</string>
+    <string name="transfer_data_exception">传输数据异常!</string>
 
     <string name="device_angle">设备水平角度</string>
 

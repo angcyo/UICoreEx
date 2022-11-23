@@ -16,17 +16,19 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.engrave.EngraveFlowDataHelper
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.toEngraveDataTypeStr
-import com.angcyo.engrave.transition.DataException
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.engrave.transition.FailException
+import com.angcyo.engrave.transition.OutOfSizeException
+import com.angcyo.engrave.transition.TransferException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.toSizeString
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -245,9 +247,17 @@ class TransferModel : ViewModel() {
         L.i("开始传输数据:[$taskId][${transferDataEntity.index}]")
         val size = transferDataEntity.bytes()?.size ?: 0
         if (size <= 0) {
-            "传输空数据".writeErrorLog()
+            "传输数据为空:${transferDataEntity.index}".writeErrorLog()
             transferState.state = TransferState.TRANSFER_STATE_FINISH
             transferState.error = EmptyException()
+            transferStateOnceData.postValue(transferState)
+
+            action(transferState.error)
+            return
+        } else if (size > HawkEngraveKeys.maxTransferDataSize) {
+            "传输数据过大:${transferDataEntity.index}${size.toSizeString()}".writeErrorLog()
+            transferState.state = TransferState.TRANSFER_STATE_FINISH
+            transferState.error = OutOfSizeException()
             transferStateOnceData.postValue(transferState)
 
             action(transferState.error)
@@ -258,7 +268,7 @@ class TransferModel : ViewModel() {
             error?.let {
                 it.toString().writeErrorLog()
                 transferState.state = TransferState.TRANSFER_STATE_FINISH
-                transferState.error = FailException(error)
+                transferState.error = TransferException(error)
                 transferStateOnceData.postValue(transferState)
 
                 action(transferState.error)
@@ -311,7 +321,7 @@ class TransferModel : ViewModel() {
                                         "数据接收未完成".writeErrorLog()
                                         transferState.state =
                                             TransferState.TRANSFER_STATE_FINISH
-                                        transferState.error = DataException()
+                                        transferState.error = TransferException()
                                         transferStateOnceData.postValue(transferState)
 
                                         action(transferState.error)
@@ -321,7 +331,7 @@ class TransferModel : ViewModel() {
                                     "发送数据失败".writeErrorLog()
                                     transferState.state =
                                         TransferState.TRANSFER_STATE_FINISH
-                                    transferState.error = FailException()
+                                    transferState.error = TransferException()
                                     transferStateOnceData.postValue(transferState)
 
                                     action(transferState.error)
@@ -333,7 +343,7 @@ class TransferModel : ViewModel() {
                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                         "未成功进入数据传输模式".writeErrorLog()
                         transferState.state = TransferState.TRANSFER_STATE_FINISH
-                        transferState.error = FailException()
+                        transferState.error = TransferException()
                         transferStateOnceData.postValue(transferState)
 
                         action(transferState.error)
