@@ -47,9 +47,9 @@ class TransferModel : ViewModel() {
         fun calcTransferProgress(taskId: String?, indexProgress: Int): Int {
             val list = EngraveFlowDataHelper.getTransferDataList(taskId)
             val count = list.count()//总共要传输的数量
-            val transferCount = list.sumOf { if (it.isTransfer) 0 else 1L }//需要传输的数量
+            val transferCount = list.sumOf { if (it.isTransfer) 1L else 0L }//已经传输的数量
             val part = 100f / count //每个文件传输只能占用的进度
-            val result = (max(0, (transferCount - 1)) * part + part * indexProgress / 100).toInt()
+            val result = (transferCount * part + part * indexProgress / 100).toInt()
             return clamp(result, 0, 100)
         }
 

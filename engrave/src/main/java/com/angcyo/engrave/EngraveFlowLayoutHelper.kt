@@ -251,6 +251,18 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemEngraveConfigEntity = engraveConfigEntity
             }
 
+            //雕刻图层切换
+            EngraveLayerConfigItem()() {
+                val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
+                itemSegmentList = layerList
+                itemCurrentIndex =
+                    max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
+                observeItemChange {
+                    selectLayerMode = layerList[itemCurrentIndex].mode
+                    renderFlowItems()
+                }
+            }
+
             if (laserPeckerModel.productInfoData.value?.isLIV() == true) {
                 //L4 激光光源选择
                 EngraveSegmentScrollItem()() {
@@ -274,18 +286,6 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemSelectedIndex =
                         EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.precision)
                     itemEngraveConfigEntity = engraveConfigEntity
-                }
-            }
-
-            //雕刻图层切换
-            EngraveLayerConfigItem()() {
-                val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
-                itemSegmentList = layerList
-                itemCurrentIndex =
-                    max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
-                observeItemChange {
-                    selectLayerMode = layerList[itemCurrentIndex].mode
-                    renderFlowItems()
                 }
             }
 
@@ -382,7 +382,7 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             //强制显示模块信息
             PreviewExDeviceTipItem()() {
-                itemEngraveConfigEntity = EngraveFlowDataHelper.getLastEngraveConfig(flowTaskId)
+                itemEngraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(flowTaskId)
             }
             EngraveProgressItem()() {
                 itemTaskId = flowTaskId
