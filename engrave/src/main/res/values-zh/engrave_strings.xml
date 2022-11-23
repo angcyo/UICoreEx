@@ -196,4 +196,9 @@
     <string name="firmware_corrupted">固件已被损坏</string>
     <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
     <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
+
+    <string name="engrave_module_single_pen">单色笔模式</string>
+    <string name="engrave_module_color_pen">彩色笔模式</string>
+    <string name="engrave_module_knife_cutting">刀切割模式</string>
+    <string name="engrave_module_cnc">CNC模式</string>
 </resources>

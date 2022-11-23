@@ -70,11 +70,37 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 )
             }
             //C1握笔模块
-            laserPeckerModel.isPenMode() -> span {
-                append(_string(R.string.device_ex_engrave_module))
-                append(":")
-                append(_string(R.string.device_ex_pen_engrave_label))
+            laserPeckerModel.isC1() -> {
+                val moduleState = laserPeckerModel.deviceStateData.value?.moduleState
+                if (moduleState == null) {
+                    null
+                } else {
+                    span {
+                        append(_string(R.string.device_ex_engrave_module))
+                        append(":")
+                        when (moduleState) {
+                            //0 5W激光
+                            0 -> append("5W 450nm")
+                            //1 10W激光
+                            1 -> append("10W 450nm")
+                            //2 20W激光
+                            2 -> append("20W 450nm")
+                            //3 1064激光
+                            3 -> append("2W 1064nm")
+                            //4 单色笔模式
+                            4 -> append(_string(R.string.engrave_module_single_pen))
+                            //5 彩色笔模式
+                            5 -> append(_string(R.string.engrave_module_color_pen))
+                            //6 刀切割模式
+                            6 -> append(_string(R.string.engrave_module_knife_cutting))
+                            //7 CNC模式
+                            7 -> append(_string(R.string.engrave_module_cnc))
+                            else -> append("Unknown $moduleState")
+                        }
+                    }
+                }
             }
+
             else -> null
         }
 
