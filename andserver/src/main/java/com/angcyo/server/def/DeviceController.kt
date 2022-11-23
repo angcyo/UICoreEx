@@ -22,6 +22,9 @@ import com.yanzhenjie.andserver.annotation.*
  * [com.yanzhenjie.andserver.framework.handler.MappingAdapter]
  * [com.angcyo.server.def.DeviceControllerAdapter]
  *
+ * [com.angcyo.engrave.auto.AutoEngraveController]
+ * [com.angcyo.server.def.DeviceController]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/22
  */
@@ -35,6 +38,8 @@ class DeviceController {
     fun device(): String {
         return DslLastDeviceInfoItem.deviceInfo {
             appendln()
+            append(nowTimeString())
+            appendln()
             append(app().packageName)
             appendln()
         }.toString()
@@ -45,7 +50,7 @@ class DeviceController {
     fun scheme(@RequestBody bean: SchemeReqBean): String {
         val scheme = bean.scheme
         if (scheme.isNullOrBlank()) {
-            return "scheme 不正确"
+            return "${nowTimeString()}\nscheme 不正确"
         } else {
             dslIntentQuery {
                 queryData = Uri.parse(scheme)

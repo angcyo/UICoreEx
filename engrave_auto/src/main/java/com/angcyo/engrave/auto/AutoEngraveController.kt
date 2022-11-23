@@ -8,7 +8,6 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.opencv.OpenCV
 import com.angcyo.server.bean.GcodeAdjustBean
-import com.angcyo.server.file.FileServerService
 import com.yanzhenjie.andserver.annotation.*
 import kotlin.io.readText
 
@@ -18,11 +17,14 @@ import kotlin.io.readText
  * [com.yanzhenjie.andserver.framework.handler.MappingAdapter]
  * [com.angcyo.server.def.DeviceControllerAdapter]
  *
+ * [com.angcyo.engrave.auto.AutoEngraveController]
+ * [com.angcyo.server.def.DeviceController]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/22
  */
 
-@RestController(FileServerService.GROUP_NAME)
+@RestController
 @CrossOrigin
 class AutoEngraveController {
 
@@ -35,7 +37,7 @@ class AutoEngraveController {
     fun gcodeAdjust(@RequestBody bean: GcodeAdjustBean): String {
         val gcode = bean.content
         return if (gcode.isNullOrBlank()) {
-            "无效的GCode内容"
+            "${nowTimeString()}\n无效的GCode内容"
         } else {
             val rect = RectF()
             val mmValueUnit = MmValueUnit()
@@ -68,7 +70,7 @@ class AutoEngraveController {
     fun bitmapToGCode(@RequestBody bean: GcodeAdjustBean): String {
         val originBitmap = bean.content?.toBitmapOfBase64()
         return if (originBitmap == null) {
-            "无效的图片!"
+            "${nowTimeString()}\n无效的图片!"
         } else {
             val width = originBitmap.width.toMm()
             bean.content = OpenCV.bitmapToGCode(

@@ -1,0 +1,20 @@
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.yanzhenjie.andserver'
+
+dependencies {
+    //classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
+    //apply plugin: 'com.yanzhenjie.andserver'
+
+    //kapt 'com.yanzhenjie.andserver:processor:2.1.9'
+    //annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.9'
+
+    //https://github.com/yanzhenjie/AndServer
+    //https://mvnrepository.com/artifact/com.yanzhenjie.andserver/api
+    api "com.yanzhenjie.andserver:api:$andServerVersion"
+    kapt "com.yanzhenjie.andserver:processor:$andServerVersion"
+
+    //[WARN] Can't find annotation processor class com.yanzhenjie.andserver.processor.ControllerProcessor: javax/activation/MimeTypeParseException
+    //https://github.com/yanzhenjie/AndServer/issues/391
+    //https://mvnrepository.com/artifact/javax.activation/javax.activation-api
+    api 'javax.activation:javax.activation-api:1.2.0'
+}

@@ -1,4 +1,6 @@
 apply from: allGradle.libBase
+apply from: allGradle.andserver
+
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.andserver)
