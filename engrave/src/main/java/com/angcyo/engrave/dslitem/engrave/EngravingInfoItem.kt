@@ -76,13 +76,15 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 val engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
                 add(LabelDesData(_string(R.string.work_time), engraveTime))
 
-                //剩余时长
-                val duration = EngraveFlowDataHelper.calcEngraveProgressDuration(itemTaskId)
-                if (duration > 3000) {
-                    //大于3秒才显示
-                    add(
-                        LabelDesData(_string(R.string.remaining_time), duration.toEngraveTime())
-                    )
+                if (laserPeckerModel.deviceStateData.value?.isEngraving() == true) {
+                    //雕刻中才显示,剩余时长
+                    val duration = EngraveFlowDataHelper.calcEngraveProgressDuration(itemTaskId)
+                    if (duration > 3000) {
+                        //大于3秒才显示
+                        add(
+                            LabelDesData(_string(R.string.remaining_time), duration.toEngraveTime())
+                        )
+                    }
                 }
             }
 
