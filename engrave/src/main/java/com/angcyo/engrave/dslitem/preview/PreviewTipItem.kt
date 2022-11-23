@@ -4,6 +4,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toColorInt
+import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base._textColor
 
@@ -17,15 +18,13 @@ import com.angcyo.widget.base._textColor
 open class PreviewTipItem : DslAdapterItem() {
 
     /**提示语*/
-    var itemTip: CharSequence? = null
+    var itemTip: CharSequence? = _string(R.string.preview_drag_tip)
 
     /**提示语颜色*/
     var itemTipTextColor: Int = "#0a84ff".toColorInt()//_color(R.color.colorAccent)
 
     init {
         itemLayoutId = R.layout.item_preview_tip_layout
-
-        itemTip = _string(R.string.preview_drag_tip)
     }
 
     override fun onItemBind(
@@ -35,8 +34,10 @@ open class PreviewTipItem : DslAdapterItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
-
+        val visible = !itemTip.isNullOrBlank()
+        itemHolder.itemView.visible(visible)
         itemHolder.tv(R.id.lib_text_view)?.apply {
+            visible(visible)
             text = itemTip
             _textColor = itemTipTextColor
         }

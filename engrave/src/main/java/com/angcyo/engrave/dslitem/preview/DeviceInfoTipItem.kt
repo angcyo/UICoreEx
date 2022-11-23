@@ -21,6 +21,7 @@ class DeviceInfoTipItem : PreviewTipItem() {
 
     init {
         itemTipTextColor = _color(R.color.text_sub_color)
+        itemTip = null
     }
 
     override fun onItemBind(
@@ -30,9 +31,11 @@ class DeviceInfoTipItem : PreviewTipItem() {
         payloads: List<Any>
     ) {
         val angle = laserPeckerModel.deviceStateData.value?.angle ?: 0
-        itemTip = span {
-            append(_string(R.string.device_angle))
-            append(":$angle°")
+        if (angle != 0) {
+            itemTip = span {
+                append(_string(R.string.device_angle))
+                append(":$angle°")
+            }
         }
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }

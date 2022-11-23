@@ -1,5 +1,6 @@
 package com.angcyo.engrave.dslitem.preview
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
@@ -8,6 +9,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 import kotlin.math.max
@@ -21,6 +23,9 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+
+    /**雕刻配置信息, 用来显示光源等信息*/
+    var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
     init {
         itemTipTextColor = _color(R.color.text_sub_color)
@@ -41,6 +46,8 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 val list = DeviceSettingFragment.getZDirSegmentList()
                 append(":")
                 append(list[max(0, QuerySettingParser.Z_MODEL)])
+
+                appendEngraveConfig()
             }
             //旋转轴
             laserPeckerModel.isROpen() -> span {
@@ -50,6 +57,8 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                     if (isForward) _string(R.string.device_direction_forward) else
                         _string(R.string.device_direction_reversal)
                 )
+
+                appendEngraveConfig()
             }
             //滑台
             laserPeckerModel.isSOpen() -> span {
@@ -59,6 +68,8 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                     if (isForward) _string(R.string.device_direction_forward) else
                         _string(R.string.device_direction_reversal)
                 )
+
+                appendEngraveConfig()
             }
             //滑台多文件雕刻模式
             laserPeckerModel.isSRepMode() -> span {
@@ -68,6 +79,8 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                     if (isForward) _string(R.string.device_direction_forward) else
                         _string(R.string.device_direction_reversal)
                 )
+
+                appendEngraveConfig()
             }
             //C1握笔模块
             laserPeckerModel.isC1() -> {
@@ -100,11 +113,22 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                     }
                 }
             }
-
-            else -> null
+            else -> span {
+                appendEngraveConfig()
+            }
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+    }
+
+    fun Appendable.appendEngraveConfig() {
+        itemEngraveConfigEntity?.apply {
+            if (type == LaserPeckerHelper.LASER_TYPE_WHITE) {
+                append(" 1064nm (${_string(R.string.laser_type_white)})")
+            } else if (type == LaserPeckerHelper.LASER_TYPE_BLUE) {
+                append(" 450nm (${_string(R.string.laser_type_blue)})")
+            }
+        }
     }
 
 }

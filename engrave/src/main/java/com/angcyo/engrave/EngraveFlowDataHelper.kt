@@ -247,6 +247,14 @@ object EngraveFlowDataHelper {
         return engraveConfigEntity
     }
 
+    /**获取最后一个图层的雕刻配置信息*/
+    fun getLastEngraveConfig(taskId: String?): EngraveConfigEntity? {
+        val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+        }
+        return engraveConfigEntity
+    }
+
     /**构建或者获取对应雕刻图层的雕刻配置信息*/
     fun generateEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {

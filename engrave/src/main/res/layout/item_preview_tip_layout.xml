@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/lib_xhdpi"
-    android:paddingVertical="@dimen/lib_ldpi">
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_text_view"
@@ -12,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/preview_drag_tip"
-        android:textColor="@color/colorAccent" />
+        android:paddingHorizontal="@dimen/lib_xhdpi"
+        android:paddingVertical="@dimen/lib_ldpi"
+        android:textColor="@color/colorAccent"
+        tools:text="@string/preview_drag_tip" />
 </FrameLayout>

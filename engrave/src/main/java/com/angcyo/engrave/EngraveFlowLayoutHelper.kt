@@ -380,8 +380,9 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 //非C1显示, 设备水平角度
                 DeviceInfoTipItem()()
             }
-            if (laserPeckerModel.needShowExDeviceTipItem()) {
-                PreviewExDeviceTipItem()()
+            //强制显示模块信息
+            PreviewExDeviceTipItem()() {
+                itemEngraveConfigEntity = EngraveFlowDataHelper.getLastEngraveConfig(flowTaskId)
             }
             EngraveProgressItem()() {
                 itemTaskId = flowTaskId
