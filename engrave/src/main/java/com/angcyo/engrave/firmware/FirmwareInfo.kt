@@ -59,6 +59,7 @@ fun String.getFirmwareVersion(ex: String = FIRMWARE_EXT): Int {
 }
 
 /**文件路径转成固件信息
+ * [verifyMd5] 是否验证固件的md5值
  * [verifyBin] 是否验证[LPBinBean]文件格式*/
 @Throws(FirmwareException::class)
 fun String.toFirmwareInfo(verifyMd5: Boolean = true, verifyBin: Boolean = false): FirmwareInfo {

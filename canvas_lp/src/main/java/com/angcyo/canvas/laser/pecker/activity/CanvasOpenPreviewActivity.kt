@@ -166,7 +166,9 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.endsWith(FirmwareUpdateFragment.FIRMWARE_EXT)) {
+        } else if (path.endsWith(FirmwareUpdateFragment.FIRMWARE_EXT) ||
+            (isAppDebug() && path.endsWith(".bin"))
+        ) {
             //固件升级
             doMain {
                 dslFHelper {
