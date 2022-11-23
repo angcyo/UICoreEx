@@ -46,6 +46,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
         maxInputLength = MAX_INPUT_LENGTH
         inputHistoryHawkKey = KEY_ADD_TEXT
         canInputEmpty = false
+        trimInputText = false
         dialogLayoutId = R.layout.dialog_add_text_layout
 
         onInputResult = { dialog, inputText ->
