@@ -12,8 +12,13 @@ import com.angcyo.widget.DslViewHolder
  */
 class ModuleCalibrationItem : DslAdapterItem() {
 
+    companion object {
+        /**最后一次是否完成了握笔*/
+        var lastIsModuleCalibration = false
+    }
+
     /**是否校准完成*/
-    var isModuleCalibration = false
+    var isModuleCalibration = lastIsModuleCalibration
 
     init {
         itemLayoutId = R.layout.item_module_calibration_layout
@@ -21,6 +26,7 @@ class ModuleCalibrationItem : DslAdapterItem() {
         itemClick = {
             it.context.moduleCalibrationDialog {
                 onModuleCalibrationAction = {
+                    lastIsModuleCalibration = it
                     isModuleCalibration = it
                     updateAdapterItem()
                 }
