@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
@@ -23,6 +24,7 @@ import com.angcyo.library.annotation.Private
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toMsTime
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
@@ -76,28 +78,25 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
                         //机器空闲了, 可能一个数据雕刻结束了
+                        val nowTime = nowTime()
                         UMEvent.ENGRAVE.umengEventValue {
-                            val nowTime = nowTime()
+                            val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
                             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
-                            put(
-                                UMEvent.KEY_DURATION,
-                                (nowTime - (_engraveTaskEntity?.startTime ?: 0)).toString()
-                            )
+                            put(UMEvent.KEY_DURATION, duration.toString())
                         }
+                        val duration = nowTime - (_engraveTaskEntity?.indexStartTime ?: 0)
+                        buildString {
+                            append("雕刻完成:${_engraveTaskId} ")
+                            append("index:${queryState.index} ")
+                            append("第${queryState.printTimes}次 ")
+                            append("耗时:${duration.toMsTime()}")
+                        }.writeEngraveLog(L.INFO)
+                        //强制更新进度到100
+                        updateEngraveProgress(queryState, 100)
                         engraveNext()
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
-                        val progress = clamp(queryState.rate, 0, 100)
-                        EngraveFlowDataHelper.updateEngraveProgress(
-                            queryState.index,
-                            queryState.printTimes,
-                            progress
-                        )
-                        _engraveTaskEntity?.let {
-                            it.progress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
-                            it.lpSaveEntity()
-                            engraveStateData.postValue(it)
-                        }
+                        updateEngraveProgress(queryState, queryState.rate)
                     } else if (queryState.isEngravePause()) {
                         //
                     } else {
@@ -200,6 +199,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     )
                     doMain {
                         task.currentIndex = nextIndex
+                        task.indexStartTime = nowTime()
                         engraveStateData.value = task
                         task.lpSaveEntity()
 
@@ -307,6 +307,21 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             } else {
                 "雕刻失败:$error".writeErrorLog()
             }
+        }
+    }
+
+    /**更新雕刻进度和次数
+     * [progress] 当前索引的雕刻进度*/
+    fun updateEngraveProgress(queryState: QueryStateParser, progress: Int) {
+        EngraveFlowDataHelper.updateEngraveProgress(
+            queryState.index,
+            queryState.printTimes,
+            clamp(progress, 0, 100)
+        )
+        _engraveTaskEntity?.let {
+            it.progress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
+            it.lpSaveEntity()
+            engraveStateData.postValue(it)
         }
     }
 

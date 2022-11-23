@@ -343,8 +343,11 @@ object EngraveFlowDataHelper {
                         .and(EngraveDataEntity_.index.equal(index))
                 )
             }
-            engraveData?.progress = 0 //清空打印进度
-            engraveData?.lpSaveEntity()
+            engraveData?.apply {
+                printTimes = 1 //重置打印次数
+                progress = 0 //清空打印进度
+                lpSaveEntity()
+            }
         }
     }
 

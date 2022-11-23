@@ -46,6 +46,10 @@ data class EngraveTaskEntity(
     /**任务开始的时间, 毫秒*/
     var startTime: Long = -1,
 
+    /**当前索引开始的时间, 毫秒
+     * 当只有1个文件时, 等同于[startTime]*/
+    var indexStartTime: Long = -1,
+
     /**任务完成的时间, 毫秒*/
     var finishTime: Long = -1,
 

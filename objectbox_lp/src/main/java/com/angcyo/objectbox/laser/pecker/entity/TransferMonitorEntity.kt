@@ -2,7 +2,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
 import com.angcyo.library.ex.fileSizeString
-import com.angcyo.library.ex.toMinuteTime
+import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.ex.toSizeString
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -72,12 +72,12 @@ data class TransferMonitorEntity(
 
     /**数据生成耗时*/
     fun dataMakeDuration(): String {
-        return (dataMakeFinishTime - dataMakeStartTime).toMinuteTime()!!
+        return (dataMakeFinishTime - dataMakeStartTime).toMsTime()!!
     }
 
     /**数据传输耗时*/
     fun dataTransferDuration(endTime: Long = dataTransferFinishTime): String {
-        return (endTime - dataTransferStartTime).toMinuteTime()!!
+        return (endTime - dataTransferStartTime).toMsTime()!!
     }
 
 }
