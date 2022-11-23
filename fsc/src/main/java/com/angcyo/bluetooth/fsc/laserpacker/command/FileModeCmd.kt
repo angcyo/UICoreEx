@@ -14,6 +14,8 @@ import com.angcyo.library.ex.toHexString
  *
  * 300ms 下位机自动退出大数据模式。
  *
+ * 最大的数据大小 30MB
+ *
  * [FileTransferParser]
  *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>

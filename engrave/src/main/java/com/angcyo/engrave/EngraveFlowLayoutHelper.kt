@@ -150,7 +150,10 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---数据传输中---
 
-    /**渲染传输中的界面*/
+    /**渲染传输中的界面
+     * 通过传输状态改变实时刷新界面
+     * [com.angcyo.engrave.model.TransferModel.transferStateOnceData]
+     * */
     fun renderTransmitting() {
         updateIViewTitle(_string(R.string.transmitting))
         showCloseView(false)
