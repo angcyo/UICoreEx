@@ -16,6 +16,7 @@ import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
+import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.VersionMatcher
@@ -765,7 +766,7 @@ fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).i
  * [log] 是否还需要输出到控制台
  * [String.writeErrorLog]
  * */
-fun String.writeBleLog(log: Boolean = true): String = writeToLog(LogFile.ble, log)
+fun String.writeBleLog(logLevel: Int = L.DEBUG): String = writeToLog(LogFile.ble, logLevel)
 
 /**写入雕刻日志, 记录数据传输的索引及信息和雕刻的索引及信息*/
-fun String.writeEngraveLog(log: Boolean = false): String = writeToLog(LogFile.engrave, log)
+fun String.writeEngraveLog(logLevel: Int = L.DEBUG): String = writeToLog(LogFile.engrave, logLevel)
