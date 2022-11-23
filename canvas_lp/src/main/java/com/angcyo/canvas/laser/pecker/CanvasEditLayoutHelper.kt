@@ -100,7 +100,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (isDebug()) {
+        if (isDebugType()) {
             if (!closeImageEditItemsFun.have("grey")) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_bitmap_grey
