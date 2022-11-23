@@ -16,8 +16,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.firmware.FirmwareUpdateFragment
 import com.angcyo.engrave.loadingAsync
+import com.angcyo.engrave.transition.OutOfSizeException
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
 import com.angcyo.http.rx.doBack
@@ -63,24 +65,29 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         }
 
         doBack {
-            val path: String? = getData()
-            openFilePath = path
-            if (path != null && path.isFileExist()) {
-                if (!handleFilePath(adapter, path)) {
-                    //不支持
-                    openFilePath = null
+            try {
+                val path: String? = getData()
+                openFilePath = path
+                if (path != null && path.isFileExist()) {
+                    if (!handleFilePath(adapter, path)) {
+                        //不支持
+                        openFilePath = null
+                    }
                 }
-            }
 
-            //support
-            if (openFilePath == null) {
-                adapter?.updateAdapterState(IllegalStateException("not support!"))
+                //support
+                if (openFilePath == null) {
+                    adapter?.updateAdapterState(IllegalStateException("not support!"))
+                }
+            } catch (e: Exception) {
+                adapter?.updateAdapterState(e)
             }
         }
     }
 
     /**处理文件路径*/
     @ThreadDes("耗时方法, 请在子线程中调用")
+    @Throws(OutOfSizeException::class)
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
         var path = filePath
@@ -90,10 +97,15 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             path = svgFile.absolutePath
             Dxf.parse(filePath, path)
         }
+        val file = path.file()
+        if (file.length() > HawkEngraveKeys.openFileDataSize) {
+            //超过最大的文件大小限制
+            throw OutOfSizeException()
+        }
         //
         if (path.endsWith(CanvasConstant.PROJECT_EXT)) {
             //工程文件
-            val text = path.file().readText()
+            val text = file.readText()
             val canvasBean = text?.toCanvasProjectBean()
 
             if (canvasBean != null) {
@@ -119,7 +131,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 return true
             }
         } else if (path.endsWith(CanvasConstant.GCODE_EXT) ||
-            (path.endsWith(CanvasConstant.TXT_EXT) && path.file().readText()
+            (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
                 ?.isGCodeContent() == true)
         ) {
             //gcode
@@ -127,7 +139,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    val text = path.file().readText()
+                    val text = file.readText()
                     itemDrawable = GCodeHelper.parseGCode(text)
 
                     openAction = {
@@ -143,7 +155,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             }
             return true
         } else if (path.endsWith(CanvasConstant.SVG_EXT) ||
-            (path.endsWith(CanvasConstant.TXT_EXT) && path.file().readText()
+            (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
                 ?.isSvgContent() == true)
         ) {
             //svg
@@ -151,7 +163,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    val text = path.file().readText()
+                    val text = file.readText()
                     itemDrawable = parseSvg(text)
 
                     openAction = {

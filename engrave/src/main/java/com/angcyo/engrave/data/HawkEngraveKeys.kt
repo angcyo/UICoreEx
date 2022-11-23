@@ -95,5 +95,8 @@ object HawkEngraveKeys {
     var closeImageEditItemsFun: String by HawkPropertyValue<Any, String>("")
 
     /**最大的下位机能接收的文件大小 字节, 30MB */
-    var maxTransferDataSize: Long by HawkPropertyValue<Any, Long>(28000000)
+    var maxTransferDataSize: Long by HawkPropertyValue<Any, Long>(28_000_000)
+
+    /**最大的外部导入文件大小 字节, 5MB */
+    var openFileDataSize: Long by HawkPropertyValue<Any, Long>(5_000_000)
 }
