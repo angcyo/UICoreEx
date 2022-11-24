@@ -38,7 +38,7 @@
 
     <!--打印部分-->
     <string name="file_name">Named</string>
-    <string name="remaining_time">Remaining duration</string>
+    <string name="remaining_time">Remaining</string>
 
     <string name="material_hbz">Recycle Paper</string>
     <string name="material_wlz">Corrugated Paper</string>
