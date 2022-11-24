@@ -349,7 +349,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**持续检查工作作态*/
     fun loopCheckDeviceState() {
-        _delay(1_000) {
+        _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
             laserPeckerModel.queryDeviceState() { bean, error ->
                 if (error != null || _listenerEngraveState) {

@@ -190,13 +190,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     /**持续检查工作作态*/
-    fun delayCheckDeviceState() {
-        _delay(1_000) {
+    fun delayLoopQueryDeviceState() {
+        _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
             laserPeckerModel.queryDeviceState() { bean, error ->
                 if (error != null || loopCheckDeviceState) {
                     //出现了错误, 继续查询
-                    delayCheckDeviceState()
+                    delayLoopQueryDeviceState()
                 }
             }
         }
@@ -343,6 +343,21 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             return false
         }
         return true
+    }
+
+    /**检查是否需要循环查询设备的状态,
+     * 如果是其他app控制的机器状态, 则需要循环查询*/
+    fun checkLoopQueryDeviceState() {
+        val stateParser = laserPeckerModel.deviceStateData.value ?: return
+        if (engraveModel._listenerEngraveState) {
+            //已在循环查询状态
+            return
+        }
+        if (!stateParser.isModeIdle()) {
+            //非空闲状态
+            loopCheckDeviceState = true
+            delayLoopQueryDeviceState()
+        }
     }
 
     /**恢复雕刻状态
