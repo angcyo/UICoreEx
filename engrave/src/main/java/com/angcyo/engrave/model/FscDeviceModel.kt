@@ -60,7 +60,7 @@ class FscDeviceModel : LifecycleViewModel() {
     var lastConnectTime: Long = -1
 
     /**通知, 是否要显示自动连接提示*/
-    val autoConnectTipData = vmDataOnce(false)
+    val autoConnectTipData = vmDataOnce<Boolean>(null)
 
     /**初始化*/
     @CallPoint
