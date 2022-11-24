@@ -19,9 +19,9 @@ import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.app
 import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toastQQ
@@ -37,6 +37,7 @@ import com.angcyo.objectbox.saveEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.viewmodel.observeOnce
 import com.angcyo.viewmodel.updateValue
+import com.angcyo.viewmodel.vmDataOnce
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -57,6 +58,9 @@ class FscDeviceModel : LifecycleViewModel() {
 
     /**最后一次触发自动连接的时间, 毫秒*/
     var lastConnectTime: Long = -1
+
+    /**通知, 是否要显示自动连接提示*/
+    val autoConnectTipData = vmDataOnce(false)
 
     /**初始化*/
     @CallPoint
@@ -112,14 +116,20 @@ class FscDeviceModel : LifecycleViewModel() {
                         //自动连接成功后, 显示连接提示
                         lastConnectTime = nowTime()
 
-                        laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
-                            //等待设备信息读取结束之后才显示
-                            if (it != null) {
-                                (RBackground.lastActivityRef?.get() ?: app()).dslAHelper {
-                                    start(DeviceConnectTipActivity::class)
+                        if (autoConnectTipData.hasObservers()) {
+                            //如果有观察者, 则说明自动连接提示需要被拦截
+                            autoConnectTipData.postValue(true)
+                        } else {
+                            //否则, 直接下你是自动连接成功提示
+                            laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
+                                //等待设备信息读取结束之后才显示
+                                if (it != null) {
+                                    lastContext.dslAHelper {
+                                        start(DeviceConnectTipActivity::class)
+                                    }
                                 }
+                                it != null
                             }
-                            it != null
                         }
                     } else {
                         toastQQ(_string(R.string.blue_connected))

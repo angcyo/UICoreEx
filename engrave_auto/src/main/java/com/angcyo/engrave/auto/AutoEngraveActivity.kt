@@ -83,6 +83,7 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                         checkStartEngrave()
                     }
                 }
+                data != null
             }
         }
 
