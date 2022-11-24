@@ -5,7 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.packetHeadSize
 import com.angcyo.library.ex.toHexByteArray
-import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 
 /**
  * 功能码(第四个字节): AABB 长度 功能码
@@ -69,7 +69,7 @@ fun ICommand.sendCommand(
         error?.let {
             if (it is ReceiveTimeOutException) {
             } else {
-                toast(it.message)
+                toastQQ(it.message)
             }
         }
     }

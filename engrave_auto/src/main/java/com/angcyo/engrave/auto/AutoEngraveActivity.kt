@@ -25,7 +25,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppIcon
-import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.recycler.renderDslAdapter
 
@@ -102,9 +102,9 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                 }
                 if (task.isFinish) {
                     if (task.error == null) {
-                        toast("雕刻完成")
+                        toastQQ("雕刻完成")
                     } else {
-                        toast(task.error?.message)
+                        toastQQ(task.error?.message)
                     }
                     finish()
                 }
@@ -129,7 +129,7 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                         }
                     }
                 } else {
-                    toast("蓝牙权限被禁用!")
+                    toastQQ("蓝牙权限被禁用!")
                 }
             }
         }

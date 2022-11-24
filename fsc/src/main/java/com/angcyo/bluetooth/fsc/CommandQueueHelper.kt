@@ -9,7 +9,7 @@ import com.angcyo.library.ex.className
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
-import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import java.util.*
 
 /**
@@ -199,7 +199,7 @@ fun ICommand.enqueue(
         error?.let {
             if (it is ReceiveTimeOutException) {
             } else {
-                toast(it.message)
+                toastQQ(it.message)
             }
         }
     }

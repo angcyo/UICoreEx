@@ -16,7 +16,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.model.toFourPoint
-import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.*
 
 /**
@@ -113,7 +113,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         queryStateParser.error.toErrorStateString()?.let {
             //查询到设备异常
             doMain {
-                toast(it)
+                toastQQ(it)
             }
 
             //查询错误日志

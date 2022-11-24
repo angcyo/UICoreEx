@@ -24,7 +24,7 @@ import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.LogFile
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.toLogFilePath
@@ -76,7 +76,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         !deviceConnectState.isActiveDisConnected
                     ) {
                         //连接成功过, 并且非主动断开蓝牙设备, 则toast提示
-                        toast(_string(R.string.blue_disconnected))
+                        toastQQ(_string(R.string.blue_disconnected))
                     }
 
                     //蓝牙断开后,清空设备状态
@@ -122,7 +122,7 @@ class FscDeviceModel : LifecycleViewModel() {
                             it != null
                         }
                     } else {
-                        toast(_string(R.string.blue_connected))
+                        toastQQ(_string(R.string.blue_connected))
                     }
 
                     //
