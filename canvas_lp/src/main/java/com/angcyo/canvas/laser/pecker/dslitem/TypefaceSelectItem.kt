@@ -30,7 +30,7 @@ class TypefaceSelectItem : CanvasControlItem2() {
         itemHolder.tv(R.id.typeface_view)?.apply {
             val renderer = itemRenderer
             typeface = if (renderer is DataItemRenderer) {
-                renderer.dataTextItem?.textPaint?.typeface
+                renderer.dataTextItem?.itemPaint?.typeface
             } else {
                 renderer?.paint?.typeface
             }

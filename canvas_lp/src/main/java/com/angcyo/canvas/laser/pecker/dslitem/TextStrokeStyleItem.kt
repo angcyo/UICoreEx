@@ -44,7 +44,7 @@ class TextStrokeStyleItem : CanvasControlItem2() {
     ) {
         val renderer = itemRenderer
         if (renderer is DataItemRenderer) {
-            itemIsSelected = renderer.dataTextItem?.textPaint?.style == itemStyle
+            itemIsSelected = renderer.dataTextItem?.itemPaint?.style == itemStyle
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

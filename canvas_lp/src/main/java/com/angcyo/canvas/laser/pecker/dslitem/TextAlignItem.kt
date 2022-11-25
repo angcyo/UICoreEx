@@ -37,7 +37,7 @@ class TextAlignItem : CanvasControlItem2() {
     ) {
         val renderer = itemRenderer
         if (renderer is DataItemRenderer) {
-            itemIsSelected = renderer.dataTextItem?.textPaint?.textAlign == itemAlign
+            itemIsSelected = renderer.dataTextItem?.itemPaint?.textAlign == itemAlign
         }
 
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

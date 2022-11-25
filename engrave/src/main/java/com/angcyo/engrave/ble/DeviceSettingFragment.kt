@@ -7,8 +7,8 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.component.fileSelector
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
@@ -357,7 +357,7 @@ class DeviceSettingFragment : BaseDslFragment() {
     fun QuerySettingParser.updateSetting() {
         //sendCommand()
         enqueue()
-        asyncQueryDeviceState { bean, error ->
+        syncQueryDeviceState { bean, error ->
             laserPeckerModel.updateSettingOnceData.postValue(true)
         }
         //LaserPeckerHelper.initDeviceSetting()

@@ -171,7 +171,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
             previewText = _string(R.string.canvas_font_text)
             typeface = type
             itemIsSelected = if (itemRenderer is DataItemRenderer) {
-                (itemRenderer?.getRendererRenderItem() as? DataTextItem)?.textPaint?.typeface == type
+                (itemRenderer?.getRendererRenderItem() as? DataTextItem)?.itemPaint?.typeface == type
             } else {
                 (itemRenderer as? BaseItemRenderer)?.paint?.typeface == type
             }

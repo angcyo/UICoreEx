@@ -283,7 +283,7 @@ class EngraveTransitionManager {
         itemDataBean: CanvasProjectItemBean,
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
-        val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean) ?: return null
+        val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean, null) ?: return null
         val transferDataEntity =
             doTransitionTransferData(renderItem, transferConfigEntity, null)
         //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了

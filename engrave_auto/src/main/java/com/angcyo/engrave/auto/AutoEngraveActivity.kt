@@ -48,9 +48,6 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
     /**需要雕刻的数据*/
     var _engraveData: CanvasOpenDataType? = null
 
-    /**已经创建的雕刻任务*/
-    var _autoEngraveTask: AutoEngraveModel.AutoEngraveTask? = null
-
     var taskId = uuid()
 
     init {
@@ -169,7 +166,7 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     bitmap = data.preview_img?.toBitmapOfBase64()
                 } else if (data is CanvasProjectItemBean) {
                     itemShowName = data.name ?: data.mtype.toTypeNameString()
-                    bitmap = GraphicsHelper.parseRenderItemFrom(data)?.getEngraveBitmap()
+                    bitmap = GraphicsHelper.parseRenderItemFrom(data, null)?.getEngraveBitmap()
                 }
                 itemDrawable = bitmap?.toDrawable(resources) ?: getAppIcon()
 
