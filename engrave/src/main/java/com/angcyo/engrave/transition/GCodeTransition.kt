@@ -222,7 +222,7 @@ class GCodeTransition : IEngraveTransition {
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-        val scanGravity = if (bounds.width() > bounds.height()) {
+        val scanGravity = if (rotateBounds.width() > rotateBounds.height()) {
             //宽图
             Gravity.TOP
         } else {
