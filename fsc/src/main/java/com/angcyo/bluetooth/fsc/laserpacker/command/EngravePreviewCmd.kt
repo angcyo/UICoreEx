@@ -414,7 +414,7 @@ data class EngravePreviewCmd(
                     d4 = 0x01
                 } else {
                     d1 = 0x00
-                    val bytes = step.toHexString(4).toHexByteArray()
+                    val bytes = (step * 10).toHexString(4).toHexByteArray()
                     d2 = bytes[0]
                     d3 = bytes[1]
                 }
