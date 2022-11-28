@@ -290,7 +290,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "9:3075746864543323178",
+      "lastPropertyId": "10:5201693759071329915",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -338,6 +338,11 @@
           "id": "9:3075746864543323178",
           "name": "time",
           "type": 5
+        },
+        {
+          "id": "10:5201693759071329915",
+          "name": "exDevice",
+          "type": 9
         }
       ],
       "relations": []

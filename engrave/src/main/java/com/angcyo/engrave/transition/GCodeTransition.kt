@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Path
 import android.view.Gravity
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
@@ -133,7 +132,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData("$index", bitmap, "png")
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW)
         }
     }
 
@@ -165,7 +164,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData("$index", bitmap, "png")
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW)
         }
     }
 
@@ -184,7 +183,7 @@ class GCodeTransition : IEngraveTransition {
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
         val autoCnc = vmApp<LaserPeckerModel>().isC1()
 
-        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val pxBitmap = bitmap//LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         var gCodeFile = OpenCV.bitmapToGCode(
             app(),
             pxBitmap,
@@ -204,7 +203,7 @@ class GCodeTransition : IEngraveTransition {
             gCodeFile
         ).apply {
             //1: 存一份原始可视化数据
-            saveEngraveData("$index", pxBitmap, "png")
+            saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
         }
     }
 
@@ -221,7 +220,7 @@ class GCodeTransition : IEngraveTransition {
         val renderer = engraveProvider.getEngraveRenderer()
         val isFirst = param?.gCodeStartRenderer == null || param.gCodeStartRenderer == renderer
         val isFinish = param?.gCodeEndRenderer == null || param.gCodeEndRenderer == renderer
-        val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val pxBitmap = bitmap//LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         val scanGravity = if (rotateBounds.width() > rotateBounds.height()) {
             //宽图
             Gravity.TOP
@@ -247,7 +246,7 @@ class GCodeTransition : IEngraveTransition {
             gCodeFile
         ).apply {
             //1: 存一份原始可视化数据
-            saveEngraveData("$index", pxBitmap, "png")
+            saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
         }
     }
 
@@ -276,7 +275,11 @@ class GCodeTransition : IEngraveTransition {
 
         //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
         val previewBitmap = gCodeDrawable?.toBitmap()
-        saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+        saveEngraveData(
+            transferDataEntity.index,
+            previewBitmap,
+            IEngraveTransition.EXT_DATA_PREVIEW
+        )
 
         return transferDataEntity
     }

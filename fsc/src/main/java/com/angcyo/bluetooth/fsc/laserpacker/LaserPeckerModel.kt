@@ -144,6 +144,15 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     //---
 
+    /**获取外部设备描述*/
+    fun getExDevice(): String? = when {
+        isZOpen() -> QuerySettingParser.EX_Z
+        isROpen() -> QuerySettingParser.EX_R
+        isSOpen() -> QuerySettingParser.EX_S
+        isCarOpen() -> QuerySettingParser.EX_CAR
+        else -> null
+    }
+
     /**是否连接了扩展设备*/
     fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
 

@@ -10,9 +10,11 @@ import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
+import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.utils.FileTextData
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -31,8 +33,15 @@ import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 interface IEngraveTransition {
 
     companion object {
+
+        /**存放元素预览图的扩展名*/
+        const val EXT_PREVIEW = ".png"
+
+        /**存放元素转成数据后, 数据再次预览图的扩展名*/
+        const val EXT_DATA_PREVIEW = ".p.png"
+
         /**保存雕刻数据到文件
-         * [fileName] 需要保存的文件名, 无扩展
+         * [index] 需要保存的文件名(雕刻索引), 无扩展
          * [suffix] 文件后缀, 扩展名
          * [data]
          *   [String]
@@ -41,17 +50,23 @@ interface IEngraveTransition {
          *   [File]
          * ]*/
         fun saveEngraveData(
-            fileName: Any?,
+            index: Any?,
             data: FileTextData?,
             suffix: String = "engrave"
         ): String? {
             //将雕刻数据写入文件
             return data.writeTo(
                 CanvasConstant.ENGRAVE_FILE_FOLDER,
-                "${fileName}.${suffix}",
+                "${index}${suffix.ensureExtName()}",
                 false
             )
         }
+
+        /**通过雕刻索引, 获取对应的元素预览图片文件路径*/
+        fun getEngravePreviewBitmapPath(index: Any?): String = appFilePath(
+            "${index}${EXT_PREVIEW.ensureExtName()}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
 
         /**数据需要处理成什么格式, 丢给机器雕刻
          * [getDataMode]*/

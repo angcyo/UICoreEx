@@ -284,7 +284,11 @@ class BitmapTransition : IEngraveTransition {
                 transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
 
                 //1:保存一份原始可视化数据
-                saveEngraveData("${transferDataEntity.index}", pxBitmap, "png")
+                saveEngraveData(
+                    transferDataEntity.index,
+                    pxBitmap,
+                    IEngraveTransition.EXT_PREVIEW
+                )
 
                 var offsetLeft = 0
                 var offsetTop = 0
@@ -335,7 +339,11 @@ class BitmapTransition : IEngraveTransition {
                             offsetLeft,
                             offsetTop
                         )
-                        saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+                        saveEngraveData(
+                            transferDataEntity.index,
+                            previewBitmap,
+                            IEngraveTransition.EXT_DATA_PREVIEW
+                        )
                     }
                     //色阶数据, 红色通道的灰度雕刻数据
                     CanvasConstant.DATA_MODE_GREY -> {
@@ -346,7 +354,11 @@ class BitmapTransition : IEngraveTransition {
                         val previewBitmap =
                             data.toEngraveBitmap(pxBitmap.width, pxBitmap.height)
                         //3:数据的预览图片
-                        saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+                        saveEngraveData(
+                            transferDataEntity.index,
+                            previewBitmap,
+                            IEngraveTransition.EXT_DATA_PREVIEW
+                        )
                     }
                     //抖动数据
                     else -> {
@@ -361,7 +373,11 @@ class BitmapTransition : IEngraveTransition {
                         //3:保存一份数据的预览图
                         val previewBitmap =
                             pair.first.toEngraveDitheringBitmap(pxBitmap.width, pxBitmap.height)
-                        saveEngraveData("${transferDataEntity.index}.p", previewBitmap, "png")
+                        saveEngraveData(
+                            transferDataEntity.index,
+                            previewBitmap,
+                            IEngraveTransition.EXT_DATA_PREVIEW
+                        )
                     }
                 }
 

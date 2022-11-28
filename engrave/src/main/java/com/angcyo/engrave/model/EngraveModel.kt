@@ -306,6 +306,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             append("\n->$engraveConfigEntity")
         }.writeEngraveLog()
 
+        //保存外接设备名
+        engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+
         EngraveCmd(
             transferDataEntity.index,
             engraveConfigEntity.power.toByte(),

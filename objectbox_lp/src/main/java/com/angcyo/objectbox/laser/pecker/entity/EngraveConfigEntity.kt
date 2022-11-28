@@ -36,6 +36,14 @@ data class EngraveConfigEntity(
      * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.code]*/
     var materialCode: String? = null,
 
+    /**外部设备名称
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_Z]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_R]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_S]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_CAR]
+     * */
+    var exDevice: String? = null,
+
     //---L4专属---
 
     /**雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)

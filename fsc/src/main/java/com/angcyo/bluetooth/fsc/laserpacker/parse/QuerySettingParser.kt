@@ -62,6 +62,18 @@ data class QuerySettingParser(
         /**第三轴模式状态存储
          * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceSettingState] 在此会初始化*/
         var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
+
+        /**扩展设备 z轴*/
+        const val EX_Z = "z"
+
+        /**扩展设备 r轴*/
+        const val EX_R = "r"
+
+        /**扩展设备 滑台*/
+        const val EX_S = "s"
+
+        /**扩展设备 移动平台*/
+        const val EX_CAR = "car"
     }
 
     //解析数据
