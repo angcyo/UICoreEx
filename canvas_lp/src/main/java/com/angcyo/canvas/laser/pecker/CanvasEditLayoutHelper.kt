@@ -40,7 +40,7 @@ object CanvasEditLayoutHelper {
         renderer: DataItemRenderer
     ) {
         val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
-        if (!closeImageEditItemsFun.have("prints")) {
+        if (!closeImageEditItemsFun.have("_prints_")) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
@@ -55,7 +55,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("gcode")) {
+        if (!closeImageEditItemsFun.have("_gcode_")) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
@@ -70,7 +70,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("bw")) {
+        if (!closeImageEditItemsFun.have("_bw_")) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
@@ -85,7 +85,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("dithering")) {
+        if (!closeImageEditItemsFun.have("_dithering_")) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
@@ -101,7 +101,7 @@ object CanvasEditLayoutHelper {
             }
         }
         if (isDebugType()) {
-            if (!closeImageEditItemsFun.have("grey")) {
+            if (!closeImageEditItemsFun.have("_grey_")) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
@@ -112,7 +112,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("seal")) {
+        if (!closeImageEditItemsFun.have("_seal_")) {
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
@@ -127,7 +127,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("mesh")) {
+        if (!closeImageEditItemsFun.have("_mesh_")) {
             //扭曲
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_actions_ico
@@ -144,7 +144,7 @@ object CanvasEditLayoutHelper {
                 drawCanvasRight()
             }
         }
-        if (!closeImageEditItemsFun.have("crop")) {
+        if (!closeImageEditItemsFun.have("_crop_")) {
             //剪裁用的是原图
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_bitmap_crop
@@ -168,31 +168,38 @@ object CanvasEditLayoutHelper {
     //region ---文本---
 
     fun DslAdapter.renderTextEditItems(renderer: DataItemRenderer) {
+        val closeTextEditItemsFun = HawkEngraveKeys.closeTextEditItemsFun
         //字体
-        TypefaceSelectItem()() {
-            itemRenderer = renderer
-            itemClick = { anchor ->
-                updateItemSelected(!itemIsSelected)
+        if (!closeTextEditItemsFun.have("_typeface_")) {
+            TypefaceSelectItem()() {
+                itemRenderer = renderer
+                itemClick = { anchor ->
+                    updateItemSelected(!itemIsSelected)
 
-                if (itemIsSelected) {
-                    anchor.context.canvasFontWindow(anchor) {
-                        itemRenderer = renderer
-                        onDismiss = {
-                            updateItemSelected(false)
-                            false
+                    if (itemIsSelected) {
+                        anchor.context.canvasFontWindow(anchor) {
+                            itemRenderer = renderer
+                            onDismiss = {
+                                updateItemSelected(false)
+                                false
+                            }
                         }
                     }
                 }
             }
         }
         //样式
-        TextStyleSelectItem()() {
-            itemRenderer = renderer
+        if (!closeTextEditItemsFun.have("_style_")) {
+            TextStyleSelectItem()() {
+                itemRenderer = renderer
+            }
         }
         //对齐
-        TextAlignSelectItem()() {
-            itemRenderer = renderer
-            drawCanvasRight()
+        if (!closeTextEditItemsFun.have("_align_")) {
+            TextAlignSelectItem()() {
+                itemRenderer = renderer
+                drawCanvasRight()
+            }
         }
         //属性调整
         TextPropertyControlItem()() {
@@ -206,19 +213,20 @@ object CanvasEditLayoutHelper {
                 itemText = _string(R.string.canvas_curve)
             }
         }
-
-        TextOrientationItem()() {
-            itemIco = R.drawable.canvas_text_standard_ico
-            itemText = _string(R.string.canvas_standard)
-            itemOrientation = LinearLayout.HORIZONTAL
-            itemRenderer = renderer
-        }
-        TextOrientationItem()() {
-            itemIco = R.drawable.canvas_text_vertical_ico
-            itemText = _string(R.string.canvas_vertical)
-            itemOrientation = LinearLayout.VERTICAL
-            itemRenderer = renderer
-            drawCanvasRight()
+        if (!closeTextEditItemsFun.have("_orientation_")) {
+            TextOrientationItem()() {
+                itemIco = R.drawable.canvas_text_standard_ico
+                itemText = _string(R.string.canvas_standard)
+                itemOrientation = LinearLayout.HORIZONTAL
+                itemRenderer = renderer
+            }
+            TextOrientationItem()() {
+                itemIco = R.drawable.canvas_text_vertical_ico
+                itemText = _string(R.string.canvas_vertical)
+                itemOrientation = LinearLayout.VERTICAL
+                itemRenderer = renderer
+                drawCanvasRight()
+            }
         }
 
         //紧凑

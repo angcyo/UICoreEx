@@ -168,23 +168,23 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             hookUpdateDepend()
             //
             val canvasDelegate = canvasView.canvasDelegate
-            if (!closeCanvasItemsFun.have("image")) {
+            if (!closeCanvasItemsFun.have("_image_")) {
                 AddImageItem()() {
                     itemCanvasDelegate = canvasDelegate
                 }
             }
-            if (!closeCanvasItemsFun.have("text")) {
+            if (!closeCanvasItemsFun.have("_text_")) {
                 AddTextItem()() {
                     itemCanvasDelegate = canvasDelegate
                 }
             }
             //素材
-            if (!closeCanvasItemsFun.have("material")) {
+            if (!closeCanvasItemsFun.have("_material_")) {
                 _materialCanvasItem() {
                     itemCanvasDelegate = canvasDelegate
                 }
             }
-            if (!closeCanvasItemsFun.have("shapes")) {
+            if (!closeCanvasItemsFun.have("_shapes_")) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_shapes_ico
                     itemText = _string(R.string.canvas_shapes)
@@ -202,7 +202,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     }
                 }
             }
-            if (!closeCanvasItemsFun.have("doodle")) {
+            if (!closeCanvasItemsFun.have("_doodle_")) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_doodle_ico
                     itemText = _string(R.string.canvas_doodle)
@@ -237,7 +237,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     vh.showControlLayout(canvasView, itemIsSelected, itemIsSelected)
                 }
             }
-            if (!closeCanvasItemsFun.have("layer")) {
+            if (!closeCanvasItemsFun.have("_layer_")) {
                 CanvasControlItem2()() {
                     _layerCanvasItem = this
                     itemIco = R.drawable.canvas_layer_ico
@@ -254,7 +254,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
             if (isDebugType()) {
-                if (!closeCanvasItemsFun.have("operate")) {
+                if (!closeCanvasItemsFun.have("_operate_")) {
                     CanvasControlItem2()() {
                         itemIco = R.drawable.canvas_actions_ico
                         itemText = _string(R.string.canvas_operate)
@@ -267,7 +267,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     }
                 }
             }
-            if (!closeCanvasItemsFun.have("setting")) {
+            if (!closeCanvasItemsFun.have("_setting_")) {
                 CanvasControlItem2()() {
                     itemIco = R.drawable.canvas_setting_ico
                     itemText = _string(R.string.canvas_setting)
