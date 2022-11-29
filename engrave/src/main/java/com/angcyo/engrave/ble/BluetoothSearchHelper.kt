@@ -111,13 +111,15 @@ class BluetoothSearchHelper {
                         render(false) {
 
                             //移除旧的item
-
                             val find =
                                 findItem(false) { it is BluetoothConnectItem && it.itemFscDevice == device }
 
                             //过滤
                             if (find == null) {
-                                if (device.name?.startsWith(LaserPeckerHelper.PRODUCT_PREFIX) == true) {
+                                val name = device.name?.lowercase() ?: ""
+                                if (name.startsWith(LaserPeckerHelper.PRODUCT_PREFIX.lowercase()) &&
+                                    !name.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX} ".lowercase()) //LaserPecker Bxx 这种情况
+                                ) {
                                     //添加新的item
                                     renderBluetoothConnectItem(device)
 
