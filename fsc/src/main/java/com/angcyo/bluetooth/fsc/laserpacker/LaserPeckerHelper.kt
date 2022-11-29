@@ -19,6 +19,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.LibHawkKeys
+import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
@@ -679,7 +680,53 @@ object LaserPeckerHelper {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         initDeviceName = name
         initDeviceAddress = address
+
+        var queryStateParser: QueryStateParser? = null
         flow { chain ->
+            //读取设备工作状态, 优先判断设备是否正忙, 异常
+            if (initCommandFlowList.contains(QueryCmd.workState.state)) {
+                sendCommand(address, QueryCmd.workState) { bean, error ->
+                    if (bean != null) {
+                        bean.parse<QueryStateParser>()?.let {
+                            if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
+                                //设备被USB占用, 则断开设备
+                                if (!isAutoConnect || !RBackground.isBackground()) {
+                                    //toastQQ(_string(R.string.device_busy_tip))
+                                    laserPeckerModel.deviceBusyOnceData.postValue(true)
+                                }
+                                doBack {
+                                    vmApp<FscBleApiModel>().disconnectAll()
+                                }
+                                chain(InterruptedException())//被中断
+                            } else {
+                                queryStateParser = it//保存数据, 但是不通知观察者
+                                chain(error)
+                            }
+                        }.elseNull {
+                            chain(error)
+                        }
+                    } else {
+                        chain(error)
+                    }
+                }
+            } else {
+                chain(null)
+            }
+        }.flow { chain ->
+            //读取设备版本, 解析产品信息
+            if (initCommandFlowList.contains(QueryCmd.version.state)) {
+                sendCommand(address, QueryCmd.version) { bean, error ->
+                    bean?.let {
+                        it.parse<QueryVersionParser>()?.let {
+                            laserPeckerModel.updateDeviceVersion(it)
+                        }
+                    }
+                    chain(error)
+                }
+            } else {
+                chain(null)
+            }
+        }.flow { chain ->
             //读取设备设置状态
             if (initCommandFlowList.contains(QueryCmd.settingState.state)) {
                 sendCommand(address, QueryCmd.settingState) { bean, error ->
@@ -694,48 +741,15 @@ object LaserPeckerHelper {
                 chain(null)
             }
         }.flow { chain ->
-            //读取设备版本
-            if (initCommandFlowList.contains(QueryCmd.version.state)) {
-                sendCommand(address, QueryCmd.version) { bean, error ->
-                    bean?.let {
-                        it.parse<QueryVersionParser>()?.let {
-                            laserPeckerModel.updateDeviceVersion(it)
-                        }
-                    }
-                    chain(error)
-                }
-            } else {
-                chain(null)
+            //通知设备工作状态
+            queryStateParser?.let {
+                laserPeckerModel.updateDeviceState(it)
             }
-        }.flow { chain ->
-            //读取设备工作状态
-            if (initCommandFlowList.contains(QueryCmd.workState.state)) {
-                sendCommand(address, QueryCmd.workState) { bean, error ->
-                    bean?.let {
-                        it.parse<QueryStateParser>()?.let {
-                            laserPeckerModel.updateDeviceState(it)
-
-                            if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
-                                //设备被USB占用, 则断开设备
-                                if (!isAutoConnect) {
-                                    //toastQQ(_string(R.string.device_busy_tip))
-                                    laserPeckerModel.deviceBusyOnceData.postValue(true)
-                                }
-                                doBack {
-                                    vmApp<FscBleApiModel>().disconnectAll()
-                                }
-                            }
-                        }
-                    }
-                    chain(error)
-                }
-            } else {
-                chain(null)
-            }
+            chain(null)
         }.start {
             laserPeckerModel.initializeData.postValue(it == null)
             laserPeckerModel.initializeOnceData.postValue(it == null)
-            if (it == null) {
+            if (it == null || it is InterruptedException) {
                 //初始化完成
                 end(it)
             } else if (count < 3) {

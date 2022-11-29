@@ -89,7 +89,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceVersionData.postValue(queryVersionParser)
     }
 
-    /**设备状态*/
+    /**设备当前的工作状态*/
     @AnyThread
     fun updateDeviceState(queryStateParser: QueryStateParser) {
         queryStateParser.deviceAddress = LaserPeckerHelper.initDeviceAddress

@@ -128,8 +128,10 @@ class FscDeviceModel : LifecycleViewModel() {
                             laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
                                 //等待设备信息读取结束之后才显示
                                 if (it != null) {
-                                    lastContext.dslAHelper {
-                                        start(DeviceConnectTipActivity::class)
+                                    if (bleApiModel.haveDeviceConnected()) {
+                                        lastContext.dslAHelper {
+                                            start(DeviceConnectTipActivity::class)
+                                        }
                                     }
                                 }
                                 it != null

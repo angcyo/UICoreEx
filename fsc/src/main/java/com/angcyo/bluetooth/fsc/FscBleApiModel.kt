@@ -788,6 +788,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (device == null) {
             return
         }
+        wrapStateDevice(device) {
+            this.isAutoConnect = isAutoConnect
+        }
         if (isConnected(device, true)) {
             return
         }
