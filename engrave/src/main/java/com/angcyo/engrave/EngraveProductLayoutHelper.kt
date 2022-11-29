@@ -22,6 +22,7 @@ import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
@@ -167,6 +168,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         //监听设备正忙提示
         laserPeckerModel.deviceBusyOnceData.observe(fragment, allowBackward = false) { busy ->
             if (busy == true) {
+                FscDeviceModel.disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
                 fragment.fContext().messageDialog {
                     dialogMessage = _string(R.string.device_busy_tip)
                 }

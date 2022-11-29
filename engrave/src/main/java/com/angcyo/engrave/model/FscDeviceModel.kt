@@ -51,6 +51,9 @@ class FscDeviceModel : LifecycleViewModel() {
     companion object {
         /**主动断开的连接, 1小时之内不自动连接*/
         var AUTO_CONNECT_DISCONNECTED_THRESHOLD = 1 * 60 * 60 * 1_000L
+
+        /**临时禁用自动连接到这个时间点, 13位毫秒*/
+        var disableAutoConnectToTime = 0L
     }
 
     val bleApiModel = vmApp<FscBleApiModel>()
@@ -217,6 +220,11 @@ class FscDeviceModel : LifecycleViewModel() {
                             //主动断开了连接
                             if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
                                 //不自动连接
+                                autoConnect = false
+                            }
+                        }
+                        if (autoConnect) {
+                            if (nowTime < disableAutoConnectToTime) {
                                 autoConnect = false
                             }
                         }
