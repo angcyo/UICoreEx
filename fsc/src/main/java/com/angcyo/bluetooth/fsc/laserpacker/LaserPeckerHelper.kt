@@ -666,11 +666,13 @@ object LaserPeckerHelper {
     /**发送初始化的指令, 读取设备的基础信息
      * [name] 蓝牙设备的名称
      * [address] 蓝牙设备的地址
+     * [isAutoConnect] 是否是自动连接触发的初始化
      * [count] 重试的次数
      * */
     fun sendInitCommand(
         name: String,
         address: String,
+        isAutoConnect: Boolean,
         count: Int = 0,
         end: (Throwable?) -> Unit = {}
     ) {
@@ -712,6 +714,17 @@ object LaserPeckerHelper {
                     bean?.let {
                         it.parse<QueryStateParser>()?.let {
                             laserPeckerModel.updateDeviceState(it)
+
+                            if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
+                                //设备被USB占用, 则断开设备
+                                if (!isAutoConnect) {
+                                    //toastQQ(_string(R.string.device_busy_tip))
+                                    laserPeckerModel.deviceBusyOnceData.postValue(true)
+                                }
+                                doBack {
+                                    vmApp<FscBleApiModel>().disconnectAll()
+                                }
+                            }
                         }
                     }
                     chain(error)
@@ -728,7 +741,7 @@ object LaserPeckerHelper {
             } else if (count < 3) {
                 //再来一次
                 doBack {
-                    sendInitCommand(name, address, count + 1, end)
+                    sendInitCommand(name, address, isAutoConnect, count + 1, end)
                 }
             }
         }

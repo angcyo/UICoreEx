@@ -31,5 +31,6 @@
     <string name="engrave_state_ing">镭雕中</string>
 
     <string name="blue_no_device_connected">未连接设备</string>
+    <string name="device_busy_tip">设备正忙, 请稍后重试!</string>
 
 </resources>

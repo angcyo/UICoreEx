@@ -61,6 +61,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**初始化指令是否成功通知*/
     val initializeOnceData = vmDataOnce(false)
 
+    /**设备被USB占用提示通知*/
+    val deviceBusyOnceData = vmDataOnce(false)
+
     /**通知, 设备的设置是否发生了改变*/
     val updateSettingOnceData = vmDataOnce(false)
 
@@ -76,7 +79,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**更新设备版本, 设备信息*/
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
-        L.i("设备版本:$queryVersionParser".writeBleLog())
+        "设备版本:$queryVersionParser".writeBleLog(L.INFO)
         val productInfo = LaserPeckerHelper.parseProductInfo(queryVersionParser.softwareVersion)
         productInfo.deviceName = LaserPeckerHelper.initDeviceName
         productInfo.deviceAddress = LaserPeckerHelper.initDeviceAddress
@@ -90,7 +93,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateDeviceState(queryStateParser: QueryStateParser) {
         queryStateParser.deviceAddress = LaserPeckerHelper.initDeviceAddress
-        L.i("设备状态:$queryStateParser".writeBleLog())
+        "设备状态:$queryStateParser".writeBleLog(L.INFO)
 
         //记录设备状态改变
         val stackList = deviceStateStackData.value
@@ -130,7 +133,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     @AnyThread
     fun updateDeviceSettingState(querySettingParser: QuerySettingParser) {
-        L.i("设备设置状态:$querySettingParser".writeBleLog())
+        "设备设置状态:$querySettingParser".writeBleLog(L.INFO)
         if (QuerySettingParser.Z_MODEL == -1) {
             //本地未初始化第三轴模式
             QuerySettingParser.Z_MODEL = if (querySettingParser.zDir == 1) {

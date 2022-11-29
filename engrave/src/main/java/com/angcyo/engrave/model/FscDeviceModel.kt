@@ -103,7 +103,8 @@ class FscDeviceModel : LifecycleViewModel() {
                     //发送初始化指令
                     LaserPeckerHelper.sendInitCommand(
                         deviceConnectState.device.name,
-                        deviceConnectState.device.address
+                        deviceConnectState.device.address,
+                        deviceConnectState.isAutoConnect
                     )
 
                     //入库

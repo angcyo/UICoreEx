@@ -31,5 +31,5 @@
     <string name="engrave_state_ing">Carving</string>
 
     <string name="blue_no_device_connected">No device is connected</string>
-
+    <string name="device_busy_tip">The device is busy, please try again later!</string>
 </resources>

@@ -84,6 +84,15 @@ data class QueryStateParser(
     var sConnect: Int = 0,
     //C1 移动平台连接状态, 0未连接, 1连接
     var carConnect: Int = 0,
+
+    /**0时无连接，1时蓝牙连接，2时为USB连接。
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.CONNECT_TYPE_BLE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.CONNECT_TYPE_USB]
+     * */
+    var usbConnect: Int = 0,
+
+    //---
+
     var stateTime: Long = nowTime(), //app数据时间
     var deviceAddress: String? = null, //app数据, 当前数据的设备地址
 ) : IPacketParser<QueryStateParser> {
@@ -116,6 +125,14 @@ data class QueryStateParser(
 
         /**0x09为下载模式(工厂)*/
         const val WORK_MODE_DOWNLOAD = 0x09
+
+        //---
+
+        /**当前是蓝牙连接*/
+        const val CONNECT_TYPE_BLE = 1
+
+        /**当前是USB连接*/
+        const val CONNECT_TYPE_USB = 2
     }
 
     //解析数据
@@ -146,6 +163,7 @@ data class QueryStateParser(
                 rConnect = readInt(1)
                 sConnect = readInt(1)
                 carConnect = readInt(1)
+                usbConnect = readInt(1, 0)
             }
             this
         } catch (e: Exception) {

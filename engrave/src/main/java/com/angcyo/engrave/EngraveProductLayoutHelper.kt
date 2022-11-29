@@ -16,6 +16,7 @@ import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.DeviceSettingFragment
@@ -163,15 +164,14 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             }
         }
 
-        /*//监听item雕刻进度
-        engraveModel.engraveItemData.observe(fragment, allowBackward = false) { info ->
-            info?.let {
-                canvasView?.canvasDelegate?.progressRenderer?.let {
-                    it.progressRenderer = canvasView.canvasDelegate.getRendererItem(info.uuid)
-                    it.progress = info.progress
+        //监听设备正忙提示
+        laserPeckerModel.deviceBusyOnceData.observe(fragment, allowBackward = false) { busy ->
+            if (busy == true) {
+                fragment.fContext().messageDialog {
+                    dialogMessage = _string(R.string.device_busy_tip)
                 }
             }
-        }*/
+        }
 
         //监听正在预览的矩形
         previewModel.previewInfoData.observe(fragment, allowBackward = false) { info ->
