@@ -244,6 +244,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         //物理尺寸用红色提示
         canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
             isPrimary = true
+            offsetRectTop = true
             limitStrokeColor = ENGRAVE_COLOR
         }
     }
@@ -265,6 +266,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             canvasView.canvasDelegate.addAndShowLimitBounds(productInfo.bounds.toPath()) {
                 isPrimary = true
                 enableRender = false
+                offsetRectTop = true
             }
         } else {
             _showProductLimit(canvasView, productInfo)
