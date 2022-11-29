@@ -37,16 +37,19 @@
         app:layout_constraintTop_toBottomOf="@id/device_name_view"
         tools:visibility="visible" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/device_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
         android:layout_marginTop="@dimen/lib_xhdpi"
-        android:minHeight="150dp"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lib_des_view"
+        app:lottie_autoPlay="true"
+        app:lottie_renderMode="automatic"
+        app:lottie_repeatCount="-1"
+        app:lottie_repeatMode="restart"
         tools:srcCompat="@mipmap/device_c1" />
 
     <com.angcyo.widget.DslButton

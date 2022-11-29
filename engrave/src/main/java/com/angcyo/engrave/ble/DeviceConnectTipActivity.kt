@@ -2,6 +2,7 @@ package com.angcyo.engrave.ble
 
 import android.os.Bundle
 import android.view.Gravity
+import com.airbnb.lottie.LottieAnimationView
 import com.angcyo.activity.BaseDialogActivity
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -18,26 +19,38 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
 
     companion object {
 
+        /**通过蓝牙名称获取获取设备类型
+         * 也可以通过硬件版本获取设备类型[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]*/
+        fun getDeviceType(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String =
+            when {
+                name == LaserPeckerHelper.CI ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true ||
+                        name?.startsWith("C1") == true -> LaserPeckerHelper.CI
+                name == LaserPeckerHelper.LIV ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-IV") == true ||
+                        name?.startsWith("L4") == true -> LaserPeckerHelper.LIV
+                name == LaserPeckerHelper.LIII ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true ||
+                        name?.startsWith("L3") == true -> LaserPeckerHelper.LIII
+                name == LaserPeckerHelper.LII ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-II") == true ||
+                        name?.startsWith("L2") == true -> LaserPeckerHelper.LII
+                name == LaserPeckerHelper.LI ||
+                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true ||
+                        name?.startsWith("L1") == true -> LaserPeckerHelper.LI
+                else -> LaserPeckerHelper.LI
+            }
+
         /**根据设备名, 获取设备对应的图片资源
          * [name] 设备名, 或者蓝牙名都支持
          * */
         fun getDeviceImageRes(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): Int =
-            when {
-                name == LaserPeckerHelper.CI ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true ||
-                        name?.startsWith("C1") == true -> R.mipmap.device_c1
-                name == LaserPeckerHelper.LIV ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-IV") == true ||
-                        name?.startsWith("L4") == true -> R.mipmap.device_l4
-                name == LaserPeckerHelper.LIII ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true ||
-                        name?.startsWith("L3") == true -> R.mipmap.device_l3
-                name == LaserPeckerHelper.LII ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-II") == true ||
-                        name?.startsWith("L2") == true -> R.mipmap.device_l2
-                name == LaserPeckerHelper.LI ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true ||
-                        name?.startsWith("L1") == true -> R.mipmap.device_l1
+            when (getDeviceType(name)) {
+                LaserPeckerHelper.CI -> R.mipmap.device_c1
+                LaserPeckerHelper.LIV -> R.mipmap.device_l4
+                LaserPeckerHelper.LIII -> R.mipmap.device_l3
+                LaserPeckerHelper.LII -> R.mipmap.device_l2
+                LaserPeckerHelper.LI -> R.mipmap.device_l1
                 else -> R.mipmap.device_l1
             }
 
@@ -79,7 +92,33 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         vmApp<LaserPeckerModel>().productInfoData.value?.apply {
             _vh.tv(R.id.device_name_view)?.text = formatDeviceName(deviceName)
             //设备图
-            _vh.img(R.id.device_image_view)?.setImageResource(getDeviceImageRes(name))
+
+            //动画资源
+            _vh.v<LottieAnimationView>(R.id.device_image_view)?.apply {
+                when (getDeviceType(deviceName)) {
+                    LaserPeckerHelper.CI -> setImageResource(getDeviceImageRes(name))
+                    LaserPeckerHelper.LIV -> {
+                        imageAssetsFolder = "lottie/L4/images"
+                        setAnimation("lottie/L4/data.json")
+                    }
+                    LaserPeckerHelper.LIII -> {
+                        imageAssetsFolder = "lottie/L3/images"
+                        setAnimation("lottie/L3/data.json")
+                    }
+                    LaserPeckerHelper.LII -> {
+                        imageAssetsFolder = "lottie/L2/images"
+                        setAnimation("lottie/L2/data.json")
+                    }
+                    LaserPeckerHelper.LI -> {
+                        imageAssetsFolder = "lottie/L1/images"
+                        setAnimation("lottie/L1/data.json")
+                    }
+                    else -> {
+                        imageAssetsFolder = "lottie/L1/images"
+                        setAnimation("lottie/L1/data.json")
+                    }
+                }
+            }
         }
 
         _vh.click(R.id.finish_button) {

@@ -19,6 +19,9 @@ dependencies {
 
     //图片算法, 这里只编译, 在canvas_lp中依赖
     compileOnly "com.angcyo:opencv:${opencv_version}"
+
+    //https://mvnrepository.com/artifact/com.airbnb.android/lottie
+    implementation "com.airbnb.android:lottie:5.2.0"
 }
 
 //apply from: allGradle.libfscaar
