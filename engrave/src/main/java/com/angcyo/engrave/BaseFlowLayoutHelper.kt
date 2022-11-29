@@ -23,7 +23,10 @@ import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._drawable
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.size
 import com.angcyo.widget.span.span
 
 /**
@@ -66,7 +69,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
 
     /**流程任务id, 建议每次显示页面时都创建一个新的任务id*/
-    var flowTaskId: String? = uuid()
+    var flowTaskId: String? = null
 
     /**当前[engraveFlow]能够回退到的模式*/
     var engraveBackFlow: Int = 0
@@ -108,7 +111,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     override fun onIViewRemove() {
         super.onIViewRemove()
         //重新分配一个id
-        flowTaskId = uuid()
+        flowTaskId = null
         loopCheckDeviceState = false
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面

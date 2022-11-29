@@ -78,7 +78,7 @@ class EngraveTransitionManager {
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
 
-        /**获取图层*/
+        /**获取图层, 获取雕刻的图层信息*/
         fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.mode == mode }
 
         /**获取一个转换需要的额外参数, 在需要合并数据时需要

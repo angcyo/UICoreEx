@@ -1,8 +1,9 @@
 package com.angcyo.engrave
 
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.checkExitIfNeed
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
@@ -25,6 +26,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -37,7 +39,7 @@ import kotlin.math.max
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/30
  */
-class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
+open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     init {
         iViewLayoutId = R.layout.canvas_engrave_flow_layout
@@ -95,7 +97,10 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
-            flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
+            if (flowTaskId != null) {
+                //再次传输不一样的数据时, 重新创建任务id
+                flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
+            }
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
@@ -126,23 +131,29 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     if (!checkItemThrowable() && !checkOverflowBounds() && checkTransferData()) {
                         //下一步, 数据传输界面
 
-                        //退出打印模式, 进入空闲模式
-                        checkExitIfNeed()
-
                         transferConfigEntity.lpSaveEntity()
+                        //退出打印模式, 进入空闲模式
+                        ExitCmd().enqueue { bean, error ->
+                            if (error == null) {
+                                engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                engraveFlow = ENGRAVE_FLOW_TRANSMITTING
 
-                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+                                val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+                                if (canvasDelegate == null) {
+                                    //不是画布上的数据, 可能是恢复的数据
+                                } else {
+                                    transferModel.startCreateTransferData(
+                                        flowTaskId,
+                                        canvasDelegate
+                                    )
+                                }
 
-                        val canvasDelegate = engraveCanvasFragment?.canvasDelegate
-                        if (canvasDelegate == null) {
-                            //不是画布上的数据, 可能是恢复的数据
-                        } else {
-                            transferModel.startCreateTransferData(flowTaskId, canvasDelegate)
+                                //last
+                                renderFlowItems()
+                            } else {
+                                toastQQ(error.message)
+                            }
                         }
-
-                        //last
-                        renderFlowItems()
                     }
                 }
             }
@@ -256,14 +267,16 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
 
             //雕刻图层切换
-            EngraveLayerConfigItem()() {
-                val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
-                itemSegmentList = layerList
-                itemCurrentIndex =
-                    max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
-                observeItemChange {
-                    selectLayerMode = layerList[itemCurrentIndex].mode
-                    renderFlowItems()
+            val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
+            if (layerList.isNotEmpty()) {
+                EngraveLayerConfigItem()() {
+                    itemSegmentList = layerList
+                    itemCurrentIndex =
+                        max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
+                    observeItemChange {
+                        selectLayerMode = layerList[itemCurrentIndex].mode
+                        renderFlowItems()
+                    }
                 }
             }
 
@@ -353,13 +366,16 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     checkExDevice {
                         showFocalDistance(it.context) {
                             showSafetyTips(it.context) {
-                                engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                renderFlowItems()
-
-                                checkExitIfNeed()
-
-                                //开始雕刻
-                                engraveModel.startEngrave(taskId)
+                                ExitCmd().enqueue { bean, error ->
+                                    if (error == null) {
+                                        engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                        renderFlowItems()
+                                        //开始雕刻
+                                        engraveModel.startEngrave(taskId)
+                                    } else {
+                                        toastQQ(error.message)
+                                    }
+                                }
                             }
                         }
                     }
@@ -375,6 +391,8 @@ class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     /**渲染雕刻中的界面
      * 通过设备状态改变实时刷新界面
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.deviceStateData]
+     *
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.bindDeviceState]
      * */
     fun renderEngraving() {
         updateIViewTitle(_string(R.string.engraving))

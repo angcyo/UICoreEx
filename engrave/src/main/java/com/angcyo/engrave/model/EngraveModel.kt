@@ -27,7 +27,6 @@ import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
-import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.IViewModel
@@ -38,7 +37,12 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * 雕刻数据存储
+ * 雕刻数据存储/管理
+ *
+ * 需要雕刻的数据放在 [TransferDataEntity]
+ * 需要雕刻的参数放在 [EngraveConfigEntity]
+ * 通过[taskId]关联
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/21
  */
@@ -187,7 +191,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             if (task.currentIndex > 0) {
                 //之前的雕刻索引
-                EngraveFlowDataHelper.finishEngrave(task.currentIndex)
+                EngraveFlowDataHelper.finishEngrave(taskId, task.currentIndex)
             }
 
             val nextIndex = EngraveFlowDataHelper.getNextEngraveIndex(taskId)
@@ -213,7 +217,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     engraveNext()
                 } else {
                     //雕刻配置数据
-                    val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(taskId)
                     val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(
                         taskId,
                         transferDataEntity.layerMode
@@ -225,11 +228,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         engraveStateData.value = task
                         task.lpSaveEntity()
 
-                        _startEngraveCmd(
-                            previewConfigEntity,
-                            transferDataEntity,
-                            engraveConfigEntity
-                        )
+                        _startEngraveCmd(transferDataEntity, engraveConfigEntity)
                     }
                 }
             }
@@ -285,12 +284,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
      * [engraveConfigEntity] 雕刻的参数实体
      * */
     fun _startEngraveCmd(
-        previewConfigEntity: PreviewConfigEntity,
         transferDataEntity: TransferDataEntity,
         engraveConfigEntity: EngraveConfigEntity
     ) {
         val diameter =
-            (MM_UNIT.convertPixelToValue(previewConfigEntity.diameterPixel) * 100).roundToInt()
+            (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
 
         val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
@@ -339,6 +337,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
      * [progress] 当前索引的雕刻进度*/
     fun updateEngraveProgress(queryState: QueryStateParser, progress: Int) {
         EngraveFlowDataHelper.updateEngraveProgress(
+            _engraveTaskEntity?.taskId,
             queryState.index,
             queryState.printTimes,
             clamp(progress, 0, 100)

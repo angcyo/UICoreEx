@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker
 
 import android.graphics.RectF
 import androidx.annotation.AnyThread
+import androidx.annotation.Px
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
@@ -69,7 +70,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**更新设备模式*/
     @AnyThread
     fun updateDeviceModel(model: Int) {
-        deviceModelData.postValue(model)
+        deviceModelData.updateValue(model)
     }
 
     /**更新设备版本, 设备信息*/
@@ -98,14 +99,14 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             //设备不一样
             stackList.clear()
             stackList.add(queryStateParser)
-            deviceStateStackData.postValue(stackList)
+            deviceStateStackData.updateValue(stackList)
         } else {
             //相同设备, 状态不一样才记录
             if (lastState?.mode != queryStateParser.mode &&
                 lastState?.workState != queryStateParser.workState
             ) {
                 stackList.add(queryStateParser)
-                deviceStateStackData.postValue(stackList)
+                deviceStateStackData.updateValue(stackList)
             }
         }
 
@@ -123,7 +124,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                 }
             }
         }
-        deviceStateData.postValue(queryStateParser)
+        deviceStateData.updateValue(queryStateParser)
         updateDeviceModel(queryStateParser.mode)
     }
 
@@ -241,8 +242,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
      * */
     fun sendUpdatePreviewRange(
-        bounds: RectF,
-        rotateBounds: RectF,
+        @Px bounds: RectF,
+        @Px rotateBounds: RectF,
         rotate: Float?,
         pwrProgress: Float,
         async: Boolean,

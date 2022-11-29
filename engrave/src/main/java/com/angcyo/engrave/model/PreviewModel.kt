@@ -17,6 +17,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.Private
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -61,6 +62,25 @@ class PreviewModel : LifecycleViewModel() {
 
             defaultPreviewInfo(result)
             updatePreviewInfo(result, selectedRenderer)
+            return result
+        }
+
+        /**创建一个预览信息*/
+        fun createPreviewInfo(transferDataEntity: TransferDataEntity?): PreviewInfo? {
+            transferDataEntity ?: return null
+
+            val result = PreviewInfo()
+
+            defaultPreviewInfo(result)
+
+            val rect = RectF(
+                transferDataEntity.x.toFloat(),
+                transferDataEntity.y.toFloat(),
+                (transferDataEntity.x + transferDataEntity.width).toFloat(),
+                (transferDataEntity.y + transferDataEntity.height).toFloat()
+            )
+            result.originBounds = RectF(rect)
+            result.rotateBounds = RectF(rect)
             return result
         }
 

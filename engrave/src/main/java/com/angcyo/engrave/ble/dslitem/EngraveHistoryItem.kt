@@ -1,9 +1,16 @@
 package com.angcyo.engrave.ble.dslitem
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
+import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
+import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.toModeString
+import com.angcyo.engrave.toEngraveTime
+import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
@@ -11,7 +18,9 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.library.unit.convertPixelToValueUnit
-import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -21,10 +30,29 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveHistoryItem : DslTagGroupItem() {
 
-    var engraveHistoryEntity: EngraveHistoryEntity? = null
+    /**雕刻的数据实体*/
+    var itemEngraveDataEntity: EngraveDataEntity? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                itemTransferDataEntity = EngraveFlowDataHelper.getTransferData(value.index)
+                itemEngraveConfigEntity = EngraveFlowDataHelper.getEngraveConfig(
+                    itemTransferDataEntity?.taskId,
+                    itemTransferDataEntity?.layerMode ?: 0
+                )
+            }
+        }
 
-    val valueUnit = CanvasConstant.valueUnit
+    /**可视化的单位*/
+    private val valueUnit = CanvasConstant.valueUnit
 
+    private val mmValueUnit = MM_UNIT
+
+    /**传输的数据*/
+    private var itemTransferDataEntity: TransferDataEntity? = null
+
+    /**雕刻的配置的数据*/
+    private var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_history_layout
@@ -38,101 +66,75 @@ class EngraveHistoryItem : DslTagGroupItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.img(R.id.lib_image_view)?.loadImage(engraveHistoryEntity?.previewDataPath)
+        //文件名
+        itemHolder.tv(R.id.lib_text_view)?.text = itemTransferDataEntity?.name.or()
 
-        /*
-        //暂时不显示
-        val zMode = engraveHistoryEntity?.zMode ?: -1
-        if (zMode >= 0) {
-            appendln()
-            append(_string(R.string.device_setting_tips_fourteen_11))
-            append(zMode.toZModeString())
-        } */
-
-        /*itemHolder.tv(R.id.lib_text_view)?.text = span {
-            append("${_string(R.string.file_name)} ${engraveHistoryEntity?.name.or()}")
-            appendln()
-
-            val mode = engraveHistoryEntity?.optionMode.toModeString()
-            append("${_string(R.string.print_file_name)}: $mode")
-            appendln()
-
-            if ((engraveHistoryEntity?.duration ?: 0) > 0) {
-                append("${_string(R.string.print_time)}: ${engraveHistoryEntity?.duration?.toEngraveTime()}")
-                appendln()
-            }
-
-            append("${_string(R.string.print_range)}: ")
-            append(
-                "${_string(R.string.wide)}${
-                    valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.width?.toFloat())
-                }"
-            )
-            append(
-                " ${_string(R.string.high)}${
-                    valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.height?.toFloat())
-                }"
-            )
-            appendln()
-
-            append("${_string(R.string.custom_material)} ${engraveHistoryEntity?.material}")
-            appendln()
-
-            append("${_string(R.string.custom_power)} ${engraveHistoryEntity?.power}%")
-            append(" ${_string(R.string.custom_speed)} ${engraveHistoryEntity?.depth}%")
-            appendln()
-
-            val pxDes = engraveHistoryEntity?.px?.toPxDes()
-            append("${_string(R.string.tv_01)}: $pxDes")
-
-            *//*暂时不显示
-            val zMode = engraveHistoryEntity?.zMode ?: -1
-            if (zMode >= 0) {
-                appendln()
-                append(_string(R.string.device_setting_tips_fourteen_11))
-                append(zMode.toZModeString())
-            }*//*
-        }*/
+        //预览图
+        val previewImagePath =
+            IEngraveTransition.getEngravePreviewBitmapPath(itemEngraveDataEntity?.index)
+        itemHolder.img(R.id.lib_image_view)?.loadImage(previewImagePath)
     }
 
     override fun initLabelDesList() {
         renderLabelDesList {
 
             if (isDebug()) {
-                add(LabelDesData("编号", "${engraveHistoryEntity?.index}"))
+                add(LabelDesData("索引", "${itemEngraveDataEntity?.index}"))
+                itemEngraveConfigEntity?.exDevice?.let {
+                    add(LabelDesData("模式", it))
+                }
             }
 
-            add(LabelDesData(_string(R.string.file_name), engraveHistoryEntity?.name.or()))
+            /*add(
+                LabelDesData(_string(R.string.engrave_file_name), itemTransferDataEntity?.name.or())
+            )*/
 
-            val mode = engraveHistoryEntity?.dataMode.toModeString()
-            add(LabelDesData(_string(R.string.print_file_name), mode))
+            EngraveTransitionManager.getEngraveLayer(itemTransferDataEntity?.layerMode)?.let {
+                add(LabelDesData(_string(R.string.engrave_layer_config), it.label))
+            }
 
+            var width = itemTransferDataEntity?.width ?: 0
+            var height = itemTransferDataEntity?.height ?: 0
+            if (itemTransferDataEntity?.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
+                width /= 10
+                height /= 10
+            }
             add(
                 LabelDesData(
                     _string(R.string.print_range),
-                    "${valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.width?.toFloat())}x${
-                        valueUnit.convertPixelToValueUnit(engraveHistoryEntity?.height?.toFloat())
+                    "${valueUnit.convertPixelToValueUnit(mmValueUnit.convertValueToPixel(width.toFloat()))}x${
+                        valueUnit.convertPixelToValueUnit(mmValueUnit.convertValueToPixel(height.toFloat()))
                     }"
                 )
             )
 
-            add(LabelDesData(_string(R.string.custom_material), engraveHistoryEntity?.material))
+            //材质
+            val materialEntity = EngraveHelper.getMaterial(itemEngraveConfigEntity?.materialCode)
+            add(
+                LabelDesData(_string(R.string.custom_material), materialEntity.toText())
+            )
 
-            add(LabelDesData(_string(R.string.custom_power), "${engraveHistoryEntity?.power}%"))
+            val pxInfo = LaserPeckerHelper.findPxInfo(itemTransferDataEntity?.dpi)
+            add(LabelDesData(_string(R.string.resolution_ratio), pxInfo.des))
 
-            add(LabelDesData(_string(R.string.custom_speed), "${engraveHistoryEntity?.depth}%"))
-
-            /*val pxDes = engraveHistoryEntity?.px?.toPxDes()
-            add(LabelDesData(_string(R.string.resolution_ratio), pxDes))
-
-            if ((engraveHistoryEntity?.duration ?: 0) > 0) {
+            if ((itemEngraveConfigEntity?.precision ?: 0) > 0) {
                 add(
                     LabelDesData(
-                        _string(R.string.print_time),
-                        engraveHistoryEntity?.duration?.toEngraveTime()
+                        _string(R.string.engrave_precision),
+                        "${itemEngraveConfigEntity?.precision}"
                     )
                 )
-            }*/
+            }
+
+            add(LabelDesData(_string(R.string.custom_power), "${itemEngraveConfigEntity?.power}%"))
+            add(LabelDesData(_string(R.string.custom_speed), "${itemEngraveConfigEntity?.depth}%"))
+
+            val startEngraveTime = itemEngraveDataEntity?.startTime ?: 0
+            val endEngraveTime = itemEngraveDataEntity?.finishTime ?: 0
+            if (endEngraveTime > 0 && startEngraveTime > 0 && endEngraveTime > startEngraveTime) {
+                val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
+                add(LabelDesData(_string(R.string.work_time), engraveTime))
+            }
         }
     }
 

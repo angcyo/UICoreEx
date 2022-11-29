@@ -5,11 +5,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.preview.*
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.uuid
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -33,9 +35,23 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             //预览前的第三轴配置信息
         } else if (to == ENGRAVE_FLOW_PREVIEW) {
+            if (flowTaskId == null) {
+                flowTaskId = uuid()
+            }
+
             //预览界面, 创建预览信息, 并开始预览
-            previewModel.startPreview(PreviewModel.createPreviewInfo(engraveCanvasFragment?.canvasDelegate))
-            previewExDeviceNoConnectTip()
+            engraveCanvasFragment?.canvasDelegate?.let {
+                previewModel.startPreview(PreviewModel.createPreviewInfo(it))
+            }
+
+            //延迟后查询设备连接状态
+            viewHolder?.postDelay(HawkEngraveKeys.minQueryDelayTime) {
+                syncQueryDeviceState { bean, error ->
+                    if (error == null) {
+                        previewExDeviceNoConnectTip()
+                    }
+                }
+            }
         }
     }
 
@@ -79,7 +95,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
         renderDslAdapter {
             //
-            PreviewTipItem()()
+            if (this@BasePreviewLayoutHelper is HistoryEngraveFlowLayoutHelper) {
+                //历史界面, 不显示拖拽元素提示
+            } else {
+                PreviewTipItem()()
+            }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
                 DeviceInfoTipItem()()

@@ -360,7 +360,7 @@ class TransferModel : ViewModel() {
         //检查数据索引是否存在
         QueryCmd.fileList.enqueue { bean, error ->
             val have =
-                bean?.parse<QueryEngraveFileParser>()?.nameList?.contains(index) == true
+                bean?.parse<QueryEngraveFileParser>()?.indexList?.contains(index) == true
             action(have)
         }
     }

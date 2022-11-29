@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker.dslitem
 import android.graphics.drawable.Drawable
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.messageDialog
@@ -21,6 +22,8 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
     var itemCanvasDelegate: CanvasDelegate? = null
 
     var itemRenderer: BaseItemRenderer<*>? = null
+
+    val itemRenderParams = RenderParams(false)
 
     //endregion ---core---
 
@@ -52,7 +55,7 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
         //item 名称
         itemHolder.tv(R.id.layer_item_name_view)?.text = itemItemName
         itemHolder.img(R.id.layer_item_drawable_view)
-            ?.setImageDrawable(itemItemDrawable ?: itemRenderer?.preview())
+            ?.setImageDrawable(itemItemDrawable ?: itemRenderer?.preview(itemRenderParams))
 
         itemHolder.visible(R.id.layer_item_warn_view, isOverflowBounds)
         itemHolder.click(R.id.layer_item_warn_view) {

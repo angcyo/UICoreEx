@@ -1,6 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
+import androidx.annotation.Px
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -51,6 +52,19 @@ data class EngraveConfigEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE]
      * */
     var type: Byte = -1,
+
+    //---L4专属---
+
+    /**雕刻物体直径, 这里用像素作为单位
+     * 在[com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig]时,会从
+     * [com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity.diameterPixel]中获取并赋值.
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
+     * [com.angcyo.engrave.data.HawkEngraveKeys.lastDiameterPixel]
+     * [com.angcyo.engrave.data.HawkEngraveKeys.lastMinDiameterPixel]
+     * */
+    @Px
+    var diameterPixel: Float = -1f,
 
     //---C1专属---
 

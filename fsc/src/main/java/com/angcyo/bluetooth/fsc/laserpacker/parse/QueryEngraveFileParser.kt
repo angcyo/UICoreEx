@@ -14,7 +14,7 @@ data class QueryEngraveFileParser(
     //文件数量
     var num: Int = 0,
     //文件编号列表
-    var nameList: List<Int>? = null,
+    var indexList: List<Int>? = null,
     //发送指令时, 自定义的数据
     var custom: Int = -1,
     //发送查询指令时传递的state
@@ -45,7 +45,7 @@ data class QueryEngraveFileParser(
                         val nameIndex = readByteInt(4)
                         list.add(nameIndex)
                     }
-                    nameList = list
+                    indexList = list
                 }
                 custom = readInt(1)
                 state = readInt(1)

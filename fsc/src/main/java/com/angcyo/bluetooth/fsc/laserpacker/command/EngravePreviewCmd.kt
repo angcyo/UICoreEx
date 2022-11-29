@@ -11,13 +11,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.pool.acquireTempRect
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.RectPointF
 import com.angcyo.library.model.toPath
-import kotlin.math.roundToInt
 
 /**
  * 雕刻/打印预览指令
@@ -208,10 +208,10 @@ data class EngravePreviewCmd(
 
             tempRect.release()
             val rect = Rect().apply {
-                left = previewX.floor().toInt()
-                top = previewY.floor().toInt()
-                right = left + previewWidth.roundToInt()
-                bottom = top + previewHeight.roundToInt()
+                left = previewX.ceil().toInt()
+                top = previewY.ceil().toInt()
+                right = left + previewWidth.ceil().toInt()
+                bottom = top + previewHeight.ceil().toInt()
             }
             return OverflowInfo(rect, null, overflowBounds, overflowLimit)
         }
@@ -288,7 +288,7 @@ data class EngravePreviewCmd(
         /**表示范围预览
          * [rect] 经过[px]处理过的像素*/
         fun _previewRangeCmd(
-            rect: Rect,
+            @Pixel rect: Rect,
             pwrProgress: Float,
             @MM diameter: Int,
             dpi: Float

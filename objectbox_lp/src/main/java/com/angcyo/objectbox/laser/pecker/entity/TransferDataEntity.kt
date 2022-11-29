@@ -1,6 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.file
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -56,7 +57,9 @@ data class TransferDataEntity(
      * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
      * */
+    @MM
     var width: Int = -1,
+    @MM
     var height: Int = -1,
 
     /**
@@ -65,7 +68,9 @@ data class TransferDataEntity(
      * [com.angcyo.engrave.data.EngraveOptionInfo.diameterPixel]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.diameter]
      * */
+    @MM
     var x: Int = -1,
+    @MM
     var y: Int = -1,
 
     /**分辨率*/
@@ -94,7 +99,7 @@ data class TransferDataEntity(
      *
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerMode]
      *
-     * [com.angcyo.engrave.transition.EngraveTransitionManager.Companion.engraveLayerList]
+     * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]
      * */
     var layerMode: Int = -1,
 

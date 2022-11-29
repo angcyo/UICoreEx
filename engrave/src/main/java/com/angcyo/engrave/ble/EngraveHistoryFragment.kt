@@ -11,21 +11,23 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.parse
+import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.fragment.BaseDslFragment
+import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
-import com.angcyo.engrave.EngraveFlowLayoutHelper
-import com.angcyo.engrave.R
+import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
+import com.angcyo.fragment.AbsFragment
+import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toast
-import com.angcyo.objectbox.deleteEntity
-import com.angcyo.objectbox.laser.pecker.LPBox
-import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity
-import com.angcyo.objectbox.laser.pecker.entity.EngraveHistoryEntity_
+import com.angcyo.library.toastQQ
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.objectbox.page
 
@@ -34,30 +36,17 @@ import com.angcyo.objectbox.page
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/05
  */
-class EngraveHistoryFragment : BaseDslFragment() {
-
-    /**前布局*/
-    /*val engraveBeforeLayoutHelper = EngraveBeforeLayoutHelper()*/
-
-    /**雕刻布局*/
-    val engraveFlowLayoutHelper = EngraveFlowLayoutHelper()
-
-/*    */
-    /**雕刻预览布局*//*
-    val engravePreviewLayoutHelper = EngravePreviewLayoutHelper(this).apply {
-        //next
-        onNextAction = {
-            toEngrave()
-        }
-    }*/
-
-    /**产品布局*/
-    //val engraveProductLayoutHelper = EngraveProductLayoutHelper(this)
+class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_history)
+        fragmentConfig.isLightStyle = true
+        fragmentConfig.showTitleLineView = true
 
         enableAdapterRefresh = true
+
+        //关闭分页
+        page.singlePage()
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
@@ -105,12 +94,16 @@ class EngraveHistoryFragment : BaseDslFragment() {
         QueryCmd.fileList.enqueue { bean, error ->
             finishRefresh()
             if (error == null) {
-                val nameList = bean?.parse<QueryEngraveFileParser>()?.nameList
-                if (nameList.isNullOrEmpty()) {
+                val indexList = bean?.parse<QueryEngraveFileParser>()?.indexList
+                if (indexList.isNullOrEmpty()) {
                     _adapter.toEmpty()
                 } else {
-                    val allList = lpBoxOf(EngraveHistoryEntity::class).all
-                    val resultList = allList.filter { nameList.contains(it.index) }
+                    val allList = EngraveFlowDataHelper.getEngraveData(indexList)
+                    //每个索引的文件, 只显示一次
+                    val resultList = mutableListOf<EngraveDataEntity>()
+                    allList.filterTo(resultList) { entity ->
+                        resultList.find { it.index == entity.index } == null
+                    }
                     loadDataEnd(resultList)
                 }
             } else {
@@ -121,39 +114,36 @@ class EngraveHistoryFragment : BaseDslFragment() {
 
     /**加载app历史记录*/
     fun loadEntityHistoryList() {
-        lpBoxOf(EngraveHistoryEntity::class) {
+        lpBoxOf(EngraveDataEntity::class) {
             val list = page(page) {
                 //降序排列
-                orderDesc(EngraveHistoryEntity_.entityId)
+                orderDesc(EngraveDataEntity_.startTime)
             }
             loadDataEnd(list)
         }
     }
 
     /**加载结束, 渲染界面*/
-    fun loadDataEnd(list: List<EngraveHistoryEntity>) {
+    fun loadDataEnd(list: List<EngraveDataEntity>) {
         loadDataEnd(EngraveHistoryItem::class.java, list) { bean ->
             val item = this
-            engraveHistoryEntity = bean
+            itemEngraveDataEntity = bean
 
             itemLongClick = {
-                selectHistoryEntity(bean)
                 fContext().itemsDialog {
                     addDialogItem {
-                        itemText = "删除历史"
+                        itemText = _string(R.string.delete_history)
                         itemClick = {
                             //删除机器记录
-                            FileModeCmd.deleteHistory(bean.index ?: 0).enqueue { bean, error ->
+                            FileModeCmd.deleteHistory(bean.index).enqueue { bean, error ->
                                 if (bean?.parse<FileTransferParser>()
                                         ?.isFileDeleteSuccess() == true
                                 ) {
-                                    toast("删除成功")
+                                    toastQQ(_string(R.string.delete_history_succeed))
 
                                     _adapter.render {
                                         item.removeAdapterItem()
                                     }
-                                    //删除本地记录
-                                    engraveHistoryEntity?.deleteEntity(LPBox.PACKAGE_NAME)
                                 }
                                 error?.let { toast(it.message) }
                             }
@@ -162,13 +152,13 @@ class EngraveHistoryFragment : BaseDslFragment() {
                     addDialogItem {
                         itemText = _string(R.string.start_preview)
                         itemClick = {
-                            toPreview()
+                            toPreview(bean)
                         }
                     }
                     addDialogItem {
                         itemText = _string(R.string.start_engrave)
                         itemClick = {
-                            toEngrave()
+                            toEngrave(bean)
                         }
                     }
                 }
@@ -176,62 +166,57 @@ class EngraveHistoryFragment : BaseDslFragment() {
             }
 
             itemClick = {
-                //数据不存在, 需要重新发送数据
-                selectHistoryEntity(bean)
-                /*engraveBeforeLayoutHelper.iViewTitle = bean.name
-                engraveBeforeLayoutHelper.engraveReadyInfo = _readyDataInfo
-                engraveBeforeLayoutHelper.showIn(this@EngraveHistoryFragment)*/
+                toPreview(bean)
             }
         }
     }
 
-    /**准备数据*/
-    fun selectHistoryEntity(entity: EngraveHistoryEntity) {
-        //准备雕刻数据
-        /*val readyDataInfo = EngraveReadyInfo()
-        readyDataInfo.historyEntity = entity
-        //readyDataInfo.engraveData = EngraveDataInfo().updateFromEntity(entity)
-
-        readyDataInfo.dataMode = entity.dataMode ?: 0
-        readyDataInfo.dataPath = entity.dataPath
-        readyDataInfo.previewDataPath = entity.previewDataPath
-        _readyDataInfo = readyDataInfo
-
-        //准备雕刻参数
-        _engraveOption = EngraveOptionInfo(
-            entity.material ?: _string(R.string.material_custom),
-            entity.power,
-            entity.depth,
-            clamp(entity.printTimes, 1, 100).toByte(),//最小打印1次
-            entity.x,
-            entity.y,
-            entity.type
-        )*/
+    fun check(action: Action) {
+        if (engraveFlowLayoutHelper.isAttach()) {
+            return
+        }
+        if (engraveFlowLayoutHelper.checkRestoreEngrave(this)) {
+            return
+        }
+        if (!engraveFlowLayoutHelper.checkStartPreview()) {
+            return
+        }
+        //安全提示弹窗
+        engraveFlowLayoutHelper.showSafetyTips(fContext()) {
+            //如果有第三轴, 还需要检查对应的配置
+            action()
+        }
     }
 
     /**开始预览*/
-    fun toPreview() {
-        /*engravePreviewLayoutHelper.showPreviewSafetyTips(fContext()) {
-            _readyDataInfo?.historyEntity?.let {
-                engravePreviewLayoutHelper.previewBoundsInfo = PreviewBoundsInfo(
-                    RectF(
-                        it.x.toFloat(),
-                        it.y.toFloat(),
-                        (it.x + it.width).toFloat(),
-                        (it.y + it.height).toFloat()
-                    )
-                )
-                engravePreviewLayoutHelper.showIn(this)
-            }
-        }*/
+    fun toPreview(engraveDataEntity: EngraveDataEntity) {
+        check {
+            _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
+            engraveFlowLayoutHelper.startPreview()
+            engraveFlowLayoutHelper.showIn(this)
+        }
     }
 
-    /**去雕刻*/
-    fun toEngrave() {
-        //vmApp<EngraveModel>().engraveOptionInfoData.value = _engraveOption
-
-/*        engraveFlowLayoutHelper.engraveReadyInfo = _readyDataInfo
-        engraveFlowLayoutHelper.showIn(this)*/
+    /**开始雕刻*/
+    fun toEngrave(engraveDataEntity: EngraveDataEntity) {
+        check {
+            _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
+            engraveFlowLayoutHelper.engraveFlow = BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
+            engraveFlowLayoutHelper.showIn(this)
+        }
     }
+
+    /**雕刻布局*/
+    val _engraveFlowLayoutHelper = HistoryEngraveFlowLayoutHelper().apply {
+        backPressedDispatcherOwner = this@EngraveHistoryFragment
+        flowTaskId = null
+    }
+
+    override val fragment: AbsFragment
+        get() = this
+    override val canvasDelegate: CanvasDelegate?
+        get() = null
+    override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
+        get() = _engraveFlowLayoutHelper
 
 }

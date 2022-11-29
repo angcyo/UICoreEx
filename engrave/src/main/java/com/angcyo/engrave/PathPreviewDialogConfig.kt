@@ -70,7 +70,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         projectItemBean?.let { itemBean ->
             val dataItem = GraphicsHelper.parseRenderItemFrom(itemBean, null)
             dialogViewHolder.img(R.id.lib_image_view)?.apply {
-                setImageDrawable(dataItem?.drawable)
+                setImageDrawable(dataItem?.renderDrawable)
                 rotation = itemBean.angle
             }
 

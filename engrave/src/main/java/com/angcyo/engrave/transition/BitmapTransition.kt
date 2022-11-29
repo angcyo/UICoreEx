@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
+import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
@@ -15,6 +16,7 @@ import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
+import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -276,7 +278,7 @@ class BitmapTransition : IEngraveTransition {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
         if (dataBean != null) {
-            val bitmap = engraveProvider.getEngraveBitmap()
+            val bitmap = engraveProvider.getEngraveBitmap(RenderParams(false))
             if (bitmap != null) {
                 val dataMode = getDataMode(dataBean, transferConfigEntity)
                 val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
@@ -314,7 +316,7 @@ class BitmapTransition : IEngraveTransition {
                         }.toInt()
                         val listBitmapPath = handleBitmapPath(
                             pxBitmap,
-                            128,
+                            LibHawkKeys.grayThreshold,
                             offsetLeft,
                             offsetTop,
                         )
@@ -365,7 +367,7 @@ class BitmapTransition : IEngraveTransition {
                         transferDataEntity.engraveDataType =
                             DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
                         //白色1 黑色0
-                        val pair = handleBitmapByte(pxBitmap, 128)
+                        val pair = handleBitmapByte(pxBitmap, LibHawkKeys.grayThreshold)
                         transferDataEntity.dataPath =
                             pair.second.writeTransferDataPath("${transferDataEntity.index}")
                         //路径数据写入日志
