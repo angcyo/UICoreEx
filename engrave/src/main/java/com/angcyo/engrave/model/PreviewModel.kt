@@ -297,19 +297,25 @@ class PreviewModel : LifecycleViewModel() {
 
     /**更新预览的操作, 并且重新发送预览指定*/
     @AnyThread
-    fun updatePreview(async: Boolean = true, action: PreviewInfo.() -> Unit) {
+    fun updatePreview(
+        async: Boolean = true,
+        sendCmd: Boolean = true,
+        action: PreviewInfo.() -> Unit
+    ) {
         previewInfoData.value?.let {
             defaultPreviewInfo(it)
             it.action()
-            startPreview(it, async)
+            if (sendCmd) {
+                startPreview(it, async)
+            }
         }
     }
 
     /**使用[itemRenderer]更新预览操作
      * [updatePreview]*/
     @AnyThread
-    fun updatePreview(itemRenderer: IRenderer?, async: Boolean = true) {
-        updatePreview(async) {
+    fun updatePreview(itemRenderer: IRenderer?, async: Boolean = true, sendCmd: Boolean = true) {
+        updatePreview(async, sendCmd) {
             updatePreviewInfo(this, itemRenderer)
 
             //有外设的情况下, z轴优先暂停滚动

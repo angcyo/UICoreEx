@@ -80,6 +80,7 @@ data class QuerySettingParser(
     override fun parse(packet: ByteArray): QuerySettingParser? {
         return try {
             packet.reader {
+                keepLastSize = LaserPeckerHelper.CHECK_SIZE
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
                 func = readByte()//偏移功能码

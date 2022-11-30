@@ -37,6 +37,8 @@ import com.angcyo.engrave.loadingAsync
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
+import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component._debounce
 import com.angcyo.library.ex.*
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
@@ -161,6 +163,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     }
 
     /**绑定画图支持的功能列表*/
+    @CallPoint
     fun bindItems(vh: DslViewHolder, canvasView: CanvasView, adapter: DslAdapter) {
         val closeCanvasItemsFun = HawkEngraveKeys.closeCanvasItemsFun
         _canvasView = canvasView
@@ -358,7 +361,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     itemRenderer == canvasView.canvasDelegate.getSelectedRenderer()
                 ) {
                     //设备正在预览模式, 更新预览
-                    previewModel.updatePreview(itemRenderer)
+                    previewModel.updatePreview(itemRenderer, sendCmd = false)
+                    _debounce {
+                        previewModel.updatePreview(itemRenderer)
+                    }
                 }
             }
 

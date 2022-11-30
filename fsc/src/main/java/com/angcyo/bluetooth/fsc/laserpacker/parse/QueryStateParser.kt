@@ -140,8 +140,9 @@ data class QueryStateParser(
         return try {
             //AABB 17 00 06 000000000000000000000000000100010000000008
             packet.reader {
+                keepLastSize = LaserPeckerHelper.CHECK_SIZE
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
-                offset(1)//偏移长度
+                val length = readInt(1)//长度
                 val func = readInt(1)//功能码
                 if (func.toByte() != QueryCmd.workState.commandFunc()) {
                     throw IllegalStateException("非查询指令!")

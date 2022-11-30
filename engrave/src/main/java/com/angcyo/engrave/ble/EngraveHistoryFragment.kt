@@ -171,10 +171,12 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                             }
                         }
                     }
-                    addDialogItem {
-                        itemText = _string(R.string.start_preview)
-                        itemClick = {
-                            toPreview(bean)
+                    if (!bean.isFromDeviceHistory) {
+                        addDialogItem {
+                            itemText = _string(R.string.start_preview)
+                            itemClick = {
+                                toPreview(bean)
+                            }
                         }
                     }
                     addDialogItem {

@@ -2,7 +2,6 @@ package com.angcyo.bluetooth.fsc.laserpacker
 
 import android.graphics.RectF
 import androidx.annotation.AnyThread
-import androidx.annotation.Px
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
@@ -16,6 +15,7 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.*
@@ -245,8 +245,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
      * */
     fun sendUpdatePreviewRange(
-        @Px bounds: RectF,
-        @Px rotateBounds: RectF,
+        @Pixel bounds: RectF,
+        @Pixel rotateBounds: RectF,
         rotate: Float?,
         pwrProgress: Float,
         async: Boolean,
