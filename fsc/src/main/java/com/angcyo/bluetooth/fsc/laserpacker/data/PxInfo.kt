@@ -57,13 +57,20 @@ data class PxInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo.widthPhys]*/
     @MM
     val physSize: Int,
+
+    /**是否是调试*/
+    val isDebug: Boolean = false
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
     val dpiScale: Float = dpi.toDpiScale()
 
     /**显示的界面上的描述*/
-    val des: String = dpi.toPxDes(physSize)
+    val des: String = if (isDebug) {
+        "${dpi.toPxDes(physSize)}′"
+    } else {
+        dpi.toPxDes(physSize)
+    }
 
     override fun toText(): CharSequence = des
 

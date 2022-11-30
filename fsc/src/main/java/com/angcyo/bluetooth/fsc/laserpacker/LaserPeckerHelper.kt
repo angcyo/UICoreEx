@@ -378,17 +378,17 @@ object LaserPeckerHelper {
             }
             LIV -> {
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_158, wPhys))
+                    pxList.add(PxInfo(DPI_158, wPhys, true))
                 }
                 pxList.add(PxInfo(DPI_254, wPhys))
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_317, wPhys))
-                    pxList.add(PxInfo(DPI_423, wPhys))
+                    pxList.add(PxInfo(DPI_317, wPhys, true))
+                    pxList.add(PxInfo(DPI_423, wPhys, true))
                 }
                 pxList.add(PxInfo(DPI_508, wPhys))
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_635, wPhys))
-                    pxList.add(PxInfo(DPI_846, wPhys))
+                    pxList.add(PxInfo(DPI_635, wPhys, true))
+                    pxList.add(PxInfo(DPI_846, wPhys, true))
                 }
                 pxList.add(PxInfo(DPI_1270, wPhys))
             }
