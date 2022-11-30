@@ -15,9 +15,9 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
-import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.Private
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmDataNull
 
 /**
@@ -156,9 +156,7 @@ class PreviewModel : LifecycleViewModel() {
     /**开始预览*/
     @AnyThread
     fun startPreview(previewInfo: PreviewInfo?, async: Boolean = true) {
-        doMain {
-            previewInfoData.setValue(previewInfo)
-        }
+        previewInfoData.updateValue(previewInfo)
         previewInfo?.let {
             val originBounds = previewInfo.originBounds
             val zPause = previewInfo.zState
@@ -307,6 +305,8 @@ class PreviewModel : LifecycleViewModel() {
             it.action()
             if (sendCmd) {
                 startPreview(it, async)
+            } else {
+                previewInfoData.updateValue(it)
             }
         }
     }
