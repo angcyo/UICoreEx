@@ -118,9 +118,19 @@ class EngraveHistoryItem : DslTagGroupItem() {
                 add(
                     LabelDesData(
                         _string(R.string.print_range),
-                        "${valueUnit.convertPixelToValueUnit(mmValueUnit.convertValueToPixel(width.toFloat()))}x${
-                            valueUnit.convertPixelToValueUnit(mmValueUnit.convertValueToPixel(height.toFloat()))
-                        }"
+                        buildString {
+                            append(
+                                valueUnit.convertPixelToValueUnit(
+                                    mmValueUnit.convertValueToPixel(width.toFloat())
+                                )
+                            )
+                            append(" × ")
+                            append(
+                                valueUnit.convertPixelToValueUnit(
+                                    mmValueUnit.convertValueToPixel(height.toFloat())
+                                )
+                            )
+                        }
                     )
                 )
 
