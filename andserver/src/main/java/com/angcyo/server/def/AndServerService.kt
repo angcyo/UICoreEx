@@ -6,10 +6,7 @@ import android.os.IBinder
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.*
-import com.angcyo.library.ex.classHash
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.nowTimeString
-import com.angcyo.library.ex.urlIntent
+import com.angcyo.library.ex.*
 import com.angcyo.library.getAppName
 import com.angcyo.library.toastQQ
 import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
@@ -178,6 +175,8 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     open fun updateNotify() {
         if (_needNotify) {
             val address = address()
+
+            L.i("${simpleHash()} 服务地址:$address")
 
             //foreground
             startForeground(_notifyId, dslBuildNotify {
