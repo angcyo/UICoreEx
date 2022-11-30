@@ -139,25 +139,28 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                         transferConfigEntity.lpSaveEntity()
                         //退出打印模式, 进入空闲模式
-                        ExitCmd().enqueue { bean, error ->
-                            if (error == null) {
-                                engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                                engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+                        engraveCanvasFragment?.fragment?.strokeLoading { isCancel, loadEnd ->
+                            ExitCmd().enqueue { bean, error ->
+                                loadEnd(bean, error)
+                                if (error == null) {
+                                    engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                    engraveFlow = ENGRAVE_FLOW_TRANSMITTING
 
-                                val canvasDelegate = engraveCanvasFragment?.canvasDelegate
-                                if (canvasDelegate == null) {
-                                    //不是画布上的数据, 可能是恢复的数据
+                                    val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+                                    if (canvasDelegate == null) {
+                                        //不是画布上的数据, 可能是恢复的数据
+                                    } else {
+                                        transferModel.startCreateTransferData(
+                                            flowTaskId,
+                                            canvasDelegate
+                                        )
+                                    }
+
+                                    //last
+                                    renderFlowItems()
                                 } else {
-                                    transferModel.startCreateTransferData(
-                                        flowTaskId,
-                                        canvasDelegate
-                                    )
+                                    toastQQ(error.message)
                                 }
-
-                                //last
-                                renderFlowItems()
-                            } else {
-                                toastQQ(error.message)
                             }
                         }
                     }
@@ -372,19 +375,22 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     checkExDevice {
                         showFocalDistance(it.context) {
                             showSafetyTips(it.context) {
-                                ExitCmd().enqueue { bean, error ->
-                                    if (error == null) {
-                                        //开始雕刻
-                                        onStartEngrave(taskId)
-                                        val taskEntity = engraveModel.startEngrave(taskId)
-                                        if (taskEntity.dataIndexList.isNullOrEmpty()) {
-                                            toastQQ(_string(R.string.no_data_engrave))
+                                engraveCanvasFragment?.fragment?.strokeLoading { isCancel, loadEnd ->
+                                    ExitCmd().enqueue { bean, error ->
+                                        loadEnd(bean, error)
+                                        if (error == null) {
+                                            //开始雕刻
+                                            onStartEngrave(taskId)
+                                            val taskEntity = engraveModel.startEngrave(taskId)
+                                            if (taskEntity.dataIndexList.isNullOrEmpty()) {
+                                                toastQQ(_string(R.string.no_data_engrave))
+                                            } else {
+                                                engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                                renderFlowItems()
+                                            }
                                         } else {
-                                            engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                            renderFlowItems()
+                                            toastQQ(error.message)
                                         }
-                                    } else {
-                                        toastQQ(error.message)
                                     }
                                 }
                             }
