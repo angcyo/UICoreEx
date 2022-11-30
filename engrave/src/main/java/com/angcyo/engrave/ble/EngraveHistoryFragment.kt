@@ -241,6 +241,8 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     override val canvasDelegate: CanvasDelegate?
         get() = null
     override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
-        get() = _engraveFlowLayoutHelper
+        get() = _engraveFlowLayoutHelper.apply {
+            engraveCanvasFragment = this@EngraveHistoryFragment
+        }
 
 }
