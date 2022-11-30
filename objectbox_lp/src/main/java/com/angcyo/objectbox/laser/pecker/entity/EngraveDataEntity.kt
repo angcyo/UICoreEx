@@ -43,4 +43,9 @@ data class EngraveDataEntity(
 
     /**前雕刻索引完成的时间, 毫秒*/
     var finishTime: Long = -1,
+
+    //---
+
+    /**是否是来自设备历史的数据*/
+    var isFromDeviceHistory: Boolean = false
 )

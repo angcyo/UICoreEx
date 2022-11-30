@@ -91,7 +91,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //
 
-    /**当前选中的图层模式*/
+    /**当前选中的图层模式
+     * [EngraveLayerConfigItem]*/
     var selectLayerMode: Int = 0
 
     override fun onEngraveFlowChanged(from: Int, to: Int) {
@@ -104,6 +105,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
+    }
+
+    /**开始雕刻前回调*/
+    open fun onStartEngrave(taskId: String?) {
+
     }
 
     //region ---数据配置---
@@ -368,10 +374,15 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             showSafetyTips(it.context) {
                                 ExitCmd().enqueue { bean, error ->
                                     if (error == null) {
-                                        engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                        renderFlowItems()
                                         //开始雕刻
-                                        engraveModel.startEngrave(taskId)
+                                        onStartEngrave(taskId)
+                                        val taskEntity = engraveModel.startEngrave(taskId)
+                                        if (taskEntity.dataIndexList.isNullOrEmpty()) {
+                                            toastQQ(_string(R.string.no_data_engrave))
+                                        } else {
+                                            engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                            renderFlowItems()
+                                        }
                                     } else {
                                         toastQQ(error.message)
                                     }

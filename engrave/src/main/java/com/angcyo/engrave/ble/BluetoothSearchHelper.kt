@@ -117,7 +117,8 @@ class BluetoothSearchHelper {
                             //过滤
                             if (find == null) {
                                 val name = device.name?.lowercase() ?: ""
-                                if (name.startsWith(LaserPeckerHelper.PRODUCT_PREFIX.lowercase()) &&
+                                if (name.isNotBlank() &&
+                                    name.startsWith(LaserPeckerHelper.PRODUCT_PREFIX.lowercase()) &&
                                     !name.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX} ".lowercase()) //LaserPecker Bxx 这种情况
                                 ) {
                                     //添加新的item

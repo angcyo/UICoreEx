@@ -132,9 +132,14 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**开始雕刻*/
     @CallPoint
-    fun startEngrave(taskId: String?) {
+    fun startEngrave(taskId: String?): EngraveTaskEntity {
         val task = EngraveFlowDataHelper.generateEngraveTask(taskId)
-        _startEngraveTask(task)
+        if (task.dataIndexList.isNullOrEmpty()) {
+            //无数据需要雕刻
+        } else {
+            _startEngraveTask(task)
+        }
+        return task
     }
 
     /**再雕一次*/
@@ -185,52 +190,60 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**雕刻下一个*/
     @CallPoint
     fun engraveNext() {
-        _engraveTaskEntity?.let { task ->
-            _listenerEngraveState = true
-            val taskId = task.taskId
+        val task = _engraveTaskEntity ?: return
+        _listenerEngraveState = true
+        val taskId = task.taskId
 
-            if (task.currentIndex > 0) {
-                //之前的雕刻索引
-                EngraveFlowDataHelper.finishEngrave(taskId, task.currentIndex)
-            }
+        if (task.currentIndex > 0) {
+            //之前的雕刻索引
+            EngraveFlowDataHelper.finishEngrave(taskId, task.currentIndex)
+        }
 
-            val nextIndex = EngraveFlowDataHelper.getNextEngraveIndex(taskId)
+        //查找下一个未完成雕刻的索引
+        val nextIndex = EngraveFlowDataHelper.getNextEngraveIndex(taskId)
 
-            if (nextIndex == null) {
-                //雕刻完成
-                finishEngrave()
-            } else {
-                //开始雕刻
-                val engraveDataEntity =
-                    EngraveFlowDataHelper.generateEngraveData(taskId, nextIndex)
-                engraveDataEntity.printTimes = 1
-                engraveDataEntity.progress = 0
-                engraveDataEntity.startTime = nowTime()
-                engraveDataEntity.finishTime = -1
-                engraveDataEntity.lpSaveEntity()
+        if (nextIndex == null) {
+            //雕刻完成
+            finishEngrave()
+        } else {
+            //开始雕刻
+            val engraveDataEntity =
+                EngraveFlowDataHelper.generateEngraveData(taskId, nextIndex)
+            engraveDataEntity.startTime = nowTime()
+            engraveDataEntity.lpSaveEntity()
 
-                val transferDataEntity = EngraveFlowDataHelper.getTransferData(taskId, nextIndex)
-                if (transferDataEntity == null) {
+            val transferDataEntity = EngraveFlowDataHelper.getTransferData(taskId, nextIndex)
+
+            if (transferDataEntity == null) {
+                if (engraveDataEntity.isFromDeviceHistory) {
+
+                } else {
+                    //
                     //需要雕刻的数据不存在,则直接完成
                     engraveDataEntity.progress = 100
                     engraveDataEntity.lpSaveEntity()
                     engraveNext()
-                } else {
-                    //雕刻配置数据
-                    val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(
-                        taskId,
-                        transferDataEntity.layerMode
-                    )
-                    doMain {
-                        task.currentIndex = nextIndex
-                        task.indexStartTime = nowTime()
-                        task.indexPrintStartTime = task.indexStartTime
-                        engraveStateData.value = task
-                        task.lpSaveEntity()
-
-                        _startEngraveCmd(transferDataEntity, engraveConfigEntity)
-                    }
+                    return
                 }
+            }
+
+            //雕刻配置数据
+            val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(
+                taskId,
+                transferDataEntity?.layerMode ?: 0
+            )
+            doMain {
+                task.currentIndex = nextIndex
+                task.indexStartTime = nowTime()
+                task.indexPrintStartTime = task.indexStartTime
+                engraveStateData.value = task
+                task.lpSaveEntity()
+
+                _startEngraveCmd(
+                    engraveDataEntity.index,
+                    transferDataEntity,
+                    engraveConfigEntity
+                )
             }
         }
     }
@@ -280,11 +293,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     //---
 
     /**开始雕刻, 发送雕刻指令
+     * [index] 需要雕刻的索引
      * [transferDataEntity] 需要雕刻的数据实体
      * [engraveConfigEntity] 雕刻的参数实体
      * */
     fun _startEngraveCmd(
-        transferDataEntity: TransferDataEntity,
+        index: Int,
+        transferDataEntity: TransferDataEntity?,
         engraveConfigEntity: EngraveConfigEntity
     ) {
         val diameter =
@@ -292,7 +307,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
-            append("开始雕刻:[${transferDataEntity.taskId}]")
+            append("开始雕刻:[${transferDataEntity?.taskId ?: index}]")
             if (engraveLayer?.label.isNullOrBlank()) {
                 append(" mode:${engraveConfigEntity.layerMode.toDataModeStr()}")
             } else {
@@ -300,7 +315,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
 
             append(" type:${engraveConfigEntity.type.toLaserTypeString()}")
-            append(" $transferDataEntity")
+            transferDataEntity?.let {
+                append(" $it")
+            }
             append("\n->$engraveConfigEntity")
         }.writeEngraveLog()
 
@@ -308,12 +325,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
 
         EngraveCmd(
-            transferDataEntity.index,
+            index,
             engraveConfigEntity.power.toByte(),
             engraveConfigEntity.depth.toByte(),
             0x01,
-            transferDataEntity.x,
-            transferDataEntity.y,
+            transferDataEntity?.x ?: 0,
+            transferDataEntity?.y ?: 0,
             max(1, engraveConfigEntity.time).toByte(),
             engraveConfigEntity.type,
             0x09,

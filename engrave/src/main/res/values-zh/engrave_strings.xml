@@ -185,6 +185,7 @@
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="engrave_warn">警告</string>
     <string name="no_data_transfer">无数据需要传输!</string>
+    <string name="no_data_engrave">无数据需要镭雕!</string>
     <string name="out_of_data_transfer">数据过大!</string>
     <string name="data_exception">数据异常!</string>
     <string name="transfer_data_exception">传输数据异常!</string>

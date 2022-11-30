@@ -53,11 +53,11 @@ object EngraveFlowDataHelper {
 
     /**通过某个雕刻索引[index], 创建一个新的任务id.
      * 通常在雕刻历史文档时使用
-     * [taskId] 可以指定任务id, 也可以不指定. 不指定则从最后一个获取
+     * [oldTaskId] 可以指定任务id, 也可以不指定. 不指定则从最后一个获取
      * @return 返回可以直接雕刻的任务id*/
-    fun generateTask(index: Int, taskId: String? = null): String? {
+    fun generateTask(index: Int, oldTaskId: String? = null): String? {
         //此任务, 只雕刻一个数据
-        val transferDataEntity = getTransferData(index, taskId) ?: return null
+        val transferDataEntity = getTransferData(index, oldTaskId) ?: return null
         val newTaskId = uuid()
 
         //复制一份雕刻数据
@@ -67,7 +67,7 @@ object EngraveFlowDataHelper {
             lpSaveEntity()
 
             //复制一份雕刻参数
-            getEngraveConfig(taskId, layerMode)?.let { entity ->
+            getEngraveConfig(oldTaskId, layerMode)?.let { entity ->
                 entity.entityId = 0
                 entity.taskId = newTaskId
                 entity.lpSaveEntity()
@@ -75,6 +75,27 @@ object EngraveFlowDataHelper {
         }
 
         return newTaskId
+    }
+
+    /**构建一个简单的任务, 不需要传输数据, 直接雕刻指定索引的任务*/
+    fun generateSingleTask(index: Int, taskId: String?): String? {
+        val engraveDataEntity = getEngraveDataEntity(taskId, index)
+        if (engraveDataEntity == null) {
+            EngraveDataEntity().apply {
+                //需要直接雕刻的索引
+                this.taskId = taskId
+                this.index = index
+                this.isFromDeviceHistory = true
+                lpSaveEntity()
+            }
+        } else {
+            engraveDataEntity.progress = 0
+            engraveDataEntity.printTimes = 1
+            engraveDataEntity.startTime = -1
+            engraveDataEntity.finishTime = -1
+            engraveDataEntity.lpSaveEntity()
+        }
+        return taskId
     }
 
     /**获取一个传输监视记录*/
@@ -351,6 +372,12 @@ object EngraveFlowDataHelper {
             this.taskId = taskId
 
             val indexList = getTransferDataList(taskId).mapTo(mutableListOf()) { "${it.index}" }
+            if (indexList.isEmpty()) {
+                //没有传输的数据, 则有可能是需要直接雕刻索引的任务
+                getEngraveDataEntity(taskId)?.let {
+                    indexList.add("${it.index}")
+                }
+            }
             dataIndexList = indexList
         }) {
             apply(EngraveTaskEntity_.taskId.equal("$taskId"))
@@ -413,15 +440,19 @@ object EngraveFlowDataHelper {
 
     /**根据索引[index], 获取一个雕刻数据状态信息实体*/
     fun generateEngraveData(taskId: String?, index: Int): EngraveDataEntity {
-        return EngraveDataEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
-            this.taskId = taskId
-            this.index = index
-            progress = 0
-        }) {
+        return EngraveDataEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
             apply(
                 EngraveDataEntity_.taskId.equal("$taskId")
                     .and(EngraveDataEntity_.index.equal(index))
             )
+        }) {
+            this.taskId = taskId
+            this.index = index
+
+            progress = 0
+            printTimes = 1
+            startTime = -1
+            finishTime = -1
         }
     }
 
@@ -453,9 +484,16 @@ object EngraveFlowDataHelper {
     }
 
     /**获取任务正在雕刻的数据实体*/
-    fun getEngraveDataEntity(taskId: String?): EngraveDataEntity? {
+    fun getCurrentEngraveDataEntity(taskId: String?): EngraveDataEntity? {
         val taskEntity = getEngraveTask(taskId) ?: return null
         return getEngraveDataEntity(taskId, taskEntity.currentIndex)
+    }
+
+    /**获取任务雕刻的数据实体*/
+    fun getEngraveDataEntity(taskId: String?): EngraveDataEntity? {
+        return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(EngraveDataEntity_.taskId.equal("$taskId"))
+        }
     }
 
     /**获取指定索引对应的雕刻信息实体*/
@@ -477,6 +515,22 @@ object EngraveFlowDataHelper {
         return EngraveDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(EngraveDataEntity_.index.oneOf(index.toIntArray()))
             orderDesc(EngraveDataEntity_.startTime)
+        }
+    }
+
+    /**通过索引列表, 获取所有雕刻的数据*/
+    fun getEngraveData(index: Int, fromDeviceHistory: Boolean): EngraveDataEntity? {
+        return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveDataEntity_.index.equal(index)
+                    .and(
+                        EngraveDataEntity_.isFromDeviceHistory.isNull.or(
+                            EngraveDataEntity_.isFromDeviceHistory.equal(
+                                fromDeviceHistory
+                            )
+                        )
+                    )
+            )
         }
     }
 

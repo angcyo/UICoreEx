@@ -1,6 +1,7 @@
 package com.angcyo.objectbox
 
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
 import androidx.collection.SimpleArrayMap
 import com.angcyo.library.L
@@ -145,11 +146,11 @@ class DslBox {
                     init(context, packageName, dbName, debug)
                 }
 
-            } catch (e: ReflectiveOperationException) {
-                e.printStackTrace()
-                L.e("当前的路径下:$_pName, 未发现[MyObjectBox]类. 可以考虑在当前包名下新建[PlaceholderEntity]类")
             } catch (e: Exception) {
                 e.printStackTrace()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && e is ReflectiveOperationException) {
+                    L.e("当前的路径下:$_pName, 未发现[MyObjectBox]类. 可以考虑在当前包名下新建[PlaceholderEntity]类")
+                }
             }
         }
 
@@ -530,6 +531,28 @@ inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
         entity.init()
         box.put(entity)
         return entity
+    }
+    return find
+}
+
+/**保证一定得到一个实体, 并且执行初始化方法*/
+@DSL
+inline fun <reified T : Any> KClass<T>.ensureEntity(
+    packageName: String = defaultBoxStore(),
+    noinline query: QueryBuilder<T>.() -> Unit,
+    block: T.() -> Unit = {},
+): T {
+    val cls = this.java
+    val box = boxOf(cls, packageName)
+    val find = box.query(query).findFirst()
+    if (find == null) {
+        val entity = cls.newInstance()
+        entity.block()
+        box.put(entity)
+        return entity
+    } else {
+        find.block()
+        find.saveEntity(packageName)
     }
     return find
 }

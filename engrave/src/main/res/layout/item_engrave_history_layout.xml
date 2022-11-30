@@ -8,6 +8,16 @@
     android:paddingHorizontal="@dimen/lib_xhdpi">
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view2"
+        style="@style/LibTitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/lib_hdpi"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="单索引文本显示" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_text_view"
         style="@style/LibTitleTextStyle"
         android:layout_width="0dp"

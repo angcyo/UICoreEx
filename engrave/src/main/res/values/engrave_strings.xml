@@ -193,6 +193,8 @@
     <string name="focal_distance_tip">Please confirm the focal length</string>
     <string name="engrave_warn">Warning</string>
     <string name="no_data_transfer">No data needs to be transmitted!</string>
+    <string name="no_data_engrave">No data need radium carving!</string>
+
     <string name="out_of_data_transfer">Data is too large!</string>
     <string name="data_exception">Data exception!</string>
     <string name="transfer_data_exception">Data transmission failure!</string>

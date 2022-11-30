@@ -328,7 +328,7 @@
     },
     {
       "id": "9:7843989811447012242",
-      "lastPropertyId": "7:5950277634928254295",
+      "lastPropertyId": "8:370659478206589290",
       "name": "EngraveDataEntity",
       "properties": [
         {
@@ -366,6 +366,11 @@
           "id": "7:5950277634928254295",
           "name": "finishTime",
           "type": 6
+        },
+        {
+          "id": "8:370659478206589290",
+          "name": "isFromDeviceHistory",
+          "type": 1
         }
       ],
       "relations": []

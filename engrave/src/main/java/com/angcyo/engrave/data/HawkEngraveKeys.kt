@@ -83,6 +83,9 @@ object HawkEngraveKeys {
     /**工程预览图, 输出的大小*/
     var projectOutSize: Int by HawkPropertyValue<Any, Int>(600)
 
+    /**是否显示设备原始历史, 本机不存在也显示*/
+    var showDeviceHistory: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**需要关闭的功能

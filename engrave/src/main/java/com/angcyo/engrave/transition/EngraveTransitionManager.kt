@@ -73,8 +73,8 @@ class EngraveTransitionManager {
 
         /**图层, 以及图层数据*/
         val engraveLayerList = listOf(
-            EngraveLayerInfo(DATA_MODE_DITHERING, _string(R.string.engrave_layer_bitmap)),
             EngraveLayerInfo(DATA_MODE_BLACK_WHITE, _string(R.string.engrave_layer_fill)),
+            EngraveLayerInfo(DATA_MODE_DITHERING, _string(R.string.engrave_layer_bitmap)),
             EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
         )
 

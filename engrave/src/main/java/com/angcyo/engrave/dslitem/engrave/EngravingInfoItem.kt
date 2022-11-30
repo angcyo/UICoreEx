@@ -32,7 +32,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
         val engraveTaskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
         val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
-        val engraveDataEntity = EngraveFlowDataHelper.getEngraveDataEntity(itemTaskId)
+        val engraveDataEntity = EngraveFlowDataHelper.getCurrentEngraveDataEntity(itemTaskId)
 
         renderLabelDesList {
             engraveConfigEntity?.let {

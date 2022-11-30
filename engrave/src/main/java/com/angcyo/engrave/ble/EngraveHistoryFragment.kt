@@ -20,12 +20,16 @@ import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
+import com.angcyo.objectbox.ensureEntity
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
 import com.angcyo.objectbox.laser.pecker.lpBoxOf
@@ -98,11 +102,29 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                 if (indexList.isNullOrEmpty()) {
                     _adapter.toEmpty()
                 } else {
-                    val allList = EngraveFlowDataHelper.getEngraveData(indexList)
                     //每个索引的文件, 只显示一次
                     val resultList = mutableListOf<EngraveDataEntity>()
-                    allList.filterTo(resultList) { entity ->
-                        resultList.find { it.index == entity.index } == null
+                    val taskId = uuid()
+                    for (index in indexList) {
+                        val engraveData = EngraveFlowDataHelper.getEngraveData(index, false)
+                        if (engraveData == null) {
+                            if (HawkEngraveKeys.showDeviceHistory) {
+                                //如果本机app没有记录, 但是设备上有记录, 则创建一个新的实体
+                                EngraveDataEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
+                                    apply(
+                                        EngraveDataEntity_.index.equal(index)
+                                            .and(EngraveDataEntity_.isFromDeviceHistory.equal(true))
+                                    )
+                                }) {
+                                    this.taskId = taskId
+                                    this.index = index
+                                    isFromDeviceHistory = true
+                                    resultList.add(this)
+                                }
+                            }
+                        } else {
+                            resultList.add(engraveData)
+                        }
                     }
                     loadDataEnd(resultList)
                 }
