@@ -456,7 +456,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     //region ---雕刻完成---
 
     /**渲染雕刻完成的界面*/
-    fun renderEngraveFinish() {
+    open fun renderEngraveFinish() {
         updateIViewTitle(_string(R.string.engrave_finish))
         engraveBackFlow = 0
         showCloseView(true, _string(R.string.back_creation))

@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.engrave.model.PreviewModel
+import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -64,6 +65,11 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
             it.finishTime = -1
             it.lpSaveEntity()
         }
+    }
+
+    override fun renderEngraveFinish() {
+        super.renderEngraveFinish()
+        showCloseView(true, _string(R.string.ui_quit))
     }
 
 }
