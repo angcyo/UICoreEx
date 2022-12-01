@@ -48,6 +48,7 @@ class ProjectListFragment : BaseDslFragment() {
                 if (index >= startIndex) {
                     val json = file.readText()
                     json.toCanvasProjectBean()?.let {
+                        it._filePath = file.absolutePath
                         projectList.add(it)
                     }
                 }

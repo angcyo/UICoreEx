@@ -11,4 +11,12 @@
     <string name="canvas_cone">圆锥</string>
     <string name="canvas_ball">球体</string>
     <string name="canvas_sync_font">备份/同步字体</string>
+
+    <string name="canvas_rename">重命名</string>
+    <string name="canvas_delete_project">删除项目</string>
+    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
+
+    <string name="save_project_title">项目名称</string>
+    <string name="project_title_limit">最多输入20个字符</string>
+    <string name="project_save_success_tip">项目保存成功</string>
 </resources>

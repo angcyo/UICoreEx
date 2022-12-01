@@ -118,5 +118,5 @@ object HawkEngraveKeys {
      * 多文件批量雕刻功能, 支持的固件范围
      * resValue "string", "lp_batch_engrave_firmware", '"650~699 6500~6599"'
      * */
-    var batchEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>("650~699 6500~6599")
+    var batchEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
 }

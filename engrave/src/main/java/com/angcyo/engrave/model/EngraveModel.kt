@@ -26,6 +26,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -471,6 +472,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**是否支持批量文件雕刻, 或者当前处于批量雕刻*/
     fun isBatchEngraveSupport(): Boolean {
         val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
+        val batchEngraveSupportFirmware = getAppString("lp_batch_engrave_firmware")
+        if (VersionMatcher.matches(version, batchEngraveSupportFirmware, false)) {
+            return true
+        }
         return VersionMatcher.matches(version, HawkEngraveKeys.batchEngraveSupportFirmware, false)
     }
 }
