@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.view.isVisible
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.glide.glide
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.lastName
@@ -58,10 +59,12 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
             itemHolder.tv(R.id.open_button)?.text = _string(R.string.canvas_import_font)
         }
         //
-        itemDrawable?.let {
+        itemDrawable?.let { drawable ->
             itemHolder.img(R.id.image_view)?.apply {
                 isVisible = true
-                setImageDrawable(it)
+                glide {
+                    load(drawable)
+                }
             }
         }
 
