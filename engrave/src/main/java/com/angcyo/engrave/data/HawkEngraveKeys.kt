@@ -111,4 +111,12 @@ object HawkEngraveKeys {
 
     /**最大的外部导入文件大小 字节, 5MB */
     var openFileDataSize: Long by HawkPropertyValue<Any, Long>(5_000_000)
+
+    //---功能固件范围配置---
+
+    /**
+     * 多文件批量雕刻功能, 支持的固件范围
+     * resValue "string", "lp_batch_engrave_firmware", '"650~699 6500~6599"'
+     * */
+    var batchEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>("650~699 6500~6599")
 }

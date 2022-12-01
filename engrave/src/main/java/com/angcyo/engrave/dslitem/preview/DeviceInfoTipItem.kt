@@ -30,11 +30,17 @@ class DeviceInfoTipItem : PreviewTipItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        val angle = laserPeckerModel.deviceStateData.value?.angle ?: 0
-        if (angle != 0) {
-            itemTip = span {
+        itemTip = span {
+            val stateParser = laserPeckerModel.deviceStateData.value
+            val angle = stateParser?.angle ?: 0
+            if (angle != 0) {
                 append(_string(R.string.device_angle))
-                append(":$angle°")
+                append(":$angle° ")
+            }
+            val temp = stateParser?.temp ?: 0
+            if (temp >= 60) {
+                append(_string(R.string.device_temp))
+                append(":$temp° ")
             }
         }
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)

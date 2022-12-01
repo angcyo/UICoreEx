@@ -22,6 +22,9 @@ data class EngraveTaskEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**批量雕刻时的大索引, 如果支持批量雕刻才有值*/
+    var bigIndex: Int? = null,
+
     /**当前正在雕刻的数据索引*/
     var currentIndex: Int = -1,
 

@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.*
 
 /**
@@ -31,6 +32,14 @@ data class EngraveCmd(
     val diameter: Int = 0,//雕刻物体直径（L4旋转轴生效），2字节,obj_d  = d * 100; d为物体实际尺寸单位为mm;
     //雕刻精度档位分：1至5档，它与系统加减速对应（C1新增）
     val precision: Int = 1,
+
+    //---多文件批量雕刻---2022-11-30
+    val indexNum: Int = 0, //是否是批量雕刻判断条件, 大于0则表示批量雕刻
+    val bigIndex: Int = -1,//大索引
+    val indexList: List<Int> = emptyList(),//文件索引列表
+    val powerList: List<Byte> = emptyList(),//功率列表
+    val depthList: List<Byte> = emptyList(),//深度列表
+    val timeList: List<Byte> = emptyList(),//次数列表
 ) : BaseCommand() {
 
     companion object {
@@ -54,31 +63,90 @@ data class EngraveCmd(
         fun depthToSpeed(depth: Int) = clamp((101 - depth), 1, 100)
 
         /**速度转深度*/
-        fun speedToDepth(speed: Int) = 101 - clamp(speed.toInt(), 1, 100)
+        fun speedToDepth(speed: Int) = 101 - clamp(speed, 1, 100)
+
+        /**批量雕刻文件指令
+         * [bigIndex] 大索引*/
+        fun batchEngrave(
+            bigIndex: Int,
+            indexList: List<Int>,
+            powerList: List<Byte>,
+            depthList: List<Byte>,
+            timeList: List<Byte>,
+            type: Byte,
+            precision: Int,
+            diameter: Int,
+        ): EngraveCmd {
+            return EngraveCmd(
+                state = 0x05,
+                custom = 0x08,
+                type = type,
+                precision = precision,
+                diameter = diameter,
+                bigIndex = bigIndex,
+                indexNum = indexList.size(),
+                powerList = powerList,
+                depthList = depthList,
+                timeList = timeList,
+            )
+        }
     }
 
     //功能码
     override fun commandFunc(): Byte = 0x01
 
     override fun toHexCommandString(): String {
-        val dataLength = 0x14 //18 //数据长度
-        val data = buildString {
-            append(commandFunc().toHexString())
-            append(state.toHexString())
-            append(power.toHexString())
-            append(depthToSpeed(depth.toInt()).toHexString()) //打印速度
-            //append(name.toHexString(8))
-            append(index.toByteArray(4).toHexString(false))
-            append(kotlin.math.max(x, 0).toHexString(4))
-            append(kotlin.math.max(y, 0).toHexString(4))
-            append(custom.toHexString())
-            append(time.toHexString())
-            append(type.toHexString())
-            append(diameter.toByteArray(2).toHexString(false))
-            append(precision.toHexString())
-        }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
-        val check = data.checksum() //“功能码”和“数据内容”在内的校验和
-        val cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
+        val check: String
+        val cmd: String
+        val data: String
+        val dataLength: Int
+        if (indexNum > 0) {
+            //批量雕刻
+            val bytes = byteWriter {
+                write(commandFunc())
+                write(state)
+                write(custom)
+                write(bigIndex, 4)
+                write(indexNum)
+                powerList.forEach {
+                    write(it)
+                }
+                depthList.forEach {
+                    write(depthToSpeed(it.toInt()))
+                }
+                timeList.forEach {
+                    write(it)
+                }
+                indexList.forEach {
+                    write(it, 4)
+                }
+                write(type)
+                write(precision)
+                write(diameter, 2)
+            }
+            data = bytes.toHexString(false)
+            dataLength = bytes.size() + LaserPeckerHelper.CHECK_SIZE
+            check = bytes.checksum()
+        } else {
+            dataLength = 0x14 //18 //数据长度
+            data = buildString {
+                append(commandFunc().toHexString())
+                append(state.toHexString())
+                append(power.toHexString())
+                append(depthToSpeed(depth.toInt()).toHexString()) //打印速度
+                //append(name.toHexString(8))
+                append(index.toByteArray(4).toHexString(false))
+                append(kotlin.math.max(x, 0).toHexString(4))
+                append(kotlin.math.max(y, 0).toHexString(4))
+                append(custom.toHexString())
+                append(time.toHexString())
+                append(type.toHexString())
+                append(diameter.toByteArray(2).toHexString(false))
+                append(precision.toHexString())
+            }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
+            check = data.checksum() //“功能码”和“数据内容”在内的校验和
+        }
+        cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
     }
 
@@ -89,6 +157,7 @@ data class EngraveCmd(
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")
+            0x05.toByte() -> append(" 批量雕刻:大索引$bigIndex :$indexNum 索引:$indexList 功率:$powerList 深度:$depthList type:$type 直径:${diameter} 加速级别:${precision}")
         }
     }
 }

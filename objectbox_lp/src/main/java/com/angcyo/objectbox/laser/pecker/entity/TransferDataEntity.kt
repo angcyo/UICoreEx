@@ -10,6 +10,8 @@ import io.objectbox.annotation.Id
  * 通过数据配置, 生成机器需要的雕刻数据
  * [com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity]
  *
+ * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/09
  */

@@ -123,6 +123,9 @@ object LaserPeckerHelper {
     const val DPI_846 = 846.66666f
 
     /**[PX_4K]*/
+    const val DPI_1016 = 1016f
+
+    /**[PX_4K]*/
     const val DPI_1270 = 1270f
 
     //雕刻激光类型选择
@@ -162,9 +165,11 @@ object LaserPeckerHelper {
     /**移除所有空格*/
     fun String.trimCmd() = replace(" ", "")
 
+    /**[hasSpace] 输出16进制字符是否需要空格*/
     fun ByteArray.checksum(length: Int = CHECK_SIZE, hasSpace: Boolean = true): String =
         sumCheck(this, length).toHexString(hasSpace)
 
+    /**[hasSpace] 输出16进制字符是否需要空格*/
     fun String.checksum(length: Int = CHECK_SIZE, hasSpace: Boolean = true): String =
         sumCheck(toHexByteArray(), length).toHexString(hasSpace)
 
@@ -391,6 +396,11 @@ object LaserPeckerHelper {
                     pxList.add(PxInfo(DPI_846, wPhys, true))
                 }
                 pxList.add(PxInfo(DPI_1270, wPhys))
+            }
+            CI -> {
+                pxList.add(PxInfo(DPI_254, wPhys))
+                pxList.add(PxInfo(DPI_508, wPhys))
+                pxList.add(PxInfo(DPI_1016, wPhys))
             }
             else -> {
                 pxList.add(PxInfo(DPI_254, wPhys))

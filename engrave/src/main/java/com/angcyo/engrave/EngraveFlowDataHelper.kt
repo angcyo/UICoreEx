@@ -470,12 +470,30 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**更新雕刻索引的进度
+    /**更新雕刻索引的进度,
+     * 注意:雕刻索引之前的所有其他索引应该已经全部雕刻完成
      * [index] 当前雕刻的数据索引
      * [printTimes] 当前的打印次数,从1开始
      * [progress] 当前的进度
      * */
     fun updateEngraveProgress(taskId: String?, index: Int, printTimes: Int, progress: Int) {
+        getEngraveTask(taskId)?.let {
+            it.dataIndexList?.let { list ->
+                for (beforeIndex in list) {
+                    if (beforeIndex == "$index") {
+                        break
+                    }
+                    getEngraveDataEntity(taskId, index)?.apply {
+                        //自动完成之前的所有索引, 比如雕刻到第8个文件再连接上蓝牙, 此时的雕刻进度~
+                        if (progress != 100) {
+                            this.progress = 100
+                            lpSaveEntity()
+                        }
+                    }
+                }
+            }
+        }
+        //
         getEngraveDataEntity(taskId, index)?.apply {
             this.printTimes = printTimes
             this.progress = progress

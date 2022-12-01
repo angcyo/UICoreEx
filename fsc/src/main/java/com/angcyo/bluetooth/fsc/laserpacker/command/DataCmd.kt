@@ -452,7 +452,7 @@ data class DataCmd(
 /**将字符串剔除到36个字节*/
 fun String.trimEngraveName(): String {
     return toByteArray(Charsets.UTF_8)
-        .trimAndPad(DataCmd.DEFAULT_NAME_BYTE_COUNT, false)
+        .trimAndPad(DataCmd.DEFAULT_NAME_BYTE_COUNT, 1)
         .toString(Charsets.UTF_8)
 }
 

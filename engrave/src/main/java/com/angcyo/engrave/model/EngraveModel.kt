@@ -21,6 +21,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
@@ -95,7 +96,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         _lastEngraveTimes = 1
                         //强制更新进度到100
                         updateEngraveProgress(queryState, 100)
-                        engraveNext()
+                        if (isBatchEngraveSupport()) {
+                            finishEngrave()
+                        } else {
+                            engraveNext()
+                        }
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
                         if (_lastEngraveTimes != queryState.printTimes) {
@@ -164,11 +169,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             _engraveTaskId = task.taskId
 
-            //checkExitIfNeed()
-            ExitCmd().enqueue()
-
             //
-            engraveNext()
+            if (isBatchEngraveSupport()) {
+                batchEngrave()
+            } else {
+                engraveNext()
+            }
 
             //loop
             loopCheckDeviceState()
@@ -248,6 +254,88 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
+    /**批量雕刻*/
+    @CallPoint
+    fun batchEngrave() {
+        val task = _engraveTaskEntity ?: return
+        _listenerEngraveState = true
+        val taskId = task.taskId
+
+        if (task.bigIndex == null) {
+            task.bigIndex = EngraveTransitionManager.generateEngraveIndex()
+            task.lpSaveEntity()
+        }
+
+        val indexList = task.dataIndexList?.mapTo(mutableListOf()) {
+            it.toIntOrNull() ?: -1
+        } ?: emptyList()
+
+        val powerList = mutableListOf<Byte>()
+        val depthList = mutableListOf<Byte>()
+        val timeList = mutableListOf<Byte>()
+
+        var type: Byte = 0
+        var precision = 0
+        var diameter = 0
+
+        for (index in indexList) {
+            EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
+                EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)
+                    ?.let { engraveConfigEntity ->
+                        precision = engraveConfigEntity.precision
+                        type = engraveConfigEntity.type
+                        diameter =
+                            (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
+
+                        powerList.add(engraveConfigEntity.power.toByte())
+                        depthList.add(engraveConfigEntity.depth.toByte())
+                        timeList.add(engraveConfigEntity.time.toByte())
+
+                        //保存外接设备名
+                        engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+                        engraveConfigEntity.lpSaveEntity()
+                    }
+            }
+        }
+
+        buildString {
+            append("开始批量雕刻:[${task.bigIndex}] $indexList")
+            append(" type:${type.toLaserTypeString()}")
+            append(" 加速级别:${precision}")
+            append(" 直径:${diameter}")
+        }.writeEngraveLog()
+
+        EngraveCmd.batchEngrave(
+            task.bigIndex!!,
+            indexList,
+            powerList,
+            depthList,
+            timeList,
+            type,
+            precision,
+            diameter
+        ).enqueue { bean, error ->
+            L.w("雕刻返回:${bean?.parse<MiniReceiveParser>()}")
+
+            if (error == null) {
+                //雕刻指令发送成功, 机器开始雕刻
+                UMEvent.ENGRAVE.umengEventValue {
+                    put(UMEvent.KEY_START_TIME, nowTime().toString())
+                }
+            } else {
+                "雕刻失败:$error".writeErrorLog()
+            }
+        }
+
+        doMain {
+            task.currentIndex = indexList.firstOrNull() ?: -1
+            task.indexStartTime = nowTime()
+            task.indexPrintStartTime = task.indexStartTime
+            engraveStateData.value = task
+            task.lpSaveEntity()
+        }
+    }
+
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave() {
@@ -323,6 +411,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //保存外接设备名
         engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+        engraveConfigEntity.lpSaveEntity()
 
         EngraveCmd(
             index,
@@ -377,5 +466,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 }
             }
         }
+    }
+
+    /**是否支持批量文件雕刻, 或者当前处于批量雕刻*/
+    fun isBatchEngraveSupport(): Boolean {
+        val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
+        return VersionMatcher.matches(version, HawkEngraveKeys.batchEngraveSupportFirmware, false)
     }
 }

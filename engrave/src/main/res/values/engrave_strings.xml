@@ -199,6 +199,7 @@
     <string name="data_exception">Data exception!</string>
     <string name="transfer_data_exception">Data transmission failure!</string>
     <string name="device_angle">Device angle</string>
+    <string name="device_temp">Device temp</string>
 
     <string name="device_firmware_version">Device firmware version</string>
     <string name="firmware_version">Firmware version</string>
