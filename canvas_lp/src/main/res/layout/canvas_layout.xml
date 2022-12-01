@@ -84,7 +84,8 @@
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="结束" />
+            android:text="结束预览"
+            android:visibility="gone" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/exit_button"
@@ -92,6 +93,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="退出" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/project_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="项目" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/file_button"
@@ -126,7 +134,8 @@
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设置" />
+            android:text="设置"
+            android:visibility="gone" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/switch_origin_button"

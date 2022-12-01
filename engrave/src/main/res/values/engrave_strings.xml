@@ -216,4 +216,6 @@
     <string name="engrave_module_color_pen">Color pen</string>
     <string name="engrave_module_knife_cutting">Knife cutting</string>
     <string name="engrave_module_cnc">CNC</string>
+
+    <string name="project_title">Project list</string>
 </resources>

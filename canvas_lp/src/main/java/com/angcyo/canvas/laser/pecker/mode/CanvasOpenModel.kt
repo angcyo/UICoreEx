@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.angcyo.base.dslAHelper
 import com.angcyo.canvas.data.CanvasOpenDataType
+import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.vmDataOnce
 
@@ -24,6 +26,14 @@ class CanvasOpenModel : ViewModel() {
 
         /** [OPEN_ACTIVITY_CLASS]内部的[Fragment], 实际上只需要[OPEN_ACTIVITY_CLASS]就可以完成处理*/
         var OPEN_ACTIVITY_FRAGMENT_CLASS: Class<out Fragment>? = null
+
+        /**打开指定数据格式
+         * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
+         * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+         * */
+        fun open(bean: CanvasOpenDataType?, context: Context = lastContext): Boolean {
+            return vmApp<CanvasOpenModel>().open(context, bean)
+        }
 
         /**启动主页*/
         fun openCanvasActivity(context: Context) {
