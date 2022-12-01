@@ -91,6 +91,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         val productInfo = laserPeckerModel.productInfoData.value
         val isC1 = productInfo?.isCI() == true
+        val isL4 = productInfo?.isLIV() == true
         val isC1CarFlag = isC1 && settingParser?.carFlag == 1
 
         renderDslAdapter(reset = true) {
@@ -139,6 +140,19 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChecked = settingParser?.gcodeView == 1
                     itemSwitchChangedAction = {
                         settingParser?.gcodeView = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
+                }
+            }
+            if (isL4) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_g_code_pwr_label)
+                    itemDes = _string(R.string.device_g_code_pwr_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.gcodePower == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.gcodePower = if (it) 1 else 0
                         settingParser?.updateSetting()
                     }
                 }
