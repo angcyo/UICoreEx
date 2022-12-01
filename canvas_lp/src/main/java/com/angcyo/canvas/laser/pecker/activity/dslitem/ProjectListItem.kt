@@ -1,6 +1,7 @@
 package com.angcyo.canvas.laser.pecker.activity.dslitem
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.angcyo.canvas.data.CanvasProjectBean
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.inputDialog
@@ -8,6 +9,7 @@ import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.glide.glide
 import com.angcyo.http.base.toJson
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
@@ -47,6 +49,12 @@ class ProjectListItem : DslAdapterItem() {
 
     /**[itemProjectFile]对应的数据结构*/
     var itemProjectBean: CanvasProjectBean? = null
+        set(value) {
+            field = value
+            _bitmap = value?.preview_img?.toBitmapOfBase64()
+        }
+
+    private var _bitmap: Bitmap? = null
 
     init {
         itemLayoutId = R.layout.item_project_list_layout
@@ -97,7 +105,8 @@ class ProjectListItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.lib_text_view)?.text = itemProjectBean?.file_name
-        itemHolder.img(R.id.lib_image_view)
-            ?.setImageBitmap(itemProjectBean?.preview_img?.toBitmapOfBase64())
+        itemHolder.img(R.id.lib_image_view)?.glide {
+            load(_bitmap)
+        }
     }
 }
