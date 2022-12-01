@@ -114,18 +114,23 @@ object LaserPeckerHelper {
 
     /**[PX_1_3K]*/
     const val DPI_317 = 317.5f
+
+    /**1.6K [PX_1_3K]*/
     const val DPI_423 = 423.33333f
 
     /**[PX_2K]*/
     const val DPI_508 = 508f
+
+    /**2.5k [PX_2K]*/
     const val DPI_635 = 635f
 
+    /**3.3k 4k [PX_4K]*/
     const val DPI_846 = 846.66666f
 
     /**[PX_4K]*/
     const val DPI_1016 = 1016f
 
-    /**[PX_4K]*/
+    /**5K [PX_4K]*/
     const val DPI_1270 = 1270f
 
     //雕刻激光类型选择
@@ -200,8 +205,21 @@ object LaserPeckerHelper {
     }
 
     /**查找[PxInfo]*/
-    fun findPxInfo(dpi: Float?): PxInfo =
-        PxInfo(dpi ?: DPI_254, vmApp<LaserPeckerModel>().productInfoData.value?.widthPhys ?: 100)
+    fun findPxInfo(dpi: Float?, debug: Boolean = false): PxInfo {
+        val _d = if (debug) "′" else ""
+        return when (dpi) {
+            DPI_158 -> PxInfo(DPI_158, PX_0_8K, "0.8K$_d")
+            DPI_317 -> PxInfo(DPI_317, PX_1_3K, "1.3K$_d")
+            DPI_423 -> PxInfo(DPI_423, PX_1_3K, "1.6K$_d")
+            DPI_508 -> PxInfo(DPI_508, PX_2K, "2K$_d")
+            DPI_635 -> PxInfo(DPI_635, PX_2K, "2.5K$_d")
+            DPI_846 -> PxInfo(DPI_846, PX_4K, "4K$_d")
+            DPI_1016 -> PxInfo(DPI_1016, PX_4K, "4K$_d")
+            DPI_1270 -> PxInfo(DPI_1270, PX_4K, "5K$_d")
+            else -> PxInfo(DPI_254, PX_1K, "1K$_d")
+        }
+    }
+    //PxInfo(dpi ?: DPI_254, vmApp<LaserPeckerModel>().productInfoData.value ?.widthPhys ?: 100)
 
     /**缩放图片到[px]指定的宽高*/
     fun bitmapScale(
@@ -372,38 +390,40 @@ object LaserPeckerHelper {
         when (name) {
             //LI, LI_PRO -> Unit
             LI_Z, LI_Z_PRO, LII -> {
-                pxList.add(PxInfo(DPI_317, wPhys))
-                pxList.add(PxInfo(DPI_508, wPhys))
+                pxList.add(findPxInfo(DPI_317))
+                pxList.add(findPxInfo(DPI_508))
             }
             LIII -> {
-                pxList.add(PxInfo(DPI_254, wPhys))
-                pxList.add(PxInfo(DPI_317, wPhys))
-                pxList.add(PxInfo(DPI_508, wPhys))
-                pxList.add(PxInfo(DPI_1270, wPhys))
+                pxList.add(findPxInfo(DPI_254))
+                pxList.add(findPxInfo(DPI_317))
+                pxList.add(findPxInfo(DPI_508))
+                pxList.add(findPxInfo(DPI_1270))
             }
             LIV -> {
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_158, wPhys, true))
+                    pxList.add(findPxInfo(DPI_158, true))
                 }
-                pxList.add(PxInfo(DPI_254, wPhys))
+                pxList.add(findPxInfo(DPI_254))
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_317, wPhys, true))
-                    pxList.add(PxInfo(DPI_423, wPhys, true))
+                    pxList.add(findPxInfo(DPI_317, true))
+                    pxList.add(findPxInfo(DPI_423, true))
                 }
-                pxList.add(PxInfo(DPI_508, wPhys))
+                pxList.add(findPxInfo(DPI_508))
                 if (isDebug()) {
-                    pxList.add(PxInfo(DPI_635, wPhys, true))
-                    pxList.add(PxInfo(DPI_846, wPhys, true))
+                    pxList.add(findPxInfo(DPI_635, true))
                 }
-                pxList.add(PxInfo(DPI_1270, wPhys))
+                pxList.add(findPxInfo(DPI_846))
+                if (isDebug()) {
+                    pxList.add(findPxInfo(DPI_1270, true))
+                }
             }
             CI -> {
-                pxList.add(PxInfo(DPI_254, wPhys))
-                pxList.add(PxInfo(DPI_508, wPhys))
-                pxList.add(PxInfo(DPI_1016, wPhys))
+                pxList.add(findPxInfo(DPI_254))
+                pxList.add(findPxInfo(DPI_508))
+                pxList.add(findPxInfo(DPI_1016))
             }
             else -> {
-                pxList.add(PxInfo(DPI_254, wPhys))
+                pxList.add(findPxInfo(DPI_254))
             }
         }
 

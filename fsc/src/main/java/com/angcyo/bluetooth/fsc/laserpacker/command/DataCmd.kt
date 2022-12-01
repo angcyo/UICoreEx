@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
-import com.angcyo.bluetooth.fsc.laserpacker.data.toOldPxByte
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.byteWriter
@@ -121,7 +121,7 @@ data class DataCmd(
                 //图片索引，占用4个字节
                 write(index, 4)
 
-                write(dpi.toOldPxByte())
+                write(LaserPeckerHelper.findPxInfo(dpi).px)
                 write(minX, 2) //d3
                 write(minY, 2) //d4
 
@@ -280,7 +280,7 @@ data class DataCmd(
                 //线段数
                 write(lines, 4)
 
-                write(dpi.toOldPxByte())
+                write(LaserPeckerHelper.findPxInfo(dpi).px)
                 write(x, 2)
                 write(y, 2)
 
@@ -362,7 +362,7 @@ data class DataCmd(
                 //数据索引，占用4个字节
                 write(index, 4)
 
-                write(dpi.toOldPxByte())
+                write(LaserPeckerHelper.findPxInfo(dpi).px)
                 write(x, 2)
                 write(y, 2)
 
