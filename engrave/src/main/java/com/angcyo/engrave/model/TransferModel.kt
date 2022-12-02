@@ -295,7 +295,7 @@ class TransferModel : ViewModel() {
                             action(transferState.error)
                         } else {
                             buildString {
-                                append("开始传输:[${taskId}]")
+                                append("开始传输:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}")
                                 append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
                                 append(" $transferDataEntity")
                             }.writeEngraveLog()
