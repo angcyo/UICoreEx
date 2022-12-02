@@ -169,7 +169,7 @@ class TransferModel : ViewModel() {
             EngraveFlowDataHelper.startTransferData(taskId, list)//检测数据
 
             if (list.isEmpty()) {
-                //需要传输的数据为空
+                //需要传输的数据为空, 是直接完成传输?还是空异常报错?
                 transferState.state = TransferState.TRANSFER_STATE_FINISH
                 transferState.error = EmptyException()
                 transferStateOnceData.postValue(transferState)
@@ -222,11 +222,7 @@ class TransferModel : ViewModel() {
         val transferDataEntity = EngraveFlowDataHelper.getNeedTransferData(taskId)
         if (transferDataEntity == null) {
             //全部传输完成
-            transferState.state = TransferState.TRANSFER_STATE_FINISH
-            transferState.progress = 100
-            transferStateOnceData.postValue(transferState)
-            EngraveFlowDataHelper.finishTransferData(taskId)
-            L.i("数据传输任务完成:${taskId}")
+            _transferFinish(transferState)
         } else {
             //需要传输数据
             if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
@@ -234,6 +230,17 @@ class TransferModel : ViewModel() {
                 transferData(transferState, transferDataEntity)
             }
         }
+    }
+
+    /**传输阶段完成*/
+    fun _transferFinish(transferState: TransferState) {
+        val taskId: String? = transferState.taskId
+        transferState.state = TransferState.TRANSFER_STATE_FINISH
+        transferState.error = null
+        transferState.progress = 100
+        transferStateOnceData.postValue(transferState)
+        EngraveFlowDataHelper.finishTransferData(taskId)
+        L.i("数据传输任务完成:${taskId}")
     }
 
     /**传输数据
