@@ -3,7 +3,7 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.viewmodel)
-    implementation project(allModule.core)
+    implementation project(allModule.core) //vmApp
 
     //https://github.com/TooTallNate/Java-WebSocket
     //https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
