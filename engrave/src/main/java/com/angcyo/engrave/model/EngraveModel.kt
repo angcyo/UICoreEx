@@ -130,7 +130,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val duration = nowTime - (_engraveTaskEntity?.indexPrintStartTime ?: 0)
         buildString {
             append("雕刻完成:${_engraveTaskId} ")
-            append("index:${queryState.index} ")
+            append("索引:${queryState.index} ")
             append("第${printTimes}次 ")
             append("耗时:${duration.toMsTime()}")
         }.writeEngraveLog(L.INFO)
@@ -246,6 +246,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 engraveStateData.value = task
                 task.lpSaveEntity()
 
+                buildString {
+                    append("准备雕刻:${task}")
+                }.writeEngraveLog()
+
+                //
                 _startEngraveCmd(
                     engraveDataEntity.index,
                     transferDataEntity,
