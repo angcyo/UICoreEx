@@ -20,6 +20,7 @@ class DeviceDiscover(val port: Int, freq: Long = 160) : BaseServer(freq) {
 
     companion object {
 
+        /**设备发现*/
         var deviceDiscover: DeviceDiscover? = null
 
         /**开始发现设备*/
