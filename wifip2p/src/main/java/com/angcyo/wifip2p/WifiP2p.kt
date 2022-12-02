@@ -1,9 +1,12 @@
 package com.angcyo.wifip2p
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.NetworkInfo
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.*
@@ -14,6 +17,7 @@ import android.net.wifi.p2p.nsd.WifiP2pServiceInfo
 import android.os.Build
 import android.os.Debug
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.app
@@ -213,8 +217,19 @@ class WifiP2p {
     var wifiP2pReceiveRunnable: WifiP2pReceiveRunnable? = null
 
     /**2.开启本地服务, 用于被发现以及过滤
-     * [serviceData]*/
+     * [serviceData]
+     * [Manifest.permission.ACCESS_FINE_LOCATION]
+     * */
     fun startService() {
+        if (ActivityCompat.checkSelfPermission(
+                _context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            L.w("无权限访问!")
+            return
+        }
+
         _channel?.let {
             _registerReceiver()
 
@@ -284,7 +299,9 @@ class WifiP2p {
         wifiP2pModel.onDnsSdTxtRecordAvailable(serviceFullDomainName, record, device)
     }
 
-    /**2.发现其他服务*/
+    /**2.发现其他服务
+     * [Manifest.permission.ACCESS_FINE_LOCATION]
+     * */
     fun discoverService() {
         _registerReceiver()
         _registerResponseListeners()
@@ -365,6 +382,14 @@ class WifiP2p {
 
     //发现服务
     fun _discoverService() {
+        if (ActivityCompat.checkSelfPermission(
+                _context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            L.w("无权限访问!")
+            return
+        }
         manager?.let {
             _serviceRequest = WifiP2pDnsSdServiceRequest.newInstance()
             it.addServiceRequest(_channel, _serviceRequest, _serviceRequestAction)
@@ -402,6 +427,7 @@ class WifiP2p {
     //region ---Group---
 
     /**创建组*/
+    @SuppressLint("MissingPermission")
     fun createGroup() {
         manager?.createGroup(_channel, object : ActionListener {
             override fun onSuccess() {
@@ -416,6 +442,7 @@ class WifiP2p {
     }
 
     /**断开连接*/
+    @SuppressLint("MissingPermission")
     fun disconnectFromDevice() {
         manager?.requestGroupInfo(_channel) { group ->
             if (group != null) {
@@ -445,6 +472,7 @@ class WifiP2p {
     }
 
     /**3.连接设备*/
+    @SuppressLint("MissingPermission")
     fun connectDevice(deviceWrap: WifiP2pDeviceWrap, action: WifiP2pConfig.() -> Unit = {}) {
         val connectState = wifiP2pModel.connectState(deviceWrap)
         if (connectState.state == ConnectStateWrap.STATE_CONNECT_START) {
@@ -530,6 +558,8 @@ class WifiP2p {
      * [android.net.wifi.p2p.THIS_DEVICE_CHANGED]
      * */
     inner class ServiceReceiver : BroadcastReceiver() {
+
+        @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
             L.i("收到服务广播:$intent")
             when (intent.action) {
