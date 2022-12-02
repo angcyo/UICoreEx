@@ -4,6 +4,7 @@ import com.angcyo.device.DeviceServerHelper
 import com.angcyo.device.bean.DeviceBean
 import com.angcyo.http.base.toJson
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.ex.getWifiIP
 import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.ID
 import com.angcyo.library.utils.uuid
@@ -30,7 +31,8 @@ object DeviceServer {
             ID.id,
             Device.deviceName,
             DeviceServerHelper._deviceServerPort,
-            uuid()
+            uuid(),
+            getWifiIP()
         ).toJson()
         deviceBroadcast?.start()
     }
