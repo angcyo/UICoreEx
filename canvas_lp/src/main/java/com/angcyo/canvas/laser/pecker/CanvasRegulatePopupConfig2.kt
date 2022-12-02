@@ -332,6 +332,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                     val threshold = 255f * fraction
                     property[key] = threshold
 
+                    //阈值持久化
                     when (key) {
                         KEY_PRINT_THRESHOLD -> HawkEngraveKeys.lastPrintThreshold = threshold
                         KEY_SEAL_THRESHOLD -> HawkEngraveKeys.lastSealThreshold = threshold
