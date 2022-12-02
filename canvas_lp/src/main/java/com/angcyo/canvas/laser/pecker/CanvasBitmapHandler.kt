@@ -39,7 +39,10 @@ object CanvasBitmapHandler {
         val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD)
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD,
+                item.dataBean.printsThreshold.toInt()
+            )
             firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_PRINT
             onApplyAction = { dismiss ->
                 if (dismiss) {
@@ -86,10 +89,10 @@ object CanvasBitmapHandler {
         var boundsRotate = 0f //需要旋转的角度
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_OUTLINE)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_LINE_SPACE)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_OUTLINE, item.dataBean.gcodeOutline)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_LINE_SPACE, item.dataBean.gcodeLineSpace)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE, item.dataBean.gcodeAngle)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION, item.dataBean.gcodeDirection)
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
             firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GCODE
             onApplyAction = { dismiss ->
@@ -189,8 +192,14 @@ object CanvasBitmapHandler {
         val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_BW_INVERT)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_BW_THRESHOLD)
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_BW_INVERT,
+                item.dataBean.inverse
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_BW_THRESHOLD,
+                item.dataBean.blackThreshold.toInt()
+            )
             firstApply =
                 renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_BLACK_WHITE
             onApplyAction = { dismiss ->
@@ -245,9 +254,9 @@ object CanvasBitmapHandler {
         val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT, item.dataBean.inverse)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST, item.dataBean.contrast)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS, item.dataBean.brightness)
             firstApply =
                 renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_DITHERING
             onApplyAction = { dismiss ->
@@ -328,7 +337,10 @@ object CanvasBitmapHandler {
         val operateBitmap = item.operateBitmap!!
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD)
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD,
+                item.dataBean.sealThreshold.toInt()
+            )
             firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_SEAL
             onApplyAction = { dismiss ->
                 if (dismiss) {
@@ -409,9 +421,18 @@ object CanvasBitmapHandler {
         val originBitmap = item.originBitmap
 
         context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_MESH_SHAPE)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER)
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
+                CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER,
+                HawkEngraveKeys.lastMinDiameterPixel
+            )
+            addRegulate(
+                CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER,
+                HawkEngraveKeys.lastDiameterPixel
+            )
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
 
             onApplyAction = { dismiss ->

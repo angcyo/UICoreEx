@@ -91,9 +91,6 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
         /**单独的确定按钮*/
         const val KEY_SUBMIT = "key_submit"
-
-        //缓存
-        val keepProperty = hashMapOf<String, Any?>()
     }
 
     /**需要调整的项目, 需要啥就添加对应的项
@@ -111,7 +108,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
     val regulateList = mutableListOf<String>()
 
     /**保存修改后的属性, 用来恢复*/
-    var property = keepProperty
+    var property = hashMapOf<String, Any?>()
 
     /**是否实时监听改变*/
     var realTimeApply: Boolean = true
@@ -428,6 +425,17 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
             realTimeApply = false
             firstApply = false
         }
+    }
+
+    /**添加一个属性, 并且设置对应的属性默认值*/
+    fun addRegulate(key: String, value: Any?) {
+        addRegulate(key)
+        setProperty(key, value)
+    }
+
+    /**设置属性*/
+    fun setProperty(key: String, value: Any?) {
+        property[key] = value
     }
 
     fun getIntOrDef(key: String, def: Int): Int {

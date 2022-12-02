@@ -127,7 +127,7 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("_mesh_")) {
+        if (isDebugType() && !closeImageEditItemsFun.have("_mesh_")) {
             //扭曲
             CanvasControlItem2()() {
                 itemIco = R.drawable.canvas_actions_ico
