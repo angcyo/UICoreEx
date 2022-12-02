@@ -26,7 +26,9 @@ class LogWSService : WSService() {
 
     override fun initServer() {
         super.initServer()
+
         L.logPrintList.add { tag: String, level: Int, msg: String ->
+            //将L输出的日志, 全部发送给客户端
             _wsServer?.sendMessage(msg)
         }
     }
