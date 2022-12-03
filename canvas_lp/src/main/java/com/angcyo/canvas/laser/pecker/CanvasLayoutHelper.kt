@@ -309,40 +309,50 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
-                if (itemRenderer is DataItemRenderer) {
-                    val dataBean = itemRenderer.dataItem?.dataBean
-                    val type = dataBean?.mtype
-                    if (type == CanvasConstant.DATA_TYPE_QRCODE ||
-                        type == CanvasConstant.DATA_TYPE_BARCODE ||
-                        type == CanvasConstant.DATA_TYPE_TEXT
-                    ) {
-                        AddTextItem.amendInputText(canvasView, itemRenderer)
+                doMain {
+                    if (itemRenderer is DataItemRenderer) {
+                        val dataBean = itemRenderer.dataItem?.dataBean
+                        val type = dataBean?.mtype
+                        if (type == CanvasConstant.DATA_TYPE_QRCODE ||
+                            type == CanvasConstant.DATA_TYPE_BARCODE ||
+                            type == CanvasConstant.DATA_TYPE_TEXT
+                        ) {
+                            AddTextItem.amendInputText(canvasView, itemRenderer)
+                        }
                     }
                 }
             }
 
             override fun onItemRendererAdd(itemRenderer: IItemRenderer<*>) {
                 super.onItemRendererAdd(itemRenderer)
-                if (itemRenderer is BaseItemRenderer<*>) {
-                    addLayerItem(vh, canvasView, itemRenderer)
+                doMain {
+                    if (itemRenderer is BaseItemRenderer<*>) {
+                        addLayerItem(vh, canvasView, itemRenderer)
+                    }
                 }
             }
 
             override fun onItemRendererRemove(itemRenderer: IItemRenderer<*>) {
                 super.onItemRendererRemove(itemRenderer)
-                if (itemRenderer is BaseItemRenderer<*>) {
-                    removeLayerItem(vh, canvasView, itemRenderer)
+                doMain {
+                    if (itemRenderer is BaseItemRenderer<*>) {
+                        removeLayerItem(vh, canvasView, itemRenderer)
+                    }
                 }
             }
 
             override fun onItemVisibleChanged(itemRenderer: IRenderer, visible: Boolean) {
                 super.onItemVisibleChanged(itemRenderer, visible)
-                updateLayerLayout(vh, canvasView)
+                doMain {
+                    updateLayerLayout(vh, canvasView)
+                }
             }
 
             override fun onItemRenderUpdate(itemRenderer: IRenderer) {
                 super.onItemRenderUpdate(itemRenderer)
-                updateLayerLayout(vh, canvasView)
+                doMain {
+                    updateLayerLayout(vh, canvasView)
+                }
             }
 
             override fun onItemBoundsChanged(
@@ -351,8 +361,11 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 oldBounds: RectF
             ) {
                 super.onItemBoundsChanged(itemRenderer, reason, oldBounds)
-                updateControlLayout(vh, canvasView)
-                updateLayerLayout(vh, canvasView)
+
+                doMain {
+                    updateControlLayout(vh, canvasView)
+                    updateLayerLayout(vh, canvasView)
+                }
 
                 val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
 
@@ -370,20 +383,26 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onItemLockScaleRatioChanged(item: BaseItemRenderer<*>) {
                 super.onItemLockScaleRatioChanged(item)
-                updateControlLayout(vh, canvasView)
+                doMain {
+                    updateControlLayout(vh, canvasView)
+                }
             }
 
             override fun onItemSortChanged(itemList: List<BaseItemRenderer<*>>) {
                 super.onItemSortChanged(itemList)
                 //updateControlLayout(vh, canvasView)
-                updateLayerListLayout(vh, canvasView)
+                doMain {
+                    updateLayerListLayout(vh, canvasView)
+                }
             }
 
             override fun onClearSelectItem(itemRenderer: IItemRenderer<*>) {
                 super.onClearSelectItem(itemRenderer)
-                cancelSelectedItem()
-                vh.showControlLayout(canvasView, false, false)
-                updateLayerLayout(vh, canvasView)
+                doMain {
+                    cancelSelectedItem()
+                    vh.showControlLayout(canvasView, false, false)
+                    updateLayerLayout(vh, canvasView)
+                }
             }
 
             override fun onSelectedItem(
@@ -395,17 +414,19 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     //重复选择
                     return
                 }
-                if (itemRenderer != null) {
-                    cancelSelectedItem()
+                doMain {
+                    if (itemRenderer != null) {
+                        cancelSelectedItem()
 
-                    //显示控制布局
-                    vh.showControlLayout(canvasView)
+                        //显示控制布局
+                        vh.showControlLayout(canvasView)
 
-                    //更新图层
-                    updateLayerLayout(vh, canvasView)
-                }
-                if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
-                    updateLayerListLayout(vh, canvasView)
+                        //更新图层
+                        updateLayerLayout(vh, canvasView)
+                    }
+                    if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
+                        updateLayerListLayout(vh, canvasView)
+                    }
                 }
 
                 val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
