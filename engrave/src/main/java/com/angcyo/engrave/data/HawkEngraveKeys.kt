@@ -112,6 +112,9 @@ object HawkEngraveKeys {
     /**最大的外部导入文件大小 字节, 5MB */
     var openFileDataSize: Long by HawkPropertyValue<Any, Long>(5_000_000)
 
+    /**最大的外部导入文件行数, 1W行 */
+    var openFileLineCount: Long by HawkPropertyValue<Any, Long>(10_000)
+
     //---功能固件范围配置---
 
     /**
