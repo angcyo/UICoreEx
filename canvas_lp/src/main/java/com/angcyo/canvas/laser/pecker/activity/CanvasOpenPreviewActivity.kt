@@ -34,6 +34,7 @@ import com.angcyo.library.getAppIcon
 import com.angcyo.library.libCacheFile
 import com.angcyo.putData
 import com.angcyo.widget.recycler.renderDslAdapter
+import java.io.File
 
 /**
  * 文件打开的预览界面
@@ -134,12 +135,13 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
                 ?.isGCodeContent() == true)
         ) {
+            val text = file.readText()
+            checkFileLines(text)
             //gcode
             adapter?.render {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    val text = file.readText()
                     itemDrawable = GCodeHelper.parseGCode(text)
 
                     openAction = {
@@ -158,12 +160,13 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
                 ?.isSvgContent() == true)
         ) {
+            val text = file.readText()
+            checkFileLines(text)
             //svg
             adapter?.render {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    val text = file.readText()
                     itemDrawable = parseSvg(text)
 
                     openAction = {
@@ -200,7 +203,11 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
 
                     //导入字体
                     openAction = {
-                        val typefaceInfo = FontManager.importCustomFont(path)
+                        if (itemFilePath != path) {
+                            path.file().renameTo(File(itemFilePath!!))
+                        }
+
+                        val typefaceInfo = FontManager.importCustomFont(itemFilePath)
                         if (typefaceInfo == null) {
                             //导入失败
                             updateAdapterState(IllegalStateException(_string(R.string.font_import_fail)))
@@ -253,6 +260,15 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             return true
         }
         return false
+    }
+
+    /**检查文件的行数是否超过了限制*/
+    @Throws(OutOfSizeException::class)
+    fun checkFileLines(text: String?) {
+        if ((text?.lines()?.size() ?: 0) > HawkEngraveKeys.openFileLineCount) {
+            //超过了行数限制
+            throw OutOfSizeException()
+        }
     }
 
 }

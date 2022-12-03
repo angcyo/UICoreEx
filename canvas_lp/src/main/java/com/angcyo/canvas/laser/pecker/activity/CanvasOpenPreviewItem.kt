@@ -4,12 +4,12 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.core.view.isVisible
 import com.angcyo.canvas.laser.pecker.R
+import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
-import com.angcyo.library.ex.ClickAction
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.lastName
+import com.angcyo.library.ex.*
 import com.angcyo.widget.DslViewHolder
+import java.io.File
 
 /**
  * 预览打开的文件item
@@ -25,7 +25,7 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
     /**文件路径*/
     var itemFilePath: String? = null
 
-    /**需要预览字体*/
+    /**需要预览字体, 设置字体后, 同时会开启文件名编辑功能*/
     var itemTypeface: Typeface? = null
 
     /**需要预览图片*/
@@ -48,7 +48,8 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.file_name_view)?.text = itemShowName ?: itemFilePath?.lastName()
+        val fileName = itemFilePath?.lastName()
+        itemHolder.tv(R.id.file_name_view)?.text = itemShowName ?: fileName
 
         //
         itemTypeface?.let {
@@ -71,6 +72,26 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
         //
         itemHolder.click(R.id.open_button, openAction)
         itemHolder.click(R.id.cancel_button, cancelAction)
+
+        //edit
+        itemHolder.visible(R.id.lib_edit_view, itemTypeface != null)
+        itemHolder.click(R.id.lib_edit_view) {
+            //编辑文件名
+            it.context.inputDialog {
+                defaultInputString = fileName?.noExtName()
+                maxInputLength = 30
+                dialogTitle = _string(R.string.canvas_rename)
+                canInputEmpty = false
+                onInputResult = { dialog, inputText ->
+                    val file =
+                        File(File(itemFilePath!!).parentFile, "${inputText}.${fileName?.extName()}")
+                    itemFilePath = file.absolutePath
+                    updateAdapterItem()
+                    false
+                }
+            }
+        }
+
     }
 
 }
