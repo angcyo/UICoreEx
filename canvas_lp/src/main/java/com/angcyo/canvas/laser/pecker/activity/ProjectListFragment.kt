@@ -42,21 +42,22 @@ class ProjectListFragment : BaseDslFragment() {
     override fun onLoadData() {
         super.onLoadData()
         val projectList = mutableListOf<CanvasProjectBean>()
-        projectPathFile.listFiles()?.sortedByDescending { it.lastModified() }?.apply {
-            val startIndex = page.requestPageIndex * page.requestPageSize
-            for ((index, file) in this.withIndex()) {
-                if (index >= startIndex) {
-                    val json = file.readText()
-                    json.toCanvasProjectBean()?.let {
-                        it._filePath = file.absolutePath
-                        projectList.add(it)
+        projectPathFile.listFiles()?.filter { it.name.endsWith(CanvasConstant.PROJECT_EXT) }
+            ?.sortedByDescending { it.lastModified() }?.apply {
+                val startIndex = page.requestPageIndex * page.requestPageSize
+                for ((index, file) in this.withIndex()) {
+                    if (index >= startIndex) {
+                        val json = file.readText()
+                        json.toCanvasProjectBean()?.let {
+                            it._filePath = file.absolutePath
+                            projectList.add(it)
+                        }
+                    }
+                    if (projectList.size() >= page.requestPageSize) {
+                        break
                     }
                 }
-                if (projectList.size() >= page.requestPageSize) {
-                    break
-                }
             }
-        }
         loadDataEnd(ProjectListItem::class, projectList) { bean ->
             itemProjectBean = bean
 

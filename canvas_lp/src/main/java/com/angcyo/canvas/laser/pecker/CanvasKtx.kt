@@ -15,15 +15,63 @@ import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
+import com.angcyo.http.base.toJson
+import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
+import com.angcyo.library.utils.writeTo
+import java.io.File
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/20
  */
+
+//---状态存储和恢复---
+
+/**保存实例数据, 实际就是保存工程数据
+ * [name] 保存的工程文件名, 请包含后缀
+ * [async] 是否异步保存
+ * */
+fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true) {
+    if (itemRendererCount <= 0) return
+    val save = Runnable {
+        val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
+        val json = bean.toJson()
+        json.writeTo(
+            CanvasDataHandleOperate._defaultProjectOutputFile(name, false),
+            false
+        )
+    }
+    if (async) {
+        doBack {
+            save.run()
+        }
+    } else {
+        //同步保存
+        save.run()
+    }
+}
+
+/**恢复实例数据
+ * [saveInstanceState]*/
+fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true) {
+    val restore = Runnable {
+        val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+        openCanvasFile(file, true)
+    }
+    if (async) {
+        doBack {
+            restore.run()
+        }
+    } else {
+        //同步保存
+        restore.run()
+    }
+}
 
 //---打开文件---
 
@@ -56,9 +104,14 @@ fun CanvasDelegate.openCanvasFile(
     }
 }
 
-/**直接加载*/
-fun CanvasDelegate.openCanvasFile(data: String, clearOld: Boolean = true) =
-    openCanvasFile(data.toCanvasProjectBean(), clearOld)
+
+/**直接从文件中加载*/
+fun CanvasDelegate.openCanvasFile(file: File?, clearOld: Boolean = true) =
+    openCanvasFile(file?.readText(), clearOld)
+
+/**直接从字符串中加载*/
+fun CanvasDelegate.openCanvasFile(data: String?, clearOld: Boolean = true) =
+    openCanvasFile(data?.toCanvasProjectBean(), clearOld)
 
 /**直接加载*/
 fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolean = true): Boolean {
