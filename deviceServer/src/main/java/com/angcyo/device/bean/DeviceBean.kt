@@ -1,5 +1,7 @@
 package com.angcyo.device.bean
 
+import com.angcyo.library.ex.connectUrl
+
 /**
  * 广播的内容结构
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -31,4 +33,7 @@ data class DeviceBean(
     override fun hashCode(): Int {
         return deviceId?.hashCode() ?: 0
     }
+
+    /**转换成接口地址*/
+    fun toApi(path: String?): String = "http://${address}:${port}".connectUrl(path)
 }

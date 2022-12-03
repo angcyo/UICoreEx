@@ -46,13 +46,19 @@ object DeviceServerHelper {
     fun startServer() {
         _deviceBroadcastPort = Port.generatePort(_deviceBroadcastPort)
         _deviceServerPort = Port.generatePort(_deviceServerPort)
+
+        //启动设备广播
         DeviceServer.startBroadcast()
+
+        //启动接口服务
+        DeviceServer.startServer(_deviceServerPort)
     }
 
     /**停止设备广播服务*/
     @CallPoint
     fun stopServer() {
         DeviceServer.stopBroadcast()
+        DeviceServer.stopServer()
     }
 
     //---
