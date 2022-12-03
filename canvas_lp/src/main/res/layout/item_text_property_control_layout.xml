@@ -9,7 +9,6 @@
     android:paddingVertical="@dimen/lib_ldpi">
 
     <!--字号-->
-
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_paint_size_view"
         style="@style/LibBodyTextStyle"
@@ -17,10 +16,12 @@
         android:layout_height="wrap_content"
         android:background="@drawable/lib_keyboard_number_increment_selector"
         android:ellipsize="none"
+        android:enabled="false"
         android:gravity="center"
         android:padding="@dimen/lib_sdpi"
         android:singleLine="true"
         android:textSize="@dimen/canvas_edit_text_size"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/paint_size_label_view"
         app:layout_constraintLeft_toLeftOf="@id/paint_size_label_view"
         app:layout_constraintRight_toRightOf="@id/paint_size_label_view"
@@ -37,6 +38,7 @@
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_font_size"
         android:textColor="@color/canvas_ico"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_paint_size_view"
