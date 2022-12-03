@@ -6,7 +6,6 @@ import android.graphics.Path
 import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.data.toPaintStyleInt
@@ -16,6 +15,7 @@ import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_GCODE
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
+import com.angcyo.canvas.utils.isLineShape
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
@@ -234,7 +234,8 @@ class GCodeTransition : IEngraveTransition {
             scanGravity,
             isFirst = isFirst,
             isFinish = isFinish,
-            autoCnc = autoCnc
+            autoCnc = autoCnc,
+            isSingleLine = engraveProvider.getEngraveDataItem()?.isLineShape() == true
         )
         val gCodeText = gCodeFile.readText()
         gCodeFile.deleteSafe()

@@ -73,11 +73,14 @@ class FscDeviceModel : LifecycleViewModel() {
             it?.let { deviceConnectState ->
 
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_START) {
-                    //
+                    //开始连接
                     UMEvent.CONNECT_DEVICE.umengEventValue {
                         put(UMEvent.KEY_START_TIME, nowTime().toString())
                     }
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
+                    //蓝牙断开
+                    GraphicsHelper.assignLocationBounds = null
+
                     if (deviceConnectState.connectTime > 0 &&
                         deviceConnectState.connectedTime > 0 &&
                         !deviceConnectState.isActiveDisConnected
