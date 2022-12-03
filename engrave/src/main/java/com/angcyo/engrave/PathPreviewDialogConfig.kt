@@ -100,7 +100,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
             return
         }
         //loading
-        dialogViewHolder.context.strokeLoading2 { isCancel, loadEnd ->
+        dialogViewHolder.context.engraveStrokeLoading { isCancel, loadEnd ->
             ExitCmd().enqueue { bean, error ->
                 if (error != null) {
                     toast("cmd exception!")

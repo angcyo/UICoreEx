@@ -22,7 +22,7 @@ import com.angcyo.acc2.parse.ConditionParse
 import com.angcyo.component.hawkInstallAndRestore
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.hideLoading
-import com.angcyo.dialog.loadLoadingBottom
+import com.angcyo.dialog.loadLoadingBottomCaller
 import com.angcyo.dsladapter.filter.batchLoad
 import com.angcyo.dsladapter.toLoading
 import com.angcyo.library.L
@@ -113,7 +113,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
 
         //在线数据
         _vh.throttleClick(R.id.on_line_checkbox) {
-            loadLoadingBottom(showCloseView = false) { cancel, loadEnd ->
+            loadLoadingBottomCaller(showCloseView = false) { cancel, loadEnd ->
                 if (!cancel.get()) {
                     /*checkModel.loadChecks((it as CompoundButton).isChecked)
                     taskModel.loadTasks(it.isChecked)
@@ -125,7 +125,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
 
         //add check
         _vh.throttleClick(R.id.add_check_button) {
-            loadLoadingBottom { cancel, loadEnd ->
+            loadLoadingBottomCaller { cancel, loadEnd ->
                 /*checkModel.reset()
                 if (!cancel) {
                     checkModel.uploadCheck { succeed, throwable ->

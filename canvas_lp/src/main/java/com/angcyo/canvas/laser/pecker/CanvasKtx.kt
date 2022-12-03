@@ -16,7 +16,7 @@ import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.loadingAsync
+import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 
@@ -29,7 +29,7 @@ import com.angcyo.library.ex.*
 
 /**异步加载, 带ui*/
 fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, uri: Uri, clearOld: Boolean = true) {
-    owner.loadingAsync({
+    owner.engraveLoadingAsync({
         uri.readString()?.let { data ->
             openCanvasFile(data, clearOld)
         }
@@ -38,7 +38,7 @@ fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, uri: Uri, clearOld: Boo
 
 /**异步加载, 带ui*/
 fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, data: String, clearOld: Boolean = true) {
-    owner.loadingAsync({
+    owner.engraveLoadingAsync({
         openCanvasFile(data, clearOld)
     })
 }
@@ -50,7 +50,7 @@ fun CanvasDelegate.openCanvasFile(
     clearOld: Boolean = true
 ) {
     dataBean?.let {
-        owner.loadingAsync({
+        owner.engraveLoadingAsync({
             openCanvasFile(dataBean, clearOld)
         })
     }

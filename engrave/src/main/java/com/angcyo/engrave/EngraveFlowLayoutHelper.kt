@@ -139,7 +139,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                         transferConfigEntity.lpSaveEntity()
                         //退出打印模式, 进入空闲模式
-                        engraveCanvasFragment?.fragment?.strokeLoading { isCancel, loadEnd ->
+                        engraveCanvasFragment?.fragment?.engraveStrokeLoadingCaller { isCancel, loadEnd ->
                             ExitCmd().enqueue { bean, error ->
                                 loadEnd(bean, error)
                                 if (error == null) {
@@ -375,7 +375,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     checkExDevice {
                         showFocalDistance(it.context) {
                             showSafetyTips(it.context) {
-                                engraveCanvasFragment?.fragment?.strokeLoading { isCancel, loadEnd ->
+                                engraveCanvasFragment?.fragment?.engraveStrokeLoadingCaller { isCancel, loadEnd ->
                                     ExitCmd().enqueue { bean, error ->
                                         loadEnd(bean, error)
                                         if (error == null) {

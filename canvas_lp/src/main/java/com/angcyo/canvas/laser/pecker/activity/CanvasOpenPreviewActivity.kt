@@ -18,7 +18,7 @@ import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.firmware.FirmwareUpdateFragment
-import com.angcyo.engrave.loadingAsync
+import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.engrave.transition.OutOfSizeException
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
@@ -244,7 +244,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                     itemDrawable = bitmap?.toDrawable(resources)
 
                     openAction = {
-                        this@CanvasOpenPreviewActivity.loadingAsync({
+                        this@CanvasOpenPreviewActivity.engraveLoadingAsync({
                             bitmap.toBlackWhiteBitmapItemData()
                         }) {
                             canvasOpenModel.open(this@CanvasOpenPreviewActivity, it)

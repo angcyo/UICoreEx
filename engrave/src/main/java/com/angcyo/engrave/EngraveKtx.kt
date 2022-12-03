@@ -9,10 +9,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.loadingAsyncTimeout
 import com.angcyo.coroutine.launchLifecycle
 import com.angcyo.coroutine.withBlock
+import com.angcyo.dialog.LoadingDialog.LOADING_TIMEOUT
 import com.angcyo.dialog.hideLoading
-import com.angcyo.dialog.loading2
+import com.angcyo.dialog.loading
 import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
@@ -25,14 +27,13 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @since 2022/06/20
  */
 
-
 /**异步加载, 带loading dialog
  * [LifecycleOwner]
  * */
-fun <T> LifecycleOwner.loadingAsync(block: () -> T?, action: (T?) -> Unit = {}) {
+fun <T> LifecycleOwner.engraveLoadingAsync(block: () -> T?, action: (T?) -> Unit = {}) {
     val context = this
     if (context is ActivityResultCaller) {
-        context.strokeLoading { cancel, loadEnd ->
+        context.engraveStrokeLoadingCaller { cancel, loadEnd ->
             context.launchLifecycle {
                 val result = withBlock { block() }
                 action(result)
@@ -45,9 +46,30 @@ fun <T> LifecycleOwner.loadingAsync(block: () -> T?, action: (T?) -> Unit = {}) 
 }
 
 /**
+ * 当异步执行多久之后, 仍未返回结果时, 则自动显示loading
+ * [timeout] 异步执行超时时长, 毫秒
+ * */
+fun <T> LifecycleOwner.engraveLoadingAsyncTimeout(
+    block: () -> T?,
+    timeout: Long = LOADING_TIMEOUT,
+    action: (T?) -> Unit = {}
+) {
+    loadingAsyncTimeout(block, { context ->
+        if (context is ActivityResultCaller) {
+            context.engraveStrokeLoadingCaller { cancel, loadEnd ->
+                //no op
+            }
+        } else {
+            L.w("context is not ActivityResultCaller!")
+            null
+        }
+    }, timeout, action)
+}
+
+/**
  * TGStrokeLoadingDrawable 加载样式的loading
  * [cancel] 是否允许被取消*/
-fun ActivityResultCaller.strokeLoading(
+fun ActivityResultCaller.engraveStrokeLoadingCaller(
     cancel: Boolean = false,
     showErrorToast: Boolean = false,
     action: (isCancel: AtomicBoolean, loadEnd: (data: Any?, error: Throwable?) -> Unit) -> Unit
@@ -59,7 +81,7 @@ fun ActivityResultCaller.strokeLoading(
             is Context -> this
             else -> null
         } ?: return null
-        activity.strokeLoading2(cancel, showErrorToast, action)
+        activity.engraveStrokeLoading(cancel, showErrorToast, action)
     } catch (e: Exception) {
         e.printStackTrace()
         return null
@@ -68,13 +90,13 @@ fun ActivityResultCaller.strokeLoading(
 
 /**扩展的对象不一样
  * [Context]*/
-fun Context.strokeLoading2(
+fun Context.engraveStrokeLoading(
     cancel: Boolean = false,
     showErrorToast: Boolean = false,
     action: (isCancel: AtomicBoolean, loadEnd: (data: Any?, error: Throwable?) -> Unit) -> Unit
 ): Dialog? {
     val isCancel = AtomicBoolean(false)
-    val dialog = loading2(layoutId = R.layout.engrave_loading_layout, config = {
+    val dialog = loading(layoutId = R.layout.engrave_loading_layout, config = {
         cancelable = cancel
         onDialogInitListener = { dialog, dialogViewHolder ->
             val loadingDrawable = TGStrokeLoadingDrawable().apply {

@@ -7,7 +7,7 @@ import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
 import com.angcyo.component.getPhoto
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave.loadingAsync
+import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.Library
 import com.angcyo.library.ex._string
@@ -40,7 +40,7 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                 if (isDebugType() && Library.CLICK_COUNT++ % 2 == 0) {
                     it.context.dslSinglePickerImage(this) {
                         it?.firstOrNull()?.let { media ->
-                            itemFragment?.loadingAsync({
+                            itemFragment?.engraveLoadingAsync({
                                 media.loadPath()?.apply {
                                     //canvasView.addDrawableRenderer(toBitmap())
                                     //canvasView.addBitmapRenderer(toBitmap())
@@ -52,7 +52,7 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                 } else {
                     it.context.getPhoto(this) { bitmap ->
                         bitmap?.let {
-                            itemFragment?.loadingAsync({
+                            itemFragment?.engraveLoadingAsync({
                                 val path = libCacheFile(fileNameUUID(".png")).absolutePath
                                 bitmap.save(path)
                                 val newPath = path.luban()

@@ -12,7 +12,7 @@ import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.loadingAsync
+import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeToFile
@@ -48,7 +48,7 @@ object CanvasBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         operateBitmap.let { bitmap ->
                             item.dataBean.printsThreshold = getIntOrDef(
                                 CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD,
@@ -99,7 +99,7 @@ object CanvasBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         //direction
                         val direction = getIntOrDef(
                             CanvasRegulatePopupConfig2.KEY_DIRECTION,
@@ -206,7 +206,7 @@ object CanvasBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         operateBitmap.let { bitmap ->
 
                             item.dataBean.blackThreshold = getIntOrDef(
@@ -263,7 +263,7 @@ object CanvasBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         operateBitmap.let { bitmap ->
                             item.dataBean.inverse = getBooleanOrDef(
                                 CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT,
@@ -312,7 +312,7 @@ object CanvasBitmapHandler {
         val context = anchor.context
         val operateBitmap = item.operateBitmap!!
 
-        owner.loadingAsync({
+        owner.engraveLoadingAsync({
             operateBitmap.toGrayHandle()
         }) {
             it?.let {
@@ -346,7 +346,7 @@ object CanvasBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                 } else {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         item.dataBean.sealThreshold = getIntOrDef(
                             CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD,
                             item.dataBean.sealThreshold.toInt()
@@ -392,7 +392,7 @@ object CanvasBitmapHandler {
 
             onCropResultAction = { result ->
                 result?.let {
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         //剪切完之后, 默认黑白处理
                         val filter = result.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
                         item.updateBitmapOriginal(
@@ -453,7 +453,7 @@ object CanvasBitmapHandler {
                         CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
                         CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
                     )
-                    owner.loadingAsync({
+                    owner.engraveLoadingAsync({
                         originBitmap?.let {
                             ImageProcess.imageMesh(
                                 originBitmap,
@@ -464,7 +464,7 @@ object CanvasBitmapHandler {
                         }
                     }) {
                         it?.let {
-                            owner.loadingAsync({
+                            owner.engraveLoadingAsync({
                                 //剪切完之后, 默认背白处理
                                 val filter =
                                     it.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
