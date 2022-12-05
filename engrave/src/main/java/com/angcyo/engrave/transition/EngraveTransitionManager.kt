@@ -245,8 +245,13 @@ class EngraveTransitionManager {
                     when (dataEngraveType) {
                         DataCmd.ENGRAVE_TYPE_GCODE -> {
                             //GCode 数据合并
-                            val gcodeTransferDataInfo = _mergeTransferData(dataList)
-                            resultDataList.add(gcodeTransferDataInfo)
+                            if (transferConfigEntity.mergeGcodeData) {
+                                val gcodeTransferDataInfo = _mergeTransferData(dataList)
+                                resultDataList.add(gcodeTransferDataInfo)
+                            } else {
+                                //不合并GCode数据
+                                resultDataList.addAll(dataList)
+                            }
                         }
                         DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> {
                             //线段数据合并

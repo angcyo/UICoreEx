@@ -38,10 +38,13 @@ data class TransferConfigEntity(
 
     /**是否要合并相同类型的数据, 比如GCode数据, 线段数据等
      * 合并数据的总开关*/
-    var mergeData: Boolean = true,
+    var mergeData: Boolean = false,
 
     /**是否要合并路径数据*/
     var mergeBpData: Boolean = false,
+
+    /**是否要合并GCode数据*/
+    var mergeGcodeData: Boolean = false,
 
     /**是否要强制指定数据处理的模式
      * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]

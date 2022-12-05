@@ -183,7 +183,7 @@ object EngraveFlowDataHelper {
             this.taskId = taskId
             name = EngraveTransitionManager.generateEngraveName()
             dpi = LaserPeckerHelper.DPI_254
-            mergeData = true
+            mergeData = false
             dataMode = null
         }) {
             apply(TransferConfigEntity_.taskId.equal("$taskId"))
