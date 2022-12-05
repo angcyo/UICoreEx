@@ -22,6 +22,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.MainExecutor
+import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.wifip2p.data.ConnectStateWrap
@@ -599,7 +600,7 @@ class WifiP2p {
                         if (networkInfo?.isConnected == true && networkInfo.typeName == "WIFI_P2P") {
                             it.requestConnectionInfo(_channel, connectionInfoListener)//api14
                             wifiP2pModel.wifiP2pGroupData.postValue(wifiP2pGroup)
-                            if (Debug.isDebuggerConnected()) {
+                            if (isDebuggerConnected()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     it.requestNetworkInfo(_channel!!) {//api29
                                         L.i(it)
@@ -624,7 +625,7 @@ class WifiP2p {
                     // WiFi P2P当前设备信息发生变化
                     val device = intent.getParcelableExtra<WifiP2pDevice>(EXTRA_WIFI_P2P_DEVICE)
                     L.i(device)
-                    if (Debug.isDebuggerConnected()) {
+                    if (isDebuggerConnected()) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             manager?.requestDeviceInfo(_channel!!) {//api29
                                 L.i(device)

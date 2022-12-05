@@ -27,8 +27,7 @@ class RawTransition : IEngraveTransition {
         val data = dataBean?.data
         if (dataBean?.mtype == CanvasConstant.DATA_TYPE_RAW && !data.isNullOrEmpty()) {
 
-            val transferDataEntity = TransferDataEntity()
-            transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
+            val transferDataEntity = createTransferDataEntity(engraveProvider, transferConfigEntity)
             if (data.isGCodeContent()) {
                 //gcode数据
                 transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE

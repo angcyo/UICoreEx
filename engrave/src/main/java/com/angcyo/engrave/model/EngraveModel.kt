@@ -174,6 +174,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             if (isBatchEngraveSupport()) {
                 batchEngrave()
             } else {
+                buildString {
+                    append("开始雕刻任务:[${taskId}][${task.dataIndexList}] $task")
+                }.writeEngraveLog()
                 engraveNext()
             }
 
@@ -246,10 +249,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 engraveStateData.value = task
                 task.lpSaveEntity()
 
-                buildString {
-                    append("准备雕刻:${task}")
-                }.writeEngraveLog()
-
                 //
                 _startEngraveCmd(
                     engraveDataEntity.index,
@@ -305,7 +304,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
 
         buildString {
-            append("开始批量雕刻:[${task.bigIndex}] $indexList")
+            append("开始批量雕刻任务:${taskId} [${task.bigIndex}] $indexList")
             append(" type:${type.toLaserTypeString()}")
             append(" 加速级别:${precision}")
             append(" 直径:${diameter}")
@@ -401,7 +400,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
-            append("开始雕刻:[${transferDataEntity?.taskId ?: index}]")
+            append("开始雕刻指令:[${transferDataEntity?.taskId}][$index]")
             if (engraveLayer?.label.isNullOrBlank()) {
                 append(" mode:${engraveConfigEntity.layerMode.toDataModeStr()}")
             } else {

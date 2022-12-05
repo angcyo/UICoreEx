@@ -341,8 +341,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onItemVisibleChanged(itemRenderer: IRenderer, visible: Boolean) {
-                super.onItemVisibleChanged(itemRenderer, visible)
+            override fun onRenderItemVisibleChanged(itemRenderer: IRenderer, visible: Boolean) {
+                super.onRenderItemVisibleChanged(itemRenderer, visible)
                 doMain {
                     updateLayerLayout(vh, canvasView)
                 }
@@ -355,12 +355,12 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onItemBoundsChanged(
+            override fun onRenderItemBoundsChanged(
                 itemRenderer: IRenderer,
                 reason: Reason,
                 oldBounds: RectF
             ) {
-                super.onItemBoundsChanged(itemRenderer, reason, oldBounds)
+                super.onRenderItemBoundsChanged(itemRenderer, reason, oldBounds)
 
                 doMain {
                     updateControlLayout(vh, canvasView)
@@ -388,8 +388,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onItemSortChanged(itemList: List<BaseItemRenderer<*>>) {
-                super.onItemSortChanged(itemList)
+            override fun onRenderItemSortChanged(itemList: List<BaseItemRenderer<*>>) {
+                super.onRenderItemSortChanged(itemList)
                 //updateControlLayout(vh, canvasView)
                 doMain {
                     updateLayerListLayout(vh, canvasView)

@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.copyTo
+import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import java.io.ByteArrayOutputStream
@@ -80,7 +81,7 @@ class WaitReceivePacket(
             api.send(address, sendPacket)
         }
         if (receiveTimeout > 0) {
-            if (!Debug.isDebuggerConnected()) {
+            if (!isDebuggerConnected()) {
                 //非调试下, 防止debug中断
                 handle.postDelayed(_timeOutRunnable, receiveTimeout)
             }

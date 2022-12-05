@@ -88,6 +88,10 @@ class EngraveTransitionManager {
             rendererList: List<BaseItemRenderer<*>>,
             transferConfigEntity: TransferConfigEntity
         ): TransitionParam {
+            if (!transferConfigEntity.mergeData) {
+                return TransitionParam()
+            }
+
             var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
             val lastIndex = rendererList.lastIndex
 
@@ -103,16 +107,20 @@ class EngraveTransitionManager {
                         .toEngraveTypeOfDataMode()
                 if (dataEngraveType == DataCmd.ENGRAVE_TYPE_BITMAP_PATH) {
                     //线段数据, 需要计算出数据左上角的坐标
-                    val rotateBounds = baseItemRenderer.getRotateBounds()
-                    bpMinLeft = min(bpMinLeft ?: rotateBounds.left, rotateBounds.left)
-                    bpMinTop = min(bpMinTop ?: rotateBounds.top, rotateBounds.top)
+                    if (transferConfigEntity.mergeBpData) {
+                        val rotateBounds = baseItemRenderer.getRotateBounds()
+                        bpMinLeft = min(bpMinLeft ?: rotateBounds.left, rotateBounds.left)
+                        bpMinTop = min(bpMinTop ?: rotateBounds.top, rotateBounds.top)
+                    }
                 } else if (dataEngraveType == DataCmd.ENGRAVE_TYPE_GCODE) {
                     //GCode数据需要计算出首尾是哪个渲染器
-                    if (index == 0) {
-                        gCodeStartRenderer = baseItemRenderer
-                    }
-                    if (index == lastIndex) {
-                        gCodeEndRenderer = baseItemRenderer
+                    if (transferConfigEntity.mergeGcodeData) {
+                        if (index == 0) {
+                            gCodeStartRenderer = baseItemRenderer
+                        }
+                        if (index == lastIndex) {
+                            gCodeEndRenderer = baseItemRenderer
+                        }
                     }
                 }
             }

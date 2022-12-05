@@ -113,7 +113,33 @@ interface IEngraveTransition {
 
     //region---private---
 
-    /**一些通用配置属性初始化*/
+    /**创建一个传输的数据[TransferDataEntity], 并进行一些初始化*/
+    fun createTransferDataEntity(
+        engraveProvider: IEngraveProvider,
+        transferConfigEntity: TransferConfigEntity
+    ) = TransferDataEntity().apply {
+        initTransferDataIndex(this, engraveProvider, transferConfigEntity)
+    }
+
+    /**初始化传输数据的索引, 在构建[TransferDataEntity]之后, 尽快调用 */
+    @Private
+    fun initTransferDataIndex(
+        transferDataEntity: TransferDataEntity,
+        engraveProvider: IEngraveProvider,
+        transferConfigEntity: TransferConfigEntity,
+    ) {
+        val dataBean = engraveProvider.getEngraveDataItem()?.dataBean
+        val index = dataBean?.index ?: -1
+        transferDataEntity.index = if (index > 0) {
+            index
+        } else {
+            EngraveTransitionManager.generateEngraveIndex()
+        }
+        dataBean?.index = transferDataEntity.index
+        dataBean?.dpi = transferConfigEntity.dpi
+    }
+
+    /**一些通用配置属性初始化, 一般在数据完成之后调用*/
     @Private
     fun initTransferDataEntity(
         engraveProvider: IEngraveProvider,

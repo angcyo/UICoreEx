@@ -259,8 +259,7 @@ class GCodeTransition : IEngraveTransition {
         transferConfigEntity: TransferConfigEntity,
         gCodeFile: File
     ): TransferDataEntity {
-        val transferDataEntity = TransferDataEntity()
-        transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
+        val transferDataEntity = createTransferDataEntity(engraveProvider, transferConfigEntity)
 
         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
         initTransferDataEntity(engraveProvider, transferConfigEntity, transferDataEntity)

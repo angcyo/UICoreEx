@@ -7,10 +7,12 @@ import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
@@ -28,7 +30,9 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -175,6 +179,10 @@ class TransferModel : ViewModel() {
                 transferStateOnceData.postValue(transferState)
             } else {
                 //开始传输
+                "准备传输:[${taskId}][${list.firstOrNull()?.name}]${list.connect { it.index.toStr() }}".writeEngraveLog()
+
+                EngraveFlowDataHelper.clearTransferDataState(taskId)  //清空所有数据已经传输完成的状态, 从设备中读取判断
+
                 transferStateOnceData.postValue(transferState)
                 _transferNext(transferState)
             }
@@ -224,10 +232,20 @@ class TransferModel : ViewModel() {
             //全部传输完成
             _transferFinish(transferState)
         } else {
-            //需要传输数据
-            if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                //状态正常
-                transferData(transferState, transferDataEntity)
+            //需要传输数据, 从设备中读取索引
+            checkIndex(transferDataEntity.index) {
+                if (it) {
+                    //下位机已经有对应的索引文件, 则直接传输下一个
+                    transferDataEntity.isTransfer = true
+                    transferDataEntity.lpSaveEntity()
+                    "索引已存在[${transferDataEntity.index}], 跳过传输!".writeEngraveLog()
+                    _transferNext(transferState)//下一个
+                } else {
+                    if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                        //状态正常
+                        transferData(transferState, transferDataEntity)
+                    }
+                }
             }
         }
     }
@@ -241,6 +259,11 @@ class TransferModel : ViewModel() {
         transferStateOnceData.postValue(transferState)
         EngraveFlowDataHelper.finishTransferData(taskId)
         L.i("数据传输任务完成:${taskId}")
+
+        //进入空闲模式
+        ExitCmd().enqueue { bean, error ->
+            syncQueryDeviceState()
+        }
     }
 
     /**传输数据
@@ -251,7 +274,7 @@ class TransferModel : ViewModel() {
         action: (Throwable?) -> Unit = {}
     ) {
         val taskId = transferDataEntity.taskId
-        L.i("开始传输数据:[$taskId][${transferDataEntity.index}]")
+        "开始传输数据:[$taskId][${transferDataEntity.index}]".writeEngraveLog()
         val size = transferDataEntity.bytes()?.size ?: 0
         if (size <= 0) {
             "传输数据为空:${transferDataEntity.index}".writeErrorLog()

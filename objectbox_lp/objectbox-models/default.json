@@ -112,7 +112,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "8:3009380007793216686",
+      "lastPropertyId": "9:6217806725152144362",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -150,6 +150,11 @@
           "id": "8:3009380007793216686",
           "name": "dpi",
           "type": 7
+        },
+        {
+          "id": "9:6217806725152144362",
+          "name": "mergeGcodeData",
+          "type": 1
         }
       ],
       "relations": []

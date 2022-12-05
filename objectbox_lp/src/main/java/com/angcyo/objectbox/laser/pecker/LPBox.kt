@@ -29,6 +29,12 @@ inline fun <reified T> T.lpSaveEntity(): Long {
     return saveEntity(LPBox.PACKAGE_NAME)
 }
 
+/**批量保存或者更新
+ * id不为0时, 就是更新*/
+inline fun <reified T> Collection<T>.lpSaveAllEntity() {
+    boxOf(T::class.java, LPBox.PACKAGE_NAME).put(this)
+}
+
 /**快速获取[BoxStore]
  * [com.angcyo.objectbox.DslBoxKt.boxStoreOf]*/
 fun lpBoxStoreOf(action: BoxStore.() -> Unit = {}): BoxStore {

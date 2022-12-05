@@ -308,8 +308,8 @@ class BitmapTransition : IEngraveTransition {
             if (bitmap != null) {
                 val dataMode = getDataMode(dataBean, transferConfigEntity)
                 val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-                val transferDataEntity = TransferDataEntity()
-                transferDataEntity.index = EngraveTransitionManager.generateEngraveIndex()
+                val transferDataEntity =
+                    createTransferDataEntity(engraveProvider, transferConfigEntity)
 
                 //1:保存一份原始可视化数据
                 saveEngraveData(

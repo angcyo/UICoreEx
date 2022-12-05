@@ -1,7 +1,9 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -11,6 +13,7 @@ import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.*
+import com.angcyo.objectbox.laser.pecker.lpSaveAllEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.laser.pecker.lpUpdateOrCreateEntity
 import kotlin.math.max
@@ -178,13 +181,30 @@ object EngraveFlowDataHelper {
     //region ---传输/数据相关---
 
     /**构建或者获取生成数据需要的配置信息*/
-    fun generateTransferConfig(taskId: String?): TransferConfigEntity {
+    fun generateTransferConfig(
+        taskId: String?,
+        canvasDelegate: CanvasDelegate? = null
+    ): TransferConfigEntity {
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
             name = EngraveTransitionManager.generateEngraveName()
             dpi = LaserPeckerHelper.DPI_254
             mergeData = false
             dataMode = null
+
+            //数据dpi恢复
+            if (canvasDelegate != null) {
+                val list =
+                    EngraveTransitionManager.getRendererList(canvasDelegate, null)
+
+                list.find {
+                    it is DataItemRenderer && (it.getRendererRenderItem()?.dataBean?.dpi ?: 0f) > 0f
+                }?.let { item ->
+                    if (item is DataItemRenderer) {
+                        dpi = item.getRendererRenderItem()?.dataBean?.dpi ?: dpi
+                    }
+                }
+            }
         }) {
             apply(TransferConfigEntity_.taskId.equal("$taskId"))
         }
@@ -203,6 +223,15 @@ object EngraveFlowDataHelper {
         return TransferDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(TransferDataEntity_.taskId.equal("$taskId"))
         }
+    }
+
+    /**清空数据已经传输完成的状态*/
+    fun clearTransferDataState(taskId: String?) {
+        val list = getTransferDataList(taskId)
+        list.forEach {
+            it.isTransfer = false
+        }
+        list.lpSaveAllEntity()
     }
 
     /**获取索引[index]对应的数据, 用来雕刻*/

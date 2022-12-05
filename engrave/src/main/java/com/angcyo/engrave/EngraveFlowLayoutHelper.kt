@@ -25,6 +25,7 @@ import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -107,9 +108,20 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         }
     }
 
+    /**回调*/
+    var onStartEngraveAction: (taskId: String?) -> Unit = {}
+
     /**开始雕刻前回调*/
     open fun onStartEngrave(taskId: String?) {
+        onStartEngraveAction(taskId)
+    }
 
+    /**回调*/
+    var onStartEngraveTransferDataAction: (taskId: String?) -> Unit = {}
+
+    /**开始传输数据的回调*/
+    open fun onStartEngraveTransferData(taskId: String?) {
+        onStartEngraveTransferDataAction(taskId)
     }
 
     //region ---数据配置---
@@ -120,15 +132,26 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         engraveBackFlow = ENGRAVE_FLOW_PREVIEW
         showCloseView(true, _string(R.string.ui_back))
 
-        val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(flowTaskId)
+        val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(
+            flowTaskId,
+            engraveCanvasFragment?.canvasDelegate
+        )
 
         renderDslAdapter {
             TransferDataNameItem()() {
                 itemTransferConfigEntity = transferConfigEntity
+
+                observeItemChange {
+                    engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
+                }
             }
             TransferDataPxItem()() {
                 itemPxList = LaserPeckerHelper.findProductSupportPxList()
                 itemTransferConfigEntity = transferConfigEntity
+
+                observeItemChange {
+                    engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
+                }
             }
             EngraveDividerItem()()
             DslBlackButtonItem()() {
@@ -139,30 +162,33 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                         transferConfigEntity.lpSaveEntity()
                         //退出打印模式, 进入空闲模式
-                        engraveCanvasFragment?.fragment?.engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                            ExitCmd().enqueue { bean, error ->
-                                loadEnd(bean, error)
-                                if (error == null) {
-                                    engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                                    engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+                        engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
+                            syncSingle { countDownLatch ->
+                                ExitCmd().enqueue { bean, error ->
+                                    countDownLatch.countDown()
+                                    if (error == null) {
+                                        engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
 
-                                    val canvasDelegate = engraveCanvasFragment?.canvasDelegate
-                                    if (canvasDelegate == null) {
-                                        //不是画布上的数据, 可能是恢复的数据
+                                        val canvasDelegate = engraveCanvasFragment?.canvasDelegate
+                                        if (canvasDelegate == null) {
+                                            //不是画布上的数据, 可能是恢复的数据
+                                        } else {
+                                            onStartEngraveTransferData(flowTaskId)
+                                            transferModel.startCreateTransferData(
+                                                flowTaskId,
+                                                canvasDelegate
+                                            )
+                                        }
+
+                                        //last
+                                        renderFlowItems()
                                     } else {
-                                        transferModel.startCreateTransferData(
-                                            flowTaskId,
-                                            canvasDelegate
-                                        )
+                                        toastQQ(error.message)
                                     }
-
-                                    //last
-                                    renderFlowItems()
-                                } else {
-                                    toastQQ(error.message)
                                 }
                             }
-                        }
+                        })
                     }
                 }
             }
@@ -375,24 +401,26 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     checkExDevice {
                         showFocalDistance(it.context) {
                             showSafetyTips(it.context) {
-                                engraveCanvasFragment?.fragment?.engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                                    ExitCmd().enqueue { bean, error ->
-                                        loadEnd(bean, error)
-                                        if (error == null) {
-                                            //开始雕刻
-                                            onStartEngrave(taskId)
-                                            val taskEntity = engraveModel.startEngrave(taskId)
-                                            if (taskEntity.dataIndexList.isNullOrEmpty()) {
-                                                toastQQ(_string(R.string.no_data_engrave))
+                                engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
+                                    syncSingle { countDownLatch ->
+                                        ExitCmd().enqueue { bean, error ->
+                                            countDownLatch.countDown()
+                                            if (error == null) {
+                                                //开始雕刻
+                                                onStartEngrave(taskId)
+                                                val taskEntity = engraveModel.startEngrave(taskId)
+                                                if (taskEntity.dataIndexList.isNullOrEmpty()) {
+                                                    toastQQ(_string(R.string.no_data_engrave))
+                                                } else {
+                                                    engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                                    renderFlowItems()
+                                                }
                                             } else {
-                                                engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                                renderFlowItems()
+                                                toastQQ(error.message)
                                             }
-                                        } else {
-                                            toastQQ(error.message)
                                         }
                                     }
-                                }
+                                })
                             }
                         }
                     }
