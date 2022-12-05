@@ -57,8 +57,9 @@ class BitmapTransition : IEngraveTransition {
             var isLTR = true
 
             //追加一段路径
-            fun appendPath(ltr: Boolean) {
+            fun appendPath(ltr: Boolean, lineEnd: Boolean = false) {
                 lastBitmapPath?.apply {
+                    this.lineEnd = lineEnd
                     result.add(this)
                     lastBitmapPath = null
                     isLTR = ltr
@@ -99,7 +100,7 @@ class BitmapTransition : IEngraveTransition {
                         handleColor(x, hIndex, color, ltr)
                     }
                     //收尾
-                    appendPath(!ltr)
+                    appendPath(!ltr, true)
                 }
             } else {
                 //横向枚举, 从上往下, 从左到右
@@ -112,7 +113,7 @@ class BitmapTransition : IEngraveTransition {
                         handleColor(wIndex, y, color, ltr)
                     }
                     //收尾
-                    appendPath(!ltr)
+                    appendPath(!ltr, true)
                 }
             }
             return result
@@ -180,6 +181,31 @@ class BitmapTransition : IEngraveTransition {
                 }
             }
             return result
+        }
+
+        /**转换成调试的输出日志*/
+        fun List<BitmapPath>.toEngraveLog(): String = buildString {
+            this@toEngraveLog.forEach { bp ->
+                if (bp.orientation == LinearLayout.VERTICAL) {
+                    //垂直
+                    if (bp.ltr) {
+                        append("y:${bp.y}→${bp.y + bp.len} ")
+                    } else {
+                        append("${bp.y - bp.len}←${bp.y}:y ")
+                    }
+                } else {
+                    //水平
+                    if (bp.ltr) {
+                        append("x:${bp.x}→${bp.x + bp.len} ")
+                    } else {
+                        append("${bp.x - bp.len}←${bp.x}:x ")
+                    }
+                }
+
+                if (bp.lineEnd) {
+                    appendLine()
+                }
+            }
         }
 
         /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
@@ -333,7 +359,11 @@ class BitmapTransition : IEngraveTransition {
                         transferDataEntity.lines = listBitmapPath.size
 
                         //2:路径数据写入日志
-                        saveEngraveData(transferDataEntity.index, "$listBitmapPath", "bp")
+                        saveEngraveData(
+                            transferDataEntity.index,
+                            listBitmapPath.toEngraveLog(),
+                            "bp"
+                        )
                         //3:保存一份数据的预览图
                         val previewBitmap = listBitmapPath.toEngraveBitmap(
                             pxBitmap.width,

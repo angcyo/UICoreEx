@@ -16,5 +16,7 @@ data class BitmapPath(
     /**从左到右, 还是从右到左*/
     var ltr: Boolean,
     /**扫描方向*/
-    val orientation: Int = LinearLayout.HORIZONTAL
+    val orientation: Int = LinearLayout.HORIZONTAL,
+    /**一行是否结束*/
+    var lineEnd: Boolean = false,
 )
