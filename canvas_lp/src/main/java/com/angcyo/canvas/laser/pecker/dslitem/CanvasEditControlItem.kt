@@ -104,6 +104,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             bindWidthHeight(itemHolder)
             bindAxis(itemHolder)
             bindRotate(itemHolder)
+            bindFlip(itemHolder)
         } else {
             itemHolder.gone(R.id.item_drawable_view)
             itemHolder.gone(R.id.item_drawable_line_view)
@@ -349,6 +350,22 @@ class CanvasEditControlItem : DslAdapterItem() {
                         false
                     }
                 }
+            }
+        }
+    }
+
+    /**翻转*/
+    fun bindFlip(itemHolder: DslViewHolder) {
+        val renderer = itemRenderer
+
+        itemHolder.click(R.id.flip_horizontal_layout) {
+            if (renderer is DataItemRenderer) {
+                renderer.getRendererRenderItem()?.toggleFlipX(renderer)
+            }
+        }
+        itemHolder.click(R.id.flip_vertical_layout) {
+            if (renderer is DataItemRenderer) {
+                renderer.getRendererRenderItem()?.toggleFlipY(renderer)
             }
         }
     }

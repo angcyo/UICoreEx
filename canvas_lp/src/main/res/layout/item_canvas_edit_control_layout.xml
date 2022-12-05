@@ -176,6 +176,69 @@
         app:layout_constraintTop_toBottomOf="@id/item_rotate_view"
         tools:layout_width="100dp" />
 
+    <!--翻转-->
+    <LinearLayout
+        android:id="@+id/flip_horizontal_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@drawable/lib_theme_horizontal_gradient_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/lib_ldpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/rotate_label_view"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_flip_horizontal_view"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:padding="@dimen/lib_sdpi"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/crop_horizontal_flip_icon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/flip_horizontal_label_view"
+            style="@style/LibSubTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_sdpi"
+            android:text="@string/crop_horizontal"
+            android:textColor="@color/lib_theme_text_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/flip_vertical_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_hdpi"
+        android:background="@drawable/lib_theme_horizontal_gradient_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/lib_ldpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/flip_horizontal_layout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_flip_vertical_view"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:padding="@dimen/lib_sdpi"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/crop_vertical_flip_icon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/flip_vertical_label_view"
+            style="@style/LibSubTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lib_sdpi"
+            android:text="@string/crop_vertical"
+            android:textColor="@color/lib_theme_text_selector" />
+    </LinearLayout>
+
     <!--x轴-->
 
     <View
@@ -187,7 +250,7 @@
         android:layout_marginBottom="@dimen/lib_hdpi"
         android:background="@color/canvas_dark_gray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/rotate_label_view"
+        app:layout_constraintLeft_toRightOf="@id/flip_vertical_layout"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
