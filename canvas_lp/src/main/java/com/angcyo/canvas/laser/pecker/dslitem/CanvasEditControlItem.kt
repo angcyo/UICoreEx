@@ -6,6 +6,7 @@ import android.graphics.RectF
 import android.widget.TextView
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
+import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
@@ -17,6 +18,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.gone
 import com.angcyo.library.gesture.RectScaleGestureHandler
+import com.angcyo.library.toastQQ
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.clickIt
 import com.jaredrummler.android.colorpicker.ColorPanelView
@@ -359,13 +361,21 @@ class CanvasEditControlItem : DslAdapterItem() {
         val renderer = itemRenderer
 
         itemHolder.click(R.id.flip_horizontal_layout) {
-            if (renderer is DataItemRenderer) {
-                renderer.getRendererRenderItem()?.toggleFlipX(renderer)
+            when (renderer) {
+                is DataItemRenderer -> renderer.getRendererRenderItem()?.toggleFlipX(renderer)
+                is SelectGroupRenderer -> itemCanvasDelegate?.apply {
+                    itemsOperateHandler.toggleFlipX(this, renderer.selectItemList)
+                }
+                else -> toastQQ("nonsupport!")
             }
         }
         itemHolder.click(R.id.flip_vertical_layout) {
-            if (renderer is DataItemRenderer) {
-                renderer.getRendererRenderItem()?.toggleFlipY(renderer)
+            when (renderer) {
+                is DataItemRenderer -> renderer.getRendererRenderItem()?.toggleFlipY(renderer)
+                is SelectGroupRenderer -> itemCanvasDelegate?.apply {
+                    itemsOperateHandler.toggleFlipY(this, renderer.selectItemList)
+                }
+                else -> toastQQ("nonsupport!")
             }
         }
     }
