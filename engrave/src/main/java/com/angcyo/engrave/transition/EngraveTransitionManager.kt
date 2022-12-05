@@ -79,7 +79,7 @@ class EngraveTransitionManager {
         )
 
         /**获取图层, 获取雕刻的图层信息*/
-        fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.mode == mode }
+        fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.layerMode == mode }
 
         /**获取一个转换需要的额外参数, 在需要合并数据时需要
          * [rendererList] 需要是一个图层下的所有渲染器, 不能混合
@@ -154,7 +154,7 @@ class EngraveTransitionManager {
                     if (layerInfo == null) {
                         true
                     } else {
-                        it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                        it.dataItem?.dataBean?._dataMode == layerInfo.layerMode
                     }
                 } else {
                     false
@@ -187,7 +187,7 @@ class EngraveTransitionManager {
                     if (layerInfo == null) {
                         true
                     } else {
-                        it.dataItem?.dataBean?._dataMode == layerInfo.mode
+                        it.dataItem?.dataBean?._dataMode == layerInfo.layerMode
                     }
                 } else {
                     false
@@ -238,7 +238,7 @@ class EngraveTransitionManager {
                     transferConfigEntity,
                     param
                 )?.let { transferDataEntity ->
-                    transferDataEntity.layerMode = engraveLayerInfo.mode
+                    transferDataEntity.layerMode = engraveLayerInfo.layerMode
                     dataEngraveType = transferDataEntity.engraveDataType
                     dataList.add(transferDataEntity)
                 }

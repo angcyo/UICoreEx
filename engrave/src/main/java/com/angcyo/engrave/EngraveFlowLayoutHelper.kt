@@ -69,7 +69,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 if (it.error == null && it.state == TransferState.TRANSFER_STATE_FINISH) {
                     //默认选中第1个雕刻图层
                     selectLayerMode =
-                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.mode ?: 0
+                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerMode ?: 0
                 }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
                     renderFlowItems()
@@ -307,9 +307,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveLayerConfigItem()() {
                     itemSegmentList = layerList
                     itemCurrentIndex =
-                        max(0, layerList.indexOf(layerList.find { it.mode == selectLayerMode }))
+                        max(0, layerList.indexOf(layerList.find { it.layerMode == selectLayerMode }))
                     observeItemChange {
-                        selectLayerMode = layerList[itemCurrentIndex].mode
+                        selectLayerMode = layerList[itemCurrentIndex].layerMode
                         renderFlowItems()
                     }
                 }
@@ -502,7 +502,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                 EngraveFinishInfoItem()() {
                     itemTaskId = taskId
-                    itemLayerMode = engraveLayerInfo.mode
+                    itemLayerMode = engraveLayerInfo.layerMode
                 }
             }
             //

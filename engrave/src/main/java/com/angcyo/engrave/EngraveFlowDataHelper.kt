@@ -296,7 +296,7 @@ object EngraveFlowDataHelper {
         }
         val laserList = mutableListOf<EngraveLayerInfo>()
         EngraveTransitionManager.engraveLayerList.forEach {
-            if (typeModeList.contains(it.mode)) {
+            if (typeModeList.contains(it.layerMode)) {
                 laserList.add(it)
             }
         }
@@ -313,7 +313,7 @@ object EngraveFlowDataHelper {
             )
         }
         EngraveTransitionManager.engraveLayerList.forEach {
-            if (transferData?.layerMode == it.mode) {
+            if (transferData?.layerMode == it.layerMode) {
                 return it
             }
         }
@@ -326,7 +326,7 @@ object EngraveFlowDataHelper {
         val engraveConfigEntity = EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerMode.equal(engraveLayerInfo?.mode ?: 0))
+                    .and(EngraveConfigEntity_.layerMode.equal(engraveLayerInfo?.layerMode ?: 0))
             )
         }
         return engraveConfigEntity
@@ -338,6 +338,17 @@ object EngraveFlowDataHelper {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
         }
         return engraveConfigEntity
+    }
+
+    /**雕刻任务, 所有图层的雕刻参数初始化*/
+    fun generateEngraveConfig(taskId: String?): List<EngraveConfigEntity> {
+        val result = mutableListOf<EngraveConfigEntity>()
+        getTransferDataList(taskId).let {
+            for (data in it) {
+                result.add(generateEngraveConfig(taskId, data.layerMode))
+            }
+        }
+        return result
     }
 
     /**构建或者获取对应雕刻图层的雕刻配置信息*/

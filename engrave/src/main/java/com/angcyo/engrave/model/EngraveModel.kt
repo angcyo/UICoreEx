@@ -170,6 +170,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             _engraveTaskId = task.taskId
 
+            //构建所有图层的雕刻参数, 确保有数据
+            EngraveFlowDataHelper.generateEngraveConfig(task.taskId)
+
             //
             if (isBatchEngraveSupport()) {
                 batchEngrave()

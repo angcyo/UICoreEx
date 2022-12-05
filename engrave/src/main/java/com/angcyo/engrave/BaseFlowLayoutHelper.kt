@@ -451,7 +451,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             if (laserPeckerModel.isZOpen()) {
                 //所有设备的第三轴模式下, 不允许雕刻GCode数据
                 val gCodeLayer =
-                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                    EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {
                     val rendererList =
                         EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
@@ -470,7 +470,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             if (isC1 && laserPeckerModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
                 val gCodeLayer =
-                    EngraveTransitionManager.engraveLayerList.find { it.mode == CanvasConstant.DATA_MODE_GCODE }
+                    EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {
                     val notGCodeRendererList = EngraveTransitionManager.getRendererListNot(
                         canvasDelegate,

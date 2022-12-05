@@ -16,14 +16,14 @@ data class EngraveLayerInfo(
      * [CanvasConstant.DATA_MODE_GCODE] gcode数据格式
      * [CanvasConstant.DATA_MODE_BLACK_WHITE] 线段数据格式
      * */
-    val mode: Int,
+    val layerMode: Int,
     /**界面显示的标签*/
     val label: CharSequence
 ) : IToText, IToValue {
 
     override fun toText(): CharSequence = label
 
-    override fun toValue(): Any = mode
+    override fun toValue(): Any = layerMode
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -31,13 +31,13 @@ data class EngraveLayerInfo(
 
         other as EngraveLayerInfo
 
-        if (mode != other.mode) return false
+        if (layerMode != other.layerMode) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return mode
+        return layerMode
     }
 
 }
