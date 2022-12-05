@@ -8,6 +8,7 @@ import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.unit.PointValueUnit
@@ -22,14 +23,6 @@ import kotlin.math.min
  * @since 2022/09/19
  */
 class TextPropertyControlItem : DslAdapterItem() {
-
-    companion object {
-        /**文本最小的字体大小, 像素*/
-        const val TEXT_MIN_SIZE = 5f
-
-        /**文本最大的字体大小, 像素*/
-        const val TEXT_MAX_SIZE = 500f
-    }
 
     var itemRenderer: IRenderer? = null
 
@@ -81,8 +74,12 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = clamp(number.toFloat(), TEXT_MIN_SIZE, TEXT_MAX_SIZE)
-                    val pixel = itemPointValueUnit.convertValueToPixel(size)
+                    val size = itemPointValueUnit.convertValueToPixel(number)
+                    val pixel = clamp(
+                        size.toFloat(),
+                        HawkEngraveKeys.minTextSize,
+                        HawkEngraveKeys.maxTextSize
+                    )
                     renderer.dataTextItem?.updateTextSize(pixel, renderer)
                 }
             }
@@ -97,7 +94,10 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(valueUit.convertValueToPixel(number).toFloat(), TEXT_MAX_SIZE)
+                    val size = min(
+                        valueUit.convertValueToPixel(number).toFloat(),
+                        HawkEngraveKeys.maxTextSize
+                    )
                     renderer.dataTextItem?.updateTextWordSpacing(size, renderer)
                 }
             }
@@ -112,7 +112,10 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(valueUit.convertValueToPixel(number).toFloat(), TEXT_MAX_SIZE)
+                    val size = min(
+                        valueUit.convertValueToPixel(number).toFloat(),
+                        HawkEngraveKeys.maxTextSize
+                    )
                     renderer.dataTextItem?.updateTextLineSpacing(size, renderer)
                 }
             }

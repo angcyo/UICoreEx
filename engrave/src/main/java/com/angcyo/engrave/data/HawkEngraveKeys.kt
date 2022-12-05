@@ -115,6 +115,13 @@ object HawkEngraveKeys {
     /**最大的外部导入文件行数, 1W行 */
     var openFileLineCount: Long by HawkPropertyValue<Any, Long>(10_000)
 
+    /**最小的文本字体大小, 像素*/
+    @Pixel
+    var minTextSize: Float by HawkPropertyValue<Any, Float>(5f)
+
+    @Pixel
+    var maxTextSize: Float by HawkPropertyValue<Any, Float>(500f)
+
     //---功能固件范围配置---
 
     /**
