@@ -85,6 +85,7 @@ data class EngraveCmd(
                 diameter = diameter,
                 bigIndex = bigIndex,
                 indexNum = indexList.size(),
+                indexList = indexList,
                 powerList = powerList,
                 depthList = depthList,
                 timeList = timeList,
