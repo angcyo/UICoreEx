@@ -159,6 +159,7 @@ class PreviewModel : LifecycleViewModel() {
         previewInfoData.updateValue(previewInfo)
         previewInfo?.let {
             val originBounds = previewInfo.originBounds
+            val rotateBounds = previewInfo.rotateBounds //旋转后的矩形
             val zPause = previewInfo.zState
             if (zPause == null) {
                 //非第三轴预览模式下
@@ -166,13 +167,13 @@ class PreviewModel : LifecycleViewModel() {
                     //需要中心点预览
                     if (laserPeckerModel.isC1()) {
                         //C1设备显示中心点
-                        _previewShowCenter(originBounds, async)
+                        _previewShowCenter(rotateBounds, async)
                     } else {
                         if (HawkEngraveKeys.enableRectCenterPreview) {
                             //矩形中心点预览
-                            originBounds?.let {
-                                val centerX = originBounds.centerX()
-                                val centerY = originBounds.centerY()
+                            rotateBounds?.let {
+                                val centerX = it.centerX()
+                                val centerY = it.centerY()
                                 val bounds = RectF(centerX, centerY, centerX + 1f, centerY + 1f)
                                 if (previewInfo.isFourPointPreview) {
                                     _previewRangeRect(bounds, bounds, 0f, async)
@@ -182,7 +183,7 @@ class PreviewModel : LifecycleViewModel() {
                             }
                         } else {
                             //设备中心点
-                            _previewShowCenter(originBounds, async)
+                            _previewShowCenter(rotateBounds, async)
                         }
                     }
                 } else {
