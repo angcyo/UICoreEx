@@ -40,7 +40,7 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 object LaserPeckerHelper {
 
     /**初始化指令, 失败后重试的次数*/
-    const val INIT_RETRY_COUNT = 3
+    var INIT_RETRY_COUNT = 3
 
     //region ---产品名称---
 
