@@ -270,7 +270,7 @@ class GCodeTransition : IEngraveTransition {
             pathGCodeText.toByteArray().writeTransferDataPath("${transferDataEntity.index}")
 
         //2:保存一份GCode文本数据/原始数据
-        saveEngraveData(transferDataEntity.index, pathGCodeText, "gcode")
+        saveEngraveData(transferDataEntity.index, pathGCodeText, IEngraveTransition.EXT_GCODE)
 
         val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
 

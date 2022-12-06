@@ -40,6 +40,15 @@ interface IEngraveTransition {
         /**存放元素转成数据后, 数据再次预览图的扩展名*/
         const val EXT_DATA_PREVIEW = ".p.png"
 
+        /**图片路径数据*/
+        const val EXT_BP = ".bp"
+
+        /**抖动数据*/
+        const val EXT_DT = ".dt"
+
+        /**gcode数据*/
+        const val EXT_GCODE = ".gcode"
+
         /**保存雕刻数据到文件
          * [index] 需要保存的文件名(雕刻索引), 无扩展
          * [suffix] 文件后缀, 扩展名

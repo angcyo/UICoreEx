@@ -4,12 +4,15 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.items.data.DataItemRenderer
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.component.file.appFilePath
 import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.library.ex.clamp
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.uuid
+import com.angcyo.engrave.transition.IEngraveTransition
+import com.angcyo.library.ex.*
+import com.angcyo.library.libCacheFile
+import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.*
@@ -24,6 +27,65 @@ import kotlin.math.max
  * @since 2022/10/09
  */
 object EngraveFlowDataHelper {
+
+    /**分享最近的雕刻日志*/
+    fun shareEngraveLog() {
+        val logList = mutableListOf(logPath())
+        logList.addAll(getTaskEngraveLogFilePath())
+        logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.zip").absolutePath)
+            ?.shareFile()
+    }
+
+    /**最后一次雕刻任务的数据日志文件路径*/
+    fun getTaskEngraveLogFilePath(): List<String> {
+        val result = mutableListOf<String>()
+        val task = EngraveTaskEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            //no op
+        }
+        task?.dataIndexList?.forEach {
+            //.png
+            var path = appFilePath(
+                "${it}${IEngraveTransition.EXT_PREVIEW}",
+                CanvasConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                result.add(path)
+            }
+            //.p.png
+            path = appFilePath(
+                "${it}${IEngraveTransition.EXT_DATA_PREVIEW}",
+                CanvasConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                result.add(path)
+            }
+            //.bp
+            path = appFilePath(
+                "${it}${IEngraveTransition.EXT_BP}",
+                CanvasConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                result.add(path)
+            }
+            //.dt
+            path = appFilePath(
+                "${it}${IEngraveTransition.EXT_DT}",
+                CanvasConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                result.add(path)
+            }
+            //.gcode
+            path = appFilePath(
+                "${it}${IEngraveTransition.EXT_GCODE}",
+                CanvasConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                result.add(path)
+            }
+        }
+        return result
+    }
 
     //region ---task---
 

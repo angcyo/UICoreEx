@@ -362,7 +362,7 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             listBitmapPath.toEngraveLog(),
-                            "bp"
+                            IEngraveTransition.EXT_BP
                         )
                         //3:保存一份数据的预览图
                         val previewBitmap = listBitmapPath.toEngraveBitmap(
@@ -401,7 +401,11 @@ class BitmapTransition : IEngraveTransition {
                         transferDataEntity.dataPath =
                             pair.second.writeTransferDataPath("${transferDataEntity.index}")
                         //路径数据写入日志
-                        saveEngraveData(transferDataEntity.index, pair.first, "dt")
+                        saveEngraveData(
+                            transferDataEntity.index,
+                            pair.first,
+                            IEngraveTransition.EXT_DT
+                        )
                         //3:保存一份数据的预览图
                         val previewBitmap =
                             pair.first.toEngraveDitheringBitmap(pxBitmap.width, pxBitmap.height)
