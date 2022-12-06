@@ -32,7 +32,7 @@ object EngraveFlowDataHelper {
     fun shareEngraveLog() {
         val logList = mutableListOf(logPath())
         logList.addAll(getTaskEngraveLogFilePath())
-        logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd_HH-mm-ss")}.zip").absolutePath)
+        logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
             ?.shareFile()
     }
 

@@ -69,7 +69,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 if (it.error == null && it.state == TransferState.TRANSFER_STATE_FINISH) {
                     //默认选中第1个雕刻图层
                     selectLayerMode =
-                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerMode ?: 0
+                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerMode
+                            ?: 0
                 }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
                     renderFlowItems()
@@ -307,7 +308,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveLayerConfigItem()() {
                     itemSegmentList = layerList
                     itemCurrentIndex =
-                        max(0, layerList.indexOf(layerList.find { it.layerMode == selectLayerMode }))
+                        max(
+                            0,
+                            layerList.indexOf(layerList.find { it.layerMode == selectLayerMode })
+                        )
                     observeItemChange {
                         selectLayerMode = layerList[itemCurrentIndex].layerMode
                         renderFlowItems()
@@ -447,6 +451,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
+
+                //分享雕刻日志
+                if (isDebug()) {
+                    itemClick = {
+                        EngraveFlowDataHelper.shareEngraveLog()
+                    }
+                }
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
@@ -462,6 +473,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngravingInfoItem()() {
                 itemTaskId = flowTaskId
             }
+            //---
             EngravingControlItem()() {
                 itemTaskId = flowTaskId
                 itemPauseAction = { isPause ->
