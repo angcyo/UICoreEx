@@ -39,6 +39,9 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  */
 object LaserPeckerHelper {
 
+    /**初始化指令, 失败后重试的次数*/
+    const val INIT_RETRY_COUNT = 3
+
     //region ---产品名称---
 
     //1为450nm激光, 波长
@@ -782,11 +785,13 @@ object LaserPeckerHelper {
             if (it == null || it is InterruptedException) {
                 //初始化完成
                 end(it)
-            } else if (count < 3) {
+            } else if (count < INIT_RETRY_COUNT) {
                 //再来一次
                 doBack {
                     sendInitCommand(name, address, isAutoConnect, count + 1, end)
                 }
+            } else {
+                end(it)
             }
         }
     }
