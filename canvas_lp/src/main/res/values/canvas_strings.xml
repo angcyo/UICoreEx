@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="canvas_open_label">使用UICoreDemo打开</string>
+    <string name="canvas_open_label">@string/app_name</string>
     <string name="canvas_open">Open</string>
     <string name="font_import_fail">Font import failed</string>
     <string name="font_import_success">Font imported successfully</string>
