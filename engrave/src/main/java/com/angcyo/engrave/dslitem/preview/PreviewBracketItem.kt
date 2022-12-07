@@ -21,6 +21,7 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.toast
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.isTouchFinish
 
 /**
  * 支架控制item
@@ -31,12 +32,6 @@ import com.angcyo.widget.DslViewHolder
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class PreviewBracketItem : DslAdapterItem() {
-
-    companion object {
-        /**支架的最大移动步长*/
-        @MM
-        val BRACKET_MAX_STEP: Int = 65535//130, 65535
-    }
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -72,17 +67,34 @@ class PreviewBracketItem : DslAdapterItem() {
                 onNumberResultAction = { number ->
                     val numberPixel = valueUnit.convertValueToPixel(number)
                     var size = numberPixel.toMm()
-                    size = clamp(size, 1f, BRACKET_MAX_STEP.toFloat())
+                    size = clamp(size, 1f, EngravePreviewCmd.BRACKET_MAX_STEP.toFloat())
                     HawkEngraveKeys.lastBracketHeight = size
                 }
             }
         }
-        itemHolder.click(R.id.bracket_up_view) {
-            bracketUpCmd()
+        //支架上升
+        itemHolder.longTouch(R.id.bracket_up_view) { view, event, eventType ->
+            when (eventType) {
+                DslViewHolder.EVENT_TYPE_CLICK -> bracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
+                DslViewHolder.EVENT_TYPE_LONG_PRESS -> bracketUpCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
+            }
+            if (event.isTouchFinish()) {
+                bracketStopCmd()
+            }
+            true
         }
-        itemHolder.click(R.id.bracket_down_view) {
-            bracketDownCmd()
+        //支架下降
+        itemHolder.longTouch(R.id.bracket_down_view) { view, event, eventType ->
+            when (eventType) {
+                DslViewHolder.EVENT_TYPE_CLICK -> bracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
+                DslViewHolder.EVENT_TYPE_LONG_PRESS -> bracketDownCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
+            }
+            if (event.isTouchFinish()) {
+                bracketStopCmd()
+            }
+            true
         }
+        //停止
         itemHolder.click(R.id.bracket_stop_view) {
             bracketStopCmd()
         }
@@ -91,8 +103,11 @@ class PreviewBracketItem : DslAdapterItem() {
     //
 
     /**支架上升*/
-    fun bracketUpCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
+    fun bracketUpCmd(
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
+        action: IReceiveBeanAction? = null
+    ) {
+        val cmd = EngravePreviewCmd.previewBracketUpCmd(step)
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))
@@ -102,8 +117,11 @@ class PreviewBracketItem : DslAdapterItem() {
     }
 
     /**支架下降*/
-    fun bracketDownCmd(action: IReceiveBeanAction? = null) {
-        val cmd = EngravePreviewCmd.previewBracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
+    fun bracketDownCmd(
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
+        action: IReceiveBeanAction? = null
+    ) {
+        val cmd = EngravePreviewCmd.previewBracketDownCmd(step)
         cmd.enqueue { bean, error ->
             if (bean?.parse<EngravePreviewParser>()?.isBracketConnect() != true) {
                 toast(_string(R.string.bracket_not_connect))

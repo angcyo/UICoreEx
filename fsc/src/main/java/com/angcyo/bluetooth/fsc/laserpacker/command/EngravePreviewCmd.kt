@@ -75,6 +75,10 @@ data class EngravePreviewCmd(
 
     companion object {
 
+        /**支架的最大移动步长*/
+        @MM
+        val BRACKET_MAX_STEP: Int = 65535//130, 65535
+
         /**获取最佳限制框的path*/
         fun getLimitPath(
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value,
@@ -391,7 +395,7 @@ data class EngravePreviewCmd(
          * 返回:  AA BB 08 02 06 00 01 00 00 00 09
          *       AA BB 08 02 06 00 00 00 00 00 08
          * */
-        fun previewBracketUpCmd(@MM step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketUpCmd(@MM step: Int = BRACKET_MAX_STEP): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x03 //0x01 //0x02
@@ -407,7 +411,7 @@ data class EngravePreviewCmd(
 
         /**支架降
          * [step] 步长1mm*/
-        fun previewBracketDownCmd(@MM step: Int = 65535): EngravePreviewCmd {
+        fun previewBracketDownCmd(@MM step: Int = BRACKET_MAX_STEP): EngravePreviewCmd {
             return EngravePreviewCmd(0x06).apply {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
                     d1 = 0x02 //0x00 //0x03
