@@ -21,5 +21,8 @@ data class LaserTypeInfo(
     /**描述字符*/
     val label: CharSequence,
 ) : IToText {
-    override fun toText(): CharSequence = "${wave}nm (${label})"  //label
+
+    //override fun toText(): CharSequence = "${wave}nm (${label})"  //label
+
+    override fun toText(): CharSequence = "${wave}nm"  //label
 }
