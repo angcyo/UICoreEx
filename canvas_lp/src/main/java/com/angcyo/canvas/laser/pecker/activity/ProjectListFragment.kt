@@ -1,5 +1,6 @@
 package com.angcyo.canvas.laser.pecker.activity
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.removeThis
 import com.angcyo.canvas.data.CanvasProjectBean
@@ -11,6 +12,7 @@ import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.engrave.R
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.widget.recycler.resetLayoutManager
@@ -30,6 +32,7 @@ class ProjectListFragment : BaseDslFragment() {
         fragmentTitle = _string(R.string.project_title)
         fragmentConfig.isLightStyle = true
         fragmentConfig.showTitleLineView = true
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(getColor(R.color.lib_white))
 
         page.firstPageIndex = 0
         enableRefresh = true
