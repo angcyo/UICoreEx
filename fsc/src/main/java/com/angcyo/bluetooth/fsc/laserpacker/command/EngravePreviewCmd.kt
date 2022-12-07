@@ -79,7 +79,11 @@ data class EngravePreviewCmd(
         @MM
         val BRACKET_MAX_STEP: Int = 65535//130, 65535
 
-        /**获取最佳限制框的path*/
+        /**获取最佳限制框的path,
+         * [com.angcyo.engrave.EngraveProductLayoutHelper.PREVIEW_COLOR] 最佳的限制框, 蓝光提示
+         *
+         * [getBoundsPath]
+         * */
         fun getLimitPath(
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value,
             includeLimitPath: Boolean = true,
@@ -97,6 +101,11 @@ data class EngravePreviewCmd(
             } else if (peckerModel.isCarOpen()) {
                 //C1平台移动模式
                 productInfo?.carLimitPath
+            } else if (peckerModel.isPenMode()) {
+                //画笔模块
+                productInfo?.penBounds?.let { rect ->
+                    Path().apply { addRect(rect, Path.Direction.CW) }
+                }
             } else if (includeLimitPath) {
                 productInfo?.limitPath
             } else {
@@ -105,7 +114,10 @@ data class EngravePreviewCmd(
             return limitPath
         }
 
-        /**获取最大物理的path*/
+        /**获取最大物理的path
+         * [com.angcyo.engrave.EngraveProductLayoutHelper.ENGRAVE_COLOR] 物理范围, 红光提示
+         * [getLimitPath]
+         * */
         fun getBoundsPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
             val boundsPath = if (peckerModel.isZOpen()) {
@@ -116,6 +128,10 @@ data class EngravePreviewCmd(
                 productInfo?.sLimitPath
             } else if (peckerModel.isCarOpen()) {
                 productInfo?.carLimitPath
+            } else if (peckerModel.isPenMode()) {
+                productInfo?.penBounds?.let { rect ->
+                    Path().apply { addRect(rect, Path.Direction.CW) }
+                }
             } else if (productInfo != null) {
                 Path().apply {
                     addRect(productInfo.bounds, Path.Direction.CW)

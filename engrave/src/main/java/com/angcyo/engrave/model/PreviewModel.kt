@@ -18,7 +18,7 @@ import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.library.annotation.Private
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.updateValue
-import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmHoldDataNull
 
 /**
  * 预览数据存储
@@ -136,7 +136,7 @@ class PreviewModel : LifecycleViewModel() {
     /**当前正在预览的信息, 退出预览模式时, 需要清空数据
      * [com.angcyo.engrave.EngravePreviewLayoutHelper.bindDeviceState] 清空数据
      * */
-    val previewInfoData = vmDataNull<PreviewInfo?>()
+    val previewInfoData = vmHoldDataNull<PreviewInfo?>()
 
     val engraveModel = vmApp<EngraveModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -301,7 +301,11 @@ class PreviewModel : LifecycleViewModel() {
         sendCmd: Boolean = true,
         action: PreviewInfo.() -> Unit
     ) {
-        previewInfoData.value?.let {
+        var previewInfo = previewInfoData.value
+        if (previewInfo == null) {
+            previewInfo = previewInfoData.beforeNonValue
+        }
+        previewInfo?.let {
             defaultPreviewInfo(it)
             it.action()
             if (sendCmd) {

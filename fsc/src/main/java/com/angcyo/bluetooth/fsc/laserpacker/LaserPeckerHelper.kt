@@ -262,7 +262,10 @@ object LaserPeckerHelper {
 
     /**
      * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
-     * 解析产品信息*/
+     * 解析产品信息
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getBoundsPath]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getLimitPath]
+     * */
     fun parseProductInfo(softwareVersion: Int, center: Boolean? = null): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
 
@@ -280,6 +283,7 @@ object LaserPeckerHelper {
         val bounds = RectF()
         val previewBounds = RectF()
         val carPreviewBounds = RectF()
+        val penBounds = RectF()
         var isOriginCenter = center ?: false
 
         val limitPath = Path()
@@ -333,12 +337,17 @@ object LaserPeckerHelper {
         zLimitPath.addRect(left, top, right, zMax, Path.Direction.CW)
         rLimitPath.addRect(left, top, right, rMax, Path.Direction.CW)
         sLimitPath.addRect(left, top, right, sMax, Path.Direction.CW)
-        //C1移动平台模式限制大小
+        //C1移动平台模式限制宽度大小
         val carWPhys = wPhys - 50
         val carRight =
             mmValueUnit.convertValueToPixel(if (isOriginCenter) carWPhys / 2f else carWPhys.toFloat())
         carLimitPath.addRect(left, top, carRight, carMax, Path.Direction.CW)
         carPreviewBounds.set(left, top, carRight, bottom)
+        //C1画笔模式限制高度大小
+        val penHPhys = hPhys - 20
+        val penBottom =
+            mmValueUnit.convertValueToPixel(if (isOriginCenter) penHPhys / 2f else penHPhys.toFloat())
+        penBounds.set(left, top, right, penBottom)
 
         //最佳预览范围设置
         when (name) {
@@ -448,6 +457,7 @@ object LaserPeckerHelper {
             this.sLimitPath = sLimitPath
             this.carLimitPath = carLimitPath
             this.carPreviewBounds = carPreviewBounds
+            this.penBounds = penBounds
         }
     }
 

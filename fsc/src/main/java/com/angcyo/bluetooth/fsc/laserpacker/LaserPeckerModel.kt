@@ -76,7 +76,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         deviceModelData.updateValue(model)
     }
 
-    /**更新设备版本, 设备信息*/
+    /**更新设备版本, 设备信息.*/
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
         "设备版本:$queryVersionParser".writeBleLog(L.INFO)

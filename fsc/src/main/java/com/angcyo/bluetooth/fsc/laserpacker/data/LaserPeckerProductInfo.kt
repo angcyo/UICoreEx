@@ -46,7 +46,7 @@ data class LaserPeckerProductInfo(
     var widthPhys: Int = 0,
     @MM
     var heightPhys: Int = 0,
-    /**机器物理的范围, 像素, 在手机上的像素*/
+    /**机器物理的范围, 像素, 在手机上的像素 */
     @Pixel
     var bounds: RectF,
     /**机器的最佳预览范围, 像素, 在手机上的像素*/
@@ -73,6 +73,15 @@ data class LaserPeckerProductInfo(
     /**C1平台移动/小车模式,最大预览范围*/
     @Pixel
     var carPreviewBounds: RectF? = null,
+
+    /** C1画笔模块, 最大高度390mm
+     * limit path 同样是这个范围
+     * */
+    @Pixel
+    var penBounds: RectF? = null,
+
+    //---
+
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,
