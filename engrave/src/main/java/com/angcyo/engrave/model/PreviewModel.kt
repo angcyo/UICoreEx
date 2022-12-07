@@ -294,15 +294,20 @@ class PreviewModel : LifecycleViewModel() {
         }
     }
 
-    /**更新预览的操作, 并且重新发送预览指定*/
+    /**更新预览的操作, 并且重新发送预览指定
+     * [async] 是否需要异步发送指令
+     * [sendCmd] 是否需要发送指令, 否则只更新信息
+     * [restore] 是否需要恢复状态
+     * */
     @AnyThread
     fun updatePreview(
         async: Boolean = true,
         sendCmd: Boolean = true,
+        restore: Boolean = false,
         action: PreviewInfo.() -> Unit
     ) {
         var previewInfo = previewInfoData.value
-        if (previewInfo == null && sendCmd) {
+        if (previewInfo == null && restore) {
             previewInfo = previewInfoData.beforeNonValue
         }
         previewInfo?.let {

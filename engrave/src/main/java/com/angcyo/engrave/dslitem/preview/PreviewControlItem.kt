@@ -57,7 +57,7 @@ class PreviewControlItem : BasePreviewItem() {
         ) { viewHolder, item ->
             if (!item.selected) {
                 //范围预览
-                previewModel.updatePreview {
+                previewModel.updatePreview(restore = true) {
                     isCenterPreview = false
                 }
                 item.selected = true
@@ -74,7 +74,7 @@ class PreviewControlItem : BasePreviewItem() {
             false
         ) { viewHolder, item ->
             if (!item.selected) {
-                previewModel.updatePreview {
+                previewModel.updatePreview(restore = true) {
                     isCenterPreview = true
                 }
                 item.selected = true
@@ -90,7 +90,7 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.bracket_stop_svg,
             false
         ) { viewHolder, item ->
-            previewModel.updatePreview {
+            previewModel.updatePreview(restore = true) {
                 isCenterPreview = false
                 //z轴需要处于的状态
                 zState = PreviewInfo.Z_STATE_PAUSE
@@ -104,7 +104,7 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.preview_pause_svg,
             false
         ) { viewHolder, item ->
-            previewModel.updatePreview {
+            previewModel.updatePreview(restore = true) {
                 isCenterPreview = false
                 //z轴需要处于的状态
                 zState = PreviewInfo.Z_STATE_CONTINUE
@@ -118,7 +118,7 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.scroll_preview_svg,
             false
         ) { viewHolder, item ->
-            previewModel.updatePreview {
+            previewModel.updatePreview(restore = true) {
                 isCenterPreview = false
                 //z轴需要处于的状态
                 zState = PreviewInfo.Z_STATE_SCROLL
