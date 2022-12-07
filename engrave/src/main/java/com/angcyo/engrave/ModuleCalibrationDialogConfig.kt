@@ -31,14 +31,14 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
             dialog.cancel()
         }
 
-        dialogViewHolder.click(R.id.start_button) {
-            EngravePreviewCmd.startCalibrationCmd().enqueue { bean, error ->
-                if (error == null) {
-                    dialogViewHolder.invisible(R.id.start_button)
-                    dialogViewHolder.visible(R.id.finish_button)
-                    cancelable = false
-                }
+        if (BuildConfig.DEBUG) {
+            dialogViewHolder.click(R.id.lib_image_view) {
+                startCalibrationCmd(dialogViewHolder)
             }
+        }
+
+        dialogViewHolder.click(R.id.start_button) {
+            startCalibrationCmd(dialogViewHolder)
         }
 
         dialogViewHolder.click(R.id.finish_button) {
@@ -47,6 +47,17 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
                     dialog.dismiss()
                     onModuleCalibrationAction(true)
                 }
+            }
+        }
+    }
+
+    /**开始对笔指令*/
+    fun startCalibrationCmd(dialogViewHolder: DslViewHolder) {
+        EngravePreviewCmd.startCalibrationCmd().enqueue { bean, error ->
+            if (error == null) {
+                dialogViewHolder.invisible(R.id.start_button)
+                dialogViewHolder.visible(R.id.finish_button)
+                cancelable = false
             }
         }
     }

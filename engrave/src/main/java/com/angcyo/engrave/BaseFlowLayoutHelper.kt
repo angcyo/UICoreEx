@@ -180,11 +180,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**开始预览*/
     @CallPoint
     fun startPreview() {
-        engraveFlow = if (laserPeckerModel.isPenMode()) {
+        /*engraveFlow = if (laserPeckerModel.isPenMode()) {
             ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
         } else {
             ENGRAVE_FLOW_PREVIEW
-        }
+        }*/ //2022-12-7
+        engraveFlow = ENGRAVE_FLOW_PREVIEW
     }
 
     /**根据不同的流程, 渲染不同的界面*/

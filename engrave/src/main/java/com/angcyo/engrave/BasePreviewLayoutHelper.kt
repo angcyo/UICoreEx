@@ -53,6 +53,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     //region ---预览界面/支架控制---
 
     /**渲染预览前配置界面*/
+    @Deprecated("废弃, 握笔校准移到预览中")
     fun renderPreviewBeforeItems() {
         renderDslAdapter {
             if (laserPeckerModel.needShowExDeviceTipItem()) {
@@ -104,7 +105,16 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             }
             if (laserPeckerModel.isPenMode()) {
                 //握笔模式, 不支持亮度调节, 握笔校准
-                //ModuleCalibrationItem()()
+                ModuleCalibrationItem()() {
+                    onCalibrationAction = {
+                        syncQueryDeviceState { bean, error ->
+                            if (error == null) {
+                                //刷新界面
+                                updateAllItem()
+                            }
+                        }
+                    }
+                }
             } else {
                 PreviewBrightnessItem()() {
                     itemPreviewConfigEntity = previewConfigEntity
@@ -122,6 +132,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }
             }
             EngraveDividerItem()()
+            //预览控制, 范围/中心点预览
             PreviewControlItem()() {
                 itemPathPreviewClick = {
                     startPathPreview(it as? CanvasProjectItemBean)
