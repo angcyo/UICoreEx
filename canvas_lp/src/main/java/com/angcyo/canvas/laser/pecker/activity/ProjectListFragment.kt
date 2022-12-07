@@ -9,6 +9,7 @@ import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.engrave.R
+import com.angcyo.http.rx.doBack
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.appFolderPath
@@ -36,35 +37,38 @@ class ProjectListFragment : BaseDslFragment() {
 
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
-        _recycler.resetLayoutManager("GV2")
+        _recycler.resetLayoutManager("SV2")
     }
 
     override fun onLoadData() {
         super.onLoadData()
-        val projectList = mutableListOf<CanvasProjectBean>()
-        projectPathFile.listFiles()?.filter { it.name.endsWith(CanvasConstant.PROJECT_EXT) }
-            ?.sortedByDescending { it.lastModified() }?.apply {
-                val startIndex = page.requestPageIndex * page.requestPageSize
-                for ((index, file) in this.withIndex()) {
-                    if (index >= startIndex) {
-                        val json = file.readText()
-                        json.toCanvasProjectBean()?.let {
-                            it._filePath = file.absolutePath
-                            projectList.add(it)
+
+        doBack {
+            val projectList = mutableListOf<CanvasProjectBean>()
+            projectPathFile.listFiles()?.filter { it.name.endsWith(CanvasConstant.PROJECT_EXT) }
+                ?.sortedByDescending { it.lastModified() }?.apply {
+                    val startIndex = page.requestPageIndex * page.requestPageSize
+                    for ((index, file) in this.withIndex()) {
+                        if (index >= startIndex) {
+                            val json = file.readText()
+                            json.toCanvasProjectBean()?.let {
+                                it._filePath = file.absolutePath
+                                projectList.add(it)
+                            }
+                        }
+                        if (projectList.size() >= page.requestPageSize) {
+                            break
                         }
                     }
-                    if (projectList.size() >= page.requestPageSize) {
-                        break
-                    }
                 }
-            }
-        loadDataEnd(ProjectListItem::class, projectList) { bean ->
-            itemProjectBean = bean
+            loadDataEnd(ProjectListItem::class, projectList) { bean ->
+                itemProjectBean = bean
 
-            itemClick = {
-                itemProjectBean?.let {
-                    CanvasOpenModel.open(it)
-                    removeThis()
+                itemClick = {
+                    itemProjectBean?.let {
+                        CanvasOpenModel.open(it)
+                        removeThis()
+                    }
                 }
             }
         }

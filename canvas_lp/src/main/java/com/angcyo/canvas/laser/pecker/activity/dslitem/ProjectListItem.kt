@@ -12,10 +12,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.glide.glide
 import com.angcyo.http.base.toJson
 import com.angcyo.library.component.lastContext
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.deleteSafe
-import com.angcyo.library.ex.file
-import com.angcyo.library.ex.toBitmapOfBase64
+import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.DslViewHolder
 
@@ -107,6 +104,18 @@ class ProjectListItem : DslAdapterItem() {
         itemHolder.tv(R.id.lib_text_view)?.text = itemProjectBean?.file_name
         itemHolder.img(R.id.lib_image_view)?.glide {
             load(_bitmap)
+        }
+        itemHolder.click(R.id.lib_more_view) {
+            itemLongClick?.invoke(it)
+        }
+
+        if (isDebug()) {
+            itemHolder.click(R.id.lib_share_view) {
+                //share
+                itemProjectBean?._filePath?.file()?.shareFile()
+            }
+        } else {
+            itemHolder.gone(R.id.lib_share_view)
         }
     }
 }

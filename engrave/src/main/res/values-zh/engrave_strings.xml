@@ -210,6 +210,6 @@
     <string name="engrave_module_knife_cutting">刀切割模式</string>
     <string name="engrave_module_cnc">CNC模式</string>
 
-    <string name="project_title">项目列表</string>
+    <string name="project_title">我的创作</string>
 
 </resources>
