@@ -26,7 +26,7 @@ import com.angcyo.viewmodel.*
  */
 class LaserPeckerModel : ViewModel(), IViewModel {
 
-    /**当前设备的模式
+    /**当前设备的模式, 用来记录设备上一次的工作模式
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_IDLE]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW]*/

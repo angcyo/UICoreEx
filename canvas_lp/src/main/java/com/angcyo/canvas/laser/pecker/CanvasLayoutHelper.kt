@@ -5,8 +5,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.Reason
@@ -27,7 +25,6 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.core.vmApp
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -367,17 +364,13 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     updateLayerLayout(vh, canvasView)
                 }
 
-                val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
-
-                val peckerModel = vmApp<LaserPeckerModel>()
-                if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                    itemRenderer == canvasView.canvasDelegate.getSelectedRenderer()
+                val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
+                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true &&
+                    itemRenderer == canvasView.canvasDelegate.getSelectedRenderer() &&
+                    reason.flag > 0
                 ) {
                     //设备正在预览模式, 更新预览
-                    previewModel.updatePreview(itemRenderer, sendCmd = false)
-                    _debounce {
-                        previewModel.updatePreview(itemRenderer)
-                    }
+                    updatePreviewByItem(itemRenderer)
                 }
             }
 
@@ -429,13 +422,11 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     }
                 }
 
-                val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
-
                 //预览选中的元素边框
-                val peckerModel = vmApp<LaserPeckerModel>()
-                if (peckerModel.deviceModelData.value == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW) {
+                val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
+                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
-                    previewModel.updatePreview(itemRenderer)
+                    updatePreviewByItem(itemRenderer)
                 }
             }
 
@@ -471,6 +462,18 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 return super.onCanvasInterceptTouchEvent(canvasDelegate, event)
             }
         })
+    }
+
+    /**使用[itemRenderer], 更新预览信息*/
+    fun updatePreviewByItem(itemRenderer: IRenderer?) {
+        if (!engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+            return
+        }
+        val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
+        previewModel.updatePreview(itemRenderer, sendCmd = false)
+        _debounce {
+            previewModel.updatePreview(itemRenderer)
+        }
     }
 
     /**隐藏/显示编辑控制布局

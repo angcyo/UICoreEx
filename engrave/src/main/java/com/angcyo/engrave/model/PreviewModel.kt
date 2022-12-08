@@ -307,7 +307,7 @@ class PreviewModel : LifecycleViewModel() {
         action: PreviewInfo.() -> Unit
     ) {
         var previewInfo = previewInfoData.value
-        if (previewInfo == null && restore) {
+        if (previewInfo == null && sendCmd && restore) {
             previewInfo = previewInfoData.beforeNonValue
         }
         previewInfo?.let {
