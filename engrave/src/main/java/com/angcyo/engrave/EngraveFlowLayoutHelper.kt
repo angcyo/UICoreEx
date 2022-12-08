@@ -451,13 +451,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
-
-                //分享雕刻日志
-                if (isDebug()) {
-                    itemClick = {
-                        EngraveFlowDataHelper.shareEngraveLog()
-                    }
-                }
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度

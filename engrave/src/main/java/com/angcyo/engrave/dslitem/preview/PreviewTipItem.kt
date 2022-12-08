@@ -1,8 +1,11 @@
 package com.angcyo.engrave.dslitem.preview
 
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
+import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
@@ -25,6 +28,19 @@ open class PreviewTipItem : DslAdapterItem() {
 
     init {
         itemLayoutId = R.layout.item_preview_tip_layout
+
+        //分享雕刻日志
+        itemClick = if (isDebug()) {
+            {
+                EngraveFlowDataHelper.shareEngraveLog()
+            }
+        } else {
+            {
+                it.watchCount(5) {
+                    EngraveFlowDataHelper.shareEngraveLog()
+                }
+            }
+        }
     }
 
     override fun onItemBind(
