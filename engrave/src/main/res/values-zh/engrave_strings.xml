@@ -211,5 +211,6 @@
     <string name="engrave_module_cnc">CNC模式</string>
 
     <string name="project_title">我的创作</string>
+    <string name="create_log_tip">请稍等，正在生成日志...</string>
 
 </resources>

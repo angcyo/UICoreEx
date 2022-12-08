@@ -10,8 +10,10 @@ import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
+import com.angcyo.http.rx.runRx
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -30,10 +32,13 @@ object EngraveFlowDataHelper {
 
     /**分享最近的雕刻日志*/
     fun shareEngraveLog() {
-        val logList = mutableListOf(logPath())
-        logList.addAll(getTaskEngraveLogFilePath())
-        logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
-            ?.shareFile()
+        toastQQ(_string(R.string.create_log_tip))
+        runRx({
+            val logList = mutableListOf(logPath())
+            logList.addAll(getTaskEngraveLogFilePath())
+            logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
+                ?.shareFile()
+        })
     }
 
     /**最后一次雕刻任务的数据日志文件路径*/
