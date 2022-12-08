@@ -247,14 +247,14 @@ object EngraveFlowDataHelper {
 
     //region ---传输/数据相关---
 
-    /**构建或者获取生成数据需要的配置信息*/
+    /**构建或者获取生成数据需要的配置信息
+     * [taskId] 可以为空*/
     fun generateTransferConfig(
         taskId: String?,
         canvasDelegate: CanvasDelegate? = null
     ): TransferConfigEntity {
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
-            name = EngraveTransitionManager.generateEngraveName()
             dpi = LaserPeckerHelper.DPI_254
             mergeData = false
             dataMode = null
@@ -273,15 +273,26 @@ object EngraveFlowDataHelper {
                 }
             }
         }) {
+            if (!taskId.isNullOrBlank()) {
+                apply(TransferConfigEntity_.taskId.equal("$taskId"))
+            }
+        }.apply {
+            name = EngraveTransitionManager.generateEngraveName()
+        }
+    }
+
+    /**获取一个传输配置信息实体
+     * [TransferConfigEntity] 包含传输的文件名, dpi等信息
+     * */
+    fun getTransferConfig(taskId: String?): TransferConfigEntity? {
+        return TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(TransferConfigEntity_.taskId.equal("$taskId"))
         }
     }
 
-    /**获取一个传输配置信息实体*/
-    fun getTransferConfig(taskId: String?): TransferConfigEntity? {
-        return TransferConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-            apply(TransferConfigEntity_.taskId.equal("$taskId"))
-        }
+    /**获取最后一次的传输配置*/
+    fun getLastTransferConfig(): TransferConfigEntity? {
+        return TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME)
     }
 
     /**获取当前任务, 所有传输了的数据, 通常这些数据都是需要雕刻的
@@ -498,7 +509,7 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**重新雕刻, 则需要清空数据雕刻完成的状态*/
+    /**重新雕刻, 则需要清空数据雕刻完成的状态, 任务id不变*/
     fun againEngrave(taskId: String?) {
         val taskEntity = getEngraveTask(taskId) ?: return
 
@@ -650,9 +661,7 @@ object EngraveFlowDataHelper {
                 EngraveDataEntity_.index.equal(index)
                     .and(
                         EngraveDataEntity_.isFromDeviceHistory.isNull.or(
-                            EngraveDataEntity_.isFromDeviceHistory.equal(
-                                fromDeviceHistory
-                            )
+                            EngraveDataEntity_.isFromDeviceHistory.equal(fromDeviceHistory)
                         )
                     )
             )

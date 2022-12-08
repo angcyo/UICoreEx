@@ -126,6 +126,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                             resultList.add(engraveData)
                         }
                     }
+                    resultList.sortByDescending { it.startTime } //排序, 根据雕刻开始的时间逆序排列
                     loadDataEnd(resultList)
                 }
             } else {
@@ -233,7 +234,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     /**雕刻布局*/
     val _engraveFlowLayoutHelper = HistoryEngraveFlowLayoutHelper().apply {
         backPressedDispatcherOwner = this@EngraveHistoryFragment
-        flowTaskId = null
+        clearFlowId()
     }
 
     override val fragment: AbsFragment

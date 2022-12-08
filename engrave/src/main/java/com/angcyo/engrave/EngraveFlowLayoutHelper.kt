@@ -100,10 +100,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
-            if (flowTaskId != null) {
+            //在开始传输数据的时候, 创建任务
+            /*if (flowTaskId != null) {
                 //再次传输不一样的数据时, 重新创建任务id
                 flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
-            }
+            }*/
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
@@ -134,7 +135,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         showCloseView(true, _string(R.string.ui_back))
 
         val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(
-            flowTaskId,
+            flowTaskId,//此时的flowTaskId可以为空
             engraveCanvasFragment?.canvasDelegate
         )
 
@@ -161,7 +162,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     if (!checkItemThrowable() && !checkOverflowBounds() && checkTransferData()) {
                         //下一步, 数据传输界面
 
-                        transferConfigEntity.lpSaveEntity()
                         //退出打印模式, 进入空闲模式
                         engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
                             syncSingle { countDownLatch ->
@@ -175,9 +175,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         if (canvasDelegate == null) {
                                             //不是画布上的数据, 可能是恢复的数据
                                         } else {
-                                            onStartEngraveTransferData(flowTaskId)
+                                            val flowId = generateFlowId()//每次发送数据之前, 都生成一个新的任务
+                                            transferConfigEntity.taskId = flowId
+                                            transferConfigEntity.lpSaveEntity()
+                                            onStartEngraveTransferData(flowId)
                                             transferModel.startCreateTransferData(
-                                                flowTaskId,
+                                                flowId,
                                                 canvasDelegate
                                             )
                                         }

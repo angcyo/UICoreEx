@@ -10,6 +10,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
+import kotlin.math.max
 
 /**
  * 数据分辨率选择
@@ -28,9 +29,9 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
-            val index = itemPxList?.indexOfFirst { it.dpi == value?.dpi }
+            val index = itemPxList?.indexOfFirst { it.dpi == value?.dpi } ?: 0
             //默认选中
-            itemCurrentIndex = index ?: 0
+            itemCurrentIndex = max(index, 0)
         }
 
     /**分辨率列表*/

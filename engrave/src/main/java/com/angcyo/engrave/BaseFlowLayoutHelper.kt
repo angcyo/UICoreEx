@@ -23,10 +23,7 @@ import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
-import com.angcyo.library.ex._drawable
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.size
+import com.angcyo.library.ex.*
 import com.angcyo.widget.span.span
 
 /**
@@ -111,7 +108,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     override fun onIViewRemove() {
         super.onIViewRemove()
         //重新分配一个id
-        flowTaskId = null
+        clearFlowId()
         loopCheckDeviceState = false
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面
@@ -155,6 +152,22 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             loopCheckDeviceState = false
         }
         onEngraveFlowChangedAction(from, to)
+    }
+
+    /**分配一个流程id
+     * 每次发送数据之前, 都生成一个新的任务.
+     * 在任务完成后清空id
+     * */
+    open fun generateFlowId(): String {
+        if (flowTaskId == null) {
+            flowTaskId = uuid()
+        }
+        return flowTaskId!!
+    }
+
+    /**清空流程id*/
+    open fun clearFlowId() {
+        flowTaskId = null
     }
 
     //
@@ -364,7 +377,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
-    /**恢复雕刻状态
+    /**恢复雕刻状态, 请在初始化指令发送完成之后, 再去检查
      * @return true 需要恢复状态*/
     fun checkRestoreEngrave(fragment: AbsLifecycleFragment, group: ViewGroup? = null): Boolean {
         val stateParser = laserPeckerModel.deviceStateData.value ?: return false

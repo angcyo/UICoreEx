@@ -83,7 +83,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         //监听雕刻状态
         laserPeckerModel.deviceStateData.observe(this) { queryState ->
             queryState?.let {
-                if (_listenerEngraveState) {
+                if (_listenerEngraveState && _engraveTaskId != null) {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
                         //机器空闲了, 可能一个数据雕刻结束了
@@ -359,6 +359,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
+
+        //clear
+        _engraveTaskId = null
     }
 
     /**暂停雕刻*/

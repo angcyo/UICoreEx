@@ -17,7 +17,7 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
     var historyEngraveDataEntity: EngraveDataEntity? = null
         set(value) {
             field = value
-            flowTaskId = null
+            clearFlowId()
             if (value != null) {
                 itemTransferDataEntity =
                     EngraveFlowDataHelper.getTransferData(value.index, value.taskId)
