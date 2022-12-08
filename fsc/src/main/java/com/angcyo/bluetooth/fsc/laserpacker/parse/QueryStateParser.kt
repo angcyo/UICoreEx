@@ -182,7 +182,7 @@ data class QueryStateParser(
     fun isEngraving(): Boolean =
         mode == WORK_MODE_ENGRAVE && (workState == 0x01 || workState == 0x02)
 
-    /**打印模式下, 打印是否停止了*/
+    /**打印模式下, 打印是否正在停止,或者停止了*/
     fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x03
 
     //endregion

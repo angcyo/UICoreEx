@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
@@ -86,21 +87,23 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 if (_listenerEngraveState && _engraveTaskId != null) {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
-                        //机器空闲了, 可能一个数据雕刻结束了
-                        val nowTime = nowTime()
-                        UMEvent.ENGRAVE.umengEventValue {
-                            val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
-                            put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
-                            put(UMEvent.KEY_DURATION, duration.toString())
-                        }
-                        _logEngraveDuration(queryState, _lastEngraveTimes)
-                        _lastEngraveTimes = 1
-                        //强制更新进度到100
-                        updateEngraveProgress(queryState, 100)
-                        if (isBatchEngraveSupport()) {
-                            finishEngrave()
-                        } else {
-                            engraveNext()
+                        if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
+                            //机器空闲了, 可能一个数据雕刻结束了
+                            val nowTime = nowTime()
+                            UMEvent.ENGRAVE.umengEventValue {
+                                val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
+                                put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+                                put(UMEvent.KEY_DURATION, duration.toString())
+                            }
+                            _logEngraveDuration(queryState, _lastEngraveTimes)
+                            _lastEngraveTimes = 1
+                            //强制更新进度到100
+                            updateEngraveProgress(queryState, 100)
+                            if (isBatchEngraveSupport()) {
+                                finishEngrave()
+                            } else {
+                                engraveNext()
+                            }
                         }
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
@@ -362,6 +365,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //clear
         _engraveTaskId = null
+
+        //更新设备状态
+        syncQueryDeviceState { bean, error ->
+            //no op
+        }
     }
 
     /**暂停雕刻*/
@@ -384,8 +392,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**停止雕刻*/
     fun stopEngrave() {
-        finishEngrave()
         EngraveCmd.stopEngrave().enqueue()
+        finishEngrave()
         ExitCmd().enqueue()
     }
 

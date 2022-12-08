@@ -24,6 +24,7 @@ import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
+import com.angcyo.library.toastQQ
 import com.angcyo.widget.span.span
 
 /**
@@ -210,7 +211,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     fun delayLoopQueryDeviceState() {
         _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState() { bean, error ->
+            laserPeckerModel.queryDeviceState { bean, error ->
                 if (error != null || loopCheckDeviceState) {
                     //出现了错误, 继续查询
                     delayLoopQueryDeviceState()
@@ -372,8 +373,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
         if (!stateParser.isModeIdle()) {
             //非空闲状态
-            loopCheckDeviceState = true
-            delayLoopQueryDeviceState()
+            if (!loopCheckDeviceState) {
+                loopCheckDeviceState = true
+                delayLoopQueryDeviceState()
+            }
         }
     }
 
@@ -382,6 +385,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     fun checkRestoreEngrave(fragment: AbsLifecycleFragment, group: ViewGroup? = null): Boolean {
         val stateParser = laserPeckerModel.deviceStateData.value ?: return false
         if (stateParser.isModeEngrave()) {
+            if (stateParser.isEngraveStop()) {
+                toastQQ(_string(R.string.engrave_stopping_tip))
+                checkLoopQueryDeviceState()
+                return true
+            }
+
             //设备正在雕刻中, 则通过index查询是否是本机app发送的任务
             val transferData = EngraveFlowDataHelper.getTransferData(stateParser.index)
 
