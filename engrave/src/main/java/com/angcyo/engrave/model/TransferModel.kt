@@ -179,7 +179,7 @@ class TransferModel : ViewModel() {
                 transferStateOnceData.postValue(transferState)
             } else {
                 //开始传输
-                "准备传输:[${taskId}][${list.firstOrNull()?.name}]${list.connect { it.index.toStr() }}".writeEngraveLog()
+                "准备传输任务:[${taskId}][${list.firstOrNull()?.name}][${list.connect { it.index.toStr() }}]".writeEngraveLog()
 
                 EngraveFlowDataHelper.clearTransferDataState(taskId)  //清空所有数据已经传输完成的状态, 从设备中读取判断
 
@@ -233,19 +233,24 @@ class TransferModel : ViewModel() {
             _transferFinish(transferState)
         } else {
             //需要传输数据, 从设备中读取索引
-            checkIndex(transferDataEntity.index) {
-                if (it) {
-                    //下位机已经有对应的索引文件, 则直接传输下一个
-                    transferDataEntity.isTransfer = true
-                    transferDataEntity.lpSaveEntity()
-                    "索引已存在[${transferDataEntity.index}], 跳过传输!".writeEngraveLog()
-                    _transferNext(transferState)//下一个
-                } else {
-                    if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                        //状态正常
-                        transferData(transferState, transferDataEntity)
+            if (HawkEngraveKeys.enableTransferIndexCheck) {
+                checkIndex(transferDataEntity.index) {
+                    if (it) {
+                        //下位机已经有对应的索引文件, 则直接传输下一个
+                        transferDataEntity.isTransfer = true
+                        transferDataEntity.lpSaveEntity()
+                        "索引已存在[${transferDataEntity.index}], 跳过传输!".writeEngraveLog()
+                        _transferNext(transferState)//下一个
+                    } else {
+                        if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                            //状态正常
+                            transferData(transferState, transferDataEntity)
+                        }
                     }
                 }
+            } else {
+                //不检查直接传输数据
+                transferData(transferState, transferDataEntity)
             }
         }
     }
