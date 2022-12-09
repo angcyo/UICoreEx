@@ -15,6 +15,7 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
+import com.angcyo.engrave.EngraveNotifyHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -390,6 +391,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         _lastEngraveIndex = -1
         _listenerEngraveState = false
 
+        EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
+
         //
         val engraveTaskEntity = _engraveTaskEntity ?: return
         engraveTaskEntity.currentIndex = -1
@@ -501,6 +504,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**更新雕刻进度和次数
      * [progress] 当前索引的雕刻进度*/
     fun updateEngraveProgress(queryState: QueryStateParser, progress: Int) {
+        EngraveNotifyHelper.showEngraveNotify(progress)//显示通知
+
         EngraveFlowDataHelper.updateEngraveProgress(
             _engraveTaskEntity?.taskId,
             queryState.index,

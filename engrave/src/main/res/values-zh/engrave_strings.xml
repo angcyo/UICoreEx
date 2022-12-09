@@ -215,4 +215,6 @@
     <string name="engrave_stopping_tip">正在停止雕刻,请稍等...</string>
     <string name="engrave_experimental">实验性</string>
 
+    <string name="engrave_channel">雕刻通道</string>
+
 </resources>

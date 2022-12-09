@@ -395,39 +395,32 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngraveConfirmItem()() {
                 itemClick = {
                     //开始雕刻
-                    /*engraveOptionInfo?.let { option ->
-                        if (showDiameter && option.diameterPixel <= 0) {
-                            toast("diameter need > 0")
-                        } else {
-                            engraveReadyInfo?.let { readyDataInfo ->
-                                //start check
-                                checkStartEngrave(readyDataInfo.engraveData!!.index!!, option)
-                            }
-                        }
-                    }*/
-                    checkExDevice {
-                        showFocalDistance(it.context) {
-                            showSafetyTips(it.context) {
-                                engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
-                                    syncSingle { countDownLatch ->
-                                        ExitCmd().enqueue { bean, error ->
-                                            countDownLatch.countDown()
-                                            if (error == null) {
-                                                //开始雕刻
-                                                onStartEngrave(taskId)
-                                                val taskEntity = engraveModel.startEngrave(taskId)
-                                                if (taskEntity.dataIndexList.isNullOrEmpty()) {
-                                                    toastQQ(_string(R.string.no_data_engrave))
+                    checkEngraveNotify {
+                        checkExDevice {
+                            showFocalDistance(it.context) {
+                                showSafetyTips(it.context) {
+                                    engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
+                                        syncSingle { countDownLatch ->
+                                            ExitCmd().enqueue { bean, error ->
+                                                countDownLatch.countDown()
+                                                if (error == null) {
+                                                    //开始雕刻
+                                                    onStartEngrave(taskId)
+                                                    val taskEntity =
+                                                        engraveModel.startEngrave(taskId)
+                                                    if (taskEntity.dataIndexList.isNullOrEmpty()) {
+                                                        toastQQ(_string(R.string.no_data_engrave))
+                                                    } else {
+                                                        engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                                        renderFlowItems()
+                                                    }
                                                 } else {
-                                                    engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                                    renderFlowItems()
+                                                    toastQQ(error.message)
                                                 }
-                                            } else {
-                                                toastQQ(error.message)
                                             }
                                         }
-                                    }
-                                })
+                                    })
+                                }
                             }
                         }
                     }

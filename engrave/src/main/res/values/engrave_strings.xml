@@ -224,4 +224,6 @@
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
     <string name="engrave_experimental">Experimental</string>
 
+    <string name="engrave_channel">Engrave Channel</string>
+
 </resources>

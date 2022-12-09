@@ -23,6 +23,8 @@ import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
+import com.angcyo.library.component.isNotificationsEnabled
+import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.toastQQ
@@ -534,6 +536,54 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
         }
         return true
+    }
+
+    //---
+
+    var _isCheckEngraveNotify = false
+
+    /**检查雕刻通知*/
+    fun checkEngraveNotify(action: () -> Unit) {
+        if (_isCheckEngraveNotify) {
+            action()
+        } else {
+            val fContext = engraveCanvasFragment?.fragment?.fContext()
+            if (!isNotificationsEnabled()) {
+                //未打开通知
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = "打开通知,接收通知进度?"
+                    negativeButton { dialog, dialogViewHolder ->
+                        _isCheckEngraveNotify = true
+                        dialog.dismiss()
+                        action()
+                    }
+                    needPositiveButton { dialog, dialogViewHolder ->
+                        dialog.dismiss()
+                        openNotificationSetting()
+                    }
+                }
+            } else if (!EngraveNotifyHelper.isChannelEnable()) {
+                //未打开对应的通道
+                fContext?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = "打开雕刻通道,接收通知进度?"
+                    negativeButton { dialog, dialogViewHolder ->
+                        _isCheckEngraveNotify = true
+                        dialog.dismiss()
+                        action()
+                    }
+                    needPositiveButton { dialog, dialogViewHolder ->
+                        dialog.dismiss()
+                        EngraveNotifyHelper.openChannelSetting()
+                    }
+                }
+            } else {
+                //可以通知
+                _isCheckEngraveNotify = true
+                action()
+            }
+        }
     }
 
 }
