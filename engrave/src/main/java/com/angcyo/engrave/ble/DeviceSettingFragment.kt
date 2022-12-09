@@ -20,6 +20,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
+import com.angcyo.item.DslTextInfoItem
 import com.angcyo.item.style.*
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -329,6 +330,18 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChecked = HawkEngraveKeys.AUTO_CONNECT_DEVICE
                 itemSwitchChangedAction = {
                     HawkEngraveKeys.AUTO_CONNECT_DEVICE = it
+                }
+            }
+
+            //实验性功能
+            DslTextInfoItem()() {
+                itemInfoText = _string(R.string.engrave_experimental)
+                itemDarkIcon = R.drawable.lib_next
+                initItem()
+                itemClick = {
+                    dslFHelper {
+                        show(EngraveExperimentalFragment::class)
+                    }
                 }
             }
 

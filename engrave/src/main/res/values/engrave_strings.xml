@@ -222,4 +222,6 @@
     <string name="project_title">My creation</string>
     <string name="create_log_tip">Please wait, logs are being generated...</string>
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
+    <string name="engrave_experimental">Experimental</string>
+
 </resources>

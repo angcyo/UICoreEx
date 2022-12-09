@@ -18,6 +18,7 @@ import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.isLineShape
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
@@ -51,7 +52,10 @@ class GCodeTransition : IEngraveTransition {
         if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
 
             //需要处理成GCode数据
-            if (dataBean?.mtype == DATA_TYPE_GCODE && !dataBean.data.isNullOrEmpty()) {
+            if (dataBean?.mtype == DATA_TYPE_GCODE &&
+                !dataBean.data.isNullOrEmpty() &&
+                !HawkEngraveKeys.enableGCodeTransform /*不激活gcode数据全转换*/
+            ) {
                 //如果是原始的GCode数据
                 return _transitionGCodeTransferData(
                     engraveProvider,
