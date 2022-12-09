@@ -40,6 +40,7 @@ data class EngraveCmd(
     val powerList: List<Byte> = emptyList(),//功率列表
     val depthList: List<Byte> = emptyList(),//深度列表
     val timeList: List<Byte> = emptyList(),//次数列表
+    val typeList: List<Byte> = emptyList(),//激光类型列表
 ) : BaseCommand() {
 
     companion object {
@@ -73,14 +74,13 @@ data class EngraveCmd(
             powerList: List<Byte>,
             depthList: List<Byte>,
             timeList: List<Byte>,
-            type: Byte,
+            typeList: List<Byte>,
             precision: Int,
             diameter: Int,
         ): EngraveCmd {
             return EngraveCmd(
                 state = 0x05,
                 custom = 0x08,
-                type = type,
                 precision = precision,
                 diameter = diameter,
                 bigIndex = bigIndex,
@@ -89,6 +89,7 @@ data class EngraveCmd(
                 powerList = powerList,
                 depthList = depthList,
                 timeList = timeList,
+                typeList = typeList,
             )
         }
     }
@@ -121,7 +122,9 @@ data class EngraveCmd(
                 indexList.forEach {
                     write(it, 4)
                 }
-                write(type)
+                typeList.forEach {
+                    write(it)
+                }
                 write(precision)
                 write(diameter, 2)
             }
@@ -158,7 +161,7 @@ data class EngraveCmd(
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")
-            0x05.toByte() -> append(" 批量雕刻:大索引$bigIndex :$indexNum 索引:$indexList 功率:$powerList 深度:$depthList type:$type 直径:${diameter} 加速级别:${precision}")
+            0x05.toByte() -> append(" 批量雕刻:大索引$bigIndex :$indexNum 索引:$indexList 功率:$powerList 深度:$depthList type:$typeList 直径:${diameter} 加速级别:${precision}")
         }
     }
 }

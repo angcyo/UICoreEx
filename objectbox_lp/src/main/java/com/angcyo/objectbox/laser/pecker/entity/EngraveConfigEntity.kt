@@ -12,6 +12,8 @@ import io.objectbox.annotation.Id
  *
  * 材质 功率/深度/次数
  *
+ * 激光类型等
+ *
  * [com.angcyo.engrave.model.EngraveModel.engraveNext]
  * [com.angcyo.engrave.model.EngraveModel._startEngraveCmd]
  *

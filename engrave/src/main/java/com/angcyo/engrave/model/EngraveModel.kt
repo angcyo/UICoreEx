@@ -284,8 +284,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val powerList = mutableListOf<Byte>()
         val depthList = mutableListOf<Byte>()
         val timeList = mutableListOf<Byte>()
+        val typeList = mutableListOf<Byte>()
 
-        var type: Byte = 0
         var precision = 0
         var diameter = 0
 
@@ -294,13 +294,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)
                     ?.let { engraveConfigEntity ->
                         precision = engraveConfigEntity.precision
-                        type = engraveConfigEntity.type
                         diameter =
                             (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
 
                         powerList.add(engraveConfigEntity.power.toByte())
                         depthList.add(engraveConfigEntity.depth.toByte())
                         timeList.add(engraveConfigEntity.time.toByte())
+                        typeList.add(engraveConfigEntity.type)
 
                         //保存外接设备名
                         engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
@@ -311,7 +311,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         buildString {
             append("开始批量雕刻任务:${taskId} [${task.bigIndex}] $indexList")
-            append(" type:${type.toLaserTypeString()}")
+            append(" power:${powerList}")
+            append(" depth:${depthList}")
+            append(" time:${timeList}")
+            append(" type:${typeList}")
             append(" 加速级别:${precision}")
             append(" 直径:${diameter}")
         }.writeEngraveLog()
@@ -322,7 +325,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             powerList,
             depthList,
             timeList,
-            type,
+            typeList,
             precision,
             diameter
         ).enqueue { bean, error ->
@@ -487,8 +490,17 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
-    /**是否支持批量文件雕刻, 或者当前处于批量雕刻*/
+    /**是否支持批量文件雕刻, 或者当前处于批量雕刻
+     *
+     * 打开滑台，打开滑台多文件雕刻开关之后， 走多文件雕刻指令。
+     * */
     fun isBatchEngraveSupport(): Boolean {
+        val setting = laserPeckerModel.deviceSettingData.value ?: return false
+        if (setting.sRep == 1) {
+            return true
+        }
+
+        //debug
         val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
         val batchEngraveSupportFirmware = getAppString("lp_batch_engrave_firmware")
         if (VersionMatcher.matches(version, batchEngraveSupportFirmware, false)) {
