@@ -24,6 +24,7 @@ import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
+import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.toastQQ
 import com.angcyo.widget.span.span
 
@@ -56,6 +57,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         /**雕刻流程: 雕刻完成.*/
         const val ENGRAVE_FLOW_FINISH = ENGRAVE_FLOW_ENGRAVING shl 1
+
+        /**安全提示, 是否不再提示, 每个版本提示一次*/
+        const val KEY_SAFETY_TIPS = "SAFETY_TIPS_NOT_PROMPT"
+
+        /**焦距提示, 是否不再提示, 每个版本提示一次*/
+        const val KEY_FOCAL_DISTANCE_TIPS = "FOCAL_DISTANCE_TIPS_NOT_PROMPT"
     }
 
     /**当前处于那个雕刻流程*/
@@ -222,10 +229,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**显示焦距提示*/
     fun showFocalDistance(context: Context?, action: () -> Unit) {
+        val KEY = "${KEY_FOCAL_DISTANCE_TIPS}${getAppVersionCode()}"
+        if (KEY.hawkGetBoolean()) {
+            //不再提示
+            action()
+            return
+        }
         context?.messageDialog {
             dialogMessageLargeDrawable = _drawable(DeviceConnectTipActivity.getDeviceImageRes())
             dialogTitle = _string(R.string.focal_distance_tip)
             negativeButtonText = _string(R.string.dialog_negative)
+            dialogNotPromptKey = KEY
 
             positiveButton { dialog, dialogViewHolder ->
                 dialog.dismiss()
@@ -236,6 +250,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**显示预览安全提示框*/
     fun showSafetyTips(context: Context?, action: () -> Unit) {
+        val KEY = "${KEY_SAFETY_TIPS}${getAppVersionCode()}"
+        if (KEY.hawkGetBoolean()) {
+            //不再提示
+            action()
+            return
+        }
         context?.messageDialog {
             dialogTitle = span {
                 appendImage(_drawable(R.mipmap.safe_tips))
@@ -244,8 +264,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
             dialogMessage = _string(R.string.size_safety_content)
             negativeButtonText = _string(R.string.dialog_negative)
+            dialogNotPromptKey = KEY
 
             positiveButton { dialog, dialogViewHolder ->
+                KEY.hawkPut(_dialogIsNotPrompt)
                 dialog.dismiss()
                 action()
             }
