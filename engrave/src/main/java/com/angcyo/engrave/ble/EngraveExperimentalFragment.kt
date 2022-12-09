@@ -17,6 +17,9 @@ class EngraveExperimentalFragment : DebugFragment() {
 
     init {
         fragmentTitle = _string(R.string.engrave_experimental)
+
+        fragmentConfig.isLightStyle = true
+        fragmentConfig.showTitleLineView = true
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {
