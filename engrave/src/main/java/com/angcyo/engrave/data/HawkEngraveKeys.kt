@@ -89,6 +89,9 @@ object HawkEngraveKeys {
     /**激活传输数据时的索引检查*/
     var enableTransferIndexCheck: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**激活第三方GCode数据全转换*/
+    var enableGCodeTransform: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**需要关闭的功能
