@@ -312,8 +312,8 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
         }
         //显示蓝牙界面
         viewHolder.throttleClick(R.id.device_tip_wrap_layout) {
-            if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
-                //界面已经显示, 不允许切换蓝牙设备
+            if (laserPeckerModel.initializeData.value == true && engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+                //界面已经显示, 并且有设备连接, 则不允许切换蓝牙设备
                 return@throttleClick
             } else {
                 engraveCanvasFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->

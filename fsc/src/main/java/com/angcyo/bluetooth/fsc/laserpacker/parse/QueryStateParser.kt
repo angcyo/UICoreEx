@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.low4Bit
 import com.angcyo.library.ex.nowTime
 
 /**
@@ -135,6 +136,10 @@ data class QueryStateParser(
         const val CONNECT_TYPE_USB = 2
     }
 
+    /**工作状态*/
+    val _workState: Int
+        get() = workState.toByte().low4Bit().toInt()
+
     //解析数据
     override fun parse(packet: ByteArray): QueryStateParser? {
         return try {
@@ -176,14 +181,14 @@ data class QueryStateParser(
     //region ------Engrave------
 
     /**打印模式下, 打印是否暂停了*/
-    fun isEngravePause(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x04
+    fun isEngravePause(): Boolean = mode == WORK_MODE_ENGRAVE && _workState == 0x04
 
     /**打印模式下, 打印是否正在打印*/
     fun isEngraving(): Boolean =
-        mode == WORK_MODE_ENGRAVE && (workState == 0x01 || workState == 0x02)
+        mode == WORK_MODE_ENGRAVE && (_workState == 0x01 || _workState == 0x02 || _workState == 0x05)
 
     /**打印模式下, 打印是否正在停止,或者停止了*/
-    fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && workState == 0x03
+    fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && _workState == 0x03
 
     //endregion
 

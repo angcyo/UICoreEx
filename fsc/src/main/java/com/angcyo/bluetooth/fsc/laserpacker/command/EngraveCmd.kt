@@ -157,11 +157,21 @@ data class EngraveCmd(
     override fun toCommandLogString(): String = buildString {
         append(toHexCommandString().removeAll())
         when (state) {
-            0x01.toByte() -> append(" 开始雕刻:文件:$index 功率:$power 深度:$depth 次数:$time state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision}")
+            0x01.toByte() -> {
+                append(" 开始雕刻:文件:$index")
+                append(" 功率:$power")
+                append(" 深度:$depth")
+                append(" 次数:$time")
+                append(" state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision}")
+            }
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")
-            0x05.toByte() -> append(" 批量雕刻:大索引$bigIndex :$indexNum 索引:$indexList 功率:$powerList 深度:$depthList type:$typeList 直径:${diameter} 加速级别:${precision}")
+            0x05.toByte() -> {
+                append(" 批量雕刻:大索引$bigIndex :$indexNum")
+                append(" 索引:$indexList 功率:$powerList 深度:$depthList type:$typeList times:$timeList")
+                append(" 直径:${diameter} 加速级别:${precision}")
+            }
         }
     }
 }

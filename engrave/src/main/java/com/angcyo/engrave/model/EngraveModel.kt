@@ -29,6 +29,7 @@ import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -63,6 +64,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         /**最后一次雕刻的次数*/
         var _lastEngraveTimes: Int = 1
+
+        /**多文件雕刻指令, 上一次雕刻的索引*/
+        var _lastEngraveIndex: Int = -1
     }
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -97,6 +101,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             }
                             _logEngraveDuration(queryState, _lastEngraveTimes)
                             _lastEngraveTimes = 1
+                            _lastEngraveIndex = -1
                             //强制更新进度到100
                             updateEngraveProgress(queryState, 100)
                             if (isBatchEngraveSupport()) {
@@ -107,6 +112,19 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
+                        if (_lastEngraveIndex != queryState.index) {
+                            _startEngraveIndex(queryState.index)
+                            if (_lastEngraveIndex > 0) {
+                                EngraveFlowDataHelper.finishEngrave(
+                                    _engraveTaskId,
+                                    _lastEngraveIndex
+                                )
+                            }
+                        }
+
+                        //多文件雕刻的小索引
+                        _lastEngraveIndex = queryState.index
+
                         if (_lastEngraveTimes != queryState.printTimes) {
                             _logEngraveDuration(queryState, _lastEngraveTimes)
                             _lastEngraveTimes = queryState.printTimes
@@ -223,10 +241,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             finishEngrave()
         } else {
             //开始雕刻
-            val engraveDataEntity =
-                EngraveFlowDataHelper.generateEngraveData(taskId, nextIndex)
-            engraveDataEntity.startTime = nowTime()
-            engraveDataEntity.lpSaveEntity()
+            val engraveDataEntity = _generateEngraveData(taskId, nextIndex)
 
             val transferDataEntity = EngraveFlowDataHelper.getTransferData(taskId, nextIndex)
 
@@ -249,11 +264,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 transferDataEntity?.layerMode ?: 0
             )
             doMain {
-                task.currentIndex = nextIndex
-                task.indexStartTime = nowTime()
-                task.indexPrintStartTime = task.indexStartTime
-                engraveStateData.value = task
-                task.lpSaveEntity()
+                _startEngraveIndex(nextIndex)
 
                 //
                 _startEngraveCmd(
@@ -306,11 +317,14 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
                         engraveConfigEntity.lpSaveEntity()
                     }
+
+                //任务雕刻的数据入库
+                _generateEngraveData(taskId, index)
             }
         }
 
         buildString {
-            append("开始批量雕刻任务:${taskId} [${task.bigIndex}] $indexList")
+            append("开始批量雕刻任务:${taskId} 大索引:${task.bigIndex} 小索引:$indexList")
             append(" power:${powerList}")
             append(" depth:${depthList}")
             append(" time:${timeList}")
@@ -350,10 +364,33 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
+    /**生成任务需要的雕刻数据*/
+    fun _generateEngraveData(taskId: String?, index: Int): EngraveDataEntity {
+        val engraveDataEntity =
+            EngraveFlowDataHelper.generateEngraveData(taskId, index)
+        engraveDataEntity.startTime = nowTime()
+        engraveDataEntity.lpSaveEntity()
+        return engraveDataEntity
+    }
+
+    /**开始雕刻指定的索引*/
+    fun _startEngraveIndex(index: Int) {
+        val task = _engraveTaskEntity ?: return
+        task.currentIndex = index
+        task.indexStartTime = nowTime()
+        task.indexPrintStartTime = task.indexStartTime
+        engraveStateData.value = task
+        task.lpSaveEntity()
+    }
+
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave() {
+        _lastEngraveTimes = 1
+        _lastEngraveIndex = -1
         _listenerEngraveState = false
+
+        //
         val engraveTaskEntity = _engraveTaskEntity ?: return
         engraveTaskEntity.currentIndex = -1
         engraveTaskEntity.finishTime = nowTime()
