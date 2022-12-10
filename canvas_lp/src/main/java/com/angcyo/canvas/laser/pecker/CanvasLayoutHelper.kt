@@ -25,6 +25,7 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.showIn
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -465,10 +466,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**使用[itemRenderer], 更新预览信息*/
     fun updatePreviewByItem(itemRenderer: IRenderer?) {
-        if (!engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+        val layoutHelper = engraveCanvasFragment.engraveFlowLayoutHelper
+        if (!layoutHelper.isAttach()) {
+            layoutHelper.startPreview()
+            layoutHelper.showIn(engraveCanvasFragment.fragment)
             return
         }
-        val previewModel = engraveCanvasFragment.engraveFlowLayoutHelper.previewModel
+        if (itemRenderer == null) {
+            return
+        }
+        val previewModel = layoutHelper.previewModel
         previewModel.updatePreview(itemRenderer, sendCmd = false)
         _debounce {
             previewModel.updatePreview(itemRenderer)
