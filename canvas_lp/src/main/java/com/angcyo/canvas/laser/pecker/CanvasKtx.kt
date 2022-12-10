@@ -36,15 +36,13 @@ import java.io.File
  * [name] 保存的工程文件名, 请包含后缀
  * [async] 是否异步保存
  * */
-fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true) {
-    if (itemRendererCount <= 0) return
+fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true): String {
+    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+    if (itemRendererCount <= 0) return file.absolutePath
     val save = Runnable {
         val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
         val json = bean.toJson()
-        json.writeTo(
-            CanvasDataHandleOperate._defaultProjectOutputFile(name, false),
-            false
-        )
+        json.writeTo(file, false)
     }
     if (async) {
         doBack {
@@ -54,13 +52,14 @@ fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = tr
         //同步保存
         save.run()
     }
+    return file.absolutePath
 }
 
 /**恢复实例数据
  * [saveInstanceState]*/
-fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true) {
+fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true): String {
+    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
     val restore = Runnable {
-        val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
         openCanvasFile(file, true)
     }
     if (async) {
@@ -71,6 +70,7 @@ fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean =
         //同步保存
         restore.run()
     }
+    return file.absolutePath
 }
 
 //---打开文件---
