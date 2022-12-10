@@ -435,15 +435,23 @@ object EngraveFlowDataHelper {
             this.taskId = taskId
             this.layerMode = layerMode
 
+            //获取最后一次相同图层的雕刻参数
+            val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(EngraveConfigEntity_.layerMode.equal(layerMode))
+            }
+
+            //材质
             val customMaterial = EngraveHelper.createCustomMaterial()
             materialCode = customMaterial.code
 
-            power = customMaterial.power
-            depth = customMaterial.depth
+            //功率
+            power = last?.power ?: customMaterial.power
+            depth = last?.depth ?: customMaterial.depth
             time = 1
 
-            type = LaserPeckerHelper.LASER_TYPE_BLUE
-            precision = HawkEngraveKeys.lastPrecision
+            //光源
+            type = last?.type ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            precision = last?.precision ?: HawkEngraveKeys.lastPrecision
 
             //物理尺寸
             val previewConfigEntity = generatePreviewConfig(taskId)
