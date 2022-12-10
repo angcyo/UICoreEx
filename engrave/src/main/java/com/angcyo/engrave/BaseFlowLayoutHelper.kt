@@ -20,6 +20,7 @@ import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.fragment.AbsLifecycleFragment
+import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
@@ -27,7 +28,10 @@ import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionCode
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.fileNameTime
+import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.span.span
 
 /**
@@ -110,6 +114,18 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             //重新刷新界面
             viewHolder?.click(R.id.lib_title_view) {
                 renderFlowItems()
+            }
+        }
+        if (isDebug()) {
+            //长按标题分享工程
+            viewHolder?.longClick(R.id.lib_title_view) {
+                engraveCanvasFragment?.canvasDelegate?.apply {
+                    val file = libCacheFile(fileNameTime("yyyy-MM-dd", CanvasConstant.PROJECT_EXT))
+                    val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
+                    val json = bean.toJson()
+                    json.writeTo(file, false)
+                    file.shareFile()
+                }
             }
         }
     }
