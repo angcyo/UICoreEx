@@ -394,8 +394,7 @@ class BitmapTransition : IEngraveTransition {
                     }
                     //抖动数据
                     else -> {
-                        transferDataEntity.engraveDataType =
-                            DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+                        transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
                         //白色1 黑色0
                         val pair = handleBitmapByte(pxBitmap, LibHawkKeys.grayThreshold)
                         transferDataEntity.dataPath =
