@@ -5,6 +5,7 @@ import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.data.toMm
+import com.angcyo.canvas.graphics.BitmapGraphicsParser
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -242,7 +243,9 @@ object CanvasBitmapHandler {
         }
     }
 
-    /**抖动*/
+    /**抖动
+     * [com.angcyo.canvas.graphics.BitmapGraphicsParser]
+     * */
     fun handleDithering(
         anchor: View,
         owner: LifecycleOwner,
@@ -281,14 +284,10 @@ object CanvasBitmapHandler {
                             )
 
                             //对于低尺寸的图片需要先放大到 1000
-                            val grayBitmap = bitmap.toGrayHandle(Color.WHITE)
-                            val grayBitmapScale = grayBitmap.scaleToMinSize(1000, 1000)
-                            OpenCV.bitmapToDithering(
-                                context,
-                                grayBitmapScale,
-                                item.dataBean.inverse,
+                            BitmapGraphicsParser.handleDithering(
+                                bitmap, item.dataBean.inverse,
                                 item.dataBean.contrast.toDouble(),
-                                item.dataBean.brightness.toDouble(),
+                                item.dataBean.brightness.toDouble()
                             )
                         }
                     }) {

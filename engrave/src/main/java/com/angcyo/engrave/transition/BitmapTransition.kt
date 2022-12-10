@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.core.RenderParams
+import com.angcyo.canvas.graphics.BitmapGraphicsParser
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
@@ -307,7 +308,13 @@ class BitmapTransition : IEngraveTransition {
             val bitmap = engraveProvider.getEngraveBitmap(RenderParams(false))
             if (bitmap != null) {
                 val dataMode = getDataMode(dataBean, transferConfigEntity)
-                val pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+                var pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+
+                if (dataMode == CanvasConstant.DATA_MODE_DITHERING) {
+                    //抖动数据, 重新计算
+                    pxBitmap = BitmapGraphicsParser.handleDithering(pxBitmap, dataBean) ?: pxBitmap
+                }
+
                 val transferDataEntity =
                     createTransferDataEntity(engraveProvider, transferConfigEntity)
 
