@@ -92,6 +92,9 @@ object HawkEngraveKeys {
     /**激活第三方GCode数据全转换*/
     var enableGCodeTransform: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**激活元素从上往下的雕刻顺序*/
+    var enableItemTopOrder: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**需要关闭的功能

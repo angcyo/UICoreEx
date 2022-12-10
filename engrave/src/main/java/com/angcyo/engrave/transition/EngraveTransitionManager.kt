@@ -224,65 +224,94 @@ class EngraveTransitionManager {
         transferConfigEntity: TransferConfigEntity
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
-        engraveLayerList.forEach { engraveLayerInfo ->
-            val dataList = mutableListOf<TransferDataEntity>()
-            val rendererList = getRendererList(canvasDelegate, engraveLayerInfo, true)
-            val param = getTransitionParam(rendererList, transferConfigEntity)
-            var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
-            rendererList.forEach { renderer ->
-                //开始将[renderer]转换成数据
-                LTime.tick()
-                L.i("开始转换数据->${transferConfigEntity.name}")
-                doTransitionTransferData(
-                    renderer,
-                    transferConfigEntity,
-                    param
-                )?.let { transferDataEntity ->
-                    transferDataEntity.layerMode = engraveLayerInfo.layerMode
-                    dataEngraveType = transferDataEntity.engraveDataType
-                    dataList.add(transferDataEntity)
-                }
-                L.i("转换耗时->${LTime.time()} ${dataEngraveType.toEngraveDataTypeStr()}")
-            }
-            if (dataList.isNotEmpty()) {
-                if (!transferConfigEntity.mergeData || dataList.size() == 1) {
-                    //只有1条数据, 不需要合并
-                    resultDataList.addAll(dataList)
-                } else {
-                    //多条数据
-                    when (dataEngraveType) {
-                        DataCmd.ENGRAVE_TYPE_GCODE -> {
-                            //GCode 数据合并
-                            if (transferConfigEntity.mergeGcodeData) {
-                                val gcodeTransferDataInfo = _mergeTransferData(dataList)
-                                resultDataList.add(gcodeTransferDataInfo)
-                            } else {
-                                //不合并GCode数据
-                                resultDataList.addAll(dataList)
-                            }
-                        }
-                        DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> {
-                            //线段数据合并
-                            if (transferConfigEntity.mergeBpData) {
-                                val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
-                                resultDataList.add(bitmapPathTransferDataInfo)
-                            } else {
-                                //不合并线段数据
-                                resultDataList.addAll(dataList)
-                            }
-                        }
-                        else -> {
-                            DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
-                            //抖动数据不需要合并
-                            resultDataList.addAll(dataList)
-                        }
-                    }
-                }
+
+        if (HawkEngraveKeys.enableItemTopOrder) {
+            //从上往下的雕刻顺序
+            val rendererList = getRendererList(canvasDelegate, null, true)
+            resultDataList.addAll(
+                transitionTransferData(rendererList, transferConfigEntity, null)
+            )
+        } else {
+            //规定的图层雕刻顺序
+            engraveLayerList.forEach { engraveLayerInfo ->
+                val rendererList = getRendererList(canvasDelegate, engraveLayerInfo, true)
+                resultDataList.addAll(
+                    transitionTransferData(rendererList, transferConfigEntity, engraveLayerInfo)
+                )
             }
         }
         //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
         //[com.angcyo.engrave.EngraveFlowDataHelper.getTransferDataList]
         resultDataList.saveAllEntity(LPBox.PACKAGE_NAME)
+        return resultDataList
+    }
+
+    /**将渲染的item[BaseItemRenderer], 转换成[TransferDataEntity]*/
+    fun transitionTransferData(
+        rendererList: List<BaseItemRenderer<*>>,
+        transferConfigEntity: TransferConfigEntity,
+        layerInfo: EngraveLayerInfo? = null,
+    ): List<TransferDataEntity> {
+        val resultDataList = mutableListOf<TransferDataEntity>()
+        val dataList = mutableListOf<TransferDataEntity>()
+        val param = getTransitionParam(rendererList, transferConfigEntity)
+        var dataEngraveType = DataCmd.ENGRAVE_TYPE_BITMAP
+        rendererList.forEach { renderer ->
+            //开始将[renderer]转换成数据
+            LTime.tick()
+            L.i("开始转换数据->${transferConfigEntity.name}")
+            doTransitionTransferData(
+                renderer,
+                transferConfigEntity,
+                param
+            )?.let { transferDataEntity ->
+                if (layerInfo != null) {
+                    transferDataEntity.layerMode = layerInfo.layerMode
+                } else if (renderer is DataItemRenderer) {
+                    renderer.dataItem?.dataBean?._dataMode?.let {
+                        transferDataEntity.layerMode = it
+                    }
+                }
+                dataEngraveType = transferDataEntity.engraveDataType
+                dataList.add(transferDataEntity)
+            }
+            L.i("转换耗时->${LTime.time()} ${dataEngraveType.toEngraveDataTypeStr()}")
+        }
+        if (dataList.isNotEmpty()) {
+            if (!transferConfigEntity.mergeData || dataList.size() == 1) {
+                //只有1条数据, 不需要合并
+                resultDataList.addAll(dataList)
+            } else {
+                //多条数据
+                when (dataEngraveType) {
+                    DataCmd.ENGRAVE_TYPE_GCODE -> {
+                        //GCode 数据合并
+                        if (transferConfigEntity.mergeGcodeData) {
+                            val gcodeTransferDataInfo = _mergeTransferData(dataList)
+                            resultDataList.add(gcodeTransferDataInfo)
+                        } else {
+                            //不合并GCode数据
+                            resultDataList.addAll(dataList)
+                        }
+                    }
+                    DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> {
+                        //线段数据合并
+                        if (transferConfigEntity.mergeBpData) {
+                            val bitmapPathTransferDataInfo = _mergeTransferData(dataList)
+                            resultDataList.add(bitmapPathTransferDataInfo)
+                        } else {
+                            //不合并线段数据
+                            resultDataList.addAll(dataList)
+                        }
+                    }
+                    else -> {
+                        DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+                        //抖动数据不需要合并
+                        resultDataList.addAll(dataList)
+                    }
+                }
+            }
+        }
         return resultDataList
     }
 

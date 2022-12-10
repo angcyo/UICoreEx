@@ -52,6 +52,15 @@ class EngraveExperimentalFragment : DebugFragment() {
                 type = Boolean::class.java
                 defValue = HawkEngraveKeys.enableGCodeTransform
             })
+
+            renderDebugAction(DebugAction().apply {
+                label = "激活从上往下雕刻"
+                des = "根据元素的顺序(从上往下),决定雕刻的顺序."
+                key = HawkEngraveKeys::enableItemTopOrder.name
+                type = Boolean::class.java
+                defValue = HawkEngraveKeys.enableItemTopOrder
+            })
+
         }
     }
 }
