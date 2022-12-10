@@ -21,7 +21,7 @@ import com.angcyo.dsladapter.toError
 import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.fragment.AbsFragment
+import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
@@ -237,7 +237,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         clearFlowId()
     }
 
-    override val fragment: AbsFragment
+    override val fragment: AbsLifecycleFragment
         get() = this
     override val canvasDelegate: CanvasDelegate?
         get() = null
