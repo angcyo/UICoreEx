@@ -504,7 +504,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**更新雕刻进度和次数
      * [progress] 当前索引的雕刻进度*/
     fun updateEngraveProgress(queryState: QueryStateParser, progress: Int) {
-        EngraveNotifyHelper.showEngraveNotify(progress)//显示通知
+        _engraveTaskEntity?.apply {
+            val engraveProgress = EngraveFlowDataHelper.calcEngraveProgress(taskId)
+            EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
+        }
 
         EngraveFlowDataHelper.updateEngraveProgress(
             _engraveTaskEntity?.taskId,
