@@ -12,7 +12,7 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
-import com.angcyo.canvas.utils.sort
+import com.angcyo.canvas.utils.engraveSort
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.toEngraveDataTypeStr
@@ -162,7 +162,7 @@ class EngraveTransitionManager {
             }
 
             return if (sort) {
-                resultList.sort()
+                resultList.engraveSort()
             } else {
                 resultList
             }
@@ -197,7 +197,7 @@ class EngraveTransitionManager {
             rendererList.removeAll(layerList)
 
             return if (sort) {
-                rendererList.sort()
+                rendererList.engraveSort()
             } else {
                 rendererList
             }
