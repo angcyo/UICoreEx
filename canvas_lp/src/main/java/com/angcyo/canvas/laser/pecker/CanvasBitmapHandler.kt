@@ -280,9 +280,12 @@ object CanvasBitmapHandler {
                                 item.dataBean.brightness
                             )
 
+                            //对于低尺寸的图片需要先放大到 1000
+                            val grayBitmap = bitmap.toGrayHandle(Color.WHITE)
+                            val grayBitmapScale = grayBitmap.scaleToMinSize(1000, 1000)
                             OpenCV.bitmapToDithering(
                                 context,
-                                bitmap.toGrayHandle(Color.WHITE),
+                                grayBitmapScale,
                                 item.dataBean.inverse,
                                 item.dataBean.contrast.toDouble(),
                                 item.dataBean.brightness.toDouble(),
