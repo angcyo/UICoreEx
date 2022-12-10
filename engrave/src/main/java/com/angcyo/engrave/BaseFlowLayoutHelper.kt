@@ -38,6 +38,7 @@ import com.angcyo.widget.span.span
 abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     companion object {
+
         /**雕刻流程: 预览前的配置
          * C1 握笔模块需要先校准对齐*/
         const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = 0x01
@@ -65,6 +66,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         /**焦距提示, 是否不再提示, 每个版本提示一次*/
         const val KEY_FOCAL_DISTANCE_TIPS = "FOCAL_DISTANCE_TIPS_NOT_PROMPT"
+
+        /**是否已经检查过通知权限*/
+        var _isCheckedEngraveNotify = false
     }
 
     /**当前处于那个雕刻流程*/
@@ -540,11 +544,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //---
 
-    var _isCheckEngraveNotify = false
-
     /**检查雕刻通知*/
     fun checkEngraveNotify(action: () -> Unit) {
-        if (_isCheckEngraveNotify) {
+        if (_isCheckedEngraveNotify) {
             action()
         } else {
             val fContext = engraveCanvasFragment?.fragment?.fContext()
@@ -554,7 +556,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                     dialogTitle = _string(R.string.engrave_warn)
                     dialogMessage = "打开通知,接收通知进度?"
                     negativeButton { dialog, dialogViewHolder ->
-                        _isCheckEngraveNotify = true
+                        _isCheckedEngraveNotify = true
                         dialog.dismiss()
                         action()
                     }
@@ -569,7 +571,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                     dialogTitle = _string(R.string.engrave_warn)
                     dialogMessage = "打开雕刻通道,接收通知进度?"
                     negativeButton { dialog, dialogViewHolder ->
-                        _isCheckEngraveNotify = true
+                        _isCheckedEngraveNotify = true
                         dialog.dismiss()
                         action()
                     }
@@ -580,7 +582,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
             } else {
                 //可以通知
-                _isCheckEngraveNotify = true
+                _isCheckedEngraveNotify = true
                 action()
             }
         }
