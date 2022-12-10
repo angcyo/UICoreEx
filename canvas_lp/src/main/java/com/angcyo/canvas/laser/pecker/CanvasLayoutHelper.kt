@@ -300,7 +300,6 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**事件监听*/
     fun initCanvasListener(vh: DslViewHolder, canvasView: CanvasView) {
-        canvasView.keepScreenOn = true
         //事件监听
         canvasView.canvasDelegate.canvasListenerList.add(object : ICanvasListener {
 

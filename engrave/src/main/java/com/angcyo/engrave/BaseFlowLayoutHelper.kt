@@ -178,6 +178,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**雕刻模式改变通知*/
     open fun onEngraveFlowChanged(from: Int, to: Int) {
+        //雕刻中保持常亮
+        engraveCanvasFragment?.fragment?._vh?.itemView?.keepScreenOn = to == ENGRAVE_FLOW_ENGRAVING
+
         if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
             loopCheckDeviceState = false
         }
