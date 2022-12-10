@@ -1,7 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.fragment.AbsFragment
+import com.angcyo.fragment.AbsLifecycleFragment
 
 /**
  * 雕刻/创作界面 接口
@@ -11,7 +11,7 @@ import com.angcyo.fragment.AbsFragment
 interface IEngraveCanvasFragment {
 
     /**界面*/
-    val fragment: AbsFragment
+    val fragment: AbsLifecycleFragment
 
     /**创作界面*/
     val canvasDelegate: CanvasDelegate?
