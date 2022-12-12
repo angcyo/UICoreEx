@@ -180,8 +180,8 @@ class EngraveTaskRenderer(val canvasDelegate: CanvasDelegate) : BaseRenderer(can
 
         //进度背景
 
-        //进度文本
-        if (progress < 100) {
+        //只绘制当前正在雕刻索引的进度文本
+        if (index == engraveTask.currentIndex) {
             _drawText(
                 canvas,
                 "${progress}%",
