@@ -9,7 +9,9 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
 
 /**
  * 雕刻完成信息item
@@ -26,6 +28,19 @@ class EngraveFinishTopItem : DslTagGroupItem() {
     init {
         itemLayoutId = R.layout.item_engrave_finish_top_layout
         itemTagLayoutId = R.layout.dsl_tag_item_vertical
+
+        //分享雕刻日志
+        itemClick = if (isDebug()) {
+            {
+                EngraveFlowDataHelper.shareEngraveLog()
+            }
+        } else {
+            {
+                it.watchCount(5) {
+                    EngraveFlowDataHelper.shareEngraveLog()
+                }
+            }
+        }
     }
 
     override fun initLabelDesList() {
@@ -33,7 +48,10 @@ class EngraveFinishTopItem : DslTagGroupItem() {
         val taskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
         val layerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
         val engraveConfigEntity =
-            EngraveFlowDataHelper.getEngraveConfig(itemTaskId, layerList.firstOrNull()?.layerMode ?: 0)
+            EngraveFlowDataHelper.getEngraveConfig(
+                itemTaskId,
+                layerList.firstOrNull()?.layerMode ?: 0
+            )
         val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity?.materialCode)
 
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
