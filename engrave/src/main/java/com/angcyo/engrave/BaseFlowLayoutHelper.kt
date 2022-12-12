@@ -268,6 +268,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             dialogNotPromptKey = KEY
 
             positiveButton { dialog, dialogViewHolder ->
+                KEY.hawkPut(_dialogIsNotPrompt)
                 dialog.dismiss()
                 action()
             }
