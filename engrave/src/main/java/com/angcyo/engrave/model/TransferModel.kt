@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
@@ -301,7 +302,7 @@ class TransferModel : ViewModel() {
         val fileModeCmd = FileModeCmd(size)
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             error?.let {
-                it.toString().writeErrorLog()
+                "进入文件传输模式异常:${it} [${transferDataEntity.index}] ${size.toSizeString()}".writeErrorLog()
                 transferState.state = TransferState.TRANSFER_STATE_FINISH
                 transferState.error = TransferException(error)
                 transferStateOnceData.postValue(transferState)
@@ -343,7 +344,9 @@ class TransferModel : ViewModel() {
                                 }
                             }) { bean, error ->
                                 val result = bean?.parse<FileTransferParser>()
-                                L.w("传输结束:$result $error Success:${result?.isFileTransferSuccess()}")
+                                "传输结束:$result $error Success:${result?.isFileTransferSuccess()}".writeBleLog(
+                                    L.WARN
+                                )
                                 result?.let {
                                     if (result.isFileTransferSuccess()) {
                                         //文件传输完成
@@ -353,7 +356,7 @@ class TransferModel : ViewModel() {
 
                                         action(null)
                                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                        "数据接收未完成".writeErrorLog()
+                                        "数据接收未完成:[${transferDataEntity.index}]".writeErrorLog()
                                         transferState.state =
                                             TransferState.TRANSFER_STATE_FINISH
                                         transferState.error = TransferException()
@@ -363,7 +366,7 @@ class TransferModel : ViewModel() {
                                     }
                                 }
                                 if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                    "发送数据失败".writeErrorLog()
+                                    "发送数据失败:[${transferDataEntity.index}]".writeErrorLog()
                                     transferState.state =
                                         TransferState.TRANSFER_STATE_FINISH
                                     transferState.error = TransferException()
@@ -376,7 +379,7 @@ class TransferModel : ViewModel() {
                         }
                         //end parse
                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                        "未成功进入数据传输模式".writeErrorLog()
+                        "未成功进入数据传输模式:[${transferDataEntity.index}]".writeErrorLog()
                         transferState.state = TransferState.TRANSFER_STATE_FINISH
                         transferState.error = TransferException()
                         transferStateOnceData.postValue(transferState)
