@@ -210,6 +210,22 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             }
         }
 
+        //监听雕刻任务
+        canvasView?.let {
+            val taskRenderer = EngraveTaskRenderer.install(it.canvasDelegate)
+            engraveModel.engraveStateData.observe(fragment, allowBackward = false) {
+                it?.let {
+                    if (it.state != EngraveModel.ENGRAVE_STATE_FINISH) {
+                        //雕刻任务未完成
+                        taskRenderer.engraveTaskId = it.taskId
+                    } else {
+                        taskRenderer.engraveTaskId = null
+                    }
+                    taskRenderer.refresh()
+                }
+            }
+        }
+
         //发送一次初始化成功的事件
         laserPeckerModel.initializeData.value?.let {
             if (it) {

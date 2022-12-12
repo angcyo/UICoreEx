@@ -28,6 +28,9 @@ data class EngraveTaskEntity(
     /**当前正在雕刻的数据索引*/
     var currentIndex: Int = -1,
 
+    /**当前雕刻索引的进度*/
+    var currentProgress: Int = 0,
+
     /**任务需要雕刻的索引集合,
      * 数据库只支持[List<String>]类型, 不支持[List<Int>]类型
      * */

@@ -382,7 +382,7 @@
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "14:232572359127392657",
+      "lastPropertyId": "15:1494318073643687543",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -454,6 +454,11 @@
         {
           "id": "14:232572359127392657",
           "name": "bigIndex",
+          "type": 5
+        },
+        {
+          "id": "15:1494318073643687543",
+          "name": "currentProgress",
           "type": 5
         }
       ],

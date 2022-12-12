@@ -49,6 +49,9 @@ object HawkEngraveKeys {
     /**保存工程的次数*/
     var lastProjectCount: Int by HawkPropertyValue<Any, Int>(0)
 
+    /**雕刻失败后的重试次数*/
+    var engraveRetryCount: Int by HawkPropertyValue<Any, Int>(3)
+
     //
 
     /**版画阈值*/
@@ -94,6 +97,9 @@ object HawkEngraveKeys {
 
     /**激活元素从上往下的雕刻顺序*/
     var enableItemTopOrder: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**激活雕刻时的信息渲染*/
+    var enableRenderEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     //
 

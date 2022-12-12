@@ -61,6 +61,14 @@ class EngraveExperimentalFragment : DebugFragment() {
                 defValue = HawkEngraveKeys.enableItemTopOrder
             })
 
+            renderDebugAction(DebugAction().apply {
+                label = "激活雕刻时的信息渲染"
+                des = "激活后,将在雕刻时渲染对应元素的雕刻序号,进度,以及对应边框."
+                key = HawkEngraveKeys::enableRenderEngraveInfo.name
+                type = Boolean::class.java
+                defValue = HawkEngraveKeys.enableRenderEngraveInfo
+            })
+
         }
     }
 }
