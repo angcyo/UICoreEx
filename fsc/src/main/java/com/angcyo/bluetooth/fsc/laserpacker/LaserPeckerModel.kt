@@ -198,6 +198,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     fun isC1() = productInfoData.value?.isCI() == true
 
+    fun isL4() = productInfoData.value?.isLIV() == true
+
     //---
 
     /**空闲模式*/

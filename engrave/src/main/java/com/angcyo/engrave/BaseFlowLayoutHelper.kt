@@ -13,6 +13,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
+import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_FINISH
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -517,48 +518,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
                 return false
             }
-
-            if (laserPeckerModel.isZOpen()) {
-                //所有设备的第三轴模式下, 不允许雕刻GCode数据
-                val gCodeLayer =
-                    EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
-                if (gCodeLayer != null) {
-                    val rendererList =
-                        EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
-                    if (rendererList.isNotEmpty()) {
-                        //不允许雕刻GCode
-                        fContext?.messageDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据"
-                        }
-                        return false
-                    }
-                }
-            }
-
-            val isC1 = laserPeckerModel.isC1()
-            if (isC1 && laserPeckerModel.isPenMode()) {
-                //C1的握笔模式下, 只允许雕刻GCode数据
-                val gCodeLayer =
-                    EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
-                if (gCodeLayer != null) {
-                    val notGCodeRendererList = EngraveTransitionManager.getRendererListNot(
-                        canvasDelegate,
-                        gCodeLayer,
-                        false
-                    )
-                    if (notGCodeRendererList.isNotEmpty()) {
-                        //不允许雕刻非GCode数据
-                        fContext?.messageDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = "当前模式下, 不允许雕刻非\"${gCodeLayer.label}\"数据"
-                        }
-                        return false
-                    }
-                }
-            }
         }
-        return true
+        //验证数据
+        return EngraveDataValidation.validation(
+            engraveCanvasFragment?.fragment?.fContext(),
+            canvasDelegate
+        )
     }
 
     //---
@@ -609,5 +574,5 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
 }
 
-/**是否进入了雕刻流程*/
-fun Int.isEngraveFlow() = this >= ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+/**是否进入了雕刻流程, 并且非雕刻完成*/
+fun Int.isEngraveFlow() = this in ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG until ENGRAVE_FLOW_FINISH
