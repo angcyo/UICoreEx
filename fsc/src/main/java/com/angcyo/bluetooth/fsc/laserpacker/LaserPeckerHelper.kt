@@ -159,7 +159,7 @@ object LaserPeckerHelper {
     /**C1移动平台/小车模式
      * 5米*/
     @MM
-    const val CAR_MAX_Y = 5_00_0
+    const val CAR_MAX_Y = 2_00_0
 
     /**默认指令初始化配置*/
     val initCommandFlowList = mutableListOf<Byte>().apply {
