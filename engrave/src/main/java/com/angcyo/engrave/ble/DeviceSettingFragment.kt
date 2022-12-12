@@ -255,18 +255,21 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            if (isC1CarFlag) {
+            if (isC1CarFlag || settingParser == null) {
                 //自动进入了移动平台模式
             } else {
-                DslPropertySwitchItem()() {
-                    itemLabel = _string(R.string.device_ex_direction_label)
-                    itemDes = _string(R.string.device_ex_direction_des)
-                    initItem()
+                if (settingParser.zFlag == 1) {
+                    //Z轴的时候, 才有正转/反转
+                    DslPropertySwitchItem()() {
+                        itemLabel = _string(R.string.device_ex_direction_label)
+                        itemDes = _string(R.string.device_ex_direction_des)
+                        initItem()
 
-                    itemSwitchChecked = settingParser?.dir == 1
-                    itemSwitchChangedAction = {
-                        settingParser?.dir = if (it) 1 else 0
-                        settingParser?.updateSetting()
+                        itemSwitchChecked = settingParser.dir == 1
+                        itemSwitchChangedAction = {
+                            settingParser.dir = if (it) 1 else 0
+                            settingParser.updateSetting()
+                        }
                     }
                 }
             }
