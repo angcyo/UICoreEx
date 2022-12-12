@@ -99,7 +99,7 @@ object HawkEngraveKeys {
     var enableItemTopOrder: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**激活雕刻时的信息渲染*/
-    var enableRenderEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(true)
+    var enableRenderEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     //
 

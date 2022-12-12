@@ -181,7 +181,15 @@ class EngraveTaskRenderer(val canvasDelegate: CanvasDelegate) : BaseRenderer(can
         //进度背景
 
         //进度文本
-        _drawText(canvas, "${progress}%", visualBounds, Gravity.CENTER, Paint.Style.FILL_AND_STROKE)
+        if (progress < 100) {
+            _drawText(
+                canvas,
+                "${progress}%",
+                visualBounds,
+                Gravity.CENTER,
+                Paint.Style.FILL_AND_STROKE
+            )
+        }
     }
 
     /**在指定的[rect]内部绘制文本
