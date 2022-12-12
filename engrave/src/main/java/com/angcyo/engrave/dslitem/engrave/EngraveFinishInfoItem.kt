@@ -41,7 +41,7 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                     itemTaskId,
                     transferDataEntity?.index ?: 0
                 )
-                val printTimes = engraveDataEntity?.printTimes
+                val printTimes = engraveDataEntity?.printTimes ?: 0
                 add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
             }
         }

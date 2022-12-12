@@ -68,7 +68,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
                 //雕刻次数
                 val times = engraveConfigEntity.time
-                val printTimes = engraveDataEntity?.printTimes
+                val printTimes = engraveDataEntity?.printTimes ?: 0
                 add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
 
                 //加工时间
