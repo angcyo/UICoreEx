@@ -225,5 +225,7 @@
     <string name="engrave_experimental">Experimental</string>
 
     <string name="engrave_channel">Engrave Channel</string>
+    <string name="open_notify_tip">Open the notification to receive notification progress?</string>
+    <string name="open_notify_channel_tip">Open the engraving channel to receive notification progress?</string>
 
 </resources>

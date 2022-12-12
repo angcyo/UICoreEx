@@ -216,5 +216,7 @@
     <string name="engrave_experimental">实验性</string>
 
     <string name="engrave_channel">雕刻通道</string>
+    <string name="open_notify_tip">打开通知,接收通知进度?</string>
+    <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
 
 </resources>

@@ -256,7 +256,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**显示焦距提示*/
     fun showFocalDistance(context: Context?, action: () -> Unit) {
         val KEY = "${KEY_FOCAL_DISTANCE_TIPS}${getAppVersionCode()}"
-        if (KEY.hawkGetBoolean()) {
+        if (KEY.hawkGetBoolean() && !BuildConfig.DEBUG) {
             //不再提示
             action()
             return
@@ -278,7 +278,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**显示预览安全提示框*/
     fun showSafetyTips(context: Context?, action: () -> Unit) {
         val KEY = "${KEY_SAFETY_TIPS}${getAppVersionCode()}"
-        if (KEY.hawkGetBoolean()) {
+        if (KEY.hawkGetBoolean() && !BuildConfig.DEBUG) {
             //不再提示
             action()
             return
@@ -539,7 +539,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 //未打开通知
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
-                    dialogMessage = "打开通知,接收通知进度?"
+                    dialogMessage = _string(R.string.open_notify_tip)
                     negativeButton { dialog, dialogViewHolder ->
                         _isCheckedEngraveNotify = true
                         dialog.dismiss()
@@ -554,7 +554,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 //未打开对应的通道
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
-                    dialogMessage = "打开雕刻通道,接收通知进度?"
+                    dialogMessage = _string(R.string.open_notify_channel_tip)
                     negativeButton { dialog, dialogViewHolder ->
                         _isCheckedEngraveNotify = true
                         dialog.dismiss()
