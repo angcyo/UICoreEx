@@ -5,7 +5,6 @@ import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.data.toMm
-import com.angcyo.canvas.graphics.BitmapGraphicsParser
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -244,6 +243,7 @@ object CanvasBitmapHandler {
     }
 
     /**抖动
+     * 2022-12-12 抖动算法, 显示的是灰度图, 只在数据发送的时候使用抖动算法处理, 所以~~~
      * [com.angcyo.canvas.graphics.BitmapGraphicsParser]
      * */
     fun handleDithering(
@@ -283,11 +283,17 @@ object CanvasBitmapHandler {
                                 item.dataBean.brightness
                             )
 
-                            //对于低尺寸的图片需要先放大到 1000
-                            BitmapGraphicsParser.handleDithering(
+                            /*BitmapGraphicsParser.handleDithering(
                                 bitmap, item.dataBean.inverse,
                                 item.dataBean.contrast.toDouble(),
                                 item.dataBean.brightness.toDouble()
+                            )*/
+
+                            //灰度, 抖动图, 使用灰度显示
+                            bitmap.toGrayHandle(
+                                item.dataBean.inverse,
+                                item.dataBean.contrast,
+                                item.dataBean.brightness
                             )
                         }
                     }) {
@@ -308,13 +314,61 @@ object CanvasBitmapHandler {
     fun handleGrey(
         anchor: View,
         owner: LifecycleOwner,
-        renderer: DataItemRenderer
+        renderer: DataItemRenderer,
+        onDismissAction: () -> Unit = {}
     ) {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
         val operateBitmap = item.operateBitmap!!
 
-        owner.engraveLoadingAsync({
+        context.canvasRegulateWindow2(anchor) {
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT, item.dataBean.inverse)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST, item.dataBean.contrast)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS, item.dataBean.brightness)
+            firstApply =
+                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GREY
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
+                } else {
+                    owner.engraveLoadingAsync({
+                        operateBitmap.let { bitmap ->
+                            item.dataBean.inverse = getBooleanOrDef(
+                                CanvasRegulatePopupConfig2.KEY_SHAKE_INVERT,
+                                item.dataBean.inverse
+                            )
+
+                            item.dataBean.contrast = getFloatOrDef(
+                                CanvasRegulatePopupConfig2.KEY_CONTRAST,
+                                item.dataBean.contrast
+                            )
+
+                            item.dataBean.brightness = getFloatOrDef(
+                                CanvasRegulatePopupConfig2.KEY_BRIGHTNESS,
+                                item.dataBean.brightness
+                            )
+
+                            //灰度
+                            bitmap.toGrayHandle(
+                                item.dataBean.inverse,
+                                item.dataBean.contrast,
+                                item.dataBean.brightness
+                            )
+                        }
+                    }) {
+                        it?.let {
+                            item.updateBitmapByMode(
+                                it.toBase64Data(),
+                                CanvasConstant.DATA_MODE_GREY,
+                                renderer
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        /*owner.engraveLoadingAsync({
             operateBitmap.toGrayHandle()
         }) {
             it?.let {
@@ -324,7 +378,7 @@ object CanvasBitmapHandler {
                     renderer
                 )
             }
-        }
+        }*/
     }
 
     /**印章*/

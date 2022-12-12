@@ -106,7 +106,9 @@ object CanvasEditLayoutHelper {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
                     itemClick = {
-                        CanvasBitmapHandler.handleGrey(it, fragment, renderer)
+                        CanvasBitmapHandler.handleGrey(it, fragment, renderer){
+                            updateItemSelected(false)
+                        }
                         UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                     }
                 }
