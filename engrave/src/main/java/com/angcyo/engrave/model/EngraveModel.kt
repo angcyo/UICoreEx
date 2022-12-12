@@ -1,5 +1,6 @@
 package com.angcyo.engrave.model
 
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
@@ -19,6 +20,7 @@ import com.angcyo.engrave.EngraveNotifyHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -72,11 +74,16 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
+    val fscBleApiModel = vmApp<FscBleApiModel>()
+
     /**雕刻状态通知*/
     val engraveStateData = vmDataOnce<EngraveTaskEntity>()
 
     //缓存
     var _engraveTaskId: String? = null
+
+    //最后一次雕刻指令发送出去, 是否有异常
+    var _lastEngraveCmdError: Throwable? = null
 
     /**必须要实时获取, 否则在其他地方修改了数据, 在这里还是缓存, 不会是最新的*/
     val _engraveTaskEntity: EngraveTaskEntity?
@@ -94,21 +101,24 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     if (queryState.isModeIdle()) {
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
                             //机器空闲了, 可能一个数据雕刻结束了
-                            val nowTime = nowTime()
-                            UMEvent.ENGRAVE.umengEventValue {
-                                val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
-                                put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
-                                put(UMEvent.KEY_DURATION, duration.toString())
-                            }
-                            _logEngraveDuration(queryState, _lastEngraveTimes)
-                            _lastEngraveTimes = 1
-                            _lastEngraveIndex = -1
-                            //强制更新进度到100
-                            updateEngraveProgress(queryState, 100)
-                            if (isBatchEngraveSupport()) {
-                                finishEngrave()
-                            } else {
-                                engraveNext()
+                            if (_lastEngraveCmdError == null) {
+                                val nowTime = nowTime()
+                                UMEvent.ENGRAVE.umengEventValue {
+                                    val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
+                                    put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+                                    put(UMEvent.KEY_DURATION, duration.toString())
+                                }
+                                _logEngraveDuration(queryState, _lastEngraveTimes)
+                                _lastEngraveTimes = 1
+                                _lastEngraveIndex = -1
+                                //强制更新进度到100
+                                updateEngraveProgress(queryState, 100)
+
+                                if (isBatchEngraveSupport()) {
+                                    finishEngrave()
+                                } else {
+                                    engraveNext()
+                                }
                             }
                         }
                     } else if (queryState.isEngraving()) {
@@ -277,9 +287,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
-    /**批量雕刻*/
+    /**批量雕刻
+     * [retryCount] 失败后的重试次数*/
     @CallPoint
-    fun batchEngrave() {
+    fun batchEngrave(retryCount: Int = 0) {
         val task = _engraveTaskEntity ?: return
         _listenerEngraveState = true
         val taskId = task.taskId
@@ -344,15 +355,27 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             precision,
             diameter
         ).enqueue { bean, error ->
-            L.w("雕刻返回:${bean?.parse<MiniReceiveParser>()}")
-
+            "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
+            _lastEngraveCmdError = error
             if (error == null) {
                 //雕刻指令发送成功, 机器开始雕刻
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
             } else {
-                "雕刻失败:$error".writeErrorLog()
+                //雕刻失败, 重试
+                val taskEntity = _engraveTaskEntity
+                "雕刻失败:[${indexList}] $error, 即将重试...$taskEntity".writeErrorLog()
+
+                if (taskEntity?.state == ENGRAVE_STATE_START &&
+                    fscBleApiModel.haveDeviceConnected()
+                ) {
+                    if (retryCount < HawkEngraveKeys.engraveRetryCount) {
+                        doBack {
+                            batchEngrave(retryCount + 1)
+                        }
+                    }
+                }
             }
         }
 
@@ -402,6 +425,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //雕刻次数+1
         HawkEngraveKeys.lastEngraveCount++
+        if (HawkEngraveKeys.lastEngraveCount > 10_0000) {
+            //超过10W个之后, 清零
+            HawkEngraveKeys.lastEngraveCount = 0
+        }
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
@@ -450,7 +477,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun _startEngraveCmd(
         index: Int,
         transferDataEntity: TransferDataEntity?,
-        engraveConfigEntity: EngraveConfigEntity
+        engraveConfigEntity: EngraveConfigEntity,
+        retryCount: Int = 0
     ) {
         val diameter =
             (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
@@ -488,15 +516,32 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             diameter,
             engraveConfigEntity.precision
         ).enqueue { bean, error ->
-            L.w("雕刻返回:${bean?.parse<MiniReceiveParser>()}")
-
+            "雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
+            _lastEngraveCmdError = error
             if (error == null) {
                 //雕刻指令发送成功, 机器开始雕刻
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
             } else {
-                "雕刻失败:$error".writeErrorLog()
+                //如果索引雕刻异常, 则不能跳过索引雕刻
+                val taskEntity = _engraveTaskEntity
+                "雕刻失败:[${index}] $error, 即将重试...$taskEntity".writeErrorLog()
+
+                if (taskEntity?.state == ENGRAVE_STATE_START &&
+                    fscBleApiModel.haveDeviceConnected()
+                ) {
+                    if (retryCount < HawkEngraveKeys.engraveRetryCount) {
+                        doBack {
+                            _startEngraveCmd(
+                                index,
+                                transferDataEntity,
+                                engraveConfigEntity,
+                                retryCount + 1
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -509,13 +554,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
         }
 
+        val currentProgress = clamp(progress, 0, 100)
         EngraveFlowDataHelper.updateEngraveProgress(
             _engraveTaskEntity?.taskId,
             queryState.index,
             queryState.printTimes,
-            clamp(progress, 0, 100)
+            currentProgress
         )
         _engraveTaskEntity?.let {
+            it.currentProgress = currentProgress
             it.progress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
             it.lpSaveEntity()
             engraveStateData.postValue(it)
