@@ -1,5 +1,7 @@
 package com.angcyo.engrave.ble
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -24,6 +26,11 @@ class EngraveExperimentalFragment : DebugFragment() {
 
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
+    }
+
+    override fun onInitFragment(savedInstanceState: Bundle?) {
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(Color.WHITE)
+        super.onInitFragment(savedInstanceState)
     }
 
     override fun renderActions() {
