@@ -22,6 +22,7 @@ import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
 import com.angcyo.item.style.*
+import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.utils.FileUtils
@@ -341,6 +342,9 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemInfoText = _string(R.string.engrave_experimental)
                 itemDarkIcon = R.drawable.lib_next
                 initItem()
+                configInfoTextStyle {
+                    textSize = _dimen(R.dimen.text_sub_size).toFloat()
+                }
                 itemClick = {
                     dslFHelper {
                         show(EngraveExperimentalFragment::class)
