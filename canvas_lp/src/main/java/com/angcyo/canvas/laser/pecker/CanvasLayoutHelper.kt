@@ -322,6 +322,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onItemRendererAdd(itemRenderer: IItemRenderer<*>) {
                 super.onItemRendererAdd(itemRenderer)
+                canvasView.canvasDelegate.saveInstanceState()
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
                         addLayerItem(vh, canvasView, itemRenderer)
@@ -331,6 +332,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onItemRendererRemove(itemRenderer: IItemRenderer<*>) {
                 super.onItemRendererRemove(itemRenderer)
+                canvasView.canvasDelegate.saveInstanceState()
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
                         removeLayerItem(vh, canvasView, itemRenderer)
