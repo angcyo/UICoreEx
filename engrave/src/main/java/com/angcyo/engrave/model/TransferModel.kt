@@ -30,10 +30,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.clamp
-import com.angcyo.library.ex.connect
-import com.angcyo.library.ex.toSizeString
-import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -280,8 +277,8 @@ class TransferModel : ViewModel() {
         action: (Throwable?) -> Unit = {}
     ) {
         val taskId = transferDataEntity.taskId
-        "开始传输数据:[$taskId][${transferDataEntity.index}]".writeEngraveLog()
         val size = transferDataEntity.bytes()?.size ?: 0
+        "开始传输数据:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}".writeEngraveLog()
         if (size <= 0) {
             "传输数据为空:${transferDataEntity.index}".writeErrorLog()
             transferState.state = TransferState.TRANSFER_STATE_FINISH
@@ -329,6 +326,7 @@ class TransferModel : ViewModel() {
                                 append(" $transferDataEntity")
                             }.writeEngraveLog()
 
+                            val startTime = nowTime()
                             dataCmd.enqueue(progress = {
                                 //进度
                                 val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
@@ -350,6 +348,9 @@ class TransferModel : ViewModel() {
                                 result?.let {
                                     if (result.isFileTransferSuccess()) {
                                         //文件传输完成
+                                        val nowTime = nowTime()
+                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTime).toMsTime()}".writeEngraveLog()
+
                                         transferDataEntity.isTransfer = true
                                         transferDataEntity.lpSaveEntity()
                                         _transferNext(transferState)
