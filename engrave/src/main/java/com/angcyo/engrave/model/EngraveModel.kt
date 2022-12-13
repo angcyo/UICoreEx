@@ -437,8 +437,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         _engraveTaskId = null
 
         //更新设备状态
-        syncQueryDeviceState { bean, error ->
-            //no op
+        _delay(HawkEngraveKeys.minQueryDelayTime) {
+            syncQueryDeviceState { bean, error ->
+                //no op
+            }
         }
     }
 
