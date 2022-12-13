@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/canvas_top_round_shape2">
+        android:background="@drawable/canvas_top_round_shape2"
+        android:clickable="true">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_close_view"
