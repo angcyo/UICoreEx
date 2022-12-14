@@ -14,10 +14,12 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
+import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_FINISH
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -231,7 +233,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         //预览信息改变时, 刷新路径预览
         previewModel.previewInfoData.observe(this) {
             if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
-                _dslAdapter?.updateAllItem()
+                if (!isInPadMode()) {
+                    _dslAdapter?.updateAllItem()
+                }
             }
         }
     }
@@ -587,6 +591,18 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 //可以通知
                 _isCheckedEngraveNotify = true
                 action()
+            }
+        }
+    }
+
+    //--
+
+    /**判断是否需要设备信息显示*/
+    fun DslAdapter.renderDeviceInfoIfNeed() {
+        val info = DeviceInfoTipItem.deviceInfoTip()
+        if (info.isNotBlank()) {
+            DeviceInfoTipItem()() {
+                itemTip = info
             }
         }
     }

@@ -98,7 +98,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
-                DeviceInfoTipItem()()
+                renderDeviceInfoIfNeed()
             }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()

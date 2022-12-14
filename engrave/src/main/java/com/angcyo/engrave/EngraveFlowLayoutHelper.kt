@@ -9,7 +9,6 @@ import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.engrave.dslitem.engrave.*
-import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave.dslitem.transfer.DataStopTransferItem
@@ -22,6 +21,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.nowTime
@@ -287,7 +287,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
-                DeviceInfoTipItem()()
+                renderDeviceInfoIfNeed()
             }
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
@@ -446,7 +446,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             if (!laserPeckerModel.isC1()) {
                 //非C1显示, 设备水平角度
-                DeviceInfoTipItem()()
+                renderDeviceInfoIfNeed()
             }
             //强制显示模块信息
             PreviewExDeviceTipItem()() {
@@ -484,7 +484,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     open fun renderEngraveFinish() {
         updateIViewTitle(_string(R.string.engrave_finish))
         engraveBackFlow = 0
-        showCloseView(true, _string(R.string.back_creation))
+        if (isInPadMode()) {
+            showCloseView(true, _string(R.string.ui_quit))
+        } else {
+            showCloseView(true, _string(R.string.back_creation))
+        }
 
         val taskId = flowTaskId
         renderDslAdapter {

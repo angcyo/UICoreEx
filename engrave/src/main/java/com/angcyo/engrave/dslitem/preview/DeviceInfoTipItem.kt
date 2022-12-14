@@ -2,11 +2,9 @@ package com.angcyo.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
-import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
@@ -16,21 +14,12 @@ import com.angcyo.widget.span.span
  */
 class DeviceInfoTipItem : PreviewTipItem() {
 
-    //产品模式
-    val laserPeckerModel = vmApp<LaserPeckerModel>()
+    companion object {
 
-    init {
-        itemTipTextColor = _color(R.color.text_sub_color)
-        itemTip = null
-    }
-
-    override fun onItemBind(
-        itemHolder: DslViewHolder,
-        itemPosition: Int,
-        adapterItem: DslAdapterItem,
-        payloads: List<Any>
-    ) {
-        itemTip = span {
+        /**设备角度/温度信息*/
+        fun deviceInfoTip(): CharSequence = span {
+            //产品模式
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
             val stateParser = laserPeckerModel.deviceStateData.value
             val angle = stateParser?.angle ?: 0
             if (angle != 0) {
@@ -43,7 +32,10 @@ class DeviceInfoTipItem : PreviewTipItem() {
                 append(":$temp° ")
             }
         }
-        super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 
+    init {
+        itemTipTextColor = _color(R.color.text_sub_color)
+        itemTip = null
+    }
 }
