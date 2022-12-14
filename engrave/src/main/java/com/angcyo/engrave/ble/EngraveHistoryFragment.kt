@@ -217,8 +217,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     fun toPreview(engraveDataEntity: EngraveDataEntity) {
         check {
             _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
-            engraveFlowLayoutHelper.startPreview()
-            engraveFlowLayoutHelper.showIn(this)
+            engraveFlowLayoutHelper.startPreview(this, _vh)
         }
     }
 

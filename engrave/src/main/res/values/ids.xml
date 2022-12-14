@@ -2,4 +2,5 @@
 <resources>
     <item name="canvas_device_state_wrap_layout" type="id" />
     <item name="device_setting_view" type="id" />
+    <item name="engrave_flow_wrap_layout" type="id" />
 </resources>

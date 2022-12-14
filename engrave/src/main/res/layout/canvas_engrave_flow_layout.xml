@@ -14,9 +14,10 @@
         android:background="@drawable/lib_bottom_tran_solid_gradient" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lib_iview_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/lib_xhdpi"
         android:background="@drawable/canvas_top_round_shape2"
         android:clickable="true">
 
@@ -25,7 +26,7 @@
             style="@style/LibTitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:layout_marginLeft="@dimen/lib_ldpi"
             android:minHeight="@dimen/lib_icon_title_size"
             android:paddingVertical="@dimen/lib_hdpi"
             android:text="@string/ui_quit"

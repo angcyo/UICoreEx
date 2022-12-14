@@ -42,10 +42,6 @@ import kotlin.math.max
  */
 open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
-    init {
-        iViewLayoutId = R.layout.canvas_engrave_flow_layout
-    }
-
     //数据传输模式
     val transferModel = vmApp<TransferModel>()
 

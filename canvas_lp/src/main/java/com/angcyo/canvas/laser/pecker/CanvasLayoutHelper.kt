@@ -25,7 +25,6 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.core.showIn
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -37,6 +36,7 @@ import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
@@ -239,17 +239,21 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
             if (!closeCanvasItemsFun.have("_layer_")) {
-                CanvasControlItem2()() {
-                    _layerCanvasItem = this
-                    itemIco = R.drawable.canvas_layer_ico
-                    itemText = _string(R.string.canvas_layer)
-                    itemEnable = true
-                    itemClick = {
-                        vh.gone(R.id.canvas_layer_layout, itemIsSelected)
-                        updateItemSelected(!itemIsSelected)
+                if (isInPadMode()) {
+                    updateLayerListLayout(vh, canvasView)
+                } else {
+                    CanvasControlItem2()() {
+                        _layerCanvasItem = this
+                        itemIco = R.drawable.canvas_layer_ico
+                        itemText = _string(R.string.canvas_layer)
+                        itemEnable = true
+                        itemClick = {
+                            vh.gone(R.id.canvas_layer_layout, itemIsSelected)
+                            updateItemSelected(!itemIsSelected)
 
-                        if (itemIsSelected) {
-                            updateLayerListLayout(vh, canvasView)
+                            if (itemIsSelected) {
+                                updateLayerListLayout(vh, canvasView)
+                            }
                         }
                     }
                 }
@@ -261,9 +265,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         itemText = _string(R.string.canvas_operate)
                         itemEnable = true
                         itemClick = {
-                            canvasDelegate.getSelectedRenderer()?.let { renderer ->
-
-                            }
+                            engraveCanvasFragment.engraveFlowLayoutHelper.startPreview(
+                                engraveCanvasFragment.fragment,
+                                vh
+                            )
                         }
                     }
                 }
@@ -372,7 +377,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     reason.flag > 0
                 ) {
                     //设备正在预览模式, 更新预览
-                    updatePreviewByItem(itemRenderer)
+                    updatePreviewByItem(vh, itemRenderer)
                 }
             }
 
@@ -428,7 +433,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
                 if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
-                    updatePreviewByItem(itemRenderer)
+                    updatePreviewByItem(vh, itemRenderer)
                 }
             }
 
@@ -455,7 +460,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             ): Boolean {
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     //点击画布, 隐藏图层布局
-                    vh.gone(R.id.canvas_layer_layout, true)
+                    if (!isInPadMode()) {
+                        vh.gone(R.id.canvas_layer_layout, true)
+                    }
                     _layerCanvasItem?.apply {
                         itemIsSelected = false
                         updateAdapterItem()
@@ -467,11 +474,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     }
 
     /**使用[itemRenderer], 更新预览信息*/
-    fun updatePreviewByItem(itemRenderer: IRenderer?) {
+    fun updatePreviewByItem(vh: DslViewHolder, itemRenderer: IRenderer?) {
         val layoutHelper = engraveCanvasFragment.engraveFlowLayoutHelper
         if (!layoutHelper.isAttach()) {
-            layoutHelper.startPreview()
-            layoutHelper.showIn(engraveCanvasFragment.fragment)
+            layoutHelper.startPreview(engraveCanvasFragment.fragment, vh)
             return
         }
         if (itemRenderer == null) {
@@ -676,12 +682,15 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             vh.rv(R.id.canvas_layer_view)?._dslAdapter?.apply {
                 val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
                 if (tabIndex == 0) {
-                    render {
-                        CanvasLayerItem()(0) {
-                            itemCanvasDelegate = canvasView.canvasDelegate
-                            itemRenderer = item
+                    val find = findItem { it is CanvasLayerItem && it.itemRenderer == item }
+                    if (find == null) {
+                        render {
+                            CanvasLayerItem()(0) {
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemRenderer = item
+                            }
+                            setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_NONE)
                         }
-                        setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_NONE)
                     }
                 } else {
                     updateLayerListLayout(vh, canvasView)
@@ -748,7 +757,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_NONE)
                     }
                 }
-            } else {
+            } else if (tabIndex == 1) {
                 //雕刻图层
                 if (_layerDragHelper != null) {
                     _layerDragHelper?.detachFromRecyclerView()

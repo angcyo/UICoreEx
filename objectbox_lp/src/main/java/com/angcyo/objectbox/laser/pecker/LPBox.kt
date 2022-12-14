@@ -35,6 +35,10 @@ inline fun <reified T> Collection<T>.lpSaveAllEntity() {
     boxOf(T::class.java, LPBox.PACKAGE_NAME).put(this)
 }
 
+inline fun <reified T> Collection<T>.lpRemoveAllEntity() {
+    boxOf(T::class.java, LPBox.PACKAGE_NAME).remove(this)
+}
+
 /**快速获取[BoxStore]
  * [com.angcyo.objectbox.DslBoxKt.boxStoreOf]*/
 fun lpBoxStoreOf(action: BoxStore.() -> Unit = {}): BoxStore {

@@ -29,7 +29,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
-        app:srcCompat="@drawable/canvas_invisible_svg" />
+        app:srcCompat="@drawable/canvas_visible_selector" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/layer_item_drawable_view"
@@ -60,7 +60,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/lib_bg2_selector"
-        android:padding="@dimen/lib_hdpi"
+        android:padding="@dimen/lib_ldpi"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
         app:layout_constraintRight_toLeftOf="@id/layer_item_sort_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
@@ -77,5 +77,5 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/canvas_layer_sort" />
-    
+
 </androidx.constraintlayout.widget.ConstraintLayout>

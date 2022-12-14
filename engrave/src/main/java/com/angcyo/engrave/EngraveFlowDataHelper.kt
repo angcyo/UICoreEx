@@ -16,11 +16,8 @@ import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.*
-import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.*
 import com.angcyo.objectbox.laser.pecker.entity.*
-import com.angcyo.objectbox.laser.pecker.lpSaveAllEntity
-import com.angcyo.objectbox.laser.pecker.lpSaveEntity
-import com.angcyo.objectbox.laser.pecker.lpUpdateOrCreateEntity
 import kotlin.math.max
 
 /**
@@ -181,8 +178,12 @@ object EngraveFlowDataHelper {
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
         }) {
             this.taskId = taskId
+            dataTransferSize = 0 //清空传输大小
             dataMakeStartTime = nowTime()
             dataMakeFinishTime = -1
+            dataTransferStartTime = -1
+            dataTransferMaxSpeed = -1f
+            dataTransferProgress = 0
         }
     }
 
@@ -310,6 +311,12 @@ object EngraveFlowDataHelper {
             it.isTransfer = false
         }
         list.lpSaveAllEntity()
+    }
+
+    /**删除数据已经传输完成的状态*/
+    fun removeTransferDataState(taskId: String?) {
+        val list = getTransferDataList(taskId)
+        list.lpRemoveAllEntity()
     }
 
     /**获取索引[index]对应的数据, 用来雕刻*/

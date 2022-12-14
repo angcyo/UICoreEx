@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import android.content.Context
+import android.graphics.Color
 import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -27,12 +28,14 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.writeTo
+import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
@@ -105,11 +108,20 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**是否循环检测设备状态*/
     var loopCheckDeviceState: Boolean = false
 
+    init {
+        iViewLayoutId = R.layout.canvas_engrave_flow_layout
+    }
+
     //
 
     override fun onIViewCreate() {
         super.onIViewCreate()
         bindDeviceState()
+
+        if (isInPadMode()) {
+            viewHolder?.gone(R.id.dialog_title_line_view)
+            viewHolder?.view(R.id.lib_iview_wrap_layout)?.setBackgroundColor(Color.WHITE)
+        }
 
         if (isDebugType()) {
             //重新刷新界面
@@ -226,13 +238,19 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**开始预览*/
     @CallPoint
-    fun startPreview() {
+    fun startPreview(fragment: AbsLifecycleFragment, holder: DslViewHolder) {
         /*engraveFlow = if (laserPeckerModel.isPenMode()) {
             ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
         } else {
             ENGRAVE_FLOW_PREVIEW
         }*/ //2022-12-7
         engraveFlow = ENGRAVE_FLOW_PREVIEW
+
+        showIn(
+            fragment,
+            holder.group(R.id.engrave_flow_wrap_layout)
+                ?: holder.group(R.id.lib_content_overlay_wrap_layout)
+        )
     }
 
     /**根据不同的流程, 渲染不同的界面*/

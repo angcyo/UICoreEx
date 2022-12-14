@@ -11,7 +11,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="behind"
             android:theme="@style/DeviceConnectTipTheme" />
 
         <!--固件升级-->

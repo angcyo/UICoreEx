@@ -143,6 +143,8 @@ class TransferModel : ViewModel() {
     @CallPoint
     @AnyThread
     fun startCreateTransferData(taskId: String?, canvasDelegate: CanvasDelegate) {
+        //清空之前之前的所有传输数据
+        EngraveFlowDataHelper.removeTransferDataState(taskId)
         stopTransfer()
         doBack {
             //传输状态, 开始创建数据

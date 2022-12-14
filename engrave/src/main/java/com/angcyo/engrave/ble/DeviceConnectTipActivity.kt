@@ -9,6 +9,10 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.R
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
+import com.angcyo.library.component.pad.isInPadMode
+import kotlin.math.min
 
 /**
  * 设备自动连接后的通知提示界面
@@ -84,6 +88,10 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
     init {
         activityLayoutId = R.layout.activity_device_connect_tip
         dialogGravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
+        if (isInPadMode()) {
+            dialogWidth = min(_screenWidth, _screenHeight)
+        }
     }
 
     override fun onCreateAfter(savedInstanceState: Bundle?) {
