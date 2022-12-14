@@ -20,14 +20,18 @@ import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.component._delay
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
+import kotlin.math.min
 
 /**
  * 路径预览对话框
@@ -179,6 +183,9 @@ fun Context.pathPreviewDialog(
         dialogContext = this@pathPreviewDialog
         this.projectItemBean = projectItemBean
         configBottomDialog()
+        if (isInPadMode()) {
+            dialogWidth = min(_screenWidth, _screenHeight) * 3 / 5
+        }
         config()
         show()
     }
