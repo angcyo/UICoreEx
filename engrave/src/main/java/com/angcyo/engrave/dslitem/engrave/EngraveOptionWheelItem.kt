@@ -4,6 +4,7 @@ import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -42,6 +43,12 @@ class EngraveOptionWheelItem : DslLabelWheelItem() {
                         //更新其他
                         _updatePowerDepthItem()
                     }*/
+                    itemEngraveConfigEntity?.apply {
+                        val materialEntity = itemWheelList?.get(index) as? MaterialEntity
+                        EngraveFlowDataHelper.generateEngraveConfigByMaterial(
+                            taskId, materialEntity?.key, materialEntity
+                        )
+                    }
                 }
                 MaterialEntity::power.name -> {
                     itemEngraveConfigEntity?.apply {

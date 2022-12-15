@@ -486,6 +486,16 @@ inline fun <reified T> Collection<T>.deleteAllEntity(packageName: String = defau
     return boxOf(T::class.java, packageName).remove(this)
 }
 
+/**获取所有记录*/
+inline fun <reified T : Any> KClass<T>.removeAll(
+    packageName: String = defaultBoxStore(),
+    noinline block: QueryBuilder<T>.() -> Unit = {}
+): List<T> {
+    val cls = this.java
+    val boxOf = boxOf(cls, packageName)
+    return boxOf.removeAll(block)
+}
+
 //endregion ---remove---
 
 //region ---save---

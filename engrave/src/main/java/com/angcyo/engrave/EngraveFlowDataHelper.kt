@@ -1,11 +1,14 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.appFilePath
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -436,6 +439,83 @@ object EngraveFlowDataHelper {
         return result
     }
 
+    /**查找任务配置的材质信息*/
+    fun findTaskMaterial(taskId: String?): MaterialEntity? {
+        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        //优先使用任务配置的雕刻信息
+        var config = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.taskId.equal("$taskId")
+                    .and(EngraveConfigEntity_.productName.equal("$productName"))
+            )
+        }
+        return EngraveHelper.materialList.find { it.code == config?.materialCode } //这是内存数据, 切换不同设备之后可以就不一样了
+            ?: EngraveHelper.getMaterial(taskId, config?.materialCode) //这是数据库数据, 需要提前保存
+    }
+
+    /**则查找相同产品的最近一次的雕刻信息*/
+    fun findLastMaterial(): MaterialEntity? {
+        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val config = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.materialCode.notNull()
+                    .and(EngraveConfigEntity_.productName.equal("$productName"))
+            )
+        }
+        return EngraveHelper.materialList.find { it.code == config?.materialCode }
+    }
+
+    /**使用材质key, 创建对应的雕刻参数配置
+     * [defMaterial] 默认的参数配置
+     * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.key]*/
+    fun generateEngraveConfigByMaterial(
+        taskId: String?,
+        materialKey: String?,
+        defMaterial: MaterialEntity?
+    ): List<EngraveConfigEntity> {
+        val result = mutableListOf<EngraveConfigEntity>()
+        val dpiScale = getTransferConfig(taskId)?.dpi?.toDpiScale() ?: 1f
+        val materialList =
+            EngraveHelper.getMaterialList(materialKey ?: "custom", dpiScale) //各个图层的雕刻参数
+        EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+        }//先移除旧的
+
+        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        //每个图层都创建一个材质参数
+        EngraveTransitionManager.engraveLayerList.forEach { engraveLayerInfo ->
+            //图层模式
+            EngraveConfigEntity().apply {
+                this.taskId = taskId
+                layerMode = engraveLayerInfo.layerMode
+
+                //材质
+                val findMaterial = materialList.find {
+                    it.layerModeStr?.contains("$layerMode") == true ||
+                            it.layerMode == layerMode
+                } ?: defMaterial
+                findMaterial?.let {
+                    materialCode = it.code
+                    this.productName = productName
+                    this.materialKey = it.key
+                    type = it.type.toByte()
+
+                    precision = it.precision
+                    power = it.power
+                    depth = it.depth
+
+                    //物理尺寸
+                    val previewConfigEntity = generatePreviewConfig(taskId)
+                    diameterPixel = previewConfigEntity.diameterPixel
+                }
+
+                lpSaveEntity()
+                result.add(this)
+            }
+        }
+        return result
+    }
+
     /**构建或者获取对应雕刻图层的雕刻配置信息*/
     fun generateEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
@@ -443,8 +523,12 @@ object EngraveFlowDataHelper {
             this.layerMode = layerMode
 
             //获取最后一次相同图层的雕刻参数
+            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
-                apply(EngraveConfigEntity_.layerMode.equal(layerMode))
+                apply(
+                    EngraveConfigEntity_.productName.equal("${productName}")
+                        .and(EngraveConfigEntity_.layerMode.equal(layerMode))
+                )
             }
 
             //材质
@@ -525,8 +609,8 @@ object EngraveFlowDataHelper {
     }
 
     /**重新雕刻, 则需要清空数据雕刻完成的状态, 任务id不变*/
-    fun againEngrave(taskId: String?) {
-        val taskEntity = getEngraveTask(taskId) ?: return
+    fun againEngrave(fromTaskId: String?) {
+        val taskEntity = getEngraveTask(fromTaskId) ?: return
 
         //
         taskEntity.lastDurationProgress = -1
@@ -538,7 +622,7 @@ object EngraveFlowDataHelper {
             val index = indexStr.toIntOrNull() ?: 0
             val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(
-                    EngraveDataEntity_.taskId.equal("$taskId")
+                    EngraveDataEntity_.taskId.equal("$fromTaskId")
                         .and(EngraveDataEntity_.index.equal(index))
                 )
             }

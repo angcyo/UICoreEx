@@ -101,6 +101,7 @@ data class TransferDataEntity(
      *
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerMode]
      *
+     * [com.angcyo.engrave.data.EngraveLayerInfo]
      * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]
      * */
     var layerMode: Int = -1,

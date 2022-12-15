@@ -24,6 +24,7 @@ import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.LogFile
 import com.angcyo.objectbox.findFirst
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -271,9 +272,9 @@ object LaserPeckerHelper {
 
         //激光类型, 默认是蓝光
         //蓝光
-        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, _string(R.string.laser_type_blue))
+        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10, _string(R.string.laser_type_blue))
         //白光
-        val whiteInfo = LaserTypeInfo(LASER_TYPE_WHITE, 1064, _string(R.string.laser_type_white))
+        val whiteInfo = LaserTypeInfo(LASER_TYPE_WHITE, 1064, 2, _string(R.string.laser_type_white))
         var laserTypeList: List<LaserTypeInfo> = listOf(blueInfo)
 
         //所有支持的分辨率
@@ -395,7 +396,11 @@ object LaserPeckerHelper {
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
-                laserTypeList = listOf(blueInfo, whiteInfo)
+                laserTypeList = listOf(whiteInfo, blueInfo)
+            }
+            CI -> {
+                //C1的模块是动态, 需要在获取设备状态后, 重新赋值
+                laserTypeList = listOf(blueInfo)
             }
         }
 
@@ -796,6 +801,7 @@ object LaserPeckerHelper {
                 //初始化完成
                 end(it)
             } else if (count < INIT_RETRY_COUNT) {
+                toastQQ(_string(R.string.device_init_fail_tip))
                 //再来一次
                 doBack {
                     sendInitCommand(name, address, isAutoConnect, count + 1, end)

@@ -26,6 +26,7 @@ import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
+import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.isNotificationsEnabled
@@ -215,6 +216,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**清空流程id*/
     open fun clearFlowId() {
+        L.i("清空流程id.")
         flowTaskId = null
     }
 

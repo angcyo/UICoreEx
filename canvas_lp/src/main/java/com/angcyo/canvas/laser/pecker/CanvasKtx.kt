@@ -2,6 +2,7 @@ package com.angcyo.canvas.laser.pecker
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
@@ -55,7 +56,7 @@ fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = tr
     return file.absolutePath
 }
 
-/**恢复实例数据
+/**恢复实例数据, 可自定义线程加载
  * [saveInstanceState]*/
 fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true): String {
     val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
@@ -114,15 +115,17 @@ fun CanvasDelegate.openCanvasFile(data: String?, clearOld: Boolean = true) =
     openCanvasFile(data?.toCanvasProjectBean(), clearOld)
 
 /**直接加载*/
+@AnyThread
 fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolean = true): Boolean {
     if (clearOld) {
-        removeAllItemRenderer(Strategy.preview)
+        removeAllItemRenderer(Strategy.init)
         undoManager.clear()
     }
     val result = dataBean?.data?.toCanvasProjectItemList()?.let { items ->
-        items.forEach { itemData ->
-            GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.preview)
-        }
+        /*items.forEach { itemData ->
+            GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.init)
+        }*/
+        GraphicsHelper.renderItemDataBeanList(this, items, false, Strategy.init)
     } != null
     return result
 }

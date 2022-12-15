@@ -4,7 +4,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
@@ -12,6 +11,7 @@ import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.getAppString
 
 /**
  * 雕刻完成信息item
@@ -47,17 +47,20 @@ class EngraveFinishTopItem : DslTagGroupItem() {
 
         val taskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
         val layerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
-        val engraveConfigEntity =
-            EngraveFlowDataHelper.getEngraveConfig(
-                itemTaskId,
-                layerList.firstOrNull()?.layerMode ?: 0
-            )
-        val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity?.materialCode)
-
+        val engraveConfigEntity = EngraveFlowDataHelper.getEngraveConfig(
+            itemTaskId,
+            layerList.firstOrNull()?.layerMode ?: 0
+        )
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
 
         renderLabelDesList {
-            add(LabelDesData("${_string(R.string.custom_material)}:", materialEntity.toText()))
+            add(
+                LabelDesData(
+                    "${_string(R.string.custom_material)}:",
+                    getAppString(engraveConfigEntity?.materialKey ?: "custom")
+                        ?: _string(R.string.custom)
+                )
+            )
 
             val pxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
             add(LabelDesData("${_string(R.string.resolution_ratio)}:", pxInfo.des))

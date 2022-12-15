@@ -4,13 +4,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.getAppString
 
 /**
  * 雕刻信息展示的item
@@ -36,10 +36,14 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
         renderLabelDesList {
             engraveConfigEntity?.let {
-                val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity.materialCode)
-
                 //材质:
-                add(LabelDesData(_string(R.string.custom_material), materialEntity.toText()))
+                add(
+                    LabelDesData(
+                        _string(R.string.custom_material),
+                        getAppString(engraveConfigEntity.materialKey ?: "custom")
+                            ?: _string(R.string.custom)
+                    )
+                )
                 //分辨率: 1k
                 val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
                 add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))

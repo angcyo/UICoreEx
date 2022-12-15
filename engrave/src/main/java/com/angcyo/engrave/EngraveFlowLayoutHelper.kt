@@ -21,6 +21,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -274,12 +275,26 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
         val taskId = flowTaskId
 
-        //雕刻配置信息
-        val engraveConfigEntity =
-            EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerMode)
+        //默认选中材质
+        var materialEntity = EngraveFlowDataHelper.findTaskMaterial(taskId)
+        L.w("材质:${taskId} $materialEntity")
 
-        //材质列表
-        val materialList = EngraveHelper.getProductMaterialList()
+        //雕刻配置信息
+        val engraveConfigEntity = if (materialEntity == null) {
+            //未初始化材质信息, 默认使用第一个
+            materialEntity =
+                EngraveFlowDataHelper.findLastMaterial() ?: EngraveHelper.materialList.firstOrNull()
+                        ?: EngraveHelper.createCustomMaterial()
+            EngraveFlowDataHelper.generateEngraveConfigByMaterial(
+                taskId,
+                materialEntity.key,
+                materialEntity
+            ).find {
+                it.layerMode == selectLayerMode
+            } ?: EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerMode)
+        } else {
+            EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerMode)
+        }
 
         renderDslAdapter {
             PreviewTipItem()() {
@@ -296,9 +311,15 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngraveOptionWheelItem()() {
                 itemTag = MaterialEntity::name.name
                 itemLabelText = _string(R.string.custom_material)
-                itemWheelList = materialList
-                itemSelectedIndex = 0
+                itemWheelList = EngraveHelper.unionMaterialList
+                itemSelectedIndex =
+                    EngraveHelper.indexOfMaterial(EngraveHelper.unionMaterialList, materialEntity)
                 itemEngraveConfigEntity = engraveConfigEntity
+
+                //刷新界面
+                observeItemChange {
+                    renderFlowItems()
+                }
             }
 
             //雕刻图层切换
@@ -318,10 +339,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
 
-            if (laserPeckerModel.productInfoData.value?.isLIV() == true) {
-                //L4 激光光源选择
+            // 激光光源选择
+            val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+            if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
                 EngraveSegmentScrollItem()() {
-                    val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
                     itemText = _string(R.string.laser_type)
                     itemSegmentList = typeList
                     itemCurrentIndex = typeList.indexOfFirst { it.type == engraveConfigEntity.type }
@@ -332,6 +353,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
             }
+
             if (laserPeckerModel.isC1()) {
                 //C1 加速级别选择
                 EngraveOptionWheelItem()() {

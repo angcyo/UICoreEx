@@ -70,9 +70,9 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
-            if (laserPeckerModel.initializeData.value == true) {
+            /*if (laserPeckerModel.initializeData.value == true) {
                 _showProductLimit(canvasView, productInfo)
-            }
+            }*/
 
             //设置限定符
             if (productInfo == null) {

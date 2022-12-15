@@ -325,9 +325,11 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onItemRendererAdd(itemRenderer: IItemRenderer<*>) {
-                super.onItemRendererAdd(itemRenderer)
-                canvasView.canvasDelegate.saveInstanceState()
+            override fun onItemRendererAdd(itemRenderer: IItemRenderer<*>, strategy: Strategy) {
+                super.onItemRendererAdd(itemRenderer, strategy)
+                if (strategy.type > Strategy.STRATEGY_TYPE_INIT) {
+                    canvasView.canvasDelegate.saveInstanceState()
+                }
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
                         addLayerItem(vh, canvasView, itemRenderer)
@@ -335,9 +337,11 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onItemRendererRemove(itemRenderer: IItemRenderer<*>) {
-                super.onItemRendererRemove(itemRenderer)
-                canvasView.canvasDelegate.saveInstanceState()
+            override fun onItemRendererRemove(itemRenderer: IItemRenderer<*>, strategy: Strategy) {
+                super.onItemRendererRemove(itemRenderer, strategy)
+                if (strategy.type > Strategy.STRATEGY_TYPE_INIT) {
+                    canvasView.canvasDelegate.saveInstanceState()
+                }
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
                         removeLayerItem(vh, canvasView, itemRenderer)
@@ -374,7 +378,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
                 if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true &&
                     itemRenderer == canvasView.canvasDelegate.getSelectedRenderer() &&
-                    reason.flag > 0
+                    reason.flag > Reason.REASON_FLAG_STYLE
                 ) {
                     //设备正在预览模式, 更新预览
                     updatePreviewByItem(vh, itemRenderer)

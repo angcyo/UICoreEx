@@ -39,6 +39,12 @@ data class EngraveConfigEntity(
      * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.code]*/
     var materialCode: String? = null,
 
+    /**材质key, 用来国际化*/
+    var materialKey: String? = null,
+
+    /**产品名, 比如L4 C1等*/
+    var productName: String? = null,
+
     /**外部设备名称
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_Z]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_R]

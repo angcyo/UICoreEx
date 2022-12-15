@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.utils.CanvasConstant
@@ -178,21 +179,62 @@ class FscDeviceModel : LifecycleViewModel() {
                 GraphicsHelper._minLeft = product.previewBounds.left.toMm()
                 GraphicsHelper._minTop = product.previewBounds.top.toMm()
                 GraphicsHelper.assignLocationBounds = product.previewBounds
-
-                //材质列表初始化, 按需初始化, 节省内存
-                if (product.isLI()) {
-                    EngraveHelper.initL1MaterialList()
-                } else if (product.isLII()) {
-                    EngraveHelper.initL2MaterialList()
-                } else if (product.isLIII()) {
-                    EngraveHelper.initL3MaterialList()
-                }
                 /*vmApp<EngraveModel>().engraveOptionInfoData.value?.let { option ->
                     if (product.laserTypeList.isNotEmpty() && !product.laserTypeList.contains(option.type)) {
                         //当前设备不支持选中的激光类型, 则调整一下
                         option.type = product.laserTypeList.first()
                     }
                 }*/
+            }
+        }
+
+        //设备初始化后回调, 初始化材质信息
+        laserPeckerModel.initializeOnceData.observe(this) {
+            if (it == true) {
+                laserPeckerModel.productInfoData.value?.let {
+                    if (it.isCI()) {
+                        //com/angcyo/bluetooth/fsc/laserpacker/parse/QueryStateParser.kt:81
+                        when (laserPeckerModel.deviceStateData.value?.moduleState) {
+                            //0 5W激光
+                            0 -> it.laserTypeList = listOf(
+                                LaserTypeInfo(
+                                    LaserPeckerHelper.LASER_TYPE_BLUE,
+                                    450,
+                                    5,
+                                    _string(R.string.laser_type_blue)
+                                )
+                            )
+                            //1 10W激光
+                            1 -> it.laserTypeList = listOf(
+                                LaserTypeInfo(
+                                    LaserPeckerHelper.LASER_TYPE_BLUE,
+                                    450,
+                                    10,
+                                    _string(R.string.laser_type_blue)
+                                )
+                            )
+                            //2 20W激光
+                            2 -> it.laserTypeList = listOf(
+                                LaserTypeInfo(
+                                    LaserPeckerHelper.LASER_TYPE_BLUE,
+                                    450,
+                                    20,
+                                    _string(R.string.laser_type_blue)
+                                )
+                            )
+                            //3 1064激光
+                            3 -> it.laserTypeList = listOf(
+                                LaserTypeInfo(
+                                    LaserPeckerHelper.LASER_TYPE_WHITE,
+                                    1064,
+                                    2,
+                                    _string(R.string.laser_type_white)
+                                )
+                            )
+                        }
+                    }
+                    EngraveHelper.initMaterial(it)
+                }
             }
         }
 

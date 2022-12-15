@@ -48,13 +48,6 @@
             app:r_flow_item_vertical_space="@dimen/lib_dpi">
 
             <com.angcyo.widget.DslButton
-                android:id="@+id/bluetooth_button"
-                style="@style/DefaultButtonStyleNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="蓝牙" />
-
-            <com.angcyo.widget.DslButton
                 android:id="@+id/engrave_preview_button"
                 style="@style/DefaultButtonStyleNormal"
                 android:layout_width="wrap_content"

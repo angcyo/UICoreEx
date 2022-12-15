@@ -23,7 +23,7 @@ data class LaserPeckerProductInfo(
     var version: Int,
     /**
      * 产品名称
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
+     * 解析方法: [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
      *
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LI]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LII]

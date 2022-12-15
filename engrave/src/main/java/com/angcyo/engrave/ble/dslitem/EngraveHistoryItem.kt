@@ -6,7 +6,6 @@ import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.transition.EngraveTransitionManager
@@ -18,6 +17,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.getAppString
 import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -142,8 +142,14 @@ class EngraveHistoryItem : DslTagGroupItem() {
 
             if (engraveConfigEntity != null) {
                 //材质
-                val materialEntity = EngraveHelper.getMaterial(engraveConfigEntity.materialCode)
-                add(LabelDesData(_string(R.string.custom_material), materialEntity.toText()))
+
+                add(
+                    LabelDesData(
+                        _string(R.string.custom_material),
+                        getAppString(engraveConfigEntity.materialKey ?: "custom")
+                            ?: _string(R.string.custom)
+                    )
+                )
 
                 if ((engraveConfigEntity.precision ?: 0) > 0) {
                     add(
