@@ -217,7 +217,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     fun toPreview(engraveDataEntity: EngraveDataEntity) {
         check {
             _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
-            engraveFlowLayoutHelper.startPreview(this, _vh)
+            engraveFlowLayoutHelper.startPreview(this)
         }
     }
 
@@ -244,5 +244,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         get() = _engraveFlowLayoutHelper.apply {
             engraveCanvasFragment = this@EngraveHistoryFragment
         }
+    override val flowLayoutContainer: ViewGroup?
+        get() = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
 
 }

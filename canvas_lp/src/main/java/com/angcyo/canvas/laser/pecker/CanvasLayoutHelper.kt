@@ -266,8 +266,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         itemEnable = true
                         itemClick = {
                             engraveCanvasFragment.engraveFlowLayoutHelper.startPreview(
-                                engraveCanvasFragment.fragment,
-                                vh
+                                engraveCanvasFragment
                             )
                         }
                     }
@@ -481,7 +480,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     fun updatePreviewByItem(vh: DslViewHolder, itemRenderer: IRenderer?) {
         val layoutHelper = engraveCanvasFragment.engraveFlowLayoutHelper
         if (!layoutHelper.isAttach()) {
-            layoutHelper.startPreview(engraveCanvasFragment.fragment, vh)
+            layoutHelper.startPreview(engraveCanvasFragment)
             return
         }
         if (itemRenderer == null) {

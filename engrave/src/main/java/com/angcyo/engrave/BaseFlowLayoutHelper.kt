@@ -38,7 +38,6 @@ import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.writeTo
-import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
 
 /**
@@ -244,19 +243,14 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**开始预览*/
     @CallPoint
-    fun startPreview(fragment: AbsLifecycleFragment, holder: DslViewHolder) {
+    fun startPreview(engraveFragment: IEngraveCanvasFragment) {
         /*engraveFlow = if (laserPeckerModel.isPenMode()) {
-            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
-        } else {
-            ENGRAVE_FLOW_PREVIEW
-        }*/ //2022-12-7
+                ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
+            } else {
+                ENGRAVE_FLOW_PREVIEW
+            }*/ //2022-12-7
         engraveFlow = ENGRAVE_FLOW_PREVIEW
-
-        showIn(
-            fragment,
-            holder.group(R.id.engrave_flow_wrap_layout)
-                ?: holder.group(R.id.lib_content_overlay_wrap_layout)
-        )
+        showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
     }
 
     /**根据不同的流程, 渲染不同的界面*/

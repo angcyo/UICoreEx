@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import android.view.ViewGroup
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.fragment.AbsLifecycleFragment
 
@@ -18,5 +19,8 @@ interface IEngraveCanvasFragment {
 
     /**雕刻流程布局*/
     val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
+
+    /**流程布局的容器*/
+    val flowLayoutContainer: ViewGroup?
 
 }
