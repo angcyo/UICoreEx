@@ -21,7 +21,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/02
  */
-class EngraveOptionWheelItem : DslLabelWheelItem() {
+open class EngraveOptionWheelItem : DslLabelWheelItem() {
 
     /**参数配置实体*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null

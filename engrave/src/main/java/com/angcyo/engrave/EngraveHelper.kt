@@ -62,8 +62,8 @@ object EngraveHelper {
     /**设备连接上之后, 初始化材质推荐参数
      * [com.angcyo.engrave.model.FscDeviceModel.initDevice]
      * */
-    fun initMaterial(product: LaserPeckerProductInfo) {
-        materialList.resetAll(getProductMaterialList(product))
+    fun initMaterial() {
+        materialList.resetAll(getProductMaterialList(vmApp<LaserPeckerModel>().productInfoData.value))
         unionMaterialList.clear()
         materialList.filterTo(unionMaterialList) { entity ->
             unionMaterialList.find { it.key == entity.key } == null
@@ -86,8 +86,8 @@ object EngraveHelper {
     }
 
     /**获取连上的设备推荐参数列表*/
-    fun getProductMaterialList(product: LaserPeckerProductInfo): List<MaterialEntity> {
-        val name = product.name ?: return emptyList()
+    fun getProductMaterialList(product: LaserPeckerProductInfo?): List<MaterialEntity> {
+        val name = product?.name ?: return emptyList()
         val result = mutableListOf<MaterialEntity>()
 
         //用户自定义的参数
@@ -123,8 +123,11 @@ object EngraveHelper {
     fun getMaterialList(materialKey: String?, dpiScale: Float): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         materialList.forEach {
-            if (it.key == materialKey && it.dpiScale == dpiScale) {
-                result.add(it)
+            if (it.key == materialKey) {
+                if (it.dpiScale <= 0 || it.dpiScale == dpiScale) {
+                    //材质未指定dpi时, 可能是用户自定义的材质, 则返回
+                    result.add(it)
+                }
             }
         }
         return result

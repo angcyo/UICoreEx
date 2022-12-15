@@ -233,7 +233,7 @@ class FscDeviceModel : LifecycleViewModel() {
                             )
                         }
                     }
-                    EngraveHelper.initMaterial(it)
+                    EngraveHelper.initMaterial()
                 }
             }
         }

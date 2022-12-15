@@ -226,4 +226,7 @@
     <string name="open_notify_tip">打开通知,接收通知进度?</string>
     <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
 
+    <string name="material_title_limit">最多输入20个字符</string>
+    <string name="save_material_title">材质名称</string>
+
 </resources>

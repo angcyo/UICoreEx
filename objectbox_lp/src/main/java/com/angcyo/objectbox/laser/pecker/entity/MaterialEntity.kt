@@ -62,7 +62,7 @@ data class MaterialEntity(
 
     /**dpi 缩放的比例,
      * 1K 2K 4K 对应 缩放比例 1 2 4*/
-    var dpiScale: Float = 1f,
+    var dpiScale: Float = 0f,
 
     //---核心配置参数---
 

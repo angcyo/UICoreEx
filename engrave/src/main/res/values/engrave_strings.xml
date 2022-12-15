@@ -235,4 +235,6 @@
     <string name="open_notify_tip">Open the notification to receive notification progress?</string>
     <string name="open_notify_channel_tip">Open the engraving channel to receive notification progress?</string>
 
+    <string name="material_title_limit">Enter up to 20 characters</string>
+    <string name="save_material_title">Material name</string>
 </resources>

@@ -516,6 +516,46 @@ object EngraveFlowDataHelper {
         return result
     }
 
+    /**保存雕刻配置信息到材质数据库*/
+    fun saveEngraveConfigToMaterial(taskId: String?, materialName: String): List<MaterialEntity> {
+        val configList = EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+        }
+        val result = mutableListOf<MaterialEntity>()
+        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val key = "${materialName}_${nowTime()}"
+
+        configList.forEach {
+            MaterialEntity().apply {
+                this.productName = productName
+                this.key = key
+                name = materialName
+                layerMode = it.layerMode
+                dpiScale = 0f
+
+                type = it.type.toInt()
+                precision = it.precision
+                power = it.power
+                depth = it.depth
+
+                //code
+                createMaterialCode("${key}_${nowTime()}")
+
+                //save
+                lpSaveEntity()
+
+                result.add(this)
+            }
+        }
+
+        //重新初始化材质列表
+        EngraveHelper.initMaterial()
+        //重新构建参数配置信息
+        generateEngraveConfigByMaterial(taskId, key, result.lastOrNull())
+
+        return result
+    }
+
     /**构建或者获取对应雕刻图层的雕刻配置信息*/
     fun generateEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {

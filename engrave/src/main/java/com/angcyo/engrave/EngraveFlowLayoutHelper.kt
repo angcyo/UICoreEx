@@ -5,6 +5,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.inputDialog
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.find
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -23,10 +26,7 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.ex.*
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -308,13 +308,20 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 PreviewExDeviceTipItem()()
             }
             //材质选择
-            EngraveOptionWheelItem()() {
+            EngraveMaterialWheelItem()() {
                 itemTag = MaterialEntity::name.name
                 itemLabelText = _string(R.string.custom_material)
                 itemWheelList = EngraveHelper.unionMaterialList
                 itemSelectedIndex =
                     EngraveHelper.indexOfMaterial(EngraveHelper.unionMaterialList, materialEntity)
                 itemEngraveConfigEntity = engraveConfigEntity
+
+                itemSaveAction = {
+                    showSaveMaterialDialog(taskId, materialEntity) {
+                        //刷新界面, 使用自定义的材质信息
+                        renderFlowItems()
+                    }
+                }
 
                 //刷新界面
                 observeItemChange {
@@ -363,6 +370,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemSelectedIndex =
                         EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.precision)
                     itemEngraveConfigEntity = engraveConfigEntity
+
+                    observeMaterialChange()
                 }
             }
 
@@ -378,11 +387,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         itemWheelList,
                         EngraveCmd.depthToSpeed(engraveConfigEntity.depth)
                     )
+                    observeMaterialChange()
                 }
             } else {
                 //功率/深度/次数
                 EngravePropertyItem()() {
                     itemEngraveConfigEntity = engraveConfigEntity
+                    observeMaterialChange()
                 }
             }
             /*EngraveOptionWheelItem()() {
@@ -443,6 +454,32 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**监听改变之后, 显示材质保存按钮*/
+    fun DslAdapterItem.observeMaterialChange() {
+        observeItemChange {
+            itemDslAdapter?.find<EngraveMaterialWheelItem>()?.let {
+                it.itemShowSaveButton = true
+                it.updateAdapterItem()
+            }
+        }
+    }
+
+    /**显示保存自定义材质的对话框*/
+    fun showSaveMaterialDialog(taskId: String?, materialEntity: MaterialEntity, action: Action) {
+        engraveCanvasFragment?.fragment?.fContext()?.inputDialog {
+            dialogTitle = _string(R.string.save_material_title)
+            hintInputString = _string(R.string.material_title_limit)
+            maxInputLength = 20
+            canInputEmpty = false
+            defaultInputString = materialEntity.toText() ?: _string(R.string.custom)
+            onInputResult = { dialog, inputText ->
+                EngraveFlowDataHelper.saveEngraveConfigToMaterial(taskId, "$inputText")
+                action.invoke()
+                false
             }
         }
     }
