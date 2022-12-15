@@ -2,8 +2,6 @@
 <resources>
     <string name="canvas_open_label">@string/app_name</string>
     <string name="canvas_open">Open</string>
-    <string name="font_import_fail">Font import failed</string>
-    <string name="font_import_success">Font imported successfully</string>
 
     <string name="canvas_min_diameter">Small D</string>
     <string name="canvas_max_diameter">Large D</string>
