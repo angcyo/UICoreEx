@@ -2,7 +2,6 @@ package com.angcyo.engrave
 
 import android.content.Context
 import android.graphics.Color
-import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -23,7 +22,6 @@ import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.library.L
@@ -449,7 +447,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**恢复雕刻状态, 请在初始化指令发送完成之后, 再去检查
      * @return true 需要恢复状态*/
-    fun checkRestoreEngrave(fragment: AbsLifecycleFragment, group: ViewGroup? = null): Boolean {
+    fun checkRestoreEngrave(engraveFragment: IEngraveCanvasFragment): Boolean {
         val stateParser = laserPeckerModel.deviceStateData.value ?: return false
         if (stateParser.isModeEngrave()) {
             if (stateParser.isEngraveStop()) {
@@ -465,7 +463,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             if (transferData != null && transferData.isTransfer && transferData.taskId != null) {
                 flowTaskId = transferData.taskId
                 engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                showIn(fragment, group)
+                showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
                 engraveModel.restoreEngrave(transferData.taskId)
                 return true
             }
