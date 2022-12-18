@@ -163,6 +163,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     /**绑定画图支持的功能列表*/
     @CallPoint
     fun bindItems(vh: DslViewHolder, canvasView: CanvasView, adapter: DslAdapter) {
+
+        //单位恢复
+        canvasView.canvasDelegate.getCanvasViewBox()
+            .updateCoordinateSystemUnit(CanvasConstant.valueUnit)
+        //智能指南恢复
+        canvasView.canvasDelegate.smartAssistant.enable = CanvasConstant.CANVAS_SMART_ASSISTANT
+        //绘制网格恢复
+        canvasView.canvasDelegate.xAxis.drawGridLine = CanvasConstant.CANVAS_DRAW_GRID
+        canvasView.canvasDelegate.yAxis.drawGridLine = CanvasConstant.CANVAS_DRAW_GRID
+
         val closeCanvasItemsFun = HawkEngraveKeys.closeCanvasItemsFun
         _canvasView = canvasView
         adapter.render {

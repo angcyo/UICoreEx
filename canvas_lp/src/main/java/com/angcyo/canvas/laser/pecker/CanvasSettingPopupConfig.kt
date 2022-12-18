@@ -100,10 +100,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             }
             DslSwitchInfoItem()() {
                 itemInfoText = _string(R.string.canvas_grid)
-                itemSwitchChecked = canvasDelegate?.xAxis?.drawGridLine == true
+                itemSwitchChecked = CanvasConstant.CANVAS_DRAW_GRID
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
+                    CanvasConstant.CANVAS_DRAW_GRID = it
                     if (it) {
                         canvasDelegate?.xAxis?.drawGridLine = true
                         canvasDelegate?.yAxis?.drawGridLine = true
