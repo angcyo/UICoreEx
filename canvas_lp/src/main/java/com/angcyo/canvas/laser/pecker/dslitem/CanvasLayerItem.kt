@@ -82,7 +82,7 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //可见性
         itemHolder.selected(R.id.layer_item_invisible_view, !itemLayerHide)
-        itemHolder.visible(R.id.layer_item_invisible_view, itemLayerHide || isInPadMode())
+        itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
 
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
 
