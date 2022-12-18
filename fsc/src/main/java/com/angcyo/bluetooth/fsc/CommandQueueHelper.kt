@@ -134,31 +134,46 @@ object CommandQueueHelper {
     }
 
     fun _runCommand(commandInfo: CommandInfo, next: Boolean) {
-        val command = commandInfo.command
-        val task = command.sendCommand(commandInfo.address, {
-            try {
-                commandInfo.listener?.onPacketProgress(it)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        try {
+            val command = commandInfo.command
+            val task = command.sendCommand(commandInfo.address, {
+                try {
+                    commandInfo.listener?.onPacketProgress(it)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }) { bean, error ->
+                //
+                if (next) {
+                    next()
+                }
+                try {
+                    commandInfo.listener?.onReceive(bean, error)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        }) { bean, error ->
+            commandInfo._receiveTask = task
+
+            //不需要返回值
+            if (commandInfo.flag.have(FLAG_NO_RECEIVE)) {
+                //直接完成
+                task?.listener?.onReceive(null, null)
+                task?.end()
+            }
+        } catch (e: Exception) {
+            //异常
+            e.printStackTrace()
+
             //
             if (next) {
                 next()
             }
             try {
-                commandInfo.listener?.onReceive(bean, error)
+                commandInfo.listener?.onReceive(null, e)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
-        commandInfo._receiveTask = task
-
-        //不需要返回值
-        if (commandInfo.flag.have(FLAG_NO_RECEIVE)) {
-            //直接完成
-            task?.listener?.onReceive(null, null)
-            task?.end()
         }
     }
 

@@ -43,6 +43,8 @@ data class EngraveTaskEntity(
      * [com.angcyo.engrave.model.EngraveModel.ENGRAVE_STATE_START]
      * [com.angcyo.engrave.model.EngraveModel.ENGRAVE_STATE_PAUSE]
      * [com.angcyo.engrave.model.EngraveModel.ENGRAVE_STATE_FINISH]
+     * [com.angcyo.engrave.model.EngraveModel.ENGRAVE_STATE_ERROR]
+     * 异常在: [com.angcyo.engrave.model.EngraveModel._lastEngraveCmdError]属性中
      * */
     var state: Int = 0,
 

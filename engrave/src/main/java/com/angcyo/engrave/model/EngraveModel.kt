@@ -3,6 +3,7 @@ package com.angcyo.engrave.model
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
@@ -64,6 +65,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         /**雕刻状态: 已完成*/
         const val ENGRAVE_STATE_FINISH = 3
+
+        /**雕刻状态: 异常*/
+        const val ENGRAVE_STATE_ERROR = 4
 
         /**最后一次雕刻的次数*/
         var _lastEngraveTimes: Int = 1
@@ -345,6 +349,14 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             append(" 直径:${diameter}")
         }.writeEngraveLog()
 
+        //task
+        task.state = ENGRAVE_STATE_START
+        task.currentIndex = indexList.firstOrNull() ?: -1
+        task.indexStartTime = nowTime()
+        task.indexPrintStartTime = task.indexStartTime
+        engraveStateData.value = task
+        task.lpSaveEntity()
+
         EngraveCmd.batchEngrave(
             task.bigIndex!!,
             indexList,
@@ -362,10 +374,14 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
+            } else if (error is CommandException) {
+                //指令异常
+                "雕刻失败:[${indexList}] $error".writeErrorLog()
+                errorEngrave()
             } else {
                 //雕刻失败, 重试
                 val taskEntity = _engraveTaskEntity
-                "雕刻失败:[${indexList}] $error, 即将重试...$taskEntity".writeErrorLog()
+                "雕刻失败:[${indexList}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
                     fscBleApiModel.haveDeviceConnected()
@@ -374,17 +390,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         doBack {
                             batchEngrave(retryCount + 1)
                         }
+                    } else {
+                        //重试过了还是失败, 则~
+                        errorEngrave()
                     }
                 }
             }
-        }
-
-        doMain {
-            task.currentIndex = indexList.firstOrNull() ?: -1
-            task.indexStartTime = nowTime()
-            task.indexPrintStartTime = task.indexStartTime
-            engraveStateData.value = task
-            task.lpSaveEntity()
         }
     }
 
@@ -469,6 +480,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         ExitCmd().enqueue()
     }
 
+    /**雕刻失败, 错误信息在
+     * [com.angcyo.engrave.model.EngraveModel._lastEngraveCmdError]*/
+    fun errorEngrave() {
+        val task = _engraveTaskEntity ?: return
+        task.state = ENGRAVE_STATE_ERROR
+        task.lpSaveEntity()
+        engraveStateData.postValue(task)
+    }
+
     //---
 
     /**开始雕刻, 发送雕刻指令
@@ -505,6 +525,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
         engraveConfigEntity.lpSaveEntity()
 
+        val taskEntity = _engraveTaskEntity
+        taskEntity?.let {
+            it.state = ENGRAVE_STATE_START
+            it.lpSaveEntity()
+        }
+
         EngraveCmd(
             index,
             engraveConfigEntity.power.toByte(),
@@ -525,10 +551,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
+            } else if (error is CommandException) {
+                //指令异常
+                "雕刻失败:[${index}] $error".writeErrorLog()
+                errorEngrave()
             } else {
                 //如果索引雕刻异常, 则不能跳过索引雕刻
-                val taskEntity = _engraveTaskEntity
-                "雕刻失败:[${index}] $error, 即将重试...$taskEntity".writeErrorLog()
+                "雕刻失败:[${index}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
                     fscBleApiModel.haveDeviceConnected()
@@ -542,6 +571,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                                 retryCount + 1
                             )
                         }
+                    } else {
+                        //重试过了还是失败, 则~
+                        errorEngrave()
                     }
                 }
             }
@@ -589,8 +621,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
      * 打开滑台，打开滑台多文件雕刻开关之后， 走多文件雕刻指令。
      * */
     fun isBatchEngraveSupport(): Boolean {
-        val setting = laserPeckerModel.deviceSettingData.value ?: return false
+        /*val setting = laserPeckerModel.deviceSettingData.value ?: return false
         if (setting.sRep == 1) {
+            return true
+        }*/
+
+        if (laserPeckerModel.isL4()) {
             return true
         }
 

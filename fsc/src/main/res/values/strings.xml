@@ -33,4 +33,6 @@
     <string name="blue_no_device_connected">No device is connected</string>
     <string name="device_busy_tip">The device is busy, please try again later!</string>
     <string name="device_init_fail_tip">Device initialization failed!</string>
+    <string name="command_too_long_tip">Command is too long!</string>
+
 </resources>

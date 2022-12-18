@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.component.byteWriter
@@ -128,8 +129,12 @@ data class EngraveCmd(
                 write(precision)
                 write(diameter, 2)
             }
+            val size = bytes.size()
             data = bytes.toHexString(false)
-            dataLength = bytes.size() + LaserPeckerHelper.CHECK_SIZE
+            dataLength = size + LaserPeckerHelper.CHECK_SIZE
+            if (dataLength > 255) {
+                throw CommandException(_string(R.string.command_too_long_tip))
+            }
             check = bytes.checksum()
         } else {
             dataLength = 0x14 //18 //数据长度
@@ -155,7 +160,10 @@ data class EngraveCmd(
     }
 
     override fun toCommandLogString(): String = buildString {
-        append(toHexCommandString().removeAll())
+        try {
+            append(toHexCommandString().removeAll())
+        } catch (e: Exception) {
+        }
         when (state) {
             0x01.toByte() -> {
                 append(" 开始雕刻:文件:$index")

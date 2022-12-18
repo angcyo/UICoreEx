@@ -77,12 +77,19 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         //
         engraveModel.engraveStateData.observe(this, allowBackward = false) {
             it?.apply {
-                if (taskId == flowTaskId && engraveFlow == ENGRAVE_FLOW_ENGRAVING) {
-                    if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
-                        //雕刻完成
-                        engraveFlow = ENGRAVE_FLOW_FINISH
+                if (taskId == flowTaskId) {
+                    val engraveCmdError = engraveModel._lastEngraveCmdError
+                    if (it.state == EngraveModel.ENGRAVE_STATE_ERROR && engraveCmdError != null) {
+                        toastQQ(engraveCmdError.message)
+                        engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+                        renderFlowItems()
+                    } else if (engraveFlow == ENGRAVE_FLOW_ENGRAVING) {
+                        if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
+                            //雕刻完成
+                            engraveFlow = ENGRAVE_FLOW_FINISH
+                        }
+                        renderFlowItems()
                     }
-                    renderFlowItems()
                 }
             }
         }
