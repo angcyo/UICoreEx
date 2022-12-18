@@ -4,6 +4,7 @@ import android.view.Gravity
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
@@ -33,13 +34,17 @@ class EngraveProgressItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.lib_text_view)?.text = "${_string(R.string.progress)}:"
-        itemHolder.tv(R.id.engrave_layer_view)?.text = span {
-            val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
-            engraveLayerList.forEach {
-                drawable {
-                    showText = it.toText()
-                    spanWeight = 1f / engraveLayerList.size() - 0.001f
-                    textGravity = Gravity.CENTER
+        itemHolder.tv(R.id.engrave_layer_view)?.text = if (HawkEngraveKeys.enableItemTopOrder) {
+            null
+        } else {
+            span {
+                val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
+                engraveLayerList.forEach {
+                    drawable {
+                        showText = it.toText()
+                        spanWeight = 1f / engraveLayerList.size() - 0.001f
+                        textGravity = Gravity.CENTER
+                    }
                 }
             }
         }
