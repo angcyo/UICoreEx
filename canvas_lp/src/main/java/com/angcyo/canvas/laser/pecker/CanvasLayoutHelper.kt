@@ -38,6 +38,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
+import com.angcyo.library.unit.IValueUnit
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.DslViewHolder
@@ -317,6 +318,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     fun initCanvasListener(vh: DslViewHolder, canvasView: CanvasView) {
         //事件监听
         canvasView.canvasDelegate.canvasListenerList.add(object : ICanvasListener {
+
+            override fun onCoordinateSystemUnitChanged(
+                oldValueUnit: IValueUnit,
+                valueUnit: IValueUnit
+            ) {
+                super.onCoordinateSystemUnitChanged(oldValueUnit, valueUnit)
+                doMain {
+                    updateControlLayout(vh, canvasView)
+                }
+            }
 
             override fun onDoubleTapItem(itemRenderer: IItemRenderer<*>) {
                 super.onDoubleTapItem(itemRenderer)
