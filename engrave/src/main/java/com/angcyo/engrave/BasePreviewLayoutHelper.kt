@@ -85,7 +85,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     /**渲染预览界面*/
     fun renderPreviewItems() {
-        updateIViewTitle(_string(R.string.previewing))
+        updateIViewTitle(_string(R.string.preview))
         engraveBackFlow = 0
         //close按钮
         showCloseView(true, _string(R.string.ui_quit))

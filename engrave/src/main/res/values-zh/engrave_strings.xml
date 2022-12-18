@@ -20,6 +20,7 @@
     <string name="print_v2_package_preview_over">结束预览</string>
     <string name="laser_brightness">激光亮度</string>
     <string name="previewing">预览中…</string>
+    <string name="preview">预览</string>
     <string name="print_setting">镭雕设置</string>
     <string name="file_setting">文件设置</string>
     <string name="transmitting">文件传输中</string>

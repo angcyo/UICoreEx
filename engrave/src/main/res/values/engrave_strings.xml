@@ -12,6 +12,7 @@
     <string name="start_engrave">Start</string>
     <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
     <string name="previewing">In preview …</string>
+    <string name="preview">Preview</string>
     <string name="engrave_file_name">Filename</string>
     <string name="transmitting">File in transit</string>
     <string name="engraving">Laser engraving</string>
