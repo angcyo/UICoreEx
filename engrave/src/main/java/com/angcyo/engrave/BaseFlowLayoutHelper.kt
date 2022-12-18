@@ -87,7 +87,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             onEngraveFlowChanged(old, value)
         }
 
-    /**流程任务id, 建议每次显示页面时都创建一个新的任务id*/
+    /**流程任务id, 建议每次显示页面时都创建一个新的任务id
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.generateFlowId]
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.clearFlowId]
+     * */
     var flowTaskId: String? = null
 
     /**当前[engraveFlow]能够回退到的模式*/
@@ -243,11 +246,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     @CallPoint
     fun startPreview(engraveFragment: IEngraveCanvasFragment) {
         /*engraveFlow = if (laserPeckerModel.isPenMode()) {
+                //提前对笔模块校准
                 ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
             } else {
                 ENGRAVE_FLOW_PREVIEW
             }*/ //2022-12-7
-        engraveFlow = ENGRAVE_FLOW_PREVIEW
+        engraveFlow = if (laserPeckerModel.isROpen()) {
+            //旋转轴打开的情况下,提前设置物理直径
+            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
+        } else {
+            ENGRAVE_FLOW_PREVIEW
+        }
         showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
     }
 

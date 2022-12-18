@@ -53,17 +53,23 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     //region ---预览界面/支架控制---
 
     /**渲染预览前配置界面*/
-    @Deprecated("废弃, 握笔校准移到预览中")
     fun renderPreviewBeforeItems() {
         renderDslAdapter {
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
-            if (laserPeckerModel.isC1()) {
+            /*if (laserPeckerModel.isC1()) {
                 if (laserPeckerModel.isPenMode()) {
                     updateIViewTitle(_string(R.string.device_module_calibration_label))
                     //握笔模式, 不支持亮度调节, 握笔校准
                     ModuleCalibrationItem()()
+                }
+            }*/
+            if (laserPeckerModel.isROpen()) {
+                //旋转轴, 提前设置物理直径
+                val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(flowTaskId)
+                PreviewDiameterItem()() {
+                    itemPreviewConfigEntity = previewConfigEntity
                 }
             }
             DslBlackButtonItem()() {
@@ -126,10 +132,10 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 PreviewBracketItem()()
             }
             if (laserPeckerModel.isROpen()) {
-                //物理直径
-                PreviewDiameterItem()() {
+                //物理直径 //2022-12-18 移动到预览之前配置
+                /*PreviewDiameterItem()() {
                     itemPreviewConfigEntity = previewConfigEntity
-                }
+                }*/
             }
             EngraveDividerItem()()
             //预览控制, 范围/中心点预览
