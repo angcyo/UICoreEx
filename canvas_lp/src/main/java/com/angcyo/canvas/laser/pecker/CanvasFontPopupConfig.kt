@@ -11,6 +11,7 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.TypefaceItem
 import com.angcyo.component.getFile
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.actionPopupWindow
@@ -118,6 +119,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         }*/
     }
 
+    /**选择字体文件*/
     fun selectFont(context: FragmentActivity, viewHolder: DslViewHolder) {
         val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
         context.supportFragmentManager.getFile("*/*") {
@@ -148,6 +150,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    "导入字体失败[${it}]:${e}".writeErrorLog()
                     toast(_string(R.string.canvas_invalid_font))
                 }
             }
