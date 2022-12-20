@@ -7,12 +7,15 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.component.DslLayout
 import com.angcyo.core.component.file.appFilePath
+import com.angcyo.core.component.renderLayout
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.EngraveLayerInfo
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
+import com.angcyo.glide.loadImage
 import com.angcyo.http.rx.runRx
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
@@ -30,15 +33,39 @@ import kotlin.math.max
  */
 object EngraveFlowDataHelper {
 
+    /**临时的雕刻日志文件路径集合, 在分享之后清空*/
+    val tempEngraveLogPathList = mutableListOf<String>()
+
     /**分享最近的雕刻日志*/
     fun shareEngraveLog() {
         toastQQ(_string(R.string.create_log_tip))
         runRx({
             val logList = mutableListOf(logPath())
             logList.addAll(getTaskEngraveLogFilePath())
-            logList.zip(libCacheFile("engrave-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
+            logList.addAll(tempEngraveLogPathList)
+
+            tempEngraveLogPathList.clear()
+            logList.zip(libCacheFile("LaserPecker-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
                 ?.shareFile()
         })
+    }
+
+    /**截图之后的意见反馈*/
+    fun showEngraveScreenShotShare(path: String) {
+        tempEngraveLogPathList.clear()
+        tempEngraveLogPathList.add(path)
+        renderLayout(R.layout.layout_engrave_screen_shot_share) {
+            renderLayoutAction = {
+                img(R.id.lib_image_view)?.loadImage(path)
+                click(R.id.lib_close_view) {
+                    DslLayout.hide(this@renderLayout)
+                }
+                clickItem {
+                    DslLayout.hide(this@renderLayout)
+                    shareEngraveLog()
+                }
+            }
+        }
     }
 
     /**最后一次雕刻任务的数据日志文件路径*/

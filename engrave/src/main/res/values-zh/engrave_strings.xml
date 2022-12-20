@@ -229,5 +229,6 @@
 
     <string name="material_title_limit">最多输入20个字符</string>
     <string name="save_material_title">材质名称</string>
+    <string name="engrave_feedback">反馈问题</string>
 
 </resources>

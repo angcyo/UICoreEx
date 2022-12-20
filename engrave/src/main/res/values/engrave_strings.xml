@@ -238,4 +238,6 @@
 
     <string name="material_title_limit">Enter up to 20 characters</string>
     <string name="save_material_title">Material name</string>
+    <string name="engrave_feedback">Feedback</string>
+
 </resources>
