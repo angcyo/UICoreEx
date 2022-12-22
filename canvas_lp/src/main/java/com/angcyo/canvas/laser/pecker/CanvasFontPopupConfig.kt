@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.angcyo.base.requestSdCardPermission
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -92,11 +91,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         viewHolder.click(R.id.import_view) {
             val context = viewHolder.context
             if (context is FragmentActivity) {
-                context.requestSdCardPermission {
-                    if (it) {
-                        selectFont(context, viewHolder)
-                    }
-                }
+                selectFont(context, viewHolder)
             } else {
                 toast(_string(R.string.canvas_cannot_import))
             }
