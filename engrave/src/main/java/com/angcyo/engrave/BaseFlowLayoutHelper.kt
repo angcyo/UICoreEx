@@ -2,6 +2,7 @@ package com.angcyo.engrave
 
 import android.content.Context
 import android.graphics.Color
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -10,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -18,6 +20,7 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_FINISH
 import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.model.EngraveModel
@@ -25,16 +28,13 @@ import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
-import com.angcyo.library.L
+import com.angcyo.library.*
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
-import com.angcyo.library.getAppVersionCode
-import com.angcyo.library.libCacheFile
-import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.span.span
@@ -258,6 +258,46 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**开始预览*/
     @CallPoint
     fun startPreview(engraveFragment: IEngraveCanvasFragment) {
+        //检查是否有设备连接
+        if (!vmApp<FscBleApiModel>().haveDeviceConnected()) {
+            engraveFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                if (allGranted) {
+                    //vmApp<FscBleApiModel>().connect("DC:0D:30:10:05:E7")
+                    engraveFragment.fragment.fContext().bluetoothSearchListDialog {
+                        connectedDismiss = true
+                    }
+                } else {
+                    toast(_string(R.string.permission_disabled))
+                }
+            }
+            return
+        }
+
+        //检查是否已经显示
+        if (isAttach()) {
+            return
+        }
+
+        //是否需要恢复之前的雕刻状态
+        if (engraveFragment.engraveFlowLayoutHelper.checkRestoreEngrave(engraveFragment)) {
+            return
+        }
+
+        //是否可以开始预览
+        if (!engraveFragment.engraveFlowLayoutHelper.checkStartPreview()) {
+            return
+        }
+
+        //安全提示弹窗
+        engraveFragment.engraveFlowLayoutHelper.showSafetyTips(engraveFragment.fragment.fContext()) {
+            //如果有第三轴, 还需要检查对应的配置
+            _startPreview(engraveFragment)
+        }
+    }
+
+    //开始预览
+    fun _startPreview(engraveFragment: IEngraveCanvasFragment) {
+        //
         /*engraveFlow = if (laserPeckerModel.isPenMode()) {
                 //提前对笔模块校准
                 ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
