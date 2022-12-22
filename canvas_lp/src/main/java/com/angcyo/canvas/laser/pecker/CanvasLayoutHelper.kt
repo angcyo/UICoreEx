@@ -789,7 +789,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
                 renderDslAdapter {
                     EngraveTransitionManager.engraveLayerList.forEach {
-                        CanvasLayerNameItem()() {
+                        CanvasLayerNameItem()() {//雕刻图层
                             itemGroupExtend = true
                             itemChanging = true
                             itemLayerInfo = it
@@ -798,7 +798,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                                 val itemList =
                                     EngraveTransitionManager.getRendererList(canvasDelegate, it)
                                         .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
-                                            CanvasBaseLayerItem().apply {
+                                            CanvasBaseLayerItem().apply {//元素
                                                 itemCanvasDelegate = canvasDelegate
                                                 itemRenderer = renderer
                                             }

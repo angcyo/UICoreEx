@@ -5,6 +5,7 @@ import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.containsPayload
 import com.angcyo.engrave.data.EngraveLayerInfo
+import com.angcyo.library.ex.invisible
 import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
 
@@ -32,21 +33,27 @@ class CanvasLayerNameItem : DslAdapterItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        val subSize = itemSubList.size()
 
         //箭头角度控制
         val imageView = itemHolder.v<View>(R.id.lib_image_view)
         if (!payloads.containsPayload(PAYLOAD_UPDATE_EXTEND)) {
             imageView?.rotation = if (itemGroupExtend) -90f else -180f
         }
+        imageView.invisible(subSize <= 0)
 
-        itemHolder.tv(R.id.lib_text_view)?.text = "${itemLayerInfo?.label} (${itemSubList.size()})"
+        itemHolder.tv(R.id.lib_text_view)?.text =
+            if (subSize >= 0) "${itemLayerInfo?.label} ($subSize)" else itemLayerInfo?.label
 
         //展开or关闭动画控制
         itemHolder.clickItem {
-            imageView?.apply {
-                animate().setDuration(300).rotation(if (itemGroupExtend) -180f else -90f).start()
+            if (subSize > 0) {
+                imageView?.apply {
+                    animate().setDuration(300).rotation(if (itemGroupExtend) -180f else -90f)
+                        .start()
+                }
+                itemGroupExtend = !itemGroupExtend
             }
-            itemGroupExtend = !itemGroupExtend
         }
     }
 
