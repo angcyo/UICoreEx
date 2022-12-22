@@ -10,7 +10,7 @@ import com.angcyo.library.ex._string
 
 /**传输数据为空*/
 class EmptyException(cause: Throwable? = null) :
-    Exception(_string(R.string.no_data_transfer), cause)
+    Exception(_string(R.string.empty_data_transfer), cause)
 
 /**数据过大异常*/
 class OutOfSizeException(cause: Throwable? = null) :

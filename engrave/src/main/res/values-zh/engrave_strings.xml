@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="permission_disabled">权限被禁用</string>
+
     <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光光源</string>
@@ -194,6 +196,7 @@
 
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="engrave_warn">警告</string>
+    <string name="empty_data_transfer">无雕刻数据!</string>
     <string name="no_data_transfer">无数据需要传输!</string>
     <string name="no_data_engrave">无数据需要镭雕!</string>
     <string name="out_of_data_transfer">数据过大!</string>
