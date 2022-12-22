@@ -7,10 +7,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.visible
+import com.angcyo.library.ex.*
 import com.angcyo.library.extend.IToText
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.image.ImageLoadingView
@@ -37,6 +34,7 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
     init {
         itemLayoutId = R.layout.item_bluetooth_connect_layout
         itemSingleSelectMutex = true
+        itemFirstPaddingTop = _dimen(R.dimen.lib_xhdpi)
 
         itemClick = {
             if (fscApi.isConnectState(itemFscDevice)) {

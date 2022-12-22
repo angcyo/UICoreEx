@@ -239,6 +239,7 @@ class BluetoothSearchHelper {
                 observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                     if (fromUser) {
                         _filterName = filterNameList.toList().getOrNull(toIndex)
+                        adapter.changingAllItem()
                         deviceFilter.filter(_filterName)
                     }
                 }
