@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.RenderParams
+import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.messageDialog
@@ -66,4 +67,18 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
         }
     }
 
+    /**将画布移动显示到目标元素*/
+    fun showItemRendererBounds() {
+        itemRenderer?.let {
+            val selectedRenderer = itemCanvasDelegate?.getSelectedRenderer()
+            if (selectedRenderer is SelectGroupRenderer) {
+                //no
+            } else {
+                itemCanvasDelegate?.selectedItem(it)
+            }
+            if (it.isVisible()) {
+                itemCanvasDelegate?.showRectBounds(it.getRotateBounds())
+            }
+        }
+    }
 }

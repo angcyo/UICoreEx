@@ -1,6 +1,7 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import android.graphics.Typeface
+import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -29,6 +30,9 @@ class EngravePropertyItem : DslAdapterItem() {
     /**参数配置实体*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
+    /**单元素参数配置*/
+    var itemEngraveItemBean: CanvasProjectItemBean? = null
+
     init {
         itemLayoutId = R.layout.item_engrave_property_layout
     }
@@ -44,7 +48,8 @@ class EngravePropertyItem : DslAdapterItem() {
 
         //属性
         val powerLabel = _string(R.string.custom_power)
-        val power = itemEngraveConfigEntity?.power ?: 100
+        val power = itemEngraveConfigEntity?.power ?: (itemEngraveItemBean?.printPower
+            ?: HawkEngraveKeys.lastPower)
         itemHolder.tv(R.id.power_view)?.text = span {
             append(powerLabel)
             appendln()
@@ -56,7 +61,8 @@ class EngravePropertyItem : DslAdapterItem() {
             append("%")
         }
         val speedLabel = _string(R.string.custom_speed)
-        val depth = itemEngraveConfigEntity?.depth ?: 3
+        val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
+            ?: HawkEngraveKeys.lastDepth)
         itemHolder.tv(R.id.speed_view)?.text = span {
             append(speedLabel)
             appendln()
@@ -69,7 +75,7 @@ class EngravePropertyItem : DslAdapterItem() {
 
         }
         val timesLabel = _string(R.string.print_times)
-        val time = itemEngraveConfigEntity?.time ?: 1
+        val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
         itemHolder.tv(R.id.tims_view)?.text = span {
             append(timesLabel)
             appendln()
@@ -90,8 +96,9 @@ class EngravePropertyItem : DslAdapterItem() {
 
                 wheelItemSelectorAction = { dialog, index, item ->
                     getSelectedInt(index, power).let {
-                        itemEngraveConfigEntity?.power = it
                         HawkEngraveKeys.lastPower = it
+                        itemEngraveConfigEntity?.power = HawkEngraveKeys.lastPower
+                        itemEngraveItemBean?.printPower = HawkEngraveKeys.lastPower
                     }
 
                     itemChanging = true
@@ -108,8 +115,9 @@ class EngravePropertyItem : DslAdapterItem() {
 
                 wheelItemSelectorAction = { dialog, index, item ->
                     getSelectedInt(index, depth).let {
-                        itemEngraveConfigEntity?.depth = it
                         HawkEngraveKeys.lastDepth = it
+                        itemEngraveConfigEntity?.depth = it
+                        itemEngraveItemBean?.printDepth = it
                     }
                     itemChanging = true
                     false
@@ -123,7 +131,9 @@ class EngravePropertyItem : DslAdapterItem() {
                 wheelSelectedIndex = findOptionIndex(wheelItems, time)
 
                 wheelItemSelectorAction = { dialog, index, item ->
-                    itemEngraveConfigEntity?.time = getSelectedInt(index, time)
+                    val times = getSelectedInt(index, time)
+                    itemEngraveConfigEntity?.time = times
+                    itemEngraveItemBean?.printCount = times
                     itemChanging = true
                     false
                 }

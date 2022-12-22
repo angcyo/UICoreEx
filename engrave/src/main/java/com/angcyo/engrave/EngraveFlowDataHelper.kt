@@ -437,14 +437,22 @@ object EngraveFlowDataHelper {
 
     /**获取当前雕刻的配置信息*/
     fun getCurrentEngraveConfig(taskId: String?): EngraveConfigEntity? {
-        val engraveLayerInfo = getCurrentEngraveLayer(taskId)
-        val engraveConfigEntity = EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-            apply(
-                EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerMode.equal(engraveLayerInfo?.layerMode ?: 0))
-            )
+        if (HawkEngraveKeys.enableItemEngraveParams) {
+            val taskEntity = getEngraveTask(taskId) ?: return null
+            val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(EngraveConfigEntity_.taskId.equal("${taskEntity.currentIndex}"))
+            }
+            return engraveConfigEntity
+        } else {
+            val engraveLayerInfo = getCurrentEngraveLayer(taskId)
+            val engraveConfigEntity = EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveConfigEntity_.taskId.equal("$taskId")
+                        .and(EngraveConfigEntity_.layerMode.equal(engraveLayerInfo?.layerMode ?: 0))
+                )
+            }
+            return engraveConfigEntity
         }
-        return engraveConfigEntity
     }
 
     /**获取最后一个图层的雕刻配置信息*/
@@ -593,7 +601,7 @@ object EngraveFlowDataHelper {
             val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
-                    EngraveConfigEntity_.productName.equal("${productName}")
+                    EngraveConfigEntity_.productName.equal("$productName")
                         .and(EngraveConfigEntity_.layerMode.equal(layerMode))
                 )
             }
@@ -633,10 +641,32 @@ object EngraveFlowDataHelper {
             depth = itemBean.printDepth ?: HawkEngraveKeys.lastDepth
             time = itemBean.printCount ?: 1
 
-            type = itemBean.printType ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            type = itemBean.printType?.toByte() ?: LaserPeckerHelper.LASER_TYPE_BLUE
             precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
 
             lpSaveEntity()
+        }
+    }
+
+    /**创建单文件雕刻参数*/
+    fun generateEngraveConfig(canvasDelegate: CanvasDelegate?) {
+        canvasDelegate?.let {
+            val rendererList = EngraveTransitionManager.getRendererList(canvasDelegate, null)
+            rendererList.forEach { renderer ->
+                if (renderer is DataItemRenderer) {
+                    renderer.dataItem?.dataBean?.let { bean ->
+                        //为每个元素创建对应的雕刻参数
+                        generateEngraveConfig("${bean.index}", bean)
+                    }
+                }
+            }
+        }
+    }
+
+    /**根据数据索引, 获取对应点额雕刻配置信息*/
+    fun getEngraveConfig(index: Int?): EngraveConfigEntity? {
+        return EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$index"))
         }
     }
 

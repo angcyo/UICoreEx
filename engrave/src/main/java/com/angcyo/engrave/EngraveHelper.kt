@@ -135,7 +135,12 @@ object EngraveHelper {
 
     /**获取材质在对应列表中的索引*/
     fun indexOfMaterial(materialList: List<MaterialEntity>, materialEntity: MaterialEntity): Int {
-        val index = materialList.indexOfFirst { it.key == materialEntity.key }
+        return indexOfMaterial(materialList, materialEntity.key)
+    }
+
+    /**获取材质在对应列表中的索引*/
+    fun indexOfMaterial(materialList: List<MaterialEntity>, materialKey: String?): Int {
+        val index = materialList.indexOfFirst { it.key == materialKey }
         return max(0, index)
     }
 

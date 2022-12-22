@@ -4,10 +4,14 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.canvas.items.data.DataItemRenderer
+import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -48,6 +52,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     override fun renderFlowItems() {
         when (engraveFlow) {
+            ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemConfig()
             ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
             ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
             ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
@@ -274,6 +279,132 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---雕刻参数配置---
 
+    /**开始单个元素雕刻参数配置*/
+    fun startEngraveItemConfig(
+        engraveFragment: IEngraveCanvasFragment,
+        itemRenderer: IItemRenderer<*>?
+    ) {
+        if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
+            //已经在显示其他流程
+            return
+        }
+        if (laserPeckerModel.deviceStateData.value?.isModeIdle() != true) {
+            //设备非空闲
+            return
+        }
+        if (itemRenderer == null) {
+            //选中空item
+            hide()
+            return
+        }
+        if (itemRenderer is DataItemRenderer) {
+            _engraveItemRenderer = itemRenderer
+            engraveFlow = ENGRAVE_FLOW_ITEM_CONFIG
+            showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
+        }
+    }
+
+    /**单元素雕刻参数配置*/
+    fun renderEngraveItemConfig() {
+        updateIViewTitle(_string(R.string.print_setting))
+        showCloseView(false)
+        cancelable = true
+
+        var engraveConfigEntity: EngraveConfigEntity? = null
+        val projectItemBean = _engraveItemRenderer?.rendererItem?.dataBean
+        projectItemBean?.apply {
+            printPower = printPower ?: HawkEngraveKeys.lastPower
+            printDepth = printDepth ?: HawkEngraveKeys.lastDepth
+            printPrecision = printPrecision ?: HawkEngraveKeys.lastPrecision
+            printType = printType ?: LaserPeckerHelper.LASER_TYPE_BLUE.toInt()
+            printCount = printCount ?: 1
+            materialKey = materialKey ?: EngraveHelper.createCustomMaterial().key
+
+            //雕刻配置
+            engraveConfigEntity =
+                EngraveFlowDataHelper.generateEngraveConfig("$index", projectItemBean)
+        }
+
+        renderDslAdapter {
+            //材质选择
+            EngraveMaterialWheelItem()() {
+                itemTag = MaterialEntity::name.name
+                itemLabelText = _string(R.string.custom_material)
+                itemWheelList = EngraveHelper.unionMaterialList
+                itemSelectedIndex = EngraveHelper.indexOfMaterial(
+                    EngraveHelper.unionMaterialList,
+                    projectItemBean?.materialKey
+                )
+                itemEngraveItemBean = projectItemBean
+                itemEngraveConfigEntity = engraveConfigEntity
+
+                //刷新界面
+                observeItemChange {
+                    renderFlowItems()
+                }
+            }
+
+            // 激光光源选择
+            val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+            if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
+                EngraveSegmentScrollItem()() {
+                    itemText = _string(R.string.laser_type)
+                    itemSegmentList = typeList
+                    itemCurrentIndex =
+                        typeList.indexOfFirst { it.type == projectItemBean?.printType?.toByte() }
+                    observeItemChange {
+                        val type = typeList[itemCurrentIndex].type
+                        projectItemBean?.printType = type.toInt()
+                        engraveConfigEntity?.type = type
+                        engraveConfigEntity.lpSaveEntity()
+                        renderFlowItems()
+                    }
+                }
+            }
+
+            if (laserPeckerModel.isC1()) {
+                //C1 加速级别选择
+                EngraveOptionWheelItem()() {
+                    itemTag = EngraveConfigEntity::precision.name
+                    itemLabelText = _string(R.string.engrave_precision)
+                    itemWheelList = EngraveHelper.percentList(5)
+                    itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        itemWheelList,
+                        projectItemBean?.printPrecision
+                    )
+                    itemEngraveConfigEntity = engraveConfigEntity
+                    itemEngraveItemBean = projectItemBean
+
+                    observeMaterialChange()
+                }
+            }
+
+            //雕刻参数
+            if (laserPeckerModel.isPenMode()) {
+                //雕刻速度, 非雕刻深度
+                EngraveOptionWheelItem()() {
+                    itemTag = MaterialEntity.SPEED
+                    itemLabelText = _string(R.string.engrave_speed)
+                    itemWheelList = EngraveHelper.percentList()
+                    itemEngraveItemBean = projectItemBean
+                    itemEngraveConfigEntity = engraveConfigEntity
+                    itemSelectedIndex = EngraveHelper.findOptionIndex(
+                        itemWheelList,
+                        EngraveCmd.depthToSpeed(
+                            projectItemBean?.printDepth ?: HawkEngraveKeys.lastDepth
+                        )
+                    )
+                }
+            } else {
+                //功率/深度/次数
+                EngravePropertyItem()() {
+                    itemEngraveItemBean = projectItemBean
+                    itemEngraveConfigEntity = engraveConfigEntity
+                }
+            }
+        }
+    }
+
     /**渲染雕刻配置界面*/
     fun renderEngraveConfig() {
         updateIViewTitle(_string(R.string.print_setting))
@@ -314,120 +445,131 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             if (laserPeckerModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
-            //材质选择
-            EngraveMaterialWheelItem()() {
-                itemTag = MaterialEntity::name.name
-                itemLabelText = _string(R.string.custom_material)
-                itemWheelList = EngraveHelper.unionMaterialList
-                itemSelectedIndex =
-                    EngraveHelper.indexOfMaterial(EngraveHelper.unionMaterialList, materialEntity)
-                itemEngraveConfigEntity = engraveConfigEntity
 
-                itemSaveAction = {
-                    showSaveMaterialDialog(taskId, materialEntity) {
-                        //刷新界面, 使用自定义的材质信息
-                        renderFlowItems()
-                    }
-                }
-
-                //刷新界面
-                observeItemChange {
-                    renderFlowItems()
-                }
-            }
-
-            //雕刻图层切换
-            val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
-            if (layerList.isNotEmpty()) {
-                EngraveLayerConfigItem()() {
-                    itemSegmentList = layerList
-                    itemCurrentIndex =
-                        max(
-                            0,
-                            layerList.indexOf(layerList.find { it.layerMode == selectLayerMode })
-                        )
-                    observeItemChange {
-                        selectLayerMode = layerList[itemCurrentIndex].layerMode
-                        renderFlowItems()
-                    }
-                }
-            }
-
-            // 激光光源选择
-            val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-            if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
-                EngraveSegmentScrollItem()() {
-                    itemText = _string(R.string.laser_type)
-                    itemSegmentList = typeList
-                    itemCurrentIndex = typeList.indexOfFirst { it.type == engraveConfigEntity.type }
-                    observeItemChange {
-                        engraveConfigEntity.type = typeList[itemCurrentIndex].type
-                        engraveConfigEntity.lpSaveEntity()
-                        renderFlowItems()
-                    }
-                }
-            }
-
-            if (laserPeckerModel.isC1()) {
-                //C1 加速级别选择
-                EngraveOptionWheelItem()() {
-                    itemTag = EngraveConfigEntity::precision.name
-                    itemLabelText = _string(R.string.engrave_precision)
-                    itemWheelList = EngraveHelper.percentList(5)
+            //雕刻相关的参数
+            if (!HawkEngraveKeys.enableItemEngraveParams) {
+                //材质选择
+                EngraveMaterialWheelItem()() {
+                    itemTag = MaterialEntity::name.name
+                    itemLabelText = _string(R.string.custom_material)
+                    itemWheelList = EngraveHelper.unionMaterialList
                     itemSelectedIndex =
-                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.precision)
+                        EngraveHelper.indexOfMaterial(
+                            EngraveHelper.unionMaterialList,
+                            materialEntity
+                        )
                     itemEngraveConfigEntity = engraveConfigEntity
 
-                    observeMaterialChange()
-                }
-            }
+                    itemSaveAction = {
+                        showSaveMaterialDialog(taskId, materialEntity) {
+                            //刷新界面, 使用自定义的材质信息
+                            renderFlowItems()
+                        }
+                    }
 
-            //雕刻参数
-            if (laserPeckerModel.isPenMode()) {
-                //雕刻速度, 非雕刻深度
+                    //刷新界面
+                    observeItemChange {
+                        renderFlowItems()
+                    }
+                }
+
+                //雕刻图层切换
+                val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
+                if (layerList.isNotEmpty()) {
+                    EngraveLayerConfigItem()() {
+                        itemSegmentList = layerList
+                        itemCurrentIndex =
+                            max(
+                                0,
+                                layerList.indexOf(layerList.find { it.layerMode == selectLayerMode })
+                            )
+                        observeItemChange {
+                            selectLayerMode = layerList[itemCurrentIndex].layerMode
+                            renderFlowItems()
+                        }
+                    }
+                }
+
+                // 激光光源选择
+                val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+                if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
+                    EngraveSegmentScrollItem()() {
+                        itemText = _string(R.string.laser_type)
+                        itemSegmentList = typeList
+                        itemCurrentIndex =
+                            typeList.indexOfFirst { it.type == engraveConfigEntity.type }
+                        observeItemChange {
+                            engraveConfigEntity.type = typeList[itemCurrentIndex].type
+                            engraveConfigEntity.lpSaveEntity()
+                            renderFlowItems()
+                        }
+                    }
+                }
+
+                if (laserPeckerModel.isC1()) {
+                    //C1 加速级别选择
+                    EngraveOptionWheelItem()() {
+                        itemTag = EngraveConfigEntity::precision.name
+                        itemLabelText = _string(R.string.engrave_precision)
+                        itemWheelList = EngraveHelper.percentList(5)
+                        itemSelectedIndex = EngraveHelper.findOptionIndex(
+                            itemWheelList,
+                            engraveConfigEntity.precision
+                        )
+                        itemEngraveConfigEntity = engraveConfigEntity
+
+                        observeMaterialChange()
+                    }
+                }
+
+                //雕刻参数
+                if (laserPeckerModel.isPenMode()) {
+                    //雕刻速度, 非雕刻深度
+                    EngraveOptionWheelItem()() {
+                        itemTag = MaterialEntity.SPEED
+                        itemLabelText = _string(R.string.engrave_speed)
+                        itemWheelList = EngraveHelper.percentList()
+                        itemEngraveConfigEntity = engraveConfigEntity
+                        itemSelectedIndex = EngraveHelper.findOptionIndex(
+                            itemWheelList,
+                            EngraveCmd.depthToSpeed(engraveConfigEntity.depth)
+                        )
+                        observeMaterialChange()
+                    }
+                } else {
+                    //功率/深度/次数
+                    EngravePropertyItem()() {
+                        itemEngraveConfigEntity = engraveConfigEntity
+                        observeMaterialChange()
+                    }
+                }
+                /*EngraveOptionWheelItem()() {
+                    itemTag = MaterialEntity::power.name
+                    itemLabelText = _string(R.string.custom_power)
+                    itemWheelList = percentList()
+                    itemEngraveConfigEntity = engraveConfigEntity
+                    itemSelectedIndex =
+                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.power)
+                }
                 EngraveOptionWheelItem()() {
-                    itemTag = MaterialEntity.SPEED
-                    itemLabelText = _string(R.string.engrave_speed)
-                    itemWheelList = EngraveHelper.percentList()
+                    itemTag = MaterialEntity::depth.name
+                    itemLabelText = _string(R.string.custom_speed)
+                    itemWheelList = percentList()
                     itemEngraveConfigEntity = engraveConfigEntity
-                    itemSelectedIndex = EngraveHelper.findOptionIndex(
-                        itemWheelList,
-                        EngraveCmd.depthToSpeed(engraveConfigEntity.depth)
-                    )
-                    observeMaterialChange()
+                    itemSelectedIndex =
+                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.depth)
                 }
-            } else {
-                //功率/深度/次数
-                EngravePropertyItem()() {
+                //次数
+                EngraveOptionWheelItem()() {
+                    itemLabelText = _string(R.string.print_times)
+                    itemWheelList = percentList(255)
+                    itemTag = EngraveConfigEntity::time.name
                     itemEngraveConfigEntity = engraveConfigEntity
-                    observeMaterialChange()
-                }
+                    itemSelectedIndex =
+                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.time)
+                }*/
             }
-            /*EngraveOptionWheelItem()() {
-                itemTag = MaterialEntity::power.name
-                itemLabelText = _string(R.string.custom_power)
-                itemWheelList = percentList()
-                itemEngraveConfigEntity = engraveConfigEntity
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.power)
-            }
-            EngraveOptionWheelItem()() {
-                itemTag = MaterialEntity::depth.name
-                itemLabelText = _string(R.string.custom_speed)
-                itemWheelList = percentList()
-                itemEngraveConfigEntity = engraveConfigEntity
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.depth)
-            }
-            //次数
-            EngraveOptionWheelItem()() {
-                itemLabelText = _string(R.string.print_times)
-                itemWheelList = percentList(255)
-                itemTag = EngraveConfigEntity::time.name
-                itemEngraveConfigEntity = engraveConfigEntity
-                itemSelectedIndex =
-                    EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.time)
-            }*/
+
             EngraveConfirmItem()() {
                 itemClick = {
                     //开始雕刻
@@ -441,6 +583,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                                 countDownLatch.countDown()
                                                 if (error == null) {
                                                     //开始雕刻
+                                                    if (HawkEngraveKeys.enableItemEngraveParams) {
+                                                        EngraveFlowDataHelper.generateEngraveConfig(
+                                                            engraveCanvasFragment?.canvasDelegate
+                                                        )
+                                                    }
                                                     onStartEngrave(taskId)
                                                     val taskEntity =
                                                         engraveModel.startEngrave(taskId)
@@ -562,14 +709,16 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemTaskId = taskId
             }
             //
-            EngraveFlowDataHelper.getEngraveLayerList(taskId).forEach { engraveLayerInfo ->
-                EngraveLabelItem()() {
-                    itemText = engraveLayerInfo.label
-                }
+            if (!HawkEngraveKeys.enableItemEngraveParams) {
+                EngraveFlowDataHelper.getEngraveLayerList(taskId).forEach { engraveLayerInfo ->
+                    EngraveLabelItem()() {
+                        itemText = engraveLayerInfo.label
+                    }
 
-                EngraveFinishInfoItem()() {
-                    itemTaskId = taskId
-                    itemLayerMode = engraveLayerInfo.layerMode
+                    EngraveFinishInfoItem()() {
+                        itemTaskId = taskId
+                        itemLayerMode = engraveLayerInfo.layerMode
+                    }
                 }
             }
             //

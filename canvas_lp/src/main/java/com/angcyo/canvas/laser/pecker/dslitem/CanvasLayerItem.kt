@@ -1,7 +1,6 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import com.angcyo.canvas.Strategy
-import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.inputDialog
@@ -28,17 +27,7 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
         itemLayoutId = R.layout.item_canvas_layer_layout
 
         itemClick = {
-            itemRenderer?.let {
-                val selectedRenderer = itemCanvasDelegate?.getSelectedRenderer()
-                if (selectedRenderer is SelectGroupRenderer) {
-                    //no
-                } else {
-                    itemCanvasDelegate?.selectedItem(it)
-                }
-                if (it.isVisible()) {
-                    itemCanvasDelegate?.showRectBounds(it.getRotateBounds())
-                }
-            }
+            showItemRendererBounds()
         }
 
         //长按重命名

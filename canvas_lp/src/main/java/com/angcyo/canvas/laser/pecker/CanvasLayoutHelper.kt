@@ -427,6 +427,14 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     vh.showControlLayout(canvasView, false, false)
                     updateLayerLayout(vh, canvasView)
                 }
+
+                //更新单个雕刻参数配置
+                if (HawkEngraveKeys.enableItemEngraveParams) {
+                    engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                        engraveCanvasFragment,
+                        null
+                    )
+                }
             }
 
             override fun onSelectedItem(
@@ -458,6 +466,14 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
                     updatePreviewByItem(vh, itemRenderer)
+                }
+
+                //更新单个雕刻参数配置
+                if (HawkEngraveKeys.enableItemEngraveParams) {
+                    engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                        engraveCanvasFragment,
+                        itemRenderer
+                    )
                 }
             }
 
@@ -712,6 +728,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                             CanvasLayerItem()(0) {
                                 itemCanvasDelegate = canvasView.canvasDelegate
                                 itemRenderer = item
+
+                                itemSortAction = {
+                                    _layerDragHelper?.startDrag(it)
+                                }
                             }
                             setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_NONE)
                         }
@@ -801,6 +821,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                                             CanvasBaseLayerItem().apply {//元素
                                                 itemCanvasDelegate = canvasDelegate
                                                 itemRenderer = renderer
+                                                itemClick = {
+                                                    showItemRendererBounds()
+                                                    if (HawkEngraveKeys.enableItemEngraveParams) {
+                                                        //显示单元素雕刻参数
+                                                        engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                                                            engraveCanvasFragment,
+                                                            renderer
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
                                 itemSubList.resetAll(itemList)

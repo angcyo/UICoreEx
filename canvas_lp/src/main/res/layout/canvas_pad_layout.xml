@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.7">
+        android:layout_weight="1">
 
         <com.angcyo.canvas.CanvasView
             android:id="@+id/canvas_view"
@@ -392,9 +392,8 @@
 
     <!--pad扩展区-->
     <com.angcyo.widget.layout.DslSoftInputLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3">
+        android:layout_width="@dimen/lib_fragment_detail_container_width"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/fragment_detail_container"

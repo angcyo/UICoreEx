@@ -278,10 +278,18 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
 
             //雕刻配置数据
-            val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(
-                taskId,
-                transferDataEntity?.layerMode ?: 0
-            )
+            val engraveConfigEntity = if (HawkEngraveKeys.enableItemEngraveParams) {
+                EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
+                    ?: EngraveFlowDataHelper.generateEngraveConfig(
+                        taskId,
+                        transferDataEntity?.layerMode ?: 0
+                    )
+            } else {
+                EngraveFlowDataHelper.generateEngraveConfig(
+                    taskId,
+                    transferDataEntity?.layerMode ?: 0
+                )
+            }
             doMain {
                 _startEngraveIndex(nextIndex)
 
@@ -322,21 +330,27 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         for (index in indexList) {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
-                EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)
-                    ?.let { engraveConfigEntity ->
-                        precision = engraveConfigEntity.precision
-                        diameter =
-                            (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
+                //雕刻参数
+                val engraveConfigEntity = if (HawkEngraveKeys.enableItemEngraveParams)
+                    EngraveFlowDataHelper.getEngraveConfig(it.index)
+                else
+                    EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)
 
-                        powerList.add(engraveConfigEntity.power.toByte())
-                        depthList.add(engraveConfigEntity.depth.toByte())
-                        timeList.add(engraveConfigEntity.time.toByte())
-                        typeList.add(engraveConfigEntity.type)
+                //---
+                engraveConfigEntity?.let {
+                    precision = engraveConfigEntity.precision
+                    diameter =
+                        (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
 
-                        //保存外接设备名
-                        engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
-                        engraveConfigEntity.lpSaveEntity()
-                    }
+                    powerList.add(engraveConfigEntity.power.toByte())
+                    depthList.add(engraveConfigEntity.depth.toByte())
+                    timeList.add(engraveConfigEntity.time.toByte())
+                    typeList.add(engraveConfigEntity.type)
+
+                    //保存外接设备名
+                    engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+                    engraveConfigEntity.lpSaveEntity()
+                }
 
                 //任务雕刻的数据入库
                 _generateEngraveData(taskId, index)

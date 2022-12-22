@@ -76,6 +76,14 @@ class EngraveExperimentalFragment : DebugFragment() {
                 defValue = HawkEngraveKeys.enableRenderEngraveInfo
             })
 
+            renderDebugAction(DebugAction().apply {
+                label = "激活单元素雕刻参数"
+                des = "激活后,每个元素都可以单独设置雕刻参数."
+                key = HawkEngraveKeys::enableItemEngraveParams.name
+                type = Boolean::class.java
+                defValue = HawkEngraveKeys.enableItemEngraveParams
+            })
+
         }
     }
 }

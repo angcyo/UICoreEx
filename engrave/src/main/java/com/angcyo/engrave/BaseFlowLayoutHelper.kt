@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.showIn
@@ -48,9 +49,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     companion object {
 
+        /**单元素雕刻参数配置*/
+        const val ENGRAVE_FLOW_ITEM_CONFIG = 0x01
+
         /**雕刻流程: 预览前的配置
          * C1 握笔模块需要先校准对齐*/
-        const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = 0x01
+        const val ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG = ENGRAVE_FLOW_ITEM_CONFIG shl 1
 
         /**雕刻流程: 预览中*/
         const val ENGRAVE_FLOW_PREVIEW = ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG shl 1
@@ -152,9 +156,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         renderFlowItems()
     }
 
+    /**
+     * 单元素雕刻参数设置
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.onEngraveFlowChanged]
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.onIViewRemove]
+     * */
+    var _engraveItemRenderer: DataItemRenderer? = null
+
     override fun onIViewRemove() {
         super.onIViewRemove()
         //重新分配一个id
+        _engraveItemRenderer = null
         clearFlowId()
         loopCheckDeviceState = false
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
@@ -175,6 +187,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (engraveBackFlow > 0) {
             engraveFlow = engraveBackFlow
             renderFlowItems()
+        } else {
+            hide()
         }
     }
 
@@ -207,6 +221,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**雕刻模式改变通知*/
     open fun onEngraveFlowChanged(from: Int, to: Int) {
+        if (to != ENGRAVE_FLOW_ITEM_CONFIG) {
+            _engraveItemRenderer = null
+        }
         //雕刻中保持常亮
         engraveCanvasFragment?.fragment?._vh?.itemView?.keepScreenOn = to == ENGRAVE_FLOW_ENGRAVING
 
@@ -274,7 +291,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
 
         //检查是否已经显示
-        if (isAttach()) {
+        if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
             return
         }
 
@@ -311,6 +328,11 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             ENGRAVE_FLOW_PREVIEW
         }
         showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
+    }
+
+    override fun onIViewReShow() {
+        super.onIViewReShow()
+        renderFlowItems()//重新渲染界面
     }
 
     /**根据不同的流程, 渲染不同的界面*/
