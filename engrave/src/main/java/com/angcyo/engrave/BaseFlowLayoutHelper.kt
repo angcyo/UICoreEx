@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.showIn
+import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
@@ -178,7 +179,19 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     override fun hide(end: (() -> Unit)?) {
-        if (cancelable && engraveBackFlow > 0 && engraveBackFlow != engraveFlow) {
+        if (cancelable && engraveFlow == ENGRAVE_FLOW_PREVIEW && engraveBackFlow <= 0) {
+            //预览中, 等待机器完全退出之后, 再关闭界面
+            engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
+                ExitCmd().enqueue { bean, error ->
+                    loadEnd(bean, error)
+                    if (error != null) {
+                        toastQQ(error.message)
+                    } else {
+                        super.hide(end)
+                    }
+                }
+            }
+        } else if (cancelable && engraveBackFlow > 0 && engraveBackFlow != engraveFlow) {
             //需要回退
             engraveFlow = engraveBackFlow
             renderFlowItems()
