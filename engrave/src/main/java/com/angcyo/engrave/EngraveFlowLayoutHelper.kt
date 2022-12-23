@@ -342,6 +342,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 observeItemChange {
                     renderFlowItems()
                 }
+                observeEngraveParamsChange()
             }
 
             // 激光光源选择
@@ -359,6 +360,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         engraveConfigEntity.lpSaveEntity()
                         renderFlowItems()
                     }
+                    observeEngraveParamsChange()
                 }
             }
 
@@ -375,7 +377,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemEngraveConfigEntity = engraveConfigEntity
                     itemEngraveItemBean = projectItemBean
 
-                    observeMaterialChange()
+                    observeEngraveParamsChange()
                 }
             }
 
@@ -394,12 +396,16 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             projectItemBean?.printDepth ?: HawkEngraveKeys.lastDepth
                         )
                     )
+
+                    observeEngraveParamsChange()
                 }
             } else {
                 //功率/深度/次数
                 EngravePropertyItem()() {
                     itemEngraveItemBean = projectItemBean
                     itemEngraveConfigEntity = engraveConfigEntity
+
+                    observeEngraveParamsChange()
                 }
             }
         }
@@ -503,6 +509,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             engraveConfigEntity.lpSaveEntity()
                             renderFlowItems()
                         }
+                        observeMaterialChange()
                     }
                 }
 
@@ -619,6 +626,16 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 it.itemShowSaveButton = true
                 it.updateAdapterItem()
             }
+        }
+    }
+
+    /**回调*/
+    var onEngraveParamsChangeAction: () -> Unit = {}
+
+    /**监听改变之后, 单文件雕刻参数*/
+    fun DslAdapterItem.observeEngraveParamsChange() {
+        observeItemChange {
+            onEngraveParamsChangeAction()
         }
     }
 

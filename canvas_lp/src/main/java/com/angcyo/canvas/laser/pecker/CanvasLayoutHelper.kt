@@ -469,7 +469,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
 
                 //更新单个雕刻参数配置
-                if (HawkEngraveKeys.enableItemEngraveParams) {
+                if (HawkEngraveKeys.enableItemEngraveParams && vh.isVisible(R.id.canvas_layer_layout)) {
                     engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
                         engraveCanvasFragment,
                         itemRenderer
