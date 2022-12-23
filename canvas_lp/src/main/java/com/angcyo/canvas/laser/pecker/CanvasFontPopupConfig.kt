@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -18,9 +19,7 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
 import com.angcyo.library.component.FontManager
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.ex.*
 import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
@@ -120,6 +119,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
         context.supportFragmentManager.getFile("*/*") {
             if (it != null) {
                 try {
+                    "准备导入字体[${it.getDisplayName()}]:${"$it".decode()}".writeBleLog()
                     val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(it)
                     if (typefaceInfo != null) {
                         //ui
@@ -145,7 +145,7 @@ class CanvasFontPopupConfig : MenuPopupConfig() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    "导入字体失败[${it}]:${e}".writeErrorLog()
+                    "导入字体失败[${"$it".decode()}]:${e}".writeErrorLog()
                     toast(_string(R.string.canvas_invalid_font))
                 }
             }
