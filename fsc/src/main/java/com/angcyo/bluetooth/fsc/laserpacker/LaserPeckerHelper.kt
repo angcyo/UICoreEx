@@ -62,6 +62,7 @@ object LaserPeckerHelper {
     const val LIII_YT = "L3-YT" //"LIII-YT"       //spp 50*50mm
     const val LIII = "L3"       //"LIII"          //spp 90*70mm 椭圆
 
+    //---焦距 150mm
     //0为1064nm激光, LIII_MAX 改名 LIV
     const val LIII_MAX = "L4"      //"LIV"   //spp 160mm*160mm 160*120mm 椭圆
     const val LIV = LIII_MAX
