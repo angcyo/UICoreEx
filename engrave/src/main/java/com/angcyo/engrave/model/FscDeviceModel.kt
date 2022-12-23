@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
@@ -191,6 +192,26 @@ class FscDeviceModel : LifecycleViewModel() {
         //设备初始化后回调, 初始化材质信息
         laserPeckerModel.initializeOnceData.observe(this) {
             if (it == true) {
+                //保存设备信息到log
+                DslLastDeviceInfoItem.saveDeviceInfo {
+                    appendln()
+                    appendln()
+                    appendLine("设备版本↓")
+                    appendLine("${laserPeckerModel.deviceVersionData.value}")
+
+                    appendln()
+                    appendLine("设备状态↓")
+                    appendLine("${laserPeckerModel.deviceStateData.value}")
+
+                    appendln()
+                    appendLine("设备设置↓")
+                    appendLine("${laserPeckerModel.deviceSettingData.value}")
+
+                    appendln()
+                    appendLine("产品信息↓")
+                    appendLine("${laserPeckerModel.productInfoData.value}")
+                }
+
                 laserPeckerModel.productInfoData.value?.let {
                     if (it.isCI()) {
                         //com/angcyo/bluetooth/fsc/laserpacker/parse/QueryStateParser.kt:81
