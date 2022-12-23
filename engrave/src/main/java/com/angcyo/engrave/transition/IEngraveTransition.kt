@@ -14,7 +14,9 @@ import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
+import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.ensureExtName
+import com.angcyo.library.ex.floor
 import com.angcyo.library.utils.FileTextData
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -165,18 +167,20 @@ interface IEngraveTransition {
         //雕刻数据坐标
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
             //mm单位
-            transferDataEntity.x = (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).toInt()
-            transferDataEntity.y = (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).toInt()
+            transferDataEntity.x =
+                (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).floor().toInt()
+            transferDataEntity.y =
+                (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).floor().toInt()
             transferDataEntity.width =
-                (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).toInt()
+                (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).ceil().toInt()
             transferDataEntity.height =
-                (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).toInt()
+                (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).ceil().toInt()
         } else {
             //px单位
-            transferDataEntity.x = rotateBounds.left.toInt()
-            transferDataEntity.y = rotateBounds.top.toInt()
-            transferDataEntity.width = rotateBounds.width().toInt()
-            transferDataEntity.height = rotateBounds.height().toInt()
+            transferDataEntity.x = rotateBounds.left.floor().toInt()
+            transferDataEntity.y = rotateBounds.top.floor().toInt()
+            transferDataEntity.width = rotateBounds.width().ceil().toInt()
+            transferDataEntity.height = rotateBounds.height().ceil().toInt()
         }
 
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ||

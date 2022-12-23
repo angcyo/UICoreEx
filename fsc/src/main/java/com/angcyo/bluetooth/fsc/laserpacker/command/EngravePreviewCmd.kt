@@ -228,8 +228,8 @@ data class EngravePreviewCmd(
 
             tempRect.release()
             val rect = Rect().apply {
-                left = previewX.ceil().toInt()
-                top = previewY.ceil().toInt()
+                left = previewX.floor().toInt()
+                top = previewY.floor().toInt()
                 right = left + previewWidth.ceil().toInt()
                 bottom = top + previewHeight.ceil().toInt()
             }
