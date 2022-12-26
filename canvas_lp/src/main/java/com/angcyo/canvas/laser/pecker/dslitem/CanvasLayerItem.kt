@@ -5,7 +5,6 @@ import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
@@ -71,7 +70,8 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //可见性
         itemHolder.selected(R.id.layer_item_invisible_view, !itemLayerHide)
-        itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
+        itemHolder.visible(R.id.layer_item_invisible_view, true)
+        //itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
 
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
 

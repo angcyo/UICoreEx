@@ -17,7 +17,6 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.library.ex.toStr
-import com.angcyo.library.getAppString
 import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -142,12 +141,10 @@ class EngraveHistoryItem : DslTagGroupItem() {
 
             if (engraveConfigEntity != null) {
                 //材质
-
                 add(
                     LabelDesData(
                         _string(R.string.custom_material),
-                        getAppString(engraveConfigEntity.materialKey ?: "custom")
-                            ?: _string(R.string.custom)
+                        EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)
                     )
                 )
 

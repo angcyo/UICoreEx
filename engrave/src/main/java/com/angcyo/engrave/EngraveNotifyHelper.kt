@@ -18,6 +18,15 @@ object EngraveNotifyHelper {
     /**通知通道*/
     const val ENGRAVE_NOTIFY_CHANNEL = "Engrave"
 
+    /**创建雕刻通知通道*/
+    fun createEngraveChannel() {
+        DslNotify().apply {
+            channelId = ENGRAVE_NOTIFY_CHANNEL
+            channelName = _string(R.string.engrave_channel)
+            _createNotifyChannel()
+        }
+    }
+
     /**显示雕刻通知*/
     fun showEngraveNotify(progress: Int = 0) {
         dslNotify {

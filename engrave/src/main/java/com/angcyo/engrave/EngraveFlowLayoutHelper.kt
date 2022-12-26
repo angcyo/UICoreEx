@@ -9,6 +9,7 @@ import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.core.showIn
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
+import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -338,6 +339,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemEngraveItemBean = projectItemBean
                 itemEngraveConfigEntity = engraveConfigEntity
 
+                itemDeleteAction = { key ->
+                    showDeleteMaterialDialog(flowTaskId, key) {
+                        renderFlowItems()
+                    }
+                }
+
                 //刷新界面
                 observeItemChange {
                     renderFlowItems()
@@ -426,9 +433,16 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         //雕刻配置信息
         val engraveConfigEntity = if (materialEntity == null) {
             //未初始化材质信息, 默认使用第一个
+            val lastMaterial = EngraveFlowDataHelper.findLastMaterial()
             materialEntity =
-                EngraveFlowDataHelper.findLastMaterial() ?: EngraveHelper.materialList.firstOrNull()
+                if (lastMaterial != null && EngraveHelper.materialList.find { it.key == lastMaterial.key } != null) {
+                    //上一次设备推荐的材质, 在列表中
+                    lastMaterial
+                } else {
+                    //使用列表中第一个
+                    EngraveHelper.materialList.firstOrNull()
                         ?: EngraveHelper.createCustomMaterial()
+                }
             EngraveFlowDataHelper.generateEngraveConfigByMaterial(
                 taskId,
                 materialEntity.key,
@@ -469,6 +483,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemSaveAction = {
                         showSaveMaterialDialog(taskId, materialEntity) {
                             //刷新界面, 使用自定义的材质信息
+                            renderFlowItems()
+                        }
+                    }
+
+                    itemDeleteAction = { key ->
+                        showDeleteMaterialDialog(taskId, key) {
                             renderFlowItems()
                         }
                     }
@@ -651,6 +671,19 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveFlowDataHelper.saveEngraveConfigToMaterial(taskId, "$inputText")
                 action.invoke()
                 false
+            }
+        }
+    }
+
+    /**显示删除自定义材质的对话框*/
+    fun showDeleteMaterialDialog(taskId: String?, materialKey: String, action: Action) {
+        engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+            dialogTitle = _string(R.string.engrave_warn)
+            dialogMessage = _string(R.string.delete_material_tip)
+            needPositiveButton { dialog, dialogViewHolder ->
+                dialog.dismiss()
+                EngraveFlowDataHelper.deleteMaterial(taskId, materialKey)
+                action()
             }
         }
     }

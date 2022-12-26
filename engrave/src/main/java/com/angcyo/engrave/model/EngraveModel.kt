@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
@@ -526,6 +527,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
             append("开始雕刻指令:[${transferDataEntity?.taskId}][$index]")
+
+            //雕刻数据类型
+            transferDataEntity?.engraveDataType?.let {
+                append(" ${it.toEngraveTypeStr()}")
+            }
+
             if (engraveLayer?.label.isNullOrBlank()) {
                 append(" mode:${engraveConfigEntity.layerMode.toDataModeStr()}")
             } else {

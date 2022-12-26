@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.graphics.BitmapGraphicsParser
@@ -13,6 +14,7 @@ import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.toEngraveBitmap
+import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
@@ -211,7 +213,7 @@ class BitmapTransition : IEngraveTransition {
 
         /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
-         * 白色传1 黑色传0
+         * 白色传1 黑色传0, 数据压缩
          * */
         fun handleBitmapByte(bitmap: Bitmap, threshold: Int): Pair<List<String>, ByteArray> {
             val width = bitmap.width
@@ -254,6 +256,41 @@ class BitmapTransition : IEngraveTransition {
                         write(byte)//写入1个字节
                     }
                     //
+                    logList.add(lineBuilder.toString())
+                    lineBuilder.clear()
+                }
+            }
+            return logList to bytes
+        }
+
+        /**[handleBitmapByte]不压缩*/
+        fun handleBitmapByteUncompress(
+            bitmap: Bitmap,
+            threshold: Int
+        ): Pair<List<String>, ByteArray> {
+            val width = bitmap.width
+            val height = bitmap.height
+
+            val logList = mutableListOf<String>()
+            val lineBuilder = StringBuilder()
+            val bytes = byteWriter {
+                for (y in 0 until height) {
+                    for (x in 0 until width) {
+                        //一行
+                        val color = bitmap.getPixel(x, y)
+                        //val channelColor = Color.red(color)
+                        val grayInt = color.toGrayInt()
+
+                        if (grayInt <= threshold) {
+                            //黑色传0, 黑色纸上雕刻, 金属不雕刻
+                            write(0)
+                            lineBuilder.append("0")
+                        } else {
+                            //白色传1
+                            write(1)
+                            lineBuilder.append("1")
+                        }
+                    }
                     logList.add(lineBuilder.toString())
                     lineBuilder.clear()
                 }
@@ -307,12 +344,17 @@ class BitmapTransition : IEngraveTransition {
         if (dataBean != null) {
             val bitmap = engraveProvider.getEngraveBitmap(RenderParams(false))
             if (bitmap != null) {
-                val dataMode = getDataMode(dataBean, transferConfigEntity)
+                var dataMode = getDataMode(dataBean, transferConfigEntity)
                 var pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
 
                 if (dataMode == CanvasConstant.DATA_MODE_DITHERING) {
                     //抖动数据, 重新计算
                     pxBitmap = BitmapGraphicsParser.handleDithering(pxBitmap, dataBean) ?: pxBitmap
+
+                    if (!vmApp<LaserPeckerModel>().isSupportDithering()) {
+                        //不支持压缩数据
+                        dataMode = CanvasConstant.DATA_MODE_GREY
+                    }
                 }
 
                 val transferDataEntity =

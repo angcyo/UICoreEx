@@ -92,7 +92,10 @@ object EngraveHelper {
 
         //用户自定义的参数
         result.addAll(MaterialEntity::class.findAll(LPBox.PACKAGE_NAME) {
-            apply(MaterialEntity_.productName.equal(name))
+            orderDesc(MaterialEntity_.entityId)//id降序
+            apply(
+                MaterialEntity_.productName.equal(name).and(MaterialEntity_.isDelete.equal(false))
+            )
         })
 
         //系统的推荐参数
@@ -111,11 +114,18 @@ object EngraveHelper {
     }
 
     /**获取一个材质*/
-    fun getMaterial(taskId: String?, code: String?): MaterialEntity? {
+    fun getMaterialByCode(taskId: String?, code: String?): MaterialEntity? {
         return MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 MaterialEntity_.taskId.equal("$taskId").and(MaterialEntity_.code.equal("$code"))
             )
+        }
+    }
+
+    /**获取一个材质*/
+    fun getMaterialByKey(materialKey: String?): MaterialEntity? {
+        return MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(MaterialEntity_.key.equal("$materialKey"))
         }
     }
 

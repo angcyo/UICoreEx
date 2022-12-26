@@ -53,7 +53,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "19:8273902293625817918",
+      "lastPropertyId": "20:1791006809016749173",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -131,6 +131,11 @@
           "id": "19:8273902293625817918",
           "name": "key",
           "type": 9
+        },
+        {
+          "id": "20:1791006809016749173",
+          "name": "isDelete",
+          "type": 1
         }
       ],
       "relations": []

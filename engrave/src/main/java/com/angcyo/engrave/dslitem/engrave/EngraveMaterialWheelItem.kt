@@ -3,6 +3,7 @@ package com.angcyo.engrave.dslitem.engrave
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.ex.Action
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -15,8 +16,11 @@ class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
     /**是否要限制保存按钮*/
     var itemShowSaveButton: Boolean = false
 
-    /**保存的回调*/
+    /**保存材质的回调*/
     var itemSaveAction: Action? = null
+
+    /**删除材质的回调*/
+    var itemDeleteAction: ((materialKey: String) -> Unit)? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_material_layout
@@ -30,10 +34,20 @@ class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
+        val materialEntity = itemWheelList?.get(itemSelectedIndex) as? MaterialEntity
+        itemHolder.visible(R.id.lib_delete_button, !materialEntity?.productName.isNullOrBlank())
         itemHolder.visible(R.id.lib_save_button, itemShowSaveButton)
+
         itemHolder.click(R.id.lib_save_button) {
             //保存材质
             itemSaveAction?.invoke()
+        }
+
+        itemHolder.click(R.id.lib_delete_button) {
+            //删除材质
+            materialEntity?.key?.let {
+                itemDeleteAction?.invoke(it)
+            }
         }
     }
 

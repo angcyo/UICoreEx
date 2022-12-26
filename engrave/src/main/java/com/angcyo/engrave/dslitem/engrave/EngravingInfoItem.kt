@@ -10,7 +10,6 @@ import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.getAppString
 
 /**
  * 雕刻信息展示的item
@@ -40,8 +39,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 add(
                     LabelDesData(
                         _string(R.string.custom_material),
-                        getAppString(engraveConfigEntity.materialKey ?: "custom")
-                            ?: _string(R.string.custom)
+                        EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)
                     )
                 )
                 //分辨率: 1k

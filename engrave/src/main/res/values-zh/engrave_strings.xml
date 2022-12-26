@@ -227,11 +227,13 @@
     <string name="engrave_experimental">实验性</string>
 
     <string name="engrave_channel">雕刻通道</string>
-    <string name="open_notify_tip">打开通知,接收通知进度?</string>
+    <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>
     <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
 
     <string name="material_title_limit">最多输入20个字符</string>
     <string name="save_material_title">材质名称</string>
     <string name="engrave_feedback">反馈问题</string>
+
+    <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
 
 </resources>

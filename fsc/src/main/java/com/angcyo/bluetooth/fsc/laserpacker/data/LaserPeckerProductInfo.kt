@@ -94,6 +94,12 @@ data class LaserPeckerProductInfo(
     /**固件版本号, 等同于[version]*/
     var softwareVersion: Int = -1,
     var hardwareVersion: Int = -1,
+
+    //---
+
+    /**当前设备是否图片的压缩抖动数据雕刻,
+     * 如果支持:则抖动算法的图片发送0x60的数据, 否则发送0x10的数据*/
+    var supportDithering: Boolean = true,
 ) {
 
     /**

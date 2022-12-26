@@ -22,6 +22,9 @@ import io.objectbox.annotation.Id
 data class MaterialEntity(
     @Id var entityId: Long = 0L,
 
+    /**是否被删除*/
+    var isDelete: Boolean = false,
+
     /**雕刻任务所使用的材质数据*/
     var taskId: String? = null,
 

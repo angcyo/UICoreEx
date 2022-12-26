@@ -113,6 +113,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     //预览模式
     val previewModel = vmApp<PreviewModel>()
 
+    //ble
+    val fscBleApiModel = vmApp<FscBleApiModel>()
+
     /**是否循环检测设备状态*/
     var loopCheckDeviceState: Boolean = false
 
@@ -193,7 +196,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     override fun hide(end: (() -> Unit)?) {
-        if (cancelable && engraveFlow == ENGRAVE_FLOW_PREVIEW && engraveBackFlow <= 0) {
+        if (cancelable && engraveFlow == ENGRAVE_FLOW_PREVIEW && engraveBackFlow <= 0 && fscBleApiModel.haveDeviceConnected()) {
             //预览中, 等待机器完全退出之后, 再关闭界面
             engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
                 ExitCmd().enqueue { bean, error ->
@@ -634,6 +637,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (_isCheckedEngraveNotify) {
             action()
         } else {
+            EngraveNotifyHelper.createEngraveChannel()
             val fContext = engraveCanvasFragment?.fragment?.fContext()
             if (!isNotificationsEnabled()) {
                 //未打开通知

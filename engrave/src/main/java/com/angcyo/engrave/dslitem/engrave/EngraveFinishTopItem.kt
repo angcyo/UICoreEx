@@ -11,7 +11,6 @@ import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.getAppString
 
 /**
  * 雕刻完成信息item
@@ -57,8 +56,7 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             add(
                 LabelDesData(
                     "${_string(R.string.custom_material)}:",
-                    getAppString(engraveConfigEntity?.materialKey ?: "custom")
-                        ?: _string(R.string.custom)
+                    EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
                 )
             )
 

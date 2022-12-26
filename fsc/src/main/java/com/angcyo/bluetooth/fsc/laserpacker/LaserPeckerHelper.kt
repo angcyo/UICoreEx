@@ -271,6 +271,9 @@ object LaserPeckerHelper {
     fun parseProductInfo(softwareVersion: Int, center: Boolean? = null): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
 
+        //是否支持压缩抖动的图片数据
+        var supportDithering = true
+
         //激光类型, 默认是蓝光
         //蓝光
         val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10, _string(R.string.laser_type_blue))
@@ -303,6 +306,7 @@ object LaserPeckerHelper {
         var wPhys = 0
         var hPhys = 0
 
+        //物理尺寸
         when (name) {
             LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_, LIII -> {
                 wPhys = 100
@@ -319,6 +323,30 @@ object LaserPeckerHelper {
                 wPhys = 400
                 hPhys = 420
                 isOriginCenter = center ?: false
+            }
+        }
+
+        //光源
+        when (name) {
+            LII -> {
+                //300~349 //HK32
+                //350~369
+                //370~399
+                supportDithering = softwareVersion in 315..349 ||
+                        softwareVersion in 359..369 ||
+                        softwareVersion in 374..399
+                blueInfo.power = 5
+                laserTypeList = listOf(blueInfo)
+            }
+            LIII -> {
+                laserTypeList = listOf(whiteInfo)
+            }
+            LIII_MAX, LIV -> {
+                laserTypeList = listOf(whiteInfo, blueInfo)
+            }
+            CI -> {
+                //C1的模块是动态, 需要在获取设备状态后, 重新赋值
+                laserTypeList = listOf(blueInfo)
             }
         }
 
@@ -374,7 +402,6 @@ object LaserPeckerHelper {
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
-                laserTypeList = listOf(whiteInfo)
             }
             LIII_MAX, LIV -> {
                 //最佳打印范围是椭圆
@@ -397,12 +424,8 @@ object LaserPeckerHelper {
                     previewBounds.set(l, t, r, b)
                     maxOvalPath(l, t, r, b, this)
                 }
-                laserTypeList = listOf(whiteInfo, blueInfo)
             }
-            CI -> {
-                //C1的模块是动态, 需要在获取设备状态后, 重新赋值
-                laserTypeList = listOf(blueInfo)
-            }
+            CI -> Unit
         }
 
         when (name) {
@@ -464,6 +487,7 @@ object LaserPeckerHelper {
             this.carLimitPath = carLimitPath
             this.carPreviewBounds = carPreviewBounds
             this.penBounds = penBounds
+            this.supportDithering = supportDithering
         }
     }
 

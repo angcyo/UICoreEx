@@ -18,6 +18,7 @@ import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.http.rx.runRx
 import com.angcyo.library.ex.*
+import com.angcyo.library.getAppString
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.logPath
@@ -284,9 +285,15 @@ object EngraveFlowDataHelper {
         taskId: String?,
         canvasDelegate: CanvasDelegate? = null
     ): TransferConfigEntity {
-        return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
+        return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME) {
+            if (!taskId.isNullOrBlank()) {
+                apply(TransferConfigEntity_.taskId.equal("$taskId"))
+            }
+        }.apply {
+            //参数设置
             this.taskId = taskId
-            dpi = LaserPeckerHelper.DPI_254
+            dpi = LaserPeckerHelper.findProductSupportPxList().firstOrNull()?.dpi
+                ?: LaserPeckerHelper.DPI_254 //默认使用第一个dpi
             mergeData = false
             dataMode = null
 
@@ -303,11 +310,6 @@ object EngraveFlowDataHelper {
                     }
                 }
             }
-        }) {
-            if (!taskId.isNullOrBlank()) {
-                apply(TransferConfigEntity_.taskId.equal("$taskId"))
-            }
-        }.apply {
             name = EngraveTransitionManager.generateEngraveName()
         }
     }
@@ -455,6 +457,18 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**获取任务雕刻的材质名称*/
+    fun getCurrentEngraveMaterName(taskId: String?): String {
+        val engraveConfigEntity = getCurrentEngraveConfig(taskId)
+        return getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
+    }
+
+    fun getEngraveMaterNameByKey(materialKey: String?): String {
+        return EngraveHelper.getMaterialByKey(materialKey)?.name
+            ?: getAppString(materialKey ?: "custom")
+            ?: _string(R.string.custom)
+    }
+
     /**获取最后一个图层的雕刻配置信息*/
     fun getLastEngraveConfig(taskId: String?): EngraveConfigEntity? {
         val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
@@ -478,14 +492,15 @@ object EngraveFlowDataHelper {
     fun findTaskMaterial(taskId: String?): MaterialEntity? {
         val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
         //优先使用任务配置的雕刻信息
-        var config = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+        val config = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
                     .and(EngraveConfigEntity_.productName.equal("$productName"))
             )
         }
-        return EngraveHelper.materialList.find { it.code == config?.materialCode } //这是内存数据, 切换不同设备之后可以就不一样了
-            ?: EngraveHelper.getMaterial(taskId, config?.materialCode) //这是数据库数据, 需要提前保存
+        config ?: return null
+        return EngraveHelper.materialList.find { it.code == config.materialCode } //这是内存数据, 切换不同设备之后可以就不一样了
+            ?: EngraveHelper.getMaterialByCode(taskId, config.materialCode) //这是数据库数据, 需要提前保存
     }
 
     /**则查找相同产品的最近一次的雕刻信息*/
@@ -589,6 +604,23 @@ object EngraveFlowDataHelper {
         generateEngraveConfigByMaterial(taskId, key, result.lastOrNull())
 
         return result
+    }
+
+    /**删除所有材质[materialKey]*/
+    fun deleteMaterial(taskId: String?, materialKey: String) {
+        val all = MaterialEntity::class.findAll(LPBox.PACKAGE_NAME) {
+            apply(MaterialEntity_.key.equal(materialKey))
+        }
+        all.forEach { it.isDelete = true }
+        all.lpSaveAllEntity()
+        //重新初始化材质列表
+        EngraveHelper.initMaterial()
+        val materialEntity = findTaskMaterial(taskId)
+        if (materialEntity?.key == materialKey) {
+            EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+                apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+            }//移除被删除的材质配置信息
+        }
     }
 
     /**构建或者获取对应雕刻图层的雕刻配置信息*/
