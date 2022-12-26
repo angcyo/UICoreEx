@@ -1,6 +1,7 @@
 package com.angcyo.engrave.data
 
 import androidx.annotation.Keep
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
@@ -51,6 +52,9 @@ object HawkEngraveKeys {
 
     /**雕刻失败后的重试次数*/
     var engraveRetryCount: Int by HawkPropertyValue<Any, Int>(3)
+
+    /**最后一次传输的dpi*/
+    var lastDpi: Float by HawkPropertyValue<Any, Float>(LaserPeckerHelper.DPI_254)
 
     //
 

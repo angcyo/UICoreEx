@@ -185,6 +185,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         if (canvasDelegate == null) {
                                             //不是画布上的数据, 可能是恢复的数据
                                         } else {
+                                            HawkEngraveKeys.lastDpi = transferConfigEntity.dpi
                                             val flowId = generateFlowId()//每次发送数据之前, 都生成一个新的任务
                                             transferConfigEntity.taskId = flowId
                                             transferConfigEntity.lpSaveEntity()

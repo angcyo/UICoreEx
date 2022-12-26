@@ -58,7 +58,7 @@ object LaserPeckerHelper {
     const val LI_Z_ = "L1-Z模块"    //"LI-Z模块"        //spp 100*100mm
     const val LII_M_ = "L2-M模块"   //"LII-M模块"       //spp 100*100mm
 
-    //---焦距 115mm
+    //---焦距 115mm 新 130mm
     const val LIII_YT = "L3-YT" //"LIII-YT"       //spp 50*50mm
     const val LIII = "L3"       //"LIII"          //spp 90*70mm 椭圆
 
@@ -131,6 +131,9 @@ object LaserPeckerHelper {
 
     /**3.3k 4k [PX_4K]*/
     const val DPI_846 = 846.66666f
+
+    /**L3 4k [PX_4K]*/
+    const val DPI_889 = 889f
 
     /**[PX_4K]*/
     const val DPI_1016 = 1016f
@@ -219,6 +222,7 @@ object LaserPeckerHelper {
             DPI_508 -> PxInfo(DPI_508, PX_2K, "2K$_d")
             DPI_635 -> PxInfo(DPI_635, PX_2K, "2.5K$_d")
             DPI_846 -> PxInfo(DPI_846, PX_4K, "4K$_d")
+            DPI_889 -> PxInfo(DPI_889, PX_4K, "4K$_d")
             DPI_1016 -> PxInfo(DPI_1016, PX_4K, "4K$_d")
             DPI_1270 -> PxInfo(DPI_1270, PX_4K, "5K$_d")
             else -> PxInfo(DPI_254, PX_1K, "1K$_d")
@@ -355,6 +359,10 @@ object LaserPeckerHelper {
                 laserTypeList = listOf(blueInfo)
             }
             LIII -> {
+                if (softwareVersion >= 5500) {
+                    supportDithering = softwareVersion in 5513..5599
+                }
+                whiteInfo.power = 1f
                 laserTypeList = listOf(whiteInfo)
             }
             LIII_MAX, LIV -> {
@@ -465,9 +473,11 @@ object LaserPeckerHelper {
             }
             LIII -> {
                 pxList.add(findPxInfo(DPI_254))
-                pxList.add(findPxInfo(DPI_317))
+                if (isDebug()) {
+                    pxList.add(findPxInfo(DPI_317, true))
+                }
                 pxList.add(findPxInfo(DPI_508))
-                pxList.add(findPxInfo(DPI_1270))
+                pxList.add(findPxInfo(DPI_889))
             }
             LIV -> {
                 if (isDebug()) {

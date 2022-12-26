@@ -292,8 +292,15 @@ object EngraveFlowDataHelper {
         }.apply {
             //参数设置
             this.taskId = taskId
-            dpi = LaserPeckerHelper.findProductSupportPxList().firstOrNull()?.dpi
-                ?: LaserPeckerHelper.DPI_254 //默认使用第一个dpi
+            val supportPxList = LaserPeckerHelper.findProductSupportPxList()
+            val find = supportPxList.find { it.dpi == HawkEngraveKeys.lastDpi }
+            dpi = if (find == null) {
+                //默认使用第一个dpi
+                supportPxList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
+            } else {
+                //最后一次使用的dpi
+                HawkEngraveKeys.lastDpi
+            }
             mergeData = false
             dataMode = null
 
