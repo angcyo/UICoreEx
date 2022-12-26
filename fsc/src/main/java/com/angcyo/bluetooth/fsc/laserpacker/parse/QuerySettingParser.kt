@@ -25,7 +25,7 @@ data class QuerySettingParser(
     //1为连续预览，0为单次预览，默认为0。
     var view: Int = 0,
     //0为G code 预览开，1为G code边界预览，默认为0。
-    var gcodeView: Int = 0,
+    var gcodeView: Int = GCODE_PREVIEW,
     //1为安全状态，0为非安全状态。
     var safe: Int = 1,
     var custom: Int = -1,
@@ -74,6 +74,12 @@ data class QuerySettingParser(
 
         /**扩展设备 移动平台*/
         const val EX_CAR = "car"
+
+        /**GCode向量预览*/
+        const val GCODE_PREVIEW = 0
+
+        /**GCode边界预览*/
+        const val GCODE_RECT_PREVIEW = 1
     }
 
     //解析数据
@@ -89,24 +95,24 @@ data class QuerySettingParser(
                     throw IllegalStateException("非查询指令!")
                 }
 
-                free = readInt(1)
-                buzzer = readInt(1)
-                view = readInt(1)
-                gcodeView = readInt(1)
-                safe = readInt(1)
-                custom = readInt(1)
-                zFlag = readInt(1)
-                zDir = readInt(1)
-                keyView = readInt(1)
-                irDst = readInt(1)
-                keyPrint = readInt(1)
-                rFlag = readInt(1)
-                sFlag = readInt(1)
-                dir = readInt(1)
-                gcodePower = readInt(1)
-                sRep = readInt(1)
-                carFlag = readInt(1)
-                state = readInt(1)
+                free = readInt(1, free)
+                buzzer = readInt(1, free)
+                view = readInt(1, view)
+                gcodeView = readInt(1, gcodeView)
+                safe = readInt(1, safe)
+                custom = readInt(1, custom)
+                zFlag = readInt(1, zFlag)
+                zDir = readInt(1, zDir)
+                keyView = readInt(1, keyView)
+                irDst = readInt(1, irDst)
+                keyPrint = readInt(1, keyPrint)
+                rFlag = readInt(1, rFlag)
+                sFlag = readInt(1, sFlag)
+                dir = readInt(1, dir)
+                gcodePower = readInt(1, gcodePower)
+                sRep = readInt(1, sRep)
+                carFlag = readInt(1, carFlag)
+                state = readInt(1, state)
             }
             this
         } catch (e: Exception) {
