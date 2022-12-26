@@ -121,6 +121,7 @@ fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolea
         removeAllItemRenderer(Strategy.init)
         undoManager.clear()
     }
+    projectName = dataBean?.file_name ?: projectName
     val result = dataBean?.data?.toCanvasProjectItemList()?.let { items ->
         /*items.forEach { itemData ->
             GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.init)
