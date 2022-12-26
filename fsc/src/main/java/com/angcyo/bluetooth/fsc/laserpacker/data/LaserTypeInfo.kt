@@ -18,8 +18,8 @@ data class LaserTypeInfo(
     val type: Byte,
     /**激光波长, nm单位*/
     var wave: Int,
-    /**功率 2W 10W*/
-    var power: Int,
+    /**功率 0.5W 2W 10W*/
+    var power: Float,
     /**描述字符*/
     val label: CharSequence,
 ) : IToText {

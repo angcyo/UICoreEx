@@ -276,9 +276,10 @@ object LaserPeckerHelper {
 
         //激光类型, 默认是蓝光
         //蓝光
-        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10, _string(R.string.laser_type_blue))
+        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10f, _string(R.string.laser_type_blue))
         //白光
-        val whiteInfo = LaserTypeInfo(LASER_TYPE_WHITE, 1064, 2, _string(R.string.laser_type_white))
+        val whiteInfo =
+            LaserTypeInfo(LASER_TYPE_WHITE, 1064, 2f, _string(R.string.laser_type_white))
         var laserTypeList: List<LaserTypeInfo> = listOf(blueInfo)
 
         //所有支持的分辨率
@@ -289,7 +290,7 @@ object LaserPeckerHelper {
         val previewBounds = RectF()
         val carPreviewBounds = RectF()
         val penBounds = RectF()
-        var isOriginCenter = center ?: false
+        var isOriginCenter = center ?: false //圆角是否在物理中心
 
         val limitPath = Path()
         val zLimitPath = Path()
@@ -303,31 +304,50 @@ object LaserPeckerHelper {
         val carMax = mmValueUnit.convertValueToPixel(CAR_MAX_Y.toFloat()).ceil()
 
         //物理尺寸宽高mm单位
+        @MM
         var wPhys = 0
+
+        @MM
         var hPhys = 0
 
         //物理尺寸
         when (name) {
-            LI_Z, LI_PRO, LI_Z_PRO, LII, LI_Z_, LII_M_, LIII -> {
+            LI_Z, LI_PRO, LII, LI_Z_, LII_M_ -> {
                 wPhys = 100
                 hPhys = 100
-                isOriginCenter = center ?: false
+            }
+            LI_Z_PRO -> {
+                wPhys = 100
+                hPhys = 100
+            }
+            LIII -> {
+                if (softwareVersion in 5500..5599) {
+                    wPhys = 100
+                    hPhys = 100
+                } else {
+                    wPhys = 115
+                    hPhys = 115
+                }
             }
             LIII_MAX, LIV -> {
                 //160*160
                 wPhys = 160
                 hPhys = 160
-                isOriginCenter = center ?: false
             }
             CI -> {
                 wPhys = 400
                 hPhys = 420
-                isOriginCenter = center ?: false
             }
         }
 
         //光源
         when (name) {
+            LI_Z_PRO -> {
+                supportDithering = softwareVersion in 253..269 ||
+                        softwareVersion in 272..299
+                blueInfo.power = 0.5f
+                laserTypeList = listOf(blueInfo)
+            }
             LII -> {
                 //300~349 //HK32
                 //350~369
@@ -335,7 +355,7 @@ object LaserPeckerHelper {
                 supportDithering = softwareVersion in 315..349 ||
                         softwareVersion in 359..369 ||
                         softwareVersion in 374..399
-                blueInfo.power = 5
+                blueInfo.power = 5f
                 laserTypeList = listOf(blueInfo)
             }
             LIII -> {
@@ -384,18 +404,30 @@ object LaserPeckerHelper {
             LIII -> {
                 //最佳打印范围是椭圆
                 limitPath.apply {
-                    //2022-9-27 试产版范围：90x60，量产版范围：100x75
+                    //2022-9-27 试产版范围：90x60，量产版范围：115x80
                     rewind()
-                    val rW = 100f
-                    val rH = 75f
-                    val tOffset = (rW - rH) / 2 //mm
-                    val l = mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
-                        .floor()
+
+                    val rW: Float
+                    val rH: Float
+                    if (softwareVersion in 5500..5599) {
+                        rW = 90f
+                        rH = 60f
+                    } else {
+                        rW = 115f
+                        rH = 80f
+                    }
+
+                    val lOffset = (wPhys - rW) / 2 //mm
+                    val tOffset = (hPhys - rH) / 2 //mm
+                    val l =
+                        mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else lOffset)
+                            .floor()
                     val t =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
                             .floor()
                     val r =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW).ceil()
+                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW + lOffset)
+                            .ceil()
                     val b =
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
                             .ceil()
@@ -588,7 +620,12 @@ object LaserPeckerHelper {
         return if (str.startsWith("1")) { //1
             if (str.startsWith("15")) LI_Z else LI
         } else if (str.startsWith("2")) { //2
-            if (str.startsWith("25")) LI_Z_PRO else LI_PRO
+            if (str.startsWith("25") ||
+                str.startsWith("26") ||
+                str.startsWith("27") ||
+                str.startsWith("28") ||
+                str.startsWith("29")
+            ) LI_Z_PRO else LI_PRO
         } else if (str.startsWith("3")) { //3
             LII
         } else if (str.startsWith("4")) { //4

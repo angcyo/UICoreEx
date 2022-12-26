@@ -221,7 +221,7 @@ class FscDeviceModel : LifecycleViewModel() {
                                 LaserTypeInfo(
                                     LaserPeckerHelper.LASER_TYPE_BLUE,
                                     450,
-                                    5,
+                                    5f,
                                     _string(R.string.laser_type_blue)
                                 )
                             )
@@ -230,7 +230,7 @@ class FscDeviceModel : LifecycleViewModel() {
                                 LaserTypeInfo(
                                     LaserPeckerHelper.LASER_TYPE_BLUE,
                                     450,
-                                    10,
+                                    10f,
                                     _string(R.string.laser_type_blue)
                                 )
                             )
@@ -239,7 +239,7 @@ class FscDeviceModel : LifecycleViewModel() {
                                 LaserTypeInfo(
                                     LaserPeckerHelper.LASER_TYPE_BLUE,
                                     450,
-                                    20,
+                                    20f,
                                     _string(R.string.laser_type_blue)
                                 )
                             )
@@ -248,7 +248,7 @@ class FscDeviceModel : LifecycleViewModel() {
                                 LaserTypeInfo(
                                     LaserPeckerHelper.LASER_TYPE_WHITE,
                                     1064,
-                                    2,
+                                    2f,
                                     _string(R.string.laser_type_white)
                                 )
                             )

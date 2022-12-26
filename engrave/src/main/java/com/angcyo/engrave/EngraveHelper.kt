@@ -12,6 +12,7 @@ import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.library.app
 import com.angcyo.library.ex.connect
+import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.unit.unitDecimal
@@ -100,7 +101,7 @@ object EngraveHelper {
 
         //系统的推荐参数
         product.laserTypeList.forEach {
-            val json = "argument/${name}_${it.wave}_${it.power}.json"
+            val json = "argument/${name}_${it.wave}_${it.power.ensureInt()}.json"
             val list = app().readAssets(json)
                 ?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
             list?.let { result.addAll(list) }
