@@ -431,6 +431,7 @@ object LaserPeckerHelper {
         when (name) {
             //LI, LI_PRO -> Unit
             LI_Z, LI_Z_PRO, LII -> {
+                pxList.add(findPxInfo(DPI_254))
                 pxList.add(findPxInfo(DPI_317))
                 pxList.add(findPxInfo(DPI_508))
             }
