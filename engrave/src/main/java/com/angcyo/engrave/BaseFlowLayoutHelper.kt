@@ -18,8 +18,7 @@ import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_FINISH
-import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSMITTING
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -688,8 +687,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
         }
     }
-
 }
 
-/**是否进入了雕刻流程, 并且非雕刻完成*/
-fun Int.isEngraveFlow() = this in ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG until ENGRAVE_FLOW_FINISH
+/**是否进入了雕刻流程, 这种状态下禁止画板手势操作*/
+fun Int.isEngraveFlow() = this >= ENGRAVE_FLOW_TRANSMITTING
