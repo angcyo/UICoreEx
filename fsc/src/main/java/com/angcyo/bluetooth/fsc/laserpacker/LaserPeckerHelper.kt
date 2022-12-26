@@ -312,11 +312,7 @@ object LaserPeckerHelper {
 
         //物理尺寸
         when (name) {
-            LI_Z, LI_PRO, LII, LI_Z_, LII_M_ -> {
-                wPhys = 100
-                hPhys = 100
-            }
-            LI_Z_PRO -> {
+            LI, LII, LI_Z_, LII_M_ -> {
                 wPhys = 100
                 hPhys = 100
             }
@@ -342,7 +338,7 @@ object LaserPeckerHelper {
 
         //光源
         when (name) {
-            LI_Z_PRO -> {
+            LI -> {
                 supportDithering = softwareVersion in 253..269 ||
                         softwareVersion in 272..299
                 blueInfo.power = 0.5f
@@ -462,7 +458,7 @@ object LaserPeckerHelper {
 
         when (name) {
             //LI, LI_PRO -> Unit
-            LI_Z, LI_Z_PRO, LII -> {
+            LI, LII -> {
                 pxList.add(findPxInfo(DPI_254))
                 pxList.add(findPxInfo(DPI_317))
                 pxList.add(findPxInfo(DPI_508))
@@ -617,28 +613,30 @@ object LaserPeckerHelper {
      * https://docs.qq.com/sheet/DT0htVG9tamZQTFBz*/
     fun parseProductName(version: Int): String? {
         val str = "$version"
-        return if (str.startsWith("1")) { //1
-            if (str.startsWith("15")) LI_Z else LI
-        } else if (str.startsWith("2")) { //2
-            if (str.startsWith("25") ||
-                str.startsWith("26") ||
-                str.startsWith("27") ||
-                str.startsWith("28") ||
-                str.startsWith("29")
-            ) LI_Z_PRO else LI_PRO
-        } else if (str.startsWith("3")) { //3
+        /*if (str.startsWith("1")) { //1
+           if (str.startsWith("15")) LI_Z else LI
+       } else if (str.startsWith("2")) { //2
+           if (str.startsWith("25") ||
+               str.startsWith("26") ||
+               str.startsWith("27") ||
+               str.startsWith("28") ||
+               str.startsWith("29")
+           ) LI_Z_PRO else LI_PRO
+       } else*/
+        return if (str.startsWith("1") || str.startsWith("2"))
+            LI
+        else if (str.startsWith("3")) //3
             LII
-        } else if (str.startsWith("4")) { //4
+        else if (str.startsWith("4"))  //4
             if (str.startsWith("41")) LI_Z_ else if (str.startsWith("42")) LII_M_ else LIII_YT
-        } else if (str.startsWith("5")) { //5
+        else if (str.startsWith("5"))  //5
             LIII
-        } else if (str.startsWith("6")) { //6
+        else if (str.startsWith("6")) //6
             LIII_MAX
-        } else if (str.startsWith("7")) { //7
+        else if (str.startsWith("7"))  //7
             if (str.startsWith("75")) CII else CI
-        } else {
+        else
             null //UNKNOWN
-        }
     }
 
     /**返回设备支持的分辨率列表*/

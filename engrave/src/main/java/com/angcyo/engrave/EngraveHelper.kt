@@ -10,6 +10,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
+import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.ensureInt
@@ -102,6 +103,7 @@ object EngraveHelper {
         //系统的推荐参数
         product.laserTypeList.forEach {
             val json = "argument/${name}_${it.wave}_${it.power.ensureInt()}.json"
+            L.w("读取材质:${json}")
             val list = app().readAssets(json)
                 ?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
             list?.let { result.addAll(list) }
