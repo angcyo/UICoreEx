@@ -9,6 +9,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.ensureInt
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -122,11 +123,11 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
     }
 
     fun Appendable.appendEngraveConfig() {
+        val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
         itemEngraveConfigEntity?.apply {
-            if (type == LaserPeckerHelper.LASER_TYPE_WHITE) {
-                append(" 1064nm (${_string(R.string.laser_type_white)})")
-            } else if (type == LaserPeckerHelper.LASER_TYPE_BLUE) {
-                append(" 450nm (${_string(R.string.laser_type_blue)})")
+            val laser = laserTypeList.find { it.type == type }
+            laser?.let {
+                append(" ${it.wave}nm ${it.power.ensureInt()}w")
             }
         }
     }
