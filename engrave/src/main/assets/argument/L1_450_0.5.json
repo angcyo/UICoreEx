@@ -7,7 +7,7 @@
     "_name": "环保纸-黑白",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -18,7 +18,7 @@
     "_name": "环保纸-黑白",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -29,7 +29,7 @@
     "_name": "环保纸-黑白",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -40,7 +40,7 @@
     "_name": "环保纸-灰度",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -51,7 +51,7 @@
     "_name": "环保纸-灰度",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -62,7 +62,7 @@
     "_name": "环保纸-灰度",
     "resIdStr": "recycle_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "recycle_paper"
   },
   {
@@ -73,7 +73,7 @@
     "_name": "瓦楞纸-黑白",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -84,7 +84,7 @@
     "_name": "瓦楞纸-黑白",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -95,7 +95,7 @@
     "_name": "瓦楞纸-黑白",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -106,7 +106,7 @@
     "_name": "瓦楞纸-灰度",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -117,7 +117,7 @@
     "_name": "瓦楞纸-灰度",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -128,7 +128,7 @@
     "_name": "瓦楞纸-灰度",
     "resIdStr": "corrugated_paper",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "corrugated_paper"
   },
   {
@@ -139,7 +139,7 @@
     "_name": "皮革-黑白",
     "resIdStr": "leather",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -150,7 +150,7 @@
     "_name": "皮革-黑白",
     "resIdStr": "leather",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -161,7 +161,7 @@
     "_name": "皮革-黑白",
     "resIdStr": "leather",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -172,7 +172,7 @@
     "_name": "皮革-灰度",
     "resIdStr": "leather",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -183,7 +183,7 @@
     "_name": "皮革-灰度",
     "resIdStr": "leather",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -194,7 +194,7 @@
     "_name": "皮革-灰度",
     "resIdStr": "leather",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "leather"
   },
   {
@@ -205,7 +205,7 @@
     "_name": "竹质-黑白",
     "resIdStr": "bamboo",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -216,7 +216,7 @@
     "_name": "竹质-黑白",
     "resIdStr": "bamboo",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -227,7 +227,7 @@
     "_name": "竹质-黑白",
     "resIdStr": "bamboo",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -238,7 +238,7 @@
     "_name": "竹质-灰度",
     "resIdStr": "bamboo",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -249,7 +249,7 @@
     "_name": "竹质-灰度",
     "resIdStr": "bamboo",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -260,7 +260,7 @@
     "_name": "竹质-灰度",
     "resIdStr": "bamboo",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "bamboo"
   },
   {
@@ -271,7 +271,7 @@
     "_name": "木质-黑白",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -282,7 +282,7 @@
     "_name": "木质-黑白",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -293,7 +293,7 @@
     "_name": "木质-黑白",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -304,7 +304,7 @@
     "_name": "木质-灰度",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -315,7 +315,7 @@
     "_name": "木质-灰度",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -326,7 +326,7 @@
     "_name": "木质-灰度",
     "resIdStr": "wood",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "wood"
   },
   {
@@ -337,7 +337,7 @@
     "_name": "软木-黑白",
     "resIdStr": "cork",
     "power": 40,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -348,7 +348,7 @@
     "_name": "软木-黑白",
     "resIdStr": "cork",
     "power": 40,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -359,7 +359,7 @@
     "_name": "软木-黑白",
     "resIdStr": "cork",
     "power": 40,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -370,7 +370,7 @@
     "_name": "软木-灰度",
     "resIdStr": "cork",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -381,7 +381,7 @@
     "_name": "软木-灰度",
     "resIdStr": "cork",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -392,7 +392,7 @@
     "_name": "软木-灰度",
     "resIdStr": "cork",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "cork"
   },
   {
@@ -403,7 +403,7 @@
     "_name": "塑料-黑白",
     "resIdStr": "plastic",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -414,7 +414,7 @@
     "_name": "塑料-黑白",
     "resIdStr": "plastic",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -425,7 +425,7 @@
     "_name": "塑料-黑白",
     "resIdStr": "plastic",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -436,7 +436,7 @@
     "_name": "塑料-灰度",
     "resIdStr": "plastic",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -447,7 +447,7 @@
     "_name": "塑料-灰度",
     "resIdStr": "plastic",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -458,7 +458,7 @@
     "_name": "塑料-灰度",
     "resIdStr": "plastic",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "plastic"
   },
   {
@@ -469,7 +469,7 @@
     "_name": "布料-黑白",
     "resIdStr": "cloth",
     "power": 90,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -480,7 +480,7 @@
     "_name": "布料-黑白",
     "resIdStr": "cloth",
     "power": 90,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -491,7 +491,7 @@
     "_name": "布料-黑白",
     "resIdStr": "cloth",
     "power": 90,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -502,7 +502,7 @@
     "_name": "布料-灰度",
     "resIdStr": "cloth",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -513,7 +513,7 @@
     "_name": "布料-灰度",
     "resIdStr": "cloth",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -524,7 +524,7 @@
     "_name": "布料-灰度",
     "resIdStr": "cloth",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "cloth"
   },
   {
@@ -535,7 +535,7 @@
     "_name": "毛毡布-黑白",
     "resIdStr": "felt",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -546,7 +546,7 @@
     "_name": "毛毡布-黑白",
     "resIdStr": "felt",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -557,7 +557,7 @@
     "_name": "毛毡布-黑白",
     "resIdStr": "felt",
     "power": 70,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -568,7 +568,7 @@
     "_name": "毛毡布-灰度",
     "resIdStr": "felt",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -579,7 +579,7 @@
     "_name": "毛毡布-灰度",
     "resIdStr": "felt",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -590,7 +590,7 @@
     "_name": "毛毡布-灰度",
     "resIdStr": "felt",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "felt"
   },
   {
@@ -601,7 +601,7 @@
     "_name": "不透明亚克力-黑白",
     "resIdStr": "opacity_acrylic",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -612,7 +612,7 @@
     "_name": "不透明亚克力-黑白",
     "resIdStr": "opacity_acrylic",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -623,7 +623,7 @@
     "_name": "不透明亚克力-黑白",
     "resIdStr": "opacity_acrylic",
     "power": 80,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -634,7 +634,7 @@
     "_name": "不透明亚克力-灰度",
     "resIdStr": "opacity_acrylic",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -645,7 +645,7 @@
     "_name": "不透明亚克力-灰度",
     "resIdStr": "opacity_acrylic",
     "power": 90,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -656,7 +656,7 @@
     "_name": "不透明亚克力-灰度",
     "resIdStr": "opacity_acrylic",
     "power": 90,
-    "type": 1,
+    "type": 0,
     "key": "opacity_acrylic"
   },
   {
@@ -667,7 +667,7 @@
     "_name": "光敏印章-黑白",
     "resIdStr": "photosensitive_seal",
     "power": 50,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -678,7 +678,7 @@
     "_name": "光敏印章-黑白",
     "resIdStr": "photosensitive_seal",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -689,7 +689,7 @@
     "_name": "光敏印章-黑白",
     "resIdStr": "photosensitive_seal",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -700,7 +700,7 @@
     "_name": "光敏印章-灰度",
     "resIdStr": "photosensitive_seal",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -711,7 +711,7 @@
     "_name": "光敏印章-灰度",
     "resIdStr": "photosensitive_seal",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -722,7 +722,7 @@
     "_name": "光敏印章-灰度",
     "resIdStr": "photosensitive_seal",
     "power": 60,
-    "type": 1,
+    "type": 0,
     "key": "photosensitive_seal"
   },
   {
@@ -733,7 +733,7 @@
     "_name": "果皮-黑白",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   },
   {
@@ -744,7 +744,7 @@
     "_name": "果皮-黑白",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   },
   {
@@ -755,7 +755,7 @@
     "_name": "果皮-黑白",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   },
   {
@@ -766,7 +766,7 @@
     "_name": "果皮-灰度",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   },
   {
@@ -777,7 +777,7 @@
     "_name": "果皮-灰度",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   },
   {
@@ -788,7 +788,7 @@
     "_name": "果皮-灰度",
     "resIdStr": "fruit_peel",
     "power": 100,
-    "type": 1,
+    "type": 0,
     "key": "fruit_peel"
   }
 ]
