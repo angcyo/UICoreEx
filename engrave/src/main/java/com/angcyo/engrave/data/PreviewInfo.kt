@@ -44,7 +44,8 @@ data class PreviewInfo(
 
     //---
 
-    /**预览的数据, 如果有,用于实现路径预览*/
+    /**预览的数据, 如果有,用于实现路径预览的判断条件
+     * [com.angcyo.engrave.dslitem.preview.PreviewControlItem]*/
     var itemDataBean: CanvasProjectItemBean? = null
 ) {
     companion object {

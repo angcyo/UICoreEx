@@ -1,5 +1,6 @@
 package com.angcyo.engrave.model
 
+import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
@@ -54,6 +55,19 @@ class PreviewModel : LifecycleViewModel() {
             }
             return null
         }*/
+
+        /**获取发送预览指令的范围*/
+        fun getPreviewCmdRect(canvasDelegate: CanvasDelegate?): Rect? {
+            val previewInfo = createPreviewInfo(canvasDelegate) ?: return null
+            val rotateBounds = previewInfo.rotateBounds ?: return null
+            val overflowInfo = EngravePreviewCmd.adjustRectRange(
+                rotateBounds.left,
+                rotateBounds.top,
+                rotateBounds.width(),
+                rotateBounds.height()
+            )
+            return overflowInfo.resultRect
+        }
 
         /**创建一个预览信息*/
         fun createPreviewInfo(canvasDelegate: CanvasDelegate?): PreviewInfo? {
