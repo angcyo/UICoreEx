@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.graphics.addParameterComparisonTable
@@ -61,12 +60,15 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         it.context.inputDialog {
                             dialogTitle = "阈值"
                             canInputEmpty = false
-                            hintInputString = "功率*深度的阈值"
-                            inputType = EditorInfo.TYPE_CLASS_NUMBER//只能输入数字
-                            defaultInputString = "${HawkEngraveKeys.lastPowerDepth}"
+                            hintInputString = "粒度数量,功率*深度阈值"
+                            defaultInputString =
+                                "${HawkEngraveKeys.lastGridCount},${HawkEngraveKeys.lastPowerDepth}"
 
                             onInputResult = { dialog, inputText ->
-                                HawkEngraveKeys.lastPowerDepth = inputText.toString().toIntOrNull()
+                                val list = inputText.toString().split(",")
+                                HawkEngraveKeys.lastGridCount = list.getOrNull(0)?.toIntOrNull()
+                                    ?: HawkEngraveKeys.lastGridCount
+                                HawkEngraveKeys.lastPowerDepth = list.getOrNull(1)?.toIntOrNull()
                                     ?: HawkEngraveKeys.lastPowerDepth
 
                                 engraveStrokeLoadingCaller { isCancel, loadEnd ->
@@ -75,6 +77,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
                                         canvasDelegate?.addParameterComparisonTable(
                                             previewBounds,
+                                            HawkEngraveKeys.lastGridCount,
                                             HawkEngraveKeys.lastPowerDepth
                                         )
                                         loadEnd(true, null)

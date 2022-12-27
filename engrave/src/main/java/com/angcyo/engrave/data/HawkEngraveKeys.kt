@@ -70,6 +70,11 @@ object HawkEngraveKeys {
     /**黑白阈值*/
     var lastBWThreshold: Float by HawkPropertyValue<Any, Float>(CanvasProjectItemBean.DEFAULT_THRESHOLD)
 
+    /**参数表网格数量
+     * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+     */
+    var lastGridCount: Int by HawkPropertyValue<Any, Int>(10)
+
     /**功率*深度 <= this 时才需要添加到参数表
      * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
      * */
