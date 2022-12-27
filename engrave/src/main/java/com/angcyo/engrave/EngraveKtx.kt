@@ -16,6 +16,7 @@ import com.angcyo.dialog.LoadingDialog.LOADING_TIMEOUT
 import com.angcyo.dialog.hideLoading
 import com.angcyo.dialog.loading
 import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
+import com.angcyo.library.IActivityProvider
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
@@ -79,6 +80,7 @@ fun ActivityResultCaller.engraveStrokeLoadingCaller(
             is Fragment -> activity
             is Activity -> this
             is Context -> this
+            is IActivityProvider -> getActivityContext()
             else -> null
         } ?: return null
         activity.engraveStrokeLoading(cancel, showErrorToast, action)
