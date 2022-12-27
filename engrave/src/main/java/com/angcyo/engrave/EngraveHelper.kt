@@ -53,6 +53,13 @@ object EngraveHelper {
         return (1..max).toList()
     }
 
+    /**获取推荐的激光类型*/
+    fun getProductLaserType(): Byte {
+        return LaserPeckerHelper.findProductSupportLaserTypeList()
+            .find { it.type.toInt() == HawkEngraveKeys.lastType }?.type
+            ?: LaserPeckerHelper.LASER_TYPE_BLUE
+    }
+
     //<editor-fold desc="material">
 
     /**缓存*/

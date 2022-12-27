@@ -152,7 +152,7 @@ class TransferModel : ViewModel() {
             EngraveFlowDataHelper.startCreateTransferData(taskId)
             transferStateOnceData.postValue(transferState)
             val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
-            val dataEntityList = engraveTransitionManager.transitionTransferData(
+            engraveTransitionManager.transitionTransferData(
                 canvasDelegate,
                 transferConfigEntity
             )//数据已入库, 可以直接在数据库中查询
@@ -187,6 +187,22 @@ class TransferModel : ViewModel() {
                 _transferNext(transferState)
             }
         }
+    }
+
+    /**开始传输同一个任务的下一个文件*/
+    fun startTransferNextData(taskId: String?) {
+        val transferState = _transferState ?: return
+        "准备传输下一个文件:[${taskId}]".writeEngraveLog()
+
+        transferState.state = TransferState.TRANSFER_STATE_NORMAL
+        transferStateOnceData.postValue(transferState)
+        _transferNext(transferState)
+    }
+
+    /**所有数据是否全部传输完成*/
+    fun isAllTransferFinish(taskId: String?): Boolean {
+        val transferDataEntity = EngraveFlowDataHelper.getNeedTransferData(taskId)
+        return transferDataEntity == null
     }
 
     /**重新传输
@@ -224,6 +240,7 @@ class TransferModel : ViewModel() {
 
     //
 
+    /**继续查找并传输下一个需要传输的数据*/
     @WorkerThread
     fun _transferNext(transferState: TransferState) {
         val taskId: String? = transferState.taskId
@@ -355,7 +372,13 @@ class TransferModel : ViewModel() {
 
                                         transferDataEntity.isTransfer = true
                                         transferDataEntity.lpSaveEntity()
-                                        _transferNext(transferState)
+
+                                        if (HawkEngraveKeys.enableSingleItemTransfer) {
+                                            //激活了单文件传输, 则传输完一个文件, 雕刻一个文件
+                                            _transferFinish(transferState)//传输完成
+                                        } else {
+                                            _transferNext(transferState)
+                                        }
 
                                         action(null)
                                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {

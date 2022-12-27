@@ -235,5 +235,6 @@
     <string name="engrave_feedback">反馈问题</string>
 
     <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
+    <string name="engrave_skip_current">跳过当前的雕刻</string>
 
 </resources>

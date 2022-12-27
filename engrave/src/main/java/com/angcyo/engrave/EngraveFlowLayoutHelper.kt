@@ -4,9 +4,11 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.core.showIn
+import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
@@ -76,6 +78,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             ?: 0
                 }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
+                    //在[renderTransmitting] 中 engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
                     renderFlowItems()
                 }
             }
@@ -83,6 +86,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         //
         engraveModel.engraveStateData.observe(this, allowBackward = false) {
             it?.apply {
+                "雕刻状态改变,当前流程id[$flowTaskId]:$this".writeBleLog()
                 if (taskId == flowTaskId) {
                     val engraveCmdError = engraveModel._lastEngraveCmdError
                     if (it.state == EngraveModel.ENGRAVE_STATE_ERROR && engraveCmdError != null) {
@@ -90,11 +94,20 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
                         renderFlowItems()
                     } else if (engraveFlow == ENGRAVE_FLOW_ENGRAVING) {
-                        if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
-                            //雕刻完成
-                            engraveFlow = ENGRAVE_FLOW_FINISH
+                        when (it.state) {
+                            EngraveModel.ENGRAVE_STATE_FINISH -> {
+                                //雕刻完成
+                                engraveFlow = ENGRAVE_FLOW_FINISH
+                                renderFlowItems()
+                            }
+                            EngraveModel.ENGRAVE_STATE_INDEX_FINISH -> {
+                                //当前索引雕刻完成, 传输下一个文件
+                                startTransferNext()
+                            }
+                            else -> {
+                                renderFlowItems()
+                            }
                         }
-                        renderFlowItems()
                     }
                 }
             }
@@ -154,6 +167,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemTransferConfigEntity = transferConfigEntity
 
                 observeItemChange {
+                    clearFlowId()
                     engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
                 }
             }
@@ -162,6 +176,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemTransferConfigEntity = transferConfigEntity
 
                 observeItemChange {
+                    clearFlowId()
                     engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
                 }
             }
@@ -214,9 +229,25 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---数据传输中---
 
+    /**开始传输下一个*/
+    fun startTransferNext() {
+        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+        transferModel.startTransferNextData(flowTaskId)
+        //last
+        renderFlowItems()
+    }
+
+    /**开始雕刻下一个*/
+    fun startEngraveNext() {
+        engraveFlow = ENGRAVE_FLOW_ENGRAVING
+        engraveModel.startEngraveNext(flowTaskId)
+        renderFlowItems()
+    }
+
     /**渲染传输中的界面
      * 通过传输状态改变实时刷新界面
      * [com.angcyo.engrave.model.TransferModel.transferStateOnceData]
+     * [com.angcyo.engrave.EngraveFlowLayoutHelper.bindDeviceState]
      * */
     fun renderTransmitting() {
         updateIViewTitle(_string(R.string.transmitting))
@@ -225,8 +256,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         val taskStateData = transferModel.transferStateOnceData.value
         if (taskStateData?.error == null && taskStateData?.state == TransferState.TRANSFER_STATE_FINISH) {
             //文件传输完成
-            engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
-            renderFlowItems()
+            if (engraveModel._engraveTaskEntity?.state == EngraveModel.ENGRAVE_STATE_INDEX_FINISH) {
+                startEngraveNext()
+            } else {
+                engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+                renderFlowItems()
+            }
         } else {
             renderDslAdapter {
                 DataTransmittingItem()() {
@@ -268,9 +303,20 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 DataStopTransferItem()() {
                     itemException = taskStateData?.error
                     itemClick = {
-                        vmApp<TransferModel>().stopTransfer()
-                        engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                        renderFlowItems()
+                        transferModel.stopTransfer()
+
+                        //强制退出
+                        engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
+                            ExitCmd().enqueue { bean, error ->
+                                loadEnd(bean, error)
+                                if (error != null) {
+                                    toastQQ(error.message)
+                                } else {
+                                    engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                    renderFlowItems()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -359,10 +405,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveSegmentScrollItem()() {
                     itemText = _string(R.string.laser_type)
                     itemSegmentList = typeList
-                    itemCurrentIndex =
-                        typeList.indexOfFirst { it.type == projectItemBean?.printType?.toByte() }
+                    itemCurrentIndex = typeList.indexOfFirst {
+                        it.type == EngraveHelper.getProductLaserType()
+                    }
                     observeItemChange {
                         val type = typeList[itemCurrentIndex].type
+                        HawkEngraveKeys.lastType = type.toInt()
                         projectItemBean?.printType = type.toInt()
                         engraveConfigEntity?.type = type
                         engraveConfigEntity.lpSaveEntity()
@@ -695,6 +743,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     /**渲染雕刻中的界面
      * 通过设备状态改变实时刷新界面
+     * [com.angcyo.engrave.model.EngraveModel.engraveStateData]
+     *
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.deviceStateData]
      *
      * [com.angcyo.engrave.BaseFlowLayoutHelper.bindDeviceState]
@@ -722,7 +772,26 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngravingInfoItem()() {
                 itemTaskId = flowTaskId
             }
-            //---
+            if (HawkEngraveKeys.enableSingleItemTransfer) {
+                //激活单文件雕刻的情况下, 允许跳过当前雕刻的索引
+                DslBlackButtonItem()() {
+                    itemButtonText = _string(R.string.engrave_skip_current)
+                    itemClick = {
+                        //强制退出
+                        engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
+                            ExitCmd().enqueue { bean, error ->
+                                loadEnd(bean, error)
+                                if (error != null) {
+                                    toastQQ(error.message)
+                                } else {
+                                    engraveModel.finishCurrentIndexEngrave()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //---雕刻控制-暂停-结束
             EngravingControlItem()() {
                 itemTaskId = flowTaskId
                 itemPauseAction = { isPause ->

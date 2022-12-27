@@ -36,6 +36,9 @@ object HawkEngraveKeys {
     /**最后一次的加速级别*/
     var lastPrecision: Int by HawkPropertyValue<Any, Int>(1)
 
+    /**最后一次的激光类型*/
+    var lastType: Int by HawkPropertyValue<Any, Int>(LaserPeckerHelper.LASER_TYPE_BLUE.toInt())
+
     /**最后一次的物理尺寸, 像素
      *长径, 大直径*/
     @Pixel
@@ -66,6 +69,11 @@ object HawkEngraveKeys {
 
     /**黑白阈值*/
     var lastBWThreshold: Float by HawkPropertyValue<Any, Float>(CanvasProjectItemBean.DEFAULT_THRESHOLD)
+
+    /**功率*深度 <= this 时才需要添加到参数表
+     * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+     * */
+    var lastPowerDepth: Int by HawkPropertyValue<Any, Int>(2500)
 
     //
 

@@ -611,7 +611,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 return false
             }
 
-            if (allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit) {
+            if (!HawkEngraveKeys.enableSingleItemTransfer &&
+                allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit
+            ) {
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
                     dialogMessage = _string(

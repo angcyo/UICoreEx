@@ -2,6 +2,7 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.graphics.addParameterComparisonTable
@@ -9,6 +10,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
+import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -56,15 +58,32 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加参数对照表"
                     itemClick = {
-                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                            doBack {
-                                HawkEngraveKeys.enableItemEngraveParams = true //必须
-                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                canvasDelegate?.addParameterComparisonTable(previewBounds)
-                                loadEnd(true, null)
-                                doMain {
-                                    window.dismissWindow()
+                        it.context.inputDialog {
+                            dialogTitle = "阈值"
+                            canInputEmpty = false
+                            hintInputString = "功率*深度的阈值"
+                            inputType = EditorInfo.TYPE_CLASS_NUMBER//只能输入数字
+                            defaultInputString = "${HawkEngraveKeys.lastPowerDepth}"
+
+                            onInputResult = { dialog, inputText ->
+                                HawkEngraveKeys.lastPowerDepth = inputText.toString().toIntOrNull()
+                                    ?: HawkEngraveKeys.lastPowerDepth
+
+                                engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                                    doBack {
+                                        HawkEngraveKeys.enableItemEngraveParams = true //必须
+                                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                                        canvasDelegate?.addParameterComparisonTable(
+                                            previewBounds,
+                                            HawkEngraveKeys.lastPowerDepth
+                                        )
+                                        loadEnd(true, null)
+                                        doMain {
+                                            window.dismissWindow()
+                                        }
+                                    }
                                 }
+                                false
                             }
                         }
                     }

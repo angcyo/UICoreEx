@@ -680,7 +680,7 @@ object EngraveFlowDataHelper {
             depth = itemBean.printDepth ?: HawkEngraveKeys.lastDepth
             time = itemBean.printCount ?: 1
 
-            type = itemBean.printType?.toByte() ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            type = itemBean.printType?.toByte() ?: EngraveHelper.getProductLaserType()
             precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
 
             lpSaveEntity()
@@ -826,10 +826,10 @@ object EngraveFlowDataHelper {
     /**更新雕刻索引的进度,
      * 注意:雕刻索引之前的所有其他索引应该已经全部雕刻完成
      * [index] 当前雕刻的数据索引
-     * [printTimes] 当前的打印次数,从1开始
+     * [printTimes] 当前的打印次数,从1开始, null 不指定
      * [progress] 当前的进度
      * */
-    fun updateEngraveProgress(taskId: String?, index: Int, printTimes: Int, progress: Int) {
+    fun updateEngraveProgress(taskId: String?, index: Int, printTimes: Int?, progress: Int) {
         getEngraveTask(taskId)?.let {
             it.dataIndexList?.let { list ->
                 for (beforeIndex in list) {
@@ -848,7 +848,7 @@ object EngraveFlowDataHelper {
         }
         //
         getEngraveDataEntity(taskId, index)?.apply {
-            this.printTimes = printTimes
+            this.printTimes = printTimes ?: this.printTimes
             this.progress = progress
             lpSaveEntity()
         }

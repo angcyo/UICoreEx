@@ -244,5 +244,6 @@
     <string name="engrave_feedback">Feedback</string>
 
     <string name="delete_material_tip">After deletion, it is not recoverable, do you want to continue?</string>
+    <string name="engrave_skip_current">Skip the current engraving</string>
 
 </resources>
