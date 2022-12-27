@@ -2,19 +2,25 @@ package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
 import android.view.View
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.graphics.addParameterComparisonTable
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
+import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
+import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.engraveStrokeLoadingCaller
+import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
+import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.ex.*
 import com.angcyo.library.unit.InchValueUnit
 import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.library.unit.PixelValueUnit
@@ -30,6 +36,7 @@ import com.hingin.umeng.umengEventValue
  */
 class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
+    /**画布*/
     var canvasDelegate: CanvasDelegate? = null
 
     init {
@@ -43,6 +50,27 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
         super.initContentLayout(window, viewHolder)
         val canvasViewBox = canvasDelegate?.getCanvasViewBox()
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
+
+            val previewBounds = vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds
+            if (isDebug() && previewBounds != null) {
+                DslBlackButtonItem()() {
+                    itemButtonText = "添加参数对照表"
+                    itemClick = {
+                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                            doBack {
+                                HawkEngraveKeys.enableItemEngraveParams = true //必须
+                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                                canvasDelegate?.addParameterComparisonTable(previewBounds)
+                                loadEnd(true, null)
+                                doMain {
+                                    window.dismissWindow()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             if (isShowDebug()) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
