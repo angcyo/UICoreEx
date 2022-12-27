@@ -38,7 +38,7 @@ class EngraveExperimentalFragment : DebugFragment() {
 
             renderDebugAction(DebugAction().apply {
                 label = "激活GCode G2/G3指令输出"
-                des = "矢量图形转GCode算法时,是否激活G2/G3指令"
+                des = "激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令."
                 key = LibHawkKeys::enableVectorArc.name
                 type = Boolean::class.java
                 defValue = LibHawkKeys.enableVectorArc
@@ -46,7 +46,7 @@ class EngraveExperimentalFragment : DebugFragment() {
 
             renderDebugAction(DebugAction().apply {
                 label = "激活传输数据时的索引检查"
-                des = "关闭后,所有数据直接传输,不检查机器是否已存在数据."
+                des = "激活后,如果设备上已存在数据,则不重新传输."
                 key = HawkEngraveKeys::enableTransferIndexCheck.name
                 type = Boolean::class.java
                 defValue = HawkEngraveKeys.enableTransferIndexCheck
@@ -62,7 +62,7 @@ class EngraveExperimentalFragment : DebugFragment() {
 
             renderDebugAction(DebugAction().apply {
                 label = "激活从上往下雕刻"
-                des = "根据元素的顺序(从上往下),决定雕刻的顺序."
+                des = "激活后,元素的雕刻顺序按照坐标从上往下,否则按照规定的图层顺序雕刻."
                 key = HawkEngraveKeys::enableItemTopOrder.name
                 type = Boolean::class.java
                 defValue = HawkEngraveKeys.enableItemTopOrder
