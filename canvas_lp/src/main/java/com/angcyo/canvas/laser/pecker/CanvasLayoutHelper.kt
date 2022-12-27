@@ -348,7 +348,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             override fun onItemRendererAdd(itemRenderer: IItemRenderer<*>, strategy: Strategy) {
                 super.onItemRendererAdd(itemRenderer, strategy)
                 if (strategy.type > Strategy.STRATEGY_TYPE_INIT) {
-                    canvasView.canvasDelegate.saveInstanceState()
+                    _debounce {
+                        canvasView.canvasDelegate.saveInstanceState()
+                    }
                 }
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
@@ -360,7 +362,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             override fun onItemRendererRemove(itemRenderer: IItemRenderer<*>, strategy: Strategy) {
                 super.onItemRendererRemove(itemRenderer, strategy)
                 if (strategy.type > Strategy.STRATEGY_TYPE_INIT) {
-                    canvasView.canvasDelegate.saveInstanceState()
+                    _debounce {
+                        canvasView.canvasDelegate.saveInstanceState()
+                    }
                 }
                 doMain {
                     if (itemRenderer is BaseItemRenderer<*>) {
