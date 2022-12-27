@@ -203,8 +203,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //旋转轴
-            if (isC1CarFlag) {
-                //自动进入了移动平台模式
+            if (isC1CarFlag || !isL4) {
+                //自动进入了移动平台模式, 或者 非L4
             } else {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_r_label)
@@ -221,7 +221,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (isC1 || isC1CarFlag) {
+            if (isC1 || isC1CarFlag || !isL4) {
 
             } else {
                 DslPropertySwitchItem()() {
@@ -239,7 +239,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (isC1 || isC1CarFlag) {
+            if (isC1 || isC1CarFlag || !isL4) {
 
             } else {
                 DslPropertySwitchItem()() {
