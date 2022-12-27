@@ -84,6 +84,14 @@ class EngraveExperimentalFragment : DebugFragment() {
                 defValue = HawkEngraveKeys.enableItemEngraveParams
             })
 
+            renderDebugAction(DebugAction().apply {
+                label = "激活单元素传输雕刻"
+                des = "激活后,一个元素一个元素传输和雕刻."
+                key = HawkEngraveKeys::enableSingleItemTransfer.name
+                type = Boolean::class.java
+                defValue = HawkEngraveKeys.enableSingleItemTransfer
+            })
+
         }
     }
 }

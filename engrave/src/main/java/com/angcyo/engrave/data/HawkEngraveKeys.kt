@@ -108,6 +108,9 @@ object HawkEngraveKeys {
     /**激活单元素自带的雕刻参数*/
     var enableItemEngraveParams: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**激活单元素传输雕刻, 一个传完雕一个, 这样可以突破同一时间雕刻item上限的问题*/
+    var enableSingleItemTransfer: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**需要关闭的功能
