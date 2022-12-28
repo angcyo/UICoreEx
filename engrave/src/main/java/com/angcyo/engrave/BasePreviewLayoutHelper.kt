@@ -106,9 +106,8 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
             }
-            if (laserPeckerModel.needShowExDeviceTipItem()) {
-                PreviewExDeviceTipItem()()
-            }
+            //预览情况下, 一直显示设备扩展信息, 因为有焦距提示
+            PreviewExDeviceTipItem()()
             if (laserPeckerModel.isPenMode()) {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {

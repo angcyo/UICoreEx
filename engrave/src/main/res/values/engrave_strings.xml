@@ -203,6 +203,7 @@
     <string name="device_engrave_ing_des">Do you want to end the sculpting task?</string>
 
     <string name="focal_distance_tip">Please confirm the focal length</string>
+    <string name="focal_distance">FFD</string>
     <string name="engrave_warn">Warning</string>
     <string name="empty_data_transfer">No engraving data!</string>
     <string name="no_data_transfer">No data needs to be transmitted!</string>

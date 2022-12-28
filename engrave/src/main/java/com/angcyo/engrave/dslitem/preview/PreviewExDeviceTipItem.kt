@@ -16,7 +16,7 @@ import com.angcyo.widget.span.span
 import kotlin.math.max
 
 /**
- * Z/R/S轴提示
+ * Z/R/S轴 光源 功率 焦距提示
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/21
  */
@@ -111,6 +111,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                             7 -> append(_string(R.string.engrave_module_cnc))
                             else -> append("Unknown $moduleState")
                         }
+                        appendFocalDistance()
                     }
                 }
             }
@@ -122,12 +123,23 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 
+    /**光源*/
     fun Appendable.appendEngraveConfig() {
         val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
         itemEngraveConfigEntity?.apply {
             val laser = laserTypeList.find { it.type == type }
             laser?.let {
                 append(" ${it.wave}nm ${it.power.ensureInt()}w")
+            }
+        }
+        appendFocalDistance()
+    }
+
+    /**焦距信息*/
+    fun Appendable.appendFocalDistance() {
+        laserPeckerModel.productInfoData.value?.let {
+            it.focalDistance?.let {
+                append(" ${_string(R.string.focal_distance)}:${it}mm")
             }
         }
     }

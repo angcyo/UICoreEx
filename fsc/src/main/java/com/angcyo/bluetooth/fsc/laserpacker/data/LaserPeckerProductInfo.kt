@@ -33,6 +33,7 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CII]
      * */
     var name: String?,
+
     /**设备支持的激光类型
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_WHITE]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE]
@@ -85,6 +86,10 @@ data class LaserPeckerProductInfo(
     /**机器的中心点, 是否在中心, 否则就是在左上角
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var isOriginCenter: Boolean = false,
+
+    /**物理设备的焦距, 毫米*/
+    @MM
+    var focalDistance: Int? = null,
 
     //---
     /**LaserPecker-CI001F60*/

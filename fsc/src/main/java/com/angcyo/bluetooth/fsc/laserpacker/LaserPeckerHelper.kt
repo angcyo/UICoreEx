@@ -282,6 +282,9 @@ object LaserPeckerHelper {
         //是否支持压缩抖动的图片数据
         var supportDithering = true
 
+        //焦距
+        var focalDistance: Int? = null
+
         //激光类型, 默认是蓝光
         //蓝光
         val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10f, _string(R.string.laser_type_blue))
@@ -318,29 +321,39 @@ object LaserPeckerHelper {
         @MM
         var hPhys = 0
 
-        //物理尺寸
+        //物理尺寸/焦距
         when (name) {
-            LI, LII, LI_Z_, LII_M_ -> {
+            LI, LI_Z_ -> {
                 wPhys = 100
                 hPhys = 100
+                focalDistance = 200
+            }
+            LII, LII_M_ -> {
+                wPhys = 100
+                hPhys = 100
+                focalDistance = 110
             }
             LIII -> {
                 if (softwareVersion in 5500..5599) {
                     wPhys = 100
                     hPhys = 100
+                    focalDistance = 115
                 } else {
                     wPhys = 115
                     hPhys = 115
+                    focalDistance = 130
                 }
             }
             LIII_MAX, LIV -> {
                 //160*160
                 wPhys = 160
                 hPhys = 160
+                focalDistance = 150
             }
             CI -> {
                 wPhys = 400
                 hPhys = 420
+                focalDistance = 40
             }
         }
 
@@ -415,14 +428,23 @@ object LaserPeckerHelper {
                     //2022-9-27 试产版范围：90x60，量产版范围：115x80
                     rewind()
 
+                    val validWidthRatio: Float
+                    val validHeightRatio: Float
+
                     val rW: Float
                     val rH: Float
                     if (softwareVersion in 5500..5599) {
                         rW = 90f
                         rH = 60f
+
+                        validWidthRatio = 65f / rW
+                        validHeightRatio = 35f / rH
                     } else {
                         rW = 115f
                         rH = 80f
+
+                        validWidthRatio = 2f / 3
+                        validHeightRatio = 2f / 3
                     }
 
                     val lOffset = (wPhys - rW) / 2 //mm
@@ -440,7 +462,7 @@ object LaserPeckerHelper {
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
                             .ceil()
                     previewBounds.set(l, t, r, b)
-                    maxOvalPath(l, t, r, b, this)
+                    maxOvalPath(l, t, r, b, validWidthRatio, validHeightRatio, this)
                 }
             }
             LIII_MAX, LIV -> {
@@ -462,7 +484,7 @@ object LaserPeckerHelper {
                         mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
                             .ceil()
                     previewBounds.set(l, t, r, b)
-                    maxOvalPath(l, t, r, b, this)
+                    maxOvalPath(l, t, r, b, 0.6f, 0.6f, this)
                 }
             }
             CI -> Unit
@@ -531,6 +553,7 @@ object LaserPeckerHelper {
             this.carPreviewBounds = carPreviewBounds
             this.penBounds = penBounds
             this.supportDithering = supportDithering
+            this.focalDistance = focalDistance
         }
     }
 
@@ -550,8 +573,17 @@ object LaserPeckerHelper {
         return true
     }
 
-    /**保持有效宽高下,  4个角用曲线连接*/
-    fun maxOvalPath(left: Float, top: Float, right: Float, bottom: Float, path: Path) {
+    /**保持有效宽高下,  4个角用曲线连接
+     * [validWidthRatio] [validHeightRatio] 有效宽高的比例*/
+    fun maxOvalPath(
+        left: Float,
+        top: Float,
+        right: Float,
+        bottom: Float,
+        validWidthRatio: Float,
+        validHeightRatio: Float,
+        path: Path
+    ) {
         val l = left.floor()
         val t = top.floor()
         val r = right.ceil()
@@ -564,8 +596,8 @@ object LaserPeckerHelper {
         val centerY = (t + b) / 2
 
         //一定能雕刻上的有效宽高, 在中心位置
-        val validWidth = width * 2 / 3
-        val validHeight = height * 2 / 3
+        val validWidth = width * validWidthRatio
+        val validHeight = height * validHeightRatio
 
         //底部左右2边的点
         val blX = centerX - validWidth / 2

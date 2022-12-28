@@ -680,7 +680,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //--
 
-    /**判断是否需要设备信息显示*/
+    /**判断是否需要设备信息显示. 温度/角度*/
     fun DslAdapter.renderDeviceInfoIfNeed() {
         val info = DeviceInfoTipItem.deviceInfoTip()
         if (info.isNotBlank()) {

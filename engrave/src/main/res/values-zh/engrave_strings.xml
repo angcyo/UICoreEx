@@ -195,6 +195,7 @@
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
 
     <string name="focal_distance_tip">请确认焦距</string>
+    <string name="focal_distance">焦距</string>
     <string name="engrave_warn">警告</string>
     <string name="empty_data_transfer">无雕刻数据!</string>
     <string name="no_data_transfer">无数据需要传输!</string>
