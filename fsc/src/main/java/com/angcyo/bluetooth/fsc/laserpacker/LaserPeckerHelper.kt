@@ -443,8 +443,8 @@ object LaserPeckerHelper {
                         rW = 115f
                         rH = 80f
 
-                        validWidthRatio = 2f / 3
-                        validHeightRatio = 2f / 3
+                        validWidthRatio = 0.5f
+                        validHeightRatio = 0.5f
                     }
 
                     val lOffset = (wPhys - rW) / 2 //mm
