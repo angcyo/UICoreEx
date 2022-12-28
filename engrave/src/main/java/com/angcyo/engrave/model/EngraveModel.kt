@@ -550,6 +550,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**暂停雕刻*/
     fun pauseEngrave() {
         val engraveState = _engraveTaskEntity ?: return
+        "暂停雕刻[${engraveState.taskId}]".writeEngraveLog()
         engraveState.state = ENGRAVE_STATE_PAUSE
         engraveState.lpSaveEntity()
         engraveStateData.postValue(engraveState)
@@ -559,6 +560,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**继续雕刻*/
     fun continueEngrave() {
         val engraveState = _engraveTaskEntity ?: return
+        "继续雕刻[${engraveState.taskId}]".writeEngraveLog()
         engraveState.state = ENGRAVE_STATE_START
         engraveState.lpSaveEntity()
         engraveStateData.postValue(engraveState)
@@ -567,6 +569,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**停止雕刻*/
     fun stopEngrave() {
+        "停止雕刻[${_engraveTaskId}]".writeEngraveLog()
         EngraveCmd.stopEngrave().enqueue()
         finishEngrave()
         ExitCmd().enqueue()
@@ -577,6 +580,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun errorEngrave(error: Exception?) {
         _lastEngraveCmdError = error
         val task = _engraveTaskEntity ?: return
+        "雕刻异常[${task.taskId}]:${error}".writeEngraveLog()
         task.state = ENGRAVE_STATE_ERROR
         task.lpSaveEntity()
         engraveStateData.postValue(task)
