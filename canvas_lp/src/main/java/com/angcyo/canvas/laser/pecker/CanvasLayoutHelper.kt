@@ -25,6 +25,8 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.dialog.popup.MenuPopupConfig
+import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -299,6 +301,30 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                                     itemIsSelected = false
                                     updateAdapterItem()
                                     false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //选择多个
+        canvasView.canvasDelegate.controlHandler.onTouchItemRendererListAction = {
+            it.touchItemRendererList?.apply {
+                canvasView.recyclerPopupWindow {
+                    showOnViewBottom(canvasView)
+                    renderAdapter {
+                        forEach { renderer ->
+                            CanvasLayerItem()() { //元素
+                                itemCanvasDelegate = canvasView.canvasDelegate
+                                itemRenderer = renderer
+                                itemShowSeeView = false
+                                itemShowEngraveParams = false
+                                itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                                itemLongClick = null
+                                itemClick = {
+                                    canvasView.canvasDelegate.selectedItem(renderer)
                                 }
                             }
                         }

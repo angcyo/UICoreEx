@@ -20,6 +20,9 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
     /**排序事件*/
     var itemSortAction: ((DslViewHolder) -> Unit)? = null
 
+    /**是否要显示可见性view*/
+    var itemShowSeeView = true
+
     //endregion ---core---
 
     init {
@@ -70,7 +73,8 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //可见性
         itemHolder.selected(R.id.layer_item_invisible_view, !itemLayerHide)
-        itemHolder.visible(R.id.layer_item_invisible_view, true)
+        itemHolder.invisible(R.id.layer_item_invisible_view, !itemShowSeeView)
+
         //itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
 
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)

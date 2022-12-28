@@ -44,6 +44,9 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
     /**当前的[itemRenderer]范围是否超出设备物理尺寸*/
     val isOverflowBounds: Boolean get() = itemRenderer?.getRotateBounds().isOverflowProductBounds()
 
+    /**是否需要参数先死*/
+    var itemShowEngraveParams = true
+
     //endregion ---计算属性---
 
     init {
@@ -65,7 +68,10 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
             ?.setImageDrawable(itemItemDrawable ?: renderer?.preview(itemRenderParams))
 
         //元素参数
-        if (HawkEngraveKeys.enableItemEngraveParams && renderer is DataItemRenderer) {
+        if (itemShowEngraveParams &&
+            HawkEngraveKeys.enableItemEngraveParams &&
+            renderer is DataItemRenderer
+        ) {
             itemHolder.visible(R.id.layer_item_params_view)
             itemHolder.tv(R.id.layer_item_params_view)?.text = buildString {
                 renderer.dataItem?.dataBean?.let { bean ->

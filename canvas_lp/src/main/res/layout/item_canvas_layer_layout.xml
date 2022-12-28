@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/lib_bg_selector"
+    android:paddingVertical="@dimen/lib_ldpi"
     tools:background="@drawable/lib_tran_circle_shape"
     tools:layout_width="200dp">
 
