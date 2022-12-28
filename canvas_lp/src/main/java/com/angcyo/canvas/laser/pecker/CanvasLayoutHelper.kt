@@ -519,15 +519,18 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**使用[itemRenderer], 更新预览信息*/
     fun updatePreviewByItem(vh: DslViewHolder, itemRenderer: IRenderer?) {
-        val layoutHelper = engraveCanvasFragment.engraveFlowLayoutHelper
-        if (!layoutHelper.isAttach()) {
-            layoutHelper.startPreview(engraveCanvasFragment)
+        val flowLayoutHelper = engraveCanvasFragment.engraveFlowLayoutHelper
+        if (!flowLayoutHelper.isInitialize) {
+            return
+        }
+        if (!flowLayoutHelper.isAttach()) {
+            flowLayoutHelper.startPreview(engraveCanvasFragment)
             return
         }
         if (itemRenderer == null) {
             return
         }
-        val previewModel = layoutHelper.previewModel
+        val previewModel = flowLayoutHelper.previewModel
         previewModel.updatePreview(itemRenderer, sendCmd = false)
         _debounce {
             previewModel.updatePreview(itemRenderer)

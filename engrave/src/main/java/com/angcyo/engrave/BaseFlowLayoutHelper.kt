@@ -83,13 +83,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         var _isCheckedEngraveNotify = false
     }
 
-    /**当前处于那个雕刻流程*/
-    var engraveFlow: Int = 0
+    /**当前处于那个雕刻流程, -1未初始化*/
+    var engraveFlow: Int = -1
         set(value) {
             val old = field
             field = value
             onEngraveFlowChanged(old, value)
         }
+
+    /**是否初始化过*/
+    val isInitialize: Boolean
+        get() = engraveFlow != -1
 
     /**流程任务id, 建议每次显示页面时都创建一个新的任务id
      * [com.angcyo.engrave.BaseFlowLayoutHelper.generateFlowId]

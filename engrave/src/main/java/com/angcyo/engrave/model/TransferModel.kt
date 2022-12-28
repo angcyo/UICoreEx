@@ -126,6 +126,16 @@ class TransferModel : ViewModel() {
             }
             return dataCmd
         }
+
+        /**检查文件索引是否存在*/
+        fun checkIndex(index: Int, action: (Boolean) -> Unit) {
+            //检查数据索引是否存在
+            QueryCmd.fileList.enqueue { bean, error ->
+                val have =
+                    bean?.parse<QueryEngraveFileParser>()?.indexList?.contains(index) == true
+                action(have)
+            }
+        }
     }
 
     /**雕刻数据转换管理*/
@@ -416,16 +426,6 @@ class TransferModel : ViewModel() {
                 //end传输指令
             }
             //end file mode cmd
-        }
-    }
-
-    /**检查文件索引是否存在*/
-    fun checkIndex(index: Int, action: (Boolean) -> Unit) {
-        //检查数据索引是否存在
-        QueryCmd.fileList.enqueue { bean, error ->
-            val have =
-                bean?.parse<QueryEngraveFileParser>()?.indexList?.contains(index) == true
-            action(have)
         }
     }
 }

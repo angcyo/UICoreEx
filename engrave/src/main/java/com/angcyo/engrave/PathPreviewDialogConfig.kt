@@ -17,6 +17,7 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.engrave.data.TransferState
+import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.model.TransferModel
@@ -31,6 +32,7 @@ import com.angcyo.library.toast
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.appendDslItem
 import kotlin.math.min
 
 /**
@@ -78,12 +80,32 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                 rotation = itemBean.angle
             }
 
+            //激光亮度
+            dialogViewHolder.group(R.id.brightness_wrap_layout)
+                ?.appendDslItem(PreviewBrightnessItem().apply {
+                    observeItemChange {
+                        itemBean.index?.let { _previewFlashBitmapCmd(it) }
+                    }
+                })
+
             dialogViewHolder.click(R.id.cancel_button) {
                 dialog.cancel()
             }
 
             dialogViewHolder.click(R.id.start_button) {
-                startPathPreview(dialogViewHolder, itemBean)
+                val index = itemBean.index
+                if (index != null) {
+                    TransferModel.checkIndex(index) {
+                        if (it) {
+                            //索引已存在, 直接预览
+                            sendPreviewFlashBitmapCmd(dialogViewHolder, index)
+                        } else {
+                            startPathPreview(dialogViewHolder, itemBean)
+                        }
+                    }
+                } else {
+                    startPathPreview(dialogViewHolder, itemBean)
+                }
             }
         }
     }
@@ -95,12 +117,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     /**开始路径预览*/
     fun startPathPreview(dialogViewHolder: DslViewHolder, itemBean: CanvasProjectItemBean) {
         if (_transferDataEntity != null) {
-            _isPathPreview = true
-            EngravePreviewCmd.previewFlashBitmapCmd(
-                _transferDataEntity!!.index,
-                HawkEngraveKeys.lastPwrProgress
-            ).enqueue()
-            delayCheckDeviceState()
+            sendPreviewFlashBitmapCmd(dialogViewHolder, _transferDataEntity!!.index)
             return
         }
         //loading
@@ -122,15 +139,11 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                             if (it != null) {
                                 toast(_string(R.string.transfer_data_exception))
                             } else {
-                                ExitCmd().enqueue { bean, error ->
-                                    _transferDataEntity = transferDataEntity
-                                    _isPathPreview = true
-                                    EngravePreviewCmd.previewFlashBitmapCmd(
-                                        transferDataEntity.index,
-                                        HawkEngraveKeys.lastPwrProgress
-                                    ).enqueue()
-                                    delayCheckDeviceState()
-                                }
+                                _transferDataEntity = transferDataEntity
+                                sendPreviewFlashBitmapCmd(
+                                    dialogViewHolder,
+                                    transferDataEntity.index
+                                )
                             }
                         }
                     }
@@ -147,6 +160,23 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                 syncQueryDeviceState()
             }
         }
+    }
+
+    /**发送预览flash图片指令*/
+    fun sendPreviewFlashBitmapCmd(dialogViewHolder: DslViewHolder, index: Int) {
+        ExitCmd().enqueue { bean, error ->
+            if (error == null) {
+                dialogViewHolder.visible(R.id.brightness_wrap_layout)
+                _isPathPreview = true
+                _previewFlashBitmapCmd(index)
+                delayCheckDeviceState()
+            }
+        }
+    }
+
+    fun _previewFlashBitmapCmd(index: Int) {
+        EngravePreviewCmd.previewFlashBitmapCmd(index, HawkEngraveKeys.lastPwrProgress)
+            .enqueue()
     }
 
     var _isDelayCheck = false

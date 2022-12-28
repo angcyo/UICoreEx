@@ -61,6 +61,8 @@ class PreviewBrightnessItem : BasePreviewItem() {
                     itemPreviewConfigEntity?.pwrProgress = fraction
                     itemPreviewConfigEntity?.lpSaveEntity()
                     HawkEngraveKeys.lastPwrProgress = fraction
+
+                    itemChanged = true
                     //通知机器
                     previewModel.refreshPreview(true)
                 }
@@ -71,6 +73,10 @@ class PreviewBrightnessItem : BasePreviewItem() {
             showBubblePopupTip(view, event)
             true
         }
+    }
+
+    override fun onItemChangeListener(item: DslAdapterItem) {
+        //super.onItemChangeListener(item)
     }
 
     //---弹窗提示---

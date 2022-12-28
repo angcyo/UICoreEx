@@ -121,7 +121,8 @@ data class LaserPeckerProductInfo(
     /**是否是LI-Z的设备
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]
      * */
-    fun isLI_Z(): Boolean = name == LaserPeckerHelper.LI_Z_PRO
+    fun isLI_Z(): Boolean =
+        softwareVersion in 250..299 || softwareVersion in 2500..2599 /*name == LaserPeckerHelper.LI_Z_PRO*/
 
     /**L2 只有蓝光*/
     fun isLII(): Boolean = name == LaserPeckerHelper.LII
