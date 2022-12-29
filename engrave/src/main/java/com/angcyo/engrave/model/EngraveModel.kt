@@ -279,6 +279,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             //构建所有图层的雕刻参数, 确保有数据
             EngraveFlowDataHelper.generateEngraveConfig(task.taskId)
 
+            //通知开始雕刻
+            engraveStateData.postValue(this)
+
             //
             if (isBatchEngraveSupport()) {
                 batchEngrave()
@@ -485,8 +488,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**生成任务需要的雕刻数据*/
     fun _generateEngraveData(taskId: String?, index: Int): EngraveDataEntity {
-        val engraveDataEntity =
-            EngraveFlowDataHelper.generateEngraveData(taskId, index)
+        val engraveDataEntity = EngraveFlowDataHelper.generateEngraveData(taskId, index)
         engraveDataEntity.startTime = nowTime()
         engraveDataEntity.lpSaveEntity()
         return engraveDataEntity
@@ -505,6 +507,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave() {
+        "完成雕刻[${_engraveTaskId}]".writeEngraveLog()
+
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
         _listenerEngraveState = false
@@ -513,6 +517,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //
         val engraveTaskEntity = _engraveTaskEntity ?: return
+        //clear
+        _engraveTaskId = null
         engraveTaskEntity.currentIndex = -1
         engraveTaskEntity.finishTime = nowTime()
         engraveTaskEntity.state = ENGRAVE_STATE_FINISH
@@ -527,14 +533,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
-
-        //clear
-        _engraveTaskId = null
-
+        
         //更新设备状态
         _delay(HawkEngraveKeys.minQueryDelayTime) {
-            syncQueryDeviceState { bean, error ->
-                //no op
+            if (_engraveTaskEntity == null || _engraveTaskEntity?.state == ENGRAVE_STATE_FINISH) {
+                syncQueryDeviceState { bean, error ->
+                    //no op
+                }
             }
         }
     }
