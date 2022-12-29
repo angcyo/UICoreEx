@@ -146,7 +146,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
     /**是否支持的固件版本*/
     fun DslSpan.appendSupportTip() {
         if (!LaserPeckerHelper.isSupportFirmware()) {
-            append(" _${_string(R.string.not_support_tip)}") {
+            append(" ${_string(R.string.not_support_tip)}") {
                 foregroundColor = _color(R.color.error)
             }
         }
