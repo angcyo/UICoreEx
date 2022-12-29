@@ -15,7 +15,6 @@ import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.engraveStrokeLoadingCaller
 import com.angcyo.http.rx.doBack
-import com.angcyo.http.rx.doMain
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
@@ -57,6 +56,8 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加参数对照表"
                     itemClick = {
+                        window.dismissWindow()
+
                         it.context.inputDialog {
                             dialogTitle = "阈值"
                             canInputEmpty = false
@@ -81,9 +82,6 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                             HawkEngraveKeys.lastPowerDepth
                                         )
                                         loadEnd(true, null)
-                                        doMain {
-                                            window.dismissWindow()
-                                        }
                                     }
                                 }
                                 false
