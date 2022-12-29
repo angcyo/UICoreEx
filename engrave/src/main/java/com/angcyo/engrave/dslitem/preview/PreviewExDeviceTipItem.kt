@@ -13,6 +13,7 @@ import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.span.DslSpan
 import com.angcyo.widget.span.span
 import kotlin.math.max
 
@@ -101,6 +102,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                             else -> append("Unknown $moduleState")
                         }
                         appendFocalDistance()
+                        appendSupportTip()
                     }
                 }
             }
@@ -113,7 +115,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
     }
 
     /**光源*/
-    fun Appendable.appendEngraveConfig() {
+    fun DslSpan.appendEngraveConfig() {
         val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
         if (laserTypeList.size() == 1) {
             //只有一种光,则直接显示
@@ -129,13 +131,23 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
             }
         }
         appendFocalDistance()
+        appendSupportTip()
     }
 
     /**焦距信息*/
-    fun Appendable.appendFocalDistance() {
+    fun DslSpan.appendFocalDistance() {
         laserPeckerModel.productInfoData.value?.let {
             it.focalDistance?.let {
                 append(" ${_string(R.string.focal_distance)}:${it}mm")
+            }
+        }
+    }
+
+    /**是否支持的固件版本*/
+    fun DslSpan.appendSupportTip() {
+        if (!LaserPeckerHelper.isSupportFirmware()) {
+            append(" _${_string(R.string.not_support_tip)}") {
+                foregroundColor = _color(R.color.error)
             }
         }
     }

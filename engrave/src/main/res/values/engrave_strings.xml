@@ -250,4 +250,7 @@
     <string name="device_models">Models</string>
     <string name="show_all_label">Detail</string>
     <string name="hide_all_label">Collapse</string>
+
+    <string name="not_support_tip">Unsupported firmware version</string>
+
 </resources>

@@ -242,4 +242,6 @@
     <string name="show_all_label">详情</string>
     <string name="hide_all_label">收起</string>
 
+    <string name="not_support_tip">不支持的固件版本</string>
+
 </resources>
