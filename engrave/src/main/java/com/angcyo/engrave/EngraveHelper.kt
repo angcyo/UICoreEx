@@ -85,7 +85,7 @@ object EngraveHelper {
         return MaterialEntity().apply {
             resId = R.string.custom
             key = "custom"
-            type = LaserPeckerHelper.LASER_TYPE_BLUE.toInt()
+            type = getProductLaserType().toInt()
             power = HawkEngraveKeys.lastPower
             depth = HawkEngraveKeys.lastDepth
             precision = HawkEngraveKeys.lastPrecision

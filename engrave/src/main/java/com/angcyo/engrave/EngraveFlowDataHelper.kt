@@ -650,7 +650,7 @@ object EngraveFlowDataHelper {
             time = 1
 
             //光源
-            type = last?.type ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            type = last?.type ?: EngraveHelper.getProductLaserType()
             precision = last?.precision ?: HawkEngraveKeys.lastPrecision
 
             //物理尺寸

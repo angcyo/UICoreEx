@@ -364,7 +364,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             printPower = printPower ?: HawkEngraveKeys.lastPower
             printDepth = printDepth ?: HawkEngraveKeys.lastDepth
             printPrecision = printPrecision ?: HawkEngraveKeys.lastPrecision
-            printType = printType ?: LaserPeckerHelper.LASER_TYPE_BLUE.toInt()
+            printType = printType ?: EngraveHelper.getProductLaserType().toInt()
             printCount = printCount ?: 1
             materialKey = materialKey ?: EngraveHelper.createCustomMaterial().key
 
@@ -410,8 +410,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                     observeItemChange {
                         val type = typeList[itemCurrentIndex].type
-                        HawkEngraveKeys.lastType = type.toInt()
                         projectItemBean?.printType = type.toInt()
+                        HawkEngraveKeys.lastType = type.toInt()
                         engraveConfigEntity?.type = type
                         engraveConfigEntity.lpSaveEntity()
                         renderFlowItems()
@@ -580,7 +580,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         itemCurrentIndex =
                             typeList.indexOfFirst { it.type == engraveConfigEntity.type }
                         observeItemChange {
-                            engraveConfigEntity.type = typeList[itemCurrentIndex].type
+                            val type = typeList[itemCurrentIndex].type
+                            HawkEngraveKeys.lastType = type.toInt()
+                            engraveConfigEntity.type = type
                             engraveConfigEntity.lpSaveEntity()
                             renderFlowItems()
                         }
