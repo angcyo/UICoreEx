@@ -1,7 +1,6 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.asyncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.data.CanvasProjectItemBean
@@ -161,8 +160,10 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     }
                 }
             }
-            asyncQueryDeviceState()
         }
+
+        //轮询查询状态
+        checkLoopQueryDeviceState(true)
     }
 
     /**开始路径预览流程*/

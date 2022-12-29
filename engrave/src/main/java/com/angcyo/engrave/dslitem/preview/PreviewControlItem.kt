@@ -47,6 +47,10 @@ class PreviewControlItem : BasePreviewItem() {
     /**路径预览回调*/
     var itemPathPreviewClick: Action1? = null
 
+    /**第三轴预览后, 机器空闲状态后, 是否需要重新开始预览*/
+    val _needRestartPreview: Boolean
+        get() = laserPeckerModel.isL1() || laserPeckerModel.isL2() || laserPeckerModel.isL3()
+
     init {
         itemLayoutId = R.layout.item_preview_control_layout
 
@@ -91,10 +95,17 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.bracket_stop_svg,
             false
         ) { viewHolder, item ->
-            previewModel.updatePreview(restore = true) {
-                isCenterPreview = false
-                //z轴需要处于的状态
-                zState = PreviewInfo.Z_STATE_PAUSE
+            if (laserPeckerModel.isIdleMode() && _needRestartPreview) {
+                previewModel.updatePreview(restore = true) {
+                    isCenterPreview = false
+                    zState = null
+                }
+            } else {
+                previewModel.updatePreview(restore = true) {
+                    isCenterPreview = false
+                    //z轴需要处于的状态
+                    zState = PreviewInfo.Z_STATE_PAUSE
+                }
             }
             queryDeviceStateCmd()
         }
@@ -105,10 +116,17 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.preview_pause_svg,
             false
         ) { viewHolder, item ->
-            previewModel.updatePreview(restore = true) {
-                isCenterPreview = false
-                //z轴需要处于的状态
-                zState = PreviewInfo.Z_STATE_CONTINUE
+            if (laserPeckerModel.isIdleMode() && _needRestartPreview) {
+                previewModel.updatePreview(restore = true) {
+                    isCenterPreview = false
+                    zState = null
+                }
+            } else {
+                previewModel.updatePreview(restore = true) {
+                    isCenterPreview = false
+                    //z轴需要处于的状态
+                    zState = PreviewInfo.Z_STATE_CONTINUE
+                }
             }
             queryDeviceStateCmd()
         }

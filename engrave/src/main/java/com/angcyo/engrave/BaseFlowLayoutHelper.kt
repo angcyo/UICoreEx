@@ -233,6 +233,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         //雕刻中保持常亮
         engraveCanvasFragment?.fragment?._vh?.itemView?.keepScreenOn = to == ENGRAVE_FLOW_ENGRAVING
 
+        if (from == ENGRAVE_FLOW_PREVIEW) {
+            loopCheckDeviceState = false
+        }
         if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
             loopCheckDeviceState = false
         }
@@ -529,13 +532,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**检查是否需要循环查询设备的状态,
      * 如果是其他app控制的机器状态, 则需要循环查询*/
-    fun checkLoopQueryDeviceState() {
+    fun checkLoopQueryDeviceState(needStartLoop: Boolean = false) {
         val stateParser = laserPeckerModel.deviceStateData.value ?: return
         if (engraveModel._listenerEngraveState) {
             //已在循环查询状态
             return
         }
-        if (!stateParser.isModeIdle()) {
+        if (needStartLoop || !stateParser.isModeIdle()) {
             //非空闲状态
             if (!loopCheckDeviceState) {
                 loopCheckDeviceState = true

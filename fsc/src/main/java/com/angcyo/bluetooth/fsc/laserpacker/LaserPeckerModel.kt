@@ -196,7 +196,11 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     //---
 
+    fun isL1() = productInfoData.value?.isLI() == true
+
     fun isL2() = productInfoData.value?.isLII() == true
+
+    fun isL3() = productInfoData.value?.isLIII() == true
 
     fun isL4() = productInfoData.value?.isLIV() == true
 

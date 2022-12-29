@@ -49,39 +49,27 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 append(":")
                 append(list[max(0, QuerySettingParser.Z_MODEL)])
 
+                append(" ")
+                append(
+                    if (isForward) _string(R.string.device_direction_forward) else
+                        _string(R.string.device_direction_reversal)
+                )
+
                 appendEngraveConfig()
             }
             //旋转轴
             laserPeckerModel.isROpen() -> span {
                 append(_string(R.string.device_ex_r_label))
-                append(":")
-                append(
-                    if (isForward) _string(R.string.device_direction_forward) else
-                        _string(R.string.device_direction_reversal)
-                )
-
                 appendEngraveConfig()
             }
             //滑台
             laserPeckerModel.isSOpen() -> span {
                 append(_string(R.string.device_ex_s_label))
-                append(":")
-                append(
-                    if (isForward) _string(R.string.device_direction_forward) else
-                        _string(R.string.device_direction_reversal)
-                )
-
                 appendEngraveConfig()
             }
             //滑台多文件雕刻模式
             laserPeckerModel.isSRepMode() -> span {
                 append(_string(R.string.device_s_batch_engrave_label))
-                append(":")
-                append(
-                    if (isForward) _string(R.string.device_direction_forward) else
-                        _string(R.string.device_direction_reversal)
-                )
-
                 appendEngraveConfig()
             }
             //C1握笔模块
