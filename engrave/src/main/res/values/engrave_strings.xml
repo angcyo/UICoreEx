@@ -132,7 +132,7 @@
     <string name="device_ex_car_label">Mobile platform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Forward</string>
-    <string name="device_ex_direction_des">The rotary shaft sliding table is turning or reversing</string>
+    <string name="device_ex_direction_des">The third axis is forward or reversed</string>
     <string name="device_direction_forward">Forward</string>
     <string name="device_direction_reversal">Reverse</string>
     <string name="device_s_batch_engrave_label">Slide table multi-file carving mode</string>
