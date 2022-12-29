@@ -40,6 +40,9 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  */
 object LaserPeckerHelper {
 
+    /**[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.isDeviceOriginCenter]*/
+    const val DEFAULT_ORIGIN_CENTER = "250~252 270~270 300~313 350~357 370~372 5500~5507 5510~5512"
+
     /**初始化指令, 失败后重试的次数*/
     var INIT_RETRY_COUNT = 3
 
@@ -274,6 +277,30 @@ object LaserPeckerHelper {
         return bitmap.scale(newWidth, newHeight)
     }
 
+    /**中心点在物理中心*/
+    fun isDeviceOriginCenter(softwareVersion: Int): Boolean {
+        //优先使用自定义配置的
+        if (VersionMatcher.matches(
+                softwareVersion,
+                LibHawkKeys.lpDeviceOriginCenter,
+                false
+            )
+        ) {
+            return true
+        }
+
+        //其次使用build配置的
+        val lpDeviceOriginCenter = if (BuildConfig.DEBUG) {
+            DEFAULT_ORIGIN_CENTER
+        } else {
+            getAppString("lp_device_origin_center")
+        }
+        if (VersionMatcher.matches(softwareVersion, lpDeviceOriginCenter, false)) {
+            return true
+        }
+        return false
+    }
+
     /**
      * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
      * 解析产品信息
@@ -305,7 +332,8 @@ object LaserPeckerHelper {
         val previewBounds = RectF()
         val carPreviewBounds = RectF()
         val penBounds = RectF()
-        var isOriginCenter = center ?: false //圆角是否在物理中心
+        //中心点是否在物理中心, 否则就是在左上角
+        val isOriginCenter = center ?: isDeviceOriginCenter(softwareVersion)
 
         val limitPath = Path()
         val zLimitPath = Path()
@@ -940,6 +968,7 @@ object LaserPeckerHelper {
         val productInfo = vmApp<LaserPeckerModel>().productInfoData.value ?: return true
         val version = productInfo.softwareVersion //固件版本
 
+        //首先使用自定义配置的
         var lpSupportFirmware = LibHawkKeys.lpSupportFirmware
         if (!lpSupportFirmware.isNullOrBlank()) {
             if (VersionMatcher.matches(version, lpSupportFirmware)) {
@@ -948,6 +977,7 @@ object LaserPeckerHelper {
             }
         }
 
+        //其次使用build配置的
         lpSupportFirmware = getAppString("lp_support_firmware")
         if (lpSupportFirmware.isNullOrEmpty()) {
             return true
