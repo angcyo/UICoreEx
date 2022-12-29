@@ -280,13 +280,8 @@ object LaserPeckerHelper {
     /**中心点在物理中心*/
     fun isDeviceOriginCenter(softwareVersion: Int): Boolean {
         //优先使用自定义配置的
-        if (VersionMatcher.matches(
-                softwareVersion,
-                LibHawkKeys.lpDeviceOriginCenter,
-                false
-            )
-        ) {
-            return true
+        if (LibHawkKeys.lpDeviceOriginCenter != null) {
+            return VersionMatcher.matches(softwareVersion, LibHawkKeys.lpDeviceOriginCenter, false)
         }
 
         //其次使用build配置的
