@@ -10,6 +10,7 @@ import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ensureInt
+import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -126,10 +127,17 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
     /**光源*/
     fun Appendable.appendEngraveConfig() {
         val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-        itemEngraveConfigEntity?.apply {
-            val laser = laserTypeList.find { it.type == type }
-            laser?.let {
+        if (laserTypeList.size() == 1) {
+            //只有一种光,则直接显示
+            laserTypeList.first().let {
                 append(" ${it.wave}nm ${it.power.ensureInt()}w")
+            }
+        } else {
+            itemEngraveConfigEntity?.apply {
+                val laser = laserTypeList.find { it.type == type }
+                laser?.let {
+                    append(" ${it.wave}nm ${it.power.ensureInt()}w")
+                }
             }
         }
         appendFocalDistance()
