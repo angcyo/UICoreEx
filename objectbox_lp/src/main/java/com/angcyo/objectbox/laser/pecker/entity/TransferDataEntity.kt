@@ -25,6 +25,10 @@ data class TransferDataEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**产品名
+     * L2 L3 L4等 */
+    var productName: String? = null,
+
     //---
 
     /**数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库
@@ -50,6 +54,13 @@ data class TransferDataEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP]
      * */
     var engraveDataType: Int = -1,
+
+    /**数据处理之前的宽高
+     * [width] [height]*/
+    @MM
+    var originWidth: Float? = null,
+    @MM
+    var originHeight: Float? = null,
 
     //---图片/GCode数据相关属性, px修正过后的
 

@@ -22,7 +22,6 @@ import com.angcyo.engrave.*
 import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsLifecycleFragment
-import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.uuid
@@ -47,6 +46,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         fragmentConfig.isLightStyle = true
         fragmentConfig.showTitleLineView = true
 
+        enableRefresh = true
         enableAdapterRefresh = true
 
         //关闭分页
@@ -196,34 +196,15 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         }
     }
 
-    fun check(action: Action) {
-        if (engraveFlowLayoutHelper.isAttach()) {
-            return
-        }
-        if (engraveFlowLayoutHelper.checkRestoreEngrave(this)) {
-            return
-        }
-        if (!engraveFlowLayoutHelper.checkStartPreview()) {
-            return
-        }
-        //安全提示弹窗
-        engraveFlowLayoutHelper.showSafetyTips(fContext()) {
-            //如果有第三轴, 还需要检查对应的配置
-            action()
-        }
-    }
-
     /**开始预览*/
     fun toPreview(engraveDataEntity: EngraveDataEntity) {
-        check {
-            _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
-            engraveFlowLayoutHelper.startPreview(this)
-        }
+        _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
+        engraveFlowLayoutHelper.startPreview(this)
     }
 
     /**开始雕刻*/
     fun toEngrave(engraveDataEntity: EngraveDataEntity) {
-        check {
+        if (engraveFlowLayoutHelper.checkCanStartPreview(this)) {
             _engraveFlowLayoutHelper.historyEngraveDataEntity = engraveDataEntity
             engraveFlowLayoutHelper.engraveFlow = BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
             engraveFlowLayoutHelper.showIn(this)

@@ -2,6 +2,7 @@ package com.angcyo.engrave.transition
 
 import android.graphics.Bitmap
 import android.graphics.RectF
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.data.CanvasProjectItemBean
@@ -12,7 +13,9 @@ import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
+import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.ensureExtName
@@ -164,6 +167,15 @@ interface IEngraveTransition {
         transferDataEntity.dpi = transferConfigEntity.dpi
         transferDataEntity.name = transferConfigEntity.name
 
+        //产品名
+        transferDataEntity.productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+
+        @MM
+        val originWidth = mmValueUnit.convertPixelToValue(rotateBounds.width())
+        val originHeight = mmValueUnit.convertPixelToValue(rotateBounds.height())
+        transferDataEntity.originWidth = originWidth
+        transferDataEntity.originHeight = originHeight
+
         //雕刻数据坐标
         if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
             //mm单位
@@ -171,10 +183,8 @@ interface IEngraveTransition {
                 (mmValueUnit.convertPixelToValue(rotateBounds.left) * 10).floor().toInt()
             transferDataEntity.y =
                 (mmValueUnit.convertPixelToValue(rotateBounds.top) * 10).floor().toInt()
-            transferDataEntity.width =
-                (mmValueUnit.convertPixelToValue(rotateBounds.width()) * 10).ceil().toInt()
-            transferDataEntity.height =
-                (mmValueUnit.convertPixelToValue(rotateBounds.height()) * 10).ceil().toInt()
+            transferDataEntity.width = (originWidth * 10).ceil().toInt()
+            transferDataEntity.height = (originHeight * 10).ceil().toInt()
         } else {
             //px单位
             transferDataEntity.x = rotateBounds.left.floor().toInt()

@@ -103,6 +103,10 @@ data class MaterialEntity(
         const val SPEED = "speed"
     }
 
+    /**是否是自定义的材质*/
+    val isCustomMaterial: Boolean
+        get() = !productName.isNullOrBlank()
+
     override fun toText(): CharSequence? {
         val idStr = resIdStr
         return name ?: if (idStr.isNullOrBlank()) _string(resId) else getAppString(idStr)

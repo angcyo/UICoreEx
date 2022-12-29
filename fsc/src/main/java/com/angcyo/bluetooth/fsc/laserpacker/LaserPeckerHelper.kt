@@ -123,6 +123,9 @@ object LaserPeckerHelper {
     /**L2 1.3k [PX_1_3K]*/
     const val DPI_333 = 333.33333f
 
+    /**L3 1.3k [PX_1_3K]*/
+    const val DPI_355 = 355f
+
     /**1.6K [PX_1_3K]*/
     const val DPI_423 = 423.33333f
 
@@ -222,6 +225,7 @@ object LaserPeckerHelper {
             DPI_158 -> PxInfo(DPI_158, PX_0_8K, "0.8K$_d")
             DPI_317 -> PxInfo(DPI_317, PX_1_3K, "1.3K$_d")
             DPI_333 -> PxInfo(DPI_333, PX_1_3K, "1.3K$_d")
+            DPI_355 -> PxInfo(DPI_355, PX_1_3K, "1.3K$_d")
             DPI_423 -> PxInfo(DPI_423, PX_1_3K, "1.6K$_d")
             DPI_508 -> PxInfo(DPI_508, PX_2K, "2K$_d")
             DPI_635 -> PxInfo(DPI_635, PX_2K, "2.5K$_d")
@@ -443,8 +447,8 @@ object LaserPeckerHelper {
                         rW = 115f
                         rH = 80f
 
-                        validWidthRatio = 0.5f
-                        validHeightRatio = 0.5f
+                        validWidthRatio = 0.65f
+                        validHeightRatio = 0.625f
                     }
 
                     val lOffset = (wPhys - rW) / 2 //mm
@@ -500,7 +504,7 @@ object LaserPeckerHelper {
             LIII -> {
                 pxList.add(findPxInfo(DPI_254))
                 if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_333, true))
+                    pxList.add(findPxInfo(DPI_355, true))
                 }
                 pxList.add(findPxInfo(DPI_508))
                 pxList.add(findPxInfo(DPI_889))

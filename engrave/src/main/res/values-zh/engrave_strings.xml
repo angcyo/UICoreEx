@@ -101,8 +101,8 @@
     <string name="print_file_name">模式</string>
     <string name="print_range">镭雕尺寸</string>
     <string name="print_time">实际耗时</string>
-    <string name="wide">宽:</string>
-    <string name="high">高:</string>
+    <string name="width">宽</string>
+    <string name="height">高</string>
 
     <string name="file_name">命名</string>
 
@@ -237,5 +237,9 @@
 
     <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
     <string name="engrave_skip_current">跳过当前的雕刻</string>
+
+    <string name="device_models">机型</string>
+    <string name="show_all_label">详情</string>
+    <string name="hide_all_label">收起</string>
 
 </resources>

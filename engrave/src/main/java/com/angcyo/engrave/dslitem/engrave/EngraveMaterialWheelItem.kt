@@ -35,7 +35,7 @@ class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         val materialEntity = itemWheelList?.get(itemSelectedIndex) as? MaterialEntity
-        itemHolder.visible(R.id.lib_delete_button, !materialEntity?.productName.isNullOrBlank())
+        itemHolder.visible(R.id.lib_delete_button, materialEntity?.isCustomMaterial == true)
         itemHolder.visible(R.id.lib_save_button, itemShowSaveButton)
 
         itemHolder.click(R.id.lib_save_button) {

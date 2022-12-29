@@ -36,8 +36,8 @@
     <string name="print_file_name">Mode</string>
     <string name="print_range">Size</string>
     <string name="print_time">Time</string>
-    <string name="wide">Width:</string>
-    <string name="high">Height:</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
 
     <!--打印部分-->
     <string name="file_name">Named</string>
@@ -247,4 +247,7 @@
     <string name="delete_material_tip">After deletion, it is not recoverable, do you want to continue?</string>
     <string name="engrave_skip_current">Skip the current engraving</string>
 
+    <string name="device_models">Models</string>
+    <string name="show_all_label">Detail</string>
+    <string name="hide_all_label">Collapse</string>
 </resources>

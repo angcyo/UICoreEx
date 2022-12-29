@@ -714,6 +714,13 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**获取图层的雕刻配置*/
+    fun getTaskEngraveConfig(taskId: String?): List<EngraveConfigEntity> {
+        return EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+        }
+    }
+
     /**构建或者获取一个雕刻任务实体*/
     fun generateEngraveTask(taskId: String?): EngraveTaskEntity {
         return EngraveTaskEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
@@ -805,7 +812,7 @@ object EngraveFlowDataHelper {
     }
 
     /**完成指定索引的雕刻*/
-    fun finishEngrave(taskId: String?, index: Int) {
+    fun finishIndexEngrave(taskId: String?, index: Int) {
         EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveDataEntity_.taskId.equal("$taskId")
@@ -889,11 +896,7 @@ object EngraveFlowDataHelper {
         return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveDataEntity_.index.equal(index)
-                    .and(
-                        EngraveDataEntity_.isFromDeviceHistory.isNull.or(
-                            EngraveDataEntity_.isFromDeviceHistory.equal(fromDeviceHistory)
-                        )
-                    )
+                    .and(EngraveDataEntity_.isFromDeviceHistory.equal(fromDeviceHistory))
             )
         }
     }

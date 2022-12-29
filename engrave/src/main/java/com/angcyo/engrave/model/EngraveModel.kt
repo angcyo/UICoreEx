@@ -122,7 +122,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         if (_lastEngraveIndex != queryState.index) {
                             _startEngraveIndex(queryState.index)
                             if (_lastEngraveIndex > 0) {
-                                EngraveFlowDataHelper.finishEngrave(
+                                EngraveFlowDataHelper.finishIndexEngrave(
                                     _engraveTaskId,
                                     _lastEngraveIndex
                                 )
@@ -235,7 +235,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
         //强制更新进度到100
-        updateEngraveProgress(index, printTimes, 100)
+        updateEngraveProgress(index, printTimes, progress)
+
+        //完成指定索引的雕刻
+        EngraveFlowDataHelper.finishIndexEngrave(_engraveTaskId, index)
 
         if (isBatchEngraveSupport()) {
             finishEngrave()
@@ -312,7 +315,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         if (task.currentIndex > 0) {
             //之前的雕刻索引
-            EngraveFlowDataHelper.finishEngrave(taskId, task.currentIndex)
+            EngraveFlowDataHelper.finishIndexEngrave(taskId, task.currentIndex)
         }
 
         //查找下一个未完成雕刻的索引

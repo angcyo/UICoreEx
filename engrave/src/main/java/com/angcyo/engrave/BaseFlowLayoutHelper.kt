@@ -278,9 +278,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
-    /**开始预览*/
-    @CallPoint
-    fun startPreview(engraveFragment: IEngraveCanvasFragment) {
+    /**检查是否可以开始预览*/
+    fun checkCanStartPreview(engraveFragment: IEngraveCanvasFragment): Boolean {
         //检查是否有设备连接
         if (!vmApp<FscBleApiModel>().haveDeviceConnected()) {
             engraveFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
@@ -293,21 +292,31 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                     toast(_string(R.string.permission_disabled))
                 }
             }
-            return
+            return false
         }
 
         //检查是否已经显示
         if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
-            return
+            return false
         }
 
         //是否需要恢复之前的雕刻状态
         if (engraveFragment.engraveFlowLayoutHelper.checkRestoreEngrave(engraveFragment)) {
-            return
+            return false
         }
 
         //是否可以开始预览
         if (!engraveFragment.engraveFlowLayoutHelper.checkStartPreview()) {
+            return false
+        }
+
+        return true
+    }
+
+    /**开始预览*/
+    @CallPoint
+    fun startPreview(engraveFragment: IEngraveCanvasFragment) {
+        if (!checkCanStartPreview(engraveFragment)) {
             return
         }
 

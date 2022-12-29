@@ -475,6 +475,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
         val taskId = flowTaskId
 
+        val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
+        val findLayer = layerList.find { it.layerMode == selectLayerMode }
+        if (findLayer == null) {
+            //选中的图层不存在, 则使用第一个
+            selectLayerMode = layerList.firstOrNull()?.layerMode ?: selectLayerMode
+        }
+
         //默认选中材质
         var materialEntity = EngraveFlowDataHelper.findTaskMaterial(taskId)
         L.w("材质:${taskId} $materialEntity")
@@ -549,7 +556,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
 
                 //雕刻图层切换
-                val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
                 if (layerList.isNotEmpty()) {
                     EngraveLayerConfigItem()() {
                         itemSegmentList = layerList

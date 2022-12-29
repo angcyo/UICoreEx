@@ -7,7 +7,6 @@ import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
-import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -50,34 +49,37 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             itemTaskId,
             layerList.firstOrNull()?.layerMode ?: 0
         )
+
+        val transferDataList = EngraveFlowDataHelper.getTransferDataList(itemTaskId)
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
 
         renderLabelDesList {
             add(
-                LabelDesData(
-                    "${_string(R.string.custom_material)}:",
+                labelDes(
+                    _string(R.string.custom_material),
                     EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
                 )
             )
 
-            val pxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
-            add(LabelDesData("${_string(R.string.resolution_ratio)}:", pxInfo.des))
+            val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
+            val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+            add(formatLabelDes(_string(R.string.resolution_ratio), findPxInfo.des))
 
             val startEngraveTime = taskEntity?.startTime ?: 0
             val endEngraveTime = taskEntity?.finishTime ?: 0
             val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
-            add(LabelDesData("${_string(R.string.work_time)}:", engraveTime))
+            add(labelDes(_string(R.string.work_time), engraveTime))
 
             //雕刻精度
             if (engraveConfigEntity != null && laserPeckerModel.isC1()) {
                 add(
-                    LabelDesData(
+                    labelDes(
                         _string(R.string.engrave_speed),
                         "${engraveConfigEntity.toEngravingSpeed()}%"
                     )
                 )
                 add(
-                    LabelDesData(
+                    labelDes(
                         _string(R.string.engrave_precision),
                         "${engraveConfigEntity.precision}"
                     )

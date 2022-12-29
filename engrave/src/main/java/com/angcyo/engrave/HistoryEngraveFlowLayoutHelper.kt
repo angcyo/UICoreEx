@@ -30,7 +30,7 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         historyEngraveDataEntity?.let { entity ->
             //使用数据索引, 创建一个雕刻任务id
-            if (flowTaskId == null) {
+            if (to > 0 && flowTaskId == null) {
                 flowTaskId = if (itemTransferDataEntity == null) {
                     //不在本机传输的数据
                     EngraveFlowDataHelper.generateSingleTask(entity.index, entity.taskId)

@@ -294,7 +294,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "16:8508965185689981119",
+      "lastPropertyId": "19:4591974673206453667",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -366,6 +366,21 @@
         {
           "id": "16:8508965185689981119",
           "name": "dataPath",
+          "type": 9
+        },
+        {
+          "id": "17:3344005349484206500",
+          "name": "originWidth",
+          "type": 7
+        },
+        {
+          "id": "18:3114256735525047501",
+          "name": "originHeight",
+          "type": 7
+        },
+        {
+          "id": "19:4591974673206453667",
+          "name": "productName",
           "type": 9
         }
       ],

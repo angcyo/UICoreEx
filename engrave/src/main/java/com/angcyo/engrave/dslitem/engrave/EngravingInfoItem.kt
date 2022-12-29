@@ -32,6 +32,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
         val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
         val engraveDataEntity = EngraveFlowDataHelper.getCurrentEngraveDataEntity(itemTaskId)
+        val transferDataList = EngraveFlowDataHelper.getTransferDataList(itemTaskId)
 
         renderLabelDesList {
             engraveConfigEntity?.let {
@@ -43,7 +44,8 @@ open class EngravingInfoItem : DslTagGroupItem() {
                     )
                 )
                 //分辨率: 1k
-                val findPxInfo = LaserPeckerHelper.findPxInfo(transferConfigEntity?.dpi)
+                val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
+                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
                 add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
 
                 //雕刻精度
