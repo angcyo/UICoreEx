@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.graphics.addMultiplicationTable
 import com.angcyo.canvas.graphics.addParameterComparisonTable
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
@@ -85,6 +86,20 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                     }
                                 }
                                 false
+                            }
+                        }
+                    }
+                }
+
+                DslBlackButtonItem()() {
+                    itemButtonText = "添加乘法口诀表"
+                    itemClick = {
+                        window.dismissWindow()
+                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                            doBack {
+                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                                canvasDelegate?.addMultiplicationTable(previewBounds)
+                                loadEnd(true, null)
                             }
                         }
                     }
