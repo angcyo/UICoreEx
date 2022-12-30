@@ -304,11 +304,22 @@ object EngraveFlowDataHelper {
                 val list =
                     EngraveTransitionManager.getRendererList(canvasDelegate, null)
 
-                list.find {
-                    it is DataItemRenderer && (it.getRendererRenderItem()?.dataBean?.dpi ?: 0f) > 0f
-                }?.let { item ->
-                    if (item is DataItemRenderer) {
-                        dpi = item.getRendererRenderItem()?.dataBean?.dpi ?: dpi
+                val isAllGCode = EngraveTransitionManager.isAllSameLayerMode(
+                    list,
+                    CanvasConstant.DATA_MODE_GCODE
+                )
+
+                if (isAllGCode) {
+                    //全部是GCode则只能是1k
+                    dpi = LaserPeckerHelper.DPI_254
+                } else {
+                    list.find {
+                        it is DataItemRenderer && (it.getRendererRenderItem()?.dataBean?.dpi
+                            ?: 0f) > 0f
+                    }?.let { item ->
+                        if (item is DataItemRenderer) {
+                            dpi = item.getRendererRenderItem()?.dataBean?.dpi ?: dpi
+                        }
                     }
                 }
             }

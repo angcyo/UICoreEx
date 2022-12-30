@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
+import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -27,6 +28,7 @@ import com.angcyo.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
@@ -162,6 +164,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             engraveCanvasFragment?.canvasDelegate
         )
 
+        //全部是GCode数据, 不能选择分辨率, 并且强制使用1k
+        val isAllGCode = EngraveTransitionManager.isAllSameLayerMode(
+            engraveCanvasFragment?.canvasDelegate,
+            CanvasConstant.DATA_MODE_GCODE
+        )
+
         renderDslAdapter {
             TransferDataNameItem()() {
                 itemTransferConfigEntity = transferConfigEntity
@@ -171,16 +179,19 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
                 }
             }
-            TransferDataPxItem()() {
-                itemPxList = LaserPeckerHelper.findProductSupportPxList()
-                itemTransferConfigEntity = transferConfigEntity
+            if (!isAllGCode) {
+                //并非全部是GCode数据
+                TransferDataPxItem()() {
+                    itemPxList = LaserPeckerHelper.findProductSupportPxList()
+                    itemTransferConfigEntity = transferConfigEntity
 
-                observeItemChange {
-                    clearFlowId()
-                    engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
+                    observeItemChange {
+                        clearFlowId()
+                        engraveCanvasFragment?.canvasDelegate?.changedRenderItemData()
+                    }
                 }
+                EngraveDividerItem()()
             }
-            EngraveDividerItem()()
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.send_file)
                 itemClick = {

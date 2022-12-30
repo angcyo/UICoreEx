@@ -18,7 +18,6 @@ import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.engrave.BaseFlowLayoutHelper.Companion.ENGRAVE_FLOW_TRANSMITTING
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -707,5 +706,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 }
 
-/**是否进入了雕刻流程, 这种状态下禁止画板手势操作*/
-fun Int.isEngraveFlow() = this >= ENGRAVE_FLOW_TRANSMITTING
+/**是否进入了雕刻流程, 这种状态下禁止画板手势操作.
+ *预览之后, 就不允许调整元素  */
+fun Int.isEngraveFlow() = this > BaseFlowLayoutHelper.ENGRAVE_FLOW_PREVIEW

@@ -202,6 +202,28 @@ class EngraveTransitionManager {
                 rendererList
             }
         }
+
+        /**[isAllSameLayerMode]*/
+        fun isAllSameLayerMode(canvasDelegate: CanvasDelegate?, layerMode: Int): Boolean {
+            canvasDelegate ?: return false
+            val list = getRendererList(canvasDelegate, null)
+            return isAllSameLayerMode(list, layerMode)
+        }
+
+        /**判断雕刻的数据类型是否全部一致*/
+        fun isAllSameLayerMode(list: List<BaseItemRenderer<*>>, layerMode: Int): Boolean {
+            for (renderer in list) {
+                if (renderer is DataItemRenderer) {
+                    if (renderer.dataItem?.dataBean?._dataMode == layerMode) {
+
+                    } else {
+                        //不一致
+                        return false
+                    }
+                }
+            }
+            return true
+        }
     }
 
     //---
@@ -396,5 +418,7 @@ class EngraveTransitionManager {
 
         return resultTransferDataInfo
     }
+
+    //---
 
 }
