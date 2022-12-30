@@ -1,10 +1,14 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
+import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.uuid
+import com.angcyo.library.extend.IToDrawable
 import com.angcyo.library.extend.IToText
 import com.angcyo.library.getAppString
+import com.angcyo.objectbox.laser.pecker.R
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -92,7 +96,7 @@ data class MaterialEntity(
      * */
     var depth: Int = 10,
 
-    ) : IToText {
+    ) : IToText, IToDrawable {
 
     companion object {
 
@@ -110,6 +114,14 @@ data class MaterialEntity(
     override fun toText(): CharSequence? {
         val idStr = resIdStr
         return name ?: if (idStr.isNullOrBlank()) _string(resId) else getAppString(idStr)
+    }
+
+    override fun toDrawable(): Drawable? {
+        return if (isCustomMaterial) {
+            _drawable(R.drawable.material_edit_ico)
+        } else {
+            null
+        }
     }
 
 }
