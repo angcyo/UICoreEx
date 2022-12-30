@@ -264,13 +264,13 @@ object LaserPeckerHelper {
         if (bitmapWidth > 1) {
             val scaleWidth = bitmapWidth * 1f / productWidth
             val width = pxInfo.devicePxWidth(productInfo)
-            newWidth = (width * scaleWidth).ceil().toInt()
+            newWidth = (width * scaleWidth).floor().toInt()
         }
 
         if (bitmapHeight > 1) {
             val scaleHeight = bitmapHeight * 1f / productHeight
             val height = pxInfo.devicePxHeight(productInfo)
-            newHeight = (height * scaleHeight).ceil().toInt()
+            newHeight = (height * scaleHeight).floor().toInt()
         }
 
         //图片缩放到指定宽高

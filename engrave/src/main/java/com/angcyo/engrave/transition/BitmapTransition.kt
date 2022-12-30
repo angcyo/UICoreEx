@@ -213,7 +213,7 @@ class BitmapTransition : IEngraveTransition {
 
         /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
          * [threshold] 颜色阈值, 此值以下的色值视为黑色0
-         * 白色传1 黑色传0, 数据压缩
+         * 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
          * */
         fun handleBitmapByte(bitmap: Bitmap, threshold: Int): Pair<List<String>, ByteArray> {
             val width = bitmap.width
