@@ -536,4 +536,31 @@ object CanvasBitmapHandler {
             }
         }
     }
+
+    /**路径填充*/
+    fun handlePathFill(
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: DataItemRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val item = renderer.getRendererRenderItem() ?: return
+        val context = anchor.context
+        context.canvasRegulateWindow2(anchor) {
+            val gcodeFillStepPixel = item.dataBean.gcodeFillStep
+            addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
+            firstApply = false
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
+                } else {
+                    val gcodeFillStep = getFloatOrDef(
+                        CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE,
+                        gcodeFillStepPixel
+                    )
+                    item.updatePathFill(gcodeFillStep, renderer)
+                }
+            }
+        }
+    }
 }

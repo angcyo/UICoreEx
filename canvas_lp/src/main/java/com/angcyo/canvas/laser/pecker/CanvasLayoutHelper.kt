@@ -606,7 +606,6 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         var result = true
         vh.rv(R.id.canvas_control_view)?.renderDslAdapter {
             hookUpdateDepend()
-
             if (itemRenderer is DataItemRenderer) {
                 val dataBean = itemRenderer.rendererItem?.dataBean
                 when (dataBean?.mtype) {
@@ -614,7 +613,6 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         engraveCanvasFragment.fragment,
                         itemRenderer
                     )
-
                     CanvasConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
                     CanvasConstant.DATA_TYPE_LINE,
                     CanvasConstant.DATA_TYPE_OVAL,
@@ -623,7 +621,10 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     CanvasConstant.DATA_TYPE_PENTAGRAM,
                     CanvasConstant.DATA_TYPE_SVG,
                     CanvasConstant.DATA_TYPE_GCODE,
-                    CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(itemRenderer)
+                    CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(
+                        engraveCanvasFragment.fragment,
+                        itemRenderer
+                    )
                 }
             } else if (itemRenderer is SelectGroupRenderer) {
                 renderGroupEditItems(engraveCanvasFragment.fragment, itemRenderer)

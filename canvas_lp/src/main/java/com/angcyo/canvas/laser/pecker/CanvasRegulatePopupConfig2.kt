@@ -19,6 +19,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
 import com.angcyo.library.annotation.DSL
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.widget.DslViewHolder
@@ -58,6 +59,9 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
         /**GCode线距*/
         const val KEY_LINE_SPACE = "key_line_space"
+
+        /**路径填充*/
+        const val KEY_PATH_FILL_LINE_SPACE = "key_path_fill_line_space"
 
         /**GCode线的角度*/
         const val KEY_ANGLE = "key_angle"
@@ -213,6 +217,33 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
                     itemSelectChangedAction = { fromIndex, toIndex, reselect, fromUser ->
                         property[KEY_DIRECTION] = toIndex
+                    }
+                }
+            }
+            //路径填充的线距
+            if (regulateList.contains(KEY_PATH_FILL_LINE_SPACE)) {
+                CanvasSeekBarItem()() {
+                    itemInfoText = _string(R.string.canvas_path_fill_line_space) //0~20
+                    initItem()
+
+                    @MM
+                    val start = 0f
+                    val max = DEFAULT_LINE_SPACE
+                    val def = getFloatOrDef(KEY_PATH_FILL_LINE_SPACE, DEFAULT_LINE_SPACE)
+
+                    itemProgressTextFormatAction = {
+                        (start + (max - start) * it._progressFraction).canvasDecimal(3)
+                    }
+
+                    property[KEY_PATH_FILL_LINE_SPACE] = def
+                    itemSeekProgress = if (def == start) {
+                        0
+                    } else {
+                        ((def / (max - start)) * 100).toInt()
+                    }
+
+                    itemSeekTouchEnd = { value, fraction ->
+                        property[KEY_PATH_FILL_LINE_SPACE] = start + (max - start) * fraction
                     }
                 }
             }

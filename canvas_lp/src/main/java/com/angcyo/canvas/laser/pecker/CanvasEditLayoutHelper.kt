@@ -106,7 +106,7 @@ object CanvasEditLayoutHelper {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
                     itemClick = {
-                        CanvasBitmapHandler.handleGrey(it, fragment, renderer){
+                        CanvasBitmapHandler.handleGrey(it, fragment, renderer) {
                             updateItemSelected(false)
                         }
                         UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
@@ -248,9 +248,9 @@ object CanvasEditLayoutHelper {
 
     //endregion ---文本---
 
-    //region ---形状---
+    //region ---形状/Path---
 
-    fun DslAdapter.renderShapeEditItems(renderer: DataItemRenderer) {
+    fun DslAdapter.renderShapeEditItems(fragment: AbsFragment, renderer: DataItemRenderer) {
         val type = renderer.dataItem?.dataBean?.mtype
         if (type == CanvasConstant.DATA_TYPE_RECT ||
             type == CanvasConstant.DATA_TYPE_POLYGON ||
@@ -280,11 +280,14 @@ object CanvasEditLayoutHelper {
                 updateAllItem()
             }
         }
+        val needPathFill = isDebug()
         CanvasControlItem2()() {
             fillControlItem = this
             itemIco = R.drawable.canvas_style_fill_ico
             itemText = _string(R.string.canvas_fill)
-            drawCanvasRight()
+            if (!needPathFill) {
+                drawCanvasRight()
+            }
             itemIsSelected = paintStyle == Paint.Style.FILL
             itemClick = {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.FILL, renderer)
@@ -301,13 +304,25 @@ object CanvasEditLayoutHelper {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.FILL_AND_STROKE, renderer)
             }
         }*/
+        if (needPathFill) {
+            CanvasControlItem2()() {
+                fillControlItem = this
+                itemIco = R.drawable.canvas_path_fill_svg
+                itemText = _string(R.string.canvas_path_fill)
+                drawCanvasRight()
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handlePathFill(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    //endregion ---形状---
-
-    //region ---Path---
-
-    //endregion ---Path---
+    //endregion ---形状/Path---
 
     //region ---Group---
 
