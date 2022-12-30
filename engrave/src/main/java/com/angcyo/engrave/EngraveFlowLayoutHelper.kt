@@ -55,7 +55,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     override fun renderFlowItems() {
         when (engraveFlow) {
-            ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemConfig()
+            ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemParamsConfig()
             ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
             ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
             ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
@@ -352,8 +352,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         }
     }
 
-    /**单元素雕刻参数配置*/
-    fun renderEngraveItemConfig() {
+    /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
+    fun renderEngraveItemParamsConfig() {
         updateIViewTitle(_string(R.string.print_setting))
         showCloseView(false)
         cancelable = true
@@ -523,7 +523,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
 
             //雕刻相关的参数
-            if (!HawkEngraveKeys.enableItemEngraveParams) {
+            if (HawkEngraveKeys.enableItemEngraveParams) {
+                //参数配置提示
+                PreviewTipItem()() {
+                    itemTip = _string(R.string.engrave_item_params_tip)
+                    itemTipTextColor = _color(R.color.error)
+                }
+            } else {
                 //材质选择
                 EngraveMaterialWheelItem()() {
                     itemTag = MaterialEntity::name.name
