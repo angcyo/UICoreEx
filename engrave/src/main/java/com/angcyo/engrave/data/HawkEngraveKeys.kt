@@ -7,6 +7,7 @@ import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.LibHawkKeys
 
 /**
  * 数据持久化
@@ -122,7 +123,9 @@ object HawkEngraveKeys {
     var enableItemEngraveParams: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**激活单元素传输雕刻, 一个传完雕一个, 这样可以突破同一时间雕刻item上限的问题*/
-    var enableSingleItemTransfer: Boolean by HawkPropertyValue<Any, Boolean>(false)
+    var enableSingleItemTransfer: Boolean by HawkPropertyValue<Any, Boolean>(false) {
+        LibHawkKeys.enableCanvasRenderLimit = !it
+    }
 
     //
 
