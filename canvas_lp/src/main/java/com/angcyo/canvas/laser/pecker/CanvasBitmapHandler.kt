@@ -549,6 +549,7 @@ object CanvasBitmapHandler {
         context.canvasRegulateWindow2(anchor) {
             val gcodeFillStepPixel = item.dataBean.gcodeFillStep
             addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
