@@ -17,6 +17,7 @@ import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.http.rx.runRx
+import com.angcyo.library.Library
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
 import com.angcyo.library.libCacheFile
@@ -42,6 +43,7 @@ object EngraveFlowDataHelper {
         toastQQ(_string(R.string.create_log_tip))
         runRx({
             val logList = mutableListOf(logPath())
+            Library.hawkPath?.let { logList.add(it) } //xml
             logList.addAll(getTaskEngraveLogFilePath())
             logList.addAll(tempEngraveLogPathList)
 
