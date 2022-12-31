@@ -476,20 +476,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     //重复选择
                     return
                 }
-                doMain {
-                    if (itemRenderer != null) {
-                        cancelSelectedItem()
-
-                        //显示控制布局
-                        vh.showControlLayout(canvasView)
-
-                        //更新图层
-                        updateLayerLayout(vh, canvasView)
-                    }
-                    if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
-                        updateLayerListLayout(vh, canvasView)
-                    }
-                }
+                updateItemControlLayout(itemRenderer)
 
                 //预览选中的元素边框
                 val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
@@ -504,6 +491,29 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         engraveCanvasFragment,
                         itemRenderer
                     )
+                }
+            }
+
+            override fun onRenderItemTypeChanged(itemRenderer: IItemRenderer<*>) {
+                super.onRenderItemTypeChanged(itemRenderer)
+                updateItemControlLayout(itemRenderer)
+            }
+
+            /**选中某个元素后, 显示对应的控制布局*/
+            fun updateItemControlLayout(itemRenderer: IItemRenderer<*>?) {
+                doMain {
+                    if (itemRenderer != null) {
+                        cancelSelectedItem()
+
+                        //显示控制布局
+                        vh.showControlLayout(canvasView)
+
+                        //更新图层
+                        updateLayerLayout(vh, canvasView)
+                    }
+                    if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
+                        updateLayerListLayout(vh, canvasView)
+                    }
                 }
             }
 

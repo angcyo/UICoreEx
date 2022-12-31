@@ -208,10 +208,20 @@ object CanvasEditLayoutHelper {
             itemRenderer = renderer
             drawCanvasRight()
         }
+        //栅格化
+        if (HawkEngraveKeys.enableRasterize) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_text_rasterize_ico
+                itemText = _string(R.string.canvas_rasterize)
+                itemClick = {
+                    renderer.dataItem?.itemRasterize(renderer)
+                }
+            }
+        }
         //曲线
         if (isDebugType()) {
             CanvasControlItem2()() {
-                itemIco = R.drawable.canvas_text_curve
+                itemIco = R.drawable.canvas_text_curve_ico
                 itemText = _string(R.string.canvas_curve)
             }
         }
@@ -280,12 +290,19 @@ object CanvasEditLayoutHelper {
                 updateAllItem()
             }
         }
-        val needPathFill = isDebug()
+
+        var afterItemCount = 0 //后面item的数量, 用来控制是否需要绘制分割线
+        if (HawkEngraveKeys.enableRasterize) {
+            afterItemCount++
+        }
+        if (HawkEngraveKeys.enablePathFill) {
+            afterItemCount++
+        }
         CanvasControlItem2()() {
             fillControlItem = this
             itemIco = R.drawable.canvas_style_fill_ico
             itemText = _string(R.string.canvas_fill)
-            if (!needPathFill) {
+            if (afterItemCount <= 0) {
                 drawCanvasRight()
             }
             itemIsSelected = paintStyle == Paint.Style.FILL
@@ -295,6 +312,7 @@ object CanvasEditLayoutHelper {
                 itemIsSelected = true
                 updateAllItem()
             }
+            afterItemCount--
         }
         /*//有切割图层之后, 就不能出现这个了
         CanvasControlItem2()() {
@@ -304,12 +322,14 @@ object CanvasEditLayoutHelper {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.FILL_AND_STROKE, renderer)
             }
         }*/
-        if (needPathFill) {
+        if (HawkEngraveKeys.enablePathFill) {
             CanvasControlItem2()() {
                 fillControlItem = this
                 itemIco = R.drawable.canvas_path_fill_svg
                 itemText = _string(R.string.canvas_path_fill)
-                drawCanvasRight()
+                if (afterItemCount <= 0) {
+                    drawCanvasRight()
+                }
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -318,6 +338,21 @@ object CanvasEditLayoutHelper {
                         }
                     }
                 }
+                afterItemCount--
+            }
+        }
+        //栅格化
+        if (HawkEngraveKeys.enableRasterize) {
+            CanvasControlItem2()() {
+                itemIco = R.drawable.canvas_text_rasterize_ico
+                itemText = _string(R.string.canvas_rasterize)
+                if (afterItemCount <= 0) {
+                    drawCanvasRight()
+                }
+                itemClick = {
+                    renderer.dataItem?.itemRasterize(renderer)
+                }
+                afterItemCount--
             }
         }
     }

@@ -8,6 +8,7 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.LibHawkKeys
+import com.angcyo.library.ex.isDebug
 
 /**
  * 数据持久化
@@ -126,6 +127,12 @@ object HawkEngraveKeys {
     var enableSingleItemTransfer: Boolean by HawkPropertyValue<Any, Boolean>(false) {
         LibHawkKeys.enableCanvasRenderLimit = !it
     }
+
+    /**是否激活栅格化功能*/
+    var enableRasterize: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
+    /**是否激活路径填充功能*/
+    var enablePathFill: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
     //
 
