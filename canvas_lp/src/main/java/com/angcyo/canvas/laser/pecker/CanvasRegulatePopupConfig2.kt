@@ -18,12 +18,16 @@ import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.DslRecyclerView
+import java.lang.Integer.min
 
 /**
  * 属性调整弹窗
@@ -500,6 +504,9 @@ fun Context.canvasRegulateWindow2(
 ): TargetWindow {
     val popupConfig = CanvasRegulatePopupConfig2()
     popupConfig.anchor = anchor
+    if (isInPadMode()) {
+        popupConfig.width = min(_screenWidth, _screenHeight)
+    }
     //popupConfig.addRegulate()
     popupConfig.config()
     return popupConfig.show(this)
