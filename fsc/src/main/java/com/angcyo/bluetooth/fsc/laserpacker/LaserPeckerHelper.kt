@@ -18,10 +18,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
 import com.angcyo.library.toastQQ
@@ -155,26 +155,6 @@ object LaserPeckerHelper {
 
     const val LASER_TYPE_BLUE = 0x00.toByte() //0为450nm激光 (蓝光-烧)
 
-    /**滚动轴
-     * 2米, mm单位, Z轴最大的Y坐标
-     * 2m = 2000mm*/
-    @MM
-    const val Z_MAX_Y = 2_00_0
-
-    /**旋转轴
-     * 200 * 3.14 [Math.PI]*/
-    @MM
-    const val R_MAX_Y = 628
-
-    /**滑台*/
-    @MM
-    const val S_MAX_Y = 300
-
-    /**C1移动平台/小车模式
-     * 5米*/
-    @MM
-    const val CAR_MAX_Y = 2_00_0
-
     /**默认指令初始化配置*/
     val initCommandFlowList = mutableListOf<Byte>().apply {
         add(QueryCmd.settingState.state)
@@ -280,8 +260,12 @@ object LaserPeckerHelper {
     /**中心点在物理中心*/
     fun isDeviceOriginCenter(softwareVersion: Int): Boolean {
         //优先使用自定义配置的
-        if (LibHawkKeys.lpDeviceOriginCenter != null) {
-            return VersionMatcher.matches(softwareVersion, LibHawkKeys.lpDeviceOriginCenter, false)
+        if (LibLpHawkKeys.lpDeviceOriginCenter != null) {
+            return VersionMatcher.matches(
+                softwareVersion,
+                LibLpHawkKeys.lpDeviceOriginCenter,
+                false
+            )
         }
 
         //其次使用build配置的
@@ -336,10 +320,10 @@ object LaserPeckerHelper {
         val sLimitPath = Path()
         val carLimitPath = Path()
 
-        val zMax = mmValueUnit.convertValueToPixel(Z_MAX_Y.toFloat()).ceil()
-        val rMax = mmValueUnit.convertValueToPixel(R_MAX_Y.toFloat()).ceil()
-        val sMax = mmValueUnit.convertValueToPixel(S_MAX_Y.toFloat()).ceil()
-        val carMax = mmValueUnit.convertValueToPixel(CAR_MAX_Y.toFloat()).ceil()
+        val zMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.zMaxY.toFloat()).ceil()
+        val rMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.rMaxY.toFloat()).ceil()
+        val sMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.sMaxY.toFloat()).ceil()
+        val carMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.carMaxY.toFloat()).ceil()
 
         //物理尺寸宽高mm单位
         @MM
@@ -351,13 +335,13 @@ object LaserPeckerHelper {
         //物理尺寸/焦距
         when (name) {
             LI, LI_Z_ -> {
-                wPhys = 100
-                hPhys = 100
+                wPhys = LibLpHawkKeys.l1Width
+                hPhys = LibLpHawkKeys.l1Height
                 focalDistance = 200
             }
             LII, LII_M_ -> {
-                wPhys = 100
-                hPhys = 100
+                wPhys = LibLpHawkKeys.l2Width
+                hPhys = LibLpHawkKeys.l2Height
                 focalDistance = 110
             }
             LIII -> {
@@ -366,20 +350,20 @@ object LaserPeckerHelper {
                     hPhys = 100
                     focalDistance = 115
                 } else {
-                    wPhys = 115
-                    hPhys = 115
+                    wPhys = LibLpHawkKeys.l3Width
+                    hPhys = LibLpHawkKeys.l3Height
                     focalDistance = 130
                 }
             }
             LIII_MAX, LIV -> {
                 //160*160
-                wPhys = 160
-                hPhys = 160
+                wPhys = LibLpHawkKeys.l4Width
+                hPhys = LibLpHawkKeys.l4Height
                 focalDistance = 150
             }
             CI -> {
-                wPhys = 400
-                hPhys = 420
+                wPhys = LibLpHawkKeys.c1Width
+                hPhys = LibLpHawkKeys.c1Height
                 focalDistance = 40
             }
         }
@@ -964,7 +948,7 @@ object LaserPeckerHelper {
         val version = productInfo.softwareVersion //固件版本
 
         //首先使用自定义配置的
-        var lpSupportFirmware = LibHawkKeys.lpSupportFirmware
+        var lpSupportFirmware = LibLpHawkKeys.lpSupportFirmware
         if (!lpSupportFirmware.isNullOrBlank()) {
             if (VersionMatcher.matches(version, lpSupportFirmware)) {
                 //强制配置的固件版本支持信息

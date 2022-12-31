@@ -7,7 +7,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
-import com.angcyo.library.component.LibHawkKeys
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._string
 
 /**
@@ -39,9 +39,9 @@ class EngraveExperimentalFragment : DebugFragment() {
             renderDebugAction(DebugAction().apply {
                 label = "激活GCode G2/G3指令输出"
                 des = "激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令."
-                key = LibHawkKeys::enableVectorArc.name
+                key = LibLpHawkKeys::enableVectorArc.name
                 type = Boolean::class.java
-                defValue = LibHawkKeys.enableVectorArc
+                defValue = LibLpHawkKeys.enableVectorArc
             })
 
             renderDebugAction(DebugAction().apply {

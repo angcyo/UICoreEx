@@ -19,7 +19,7 @@ import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
-import com.angcyo.library.component.LibHawkKeys
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release

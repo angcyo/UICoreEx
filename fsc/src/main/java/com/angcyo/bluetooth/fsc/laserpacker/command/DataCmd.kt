@@ -3,8 +3,8 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
 import com.angcyo.library.annotation.Implementation
-import com.angcyo.library.component.LibHawkKeys
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.trimAndPad
 
 /**
@@ -128,7 +128,7 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -213,7 +213,7 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -287,7 +287,7 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 /*以下是0x30数据
                 //线段数 低16位
@@ -369,7 +369,7 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)

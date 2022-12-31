@@ -7,7 +7,7 @@ import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
-import com.angcyo.library.component.LibHawkKeys
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.isDebug
 
 /**
