@@ -1,11 +1,14 @@
 package com.angcyo.canvas.laser.pecker
 
 import android.content.Context
+import android.graphics.RectF
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
+import com.angcyo.canvas.data.toPixel
 import com.angcyo.canvas.graphics.addMultiplicationTable
 import com.angcyo.canvas.graphics.addParameterComparisonTable
+import com.angcyo.canvas.graphics.addVisualChart
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
@@ -21,7 +24,10 @@ import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchValueUnit
 import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.library.unit.PixelValueUnit
@@ -52,8 +58,15 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
         val canvasViewBox = canvasDelegate?.getCanvasViewBox()
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
 
-            val previewBounds = vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds
-            if (isDebug() && previewBounds != null) {
+            val previewBounds =
+                vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds ?: RectF(
+                    0f,
+                    0f,
+                    100f.toPixel(),
+                    100f.toPixel()
+                )
+
+            if (HawkEngraveKeys.enableParameterComparisonTable) {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加参数对照表"
                     itemClick = {
@@ -90,7 +103,8 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         }
                     }
                 }
-
+            }
+            if (HawkEngraveKeys.enableMultiplicationTable) {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加乘法口诀表"
                     itemClick = {
@@ -106,7 +120,23 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 }
             }
 
-            if (isShowDebug()) {
+            if (HawkEngraveKeys.enableVisualChart) {
+                DslBlackButtonItem()() {
+                    itemButtonText = "添加视力表"
+                    itemClick = {
+                        window.dismissWindow()
+                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                            doBack {
+                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                                canvasDelegate?.addVisualChart(previewBounds)
+                                loadEnd(true, null)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (HawkEngraveKeys.enablePixelUnit) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
                     itemInfoText = _string(R.string.canvas_pixel_unit)

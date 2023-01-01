@@ -134,6 +134,18 @@ object HawkEngraveKeys {
     /**是否激活路径填充功能*/
     var enablePathFill: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**是否像素单位*/
+    var enablePixelUnit: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
+    /**是否激活参数对照表*/
+    var enableParameterComparisonTable: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
+    /**是否激活乘法口诀表*/
+    var enableMultiplicationTable: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
+    /**是否激活视力表*/
+    var enableVisualChart: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
     //
 
     /**需要关闭的功能
