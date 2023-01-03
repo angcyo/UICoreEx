@@ -95,7 +95,7 @@ class PreviewModel : LifecycleViewModel() {
             val width = (transferDataEntity.originWidth ?: 0f).toPixel()
             val height = (transferDataEntity.originHeight ?: 0f).toPixel()
             val rect = RectF(x, y, x + width, y + height)
-            
+
             result.originBounds = RectF(rect)
             result.rotateBounds = RectF(rect)
             return result
@@ -164,10 +164,16 @@ class PreviewModel : LifecycleViewModel() {
             if (queryState?.isModeEngravePreview() == true) {
                 //no op
             } else {
-                //非预览模式, 清空预览数据
-                previewInfoData.value = null
+                //非预览模式, 清空预览数据, 路径预览时退出后~, 移到关闭界面时, 清除数据
+                //previewInfoData.value = null
             }
         }
+    }
+
+    /**清理预览信息*/
+    @AnyThread
+    fun clearPreviewInfo() {
+        previewInfoData.updateValue(null)
     }
 
     /**开始预览*/

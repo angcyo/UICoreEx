@@ -233,7 +233,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         engraveCanvasFragment?.fragment?._vh?.itemView?.keepScreenOn = to == ENGRAVE_FLOW_ENGRAVING
 
         if (from == ENGRAVE_FLOW_PREVIEW) {
+            //从预览中切换~
             loopCheckDeviceState = false
+            previewModel.clearPreviewInfo()
         }
         if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
             loopCheckDeviceState = false
