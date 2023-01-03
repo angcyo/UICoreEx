@@ -23,6 +23,9 @@ import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -35,6 +38,7 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
+import kotlin.math.min
 
 /**
  * 画图设置弹窗
@@ -228,6 +232,9 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 fun Context.canvasSettingWindow(anchor: View?, config: CanvasSettingPopupConfig.() -> Unit): Any {
     val popupConfig = CanvasSettingPopupConfig()
     popupConfig.anchor = anchor
+    if (isInPadMode()) {
+        popupConfig.width = min(_screenWidth, _screenHeight)
+    }
     popupConfig.config()
     return popupConfig.show(this)
 }
