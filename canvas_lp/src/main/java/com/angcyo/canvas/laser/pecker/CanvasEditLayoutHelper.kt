@@ -273,6 +273,7 @@ object CanvasEditLayoutHelper {
             }
         }
 
+        //描边/填充 按钮切换
         var strokeControlItem: DslAdapterItem? = null
         var fillControlItem: DslAdapterItem? = null
 
