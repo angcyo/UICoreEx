@@ -294,7 +294,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "19:4591974673206453667",
+      "lastPropertyId": "21:4977247402785263802",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -382,6 +382,16 @@
           "id": "19:4591974673206453667",
           "name": "productName",
           "type": 9
+        },
+        {
+          "id": "20:2862500352282497999",
+          "name": "originX",
+          "type": 7
+        },
+        {
+          "id": "21:4977247402785263802",
+          "name": "originY",
+          "type": 7
         }
       ],
       "relations": []

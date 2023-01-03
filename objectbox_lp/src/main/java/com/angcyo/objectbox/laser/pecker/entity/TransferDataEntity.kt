@@ -55,6 +55,13 @@ data class TransferDataEntity(
      * */
     var engraveDataType: Int = -1,
 
+    /**数据处理之前的坐标
+     * [width] [height]*/
+    @MM
+    var originX: Float? = null,
+    @MM
+    var originY: Float? = null,
+
     /**数据处理之前的宽高
      * [width] [height]*/
     @MM
