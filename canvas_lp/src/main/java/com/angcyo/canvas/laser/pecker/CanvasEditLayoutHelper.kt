@@ -285,9 +285,8 @@ object CanvasEditLayoutHelper {
             itemIsSelected = paintStyle == Paint.Style.STROKE
             itemClick = {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.STROKE, renderer)
-                fillControlItem?.itemIsSelected = false
-                itemIsSelected = true
-                updateAllItem()
+                fillControlItem?.updateItemSelected(false)
+                updateItemSelected(true)
             }
         }
 
@@ -308,9 +307,8 @@ object CanvasEditLayoutHelper {
             itemIsSelected = paintStyle == Paint.Style.FILL
             itemClick = {
                 renderer.dataItem?.updatePaintStyle(Paint.Style.FILL, renderer)
-                strokeControlItem?.itemIsSelected = false
-                itemIsSelected = true
-                updateAllItem()
+                strokeControlItem?.updateItemSelected(false)
+                updateItemSelected(true)
             }
             afterItemCount--
         }
@@ -324,7 +322,6 @@ object CanvasEditLayoutHelper {
         }*/
         if (HawkEngraveKeys.enablePathFill) {
             CanvasControlItem2()() {
-                fillControlItem = this
                 itemIco = R.drawable.canvas_path_fill_svg
                 itemText = _string(R.string.canvas_path_fill)
                 if (afterItemCount <= 0) {
