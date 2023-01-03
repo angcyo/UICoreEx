@@ -36,6 +36,9 @@ data class CommandEntity(
     /**指令返回, hex字符串*/
     var result: String? = null,
 
+    /**返回值描述*/
+    var resultDes: String? = null,
+
     /**指令发送时间, 13位毫秒*/
     var sendTime: Long = -1,
 

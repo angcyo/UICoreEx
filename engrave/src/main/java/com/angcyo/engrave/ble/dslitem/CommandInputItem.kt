@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.command.CustomCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
 import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
+import com.angcyo.component.hawkInstallAndRestore
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.ble.bluetoothSearchListDialog
@@ -40,6 +41,8 @@ class CommandInputItem : DslAdapterItem(), IEditItem {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+
+        itemHolder.hawkInstallAndRestore("CommandInput_")
 
         itemHolder.click(R.id.trim_button) {
             //移除指令长度和校验和

@@ -25,6 +25,7 @@ fun ByteArray.parseResultPacketLog(func: Int?, state: Int?): IPacketParser<*>? {
                 QueryCmd.QUERY_FILE.toInt() -> QueryEngraveFileParser().parse(bytes)
                 QueryCmd.QUERY_SETTING.toInt() -> QuerySettingParser().parse(bytes)
                 QueryCmd.QUERY_VERSION.toInt() -> QueryVersionParser().parse(bytes)
+                QueryCmd.QUERY_SAFE_CODE.toInt() -> QuerySafeCodeParser().parse(bytes)
                 QueryCmd.QUERY_LOG.toInt() -> QueryLogParser().parse(bytes)
                 else -> MiniReceiveParser().parse(bytes)
             }

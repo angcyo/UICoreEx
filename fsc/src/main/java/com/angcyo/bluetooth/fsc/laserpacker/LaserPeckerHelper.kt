@@ -791,12 +791,14 @@ object LaserPeckerHelper {
             progress
         ) { bean, error ->
             val result = bean?.receivePacket?.toHexString(false) ?: ""
-            "指令返回:${uuid}->${result.parseResultPacketLog(func, state)}".writeBleLog()
+            val resultDes = result.parseResultPacketLog(func, state)
+            "指令返回:${uuid}->$resultDes".writeBleLog()
             CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(CommandEntity_.uuid.equal(uuid))
             }?.apply {
                 resultTime = nowTime()
-                this.result = "$result ${error ?: ""}"
+                this.result = result
+                this.resultDes = "$resultDes ${error ?: ""}"
                 lpSaveEntity()
             }
             action?.invoke(bean, error)
