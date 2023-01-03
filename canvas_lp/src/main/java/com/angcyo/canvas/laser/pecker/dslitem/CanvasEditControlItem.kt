@@ -150,7 +150,7 @@ class CanvasEditControlItem : DslAdapterItem() {
 
                         //2
                         val bounds = renderer.getBounds()
-                        val newWidth = width.toFloat()
+                        val newWidth = width
                         val scaleWidth = newWidth / bounds.width()
                         val newHeight = if (lockRatio) {
                             bounds.height() * scaleWidth
@@ -170,7 +170,9 @@ class CanvasEditControlItem : DslAdapterItem() {
                             anchor.x,
                             anchor.y
                         )
-
+                        if (renderer.isLineShape()) {
+                            newBounds.bottom = newBounds.top + renderer.getBounds().height()
+                        }
                         itemCanvasDelegate?.addChangeItemBounds(renderer, newBounds)
                     }
                 }
