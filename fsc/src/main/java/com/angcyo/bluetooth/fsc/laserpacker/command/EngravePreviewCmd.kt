@@ -75,6 +75,9 @@ data class EngravePreviewCmd(
 
     companion object {
 
+        /**指令*/
+        const val ENGRAVE_PREVIEW_FUNC: Byte = 0x02
+
         /**支架的最大移动步长*/
         @MM
         val BRACKET_MAX_STEP: Int = 65535//130, 65535
@@ -579,7 +582,7 @@ data class EngravePreviewCmd(
     }
 
     //功能码
-    override fun commandFunc(): Byte = 0x02
+    override fun commandFunc(): Byte = ENGRAVE_PREVIEW_FUNC
 
     override fun toHexCommandString(): String {
         val dataLength = 0x17 //数据长度

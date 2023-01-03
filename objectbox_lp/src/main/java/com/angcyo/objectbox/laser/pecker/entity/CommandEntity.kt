@@ -22,6 +22,12 @@ data class CommandEntity(
     /**发送的指令, hex字符串*/
     var command: String? = null,
 
+    /**[command]的功能码*/
+    var func: Int? = null,
+
+    /**[command]的功能码状态*/
+    var state: Int? = null,
+
     /**指令描述*/
     var des: String? = null,
 

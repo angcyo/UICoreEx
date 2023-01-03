@@ -23,34 +23,45 @@ data class QueryCmd(
 
     companion object {
 
+        /**指令*/
+        const val QUERY_FUNC: Byte = 0x00
+
+        /**指令状态*/
+        const val QUERY_WORK: Byte = 0x00
+        const val QUERY_FILE: Byte = 0x01
+        const val QUERY_SETTING: Byte = 0x02
+        const val QUERY_VERSION: Byte = 0x03
+        const val QUERY_SAFE_CODE: Byte = 0x04
+        const val QUERY_LOG: Byte = 0x06
+
         /**查询工作状态*/
         val workState: QueryCmd
-            get() = QueryCmd(0x00)
+            get() = QueryCmd(QUERY_WORK)
 
         /**查询文件列表/历史记录*/
         val fileList: QueryCmd
-            get() = QueryCmd(0x01)
+            get() = QueryCmd(QUERY_FILE)
 
         /**查询设置状态*/
         val settingState: QueryCmd
-            get() = QueryCmd(0x02)
+            get() = QueryCmd(QUERY_SETTING)
 
         /**查询版本信息*/
         val version: QueryCmd
-            get() = QueryCmd(0x03)
+            get() = QueryCmd(QUERY_VERSION)
 
         /**查询安全码和用户账号*/
         val safeCode: QueryCmd
-            get() = QueryCmd(0x04)
+            get() = QueryCmd(QUERY_SAFE_CODE)
 
         /**查询日志
          * AABB080006000000000006*/
         val log: QueryCmd
-            get() = QueryCmd(0x06)
+            get() = QueryCmd(QUERY_LOG)
     }
 
     //功能码
-    override fun commandFunc(): Byte = 0x00
+    override fun commandFunc(): Byte = QUERY_FUNC
 
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度

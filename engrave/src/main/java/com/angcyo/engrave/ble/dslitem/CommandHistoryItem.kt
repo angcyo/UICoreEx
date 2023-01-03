@@ -1,6 +1,6 @@
 package com.angcyo.engrave.ble.dslitem
 
-import com.angcyo.bluetooth.fsc.laserpacker.command.parsePacketLog
+import com.angcyo.bluetooth.fsc.laserpacker.command.parseResultPacketLog
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
@@ -65,10 +65,12 @@ class CommandHistoryItem : DslAdapterItem() {
         }
 
         itemHolder.tv(R.id.result_view)?.text = span {
-            append("<-${itemCommandEntity?.result ?: "?"}")
-            itemCommandEntity?.result?.parsePacketLog()?.let {
-                appendln()
-                append("$it")
+            itemCommandEntity?.let { entity ->
+                append("<-${entity.result ?: "?"}")
+                entity.result?.parseResultPacketLog(entity.func, entity.state)?.let {
+                    appendln()
+                    append("$it")
+                }
             }
         }
     }

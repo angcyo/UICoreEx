@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.*
 
@@ -14,6 +15,8 @@ import com.angcyo.library.ex.*
  *
  * 雕刻结束返回: 当L1接收到退出指令时，L1退出当前工作模式，进入空闲状态。
  * AA BB 08 FF 01 64 32 62 95 02 8D
+ *
+ * [MiniReceiveParser]
  *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/03/26
@@ -45,6 +48,9 @@ data class EngraveCmd(
 ) : BaseCommand() {
 
     companion object {
+
+        /**指令*/
+        const val ENGRAVE_FUNC: Byte = 0x01
 
         /**继续打印指令*/
         fun continueEngrave(): EngraveCmd {
@@ -96,7 +102,7 @@ data class EngraveCmd(
     }
 
     //功能码
-    override fun commandFunc(): Byte = 0x01
+    override fun commandFunc(): Byte = ENGRAVE_FUNC
 
     override fun toHexCommandString(): String {
         val check: String

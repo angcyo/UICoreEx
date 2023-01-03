@@ -590,7 +590,7 @@
     },
     {
       "id": "12:1283913521419266299",
-      "lastPropertyId": "7:7217022909913505481",
+      "lastPropertyId": "9:6315754971625279016",
       "name": "CommandEntity",
       "properties": [
         {
@@ -628,6 +628,16 @@
           "id": "7:7217022909913505481",
           "name": "resultTime",
           "type": 6
+        },
+        {
+          "id": "8:7326364645646886575",
+          "name": "func",
+          "type": 5
+        },
+        {
+          "id": "9:6315754971625279016",
+          "name": "state",
+          "type": 5
         }
       ],
       "relations": []

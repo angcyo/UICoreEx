@@ -20,6 +20,7 @@ data class BracketParser(
     //当state为0x06电动架升降指令时，返回指令中的res表示电动支架的连接状态，当res = 0x01时，表示已经连接，0为未连接。
     var res: Byte = 0
 ) : IPacketParser<BracketParser> {
+
     override fun parse(packet: ByteArray): BracketParser? {
         return try {
             packet.reader {

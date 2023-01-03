@@ -10,33 +10,30 @@ import com.angcyo.library.ex.toHexByteArray
  */
 interface IPacketParser<T> {
 
+    /**解析指令返回的字节数组[ByteArray]*/
     fun parse(packet: ByteArray): T?
 }
 
-/**将指令的返回值hex字符串解析成对应的结构*/
-fun String.parsePacketLog(): IPacketParser<*>? {
-    val list = mutableListOf<IPacketParser<*>>()
-    //list.add(QuerySettingParser())
-    list.add(QueryStateParser())
-    //list.add(QueryVersionParser())
-    //list.add(QueryEngraveFileParser())
-    //list.add(QueryLogParser())
-    //list.add(QuerySafeCodeParser())
-    list.add(EngravePreviewParser())
-    list.add(BracketParser())
-    list.add(EngraveReceiveParser())
-    list.add(FirmwareUpdateParser())
-    list.add(FileTransferParser())
-
-    list.forEach {
-        try {
-            val result = it.parse(toHexByteArray()) as? IPacketParser<*>?
-            if (result != null) {
-                return result
+/**将指令的返回值hex字符串解析成对应的结构
+ * [func] 功能码, 更具指定的功能码, 解析对应的返回值*/
+fun ByteArray.parseResultPacketLog(func: Int?, state: Int?): IPacketParser<*>? {
+    val bytes = this
+    return when (func) {
+        QueryCmd.QUERY_FUNC.toInt() -> {
+            return when (state) {
+                QueryCmd.QUERY_WORK.toInt() -> QueryStateParser().parse(bytes)
+                QueryCmd.QUERY_FILE.toInt() -> QueryEngraveFileParser().parse(bytes)
+                QueryCmd.QUERY_SETTING.toInt() -> QuerySettingParser().parse(bytes)
+                QueryCmd.QUERY_VERSION.toInt() -> QueryVersionParser().parse(bytes)
+                QueryCmd.QUERY_LOG.toInt() -> QueryLogParser().parse(bytes)
+                else -> MiniReceiveParser().parse(bytes)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+        else -> MiniReceiveParser().parse(bytes)
     }
-    return null
+}
+
+fun String.parseResultPacketLog(func: Int?, state: Int?): IPacketParser<*>? {
+    val bytes = toHexByteArray()
+    return bytes.parseResultPacketLog(func, state)
 }

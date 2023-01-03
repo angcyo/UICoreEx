@@ -8,11 +8,11 @@ import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.parseResultPacketLog
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
-import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
@@ -25,6 +25,7 @@ import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
 import com.angcyo.library.toastQQ
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.utils.LogFile
 import com.angcyo.objectbox.findFirst
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -763,9 +764,18 @@ object LaserPeckerHelper {
         val uuid = command.uuid
         val commandLogString = command.toCommandLogString()
         "发送指令:$address->$uuid $commandLogString".writeBleLog()
+
+        val func = command.commandFunc().toInt()
+        val state = if (command is QueryCmd) {
+            command.state.toInt()
+        } else {
+            null
+        }
         CommandEntity().apply {
             this.uuid = uuid
             this.command = command.toHexCommandString().removeAll()
+            this.func = func
+            this.state = state
             des = commandLogString
             sendTime = nowTime()
             lpSaveEntity()
@@ -780,13 +790,13 @@ object LaserPeckerHelper {
             command.getReceiveTimeout(), //数据返回超时时长
             progress
         ) { bean, error ->
-            val log = "${bean?.parse<MiniReceiveParser>() ?: error}"
-            "指令返回:${uuid}->${log}".writeBleLog()
+            val result = bean?.receivePacket?.toHexString(false) ?: ""
+            "指令返回:${uuid}->${result.parseResultPacketLog(func, state)}".writeBleLog()
             CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(CommandEntity_.uuid.equal(uuid))
             }?.apply {
                 resultTime = nowTime()
-                result = "${bean?.receivePacket?.toHexString(false) ?: ""} ${error ?: ""}"
+                this.result = "$result ${error ?: ""}"
                 lpSaveEntity()
             }
             action?.invoke(bean, error)
