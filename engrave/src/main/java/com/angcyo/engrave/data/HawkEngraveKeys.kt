@@ -146,6 +146,9 @@ object HawkEngraveKeys {
     /**是否激活视力表*/
     var enableVisualChart: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**是否激活后台雕刻, 在雕刻中可以关闭页面*/
+    var enableBackEngrave: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
     //
 
     /**需要关闭的功能

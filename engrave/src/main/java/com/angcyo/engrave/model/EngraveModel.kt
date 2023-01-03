@@ -504,6 +504,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun _startEngraveIndex(index: Int) {
         val task = _engraveTaskEntity ?: return
         if (index != -1) task.currentIndex = index
+        task.state = ENGRAVE_STATE_START //雕刻已开始
         task.indexStartTime = nowTime()
         task.indexPrintStartTime = task.indexStartTime
         engraveStateData.value = task

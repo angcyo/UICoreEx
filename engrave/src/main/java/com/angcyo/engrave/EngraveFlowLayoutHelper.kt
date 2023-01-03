@@ -776,8 +776,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
      * */
     fun renderEngraving() {
         updateIViewTitle(_string(R.string.engraving))
-        engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
-        showCloseView(false)
+        if (HawkEngraveKeys.enableBackEngrave) {
+            engraveBackFlow = 0
+            showCloseView(true, _string(R.string.back_creation))
+        } else {
+            engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+            showCloseView(false)
+        }
 
         renderDslAdapter {
             PreviewTipItem()() {
