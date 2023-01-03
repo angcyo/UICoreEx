@@ -7,7 +7,6 @@ import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
-import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.data.toPaintStyleInt
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataBitmapItem
@@ -28,6 +27,7 @@ import com.angcyo.library.app
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.opencv.OpenCV

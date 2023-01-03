@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
-import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -15,6 +14,7 @@ import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex.*
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.hingin.rn.image.ImageProcess

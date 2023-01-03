@@ -6,9 +6,7 @@ import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
-import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
@@ -18,8 +16,9 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
-import com.angcyo.library.unit.MmValueUnit
+import com.angcyo.library.unit.toPixel
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmHoldDataNull
@@ -90,21 +89,13 @@ class PreviewModel : LifecycleViewModel() {
 
             defaultPreviewInfo(result)
 
-            val rect = RectF(
-                transferDataEntity.x / transferDataEntity.dpi.toDpiScale(),
-                transferDataEntity.y / transferDataEntity.dpi.toDpiScale(),
-                (transferDataEntity.x + transferDataEntity.width) / transferDataEntity.dpi.toDpiScale(),
-                (transferDataEntity.y + transferDataEntity.height) / transferDataEntity.dpi.toDpiScale()
-            )
-            if (transferDataEntity.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
-                val mmValueUnit = MmValueUnit()
-                rect.set(
-                    mmValueUnit.convertValueToPixel(transferDataEntity.x / 10f),
-                    mmValueUnit.convertValueToPixel(transferDataEntity.y / 10f),
-                    mmValueUnit.convertValueToPixel((transferDataEntity.x + transferDataEntity.width) / 10f),
-                    mmValueUnit.convertValueToPixel((transferDataEntity.y + transferDataEntity.height) / 10f)
-                )
-            }
+            @Pixel
+            val x = (transferDataEntity.originX ?: transferDataEntity.x.toFloat()).toPixel()
+            val y = (transferDataEntity.originY ?: transferDataEntity.y.toFloat()).toPixel()
+            val width = (transferDataEntity.originWidth ?: 0f).toPixel()
+            val height = (transferDataEntity.originHeight ?: 0f).toPixel()
+            val rect = RectF(x, y, x + width, y + height)
+            
             result.originBounds = RectF(rect)
             result.rotateBounds = RectF(rect)
             return result

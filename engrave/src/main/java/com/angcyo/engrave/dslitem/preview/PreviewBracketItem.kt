@@ -7,8 +7,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.data.toMm
-import com.angcyo.canvas.data.toPixel
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
@@ -19,6 +17,8 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.toast
+import com.angcyo.library.unit.toMm
+import com.angcyo.library.unit.toPixel
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.isTouchFinish

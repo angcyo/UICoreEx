@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.widget.TextView
 import com.angcyo.canvas.core.IRenderer
-import com.angcyo.canvas.data.toPixel
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.canvasDecimal
@@ -13,6 +12,7 @@ import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.unit.PointValueUnit
 import com.angcyo.library.unit.convertPixelToValueUnit
+import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 import kotlin.math.min
 
@@ -76,7 +76,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 onNumberResultAction = { number ->
                     val size = itemPointValueUnit.convertValueToPixel(number)
                     val pixel = clamp(
-                        size.toFloat(),
+                        size,
                         HawkEngraveKeys.minTextSize,
                         HawkEngraveKeys.maxTextSize
                     )
@@ -95,7 +95,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = min(
-                        valueUit.convertValueToPixel(number).toFloat(),
+                        valueUit.convertValueToPixel(number),
                         HawkEngraveKeys.maxTextSize
                     )
                     renderer.dataTextItem?.updateTextWordSpacing(size, renderer)
@@ -113,7 +113,7 @@ class TextPropertyControlItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = min(
-                        valueUit.convertValueToPixel(number).toFloat(),
+                        valueUit.convertValueToPixel(number),
                         HawkEngraveKeys.maxTextSize
                     )
                     renderer.dataTextItem?.updateTextLineSpacing(size, renderer)

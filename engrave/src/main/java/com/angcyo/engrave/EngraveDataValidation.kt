@@ -3,13 +3,13 @@ package com.angcyo.engrave
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.unitDecimal
 
 /**

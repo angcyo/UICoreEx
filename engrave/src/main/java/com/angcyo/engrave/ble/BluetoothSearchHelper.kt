@@ -65,6 +65,7 @@ class BluetoothSearchHelper {
     /**排序过滤器*/
     val sortFilter = SortAfterFilterInterceptor(true, false) {
         if (it is BluetoothConnectItem) {
+            it.itemUpdateFlag = true
             it.itemFscDevice?.rssi
         } else {
             0

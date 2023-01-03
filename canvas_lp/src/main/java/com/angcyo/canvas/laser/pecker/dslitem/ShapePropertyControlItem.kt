@@ -2,7 +2,6 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.widget.TextView
 import com.angcyo.canvas.core.IRenderer
-import com.angcyo.canvas.data.toPixel
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.utils.CanvasConstant
@@ -14,6 +13,7 @@ import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.dp
+import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -140,7 +140,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
                     val size = clamp(
-                        valueUit.convertValueToPixel(number).toFloat(),
+                        valueUit.convertValueToPixel(number),
                         SHAPE_MIN_CORNER,
                         SHAPE_MAX_CORNER
                     ) //pixel

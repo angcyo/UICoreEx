@@ -5,7 +5,6 @@ import android.graphics.RectF
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.data.toPixel
 import com.angcyo.canvas.graphics.addMultiplicationTable
 import com.angcyo.canvas.graphics.addParameterComparisonTable
 import com.angcyo.canvas.graphics.addVisualChart
@@ -31,6 +30,7 @@ import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchValueUnit
 import com.angcyo.library.unit.MmValueUnit
 import com.angcyo.library.unit.PixelValueUnit
+import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent

@@ -12,7 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
-import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack

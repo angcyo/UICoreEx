@@ -7,7 +7,6 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
-import com.angcyo.canvas.data.toMm
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -27,6 +26,7 @@ import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.toastQQ
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.LogFile
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.toLogFilePath

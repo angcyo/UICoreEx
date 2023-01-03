@@ -6,7 +6,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.canvas.data.CanvasProjectItemBean
-import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.MM_UNIT
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -20,6 +19,7 @@ import com.angcyo.library.annotation.Private
 import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.ex.floor
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.utils.FileTextData
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -173,6 +173,8 @@ interface IEngraveTransition {
         @MM
         val originWidth = mmValueUnit.convertPixelToValue(rotateBounds.width())
         val originHeight = mmValueUnit.convertPixelToValue(rotateBounds.height())
+        transferDataEntity.originX = mmValueUnit.convertPixelToValue(rotateBounds.left)
+        transferDataEntity.originY = mmValueUnit.convertPixelToValue(rotateBounds.top)
         transferDataEntity.originWidth = originWidth
         transferDataEntity.originHeight = originHeight
 
