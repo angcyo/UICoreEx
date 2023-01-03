@@ -39,7 +39,6 @@ import java.io.File
  * */
 fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true): String {
     val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
-    if (itemRendererCount <= 0) return file.absolutePath
     val save = Runnable {
         val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
         val json = bean.toJson()
