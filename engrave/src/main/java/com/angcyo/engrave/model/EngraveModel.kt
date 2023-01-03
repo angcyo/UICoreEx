@@ -11,7 +11,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.canvas.utils.toDataModeStr
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -33,6 +32,7 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.getAppString
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
@@ -109,6 +109,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     if (queryState.isModeIdle()) {
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
                             //机器空闲了, 可能一个数据雕刻结束了
+                            if (_lastEngraveIndex > 0) {
+                                EngraveFlowDataHelper.finishIndexEngrave(
+                                    _engraveTaskId,
+                                    _lastEngraveIndex
+                                )
+                            }
                             if (_lastEngraveCmdError == null) {
                                 _checkEngraveNextOnIdle(
                                     queryState.index,
@@ -533,7 +539,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
-        
+
         //更新设备状态
         _delay(HawkEngraveKeys.minQueryDelayTime) {
             if (_engraveTaskEntity == null || _engraveTaskEntity?.state == ENGRAVE_STATE_FINISH) {
@@ -658,6 +664,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             "雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error
             if (error == null) {
+                _lastEngraveIndex = index //赋值, 如果机器雕刻过快, 可以不会进入progress状态
                 //雕刻指令发送成功, 机器开始雕刻
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
