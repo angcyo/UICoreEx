@@ -7,7 +7,7 @@
     android:background="@drawable/lib_bg_selector"
     android:minWidth="@dimen/lib_min_item_height"
     android:paddingHorizontal="@dimen/lib_xhdpi"
-    android:paddingVertical="@dimen/lib_hdpi">
+    android:paddingVertical="@dimen/lib_sdpi">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/device_image_view"
