@@ -98,9 +98,9 @@
     <string name="blue_connect">Bluetooth Device Connection</string>
     <string name="device_connected">Connected</string>
 
-    <string name="device_setting_tips_fourteen_8">Slab</string>
-    <string name="device_setting_tips_fourteen_9">Trolley</string>
-    <string name="device_setting_tips_fourteen_10">Cylinder</string>
+    <string name="device_z_model_flat">Slab</string>
+    <string name="device_z_model_car">Trolley</string>
+    <string name="device_z_model_cylinder">Cylinder</string>
     <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
 
     <string name="ui_slip_menu_history">History Documents</string>

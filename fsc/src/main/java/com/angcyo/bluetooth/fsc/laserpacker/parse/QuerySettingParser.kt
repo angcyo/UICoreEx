@@ -59,9 +59,24 @@ data class QuerySettingParser(
 ) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
+
         /**第三轴模式状态存储
          * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.updateDeviceSettingState] 在此会初始化*/
-        var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
+        //var Z_MODEL: Int by HawkPropertyValue<Any, Int>(-1)
+
+        /**[Z_MODEL] 字符串数据*/
+        var Z_MODEL_STR: String by HawkPropertyValue<Any, String>("")
+
+        //平板
+        const val Z_MODEL_FLAT = "device_z_model_flat"
+
+        //小车
+        const val Z_MODEL_CAR = "device_z_model_car"
+
+        //圆柱
+        const val Z_MODEL_CYLINDER = "device_z_model_cylinder"
+
+        //---
 
         /**扩展设备 z轴*/
         const val EX_Z = "z"

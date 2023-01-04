@@ -134,14 +134,17 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     @AnyThread
     fun updateDeviceSettingState(querySettingParser: QuerySettingParser) {
         "设备设置状态:$querySettingParser".writeBleLog(L.INFO)
-        if (QuerySettingParser.Z_MODEL == -1) {
+        if (QuerySettingParser.Z_MODEL_STR.isBlank()) {
             //本地未初始化第三轴模式
-            QuerySettingParser.Z_MODEL = if (querySettingParser.zDir == 1) {
-                //圆柱
-                2
+            QuerySettingParser.Z_MODEL_STR = if (querySettingParser.zDir == 1 || isC1()) {
+                //圆柱, C1只有圆柱
+                QuerySettingParser.Z_MODEL_CYLINDER
             } else {
-                0
+                //平板
+                QuerySettingParser.Z_MODEL_FLAT
             }
+        } else if (isC1()) {
+            QuerySettingParser.Z_MODEL_STR = QuerySettingParser.Z_MODEL_CYLINDER
         }
         deviceSettingData.postValue(querySettingParser)
     }

@@ -18,6 +18,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.data.ZModel
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
@@ -41,20 +42,18 @@ class DeviceSettingFragment : BaseDslFragment() {
         /**z轴的3中模式*/
         fun getZDirSegmentList() = if (vmApp<LaserPeckerModel>().isC1()) {
             //C1只有圆柱模式
-            listOf(
-                _string(R.string.device_setting_tips_fourteen_10)
-            )
+            listOf(ZModel(QuerySettingParser.Z_MODEL_CYLINDER))
         } else if (vmApp<LaserPeckerModel>().isL3()) {
             //L3没有小车 2023-1-4
             listOf(
-                _string(R.string.device_setting_tips_fourteen_8),
-                _string(R.string.device_setting_tips_fourteen_10)
+                ZModel(QuerySettingParser.Z_MODEL_FLAT),
+                ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
             )
         } else {
             listOf(
-                _string(R.string.device_setting_tips_fourteen_8),
-                _string(R.string.device_setting_tips_fourteen_9),
-                _string(R.string.device_setting_tips_fourteen_10)
+                ZModel(QuerySettingParser.Z_MODEL_FLAT),
+                ZModel(QuerySettingParser.Z_MODEL_CAR),
+                ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
             )
         }
 
@@ -201,30 +200,38 @@ class DeviceSettingFragment : BaseDslFragment() {
                         renderData()
                     }
                 }
-                DslSegmentTabItem()() {
-                    itemLayoutId = R.layout.device_z_dir_segment_tab_item
-                    initItem()
+                if (!isC1) {
+                    //C1只有一种模式, 干脆就不显示了
+                    DslSegmentTabItem()() {
+                        itemLayoutId = R.layout.device_z_dir_segment_tab_item
+                        initItem()
 
-                    //平板 //小车 //圆柱
-                    itemSegmentList = getZDirSegmentList()
-                    val maxIndex = itemSegmentList.lastIndex
+                        //平板 //小车 //圆柱
+                        val zModelList = getZDirSegmentList()
+                        itemSegmentList = zModelList
 
-                    //zDir 0为打直板，1为打印圆柱。
-                    val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
-                    itemCurrentIndex =
-                        if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
-                            //平板和小车都对应的 0
-                            QuerySettingParser.Z_MODEL
-                        } else {
-                            zDirIndex
-                        }
-                    itemSelectIndexChangeAction =
-                        { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
-                            val index = selectIndexList.first()
-                            QuerySettingParser.Z_MODEL = index //确切的模式
-                            settingParser?.zDir = if (index == 2) 1 else 0
-                            settingParser?.updateSetting()
-                        }
+                        //zDir 0为打直板，1为打印圆柱。
+                        val zModel =
+                            if (settingParser?.zDir == 1) QuerySettingParser.Z_MODEL_CYLINDER else QuerySettingParser.Z_MODEL_STR
+                        itemCurrentIndex = max(zModelList.indexOfFirst { it.resKey == zModel }, 0)
+                        /* val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
+                             if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
+                                 //平板和小车都对应的 0
+                                 QuerySettingParser.Z_MODEL
+                             } else {
+                                 zDirIndex
+                             }*/
+                        itemSelectIndexChangeAction =
+                            { fromIndex: Int, selectIndexList: List<Int>, reselect: Boolean, fromUser: Boolean ->
+                                val index = selectIndexList.first()
+                                //QuerySettingParser.Z_MODEL = index //确切的模式
+                                QuerySettingParser.Z_MODEL_STR = zModelList.getOrNull(index)?.resKey
+                                    ?: QuerySettingParser.Z_MODEL_FLAT //确切的模式
+                                settingParser?.zDir =
+                                    if (QuerySettingParser.Z_MODEL_STR == QuerySettingParser.Z_MODEL_CYLINDER) 1 else 0
+                                settingParser?.updateSetting()
+                            }
+                    }
                 }
             }
             //旋转轴

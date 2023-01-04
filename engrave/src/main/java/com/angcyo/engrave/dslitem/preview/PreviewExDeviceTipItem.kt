@@ -6,16 +6,15 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.size
+import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.DslSpan
 import com.angcyo.widget.span.span
-import kotlin.math.max
 
 /**
  * Z/R/S轴 光源 功率 焦距提示
@@ -44,11 +43,13 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
         val isForward = laserPeckerModel.deviceSettingData.value?.dir == 1 //正转
         itemTip = when {
             //第三轴
-            laserPeckerModel.isZOpen() -> span {
+            !laserPeckerModel.isC1() && laserPeckerModel.isZOpen() -> span {
                 append(_string(R.string.device_ex_z_label))
-                val list = DeviceSettingFragment.getZDirSegmentList()
                 append(":")
-                append(list[max(0, QuerySettingParser.Z_MODEL)])
+                append(
+                    getAppString(QuerySettingParser.Z_MODEL_STR)
+                        ?: getAppString(QuerySettingParser.Z_MODEL_FLAT)
+                )
 
                 append(" ")
                 append(

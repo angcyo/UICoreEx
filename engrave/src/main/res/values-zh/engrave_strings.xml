@@ -93,9 +93,9 @@
     <string name="delete_history">删除历史</string>
     <string name="delete_history_succeed">删除成功</string>
 
-    <string name="device_setting_tips_fourteen_8">平板</string>
-    <string name="device_setting_tips_fourteen_9">小车</string>
-    <string name="device_setting_tips_fourteen_10">圆柱</string>
+    <string name="device_z_model_flat">平板</string>
+    <string name="device_z_model_car">小车</string>
+    <string name="device_z_model_cylinder">圆柱</string>
     <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
 
     <string name="print_file_name">模式</string>
