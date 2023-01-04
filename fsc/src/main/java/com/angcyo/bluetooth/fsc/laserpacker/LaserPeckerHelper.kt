@@ -97,20 +97,11 @@ object LaserPeckerHelper {
     //数据返回超时时长, 毫秒
     const val DEFAULT_RECEIVE_TIMEOUT = 3_000L
 
-    //设备支持的分辨率
-    @Deprecated("请使用dpi")
+    //设备支持的分辨率, 请优先使用dpi
     const val PX_4K: Byte = 0x01
-
-    @Deprecated("请使用dpi")
     const val PX_2K: Byte = 0x02
-
-    @Deprecated("请使用dpi")
     const val PX_1_3K: Byte = 0x03
-
-    @Deprecated("请使用dpi")
     const val PX_1K: Byte = 0x04
-
-    @Deprecated("请使用dpi")
     const val PX_0_8K: Byte = 0x05
 
     //推荐DPI:
@@ -511,9 +502,6 @@ object LaserPeckerHelper {
             }
             LIII -> {
                 pxList.add(findPxInfo(DPI_254))
-                if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_355, true))
-                }
                 pxList.add(findPxInfo(DPI_508))
                 pxList.add(findPxInfo(DPI_889))
             }

@@ -46,7 +46,6 @@ data class PxInfo(
      * PX = 0x02 时 图片分辨率为2000*2000
      * PX = 0x01 时 图片分辨率为4000*4000
      * */
-    @Deprecated("已废弃")
     val px: Byte,
 
     /**显示的界面上的描述*/

@@ -182,7 +182,15 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             if (!isAllGCode) {
                 //并非全部是GCode数据
                 TransferDataPxItem()() {
-                    itemPxList = LaserPeckerHelper.findProductSupportPxList()
+                    itemPxList =
+                        if (laserPeckerModel.isL3() && laserPeckerModel.deviceSettingData.value?.zFlag == 1) {
+                            //L3 z轴打开的情况下, 取消4k 2023-1-4
+                            LaserPeckerHelper.findProductSupportPxList()
+                                .filter { it.px != LaserPeckerHelper.PX_4K }
+                        } else {
+                            LaserPeckerHelper.findProductSupportPxList()
+                        }
+
                     itemTransferConfigEntity = transferConfigEntity
 
                     observeItemChange {
