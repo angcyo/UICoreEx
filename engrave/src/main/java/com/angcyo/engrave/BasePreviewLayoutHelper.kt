@@ -111,6 +111,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {
                     onCalibrationAction = {
+                        pauseLoopCheckDeviceState = it == 1
                         syncQueryDeviceState { bean, error ->
                             if (error == null) {
                                 //刷新界面
@@ -169,8 +170,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     /**开始路径预览流程*/
     fun startPathPreview(projectDataBean: CanvasProjectItemBean?) {
         projectDataBean ?: return
+        pauseLoopCheckDeviceState = true
         viewHolder?.context?.pathPreviewDialog(projectDataBean) {
-
+            onDismissListener = {
+                pauseLoopCheckDeviceState = false
+            }
         }
     }
 

@@ -20,8 +20,9 @@ class ModuleCalibrationItem : BasePreviewItem() {
     /**是否校准完成*/
     var isModuleCalibration = lastIsModuleCalibration
 
-    /**开始对笔之前的回调*/
-    var onCalibrationAction: () -> Unit = {}
+    /**开始对笔之前的回调
+     * [state] 0:完成校准, 1:开始校准*/
+    var onCalibrationAction: (state: Int) -> Unit = {}
 
     init {
         itemLayoutId = R.layout.item_module_calibration_layout
@@ -33,9 +34,10 @@ class ModuleCalibrationItem : BasePreviewItem() {
                     lastIsModuleCalibration = it
                     isModuleCalibration = it
                     updateAdapterItem()
+                    onCalibrationAction(0)
                 }
             }
-            onCalibrationAction()
+            onCalibrationAction(1)
         }
     }
 

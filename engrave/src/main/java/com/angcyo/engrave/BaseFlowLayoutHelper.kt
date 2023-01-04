@@ -121,6 +121,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**是否循环检测设备状态*/
     var loopCheckDeviceState: Boolean = false
 
+    /**是否暂停循环查询状态, 暂停不会退出循环*/
+    var pauseLoopCheckDeviceState: Boolean = false
+
     init {
         iViewLayoutId = R.layout.canvas_engrave_flow_layout
     }
@@ -363,10 +366,14 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     fun delayLoopQueryDeviceState() {
         _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState { bean, error ->
-                if (error != null || loopCheckDeviceState) {
-                    //出现了错误, 继续查询
-                    delayLoopQueryDeviceState()
+            if (pauseLoopCheckDeviceState) {
+                delayLoopQueryDeviceState()
+            } else {
+                laserPeckerModel.queryDeviceState { bean, error ->
+                    if (error != null || loopCheckDeviceState) {
+                        //出现了错误, 继续查询
+                        delayLoopQueryDeviceState()
+                    }
                 }
             }
         }
