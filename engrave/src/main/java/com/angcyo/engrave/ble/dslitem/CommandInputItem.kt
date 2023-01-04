@@ -30,6 +30,9 @@ class CommandInputItem : DslAdapterItem(), IEditItem {
     private val inputValue: String
         get() = "${itemEditText ?: ""}".removeAll().uppercase()
 
+    /**过滤回调*/
+    var itemFilterAction: (CharSequence) -> Unit = {}
+
     init {
         itemLayoutId = R.layout.item_command_input_layout
     }
@@ -86,6 +89,10 @@ class CommandInputItem : DslAdapterItem(), IEditItem {
                     }
                 }
             }
+        }
+
+        itemHolder.click(R.id.filter_button) {
+            itemFilterAction(itemEditText ?: "")
         }
     }
 

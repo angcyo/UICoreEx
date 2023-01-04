@@ -6,6 +6,7 @@ import com.angcyo.engrave.R
 import com.angcyo.library.ex.copy
 import com.angcyo.library.ex.fullTime
 import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.extend.IFilterItem
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -15,7 +16,7 @@ import com.angcyo.widget.span.span
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/25
  */
-class CommandHistoryItem : DslAdapterItem() {
+class CommandHistoryItem : DslAdapterItem(), IFilterItem {
 
     /**指令记录*/
     var itemCommandEntity: CommandEntity? = null
@@ -71,4 +72,9 @@ class CommandHistoryItem : DslAdapterItem() {
             }
         }
     }
+
+    override fun containsFilterText(text: CharSequence): Boolean =
+        itemCommandEntity?.des?.contains(text) == true ||
+                itemCommandEntity?.result?.contains(text) == true ||
+                itemCommandEntity?.resultDes?.contains(text) == true
 }

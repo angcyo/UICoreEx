@@ -7,6 +7,7 @@ import com.angcyo.dsladapter.find
 import com.angcyo.engrave.ble.dslitem.CommandHistoryItem
 import com.angcyo.engrave.ble.dslitem.CommandInputItem
 import com.angcyo.engrave.ble.dslitem.CommandParseItem
+import com.angcyo.item.component.filterItem
 import com.angcyo.item.style.itemEditText
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
@@ -26,7 +27,11 @@ class CommandFragment : BaseDslFragment() {
 
     override fun onInitDslLayout(recyclerView: RecyclerView, dslAdapter: DslAdapter) {
         super.onInitDslLayout(recyclerView, dslAdapter)
-        dslAdapter.headerItems.add(CommandInputItem())
+        dslAdapter.headerItems.add(CommandInputItem().apply {
+            itemFilterAction = {
+                dslAdapter.filterItem("$it")
+            }
+        })
         dslAdapter.headerItems.add(CommandParseItem())
     }
 
