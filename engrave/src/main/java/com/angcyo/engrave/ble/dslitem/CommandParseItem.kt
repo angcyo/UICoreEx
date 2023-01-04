@@ -7,6 +7,7 @@ import com.angcyo.engrave.R
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.string
+import com.orhanobut.hawk.HawkValueParserHelper
 
 /**
  * 指令返回值解析
@@ -34,6 +35,15 @@ class CommandParseItem : DslAdapterItem() {
             val func = itemHolder.tv(R.id.func_edit_view).string().toHexInt()
             val state = itemHolder.tv(R.id.state_edit_view).string().toHexInt()
             itemHolder.tv(R.id.lib_text_view)?.text = "${text.parseResultPacketLog(func, state)}"
+        }
+
+        itemHolder.click(R.id.parse_hawk_button) {
+            val text = itemHolder.tv(R.id.lib_edit_view).string()
+            val key = itemHolder.tv(R.id.func_edit_view).string()
+            itemHolder.tv(R.id.lib_text_view)?.text = HawkValueParserHelper.parse(
+                key,
+                text
+            )
         }
     }
 

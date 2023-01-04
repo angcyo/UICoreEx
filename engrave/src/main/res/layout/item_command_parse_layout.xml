@@ -18,8 +18,7 @@
             style="@style/LibEditStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:digits="@string/lib_hex_digits"
-            android:hint="功能码(HEX)"
+            android:hint="功能码(HEX)/Hawk(key)"
             android:inputType="textWebEmailAddress"
             android:minHeight="@dimen/lib_min_item_height"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -44,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_ldpi"
+            android:hint="指令返回值/Hawk(value)"
             android:inputType="textWebEmailAddress"
             android:minHeight="@dimen/lib_min_item_height"
             app:layout_constraintTop_toBottomOf="@id/func_edit_view"
@@ -65,8 +65,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lib_hdpi"
             android:text="解析返回值"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lib_text_view" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/parse_hawk_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:text="解析Hawk"
+            app:layout_constraintLeft_toRightOf="@id/parse_result_button"
+            app:layout_constraintTop_toTopOf="@id/parse_result_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
