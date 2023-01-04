@@ -475,6 +475,7 @@ object CanvasBitmapHandler {
         val item = renderer.getRendererRenderItem() as? DataBitmapItem ?: return
         val context = anchor.context
         val originBitmap = item.originBitmap
+        val oldIsMesh = item.dataBean.isMesh
 
         context.canvasRegulateWindow2(anchor) {
             addRegulate(
@@ -509,6 +510,7 @@ object CanvasBitmapHandler {
                         CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
                         CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
                     )
+                    item.dataBean.isMesh = true //提前赋值
                     owner.engraveLoadingAsync({
                         originBitmap?.let {
                             ImageProcess.imageMesh(
@@ -527,7 +529,7 @@ object CanvasBitmapHandler {
                                 item.updateBitmapMesh(
                                     filter,
                                     CanvasConstant.DATA_MODE_BLACK_WHITE,
-                                    shape, minDiameter, maxDiameter, renderer
+                                    shape, minDiameter, maxDiameter, oldIsMesh, renderer
                                 )
                             })
                         }

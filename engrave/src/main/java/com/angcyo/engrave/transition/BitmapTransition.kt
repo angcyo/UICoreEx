@@ -19,8 +19,8 @@ import com.angcyo.engrave.data.BitmapPath
 import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
-import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.toGrayInt
@@ -352,7 +352,7 @@ class BitmapTransition : IEngraveTransition {
                     pxBitmap = BitmapGraphicsParser.handleDithering(pxBitmap, dataBean) ?: pxBitmap
 
                     if (!vmApp<LaserPeckerModel>().isSupportDithering()) {
-                        //不支持压缩数据
+                        //不支持压缩数据, 则使用灰度图处理
                         dataMode = CanvasConstant.DATA_MODE_GREY
                     }
                 }

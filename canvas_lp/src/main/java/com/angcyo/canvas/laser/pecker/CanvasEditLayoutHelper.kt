@@ -15,10 +15,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
-import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.drawRight
-import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.dsladapter.*
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.library.ex.*
@@ -40,15 +37,18 @@ object CanvasEditLayoutHelper {
         renderer: DataItemRenderer
     ) {
         val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
-        if (!closeImageEditItemsFun.have("_prints_")) {
-            CanvasControlItem2()() {
+        if (!closeImageEditItemsFun.have("_print_")) {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_PRINT
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                     }
@@ -56,14 +56,17 @@ object CanvasEditLayoutHelper {
             }
         }
         if (!closeImageEditItemsFun.have("_gcode_")) {
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_GCODE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
                     }
@@ -71,14 +74,17 @@ object CanvasEditLayoutHelper {
             }
         }
         if (!closeImageEditItemsFun.have("_bw_")) {
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handleBlackWhite(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_BW.umengEventValue()
                     }
@@ -86,14 +92,17 @@ object CanvasEditLayoutHelper {
             }
         }
         if (!closeImageEditItemsFun.have("_dithering_")) {
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_DITHERING
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handleDithering(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_DITHERING.umengEventValue()
                     }
@@ -102,12 +111,15 @@ object CanvasEditLayoutHelper {
         }
         if (isDebugType()) {
             if (!closeImageEditItemsFun.have("_grey_")) {
-                CanvasControlItem2()() {
+                CanvasImageFilterItem()() {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
+                    itemRenderer = renderer
+                    itemImageFilter = CanvasConstant.DATA_MODE_GREY
                     itemClick = {
                         CanvasBitmapHandler.handleGrey(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
                     }
@@ -115,14 +127,17 @@ object CanvasEditLayoutHelper {
             }
         }
         if (!closeImageEditItemsFun.have("_seal_")) {
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_SEAL
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handleSeal(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_SEAL.umengEventValue()
                     }
@@ -131,14 +146,17 @@ object CanvasEditLayoutHelper {
         }
         if (isDebugType() && !closeImageEditItemsFun.have("_mesh_")) {
             //扭曲
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_actions_ico
                 itemText = _string(R.string.canvas_mesh)
+                itemRenderer = renderer
+                itemIsMeshItem = true
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         CanvasBitmapHandler.handleMesh(it, fragment, renderer) {
-                            updateItemSelected(false)
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_MESH.umengEventValue()
                     }
@@ -148,7 +166,7 @@ object CanvasEditLayoutHelper {
         }
         if (!closeImageEditItemsFun.have("_crop_")) {
             //剪裁用的是原图
-            CanvasControlItem2()() {
+            CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_crop
                 itemText = _string(R.string.canvas_crop)
                 itemClick = {
