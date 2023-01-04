@@ -37,42 +37,6 @@ object CanvasEditLayoutHelper {
         renderer: DataItemRenderer
     ) {
         val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
-        if (!closeImageEditItemsFun.have("_print_")) {
-            CanvasImageFilterItem()() {
-                itemIco = R.drawable.canvas_bitmap_prints
-                itemText = _string(R.string.canvas_prints)
-                itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_PRINT
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
-                            itemIsSelected = false
-                            updateAllItemBy { it is CanvasImageFilterItem }
-                        }
-                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
-                    }
-                }
-            }
-        }
-        if (!closeImageEditItemsFun.have("_gcode_")) {
-            CanvasImageFilterItem()() {
-                itemIco = R.drawable.canvas_bitmap_gcode
-                itemText = _string(R.string.canvas_gcode)
-                itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_GCODE
-                itemClick = {
-                    updateItemSelected(!itemIsSelected)
-                    if (itemIsSelected) {
-                        CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
-                            itemIsSelected = false
-                            updateAllItemBy { it is CanvasImageFilterItem }
-                        }
-                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
-                    }
-                }
-            }
-        }
         if (!closeImageEditItemsFun.have("_bw_")) {
             CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
@@ -109,6 +73,25 @@ object CanvasEditLayoutHelper {
                 }
             }
         }
+        if (!closeImageEditItemsFun.have("_gcode_")) {
+            CanvasImageFilterItem()() {
+                itemIco = R.drawable.canvas_bitmap_gcode
+                itemText = _string(R.string.canvas_gcode)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_GCODE
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handleGCode(it, fragment, renderer) {
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
+                        }
+                        UMEvent.CANVAS_IMAGE_GCODE.umengEventValue()
+                    }
+                }
+            }
+        }
+
         if (isDebugType()) {
             if (!closeImageEditItemsFun.have("_grey_")) {
                 CanvasImageFilterItem()() {
@@ -122,6 +105,24 @@ object CanvasEditLayoutHelper {
                             updateAllItemBy { it is CanvasImageFilterItem }
                         }
                         UMEvent.CANVAS_IMAGE_GREY.umengEventValue()
+                    }
+                }
+            }
+        }
+        if (!closeImageEditItemsFun.have("_print_")) {
+            CanvasImageFilterItem()() {
+                itemIco = R.drawable.canvas_bitmap_prints
+                itemText = _string(R.string.canvas_prints)
+                itemRenderer = renderer
+                itemImageFilter = CanvasConstant.DATA_MODE_PRINT
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        CanvasBitmapHandler.handlePrint(it, fragment, renderer) {
+                            itemIsSelected = false
+                            updateAllItemBy { it is CanvasImageFilterItem }
+                        }
+                        UMEvent.CANVAS_IMAGE_PRINT.umengEventValue()
                     }
                 }
             }
