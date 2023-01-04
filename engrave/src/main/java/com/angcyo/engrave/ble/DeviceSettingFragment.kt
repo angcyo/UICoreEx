@@ -38,9 +38,16 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     companion object {
 
+        /**z轴的3中模式*/
         fun getZDirSegmentList() = if (vmApp<LaserPeckerModel>().isC1()) {
             //C1只有圆柱模式
             listOf(
+                _string(R.string.device_setting_tips_fourteen_10)
+            )
+        } else if (vmApp<LaserPeckerModel>().isL3()) {
+            //L3没有小车 2023-1-4
+            listOf(
+                _string(R.string.device_setting_tips_fourteen_8),
                 _string(R.string.device_setting_tips_fourteen_10)
             )
         } else {
@@ -93,8 +100,28 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         val productInfo = laserPeckerModel.productInfoData.value
         val isC1 = productInfo?.isCI() == true
+        val isL3 = productInfo?.isLIII() == true
         val isL4 = productInfo?.isLIV() == true
         val isC1CarFlag = isC1 && settingParser?.carFlag == 1
+
+        //是否需要z轴开关
+        var zEx = true
+        //是否需要r轴开关, 旋转轴
+        var rEx = isL4
+        //是否需要s轴开关, 滑台
+        var sEx = isL4
+        if (isC1CarFlag) {
+            //自动进入了移动平台模式
+            zEx = false
+            rEx = false
+            sEx = false
+        } else if (isC1) {
+            zEx = true
+            rEx = true
+        }
+        if (isC1) {
+            sEx = false
+        }
 
         renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
@@ -161,9 +188,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //第三轴
-            if (isC1CarFlag) {
-                //自动进入了移动平台模式
-            } else {
+            if (zEx) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_z_label)
                     itemDes = _string(R.string.device_ex_z_des)
@@ -203,9 +228,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //旋转轴
-            if (isC1CarFlag || !isL4) {
-                //自动进入了移动平台模式, 或者 非L4
-            } else {
+            if (rEx) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_r_label)
                     itemDes = _string(R.string.device_ex_r_des)
@@ -221,9 +244,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (isC1 || isC1CarFlag || !isL4) {
-
-            } else {
+            if (sEx) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_s_label)
                     itemDes = _string(R.string.device_ex_s_des)
@@ -239,9 +260,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (isC1 || isC1CarFlag || !isL4) {
-
-            } else {
+            if (sEx) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
                     itemDes = _string(R.string.device_s_batch_engrave_des)
@@ -257,10 +276,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            if (isC1CarFlag || settingParser == null) {
-                //自动进入了移动平台模式
-            } else {
-                if (settingParser.zFlag == 1) {
+            if (zEx && settingParser != null) {
+                /*if (settingParser.zFlag == 1) {
                     //Z轴的时候, 才有正转/反转
                     DslPropertySwitchItem()() {
                         itemLabel = _string(R.string.device_ex_direction_label)
@@ -273,7 +290,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                             settingParser.updateSetting()
                         }
                     }
-                }
+                }*/
             }
             //C1 移动平台雕刻模式
             if (isC1) {
