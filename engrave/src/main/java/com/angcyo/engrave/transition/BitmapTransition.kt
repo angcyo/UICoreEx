@@ -24,6 +24,7 @@ import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
+import com.angcyo.library.ex.toGrayHandle
 import com.angcyo.library.ex.toGrayInt
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -390,6 +391,14 @@ class BitmapTransition : IEngraveTransition {
                         } else {
                             0
                         }.toInt()
+
+                        if (dataBean.imageFilter == CanvasConstant.DATA_MODE_PRINT ||
+                            dataBean.imageFilter == CanvasConstant.DATA_MODE_SEAL
+                        ) {
+                            val bgColor = Color.WHITE
+                            pxBitmap = pxBitmap.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
+                        }
+
                         val listBitmapPath = handleBitmapPath(
                             pxBitmap,
                             LibHawkKeys.grayThreshold,
