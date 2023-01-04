@@ -112,7 +112,7 @@
     <string name="device_setting_act_des_security">有保护罩状态下自动开启安全模式</string>
     <string name="device_setting_act_model_free">自由模式</string>
     <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
-    <string name="device_setting_act_model_preview_g_code">向量图预览</string>
+    <string name="device_setting_act_model_preview_g_code">向量图</string>
     <string name="device_g_code_pwr_label">使用GCode指令功率</string>
     <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
     <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
@@ -163,8 +163,8 @@
     <string name="bracket_height_label">升降高度</string>
     <string name="bracket_not_connect">支架未连接</string>
 
-    <string name="range_preview">范围预览</string>
-    <string name="center_preview">显示中心点</string>
+    <string name="range_preview">范围</string>
+    <string name="center_preview">中心点</string>
     <string name="pause_preview">暂停</string>
     <string name="continue_preview">继续</string>
     <string name="scroll_preview">滚动</string>
