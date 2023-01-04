@@ -149,6 +149,9 @@ object HawkEngraveKeys {
     /**是否激活后台雕刻, 在雕刻中可以关闭页面*/
     var enableBackEngrave: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**是否关闭抖动算法, 强制使用灰度图片算法?*/
+    var forceGrey: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**需要关闭的功能
