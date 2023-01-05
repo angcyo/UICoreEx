@@ -142,10 +142,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     //禁用之前是否是编辑item
     var _disableBeforeIsEditItem = false
 
+    /**查找编辑item*/
+    fun DslViewHolder.findEditItem(): DslAdapterItem? {
+        val itemRecyclerView = v<RecyclerView>(R.id.canvas_item_view)
+        val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
+        return editItem
+    }
+
     /**禁止编辑item*/
     fun disableEditItem(vh: DslViewHolder, canvasView: CanvasView?, disable: Boolean) {
-        val itemRecyclerView = vh.v<RecyclerView>(R.id.canvas_item_view)
-        val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
+        val editItem = vh.findEditItem()
         if (editItem?.itemEnable == !disable) {
             return
         }
@@ -552,7 +558,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onCanvasUndoChanged(undoManager: CanvasUndoManager) {
                 super.onCanvasUndoChanged(undoManager)
-                updateUndoLayout(undoManager, false)
+                updateUndoLayout(undoManager, vh.findEditItem()?.itemEnable == false)
             }
 
             override fun onCanvasInterceptTouchEvent(
@@ -604,24 +610,32 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         needEdit: Boolean = true,
         visible: Boolean = true
     ) {
-        val itemRecyclerView = v<RecyclerView>(R.id.canvas_item_view)
-        val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
-        val edit = visible && needEdit
+        val editItem = findEditItem()
+        var renderEditItemList = visible && needEdit
+        var showLayout = visible
         editItem?.apply {
-            updateItemSelected(edit)
-            if (edit) {
-                if (_selectedCanvasItem != this) {
-                    cancelSelectedItem()
+            if (itemEnable) {
+                updateItemSelected(renderEditItemList)
+                if (renderEditItemList) {
+                    if (_selectedCanvasItem != this) {
+                        cancelSelectedItem()
+                    }
+                    _selectedCanvasItem = this
                 }
-                _selectedCanvasItem = this
+            } else {
+                renderEditItemList = false
             }
         }
 
         if (visible) {
-            if (needEdit && canvasView != null) {
-                //显示编辑控制布局
-                val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
-                renderSelectedItemEditControlLayout(this, canvasView, itemRenderer)
+            if (renderEditItemList) {
+                if (canvasView != null) {
+                    //显示编辑控制布局
+                    val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
+                    renderSelectedItemEditControlLayout(this, canvasView, itemRenderer)
+                }
+            } else {
+                showLayout = !needEdit
             }
         } else {
             //隐藏编辑控制
@@ -632,7 +646,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 //invisible(R.id.canvas_control_layout)
             }
             onCaptureEndValues = {
-                visible(R.id.canvas_control_layout, visible)
+                visible(R.id.canvas_control_layout, showLayout)
             }
         }
     }
