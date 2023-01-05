@@ -3,7 +3,6 @@ package com.angcyo.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
-import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -16,6 +15,7 @@ import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.resetAll
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.findLast
@@ -75,7 +75,7 @@ object EngraveHelper {
         materialList.resetAll(getProductMaterialList(vmApp<LaserPeckerModel>().productInfoData.value))
         unionMaterialList.clear()
         materialList.filterTo(unionMaterialList) { entity ->
-            unionMaterialList.find { it.key == entity.key } == null
+            unionMaterialList.find { it.key == entity.key && it.type == entity.type /*名称一样, 并且光源一样*/ } == null
         }
     }
 
@@ -139,14 +139,20 @@ object EngraveHelper {
         }
     }
 
-    /**获取材质列表*/
-    fun getMaterialList(materialKey: String?, dpiScale: Float): List<MaterialEntity> {
+    /**获取材质列表
+     * [type] 激光类型/光源 0:蓝光 1:白光, 不指定则都要
+     * [LaserPeckerHelper.LASER_TYPE_WHITE] 0x01 白光
+     * [LaserPeckerHelper.LASER_TYPE_BLUE] 0x00 蓝光
+     * */
+    fun getMaterialList(materialKey: String?, dpiScale: Float, type: Int?): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         materialList.forEach {
             if (it.key == materialKey) {
                 if (it.dpiScale <= 0 || it.dpiScale == dpiScale) {
                     //材质未指定dpi时, 可能是用户自定义的材质, 则返回
-                    result.add(it)
+                    if (type == null || type == it.type) {
+                        result.add(it)
+                    }
                 }
             }
         }
@@ -155,12 +161,15 @@ object EngraveHelper {
 
     /**获取材质在对应列表中的索引*/
     fun indexOfMaterial(materialList: List<MaterialEntity>, materialEntity: MaterialEntity): Int {
-        return indexOfMaterial(materialList, materialEntity.key)
+        return indexOfMaterial(materialList, materialEntity.key, materialEntity.type)
     }
 
-    /**获取材质在对应列表中的索引*/
-    fun indexOfMaterial(materialList: List<MaterialEntity>, materialKey: String?): Int {
-        val index = materialList.indexOfFirst { it.key == materialKey }
+    /**获取材质在对应列表中的索引
+     * [getMaterialList]
+     * */
+    fun indexOfMaterial(materialList: List<MaterialEntity>, materialKey: String?, type: Int?): Int {
+        val index =
+            materialList.indexOfFirst { it.key == materialKey && (type == null || type == it.type) }
         return max(0, index)
     }
 

@@ -400,7 +400,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemWheelList = EngraveHelper.unionMaterialList
                 itemSelectedIndex = EngraveHelper.indexOfMaterial(
                     EngraveHelper.unionMaterialList,
-                    projectItemBean?.materialKey
+                    projectItemBean?.materialKey,
+                    projectItemBean?.printType,
                 )
                 itemEngraveItemBean = projectItemBean
                 itemEngraveConfigEntity = engraveConfigEntity
@@ -554,11 +555,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemTag = MaterialEntity::name.name
                     itemLabelText = _string(R.string.custom_material)
                     itemWheelList = EngraveHelper.unionMaterialList
-                    itemSelectedIndex =
-                        EngraveHelper.indexOfMaterial(
-                            EngraveHelper.unionMaterialList,
-                            materialEntity
-                        )
+                    itemSelectedIndex = EngraveHelper.indexOfMaterial(
+                        EngraveHelper.unionMaterialList,
+                        materialEntity
+                    )
                     itemEngraveConfigEntity = engraveConfigEntity
 
                     itemSaveAction = {

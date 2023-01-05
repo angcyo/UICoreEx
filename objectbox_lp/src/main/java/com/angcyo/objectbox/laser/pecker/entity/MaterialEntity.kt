@@ -1,9 +1,11 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.tintDrawable
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.extend.IToDrawable
 import com.angcyo.library.extend.IToText
@@ -119,9 +121,13 @@ data class MaterialEntity(
     override fun toDrawable(): Drawable? {
         return if (isCustomMaterial) {
             _drawable(R.drawable.material_edit_ico)
-        } else {
-            null
-        }
+        } else if (type == 0x00) {
+            //蓝光
+            _drawable(R.drawable.material_laser_type_ico).tintDrawable(Color.BLUE)
+        } else if (type == 0x01) {
+            //白光
+            null //_drawable(R.drawable.material_laser_type_ico)
+        } else null
     }
 
 }

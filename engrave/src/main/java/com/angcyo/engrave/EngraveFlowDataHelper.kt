@@ -540,8 +540,11 @@ object EngraveFlowDataHelper {
     ): List<EngraveConfigEntity> {
         val result = mutableListOf<EngraveConfigEntity>()
         val dpiScale = getTransferConfig(taskId)?.dpi?.toDpiScale() ?: 1f
-        val materialList =
-            EngraveHelper.getMaterialList(materialKey ?: "custom", dpiScale) //各个图层的雕刻参数
+        val materialList = EngraveHelper.getMaterialList(
+            materialKey ?: "custom",
+            dpiScale,
+            defMaterial?.type
+        ) //各个图层的雕刻参数
         EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
         }//先移除旧的
