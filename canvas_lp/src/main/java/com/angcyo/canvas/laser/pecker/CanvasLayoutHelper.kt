@@ -57,6 +57,8 @@ import com.pixplicity.sharp.SharpDrawable
 class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     companion object {
+
+        /**tag 编辑item*/
         const val TAG_EDIT_ITEM = "tag_edit_item"
     }
 
@@ -137,6 +139,37 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         }
     }
 
+    //禁用之前是否是编辑item
+    var _disableBeforeIsEditItem = false
+
+    /**禁止编辑item*/
+    fun disableEditItem(vh: DslViewHolder, canvasView: CanvasView?, disable: Boolean) {
+        val itemRecyclerView = vh.v<RecyclerView>(R.id.canvas_item_view)
+        val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
+        if (editItem?.itemEnable == !disable) {
+            return
+        }
+
+        if (disable) {
+            //禁用
+            _disableBeforeIsEditItem = false
+            val item = _selectedCanvasItem
+            if (item != null && item.itemTag == TAG_EDIT_ITEM) {
+                _disableBeforeIsEditItem = true
+                selectedItemWith(vh, null, null)
+            }
+        }
+        editItem?.apply {
+            itemEnable = !disable
+            updateAdapterItem()
+        }
+        updateUndoLayout(canvasView?.canvasDelegate?.undoManager, disable)
+        if (!disable && _disableBeforeIsEditItem) {
+            //启用, 恢复之前的编辑状态
+            selectedItemWith(vh, canvasView, null)
+        }
+    }
+
     /**取消正在选中的项状态*/
     fun cancelSelectedItem() {
         _selectedCanvasItem?.updateItemSelected(false)
@@ -145,16 +178,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
     /**选中一个新的Item, 并取消之前选中的.
      * 互斥操作逻辑*/
-    fun selectedItemWith(vh: DslViewHolder, canvasView: CanvasView, item: DslAdapterItem?) {
-        if (_selectedCanvasItem == item) {
+    fun selectedItemWith(vh: DslViewHolder, canvasView: CanvasView?, item: DslAdapterItem?) {
+        if (_selectedCanvasItem != null && _selectedCanvasItem == item) {
             return
         }
         cancelSelectedItem()
         _selectedCanvasItem = item
 
         //取消选中后, 恢复是否需要编辑
-        if (item == null) {
-            val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
+        if (item == null || item.itemTag == TAG_EDIT_ITEM) {
+            val itemRenderer = canvasView?.canvasDelegate?.getSelectedRenderer()
             if (itemRenderer == null) {
                 vh.showControlLayout(canvasView, false, false)
             } else {
@@ -238,7 +271,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             }
             //
 
-            CanvasControlItem2()() {
+            CanvasControlItem2()() { //edit
                 itemIco = R.drawable.canvas_edit_ico
                 itemText = _string(R.string.canvas_edit)
                 itemEnable = true
@@ -519,19 +552,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
 
             override fun onCanvasUndoChanged(undoManager: CanvasUndoManager) {
                 super.onCanvasUndoChanged(undoManager)
-                _undoCanvasItem.apply {
-                    itemEnable = undoManager.canUndo()
-                    if (isShowDebug()) {
-                        itemTextSuperscript = "${undoManager.undoStack.size()}"
-                    }
-                }
-                _redoCanvasItem.apply {
-                    itemEnable = undoManager.canRedo()
-                    if (isShowDebug()) {
-                        itemTextSuperscript = "${undoManager.redoStack.size()}"
-                    }
-                }
-                _updateUndoLayout()
+                updateUndoLayout(undoManager, false)
             }
 
             override fun onCanvasInterceptTouchEvent(
@@ -574,21 +595,30 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     }
 
     /**隐藏/显示编辑控制布局
-     * [canvasView]
+     * [canvasView] 恢复编辑状态需要
      * [needEdit] 是否需要渲染编辑item
      * [visible] 隐藏/显示
      * */
     fun DslViewHolder.showControlLayout(
-        canvasView: CanvasView,
+        canvasView: CanvasView?,
         needEdit: Boolean = true,
         visible: Boolean = true
     ) {
         val itemRecyclerView = v<RecyclerView>(R.id.canvas_item_view)
         val editItem = itemRecyclerView?._dslAdapter?.findItemByTag(TAG_EDIT_ITEM)
-        editItem?.updateItemSelected(visible && needEdit)
+        val edit = visible && needEdit
+        editItem?.apply {
+            updateItemSelected(edit)
+            if (edit) {
+                if (_selectedCanvasItem != this) {
+                    cancelSelectedItem()
+                }
+                _selectedCanvasItem = this
+            }
+        }
 
         if (visible) {
-            if (needEdit) {
+            if (needEdit && canvasView != null) {
                 //显示编辑控制布局
                 val itemRenderer = canvasView.canvasDelegate.getSelectedRenderer()
                 renderSelectedItemEditControlLayout(this, canvasView, itemRenderer)
@@ -596,6 +626,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         } else {
             //隐藏编辑控制
         }
+        //转场动画
         dslTransition(itemView as ViewGroup) {
             onCaptureStartValues = {
                 //invisible(R.id.canvas_control_layout)
@@ -915,6 +946,24 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
     //</editor-fold desc="图层控制">
 
     //<editor-fold desc="Undo">
+
+    /**更新撤销回退item
+     * [disable] 是否强制禁用2个item*/
+    fun updateUndoLayout(undoManager: CanvasUndoManager?, disable: Boolean) {
+        _undoCanvasItem.apply {
+            itemEnable = if (disable) false else undoManager?.canUndo() == true
+            if (isShowDebug()) {
+                itemTextSuperscript = "${undoManager?.undoStack.size()}"
+            }
+        }
+        _redoCanvasItem.apply {
+            itemEnable = if (disable) false else undoManager?.canRedo() == true
+            if (isShowDebug()) {
+                itemTextSuperscript = "${undoManager?.redoStack.size()}"
+            }
+        }
+        _updateUndoLayout()
+    }
 
     /**undo redo*/
     fun _updateUndoLayout(viewHolder: DslViewHolder = engraveCanvasFragment.fragment._vh) {
