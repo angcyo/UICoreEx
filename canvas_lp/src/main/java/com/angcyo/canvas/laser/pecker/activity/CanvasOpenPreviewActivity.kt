@@ -235,7 +235,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             }
             return true
         } else if (path.isImageType()) {
-            //图片
+            //图片, 导入的图片不进行压缩处理
             adapter?.render {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
