@@ -39,7 +39,7 @@ class BluetoothSearchHelper {
         var last_search_time: Long = 0
 
         /**是否显示信号强度*/
-        var SHOW_RSSI = isDebugType()
+        var SHOW_RSSI = isDebug()
 
         /**联系客服*/
         var ON_CONTACT_ME_ACTION: Action? = null
@@ -65,7 +65,7 @@ class BluetoothSearchHelper {
     /**排序过滤器*/
     val sortFilter = SortAfterFilterInterceptor(true, false) {
         if (it is BluetoothConnectItem) {
-            it.itemUpdateFlag = true
+            it.itemUpdateFlag = it.itemIndexPosition() < 2
             it.itemFscDevice?.rssi
         } else {
             0
