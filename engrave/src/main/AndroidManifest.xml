@@ -29,11 +29,5 @@
                  <data android:mimeType="*/*" />
              </intent-filter>-->
         </activity>
-
-        <!--指令列表-->
-        <activity
-            android:name=".ble.CommandActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
     </application>
 </manifest>

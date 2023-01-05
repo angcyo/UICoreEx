@@ -15,6 +15,7 @@ import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
 import com.angcyo.objectbox.page
 
 /**
+ * 蓝牙指令发送记录
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/25
  */
