@@ -19,7 +19,7 @@
     },
     {
       "id": "2:8000287119433493370",
-      "lastPropertyId": "5:1827595186221278688",
+      "lastPropertyId": "6:6578179237067619056",
       "name": "DeviceConnectEntity",
       "properties": [
         {
@@ -47,6 +47,11 @@
           "id": "5:1827595186221278688",
           "name": "disconnectTime",
           "type": 6
+        },
+        {
+          "id": "6:6578179237067619056",
+          "name": "isAutoConnect",
+          "type": 1
         }
       ],
       "relations": []

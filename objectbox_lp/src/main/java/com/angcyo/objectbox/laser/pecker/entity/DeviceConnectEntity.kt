@@ -16,6 +16,9 @@ import io.objectbox.annotation.Id
 data class DeviceConnectEntity(
     @Id var entityId: Long = 0L,
 
+    /**是否是自动连接*/
+    var isAutoConnect: Boolean = false,
+
     /**设备连接的时间, 毫秒*/
     var connectTime: Long = nowTime(),
 
