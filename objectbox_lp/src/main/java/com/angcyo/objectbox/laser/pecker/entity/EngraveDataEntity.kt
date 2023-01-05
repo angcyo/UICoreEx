@@ -24,6 +24,10 @@ data class EngraveDataEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**蓝牙设备地址
+     * DC:0D:30:00:1F:60*/
+    var deviceAddress: String? = null,
+
     /**
      * 雕刻数据的索引
      * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.index]*/

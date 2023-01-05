@@ -29,6 +29,10 @@ data class TransferDataEntity(
      * L2 L3 L4等 */
     var productName: String? = null,
 
+    /**蓝牙设备地址
+     * DC:0D:30:00:1F:60*/
+    var deviceAddress: String? = null,
+
     //---
 
     /**数据, 纯数据. 不包含文件头. 此数据不入库, 通过文件路径的方式入库

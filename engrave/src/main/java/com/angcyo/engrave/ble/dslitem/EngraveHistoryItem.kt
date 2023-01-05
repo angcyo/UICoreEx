@@ -1,61 +1,48 @@
 package com.angcyo.engrave.ble.dslitem
 
+import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.engrave.dslitem.engrave.EngraveLabelItem
-import com.angcyo.engrave.toEngraveTime
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.or
-import com.angcyo.library.ex.toStr
-import com.angcyo.library.ex.visible
+import com.angcyo.item.data.LabelDesData
+import com.angcyo.library.ex.*
+import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
-import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
+import com.angcyo.widget.span.span
 
 /**
  * 雕刻历史item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/05
  */
-class EngraveHistoryItem : DslTagGroupItem() {
-
-    /**雕刻的数据实体*/
-    var itemEngraveDataEntity: EngraveDataEntity? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                itemTransferDataEntity = EngraveFlowDataHelper.getTransferData(value.index)
-                itemTransferDataEntity?.taskId?.let {
-                    itemEngraveConfigEntityList = EngraveFlowDataHelper.getTaskEngraveConfig(it)
-                }
-            }
-        }
+open class EngraveHistoryItem : DslTagGroupItem() {
 
     /**可视化的单位*/
     private val valueUnit = CanvasConstant.valueUnit
 
     private val mmValueUnit = MM_UNIT
 
-    /**传输的数据, 如果没有传输的数据, 说明数据不在本机产生, 则只能直接雕刻, 不能预览*/
-    var itemTransferDataEntity: TransferDataEntity? = null
+    /**传输的数据, 如果没有传输的数据*/
+    var itemTransferDataEntityList: List<TransferDataEntity>? = null
 
     /**雕刻的配置的数据*/
     var itemEngraveConfigEntityList: List<EngraveConfigEntity>? = null
 
     /**是否显示了所有*/
-    var _isShowAll = false
+    var _isShowDetail = false
 
     init {
         itemLayoutId = R.layout.item_engrave_history_layout
@@ -70,11 +57,13 @@ class EngraveHistoryItem : DslTagGroupItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        //文件名
-        val name = (itemTransferDataEntity?.name ?: itemEngraveDataEntity?.index?.toStr()).or()
-        itemHolder.tv(R.id.file_name_view)?.text = "${_string(R.string.engrave_file_name)}:${name}"
+        val lastEngraveDataEntity = itemTransferDataEntityList?.lastOrNull()
 
-        if (itemTransferDataEntity == null) {
+        //文件名
+        val name = lastEngraveDataEntity?.name.or()
+        itemHolder.tv(R.id.file_name_view)?.text = "${_string(R.string.engrave_file_name)}:$name"
+
+        if (itemTransferDataEntityList.isNullOrEmpty()) {
             //未在本机的雕刻历史//只能直接雕刻的数据
             itemHolder.visible(R.id.lib_image_view, false)
             itemHolder.visible(R.id.lib_flow_layout, false)
@@ -84,64 +73,66 @@ class EngraveHistoryItem : DslTagGroupItem() {
             itemHolder.visible(R.id.lib_image_view, true)
             itemHolder.visible(R.id.lib_flow_layout, true)
             itemHolder.tv(R.id.show_all_view)?.text =
-                if (_isShowAll) _string(R.string.hide_all_label) else _string(R.string.show_all_label)
+                if (_isShowDetail) _string(R.string.hide_all_label) else _string(R.string.show_all_label)
 
             //预览图
             val previewImagePath =
-                IEngraveTransition.getEngravePreviewBitmapPath(itemEngraveDataEntity?.index)
+                IEngraveTransition.getEngravePreviewBitmapPath(lastEngraveDataEntity?.index)
             itemHolder.img(R.id.lib_image_view)?.loadImage(previewImagePath)
 
             //图层信息
             val engraveConfigEntityList = itemEngraveConfigEntityList
             val itemList = mutableListOf<DslAdapterItem>()
-            /* 2022-12-28 不支持恢复任务雕刻, 所以只能显示一个图层
-            EngraveTransitionManager.engraveLayerList.forEach { layerInfo ->
-                engraveConfigEntityList?.find { it.layerMode == layerInfo.layerMode }
-                    ?.let { engraveConfigEntity ->
-                        itemList.add(EngraveLabelItem().apply {
-                            itemText = layerInfo.label
-                        })
-                        itemList.add(EngraveFinishInfoItem().apply {
-                            itemTaskId = engraveConfigEntity.taskId
-                            itemLayerMode = engraveConfigEntity.layerMode
-                        })
+
+            if (showAllEngraveLayerData()) {
+                EngraveTransitionManager.engraveLayerList.forEach { layerInfo ->
+                    val findData =
+                        itemTransferDataEntityList?.find { it.layerMode == layerInfo.layerMode }
+                    if (findData != null) {
+                        //对应的图层有对应的数据, 才显示对应的雕刻参数信息
+                        engraveConfigEntityList?.find { it.layerMode == layerInfo.layerMode }
+                            ?.let { engraveConfigEntity ->
+                                createEngraveConfig(itemList, engraveConfigEntity)
+                            }
                     }
-            }*/
-            //只能显示单个数据的信息
-            engraveConfigEntityList?.find { it.layerMode == itemTransferDataEntity?.layerMode }
-                ?.let { engraveConfigEntity ->
-                    itemList.add(EngraveLabelItem().apply {
-                        itemText =
-                            EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)?.label
-                    })
-                    itemList.add(EngraveFinishInfoItem().apply {
-                        itemTaskId = engraveConfigEntity.taskId
-                        itemLayerMode = engraveConfigEntity.layerMode
-                    })
                 }
+            } else {
+                //只能显示单个数据的信息
+                engraveConfigEntityList?.find { it.layerMode == lastEngraveDataEntity?.layerMode }
+                    ?.let { engraveConfigEntity ->
+                        createEngraveConfig(itemList, engraveConfigEntity)
+                    }
+            }
+
             itemHolder.visible(R.id.show_all_view, itemList.isNotEmpty())
             itemHolder.group(R.id.layer_wrap_layout)?.apply {
-                visible(itemList.isNotEmpty() && _isShowAll)
+                visible(itemList.isNotEmpty() && _isShowDetail)
                 if (itemList.isNotEmpty()) {
                     resetDslItem(itemList)
                 }
             }
 
             itemHolder.click(R.id.show_all_view) {
-                _isShowAll = !_isShowAll
+                _isShowDetail = !_isShowDetail
                 updateAdapterItem()
             }
         }
     }
 
     override fun initLabelDesList() {
-        val transferDataEntity = itemTransferDataEntity
+        val transferDataEntityList = itemTransferDataEntityList
+        val transferDataEntity = transferDataEntityList?.lastOrNull()
         val engraveConfigEntityList = itemEngraveConfigEntityList
         renderLabelDesList {
 
             if (transferDataEntity != null) {
                 transferDataEntity.productName?.let { name ->
-                    add(formatLabelDes(_string(R.string.device_models), name))
+                    add(
+                        formatLabelDes(
+                            _string(R.string.device_models),
+                            if (isDebug()) "${name}/${transferDataEntity.deviceAddress.or()}" else name
+                        )
+                    )
                 }
 
                 val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
@@ -175,12 +166,8 @@ class EngraveHistoryItem : DslTagGroupItem() {
                 }
             }
 
-            val startEngraveTime = itemEngraveDataEntity?.startTime ?: 0
-            val endEngraveTime = itemEngraveDataEntity?.finishTime ?: 0
-            if (endEngraveTime > 0 && startEngraveTime > 0 && endEngraveTime > startEngraveTime) {
-                val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
-                add(formatLabelDes(_string(R.string.work_time), engraveTime))
-            }
+            //时长
+            onInitEngraveTime(this)
 
             //---
 
@@ -212,5 +199,43 @@ class EngraveHistoryItem : DslTagGroupItem() {
             */
             //---
         }
+    }
+
+    /**是否要显示所有的图层雕刻参数信息*/
+    fun showAllEngraveLayerData(): Boolean = this is EngraveTaskHistoryItem
+
+    /**创建参数信息*/
+    fun createEngraveConfig(
+        list: MutableList<DslAdapterItem>,
+        engraveConfigEntity: EngraveConfigEntity
+    ) {
+        list.add(EngraveLabelItem().apply {
+            val label =
+                EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)?.label.or()
+            if (isDebug()) {
+                itemText = span {
+                    append(label)
+                    append(" ")
+                    MaterialEntity.createLaserTypeDrawable(
+                        engraveConfigEntity.type.toInt(),
+                        Color.WHITE
+                    )?.let {
+                        val size = 20 * dpi
+                        appendDrawable(it.setBounds(size, size))
+                    }
+                }
+            } else {
+                itemText = label
+            }
+        })
+        list.add(EngraveFinishInfoItem().apply {
+            itemTaskId = engraveConfigEntity.taskId
+            itemLayerMode = engraveConfigEntity.layerMode
+        })
+    }
+
+    /**雕刻时长, 或者雕刻任务的总时长*/
+    open fun onInitEngraveTime(list: MutableList<LabelDesData>) {
+
     }
 }

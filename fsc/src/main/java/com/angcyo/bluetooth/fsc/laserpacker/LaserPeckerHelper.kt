@@ -836,15 +836,14 @@ object LaserPeckerHelper {
         val apiModel = vmApp<FscBleApiModel>()
         var deviceAddress = address
         if (deviceAddress.isNullOrEmpty()) {
-            val deviceState = apiModel.lastDeviceState()
-            if (deviceState == null) {
+            deviceAddress = apiModel.lastDeviceAddress()
+            if (deviceAddress.isNullOrBlank()) {
                 action?.invoke(null, NoDeviceException(_string(R.string.blue_no_device_connected)))
                 return null
             }
-            deviceAddress = deviceState.device.address
         }
         return sendCommand(
-            deviceAddress!!,
+            deviceAddress,
             command,
             apiModel,
             progress,
@@ -855,7 +854,8 @@ object LaserPeckerHelper {
     /**初始化的蓝牙设备名称*/
     var initDeviceName: String? = null
 
-    /**初始化的蓝牙设备地址*/
+    /**初始化的蓝牙设备地址
+     * [lastDeviceAddress]*/
     var initDeviceAddress: String? = null
 
     /**发送初始化的指令, 读取设备的基础信息
@@ -991,6 +991,9 @@ object LaserPeckerHelper {
         }
         return VersionMatcher.matches(version, lpSupportFirmware)
     }
+
+    /**设备地址*/
+    fun lastDeviceAddress(): String? = initDeviceAddress
 
     //</editor-fold desc="packet">
 }

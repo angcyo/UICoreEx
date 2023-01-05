@@ -104,6 +104,19 @@ data class MaterialEntity(
          * */
         @Keep
         const val SPEED = "speed"
+
+        /**根据激光类型, 创建对应的[Drawable]
+         * [whiteColor] 白光的颜色*/
+        fun createLaserTypeDrawable(
+            type: Int?,
+            whiteColor: Int = "#efefef".toColorInt()
+        ): Drawable? = when (type) {
+            //蓝光
+            0x00 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(Color.BLUE)
+            //白光
+            0x01 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(whiteColor)
+            else -> null
+        }
     }
 
     /**是否是自定义的材质*/
@@ -118,12 +131,6 @@ data class MaterialEntity(
     override fun toDrawable(): Drawable? {
         return if (isCustomMaterial) {
             _drawable(R.drawable.material_edit_ico)
-        } else if (type == 0x00) {
-            //蓝光
-            _drawable(R.drawable.material_laser_type_ico).tintDrawable(Color.BLUE)
-        } else if (type == 0x01) {
-            //白光
-            _drawable(R.drawable.material_laser_type_ico).tintDrawable("#efefef".toColorInt())
-        } else null
+        } else createLaserTypeDrawable(type)
     }
 }

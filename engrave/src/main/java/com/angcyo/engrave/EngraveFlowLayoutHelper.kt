@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -504,7 +505,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
         //默认选中材质
         var materialEntity = EngraveFlowDataHelper.findTaskMaterial(taskId)
-        L.w("材质:${taskId} $materialEntity")
+        "材质:${taskId} $materialEntity".writeToLog(logLevel = L.WARN)
 
         //雕刻配置信息
         val engraveConfigEntity = if (materialEntity == null) {

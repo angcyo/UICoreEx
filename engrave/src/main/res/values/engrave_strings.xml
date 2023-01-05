@@ -104,6 +104,8 @@
     <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
 
     <string name="ui_slip_menu_history">History Documents</string>
+    <string name="device_history_title">Device data</string>
+    <string name="app_history_title">Local data</string>
     <string name="delete_history">Delete history</string>
     <string name="delete_history_succeed">Delete succeed</string>
 

@@ -550,6 +550,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**获取最后一个连接的设备*/
     fun lastDeviceState(): DeviceConnectState? = connectDeviceListData.value?.lastOrNull()
 
+    /**获取最后一台设备的地址*/
+    fun lastDeviceAddress(): String? = lastDeviceState()?.device?.address
+
     /**蓝牙是否正在连接, 或者已经连接*/
     fun isConnectState(device: FscDevice?): Boolean {
         val address = device?.address

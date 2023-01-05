@@ -206,7 +206,7 @@ object EngraveFlowDataHelper {
     }
 
     /**开始创建传输的数据*/
-    fun startCreateTransferData(taskId: String?) {
+    fun onStartCreateTransferData(taskId: String?) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
         }) {
@@ -221,7 +221,7 @@ object EngraveFlowDataHelper {
     }
 
     /**完成创建传输的数据*/
-    fun finishCreateTransferData(taskId: String?) {
+    fun onFinishCreateTransferData(taskId: String?) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
         }) {
@@ -379,16 +379,20 @@ object EngraveFlowDataHelper {
     /**通过指定的文件索引[index], 查询对应的传输数据, 反向获取对应的任务id,
      * 用来恢复雕刻任务
      * [taskId] 可以指定任务id, 也可以不指定. 不指定则从最后一个获取
+     * [deviceAddress] 指定某一台设备, 同一个索引, 有可能发送给多个机器
      * */
-    fun getTransferData(index: Int, taskId: String? = null): TransferDataEntity? {
+    fun getTransferData(
+        index: Int,
+        taskId: String? = null,
+        deviceAddress: String? = null
+    ): TransferDataEntity? {
         return TransferDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
-            if (taskId == null) {
-                apply(TransferDataEntity_.index.equal(index))
-            } else {
-                apply(
-                    TransferDataEntity_.taskId.equal("$taskId")
-                        .and(TransferDataEntity_.index.equal(index))
-                )
+            equal(TransferDataEntity_.index, index.toLong())
+            if (taskId != null) {
+                equalString(TransferDataEntity_.taskId, taskId)
+            }
+            if (deviceAddress != null) {
+                equalString(TransferDataEntity_.deviceAddress, deviceAddress)
             }
         }
     }
@@ -577,6 +581,9 @@ object EngraveFlowDataHelper {
                     diameterPixel = previewConfigEntity.diameterPixel
                 }
 
+                //设备地址
+                deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+
                 lpSaveEntity()
                 result.add(this)
             }
@@ -647,6 +654,8 @@ object EngraveFlowDataHelper {
             this.taskId = taskId
             this.layerMode = layerMode
 
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+
             //获取最后一次相同图层的雕刻参数
             val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
@@ -694,6 +703,8 @@ object EngraveFlowDataHelper {
             type = itemBean.printType?.toByte() ?: EngraveHelper.getProductLaserType()
             precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
 
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+
             lpSaveEntity()
         }
     }
@@ -731,7 +742,7 @@ object EngraveFlowDataHelper {
     }
 
     /**获取图层的雕刻配置*/
-    fun getTaskEngraveConfig(taskId: String?): List<EngraveConfigEntity> {
+    fun getTaskEngraveConfigList(taskId: String?): List<EngraveConfigEntity> {
         return EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
         }
@@ -739,7 +750,9 @@ object EngraveFlowDataHelper {
 
     /**构建或者获取一个雕刻任务实体*/
     fun generateEngraveTask(taskId: String?): EngraveTaskEntity {
-        return EngraveTaskEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
+        return EngraveTaskEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
+            apply(EngraveTaskEntity_.taskId.equal("$taskId"))
+        }) {
             this.taskId = taskId
 
             val indexList = getTransferDataList(taskId).mapTo(mutableListOf()) { "${it.index}" }
@@ -750,8 +763,9 @@ object EngraveFlowDataHelper {
                 }
             }
             dataIndexList = indexList
-        }) {
-            apply(EngraveTaskEntity_.taskId.equal("$taskId"))
+
+            //任务所属的设备地址
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
         }
     }
 
@@ -819,6 +833,7 @@ object EngraveFlowDataHelper {
         }) {
             this.taskId = taskId
             this.index = index
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
 
             progress = 0
             printTimes = 1
@@ -907,13 +922,19 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**通过索引列表, 获取所有雕刻的数据*/
-    fun getEngraveData(index: Int, fromDeviceHistory: Boolean): EngraveDataEntity? {
+    /**通过索引列表, 获取所有雕刻的数据
+     * [deviceAddress] 指定设备的地址, 也可以不指定*/
+    fun getEngraveData(
+        index: Int,
+        fromDeviceHistory: Boolean,
+        deviceAddress: String?
+    ): EngraveDataEntity? {
         return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
-            apply(
-                EngraveDataEntity_.index.equal(index)
-                    .and(EngraveDataEntity_.isFromDeviceHistory.equal(fromDeviceHistory))
-            )
+            equal(EngraveDataEntity_.index, index.toLong())
+            equal(EngraveDataEntity_.isFromDeviceHistory, fromDeviceHistory)
+            if (deviceAddress != null) {
+                equalString(EngraveDataEntity_.deviceAddress, deviceAddress)
+            }
         }
     }
 

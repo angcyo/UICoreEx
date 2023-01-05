@@ -196,7 +196,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "13:5141202310601434335",
+      "lastPropertyId": "14:7222560289421744271",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -264,6 +264,11 @@
           "id": "13:5141202310601434335",
           "name": "productName",
           "type": 9
+        },
+        {
+          "id": "14:7222560289421744271",
+          "name": "deviceAddress",
+          "type": 9
         }
       ],
       "relations": []
@@ -299,7 +304,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "21:4977247402785263802",
+      "lastPropertyId": "22:6715378607701468455",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -397,13 +402,18 @@
           "id": "21:4977247402785263802",
           "name": "originY",
           "type": 7
+        },
+        {
+          "id": "22:6715378607701468455",
+          "name": "deviceAddress",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "9:7843989811447012242",
-      "lastPropertyId": "8:370659478206589290",
+      "lastPropertyId": "9:5388753489429677370",
       "name": "EngraveDataEntity",
       "properties": [
         {
@@ -446,13 +456,18 @@
           "id": "8:370659478206589290",
           "name": "isFromDeviceHistory",
           "type": 1
+        },
+        {
+          "id": "9:5388753489429677370",
+          "name": "deviceAddress",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "15:1494318073643687543",
+      "lastPropertyId": "16:8095388992323307817",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -530,6 +545,11 @@
           "id": "15:1494318073643687543",
           "name": "currentProgress",
           "type": 5
+        },
+        {
+          "id": "16:8095388992323307817",
+          "name": "deviceAddress",
+          "type": 9
         }
       ],
       "relations": []

@@ -1,10 +1,11 @@
-package com.angcyo.engrave.ble
+package com.angcyo.engrave.ble.history
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
@@ -19,11 +20,10 @@ import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.engrave.*
-import com.angcyo.engrave.ble.dslitem.EngraveHistoryItem
+import com.angcyo.engrave.ble.dslitem.EngraveIndexHistoryItem
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
@@ -31,15 +31,13 @@ import com.angcyo.objectbox.ensureEntity
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
-import com.angcyo.objectbox.laser.pecker.lpBoxOf
-import com.angcyo.objectbox.page
 
 /**
- * 历史文档界面
+ * 设备历史文档界面
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/07/05
+ * @since 2023-1-5
  */
-class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
+class EngraveDeviceHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_history)
@@ -87,9 +85,6 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
 
     override fun onLoadData() {
         super.onLoadData()
-        if (isDebugType()) {
-            //loadEntityHistoryList()
-        }
         loadDeviceHistoryList()
     }
 
@@ -106,7 +101,11 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                     val resultList = mutableListOf<EngraveDataEntity>()
                     val taskId = uuid()
                     for (index in indexList) {
-                        val engraveData = EngraveFlowDataHelper.getEngraveData(index, false)
+                        val engraveData = EngraveFlowDataHelper.getEngraveData(
+                            index,
+                            false,
+                            LaserPeckerHelper.lastDeviceAddress()
+                        )
                         if (engraveData == null) {
                             if (HawkEngraveKeys.showDeviceHistory) {
                                 //如果本机app没有记录, 但是设备上有记录, 则创建一个新的实体
@@ -118,6 +117,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                                 }) {
                                     this.taskId = taskId
                                     this.index = index
+                                    deviceAddress = LaserPeckerHelper.lastDeviceAddress()
                                     isFromDeviceHistory = true
                                     resultList.add(this)
                                 }
@@ -135,20 +135,9 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         }
     }
 
-    /**加载app历史记录*/
-    fun loadEntityHistoryList() {
-        lpBoxOf(EngraveDataEntity::class) {
-            val list = page(page) {
-                //降序排列
-                orderDesc(EngraveDataEntity_.startTime)
-            }
-            loadDataEnd(list)
-        }
-    }
-
     /**加载结束, 渲染界面*/
     fun loadDataEnd(list: List<EngraveDataEntity>) {
-        loadDataEnd(EngraveHistoryItem::class.java, list) { bean ->
+        loadDataEnd(EngraveIndexHistoryItem::class.java, list) { bean ->
             val item = this
             itemEngraveDataEntity = bean
 
@@ -159,8 +148,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                         itemClick = {
                             //删除机器记录
                             FileModeCmd.deleteHistory(bean.index).enqueue { bean, error ->
-                                if (bean?.parse<FileTransferParser>()
-                                        ?.isFileDeleteSuccess() == true
+                                if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true
                                 ) {
                                     toastQQ(_string(R.string.delete_history_succeed))
 
@@ -213,7 +201,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
 
     /**雕刻布局*/
     val _engraveFlowLayoutHelper = HistoryEngraveFlowLayoutHelper().apply {
-        backPressedDispatcherOwner = this@EngraveHistoryFragment
+        backPressedDispatcherOwner = this@EngraveDeviceHistoryFragment
         clearFlowId()
     }
 
@@ -223,7 +211,7 @@ class EngraveHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
         get() = null
     override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
         get() = _engraveFlowLayoutHelper.apply {
-            engraveCanvasFragment = this@EngraveHistoryFragment
+            engraveCanvasFragment = this@EngraveDeviceHistoryFragment
         }
     override val flowLayoutContainer: ViewGroup?
         get() = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup

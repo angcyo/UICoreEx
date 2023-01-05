@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
@@ -161,7 +162,7 @@ class TransferModel : ViewModel() {
         doBack {
             //传输状态, 开始创建数据
             val transferState = TransferState(taskId, progress = -1)
-            EngraveFlowDataHelper.startCreateTransferData(taskId)
+            EngraveFlowDataHelper.onStartCreateTransferData(taskId)
             transferStateOnceData.postValue(transferState)
             val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
             val entityList = engraveTransitionManager.transitionTransferData(
@@ -169,7 +170,7 @@ class TransferModel : ViewModel() {
                 transferConfigEntity
             )//数据已入库, 可以直接在数据库中查询
             "创建传输数据[$taskId]:$entityList".writeToLog()
-            EngraveFlowDataHelper.finishCreateTransferData(taskId)
+            EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
             startTransferData(transferState.taskId)
         }
     }
@@ -358,7 +359,7 @@ class TransferModel : ViewModel() {
                                 append(" $transferDataEntity")
                             }.writeEngraveLog()
 
-                            val startTime = nowTime()
+                            val startTransferTime = nowTime()//开始传输的时间
                             dataCmd.enqueue(progress = {
                                 //进度
                                 val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
@@ -374,15 +375,19 @@ class TransferModel : ViewModel() {
                                 }
                             }) { bean, error ->
                                 val result = bean?.parse<FileTransferParser>()
-                                "传输结束:$result $error Success:${result?.isFileTransferSuccess()}".writeBleLog(
-                                    L.WARN
-                                )
+                                buildString {
+                                    append("传输结束:$result $error ")
+                                    append("Success:${result?.isFileTransferSuccess().toDC()}")
+                                }.writeBleLog(L.WARN)
+
                                 result?.let {
                                     if (result.isFileTransferSuccess()) {
                                         //文件传输完成
                                         val nowTime = nowTime()
-                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTime).toMsTime()}".writeEngraveLog()
+                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTransferTime).toMsTime()}".writeEngraveLog()
 
+                                        transferDataEntity.deviceAddress =
+                                            LaserPeckerHelper.lastDeviceAddress()
                                         transferDataEntity.isTransfer = true
                                         transferDataEntity.lpSaveEntity()
 

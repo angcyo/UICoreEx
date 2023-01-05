@@ -45,6 +45,10 @@ data class EngraveConfigEntity(
     /**产品名, 比如L4 C1等*/
     var productName: String? = null,
 
+    /**蓝牙设备地址
+     * DC:0D:30:00:1F:60*/
+    var deviceAddress: String? = null,
+
     /**外部设备名称
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_Z]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_R]

@@ -168,7 +168,10 @@ interface IEngraveTransition {
         transferDataEntity.name = transferConfigEntity.name
 
         //产品名
-        transferDataEntity.productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        vmApp<LaserPeckerModel>().productInfoData.value?.apply {
+            transferDataEntity.productName = name
+            transferDataEntity.deviceAddress = deviceAddress
+        }
 
         @MM
         val originWidth = mmValueUnit.convertPixelToValue(rotateBounds.width())

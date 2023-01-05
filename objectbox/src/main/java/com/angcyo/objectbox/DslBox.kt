@@ -13,12 +13,10 @@ import com.angcyo.library.model.Page
 import com.angcyo.objectbox.DslBox.Companion.default_package_name
 import com.angcyo.objectbox.DslBox.Companion.getBox
 import com.angcyo.objectbox.DslBox.Companion.getBoxStore
-import io.objectbox.Box
-import io.objectbox.BoxStore
-import io.objectbox.BoxStoreBuilder
-import io.objectbox.DebugFlags
+import io.objectbox.*
 import io.objectbox.android.Admin
 import io.objectbox.exception.DbException
+import io.objectbox.kotlin.equal
 import io.objectbox.kotlin.query
 import io.objectbox.query.QueryBuilder
 import io.objectbox.query.QueryCondition
@@ -337,14 +335,27 @@ inline fun <reified T : Any> KClass<T>.countBy(
     return boxOf(cls, packageName).query(block).count()
 }
 
-/**获取所有记录*/
+/**获取所有记录
+ * [KClass.page] 分页获取
+ * */
 fun <T> Box<T>.findAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return query(block).find()
 }
 
 /**
+ * [QueryBuilder.StringOrder.CASE_SENSITIVE] //区分大小写
+ * [QueryBuilder.StringOrder.CASE_INSENSITIVE] //不区分大小写
+ * */
+fun <T> QueryBuilder<T>.equalString(
+    property: Property<T>,
+    value: Any?,
+    order: QueryBuilder.StringOrder = QueryBuilder.StringOrder.CASE_INSENSITIVE
+): QueryBuilder<T> = equal(property, "${value ?: ""}", order)
+
+/**
  * box.query(User_.name.equal("Jane") and (User_.age.less(12) or User_.status.equal("child")))
- * [io.objectbox.query.QueryBuilder.apply]
+ * [io.objectbox.query.QueryBuilder.apply] //新方式
+ * [io.objectbox.query.QueryBuilder.equal] //旧方式
  * */
 fun <T> Box<T>.findAll(
     queryCondition: QueryCondition<T>? = null,
