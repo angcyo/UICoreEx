@@ -6,7 +6,6 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -213,47 +212,7 @@ class FscDeviceModel : LifecycleViewModel() {
                 }
 
                 laserPeckerModel.productInfoData.value?.let {
-                    if (it.isCI()) {
-                        //com/angcyo/bluetooth/fsc/laserpacker/parse/QueryStateParser.kt:81
-                        when (laserPeckerModel.deviceStateData.value?.moduleState) {
-                            //0 5W激光
-                            0 -> it.laserTypeList = listOf(
-                                LaserTypeInfo(
-                                    LaserPeckerHelper.LASER_TYPE_BLUE,
-                                    450,
-                                    5f,
-                                    _string(R.string.laser_type_blue)
-                                )
-                            )
-                            //1 10W激光
-                            1 -> it.laserTypeList = listOf(
-                                LaserTypeInfo(
-                                    LaserPeckerHelper.LASER_TYPE_BLUE,
-                                    450,
-                                    10f,
-                                    _string(R.string.laser_type_blue)
-                                )
-                            )
-                            //2 20W激光
-                            2 -> it.laserTypeList = listOf(
-                                LaserTypeInfo(
-                                    LaserPeckerHelper.LASER_TYPE_BLUE,
-                                    450,
-                                    20f,
-                                    _string(R.string.laser_type_blue)
-                                )
-                            )
-                            //3 1064激光
-                            3 -> it.laserTypeList = listOf(
-                                LaserTypeInfo(
-                                    LaserPeckerHelper.LASER_TYPE_WHITE,
-                                    1064,
-                                    2f,
-                                    _string(R.string.laser_type_white)
-                                )
-                            )
-                        }
-                    }
+                    LaserPeckerHelper.updateProductInfo(it, laserPeckerModel.deviceStateData.value)
                     EngraveHelper.initMaterial()
                 }
             }
