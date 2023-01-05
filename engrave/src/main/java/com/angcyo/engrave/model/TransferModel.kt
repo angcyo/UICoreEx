@@ -18,6 +18,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
@@ -154,6 +155,7 @@ class TransferModel : ViewModel() {
     @AnyThread
     fun startCreateTransferData(taskId: String?, canvasDelegate: CanvasDelegate) {
         //清空之前之前的所有传输数据
+        "开始创建传输数据[$taskId]".writeToLog()
         EngraveFlowDataHelper.removeTransferDataState(taskId)
         stopTransfer()
         doBack {
@@ -162,10 +164,11 @@ class TransferModel : ViewModel() {
             EngraveFlowDataHelper.startCreateTransferData(taskId)
             transferStateOnceData.postValue(transferState)
             val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
-            engraveTransitionManager.transitionTransferData(
+            val entityList = engraveTransitionManager.transitionTransferData(
                 canvasDelegate,
                 transferConfigEntity
             )//数据已入库, 可以直接在数据库中查询
+            "创建传输数据[$taskId]:$entityList".writeToLog()
             EngraveFlowDataHelper.finishCreateTransferData(taskId)
             startTransferData(transferState.taskId)
         }
@@ -178,24 +181,24 @@ class TransferModel : ViewModel() {
         stopTransfer()
         val transferState = TransferState(taskId, TransferState.TRANSFER_STATE_NORMAL, 0)
         _transferState = transferState
+        val list = EngraveFlowDataHelper.getTransferDataList(taskId)
+        EngraveFlowDataHelper.startTransferData(taskId, list)//检测数据
+        if (list.isEmpty()) {
+            //需要传输的数据为空, 是直接完成传输?还是空异常报错?
+            "传输数据为空:[${taskId}]".writeEngraveLog()
+            transferState.state = TransferState.TRANSFER_STATE_FINISH
+            transferState.error = EmptyException()
+            transferStateOnceData.postValue(transferState)
+            return
+        }
         doBack {
-            val list = EngraveFlowDataHelper.getTransferDataList(taskId)
-            EngraveFlowDataHelper.startTransferData(taskId, list)//检测数据
+            //开始传输
+            "准备传输任务:[${taskId}][${list.firstOrNull()?.name}][${list.connect { it.index.toStr() }}]".writeEngraveLog()
 
-            if (list.isEmpty()) {
-                //需要传输的数据为空, 是直接完成传输?还是空异常报错?
-                transferState.state = TransferState.TRANSFER_STATE_FINISH
-                transferState.error = EmptyException()
-                transferStateOnceData.postValue(transferState)
-            } else {
-                //开始传输
-                "准备传输任务:[${taskId}][${list.firstOrNull()?.name}][${list.connect { it.index.toStr() }}]".writeEngraveLog()
+            EngraveFlowDataHelper.clearTransferDataState(taskId)  //清空所有数据已经传输完成的状态, 从设备中读取判断
 
-                EngraveFlowDataHelper.clearTransferDataState(taskId)  //清空所有数据已经传输完成的状态, 从设备中读取判断
-
-                transferStateOnceData.postValue(transferState)
-                _transferNext(transferState)
-            }
+            transferStateOnceData.postValue(transferState)
+            _transferNext(transferState)
         }
     }
 

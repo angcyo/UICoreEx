@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.dslPermissions
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -27,13 +28,16 @@ import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
-import com.angcyo.library.*
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
+import com.angcyo.library.getAppVersionCode
+import com.angcyo.library.libCacheFile
+import com.angcyo.library.toast
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.span.span
@@ -251,15 +255,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * 在任务完成后清空id
      * */
     open fun generateFlowId(): String {
-        if (flowTaskId == null) {
+        val old = flowTaskId
+        if (old == null) {
             flowTaskId = uuid()
         }
+        "生成流程id[$old]->[$flowTaskId]".writeToLog()
         return flowTaskId!!
     }
 
     /**清空流程id*/
     open fun clearFlowId() {
-        L.i("清空流程id.")
+        "清空流程id[$flowTaskId]".writeToLog()
         flowTaskId = null
     }
 
