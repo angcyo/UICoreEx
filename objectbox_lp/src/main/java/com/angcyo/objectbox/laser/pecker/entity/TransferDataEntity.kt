@@ -48,7 +48,9 @@ data class TransferDataEntity(
 
     /**数据路径, 直接存储数据数据库会炸裂, 所以这里存储数据文本的路径.
      * 这个数据就是传输的字节数据
-     * [com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferDataPath]*/
+     * [com.angcyo.engrave.transition.EngraveTransitionManager.writeTransferDataPath]
+     * [ByteArray.writeTransferDataPath]
+     * */
     var dataPath: String? = null,
 
     /**下位机雕刻的数据类型
