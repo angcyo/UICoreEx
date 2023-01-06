@@ -550,7 +550,9 @@ object CanvasBitmapHandler {
         val context = anchor.context
         context.canvasRegulateWindow2(anchor) {
             val gcodeFillStepPixel = item.dataBean.gcodeFillStep
+            val fillAngle = item.dataBean.gcodeFillAngle
             addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
+            addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_ANGLE, fillAngle)
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
             firstApply = false
             onApplyAction = { dismiss ->
@@ -561,7 +563,11 @@ object CanvasBitmapHandler {
                         CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE,
                         gcodeFillStepPixel
                     )
-                    item.updatePathFill(gcodeFillStep, renderer)
+                    val gcodeFillAngle = getFloatOrDef(
+                        CanvasRegulatePopupConfig2.KEY_PATH_FILL_ANGLE,
+                        fillAngle
+                    )
+                    item.updatePathFill(gcodeFillStep, gcodeFillAngle, renderer)
                 }
             }
         }

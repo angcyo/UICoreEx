@@ -21,7 +21,6 @@ import com.angcyo.item.style.*
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
-import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -66,6 +65,9 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
         /**路径填充*/
         const val KEY_PATH_FILL_LINE_SPACE = "key_path_fill_line_space"
+
+        /**路径填充角度*/
+        const val KEY_PATH_FILL_ANGLE = "key_path_fill_angle"
 
         /**GCode线的角度*/
         const val KEY_ANGLE = "key_angle"
@@ -226,30 +228,23 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
             }
             //路径填充的线距
             if (regulateList.contains(KEY_PATH_FILL_LINE_SPACE)) {
-                CanvasSeekBarItem()() {
-                    itemInfoText = _string(R.string.canvas_path_fill_line_space) //0~20
-                    initItem()
-
-                    @MM
-                    val start = 0f
-                    val max = DEFAULT_LINE_SPACE
-                    val def = getFloatOrDef(KEY_PATH_FILL_LINE_SPACE, DEFAULT_LINE_SPACE)
-
-                    itemProgressTextFormatAction = {
-                        (start + (max - start) * it._progressFraction).canvasDecimal(3)
-                    }
-
-                    property[KEY_PATH_FILL_LINE_SPACE] = def
-                    itemSeekProgress = if (def == start) {
-                        0
-                    } else {
-                        ((def / (max - start)) * 100).toInt()
-                    }
-
-                    itemSeekTouchEnd = { value, fraction ->
-                        property[KEY_PATH_FILL_LINE_SPACE] = start + (max - start) * fraction
-                    }
-                }
+                renderSeekBarItem(
+                    KEY_PATH_FILL_LINE_SPACE,
+                    _string(R.string.canvas_path_fill_line_space),
+                    0f,
+                    0f,
+                    DEFAULT_LINE_SPACE
+                )
+            }
+            //路径填充的角度
+            if (regulateList.contains(KEY_PATH_FILL_ANGLE)) {
+                renderSeekBarItem(
+                    KEY_PATH_FILL_ANGLE,
+                    _string(R.string.canvas_path_fill_angle),
+                    0f,
+                    0f,
+                    360f
+                )
             }
 
             //黑白画
@@ -375,6 +370,37 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                     }
                 }
             }
+        }
+    }
+
+    /**渲染滑块*/
+    fun DslAdapter.renderSeekBarItem(
+        key: String,
+        label: CharSequence?,
+        defValue: Float = 0f,
+        minValue: Float = 0f,
+        maxValue: Float = 100f,
+        init: CanvasSeekBarItem.() -> Unit = {}
+    ) {
+        CanvasSeekBarItem()() { //路径填充的角度
+            itemInfoText = label
+            initItem()
+            val sum = maxValue - minValue
+
+            itemProgressTextFormatAction = {
+                (minValue + sum * it._progressFraction).canvasDecimal(1)
+            }
+
+            val def = getFloatOrDef(key, defValue)
+            val ratio = def / sum
+            itemSeekProgress = (ratio * 100).toInt()
+            property[key] = def
+
+            itemSeekTouchEnd = { value, fraction ->
+                property[key] = minValue + sum * fraction
+            }
+
+            init()
         }
     }
 
