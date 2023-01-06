@@ -139,10 +139,11 @@ class EngraveTransitionManager {
         fun getRendererList(
             canvasDelegate: CanvasDelegate,
             layerInfo: EngraveLayerInfo? = null,
-            sort: Boolean = false
+            sort: Boolean = false,
+            includeGroupSubItem: Boolean = true
         ): List<BaseItemRenderer<*>> {
             val rendererList = mutableListOf<BaseItemRenderer<*>>()
-            val selectList = canvasDelegate.getSelectedRendererList()
+            val selectList = canvasDelegate.getSelectedRendererList(includeGroupSubItem)
             if (selectList.isEmpty()) {
                 rendererList.addAll(canvasDelegate.itemsRendererList)
             } else {
@@ -172,10 +173,11 @@ class EngraveTransitionManager {
         fun getRendererListNot(
             canvasDelegate: CanvasDelegate,
             layerInfo: EngraveLayerInfo?,
-            sort: Boolean = false
+            sort: Boolean = false,
+            includeGroupSubItem: Boolean = true,
         ): List<BaseItemRenderer<*>> {
             val rendererList = mutableListOf<BaseItemRenderer<*>>()
-            val selectList = canvasDelegate.getSelectedRendererList()
+            val selectList = canvasDelegate.getSelectedRendererList(includeGroupSubItem)
             if (selectList.isEmpty()) {
                 rendererList.addAll(canvasDelegate.itemsRendererList)
             } else {

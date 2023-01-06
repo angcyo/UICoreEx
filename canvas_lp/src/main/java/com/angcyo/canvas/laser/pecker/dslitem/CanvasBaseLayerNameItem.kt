@@ -6,7 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.RenderParams
-import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.R
@@ -115,7 +115,7 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
     fun showItemRendererBounds() {
         itemRenderer?.let {
             val selectedRenderer = itemCanvasDelegate?.getSelectedRenderer()
-            if (selectedRenderer is SelectGroupRenderer) {
+            if (selectedRenderer is GroupRenderer) {
                 //no
             } else {
                 itemCanvasDelegate?.selectedItem(it)

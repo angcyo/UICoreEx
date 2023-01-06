@@ -1,7 +1,7 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.widget.LinearLayout
-import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.popup.MenuPopupConfig
 
@@ -20,7 +20,7 @@ class CanvasFlatItem : CanvasControlItem2() {
 
         itemClick = {
             itemRenderer?.let {
-                if (it is SelectGroupRenderer) {
+                if (it is GroupRenderer) {
                     it.updateFlat(itemFlat)
                 }
             }

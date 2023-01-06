@@ -366,7 +366,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             when (renderer) {
                 is DataItemRenderer -> renderer.getRendererRenderItem()?.toggleFlipX(renderer)
                 is SelectGroupRenderer -> itemCanvasDelegate?.apply {
-                    itemsOperateHandler.toggleFlipX(this, renderer.selectItemList)
+                    itemsOperateHandler.toggleFlipX(this, renderer.subItemList)
                 }
                 else -> toastQQ("nonsupport!")
             }
@@ -375,7 +375,7 @@ class CanvasEditControlItem : DslAdapterItem() {
             when (renderer) {
                 is DataItemRenderer -> renderer.getRendererRenderItem()?.toggleFlipY(renderer)
                 is SelectGroupRenderer -> itemCanvasDelegate?.apply {
-                    itemsOperateHandler.toggleFlipY(this, renderer.selectItemList)
+                    itemsOperateHandler.toggleFlipY(this, renderer.subItemList)
                 }
                 else -> toastQQ("nonsupport!")
             }

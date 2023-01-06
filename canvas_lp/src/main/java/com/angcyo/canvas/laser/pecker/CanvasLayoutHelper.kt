@@ -12,7 +12,7 @@ import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
-import com.angcyo.canvas.core.renderer.SelectGroupRenderer
+import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.graphics.*
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -489,6 +489,16 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
+            override fun onRenderItemListChanged(
+                itemList: List<BaseItemRenderer<*>>,
+                reason: Reason
+            ) {
+                super.onRenderItemListChanged(itemList, reason)
+                doMain {
+                    updateLayerListLayout(vh, canvasView)
+                }
+            }
+
             override fun onClearSelectItem(itemRenderer: IItemRenderer<*>) {
                 super.onClearSelectItem(itemRenderer)
                 doMain {
@@ -681,7 +691,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         itemRenderer
                     )
                 }
-            } else if (itemRenderer is SelectGroupRenderer) {
+            } else if (itemRenderer is GroupRenderer) {
                 renderGroupEditItems(engraveCanvasFragment.fragment, itemRenderer)
             } else {
                 //vh.showControlLayout(false)
@@ -940,7 +950,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         if (tabIndex == 0) {
             val canvasDelegate = canvasView.canvasDelegate
             //control
-            val list = canvasDelegate.getSelectedRendererList()
+            val list = canvasDelegate.getSelectedRendererList(false)
             vh.enable(R.id.layer_control_delete_view, list.isNotEmpty())
             vh.enable(R.id.layer_control_visible_view, list.isNotEmpty())
             vh.enable(R.id.layer_control_copy_view, list.isNotEmpty())

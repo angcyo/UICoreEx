@@ -66,7 +66,7 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //高亮选中的item
         itemIsSelected =
-            itemCanvasDelegate?.getSelectedRendererList()?.contains(itemRenderer) == true
+            itemCanvasDelegate?.getSelectedRendererList(false)?.contains(itemRenderer) == true
 
         itemHolder.visible(R.id.background_view, itemIsSelected)
         itemHolder.visible(R.id.layer_item_sort_view, itemSortAction != null)

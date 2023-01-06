@@ -6,12 +6,15 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
+import com.angcyo.canvas.Strategy
+import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.data.toPaintStyle
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.isJustGroupRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
@@ -378,12 +381,13 @@ object CanvasEditLayoutHelper {
 
     //region ---Group---
 
-    fun DslAdapter.renderGroupEditItems(fragment: AbsFragment, renderer: SelectGroupRenderer) {
+    /**群组, 多选*/
+    fun DslAdapter.renderGroupEditItems(fragment: AbsFragment, renderer: GroupRenderer) {
         //对齐
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_align_left_ico
             itemText = _string(R.string.canvas_align)
-            itemEnable = renderer.selectItemList.size >= 2//2个以上的元素才支持对齐
+            itemEnable = renderer.subItemList.size >= 2//2个以上的元素才支持对齐
             itemClick = {
                 fragment.context.menuPopupWindow(it) {
                     renderAdapterAction = {
@@ -442,7 +446,8 @@ object CanvasEditLayoutHelper {
         CanvasControlItem2()() {
             itemIco = R.drawable.canvas_flat_horizontal_svg
             itemText = _string(R.string.canvas_flat)
-            itemEnable = renderer.selectItemList.size >= 3//3个以上的元素才支持分布
+            itemEnable = renderer.subItemList.size >= 3//3个以上的元素才支持分布
+            drawCanvasRight()
             itemClick = {
                 fragment.context.menuPopupWindow(it) {
                     renderAdapterAction = {
@@ -460,6 +465,25 @@ object CanvasEditLayoutHelper {
                         }
                     }
                 }
+            }
+        }
+
+        //群组
+        CanvasControlItem2()() { //编组
+            itemIco = R.drawable.canvas_group_group_svg
+            itemText = _string(R.string.canvas_group_group)
+            itemEnable = renderer is SelectGroupRenderer
+            itemClick = {
+                renderer.canvasDelegate.groupGroup(renderer, Strategy.normal)
+            }
+        }
+        CanvasControlItem2()() { //解组
+            itemIco = R.drawable.canvas_group_dissolve_svg
+            itemText = _string(R.string.canvas_group_dissolve)
+            itemEnable = renderer.isJustGroupRenderer()
+            drawCanvasRight()
+            itemClick = {
+                renderer.canvasDelegate.groupDissolve(renderer, Strategy.normal)
             }
         }
     }

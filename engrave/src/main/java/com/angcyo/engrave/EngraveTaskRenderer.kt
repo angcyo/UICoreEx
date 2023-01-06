@@ -20,7 +20,7 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/12/12
  */
-class EngraveTaskRenderer(val canvasDelegate: CanvasDelegate) : BaseRenderer(canvasDelegate) {
+class EngraveTaskRenderer(canvasDelegate: CanvasDelegate) : BaseRenderer(canvasDelegate) {
 
     companion object {
 
