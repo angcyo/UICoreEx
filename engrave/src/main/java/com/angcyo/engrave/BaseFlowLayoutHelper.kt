@@ -64,8 +64,11 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         /**数据传输之前的配置*/
         const val ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG = ENGRAVE_FLOW_PREVIEW shl 1
 
+        /**自动开始传输数据, 并不会创建数据, 而是直接传输*/
+        const val ENGRAVE_FLOW_AUTO_TRANSFER = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG shl 1
+
         /**雕刻流程: 雕刻数据传输中...*/
-        const val ENGRAVE_FLOW_TRANSMITTING = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG shl 1
+        const val ENGRAVE_FLOW_TRANSMITTING = ENGRAVE_FLOW_AUTO_TRANSFER shl 1
 
         /**雕刻流程: 雕刻前的配置*/
         const val ENGRAVE_FLOW_BEFORE_CONFIG = ENGRAVE_FLOW_TRANSMITTING shl 1

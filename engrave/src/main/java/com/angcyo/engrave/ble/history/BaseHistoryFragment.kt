@@ -144,7 +144,13 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     open fun toEngrave(item: EngraveHistoryItem) {
         if (engraveFlowLayoutHelper.checkCanStartPreview(this)) {
             initEngraveHistoryFlowLayout(item)
-            engraveFlowLayoutHelper.engraveFlow = BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
+            engraveFlowLayoutHelper.engraveFlow = if (item is EngraveIndexHistoryItem) {
+                //机器数据, 数据一定存在
+                BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
+            } else {
+                //app的历史记录, 有可能没有传输数据
+                BaseFlowLayoutHelper.ENGRAVE_FLOW_AUTO_TRANSFER
+            }
             engraveFlowLayoutHelper.showIn(this)
         }
     }

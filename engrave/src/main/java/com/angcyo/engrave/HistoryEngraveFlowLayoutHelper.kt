@@ -54,7 +54,13 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
         }
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             //历史文档直接进入雕刻配置
-            engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
+            engraveFlow = if (appHistoryEngraveTaskEntity == null) {
+                //机器数据, 数据一定存在
+                ENGRAVE_FLOW_BEFORE_CONFIG
+            } else {
+                //app的历史记录, 有可能没有传输数据
+                ENGRAVE_FLOW_AUTO_TRANSFER
+            }
         } else if (to == ENGRAVE_FLOW_PREVIEW) {
             //预览界面, 创建预览信息, 并开始预览
             if (transferDataEntityList.isNullOrEmpty()) {

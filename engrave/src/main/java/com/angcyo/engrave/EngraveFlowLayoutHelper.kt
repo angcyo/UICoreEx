@@ -60,6 +60,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         when (engraveFlow) {
             ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemParamsConfig()
             ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
+            ENGRAVE_FLOW_AUTO_TRANSFER -> renderAutoTransfer()
             ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
             ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
             ENGRAVE_FLOW_ENGRAVING -> renderEngraving()
@@ -261,6 +262,17 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     fun startEngraveNext() {
         engraveFlow = ENGRAVE_FLOW_ENGRAVING
         engraveModel.startEngraveNext(flowTaskId)
+        renderFlowItems()
+    }
+
+    /**开始自动传输数据*/
+    fun renderAutoTransfer() {
+        val flowId = flowTaskId
+        onStartEngraveTransferData(flowId)
+        transferModel.startTransferData(flowId)
+
+        //last
+        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
         renderFlowItems()
     }
 
