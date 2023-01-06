@@ -179,21 +179,15 @@ object EngraveFlowDataHelper {
 
     /**构建一个简单的任务, 不需要传输数据, 直接雕刻指定索引的任务*/
     fun generateSingleTask(index: Int, taskId: String?): String? {
-        val engraveDataEntity = getEngraveDataEntity(taskId, index)
-        if (engraveDataEntity == null) {
-            EngraveDataEntity().apply {
-                //需要直接雕刻的索引
-                this.taskId = taskId
-                this.index = index
-                this.isFromDeviceHistory = true
-                lpSaveEntity()
-            }
-        } else {
-            engraveDataEntity.progress = 0
-            engraveDataEntity.printTimes = 1
-            engraveDataEntity.startTime = -1
-            engraveDataEntity.finishTime = -1
-            engraveDataEntity.lpSaveEntity()
+        val engraveDataEntity = getEngraveDataEntity(taskId, index) ?: EngraveDataEntity()
+        engraveDataEntity.apply {
+            //需要直接雕刻的索引
+            this.taskId = taskId
+            this.index = index
+            this.isFromDeviceHistory = true
+            this.deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+            engraveDataEntity.clearEngraveData()
+            lpSaveEntity()
         }
         return taskId
     }
@@ -795,8 +789,7 @@ object EngraveFlowDataHelper {
                 )
             }
             engraveData?.apply {
-                printTimes = 1 //重置打印次数
-                progress = 0 //清空打印进度
+                clearEngraveData()
                 lpSaveEntity()
             }
         }
@@ -834,11 +827,7 @@ object EngraveFlowDataHelper {
             this.taskId = taskId
             this.index = index
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
-
-            progress = 0
-            printTimes = 1
-            startTime = -1
-            finishTime = -1
+            clearEngraveData()
         }
     }
 

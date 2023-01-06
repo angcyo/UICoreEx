@@ -52,4 +52,13 @@ data class EngraveDataEntity(
 
     /**是否是来自设备历史的数据*/
     var isFromDeviceHistory: Boolean = false
-)
+) {
+
+    /**清空数据*/
+    fun clearEngraveData() {
+        printTimes = 1 //重置打印次数
+        progress = 0 //清空打印进度
+        startTime = -1
+        finishTime = -1
+    }
+}

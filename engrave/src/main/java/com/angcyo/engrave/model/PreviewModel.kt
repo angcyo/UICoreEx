@@ -16,12 +16,15 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveHelper
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.unit.toPixel
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmHoldDataNull
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 预览数据存储
@@ -82,19 +85,35 @@ class PreviewModel : LifecycleViewModel() {
         }
 
         /**创建一个预览信息*/
-        fun createPreviewInfo(transferDataEntity: TransferDataEntity?): PreviewInfo? {
-            transferDataEntity ?: return null
+        fun createPreviewInfo(list: List<TransferDataEntity>?): PreviewInfo? {
+            if (list.isNullOrEmpty()) return null
 
             val result = PreviewInfo()
 
             defaultPreviewInfo(result)
 
+            @MM
+            var left: Float? = null
+            var top: Float? = null
+            var right: Float? = null
+            var bottom: Float? = null
+
+            list.forEach {
+                val originX = it.originX ?: 0f
+                val originY = it.originY ?: 0f
+                val width = it.originWidth ?: 0f
+                val height = it.originHeight ?: 0f
+                val originRight = originX + width
+                val originBottom = originY + height
+
+                left = min(originX, left ?: originX)
+                top = min(originY, top ?: originY)
+                right = max(originRight, right ?: originRight)
+                bottom = max(originBottom, bottom ?: originBottom)
+            }
+
             @Pixel
-            val x = (transferDataEntity.originX ?: transferDataEntity.x.toFloat()).toPixel()
-            val y = (transferDataEntity.originY ?: transferDataEntity.y.toFloat()).toPixel()
-            val width = (transferDataEntity.originWidth ?: 0f).toPixel()
-            val height = (transferDataEntity.originHeight ?: 0f).toPixel()
-            val rect = RectF(x, y, x + width, y + height)
+            val rect = RectF(left.toPixel(), top.toPixel(), right.toPixel(), bottom.toPixel())
 
             result.originBounds = RectF(rect)
             result.rotateBounds = RectF(rect)

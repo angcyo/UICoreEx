@@ -105,9 +105,6 @@ object HawkEngraveKeys {
     /**工程预览图, 输出的大小*/
     var projectOutSize: Int by HawkPropertyValue<Any, Int>(600)
 
-    /**是否显示设备原始历史, 本机不存在也显示*/
-    var showDeviceHistory: Boolean by HawkPropertyValue<Any, Boolean>(false)
-
     /**激活传输数据时的索引检查*/
     var enableTransferIndexCheck: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

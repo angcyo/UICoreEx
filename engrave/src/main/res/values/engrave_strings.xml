@@ -108,6 +108,7 @@
     <string name="app_history_title">Local data</string>
     <string name="delete_history">Delete history</string>
     <string name="delete_history_succeed">Delete succeed</string>
+    <string name="delete_history_failed">Delete failed</string>
 
     <string name="ui_slip_menu_model">Mode Settings</string>
     <string name="ui_next">Next</string>

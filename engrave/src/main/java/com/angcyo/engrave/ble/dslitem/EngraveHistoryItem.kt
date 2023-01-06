@@ -8,11 +8,13 @@ import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.engrave.dslitem.engrave.EngraveLabelItem
+import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.*
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.unit.convertPixelToValueUnit
@@ -20,7 +22,10 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.dslViewHolder
+import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.base.resetDslItem
+import com.angcyo.widget.flow
 import com.angcyo.widget.span.span
 
 /**
@@ -65,20 +70,27 @@ open class EngraveHistoryItem : DslTagGroupItem() {
 
         if (itemTransferDataEntityList.isNullOrEmpty()) {
             //未在本机的雕刻历史//只能直接雕刻的数据
-            itemHolder.visible(R.id.lib_image_view, false)
+            itemHolder.visible(R.id.image_flow_layout, false)
             itemHolder.visible(R.id.lib_flow_layout, false)
             itemHolder.visible(R.id.layer_wrap_layout, false)
             itemHolder.visible(R.id.show_all_view, false)
         } else {
-            itemHolder.visible(R.id.lib_image_view, true)
+            itemHolder.visible(R.id.image_flow_layout, true)
             itemHolder.visible(R.id.lib_flow_layout, true)
             itemHolder.tv(R.id.show_all_view)?.text =
                 if (_isShowDetail) _string(R.string.hide_all_label) else _string(R.string.show_all_label)
 
             //预览图
-            val previewImagePath =
-                IEngraveTransition.getEngravePreviewBitmapPath(lastEngraveDataEntity?.index)
-            itemHolder.img(R.id.lib_image_view)?.loadImage(previewImagePath)
+            itemHolder.flow(R.id.image_flow_layout)
+                ?.resetChild(
+                    itemTransferDataEntityList,
+                    R.layout.layout_engrave_image
+                ) { itemView, item, itemIndex ->
+                    val viewHolder = itemView.dslViewHolder()
+                    val previewImagePath =
+                        IEngraveTransition.getEngravePreviewBitmapPath(item.index)
+                    viewHolder.img(R.id.lib_image_view)?.loadImage(previewImagePath)
+                }
 
             //图层信息
             val engraveConfigEntityList = itemEngraveConfigEntityList
@@ -135,34 +147,64 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                     )
                 }
 
+                //分辨率
                 val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
                 add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.des))
 
-                val originWidth = transferDataEntity.originWidth
-                val originHeight = transferDataEntity.originHeight
-                if (originWidth != null && originHeight != null) {
-                    add(
-                        formatLabelDes(
-                            _string(R.string.print_range),
-                            buildString {
-                                append(_string(R.string.width))
-                                append(
-                                    valueUnit.convertPixelToValueUnit(
-                                        mmValueUnit.convertValueToPixel(originWidth),
-                                        false
+                //尺寸
+                val transferDataSize = itemTransferDataEntityList.size()
+                if (transferDataSize == 1) {
+                    //只有1个时, 则显示实际的宽高
+                    val originWidth = transferDataEntity.originWidth
+                    val originHeight = transferDataEntity.originHeight
+                    if (originWidth != null && originHeight != null) {
+                        add(
+                            formatLabelDes(
+                                _string(R.string.print_range),
+                                buildString {
+                                    append(_string(R.string.width))
+                                    append(
+                                        valueUnit.convertPixelToValueUnit(
+                                            mmValueUnit.convertValueToPixel(originWidth),
+                                            false
+                                        )
                                     )
-                                )
-                                append(" ")
-                                append(_string(R.string.height))
-                                append(
-                                    valueUnit.convertPixelToValueUnit(
-                                        mmValueUnit.convertValueToPixel(originHeight),
-                                        false
+                                    append(" ")
+                                    append(_string(R.string.height))
+                                    append(
+                                        valueUnit.convertPixelToValueUnit(
+                                            mmValueUnit.convertValueToPixel(originHeight),
+                                            false
+                                        )
                                     )
-                                )
-                            }
+                                }
+                            )
                         )
-                    )
+                    }
+                } else if (transferDataSize > 1) {
+                    //有多个数据时, 显示旋转后的实际宽高
+                    @Pixel
+                    val previewInfo = PreviewModel.createPreviewInfo(transferDataEntityList)
+                    val previewWidth = previewInfo?.rotateBounds?.width()
+                    val previewHeight = previewInfo?.rotateBounds?.height()
+                    if (previewWidth != null && previewHeight != null) {
+                        add(
+                            formatLabelDes(
+                                _string(R.string.print_range),
+                                buildString {
+                                    append(_string(R.string.width))
+                                    append(
+                                        valueUnit.convertPixelToValueUnit(previewWidth, false)
+                                    )
+                                    append(" ")
+                                    append(_string(R.string.height))
+                                    append(
+                                        valueUnit.convertPixelToValueUnit(previewHeight, false)
+                                    )
+                                }
+                            )
+                        )
+                    }
                 }
             }
 

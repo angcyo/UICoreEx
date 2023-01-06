@@ -3,6 +3,7 @@ package com.angcyo.engrave
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 
@@ -13,31 +14,40 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  */
 class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
 
-    /**历史雕刻的数据*/
-    var historyEngraveDataEntity: EngraveDataEntity? = null
+    /**设备历史雕刻的数据*/
+    var deviceHistoryEngraveDataEntity: EngraveDataEntity? = null
         set(value) {
             field = value
             clearFlowId()
-            if (value != null) {
-                itemTransferDataEntity =
-                    EngraveFlowDataHelper.getTransferData(value.index, value.taskId)
-            }
         }
 
-    /**传输的数据*/
-    private var itemTransferDataEntity: TransferDataEntity? = null
+    /**app历史雕刻的数据*/
+    var appHistoryEngraveTaskEntity: EngraveTaskEntity? = null
+        set(value) {
+            field = value
+            clearFlowId()
+        }
+
+    /**传输的数据, 如果没有传输的数据
+     * [deviceHistoryEngraveDataEntity] or [appHistoryEngraveTaskEntity] 赋值一个
+     * 这个属性一定要赋值, 用来生成预览bounds
+     * */
+    var transferDataEntityList: List<TransferDataEntity>? = null
 
     override fun onEngraveFlowChanged(from: Int, to: Int) {
-        historyEngraveDataEntity?.let { entity ->
+        deviceHistoryEngraveDataEntity?.let { entity ->
             //使用数据索引, 创建一个雕刻任务id
             if (to > 0 && flowTaskId == null) {
-                flowTaskId = if (itemTransferDataEntity == null) {
+                flowTaskId = if (transferDataEntityList.isNullOrEmpty()) {
                     //不在本机传输的数据
                     EngraveFlowDataHelper.generateSingleTask(entity.index, entity.taskId)
                 } else {
                     EngraveFlowDataHelper.generateTask(entity.index, entity.taskId)
                 }
             }
+        }
+        appHistoryEngraveTaskEntity?.let {
+            flowTaskId = it.taskId
         }
         if (to != ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             super.onEngraveFlowChanged(from, to)
@@ -47,23 +57,25 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
             engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
         } else if (to == ENGRAVE_FLOW_PREVIEW) {
             //预览界面, 创建预览信息, 并开始预览
-            if (itemTransferDataEntity == null) {
+            if (transferDataEntityList.isNullOrEmpty()) {
                 //不在本机传输的数据, 则直接进入雕刻配置界面
                 engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
             } else {
-                previewModel.startPreview(PreviewModel.createPreviewInfo(itemTransferDataEntity))
+                previewModel.startPreview(PreviewModel.createPreviewInfo(transferDataEntityList))
             }
         }
     }
 
     override fun onStartEngrave(taskId: String?) {
         super.onStartEngrave(taskId)
-        EngraveFlowDataHelper.getEngraveDataEntity(taskId)?.let {
-            it.printTimes = 0
-            it.progress = 0
-            it.startTime = -1
-            it.finishTime = -1
-            it.lpSaveEntity()
+        if (appHistoryEngraveTaskEntity == null) {
+            EngraveFlowDataHelper.getEngraveDataEntity(taskId)?.let {
+                it.clearEngraveData()
+                it.lpSaveEntity()
+            }
+        } else {
+            //清除缓存状态数据
+            EngraveFlowDataHelper.againEngrave(appHistoryEngraveTaskEntity?.taskId)
         }
     }
 
