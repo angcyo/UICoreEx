@@ -5,7 +5,7 @@ import android.view.Gravity
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.R
 import com.angcyo.canvas.core.RenderParams
-import com.angcyo.canvas.core.renderer.BaseRenderer
+import com.angcyo.canvas.core.renderer.BaseOverlayRenderer
 import com.angcyo.canvas.graphics.dataItemIndex
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.utils.createPaint
@@ -20,7 +20,7 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/12/12
  */
-class EngraveTaskRenderer(canvasDelegate: CanvasDelegate) : BaseRenderer(canvasDelegate) {
+class EngraveTaskRenderer(canvasDelegate: CanvasDelegate) : BaseOverlayRenderer(canvasDelegate) {
 
     companion object {
 
