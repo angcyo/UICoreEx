@@ -6,6 +6,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.engrave.model.PreviewModel
@@ -27,6 +28,7 @@ import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.flow
 import com.angcyo.widget.span.span
+import kotlin.math.min
 
 /**
  * 雕刻历史item
@@ -77,18 +79,31 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         } else {
             itemHolder.visible(R.id.image_flow_layout, true)
             itemHolder.visible(R.id.lib_flow_layout, true)
+
+            val dataSize = itemTransferDataEntityList.size()
             itemHolder.tv(R.id.show_all_view)?.text =
-                if (_isShowDetail) _string(R.string.hide_all_label) else _string(R.string.show_all_label)
+                if (_isShowDetail) _string(R.string.hide_all_label) else {
+                    if (dataSize > HawkEngraveKeys.maxShowTransferImageCount) {
+                        "${_string(R.string.show_all_label)}(${dataSize})"
+                    } else {
+                        _string(R.string.show_all_label)
+                    }
+                }
 
             //预览图
+            val showItemCount = if (_isShowDetail) dataSize else min(
+                dataSize,
+                HawkEngraveKeys.maxShowTransferImageCount
+            ) //没有显示详情的情况下, 最多显示3个
             itemHolder.flow(R.id.image_flow_layout)
                 ?.resetChild(
-                    itemTransferDataEntityList,
+                    showItemCount,
                     R.layout.layout_engrave_image
-                ) { itemView, item, itemIndex ->
+                ) { itemView, itemIndex ->
+                    val item = itemTransferDataEntityList?.getOrNull(itemIndex)
                     val viewHolder = itemView.dslViewHolder()
                     val previewImagePath =
-                        IEngraveTransition.getEngravePreviewBitmapPath(item.index)
+                        IEngraveTransition.getEngravePreviewBitmapPath(item?.index)
                     viewHolder.img(R.id.lib_image_view)?.loadImage(previewImagePath)
                 }
 

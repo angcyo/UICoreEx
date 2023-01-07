@@ -185,6 +185,9 @@ object HawkEngraveKeys {
     @Pixel
     var maxTextSize: Float by HawkPropertyValue<Any, Float>(500f)
 
+    /**最大显示传输文件预览图的数量*/
+    var maxShowTransferImageCount: Int by HawkPropertyValue<Any, Int>(3)
+
     //---功能固件范围配置---
 
     /**
