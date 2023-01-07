@@ -21,10 +21,12 @@ import com.hingin.umeng.umengEventValue
 abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
     override fun renderFlowItems() {
-        when (engraveFlow) {
-            ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG -> renderPreviewBeforeItems()
-            ENGRAVE_FLOW_PREVIEW -> renderPreviewItems()
-            else -> super.renderFlowItems()
+        if (isAttach()) {
+            when (engraveFlow) {
+                ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG -> renderPreviewBeforeItems()
+                ENGRAVE_FLOW_PREVIEW -> renderPreviewItems()
+                else -> super.renderFlowItems()
+            }
         }
     }
 

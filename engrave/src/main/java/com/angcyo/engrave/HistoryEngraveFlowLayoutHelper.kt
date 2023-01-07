@@ -1,5 +1,6 @@
 package com.angcyo.engrave
 
+import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -54,12 +55,22 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
         }
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
             //历史文档直接进入雕刻配置
-            engraveFlow = if (appHistoryEngraveTaskEntity == null) {
-                //机器数据, 数据一定存在
-                ENGRAVE_FLOW_BEFORE_CONFIG
+            if (from == ENGRAVE_FLOW_TRANSMITTING &&
+                transferModel._transferState?.state == TransferState.TRANSFER_STATE_CANCEL
+            ) {
+                //传输数据被取消, 则直接关闭页面
+                engraveBackFlow = 0
+                engraveFlow = -1
+                cancelable = true
+                back()
             } else {
-                //app的历史记录, 有可能没有传输数据
-                ENGRAVE_FLOW_AUTO_TRANSFER
+                engraveFlow = if (appHistoryEngraveTaskEntity == null) {
+                    //机器数据, 数据一定存在
+                    ENGRAVE_FLOW_BEFORE_CONFIG
+                } else {
+                    //app的历史记录, 有可能没有传输数据
+                    ENGRAVE_FLOW_AUTO_TRANSFER
+                }
             }
         } else if (to == ENGRAVE_FLOW_PREVIEW) {
             //预览界面, 创建预览信息, 并开始预览

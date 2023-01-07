@@ -259,7 +259,10 @@ class TransferModel : ViewModel() {
     fun _transferNext(transferState: TransferState) {
         val taskId: String? = transferState.taskId
         val transferDataEntity = EngraveFlowDataHelper.getNeedTransferData(taskId)
-        if (transferDataEntity == null) {
+        if (transferState.state == TransferState.TRANSFER_STATE_CANCEL) {
+            //
+            "传输被取消[${taskId}]:$transferState".writeEngraveLog()
+        } else if (transferDataEntity == null) {
             //全部传输完成
             _transferFinish(transferState)
         } else {

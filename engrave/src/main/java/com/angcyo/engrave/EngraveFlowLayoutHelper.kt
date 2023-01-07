@@ -57,15 +57,17 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     val transferModel = vmApp<TransferModel>()
 
     override fun renderFlowItems() {
-        when (engraveFlow) {
-            ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemParamsConfig()
-            ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
-            ENGRAVE_FLOW_AUTO_TRANSFER -> renderAutoTransfer()
-            ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
-            ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
-            ENGRAVE_FLOW_ENGRAVING -> renderEngraving()
-            ENGRAVE_FLOW_FINISH -> renderEngraveFinish()
-            else -> super.renderFlowItems()
+        if (isAttach()) {
+            when (engraveFlow) {
+                ENGRAVE_FLOW_ITEM_CONFIG -> renderEngraveItemParamsConfig()
+                ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG -> renderTransferConfig()
+                ENGRAVE_FLOW_AUTO_TRANSFER -> renderAutoTransfer()
+                ENGRAVE_FLOW_TRANSMITTING -> renderTransmitting()
+                ENGRAVE_FLOW_BEFORE_CONFIG -> renderEngraveConfig()
+                ENGRAVE_FLOW_ENGRAVING -> renderEngraving()
+                ENGRAVE_FLOW_FINISH -> renderEngraveFinish()
+                else -> super.renderFlowItems()
+            }
         }
     }
 

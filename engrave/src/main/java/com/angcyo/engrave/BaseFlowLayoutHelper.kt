@@ -369,6 +369,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**根据不同的流程, 渲染不同的界面*/
     open fun renderFlowItems() {
         //no op
+        if (isAttach()) {
+            //
+        }
     }
 
     /**持续检查工作作态*/
