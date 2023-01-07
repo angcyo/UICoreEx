@@ -403,15 +403,16 @@ object CanvasBitmapHandler {
                     onDismissAction()
                 } else {
                     owner.engraveLoadingAsync({
-                        item.dataBean.sealThreshold = getIntOrDef(
+                        val threshold = getIntOrDef(
                             CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD,
                             item.dataBean.sealThreshold.toInt()
-                        ).toFloat()
+                        )
+                        item.dataBean.sealThreshold = threshold.toFloat()
                         operateBitmap.let { bitmap ->
                             OpenCV.bitmapToSeal(
                                 context,
-                                bitmap.toGrayHandle(Color.WHITE),
-                                item.dataBean.sealThreshold.toInt()
+                                bitmap.toBlackWhiteHandle(threshold, alphaBgColor = Color.WHITE),
+                                threshold
                             )
                         }
                     }) {
