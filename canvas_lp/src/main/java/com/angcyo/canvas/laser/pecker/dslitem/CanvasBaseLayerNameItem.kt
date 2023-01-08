@@ -30,7 +30,7 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
 
     var itemRenderer: BaseItemRenderer<*>? = null
 
-    val itemRenderParams = RenderParams(false)
+    val itemRenderParams = RenderParams(false, isPreview = true)
 
     //endregion ---core---
 

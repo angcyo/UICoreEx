@@ -438,8 +438,12 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onRenderItemVisibleChanged(itemRenderer: IRenderer, visible: Boolean) {
-                super.onRenderItemVisibleChanged(itemRenderer, visible)
+            override fun onRenderItemVisibleChanged(
+                itemRenderer: IRenderer,
+                visible: Boolean,
+                strategy: Strategy
+            ) {
+                super.onRenderItemVisibleChanged(itemRenderer, visible, strategy)
                 doMain {
                     updateLayerLayout(vh, canvasView)
                 }

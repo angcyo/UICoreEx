@@ -45,7 +45,11 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
                             itemLayerName = dataBean.name
                         }
                         itemRenderer?.let {
-                            itemCanvasDelegate?.dispatchItemVisibleChanged(it, it.isVisible())
+                            itemCanvasDelegate?.dispatchItemVisibleChanged(
+                                it,
+                                it.isVisible(),
+                                Strategy.preview
+                            )
                         }
                         updateAdapterItem()
                         false
