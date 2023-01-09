@@ -40,6 +40,11 @@ data class EngraveTaskEntity(
      * */
     var dataIndexList: List<String>? = null,
 
+    /**是否激活了[com.angcyo.engrave.data.HawkEngraveKeys.enableItemEngraveParams]
+     * 决定了雕刻参数的获取方式
+     * [com.angcyo.engrave.EngraveFlowDataHelper.getEngraveConfig(java.lang.Integer)]*/
+    var enableItemEngraveParams: Boolean = false,
+
     //---
 
     /**

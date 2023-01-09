@@ -278,6 +278,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             finishTime = -1
             currentIndex = -1
             state = ENGRAVE_STATE_START
+
+            //雕刻参数获取方式
+            enableItemEngraveParams = HawkEngraveKeys.enableItemEngraveParams
             lpSaveEntity()
 
             _engraveTaskId = task.taskId
@@ -353,7 +356,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
 
             //雕刻配置数据
-            val engraveConfigEntity = if (HawkEngraveKeys.enableItemEngraveParams) {
+            val engraveConfigEntity = if (task.enableItemEngraveParams) {
                 EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
                     ?: EngraveFlowDataHelper.generateEngraveConfig(
                         taskId,
@@ -406,7 +409,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         for (index in indexList) {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
                 //雕刻参数
-                val engraveConfigEntity = if (HawkEngraveKeys.enableItemEngraveParams)
+                val engraveConfigEntity = if (task.enableItemEngraveParams)
                     EngraveFlowDataHelper.getEngraveConfig(it.index)
                 else
                     EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)

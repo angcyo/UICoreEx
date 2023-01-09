@@ -467,7 +467,7 @@
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "16:8095388992323307817",
+      "lastPropertyId": "17:2460197047175850066",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -550,6 +550,11 @@
           "id": "16:8095388992323307817",
           "name": "deviceAddress",
           "type": 9
+        },
+        {
+          "id": "17:2460197047175850066",
+          "name": "enableItemEngraveParams",
+          "type": 1
         }
       ],
       "relations": []
