@@ -558,7 +558,7 @@ object CanvasBitmapHandler {
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
-                    onDismissAction()
+                    //no
                 } else {
                     val gcodeFillStep = getFloatOrDef(
                         CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE,
@@ -568,7 +568,12 @@ object CanvasBitmapHandler {
                         CanvasRegulatePopupConfig2.KEY_PATH_FILL_ANGLE,
                         fillAngle
                     )
-                    item.updatePathFill(gcodeFillStep, gcodeFillAngle, renderer)
+
+                    owner.engraveLoadingAsync({
+                        item.updatePathFill(gcodeFillStep, gcodeFillAngle, renderer)
+                    }) {
+                        onDismissAction()
+                    }
                 }
             }
         }
