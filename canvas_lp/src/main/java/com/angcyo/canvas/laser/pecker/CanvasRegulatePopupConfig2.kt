@@ -133,7 +133,10 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
     init {
         minHorizontalOffset = 20 * dpi
         onDismiss = {
-            onApplyAction(true)
+            if (!regulateList.contains(KEY_SUBMIT)) {
+                //在没有确定按钮的情况下, 销毁窗口时需要apply一下
+                onApplyAction(true)
+            }
             false
         }
     }
