@@ -8,6 +8,7 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
+import com.angcyo.canvas.laser.pecker.BuildConfig
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
 import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
@@ -265,6 +266,9 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     /**检查文件的行数是否超过了限制, 文本的数据量大小*/
     @Throws(OutOfSizeException::class)
     fun checkFileLimit(text: String?) {
+        if (BuildConfig.DEBUG) {
+            return
+        }
         if ((text?.byteSize() ?: 0) > HawkEngraveKeys.openFileByteCount) {
             //超过了字节限制
             throw OutOfSizeException()
