@@ -178,6 +178,9 @@ object HawkEngraveKeys {
     /**最大的外部导入文件行数, 2W行 */
     var openFileLineCount: Long by HawkPropertyValue<Any, Long>(2_0000)
 
+    /**最大的外部导入文件字节数, 1MB 1048576*/
+    var openFileByteCount: Long by HawkPropertyValue<Any, Long>(1 * 1024 * 1024)
+
     /**最小的文本字体大小, 像素*/
     @Pixel
     var minTextSize: Float by HawkPropertyValue<Any, Float>(5f)

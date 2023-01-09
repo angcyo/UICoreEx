@@ -17,8 +17,8 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.firmware.FirmwareUpdateFragment
 import com.angcyo.engrave.engraveLoadingAsync
+import com.angcyo.engrave.firmware.FirmwareUpdateFragment
 import com.angcyo.engrave.transition.OutOfSizeException
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
@@ -136,7 +136,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 ?.isGCodeContent() == true)
         ) {
             val text = file.readText()
-            checkFileLines(text)
+            checkFileLimit(text)
             //gcode
             adapter?.render {
                 clearAllItems()
@@ -161,7 +161,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 ?.isSvgContent() == true)
         ) {
             val text = file.readText()
-            checkFileLines(text)
+            checkFileLimit(text)
             //svg
             adapter?.render {
                 clearAllItems()
@@ -262,9 +262,13 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         return false
     }
 
-    /**检查文件的行数是否超过了限制*/
+    /**检查文件的行数是否超过了限制, 文本的数据量大小*/
     @Throws(OutOfSizeException::class)
-    fun checkFileLines(text: String?) {
+    fun checkFileLimit(text: String?) {
+        if ((text?.byteSize() ?: 0) > HawkEngraveKeys.openFileByteCount) {
+            //超过了字节限制
+            throw OutOfSizeException()
+        }
         if ((text?.lines()?.size() ?: 0) > HawkEngraveKeys.openFileLineCount) {
             //超过了行数限制
             throw OutOfSizeException()
