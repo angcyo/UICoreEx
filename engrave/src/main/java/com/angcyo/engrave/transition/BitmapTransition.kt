@@ -348,10 +348,17 @@ class BitmapTransition : IEngraveTransition {
             if (bitmap != null) {
                 var dataMode = getDataMode(dataBean, transferConfigEntity)
                 var pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+                if (pxBitmap != bitmap) {
+                    bitmap.recycle()
+                }
 
                 if (dataMode == CanvasConstant.DATA_MODE_DITHERING) {
                     //抖动数据, 重新计算
-                    pxBitmap = BitmapGraphicsParser.handleDithering(pxBitmap, dataBean) ?: pxBitmap
+                    val old = pxBitmap
+                    pxBitmap = BitmapGraphicsParser.handleDithering(old, dataBean) ?: pxBitmap
+                    if (pxBitmap != old) {
+                        old.recycle()
+                    }
 
                     if (HawkEngraveKeys.forceGrey || !vmApp<LaserPeckerModel>().isSupportDithering()) {
                         //不支持压缩数据, 则使用灰度图处理
@@ -396,7 +403,11 @@ class BitmapTransition : IEngraveTransition {
                             dataBean.imageFilter == CanvasConstant.DATA_MODE_SEAL
                         ) {
                             val bgColor = Color.WHITE
-                            pxBitmap = pxBitmap.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
+                            val old = pxBitmap
+                            pxBitmap = old.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
+                            if (pxBitmap != old) {
+                                old.recycle()
+                            }
                         }
 
                         val listBitmapPath = handleBitmapPath(
@@ -481,6 +492,8 @@ class BitmapTransition : IEngraveTransition {
                 transferDataEntity.height = pxBitmap.height
 
                 rotateBounds.release()
+                pxBitmap.recycle()
+
                 return transferDataEntity
             }
         }
