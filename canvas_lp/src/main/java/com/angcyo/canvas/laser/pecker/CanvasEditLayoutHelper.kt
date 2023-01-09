@@ -1,5 +1,6 @@
 package com.angcyo.canvas.laser.pecker
 
+import android.graphics.Color
 import android.graphics.Paint
 import android.view.Gravity
 import android.widget.LinearLayout
@@ -10,6 +11,7 @@ import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.data.toPaintStyle
+import com.angcyo.canvas.graphics.IGraphicsParser
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
@@ -283,7 +285,8 @@ object CanvasEditLayoutHelper {
     //region ---形状/Path---
 
     fun DslAdapter.renderShapeEditItems(fragment: AbsFragment, renderer: DataItemRenderer) {
-        val type = renderer.dataItem?.dataBean?.mtype
+        val dataBean = renderer.dataItem?.dataBean
+        val type = dataBean?.mtype
         if (type == CanvasConstant.DATA_TYPE_RECT ||
             type == CanvasConstant.DATA_TYPE_POLYGON ||
             type == CanvasConstant.DATA_TYPE_PENTAGRAM
@@ -299,7 +302,7 @@ object CanvasEditLayoutHelper {
         var strokeControlItem: DslAdapterItem? = null
         var fillControlItem: DslAdapterItem? = null
 
-        val paintStyle = renderer.dataItem?.dataBean?.paintStyle?.toPaintStyle()
+        val paintStyle = dataBean?.paintStyle?.toPaintStyle()
 
         CanvasControlItem2()() {
             strokeControlItem = this
@@ -349,6 +352,13 @@ object CanvasEditLayoutHelper {
                 itemText = _string(R.string.canvas_path_fill)
                 if (afterItemCount <= 0) {
                     drawCanvasRight()
+                }
+                itemUpdateCheckColorAction = {
+                    if (IGraphicsParser.isNeedGCodeFill(dataBean)) {
+                        _color(R.color.colorAccent).alphaRatio(0.5f)
+                    } else {
+                        Color.TRANSPARENT
+                    }
                 }
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
