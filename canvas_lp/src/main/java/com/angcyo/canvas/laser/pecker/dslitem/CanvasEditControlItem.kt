@@ -6,6 +6,7 @@ import android.graphics.RectF
 import android.widget.TextView
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.core.IRenderer
+import com.angcyo.canvas.core.component.ControlPoint
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
@@ -78,7 +79,10 @@ class CanvasEditControlItem : DslAdapterItem() {
 
             //如果是线, 只支持调整宽度
             itemHolder.enable(R.id.item_height_view, !renderer.isLineShape())
-            itemHolder.enable(R.id.item_lock_view, !renderer.isLineShape())
+            itemHolder.enable(
+                R.id.item_lock_view,
+                renderer.isSupportControlPoint(ControlPoint.POINT_TYPE_LOCK)
+            )
 
             //xy坐标
             _tempPoint.set(renderRotateBounds.left, renderRotateBounds.top)
