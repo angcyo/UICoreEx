@@ -49,6 +49,23 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }
             }
         }
+
+        checkRightView()
+    }
+
+    override fun onIViewShow() {
+        super.onIViewShow()
+        isMinimumPreview = false
+        checkRightView()
+    }
+
+    /**检查右边图标的可见性*/
+    open fun checkRightView() {
+        viewHolder?.visible(R.id.right_image_view, engraveFlow == ENGRAVE_FLOW_PREVIEW)
+        viewHolder?.click(R.id.right_image_view) {
+            isMinimumPreview = true
+            removeInner()
+        }
     }
 
     //region ---预览界面/支架控制---

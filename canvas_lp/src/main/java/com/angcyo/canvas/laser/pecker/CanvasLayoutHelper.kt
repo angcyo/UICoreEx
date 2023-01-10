@@ -600,7 +600,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         if (!flowLayoutHelper.isInitialize) {
             return
         }
-        if (!flowLayoutHelper.isAttach()) {
+        if (!flowLayoutHelper.isAttach() &&
+            !engraveCanvasFragment.engraveFlowLayoutHelper.isMinimumPreview
+        ) {
             flowLayoutHelper.startPreview(engraveCanvasFragment)
             return
         }

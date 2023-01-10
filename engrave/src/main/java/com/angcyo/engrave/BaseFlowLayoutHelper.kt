@@ -131,6 +131,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**是否暂停循环查询状态, 暂停不会退出循环*/
     var pauseLoopCheckDeviceState: Boolean = false
 
+    /**是否处于最小化预览*/
+    var isMinimumPreview: Boolean = false
+
     init {
         iViewLayoutId = R.layout.canvas_engrave_flow_layout
     }
@@ -188,9 +191,11 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             //在预览界面
             if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
                 //关闭界面时, 如果在预览状态, 则退出预览, 并清除预览信息
-                previewModel.previewInfoData.value = null
-                ExitCmd().enqueue()
-                syncQueryDeviceState()
+                if (!isMinimumPreview) {
+                    previewModel.previewInfoData.value = null
+                    ExitCmd().enqueue()
+                    syncQueryDeviceState()
+                }
             }
         }
         //界面移除, 回归默认
@@ -244,8 +249,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         if (from == ENGRAVE_FLOW_PREVIEW) {
             //从预览中切换~
-            loopCheckDeviceState = false
-            previewModel.clearPreviewInfo()
+            if (!isMinimumPreview) {
+                loopCheckDeviceState = false
+                previewModel.clearPreviewInfo()
+            }
         }
         if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
             loopCheckDeviceState = false
