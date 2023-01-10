@@ -94,7 +94,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE, item.dataBean.gcodeAngle)
             addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION, item.dataBean.gcodeDirection)
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
-            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GCODE
+            //firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GCODE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
