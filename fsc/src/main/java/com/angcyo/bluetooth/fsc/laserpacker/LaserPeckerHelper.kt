@@ -41,8 +41,10 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  */
 object LaserPeckerHelper {
 
-    /**[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.isDeviceOriginCenter]*/
-    const val DEFAULT_ORIGIN_CENTER = "250~252 270~270 300~313 350~357 370~372 5500~5507 5510~5512"
+    /** 中心点在物理设备中心
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.isDeviceOriginCenter]*/
+    const val DEFAULT_ORIGIN_CENTER =
+        "250~252 270~270 300~313 350~357 370~372 4000~4099 5500~5507 5510~5512"
 
     /**初始化指令, 失败后重试的次数*/
     var INIT_RETRY_COUNT = 3
@@ -347,6 +349,11 @@ object LaserPeckerHelper {
                     focalDistance = 130
                 }
             }
+            LIII_YT -> {//LIII-YT
+                wPhys = 50
+                hPhys = 50
+                focalDistance = 115
+            }
             LIII_MAX, LIV -> {
                 //160*160
                 wPhys = LibLpHawkKeys.l4Width
@@ -382,6 +389,11 @@ object LaserPeckerHelper {
                 if (softwareVersion >= 5500) {
                     supportDithering = softwareVersion in 5513..5599
                 }
+                whiteInfo.power = 1f
+                laserTypeList = listOf(whiteInfo)
+            }
+            LIII_YT -> {
+                supportDithering = false
                 whiteInfo.power = 1f
                 laserTypeList = listOf(whiteInfo)
             }
@@ -502,7 +514,7 @@ object LaserPeckerHelper {
                 pxList.add(findPxInfo(DPI_333))
                 pxList.add(findPxInfo(DPI_508))
             }
-            LIII -> {
+            LIII, LIII_YT -> {
                 pxList.add(findPxInfo(DPI_254))
                 pxList.add(findPxInfo(DPI_508))
                 pxList.add(findPxInfo(DPI_889))
