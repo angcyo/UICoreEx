@@ -9,6 +9,7 @@ dependencies {
     implementation project(allModule.objectbox_lp) //数据库
     implementation project(allModule.canvas)
     implementation project(allModule.dialog2)
+    implementation project(allModule.pager) //
 
     compileOnly project(allModule.umeng_lp)
 

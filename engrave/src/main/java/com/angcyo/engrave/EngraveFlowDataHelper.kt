@@ -78,46 +78,53 @@ object EngraveFlowDataHelper {
             //no op
         }
         task?.dataIndexList?.forEach {
-            //.png
-            var path = appFilePath(
-                "${it}${IEngraveTransition.EXT_PREVIEW}",
-                CanvasConstant.ENGRAVE_FILE_FOLDER
-            )
-            if (path.isFileExist()) {
-                result.add(path)
-            }
-            //.p.png
-            path = appFilePath(
-                "${it}${IEngraveTransition.EXT_DATA_PREVIEW}",
-                CanvasConstant.ENGRAVE_FILE_FOLDER
-            )
-            if (path.isFileExist()) {
-                result.add(path)
-            }
-            //.bp
-            path = appFilePath(
-                "${it}${IEngraveTransition.EXT_BP}",
-                CanvasConstant.ENGRAVE_FILE_FOLDER
-            )
-            if (path.isFileExist()) {
-                result.add(path)
-            }
-            //.dt
-            path = appFilePath(
-                "${it}${IEngraveTransition.EXT_DT}",
-                CanvasConstant.ENGRAVE_FILE_FOLDER
-            )
-            if (path.isFileExist()) {
-                result.add(path)
-            }
-            //.gcode
-            path = appFilePath(
-                "${it}${IEngraveTransition.EXT_GCODE}",
-                CanvasConstant.ENGRAVE_FILE_FOLDER
-            )
-            if (path.isFileExist()) {
-                result.add(path)
-            }
+            result.addAll(getIndexLogFilePath(it))
+        }
+        return result
+    }
+
+    /**获取指定索引对应的雕刻日志文件*/
+    fun getIndexLogFilePath(index: Any?): List<String> {
+        val result = mutableListOf<String>()
+        //.png
+        var path = appFilePath(
+            "$index${IEngraveTransition.EXT_PREVIEW}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
+        if (path.isFileExist()) {
+            result.add(path)
+        }
+        //.p.png
+        path = appFilePath(
+            "$index${IEngraveTransition.EXT_DATA_PREVIEW}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
+        if (path.isFileExist()) {
+            result.add(path)
+        }
+        //.bp
+        path = appFilePath(
+            "$index${IEngraveTransition.EXT_BP}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
+        if (path.isFileExist()) {
+            result.add(path)
+        }
+        //.dt
+        path = appFilePath(
+            "$index${IEngraveTransition.EXT_DT}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
+        if (path.isFileExist()) {
+            result.add(path)
+        }
+        //.gcode
+        path = appFilePath(
+            "$index${IEngraveTransition.EXT_GCODE}",
+            CanvasConstant.ENGRAVE_FILE_FOLDER
+        )
+        if (path.isFileExist()) {
+            result.add(path)
         }
         return result
     }
