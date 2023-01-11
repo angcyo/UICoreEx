@@ -79,6 +79,9 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
         itemHolder.selected(R.id.layer_item_invisible_view, !itemLayerHide)
         itemHolder.invisible(R.id.layer_item_invisible_view, !itemShowSeeView)
 
+        //锁定
+        itemHolder.selected(R.id.layer_item_lock_view, itemLayerLock)
+
         //itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
 
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
@@ -91,6 +94,10 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
         itemHolder.click(R.id.layer_item_invisible_view) {
             //可见
             itemRenderer?.setVisible(!it.isSelected, Strategy.normal)
+        }
+        itemHolder.click(R.id.layer_item_lock_view) {
+            //锁定
+            itemRenderer?.setLockLayer(!it.isSelected, Strategy.normal)
         }
 
         itemHolder.click(R.id.lib_check_view) {

@@ -449,6 +449,17 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
+            override fun onRenderItemLockChanged(
+                itemRenderer: IRenderer,
+                lock: Boolean,
+                strategy: Strategy
+            ) {
+                super.onRenderItemLockChanged(itemRenderer, lock, strategy)
+                doMain {
+                    updateLayerLayout(vh, canvasView)
+                }
+            }
+
             override fun onItemRenderUpdate(itemRenderer: IRenderer) {
                 super.onItemRenderUpdate(itemRenderer)
                 doMain {

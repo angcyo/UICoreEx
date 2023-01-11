@@ -407,7 +407,7 @@
             android:background="@drawable/lib_left_tran_solid_gradient" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="180dp"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
             android:background="@color/lib_white">
 
@@ -477,6 +477,7 @@
                     android:background="@drawable/lib_bg2_selector"
                     android:minHeight="40dp"
                     android:padding="@dimen/lib_hdpi"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/canvas_visible_svg"
                     app:tint="@color/icon_disable_colors" />
 

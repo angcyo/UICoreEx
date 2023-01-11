@@ -38,6 +38,8 @@ open class CanvasBaseLayerItem : DslAdapterItem() {
 
     val itemLayerHide: Boolean get() = itemRenderer?.isVisible() == false
 
+    val itemLayerLock: Boolean get() = itemRenderer?.isLock() == true
+
     val itemItemDrawable: Drawable? get() = itemRenderer?.getRendererRenderItem()?.itemLayerDrawable
 
     val itemItemName: CharSequence? get() = itemRenderer?.getRendererRenderItem()?.itemLayerName
