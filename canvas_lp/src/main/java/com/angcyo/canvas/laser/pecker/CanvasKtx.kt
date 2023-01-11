@@ -161,6 +161,7 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
     return toBlackWhiteHandle(bmpThreshold, invert).toBase64Data()
 }
 
+/**将[Bitmap]转换成[CanvasProjectItemBean]数据结构*/
 fun Bitmap?.toBlackWhiteBitmapItemData(): CanvasProjectItemBean? {
     val bitmap = this ?: return null
     return toBitmapItemData {
