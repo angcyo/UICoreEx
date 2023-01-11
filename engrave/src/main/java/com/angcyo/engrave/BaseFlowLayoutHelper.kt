@@ -575,6 +575,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     /**恢复雕刻状态, 请在初始化指令发送完成之后, 再去检查
+     * [checkStartPreview]
      * @return true 需要恢复状态*/
     fun checkRestoreEngrave(engraveFragment: IEngraveCanvasFragment): Boolean {
         val stateParser = laserPeckerModel.deviceStateData.value ?: return false
@@ -586,7 +587,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
 
             //设备正在雕刻中, 则通过index查询是否是本机app发送的任务
-            val transferData = EngraveFlowDataHelper.getTransferData(stateParser.index)
+            val transferData = EngraveFlowDataHelper.getTransferData(
+                stateParser.index,
+                deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+            )
 
             //如果是, 恢复界面, 如果不是, 则只是弹窗提示
             if (transferData != null && transferData.isTransfer && transferData.taskId != null) {
