@@ -76,7 +76,7 @@
         app:layout_constraintLeft_toRightOf="@id/layer_item_drawable_view"
         app:layout_constraintRight_toLeftOf="@id/lib_check_view"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="绘制项目" />
+        tools:text="绘制项目绘制项目绘制项目绘制项目绘制项目绘制项目" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_check_view"

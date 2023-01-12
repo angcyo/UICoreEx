@@ -6,10 +6,7 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
-import com.angcyo.canvas.data.CanvasProjectBean
-import com.angcyo.canvas.data.CanvasProjectItemBean
-import com.angcyo.canvas.data.toCanvasProjectBean
-import com.angcyo.canvas.data.toCanvasProjectItemList
+import com.angcyo.canvas.data.*
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.toBitmapItemData
 import com.angcyo.canvas.graphics.toGCodeItemData
@@ -125,6 +122,7 @@ fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolea
         /*items.forEach { itemData ->
             GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.init)
         }*/
+        items.generateName()
         GraphicsHelper.renderItemDataBeanList(this, items, false, Strategy.init)
     } != null
     return result
