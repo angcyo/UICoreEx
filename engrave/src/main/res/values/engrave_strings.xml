@@ -255,6 +255,6 @@
     <string name="hide_all_label">Collapse</string>
 
     <string name="not_support_tip">Unsupported firmware version</string>
-    <string name="engrave_item_params_tip">Configure the sculpting parameters in the layer</string>
+    <string name="engrave_item_params_tip">In the single-element sculpting parameter mode, you need to configure the sculpting parameters of the element in the sculpting layer first!</string>
 
 </resources>
