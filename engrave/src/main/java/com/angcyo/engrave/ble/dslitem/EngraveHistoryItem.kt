@@ -157,7 +157,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                     add(
                         formatLabelDes(
                             _string(R.string.device_models),
-                            if (isDebug()) "${name}/${transferDataEntity.deviceAddress.or()}" else name
+                            if (HawkEngraveKeys.enableShowHistoryAddress) "${name}/${transferDataEntity.deviceAddress.or()}" else name
                         )
                     )
                 }

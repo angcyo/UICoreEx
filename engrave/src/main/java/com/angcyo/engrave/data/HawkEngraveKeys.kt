@@ -149,6 +149,9 @@ object HawkEngraveKeys {
     /**是否关闭抖动算法, 强制使用灰度图片算法?*/
     var forceGrey: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**是否激活雕刻历史记录中的设备地址显示[EngraveHistoryItem]*/
+    var enableShowHistoryAddress: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
     //
 
     /**需要关闭的功能
