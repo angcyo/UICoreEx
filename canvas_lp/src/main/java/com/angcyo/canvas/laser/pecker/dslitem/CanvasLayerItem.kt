@@ -20,8 +20,11 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
     /**排序事件*/
     var itemSortAction: ((DslViewHolder) -> Unit)? = null
 
-    /**是否要显示可见性view*/
+    /**是否要显示可见性view, 在touch多选item时, 不需要显示*/
     var itemShowSeeView = true
+
+    /**是否要显示lock view, 在touch多选item时, 不需要显示*/
+    var itemShowLockView = true
 
     //endregion ---core---
 
@@ -81,9 +84,9 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //锁定
         itemHolder.selected(R.id.layer_item_lock_view, itemLayerLock)
+        itemHolder.invisible(R.id.layer_item_lock_view, !itemShowLockView)
 
-        //itemHolder.invisible(R.id.layer_item_invisible_view, !(itemLayerHide || isInPadMode()))
-
+        //
         itemHolder.selected(R.id.lib_check_view, itemIsSelected)
 
         //事件

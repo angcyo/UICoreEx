@@ -359,6 +359,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                                 itemCanvasDelegate = canvasView.canvasDelegate
                                 itemRenderer = renderer
                                 itemShowSeeView = false
+                                itemShowLockView = false
                                 itemShowEngraveParams = false
                                 itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                                 itemLongClick = null
