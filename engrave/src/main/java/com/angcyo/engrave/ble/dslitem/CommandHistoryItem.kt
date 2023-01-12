@@ -4,6 +4,7 @@ import com.angcyo.dialog.itemsDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.library.ex.copy
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.fullTime
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.extend.IFilterItem
@@ -57,6 +58,11 @@ class CommandHistoryItem : DslAdapterItem(), IFilterItem {
             append(sendTime.fullTime())
             if (resultTime > 0) {
                 append(" 耗时:${(resultTime - sendTime).toMsTime()}")
+                itemCommandEntity?.address?.let {
+                    append("/${it}") {
+                        fontSize = 9 * dpi
+                    }
+                }
             }
         }
 

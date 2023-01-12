@@ -804,8 +804,10 @@ object LaserPeckerHelper {
             this.command = command.toHexCommandString().removeAll()
             this.func = func
             this.state = state
+            this.address = address
             des = commandLogString
             sendTime = nowTime()
+
             lpSaveEntity()
         }
         return waitCmdReturn(

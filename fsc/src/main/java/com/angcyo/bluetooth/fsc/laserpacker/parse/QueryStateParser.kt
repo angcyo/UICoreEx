@@ -170,6 +170,9 @@ data class QueryStateParser(
                 sConnect = readInt(1, sConnect)
                 carConnect = readInt(1, carConnect)
                 usbConnect = readInt(1, usbConnect)
+
+                //最后的设备地址
+                deviceAddress = LaserPeckerHelper.lastDeviceAddress()
             }
             this
         } catch (e: Exception) {

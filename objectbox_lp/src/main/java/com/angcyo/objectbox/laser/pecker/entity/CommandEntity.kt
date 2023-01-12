@@ -17,6 +17,9 @@ data class CommandEntity(
     /**指令的uuid, 唯一标识*/
     var uuid: String? = null,
 
+    /**指令的发送机器地址*/
+    var address: String? = null,
+
     //---
 
     /**发送的指令, hex字符串*/
