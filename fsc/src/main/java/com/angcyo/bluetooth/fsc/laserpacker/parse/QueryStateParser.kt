@@ -152,6 +152,9 @@ data class QueryStateParser(
                 if (func.toByte() != QueryCmd.workState.commandFunc()) {
                     throw IllegalStateException("非查询指令!")
                 }
+                if (length < 2) {
+                    throw IllegalStateException("无效的指令返回值!")
+                }
                 mode = readInt(1, mode)
                 workState = readInt(1, workState)
                 rate = readInt(1, rate)
