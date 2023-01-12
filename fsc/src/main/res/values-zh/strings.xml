@@ -34,5 +34,6 @@
     <string name="device_busy_tip">设备正忙, 请稍后重试!</string>
     <string name="device_init_fail_tip">设备初始化失败!</string>
     <string name="command_too_long_tip">指令过长!</string>
+    <string name="command_send_error_tip">通信异常, 请稍后重试!</string>
 
 </resources>

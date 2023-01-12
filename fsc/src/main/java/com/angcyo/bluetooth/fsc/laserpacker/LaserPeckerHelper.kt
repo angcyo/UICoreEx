@@ -774,6 +774,7 @@ object LaserPeckerHelper {
                 }
 
                 override fun onReceive(bean: ReceivePacket?, error: Exception?) {
+                    LaserPeckerCmdStatistics.onReceive(bean, error)
                     action?.invoke(bean, error)
                 }
             }).apply {
