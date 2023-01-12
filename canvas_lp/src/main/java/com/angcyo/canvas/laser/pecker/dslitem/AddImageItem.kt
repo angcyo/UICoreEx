@@ -55,11 +55,14 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                             itemFragment?.engraveLoadingAsync({
                                 val path = libCacheFile(fileNameUUID(".png")).absolutePath
                                 bitmap.save(path)
+                                bitmap.recycle()
                                 val newPath = path.luban()
                                 L.i("${path}->${newPath}")
 
                                 //压缩后
-                                itemCanvasDelegate?.addBlackWhiteBitmapRender(newPath.toBitmap())
+                                val newBitmap = newPath.toBitmap() ?: return@engraveLoadingAsync
+                                itemCanvasDelegate?.addBlackWhiteBitmapRender(newBitmap)
+                                newBitmap.recycle()
                             })
                         }
                     }
