@@ -11,7 +11,7 @@
     <string name="canvas_sync_font">Backing up / synchronizing fonts</string>
 
     <string name="canvas_rename">Rename</string>
-    <string name="canvas_delete_project">Project</string>
+    <string name="canvas_delete_project">Delete project</string>
     <string name="canvas_delete_project_tip">Unrecoverable after deletion, continue?</string>
 
     <string name="save_project_title">Project name</string>
