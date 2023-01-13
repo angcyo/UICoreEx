@@ -7,6 +7,7 @@ import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._string
 
@@ -90,6 +91,12 @@ class EngraveExperimentalFragment : DebugFragment() {
                 key = HawkEngraveKeys::enableSingleItemTransfer.name
                 type = Boolean::class.java
                 defValue = HawkEngraveKeys.enableSingleItemTransfer
+
+                action = { _, value ->
+                    if (value is Boolean) {
+                        LibHawkKeys.enableCanvasRenderLimit = !value
+                    }
+                }
             })
 
         }
