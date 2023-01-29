@@ -2,21 +2,23 @@ package com.angcyo.canvas.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.angcyo.canvas.graphics.addGCodeRender
+import com.angcyo.canvas.graphics.addSvgRender
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
-import com.angcyo.component.getPhoto
+import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.utils.isGCodeContent
+import com.angcyo.canvas.utils.isSvgContent
+import com.angcyo.component.getFile
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.Library
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.save
-import com.angcyo.library.ex.toBitmap
-import com.angcyo.library.libCacheFile
+import com.angcyo.library.component.ROpenFileHelper
+import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
-import com.angcyo.library.utils.fileNameUUID
+import com.angcyo.library.toastQQ
 import com.angcyo.picker.dslSinglePickerImage
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -50,7 +52,7 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                         }
                     }
                 } else {
-                    it.context.getPhoto(this) { bitmap ->
+                    /*it.context.getPhoto(this) { bitmap ->
                         bitmap?.let {
                             itemFragment?.engraveLoadingAsync({
                                 val path = libCacheFile(fileNameUUID(".png")).absolutePath
@@ -64,6 +66,41 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                                 itemCanvasDelegate?.addBlackWhiteBitmapRender(newBitmap)
                                 newBitmap.recycle()
                             })
+                        }
+                    }*/
+
+                    getFile { uri ->
+                        val filePath = ROpenFileHelper.parseData(uri)
+                        filePath?.let { path ->
+                            if (path.endsWith(CanvasConstant.SVG_EXT, true) || (path.endsWith(
+                                    CanvasConstant.TXT_EXT,
+                                    true
+                                ) && path.file().readText()
+                                    ?.isSvgContent() == true)
+                            ) {
+                                //svg
+                                itemCanvasDelegate?.addSvgRender(path.file().readText())
+                            } else if (path.endsWith(CanvasConstant.GCODE_EXT, true) ||
+                                (path.endsWith(CanvasConstant.TXT_EXT, true) && path.file()
+                                    .readText()
+                                    ?.isGCodeContent() == true)
+                            ) {
+                                //gcode
+                                itemCanvasDelegate?.addGCodeRender(path.file().readText())
+                            } else if (path.isImageType()) {
+                                //图片
+                                itemFragment?.engraveLoadingAsync({
+                                    val newPath = path.luban()
+                                    L.i("${path}->${newPath}")
+
+                                    //压缩后
+                                    val newBitmap = newPath.toBitmap() ?: return@engraveLoadingAsync
+                                    itemCanvasDelegate?.addBlackWhiteBitmapRender(newBitmap)
+                                    newBitmap.recycle()
+                                })
+                            } else {
+                                toastQQ("not support!")
+                            }
                         }
                     }
                 }

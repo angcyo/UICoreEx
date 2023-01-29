@@ -93,7 +93,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
         var path = filePath
-        if (path.endsWith(CanvasConstant.DXF_EXT)) {
+        if (path.endsWith(CanvasConstant.DXF_EXT, true)) {
             //dxf文件, 将dxf转成svg文件
             val svgFile = libCacheFile("${filePath.lastName().noExtName()}.svg")
             path = svgFile.absolutePath
@@ -105,7 +105,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             throw OutOfSizeException()
         }
         //
-        if (path.endsWith(CanvasConstant.PROJECT_EXT)) {
+        if (path.endsWith(CanvasConstant.PROJECT_EXT, true)) {
             //工程文件
             val text = file.readText()
             val canvasBean = text?.toCanvasProjectBean()
@@ -132,8 +132,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
                 return true
             }
-        } else if (path.endsWith(CanvasConstant.GCODE_EXT) ||
-            (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
+        } else if (path.endsWith(CanvasConstant.GCODE_EXT, true) ||
+            (path.endsWith(CanvasConstant.TXT_EXT, true) && file.readText()
                 ?.isGCodeContent() == true)
         ) {
             val text = file.readText()
@@ -157,8 +157,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.endsWith(CanvasConstant.SVG_EXT) ||
-            (path.endsWith(CanvasConstant.TXT_EXT) && file.readText()
+        } else if (path.endsWith(CanvasConstant.SVG_EXT, true) ||
+            (path.endsWith(CanvasConstant.TXT_EXT, true) && file.readText()
                 ?.isSvgContent() == true)
         ) {
             val text = file.readText()
@@ -182,8 +182,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.endsWith(FirmwareUpdateFragment.FIRMWARE_EXT) ||
-            (isAppDebug() && path.endsWith(".bin"))
+        } else if (path.endsWith(FirmwareUpdateFragment.FIRMWARE_EXT, true) ||
+            (isAppDebug() && path.endsWith(".bin", true))
         ) {
             //固件升级
             doMain {
