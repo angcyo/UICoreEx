@@ -161,6 +161,7 @@ class TransferModel : ViewModel() {
         stopTransfer()
         doBack {
             //传输状态, 开始创建数据
+            "即将创建传输数据[$taskId]".writeToLog()
             val transferState = TransferState(taskId, progress = -1)
             EngraveFlowDataHelper.onStartCreateTransferData(taskId)
             transferStateOnceData.postValue(transferState)
@@ -169,10 +170,11 @@ class TransferModel : ViewModel() {
                 canvasDelegate,
                 transferConfigEntity
             )//数据已入库, 可以直接在数据库中查询
-            "创建传输数据[$taskId]:$entityList".writeToLog()
+            "已创建传输数据[$taskId]:$entityList".writeToLog()
             EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
             startTransferData(transferState.taskId)
         }
+        "请等待数据创建完成[$taskId]".writeToLog()
     }
 
     /**开始传输机器需要的数据*/
