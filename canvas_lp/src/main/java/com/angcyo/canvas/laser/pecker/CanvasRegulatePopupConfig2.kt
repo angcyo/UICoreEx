@@ -189,9 +189,9 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
                     property[KEY_LINE_SPACE] = def
                     itemSeekProgress = if (def == start) {
-                        0
+                        0f
                     } else {
-                        ((def / (max - start)) * 100).toInt()
+                        (def / (max - start)) * 100
                     }
 
                     itemSeekTouchEnd = { value, fraction ->
@@ -210,7 +210,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
                     val def = getFloatOrDef(KEY_ANGLE, 0f)
                     property[KEY_ANGLE] = def
-                    itemSeekProgress = ((def / 90f) * 100).toInt()
+                    itemSeekProgress = (def / 90f) * 100
 
                     itemSeekTouchEnd = { value, fraction ->
                         property[KEY_ANGLE] = 90f * fraction
@@ -326,7 +326,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                 }
 
                 val def = getFloatOrDef(key, 0f)
-                itemSeekProgress = (((def + 1) / 2f) * 100).toInt()
+                itemSeekProgress = ((def + 1) / 2f) * 100
                 property[key] = def
 
                 itemSeekTouchEnd = { value, fraction ->
@@ -342,7 +342,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                 }
 
                 val def = getFloatOrDef(key, 0f)
-                itemSeekProgress = (((def + 1) / 2f) * 100).toInt()
+                itemSeekProgress = ((def + 1) / 2f) * 100
                 property[key] = def
 
                 itemSeekTouchEnd = { value, fraction ->
@@ -358,7 +358,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                 }
 
                 val def = getFloatOrDef(key, defValue)
-                itemSeekProgress = ((def / 255f) * 100).toInt()
+                itemSeekProgress = (def / 255f) * 100
                 property[key] = def
 
                 itemSeekTouchEnd = { value, fraction ->
@@ -396,7 +396,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
             val def = getFloatOrDef(key, defValue)
             val ratio = def / sum
-            itemSeekProgress = (ratio * 100).toInt()
+            itemSeekProgress = ratio * 100
             property[key] = def
 
             itemSeekTouchEnd = { value, fraction ->
