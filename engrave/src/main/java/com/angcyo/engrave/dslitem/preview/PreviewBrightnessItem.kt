@@ -49,7 +49,7 @@ class PreviewBrightnessItem : BasePreviewItem() {
             progressTextFormatAction = itemProgressTextFormatAction
             val pwrProgress =
                 itemPreviewConfigEntity?.pwrProgress ?: HawkEngraveKeys.lastPwrProgress
-            setProgress((pwrProgress * 100).toInt(), animDuration = 0)
+            setProgress(pwrProgress * 100, animDuration = 0)
             config {
                 /*onSeekChanged = { value, fraction, fromUser ->
                     if (!isTouchDown && fromUser) {

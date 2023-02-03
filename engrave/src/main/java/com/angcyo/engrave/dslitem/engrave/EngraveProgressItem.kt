@@ -59,7 +59,7 @@ class EngraveProgressItem : DslAdapterItem() {
 
         itemHolder.v<DslProgressBar>(R.id.engrave_progress_view)?.apply {
             val progress = EngraveFlowDataHelper.calcEngraveProgress(itemTaskId)
-            setProgress(progress)
+            setProgress(progress.toFloat())
         }
     }
 }

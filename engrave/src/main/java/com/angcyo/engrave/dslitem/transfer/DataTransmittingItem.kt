@@ -31,10 +31,10 @@ class DataTransmittingItem : DslAdapterItem() {
             enableProgressFlowMode = true
             if (itemProgress == -1) {
                 showProgressText = false
-                setProgress(100, animDuration = 0)
+                setProgress(100f, animDuration = 0)
             } else {
                 showProgressText = true
-                setProgress(itemProgress)
+                setProgress(itemProgress.toFloat())
             }
         }
     }
