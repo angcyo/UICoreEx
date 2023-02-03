@@ -257,4 +257,6 @@
     <string name="not_support_tip">Unsupported firmware version</string>
     <string name="engrave_item_params_tip">In the single-element sculpting parameter mode, you need to configure the sculpting parameters of the element in the sculpting layer first!</string>
 
+    <string name="device_shutdown_tip">Device is shutdown</string>
+
 </resources>

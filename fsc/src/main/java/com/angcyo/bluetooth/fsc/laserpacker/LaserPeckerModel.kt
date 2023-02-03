@@ -219,6 +219,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         return deviceState?.mode == QueryStateParser.WORK_MODE_IDLE
     }
 
+    /**关机状态, 设备已关机*/
+    fun isShutdownMode(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_SHUTDOWN
+    }
+
     /**雕刻预览模式, 并且非显示中心*/
     fun isEngravePreviewMode(): Boolean {
         val deviceState = deviceStateData.value

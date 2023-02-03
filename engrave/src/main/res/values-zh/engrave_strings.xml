@@ -248,4 +248,5 @@
     <string name="not_support_tip">不支持的固件版本</string>
     <string name="engrave_item_params_tip">单元素雕刻参数模式下,需要先在雕刻图层中配置好元素的雕刻参数!</string>
 
+    <string name="device_shutdown_tip">设备已关机</string>
 </resources>

@@ -318,6 +318,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             return false
         }
 
+        //检查是否处于关机状态
+        if (laserPeckerModel.isShutdownMode()) {
+            toast(_string(R.string.device_shutdown_tip))
+            return false
+        }
+
         //检查是否已经显示
         if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
             return false
