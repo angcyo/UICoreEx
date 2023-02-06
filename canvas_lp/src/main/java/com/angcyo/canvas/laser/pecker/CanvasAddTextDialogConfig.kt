@@ -65,13 +65,13 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                 if (!reselect) {
                     when (toIndex) {
                         1 -> {
-                            //二维码
+                            //二维码 BarcodeFormat.QR_CODE
                             dataType = CanvasConstant.DATA_TYPE_QRCODE
                             inputType = InputType.TYPE_CLASS_TEXT
                             digits = null
                         }
                         2 -> {
-                            //条形码
+                            //条形码 BarcodeFormat.CODE_128
                             dataType = CanvasConstant.DATA_TYPE_BARCODE
                             inputType =
                                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
