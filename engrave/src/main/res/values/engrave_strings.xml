@@ -175,8 +175,8 @@
 
     <string name="range_preview">Scope</string>
     <string name="center_preview">Center</string>
-    <string name="pause_preview">Pause</string>
-    <string name="continue_preview">Continue</string>
+    <string name="pause_preview">Pause Scroll</string>
+    <string name="continue_preview">Continue Scroll</string>
     <string name="scroll_preview">Scroll</string>
     <string name="preview_parameter_setting">Parameter Settings</string>
     <string name="filename_hint">A maximum of 28 bytes can be entered</string>

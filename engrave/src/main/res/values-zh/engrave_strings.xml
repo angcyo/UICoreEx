@@ -168,8 +168,8 @@
 
     <string name="range_preview">范围</string>
     <string name="center_preview">中心点</string>
-    <string name="pause_preview">暂停</string>
-    <string name="continue_preview">继续</string>
+    <string name="pause_preview">暂停滚动</string>
+    <string name="continue_preview">继续滚动</string>
     <string name="scroll_preview">滚动</string>
     <string name="preview_parameter_setting">参数设置</string>
     <string name="filename_hint">最多输入28个字节</string>
