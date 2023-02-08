@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.library.component.reader
+import com.angcyo.library.ex.size
 
 /**AABB82001E0009A67B924FEFF1000ADC0B000AE0A50002369D0003D00F0009872C000B7515000B98B6000BF395000E316C000E475F000E57AA000E660B000E7696000DA6BF000DB07F000DB0EA000991CF000B445F0000754A000076EF0000787AFFFFFFFF0009930F000996A4000997C40009984100099F4D0009A27E0009A4DE000125E0
  * 打印的文件历史记录
@@ -39,14 +40,15 @@ data class QueryEngraveFileParser(
 
                 num = readInt(1)
 
-                if (num > 0) {
-                    val list = mutableListOf<Int>()
-                    for (i in 0 until num) {
-                        val nameIndex = readByteInt(4)
+                val list = mutableListOf<Int>()
+                indexList = list
+                for (i in 0 until 30) {
+                    val nameIndex = readByteInt(4)
+                    if (nameIndex > 0 && list.size() < num) {
                         list.add(nameIndex)
                     }
-                    indexList = list
                 }
+
                 custom = readInt(1)
                 state = readInt(1)
             }

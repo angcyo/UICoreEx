@@ -823,7 +823,7 @@ object LaserPeckerHelper {
         ) { bean, error ->
             val result = bean?.receivePacket?.toHexString(false) ?: ""
             val resultDes = result.parseResultPacketLog(func, state)
-            "指令返回:${uuid}->$resultDes".writeBleLog()
+            "指令返回:${uuid}->$result\n$resultDes".writeBleLog()
             CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(CommandEntity_.uuid.equal(uuid))
             }?.apply {
