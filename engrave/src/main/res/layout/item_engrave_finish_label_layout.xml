@@ -11,7 +11,6 @@
         style="@style/LibBodyTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/lib_hdpi"
         android:textColor="#6f6f6f"
         tools:text="angcyo" />
 
