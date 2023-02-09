@@ -152,6 +152,9 @@ object HawkEngraveKeys {
     /**是否激活雕刻历史记录中的设备地址显示[EngraveHistoryItem]*/
     var enableShowHistoryAddress: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**是否激活实验性功能*/
+    var enableExperimental: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+
     //
 
     /**需要关闭的功能

@@ -363,16 +363,18 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //实验性功能
-            DslTextInfoItem()() {
-                itemInfoText = _string(R.string.engrave_experimental)
-                itemDarkIcon = R.drawable.lib_next
-                initItem()
-                configInfoTextStyle {
-                    textSize = _dimen(R.dimen.text_sub_size).toFloat()
-                }
-                itemClick = {
-                    dslFHelper {
-                        show(EngraveExperimentalFragment::class)
+            if (HawkEngraveKeys.enableExperimental) {
+                DslTextInfoItem()() {
+                    itemInfoText = _string(R.string.engrave_experimental)
+                    itemDarkIcon = R.drawable.lib_next
+                    initItem()
+                    configInfoTextStyle {
+                        textSize = _dimen(R.dimen.text_sub_size).toFloat()
+                    }
+                    itemClick = {
+                        dslFHelper {
+                            show(EngraveExperimentalFragment::class)
+                        }
                     }
                 }
             }
