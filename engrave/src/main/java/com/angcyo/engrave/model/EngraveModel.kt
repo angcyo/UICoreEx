@@ -116,9 +116,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                                 )
                             }
                             if (_lastEngraveCmdError == null) {
+                                val printTimes =
+                                    if (queryState.printTimes <= 0) null else queryState.printTimes
                                 _checkEngraveNextOnIdle(
                                     queryState.index,
-                                    queryState.printTimes,
+                                    printTimes,
                                     100
                                 )
                             }
