@@ -141,9 +141,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW)
-
-            bitmap?.recycle()
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, true)
         }
     }
 
@@ -175,9 +173,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW)
-
-            bitmap?.recycle()
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, true)
         }
     }
 
@@ -295,11 +291,9 @@ class GCodeTransition : IEngraveTransition {
         saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            IEngraveTransition.EXT_DATA_PREVIEW
+            IEngraveTransition.EXT_DATA_PREVIEW,
+            true
         )
-
-        //
-        previewBitmap?.recycle()
 
         return transferDataEntity
     }

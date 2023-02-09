@@ -66,13 +66,15 @@ interface IEngraveTransition {
         fun saveEngraveData(
             index: Any?,
             data: FileTextData?,
-            suffix: String = "engrave"
+            suffix: String = "engrave",
+            recycle: Boolean = false,
         ): String? {
             //将雕刻数据写入文件
             return data.writeTo(
                 CanvasConstant.ENGRAVE_FILE_FOLDER,
                 "${index}${suffix.ensureExtName()}",
-                false
+                false,
+                recycle
             )
         }
 

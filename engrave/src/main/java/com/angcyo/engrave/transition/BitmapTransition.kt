@@ -405,9 +405,6 @@ class BitmapTransition : IEngraveTransition {
                             val bgColor = Color.WHITE
                             val old = pxBitmap
                             pxBitmap = old.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
-                            if (pxBitmap != old) {
-                                old.recycle()
-                            }
                         }
 
                         val listBitmapPath = handleBitmapPath(
@@ -444,7 +441,8 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW
+                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            true
                         )
                     }
                     //色阶数据, 红色通道的灰度雕刻数据
@@ -459,7 +457,8 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW
+                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            true
                         )
                     }
                     //抖动数据
@@ -481,7 +480,8 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW
+                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            true
                         )
                     }
                 }
@@ -492,7 +492,6 @@ class BitmapTransition : IEngraveTransition {
                 transferDataEntity.height = pxBitmap.height
 
                 rotateBounds.release()
-                pxBitmap.recycle()
 
                 return transferDataEntity
             }
