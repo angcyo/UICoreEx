@@ -65,7 +65,8 @@ class CanvasOpenModel : ViewModel() {
         openPendingData.postValue(bean)
         return if (openPendingData.hasObservers()) {
             //有监听者, 需要弹出界面
-            context.openApp()
+            //context.openApp()
+            //startJumpActivity()
             //RBackground.moveAppToFront()
             true
         } else if (OPEN_ACTIVITY_CLASS != null) {

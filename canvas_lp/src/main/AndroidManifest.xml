@@ -9,7 +9,9 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/canvas_open_label"
-            android:taskAffinity=""
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:taskAffinity="${applicationId}"
             android:theme="@android:style/Theme.NoDisplay">
 
             <!--使用xxx打开-->
@@ -42,6 +44,6 @@
         <activity
             android:name=".activity.CanvasOpenPreviewActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="behind" />
     </application>
 </manifest>
