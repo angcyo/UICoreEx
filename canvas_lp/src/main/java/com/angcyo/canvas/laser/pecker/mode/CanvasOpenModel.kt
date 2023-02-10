@@ -66,6 +66,7 @@ class CanvasOpenModel : ViewModel() {
         return if (openPendingData.hasObservers()) {
             //有监听者, 需要弹出界面
             context.openApp()
+            //RBackground.moveAppToFront()
             true
         } else if (OPEN_ACTIVITY_CLASS != null) {
             //无监听者
