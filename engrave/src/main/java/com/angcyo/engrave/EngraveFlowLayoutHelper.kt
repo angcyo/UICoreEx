@@ -648,7 +648,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                 //雕刻参数
                 if (laserPeckerModel.isPenMode()) {
-                    //雕刻速度, 非雕刻深度
+                    //握笔模块, 雕刻速度, 非雕刻深度
+                    engraveConfigEntity.power = 100 //功率必须100%
+                    engraveConfigEntity.lpSaveEntity()
                     EngraveOptionWheelItem()() {
                         itemTag = MaterialEntity.SPEED
                         itemLabelText = _string(R.string.engrave_speed)
