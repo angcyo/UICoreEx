@@ -78,6 +78,7 @@ data class QueryStateParser(
     //5 彩色笔模式
     //6 刀切割模式
     //7 CNC模式
+    //255 激光设备未插好
     var moduleState: Int = -1,
     //旋转轴连接状态, 0未连接, 1连接
     var rConnect: Int = 0,
@@ -236,21 +237,27 @@ fun QueryStateParser.toDeviceStateString(): String? {
                 0x0A -> builder.append(_string(R.string.preview_state_z_scroll))
             }
         }
-        QueryStateParser.WORK_MODE_FOCUSING -> builder.append("调焦模式")
-        QueryStateParser.WORK_MODE_FILE_DOWNLOAD -> builder.append("文件下载模式")
-        QueryStateParser.WORK_MODE_SHUTDOWN -> builder.append("关机状态")
-        QueryStateParser.WORK_MODE_SETUP -> builder.append("设置模式")
-        QueryStateParser.WORK_MODE_DOWNLOAD -> builder.append("下载模式")
-    }
-
-    if (builder.isEmpty()) {
-        return null
+        QueryStateParser.WORK_MODE_FOCUSING -> builder.append(_string(R.string.work_mode_focusing))
+        QueryStateParser.WORK_MODE_FILE_DOWNLOAD -> builder.append(_string(R.string.work_mode_file_download))
+        QueryStateParser.WORK_MODE_SHUTDOWN -> builder.append(_string(R.string.work_mode_shutdown))
+        QueryStateParser.WORK_MODE_SETUP -> builder.append(_string(R.string.work_mode_setup))
+        QueryStateParser.WORK_MODE_DOWNLOAD -> builder.append(_string(R.string.work_mode_download))
     }
 
     //错误信息
     if (error != 0) {
-        builder.appendLine()
+        if (builder.isNotEmpty()) {
+            builder.appendLine()
+        }
         builder.append(error.toErrorStateString())
+    }
+
+    //C1 激光头未插好提示
+    if (moduleState == 255) {
+        if (builder.isNotEmpty()) {
+            builder.appendLine()
+        }
+        builder.append(_string(R.string.laser_not_plugged_tip))
     }
 
     return builder.toString()

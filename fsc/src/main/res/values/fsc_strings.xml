@@ -36,4 +36,11 @@
     <string name="command_too_long_tip">Command is too long!</string>
     <string name="command_send_error_tip">Communication exception, please try again later!</string>
 
+    <string name="work_mode_focusing">Focus mode</string>
+    <string name="work_mode_file_download">File download mode</string>
+    <string name="work_mode_shutdown">Shutdown state</string>
+    <string name="work_mode_setup">Set the mode</string>
+    <string name="work_mode_download">Download mode</string>
+
+    <string name="laser_not_plugged_tip">The laser head is not plugged in</string>
 </resources>
