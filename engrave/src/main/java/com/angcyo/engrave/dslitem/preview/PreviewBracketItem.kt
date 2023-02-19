@@ -21,7 +21,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.isTouchFinish
+import com.angcyo.library.ex.isTouchFinish
 
 /**
  * 支架控制item

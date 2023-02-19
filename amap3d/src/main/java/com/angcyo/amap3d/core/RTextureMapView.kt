@@ -17,8 +17,8 @@ import com.angcyo.amap3d.DslAMap
 import com.angcyo.amap3d.DslMarker
 import com.angcyo.library.L
 import com.angcyo.library.utils.requestMultiplePermissionsLauncher
-import com.angcyo.widget.base.isTouchDown
-import com.angcyo.widget.base.isTouchFinish
+import com.angcyo.library.ex.isTouchDown
+import com.angcyo.library.ex.isTouchFinish
 import com.angcyo.library.ex.mH
 import com.angcyo.library.ex.mW
 
