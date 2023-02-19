@@ -124,7 +124,7 @@
     <string name="device_ex_r_label">旋转轴</string>
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">滑台</string>
-    <string name="device_ex_s_des">--</string>
+    <string name="device_ex_s_des">--\n(请确保在滑台通电归位后，再打开开关)</string>
     <string name="device_ex_car_label">移动平台</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">正转</string>
@@ -132,7 +132,7 @@
     <string name="device_direction_forward">正转</string>
     <string name="device_direction_reversal">反转</string>
     <string name="device_s_batch_engrave_label">滑台多文件雕刻模式</string>
-    <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_s_batch_engrave_des">--\n(请确保在滑台通电归位后，再打开开关)</string>
     <string name="device_ex_engrave_module">雕刻模块</string>
     <string name="device_ex_pen_engrave_label">画笔模式</string>
     <string name="device_module_calibration_label">模块校准</string>
