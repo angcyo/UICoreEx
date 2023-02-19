@@ -54,28 +54,30 @@ object LaserPeckerHelper {
     //1为450nm激光, 波长
 
     //---焦距 200mm
-    const val LI = "L1"               //"LI"
-    const val LI_Z = "L1-Z"           //"LI-Z"       //spp 100*100mm
-    const val LI_PRO = "L1-Pro"       //"LI-PRO"     //spp 100*100mm
-    const val LI_Z_PRO = "L1-Z-Pro"   //"LI-Z-PRO"   //spp 100*100mm
+    const val LI = "LP1"               //"LI"
+    const val LI_Z = "LP1-Z"           //"LI-Z"       //spp 100*100mm
+    const val LI_PRO = "LP1-Pro"       //"LI-PRO"     //spp 100*100mm
+    const val LI_Z_PRO = "LP1-Z-Pro"   //"LI-Z-PRO"   //spp 100*100mm
 
     //---焦距 110mm
-    const val LII = "L2"           //"LII"             //spp 100*100mm
-    const val LI_Z_ = "L1-Z模块"    //"LI-Z模块"        //spp 100*100mm
-    const val LII_M_ = "L2-M模块"   //"LII-M模块"       //spp 100*100mm
+    const val LII = "LP2"           //"LII"             //spp 100*100mm
+    const val LI_Z_ = "LP1-Z模块"    //"LI-Z模块"        //spp 100*100mm
+    const val LII_M_ = "LP2-M模块"   //"LII-M模块"       //spp 100*100mm
 
     //---焦距 115mm 新 130mm
-    const val LIII_YT = "L3-YT" //"LIII-YT"       //spp 50*50mm
-    const val LIII = "L3"       //"LIII"          //spp 90*70mm 椭圆
+    const val LIII_YT = "LP3-YT" //"LIII-YT"       //spp 50*50mm
+    const val LIII = "LP3"       //"LIII"          //spp 90*70mm 椭圆
 
     //---焦距 150mm
     //0为1064nm激光, LIII_MAX 改名 LIV
-    const val LIII_MAX = "L4"      //"LIV"   //spp 160mm*160mm 160*120mm 椭圆
+    const val LIII_MAX = "LP4"      //"LIV"   //spp 160mm*160mm 160*120mm 椭圆
     const val LIV = LIII_MAX
 
     //---焦距 40mm
-    const val CI = "C1"            //"CI"               //spp 300*400mm
-    const val CII = "C2"           //"CII"
+    //2023-2-17  C系列改名为LX  C1重命名为LX1
+    const val CI_OLD = "C1"            //"CI"               //spp 300*400mm
+    const val CI = "LX1"               //"LX1"              //spp 300*400mm
+    const val CII = "LX2"               //"CII"
     const val UNKNOWN = "Unknown"
 
     //endregion ---产品名称---

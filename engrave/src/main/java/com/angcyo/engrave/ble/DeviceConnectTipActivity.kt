@@ -25,25 +25,29 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
 
         /**通过蓝牙名称获取获取设备类型
          * 也可以通过硬件版本获取设备类型[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]*/
-        fun getDeviceType(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String =
-            when {
+        fun getDeviceType(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String {
+            val prefix = LaserPeckerHelper.PRODUCT_PREFIX
+            return when {
                 name == LaserPeckerHelper.CI ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true ||
-                        name?.startsWith("C1") == true -> LaserPeckerHelper.CI
+                        name?.startsWith("$prefix-CI") == true ||
+                        name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true ||
+                        name?.startsWith(LaserPeckerHelper.CI) == true ||
+                        name?.startsWith(LaserPeckerHelper.CI_OLD) == true -> LaserPeckerHelper.CI
                 name == LaserPeckerHelper.LIV ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-IV") == true ||
-                        name?.startsWith("L4") == true -> LaserPeckerHelper.LIV
+                        name?.startsWith("$prefix-IV") == true ||
+                        name?.startsWith(LaserPeckerHelper.LIV) == true -> LaserPeckerHelper.LIV
                 name == LaserPeckerHelper.LIII ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true ||
-                        name?.startsWith("L3") == true -> LaserPeckerHelper.LIII
+                        name?.startsWith("$prefix-III") == true ||
+                        name?.startsWith(LaserPeckerHelper.LIII) == true -> LaserPeckerHelper.LIII
                 name == LaserPeckerHelper.LII ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-II") == true ||
-                        name?.startsWith("L2") == true -> LaserPeckerHelper.LII
+                        name?.startsWith("$prefix-II") == true ||
+                        name?.startsWith(LaserPeckerHelper.LII) == true -> LaserPeckerHelper.LII
                 name == LaserPeckerHelper.LI ||
-                        name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true ||
-                        name?.startsWith("L1") == true -> LaserPeckerHelper.LI
+                        name?.startsWith("$prefix-I") == true ||
+                        name?.startsWith(LaserPeckerHelper.LI) == true -> LaserPeckerHelper.LI
                 else -> LaserPeckerHelper.LI
             }
+        }
 
         /**根据设备名, 获取设备对应的图片资源
          * [name] 设备名, 或者蓝牙名都支持
@@ -59,30 +63,36 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
             }
 
         /**格式化蓝牙名称*/
-        fun formatDeviceName(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String? =
-            when {
-                name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-CI") == true -> name.replace(
-                    "${LaserPeckerHelper.PRODUCT_PREFIX}-CI",
-                    "C1-"
+        fun formatDeviceName(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String? {
+            val prefix = LaserPeckerHelper.PRODUCT_PREFIX
+            return when {
+                name?.startsWith("$prefix-CI") == true -> name.replace(
+                    "$prefix-CI",
+                    "${LaserPeckerHelper.CI}-"
                 )
-                name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-IV") == true -> name.replace(
-                    "${LaserPeckerHelper.PRODUCT_PREFIX}-IV",
-                    "L4-"
+                name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true -> name.replace(
+                    "$prefix-${LaserPeckerHelper.CI}",
+                    "${LaserPeckerHelper.CI}-"
                 )
-                name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-III") == true -> name.replace(
-                    "${LaserPeckerHelper.PRODUCT_PREFIX}-III",
-                    "L3-"
+                name?.startsWith("$prefix-IV") == true -> name.replace(
+                    "$prefix-IV",
+                    "${LaserPeckerHelper.LIV}-"
                 )
-                name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-II") == true -> name.replace(
-                    "${LaserPeckerHelper.PRODUCT_PREFIX}-II",
-                    "L2-"
+                name?.startsWith("$prefix-III") == true -> name.replace(
+                    "$prefix-III",
+                    "${LaserPeckerHelper.LIII}-"
                 )
-                name?.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX}-I") == true -> name.replace(
-                    "${LaserPeckerHelper.PRODUCT_PREFIX}-I",
-                    "L1-"
+                name?.startsWith("$prefix-II") == true -> name.replace(
+                    "$prefix-II",
+                    "${LaserPeckerHelper.LII}-"
+                )
+                name?.startsWith("$prefix-I") == true -> name.replace(
+                    "$prefix-I",
+                    "${LaserPeckerHelper.LI}-"
                 )
                 else -> name
             }
+        }
     }
 
     init {
