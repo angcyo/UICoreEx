@@ -348,9 +348,6 @@ class BitmapTransition : IEngraveTransition {
             if (bitmap != null) {
                 var dataMode = getDataMode(dataBean, transferConfigEntity)
                 var pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-                if (pxBitmap != bitmap) {
-                    bitmap.recycle()
-                }
 
                 if (dataMode == CanvasConstant.DATA_MODE_DITHERING) {
                     //抖动数据, 重新计算

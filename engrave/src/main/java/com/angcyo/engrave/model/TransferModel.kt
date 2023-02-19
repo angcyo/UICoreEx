@@ -163,16 +163,21 @@ class TransferModel : ViewModel() {
             //传输状态, 开始创建数据
             "即将创建传输数据[$taskId]".writeToLog()
             val transferState = TransferState(taskId, progress = -1)
-            EngraveFlowDataHelper.onStartCreateTransferData(taskId)
-            transferStateOnceData.postValue(transferState)
-            val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
-            val entityList = engraveTransitionManager.transitionTransferData(
-                canvasDelegate,
-                transferConfigEntity
-            )//数据已入库, 可以直接在数据库中查询
-            "已创建传输数据[$taskId]:$entityList".writeToLog()
-            EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
-            startTransferData(transferState.taskId)
+            try {
+                EngraveFlowDataHelper.onStartCreateTransferData(taskId)
+                transferStateOnceData.postValue(transferState)
+                val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
+                val entityList = engraveTransitionManager.transitionTransferData(
+                    canvasDelegate,
+                    transferConfigEntity
+                )//数据已入库, 可以直接在数据库中查询
+                "已创建传输数据[$taskId]:$entityList".writeToLog()
+                EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
+                startTransferData(transferState.taskId)
+            } catch (e: Exception) {
+                "$e".writeErrorLog()
+                errorTransfer(transferState, TransferException())
+            }
         }
         "请等待数据创建完成[$taskId]".writeToLog()
     }
@@ -254,6 +259,13 @@ class TransferModel : ViewModel() {
         //CommandQueueHelper.clearCommand()
     }
 
+    /**传输异常*/
+    fun errorTransfer(transferState: TransferState, error: Throwable?) {
+        transferState.state = TransferState.TRANSFER_STATE_FINISH
+        transferState.error = error
+        transferStateOnceData.postValue(transferState)
+    }
+
     //
 
     /**继续查找并传输下一个需要传输的数据*/
@@ -319,18 +331,12 @@ class TransferModel : ViewModel() {
         "开始传输数据:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}".writeEngraveLog()
         if (size <= 0) {
             "传输数据为空:${transferDataEntity.index}".writeErrorLog()
-            transferState.state = TransferState.TRANSFER_STATE_FINISH
-            transferState.error = EmptyException()
-            transferStateOnceData.postValue(transferState)
-
+            errorTransfer(transferState, EmptyException())
             action(transferState.error)
             return
         } else if (size > HawkEngraveKeys.maxTransferDataSize) {
             "传输数据过大:${transferDataEntity.index}${size.toSizeString()}".writeErrorLog()
-            transferState.state = TransferState.TRANSFER_STATE_FINISH
-            transferState.error = OutOfSizeException()
-            transferStateOnceData.postValue(transferState)
-
+            errorTransfer(transferState, OutOfSizeException())
             action(transferState.error)
             return
         }
@@ -338,10 +344,7 @@ class TransferModel : ViewModel() {
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             error?.let {
                 "进入文件传输模式异常:${it} [${transferDataEntity.index}] ${size.toSizeString()}".writeErrorLog()
-                transferState.state = TransferState.TRANSFER_STATE_FINISH
-                transferState.error = TransferException(error)
-                transferStateOnceData.postValue(transferState)
-
+                errorTransfer(transferState, TransferException(error))
                 action(transferState.error)
             }
             if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
@@ -406,21 +409,13 @@ class TransferModel : ViewModel() {
                                         action(null)
                                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                                         "数据接收未完成:[${transferDataEntity.index}]".writeErrorLog()
-                                        transferState.state =
-                                            TransferState.TRANSFER_STATE_FINISH
-                                        transferState.error = TransferException()
-                                        transferStateOnceData.postValue(transferState)
-
+                                        errorTransfer(transferState, TransferException())
                                         action(transferState.error)
                                     }
                                 }
                                 if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                                     "发送数据失败:[${transferDataEntity.index}]".writeErrorLog()
-                                    transferState.state =
-                                        TransferState.TRANSFER_STATE_FINISH
-                                    transferState.error = TransferException()
-                                    transferStateOnceData.postValue(transferState)
-
+                                    errorTransfer(transferState, TransferException())
                                     action(transferState.error)
                                 }
                             }
@@ -429,10 +424,7 @@ class TransferModel : ViewModel() {
                         //end parse
                     } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                         "未成功进入数据传输模式:[${transferDataEntity.index}]".writeErrorLog()
-                        transferState.state = TransferState.TRANSFER_STATE_FINISH
-                        transferState.error = TransferException()
-                        transferStateOnceData.postValue(transferState)
-
+                        errorTransfer(transferState, TransferException())
                         action(transferState.error)
                     }
                 }

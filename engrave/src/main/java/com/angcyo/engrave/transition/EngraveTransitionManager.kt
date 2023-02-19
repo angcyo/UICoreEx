@@ -13,11 +13,11 @@ import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
 import com.angcyo.canvas.utils.engraveSort
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.toEngraveTypeOfDataMode
-import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
@@ -283,7 +283,7 @@ class EngraveTransitionManager {
         rendererList.forEach { renderer ->
             //开始将[renderer]转换成数据
             LTime.tick()
-            L.i("开始转换数据->${transferConfigEntity.name}")
+            "开始转换数据->${transferConfigEntity.name}".writeToLog()
             doTransitionTransferData(
                 renderer,
                 transferConfigEntity,
@@ -299,7 +299,7 @@ class EngraveTransitionManager {
                 dataEngraveType = transferDataEntity.engraveDataType
                 dataList.add(transferDataEntity)
             }
-            L.i("转换耗时->${LTime.time()} ${dataEngraveType.toEngraveDataTypeStr()}")
+            "转换耗时->${LTime.time()} ${dataEngraveType.toEngraveDataTypeStr()}".writeToLog()
         }
         if (dataList.isNotEmpty()) {
             if (!transferConfigEntity.mergeData || dataList.size() == 1) {
@@ -369,8 +369,11 @@ class EngraveTransitionManager {
         var result: TransferDataEntity? = null
 
         for (transition in transitionList) {
-            result =
-                transition.doTransitionTransferData(engraveProvider, transferConfigEntity, param)
+            result = transition.doTransitionTransferData(
+                engraveProvider,
+                transferConfigEntity,
+                param
+            )
             if (result != null) {
                 break
             }

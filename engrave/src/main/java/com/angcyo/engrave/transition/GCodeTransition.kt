@@ -69,14 +69,12 @@ class GCodeTransition : IEngraveTransition {
                 //线条转GCode使用图片的方式
                 val bitmap = engraveProvider.getEngraveBitmap()
                 bitmap?.let {
-                    val transferDataEntity = _transitionBitmapTransferData2(
+                    return _transitionBitmapTransferData2(
                         engraveProvider,
                         transferConfigEntity,
                         bitmap,
                         param
                     )
-                    it.recycle()
-                    return transferDataEntity
                 }
             } else if (dataItem is DataPathItem) {
                 val pathList = dataItem.dataPathList
@@ -100,14 +98,12 @@ class GCodeTransition : IEngraveTransition {
                 val bitmap = engraveProvider.getEngraveBitmap()
                 bitmap?.let {
                     //此图片已经缩放并且旋转了
-                    val transferDataEntity = _transitionBitmapTransferData(
+                    return _transitionBitmapTransferData(
                         engraveProvider,
                         transferConfigEntity,
                         bitmap,
                         param
                     )
-                    it.recycle()
-                    return transferDataEntity
                 }
             }
         }
@@ -141,7 +137,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, true)
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, false)
         }
     }
 
@@ -173,7 +169,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, true)
+            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, false)
         }
     }
 
@@ -213,8 +209,6 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
-
-            pxBitmap.recycle()
         }
     }
 
@@ -259,8 +253,6 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
-
-            pxBitmap.recycle()
         }
     }
 
