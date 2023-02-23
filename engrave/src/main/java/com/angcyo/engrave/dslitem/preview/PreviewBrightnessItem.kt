@@ -9,6 +9,7 @@ import com.angcyo.drawable.BubbleDrawable
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.interceptParentTouchEvent
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -64,7 +65,9 @@ class PreviewBrightnessItem : BasePreviewItem() {
 
                     itemChanged = true
                     //通知机器
-                    previewModel.refreshPreview(true)
+                    previewModel.refreshPreview(true) {
+                        zState = PreviewInfo.Z_STATE_PAUSE
+                    }
                 }
             }
         }

@@ -330,8 +330,9 @@ class PreviewModel : LifecycleViewModel() {
 
     /**刷新预览, 根据当前的状态, 择优发送指令*/
     @AnyThread
-    fun refreshPreview(async: Boolean = true) {
+    fun refreshPreview(async: Boolean = true, action: PreviewInfo.() -> Unit = {}) {
         previewInfoData.value?.let {
+            it.action()
             startPreview(it, async)
         }
     }
