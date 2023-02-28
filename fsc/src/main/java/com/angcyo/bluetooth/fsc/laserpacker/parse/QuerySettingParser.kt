@@ -56,6 +56,8 @@ data class QuerySettingParser(
     var admin: Int = 0,
     //CAR_flag：C1小车, 移动平台模式开关，0为关，1为开。
     var carFlag: Int = 0,
+    //2023-2-28 L2 雕刻方向设置位，0为默认方向（从机尾向机头雕刻），1则反之。
+    var printDir: Int = 0,
 ) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
@@ -128,6 +130,7 @@ data class QuerySettingParser(
                 sRep = readInt(1, sRep)
                 carFlag = readInt(1, carFlag)
                 state = readInt(1, state)
+                printDir = readInt(1, printDir)
             }
             this
         } catch (e: Exception) {
@@ -182,6 +185,8 @@ data class QuerySettingParser(
                 append(gcodePower.toHexString())
                 append(sRep.toHexString())
                 append(carFlag.toHexString())
+                //2023-2-28
+                append(printDir.toHexString())
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和

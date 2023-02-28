@@ -121,6 +121,8 @@
     <string name="device_setting_act_model_free">Free Mode</string>
     <string name="device_setting_act_des_free">Disclaimer consent is required in the absence of a protective cover</string>
     <string name="device_setting_act_model_preview_g_code">GCode</string>
+    <string name="device_setting_engrave_dir">Engraving direction</string>
+    <string name="device_setting_engrave_dir_des">The default is forward engraving, and the open button is reverse handheld engraving</string>
     <string name="device_g_code_pwr_label">Use G Code command power</string>
     <string name="device_g_code_pwr_des">Turn on the option, the GCode engraving power takes the value from the command; turn off the option, the GCode engraving power takes the value from the App.</string>
     <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>

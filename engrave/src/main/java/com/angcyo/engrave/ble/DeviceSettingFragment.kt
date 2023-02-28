@@ -99,6 +99,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         val productInfo = laserPeckerModel.productInfoData.value
         val isC1 = productInfo?.isCI() == true
+        val isL2 = productInfo?.isLII() == true
         val isL3 = productInfo?.isLIII() == true
         val isL4 = productInfo?.isLIV() == true
         val isC1CarFlag = isC1 && settingParser?.carFlag == 1
@@ -154,6 +155,21 @@ class DeviceSettingFragment : BaseDslFragment() {
                 itemSwitchChangedAction = {
                     settingParser?.free = if (it) 1 else 0
                     settingParser?.updateSetting()
+                }
+            }
+            //雕刻方向
+            if (isL2) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_engrave_dir)
+                    itemDes = _string(R.string.device_setting_engrave_dir_des)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.gcodeView == QuerySettingParser.GCODE_PREVIEW
+                    itemSwitchChangedAction = {
+                        settingParser?.gcodeView =
+                            if (it) QuerySettingParser.GCODE_PREVIEW else QuerySettingParser.GCODE_RECT_PREVIEW
+                        settingParser?.updateSetting()
+                    }
                 }
             }
             //GCode预览

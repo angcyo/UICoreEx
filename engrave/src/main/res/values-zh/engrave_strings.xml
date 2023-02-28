@@ -116,6 +116,8 @@
     <string name="device_setting_act_model_free">自由模式</string>
     <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
     <string name="device_setting_act_model_preview_g_code">向量图</string>
+    <string name="device_setting_engrave_dir">雕刻方向</string>
+    <string name="device_setting_engrave_dir_des">默认为正向雕刻，打开按钮为反向手持雕刻</string>
     <string name="device_g_code_pwr_label">使用GCode指令功率</string>
     <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
     <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
