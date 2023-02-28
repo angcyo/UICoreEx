@@ -164,10 +164,9 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemDes = _string(R.string.device_setting_engrave_dir_des)
                     initItem()
 
-                    itemSwitchChecked = settingParser?.gcodeView == QuerySettingParser.GCODE_PREVIEW
+                    itemSwitchChecked = settingParser?.printDir == 1
                     itemSwitchChangedAction = {
-                        settingParser?.gcodeView =
-                            if (it) QuerySettingParser.GCODE_PREVIEW else QuerySettingParser.GCODE_RECT_PREVIEW
+                        settingParser?.printDir = if (it) 1 else 0
                         settingParser?.updateSetting()
                     }
                 }
