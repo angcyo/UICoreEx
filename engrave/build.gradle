@@ -19,6 +19,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     //图片算法, 这里只编译, 在canvas_lp中依赖
+    compileOnly "com.angcyo:bitmapHandle:${opencv_version}"
     compileOnly "com.angcyo:opencv:${opencv_version}"
 
     //https://mvnrepository.com/artifact/com.airbnb.android/lottie

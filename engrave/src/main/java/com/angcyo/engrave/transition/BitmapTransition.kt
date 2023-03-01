@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.widget.LinearLayout
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
@@ -24,7 +25,6 @@ import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
-import com.angcyo.library.ex.toGrayHandle
 import com.angcyo.library.ex.toGrayInt
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -401,7 +401,12 @@ class BitmapTransition : IEngraveTransition {
                         ) {
                             val bgColor = Color.WHITE
                             val old = pxBitmap
-                            pxBitmap = old.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
+                            //pxBitmap = old.toGrayHandle(bgColor, LibHawkKeys.bgAlphaThreshold)
+                            pxBitmap = BitmapHandle.toGrayHandle(
+                                old,
+                                alphaBgColor = bgColor,
+                                alphaThreshold = LibHawkKeys.bgAlphaThreshold
+                            )!!
                         }
 
                         val listBitmapPath = handleBitmapPath(

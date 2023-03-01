@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
@@ -13,12 +14,15 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.library.ex.*
+import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.rotate
+import com.angcyo.library.ex.setWidthHeight
+import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.hingin.rn.image.ImageProcess
-import kotlin.io.readText
 
 /**
  * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
@@ -56,7 +60,12 @@ object CanvasBitmapHandler {
                             ).toFloat()
                             OpenCV.bitmapToPrint(
                                 context,
-                                bitmap.toGrayHandle(Color.WHITE),
+                                BitmapHandle.toGrayHandle(
+                                    bitmap,
+                                    alphaBgColor = Color.WHITE,
+                                    alphaThreshold = LibHawkKeys.bgAlphaThreshold
+                                )!!
+                                /*bitmap.toGrayHandle(Color.WHITE)*/,
                                 item.dataBean.printsThreshold.toInt()
                             )
                         }
@@ -223,7 +232,12 @@ object CanvasBitmapHandler {
                                 item.dataBean.blackThreshold.toInt(),
                                 if (item.dataBean.inverse) 1 else 0
                             )*/
-                            bitmap.toBlackWhiteHandle(
+                            /*bitmap.toBlackWhiteHandle(
+                                item.dataBean.blackThreshold.toInt(),
+                                item.dataBean.inverse
+                            )*/
+                            BitmapHandle.toBlackWhiteHandle(
+                                bitmap,
                                 item.dataBean.blackThreshold.toInt(),
                                 item.dataBean.inverse
                             )
@@ -290,7 +304,13 @@ object CanvasBitmapHandler {
                             )*/
 
                             //灰度, 抖动图, 使用灰度显示
-                            bitmap.toGrayHandle(
+                            /*bitmap.toGrayHandle(
+                                item.dataBean.inverse,
+                                item.dataBean.contrast,
+                                item.dataBean.brightness
+                            )*/
+                            BitmapHandle.toGrayHandle(
+                                bitmap,
                                 item.dataBean.inverse,
                                 item.dataBean.contrast,
                                 item.dataBean.brightness
@@ -349,7 +369,13 @@ object CanvasBitmapHandler {
                             )
 
                             //灰度
-                            bitmap.toGrayHandle(
+                            /*bitmap.toGrayHandle(
+                                item.dataBean.inverse,
+                                item.dataBean.contrast,
+                                item.dataBean.brightness
+                            )*/
+                            BitmapHandle.toGrayHandle(
+                                bitmap,
                                 item.dataBean.inverse,
                                 item.dataBean.contrast,
                                 item.dataBean.brightness
@@ -411,7 +437,12 @@ object CanvasBitmapHandler {
                         operateBitmap.let { bitmap ->
                             OpenCV.bitmapToSeal(
                                 context,
-                                bitmap.toBlackWhiteHandle(threshold, alphaBgColor = Color.WHITE),
+                                BitmapHandle.toBlackWhiteHandle(
+                                    bitmap,
+                                    threshold,
+                                    alphaBgColor = Color.WHITE
+                                )!!
+                                /*bitmap.toBlackWhiteHandle(threshold, alphaBgColor = Color.WHITE)*/,
                                 threshold
                             )
                         }

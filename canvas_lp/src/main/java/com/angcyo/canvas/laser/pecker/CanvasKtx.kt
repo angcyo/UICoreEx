@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.data.*
@@ -162,7 +163,9 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
         bmpThreshold,
         if (invert) 1 else 0
     ).toBase64Data()*/
-    return toBlackWhiteHandle(bmpThreshold, invert).toBase64Data()
+    //toBlackWhiteHandle(bmpThreshold, invert)
+    val bitmap = BitmapHandle.toBlackWhiteHandle(this, bmpThreshold, invert)
+    return bitmap?.toBase64Data()
 }
 
 /**将[Bitmap]转换成[CanvasProjectItemBean]数据结构*/

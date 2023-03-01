@@ -21,4 +21,5 @@ dependencies {
     //图片算法
     api "com.angcyo:opencv:${opencv_version}"
     api "com.angcyo:imageProcess:${opencv_version}"
+    api "com.angcyo:bitmapHandle:${opencv_version}"
 }
