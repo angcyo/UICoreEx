@@ -1,7 +1,5 @@
-# engrave
+# canvas_lp
 
 2022-6-17 
 
-LaserPecker 激光雕刻
-
-画板/蓝牙/雕刻
+LaserPecker 创作界面
