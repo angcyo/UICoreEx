@@ -833,13 +833,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**蓝牙模块空中升级
      * https://document.feasycom.com/web/#/16/451
      *
-     * [spiltDfuName] 分割[dfuFile]文件名的字符串, 最终文件名必须是BTxxxxxx.dfu
      * [dfuFile] 固件数据
      * [reset] 是否重置设置
      * */
     fun connectToOTAWithFactory(
         address: String,
-        spiltDfuName: String,
         dfuFile: ByteArray,
         reset: Boolean = true,
         callback: (percentage: Int) -> Unit
@@ -867,7 +865,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
         }
         addPacketListener(listener)
-        fscApi.connectToOTAWithFactory(spiltDfuName, address, dfuFile, reset)
+        fscApi.connectToOTAWithFactory(address, dfuFile, reset)
     }
 
     /**断开所有连接的设备
