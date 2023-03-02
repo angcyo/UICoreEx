@@ -31,6 +31,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PR
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.bluetooth.fsc.laserpacker.bean.AtCommandBean
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
@@ -287,6 +288,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
+            _otaProgressUpdate(address, percentage, status)
         }
 
         /**
@@ -298,7 +300,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
-            L.v("AT...${command} $param $type $status")
+            _atCommandCallBack(command, param, type, status)
         }
 
         /**
@@ -422,18 +424,21 @@ class FscBleApiModel : ViewModel(), IViewModel {
         @WorkerThread
         override fun otaProgressUpdate(address: String, percentage: Int, status: Int) {
             super.otaProgressUpdate(address, percentage, status)
+            _otaProgressUpdate(address, percentage, status)
         }
 
         /**
          *  AT 指令模式通讯回调
          *  @param command 发送的命令
-         *  @param parameter 收到的回复
+         *  @param param 收到的回复
          *  @param type 类型
          *  @param status 状态
          */
         override fun atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
             super.atCommandCallBack(command, param, type, status)
-            L.v("AT...${command} $param $type $status")
+            //AT+VER :9.1.1,FSC-BT986 5 2
+            //AT_VER :null 5 3
+            _atCommandCallBack(command, param, type, status)
         }
 
         /**
@@ -445,8 +450,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
             L.v("AT...endATCommand")
         }
 
-        /**
-         *  开始发送AT指令时触发
+        /** 进入AT指令发送模式
+         *  [com.feasycom.common.controler.FscApi.connectToModify]
          */
         override fun startATCommand() {
             super.startATCommand()
@@ -551,7 +556,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
     fun lastDeviceState(): DeviceConnectState? = connectDeviceListData.value?.lastOrNull()
 
     /**获取最后一台设备的地址*/
-    fun lastDeviceAddress(): String? = lastDeviceState()?.device?.address
+    fun lastDeviceAddress(): String? =
+        lastDeviceState()?.device?.address ?: fscApi.bondDevices.lastOrNull()?.device?.address
 
     /**蓝牙是否正在连接, 或者已经连接*/
     fun isConnectState(device: FscDevice?): Boolean {
@@ -782,7 +788,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         device: FscDevice?,
         isAutoConnect: Boolean = false,
         disconnectOther: Boolean = false,
-        stopScan: Boolean = true
+        stopScan: Boolean = true,
+        connectToModify: Boolean = false,
     ) {
         _checkDisconnectTimeout()
         if (stopScan) {
@@ -814,8 +821,53 @@ class FscBleApiModel : ViewModel(), IViewModel {
             this.isAutoConnect = isAutoConnect
             isActiveDisConnected = false
             exception = null
+            isNormalConnect = !connectToModify
         }
-        fscApi.connect(device.address)
+        if (connectToModify) {
+            fscApi.connectToModify(device.address)
+        } else {
+            fscApi.connect(device.address)
+        }
+    }
+
+    /**蓝牙模块空中升级
+     * https://document.feasycom.com/web/#/16/451
+     *
+     * [spiltDfuName] 分割[dfuFile]文件名的字符串, 最终文件名必须是BTxxxxxx.dfu
+     * [dfuFile] 固件数据
+     * [reset] 是否重置设置
+     * */
+    fun connectToOTAWithFactory(
+        address: String,
+        spiltDfuName: String,
+        dfuFile: ByteArray,
+        reset: Boolean = true,
+        callback: (percentage: Int) -> Unit
+    ) {
+        val listener = object : IPacketListener {
+            override fun onOtaProgressUpdate(address: String, percentage: Int, status: Int) {
+                super.onOtaProgressUpdate(address, percentage, status)
+                removePacketListener(this)
+                callback(percentage)
+            }
+
+            override fun onPacketReceived(
+                address: String,
+                strValue: String,
+                dataHexString: String,
+                data: ByteArray
+            ) {
+                super.onPacketReceived(address, strValue, dataHexString, data)
+                removePacketListener(this)
+                if (strValue.contains("OK") && strValue.length >= 15) {
+                    callback(100)
+                } else {
+                    callback(-1)
+                }
+            }
+        }
+        addPacketListener(listener)
+        fscApi.connectToOTAWithFactory(spiltDfuName, address, dfuFile, reset)
     }
 
     /**断开所有连接的设备
@@ -1106,6 +1158,21 @@ class FscBleApiModel : ViewModel(), IViewModel {
         return fscApi.sendFile(address, byteArray)
     }
 
+    /**发送一个AT指令
+     * [command] AT+VER*/
+    fun sendAtCommand(command: String, callback: (bean: AtCommandBean) -> Unit) {
+        val address = lastDeviceAddress() ?: return
+        val listener = object : IPacketListener {
+            override fun onAtCommandCallBack(bean: AtCommandBean) {
+                super.onAtCommandCallBack(bean)
+                removePacketListener(this)
+                callback(bean)
+            }
+        }
+        addPacketListener(listener)
+        fscApi.sendATCommand(address, setOf(command))
+    }
+
     /**数据发送状态,进度监听*/
     val devicePacketStateData: MutableOnceLiveData<DevicePacketState> = vmDataOnce(null)
 
@@ -1228,7 +1295,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     @WorkerThread
     @Synchronized
     fun _packetReceived(address: String, strValue: String, dataHexString: String, data: ByteArray) {
-        L.d("$address 收到:\n$dataHexString ${data.size}bytes")
+        L.d("$address 收到:\n${strValue} $dataHexString ${data.size}bytes")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = System.currentTimeMillis()
@@ -1239,6 +1306,54 @@ class FscBleApiModel : ViewModel(), IViewModel {
         devicePacketStateData.postValue(DevicePacketState(address, data, -1, PACKET_STATE_RECEIVED))
         packetListenerList.forEach {
             it.onPacketReceived(address, strValue, dataHexString, data)
+        }
+    }
+
+    /**AT指令返回回调*/
+    @WorkerThread
+    @Synchronized
+    fun _atCommandCallBack(command: String?, param: String?, type: Int, status: Int) {
+        val address = lastDeviceAddress() ?: return
+        val bean = AtCommandBean(address, command, param, type, status)
+        L.d("$address AT指令[$command]返回:${param} $type $status")
+        wrapReceiveDevice(address) {
+            if (startTime == -1L) {
+                startTime = System.currentTimeMillis()
+            }
+        }
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                param?.toByteArray() ?: byteArrayOf(),
+                100,
+                PACKET_STATE_RECEIVED
+            )
+        )
+        packetListenerList.forEach {
+            it.onAtCommandCallBack(bean)
+        }
+    }
+
+    /**空中升级进度*/
+    @WorkerThread
+    @Synchronized
+    fun _otaProgressUpdate(address: String, percentage: Int, status: Int) {
+        L.d("$address 空中升级:${percentage} $status $status")
+        wrapReceiveDevice(address) {
+            if (startTime == -1L) {
+                startTime = System.currentTimeMillis()
+            }
+        }
+        devicePacketStateData.postValue(
+            DevicePacketState(
+                address,
+                byteArrayOf(),
+                percentage,
+                PACKET_STATE_RECEIVED
+            )
+        )
+        packetListenerList.forEach {
+            it.onOtaProgressUpdate(address, percentage, status)
         }
     }
 

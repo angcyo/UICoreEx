@@ -104,7 +104,7 @@ class FscDeviceModel : LifecycleViewModel() {
                                 it.lpSaveEntity()
                             }
                     }
-                } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
+                } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS && deviceConnectState.isNormalConnect) {
                     //蓝牙已连接
 
                     //发送初始化指令

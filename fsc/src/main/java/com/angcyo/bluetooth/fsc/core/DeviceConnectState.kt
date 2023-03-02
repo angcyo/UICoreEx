@@ -13,6 +13,8 @@ import com.feasycom.common.bean.FscDevice
 data class DeviceConnectState(
     val device: FscDevice,
     var state: Int = CONNECT_STATE_NORMAL,
+    /**是否是普通连接模式, 非AT模式, 工厂模式*/
+    var isNormalConnect: Boolean = true,
     var gatt: BluetoothGatt? = null,
     var type: ConnectType? = null,
     var exception: Exception? = null,
