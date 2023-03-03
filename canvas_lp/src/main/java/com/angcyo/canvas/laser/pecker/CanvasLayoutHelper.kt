@@ -903,6 +903,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 renderDslAdapter {
                     hookUpdateDepend()
                     canvasDelegate.itemsRendererList.forEach { renderer ->
+                        //后面添加的元素, 在顶部显示
                         CanvasLayerItem()(0) {
                             itemCanvasDelegate = canvasDelegate
                             itemRenderer = renderer
