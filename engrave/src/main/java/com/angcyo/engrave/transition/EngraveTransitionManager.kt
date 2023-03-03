@@ -258,7 +258,7 @@ class EngraveTransitionManager {
         } else {
             //规定的图层雕刻顺序
             engraveLayerList.forEach { engraveLayerInfo ->
-                val rendererList = getRendererList(canvasDelegate, engraveLayerInfo, true)
+                val rendererList = getRendererList(canvasDelegate, engraveLayerInfo, false)
                 resultDataList.addAll(
                     transitionTransferData(rendererList, transferConfigEntity, engraveLayerInfo)
                 )
