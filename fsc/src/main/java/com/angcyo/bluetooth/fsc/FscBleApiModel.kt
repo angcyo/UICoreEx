@@ -832,7 +832,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**蓝牙模块空中升级
      * https://document.feasycom.com/web/#/16/451
-     *
+     * [status] status=10086升级成功 status=120升级失败 121升级中
      * [dfuFile] 固件数据
      * [reset] 是否重置设置
      * */
@@ -840,13 +840,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
         address: String,
         dfuFile: ByteArray,
         reset: Boolean = true,
-        callback: (percentage: Int) -> Unit
-    ) {
+        callback: (percentage: Int, status: Int) -> Unit
+    ): IPacketListener {
         val listener = object : IPacketListener {
             override fun onOtaProgressUpdate(address: String, percentage: Int, status: Int) {
                 super.onOtaProgressUpdate(address, percentage, status)
-                removePacketListener(this)
-                callback(percentage)
+                if (status == 10086 || status == 120) {
+                    removePacketListener(this)
+                }
+                callback(percentage, status)
             }
 
             override fun onPacketReceived(
@@ -856,16 +858,17 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 data: ByteArray
             ) {
                 super.onPacketReceived(address, strValue, dataHexString, data)
-                removePacketListener(this)
                 if (strValue.contains("OK") && strValue.length >= 15) {
-                    callback(100)
+                    callback(0, 121)
                 } else {
-                    callback(-1)
+                    removePacketListener(this)
+                    callback(-1, 120)
                 }
             }
         }
         addPacketListener(listener)
         fscApi.connectToOTAWithFactory(address, dfuFile, reset)
+        return listener
     }
 
     /**断开所有连接的设备
@@ -1332,7 +1335,11 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
-    /**空中升级进度*/
+    /**空中升级进度
+     * status=10086升级成功 status=120升级失败 121升级中
+     * [DC:0D:30:1D:3E:E3 空中升级:100 121 121]
+     * [DC:0D:30:1D:3E:E3 空中升级:100 10086 10086]
+     * */
     @WorkerThread
     @Synchronized
     fun _otaProgressUpdate(address: String, percentage: Int, status: Int) {
