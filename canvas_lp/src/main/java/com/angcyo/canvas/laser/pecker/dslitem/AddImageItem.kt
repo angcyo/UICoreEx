@@ -7,8 +7,6 @@ import com.angcyo.canvas.graphics.addSvgRender
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.isGCodeContent
-import com.angcyo.canvas.utils.isSvgContent
 import com.angcyo.component.getFile
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
@@ -19,6 +17,8 @@ import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.ex.*
 import com.angcyo.library.model.loadPath
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.isGCodeContent
+import com.angcyo.library.utils.isSvgContent
 import com.angcyo.picker.dslSinglePickerImage
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue

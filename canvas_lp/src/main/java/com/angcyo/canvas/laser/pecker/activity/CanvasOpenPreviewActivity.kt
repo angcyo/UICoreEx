@@ -33,13 +33,15 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppIcon
 import com.angcyo.library.libCacheFile
+import com.angcyo.library.utils.isGCodeContent
+import com.angcyo.library.utils.isSvgContent
 import com.angcyo.putData
 import com.angcyo.widget.recycler.renderDslAdapter
 import java.io.File
 
 /**
  * 文件打开的预览界面
- * [com.angcyo.uicore.activity.CanvasOpenActivity]
+ * [com.angcyo.canvas.laser.pecker.activity.CanvasOpenActivity]
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/12
  */
