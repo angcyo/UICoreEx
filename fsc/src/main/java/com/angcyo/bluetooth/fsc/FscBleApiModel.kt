@@ -1343,7 +1343,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
     @WorkerThread
     @Synchronized
     fun _otaProgressUpdate(address: String, percentage: Int, status: Int) {
-        L.d("$address 空中升级:${percentage} $status $status")
+        val str = if (status == 10086) "成功" else if (status == 120) "失败" else "..."
+        L.d("$address 空中升级:${percentage} $status $str")
         wrapReceiveDevice(address) {
             if (startTime == -1L) {
                 startTime = System.currentTimeMillis()
