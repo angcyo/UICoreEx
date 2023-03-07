@@ -1,0 +1,25 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.dslitem)
+    implementation project(allModule.dialog)
+    implementation project(allModule.engrave)
+    implementation project(allModule.component)
+
+    //涂鸦
+    implementation project(allModule.doodle)
+    //剪裁
+    implementation project(allModule.crop)
+    //选择图片
+    compileOnly project(allModule.picker)
+
+    api project(allModule.dialog2)
+    api project(allModule.canvas2)
+
+    compileOnly project(allModule.umeng_lp)
+
+    //图片算法
+    api "com.angcyo:opencv:${opencv_version}"
+    api "com.angcyo:imageProcess:${opencv_version}"
+    api "com.angcyo:bitmapHandle:${opencv_version}"
+}
