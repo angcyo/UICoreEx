@@ -1,4 +1,4 @@
-package com.angcyo.canvas2.laser.pecker.dslitem.control
+package com.angcyo.canvas2.laser.pecker.dslitem
 
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.drawCanvasRight

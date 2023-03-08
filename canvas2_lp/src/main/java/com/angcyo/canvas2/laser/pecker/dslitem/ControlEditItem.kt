@@ -1,7 +1,7 @@
-package com.angcyo.canvas2.laser.pecker.dslitem.control
+package com.angcyo.canvas2.laser.pecker.dslitem
 
+import com.angcyo.canvas2.laser.pecker.CanvasLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
 
@@ -11,6 +11,9 @@ import com.angcyo.library.ex._string
  * @since 2023/03/03
  */
 class ControlEditItem : CanvasIconItem() {
+
+    /**控制器*/
+    var itemCanvasLayoutHelper: CanvasLayoutHelper? = null
 
     companion object {
 
@@ -25,10 +28,10 @@ class ControlEditItem : CanvasIconItem() {
         itemTag = TAG_EDIT_ITEM
         itemClick = {
             updateItemSelected(!itemIsSelected)
-            /*if (itemIsSelected) {
-                selectedItemWith(vh, canvasView, this)
+            if (itemIsSelected) {
+                itemCanvasLayoutHelper?.changeSelectItem(this)
             }
-            vh.showControlLayout(canvasView, itemIsSelected, itemIsSelected)*/
+            itemCanvasLayoutHelper?.canvasControlHelper?.visibleControlLayout(itemIsSelected)
         }
     }
 }

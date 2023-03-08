@@ -12,13 +12,11 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/03
  */
-open class CanvasIconItem : DoodleIconItem() {
+open class CanvasIconItem : DoodleIconItem(), ICanvasRendererItem {
 
-    /**渲染器*/
-    var itemRenderer: BaseRenderer? = null
+    override var itemRenderer: BaseRenderer? = null
 
-    /**画板代理*/
-    var itemRenderDelegate: CanvasRenderDelegate? = null
+    override var itemRenderDelegate: CanvasRenderDelegate? = null
 
     init {
         //itemLayoutId = R.layout.item_doodle_icon_layout //图文上下结构
@@ -36,5 +34,4 @@ open class CanvasIconItem : DoodleIconItem() {
         //如果有[R.id.lib_check_view]控制, 则...
         itemHolder.visible(R.id.lib_check_view, itemIsSelected)
     }
-
 }

@@ -1,8 +1,7 @@
-package com.angcyo.canvas2.laser.pecker.dslitem.control
+package com.angcyo.canvas2.laser.pecker.dslitem
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.component.getFile

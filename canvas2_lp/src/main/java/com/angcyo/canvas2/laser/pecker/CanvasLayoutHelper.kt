@@ -2,12 +2,16 @@ package com.angcyo.canvas2.laser.pecker
 
 import com.angcyo.canvas.render.core.CanvasUndoManager
 import com.angcyo.canvas.render.core.ICanvasRenderListener
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.*
+import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.component.CanvasRenderProperty
+import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
+import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.findItemByTag
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.http.rx.doMain
@@ -28,7 +32,7 @@ import com.angcyo.widget.recycler.renderDslAdapter
  */
 class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
-    //region ---基础界面---
+    //region ---基础---
 
     /**调用入口*/
     @CallPoint
@@ -37,40 +41,42 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
         //功能item渲染
         vh.canvasItemRv?.renderDslAdapter {
-            hookUpdateDepend()
+            hookUpdateDepend(this)
 
             //需要关闭的功能
             val closeCanvasItemsFun = HawkEngraveKeys.closeCanvasItemsFun
 
             if (!closeCanvasItemsFun.have("_image_")) {
                 AddBitmapItem()() {
-                    itemRenderDelegate = vh.canvasDelegate
+                    initItem()
                 }
             }
             if (!closeCanvasItemsFun.have("_text_")) {
                 AddTextItem()() {
-                    itemRenderDelegate = vh.canvasDelegate
+                    initItem()
                 }
             }
             //素材
             if (!closeCanvasItemsFun.have("_material_")) {
                 materialCanvasItem() {
-                    itemRenderDelegate = vh.canvasDelegate
+                    initItem()
                 }
             }
             if (!closeCanvasItemsFun.have("_shapes_")) {
                 AddShapesItem()() {
-                    itemRenderDelegate = vh.canvasDelegate
+                    initItem()
                 }
             }
             if (!closeCanvasItemsFun.have("_doodle_")) {
                 AddDoodleItem()() {
-                    itemRenderDelegate = vh.canvasDelegate
+                    initItem()
                 }
             }
             //
 
             ControlEditItem()() {//edit
+                initItem()
+                itemCanvasLayoutHelper = this@CanvasLayoutHelper
             }
 
             if (!closeCanvasItemsFun.have("_layer_")) {
@@ -78,6 +84,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                     //updateLayerListLayout(vh, canvasView)
                 } else {
                     ControlLayerItem()() {
+                        initItem()
                     }
                 }
             }
@@ -97,7 +104,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             }*/
             if (!closeCanvasItemsFun.have("_setting_")) {
                 ControlSettingItem()() {
-
+                    initItem()
                 }
             }
         }
@@ -109,21 +116,44 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         updateUndoLayout()
     }
 
-    //endregion ---基础界面---
+    private var _selectItem: DslAdapterItem? = null
+
+    /**切换底部选中的item*/
+    @CallPoint
+    fun changeSelectItem(toItem: DslAdapterItem?) {
+        if (_selectItem == toItem) {
+            return
+        }
+        _selectItem?.updateItemSelected(false)
+        _selectItem = toItem
+    }
+
+    //endregion ---基础---
 
     //region ---init---
 
-    private var _rootViewHolder: DslViewHolder? = null
+    /**控制布局助手*/
+    val canvasControlHelper = CanvasControlHelper(this)
+
+    internal var _rootViewHolder: DslViewHolder? = null
 
     /**监听, 并赋值[IFragmentItem]*/
-    fun DslAdapter.hookUpdateDepend() {
-        observeItemUpdateDepend {
-            adapterItems.forEach {
-                if (it is IFragmentItem) {
-                    it.itemFragment = canvasFragment.fragment
+    fun hookUpdateDepend(adapter: DslAdapter) {
+        adapter.apply {
+            observeItemUpdateDepend {
+                adapterItems.forEach {
+                    if (it is IFragmentItem) {
+                        it.itemFragment = canvasFragment.fragment
+                    }
                 }
             }
         }
+    }
+
+    /**初始化*/
+    private fun ICanvasRendererItem.initItem(renderer: BaseRenderer? = null) {
+        itemRenderer = renderer
+        itemRenderDelegate = _rootViewHolder?.canvasDelegate
     }
 
     /**素材item, 暴露给外部配置*/
@@ -139,6 +169,37 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         _rootViewHolder?.canvasDelegate?.addCanvasRenderListener(object : ICanvasRenderListener {
             override fun onRenderUndoChange(undoManager: CanvasUndoManager) {
                 updateUndoLayout()
+            }
+
+            override fun onSelectorRendererChange(
+                selectorComponent: CanvasSelectorComponent,
+                from: List<BaseRenderer>,
+                to: List<BaseRenderer>
+            ) {
+                canvasControlHelper.bindControlLayout()
+            }
+
+            override fun onRendererFlagsChange(
+                renderer: BaseRenderer,
+                oldFlags: Int,
+                newFlags: Int,
+                reason: Reason
+            ) {
+                if (renderer is CanvasSelectorComponent) {
+                    if (reason.renderFlag == BaseRenderer.RENDERER_FLAG_LOCK_SCALE) {
+                        //锁的状态改变
+                        canvasControlHelper.updateControlLayout()
+                    }
+                }
+            }
+
+            override fun onRendererPropertyChange(
+                renderer: BaseRenderer,
+                fromProperty: CanvasRenderProperty?,
+                toProperty: CanvasRenderProperty?,
+                reason: Reason
+            ) {
+                canvasControlHelper.updateControlLayout()
             }
         })
     }
