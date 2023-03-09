@@ -105,6 +105,7 @@ object LPBitmapHandler {
 
     /**版画*/
     fun handlePrint(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
@@ -115,6 +116,9 @@ object LPBitmapHandler {
         val context = anchor.context
         val operateBitmap = element.originBitmap
 
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
+
         context.canvasRegulateWindow(anchor) {
             addRegulate(
                 CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
@@ -124,6 +128,9 @@ object LPBitmapHandler {
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
+                    if (_valueChange) {
+                        addToStack(delegate, renderer, undoState)
+                    }
                 } else {
                     owner.engraveLoadingAsync({
                         operateBitmap?.let { bitmap ->
@@ -136,6 +143,9 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
                     }
                 }
             }
@@ -307,6 +317,7 @@ object LPBitmapHandler {
      * [com.angcyo.canvas.graphics.BitmapGraphicsParser]
      * */
     fun handleDithering(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
@@ -316,6 +327,9 @@ object LPBitmapHandler {
         val bean = element.elementBean
         val context = anchor.context
         val operateBitmap = element.originBitmap
+
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
@@ -325,6 +339,9 @@ object LPBitmapHandler {
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
+                    if (_valueChange) {
+                        addToStack(delegate, renderer, undoState)
+                    }
                 } else {
                     owner.engraveLoadingAsync({
                         operateBitmap?.let { bitmap ->
@@ -332,22 +349,22 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
                                 bean.inverse
                             )
-
                             bean.contrast = getFloatOrDef(
                                 CanvasRegulatePopupConfig.KEY_CONTRAST,
                                 bean.contrast
                             )
-
                             bean.brightness = getFloatOrDef(
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
                             )
-
                             bean.imageFilter = LPConstant.DATA_MODE_DITHERING
                             toGrayHandle(bitmap, bean)
                         }
                     }) { result ->
                         element.renderBitmap = result
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
                     }
                 }
             }
@@ -356,6 +373,7 @@ object LPBitmapHandler {
 
     /**灰度*/
     fun handleGrey(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
@@ -365,6 +383,9 @@ object LPBitmapHandler {
         val bean = element.elementBean
         val context = anchor.context
         val operateBitmap = element.originBitmap
+
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
@@ -374,6 +395,9 @@ object LPBitmapHandler {
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
+                    if (_valueChange) {
+                        addToStack(delegate, renderer, undoState)
+                    }
                 } else {
                     owner.engraveLoadingAsync({
                         operateBitmap?.let { bitmap ->
@@ -381,12 +405,10 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
                                 bean.inverse
                             )
-
                             bean.contrast = getFloatOrDef(
                                 CanvasRegulatePopupConfig.KEY_CONTRAST,
                                 bean.contrast
                             )
-
                             bean.brightness = getFloatOrDef(
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
@@ -396,6 +418,9 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
                     }
                 }
             }
@@ -404,6 +429,7 @@ object LPBitmapHandler {
 
     /**印章*/
     fun handleSeal(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
@@ -413,6 +439,9 @@ object LPBitmapHandler {
         val bean = element.elementBean
         val context = anchor.context
         val operateBitmap = element.originBitmap
+
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(
@@ -423,6 +452,9 @@ object LPBitmapHandler {
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
+                    if (_valueChange) {
+                        addToStack(delegate, renderer, undoState)
+                    }
                 } else {
                     owner.engraveLoadingAsync({
                         val threshold = getIntOrDef(
@@ -436,6 +468,9 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
                     }
                 }
             }

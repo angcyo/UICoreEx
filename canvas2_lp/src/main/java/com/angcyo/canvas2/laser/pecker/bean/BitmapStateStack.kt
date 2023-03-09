@@ -33,7 +33,10 @@ class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
 
     val imageFilter = elementBean.imageFilter
     val inverse = elementBean.inverse
+    val contrast = elementBean.contrast
+    val brightness = elementBean.brightness
     val blackThreshold = elementBean.blackThreshold
+    val printsThreshold = elementBean.printsThreshold
 
     //endregion---需要存储的数据---
 
@@ -47,7 +50,10 @@ class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
 
         elementBean.imageFilter = imageFilter
         elementBean.inverse = inverse
+        elementBean.contrast = contrast
+        elementBean.brightness = brightness
         elementBean.blackThreshold = blackThreshold
+        elementBean.printsThreshold = printsThreshold
 
         renderer.requestUpdateDrawable(reason, delegate)
         renderer.requestUpdateProperty(reason, delegate)

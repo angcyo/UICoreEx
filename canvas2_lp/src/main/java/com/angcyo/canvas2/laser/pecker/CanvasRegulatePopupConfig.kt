@@ -470,6 +470,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
     //抖动处理
     val valueChangedRunnable = Runnable {
+        _valueChange = true
         onApplyAction(false)
     }
 

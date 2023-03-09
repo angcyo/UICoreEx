@@ -220,7 +220,12 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleDithering(it, fragment, renderer) {
+                        LPBitmapHandler.handleDithering(
+                            canvasRenderDelegate,
+                            it,
+                            fragment,
+                            renderer
+                        ) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -256,7 +261,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                     itemRenderer = renderer
                     itemImageFilter = LPConstant.DATA_MODE_GREY
                     itemClick = {
-                        LPBitmapHandler.handleGrey(it, fragment, renderer) {
+                        LPBitmapHandler.handleGrey(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -274,7 +279,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handlePrint(it, fragment, renderer) {
+                        LPBitmapHandler.handlePrint(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -292,7 +297,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleSeal(it, fragment, renderer) {
+                        LPBitmapHandler.handleSeal(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }

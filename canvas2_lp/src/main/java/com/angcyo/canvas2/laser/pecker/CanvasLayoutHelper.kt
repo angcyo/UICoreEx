@@ -3,10 +3,12 @@ package com.angcyo.canvas2.laser.pecker
 import com.angcyo.canvas.render.core.CanvasUndoManager
 import com.angcyo.canvas.render.core.ICanvasRenderListener
 import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas2.laser.pecker.dslitem.*
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -187,10 +189,14 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 reason: Reason
             ) {
                 if (renderer is CanvasSelectorComponent) {
-                    if (reason.renderFlag?.have(BaseRenderer.RENDERER_FLAG_LOCK_SCALE) == true) {
+                    if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_LOCK_SCALE)) {
                         //锁的状态改变
                         canvasControlHelper.updateControlLayout()
                     }
+                }
+                if (reason.controlType.have(BaseControlPoint.CONTROL_TYPE_DATA)) {
+                    //数据改变, 比如切换了图片算法/填充/描边等
+                    canvasControlHelper.updateControlLayout()
                 }
             }
 
