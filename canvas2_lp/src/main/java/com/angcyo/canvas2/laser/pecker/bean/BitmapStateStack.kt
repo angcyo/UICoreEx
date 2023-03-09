@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.bean
 
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.data.IStateStack
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
@@ -36,7 +37,7 @@ class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
 
     //endregion---需要存储的数据---
 
-    override fun restoreState(reason: Reason, delegate: CanvasRenderDelegate?) {
+    override fun restoreState(reason: Reason, strategy: Strategy, delegate: CanvasRenderDelegate?) {
         element?.originBitmap = operateBitmap
         element?.renderBitmap = renderBitmap
         element?.pathList = pathList
