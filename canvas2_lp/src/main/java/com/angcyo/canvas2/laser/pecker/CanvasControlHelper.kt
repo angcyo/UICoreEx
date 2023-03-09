@@ -90,8 +90,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 eachItem { index, item ->
                     if (item is ICanvasRendererItem) {
                         val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
-                        item.itemRenderer = selectorRenderer
-                        item.itemRenderDelegate = canvasRenderDelegate
+                        item.initItem(selectorRenderer)
                     }
                 }
                 updateAllItem()

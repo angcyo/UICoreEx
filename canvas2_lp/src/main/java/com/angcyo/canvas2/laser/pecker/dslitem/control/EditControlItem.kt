@@ -5,6 +5,7 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
+import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.unit.IRenderUnit
 import com.angcyo.canvas.render.util.canvasDecimal
@@ -27,6 +28,9 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
 
+    private val selectorComponent: CanvasSelectorComponent?
+        get() = itemRenderDelegate?.selectorManager?.selectorComponent
+
     private val unit: IRenderUnit
         get() = itemRenderDelegate?.axisManager?.renderUnit!!
 
@@ -45,10 +49,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
         //color
         bindColor(itemHolder)
 
-        val renderer = itemRenderer
+        val renderer = selectorComponent
         val canvasDelegate = itemRenderDelegate
         if (canvasDelegate != null && renderer is BaseRenderer) {
-            //val drawable = renderer._rendererItem?.itemDrawable ?: itemRenderer?.preview()
+            //val drawable = renderer._rendererItem?.itemDrawable ?: selectorComponent?.preview()
             itemHolder.img(R.id.item_drawable_view)?.apply {
                 //visible(drawable != null)
                 itemHolder.visible(R.id.item_drawable_line_view, drawable != null)
@@ -131,7 +135,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     /**绑定宽高事件*/
     private fun bindWidthHeight(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.item_width_view) {
-            val renderer = itemRenderer ?: return@click
+            val renderer = selectorComponent ?: return@click
             val property = renderer.renderProperty ?: return@click
             val bounds = property.getRenderBounds()
 
@@ -154,7 +158,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
             }
         }
         itemHolder.click(R.id.item_height_view) {
-            val renderer = itemRenderer ?: return@click
+            val renderer = selectorComponent ?: return@click
             val property = renderer.renderProperty ?: return@click
             val bounds = property.getRenderBounds()
             itemHolder.context.keyboardNumberWindow(it) {
@@ -180,7 +184,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     /**绑定xy轴事件*/
     private fun bindAxis(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.item_axis_x_view) {
-            val renderer = itemRenderer ?: return@click
+            val renderer = selectorComponent ?: return@click
             val property = renderer.renderProperty ?: return@click
             val bounds = property.getRenderBounds()
             itemHolder.context.keyboardNumberWindow(it) {
@@ -198,7 +202,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
             }
         }
         itemHolder.click(R.id.item_axis_y_view) {
-            val renderer = itemRenderer ?: return@click
+            val renderer = selectorComponent ?: return@click
             val property = renderer.renderProperty ?: return@click
             val bounds = property.getRenderBounds()
             itemHolder.context.keyboardNumberWindow(it) {
@@ -220,7 +224,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     /**绑定旋转事件*/
     private fun bindRotate(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.item_rotate_view) {
-            val renderer = itemRenderer ?: return@click
+            val renderer = selectorComponent ?: return@click
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@EditControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
@@ -237,7 +241,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
 
     /**颜色*/
     private fun bindColor(itemHolder: DslViewHolder) {
-        val renderer = itemRenderer
+        val renderer = selectorComponent
 
         //是否需要显示颜色控件
         /*var showColorView = false
@@ -290,10 +294,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     /**翻转*/
     private fun bindFlip(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.flip_horizontal_layout) {
-            itemRenderer?.flipX(Reason.user, Strategy.normal, itemRenderDelegate)
+            selectorComponent?.flipX(Reason.user, Strategy.normal, itemRenderDelegate)
         }
         itemHolder.click(R.id.flip_vertical_layout) {
-            itemRenderer?.flipY(Reason.user, Strategy.normal, itemRenderDelegate)
+            selectorComponent?.flipY(Reason.user, Strategy.normal, itemRenderDelegate)
         }
     }
 
