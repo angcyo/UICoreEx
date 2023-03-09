@@ -1,4 +1,4 @@
-package com.angcyo.canvas2.laser.pecker.dslitem
+package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem

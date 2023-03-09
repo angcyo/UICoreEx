@@ -7,6 +7,7 @@ import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.dslitem.*
+import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.findItemByTag
@@ -186,7 +187,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 reason: Reason
             ) {
                 if (renderer is CanvasSelectorComponent) {
-                    if (reason.renderFlag == BaseRenderer.RENDERER_FLAG_LOCK_SCALE) {
+                    if (reason.renderFlag?.have(BaseRenderer.RENDERER_FLAG_LOCK_SCALE) == true) {
                         //锁的状态改变
                         canvasControlHelper.updateControlLayout()
                     }

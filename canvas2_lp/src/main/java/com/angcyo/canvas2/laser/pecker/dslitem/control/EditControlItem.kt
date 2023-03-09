@@ -30,11 +30,6 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     private val unit: IRenderUnit
         get() = itemRenderDelegate?.axisManager?.renderUnit!!
 
-    private val reason: Reason
-        get() = Reason.user.apply {
-            controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY
-        }
-
     init {
         itemLayoutId = R.layout.item_canvas_edit_control_layout
     }
@@ -107,7 +102,9 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
             itemHolder.click(R.id.item_lock_view) {
                 canvasDelegate.selectorManager.updateLockScaleRatio(
                     !renderer.isLockScaleRatio,
-                    reason,
+                    Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY
+                    },
                     canvasDelegate
                 )
                 updateAdapterItem()
@@ -148,7 +145,11 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                     val sx = newWidth / bounds.width()
                     val sy = if (lockRatio) sx else 1f
 
-                    renderer.scale(sx, sy, reason, Strategy.normal, itemRenderDelegate)
+                    renderer.scale(sx, sy, Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
+                                BaseControlPoint.CONTROL_TYPE_DATA or
+                                BaseControlPoint.CONTROL_TYPE_WIDTH
+                    }, Strategy.normal, itemRenderDelegate)
                 }
             }
         }
@@ -166,7 +167,11 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                     val sy = newHeight / bounds.height()
                     val sx = if (lockRatio) sy else 1f
 
-                    renderer.scale(sx, sy, reason, Strategy.normal, itemRenderDelegate)
+                    renderer.scale(sx, sy, Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
+                                BaseControlPoint.CONTROL_TYPE_DATA or
+                                BaseControlPoint.CONTROL_TYPE_HEIGHT
+                    }, Strategy.normal, itemRenderDelegate)
                 }
             }
         }
@@ -185,7 +190,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                     val newX = unit.convertValueToPixel(toX)
                     val dx = newX - bounds.left
 
-                    renderer.translate(dx, 0f, reason, Strategy.normal, itemRenderDelegate)
+                    renderer.translate(dx, 0f, Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
+                                BaseControlPoint.CONTROL_TYPE_TRANSLATE
+                    }, Strategy.normal, itemRenderDelegate)
                 }
             }
         }
@@ -200,7 +208,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                     val newY = unit.convertValueToPixel(toY)
                     val dy = newY - bounds.top
 
-                    renderer.translate(0f, dy, reason, Strategy.normal, itemRenderDelegate)
+                    renderer.translate(0f, dy, Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
+                                BaseControlPoint.CONTROL_TYPE_TRANSLATE
+                    }, Strategy.normal, itemRenderDelegate)
                 }
             }
         }
@@ -214,7 +225,11 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                 onDismiss = this@EditControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { toRotate ->
-                    renderer.rotate(toRotate, reason, Strategy.normal, itemRenderDelegate)
+                    renderer.rotate(toRotate, Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
+                                BaseControlPoint.CONTROL_TYPE_DATA or
+                                BaseControlPoint.CONTROL_TYPE_ROTATE
+                    }, Strategy.normal, itemRenderDelegate)
                 }
             }
         }
