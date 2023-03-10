@@ -20,6 +20,8 @@ import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.library.L
+import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.unit.toMm
@@ -226,7 +228,9 @@ object LPBitmapHandler {
                         bean.imageFilter = LPConstant.DATA_MODE_GCODE
 
                         operateBitmap.let { bitmap ->
+                            LTime.tick()
                             val gcodeFile = toGCode(context, bitmap, bean)
+                            L.i("图片转GCode耗时:${LTime.time()}")
                             val gCodeText = gcodeFile.readText()
                             gcodeFile.deleteSafe()
                             gCodeText to GCodeHelper.parseGCode(gCodeText)
