@@ -97,7 +97,7 @@ object HawkEngraveKeys {
     var enableRectCenterPreview: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**最大允许雕刻的item数量*/
-    var maxEngraveItemCountLimit: Int by HawkPropertyValue<Any, Int>(10)
+    var maxEngraveItemCountLimit: Int by HawkPropertyValue<Any, Int>(30)
 
     /**当设备数量大于10时, 显示过滤布局*/
     var showDeviceFilterCount: Int by HawkPropertyValue<Any, Int>(10)
