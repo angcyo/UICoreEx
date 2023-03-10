@@ -754,7 +754,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             return false
         }
 
-        if (laserPeckerModel.isL4()) {
+        if (laserPeckerModel.isL4() || laserPeckerModel.isC1()) {
             return true
         }
 
