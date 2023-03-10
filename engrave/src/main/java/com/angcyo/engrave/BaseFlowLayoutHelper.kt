@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.dslPermissions
@@ -358,6 +359,16 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //开始预览
     fun _startPreview(engraveFragment: IEngraveCanvasFragment) {
+        //未选中元素的情况下, 自动选中有效的所有元素
+        val selectedRenderer = engraveFragment.canvasDelegate?.getSelectedRenderer()
+        if (selectedRenderer == null) {
+            val list = engraveFragment.canvasDelegate?.getAllDependRendererList()
+            engraveFragment.canvasDelegate?.selectGroupRenderer?.selectedRendererList(
+                list ?: emptyList(),
+                Strategy.preview
+            )
+        }
+
         //
         /*engraveFlow = if (laserPeckerModel.isPenMode()) {
                 //提前对笔模块校准
