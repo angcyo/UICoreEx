@@ -1,5 +1,7 @@
 package com.angcyo.canvas2.laser.pecker
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -7,10 +9,16 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.drawRight
+import com.angcyo.gcode.GCodeDrawable
+import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex.colorChannel
+import com.angcyo.svg.Svg
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.createPaint
 import com.angcyo.widget.recycler.DslRecyclerView
+import com.pixplicity.sharp.SharpDrawable
 
 /** 扩展方法
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -64,4 +72,26 @@ fun DslAdapterItem.drawCanvasRight(
 
 //---
 
+/**扩展*/
+fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
+    parseGCode(gCodeText, createPaint(Color.BLACK))
 
+/**扩展*/
+fun parseSvg(svgText: String?): SharpDrawable? = if (svgText.isNullOrEmpty()) {
+    null
+} else {
+    Svg.loadSvgPathDrawable(svgText, -1, null, createPaint(Color.BLACK), 0, 0)
+}
+
+/**从图片中, 获取雕刻需要用到的像素信息*/
+fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
+    return colorChannel(channelType) { color, channelValue ->
+        if (color == Color.TRANSPARENT) {
+            0xFF //255 白色像素, 白色在纸上不雕刻, 在金属上雕刻
+        } else {
+            channelValue
+        }
+    }
+}
+
+//---

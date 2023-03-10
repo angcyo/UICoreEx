@@ -158,7 +158,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //雕刻方向
-            if (isL2) {
+            if (isL2 && productInfo?.version in 374..399) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_engrave_dir)
                     itemDes = _string(R.string.device_setting_engrave_dir_des)
@@ -242,8 +242,14 @@ class DeviceSettingFragment : BaseDslFragment() {
                                 //QuerySettingParser.Z_MODEL = index //确切的模式
                                 QuerySettingParser.Z_MODEL_STR = zModelList.getOrNull(index)?.resKey
                                     ?: QuerySettingParser.Z_MODEL_FLAT //确切的模式
-                                settingParser?.zDir =
-                                    if (QuerySettingParser.Z_MODEL_STR == QuerySettingParser.Z_MODEL_CYLINDER) 1 else 0
+                                if (productInfo?.version == 373) {
+                                    //2023-3-10 373的版本小车模式和圆柱模式逻辑统一
+                                    settingParser?.zDir =
+                                        if (QuerySettingParser.Z_MODEL_STR == QuerySettingParser.Z_MODEL_FLAT) 0 else 1
+                                } else {
+                                    settingParser?.zDir =
+                                        if (QuerySettingParser.Z_MODEL_STR == QuerySettingParser.Z_MODEL_CYLINDER) 1 else 0
+                                }
                                 settingParser?.updateSetting()
                             }
                     }

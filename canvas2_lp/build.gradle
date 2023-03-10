@@ -16,6 +16,9 @@ dependencies {
     api project(allModule.dialog2)
     api project(allModule.canvas2)
 
+    //矢量处理
+    api project(allModule.vector)
+
     compileOnly project(allModule.umeng_lp)
 
     //图片算法

@@ -7,7 +7,6 @@ import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.library.ex.toBase64Data
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -30,12 +29,9 @@ object LPElementHelper {
         UMEvent.CANVAS_IMAGE.umengEventValue()
 
         delegate.renderManager.addRenderer(CanvasElementRenderer().apply {
+            val renderer = this
             renderElement = LPBitmapElement(elementBean).apply {
-                initOriginBitmap(bitmap)
-                renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
-            }
-            delegate.asyncManager.addAsyncTask(this@apply) {
-                elementBean.imageOriginal = bitmap.toBase64Data()
+                updateOriginBitmap(delegate, renderer, bitmap)
             }
         }, true, Strategy.normal)
     }

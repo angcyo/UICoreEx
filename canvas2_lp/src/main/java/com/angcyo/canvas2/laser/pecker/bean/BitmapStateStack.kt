@@ -4,6 +4,7 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.data.IStateStack
+import com.angcyo.canvas.render.data.PropertyStateStack
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
@@ -14,7 +15,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/09
  */
-class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
+class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStateStack {
 
     private val element: LPBitmapElement?
         get() = renderer.lpBitmapElement()
@@ -38,6 +39,18 @@ class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
     val blackThreshold = elementBean.blackThreshold
     val printsThreshold = elementBean.printsThreshold
 
+    val data = elementBean.data
+    val gcodeDirection = elementBean.gcodeDirection
+    val gcodeLineSpace = elementBean.gcodeLineSpace
+    val gcodeAngle = elementBean.gcodeAngle
+    val gcodeOutline = elementBean.gcodeOutline
+    val gcodeFillStep = elementBean.gcodeFillStep
+    val gcodeFillAngle = elementBean.gcodeFillAngle
+
+    init {
+        saveState(renderer)
+    }
+
     //endregion---需要存储的数据---
 
     override fun restoreState(reason: Reason, strategy: Strategy, delegate: CanvasRenderDelegate?) {
@@ -55,7 +68,15 @@ class BitmapStateStack(val renderer: BaseRenderer) : IStateStack {
         elementBean.blackThreshold = blackThreshold
         elementBean.printsThreshold = printsThreshold
 
+        elementBean.data = data
+        elementBean.gcodeDirection = gcodeDirection
+        elementBean.gcodeLineSpace = gcodeLineSpace
+        elementBean.gcodeAngle = gcodeAngle
+        elementBean.gcodeOutline = gcodeOutline
+        elementBean.gcodeFillStep = gcodeFillStep
+        elementBean.gcodeFillAngle = gcodeFillAngle
+
+        super.restoreState(reason, strategy, delegate)
         renderer.requestUpdateDrawable(reason, delegate)
-        renderer.requestUpdateProperty(reason, delegate)
     }
 }

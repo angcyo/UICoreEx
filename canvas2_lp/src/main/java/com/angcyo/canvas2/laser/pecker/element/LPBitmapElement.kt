@@ -1,10 +1,17 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import android.graphics.Bitmap
 import android.graphics.Path
 import android.graphics.drawable.Drawable
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
+import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.util.CanvasRenderHelper
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
+import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.library.ex.toBase64Data
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -17,7 +24,34 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     var pathList: List<Path>? = null
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
+        if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+            return createPathDrawable(
+                pathList,
+                paint,
+                renderParams?.overrideWidth,
+                renderParams?.overrideHeight
+            )
+        }
         return super.requestElementRenderDrawable(renderParams)
     }
 
+    /**更新GCode数据*/
+    fun updateOriginBitmap(pathList: List<Path>?) {
+        this.pathList = pathList
+        val bounds = CanvasRenderHelper.computePathBounds(pathList)
+        updateOriginWidthHeight(bounds.width(), bounds.height())
+    }
+
+    /**更新原始图片, 并且自动处理成默认的黑白数据, 以及转成对应的base64数据*/
+    fun updateOriginBitmap(
+        delegate: CanvasRenderDelegate?,
+        renderer: BaseRenderer,
+        bitmap: Bitmap
+    ) {
+        updateOriginBitmap(bitmap)
+        renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
+        delegate?.asyncManager?.addAsyncTask(renderer) {
+            elementBean.imageOriginal = bitmap.toBase64Data()
+        }
+    }
 }

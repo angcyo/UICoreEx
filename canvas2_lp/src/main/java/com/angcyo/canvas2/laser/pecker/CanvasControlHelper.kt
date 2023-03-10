@@ -243,7 +243,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleGCode(it, fragment, renderer) {
+                        LPBitmapHandler.handleGCode(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -334,7 +334,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleCrop(it, fragment, renderer) {
+                        LPBitmapHandler.handleCrop(canvasRenderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
                         UMEvent.CANVAS_IMAGE_CROP.umengEventValue()

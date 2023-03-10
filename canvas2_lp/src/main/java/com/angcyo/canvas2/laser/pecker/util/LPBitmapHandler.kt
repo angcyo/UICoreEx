@@ -16,10 +16,16 @@ import com.angcyo.canvas2.laser.pecker.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.bean.BitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.canvasRegulateWindow
+import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.engraveLoadingAsync
+import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.unit.toMm
+import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
+import java.io.File
 
 /**
  * 图片编辑处理, 实时改变, 不需要确定按钮, 模式恢复
@@ -78,6 +84,19 @@ object LPBitmapHandler {
         return OpenCV.bitmapToSeal(context, bitmap, sealThreshold.toInt())
     }
 
+    /**转GCode处理*/
+    fun toGCode(context: Context, bitmap: Bitmap, bean: LPElementBean): File {
+        return OpenCV.bitmapToGCode(
+            context,
+            bitmap,
+            (bitmap.width).toMm().toDouble(),
+            lineSpace = bean.gcodeLineSpace.toDouble(),
+            direction = bean.gcodeDirection,
+            angle = bean.gcodeAngle.toDouble(),
+            type = if (bean.gcodeOutline) 1 else 3
+        )
+    }
+
     //endregion---图片算法处理---
 
     //region---core---
@@ -112,9 +131,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
         //用来恢复的状态
         val undoState = BitmapStateStack(renderer)
@@ -133,7 +152,7 @@ object LPBitmapHandler {
                     }
                 } else {
                     owner.engraveLoadingAsync({
-                        operateBitmap?.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             bean.printsThreshold = getIntOrDef(
                                 CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
                                 bean.printsThreshold.toInt()
@@ -154,106 +173,78 @@ object LPBitmapHandler {
 
     /**GCode*/
     fun handleGCode(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
-        /*context.canvasRegulateWindow2(anchor) {
-            addRegulate(CanvasRegulatePopupConfig2.KEY_OUTLINE, bean.gcodeOutline)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_LINE_SPACE, bean.gcodeLineSpace)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE, bean.gcodeAngle)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION, bean.gcodeDirection)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE, bean.gcodeOutline)
+            addRegulate(CanvasRegulatePopupConfig.KEY_LINE_SPACE, bean.gcodeLineSpace)
+            addRegulate(CanvasRegulatePopupConfig.KEY_ANGLE, bean.gcodeAngle)
+            //addRegulate(CanvasRegulatePopupConfig.KEY_DIRECTION, bean.gcodeDirection)//2023-3-10
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
             //firstApply = bean.imageFilter != LPConstant.DATA_MODE_GCODE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     owner.engraveLoadingAsync({
+
                         //direction
-                        val direction = getIntOrDef(
-                            CanvasRegulatePopupConfig2.KEY_DIRECTION,
-                            bean.gcodeDirection
-                        )
-                        if (direction == 1 || direction == 3) {
-                            boundsRotate = 90f
-                        }
-                        bean.gcodeDirection = direction
+                        bean.gcodeDirection = 0
 
                         //lineSpace
                         val lineSpace = getFloatOrDef(
-                            CanvasRegulatePopupConfig2.KEY_LINE_SPACE,
+                            CanvasRegulatePopupConfig.KEY_LINE_SPACE,
                             bean.gcodeLineSpace
                         )
                         bean.gcodeLineSpace = lineSpace
 
                         //angle
-                        val angle = getFloatOrDef(
-                            CanvasRegulatePopupConfig2.KEY_ANGLE,
+                        val gcodeAngle = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_ANGLE,
                             bean.gcodeAngle
                         )
-                        bean.gcodeAngle = angle
+                        bean.gcodeAngle = gcodeAngle
 
                         //outline
-                        val outline = getBooleanOrDef(
-                            CanvasRegulatePopupConfig2.KEY_OUTLINE,
+                        val gcodeOutline = getBooleanOrDef(
+                            CanvasRegulatePopupConfig.KEY_OUTLINE,
                             bean.gcodeOutline
                         )
-                        bean.gcodeOutline = outline
+                        bean.gcodeOutline = gcodeOutline
+                        bean.imageFilter = LPConstant.DATA_MODE_GCODE
 
                         operateBitmap.let { bitmap ->
-                            OpenCV.bitmapToGCode(
-                                context,
-                                bitmap,
-                                (beforeBounds.width() / 2).toMm().toDouble(),
-                                lineSpace = lineSpace.toDouble(),
-                                direction = direction,
-                                angle = angle.toDouble(),
-                                type = if (outline) 1 else 3
-                            ).let {
-                                val gCodeText = it.readText()
-                                it.deleteSafe()
-                                gCodeText to GCodeHelper.parseGCode(gCodeText)
-                            }
+                            val gcodeFile = toGCode(context, bitmap, bean)
+                            val gCodeText = gcodeFile.readText()
+                            gcodeFile.deleteSafe()
+                            gCodeText to GCodeHelper.parseGCode(gCodeText)
                         }
-                    }) {
-                        it?.let {
-                            it.first.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
-                            beforeBounds.rotate(boundsRotate)
-                            it.second?.gCodeBound?.let {
-                                val gcodeWidth = it.width()
-                                val gcodeHeight = it.height()
-                                var newWidth = gcodeWidth
-                                var newHeight = gcodeHeight
-                                if (gcodeWidth > gcodeHeight) {
-                                    val scale = beforeBounds.width() / gcodeWidth
-                                    newWidth = gcodeWidth * scale
-                                    newHeight = gcodeHeight * scale
-                                } else {
-                                    val scale = beforeBounds.height() / gcodeHeight
-                                    newWidth = gcodeWidth * scale
-                                    newHeight = gcodeHeight * scale
-                                }
-                                beforeBounds.setWidthHeight(newWidth, newHeight, true)
-                            }
-                            item.updateBitmapByMode(
-                                it.first,
-                                LPConstant.DATA_MODE_GCODE,
-                                renderer,
-                                beforeBounds.width(),
-                                beforeBounds.height()
-                            )
-                        }
+                    }) { pair ->
+                        bean.data = pair?.first
+                        pair?.first?.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+                        element.updateOriginBitmap(pair?.second?.gCodePath?.run { listOf(this) })
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
+
+                        //stack
+                        addToStack(delegate, renderer, undoState)
                     }
                 }
             }
-        }*/
+        }
     }
 
     /**黑白画*/
@@ -265,9 +256,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
         //用来恢复的状态
         val undoState = BitmapStateStack(renderer)
@@ -290,7 +281,7 @@ object LPBitmapHandler {
                     }
                 } else {
                     owner.engraveLoadingAsync({
-                        operateBitmap?.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             bean.blackThreshold = getIntOrDef(
                                 CanvasRegulatePopupConfig.KEY_BW_THRESHOLD,
                                 bean.blackThreshold.toInt()
@@ -324,9 +315,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
         //用来恢复的状态
         val undoState = BitmapStateStack(renderer)
@@ -344,7 +335,7 @@ object LPBitmapHandler {
                     }
                 } else {
                     owner.engraveLoadingAsync({
-                        operateBitmap?.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             bean.inverse = getBooleanOrDef(
                                 CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
                                 bean.inverse
@@ -380,9 +371,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
         //用来恢复的状态
         val undoState = BitmapStateStack(renderer)
@@ -400,7 +391,7 @@ object LPBitmapHandler {
                     }
                 } else {
                     owner.engraveLoadingAsync({
-                        operateBitmap?.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             bean.inverse = getBooleanOrDef(
                                 CanvasRegulatePopupConfig.KEY_SHAKE_INVERT,
                                 bean.inverse
@@ -436,9 +427,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
 
         //用来恢复的状态
         val undoState = BitmapStateStack(renderer)
@@ -462,7 +453,7 @@ object LPBitmapHandler {
                             bean.sealThreshold.toInt()
                         )
                         bean.sealThreshold = threshold.toFloat()
-                        operateBitmap?.let { bitmap ->
+                        operateBitmap.let { bitmap ->
                             bean.imageFilter = LPConstant.DATA_MODE_SEAL
                             toSeal(context, bitmap, bean.sealThreshold)
                         }
@@ -479,15 +470,18 @@ object LPBitmapHandler {
 
     /**图片剪裁*/
     fun handleCrop(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
-        val context = anchor.context
-        val operateBitmap = element.originBitmap
+
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
 
         anchor.context.cropDialog {
             cropBitmap = operateBitmap
@@ -497,18 +491,20 @@ object LPBitmapHandler {
 
             onCropResultAction = { result ->
                 result?.let {
-                    /*owner.engraveLoadingAsync({
+                    owner.engraveLoadingAsync({
                         //剪切完之后, 默认黑白处理
-                        val filter = result.toBlackWhiteBitmap(bean.blackThreshold.toInt())
-                        item.updateBitmapOriginal(
-                            result.toBase64Data(),
-                            filter,
-                            LPConstant.DATA_MODE_BLACK_WHITE,
-                            renderer,
-                            result.width.toFloat(),
-                            result.height.toFloat(),
-                        )
-                    })*/
+
+                        bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
+                        element.renderBitmap = toBlackWhiteHandle(result, bean)
+                        element.updateOriginBitmap(result)
+
+                        addToStack(delegate, renderer, undoState)
+                        result
+                    }) {
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
+                    }
                 }
             }
         }
@@ -522,43 +518,43 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val operateBitmap = element.originBitmap
         val oldIsMesh = bean.isMesh
 
         /*context.canvasRegulateWindow2(anchor) {
             addRegulate(
-                CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
-                CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
+                CanvasRegulatePopupConfig.KEY_MESH_SHAPE,
+                CanvasRegulatePopupConfig.DEFAULT_MESH_SHAPE
             )
             addRegulate(
-                CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER,
+                CanvasRegulatePopupConfig.KEY_MIN_DIAMETER,
                 HawkEngraveKeys.lastMinDiameterPixel
             )
             addRegulate(
-                CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER,
+                CanvasRegulatePopupConfig.KEY_MAX_DIAMETER,
                 HawkEngraveKeys.lastDiameterPixel
             )
-            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
 
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
                 } else {
                     val minDiameter = getFloatOrDef(
-                        CanvasRegulatePopupConfig2.KEY_MIN_DIAMETER,
+                        CanvasRegulatePopupConfig.KEY_MIN_DIAMETER,
                         HawkEngraveKeys.lastMinDiameterPixel
                     )
                     val maxDiameter = getFloatOrDef(
-                        CanvasRegulatePopupConfig2.KEY_MAX_DIAMETER,
+                        CanvasRegulatePopupConfig.KEY_MAX_DIAMETER,
                         HawkEngraveKeys.lastDiameterPixel
                     )
                     // "CONE" 圆锥
                     // "BALL" 球体
                     val shape = getStringOrDef(
-                        CanvasRegulatePopupConfig2.KEY_MESH_SHAPE,
-                        CanvasRegulatePopupConfig2.DEFAULT_MESH_SHAPE
+                        CanvasRegulatePopupConfig.KEY_MESH_SHAPE,
+                        CanvasRegulatePopupConfig.DEFAULT_MESH_SHAPE
                     )
                     bean.isMesh = true //提前赋值
                     owner.engraveLoadingAsync({
@@ -601,20 +597,20 @@ object LPBitmapHandler {
         context.canvasRegulateWindow2(anchor) {
             val gcodeFillStepPixel = bean.gcodeFillStep
             val fillAngle = bean.gcodeFillAngle
-            addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_PATH_FILL_ANGLE, fillAngle)
-            addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
+            addRegulate(CanvasRegulatePopupConfig.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
+            addRegulate(CanvasRegulatePopupConfig.KEY_PATH_FILL_ANGLE, fillAngle)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
             firstApply = false
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     //no
                 } else {
                     val gcodeFillStep = getFloatOrDef(
-                        CanvasRegulatePopupConfig2.KEY_PATH_FILL_LINE_SPACE,
+                        CanvasRegulatePopupConfig.KEY_PATH_FILL_LINE_SPACE,
                         gcodeFillStepPixel
                     )
                     val gcodeFillAngle = getFloatOrDef(
-                        CanvasRegulatePopupConfig2.KEY_PATH_FILL_ANGLE,
+                        CanvasRegulatePopupConfig.KEY_PATH_FILL_ANGLE,
                         fillAngle
                     )
 

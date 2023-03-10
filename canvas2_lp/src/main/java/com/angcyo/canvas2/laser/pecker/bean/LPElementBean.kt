@@ -277,10 +277,11 @@ data class LPElementBean(
     /**gcode线距*/
     var gcodeLineSpace: Float = 5f,
 
-    /**gcode角度[0-90]*/
+    /**gcode填充线的角度[0-90]*/
     var gcodeAngle: Float = 0f,
 
     /**gcode方向 0:0 1:90 2:180 3:270*/
+    @Deprecated("使用angle属性代替")
     var gcodeDirection: Int = 0,
 
     /**gcode是否需要轮廓*/

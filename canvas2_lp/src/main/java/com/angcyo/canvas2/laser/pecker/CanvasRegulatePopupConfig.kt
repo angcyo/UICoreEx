@@ -120,7 +120,9 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
     var firstApply: Boolean = true
 
     /**应用属性实现方法的回调
-     * [dismiss] 是否销毁了弹窗*/
+     * [dismiss] 是否销毁了弹窗
+     * 当前提交按钮[DslBlackButtonItem]时, 会先触发一次false, 然后再触发true
+     * */
     var onApplyAction: (dismiss: Boolean) -> Unit = {}
 
     /**值是否发生过改变*/
@@ -296,6 +298,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 DslBlackButtonItem()() {
                     itemButtonText = _string(R.string.dialog_positive)
                     itemClick = {
+                        _valueChange = true //2023-3-10 need?
                         onApplyAction(false)
                         onApplyAction(true)
                         window.dismissWindow()
