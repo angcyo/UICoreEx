@@ -226,8 +226,11 @@ class DeviceSettingFragment : BaseDslFragment() {
                         itemSegmentList = zModelList
 
                         //zDir 0为打直板，1为打印圆柱。
-                        val zModel =
+                        val zModel = if (productInfo?.version in 373..399) {
+                            if (settingParser?.zDir == 0) QuerySettingParser.Z_MODEL_CYLINDER else QuerySettingParser.Z_MODEL_STR
+                        } else {
                             if (settingParser?.zDir == 1) QuerySettingParser.Z_MODEL_CYLINDER else QuerySettingParser.Z_MODEL_STR
+                        }
                         itemCurrentIndex = max(zModelList.indexOfFirst { it.resKey == zModel }, 0)
                         /* val zDirIndex = max(if (settingParser?.zDir == 1) 2 else 0, maxIndex)
                              if (zDirIndex == 0 && (QuerySettingParser.Z_MODEL == 0 || QuerySettingParser.Z_MODEL == 1)) {
@@ -242,7 +245,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                                 //QuerySettingParser.Z_MODEL = index //确切的模式
                                 QuerySettingParser.Z_MODEL_STR = zModelList.getOrNull(index)?.resKey
                                     ?: QuerySettingParser.Z_MODEL_FLAT //确切的模式
-                                if (productInfo?.version == 373) {
+                                if (productInfo?.version in 373..399) {
                                     //2023-3-10 373的版本小车模式和圆柱模式逻辑统一
                                     settingParser?.zDir =
                                         if (QuerySettingParser.Z_MODEL_STR == QuerySettingParser.Z_MODEL_FLAT) 0 else 1
