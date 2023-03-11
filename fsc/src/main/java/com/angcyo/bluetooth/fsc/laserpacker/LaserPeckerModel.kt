@@ -211,6 +211,11 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     fun isSupportDithering() = productInfoData.value?.supportDithering == true
 
+    /**激光是否异常, 比如C1未插好激光头*/
+    fun isLaserException(): Boolean {
+        return deviceStateData.value?.moduleState == 255
+    }
+
     //---
 
     /**空闲模式*/
