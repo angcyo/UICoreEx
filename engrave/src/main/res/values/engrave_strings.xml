@@ -126,21 +126,14 @@
     <string name="device_g_code_pwr_label">Use G Code command power</string>
     <string name="device_g_code_pwr_des">Turn on the option, the GCode engraving power takes the value from the command; turn off the option, the GCode engraving power takes the value from the App.</string>
     <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
-    <string name="device_ex_z_label">The Third Axis</string>
-    <string name="device_ex_z_des">Support the parameter setting of engraving scene
-        on the surface of regular cuboid and cylinder objects (size limit: the width of cuboid is
-        within 100mm, the length is within 5m, and the circumference of cylinder cross section is within 5m)</string>
-    <string name="device_ex_r_label">Rotation axis</string>
-    <string name="device_ex_r_des">--</string>
-    <string name="device_ex_s_label">Slide</string>
-    <string name="device_ex_s_des">--\n(Make sure to turn on the switch after the slide is energized and home)</string>
+
     <string name="device_ex_car_label">Mobile platform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Forward</string>
     <string name="device_ex_direction_des">The third axis is forward or reversed</string>
     <string name="device_direction_forward">Forward</string>
     <string name="device_direction_reversal">Reverse</string>
-    <string name="device_s_batch_engrave_label">Slide table multi-file carving mode</string>
+    <string name="device_s_batch_engrave_label">Slide Extension Multi-file Mode</string>
     <string name="device_s_batch_engrave_des">--\n(Make sure to turn on the switch after the slide is energized and home)</string>
     <string name="device_ex_engrave_module">Carving module</string>
     <string name="device_ex_pen_engrave_label">Brush model</string>

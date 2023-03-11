@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.Strategy
@@ -495,13 +496,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         return noConnectType
     }
 
-    fun Int.toDeviceNoConnectStr(): String = when (this) {
-        1 -> _string(R.string.device_ex_z_label)
-        2 -> _string(R.string.device_ex_s_label)
-        3 -> _string(R.string.device_ex_r_label)
-        else -> ""
-    }
-
     /**预览时, 第三轴的连接状态提示*/
     fun previewExDeviceNoConnectTip() {
         val noConnectType = exDeviceNoConnectType()
@@ -510,7 +504,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                 dialogMessage = _string(
                     R.string.device_ex_discontent_tips,
-                    noConnectType.toDeviceNoConnectStr()
+                    noConnectType.toDeviceStr()
                 )
 
                 onDismissListener = {
@@ -530,7 +524,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                 dialogMessage = _string(
                     R.string.engrave_ex_discontent_tips,
-                    noConnectType.toDeviceNoConnectStr()
+                    noConnectType.toDeviceStr()
                 )
 
                 negativeButtonText = _string(R.string.dialog_negative)

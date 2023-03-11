@@ -2,8 +2,10 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.core.vmApp
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.low4Bit
@@ -229,8 +231,27 @@ fun QueryStateParser.toDeviceStateString(): String? {
             when (workState) {
                 0x01 -> builder.append(_string(R.string.preview_state_gcode))
                 0x02 -> builder.append(_string(R.string.preview_state_range))
-                0x04 -> builder.append(_string(R.string.preview_state_z_pause))
-                0x05 -> builder.append(_string(R.string.preview_state_z_continue))
+
+                0x04, 0x05 -> {
+                    val peckerModel = vmApp<LaserPeckerModel>()
+                    val type =
+                        if (peckerModel.isROpen()) 3 else if (peckerModel.isSOpen()) 2 else if (peckerModel.isZOpen()) 1 else 0
+                    if (type > 0) {
+                        when (workState) {
+                            0x04 -> builder.append(
+                                _string(R.string.preview_state_z_pause2, type.toDeviceStr())
+                            )
+                            0x05 -> builder.append(
+                                _string(R.string.preview_state_z_continue2, type.toDeviceStr())
+                            )
+                        }
+                    } else {
+                        when (workState) {
+                            0x04 -> builder.append(_string(R.string.preview_state_z_pause))
+                            0x05 -> builder.append(_string(R.string.preview_state_z_continue))
+                        }
+                    }
+                }
                 0x06 -> builder.append(_string(R.string.preview_state_bracket))
                 0x07 -> builder.append(_string(R.string.preview_state_center))
                 0x08 -> builder.append(_string(R.string.preview_state_points))
@@ -275,4 +296,12 @@ fun Int.toErrorStateString() = when (this) {
     9 -> _string(R.string.ex_tips_nine)
     10 -> _string(R.string.ex_tips_ten)
     else -> null
+}
+
+/**转成对应设备字符串*/
+fun Int.toDeviceStr(): String = when (this) {
+    1 -> _string(R.string.device_ex_z_label) //z轴
+    2 -> _string(R.string.device_ex_s_label) //s轴
+    3 -> _string(R.string.device_ex_r_label) //r轴
+    else -> ""
 }
