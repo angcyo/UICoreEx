@@ -82,6 +82,14 @@ object HawkEngraveKeys {
      * */
     var lastPowerDepth: Int by HawkPropertyValue<Any, Int>(2500)
 
+    /**[addParameterComparisonTable] 字体大小*/
+    @MM
+    var lastFontSize: Int by HawkPropertyValue<Any, Int>(0)
+
+    /**[addParameterComparisonTable] 网格间隙*/
+    @MM
+    var lastGridMargin: Int by HawkPropertyValue<Any, Int>(5)
+
     //
 
     /**自动连接设备状态存储*/

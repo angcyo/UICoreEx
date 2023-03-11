@@ -81,7 +81,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                             canInputEmpty = false
                             hintInputString = "粒度数量,功率*深度阈值"
                             defaultInputString =
-                                "${HawkEngraveKeys.lastGridCount},${HawkEngraveKeys.lastPowerDepth}"
+                                "${HawkEngraveKeys.lastGridCount},${HawkEngraveKeys.lastPowerDepth},${HawkEngraveKeys.lastGridMargin},${HawkEngraveKeys.lastFontSize}"
 
                             onInputResult = { dialog, inputText ->
                                 val list = inputText.toString().split(",")
@@ -89,6 +89,10 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                     ?: HawkEngraveKeys.lastGridCount
                                 HawkEngraveKeys.lastPowerDepth = list.getOrNull(1)?.toIntOrNull()
                                     ?: HawkEngraveKeys.lastPowerDepth
+                                HawkEngraveKeys.lastGridMargin = list.getOrNull(2)?.toIntOrNull()
+                                    ?: HawkEngraveKeys.lastGridMargin
+                                HawkEngraveKeys.lastFontSize = list.getOrNull(3)?.toIntOrNull()
+                                    ?: HawkEngraveKeys.lastFontSize
 
                                 engraveStrokeLoadingCaller { isCancel, loadEnd ->
                                     doBack {
@@ -97,7 +101,9 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                         canvasDelegate?.addParameterComparisonTable(
                                             previewBounds,
                                             HawkEngraveKeys.lastGridCount,
-                                            HawkEngraveKeys.lastPowerDepth
+                                            HawkEngraveKeys.lastPowerDepth,
+                                            HawkEngraveKeys.lastGridMargin,
+                                            HawkEngraveKeys.lastFontSize,
                                         )
                                         loadEnd(true, null)
                                     }
