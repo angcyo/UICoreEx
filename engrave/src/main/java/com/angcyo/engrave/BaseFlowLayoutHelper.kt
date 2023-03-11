@@ -313,7 +313,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                         connectedDismiss = true
                     }
                 } else {
-                    toast(_string(R.string.permission_disabled))
+                    toast(_string(R.string.blue_no_device_connected))
                 }
             }
             return false
@@ -322,6 +322,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         //检查是否处于关机状态
         if (laserPeckerModel.isShutdownMode()) {
             toast(_string(R.string.device_shutdown_tip))
+            return false
+        }
+
+        //检查是否激光头异常
+        if (laserPeckerModel.isLaserException()) {
+            toast(_string(R.string.laser_not_plugged_tip))
             return false
         }
 
