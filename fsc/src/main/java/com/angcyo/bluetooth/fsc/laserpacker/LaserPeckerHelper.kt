@@ -9,12 +9,15 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.parseResultPacketLog
+import com.angcyo.bluetooth.fsc.laserpacker.data.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
+import com.angcyo.http.base.fromJson
+import com.angcyo.http.base.listType
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
@@ -22,6 +25,7 @@ import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.component.hawk.LibLpHawkKeys
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
 import com.angcyo.library.toastQQ
@@ -281,39 +285,37 @@ object LaserPeckerHelper {
      * 解析产品信息
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getBoundsPath]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getLimitPath]
+     *
+     * 根据软件版本号, 解析成产品名称
+     * Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ、Ⅶ、Ⅷ、Ⅸ、Ⅹ、Ⅺ、Ⅻ...
+     * https://docs.qq.com/sheet/DT0htVG9tamZQTFBz
      * */
     fun parseProductInfo(
         softwareVersion: Int,
         hardwareVersion: Int,
         center: Boolean? = null
-    ): LaserPeckerProductInfo {
-        val name = parseProductName(softwareVersion)
+    ): LaserPeckerProductInfo? {
+        val json = lastContext.readAssets("lp_device_config.json") ?: return null
+        val configList =
+            json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class)) ?: return null
 
-        //是否支持压缩抖动的图片数据
-        var supportDithering = true
+        val configBean = configList.find { bean ->
+            VersionMatcher.matches(
+                softwareVersion,
+                bean.softwareVersionRange,
+                false
+            ) && VersionMatcher.matches(hardwareVersion, bean.hardwareVersionRange, true)
+        } ?: return null
 
-        //焦距
-        @MM
-        var focalDistance: Int? = null
+        //L.i("匹配到配置:$configBean")
 
-        //激光类型, 默认是蓝光
-        //蓝光
-        val blueInfo = LaserTypeInfo(LASER_TYPE_BLUE, 450, 10f, _string(R.string.laser_type_blue))
-        //白光
-        val whiteInfo =
-            LaserTypeInfo(LASER_TYPE_WHITE, 1064, 2f, _string(R.string.laser_type_white))
-        var laserTypeList: List<LaserTypeInfo> = listOf(blueInfo)
-
-        //所有支持的分辨率
-        val pxList: MutableList<PxInfo> = mutableListOf()
+        val name = configBean.name ?: "Unknown"
 
         val mmValueUnit = MM_UNIT
         val bounds = RectF()
         val previewBounds = RectF()
         val carPreviewBounds = RectF()
         val penBounds = RectF()
-        //中心点是否在物理中心, 否则就是在左上角
-        val isOriginCenter = center ?: isDeviceOriginCenter(softwareVersion)
 
         val limitPath = Path()
         val zLimitPath = Path()
@@ -321,111 +323,60 @@ object LaserPeckerHelper {
         val sLimitPath = Path()
         val carLimitPath = Path()
 
-        val zMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.zMaxY.toFloat()).ceil()
-        val rMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.rMaxY.toFloat()).ceil()
-        val sMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.sMaxY.toFloat()).ceil()
-        val carMax = mmValueUnit.convertValueToPixel(LibLpHawkKeys.carMaxY.toFloat()).ceil()
+        val zMax = mmValueUnit.convertValueToPixel(
+            (LibLpHawkKeys.zMaxY ?: configBean.zMaxHeight).toFloat()
+        ).ceil()
+        val rMax = mmValueUnit.convertValueToPixel(
+            (LibLpHawkKeys.rMaxY ?: configBean.rMaxHeight).toFloat()
+        ).ceil()
+        val sMax = mmValueUnit.convertValueToPixel(
+            (LibLpHawkKeys.sMaxY ?: configBean.sMaxHeight).toFloat()
+        ).ceil()
+        val carMax = mmValueUnit.convertValueToPixel(
+            (LibLpHawkKeys.carMaxY ?: configBean.carMaxHeight).toFloat()
+        ).ceil()
 
         //物理尺寸宽高mm单位
         @MM
-        var wPhys = 0
+        var wPhys = configBean.widthPhys
 
         @MM
-        var hPhys = 0
+        var hPhys = configBean.heightPhys
+
+        val focalDistance = configBean.focalDistance
 
         //物理尺寸/焦距
         when (name) {
             LI, LI_Z_ -> {
-                wPhys = LibLpHawkKeys.l1Width
-                hPhys = LibLpHawkKeys.l1Height
-                focalDistance = 200
+                wPhys = LibLpHawkKeys.l1Width ?: configBean.widthPhys
+                hPhys = LibLpHawkKeys.l1Height ?: configBean.heightPhys
             }
             LII, LII_M_ -> {
-                wPhys = LibLpHawkKeys.l2Width
-                hPhys = LibLpHawkKeys.l2Height
-                focalDistance = 110
+                wPhys = LibLpHawkKeys.l2Width ?: configBean.widthPhys
+                hPhys = LibLpHawkKeys.l2Height ?: configBean.heightPhys
             }
-            LIII -> {
-                if (softwareVersion in 5500..5599) {
-                    wPhys = 100
-                    hPhys = 100
-                    focalDistance = 115
-                } else {
-                    wPhys = LibLpHawkKeys.l3Width
-                    hPhys = LibLpHawkKeys.l3Height
-                    focalDistance = 130
-                }
-            }
-            LIII_YT -> {//LIII-YT
-                wPhys = 50
-                hPhys = 50
-                focalDistance = 115
+            LIII, LIII_YT -> {
+                wPhys = LibLpHawkKeys.l3Width ?: configBean.widthPhys
+                hPhys = LibLpHawkKeys.l3Height ?: configBean.heightPhys
             }
             LIII_MAX, LIV -> {
                 //160*160
-                wPhys = LibLpHawkKeys.l4Width
-                hPhys = LibLpHawkKeys.l4Height
-                focalDistance = 150
+                wPhys = LibLpHawkKeys.l4Width ?: configBean.widthPhys
+                hPhys = LibLpHawkKeys.l4Height ?: configBean.heightPhys
             }
             CI -> {
-                wPhys = LibLpHawkKeys.c1Width
-                hPhys =
-                    if (hardwareVersion == 800) LibLpHawkKeys.c1LHeight else LibLpHawkKeys.c1Height
-                focalDistance = 40
-            }
-        }
-
-        //光源
-        when (name) {
-            LI -> {
-                supportDithering = softwareVersion in 253..269 ||
-                        softwareVersion in 272..299
-                blueInfo.power = 0.5f
-                laserTypeList = listOf(blueInfo)
-            }
-            LII -> {
-                //300~349 //HK32
-                //350~369
-                //370~399
-                supportDithering = softwareVersion in 315..349 ||
-                        softwareVersion in 359..369 ||
-                        softwareVersion in 374..399
-                blueInfo.power = 5f
-                laserTypeList = listOf(blueInfo)
-            }
-            LIII -> {
-                if (softwareVersion >= 5500) {
-                    supportDithering = softwareVersion in 5513..5599
-                }
-                whiteInfo.power = 1f
-                laserTypeList = listOf(whiteInfo)
-            }
-            LIII_YT -> {
-                supportDithering = false
-                whiteInfo.power = 1f
-                laserTypeList = listOf(whiteInfo)
-            }
-            LIII_MAX, LIV -> {
-                laserTypeList = listOf(whiteInfo, blueInfo)
-            }
-            CI -> {
-                //C1的模块是动态, 需要在获取设备状态后, 重新赋值
-                //com.angcyo.engrave.model.FscDeviceModel.initDevice
-                //com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.updateProductInfo
-                laserTypeList = listOf(blueInfo)
+                wPhys = LibLpHawkKeys.c1Width ?: configBean.widthPhys
+                hPhys = if (hardwareVersion == 800) LibLpHawkKeys.c1LHeight
+                    ?: configBean.heightPhys else LibLpHawkKeys.c1Height
+                    ?: configBean.heightPhys
             }
         }
 
         //bounds
-        val left =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) -wPhys / 2f else 0f).floor()
-        val top = mmValueUnit.convertValueToPixel(if (isOriginCenter) -hPhys / 2f else 0f).floor()
-        val right =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) wPhys / 2f else wPhys.toFloat())
-                .ceil()
-        val bottom =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) hPhys / 2f else hPhys.toFloat())
-                .ceil()
+        val left = mmValueUnit.convertValueToPixel(0f).floor()
+        val top = mmValueUnit.convertValueToPixel(0f).floor()
+        val right = mmValueUnit.convertValueToPixel(wPhys.toFloat()).ceil()
+        val bottom = mmValueUnit.convertValueToPixel(hPhys.toFloat()).ceil()
         bounds.set(left, top, right, bottom)
         previewBounds.set(left, top, right, bottom)
 
@@ -434,147 +385,60 @@ object LaserPeckerHelper {
         rLimitPath.addRect(left, top, right, rMax, Path.Direction.CW)
         sLimitPath.addRect(left, top, right, sMax, Path.Direction.CW)
         //C1移动平台模式限制宽度大小
-        val carWPhys = wPhys - 50
-        val carRight =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) carWPhys / 2f else carWPhys.toFloat())
+        val carWPhys = configBean.carMaxWidth
+        val carRight = mmValueUnit.convertValueToPixel(carWPhys.toFloat())
         carLimitPath.addRect(left, top, carRight, carMax, Path.Direction.CW)
         carPreviewBounds.set(left, top, carRight, bottom)
         //C1画笔模式限制高度大小
-        val penHPhys = hPhys - 20
-        val penBottom =
-            mmValueUnit.convertValueToPixel(if (isOriginCenter) penHPhys / 2f else penHPhys.toFloat())
+        val penHPhys = configBean.penMaxHeight
+        val penBottom = mmValueUnit.convertValueToPixel(penHPhys.toFloat())
         penBounds.set(left, top, right, penBottom)
 
         //最佳预览范围设置
-        when (name) {
-            LIII -> {
-                //最佳打印范围是椭圆
-                limitPath.apply {
-                    //2022-9-27 试产版范围：90x60，量产版范围：115x80
-                    rewind()
-
-                    val validWidthRatio: Float
-                    val validHeightRatio: Float
-
-                    val rW: Float
-                    val rH: Float
-                    if (softwareVersion in 5500..5599) {
-                        rW = 90f
-                        rH = 60f
-
-                        validWidthRatio = 65f / rW
-                        validHeightRatio = 35f / rH
-                    } else {
-                        rW = 115f
-                        rH = 80f
-
-                        validWidthRatio = 0.65f
-                        validHeightRatio = 0.625f
-                    }
-
-                    val lOffset = (wPhys - rW) / 2 //mm
-                    val tOffset = (hPhys - rH) / 2 //mm
-                    val l =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else lOffset)
-                            .floor()
-                    val t =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
-                            .floor()
-                    val r =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW + lOffset)
-                            .ceil()
-                    val b =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
-                            .ceil()
-                    previewBounds.set(l, t, r, b)
-                    maxOvalPath(l, t, r, b, validWidthRatio, validHeightRatio, this)
-                }
-            }
-            LIII_MAX, LIV -> {
-                //最佳打印范围是椭圆
-                //160*160 mm
-                limitPath.apply {
-                    rewind()
-                    val rW = 160f
-                    val rH = 120f
-                    val tOffset = (rW - rH) / 2 //mm
-                    val l = mmValueUnit.convertValueToPixel(if (isOriginCenter) -rW / 2f else 0f)
-                        .floor()
-                    val t =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) -rH / 2f else tOffset)
-                            .floor()
-                    val r =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rW / 2f else rW).ceil()
-                    val b =
-                        mmValueUnit.convertValueToPixel(if (isOriginCenter) rH / 2f else rH + tOffset)
-                            .ceil()
-                    previewBounds.set(l, t, r, b)
-                    maxOvalPath(l, t, r, b, 0.6f, 0.6f, this)
-                }
-            }
-            CI -> Unit
-        }
-
-        when (name) {
-            //LI, LI_PRO -> Unit
-            LI, LII -> {
-                pxList.add(findPxInfo(DPI_254))
-                pxList.add(findPxInfo(DPI_333))
-                pxList.add(findPxInfo(DPI_508))
-            }
-            LIII, LIII_YT -> {
-                pxList.add(findPxInfo(DPI_254))
-                pxList.add(findPxInfo(DPI_508))
-                pxList.add(findPxInfo(DPI_889))
-            }
-            LIV -> {
-                if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_158, true))
-                }
-                pxList.add(findPxInfo(DPI_254))
-                if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_317, true))
-                    pxList.add(findPxInfo(DPI_423, true))
-                }
-                pxList.add(findPxInfo(DPI_508))
-                if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_635, true))
-                }
-                pxList.add(findPxInfo(DPI_846))
-                if (isDebug()) {
-                    pxList.add(findPxInfo(DPI_1270, true))
-                }
-            }
-            CI -> {
-                pxList.add(findPxInfo(DPI_254))
-                pxList.add(findPxInfo(DPI_508))
-                pxList.add(findPxInfo(DPI_1016))
-            }
-            else -> {
-                pxList.add(findPxInfo(DPI_254))
-            }
+        if (configBean.bestWidthPhys > 0 && configBean.bestHeightPhys > 0) {
+            val lOffset = (wPhys - configBean.bestWidthPhys) / 2 //mm
+            val tOffset = (hPhys - configBean.bestHeightPhys) / 2 //mm
+            val l = mmValueUnit.convertValueToPixel(lOffset.toFloat()).floor()
+            val t = mmValueUnit.convertValueToPixel(tOffset.toFloat()).floor()
+            val r = mmValueUnit.convertValueToPixel((configBean.bestWidthPhys + lOffset).toFloat())
+                .ceil()
+            val b =
+                mmValueUnit.convertValueToPixel((configBean.bestHeightPhys + tOffset).toFloat())
+                    .ceil()
+            previewBounds.set(l, t, r, b)
+            limitPath.rewind()
+            maxOvalPath(
+                l,
+                t,
+                r,
+                b,
+                configBean.validWidthRatio,
+                configBean.validHeightRatio,
+                limitPath
+            )
         }
 
         //result
         return LaserPeckerProductInfo(
             softwareVersion,
             name,
-            laserTypeList,
-            pxList,
+            configBean.laserTypeList ?: emptyList(),
+            configBean.dpiList?.filter { if (it.debug) isDebug() else true } ?: emptyList(),
             wPhys,
             hPhys,
             bounds,
             previewBounds,
             limitPath
         ).apply {
-            this.isOriginCenter = isOriginCenter
+            this.isOriginCenter = false
             this.zLimitPath = zLimitPath
             this.rLimitPath = rLimitPath
             this.sLimitPath = sLimitPath
             this.carLimitPath = carLimitPath
             this.carPreviewBounds = carPreviewBounds
             this.penBounds = penBounds
-            this.supportDithering = supportDithering
+            this.supportDithering =
+                VersionMatcher.matches(softwareVersion, configBean.supportDitheringRange, false)
             this.focalDistance = focalDistance
             this.softwareVersion = softwareVersion
             this.hardwareVersion = hardwareVersion
@@ -616,10 +480,10 @@ object LaserPeckerHelper {
         val newProductInfo =
             parseProductInfo(productInfo.softwareVersion, productInfo.hardwareVersion, center)
         //赋值
-        newProductInfo.deviceName = productInfo.deviceName
-        newProductInfo.deviceAddress = productInfo.deviceAddress
-        newProductInfo.softwareVersion = productInfo.softwareVersion
-        newProductInfo.hardwareVersion = productInfo.hardwareVersion
+        newProductInfo?.deviceName = productInfo.deviceName
+        newProductInfo?.deviceAddress = productInfo.deviceAddress
+        newProductInfo?.softwareVersion = productInfo.softwareVersion
+        newProductInfo?.hardwareVersion = productInfo.hardwareVersion
         productInfoData.postValue(newProductInfo)
         return true
     }
@@ -703,37 +567,6 @@ object LaserPeckerHelper {
 
         path.lineTo(blX, blY)
         path.close()
-    }
-
-    /**根据软件版本号, 解析成产品名称
-     * Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ、Ⅶ、Ⅷ、Ⅸ、Ⅹ、Ⅺ、Ⅻ...
-     * https://docs.qq.com/sheet/DT0htVG9tamZQTFBz*/
-    fun parseProductName(version: Int): String? {
-        val str = "$version"
-        /*if (str.startsWith("1")) { //1
-           if (str.startsWith("15")) LI_Z else LI
-       } else if (str.startsWith("2")) { //2
-           if (str.startsWith("25") ||
-               str.startsWith("26") ||
-               str.startsWith("27") ||
-               str.startsWith("28") ||
-               str.startsWith("29")
-           ) LI_Z_PRO else LI_PRO
-       } else*/
-        return if (str.startsWith("1") || str.startsWith("2"))
-            LI
-        else if (str.startsWith("3")) //3
-            LII
-        else if (str.startsWith("4"))  //4
-            if (str.startsWith("41")) LI_Z_ else if (str.startsWith("42")) LII_M_ else LIII_YT
-        else if (str.startsWith("5"))  //5
-            LIII
-        else if (str.startsWith("6")) //6
-            LIII_MAX
-        else if (str.startsWith("7"))  //7
-            if (str.startsWith("75")) CII else CI
-        else
-            null //UNKNOWN
     }
 
     /**返回设备支持的分辨率列表*/

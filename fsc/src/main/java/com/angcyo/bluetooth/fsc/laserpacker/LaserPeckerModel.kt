@@ -5,6 +5,7 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
@@ -16,7 +17,9 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex._string
 import com.angcyo.library.model.toFourPoint
+import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.*
 
@@ -84,8 +87,11 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             queryVersionParser.softwareVersion,
             queryVersionParser.hardwareVersion
         )
-        productInfo.deviceName = LaserPeckerHelper.initDeviceName
-        productInfo.deviceAddress = LaserPeckerHelper.initDeviceAddress
+        if (productInfo == null) {
+            toast(_string(R.string.not_support))
+        }
+        productInfo?.deviceName = LaserPeckerHelper.initDeviceName
+        productInfo?.deviceAddress = LaserPeckerHelper.initDeviceAddress
         productInfoData.postValue(productInfo)
         deviceVersionData.postValue(queryVersionParser)
     }

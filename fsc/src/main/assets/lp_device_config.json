@@ -1,0 +1,445 @@
+[
+  {
+    "name": "LP1",
+    "softwareVersionRange": "100~199 1000~1099 150~199 1500~1599 200~299 2000~2099 250~269 2500~2599 270~299",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "253~269 272~299",
+    "focalDistance": 200,
+    "widthPhys": 100,
+    "heightPhys": 100,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 0.5,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 333.33333,
+        "px": 3,
+        "des": "1.3K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      }
+    ]
+  },
+  {
+    "name": "LP2",
+    "softwareVersionRange": "300~349 3000~3099 350~369 3500~3599 370~399 3700~3799",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "315~349 359~369 374~399",
+    "focalDistance": 110,
+    "widthPhys": 100,
+    "heightPhys": 100,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 5,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 333.33333,
+        "px": 3,
+        "des": "1.3K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      }
+    ]
+  },
+  {
+    "name": "LP3",
+    "des": "LP3-YT",
+    "softwareVersionRange": "4000~4099",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "focalDistance": 115,
+    "widthPhys": 50,
+    "heightPhys": 50,
+    "validWidthRatio": 0.65,
+    "validHeightRatio": 0.625,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 1,
+        "label": "白光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 889,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "L1",
+    "des": "L1-Z",
+    "softwareVersionRange": "4100~4199",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "focalDistance": 115,
+    "widthPhys": 50,
+    "heightPhys": 50,
+    "validWidthRatio": 0.65,
+    "validHeightRatio": 0.625,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 1,
+        "label": "白光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 889,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "L2",
+    "des": "L2-M",
+    "softwareVersionRange": "4200~4299",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "focalDistance": 115,
+    "widthPhys": 50,
+    "heightPhys": 50,
+    "validWidthRatio": 0.65,
+    "validHeightRatio": 0.625,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 1,
+        "label": "白光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 889,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "LP3",
+    "softwareVersionRange": "5500~5599",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "5513~5599",
+    "focalDistance": 115,
+    "widthPhys": 100,
+    "heightPhys": 100,
+    "bestWidthPhys": 90,
+    "bestHeightPhys": 60,
+    "validWidthRatio": 0.72222,
+    "validHeightRatio": 0.58333,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 1,
+        "label": "白光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 889,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "LP3",
+    "des": "LP3-S",
+    "softwareVersionRange": "550~599",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "550~599",
+    "focalDistance": 130,
+    "widthPhys": 115,
+    "heightPhys": 115,
+    "bestWidthPhys": 115,
+    "bestHeightPhys": 80,
+    "validWidthRatio": 0.65,
+    "validHeightRatio": 0.625,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 1,
+        "label": "白光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 889,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "LP4",
+    "softwareVersionRange": "650~699 6500~6599",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "focalDistance": 150,
+    "widthPhys": 160,
+    "heightPhys": 160,
+    "bestWidthPhys": 160,
+    "bestHeightPhys": 120,
+    "validWidthRatio": 0.6,
+    "validHeightRatio": 0.6,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 2,
+        "label": "白光"
+      },
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 10,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 158.75,
+        "px": 5,
+        "des": "0.8K",
+        "debug": true
+      },
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 317.5,
+        "px": 3,
+        "des": "1.3K",
+        "debug": true
+      },
+      {
+        "dpi": 423.33333,
+        "px": 3,
+        "des": "1.6K",
+        "debug": true
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 635,
+        "px": 2,
+        "des": "2.5K",
+        "debug": true
+      },
+      {
+        "dpi": 846.66666,
+        "px": 1,
+        "des": "4K"
+      },
+      {
+        "dpi": 1270,
+        "px": 1,
+        "des": "5K",
+        "debug": true
+      }
+    ]
+  },
+  {
+    "name": "LX1",
+    "des": "LX1-加长版",
+    "softwareVersionRange": "700~749 7000~7099",
+    "hardwareVersionRange": "800~800",
+    "supportDitheringRange": "",
+    "focalDistance": 40,
+    "widthPhys": 400,
+    "heightPhys": 800,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 800,
+    "sMaxHeight": 300,
+    "carMaxWidth": 350,
+    "carMaxHeight": 2000,
+    "penMaxHeight": 780,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 10,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 1016,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
+    "name": "LX1",
+    "softwareVersionRange": "700~749 7000~7099",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "focalDistance": 40,
+    "widthPhys": 400,
+    "heightPhys": 420,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 420,
+    "sMaxHeight": 300,
+    "carMaxWidth": 350,
+    "carMaxHeight": 2000,
+    "penMaxHeight": 400,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 10,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 1016,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  }
+]

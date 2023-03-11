@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.data
 
+import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.floor
@@ -17,6 +18,8 @@ import com.angcyo.library.extend.IToValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/01
  */
+
+@Keep
 data class PxInfo(
     /*//当PX为以下值时对应图片分辨率：
 
@@ -49,7 +52,10 @@ data class PxInfo(
     val px: Byte,
 
     /**显示的界面上的描述*/
-    val des: String
+    val des: String,
+
+    /**是否只在调试模式下显示*/
+    val debug: Boolean = false
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
