@@ -17,6 +17,7 @@ import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
+import com.angcyo.dialog.normalDialog
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.DeviceSettingFragment
@@ -27,7 +28,6 @@ import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
 import com.angcyo.library.ex.*
-import com.angcyo.library.toast
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
@@ -338,7 +338,17 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                             connectedDismiss = true
                         }
                     } else {
-                        toast("cancel")
+                        //权限被禁用, 显示权限跳转提示框
+                        //toast(_string(R.string.permission_disabled))
+                        it.context.normalDialog {
+                            dialogTitle = _string(R.string.engrave_warn)
+                            dialogMessage = _string(R.string.permission_disabled)
+
+                            positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
+                                dialog.dismiss()
+                                dialogViewHolder.context.toApplicationDetailsSettings()
+                            }
+                        }
                     }
                 }
             }
