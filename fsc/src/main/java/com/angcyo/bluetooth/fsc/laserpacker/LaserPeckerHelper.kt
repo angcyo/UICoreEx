@@ -282,13 +282,18 @@ object LaserPeckerHelper {
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getBoundsPath]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd.Companion.getLimitPath]
      * */
-    fun parseProductInfo(softwareVersion: Int, center: Boolean? = null): LaserPeckerProductInfo {
+    fun parseProductInfo(
+        softwareVersion: Int,
+        hardwareVersion: Int,
+        center: Boolean? = null
+    ): LaserPeckerProductInfo {
         val name = parseProductName(softwareVersion)
 
         //是否支持压缩抖动的图片数据
         var supportDithering = true
 
         //焦距
+        @MM
         var focalDistance: Int? = null
 
         //激光类型, 默认是蓝光
@@ -364,7 +369,8 @@ object LaserPeckerHelper {
             }
             CI -> {
                 wPhys = LibLpHawkKeys.c1Width
-                hPhys = LibLpHawkKeys.c1Height
+                hPhys =
+                    if (hardwareVersion == 800) LibLpHawkKeys.c1LHeight else LibLpHawkKeys.c1Height
                 focalDistance = 40
             }
         }
@@ -605,7 +611,8 @@ object LaserPeckerHelper {
         val productInfoData = vmApp<LaserPeckerModel>().productInfoData
         val productInfo = productInfoData.value ?: return false
         val center = !productInfo.isOriginCenter
-        val newProductInfo = parseProductInfo(productInfo.softwareVersion, center)
+        val newProductInfo =
+            parseProductInfo(productInfo.softwareVersion, productInfo.hardwareVersion, center)
         //赋值
         newProductInfo.deviceName = productInfo.deviceName
         newProductInfo.deviceAddress = productInfo.deviceAddress
