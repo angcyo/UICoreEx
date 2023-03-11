@@ -188,7 +188,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
                 }
             }
-            if (isL4) {
+            if (isL4 || isC1) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_g_code_pwr_label)
                     itemDes = _string(R.string.device_g_code_pwr_des)
