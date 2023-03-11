@@ -243,6 +243,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**雕刻模式改变通知*/
     open fun onEngraveFlowChanged(from: Int, to: Int) {
+        //非输入框界面, 禁止输入键盘弹出
+        engraveCanvasFragment?.fragment?._vh?.enable(
+            R.id.lib_soft_input_layout,
+            to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG,
+            false
+        )
+
         if (to != ENGRAVE_FLOW_ITEM_CONFIG) {
             _engraveItemRenderer = null
         }
