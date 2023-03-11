@@ -86,8 +86,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         )
         productInfo.deviceName = LaserPeckerHelper.initDeviceName
         productInfo.deviceAddress = LaserPeckerHelper.initDeviceAddress
-        productInfo.softwareVersion = queryVersionParser.softwareVersion
-        productInfo.hardwareVersion = queryVersionParser.hardwareVersion
         productInfoData.postValue(productInfo)
         deviceVersionData.postValue(queryVersionParser)
     }

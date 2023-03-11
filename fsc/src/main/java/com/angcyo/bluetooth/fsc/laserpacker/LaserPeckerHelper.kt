@@ -576,6 +576,8 @@ object LaserPeckerHelper {
             this.penBounds = penBounds
             this.supportDithering = supportDithering
             this.focalDistance = focalDistance
+            this.softwareVersion = softwareVersion
+            this.hardwareVersion = hardwareVersion
         }
     }
 
