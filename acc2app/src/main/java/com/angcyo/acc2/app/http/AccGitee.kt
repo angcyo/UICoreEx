@@ -17,9 +17,7 @@ import com.angcyo.download.version.VersionUpdateBean
 import com.angcyo.http.base.bean
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
-import com.angcyo.http.exception.HttpResponseException
-import com.angcyo.http.interceptor.LogInterceptor
-import com.angcyo.http.rx.observer
+import com.angcyo.http.gitee.Gitee
 import com.angcyo.http.toBean
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -34,17 +32,7 @@ import java.lang.reflect.Type
  * @author angcyo
  * @date 2021/01/26
  */
-object Gitee {
-
-    //无/结尾
-    //https://gitee.com/angcyo/json/raw/master/accauto
-    //https://gitee.com/angcyo/json/raw/master/accauto/memory_config.json
-    var BASE = ""
-
-    //备用地址, 当BASE访问403时, 自动将BACKUP替换之
-    //https://gitcode.net/angcyo/json/-/raw/master/accauto
-    //https://gitcode.net/angcyo/json/-/raw/master/accauto/memory_config.json
-    var BASE_BACKUP = ""
+object AccGitee {
 
     var _last_fetch_time = 0L
 
@@ -67,7 +55,7 @@ object Gitee {
      * [force] 强制拉取
      * */
     fun fetch(online: Boolean = !isDebugType(), force: Boolean = isFirst) {
-        if (BASE.isEmpty()) {
+        if (Gitee.BASE.isEmpty()) {
             throw IllegalArgumentException("请先配置[BASE]地址.")
         }
 
@@ -122,41 +110,9 @@ object Gitee {
         val url = if (json.isHttpScheme()) {
             json
         } else {
-            "$BASE/${json.jsonName()}"
+            "$${Gitee.BASE}/${json.jsonName()}"
         }
-        return com.angcyo.http.get {
-            this.url = url
-            query = hashMapOf("time" to nowTime()) //带上时间参数, 避免缓存
-            header = hashMapOf(
-                LogInterceptor.closeLog(false),
-                "Host" to (url.toUri()?.host ?: "gitee.com"),
-                "Referer" to (url.toUri()?.host ?: "gitee.com"),
-                "Cache-Control" to "no-cache",
-                "Cookie" to "gitee-session-n=MEl6NWFQd3RVMjhuL1pjWEJzWWE3MGpXMXFCcXMvRjdEWHl4ZXdQSVhVbFpQdTJtdVdWMVloYmYxWVQ4ZTkvVWFrRnl4WTdtazBpNTZpZkllUnFhTHc9PS0tMUdwM2JSM1R0VnRMNzhmamR6c081dz09--555bc1476152411c5402088a42058307da19dc8e; oschina_new_user=false",
-                "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.64"
-            )
-            isSuccessful = {
-                it.isSuccessful
-            }
-        }.map {
-            if (!it.isSuccessful) {
-                throw IllegalArgumentException("${url}:${it.message()}")
-            }
-            it
-        }.observer {
-            onObserverEnd = { data, error ->
-                if (error is HttpResponseException &&
-                    (error.code == 404 || error.code == 403) &&
-                    BASE != BASE_BACKUP
-                ) {
-                    //替换备用地址, 重新请求
-                    BASE = BASE_BACKUP
-                    get(json, end)
-                } else {
-                    end(data, error)
-                }
-            }
-        }
+        return Gitee.get(url, end)
     }
 
     fun <T> assets(json: String, typeOfT: Type, end: (T) -> Unit) {
@@ -486,6 +442,7 @@ object Gitee {
 
     var lastVersionUpdateBean: VersionUpdateBean? = null
 
+    /**[giteeVersionUpdate]*/
     fun fetchVersion(end: (data: VersionUpdateBean?, error: Throwable?) -> Unit) {
         val json = memoryConfig().file?.version ?: "version"
         get(json) { data, error ->

@@ -1,7 +1,7 @@
 package com.angcyo.acc2.app
 
 import android.content.Context
-import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
@@ -75,7 +75,7 @@ open class AccApp : CoreApplication() {
         }
 
         //初始化
-        Gitee.init()
+        AccGitee.init()
 
         //debug
         BaseEditDelegate.textChangedActionList.add(AccDebug::onAccDebugTextChanged)

@@ -23,32 +23,32 @@ import com.angcyo.viewmodel.vmDataNull
 class GiteeModel : LifecycleViewModel() {
 
     /**存储功能列表
-     * [com.angcyo.acc2.app.http.Gitee.fetchFunctionList]*/
+     * [com.angcyo.acc2.app.http.AccGitee.fetchFunctionList]*/
     val allFunctionData = vmData(listOf<FunctionBean>())
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllAction]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllAction]*/
     val allActionData = vmData(listOf<ActionBean>())
 
     //备份
     val allActionDataBack = mutableListOf<ActionBean>()
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllBackAction]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllBackAction]*/
     val allBackActionData = vmData(listOf<ActionBean>())
 
     //备份
     val allBackActionDataBack = mutableListOf<ActionBean>()
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllCheck]*/
     val allCheckData = vmData(listOf<CheckBean>())
 
     //备份
     val allCheckDataBack = mutableListOf<CheckBean>()
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllCheck]*/
     val allAssetCheckData = vmData(listOf<CheckBean>())
 
     /**所有在线任务
-     * [com.angcyo.acc2.app.http.Gitee.fetchAllTask]
+     * [com.angcyo.acc2.app.http.AccGitee.fetchAllTask]
      * */
     val allTaskData = vmData(listOf<TaskBean>())
 

@@ -35,7 +35,7 @@ object Message {
         val json = app().memoryConfigBean.file?.message ?: "message"
 
         if (online) {
-            Gitee.get(json) { data, error ->
+            AccGitee.get(json) { data, error ->
                 data?.toBean<List<MessageBean>>(listType(MessageBean::class.java))?.let {
                     for (bean in it) {
                         if (parseMessage(bean)) {
@@ -45,7 +45,7 @@ object Message {
                 }
             }
         } else {
-            Gitee.assets<List<MessageBean>>(json, listType(MessageBean::class.java)) {
+            AccGitee.assets<List<MessageBean>>(json, listType(MessageBean::class.java)) {
                 for (bean in it) {
                     if (parseMessage(bean)) {
                         break
@@ -73,16 +73,16 @@ object Message {
                 UserHelper.exit()
             }
             MessageBean.TYPE_UPDATE_CHECK -> {
-                Gitee.fetchAllCheck(true)
+                AccGitee.fetchAllCheck(true)
                 saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_ACTION -> {
-                Gitee.fetchAllAction(true)
-                Gitee.fetchAllBackAction(true)
+                AccGitee.fetchAllAction(true)
+                AccGitee.fetchAllBackAction(true)
                 saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_TASK -> {
-                Gitee.fetchAllTask(true)
+                AccGitee.fetchAllTask(true)
                 saveReadMessage(bean)
             }
             MessageBean.TYPE_OPEN_URL -> {
@@ -93,7 +93,7 @@ object Message {
                 }
             }
             MessageBean.TYPE_UPDATE_MEMORY_CONFIG -> {
-                Gitee.fetchMemoryConfig()
+                AccGitee.fetchMemoryConfig()
                 saveReadMessage(bean)
             }
             MessageBean.TYPE_UPDATE_USER -> {

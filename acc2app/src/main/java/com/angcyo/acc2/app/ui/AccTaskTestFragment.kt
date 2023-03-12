@@ -11,7 +11,7 @@ import com.angcyo.acc2.app.dslitem.AppTaskItem
 import com.angcyo.acc2.app.dslitem.AppTextItem
 import com.angcyo.acc2.app.dslitem.shareApk
 import com.angcyo.acc2.app.helper.LogHelper
-import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.bean.FunctionBean
 import com.angcyo.acc2.app.model.AccTaskModel
 import com.angcyo.acc2.app.model.AdaptiveModel
@@ -118,7 +118,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
                     /*checkModel.loadChecks((it as CompoundButton).isChecked)
                     taskModel.loadTasks(it.isChecked)
                     vmApp<ActionsModel>().loadActions(it.isChecked)*/
-                    Gitee.fetch(_vh.isChecked(R.id.on_line_checkbox), true)
+                    AccGitee.fetch(_vh.isChecked(R.id.on_line_checkbox), true)
                 }
             }
         }
@@ -240,7 +240,7 @@ class AccTaskTestFragment : AccAppDslFragment() {
             }
         }
         //加载全部离线数据
-        Gitee.fetch(false)
+        AccGitee.fetch(false)
     }
 
     //读取剪切板内容提示

@@ -2,7 +2,7 @@ package com.angcyo.acc2.app
 
 import android.os.Bundle
 import com.angcyo.acc2.app.component.AccWindow
-import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.Message
 import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.app.model.AdaptiveModel
@@ -63,7 +63,7 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
         super.onStart()
 
         if (mainMemoryConfig().isOnlineData) {
-            Gitee.fetchVersion { data, error ->
+            AccGitee.fetchVersion { data, error ->
                 data.let {
                     versionUpdate(it)
                 }

@@ -2,7 +2,7 @@ package com.angcyo.acc2.app.component
 
 import com.angcyo.acc2.app.AppAccPrint
 import com.angcyo.acc2.app.app
-import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.model.GiteeModel
 import com.angcyo.acc2.bean.ActionBean
 import com.angcyo.acc2.bean.TaskBean
@@ -63,7 +63,7 @@ object Task {
 
     /**根据指定的url, 启动任务*/
     fun start(taskUrl: String, startAction: (TaskBean?, Throwable?) -> Unit) {
-        Gitee.getTask(taskUrl) { data, error ->
+        AccGitee.getTask(taskUrl) { data, error ->
             val task = data?.init(control)
             startAction(task, error)
             task?.let {

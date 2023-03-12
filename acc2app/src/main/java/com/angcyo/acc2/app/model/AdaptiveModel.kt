@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.dslitem.shareApk
-import com.angcyo.acc2.app.http.Gitee
+import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.Message
 import com.angcyo.acc2.app.http.bean.*
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -44,7 +44,7 @@ class AdaptiveModel : LifecycleViewModel() {
 
     /**加载本地适配数据信息*/
     fun loadAdaptiveVersion(online: Boolean = !isDebugType()) {
-        Gitee.fetchAdaptiveConfig(online) { data, error ->
+        AccGitee.fetchAdaptiveConfig(online) { data, error ->
             val oldVersion: Long = adaptiveData.value?.version ?: 0
             if (oldVersion < data?.version ?: -1) {
                 adaptiveData.value = data
@@ -55,7 +55,7 @@ class AdaptiveModel : LifecycleViewModel() {
     /**加载本地适配数据信息*/
     fun loadAnim(online: Boolean = !isDebugType()) {
         if (online) {
-            Gitee.get("admin.json") { data, error ->
+            AccGitee.get("admin.json") { data, error ->
                 if (data != null) {
                     val bean = data.toBean<AdminBean>()
                     val oldBean: Long = adminData.value?.version ?: 0
@@ -76,7 +76,7 @@ class AdaptiveModel : LifecycleViewModel() {
     fun loadAppList(online: Boolean = !isDebugType()) {
         val beanListType = listBeanType(AppInfoBean::class.java)
         if (online) {
-            Gitee.get("app_list.json") { data, error ->
+            AccGitee.get("app_list.json") { data, error ->
                 data?.let {
                     it.toBean<HttpBean<List<AppInfoBean>>>(beanListType).let { bean ->
                         val oldVersion = appListData.value?.version ?: 0
@@ -88,7 +88,7 @@ class AdaptiveModel : LifecycleViewModel() {
                 }
             }
         } else {
-            Gitee.assets<HttpBean<List<AppInfoBean>>>("app_list.json", beanListType) {
+            AccGitee.assets<HttpBean<List<AppInfoBean>>>("app_list.json", beanListType) {
                 appListData.value = it
             }
         }

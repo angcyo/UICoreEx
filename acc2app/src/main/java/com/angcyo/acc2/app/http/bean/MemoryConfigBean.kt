@@ -22,23 +22,23 @@ data class MemoryConfigBean(
      * 只影响[fetch]相关数据的获取*/
     var version: Long = 0,
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchFunctionList]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchFunctionList]*/
     var updateFunction: Boolean = false,
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllAction]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllAction]*/
     var updateAction: Boolean = false,
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllBackAction]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllBackAction]*/
     var updateBackAction: Boolean = false,
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllCheck]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllCheck]*/
     var updateCheck: Boolean = false,
 
-    /**[com.angcyo.acc2.app.http.Gitee.fetchAllTask]*/
+    /**[com.angcyo.acc2.app.http.AccGitee.fetchAllTask]*/
     var updateTask: Boolean = false,
 
     /**是否是在线获取到的数据
-     * [com.angcyo.acc2.app.http.Gitee.fetchMemoryConfig]*/
+     * [com.angcyo.acc2.app.http.AccGitee.fetchMemoryConfig]*/
     var isOnlineData: Boolean = false,
 
     /**音量减少时, 是否停止任务*/
