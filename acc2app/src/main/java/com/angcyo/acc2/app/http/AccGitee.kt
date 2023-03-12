@@ -110,7 +110,7 @@ object AccGitee {
         val url = if (json.isHttpScheme()) {
             json
         } else {
-            "$${Gitee.BASE}/${json.jsonName()}"
+            "${Gitee.BASE}/${json.jsonName()}"
         }
         return Gitee.get(url, end)
     }
