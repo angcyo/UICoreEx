@@ -38,3 +38,13 @@ fun BaseRenderer.lpBitmapElement(): LPBitmapElement? {
 }
 
 //endregion---LpRenderer---
+
+//region---LPElementBean---
+
+/**是否加粗*/
+fun LPElementBean.isBold() = fontWeight == "bold"
+
+/**是否斜体*/
+fun LPElementBean.isItalic() = fontStyle == "italic"
+
+//endregion---LPElementBean---

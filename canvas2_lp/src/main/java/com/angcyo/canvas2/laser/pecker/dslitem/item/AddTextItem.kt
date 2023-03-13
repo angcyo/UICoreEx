@@ -2,14 +2,16 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.addTextDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 
 /**
  * 添加文本/二维码/条码
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2023/03/03
+ * @since 2023-3-13
  */
 class AddTextItem : CanvasIconItem(), IFragmentItem {
 
@@ -20,12 +22,11 @@ class AddTextItem : CanvasIconItem(), IFragmentItem {
         itemText = _string(R.string.canvas_text)
 
         itemClick = {
-            /*itemFragment?.context?.addTextDialog {
+            itemFragment?.context?.addTextDialog {
                 onAddTextAction = { inputText, type ->
-                    itemCanvasDelegate?.addTextRender(inputText, type)
-                    UMEvent.CANVAS_TEXT.umengEventValue()
+                    LPElementHelper.addTextElement(itemRenderDelegate, inputText, type)
                 }
-            }*/
+            }
         }
     }
 

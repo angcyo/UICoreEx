@@ -23,6 +23,10 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     /**图片转成的[Path]数据, 原始数据*/
     var pathList: List<Path>? = null
 
+    init {
+        updateBeanToBaseElement()
+    }
+
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
             return createPathDrawable(
@@ -36,19 +40,20 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     }
 
     /**更新GCode数据*/
-    fun updateOriginBitmap(pathList: List<Path>?) {
+    fun updateOriginBitmap(pathList: List<Path>?, keepVisibleSize: Boolean = true) {
         this.pathList = pathList
         val bounds = CanvasRenderHelper.computePathBounds(pathList)
-        updateOriginWidthHeight(bounds.width(), bounds.height())
+        updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 
     /**更新原始图片, 并且自动处理成默认的黑白数据, 以及转成对应的base64数据*/
     fun updateOriginBitmap(
         delegate: CanvasRenderDelegate?,
         renderer: BaseRenderer,
-        bitmap: Bitmap
+        bitmap: Bitmap,
+        keepVisibleSize: Boolean = true
     ) {
-        updateOriginBitmap(bitmap)
+        updateOriginBitmap(bitmap, keepVisibleSize)
         renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
         delegate?.asyncManager?.addAsyncTask(renderer) {
             elementBean.imageOriginal = bitmap.toBase64Data()

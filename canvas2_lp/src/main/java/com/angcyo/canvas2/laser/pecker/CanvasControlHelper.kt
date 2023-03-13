@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker
 
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
@@ -8,11 +9,11 @@ import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.renderElement
+import com.angcyo.canvas.render.util.textElement
+import com.angcyo.canvas2.laser.pecker.dialog.canvasFontWindow
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.AlignDeviceItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.EditControlItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.ImageFilterItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.LayerSortItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
@@ -162,7 +163,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                     if (element is ILaserPeckerElement) {
                         when (element.elementBean.mtype) {
                             LPConstant.DATA_TYPE_BITMAP -> renderBitmapEditItems(renderer)
-                            LPConstant.DATA_TYPE_TEXT -> Unit //renderTextEditItems(itemRenderer)
+                            LPConstant.DATA_TYPE_TEXT -> renderTextEditItems(renderer)
                             LPConstant.DATA_TYPE_LINE,
                             LPConstant.DATA_TYPE_OVAL,
                             LPConstant.DATA_TYPE_RECT,
@@ -346,6 +347,100 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
     }
 
     //endregion ---Bitmap---
+
+    //region ---文本---
+
+    /**渲染文本编辑控制items*/
+    private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
+        val closeTextEditItemsFun = HawkEngraveKeys.closeTextEditItemsFun
+        //字体
+        if (!closeTextEditItemsFun.have("_typeface_")) {
+            TextTypefaceSelectItem()() {
+                initItem(renderer)
+                itemClick = { anchor ->
+                    updateItemSelected(!itemIsSelected)
+
+                    if (itemIsSelected) {
+                        anchor.context.canvasFontWindow(anchor) {
+                            initItem(renderer)
+                            onDismiss = {
+                                updateItemSelected(false)
+                                false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //样式
+        if (!closeTextEditItemsFun.have("_style_")) {
+            TextStyleSelectItem()() {
+                initItem(renderer)
+            }
+        }
+        //对齐
+        if (!closeTextEditItemsFun.have("_align_")) {
+            TextAlignSelectItem()() {
+                initItem(renderer)
+                drawCanvasRight()
+            }
+        }
+        //属性调整
+        TextPropertyControlItem()() {
+            initItem(renderer)
+            drawCanvasRight()
+        }
+        //栅格化
+        if (HawkEngraveKeys.enableRasterize) {
+            CanvasIconItem()() {
+                itemIco = R.drawable.canvas_text_rasterize_ico
+                itemText = _string(R.string.canvas_rasterize)
+                itemClick = {
+                    //renderer.dataItem?.itemRasterize(renderer)
+                }
+            }
+        }
+        //曲线
+        if (isDebugType()) {
+            CanvasIconItem()() {
+                itemIco = R.drawable.canvas_text_curve_ico
+                itemText = _string(R.string.canvas_curve)
+            }
+        }
+        if (!closeTextEditItemsFun.have("_orientation_")) {
+            TextOrientationItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_text_standard_ico
+                itemText = _string(R.string.canvas_standard)
+                itemOrientation = LinearLayout.HORIZONTAL
+            }
+            TextOrientationItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_text_vertical_ico
+                itemText = _string(R.string.canvas_vertical)
+                itemOrientation = LinearLayout.VERTICAL
+                drawCanvasRight()
+            }
+        }
+
+        //紧凑
+        if (isDebugType()) {
+            CanvasIconItem()() {
+                itemText = "紧凑"
+                itemIco = R.drawable.canvas_text_style
+                itemIsSelected = renderer.textElement?.textProperty?.isCompactText == true
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+
+                    renderer.textElement?.updateTextProperty(renderer, itemRenderDelegate) {
+                        isCompactText = itemIsSelected
+                    }
+                }
+            }
+        }
+    }
+
+    //endregion ---文本---
 
     //region ---公共的编辑---
 

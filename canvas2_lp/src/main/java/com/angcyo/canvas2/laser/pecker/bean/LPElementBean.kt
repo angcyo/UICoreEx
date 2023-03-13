@@ -88,10 +88,10 @@ data class LPElementBean(
     var icon: String? = null,
 
     /**数据类型, 线条类型的长度放在[width]属性中
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_TEXT]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_RECT]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_OVAL]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_LINE]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_TEXT]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_RECT]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_OVAL]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_LINE]
      * */
     var mtype: Int = -1,
 
@@ -131,8 +131,8 @@ data class LPElementBean(
     //region ---文本类型---
 
     /**文本的内容
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_QRCODE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_BARCODE]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_QRCODE]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_BARCODE]
      * */
     var text: String? = null,
 
@@ -354,9 +354,9 @@ data class LPElementBean(
     //region ---私有属性---
 
     /**数据处理的模式, 处理成机器需要的数据. 通常情况下和雕刻图层一致
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_GCODE]
+     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_DITHERING]
      *
      * [com.angcyo.canvas.graphics.IGraphicsParser.initDataModeWithPaintStyle]
      *

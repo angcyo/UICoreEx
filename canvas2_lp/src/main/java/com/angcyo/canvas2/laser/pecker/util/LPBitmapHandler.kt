@@ -106,7 +106,7 @@ object LPBitmapHandler {
 
     //region---core---
 
-    private fun addToStack(
+    private fun addBitmapStateToStack(
         delegate: CanvasRenderDelegate?,
         renderer: BaseRenderer,
         undoState: IStateStack
@@ -153,7 +153,7 @@ object LPBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                     if (_valueChange) {
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 } else {
                     owner.engraveLoadingAsync({
@@ -249,13 +249,16 @@ object LPBitmapHandler {
                     }) { pair ->
                         bean.data = pair?.first
                         pair?.first?.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
-                        element.updateOriginBitmap(pair?.second?.gCodePath?.run { listOf(this) })
+                        element.updateOriginBitmap(
+                            pair?.second?.gCodePath?.run { listOf(this) },
+                            false
+                        )
                         renderer.requestUpdateDrawable(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
 
                         //stack
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 }
             }
@@ -292,7 +295,7 @@ object LPBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                     if (_valueChange) {
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 } else {
                     owner.engraveLoadingAsync({
@@ -349,7 +352,7 @@ object LPBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                     if (_valueChange) {
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 } else {
                     owner.engraveLoadingAsync({
@@ -408,7 +411,7 @@ object LPBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                     if (_valueChange) {
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 } else {
                     owner.engraveLoadingAsync({
@@ -468,7 +471,7 @@ object LPBitmapHandler {
                 if (dismiss) {
                     onDismissAction()
                     if (_valueChange) {
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 } else {
                     owner.engraveLoadingAsync({
@@ -525,7 +528,7 @@ object LPBitmapHandler {
                         element.renderBitmap = toBlackWhiteHandle(result, bean)
                         element.updateOriginBitmap(result)
 
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
                         result
                     }) {
                         renderer.requestUpdateDrawable(Reason.user.apply {
@@ -603,9 +606,9 @@ object LPBitmapHandler {
                         result?.let {
                             bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
                             element.renderBitmap = toBlackWhiteHandle(result, bean)
-                            element.updateOriginBitmap(result)
+                            element.updateOriginBitmap(result, false)
                         }
-                        addToStack(delegate, renderer, undoState)
+                        addBitmapStateToStack(delegate, renderer, undoState)
 
                         result
                     }) {
