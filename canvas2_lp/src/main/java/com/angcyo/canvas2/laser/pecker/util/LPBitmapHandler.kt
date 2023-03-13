@@ -17,13 +17,14 @@ import com.angcyo.canvas2.laser.pecker.bean.BitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.parseGCode
+import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
@@ -230,10 +231,15 @@ object LPBitmapHandler {
                         operateBitmap.let { bitmap ->
                             LTime.tick()
                             val gcodeFile = toGCode(context, bitmap, bean)
-                            L.i("图片转GCode耗时:${LTime.time()}")
+                            "图片[${
+                                bitmap.byteCount.toSizeString()
+                            }]转GCode耗时:${LTime.time()}".writePerfLog()
                             val gCodeText = gcodeFile.readText()
                             gcodeFile.deleteSafe()
-                            gCodeText to GCodeHelper.parseGCode(gCodeText)
+                            LTime.tick()
+                            val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
+                            "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { pair ->
                         bean.data = pair?.first
