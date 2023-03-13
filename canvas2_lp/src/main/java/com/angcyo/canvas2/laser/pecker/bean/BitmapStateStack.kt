@@ -47,6 +47,11 @@ class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStat
     val gcodeFillStep = elementBean.gcodeFillStep
     val gcodeFillAngle = elementBean.gcodeFillAngle
 
+    val minDiameter = elementBean.minDiameter
+    val meshShape = elementBean.meshShape
+    val maxDiameter = elementBean.maxDiameter
+    val isMesh = elementBean.isMesh
+
     init {
         saveState(renderer)
     }
@@ -75,6 +80,11 @@ class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStat
         elementBean.gcodeOutline = gcodeOutline
         elementBean.gcodeFillStep = gcodeFillStep
         elementBean.gcodeFillAngle = gcodeFillAngle
+
+        elementBean.minDiameter = minDiameter
+        elementBean.maxDiameter = maxDiameter
+        elementBean.meshShape = meshShape
+        elementBean.isMesh = isMesh
 
         super.restoreState(reason, strategy, delegate)
         renderer.requestUpdateDrawable(reason, delegate)

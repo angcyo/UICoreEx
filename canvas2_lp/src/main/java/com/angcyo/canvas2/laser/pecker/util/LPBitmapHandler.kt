@@ -19,6 +19,7 @@ import com.angcyo.canvas2.laser.pecker.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
+import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.LTime
@@ -28,6 +29,7 @@ import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
+import com.hingin.rn.image.ImageProcess
 import java.io.File
 
 /**
@@ -161,7 +163,10 @@ object LPBitmapHandler {
                                 bean.printsThreshold.toInt()
                             ).toFloat()
                             bean.imageFilter = LPConstant.DATA_MODE_PRINT
-                            toPrint(context, bitmap, bean.printsThreshold)
+                            LTime.tick()
+                            val result = toPrint(context, bitmap, bean.printsThreshold)
+                            "图片[${bitmap.byteCount.toSizeString()}]转版画耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { result ->
                         element.renderBitmap = result
@@ -300,7 +305,10 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_BW_INVERT, bean.inverse
                             )
                             bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
-                            toBlackWhiteHandle(bitmap, bean)
+                            LTime.tick()
+                            val result = toBlackWhiteHandle(bitmap, bean)
+                            "图片[${bitmap.byteCount.toSizeString()}]转黑白耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { result ->
                         element.renderBitmap = result
@@ -359,7 +367,10 @@ object LPBitmapHandler {
                                 bean.brightness
                             )
                             bean.imageFilter = LPConstant.DATA_MODE_DITHERING
-                            toGrayHandle(bitmap, bean)
+                            LTime.tick()
+                            val result = toGrayHandle(bitmap, bean)
+                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { result ->
                         element.renderBitmap = result
@@ -415,7 +426,10 @@ object LPBitmapHandler {
                                 bean.brightness
                             )
                             bean.imageFilter = LPConstant.DATA_MODE_GREY
-                            toGrayHandle(bitmap, bean)
+                            LTime.tick()
+                            val result = toGrayHandle(bitmap, bean)
+                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { result ->
                         element.renderBitmap = result
@@ -465,7 +479,10 @@ object LPBitmapHandler {
                         bean.sealThreshold = threshold.toFloat()
                         operateBitmap.let { bitmap ->
                             bean.imageFilter = LPConstant.DATA_MODE_SEAL
-                            toSeal(context, bitmap, bean.sealThreshold)
+                            LTime.tick()
+                            val result = toSeal(context, bitmap, bean.sealThreshold)
+                            "图片[${bitmap.byteCount.toSizeString()}]转印章耗时:${LTime.time()}".writePerfLog()
+                            result
                         }
                     }) { result ->
                         element.renderBitmap = result
@@ -522,6 +539,7 @@ object LPBitmapHandler {
 
     /**图片扭曲*/
     fun handleMesh(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
@@ -531,20 +549,22 @@ object LPBitmapHandler {
         val operateBitmap = element.originBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
-        val oldIsMesh = bean.isMesh
 
-        /*context.canvasRegulateWindow2(anchor) {
+        //用来恢复的状态
+        val undoState = BitmapStateStack(renderer)
+
+        context.canvasRegulateWindow(anchor) {
             addRegulate(
                 CanvasRegulatePopupConfig.KEY_MESH_SHAPE,
-                CanvasRegulatePopupConfig.DEFAULT_MESH_SHAPE
+                bean.meshShape ?: CanvasRegulatePopupConfig.DEFAULT_MESH_SHAPE
             )
             addRegulate(
                 CanvasRegulatePopupConfig.KEY_MIN_DIAMETER,
-                HawkEngraveKeys.lastMinDiameterPixel
+                bean.minDiameter ?: HawkEngraveKeys.lastMinDiameterPixel
             )
             addRegulate(
                 CanvasRegulatePopupConfig.KEY_MAX_DIAMETER,
-                HawkEngraveKeys.lastDiameterPixel
+                bean.maxDiameter ?: HawkEngraveKeys.lastDiameterPixel
             )
             addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
 
@@ -556,43 +576,46 @@ object LPBitmapHandler {
                         CanvasRegulatePopupConfig.KEY_MIN_DIAMETER,
                         HawkEngraveKeys.lastMinDiameterPixel
                     )
+                    bean.minDiameter = minDiameter
                     val maxDiameter = getFloatOrDef(
                         CanvasRegulatePopupConfig.KEY_MAX_DIAMETER,
                         HawkEngraveKeys.lastDiameterPixel
                     )
+                    bean.maxDiameter = maxDiameter
                     // "CONE" 圆锥
                     // "BALL" 球体
-                    val shape = getStringOrDef(
+                    val meshShape = getStringOrDef(
                         CanvasRegulatePopupConfig.KEY_MESH_SHAPE,
                         CanvasRegulatePopupConfig.DEFAULT_MESH_SHAPE
                     )
+                    bean.meshShape = meshShape
                     bean.isMesh = true //提前赋值
                     owner.engraveLoadingAsync({
-                        originBitmap?.let {
-                            ImageProcess.imageMesh(
-                                originBitmap,
-                                minDiameter,
-                                maxDiameter,
-                                shape
-                            )
+                        LTime.tick()
+                        val result = ImageProcess.imageMesh(
+                            operateBitmap,
+                            minDiameter,
+                            maxDiameter,
+                            meshShape
+                        )
+                        "图片[${operateBitmap.byteCount.toSizeString()}]扭曲耗时:${LTime.time()}".writePerfLog()
+
+                        result?.let {
+                            bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
+                            element.renderBitmap = toBlackWhiteHandle(result, bean)
+                            element.updateOriginBitmap(result)
                         }
+                        addToStack(delegate, renderer, undoState)
+
+                        result
                     }) {
-                        it?.let {
-                            owner.engraveLoadingAsync({
-                                //剪切完之后, 默认背白处理
-                                val filter =
-                                    it.toBlackWhiteBitmap(bean.blackThreshold.toInt())
-                                item.updateBitmapMesh(
-                                    filter,
-                                    LPConstant.DATA_MODE_BLACK_WHITE,
-                                    shape, minDiameter, maxDiameter, oldIsMesh, renderer
-                                )
-                            })
-                        }
+                        renderer.requestUpdateDrawable(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
                     }
                 }
             }
-        }*/
+        }
     }
 
     /**路径填充*/

@@ -301,10 +301,10 @@ data class LPElementBean(
 
     /**最小直径, 最大直径*/
     @MM
-    var minDiameter: Float = 0f,
+    var minDiameter: Float? = null,
 
     @MM
-    var maxDiameter: Float = 0f,
+    var maxDiameter: Float? = null,
 
     /**扭曲类型,
      * "CONE" 圆锥

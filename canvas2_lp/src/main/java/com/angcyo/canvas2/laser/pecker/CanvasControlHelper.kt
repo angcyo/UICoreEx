@@ -316,7 +316,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleMesh(it, fragment, renderer) {
+                        LPBitmapHandler.handleMesh(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
