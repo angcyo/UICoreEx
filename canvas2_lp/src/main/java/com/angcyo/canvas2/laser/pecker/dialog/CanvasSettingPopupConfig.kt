@@ -1,14 +1,15 @@
-package com.angcyo.canvas.laser.pecker
+package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.content.Context
 import android.graphics.RectF
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.graphics.addMultiplicationTable
-import com.angcyo.canvas.graphics.addParameterComparisonTable
-import com.angcyo.canvas.graphics.addVisualChart
-import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.unit.InchRenderUnit
+import com.angcyo.canvas.render.unit.MmRenderUnit
+import com.angcyo.canvas.render.unit.PxRenderUnit
+import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
@@ -30,9 +31,6 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isShowDebug
-import com.angcyo.library.unit.InchValueUnit
-import com.angcyo.library.unit.MmValueUnit
-import com.angcyo.library.unit.PixelValueUnit
 import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
@@ -43,15 +41,15 @@ import kotlin.math.min
 /**
  * 画图设置弹窗
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/05/16
+ * @since 2023-3-13
  */
 class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
     /**画布*/
-    var canvasDelegate: CanvasDelegate? = null
+    var canvasDelegate: CanvasRenderDelegate? = null
 
     init {
-        contentLayoutId = R.layout.canvas_setting_layout
+        contentLayoutId = R.layout.dialog_setting_layout
         triangleMinMargin = 24 * dpi
         //yoff = -10 * dpi
         offsetY = -10 * dpi
@@ -59,7 +57,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
     override fun initContentLayout(window: TargetWindow, viewHolder: DslViewHolder) {
         super.initContentLayout(window, viewHolder)
-        val canvasViewBox = canvasDelegate?.getCanvasViewBox()
+        val canvasViewBox = canvasDelegate?.renderViewBox
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
 
             val previewBounds =
@@ -94,7 +92,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                 HawkEngraveKeys.lastFontSize = list.getOrNull(3)?.toIntOrNull()
                                     ?: HawkEngraveKeys.lastFontSize
 
-                                engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                                /*engraveStrokeLoadingCaller { isCancel, loadEnd ->
                                     doBack {
                                         HawkEngraveKeys.enableItemEngraveParams = true //必须
                                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
@@ -107,7 +105,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                         )
                                         loadEnd(true, null)
                                     }
-                                }
+                                }*/
                                 false
                             }
                         }
@@ -122,7 +120,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         engraveStrokeLoadingCaller { isCancel, loadEnd ->
                             doBack {
                                 HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                canvasDelegate?.addMultiplicationTable(previewBounds)
+                                //canvasDelegate?.addMultiplicationTable(previewBounds)
                                 loadEnd(true, null)
                             }
                         }
@@ -138,7 +136,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         engraveStrokeLoadingCaller { isCancel, loadEnd ->
                             doBack {
                                 HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                canvasDelegate?.addVisualChart(previewBounds)
+                                //canvasDelegate?.addVisualChart(previewBounds)
                                 loadEnd(true, null)
                             }
                         }
@@ -150,23 +148,21 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
                     itemInfoText = _string(R.string.canvas_pixel_unit)
-                    itemSwitchChecked = canvasViewBox?.valueUnit is PixelValueUnit
+                    itemSwitchChecked = canvasDelegate?.axisManager?.renderUnit is PxRenderUnit
                     drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                     itemExtendLayoutId = R.layout.canvas_extent_switch_item
                     itemSwitchChangedAction = {
-                        canvasViewBox?.updateCoordinateSystemUnit(
+                        canvasDelegate?.axisManager?.updateRenderUnit(
                             if (it) {
                                 (get("inch") as? DslSwitchInfoItem)?.apply {
                                     itemSwitchChecked = false
                                     updateAdapterItem()
                                 }
-                                CanvasConstant.CANVAS_VALUE_UNIT =
-                                    CanvasConstant.CANVAS_VALUE_UNIT_PIXEL
-                                PixelValueUnit()
+                                LPConstant.CANVAS_VALUE_UNIT = LPConstant.CANVAS_VALUE_UNIT_PIXEL
+                                PxRenderUnit()
                             } else {
-                                CanvasConstant.CANVAS_VALUE_UNIT =
-                                    CanvasConstant.CANVAS_VALUE_UNIT_MM
-                                MmValueUnit()
+                                LPConstant.CANVAS_VALUE_UNIT = LPConstant.CANVAS_VALUE_UNIT_MM
+                                MmRenderUnit()
                             }
                         )
                     }
@@ -175,11 +171,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             DslSwitchInfoItem()() {
                 itemTag = "inch"
                 itemInfoText = _string(R.string.canvas_inch_unit)
-                itemSwitchChecked = canvasViewBox?.valueUnit is InchValueUnit
+                itemSwitchChecked = canvasDelegate?.axisManager?.renderUnit is InchRenderUnit
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
-                    canvasViewBox?.updateCoordinateSystemUnit(
+                    canvasDelegate?.axisManager?.updateRenderUnit(
                         if (it) {
                             if (isShowDebug()) {
                                 (get("pixel") as? DslSwitchInfoItem)?.apply {
@@ -187,11 +183,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                     updateAdapterItem()
                                 }
                             }
-                            CanvasConstant.CANVAS_VALUE_UNIT = CanvasConstant.CANVAS_VALUE_UNIT_INCH
-                            InchValueUnit()
+                            LPConstant.CANVAS_VALUE_UNIT = LPConstant.CANVAS_VALUE_UNIT_INCH
+                            InchRenderUnit()
                         } else {
-                            CanvasConstant.CANVAS_VALUE_UNIT = CanvasConstant.CANVAS_VALUE_UNIT_MM
-                            MmValueUnit()
+                            LPConstant.CANVAS_VALUE_UNIT = LPConstant.CANVAS_VALUE_UNIT_MM
+                            MmRenderUnit()
                         }
                     )
                     if (it) {
@@ -203,33 +199,33 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             }
             DslSwitchInfoItem()() {
                 itemInfoText = _string(R.string.canvas_grid)
-                itemSwitchChecked = CanvasConstant.CANVAS_DRAW_GRID
+                itemSwitchChecked = LPConstant.CANVAS_DRAW_GRID
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
-                    CanvasConstant.CANVAS_DRAW_GRID = it
+                    LPConstant.CANVAS_DRAW_GRID = it
                     if (it) {
-                        canvasDelegate?.xAxis?.drawGridLine = true
-                        canvasDelegate?.yAxis?.drawGridLine = true
+                        canvasDelegate?.axisManager?.enableRenderGrid = true
+                        canvasDelegate?.axisManager?.enableRenderGrid = true
                     } else {
-                        canvasDelegate?.xAxis?.drawGridLine = false
-                        canvasDelegate?.yAxis?.drawGridLine = false
+                        canvasDelegate?.axisManager?.enableRenderGrid = false
+                        canvasDelegate?.axisManager?.enableRenderGrid = false
                     }
                     canvasDelegate?.refresh()
                 }
             }
-            DslSwitchInfoItem()() {
+            /*DslSwitchInfoItem()() {
                 itemInfoText = _string(R.string.canvas_smart_assistant)
                 itemSwitchChecked = canvasDelegate?.smartAssistant?.enable == true
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
                     canvasDelegate?.smartAssistant?.enable = it
-                    CanvasConstant.CANVAS_SMART_ASSISTANT = it
+                    LPConstant.CANVAS_SMART_ASSISTANT = it
                     if (it) {
                         UMEvent.SMART_ASSISTANT.umengEventValue()
                     }
                 }
-            }
+            }*/
         }
     }
 }

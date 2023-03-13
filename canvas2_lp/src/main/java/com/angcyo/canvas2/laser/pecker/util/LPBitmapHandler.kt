@@ -12,10 +12,10 @@ import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.IStateStack
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas2.laser.pecker.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.bean.BitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.canvasRegulateWindow
+import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
+import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog

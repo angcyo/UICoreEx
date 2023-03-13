@@ -1,6 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.util
 
 import android.graphics.Paint
+import com.angcyo.canvas.render.unit.IRenderUnit
+import com.angcyo.canvas.render.unit.InchRenderUnit
+import com.angcyo.canvas.render.unit.MmRenderUnit
+import com.angcyo.canvas.render.unit.PxRenderUnit
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_GCODE
@@ -18,10 +22,6 @@ import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_TEXT
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.hawk.LibHawkKeys
-import com.angcyo.library.unit.IValueUnit
-import com.angcyo.library.unit.InchValueUnit
-import com.angcyo.library.unit.MmValueUnit
-import com.angcyo.library.unit.PixelValueUnit
 
 /**
  * 常量
@@ -142,12 +142,12 @@ object LPConstant {
     /**是否开启网格绘制, 持久化*/
     var CANVAS_DRAW_GRID: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
-    /**单位*/
-    val valueUnit: IValueUnit
+    /**渲染的单位*/
+    val renderUnit: IRenderUnit
         get() = when (CANVAS_VALUE_UNIT) {
-            CANVAS_VALUE_UNIT_PIXEL -> PixelValueUnit()
-            CANVAS_VALUE_UNIT_INCH -> InchValueUnit()
-            else -> MmValueUnit()
+            CANVAS_VALUE_UNIT_PIXEL -> PxRenderUnit()
+            CANVAS_VALUE_UNIT_INCH -> InchRenderUnit()
+            else -> MmRenderUnit()
         }
 
     /**默认的阈值*/

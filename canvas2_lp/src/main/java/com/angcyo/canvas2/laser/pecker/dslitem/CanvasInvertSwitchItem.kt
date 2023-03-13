@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem
 
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.invertHelpDialog
+import com.angcyo.canvas2.laser.pecker.dialog.invertHelpDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
 

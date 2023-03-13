@@ -1,12 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.canvasSettingWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
 
 /**
- * 图层item
+ * 设置item
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/03
  */
@@ -21,14 +22,14 @@ class ControlSettingItem : CanvasIconItem() {
             updateItemSelected(!itemIsSelected)
 
             if (itemIsSelected) {
-                /*it.context.canvasSettingWindow(it) {
-                    this.canvasDelegate = canvasDelegate
+                it.context.canvasSettingWindow(it) {
+                    this.canvasDelegate = itemRenderDelegate
                     onDismiss = {
                         itemIsSelected = false
                         updateAdapterItem()
                         false
                     }
-                }*/
+                }
             }
         }
     }

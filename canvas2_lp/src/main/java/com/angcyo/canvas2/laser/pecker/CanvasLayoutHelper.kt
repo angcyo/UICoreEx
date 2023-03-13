@@ -1,15 +1,18 @@
 package com.angcyo.canvas2.laser.pecker
 
+import com.angcyo.canvas.render.core.BaseCanvasRenderListener
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasUndoManager
-import com.angcyo.canvas.render.core.ICanvasRenderListener
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.findItemByTag
@@ -41,6 +44,9 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     @CallPoint
     fun bindCanvasLayout(vh: DslViewHolder) {
         _rootViewHolder = vh
+
+        //恢复设置
+        restoreCanvasSetting()
 
         //功能item渲染
         vh.canvasItemRv?.renderDslAdapter {
@@ -140,6 +146,21 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     internal var _rootViewHolder: DslViewHolder? = null
 
+    private val canvasDelegate: CanvasRenderDelegate?
+        get() = _rootViewHolder?.canvasDelegate
+
+    /**恢复界面渲染界面设置*/
+    private fun restoreCanvasSetting() {
+        canvasDelegate?.axisManager?.apply {
+            //绘制网格恢复
+            enableRenderGrid = LPConstant.CANVAS_DRAW_GRID
+            //单位恢复
+            updateRenderUnit(LPConstant.renderUnit)
+        }
+        //智能指南恢复
+        //canvasDelegate.smartAssistant.enable = CanvasConstant.CANVAS_SMART_ASSISTANT
+    }
+
     /**监听, 并赋值[IFragmentItem]*/
     fun hookUpdateDepend(adapter: DslAdapter) {
         adapter.apply {
@@ -169,7 +190,8 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     /**绑定事件*/
     private fun bindCanvasListener() {
-        _rootViewHolder?.canvasDelegate?.addCanvasRenderListener(object : ICanvasRenderListener {
+        _rootViewHolder?.canvasDelegate?.addCanvasRenderListener(object :
+            BaseCanvasRenderListener() {
             override fun onRenderUndoChange(undoManager: CanvasUndoManager) {
                 updateUndoLayout()
             }
@@ -206,6 +228,10 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 toProperty: CanvasRenderProperty?,
                 reason: Reason
             ) {
+                canvasControlHelper.updateControlLayout()
+            }
+
+            override fun onRenderUnitChange(from: IRenderUnit, to: IRenderUnit) {
                 canvasControlHelper.updateControlLayout()
             }
         })

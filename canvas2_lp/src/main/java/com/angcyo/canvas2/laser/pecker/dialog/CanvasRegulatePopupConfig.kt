@@ -1,10 +1,11 @@
-package com.angcyo.canvas2.laser.pecker
+package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import com.angcyo.canvas.render.util.canvasDecimal
+import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.bean.MeshShapeInfo
 import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DEFAULT_LINE_SPACE
