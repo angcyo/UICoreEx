@@ -7,7 +7,9 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.util.CanvasRenderHelper
+import com.angcyo.canvas2.laser.pecker.bean.LPBitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
@@ -26,6 +28,9 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     init {
         updateBeanToBaseElement()
     }
+
+    override fun createStateStack(renderer: BaseRenderer): IStateStack =
+        LPBitmapStateStack(renderer)
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {

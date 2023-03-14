@@ -3,9 +3,8 @@ package com.angcyo.canvas2.laser.pecker.bean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
-import com.angcyo.canvas.render.data.IStateStack
-import com.angcyo.canvas.render.data.PropertyStateStack
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.state.BitmapStateStack
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -15,7 +14,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/09
  */
-class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStateStack {
+class LPBitmapStateStack(renderer: BaseRenderer) : BitmapStateStack(renderer) {
 
     private val element: LPBitmapElement?
         get() = renderer.lpBitmapElement()
@@ -25,8 +24,6 @@ class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStat
 
     //region---需要存储的数据---
 
-    val operateBitmap = element?.originBitmap
-    val renderBitmap = element?.renderBitmap
     val pathList = element?.pathList
 
     val imageOriginal = elementBean.imageOriginal
@@ -59,10 +56,7 @@ class BitmapStateStack(val renderer: BaseRenderer) : PropertyStateStack(), IStat
     //endregion---需要存储的数据---
 
     override fun restoreState(reason: Reason, strategy: Strategy, delegate: CanvasRenderDelegate?) {
-        element?.originBitmap = operateBitmap
-        element?.renderBitmap = renderBitmap
         element?.pathList = pathList
-
         elementBean.imageOriginal = imageOriginal
         elementBean.src = src
 
