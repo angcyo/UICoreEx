@@ -20,7 +20,10 @@ class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
     /**纠错级别*/
     var eclevel: String? = null
 
-    /**图片*/
+    /**数据类型*/
+    var type: Int = 0
+
+    /**生成的缓存图片*/
     var codeBitmap: Bitmap? = null
 
     override fun saveState(renderer: BaseRenderer) {
@@ -28,6 +31,7 @@ class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
 
         val element = textElement
         if (element is LPTextElement) {
+            type = element.elementBean.mtype
             coding = element.elementBean.coding
             eclevel = element.elementBean.eclevel
             codeBitmap = element.codeBitmap
@@ -37,6 +41,7 @@ class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
     override fun restoreState(reason: Reason, strategy: Strategy, delegate: CanvasRenderDelegate?) {
         val element = textElement
         if (element is LPTextElement) {
+            element.elementBean.mtype = type
             element.elementBean.coding = coding
             element.elementBean.eclevel = eclevel
             element.codeBitmap = codeBitmap

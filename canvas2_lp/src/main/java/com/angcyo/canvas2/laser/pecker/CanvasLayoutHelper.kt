@@ -1,9 +1,6 @@
 package com.angcyo.canvas2.laser.pecker
 
-import com.angcyo.canvas.render.core.BaseCanvasRenderListener
-import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas.render.core.CanvasUndoManager
-import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.*
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
@@ -13,6 +10,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.findItemByTag
@@ -233,6 +231,15 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
             override fun onRenderUnitChange(from: IRenderUnit, to: IRenderUnit) {
                 canvasControlHelper.updateControlLayout()
+            }
+
+            override fun onDoubleTapItem(
+                selectorManager: CanvasSelectorManager,
+                renderer: BaseRenderer
+            ) {
+                renderer.lpTextElement()?.let {
+                    AddTextItem.amendInputText(canvasDelegate, renderer)
+                }
             }
         })
     }

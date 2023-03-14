@@ -5,6 +5,7 @@ import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
+import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 
 /**
  * LP渲染器操作助手
@@ -32,6 +33,15 @@ fun BaseRenderer.lpElementBean(): LPElementBean? = lpElement()?.elementBean
 fun BaseRenderer.lpBitmapElement(): LPBitmapElement? {
     val element = lpElement()
     if (element is LPBitmapElement) {
+        return element
+    }
+    return null
+}
+
+/**[LPTextElement]*/
+fun BaseRenderer.lpTextElement(): LPTextElement? {
+    val element = lpElement()
+    if (element is LPTextElement) {
         return element
     }
     return null

@@ -1,10 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import androidx.fragment.app.Fragment
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.addTextDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 
@@ -14,6 +17,27 @@ import com.angcyo.library.ex._string
  * @since 2023-3-13
  */
 class AddTextItem : CanvasIconItem(), IFragmentItem {
+
+    companion object {
+
+        /**修改条码/二维码/文本内容*/
+        fun amendInputText(delegate: CanvasRenderDelegate?, renderer: BaseRenderer) {
+            delegate ?: return
+            val element = renderer.lpTextElement() ?: return
+            val bean = element.elementBean
+            delegate.view.context?.addTextDialog {
+                dataType = bean.mtype
+                defaultInputString = element.textProperty.text
+                canSwitchType = false
+                onAddTextAction = { inputText, type ->
+                    element.updateTextProperty(renderer, delegate) {
+                        text = "$inputText"
+                        bean.mtype = type
+                    }
+                }
+            }
+        }
+    }
 
     override var itemFragment: Fragment? = null
 
