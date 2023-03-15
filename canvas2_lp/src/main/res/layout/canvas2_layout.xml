@@ -409,7 +409,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="220dp"
             android:layout_height="match_parent"
-            android:background="@color/lib_white">
+            android:background="@color/lib_white"
+            tools:visibility="gone">
 
             <com.angcyo.tablayout.DslTabLayout
                 android:id="@+id/layer_tab_view"
@@ -509,7 +510,8 @@
     <com.angcyo.widget.layout.DslSoftInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        tools:visibility="gone">
 
         <FrameLayout
             android:id="@+id/engrave_flow_wrap_layout"
