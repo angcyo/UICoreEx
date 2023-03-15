@@ -8,7 +8,6 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
-import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.toTypeNameString
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -44,9 +43,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
     val itemLayerLock: Boolean get() = itemRenderer?.isLock == true
 
     val itemItemDrawable: Drawable?
-        get() = itemRenderer?.renderElement?.requestElementRenderDrawable(
-            itemRenderParams
-        )
+        get() = itemRenderer?.requestRenderDrawable(itemRenderParams)
 
     val itemItemName: CharSequence? get() = itemRenderer?.lpElementBean()?.name
 
@@ -123,7 +120,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
         itemRenderer?.let {
             if (it.isVisible) {
                 it.renderProperty?.getRenderBounds()?.let { bounds ->
-                    itemRenderDelegate?.showRectBounds(bounds)
+                    itemRenderDelegate?.showRectBounds(bounds, zoomIn = false)
                 }
             }
         }

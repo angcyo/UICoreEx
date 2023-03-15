@@ -9,27 +9,25 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.canvas2.laser.pecker.util.saveProjectState
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
-import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.findItemByTag
+import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.have
-import com.angcyo.library.ex.isShowDebug
-import com.angcyo.library.ex.size
+import com.angcyo.library.ex.*
+import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.recycler.renderDslAdapter
@@ -97,23 +95,17 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 } else {
                     ControlLayerItem()() {
                         initItem()
+                        itemCanvasLayoutHelper = this@CanvasLayoutHelper
                     }
                 }
             }
-            /*if (isDebugType()) {
+            if (isDebugType()) {
                 if (!closeCanvasItemsFun.have("_operate_")) {
-                    CanvasControlItem2()() {
-                        itemIco = R.drawable.canvas_actions_ico
-                        itemText = _string(R.string.canvas_operate)
-                        itemEnable = true
-                        itemClick = {
-                            engraveCanvasFragment.engraveFlowLayoutHelper.startPreview(
-                                engraveCanvasFragment
-                            )
-                        }
+                    ControlOperateItem()() {
+                        initItem()
                     }
                 }
-            }*/
+            }
             if (!closeCanvasItemsFun.have("_setting_")) {
                 ControlSettingItem()() {
                     initItem()
@@ -298,7 +290,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     //endregion ---init---
 
-    //<editor-fold desc="Undo">
+    //region---Undo---
 
     val undoManager: CanvasUndoManager?
         get() = _rootViewHolder?.renderDelegate?.undoManager
@@ -353,7 +345,138 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         }
     }
 
-    //</editor-fold desc="Undo">
+    //endregion---Undo---
 
+    //region---Layer---
+
+    var _layerDragHelper: DragCallbackHelper? = null
+    var _layerTabLayout: DslTabLayout? = null
+
+    /**显示/更新图层item*/
+    fun renderLayerListLayout() {
+        val vh = _rootViewHolder ?: return
+        val delegate = canvasRenderDelegate ?: return
+        _layerTabLayout = vh.v(R.id.layer_tab_view)
+        _layerTabLayout?.configTabLayoutConfig {
+            onSelectIndexChange = { fromIndex, selectIndexList, reselect, fromUser ->
+                vh.post {
+                    //刷新界面
+                    renderLayerListLayout()
+                }
+            }
+        }
+        val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
+
+        vh.rv(R.id.canvas_layer_view)?.apply {
+            if (tabIndex == 0) {
+                //正常图层
+                if (_layerDragHelper == null) {
+                    _layerDragHelper =
+                        DragCallbackHelper.install(this, DragCallbackHelper.FLAG_VERTICAL).apply {
+                            enableLongPressDrag = false//长按拖拽关闭
+                            onClearView = { recyclerView, viewHolder ->
+                                if (_dragHappened) {
+                                    //发生过拖拽
+                                    val list = mutableListOf<BaseRenderer>()
+                                    _dslAdapter?.eachItem { index, dslAdapterItem ->
+                                        if (dslAdapterItem is CanvasLayerItem) {
+                                            dslAdapterItem.itemRenderer?.let {
+                                                list.add(0, it)
+                                            }
+                                        }
+                                    }
+                                    delegate.renderManager.arrangeSort(list, Strategy.normal)
+                                }
+                            }
+                        }
+                }
+                renderDslAdapter {
+                    hookUpdateDepend(this)
+                    val allElementRendererList =
+                        delegate.renderManager.getAllElementRendererList(false)
+                    allElementRendererList.forEach { renderer ->
+                        //后面添加的元素, 在顶部显示
+                        CanvasLayerItem()(0) {
+                            initItem(renderer)
+
+                            itemSortAction = {
+                                _layerDragHelper?.startDrag(it)
+                            }
+                        }
+                    }
+                    if (allElementRendererList.isEmpty()) {
+                        setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_EMPTY)
+                    } else {
+                        setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_NONE)
+                    }
+                }
+            } else if (tabIndex == 1) {
+                //雕刻图层
+                if (_layerDragHelper != null) {
+                    _layerDragHelper?.detachFromRecyclerView()
+                    _layerDragHelper = null
+                }
+                renderDslAdapter {
+                    EngraveTransitionManager.engraveLayerList.forEach {
+                        CanvasLayerNameItem()() {//雕刻图层
+                            itemGroupExtend = true
+                            itemChanging = true
+                            itemLayerInfo = it
+
+                            itemLoadSubList = {
+                                /*val itemList =
+                                    EngraveTransitionManager.getRendererList(canvasDelegate, it)
+                                        .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
+                                            CanvasBaseLayerItem().apply {//元素
+                                                initItem(renderer)
+                                                itemClick = {
+                                                    showItemRendererBounds()
+                                                    if (HawkEngraveKeys.enableItemEngraveParams) {
+                                                        //显示单元素雕刻参数
+                                                        engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                                                            engraveCanvasFragment,
+                                                            renderer
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                itemSubList.resetAll(itemList)*/
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        updateLayerControlLayout()
+    }
+
+    /**更新图层下面的几个控制按钮*/
+    fun updateLayerControlLayout() {
+        val vh = _rootViewHolder ?: return
+        val delegate = canvasRenderDelegate ?: return
+        val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
+        vh.visible(R.id.layer_control_layout, tabIndex == 0)
+        vh.visible(R.id.layer_control_line_view, tabIndex == 0)
+        if (tabIndex == 0) {
+            //control
+            val list = delegate.selectorManager.getSelectorRendererList(false)
+            vh.enable(R.id.layer_control_delete_view, list.isNotEmpty())
+            vh.enable(R.id.layer_control_visible_view, list.isNotEmpty())
+            vh.enable(R.id.layer_control_copy_view, list.isNotEmpty())
+
+            vh.click(R.id.layer_control_delete_view) {
+                delegate.renderManager.removeElementRenderer(list, Strategy.normal)
+            }
+            vh.click(R.id.layer_control_visible_view) {
+                delegate.renderManager.updateRendererVisible(list, false, Reason.user, delegate)
+            }
+            vh.click(R.id.layer_control_copy_view) {
+                LPRendererHelper.copyRenderer(delegate, list, true)
+            }
+        }
+    }
+
+    //endregion---Layer---
 
 }

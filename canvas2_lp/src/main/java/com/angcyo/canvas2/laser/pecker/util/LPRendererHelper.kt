@@ -16,10 +16,12 @@ import com.angcyo.canvas2.laser.pecker.generateName
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.http.base.*
 import com.angcyo.http.rx.doBack
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBase64Data
+import com.angcyo.library.utils.uuid
 import com.angcyo.library.utils.writeTo
 import java.io.File
 
@@ -29,6 +31,9 @@ import java.io.File
  * @since 2023/03/08
  */
 object LPRendererHelper {
+
+    @MM
+    const val POSITION_STEP = 5f
 
     /**解析对应的数据结构, 返回可以被渲染的元素*/
     fun parseElementBean(bean: LPElementBean): ILaserPeckerElement? = when (bean.mtype) {
@@ -48,10 +53,12 @@ object LPRendererHelper {
     }
 
     /**渲染元素列表
+     * [selected] 是否要选中渲染器
      * @return 返回渲染器集合*/
     fun renderElementList(
         delegate: CanvasRenderDelegate,
-        beanList: List<LPElementBean>
+        beanList: List<LPElementBean>,
+        selected: Boolean
     ): List<BaseRenderer> {
         val result = mutableListOf<BaseRenderer>()
 
@@ -97,7 +104,53 @@ object LPRendererHelper {
             }
         }
         delegate.renderManager.resetElementRenderer(result, Strategy.init)
+        if (selected) {
+            delegate.selectorManager.resetSelectorRenderer(result, Reason.user)
+        }
         return result
+    }
+
+    /**复制渲染器*/
+    fun copyRenderer(
+        delegate: CanvasRenderDelegate,
+        rendererList: List<BaseRenderer>,
+        offset: Boolean
+    ) {
+        //复制元素, 主要就是复制元素的数据
+        val elementBeanList = mutableListOf<LPElementBean>()
+        for (renderer in rendererList) {
+            elementBeanList.addAll(copyRenderer(renderer, null, offset))
+        }
+        renderElementList(delegate, elementBeanList, true)
+    }
+
+    private fun copyRenderer(
+        rootRenderer: BaseRenderer,
+        groupId: String?,
+        offset: Boolean
+    ): List<LPElementBean> {
+        val elementBeanList = mutableListOf<LPElementBean>()
+        if (rootRenderer is CanvasGroupRenderer) {
+            //分组, 则组内所有元素重新分配group id
+            val newGroupId: String = uuid()
+            for (renderer in rootRenderer.rendererList) {
+                elementBeanList.addAll(copyRenderer(renderer, newGroupId, offset))
+            }
+        } else {
+            rootRenderer.lpElement()?.apply {
+                updateBeanFromElement()
+                val newBean = elementBean.copy()
+                if (newBean.groupId != null) {
+                    newBean.groupId = groupId
+                }
+                if (offset) {
+                    newBean.left += POSITION_STEP
+                    newBean.top += POSITION_STEP
+                    newBean.index = null//清空索引
+                }
+            }
+        }
+        return elementBeanList
     }
 }
 
@@ -177,7 +230,7 @@ fun CanvasRenderDelegate.openProjectBean(
     }
     val result = projectBean?.data?.toElementBeanList()?.let { beanList ->
         beanList.generateName()
-        LPRendererHelper.renderElementList(this, beanList)
+        LPRendererHelper.renderElementList(this, beanList, false)
     } != null
     return result
 }
