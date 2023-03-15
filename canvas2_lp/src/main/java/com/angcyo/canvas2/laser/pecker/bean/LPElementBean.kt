@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.bean
 
 import android.graphics.Paint
 import android.widget.LinearLayout
+import com.angcyo.canvas2.laser.pecker.toTypeNameString
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.library.annotation.Implementation
@@ -115,7 +116,7 @@ data class LPElementBean(
     var paintStyle: Int = Paint.Style.FILL.toPaintStyleInt(),
 
     /**原始的数据, 如svg文件内容, gcode文件内容
-     * [CanvasConstant.DATA_TYPE_RAW] 真实数据的类型
+     * [LPConstant.DATA_TYPE_RAW] 真实数据的类型
      * [Charsets.ISO_8859_1]
      * */
     var data: String? = null,
@@ -326,7 +327,7 @@ data class LPElementBean(
     var dpi: Float? = null,
 
     /**
-     * [CanvasConstant.DATA_TYPE_RAW] 真实数据的雕刻类型, 发给机器的数据类型
+     * [LPConstant.DATA_TYPE_RAW] 真实数据的雕刻类型, 发给机器的数据类型
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
@@ -369,4 +370,22 @@ data class LPElementBean(
     var _debug: Boolean? = null
 
     //endregion ---私有属性---
-)
+) {
+
+    /**构建一个图层名*/
+    fun generateName(list: List<LPElementBean>) {
+        if (name == null) {
+            if (mtype >= 0) {
+                val typeName = mtype.toTypeNameString()
+                val typeCount = list.count { it.mtype == mtype }
+                name = "$typeName ${typeCount + 1}"
+
+                val nameCount = list.count { it.name == name }
+                if (nameCount > 0) {
+                    name = "${name}(${nameCount + 1})"
+                }
+            }
+        }
+    }
+
+}

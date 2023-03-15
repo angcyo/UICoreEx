@@ -4,13 +4,18 @@ import com.angcyo.canvas.render.core.*
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
+import com.angcyo.canvas.render.data.TouchSelectorInfo
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.canvas2.laser.pecker.util.saveProjectState
+import com.angcyo.dialog.popup.MenuPopupConfig
+import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.findItemByTag
@@ -144,12 +149,12 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     internal var _rootViewHolder: DslViewHolder? = null
 
-    private val canvasDelegate: CanvasRenderDelegate?
+    val canvasRenderDelegate: CanvasRenderDelegate?
         get() = _rootViewHolder?.canvasDelegate
 
     /**恢复界面渲染界面设置*/
     private fun restoreCanvasSetting() {
-        canvasDelegate?.axisManager?.apply {
+        canvasRenderDelegate?.axisManager?.apply {
             //绘制网格恢复
             enableRenderGrid = LPConstant.CANVAS_DRAW_GRID
             //单位恢复
@@ -188,8 +193,10 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     /**绑定事件*/
     private fun bindCanvasListener() {
-        _rootViewHolder?.canvasDelegate?.addCanvasRenderListener(object :
+        val renderDelegate = _rootViewHolder?.canvasDelegate
+        renderDelegate?.addCanvasRenderListener(object :
             BaseCanvasRenderListener() {
+
             override fun onRenderUndoChange(undoManager: CanvasUndoManager) {
                 updateUndoLayout()
             }
@@ -238,7 +245,52 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 renderer: BaseRenderer
             ) {
                 renderer.lpTextElement()?.let {
-                    AddTextItem.amendInputText(canvasDelegate, renderer)
+                    AddTextItem.amendInputText(canvasRenderDelegate, renderer)
+                }
+            }
+
+            override fun onSelectorRendererList(
+                selectorManager: CanvasSelectorManager,
+                selectorInfo: TouchSelectorInfo
+            ) {
+                canvasRenderDelegate?.view?.let { view ->
+                    view.recyclerPopupWindow {
+                        showOnViewBottom(view)
+                        renderAdapter {
+                            selectorInfo.touchRendererList.forEach { renderer ->
+                                CanvasLayerItem()() { //元素
+                                    initItem(renderer)
+                                    itemShowSeeView = false
+                                    itemShowLockView = false
+                                    itemShowEngraveParams = false
+                                    itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+                                    itemLongClick = null
+                                    itemClick = {
+                                        canvasRenderDelegate?.selectorManager?.resetSelectorRenderer(
+                                            listOf(renderer),
+                                            Reason.user
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onElementRendererListChange(
+                from: List<BaseRenderer>,
+                to: List<BaseRenderer>,
+                op: List<BaseRenderer>
+            ) {
+                if (!renderDelegate.asyncManager.hasAsyncTask()) {
+                    renderDelegate.saveProjectState()
+                }
+            }
+
+            override fun onAsyncStateChange(uuid: String, state: Int) {
+                if (!renderDelegate.asyncManager.hasAsyncTask()) {
+                    renderDelegate.saveProjectState()
                 }
             }
         })

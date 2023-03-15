@@ -25,7 +25,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     var codeBitmap: Bitmap? = null
 
     init {
-        updateBeanToBaseElement()
+        updateBeanToElement()
         updateOriginText(elementBean.text)
     }
 
@@ -36,18 +36,13 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             super.requestElementRenderDrawable(renderParams)
         } else {
             codeBitmap?.run {
-                createBitmapDrawable(
-                    this,
-                    textPaint,
-                    renderParams?.overrideWidth,
-                    renderParams?.overrideWidth
-                )
+                createBitmapDrawable(this, textPaint, renderParams?.overrideSize)
             }
         }
     }
 
-    override fun updateBeanToBaseElement() {
-        super.updateBeanToBaseElement()
+    override fun updateBeanToElement() {
+        super.updateBeanToElement()
         textProperty.text = elementBean.text
         textProperty.fontFamily = elementBean.fontFamily
         textProperty.orientation = elementBean.orientation
@@ -67,8 +62,8 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         updatePaint()
     }
 
-    override fun updateBeanFromBaseElement() {
-        super.updateBeanFromBaseElement()
+    override fun updateBeanFromElement() {
+        super.updateBeanFromElement()
         elementBean.text = textProperty.text
         elementBean.fontFamily = textProperty.fontFamily
         elementBean.orientation = textProperty.orientation

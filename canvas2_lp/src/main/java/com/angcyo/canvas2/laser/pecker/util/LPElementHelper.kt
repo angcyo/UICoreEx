@@ -31,10 +31,10 @@ object LPElementHelper {
         }
         UMEvent.CANVAS_IMAGE.umengEventValue()
 
-        delegate.renderManager.addRenderer(CanvasElementRenderer().apply {
+        delegate.renderManager.addElementRenderer(CanvasElementRenderer().apply {
             val renderer = this
             renderElement = LPBitmapElement(elementBean).apply {
-                updateOriginBitmap(delegate, renderer, bitmap)
+                updateOriginBitmapSrc(delegate, renderer, bitmap)
             }
         }, true, Strategy.normal)
     }
@@ -57,7 +57,7 @@ object LPElementHelper {
         }
         UMEvent.CANVAS_TEXT.umengEventValue()
 
-        delegate.renderManager.addRenderer(CanvasElementRenderer().apply {
+        delegate.renderManager.addElementRenderer(CanvasElementRenderer().apply {
             renderElement = LPTextElement(elementBean)
         }, true, Strategy.normal)
     }

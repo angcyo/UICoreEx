@@ -10,8 +10,8 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
-import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPBitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
@@ -94,7 +94,7 @@ object LPBitmapHandler {
         return OpenCV.bitmapToGCode(
             context,
             bitmap,
-            (bitmap.width).toMm().toDouble(),
+            bitmap.width.toMm().toDouble(),
             lineSpace = bean.gcodeLineSpace.toDouble(),
             direction = bean.gcodeDirection,
             angle = bean.gcodeAngle.toDouble(),
@@ -231,8 +231,6 @@ object LPBitmapHandler {
                             bean.gcodeOutline
                         )
                         bean.gcodeOutline = gcodeOutline
-                        bean.imageFilter = LPConstant.DATA_MODE_GCODE
-
                         operateBitmap.let { bitmap ->
                             LTime.tick()
                             val gcodeFile = toGCode(context, bitmap, bean)
@@ -244,13 +242,13 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
                             "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
+                            gCodeText.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
                             result
                         }
                     }) { pair ->
-                        bean.data = pair?.first
-                        pair?.first?.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
-                        element.updateOriginBitmap(
+                        element.updateOriginBitmapGCode(
                             pair?.second?.gCodePath?.run { listOf(this) },
+                            pair?.first,
                             false
                         )
                         renderer.requestUpdateDrawable(Reason.user.apply {
@@ -523,11 +521,7 @@ object LPBitmapHandler {
                 result?.let {
                     owner.engraveLoadingAsync({
                         //剪切完之后, 默认黑白处理
-
-                        bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
-                        element.renderBitmap = toBlackWhiteHandle(result, bean)
-                        element.updateOriginBitmap(result)
-
+                        element.updateOriginBitmapSrc(delegate, renderer, result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
                         result
                     }) {
@@ -604,9 +598,7 @@ object LPBitmapHandler {
                         "图片[${operateBitmap.byteCount.toSizeString()}]扭曲耗时:${LTime.time()}".writePerfLog()
 
                         result?.let {
-                            bean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
-                            element.renderBitmap = toBlackWhiteHandle(result, bean)
-                            element.updateOriginBitmap(result, false)
+                            element.updateOriginBitmapSrc(delegate, renderer, result, false)
                         }
                         addBitmapStateToStack(delegate, renderer, undoState)
 
