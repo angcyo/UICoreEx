@@ -87,25 +87,33 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
         itemHolder.click(R.id.layer_item_invisible_view) {
             //可见
             itemRenderer?.updateVisible(!it.isSelected, Reason.user, itemRenderDelegate)
+            updateAdapterItem()
         }
         itemHolder.click(R.id.layer_item_lock_view) {
             //锁定
             itemRenderer?.updateLock(!it.isSelected, Reason.user, itemRenderDelegate)
+            updateAdapterItem()
         }
 
         itemHolder.click(R.id.lib_check_view) {
-            itemIsSelected = !itemIsSelected
             itemRenderer?.let { renderer ->
-                if (itemIsSelected) {
-                    itemRenderDelegate?.selectorManager?.addSelectorRenderer(renderer, Reason.user)
-                } else {
-                    itemRenderDelegate?.selectorManager?.removeSelectorRenderer(
-                        renderer,
-                        Reason.user
-                    )
+                if (renderer.isVisible) {
+                    //可见状态下, 才允许选中
+                    itemIsSelected = !itemIsSelected
+                    if (itemIsSelected) {
+                        itemRenderDelegate?.selectorManager?.addSelectorRenderer(
+                            renderer,
+                            Reason.user
+                        )
+                    } else {
+                        itemRenderDelegate?.selectorManager?.removeSelectorRenderer(
+                            renderer,
+                            Reason.user
+                        )
+                    }
+                    updateAdapterItem()
                 }
             }
-            updateAdapterItem()
         }
     }
 
