@@ -19,6 +19,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.utils.writeTo
 import java.io.File
 
@@ -133,6 +134,12 @@ fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = render
     return LPProjectBean().apply {
         create_time = nowTime()
         update_time = nowTime()
+
+        val preview = preview(
+            overrideSize = HawkEngraveKeys.projectOutSize.toFloat(),
+            rendererList = renderList
+        )
+        preview_img = preview?.toBase64Data()
 
         data = jsonArray {
             renderList?.forEach { renderer ->
