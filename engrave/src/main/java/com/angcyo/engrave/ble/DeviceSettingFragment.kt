@@ -158,16 +158,17 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //雕刻方向
-            if (isL2 && productInfo?.version in 374..399) {
+            if (settingParser?.zFlag == 0 && isL2 && productInfo?.version in 374..399) {
+                //第三轴打开的情况下, 不允许调整雕刻方向
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_engrave_dir)
                     itemDes = _string(R.string.device_setting_engrave_dir_des)
                     initItem()
 
-                    itemSwitchChecked = settingParser?.printDir == 1
+                    itemSwitchChecked = settingParser.printDir == 1
                     itemSwitchChangedAction = {
-                        settingParser?.printDir = if (it) 1 else 0
-                        settingParser?.updateSetting()
+                        settingParser.printDir = if (it) 1 else 0
+                        settingParser.updateSetting()
                     }
                 }
             }
