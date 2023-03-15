@@ -39,7 +39,7 @@ import com.hingin.umeng.umengEventValue
 class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
 
     val canvasRenderDelegate: CanvasRenderDelegate?
-        get() = canvasLayoutHelper._rootViewHolder?.canvasDelegate
+        get() = canvasLayoutHelper._rootViewHolder?.renderDelegate
 
     val selectorManager: CanvasSelectorManager?
         get() = canvasRenderDelegate?.selectorManager

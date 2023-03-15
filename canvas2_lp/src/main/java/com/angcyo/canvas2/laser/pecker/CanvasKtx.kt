@@ -34,7 +34,7 @@ val DslViewHolder.canvasView: CanvasRenderView?
     get() = v(R.id.canvas_view)
 
 /**画板核心操作代理类*/
-val DslViewHolder.canvasDelegate: CanvasRenderDelegate?
+val DslViewHolder.renderDelegate: CanvasRenderDelegate?
     get() = canvasView?.delegate
 
 //---

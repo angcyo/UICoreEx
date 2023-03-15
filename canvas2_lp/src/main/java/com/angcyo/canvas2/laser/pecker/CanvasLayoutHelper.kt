@@ -150,7 +150,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     internal var _rootViewHolder: DslViewHolder? = null
 
     val canvasRenderDelegate: CanvasRenderDelegate?
-        get() = _rootViewHolder?.canvasDelegate
+        get() = _rootViewHolder?.renderDelegate
 
     /**恢复界面渲染界面设置*/
     private fun restoreCanvasSetting() {
@@ -180,7 +180,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     /**初始化*/
     private fun ICanvasRendererItem.initItem(renderer: BaseRenderer? = null) {
         itemRenderer = renderer
-        itemRenderDelegate = _rootViewHolder?.canvasDelegate
+        itemRenderDelegate = _rootViewHolder?.renderDelegate
     }
 
     /**素材item, 暴露给外部配置*/
@@ -193,7 +193,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     /**绑定事件*/
     private fun bindCanvasListener() {
-        val renderDelegate = _rootViewHolder?.canvasDelegate
+        val renderDelegate = _rootViewHolder?.renderDelegate
         renderDelegate?.addCanvasRenderListener(object :
             BaseCanvasRenderListener() {
 
@@ -301,7 +301,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     //<editor-fold desc="Undo">
 
     val undoManager: CanvasUndoManager?
-        get() = _rootViewHolder?.canvasDelegate?.undoManager
+        get() = _rootViewHolder?.renderDelegate?.undoManager
 
     /**撤销item*/
     private var _undoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
