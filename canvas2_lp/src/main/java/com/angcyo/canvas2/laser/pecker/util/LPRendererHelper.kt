@@ -47,6 +47,7 @@ object LPRendererHelper {
     fun parseElementRenderer(bean: LPElementBean): CanvasElementRenderer? {
         return parseElementBean(bean)?.run {
             val renderer = CanvasElementRenderer()
+            updateBeanToElement(renderer)
             renderer.renderElement = this
             renderer
         }
@@ -146,7 +147,7 @@ object LPRendererHelper {
             }
         } else {
             rootRenderer.lpElement()?.apply {
-                updateBeanFromElement()
+                updateBeanFromElement(rootRenderer)
                 val newBean = elementBean.copy()
                 if (newBean.groupId != null) {
                     newBean.groupId = groupId
@@ -221,7 +222,7 @@ fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = render
                 list.forEach { sub ->
                     try {
                         sub.lpElement()?.let { element ->
-                            element.updateBeanFromElement()
+                            element.updateBeanFromElement(sub)
                             add(element.elementBean.toJson().json())
                         }
                     } catch (e: Exception) {

@@ -1,8 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.element.BaseElement
 import com.angcyo.canvas.render.element.IElement
+import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.unit.toMm
@@ -28,7 +30,7 @@ interface ILaserPeckerElement : IElement {
     }
 
     /**将[elementBean] 数据更新到 [CanvasRenderProperty]*/
-    fun updateBeanToElement() {
+    fun updateBeanToElement(renderer: BaseRenderer) {
         if (this is BaseElement) {
             renderProperty.anchorX = elementBean.left.toPixel()
             renderProperty.anchorY = elementBean.top.toPixel()
@@ -42,11 +44,14 @@ interface ILaserPeckerElement : IElement {
             renderProperty.skewY = elementBean.skewY ?: renderProperty.skewY
             renderProperty.flipX = elementBean.flipX ?: renderProperty.flipX
             renderProperty.flipY = elementBean.flipY ?: renderProperty.flipY
+
+            renderer.updateVisible(elementBean.isVisible, Reason.init, null)
+            renderer.updateLock(elementBean.isLock, Reason.init, null)
         }
     }
 
     /**将[CanvasRenderProperty] 数据同步到 [elementBean]*/
-    fun updateBeanFromElement() {
+    fun updateBeanFromElement(renderer: BaseRenderer) {
         if (this is BaseElement) {
             elementBean.left = renderProperty.anchorX.toMm()
             elementBean.top = renderProperty.anchorY.toMm()
@@ -60,6 +65,9 @@ interface ILaserPeckerElement : IElement {
             elementBean.skewY = renderProperty.skewY
             elementBean.flipX = renderProperty.flipX
             elementBean.flipY = renderProperty.flipY
+
+            elementBean.isLock = renderer.isLock
+            elementBean.isVisible = renderer.isVisible
         }
     }
 

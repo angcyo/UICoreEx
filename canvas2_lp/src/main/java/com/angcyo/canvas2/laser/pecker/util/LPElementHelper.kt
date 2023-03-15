@@ -103,12 +103,12 @@ object LPElementHelper {
         assignLocation(elementBean)
         UMEvent.CANVAS_IMAGE.umengEventValue()
 
-        delegate.renderManager.addElementRenderer(CanvasElementRenderer().apply {
-            val renderer = this
-            renderElement = LPBitmapElement(elementBean).apply {
-                updateOriginBitmapSrc(delegate, renderer, bitmap)
-            }
-        }, true, Reason.user, Strategy.normal)
+        val renderer = CanvasElementRenderer()
+        renderer.renderElement = LPBitmapElement(elementBean).apply {
+            updateBeanToElement(renderer)
+            updateOriginBitmapSrc(delegate, renderer, bitmap)
+        }
+        delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }
 
@@ -131,9 +131,11 @@ object LPElementHelper {
         assignLocation(elementBean)
         UMEvent.CANVAS_TEXT.umengEventValue()
 
-        delegate.renderManager.addElementRenderer(CanvasElementRenderer().apply {
-            renderElement = LPTextElement(elementBean)
-        }, true, Reason.user, Strategy.normal)
+        val renderer = CanvasElementRenderer()
+        renderer.renderElement = LPTextElement(elementBean).apply {
+            updateBeanToElement(renderer)
+        }
+        delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }
 

@@ -24,11 +24,6 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     /**条码/二维码图片*/
     var codeBitmap: Bitmap? = null
 
-    init {
-        updateBeanToElement()
-        updateOriginText(elementBean.text)
-    }
-
     override fun createStateStack(renderer: BaseRenderer): IStateStack = LPTextStateStack(renderer)
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
@@ -41,8 +36,8 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         }
     }
 
-    override fun updateBeanToElement() {
-        super.updateBeanToElement()
+    override fun updateBeanToElement(renderer: BaseRenderer) {
+        super.updateBeanToElement(renderer)
         textProperty.text = elementBean.text
         textProperty.fontFamily = elementBean.fontFamily
         textProperty.orientation = elementBean.orientation
@@ -60,10 +55,11 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         textProperty.paintStyle = elementBean.paintStyle.toPaintStyle()
 
         updatePaint()
+        updateOriginText(elementBean.text)
     }
 
-    override fun updateBeanFromElement() {
-        super.updateBeanFromElement()
+    override fun updateBeanFromElement(renderer: BaseRenderer) {
+        super.updateBeanFromElement(renderer)
         elementBean.text = textProperty.text
         elementBean.fontFamily = textProperty.fontFamily
         elementBean.orientation = textProperty.orientation

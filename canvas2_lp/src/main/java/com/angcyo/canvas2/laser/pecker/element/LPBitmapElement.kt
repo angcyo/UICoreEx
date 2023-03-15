@@ -36,12 +36,8 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     /**图片转成的[Path]数据, 原始数据*/
     var pathList: List<Path>? = null
 
-    init {
-        updateBeanToElement()
-    }
-
-    override fun updateBeanToElement() {
-        super.updateBeanToElement()
+    override fun updateBeanToElement(renderer: BaseRenderer) {
+        super.updateBeanToElement(renderer)
         if (originBitmap == null) {
             originBitmap = elementBean.imageOriginal?.toBitmapOfBase64()?.apply {
                 updateBeanWidthHeight(width.toFloat(), height.toFloat())
@@ -121,8 +117,8 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         }
     }
 
-    override fun updateBeanFromElement() {
-        super.updateBeanFromElement()
+    override fun updateBeanFromElement(renderer: BaseRenderer) {
+        super.updateBeanFromElement(renderer)
     }
 
     override fun createStateStack(renderer: BaseRenderer): IStateStack =
