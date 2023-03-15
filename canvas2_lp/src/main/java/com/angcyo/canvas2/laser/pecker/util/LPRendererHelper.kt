@@ -58,12 +58,23 @@ object LPRendererHelper {
     fun renderElementList(
         delegate: CanvasRenderDelegate,
         beanList: List<LPElementBean>,
-        selected: Boolean
+        selected: Boolean,
+        strategy: Strategy
     ): List<BaseRenderer> {
         val result = mutableListOf<BaseRenderer>()
 
         //组内子元素
         val jumpList = mutableListOf<LPElementBean>()
+
+        //分配名称
+        val allElementBeanList = mutableListOf<LPElementBean>()
+        for (element in delegate.renderManager.getAllElementList()) {
+            if (element is ILaserPeckerElement) {
+                allElementBeanList.add(element.elementBean)
+            }
+        }
+        allElementBeanList.addAll(beanList)
+        allElementBeanList.generateName()//end
 
         for ((index, bean) in beanList.withIndex()) {
             if (jumpList.contains(bean)) {
@@ -103,10 +114,7 @@ object LPRendererHelper {
                 }
             }
         }
-        delegate.renderManager.resetElementRenderer(result, Strategy.init)
-        if (selected) {
-            delegate.selectorManager.resetSelectorRenderer(result, Reason.user)
-        }
+        delegate.renderManager.addElementRenderer(result, selected, Reason.user, strategy)
         return result
     }
 
@@ -121,7 +129,7 @@ object LPRendererHelper {
         for (renderer in rendererList) {
             elementBeanList.addAll(copyRenderer(renderer, null, offset))
         }
-        renderElementList(delegate, elementBeanList, true)
+        renderElementList(delegate, elementBeanList, true, Strategy.normal)
     }
 
     private fun copyRenderer(
@@ -148,10 +156,24 @@ object LPRendererHelper {
                     newBean.top += POSITION_STEP
                     newBean.index = null//清空索引
                 }
+                elementBeanList.add(newBean)
             }
         }
         return elementBeanList
     }
+
+    /**分配一个元素名称*/
+    fun generateName(delegate: CanvasRenderDelegate) {
+        //分配名称
+        val allElementBeanList = mutableListOf<LPElementBean>()
+        for (element in delegate.renderManager.getAllElementList()) {
+            if (element is ILaserPeckerElement) {
+                allElementBeanList.add(element.elementBean)
+            }
+        }
+        allElementBeanList.generateName()//end
+    }
+
 }
 
 //region---Bean---
@@ -183,7 +205,6 @@ fun deleteProjectFile(name: String = ".temp"): Boolean {
 
 /**获取工程结构[LPProjectBean]*/
 fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = renderManager.elementRendererList): LPProjectBean {
-    HawkEngraveKeys.projectOutSize
     return LPProjectBean().apply {
         create_time = nowTime()
         update_time = nowTime()
@@ -230,7 +251,7 @@ fun CanvasRenderDelegate.openProjectBean(
     }
     val result = projectBean?.data?.toElementBeanList()?.let { beanList ->
         beanList.generateName()
-        LPRendererHelper.renderElementList(this, beanList, false)
+        LPRendererHelper.renderElementList(this, beanList, false, Strategy.init)
     } != null
     return result
 }

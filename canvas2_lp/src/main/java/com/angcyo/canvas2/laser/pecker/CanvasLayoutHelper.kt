@@ -199,6 +199,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 to: List<BaseRenderer>
             ) {
                 canvasControlHelper.bindControlLayout()
+                renderLayerListLayout()
             }
 
             override fun onRendererFlagsChange(
@@ -216,6 +217,11 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 if (reason.controlType.have(BaseControlPoint.CONTROL_TYPE_DATA)) {
                     //数据改变, 比如切换了图片算法/填充/描边等
                     canvasControlHelper.updateControlLayout()
+                }
+                if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
+                    reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)
+                ) {
+                    renderLayerListLayout()
                 }
             }
 
@@ -278,6 +284,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 if (!renderDelegate.asyncManager.hasAsyncTask()) {
                     renderDelegate.saveProjectState()
                 }
+                renderLayerListLayout()
             }
 
             override fun onAsyncStateChange(uuid: String, state: Int) {
@@ -356,6 +363,11 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     fun renderLayerListLayout() {
         val vh = _rootViewHolder ?: return
         val delegate = canvasRenderDelegate ?: return
+
+        if (!vh.isVisible(R.id.canvas_layer_layout)) {
+            return
+        }
+
         _layerTabLayout = vh.v(R.id.layer_tab_view)
         _layerTabLayout?.configTabLayoutConfig {
             onSelectIndexChange = { fromIndex, selectIndexList, reselect, fromUser ->

@@ -7,6 +7,8 @@ import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.unit.toPixel
 
 /**
  * 数据元素存储的结构
@@ -372,20 +374,77 @@ data class LPElementBean(
     //endregion ---私有属性---
 ) {
 
+    /**原始的宽高, 毫米*/
+    @MM
+    val _width: Float
+        get() = width ?: 0f
+
+    @MM
+    val _height: Float
+        get() = height ?: 0f
+
+    /**缩放后的宽高, 像素*/
+    @Pixel
+    val _widthScalePixel: Float
+        get() = _width.toPixel() * _scaleX
+
+    @Pixel
+    val _heightScalePixel: Float
+        get() = _height.toPixel() * _scaleY
+
+    //---
+
+    val _scaleX: Float
+        get() = scaleX ?: 1f
+
+    val _scaleY: Float
+        get() = scaleY ?: 1f
+
+    //---
+
+    val _flipX: Boolean
+        get() = flipX ?: false
+
+    val _flipY: Boolean
+        get() = flipY ?: false
+
+    //翻转其实就是反向缩放
+    val _flipScaleX: Float
+        get() = if (_flipX) -1f else 1f
+
+    val _flipScaleY: Float
+        get() = if (_flipY) -1f else 1f
+
+    //---
+
+    /**倾斜, 角度*/
+    val _skewX: Float
+        get() = skewX ?: 0f
+
+    val _skewY: Float
+        get() = skewY ?: 0f
+
     /**构建一个图层名*/
     fun generateName(list: List<LPElementBean>) {
         if (name == null) {
             if (mtype >= 0) {
                 val typeName = mtype.toTypeNameString()
-                val typeCount = list.count { it.mtype == mtype }
-                name = "$typeName ${typeCount + 1}"
-
-                val nameCount = list.count { it.name == name }
-                if (nameCount > 0) {
-                    name = "${name}(${nameCount + 1})"
-                }
+                generateName(list, typeName)
             }
         }
     }
 
+    /**分配一个新的名字
+     * [newName] 新的名字*/
+    fun generateName(list: List<LPElementBean>, newName: String) {
+        val find = list.find { it != this && it.name == newName }
+        if (find == null) {
+            //未重名
+            name = newName
+        } else {
+            //重名了
+            val typeCount = list.count { it != this && it.mtype == mtype }
+            generateName(list, "$newName($typeCount)")
+        }
+    }
 }
