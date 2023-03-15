@@ -43,6 +43,29 @@ class BluetoothSearchHelper {
 
         /**联系客服*/
         var ON_CONTACT_ME_ACTION: Action? = null
+
+        /**指定的蓝牙名称, 是否是LP设备*/
+        fun isLpBluetoothDevice(deviceName: String?): Boolean {
+            deviceName ?: return false
+            val name = deviceName.lowercase()
+            if (name.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX} ".lowercase())) {
+                //LaserPecker BXX 这种情况
+                return false
+            }
+            if (name.startsWith(LaserPeckerHelper.PRODUCT_PREFIX.lowercase())) {
+                //LaserPeckerXXX 这种情况
+                return true
+            }
+            if (name.startsWith("lp".lowercase())) {
+                //LPXXX 这种情况
+                return true
+            }
+            if (name.startsWith("lx".lowercase())) {
+                //LXXXX 这种情况
+                return true
+            }
+            return false
+        }
     }
 
     /**连接成功后, 是否关闭界面*/
@@ -117,11 +140,7 @@ class BluetoothSearchHelper {
 
                             //过滤
                             if (find == null) {
-                                val name = device.name?.lowercase() ?: ""
-                                if (name.isNotBlank() &&
-                                    name.startsWith(LaserPeckerHelper.PRODUCT_PREFIX.lowercase()) &&
-                                    !name.startsWith("${LaserPeckerHelper.PRODUCT_PREFIX} ".lowercase()) //LaserPecker Bxx 这种情况
-                                ) {
+                                if (isLpBluetoothDevice(device.name)) {
                                     //添加新的item
                                     renderBluetoothConnectItem(device)
 
