@@ -3,18 +3,18 @@ package com.angcyo.canvas2.laser.pecker.util
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.RectF
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
+import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.unit.toMm
 
 /**
@@ -23,10 +23,6 @@ import com.angcyo.library.unit.toMm
  * @since 2023/03/06
  */
 object LPElementHelper {
-
-    /**如果配置了此属性, 则分配位置的时候, 会在此矩形的中心*/
-    @Pixel
-    var assignLocationBounds: RectF? = null
 
     /**最小位置分配, 应该为设备最佳预览范围的左上角
      * [com.angcyo.engrave.model.FscDeviceModel.initDevice]*/
@@ -73,7 +69,7 @@ object LPElementHelper {
         _lastLeft += POSITION_STEP
         _lastTop += POSITION_STEP
 
-        val bounds = assignLocationBounds
+        val bounds = FscDeviceModel.productAssignLocationBounds
         if (bounds == null) {
             bean.left = _minLeft + _lastLeft
             bean.top = _minTop + _lastTop
@@ -97,23 +93,60 @@ object LPElementHelper {
                 bean.gcodeFillStep > 0
     }
 
-    /**添加一个图片元素到画板
-     * [LPConstant.DATA_TYPE_BITMAP]*/
-    fun addBitmapElement(delegate: CanvasRenderDelegate?, bitmap: Bitmap?) {
-        delegate ?: return
-        bitmap ?: return
+    /**栅格化渲染器
+     * [renderer] 需要被栅格化的渲染器*/
+    fun rasterizeRenderer(renderer: BaseRenderer?, delegate: CanvasRenderDelegate?) {
+        val bitmap = renderer?.requestRenderBitmap(null) ?: return
+        val newRenderer = createBitmapRenderer(bitmap, delegate, false) {
+            //保持位置不变
+            renderer.renderProperty?.getRenderBounds()?.let { bounds ->
+                left = bounds.left.toMm()
+                top = bounds.top.toMm()
+            }
+        }
+
+        delegate?.renderManager?.replaceElementRenderer(
+            renderer,
+            listOf(newRenderer),
+            true,
+            Reason.user,
+            Strategy.normal
+        )
+    }
+
+    /**创建一个图片渲染器*/
+    private fun createBitmapRenderer(
+        bitmap: Bitmap,
+        delegate: CanvasRenderDelegate?,
+        assignLocation: Boolean,
+        init: LPElementBean.() -> Unit = {}
+    ): CanvasElementRenderer {
         val elementBean = LPElementBean().apply {
             mtype = LPConstant.DATA_TYPE_BITMAP
             imageFilter = LPConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
-        assignLocation(elementBean)
+
+        if (assignLocation) {
+            assignLocation(elementBean)//分配位置
+        }
+
+        elementBean.init()//init
 
         val renderer = CanvasElementRenderer()
         renderer.renderElement = LPBitmapElement(elementBean).apply {
             updateBeanToElement(renderer)
             updateOriginBitmapSrc(delegate, renderer, bitmap)
         }
+        return renderer
+    }
+
+    /**添加一个图片元素到画板
+     * [LPConstant.DATA_TYPE_BITMAP]*/
+    fun addBitmapElement(delegate: CanvasRenderDelegate?, bitmap: Bitmap?) {
+        delegate ?: return
+        bitmap ?: return
+        val renderer = createBitmapRenderer(bitmap, delegate, true)
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }

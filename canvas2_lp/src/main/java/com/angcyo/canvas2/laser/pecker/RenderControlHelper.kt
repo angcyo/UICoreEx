@@ -396,16 +396,18 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
         //栅格化
         if (HawkEngraveKeys.enableRasterize) {
             CanvasIconItem()() {
+                initItem(renderer)
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
                 itemClick = {
-                    //renderer.dataItem?.itemRasterize(renderer)
+                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                 }
             }
         }
         //曲线
         if (isDebugType()) {
             CanvasIconItem()() {
+                initItem(renderer)
                 itemIco = R.drawable.canvas_text_curve_ico
                 itemText = _string(R.string.canvas_curve)
             }
@@ -429,6 +431,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
         //紧凑
         if (isDebugType()) {
             CanvasIconItem()() {
+                initItem(renderer)
                 itemText = "紧凑"
                 itemIco = R.drawable.canvas_text_style
                 itemIsSelected =
@@ -530,7 +533,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
                     drawCanvasRight()
                 }
                 itemClick = {
-                    //renderer.dataItem?.itemRasterize(renderer)
+                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                 }
                 afterItemCount--
             }
