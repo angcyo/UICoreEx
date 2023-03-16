@@ -1,16 +1,21 @@
 package com.angcyo.acc2.app
 
 import android.os.Bundle
+import android.view.MotionEvent
 import com.angcyo.acc2.app.component.AccWindow
 import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.Message
 import com.angcyo.acc2.app.http.bean.MessageBean
 import com.angcyo.acc2.app.model.AdaptiveModel
 import com.angcyo.acc2.app.model.GiteeModel
+import com.angcyo.acc2.app.ui.AccTaskTestFragment
+import com.angcyo.base.dslFHelper
 import com.angcyo.core.activity.BaseCoreAppCompatActivity
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.normalIosDialog
 import com.angcyo.download.version.versionUpdate
+import com.angcyo.library.component.MultiFingeredHelper
+import com.angcyo.library.ex.isDebug
 import com.angcyo.viewmodel.observe
 
 /**
@@ -82,5 +87,21 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AccWindow.hide()
+    }
+
+    /**4指捏合, 进入任务测试界面*/
+    val pinchGestureDetector = MultiFingeredHelper.PinchGestureDetector().apply {
+        onPinchAction = {
+            dslFHelper {
+                show(AccTaskTestFragment::class.java)
+            }
+        }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (isDebug()) {
+            pinchGestureDetector.onTouchEvent(ev)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }
