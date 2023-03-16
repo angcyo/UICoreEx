@@ -1,9 +1,18 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
+import android.graphics.drawable.BitmapDrawable
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMaterialWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.toBitmap
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
+import com.pixplicity.sharp.SharpDrawable
 
 /**
  * 添加素材
@@ -19,7 +28,7 @@ class AddMaterialItem : CanvasIconItem() {
 
         itemClick = {
             updateItemSelected(!itemIsSelected)
-            /*engraveCanvasFragment.fragment.context.canvasMaterialWindow(it) {
+            it.context.canvasMaterialWindow(it) {
                 onDismiss = {
                     updateItemSelected(false)
                     false
@@ -27,21 +36,35 @@ class AddMaterialItem : CanvasIconItem() {
                 onDrawableAction = { data, drawable ->
                     when (drawable) {
                         //bitmap
-                        is BitmapDrawable -> itemCanvasDelegate?.addBlackWhiteBitmapRender(
+                        is BitmapDrawable -> LPElementHelper.addBitmapElement(
+                            itemRenderDelegate,
                             drawable.bitmap
                         )
                         //gcode
-                        is GCodeDrawable -> itemCanvasDelegate?.addGCodeRender(data as String)
+                        is GCodeDrawable -> LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPConstant.DATA_TYPE_GCODE,
+                            data as String,
+                            drawable.gCodePath.run { listOf(this) }
+                        )
                         //svg
-                        is SharpDrawable -> itemCanvasDelegate?.addSvgRender(data as String)
+                        is SharpDrawable -> LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPConstant.DATA_TYPE_SVG,
+                            data as String,
+                            drawable.pathList
+                        )
                         //other
                         else -> {
-                            itemCanvasDelegate?.addBlackWhiteBitmapRender(drawable.toBitmap())
+                            LPElementHelper.addBitmapElement(
+                                itemRenderDelegate,
+                                drawable.toBitmap()
+                            )
                         }
                     }
                     UMEvent.CANVAS_MATERIAL.umengEventValue()
                 }
-            }*/
+            }
         }
     }
 }

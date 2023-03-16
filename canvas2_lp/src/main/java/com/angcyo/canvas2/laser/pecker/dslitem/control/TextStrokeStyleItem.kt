@@ -39,7 +39,7 @@ class TextStrokeStyleItem : BaseTextControlItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        itemIsSelected = itemRenderer?.textElement?.textPaint?.style == itemStyle
+        itemIsSelected = itemRenderer?.textElement?.paint?.style == itemStyle
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 

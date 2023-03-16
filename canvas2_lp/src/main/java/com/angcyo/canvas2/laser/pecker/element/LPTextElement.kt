@@ -7,7 +7,6 @@ import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.bean.LPTextStateStack
 import com.angcyo.canvas2.laser.pecker.util.*
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
@@ -31,7 +30,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             super.requestElementRenderDrawable(renderParams)
         } else {
             codeBitmap?.run {
-                createBitmapDrawable(this, textPaint, renderParams?.overrideSize)
+                createBitmapDrawable(this, paint, renderParams?.overrideSize)
             }
         }
     }

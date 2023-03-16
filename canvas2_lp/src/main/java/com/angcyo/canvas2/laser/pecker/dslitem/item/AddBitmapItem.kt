@@ -13,6 +13,8 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.library.utils.isSvgContent
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 添加图片, 支持svg/gcode/等支持的文件格式
@@ -64,6 +66,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                                 itemRenderDelegate,
                                 filePath.toBitmap()
                             )
+                            UMEvent.CANVAS_IMAGE.umengEventValue()
                         } else {
                             toastQQ(_string(R.string.not_support))
                         }

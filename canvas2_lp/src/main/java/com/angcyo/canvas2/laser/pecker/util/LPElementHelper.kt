@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.util
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
@@ -9,13 +10,12 @@ import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
+import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.unit.toMm
-import com.hingin.umeng.UMEvent
-import com.hingin.umeng.umengEventValue
 
 /**
  * 元素助手
@@ -101,7 +101,6 @@ object LPElementHelper {
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
         assignLocation(elementBean)
-        UMEvent.CANVAS_IMAGE.umengEventValue()
 
         val renderer = CanvasElementRenderer()
         renderer.renderElement = LPBitmapElement(elementBean).apply {
@@ -129,10 +128,39 @@ object LPElementHelper {
             paintStyle = Paint.Style.FILL.toPaintStyleInt()
         }
         assignLocation(elementBean)
-        UMEvent.CANVAS_TEXT.umengEventValue()
 
         val renderer = CanvasElementRenderer()
         renderer.renderElement = LPTextElement(elementBean).apply {
+            updateBeanToElement(renderer)
+        }
+        delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
+        LPRendererHelper.generateName(delegate)
+    }
+
+    /**添加一个路径元素到画板
+     * [LPConstant.DATA_TYPE_GCODE]
+     * [LPConstant.DATA_TYPE_SVG]
+     * [LPConstant.DATA_TYPE_PATH]
+     *
+     * [data] 原始数据
+     * */
+    fun addPathElement(
+        delegate: CanvasRenderDelegate?,
+        type: Int,
+        data: String?,
+        pathList: List<Path>?
+    ) {
+        delegate ?: return
+        val elementBean = LPElementBean().apply {
+            mtype = type
+            this.data = data
+            paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+        }
+        assignLocation(elementBean)
+
+        val renderer = CanvasElementRenderer()
+        renderer.renderElement = LPPathElement(elementBean).apply {
+            this.pathList = pathList
             updateBeanToElement(renderer)
         }
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)

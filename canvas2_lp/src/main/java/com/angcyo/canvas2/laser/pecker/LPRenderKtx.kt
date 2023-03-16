@@ -2,6 +2,8 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -13,9 +15,11 @@ import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.library.app
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex.colorChannel
+import com.angcyo.library.ex.readAssets
 import com.angcyo.svg.Svg
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.createPaint
@@ -73,6 +77,25 @@ fun DslAdapterItem.drawCanvasRight(
 }
 
 //---
+
+/**只读取[SVG]中的[Path]数据
+ * [com.angcyo.svg.StylePath]
+ * [com.pixplicity.sharp.SharpDrawable.pathList]*/
+fun loadAssetsSvgPath(
+    assetsName: String,
+    color: Int = Color.BLACK, // Color.BLACK 黑色边
+    drawStyle: Paint.Style? = null, //Paint.Style.STROKE //描边
+    viewWidth: Int = 0,
+    viewHeight: Int = 0,
+): Pair<String?, SharpDrawable?>? {
+    val svg = app().readAssets(assetsName)
+    return try {
+        svg to Svg.loadSvgPathDrawable(svg!!, color, drawStyle, null, viewWidth, viewHeight)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
 
 /**扩展*/
 fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =

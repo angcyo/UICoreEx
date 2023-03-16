@@ -32,7 +32,7 @@ class TextTypefaceSelectItem : CanvasIconItem() {
         itemHolder.tv(R.id.typeface_view)?.apply {
             val renderElement = itemRenderer?.renderElement
             if (renderElement is TextElement) {
-                typeface = renderElement.textPaint.typeface
+                typeface = renderElement.paint.typeface
             }
         }
     }

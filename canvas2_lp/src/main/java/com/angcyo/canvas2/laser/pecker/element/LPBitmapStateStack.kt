@@ -1,11 +1,11 @@
-package com.angcyo.canvas2.laser.pecker.bean
+package com.angcyo.canvas2.laser.pecker.element
 
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.BitmapStateStack
-import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
+import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 

@@ -10,6 +10,8 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 添加文本/二维码/条码
@@ -49,6 +51,7 @@ class AddTextItem : CanvasIconItem(), IFragmentItem {
             itemFragment?.context?.addTextDialog {
                 onAddTextAction = { inputText, type ->
                     LPElementHelper.addTextElement(itemRenderDelegate, inputText, type)
+                    UMEvent.CANVAS_TEXT.umengEventValue()
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -8,8 +9,7 @@ import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.canvas.render.util.CanvasRenderHelper
-import com.angcyo.canvas2.laser.pecker.bean.LPBitmapStateStack
+import com.angcyo.canvas.render.util.RenderHelper
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.canvas2.laser.pecker.util.CanvasDataHandleOperate
@@ -126,6 +126,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+            paint.style = Paint.Style.STROKE
             return createPathDrawable(pathList, paint, renderParams?.overrideSize)
         }
         return super.requestElementRenderDrawable(renderParams)
@@ -140,7 +141,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         elementBean.imageFilter = LPConstant.DATA_MODE_GCODE
         elementBean.data = gcode
         this.pathList = pathList
-        val bounds = CanvasRenderHelper.computePathBounds(pathList)
+        val bounds = RenderHelper.computePathBounds(pathList)
         updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 

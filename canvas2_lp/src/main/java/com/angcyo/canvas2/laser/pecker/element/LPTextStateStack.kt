@@ -1,4 +1,4 @@
-package com.angcyo.canvas2.laser.pecker.bean
+package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import com.angcyo.canvas.render.core.CanvasRenderDelegate

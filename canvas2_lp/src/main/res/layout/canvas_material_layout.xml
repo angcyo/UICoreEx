@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.recycler.DslRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lib_recycler_view"
+    style="@style/LibRecyclerViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:r_layout_manager="GV4"
+    app:r_layout_width="0.75sw">
+
+</com.angcyo.widget.recycler.DslRecyclerView>

@@ -12,7 +12,7 @@ import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.canvas2.laser.pecker.bean.LPBitmapStateStack
+import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
