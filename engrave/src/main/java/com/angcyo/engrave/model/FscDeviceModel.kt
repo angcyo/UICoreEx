@@ -1,6 +1,7 @@
 package com.angcyo.engrave.model
 
 import android.app.Activity
+import android.graphics.RectF
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
@@ -19,6 +20,7 @@ import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
@@ -55,6 +57,10 @@ class FscDeviceModel : LifecycleViewModel() {
 
         /**临时禁用自动连接到这个时间点, 13位毫秒*/
         var disableAutoConnectToTime = 0L
+
+        /**如果配置了此属性, 则分配位置的时候, 会在此矩形的中心*/
+        @Pixel
+        var productAssignLocationBounds: RectF? = null
     }
 
     val bleApiModel = vmApp<FscBleApiModel>()
@@ -81,6 +87,7 @@ class FscDeviceModel : LifecycleViewModel() {
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
                     //蓝牙断开
                     GraphicsHelper.assignLocationBounds = null
+                    productAssignLocationBounds = null
 
                     if (deviceConnectState.connectTime > 0 &&
                         deviceConnectState.connectedTime > 0 &&
@@ -174,12 +181,14 @@ class FscDeviceModel : LifecycleViewModel() {
             if (it == null) {
                 GraphicsHelper.restoreLocation()
                 GraphicsHelper.assignLocationBounds = null
+                productAssignLocationBounds = null
             }
             it?.let { product ->
                 //
                 GraphicsHelper._minLeft = product.previewBounds.left.toMm()
                 GraphicsHelper._minTop = product.previewBounds.top.toMm()
                 GraphicsHelper.assignLocationBounds = product.previewBounds
+                productAssignLocationBounds = product.previewBounds
                 /*vmApp<EngraveModel>().engraveOptionInfoData.value?.let { option ->
                     if (product.laserTypeList.isNotEmpty() && !product.laserTypeList.contains(option.type)) {
                         //当前设备不支持选中的激光类型, 则调整一下
