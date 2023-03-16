@@ -117,8 +117,7 @@ object LPBitmapHandler {
             LPBitmapStateStack().apply { saveState(renderer) },
             false,
             Reason.user.apply {
-                controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY or
-                        BaseControlPoint.CONTROL_TYPE_DATA
+                controlType = BaseControlPoint.CONTROL_TYPE_DATA
             },
             Strategy.normal
         )
@@ -244,20 +243,21 @@ object LPBitmapHandler {
                             val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
                             "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
                             gCodeText.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+
+                            element.updateOriginBitmapGCode(
+                                result.second?.gCodePath?.run { listOf(this) },
+                                result.first,
+                                false
+                            )
+                            //stack
+                            addBitmapStateToStack(delegate, renderer, undoState)
+
                             result
                         }
-                    }) { pair ->
-                        element.updateOriginBitmapGCode(
-                            pair?.second?.gCodePath?.run { listOf(this) },
-                            pair?.first,
-                            false
-                        )
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                    }) {
+                        renderer.requestUpdateDrawableAndProperty(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
-
-                        //stack
-                        addBitmapStateToStack(delegate, renderer, undoState)
                     }
                 }
             }
@@ -526,7 +526,7 @@ object LPBitmapHandler {
                         addBitmapStateToStack(delegate, renderer, undoState)
                         result
                     }) {
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableAndProperty(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
