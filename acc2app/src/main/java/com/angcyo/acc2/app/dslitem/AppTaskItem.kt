@@ -45,7 +45,12 @@ class AppTaskItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.tv(R.id.task_id_view)?.text = span {
-            append("任务ID:${taskBean?.taskId ?: -1}")
+            val taskId = taskBean?.taskId ?: -1
+            if (taskId > 0) {
+                append("任务ID:${taskId}")
+            } else {
+                append("任务UUId:${taskBean?.uuid ?: "--"}")
+            }
             taskBean?.type?.let {
                 append(" type:[${it.or()}]")
             }
