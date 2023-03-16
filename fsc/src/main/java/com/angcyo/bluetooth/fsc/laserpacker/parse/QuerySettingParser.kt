@@ -143,6 +143,13 @@ data class QuerySettingParser(
     //功能码
     override fun commandFunc(): Byte = 0x06
 
+    /**超时时长, 毫秒*/
+    var receiveTimeout: Long? = null
+
+    override fun getReceiveTimeout(): Long {
+        return receiveTimeout ?: super.getReceiveTimeout()
+    }
+
     //转换成指令
     override fun toHexCommandString(): String {
         var dataLength: Int  //数据长度, 指由功能码开始到较验和一共包含的字节数

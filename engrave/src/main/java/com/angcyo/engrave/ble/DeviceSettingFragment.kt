@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.dslFHelper
+import com.angcyo.bluetooth.fsc.IReceiveBeanAction
+import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -19,6 +21,7 @@ import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.data.ZModel
+import com.angcyo.engrave.engraveLoadingAsyncTimeout
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
@@ -26,6 +29,8 @@ import com.angcyo.item.style.*
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.FileUtils
 import kotlin.math.max
 
@@ -278,8 +283,27 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChangedAction = {
                         settingParser?.clearFlag()
                         settingParser?.sFlag = if (it) 1 else 0
-                        settingParser?.updateSetting()
-                        renderData()
+
+                        if (isL4) {
+                            //L4 调整滑台开关需要等待设备返回
+                            this@DeviceSettingFragment.engraveLoadingAsyncTimeout({
+                                syncSingle { countDownLatch ->
+                                    settingParser?.receiveTimeout = 1 * 60 * 1000
+                                    settingParser?.updateSetting { bean, error ->
+                                        settingParser.receiveTimeout = null
+                                        error?.let {
+                                            toastQQ(it.message)
+                                        }
+                                        countDownLatch.countDown()
+                                    }
+                                }
+                            }) {
+                                renderData()
+                            }
+                        } else {
+                            settingParser?.updateSetting()
+                            renderData()
+                        }
                     }
                 }
             }
@@ -294,8 +318,26 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChangedAction = {
                         settingParser?.clearFlag()
                         settingParser?.sRep = if (it) 1 else 0
-                        settingParser?.updateSetting()
-                        renderData()
+                        if (isL4) {
+                            //L4 调整滑台开关需要等待设备返回
+                            this@DeviceSettingFragment.engraveLoadingAsyncTimeout({
+                                syncSingle { countDownLatch ->
+                                    settingParser?.receiveTimeout = 1 * 60 * 1000
+                                    settingParser?.updateSetting { bean, error ->
+                                        settingParser.receiveTimeout = null
+                                        error?.let {
+                                            toastQQ(it.message)
+                                        }
+                                        countDownLatch.countDown()
+                                    }
+                                }
+                            }) {
+                                renderData()
+                            }
+                        } else {
+                            settingParser?.updateSetting()
+                            renderData()
+                        }
                     }
                 }
             }
@@ -432,9 +474,15 @@ class DeviceSettingFragment : BaseDslFragment() {
         drawBottom()
     }
 
-    fun QuerySettingParser.updateSetting() {
+    fun QuerySettingParser.updateSetting(
+        action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
+            error?.let {
+                toastQQ(it.message)
+            }
+        }
+    ) {
         //sendCommand()
-        enqueue()
+        enqueue(action = action)
         syncQueryDeviceState { bean, error ->
             laserPeckerModel.updateSettingOnceData.postValue(true)
         }
