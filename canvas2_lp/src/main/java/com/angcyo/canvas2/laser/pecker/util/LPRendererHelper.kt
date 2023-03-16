@@ -11,6 +11,7 @@ import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.bean.LPProjectBean
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
+import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.generateName
 import com.angcyo.engrave.data.HawkEngraveKeys
@@ -41,6 +42,8 @@ object LPRendererHelper {
         LPConstant.DATA_TYPE_TEXT,
         LPConstant.DATA_TYPE_QRCODE,
         LPConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
+        LPConstant.DATA_TYPE_SVG,
+        LPConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
         else -> null
     }
 
