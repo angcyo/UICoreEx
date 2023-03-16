@@ -23,7 +23,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     /**条码/二维码图片*/
     var codeBitmap: Bitmap? = null
 
-    override fun createStateStack(renderer: BaseRenderer): IStateStack = LPTextStateStack(renderer)
+    override fun createStateStack(): IStateStack = LPTextStateStack()
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         return if (elementBean.mtype == LPConstant.DATA_TYPE_TEXT) {

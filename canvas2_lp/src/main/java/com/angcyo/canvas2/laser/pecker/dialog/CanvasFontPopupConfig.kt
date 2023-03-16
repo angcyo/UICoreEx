@@ -8,8 +8,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas.render.util.renderElement
-import com.angcyo.canvas.render.util.textElement
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.TypefaceItem
@@ -215,7 +215,7 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
     //更新字体
     fun updatePaintTypeface(typeface: Typeface?) {
         val renderer = itemRenderer ?: return
-        itemRenderer?.textElement?.updatePaintTypeface(typeface, renderer, itemRenderDelegate)
+        itemRenderer?.element<TextElement>()?.updatePaintTypeface(typeface, renderer, itemRenderDelegate)
     }
 }
 

@@ -424,6 +424,11 @@ data class LPElementBean(
     val _skewY: Float
         get() = skewY ?: 0f
 
+    //---
+
+    val isLineShape: Boolean
+        get() = mtype == LPConstant.DATA_TYPE_LINE
+
     /**构建一个图层名*/
     fun generateName(list: List<LPElementBean>) {
         if (name == null) {

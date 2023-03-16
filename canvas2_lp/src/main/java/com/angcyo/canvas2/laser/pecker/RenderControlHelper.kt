@@ -1,15 +1,18 @@
 package com.angcyo.canvas2.laser.pecker
 
+import android.graphics.Color
+import android.graphics.Paint
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
+import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
+import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas.render.util.renderElement
-import com.angcyo.canvas.render.util.textElement
 import com.angcyo.canvas2.laser.pecker.dialog.canvasFontWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
@@ -18,14 +21,14 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.have
-import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.*
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
@@ -171,7 +174,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
                             LPConstant.DATA_TYPE_PENTAGRAM,
                             LPConstant.DATA_TYPE_SVG,
                             LPConstant.DATA_TYPE_GCODE,
-                            LPConstant.DATA_TYPE_LOVE -> Unit//renderShapeEditItems(renderer)
+                            LPConstant.DATA_TYPE_LOVE -> renderPathEditItems(renderer)
                         }
                     }
                 }
@@ -428,19 +431,113 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
             CanvasIconItem()() {
                 itemText = "紧凑"
                 itemIco = R.drawable.canvas_text_style
-                itemIsSelected = renderer.textElement?.textProperty?.isCompactText == true
+                itemIsSelected =
+                    renderer.element<TextElement>()?.textProperty?.isCompactText == true
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
 
-                    renderer.textElement?.updateTextProperty(renderer, itemRenderDelegate) {
-                        isCompactText = itemIsSelected
-                    }
+                    renderer.element<TextElement>()
+                        ?.updateTextProperty(renderer, itemRenderDelegate) {
+                            isCompactText = itemIsSelected
+                        }
                 }
             }
         }
     }
 
     //endregion ---文本---
+
+    //region ---形状/Path---
+
+    fun DslAdapter.renderPathEditItems(renderer: BaseRenderer) {
+        val elementBean = renderer.lpElementBean()
+        val type = elementBean?.mtype
+        if (type == LPConstant.DATA_TYPE_RECT ||
+            type == LPConstant.DATA_TYPE_POLYGON ||
+            type == LPConstant.DATA_TYPE_PENTAGRAM
+        ) {
+            //多边形/星星
+            //属性调整
+            ShapePropertyControlItem()() {
+                initItem(renderer)
+            }
+        }
+
+        PathStyleItem()() {
+            initItem(renderer)
+            itemIco = R.drawable.canvas_style_stroke_ico
+            itemText = _string(R.string.canvas_stroke)
+            itemStyle = Paint.Style.STROKE
+        }
+
+        var afterItemCount = 0 //后面item的数量, 用来控制是否需要绘制分割线
+        if (HawkEngraveKeys.enableRasterize) {
+            afterItemCount++
+        }
+        if (HawkEngraveKeys.enablePathFill) {
+            afterItemCount++
+        }
+        PathStyleItem()() {
+            initItem(renderer)
+            itemIco = R.drawable.canvas_style_fill_ico
+            itemText = _string(R.string.canvas_fill)
+            itemStyle = Paint.Style.FILL
+            if (afterItemCount <= 0) {
+                drawCanvasRight()
+            }
+            afterItemCount--
+        }
+        /*//有切割图层之后, 就不能出现这个了
+        PathStyleItem()() {
+            initItem(renderer)
+            itemIco = R.drawable.canvas_style_stroke_fill_ico
+            itemText = _string(R.string.canvas_fill_stroke)
+            itemStyle = Paint.Style.FILL_AND_STROKE
+        }*/
+        if (HawkEngraveKeys.enablePathFill) {
+            CanvasIconItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_path_fill_svg
+                itemText = _string(R.string.canvas_path_fill)
+                if (afterItemCount <= 0) {
+                    drawCanvasRight()
+                }
+                itemUpdateCheckColorAction = {
+                    if (LPElementHelper.isPathFill(elementBean)) {
+                        _color(R.color.colorAccent).alphaRatio(0.5f)
+                    } else {
+                        Color.TRANSPARENT
+                    }
+                }
+                itemClick = {
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        LPBitmapHandler.handlePathFill(it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                    }
+                }
+                afterItemCount--
+            }
+        }
+        //栅格化
+        if (HawkEngraveKeys.enableRasterize) {
+            CanvasIconItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_text_rasterize_ico
+                itemText = _string(R.string.canvas_rasterize)
+                if (afterItemCount <= 0) {
+                    drawCanvasRight()
+                }
+                itemClick = {
+                    //renderer.dataItem?.itemRasterize(renderer)
+                }
+                afterItemCount--
+            }
+        }
+    }
+
+    //endregion ---形状/Path---
 
     //region ---公共的编辑---
 

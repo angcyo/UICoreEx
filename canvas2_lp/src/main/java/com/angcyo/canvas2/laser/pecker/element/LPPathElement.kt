@@ -1,5 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import android.graphics.drawable.Drawable
+import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
@@ -18,11 +20,15 @@ import com.pixplicity.sharp.Sharp
  */
 class LPPathElement(override val elementBean: LPElementBean) : PathElement(), ILaserPeckerElement {
 
-    override fun createStateStack(renderer: BaseRenderer): IStateStack = LPPathStateStack(renderer)
+    override fun createStateStack(): IStateStack = LPPathStateStack()
+
+    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
+        paint.style = elementBean.paintStyle.toPaintStyle()
+        return super.requestElementRenderDrawable(renderParams)
+    }
 
     override fun updateBeanToElement(renderer: BaseRenderer) {
         super.updateBeanToElement(renderer)
-        paint.style = elementBean.paintStyle.toPaintStyle()
         if (pathList == null) {
             val data = elementBean.data
             if (!data.isNullOrEmpty()) {

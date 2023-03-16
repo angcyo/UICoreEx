@@ -90,6 +90,13 @@ object LPElementHelper {
         _lastTopIndex = 0
     }
 
+    /**当前元素, 是否进行了路径填充*/
+    fun isPathFill(bean: LPElementBean?): Boolean {
+        bean ?: return false
+        return !bean.isLineShape &&
+                bean.gcodeFillStep > 0
+    }
+
     /**添加一个图片元素到画板
      * [LPConstant.DATA_TYPE_BITMAP]*/
     fun addBitmapElement(delegate: CanvasRenderDelegate?, bitmap: Bitmap?) {

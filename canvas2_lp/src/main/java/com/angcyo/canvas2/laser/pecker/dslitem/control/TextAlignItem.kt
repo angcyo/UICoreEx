@@ -1,8 +1,9 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.graphics.Paint
+import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.element.toAlignString
-import com.angcyo.canvas.render.util.textElement
+import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
@@ -34,7 +35,7 @@ class TextAlignItem : BaseTextControlItem() {
         payloads: List<Any>
     ) {
         itemIsSelected =
-            itemRenderer?.textElement?.textProperty?.textAlign == itemAlign.toAlignString()
+            itemRenderer?.element<TextElement>()?.textProperty?.textAlign == itemAlign.toAlignString()
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 

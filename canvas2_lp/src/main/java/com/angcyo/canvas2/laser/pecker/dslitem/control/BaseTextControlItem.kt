@@ -1,7 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import com.angcyo.canvas.render.data.TextProperty
-import com.angcyo.canvas.render.util.textElement
+import com.angcyo.canvas.render.element.TextElement
+import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 
@@ -17,7 +18,7 @@ abstract class BaseTextControlItem : CanvasIconItem() {
         keepVisibleSize: Boolean = false,
         block: TextProperty.() -> Unit
     ) {
-        itemRenderer?.textElement?.updateTextProperty(
+        itemRenderer?.element<TextElement>()?.updateTextProperty(
             itemRenderer,
             itemRenderDelegate,
             keepGroupProperty,

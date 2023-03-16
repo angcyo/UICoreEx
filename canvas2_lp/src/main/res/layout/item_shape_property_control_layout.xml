@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_hdpi"
+    android:paddingVertical="@dimen/lib_ldpi">
+
+    <!--边数-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_side_count_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="@dimen/canvas_edit_min_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lib_keyboard_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/side_count_label_view"
+        app:layout_constraintLeft_toLeftOf="@id/side_count_label_view"
+        app:layout_constraintRight_toRightOf="@id/side_count_label_view"
+        app:layout_constraintTop_toTopOf="@id/side_count_label_view"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/side_count_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
+        android:text="@string/canvas_side"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_side_count_view"
+        tools:layout_width="100dp" />
+
+    <!--深度-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_depth_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lib_keyboard_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/depth_label_view"
+        app:layout_constraintLeft_toLeftOf="@id/depth_label_view"
+        app:layout_constraintRight_toRightOf="@id/depth_label_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/depth_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_ldpi"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
+        android:text="@string/canvas_depth"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/side_count_label_view"
+        app:layout_constraintTop_toBottomOf="@id/item_depth_view"
+        tools:layout_width="100dp" />
+
+    <!--圆角-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_corner_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lib_keyboard_number_increment_selector"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/corner_label_view"
+        app:layout_constraintLeft_toLeftOf="@id/corner_label_view"
+        app:layout_constraintRight_toRightOf="@id/corner_label_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/corner_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_ldpi"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:minWidth="@dimen/canvas_edit_min_width"
+        android:text="@string/canvas_corner"
+        android:textColor="@color/canvas_ico"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/depth_label_view"
+        app:layout_constraintTop_toBottomOf="@id/item_corner_view"
+        tools:layout_width="100dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

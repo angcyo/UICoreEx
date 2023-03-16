@@ -343,6 +343,15 @@ fun BaseRenderer.lpTextElement(): LPTextElement? {
     return null
 }
 
+/**[LPPathElement]*/
+fun BaseRenderer.lpPathElement(): LPPathElement? {
+    val element = lpElement()
+    if (element is LPPathElement) {
+        return element
+    }
+    return null
+}
+
 //endregion---LpRenderer---
 
 //region---LPElementBean---

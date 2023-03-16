@@ -4,15 +4,16 @@ import android.graphics.Bitmap
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
+import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.TextStateStack
-import com.angcyo.canvas2.laser.pecker.element.LPTextElement
+import com.angcyo.canvas.render.util.element
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/14
  */
-class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
+class LPTextStateStack : TextStateStack() {
 
     /**二维码编码格式, 编码格式（qrcode）, 编码格式（code128）*/
     var coding: String? = null
@@ -29,7 +30,7 @@ class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
     override fun saveState(renderer: BaseRenderer) {
         super.saveState(renderer)
 
-        val element = textElement
+        val element = renderer.element<TextElement>()
         if (element is LPTextElement) {
             type = element.elementBean.mtype
             coding = element.elementBean.coding
@@ -38,15 +39,20 @@ class LPTextStateStack(renderer: BaseRenderer) : TextStateStack(renderer) {
         }
     }
 
-    override fun restoreState(reason: Reason, strategy: Strategy, delegate: CanvasRenderDelegate?) {
-        val element = textElement
+    override fun restoreState(
+        renderer: BaseRenderer,
+        reason: Reason,
+        strategy: Strategy,
+        delegate: CanvasRenderDelegate?
+    ) {
+        val element = renderer.element<TextElement>()
         if (element is LPTextElement) {
             element.elementBean.mtype = type
             element.elementBean.coding = coding
             element.elementBean.eclevel = eclevel
             element.codeBitmap = codeBitmap
         }
-        super.restoreState(reason, strategy, delegate)
+        super.restoreState(renderer, reason, strategy, delegate)
     }
 
 }

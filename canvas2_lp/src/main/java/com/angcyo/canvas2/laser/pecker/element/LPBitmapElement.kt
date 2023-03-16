@@ -121,8 +121,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         super.updateBeanFromElement(renderer)
     }
 
-    override fun createStateStack(renderer: BaseRenderer): IStateStack =
-        LPBitmapStateStack(renderer)
+    override fun createStateStack(): IStateStack = LPBitmapStateStack()
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
