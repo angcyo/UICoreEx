@@ -1,6 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
-import com.angcyo.canvas2.laser.pecker.CanvasLayoutHelper
+import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
@@ -19,7 +19,7 @@ class ControlLayerItem : CanvasIconItem() {
         const val TAG_LAYER_ITEM = "tag_layer_item"
     }
 
-    var itemCanvasLayoutHelper: CanvasLayoutHelper? = null
+    var itemRenderLayoutHelper: RenderLayoutHelper? = null
 
     init {
         itemIco = R.drawable.canvas_layer_ico
@@ -28,12 +28,12 @@ class ControlLayerItem : CanvasIconItem() {
         itemTag = TAG_LAYER_ITEM
         itemClick = {
             //隐藏或者显示图层布局
-            itemCanvasLayoutHelper?._rootViewHolder?.gone(R.id.canvas_layer_layout, itemIsSelected)
+            itemRenderLayoutHelper?._rootViewHolder?.gone(R.id.canvas_layer_layout, itemIsSelected)
             updateItemSelected(!itemIsSelected)
 
             if (itemIsSelected) {
                 //选中之后, 渲染图层item rv
-                itemCanvasLayoutHelper?.renderLayerListLayout()
+                itemRenderLayoutHelper?.renderLayerListLayout()
             }
         }
     }

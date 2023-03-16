@@ -36,24 +36,24 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/08
  */
-class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
+class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
 
     val canvasRenderDelegate: CanvasRenderDelegate?
-        get() = canvasLayoutHelper._rootViewHolder?.renderDelegate
+        get() = renderLayoutHelper._rootViewHolder?.renderDelegate
 
     val selectorManager: CanvasSelectorManager?
         get() = canvasRenderDelegate?.selectorManager
 
     /**编辑item*/
     val editItem: DslAdapterItem?
-        get() = canvasLayoutHelper.findTagItem(ControlEditItem.TAG_EDIT_ITEM)
+        get() = renderLayoutHelper.findTagItem(ControlEditItem.TAG_EDIT_ITEM)
 
     /**是否可以编辑*/
     val isEditEnable: Boolean
         get() = editItem == null || editItem?.itemEnable == true
 
     val fragment: AbsLifecycleFragment
-        get() = canvasLayoutHelper.canvasFragment.fragment
+        get() = renderLayoutHelper.canvasFragment.fragment
 
     //region ---基础---
 
@@ -85,7 +85,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
     /**当有元素属性更新时, 触发更新显示*/
     @CallPoint
     fun updateControlLayout() {
-        val vh = canvasLayoutHelper._rootViewHolder ?: return
+        val vh = renderLayoutHelper._rootViewHolder ?: return
         if (vh.isVisible(R.id.canvas_control_layout)) {
             vh.canvasControlAdapter?.apply {
                 eachItem { index, item ->
@@ -113,7 +113,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
     private fun showControlLayout() {
         if (isEditEnable) {
             editItem?.updateItemSelected(true)
-            canvasLayoutHelper._rootViewHolder?.apply {
+            renderLayoutHelper._rootViewHolder?.apply {
                 //转场动画
                 dslTransition(itemView as ViewGroup) {
                     onCaptureStartValues = {
@@ -131,7 +131,7 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
     private fun hideControlLayout() {
         if (isEditEnable) {
             editItem?.updateItemSelected(false)
-            canvasLayoutHelper._rootViewHolder?.apply {
+            renderLayoutHelper._rootViewHolder?.apply {
                 //转场动画
                 dslTransition(itemView as ViewGroup) {
                     onCaptureStartValues = {
@@ -148,8 +148,8 @@ class CanvasControlHelper(val canvasLayoutHelper: CanvasLayoutHelper) {
     /**追加控制item*/
     private fun renderControlItemLayout(renderer: BaseRenderer?) {
         //控制item渲染
-        canvasLayoutHelper._rootViewHolder?.canvasControlRv?.renderDslAdapter {
-            canvasLayoutHelper.hookUpdateDepend(this)
+        renderLayoutHelper._rootViewHolder?.canvasControlRv?.renderDslAdapter {
+            renderLayoutHelper.hookUpdateDepend(this)
 
             //渲染不同的控制item
             when (renderer) {

@@ -37,7 +37,7 @@ import com.angcyo.widget.recycler.renderDslAdapter
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/03
  */
-class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
+class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     //region ---基础---
 
@@ -86,7 +86,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
             ControlEditItem()() {//edit
                 initItem()
-                itemCanvasLayoutHelper = this@CanvasLayoutHelper
+                itemRenderLayoutHelper = this@RenderLayoutHelper
             }
 
             if (!closeCanvasItemsFun.have("_layer_")) {
@@ -95,7 +95,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 } else {
                     ControlLayerItem()() {
                         initItem()
-                        itemCanvasLayoutHelper = this@CanvasLayoutHelper
+                        itemRenderLayoutHelper = this@RenderLayoutHelper
                     }
                 }
             }
@@ -137,7 +137,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     //region ---init---
 
     /**控制布局助手*/
-    val canvasControlHelper = CanvasControlHelper(this)
+    val renderControlHelper = RenderControlHelper(this)
 
     internal var _rootViewHolder: DslViewHolder? = null
 
@@ -198,7 +198,7 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 from: List<BaseRenderer>,
                 to: List<BaseRenderer>
             ) {
-                canvasControlHelper.bindControlLayout()
+                renderControlHelper.bindControlLayout()
                 renderLayerListLayout()
             }
 
@@ -211,12 +211,12 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 if (renderer is CanvasSelectorComponent) {
                     if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_LOCK_SCALE)) {
                         //锁的状态改变
-                        canvasControlHelper.updateControlLayout()
+                        renderControlHelper.updateControlLayout()
                     }
                 }
                 if (reason.controlType.have(BaseControlPoint.CONTROL_TYPE_DATA)) {
                     //数据改变, 比如切换了图片算法/填充/描边等
-                    canvasControlHelper.updateControlLayout()
+                    renderControlHelper.updateControlLayout()
                 }
                 if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
                     reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)
@@ -231,11 +231,11 @@ class CanvasLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 toProperty: CanvasRenderProperty?,
                 reason: Reason
             ) {
-                canvasControlHelper.updateControlLayout()
+                renderControlHelper.updateControlLayout()
             }
 
             override fun onRenderUnitChange(from: IRenderUnit, to: IRenderUnit) {
-                canvasControlHelper.updateControlLayout()
+                renderControlHelper.updateControlLayout()
             }
 
             override fun onDoubleTapItem(
