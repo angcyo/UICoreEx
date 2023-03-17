@@ -29,6 +29,9 @@ interface ILaserPeckerElement : IElement {
         }
     }
 
+    /**解析对应的[elementBean]变成可以绘制的元素*/
+    fun parseElementBean()
+
     /**将[elementBean] 数据更新到 [CanvasRenderProperty]*/
     fun updateBeanToElement(renderer: BaseRenderer) {
         if (this is BaseElement) {

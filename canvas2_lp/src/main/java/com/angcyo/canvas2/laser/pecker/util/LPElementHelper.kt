@@ -8,10 +8,10 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
+import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
-import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.library.annotation.MM
@@ -133,12 +133,9 @@ object LPElementHelper {
 
         elementBean.init()//init
 
-        val renderer = CanvasElementRenderer()
-        renderer.renderElement = LPBitmapElement(elementBean).apply {
-            updateBeanToElement(renderer)
-            updateOriginBitmapSrc(delegate, renderer, bitmap)
+        return LPRendererHelper.parseElementRenderer(elementBean)!!.apply {
+            element<LPBitmapElement>()?.updateOriginBitmapSrc(delegate, this, bitmap)
         }
-        return renderer
     }
 
     /**添加一个图片元素到画板
@@ -169,10 +166,7 @@ object LPElementHelper {
         }
         assignLocation(elementBean)
 
-        val renderer = CanvasElementRenderer()
-        renderer.renderElement = LPTextElement(elementBean).apply {
-            updateBeanToElement(renderer)
-        }
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }
@@ -198,11 +192,45 @@ object LPElementHelper {
         }
         assignLocation(elementBean)
 
-        val renderer = CanvasElementRenderer()
-        renderer.renderElement = LPPathElement(elementBean).apply {
-            this.pathList = pathList
-            updateBeanToElement(renderer)
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!.apply {
+            element<LPPathElement>()?.pathList = pathList
         }
+        delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
+        LPRendererHelper.generateName(delegate)
+    }
+
+    /**添加一个形状元素到画板
+     * [LPConstant.DATA_TYPE_LINE]
+     * [LPConstant.DATA_TYPE_RECT]
+     * [LPConstant.DATA_TYPE_OVAL]
+     * [LPConstant.DATA_TYPE_POLYGON]
+     * [LPConstant.DATA_TYPE_PENTAGRAM]
+     * [LPConstant.DATA_TYPE_LOVE]
+     * */
+    fun addShapesElement(delegate: CanvasRenderDelegate?, type: Int) {
+        delegate ?: return
+        val elementBean = LPElementBean().apply {
+            mtype = type
+            width = LPPathElement.SHAPE_DEFAULT_WIDTH
+            height = LPPathElement.SHAPE_DEFAULT_HEIGHT
+            if (mtype == LPConstant.DATA_TYPE_OVAL) {
+                rx = width!! / 2
+                ry = height!! / 2
+            } else if (mtype == LPConstant.DATA_TYPE_PENTAGRAM) {
+                side = 5
+            } else if (mtype == LPConstant.DATA_TYPE_POLYGON) {
+                side = 3
+            }
+            paintStyle = if (isLineShape) {
+                height = 1f.toMm()//线的高度 1px
+                Paint.Style.FILL.toPaintStyleInt()
+            } else {
+                Paint.Style.STROKE.toPaintStyleInt()
+            }
+        }
+        assignLocation(elementBean)
+
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }

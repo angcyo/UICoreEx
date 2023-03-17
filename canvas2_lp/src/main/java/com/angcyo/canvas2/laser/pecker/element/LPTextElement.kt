@@ -29,6 +29,9 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         return if (elementBean.mtype == LPConstant.DATA_TYPE_TEXT) {
             super.requestElementRenderDrawable(renderParams)
         } else {
+            if (codeBitmap == null) {
+                parseElementBean()
+            }
             codeBitmap?.run {
                 createBitmapDrawable(this, paint, renderParams?.overrideSize)
             }
@@ -81,27 +84,26 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             super.updateOriginText(text, keepVisibleSize)
         } else {
             textProperty.text = text
-            if (elementBean.mtype == LPConstant.DATA_TYPE_QRCODE) {
-                elementBean.coding = "${BarcodeFormat.QR_CODE}".lowercase()
-                text?.createQRCode()?.let {
-                    codeBitmap = it
-                    updateOriginWidthHeight(
-                        it.width.toFloat(),
-                        it.height.toFloat(),
-                        keepVisibleSize
-                    )
-                }
-            } else if (elementBean.mtype == LPConstant.DATA_TYPE_BARCODE) {
-                elementBean.coding = "${BarcodeFormat.CODE_128}".lowercase()
-                text?.createBarCode()?.let {
-                    codeBitmap = it
-                    updateOriginWidthHeight(
-                        it.width.toFloat(),
-                        it.height.toFloat(),
-                        keepVisibleSize
-                    )
-                }
+            parseElementBean()
+
+            codeBitmap?.let {
+                updateOriginWidthHeight(
+                    it.width.toFloat(),
+                    it.height.toFloat(),
+                    keepVisibleSize
+                )
             }
+        }
+    }
+
+    override fun parseElementBean() {
+        val text = textProperty.text
+        if (elementBean.mtype == LPConstant.DATA_TYPE_QRCODE) {
+            elementBean.coding = "${BarcodeFormat.QR_CODE}".lowercase()
+            codeBitmap = text?.createQRCode()
+        } else if (elementBean.mtype == LPConstant.DATA_TYPE_BARCODE) {
+            elementBean.coding = "${BarcodeFormat.CODE_128}".lowercase()
+            codeBitmap = text?.createBarCode()
         }
     }
 }

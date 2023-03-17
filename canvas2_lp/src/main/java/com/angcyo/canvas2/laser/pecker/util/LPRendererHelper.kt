@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.util
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
+import com.angcyo.canvas.render.element.IElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
@@ -42,7 +43,14 @@ object LPRendererHelper {
         LPConstant.DATA_TYPE_TEXT,
         LPConstant.DATA_TYPE_QRCODE,
         LPConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
-        LPConstant.DATA_TYPE_SVG,
+        LPConstant.DATA_TYPE_LINE,
+        LPConstant.DATA_TYPE_RECT,
+        LPConstant.DATA_TYPE_OVAL,
+        LPConstant.DATA_TYPE_LOVE,
+        LPConstant.DATA_TYPE_POLYGON,
+        LPConstant.DATA_TYPE_PENTAGRAM,
+        LPConstant.DATA_TYPE_PEN,
+        LPConstant.DATA_TYPE_PATH,
         LPConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
         else -> null
     }
@@ -312,6 +320,13 @@ fun CanvasRenderDelegate.restoreProjectState(
 //endregion---Delegate---
 
 //region---LpRenderer---
+
+fun IElement?.lpElement(): ILaserPeckerElement? {
+    if (this is ILaserPeckerElement) {
+        return this
+    }
+    return null
+}
 
 /**[ILaserPeckerElement]*/
 fun BaseRenderer.lpElement(): ILaserPeckerElement? {

@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker
 
 import com.angcyo.canvas.render.core.*
 import com.angcyo.canvas.render.core.component.BaseControlPoint
-import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.data.TouchSelectorInfo
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -276,14 +275,14 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 }
             }
 
-            override fun onRendererPropertyChange(
+            /*override fun onRendererPropertyChange(
                 renderer: BaseRenderer,
                 fromProperty: CanvasRenderProperty?,
                 toProperty: CanvasRenderProperty?,
                 reason: Reason
             ) {
                 renderControlHelper.updateControlLayout()
-            }
+            }*/
 
             override fun onRenderUnitChange(from: IRenderUnit, to: IRenderUnit) {
                 renderControlHelper.updateControlLayout()

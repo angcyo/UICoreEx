@@ -38,6 +38,28 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
 
     override fun updateBeanToElement(renderer: BaseRenderer) {
         super.updateBeanToElement(renderer)
+        parseElementBean()
+    }
+
+    override fun updateBeanFromElement(renderer: BaseRenderer) {
+        super.updateBeanFromElement(renderer)
+    }
+
+    override fun createStateStack(): IStateStack = LPBitmapStateStack()
+
+    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
+        if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+            paint.style = Paint.Style.STROKE
+            return createPathDrawable(pathList, paint, renderParams?.overrideSize)
+        }
+        val bitmap = renderBitmap ?: originBitmap
+        if (bitmap == null) {
+            parseElementBean()
+        }
+        return super.requestElementRenderDrawable(renderParams)
+    }
+
+    override fun parseElementBean() {
         if (originBitmap == null) {
             originBitmap = elementBean.imageOriginal?.toBitmapOfBase64()?.apply {
                 updateBeanWidthHeight(width.toFloat(), height.toFloat())
@@ -115,20 +137,6 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                 }
             }
         }
-    }
-
-    override fun updateBeanFromElement(renderer: BaseRenderer) {
-        super.updateBeanFromElement(renderer)
-    }
-
-    override fun createStateStack(): IStateStack = LPBitmapStateStack()
-
-    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
-        if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
-            paint.style = Paint.Style.STROKE
-            return createPathDrawable(pathList, paint, renderParams?.overrideSize)
-        }
-        return super.requestElementRenderDrawable(renderParams)
     }
 
     /**更新GCode数据*/
