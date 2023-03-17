@@ -127,7 +127,8 @@
     <string name="canvas_curve">Curve</string>
     <string name="canvas_rasterize">Rasterize</string>
 
-    <string name="canvas_side">Edges</string>
+    <string name="canvas_side_count">Edges</string>
+    <string name="canvas_angle_count">Corners</string>
     <string name="canvas_depth">Depth</string>
     <string name="canvas_corner">Corners</string>
 
