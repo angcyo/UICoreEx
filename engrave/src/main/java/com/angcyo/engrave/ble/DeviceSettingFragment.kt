@@ -45,21 +45,24 @@ class DeviceSettingFragment : BaseDslFragment() {
     companion object {
 
         /**z轴的3中模式*/
-        fun getZDirSegmentList() = if (vmApp<LaserPeckerModel>().isC1()) {
-            //C1只有圆柱模式
-            listOf(ZModel(QuerySettingParser.Z_MODEL_CYLINDER))
-        } else if (vmApp<LaserPeckerModel>().isL3()) {
-            //L3没有小车 2023-1-4
-            listOf(
-                ZModel(QuerySettingParser.Z_MODEL_FLAT),
-                ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
-            )
-        } else {
-            listOf(
-                ZModel(QuerySettingParser.Z_MODEL_FLAT),
-                ZModel(QuerySettingParser.Z_MODEL_CAR),
-                ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
-            )
+        fun getZDirSegmentList(): List<ZModel> {
+            val peckerModel = vmApp<LaserPeckerModel>()
+            return if (peckerModel.isC1()) {
+                //C1只有圆柱模式
+                listOf(ZModel(QuerySettingParser.Z_MODEL_CYLINDER))
+            } else if (peckerModel.isL3() || peckerModel.isL4()) {
+                //L3没有小车 2023-1-4
+                listOf(
+                    ZModel(QuerySettingParser.Z_MODEL_FLAT),
+                    ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
+                )
+            } else {
+                listOf(
+                    ZModel(QuerySettingParser.Z_MODEL_FLAT),
+                    ZModel(QuerySettingParser.Z_MODEL_CAR),
+                    ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
+                )
+            }
         }
 
         /**上传日志的item*/
