@@ -13,6 +13,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig.Companion.STYLE_DECIMAL
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.dp
 import com.angcyo.library.unit.toMm
@@ -80,9 +81,13 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
 
             //深度
             if (elementBean.mtype == LPConstant.DATA_TYPE_PENTAGRAM) {
+                itemHolder.tv(R.id.side_count_label_view)?.text =
+                    _string(R.string.canvas_angle_count)//角数
                 itemHolder.visible(R.id.item_depth_view)
                 itemHolder.visible(R.id.depth_label_view)
             } else {
+                itemHolder.tv(R.id.side_count_label_view)?.text =
+                    _string(R.string.canvas_side_count)//边数
                 itemHolder.gone(R.id.item_depth_view)
                 itemHolder.gone(R.id.depth_label_view)
             }
@@ -117,6 +122,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                     itemRenderer?.lpElement()?.apply {
                         updateElement(itemRenderer, itemRenderDelegate) {
                             elementBean.side = size
+                            lpElement()?.parseElementBean()
                         }
                     }
                 }
@@ -126,7 +132,6 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
 
     /**深度*/
     fun bindDepth(itemHolder: DslViewHolder) {
-        val elementBean = elementBean ?: return
         itemHolder.click(R.id.item_depth_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@ShapePropertyControlItem::onPopupDismiss
@@ -137,6 +142,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                     itemRenderer?.lpElement()?.apply {
                         updateElement(itemRenderer, itemRenderDelegate) {
                             elementBean.depth = size
+                            lpElement()?.parseElementBean()
                         }
                     }
                 }
@@ -161,6 +167,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                         updateElement(itemRenderer, itemRenderDelegate) {
                             elementBean.rx = size.toMm()
                             elementBean.ry = elementBean.rx
+                            lpElement()?.parseElementBean()
                         }
                     }
                 }

@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/lib_sdpi"
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
-        android:text="@string/canvas_side"
+        android:text="@string/canvas_side_count"
         android:textColor="@color/canvas_ico"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

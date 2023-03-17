@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 
 /**
  * 形状item
@@ -15,7 +16,7 @@ class ShapesItem : CanvasIconItem() {
 
     init {
         itemClick = {
-            //itemRenderDelegate?.addLineRender()
+            LPElementHelper.addShapesElement(itemRenderDelegate, itemShapeType)
         }
     }
 
