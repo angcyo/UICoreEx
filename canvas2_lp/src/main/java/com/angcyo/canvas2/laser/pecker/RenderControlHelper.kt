@@ -60,62 +60,22 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
 
     //region ---基础---
 
-    /**调用入口, 选中元素改变后, 重新渲染对应的编辑属性item*/
-    @CallPoint
+    /**根据选中状态自动渲染/隐藏布局*/
     fun bindControlLayout() {
+        renderLayoutHelper.changeSelectItem(null)
         val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
         if (selectorRenderer == null) {
             hideControlLayout()
         } else {
-            showControlLayout()
-            renderControlItemLayout(selectorRenderer)
+            showControlLayout(null)
+            renderControlItems(selectorRenderer)
         }
     }
-
-    /**控制布局的可见性控制
-     * [visible] 是否要可见*/
-    @CallPoint
-    fun visibleControlLayout(visible: Boolean) {
-        if (visible) {
-            val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
-            showControlLayout()
-            renderControlItemLayout(selectorRenderer)
-        } else {
-            hideControlLayout()
-        }
-    }
-
-    /**当有元素属性更新时, 触发更新显示*/
-    @CallPoint
-    fun updateControlLayout() {
-        val vh = renderLayoutHelper._rootViewHolder ?: return
-        if (vh.isVisible(R.id.canvas_control_layout)) {
-            vh.canvasControlAdapter?.apply {
-                eachItem { index, item ->
-                    if (item is ICanvasRendererItem) {
-                        val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
-                        item.initItem(selectorRenderer)
-                    }
-                }
-                updateAllItem()
-            }
-        }
-    }
-
-    /**初始化*/
-    private fun ICanvasRendererItem.initItem(renderer: BaseRenderer?) {
-        itemRenderer = renderer
-        itemRenderDelegate = canvasRenderDelegate
-    }
-
-    //endregion ---基础---
-
-    //region ---core---
 
     /**显示控制布局*/
-    private fun showControlLayout() {
+    fun showControlLayout(fromItem: DslAdapterItem?) {
         if (isEditEnable) {
-            editItem?.updateItemSelected(true)
+            editItem?.updateItemSelected(fromItem == null || fromItem == editItem)
             renderLayoutHelper._rootViewHolder?.apply {
                 //转场动画
                 dslTransition(itemView as ViewGroup) {
@@ -131,7 +91,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     }
 
     /**隐藏控制布局*/
-    private fun hideControlLayout() {
+    fun hideControlLayout() {
         if (isEditEnable) {
             editItem?.updateItemSelected(false)
             renderLayoutHelper._rootViewHolder?.apply {
@@ -149,7 +109,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     }
 
     /**追加控制item*/
-    private fun renderControlItemLayout(renderer: BaseRenderer?) {
+    fun renderControlItems(renderer: BaseRenderer? = selectorManager?.getTargetSelectorRenderer()) {
         //控制item渲染
         renderLayoutHelper._rootViewHolder?.canvasControlRv?.renderDslAdapter {
             renderLayoutHelper.hookUpdateDepend(this)
@@ -185,7 +145,30 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
         }
     }
 
-    //endregion ---core---
+    /**当有元素属性更新时, 触发更新显示*/
+    @CallPoint
+    fun updateControlLayout() {
+        val vh = renderLayoutHelper._rootViewHolder ?: return
+        if (vh.isVisible(R.id.canvas_control_layout)) {
+            vh.canvasControlAdapter?.apply {
+                eachItem { index, item ->
+                    if (item is ICanvasRendererItem) {
+                        val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
+                        item.initItem(selectorRenderer)
+                    }
+                }
+                updateAllItem()
+            }
+        }
+    }
+
+    /**初始化*/
+    private fun ICanvasRendererItem.initItem(renderer: BaseRenderer?) {
+        itemRenderer = renderer
+        itemRenderDelegate = canvasRenderDelegate
+    }
+
+    //endregion ---基础---
 
     //region ---Bitmap---
 

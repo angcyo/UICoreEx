@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
-import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
@@ -31,8 +31,13 @@ class ControlEditItem : CanvasIconItem() {
             updateItemSelected(!itemIsSelected)
             if (itemIsSelected) {
                 itemRenderLayoutHelper?.changeSelectItem(this)
+                itemRenderLayoutHelper?.renderControlHelper?.apply {
+                    showControlLayout(this@ControlEditItem)
+                    renderControlItems()
+                }
+            } else {
+                itemRenderLayoutHelper?.renderControlHelper?.hideControlLayout()
             }
-            itemRenderLayoutHelper?.renderControlHelper?.visibleControlLayout(itemIsSelected)
         }
     }
 }

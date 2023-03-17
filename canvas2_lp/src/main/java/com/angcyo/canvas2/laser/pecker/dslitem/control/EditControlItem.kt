@@ -51,7 +51,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
 
         val renderer = selectorComponent
         val canvasDelegate = itemRenderDelegate
-        if (canvasDelegate != null && renderer is BaseRenderer) {
+        if (canvasDelegate != null && renderer is BaseRenderer && renderer.isSelectorElement) {
             //val drawable = renderer._rendererItem?.itemDrawable ?: selectorComponent?.preview()
             itemHolder.img(R.id.item_drawable_view)?.apply {
                 //visible(drawable != null)

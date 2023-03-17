@@ -75,6 +75,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             if (!closeCanvasItemsFun.have("_shapes_")) {
                 AddShapesItem()() {
                     initItem()
+                    itemRenderLayoutHelper = this@RenderLayoutHelper
                 }
             }
             if (!closeCanvasItemsFun.have("_doodle_")) {
@@ -130,6 +131,56 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         }
         _selectItem?.updateItemSelected(false)
         _selectItem = toItem
+    }
+
+    /**渲染形状列表
+     * [visible] 是否要渲染*/
+    fun renderShapesItems(item: DslAdapterItem, visible: Boolean) {
+        if (visible) {
+            changeSelectItem(item)
+            renderControlHelper.showControlLayout(item)
+            _rootViewHolder?.canvasControlRv?.renderDslAdapter {
+                hookUpdateDepend(this)
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_line_ico
+                    itemText = _string(R.string.canvas_line)
+                    itemShapeType = LPConstant.DATA_TYPE_LINE
+                }
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_oval_ico
+                    itemText = _string(R.string.canvas_oval)
+                    itemShapeType = LPConstant.DATA_TYPE_OVAL
+                }
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_rectangle_ico
+                    itemText = _string(R.string.canvas_rectangle)
+                    itemShapeType = LPConstant.DATA_TYPE_RECT
+                }
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_polygon_ico
+                    itemText = _string(R.string.canvas_polygon)
+                    itemShapeType = LPConstant.DATA_TYPE_POLYGON
+                }
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_pentagram_ico
+                    itemText = _string(R.string.canvas_pentagram)
+                    itemShapeType = LPConstant.DATA_TYPE_PENTAGRAM
+                }
+                ShapesItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_shape_love_ico
+                    itemText = _string(R.string.canvas_love)
+                    itemShapeType = LPConstant.DATA_TYPE_LOVE
+                }
+            }
+        } else {
+            renderControlHelper.bindControlLayout()
+        }
     }
 
     //endregion ---基础---
