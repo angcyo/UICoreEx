@@ -1,9 +1,12 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import android.graphics.DashPathEffect
 import android.graphics.Path
+import android.graphics.PathEffect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Build
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -15,6 +18,7 @@ import com.angcyo.canvas2.laser.pecker.util.toPaintStyle
 import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.toRadians
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
@@ -160,10 +164,44 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         if (pathList == null) {
             parseElementBean()
         }
-        return super.requestElementRenderDrawable(renderParams)
+        val pathList = pathList ?: return null
+
+        val renderDst = renderParams?.renderDst
+
+        paint.strokeWidth = 1f
+        if (renderDst is CanvasRenderDelegate) {
+            val scale = renderDst.renderViewBox.getScale()
+            paint.strokeWidth = paint.strokeWidth / scale //确保边框线的可见性
+        }
+        return createPathDrawable(
+            pathList,
+            paint,
+            renderParams?.overrideSize,
+            paint.strokeWidth,
+            paint.strokeWidth,
+            elementBean.isLineShape
+        )
+    }
+
+    override fun getElementBoundsPath(delegate: CanvasRenderDelegate?, result: Path): Path {
+        return super.getElementBoundsPath(delegate, result)
+    }
+
+    override fun getElementBounds(delegate: CanvasRenderDelegate?, result: RectF): RectF {
+        if (elementBean.isLineShape) {
+            val height = 10 * dp / (delegate?.renderViewBox?.getScale() ?: 1f) //上下增益10dp
+            result.set(0f, 0f, renderProperty.width, 0f)//线的高度
+            result.inset(0f, -height)
+            return result
+        }
+        return super.getElementBounds(delegate, result)
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer) {
+        if (elementBean.isLineShape) {
+            //elementBean.height = 1f.toMm()//线的高度 1px
+            elementBean.height = 0f
+        }
         super.updateBeanToElement(renderer)
         if (pathList == null) {
             parseElementBean()
@@ -206,4 +244,11 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             updateOriginPathList(pathList)
         }
     }
+
+    override fun createDashPathEffect(): PathEffect {
+        val dashWidth = elementBean.dashWidth.toPixel()
+        val dashGap = elementBean.dashGap.toPixel()
+        return DashPathEffect(floatArrayOf(dashWidth, dashGap), 0f)
+    }
+
 }

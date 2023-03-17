@@ -32,7 +32,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
 
-    val itemRenderParams = RenderParams(overrideSize = 30 * dp)
+    val itemRenderParams = RenderParams(renderDst = this, overrideSize = 30 * dp)
 
     //endregion ---core---
 

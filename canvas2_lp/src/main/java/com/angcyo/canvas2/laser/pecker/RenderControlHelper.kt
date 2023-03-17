@@ -480,7 +480,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
             itemText = _string(R.string.canvas_fill_stroke)
             itemStyle = Paint.Style.FILL_AND_STROKE
         }*/
-        if (HawkEngraveKeys.enablePathFill) {
+        if (HawkEngraveKeys.enablePathFill && elementBean?.isLineShape == false) {
             CanvasIconItem()() {
                 initItem(renderer)
                 itemIco = R.drawable.canvas_path_fill_svg

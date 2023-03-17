@@ -50,7 +50,14 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
             paint.style = Paint.Style.STROKE
-            return createPathDrawable(pathList, paint, renderParams?.overrideSize)
+            return createPathDrawable(
+                pathList,
+                paint,
+                renderParams?.overrideSize,
+                (renderParams ?: RenderParams()).drawMinWidth,
+                (renderParams ?: RenderParams()).drawMinHeight,
+                false
+            )
         }
         val bitmap = renderBitmap ?: originBitmap
         if (bitmap == null) {

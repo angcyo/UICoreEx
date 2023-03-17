@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.element.BaseElement
 import com.angcyo.canvas.render.element.IElement
@@ -18,6 +19,17 @@ interface ILaserPeckerElement : IElement {
 
     /**元素数据结构*/
     val elementBean: LPElementBean
+
+    override fun isElementSupportControlPoint(type: Int): Boolean {
+        if (elementBean.isLineShape) {
+            if (type == BaseControlPoint.CONTROL_TYPE_HEIGHT ||
+                type == BaseControlPoint.CONTROL_TYPE_LOCK
+            ) {
+                return false
+            }
+        }
+        return super.isElementSupportControlPoint(type)
+    }
 
     /**更新原始数据的宽高*/
     fun updateBeanWidthHeight(@Pixel width: Float, @Pixel height: Float) {

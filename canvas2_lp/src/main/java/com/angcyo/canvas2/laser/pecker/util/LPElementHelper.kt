@@ -222,7 +222,6 @@ object LPElementHelper {
                 side = 3
             }
             paintStyle = if (isLineShape) {
-                height = 1f.toMm()//线的高度 1px
                 Paint.Style.FILL.toPaintStyleInt()
             } else {
                 Paint.Style.STROKE.toPaintStyleInt()
