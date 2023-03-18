@@ -173,36 +173,7 @@ object AccWindow {
             toastQQ("权限未开启")
         } else {
             doBack {
-                AccNodeLog().apply {
-                    LTime.tick()
-                    logMinWindowInfo = true
-                    logWindowNode = false
-                    val log = "${getAccessibilityWindowLog()}\n耗时:${LTime.time()}"
-                    L.i(log)
-                    toastQQ(log) {
-                        duration = Toast.LENGTH_LONG
-                    }
-                    reset()
-                    getAccessibilityWindowLog().apply {
-                        val log = toString()
-                        val logPath = log.saveAccLog()
-                        /*//直接分享文件
-                        logPath?.file()?.shareFile()*/
-                        pushToGist("${nowTimeString()}/${Build.MODEL}/catch") {
-                            val info = buildString {
-                                //屏幕信息, 设备信息
-                                app().let {
-                                    Device.screenInfo(it, this)
-                                    appendln()
-                                    Device.deviceInfo(it, this)
-                                }
-                            }
-                            addGistFile("device info", info)
-                            addGistFile("node info", log)
-                        }
-                        onSaveWindowLog?.invoke(log)
-                    }
-                }
+                catchNodeLog()
             }
         }
     }
@@ -228,6 +199,42 @@ object AccWindow {
     }
 
     //</editor-fold desc="回调">
+
+    /**捕捉节点日志*/
+    fun catchNodeLog(): String? {
+        var logPath: String? = null
+        AccNodeLog().apply {
+            LTime.tick()
+            logMinWindowInfo = true
+            logWindowNode = false
+            val log = "${getAccessibilityWindowLog()}\n耗时:${LTime.time()}"
+            L.i(log)
+            toastQQ(log) {
+                duration = Toast.LENGTH_LONG
+            }
+            reset()
+            getAccessibilityWindowLog().apply {
+                val log = toString()
+                logPath = log.saveAccLog()
+                /*//直接分享文件
+                logPath?.file()?.shareFile()*/
+                pushToGist("${nowTimeString()}/${Build.MODEL}/catch") {
+                    val info = buildString {
+                        //屏幕信息, 设备信息
+                        app().let {
+                            Device.screenInfo(it, this)
+                            appendln()
+                            Device.deviceInfo(it, this)
+                        }
+                    }
+                    addGistFile("device info", info)
+                    addGistFile("node info", log)
+                }
+                onSaveWindowLog?.invoke(log)
+            }
+        }
+        return logPath
+    }
 
     /**清空默认*/
     fun reset() {

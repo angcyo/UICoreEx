@@ -1,17 +1,23 @@
 package com.angcyo.acc2.app
 
 import android.content.Context
+import com.angcyo.acc2.app.component.AccWindow
+import com.angcyo.acc2.app.helper.LogHelper
 import com.angcyo.acc2.app.http.AccGitee
 import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
+import com.angcyo.core.component.DslLayout
+import com.angcyo.core.component.ScreenShotModel
+import com.angcyo.core.component.renderLayout
 import com.angcyo.core.fragment.BaseUI
+import com.angcyo.core.vmApp
+import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.DslNotify
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.uuid
+import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.RUtils
 import com.angcyo.library.utils.fillTo
@@ -86,6 +92,39 @@ open class AccApp : CoreApplication() {
 
     //配置信息
     var memoryConfigBean = MemoryConfigBean()
+
+    override fun onCreateMain() {
+        super.onCreateMain()
+
+        vmApp<ScreenShotModel>().apply {
+            startListen()
+            screenShotPathData.observeForever { path ->
+                if (!path.isNullOrBlank()) {
+                    doBack {
+                        val logList = mutableListOf<String>()
+                        AccWindow.catchNodeLog()?.let { logList.add(it) }
+                        logList.add(path)
+                        logList.add(AppAccPrint.logPath())
+                        logList.add(LogHelper.taskLogPath())
+
+                        renderLayout(R.layout.core_screen_shot_share_layout) {
+                            renderLayoutAction = {
+                                img(R.id.lib_image_view)?.setImageBitmap(path.toBitmap())
+                                click(R.id.lib_close_view) {
+                                    DslLayout.hide(this@renderLayout)
+                                }
+                                clickItem {
+                                    DslLayout.hide(this@renderLayout)
+                                    logList.zip(libCacheFile("Acc-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
+                                        ?.shareFile()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun app() = com.angcyo.library.app() as AccApp
