@@ -15,6 +15,8 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.component.DslNotify
+import com.angcyo.library.component.RBackground
+import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.libCacheFile
@@ -118,6 +120,13 @@ open class AccApp : CoreApplication() {
                                     logList.zip(libCacheFile("Acc-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
                                         ?.shareFile()
                                 }
+                            }
+                        }
+
+                        if (RBackground.isBackground()) {
+                            _delay(300) {
+                                logList.zip(libCacheFile("Acc-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
+                                    ?.shareFile()
                             }
                         }
                     }
