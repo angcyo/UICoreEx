@@ -1,6 +1,9 @@
 package com.angcyo.material
 
 import android.content.Context
+import androidx.annotation.IdRes
+import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.setInputHint
 import com.angcyo.widget.base.setTextViewHintAction
 import com.google.android.material.textfield.TextInputLayout
 
@@ -26,4 +29,9 @@ object DslMaterial {
             }
         }
     }
+}
+
+/**[com.angcyo.widget.base.TextView.setInputHint]*/
+fun DslViewHolder.setInputHint(@IdRes id: Int, hint: CharSequence?) {
+    tv(id)?.setInputHint(hint)
 }

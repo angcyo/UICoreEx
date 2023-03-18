@@ -14,6 +14,7 @@ import com.angcyo.library.L
 import com.angcyo.library.ex.ensureName
 import com.angcyo.library.ex.isHttpScheme
 import com.angcyo.library.ex.readAssets
+import com.angcyo.library.toastQQ
 
 /**
  *
@@ -63,10 +64,21 @@ object Task {
 
     /**根据指定的url, 启动任务*/
     fun start(taskUrl: String, startAction: (TaskBean?, Throwable?) -> Unit) {
-        AccGitee.getTask(taskUrl) { data, error ->
-            val task = data?.init(control)
-            startAction(task, error)
-            task?.let {
+        if (taskUrl.isHttpScheme()) {
+            AccGitee.getTask(taskUrl) { data, error ->
+                error?.let {
+                    toastQQ(it.message)
+                }
+                val task = data?.init(control)
+                startAction(task, error)
+                task?.let {
+                    start(it)
+                }
+            }
+        } else {
+            val taskBean = readAssetsTask(taskUrl)
+            startAction(taskBean, null)
+            taskBean?.let {
                 start(it)
             }
         }
