@@ -237,13 +237,14 @@ class AdaptiveModel : LifecycleViewModel() {
 
                 if (vmApp<AdaptiveModel>().getAdaptiveInfo(it.packageName) == null) {
                     //未找到适配信息
-                    append(" × ")
+                    append(" ×")
                 }
             }.elseNull {
                 append(app.label)
                 append("[${app.packageName}]")
-                append(":未安装 ")
+                append(":未安装")
             }
+            append(" ")
         }
     }
 
