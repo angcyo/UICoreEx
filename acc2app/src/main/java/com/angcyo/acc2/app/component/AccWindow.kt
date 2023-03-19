@@ -3,6 +3,7 @@ package com.angcyo.acc2.app.component
 import android.graphics.Color
 import android.os.Build
 import android.widget.Toast
+import com.angcyo.acc2.app.model.AdaptiveModel
 import com.angcyo.acc2.app.saveAccLog
 import com.angcyo.acc2.control.isControlPause
 import com.angcyo.acc2.control.isControlStart
@@ -12,6 +13,7 @@ import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.R
 import com.angcyo.core.component.addGistFile
 import com.angcyo.core.component.pushToGist
+import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.*
@@ -214,8 +216,8 @@ object AccWindow {
             }
             reset()
             getAccessibilityWindowLog().apply {
-                val log = toString()
-                logPath = log.saveAccLog()
+                val nodeLog = "${vmApp<AdaptiveModel>().getAllAppAdaptiveInfo()}\n\n${toString()}"
+                logPath = nodeLog.saveAccLog()
                 /*//直接分享文件
                 logPath?.file()?.shareFile()*/
                 pushToGist("${nowTimeString()}/${Build.MODEL}/catch") {
@@ -228,9 +230,9 @@ object AccWindow {
                         }
                     }
                     addGistFile("device info", info)
-                    addGistFile("node info", log)
+                    addGistFile("node info", nodeLog)
                 }
-                onSaveWindowLog?.invoke(log)
+                onSaveWindowLog?.invoke(nodeLog)
             }
         }
         return logPath

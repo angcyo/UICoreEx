@@ -59,8 +59,8 @@ class AdaptiveModel : LifecycleViewModel() {
                 if (data != null) {
                     val bean = data.toBean<AdminBean>()
                     val oldBean: Long = adminData.value?.version ?: 0
-                    if (oldBean < bean?.version ?: 0) {
-                        adminData.value = bean
+                    if (oldBean < (bean?.version ?: 0)) {
+                        adminData.value = bean!!
                     }
                 }
             }
@@ -80,7 +80,7 @@ class AdaptiveModel : LifecycleViewModel() {
                 data?.let {
                     it.toBean<HttpBean<List<AppInfoBean>>>(beanListType).let { bean ->
                         val oldVersion = appListData.value?.version ?: 0
-                        if (oldVersion < bean?.version ?: 0) {
+                        if (oldVersion < (bean?.version ?: 0)) {
                             //应用列表
                             appListData.value = bean
                         }
@@ -226,12 +226,33 @@ class AdaptiveModel : LifecycleViewModel() {
         return adaptive
     }
 
+    /**获取所有app适配的情况/安装情况以及对应的版本信息*/
+    fun getAllAppAdaptiveInfo(): String = buildString {
+        allApp.forEach { app ->
+            app.packageName?.appBean()?.it {
+                append(app.label ?: it.appName)
+                append("[${app.packageName}]")
+                append(":")
+                append(it.versionName)
+
+                if (vmApp<AdaptiveModel>().getAdaptiveInfo(it.packageName) == null) {
+                    //未找到适配信息
+                    append(" × ")
+                }
+            }.elseNull {
+                append(app.label)
+                append("[${app.packageName}]")
+                append(":未安装 ")
+            }
+        }
+    }
+
     /**是否是管理员*/
     fun isAdmin(num: String? = null, device: String = Device.androidId): Boolean {
         val adminBean = adminData.value
         return adminBean?.data?.contains(num) == true ||
-            adminBean?.devices?.contains(device) == true ||
-            isSuperAdmin(num, device)
+                adminBean?.devices?.contains(device) == true ||
+                isSuperAdmin(num, device)
     }
 
     /**是否是调试设备*/
