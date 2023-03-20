@@ -97,7 +97,7 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         itemHolder.click(R.id.lib_check_view) {
             itemRenderer?.let { renderer ->
-                if (renderer.isVisible) {
+                if (renderer.isVisible && !renderer.isLock) {
                     //可见状态下, 才允许选中
                     itemIsSelected = !itemIsSelected
                     if (itemIsSelected) {
