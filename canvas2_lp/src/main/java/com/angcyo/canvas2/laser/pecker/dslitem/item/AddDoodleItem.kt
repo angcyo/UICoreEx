@@ -3,7 +3,11 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.drawCanvasRight
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.library.ex._string
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 添加涂鸦
@@ -17,16 +21,12 @@ class AddDoodleItem : CanvasIconItem() {
         itemText = _string(R.string.canvas_doodle)
         itemEnable = true
         itemClick = {
-            /*UMEvent.CANVAS_DOODLE.umengEventValue()
-            engraveCanvasFragment.fragment.context.doodleDialog {
-                onDoodleResultAction = {
-                    engraveCanvasFragment.fragment.engraveLoadingAsync({
-                        //涂鸦之后, 默认黑白处理
-                        val bean = it.toBlackWhiteBitmapItemData()
-                        GraphicsHelper.addRenderItemDataBean(canvasDelegate, bean)
-                    })
+            UMEvent.CANVAS_DOODLE.umengEventValue()
+            it.context.doodleDialog {
+                onDoodleResultAction = { bitmap ->
+                    LPElementHelper.addBitmapElement(itemRenderDelegate, bitmap)
                 }
-            }*/
+            }
         }
         drawCanvasRight()
     }
