@@ -293,20 +293,26 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 newFlags: Int,
                 reason: Reason
             ) {
+                var needUpdateControlLayout = false
                 if (renderer is CanvasSelectorComponent) {
                     if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_LOCK_SCALE)) {
                         //锁的状态改变
-                        renderControlHelper.updateControlLayout()
+                        needUpdateControlLayout = true
                     }
                 }
                 if (reason.controlType.have(BaseControlPoint.CONTROL_TYPE_DATA)) {
                     //数据改变, 比如切换了图片算法/填充/描边等
-                    renderControlHelper.updateControlLayout()
+                    needUpdateControlLayout = true
                 }
                 if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
                     reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)
                 ) {
                     renderLayerListLayout()
+                    needUpdateControlLayout = true
+                }
+
+                if (needUpdateControlLayout) {
+                    renderControlHelper.updateControlLayout()
                 }
             }
 
