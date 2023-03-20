@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
@@ -120,7 +121,11 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
         itemRenderer?.let {
             if (it.isVisible) {
                 it.renderProperty?.getRenderBounds()?.let { bounds ->
-                    itemRenderDelegate?.showRectBounds(bounds, zoomIn = false)
+                    itemRenderDelegate?.showRectBounds(
+                        bounds,
+                        BaseControlPoint.DEFAULT_CONTROL_POINT_SIZE,
+                        false
+                    )
                 }
             }
         }
