@@ -34,4 +34,9 @@ open class CanvasIconItem : DoodleIconItem(), ICanvasRendererItem {
         //如果有[R.id.lib_check_view]控制, 则...
         itemHolder.visible(R.id.lib_check_view, itemIsSelected)
     }
+
+    open fun initSubItem(subItem: ICanvasRendererItem) {
+        subItem.itemRenderer = itemRenderer
+        subItem.itemRenderDelegate = itemRenderDelegate
+    }
 }

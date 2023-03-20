@@ -488,7 +488,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                                             }
                                         }
                                     }
-                                    delegate.renderManager.arrangeSort(list, Strategy.normal)
+                                    delegate.renderManager.arrangeElementSortWith(list, Strategy.normal)
                                 }
                             }
                         }
