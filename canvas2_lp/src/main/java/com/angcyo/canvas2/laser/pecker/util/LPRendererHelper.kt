@@ -51,6 +51,7 @@ object LPRendererHelper {
         LPConstant.DATA_TYPE_PENTAGRAM,
         LPConstant.DATA_TYPE_PEN,
         LPConstant.DATA_TYPE_PATH,
+        LPConstant.DATA_TYPE_SVG,
         LPConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
         else -> null
     }

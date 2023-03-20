@@ -38,8 +38,22 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                     val isGCodeExt = path.endsWith(LPConstant.GCODE_EXT, true)
                     if (isSvgExt) {
                         //.svg后缀
+                        val text = path.file().readText()
+                        LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPConstant.DATA_TYPE_SVG,
+                            text,
+                            null
+                        )
                     } else if (isGCodeExt) {
                         //.gcode后缀
+                        val text = path.file().readText()
+                        LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPConstant.DATA_TYPE_GCODE,
+                            text,
+                            null
+                        )
                     } else {
                         val isTxtExt = path.endsWith(LPConstant.TXT_EXT, true)
                         if (isTxtExt) {
@@ -47,8 +61,20 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                             val text = path.file().readText()
                             if (text?.isSvgContent() == true) {
                                 //svg内容
+                                LPElementHelper.addPathElement(
+                                    itemRenderDelegate,
+                                    LPConstant.DATA_TYPE_SVG,
+                                    text,
+                                    null
+                                )
                             } else if (text?.isGCodeContent() == true) {
                                 //gcode内容
+                                LPElementHelper.addPathElement(
+                                    itemRenderDelegate,
+                                    LPConstant.DATA_TYPE_GCODE,
+                                    text,
+                                    null
+                                )
                             } else {
                                 toastQQ(_string(R.string.not_support))
                             }
