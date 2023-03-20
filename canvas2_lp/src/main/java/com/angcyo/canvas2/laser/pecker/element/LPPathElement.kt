@@ -18,7 +18,6 @@ import com.angcyo.canvas2.laser.pecker.util.toPaintStyle
 import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.toRadians
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
@@ -181,20 +180,6 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             paint.strokeWidth,
             elementBean.isLineShape
         )
-    }
-
-    override fun getElementBoundsPath(delegate: CanvasRenderDelegate?, result: Path): Path {
-        return super.getElementBoundsPath(delegate, result)
-    }
-
-    override fun getElementBounds(delegate: CanvasRenderDelegate?, result: RectF): RectF {
-        if (elementBean.isLineShape) {
-            val height = 10 * dp / (delegate?.renderViewBox?.getScale() ?: 1f) //上下增益10dp
-            result.set(0f, 0f, renderProperty.width, 0f)//线的高度
-            result.inset(0f, -height)
-            return result
-        }
-        return super.getElementBounds(delegate, result)
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer) {
