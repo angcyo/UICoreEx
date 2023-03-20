@@ -238,7 +238,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         renderDelegate?.addCanvasRenderListener(object :
             BaseCanvasRenderListener() {
 
-            /**画笔缩放比例改变后, */
+            /**画笔缩放比例改变后, 反向放大画笔绘制*/
             override fun onRenderBoxMatrixUpdate(
                 newMatrix: Matrix,
                 reason: Reason,
