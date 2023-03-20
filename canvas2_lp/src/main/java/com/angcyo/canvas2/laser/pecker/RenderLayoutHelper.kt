@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker
 
+import android.graphics.Matrix
 import com.angcyo.canvas.render.core.*
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
@@ -11,10 +12,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
-import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
-import com.angcyo.canvas2.laser.pecker.util.lpTextElement
-import com.angcyo.canvas2.laser.pecker.util.saveProjectState
+import com.angcyo.canvas2.laser.pecker.util.*
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.dsladapter.*
@@ -236,8 +234,45 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
     /**绑定事件*/
     private fun bindCanvasListener() {
         val renderDelegate = _rootViewHolder?.renderDelegate
+
         renderDelegate?.addCanvasRenderListener(object :
             BaseCanvasRenderListener() {
+
+            /**画笔缩放比例改变后, */
+            override fun onRenderBoxMatrixUpdate(
+                newMatrix: Matrix,
+                reason: Reason,
+                finish: Boolean
+            ) {
+                if (finish && reason.controlType.have(BaseControlPoint.CONTROL_TYPE_SCALE)) {
+                    val list = renderDelegate.renderManager.getAllElementRendererList(true)
+                    for (renderer in list) {
+                        val bean = renderer.lpElementBean()
+                        when (bean?.mtype) {
+                            LPConstant.DATA_TYPE_LINE,
+                            LPConstant.DATA_TYPE_RECT,
+                            LPConstant.DATA_TYPE_OVAL,
+                            LPConstant.DATA_TYPE_LOVE,
+                            LPConstant.DATA_TYPE_POLYGON,
+                            LPConstant.DATA_TYPE_PENTAGRAM,
+                            LPConstant.DATA_TYPE_PEN,
+                            LPConstant.DATA_TYPE_PATH,
+                            LPConstant.DATA_TYPE_SVG,
+                            LPConstant.DATA_TYPE_GCODE -> {
+                                if (bean.paintStyle == 1) {
+                                    //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
+                                    renderer.requestUpdateDrawable(Reason.preview, renderDelegate)
+                                }
+                            }
+                            LPConstant.DATA_TYPE_BITMAP -> {
+                                if (bean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+                                    renderer.requestUpdateDrawable(Reason.preview, renderDelegate)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             override fun onRenderUndoChange(undoManager: CanvasUndoManager) {
                 updateUndoLayout()
