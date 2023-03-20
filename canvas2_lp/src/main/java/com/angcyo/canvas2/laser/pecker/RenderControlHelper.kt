@@ -116,10 +116,8 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
 
             //渲染不同的控制item
             when (renderer) {
-                //多选
-                is CanvasSelectorComponent -> Unit
-                //群组
-                is CanvasGroupRenderer -> Unit
+                //多选 //群组
+                is CanvasSelectorComponent, is CanvasGroupRenderer -> renderGroupEditItems(renderer as CanvasGroupRenderer)
                 //单元素
                 else -> {
                     val element = renderer?.renderElement
@@ -360,13 +358,13 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
         }
         //样式
         if (!closeTextEditItemsFun.have("_style_")) {
-            TextStyleSelectItem()() {
+            TextStyleMenuItem()() {
                 initItem(renderer)
             }
         }
         //对齐
         if (!closeTextEditItemsFun.have("_align_")) {
-            TextAlignSelectItem()() {
+            TextAlignMenuItem()() {
                 initItem(renderer)
                 drawCanvasRight()
             }
@@ -525,6 +523,49 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
 
     //endregion ---形状/Path---
 
+    //region ---Group---
+
+    /**群组, 多选*/
+    fun DslAdapter.renderGroupEditItems(renderer: CanvasGroupRenderer) {
+        
+        //对齐
+        RendererAlignMenuItem()() {
+            initItem(renderer)
+            itemEnable = renderer.rendererList.size() >= 2//2个以上的元素才支持对齐
+        }
+
+        //分布
+        RendererFlatMenuItem()() {
+            initItem(renderer)
+            itemEnable = renderer.rendererList.size() >= 3//3个以上的元素才支持分布
+
+            drawCanvasRight()
+        }
+
+        /*//群组
+        CanvasIconItem()() { //编组
+            itemIco = R.drawable.canvas_group_group_svg
+            itemText = _string(R.string.canvas_group_group)
+            initItem(renderer)
+            itemEnable = renderer.rendererList.size() > 1
+            itemClick = {
+                canvasRenderDelegate?.groupGroup(renderer, Strategy.normal)
+            }
+        }
+        CanvasIconItem()() { //解组
+            itemIco = R.drawable.canvas_group_dissolve_svg
+            itemText = _string(R.string.canvas_group_dissolve)
+            initItem(renderer)
+            itemEnable = renderer.isOnlyGroupRenderer()
+            drawCanvasRight()
+            itemClick = {
+                canvasRenderDelegate?.groupDissolve(renderer, Strategy.normal)
+            }
+        }*/
+    }
+
+    //endregion ---Group---
+
     //region ---公共的编辑---
 
     private fun DslAdapter.renderCommonEditItems(renderer: BaseRenderer?) {
@@ -538,7 +579,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
             }
 
             //图层排序
-            LayerSortItem()() {
+            LayerSortMenuItem()() {
                 initItem(renderer)
             }
         }

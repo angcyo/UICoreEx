@@ -13,7 +13,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/19
  */
-class TextAlignSelectItem : BaseTextControlItem() {
+class TextAlignMenuItem : BaseTextControlItem() {
 
     init {
         itemIco = R.drawable.canvas_text_align

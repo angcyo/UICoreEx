@@ -16,7 +16,7 @@ import com.angcyo.widget.DslViewHolder
  */
 class LayerArrangeItem : CanvasIconItem() {
 
-    /**安排方式*/
+    /**排序方式*/
     var itemArrange: Int = 0
         set(value) {
             field = value

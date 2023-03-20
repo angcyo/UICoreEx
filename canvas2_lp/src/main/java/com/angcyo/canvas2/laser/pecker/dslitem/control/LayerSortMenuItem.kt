@@ -15,7 +15,7 @@ import com.angcyo.library.ex._string
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/08
  */
-class LayerSortItem : CanvasIconItem() {
+class LayerSortMenuItem : CanvasIconItem() {
 
     init {
         itemIco = R.drawable.canvas_layer_sort
@@ -27,20 +27,20 @@ class LayerSortItem : CanvasIconItem() {
                 renderAdapterAction = {
                     LayerArrangeItem()() {
                         itemArrange = CanvasRenderManager.ARRANGE_FORWARD
-                        this@LayerSortItem.initSubItem(this)
+                        this@LayerSortMenuItem.initSubItem(this)
                     }
                     LayerArrangeItem()() {
                         itemArrange = CanvasRenderManager.ARRANGE_BACKWARD
-                        this@LayerSortItem.initSubItem(this)
+                        this@LayerSortMenuItem.initSubItem(this)
                     }
                     LayerArrangeItem()() {
                         itemArrange = CanvasRenderManager.ARRANGE_FRONT
-                        this@LayerSortItem.initSubItem(this)
+                        this@LayerSortMenuItem.initSubItem(this)
                         itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                     }
                     LayerArrangeItem()() {
                         itemArrange = CanvasRenderManager.ARRANGE_BACK
-                        this@LayerSortItem.initSubItem(this)
+                        this@LayerSortMenuItem.initSubItem(this)
                         itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                     }
                 }
