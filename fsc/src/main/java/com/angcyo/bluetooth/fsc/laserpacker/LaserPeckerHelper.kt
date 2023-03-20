@@ -437,8 +437,12 @@ object LaserPeckerHelper {
             this.carLimitPath = carLimitPath
             this.carPreviewBounds = carPreviewBounds
             this.penBounds = penBounds
-            this.supportDithering =
-                VersionMatcher.matches(softwareVersion, configBean.supportDitheringRange, false)
+            this.supportDithering = if (configBean.supportDitheringRange == null) false
+            else if (configBean.supportDitheringRange.isNullOrEmpty()) true else VersionMatcher.matches(
+                softwareVersion,
+                configBean.supportDitheringRange,
+                false
+            )
             this.focalDistance = focalDistance
             this.softwareVersion = softwareVersion
             this.hardwareVersion = hardwareVersion
