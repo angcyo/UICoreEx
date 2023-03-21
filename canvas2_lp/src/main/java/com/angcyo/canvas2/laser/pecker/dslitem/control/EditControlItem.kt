@@ -49,9 +49,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
         //color
         bindColor(itemHolder)
 
-        val renderer = selectorComponent
+        val selectorComponent = selectorComponent
+        itemRenderDelegate?.selectorManager?.getTargetSelectorRenderer()
         val canvasDelegate = itemRenderDelegate
-        if (canvasDelegate != null && renderer is BaseRenderer && renderer.isSelectorElement) {
+        if (canvasDelegate != null && selectorComponent is BaseRenderer && selectorComponent.isSelectorElement) {
             //val drawable = renderer._rendererItem?.itemDrawable ?: selectorComponent?.preview()
             itemHolder.img(R.id.item_drawable_view)?.apply {
                 //visible(drawable != null)
@@ -59,10 +60,10 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                 //setImageDrawable(drawable)
                 gone()
             }
-            itemHolder.selected(R.id.item_lock_view, renderer.isLockScaleRatio)
+            itemHolder.selected(R.id.item_lock_view, selectorComponent.isLockScaleRatio)
 
             //宽高
-            renderer.renderProperty?.let { property ->
+            selectorComponent.renderProperty?.let { property ->
                 val bounds = property.getRenderBounds()
 
                 //w/h
@@ -87,25 +88,25 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
             //enable/support
             itemHolder.enable(
                 R.id.item_width_view,
-                renderer.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_WIDTH)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_WIDTH)
             )
             itemHolder.enable(
                 R.id.item_height_view,
-                renderer.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_HEIGHT)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_HEIGHT)
             )
             itemHolder.enable(
                 R.id.item_lock_view,
-                renderer.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_LOCK)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_LOCK)
             )
             itemHolder.enable(
                 R.id.item_rotate_view,
-                renderer.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_ROTATE)
+                selectorComponent.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_ROTATE)
             )
 
             //是否锁定等比
             itemHolder.click(R.id.item_lock_view) {
                 canvasDelegate.selectorManager.updateLockScaleRatio(
-                    !renderer.isLockScaleRatio,
+                    !selectorComponent.isLockScaleRatio,
                     Reason.user.apply {
                         controlType = BaseControlPoint.CONTROL_TYPE_KEEP_GROUP_PROPERTY
                     },
