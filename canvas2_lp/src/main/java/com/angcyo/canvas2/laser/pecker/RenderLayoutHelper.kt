@@ -6,6 +6,9 @@ import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.data.TouchSelectorInfo
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
+import com.angcyo.canvas.render.state.GroupStateStack
+import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
@@ -381,6 +384,45 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             override fun onAsyncStateChange(uuid: String, state: Int) {
                 if (!renderDelegate.asyncManager.hasAsyncTask()) {
                     renderDelegate.saveProjectState()
+                }
+            }
+
+            override fun onRendererGroupChange(
+                groupRenderer: CanvasGroupRenderer,
+                subRendererList: List<BaseRenderer>,
+                groupType: Int
+            ) {
+                var groupId: String? = null
+                if (groupType == CanvasGroupRenderer.GROUP_TYPE_GROUP) {
+                    //群组时, 使用统一的groupId
+                    groupId = uuid()
+                } else if (groupType == CanvasGroupRenderer.GROUP_TYPE_GROUP) {
+                    //解组时, 清除groupId
+                }
+                for (renderer in subRendererList) {
+                    renderer.lpElementBean()?.groupId = groupId
+                }
+            }
+
+            /**群组状态的保存和恢复*/
+            override fun onRendererSaveState(renderer: BaseRenderer, stateStack: IStateStack) {
+                if (stateStack is GroupStateStack) {
+                    for (subRenderer in renderer.getSingleRendererList()) {
+                        subRenderer.lpElementBean()?.apply {
+                            //保存groupId
+                            stateStack.valueMap[subRenderer.uuid] = groupId
+                        }
+                    }
+                }
+            }
+
+            override fun onRendererRestoreState(renderer: BaseRenderer, stateStack: IStateStack) {
+                if (stateStack is GroupStateStack) {
+                    for (subRenderer in renderer.getSingleRendererList()) {
+                        //恢复groupId
+                        subRenderer.lpElementBean()?.groupId =
+                            stateStack.valueMap[subRenderer.uuid]?.toString()
+                    }
                 }
             }
         })

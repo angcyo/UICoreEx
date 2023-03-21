@@ -110,7 +110,7 @@ object LPRendererHelper {
                         val subBean = beanList[i]
                         if (subBean.groupId == groupId) {
                             jumpList.add(subBean)
-                            parseElementRenderer(bean)?.let { subRenderer ->
+                            parseElementRenderer(subBean)?.let { subRenderer ->
                                 subRendererList.add(subRenderer)
                             }
                         }
