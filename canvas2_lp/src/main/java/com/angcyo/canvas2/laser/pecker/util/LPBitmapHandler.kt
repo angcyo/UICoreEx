@@ -114,7 +114,7 @@ object LPBitmapHandler {
         delegate?.undoManager?.addToStack(
             renderer,
             undoState,
-            LPBitmapStateStack().apply { saveState(renderer) },
+            LPBitmapStateStack().apply { saveState(renderer, delegate) },
             false,
             Reason.user.apply {
                 controlType = BaseControlPoint.CONTROL_TYPE_DATA
@@ -141,7 +141,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(
@@ -193,7 +193,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE, bean.gcodeOutline)
@@ -278,7 +278,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(
@@ -340,7 +340,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
@@ -399,7 +399,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
@@ -458,7 +458,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(
@@ -510,7 +510,7 @@ object LPBitmapHandler {
         val bean = element.elementBean
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         anchor.context.cropDialog {
             cropBitmap = operateBitmap
@@ -549,7 +549,7 @@ object LPBitmapHandler {
         val context = anchor.context
 
         //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer) }
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
 
         context.canvasRegulateWindow(anchor) {
             addRegulate(

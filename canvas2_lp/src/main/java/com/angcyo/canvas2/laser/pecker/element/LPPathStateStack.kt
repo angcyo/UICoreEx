@@ -24,8 +24,8 @@ class LPPathStateStack : PathStateStack() {
     @MM
     var ry: Float = 0f
 
-    override fun saveState(renderer: BaseRenderer) {
-        super.saveState(renderer)
+    override fun saveState(renderer: BaseRenderer, delegate: CanvasRenderDelegate?) {
+        super.saveState(renderer, delegate)
         renderer.lpElementBean()?.let { elementBean ->
             paintStyle = elementBean.paintStyle
             side = elementBean.side

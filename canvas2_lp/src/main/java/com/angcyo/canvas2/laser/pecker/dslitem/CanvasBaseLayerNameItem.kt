@@ -9,6 +9,7 @@ import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.toTypeNameString
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -32,6 +33,13 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
     override var itemRenderer: BaseRenderer? = null
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
+
+    val operateRenderer: BaseRenderer?
+        get() = if (itemRenderer is CanvasGroupRenderer) {
+            (itemRenderer as CanvasGroupRenderer).rendererList.firstOrNull()
+        } else {
+            itemRenderer
+        }
 
     val itemRenderParams = RenderParams(renderDst = this, overrideSize = 30 * dp)
 
@@ -72,7 +80,8 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
         //item 名称
         itemHolder.tv(R.id.layer_item_name_view)?.text =
-            itemItemName ?: itemRenderer?.lpElementBean()?.mtype.toTypeNameString()
+            itemItemName ?: operateRenderer?.lpElementBean()?.mtype.toTypeNameString()
+
         itemHolder.img(R.id.layer_item_drawable_view)
             ?.setImageDrawable(itemItemDrawable /*?: renderer?.preview(itemRenderParams)*/)
 

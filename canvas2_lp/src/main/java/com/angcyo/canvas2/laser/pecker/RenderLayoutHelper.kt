@@ -346,7 +346,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                     view.recyclerPopupWindow {
                         showOnViewBottom(view)
                         renderAdapter {
-                            selectorInfo.touchRendererList.forEach { renderer ->
+                            selectorInfo.touchRendererList.reversed().forEach { renderer ->
                                 CanvasLayerItem()() { //元素
                                     initItem(renderer)
                                     itemShowSeeView = false
@@ -488,7 +488,10 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                                             }
                                         }
                                     }
-                                    delegate.renderManager.arrangeElementSortWith(list, Strategy.normal)
+                                    delegate.renderManager.arrangeElementSortWith(
+                                        list,
+                                        Strategy.normal
+                                    )
                                 }
                             }
                         }

@@ -37,7 +37,7 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
 
         //长按重命名
         itemLongClick = { view ->
-            itemRenderer?.lpElementBean()?.let { bean ->
+            operateRenderer?.lpElementBean()?.let { bean ->
                 view.context.inputDialog {
                     dialogTitle = _string(R.string.canvas_rename)
                     maxInputLength = 10

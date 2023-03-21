@@ -7,11 +7,15 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
+import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.element
+import com.angcyo.canvas.render.util.isOnlyGroupRenderer
+import com.angcyo.canvas.render.util.isSelectorGroupRenderer
 import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.dialog.canvasFontWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
@@ -527,29 +531,31 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
 
     /**群组, 多选*/
     fun DslAdapter.renderGroupEditItems(renderer: CanvasGroupRenderer) {
-        
+
         //对齐
         RendererAlignMenuItem()() {
             initItem(renderer)
-            itemEnable = renderer.rendererList.size() >= 2//2个以上的元素才支持对齐
+            itemEnable = renderer.isSelectorGroupRenderer() &&
+                    renderer.rendererList.size() >= 2//2个以上的元素才支持对齐
         }
 
         //分布
         RendererFlatMenuItem()() {
             initItem(renderer)
-            itemEnable = renderer.rendererList.size() >= 3//3个以上的元素才支持分布
+            itemEnable = renderer.isSelectorGroupRenderer() &&
+                    renderer.rendererList.size() >= 3//3个以上的元素才支持分布
 
             drawCanvasRight()
         }
 
-        /*//群组
+        //群组
         CanvasIconItem()() { //编组
             itemIco = R.drawable.canvas_group_group_svg
             itemText = _string(R.string.canvas_group_group)
             initItem(renderer)
-            itemEnable = renderer.rendererList.size() > 1
+            itemEnable = renderer.isSelectorGroupRenderer() && renderer.rendererList.size() > 1
             itemClick = {
-                canvasRenderDelegate?.groupGroup(renderer, Strategy.normal)
+                renderer.groupRendererGroup(canvasRenderDelegate, Reason.user, Strategy.normal)
             }
         }
         CanvasIconItem()() { //解组
@@ -559,9 +565,9 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
             itemEnable = renderer.isOnlyGroupRenderer()
             drawCanvasRight()
             itemClick = {
-                canvasRenderDelegate?.groupDissolve(renderer, Strategy.normal)
+                renderer.groupRendererDissolve(canvasRenderDelegate, Reason.user, Strategy.normal)
             }
-        }*/
+        }
     }
 
     //endregion ---Group---

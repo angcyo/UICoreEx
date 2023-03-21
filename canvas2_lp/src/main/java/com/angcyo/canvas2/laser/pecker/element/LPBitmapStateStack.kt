@@ -46,8 +46,8 @@ class LPBitmapStateStack : BitmapStateStack() {
 
     //endregion---需要存储的数据---
 
-    override fun saveState(renderer: BaseRenderer) {
-        super.saveState(renderer)
+    override fun saveState(renderer: BaseRenderer, delegate: CanvasRenderDelegate?) {
+        super.saveState(renderer, delegate)
         pathList = renderer.element<LPBitmapElement>()?.pathList
 
         renderer.lpElementBean()?.let { elementBean ->

@@ -81,7 +81,7 @@ object LPRendererHelper {
 
         //分配名称
         val allElementBeanList = mutableListOf<LPElementBean>()
-        for (element in delegate.renderManager.getAllElementList()) {
+        for (element in delegate.renderManager.getAllSingleElementList()) {
             if (element is ILaserPeckerElement) {
                 allElementBeanList.add(element.elementBean)
             }
@@ -179,7 +179,7 @@ object LPRendererHelper {
     fun generateName(delegate: CanvasRenderDelegate) {
         //分配名称
         val allElementBeanList = mutableListOf<LPElementBean>()
-        for (element in delegate.renderManager.getAllElementList()) {
+        for (element in delegate.renderManager.getAllSingleElementList()) {
             if (element is ILaserPeckerElement) {
                 allElementBeanList.add(element.elementBean)
             }
@@ -230,7 +230,7 @@ fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = render
 
         data = jsonArray {
             renderList?.forEach { renderer ->
-                val list = renderer.getRendererList()
+                val list = renderer.getSingleRendererList()
                 list.forEach { sub ->
                     try {
                         sub.lpElement()?.let { element ->

@@ -27,8 +27,8 @@ class LPTextStateStack : TextStateStack() {
     /**生成的缓存图片*/
     var codeBitmap: Bitmap? = null
 
-    override fun saveState(renderer: BaseRenderer) {
-        super.saveState(renderer)
+    override fun saveState(renderer: BaseRenderer, delegate: CanvasRenderDelegate?) {
+        super.saveState(renderer, delegate)
 
         val element = renderer.element<TextElement>()
         if (element is LPTextElement) {
