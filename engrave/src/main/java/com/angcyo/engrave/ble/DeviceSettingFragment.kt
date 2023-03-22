@@ -20,16 +20,12 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.engrave.R
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.data.ZModel
 import com.angcyo.engrave.engraveLoadingAsyncTimeout
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
 import com.angcyo.item.style.*
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.FileUtils
 import kotlin.math.max
@@ -43,27 +39,6 @@ import kotlin.math.max
 class DeviceSettingFragment : BaseDslFragment() {
 
     companion object {
-
-        /**z轴的3中模式*/
-        fun getZDirSegmentList(): List<ZModel> {
-            val peckerModel = vmApp<LaserPeckerModel>()
-            return if (peckerModel.isC1()) {
-                //C1只有圆柱模式
-                listOf(ZModel(QuerySettingParser.Z_MODEL_CYLINDER))
-            } else if (peckerModel.isL3() || peckerModel.isL4()) {
-                //L3没有小车 2023-1-4
-                listOf(
-                    ZModel(QuerySettingParser.Z_MODEL_FLAT),
-                    ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
-                )
-            } else {
-                listOf(
-                    ZModel(QuerySettingParser.Z_MODEL_FLAT),
-                    ZModel(QuerySettingParser.Z_MODEL_CAR),
-                    ZModel(QuerySettingParser.Z_MODEL_CYLINDER)
-                )
-            }
-        }
 
         /**上传日志的item*/
         var createUploadLoadItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
@@ -112,24 +87,22 @@ class DeviceSettingFragment : BaseDslFragment() {
         val isL4 = productInfo?.isLIV() == true
         val isC1CarFlag = isC1 && settingParser?.carFlag == 1
 
+        val ex = productInfo?.ex?.lowercase() ?: ""
+
         //是否需要z轴开关
-        var zEx = true
+        var zEx = ex.contains("z")
         //是否需要r轴开关, 旋转轴
-        var rEx = isL4
+        var rEx = ex.contains("r")
         //是否需要s轴开关, 滑台
-        var sEx = isL4
+        var sEx = ex.contains("s")
         if (isC1CarFlag) {
             //自动进入了移动平台模式
             zEx = false
             rEx = false
             sEx = false
-        } else if (isC1) {
-            zEx = true
-            rEx = true
         }
-        if (isC1) {
-            sEx = false
-        }
+
+        val zModelList = productInfo?.zModeList
 
         renderDslAdapter(reset = true) {
             DslPropertySwitchItem()() {
@@ -224,14 +197,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                         renderData()
                     }
                 }
-                if (!isC1) {
+                if (!zModelList.isNullOrEmpty() && zModelList.size() > 1) {
                     //C1只有一种模式, 干脆就不显示了
                     DslSegmentTabItem()() {
                         itemLayoutId = R.layout.device_z_dir_segment_tab_item
                         initItem()
 
                         //平板 //小车 //圆柱
-                        val zModelList = getZDirSegmentList()
                         itemSegmentList = zModelList
 
                         //zDir 0为打直板，1为打印圆柱。

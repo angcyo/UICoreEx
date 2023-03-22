@@ -9,10 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.parseResultPacketLog
-import com.angcyo.bluetooth.fsc.laserpacker.data.DeviceConfigBean
-import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
-import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
-import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.*
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
@@ -446,6 +443,22 @@ object LaserPeckerHelper {
             this.focalDistance = focalDistance
             this.softwareVersion = softwareVersion
             this.hardwareVersion = hardwareVersion
+
+            this.ex = configBean.ex
+            val modeList = mutableListOf<ZModel>()
+
+            configBean.zDirList?.lowercase()?.split(",")?.let {
+                if (it.contains("flat")) {
+                    modeList.add(ZModel(QuerySettingParser.Z_MODEL_FLAT))
+                }
+                if (it.contains("car")) {
+                    modeList.add(ZModel(QuerySettingParser.Z_MODEL_CAR))
+                }
+                if (it.contains("cylinder")) {
+                    modeList.add(ZModel(QuerySettingParser.Z_MODEL_CYLINDER))
+                }
+            }
+            this.zModeList = modeList
         }
     }
 

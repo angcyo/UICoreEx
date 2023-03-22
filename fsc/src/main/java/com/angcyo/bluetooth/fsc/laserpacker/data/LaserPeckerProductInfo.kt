@@ -42,6 +42,7 @@ data class LaserPeckerProductInfo(
     /**设备支持的分辨率
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductInfo]*/
     var pxList: List<PxInfo> = emptyList(),
+
     /**物理尺寸宽高, mm单位*/
     @MM
     var widthPhys: Int = 0,
@@ -105,6 +106,12 @@ data class LaserPeckerProductInfo(
     /**当前设备是否图片的压缩抖动数据雕刻,
      * 如果支持:则抖动算法的图片发送0x60的数据, 否则发送0x10的数据*/
     var supportDithering: Boolean = true,
+
+    /**支持的外设*/
+    var ex: String? = null,
+
+    /**第三轴的模式列表*/
+    var zModeList: List<ZModel>? = null,
 ) {
 
     /**

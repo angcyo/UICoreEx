@@ -21,6 +21,12 @@ data class DeviceConfigBean(
     var name: String? = null,
     var des: String? = null,
 
+    /**支持的外设*/
+    var ex: String? = null,
+
+    /**第三轴的模式*/
+    var zDirList: String? = null,
+
     var supportDitheringRange: String? = null,
     /**设备尺寸*/
     @MM
