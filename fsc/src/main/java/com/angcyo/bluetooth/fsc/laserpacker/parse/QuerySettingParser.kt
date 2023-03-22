@@ -69,13 +69,13 @@ data class QuerySettingParser(
         /**[Z_MODEL] 字符串数据*/
         var Z_MODEL_STR: String by HawkPropertyValue<Any, String>("")
 
-        //平板
+        //平板, 对应string中的资源
         const val Z_MODEL_FLAT = "device_z_model_flat"
 
-        //小车
+        //小车, 对应string中的资源
         const val Z_MODEL_CAR = "device_z_model_car"
 
-        //圆柱
+        //圆柱, 对应string中的资源
         const val Z_MODEL_CYLINDER = "device_z_model_cylinder"
 
         //---
