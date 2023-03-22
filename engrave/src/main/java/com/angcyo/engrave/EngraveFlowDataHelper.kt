@@ -326,7 +326,9 @@ object EngraveFlowDataHelper {
                     }
                 }
             }
-            name = EngraveTransitionManager.generateEngraveName()
+            if (name.isEmpty()) {
+                name = EngraveTransitionManager.generateEngraveName()
+            }
         }
     }
 
