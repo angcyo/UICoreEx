@@ -14,14 +14,12 @@ abstract class BaseTextControlItem : CanvasIconItem() {
 
     /**[com.angcyo.canvas.render.element.TextElement.updateTextProperty]*/
     protected fun updateTextProperty(
-        keepGroupProperty: Boolean = false,
         keepVisibleSize: Boolean = false,
         block: TextProperty.() -> Unit
     ) {
         itemRenderer?.element<TextElement>()?.updateTextProperty(
             itemRenderer,
             itemRenderDelegate,
-            keepGroupProperty,
             keepVisibleSize,
             block
         )
