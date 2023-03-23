@@ -12,5 +12,8 @@ class FirmwareException(message: String?, val type: Int) : Exception(message) {
 
         /**非lpbin格式*/
         const val TYPE_LPBIN = 2
+
+        /**更新范围不匹配*/
+        const val TYPE_RANGE = 3
     }
 }

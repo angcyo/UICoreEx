@@ -3,11 +3,16 @@ package com.angcyo.engrave.firmware
 import androidx.annotation.AnyThread
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
+import com.angcyo.core.vmApp
+import com.angcyo.engrave.R
 import com.angcyo.http.download.download
+import com.angcyo.library.component.VersionMatcher
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.elseNull
 import com.angcyo.viewmodel.vmDataOnce
 
@@ -31,7 +36,7 @@ class FirmwareModel : ViewModel() {
         verifyBin: Boolean = false,
         action: (firmwareInfo: FirmwareInfo?, error: Throwable?) -> Unit = { firmwareInfo, error ->
             firmwareInfo?.let {
-                startUpdate(it)
+                startUpdate(it, verifyBin)
             }
             error?.let {
                 firmwareUpdateOnceData.postValue(
@@ -56,9 +61,30 @@ class FirmwareModel : ViewModel() {
         }
     }
 
-    /**开始升级固件*/
+    /**开始升级固件
+     * [verifyBin] 是否要验证bin的固件升级范围*/
     @AnyThread
-    fun startUpdate(firmwareInfo: FirmwareInfo) {
+    fun startUpdate(firmwareInfo: FirmwareInfo, verifyBin: Boolean = false) {
+        if (verifyBin) {
+            var result = true
+            vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion?.let {
+                result = VersionMatcher.matches(it, firmwareInfo.lpBin?.r, false)
+            }
+            if (!result) {
+                firmwareUpdateOnceData.postValue(
+                    FirmwareUpdateState(
+                        FirmwareUpdateState.STATE_ERROR,
+                        -1,
+                        FirmwareException(
+                            _string(R.string.cannot_update_firmware_tip),
+                            FirmwareException.TYPE_RANGE
+                        )
+                    )
+                )
+                return
+            }
+        }
+
         firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_UPDATE, 0))
         ExitCmd().enqueue()//先进入空闲模式
         FirmwareUpdateCmd.update(firmwareInfo.data.size, firmwareInfo.version)
@@ -68,7 +94,9 @@ class FirmwareModel : ViewModel() {
                     DataCmd.data(firmwareInfo.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
                     listenerFinish()
                 }.elseNull {
-                    firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR))
+                    firmwareUpdateOnceData.postValue(
+                        FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR, -1, error)
+                    )
                 }
             }
     }
@@ -100,7 +128,7 @@ class FirmwareModel : ViewModel() {
             }
             error?.let {
                 firmwareUpdateOnceData.postValue(
-                    FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR)
+                    FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR, -1, it)
                 )
             }
         }
