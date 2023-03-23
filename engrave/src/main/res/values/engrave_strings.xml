@@ -221,6 +221,7 @@
     <string name="cannot_update_firmware_tip">This firmware cannot be updated for the current device.</string>
 
     <string name="firmware_corrupted">The firmware has been corrupted</string>
+    <string name="firmware_invalid">Invalid firmware</string>
     <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
     <string name="limit_engrave_count_tip">The number of carvings has reached the upper limit, maximum %1$s.</string>
 

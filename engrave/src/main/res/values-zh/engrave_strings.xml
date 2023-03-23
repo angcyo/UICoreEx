@@ -214,6 +214,7 @@
     <string name="upgrade_duration">耗时</string>
     <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
     <string name="firmware_corrupted">固件已被损坏</string>
+    <string name="firmware_invalid">无效的固件</string>
     <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
     <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
 

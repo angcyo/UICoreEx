@@ -90,7 +90,10 @@ fun String.toFirmwareInfo(verifyMd5: Boolean = true, verifyBin: Boolean = false)
                         if (bytes.md5()?.lowercase() == lpBinBean?.md5) {
                             //固件验证成功
                         } else {
-                            throw FirmwareException(_string(R.string.firmware_corrupted))
+                            throw FirmwareException(
+                                _string(R.string.firmware_corrupted),
+                                FirmwareException.TYPE_MD5
+                            )
                         }
                     }
                 }
@@ -103,7 +106,10 @@ fun String.toFirmwareInfo(verifyMd5: Boolean = true, verifyBin: Boolean = false)
     }
     if (verifyBin) {
         if (lpBinBean == null) {
-            throw FirmwareException(_string(R.string.firmware_corrupted))
+            throw FirmwareException(
+                _string(R.string.firmware_invalid),
+                FirmwareException.TYPE_LPBIN
+            )
         }
     }
     val firmwareVersion = lpBinBean?.v ?: getFirmwareVersion()

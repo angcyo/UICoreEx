@@ -34,7 +34,9 @@ class FirmwareModel : ViewModel() {
                 startUpdate(it)
             }
             error?.let {
-                firmwareUpdateOnceData.postValue(FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR))
+                firmwareUpdateOnceData.postValue(
+                    FirmwareUpdateState(FirmwareUpdateState.STATE_ERROR, -1, it)
+                )
             }
         }
     ) {
@@ -109,6 +111,8 @@ class FirmwareModel : ViewModel() {
         val state: Int,
         /**当前状态下的记录*/
         val progress: Int = -1,
+        /**失败时的错误信息*/
+        val error: Throwable? = null
     ) {
         companion object {
             const val STATE_NORMAL = 0
