@@ -126,8 +126,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 && app().packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
 
         /**是否开启了蓝牙*/
-        fun isBlueEnable() =
-            bleApi?.isEnabled == true || FscSppCentralApiImp.getInstance().isEnabled
+        fun isBlueEnable() = BluetoothAdapter.getDefaultAdapter()?.isEnabled == true &&
+                (bleApi?.isEnabled == true || FscSppCentralApiImp.getInstance().isEnabled)
 
         /**GPS是否已打开*/
         fun checkGPSIsOpen(context: Context = app()): Boolean {
