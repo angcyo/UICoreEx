@@ -22,6 +22,9 @@ data class PreviewInfo(
     /**旋转信息, 如果有, 则优先使用4点预览*/
     var rotate: Float? = null,
 
+    /**是否是更新pwr指令*/
+    var updatePwr: Boolean = false,
+
     //---
 
     /**是否处于/需要4点预览状态*/

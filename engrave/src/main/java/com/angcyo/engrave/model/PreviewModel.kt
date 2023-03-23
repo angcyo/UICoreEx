@@ -250,7 +250,8 @@ class PreviewModel : LifecycleViewModel() {
             } else {
                 //第三轴预览模式
                 if (previewInfo.isStartPreview) {
-                    if (zPause == PreviewInfo.Z_STATE_PAUSE) {
+                    if (previewInfo.updatePwr || zPause == PreviewInfo.Z_STATE_PAUSE) {
+                        //2023-3-23 更新pwr时, 强制进入第三轴暂停状态
                         //第三轴需要处于暂停状态
                         _previewRangeRect(
                             originBounds,
@@ -278,6 +279,7 @@ class PreviewModel : LifecycleViewModel() {
                     previewInfo.zState = PreviewInfo.Z_STATE_PAUSE
                 }
             }
+            previewInfo.updatePwr = false
         }
     }
 
