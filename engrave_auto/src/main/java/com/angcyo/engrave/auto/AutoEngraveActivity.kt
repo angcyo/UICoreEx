@@ -15,6 +15,7 @@ import com.angcyo.canvas.data.toTypeNameString
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateItem
@@ -22,6 +23,8 @@ import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.library.component._delay
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.toApplicationDetailsSettings
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppIcon
@@ -127,7 +130,18 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                         }
                     }
                 } else {
-                    toastQQ("蓝牙权限被禁用!")
+                    //toastQQ("蓝牙权限被禁用!")
+                    //权限被禁用, 显示权限跳转提示框
+                    //toast(_string(R.string.permission_disabled))
+                    normalDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage = _string(R.string.ble_permission_disabled)
+
+                        positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            dialogViewHolder.context.toApplicationDetailsSettings()
+                        }
+                    }
                 }
             }
         }

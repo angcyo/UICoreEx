@@ -180,7 +180,18 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                         connectedDismiss = true
                     }
                 } else {
-                    toast("蓝牙权限被禁用!")
+                    //toast("蓝牙权限被禁用!")
+                    //权限被禁用, 显示权限跳转提示框
+                    //toast(_string(R.string.permission_disabled))
+                    context?.normalDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage = _string(R.string.ble_permission_disabled)
+
+                        positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            dialogViewHolder.context.toApplicationDetailsSettings()
+                        }
+                    }
                 }
             }
         }

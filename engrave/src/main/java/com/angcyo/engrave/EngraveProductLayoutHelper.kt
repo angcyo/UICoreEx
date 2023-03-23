@@ -342,7 +342,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                         //toast(_string(R.string.permission_disabled))
                         it.context.normalDialog {
                             dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = _string(R.string.permission_disabled)
+                            dialogMessage = _string(R.string.ble_permission_disabled)
 
                             positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
                                 dialog.dismiss()

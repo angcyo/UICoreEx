@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="permission_disabled">权限被禁用</string>
+    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
 
     <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
