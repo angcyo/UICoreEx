@@ -23,11 +23,13 @@ import kotlin.concurrent.thread
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/08/19
  */
-open class WSServer(address: InetSocketAddress) : WebSocketServer(address) {
+open class WSServer(address: InetSocketAddress? = null) :
+    WebSocketServer(address ?: InetSocketAddress(Port.generatePort(DEFAULT_PORT))) {
 
     companion object {
 
-        /**保存服务实例*/
+        /**保存服务实例
+         * [key] 端口*/
         val serverMap = hashMapOf<Int, WSServer>()
 
         /**默认端口*/
@@ -68,7 +70,9 @@ open class WSServer(address: InetSocketAddress) : WebSocketServer(address) {
     val wsServerModel = vmApp<WSServerModel>()
 
     init {
-
+        //start()//启动一个线程, 并run
+        //run()//直径运行
+        //stop()//停止
     }
 
     /**
@@ -86,10 +90,16 @@ open class WSServer(address: InetSocketAddress) : WebSocketServer(address) {
         wsServerModel.removeClient(conn)
     }
 
+    override fun onMessage(conn: WebSocket, message: ByteBuffer) {
+        val bytes = message.array()
+        L.i("WebSocketServer 数据:${conn.remoteSocketAddress} ${bytes.size}bytes")
+        wsServerModel.onMessage(conn, bytes)
+    }
+
     /**
      * WebSocketServer 消息:org.java_websocket.WebSocketImpl@38d6a55 测试发送的消息
      * */
-    override fun onMessage(conn: WebSocket, message: String?) {
+    override fun onMessage(conn: WebSocket, message: String) {
         L.i("WebSocketServer 消息:${conn.remoteSocketAddress} $message")
         wsServerModel.onMessage(conn, message)
     }

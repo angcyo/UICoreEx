@@ -11,7 +11,7 @@ import com.angcyo.websocket.data.WSMessageInfo
 import org.java_websocket.WebSocket
 
 /**
- * [WebSocket]数据模式
+ * [WSServer]数据模式
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/08/19
  */
@@ -55,14 +55,23 @@ class WSServerModel : ViewModel() {
 
     //region ---message---
 
-    /**收到的消息通知*/
+    /**收到客户端的消息通知*/
     val clientMessageData = vmDataOnce<WSMessageInfo>()
+
+    /**收到消息的处理*/
+    fun onMessage(client: WebSocket, bytes: ByteArray) {
+        val clientInfo = clientListData.value?.find { it.client == client }
+        clientInfo?.let {
+            val messageInfo = WSMessageInfo(it, null, bytes)
+            clientMessageData.updateValue(messageInfo)
+        }
+    }
 
     /**收到消息的处理*/
     fun onMessage(client: WebSocket, message: String?) {
         val clientInfo = clientListData.value?.find { it.client == client }
         clientInfo?.let {
-            val messageInfo = WSMessageInfo(it, message)
+            val messageInfo = WSMessageInfo(it, message, null)
             clientMessageData.updateValue(messageInfo)
         }
     }

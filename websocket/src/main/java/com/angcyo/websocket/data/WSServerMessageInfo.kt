@@ -1,12 +1,16 @@
 package com.angcyo.websocket.data
 
+import com.angcyo.websocket.WSClient
+
 /**
- * 收到客户端的消息
- * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/08/19
+ *
+ * Email:angcyo@126.com
+ * @author angcyo
+ * @date 2023/03/24
+ * Copyright (c) 2020 angcyo. All rights reserved.
  */
-data class WSMessageInfo(
-    val clientInfo: WSClientInfo,
+data class WSServerMessageInfo(
+    val client: WSClient,
     /**消息*/
     val message: String? = null,
     /**消息字节数组, 不为空时, 优先使用此数据*/
@@ -16,9 +20,9 @@ data class WSMessageInfo(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as WSMessageInfo
+        other as WSServerMessageInfo
 
-        if (clientInfo != other.clientInfo) return false
+        if (client != other.client) return false
         if (message != other.message) return false
         if (bytes != null) {
             if (other.bytes == null) return false
@@ -29,7 +33,7 @@ data class WSMessageInfo(
     }
 
     override fun hashCode(): Int {
-        var result = clientInfo.hashCode()
+        var result = client.hashCode()
         result = 31 * result + (message?.hashCode() ?: 0)
         result = 31 * result + (bytes?.contentHashCode() ?: 0)
         return result
