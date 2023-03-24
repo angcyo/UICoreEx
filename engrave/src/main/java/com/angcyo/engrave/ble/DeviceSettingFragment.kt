@@ -141,7 +141,7 @@ class DeviceSettingFragment : BaseDslFragment() {
             //雕刻方向
             if (settingParser?.zFlag == 0 && (
                         isL2 && productInfo?.version in 374..399 ||
-                                isL3 && productInfo?.version in 553..599
+                                isL3 && productInfo?.version in 552..599
                         )
             ) {
                 //第三轴打开的情况下, 不允许调整雕刻方向
