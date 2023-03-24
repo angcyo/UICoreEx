@@ -39,7 +39,7 @@ class WSServerModel : ViewModel() {
     }
 
     fun removeClient(client: WebSocket) {
-        clientListData.value?.removeIf { it.client == client }
+        clientListData.value?.removeAll { it.client == client }
         clientListData.notify()
     }
 

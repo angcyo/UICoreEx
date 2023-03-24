@@ -56,7 +56,7 @@ class WifiP2pModel : ViewModel() {
 
         //缓存找到的设备
         val list = serviceDeviceListData.value?.toMutableList() ?: mutableListOf()
-        list.removeIf { it.sourceDevice.deviceAddress == device.sourceDevice.deviceAddress }
+        list.removeAll { it.sourceDevice.deviceAddress == device.sourceDevice.deviceAddress }
         list.add(device)
 
         serviceDeviceListData.postValue(list)
