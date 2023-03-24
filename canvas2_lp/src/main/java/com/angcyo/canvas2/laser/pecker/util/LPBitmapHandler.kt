@@ -170,7 +170,7 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -255,7 +255,7 @@ object LPBitmapHandler {
                             result
                         }
                     }) {
-                        renderer.requestUpdateDrawableAndProperty(Reason.user.apply {
+                        renderer.requestUpdateDrawableAndPropertyFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -314,7 +314,7 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -376,7 +376,7 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -435,7 +435,7 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -488,7 +488,7 @@ object LPBitmapHandler {
                         }
                     }) { result ->
                         element.renderBitmap = result
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -526,7 +526,7 @@ object LPBitmapHandler {
                         addBitmapStateToStack(delegate, renderer, undoState)
                         result
                     }) {
-                        renderer.requestUpdateDrawableAndProperty(Reason.user.apply {
+                        renderer.requestUpdateDrawableAndPropertyFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }
@@ -605,7 +605,7 @@ object LPBitmapHandler {
 
                         result
                     }) {
-                        renderer.requestUpdateDrawable(Reason.user.apply {
+                        renderer.requestUpdateDrawableFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
                         }, delegate)
                     }

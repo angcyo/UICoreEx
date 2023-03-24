@@ -41,7 +41,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
             itemRenderer
         }
 
-    val itemRenderParams = RenderParams(renderDst = this, overrideSize = 30 * dp)
+    val itemRenderParams = RenderParams(overrideSize = 30 * dp)
 
     //endregion ---core---
 
@@ -52,7 +52,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
     val itemLayerLock: Boolean get() = itemRenderer?.isLock == true
 
     val itemItemDrawable: Drawable?
-        get() = itemRenderer?.requestRenderDrawable(itemRenderParams)
+        get() = itemRenderer?.requestRenderDrawable(itemRenderParams.overrideSize)
 
     val itemItemName: CharSequence? get() = itemRenderer?.lpElementBean()?.name
 

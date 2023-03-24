@@ -264,12 +264,12 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                             LPConstant.DATA_TYPE_GCODE -> {
                                 if (bean.paintStyle == 1) {
                                     //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
-                                    renderer.requestUpdateDrawable(Reason.preview, renderDelegate)
+                                    renderer.requestUpdateDrawableFlag(Reason.preview, renderDelegate)
                                 }
                             }
                             LPConstant.DATA_TYPE_BITMAP -> {
                                 if (bean.imageFilter == LPConstant.DATA_MODE_GCODE) {
-                                    renderer.requestUpdateDrawable(Reason.preview, renderDelegate)
+                                    renderer.requestUpdateDrawableFlag(Reason.preview, renderDelegate)
                                 }
                             }
                         }

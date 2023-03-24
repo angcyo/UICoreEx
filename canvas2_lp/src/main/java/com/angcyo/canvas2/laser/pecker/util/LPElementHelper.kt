@@ -96,7 +96,7 @@ object LPElementHelper {
     /**栅格化渲染器
      * [renderer] 需要被栅格化的渲染器*/
     fun rasterizeRenderer(renderer: BaseRenderer?, delegate: CanvasRenderDelegate?) {
-        val bitmap = renderer?.requestRenderBitmap(null) ?: return
+        val bitmap = renderer?.requestRenderBitmap() ?: return
         val newRenderer = createBitmapRenderer(bitmap, delegate, false) {
             //保持位置不变
             renderer.renderProperty?.getRenderBounds()?.let { bounds ->

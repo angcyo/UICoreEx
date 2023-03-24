@@ -6,7 +6,6 @@ import android.graphics.PathEffect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Build
-import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -164,20 +163,16 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             parseElementBean()
         }
         val pathList = pathList ?: return null
-
-        val renderDst = renderParams?.renderDst
-
         paint.strokeWidth = 1f
-        if (renderDst is CanvasRenderDelegate) {
-            val scale = renderDst.renderViewBox.getScale()
-            paint.strokeWidth = paint.strokeWidth / scale //确保边框线的可见性
-        }
+        renderParams?.updateDrawPathPaintStrokeWidth(paint)
+        val minWidth = max((renderParams ?: RenderParams()).drawMinWidth, paint.strokeWidth)
+        val minHeight = max((renderParams ?: RenderParams()).drawMinHeight, paint.strokeWidth)
         return createPathDrawable(
             pathList,
             paint,
             renderParams?.overrideSize,
-            paint.strokeWidth,
-            paint.strokeWidth,
+            minWidth,
+            minHeight,
             elementBean.isLineShape
         )
     }
