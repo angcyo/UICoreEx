@@ -14,15 +14,14 @@ import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
-import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.model.EngraveModel
@@ -314,16 +313,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     fun checkCanStartPreview(engraveFragment: IEngraveCanvasFragment): Boolean {
         //检查是否有设备连接
         if (!vmApp<FscBleApiModel>().haveDeviceConnected()) {
-            engraveFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                if (allGranted) {
-                    //vmApp<FscBleApiModel>().connect("DC:0D:30:10:05:E7")
-                    engraveFragment.fragment.fContext().bluetoothSearchListDialog {
-                        connectedDismiss = true
-                    }
-                } else {
-                    toast(_string(R.string.blue_no_device_connected))
-                }
-            }
+            BluetoothSearchHelper.checkAndSearchDevice(engraveFragment.fragment)
             return false
         }
 

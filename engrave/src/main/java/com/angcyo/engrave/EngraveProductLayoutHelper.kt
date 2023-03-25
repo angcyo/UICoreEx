@@ -14,14 +14,12 @@ import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.CanvasEntryPoint
 import com.angcyo.canvas.graphics.GraphicsHelper
-import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
-import com.angcyo.dialog.normalDialog
 import com.angcyo.drawable.DangerWarningDrawable
+import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
 import com.angcyo.engrave.ble.DeviceSettingFragment
-import com.angcyo.engrave.ble.bluetoothSearchListDialog
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.engrave.model.PreviewModel
@@ -332,25 +330,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
                 //界面已经显示, 并且有设备连接, 则不允许切换蓝牙设备
                 return@throttleClick
             } else {
-                engraveCanvasFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                    if (allGranted) {
-                        engraveCanvasFragment.fragment.fContext().bluetoothSearchListDialog {
-                            connectedDismiss = true
-                        }
-                    } else {
-                        //权限被禁用, 显示权限跳转提示框
-                        //toast(_string(R.string.permission_disabled))
-                        it.context.normalDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = _string(R.string.ble_permission_disabled)
-
-                            positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
-                                dialog.dismiss()
-                                dialogViewHolder.context.toApplicationDetailsSettings()
-                            }
-                        }
-                    }
-                }
+                BluetoothSearchHelper.checkAndSearchDevice(engraveCanvasFragment.fragment)
             }
         }
         //显示设备设置界面

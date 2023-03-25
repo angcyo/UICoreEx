@@ -1,13 +1,17 @@
 package com.angcyo.engrave.ble
 
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
+import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.filter.SortAfterFilterInterceptor
 import com.angcyo.engrave.R
@@ -65,6 +69,43 @@ class BluetoothSearchHelper {
                 return true
             }
             return false
+        }
+
+        /**检查蓝牙权限, 并显示搜索对话框*/
+        fun checkAndSearchDevice(
+            fragment: Fragment? = null,
+            fragmentActivity: FragmentActivity? = null,
+            dialogConfig: BluetoothSearchListDialogConfig.() -> Unit = {}
+        ) {
+            val context = fragment?.requireContext() ?: fragmentActivity ?: return
+
+            fun permissionsResult(allGranted: Boolean) {
+                if (allGranted) {
+                    context.bluetoothSearchListDialog {
+                        connectedDismiss = true
+                        dialogConfig()
+                    }
+                } else {
+                    //权限被禁用, 显示权限跳转提示框
+                    //toast(_string(R.string.permission_disabled))
+                    context.normalDialog {
+                        dialogTitle = _string(R.string.engrave_warn)
+                        dialogMessage = _string(R.string.ble_permission_disabled)
+
+                        positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
+                            dialog.dismiss()
+                            context.toApplicationDetailsSettings()
+                        }
+                    }
+                }
+            }
+
+            fragment?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                permissionsResult(allGranted)
+            }
+            fragmentActivity?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
+                permissionsResult(allGranted)
+            }
         }
     }
 

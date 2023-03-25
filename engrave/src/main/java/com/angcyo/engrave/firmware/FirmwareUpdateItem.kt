@@ -10,7 +10,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toFirmwareVersionString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
-import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.normalDialog
@@ -19,7 +18,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.UpdateAdapterProperty
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.ble.bluetoothSearchListDialog
+import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.library.L
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.*
@@ -173,27 +172,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
     /**搜索设备*/
     fun searchDeviceList() {
         itemFragment?.apply {
-            dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                if (allGranted) {
-                    //vmApp<FscBleApiModel>().connect("DC:0D:30:10:05:E7")
-                    context?.bluetoothSearchListDialog {
-                        connectedDismiss = true
-                    }
-                } else {
-                    //toast("蓝牙权限被禁用!")
-                    //权限被禁用, 显示权限跳转提示框
-                    //toast(_string(R.string.permission_disabled))
-                    context?.normalDialog {
-                        dialogTitle = _string(R.string.engrave_warn)
-                        dialogMessage = _string(R.string.ble_permission_disabled)
-
-                        positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
-                            dialog.dismiss()
-                            dialogViewHolder.context.toApplicationDetailsSettings()
-                        }
-                    }
-                }
-            }
+            BluetoothSearchHelper.checkAndSearchDevice(this)
         }
     }
 

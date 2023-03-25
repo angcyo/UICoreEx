@@ -3,6 +3,8 @@ package com.angcyo.canvas2.laser.pecker
 import android.graphics.Color
 import android.graphics.Path
 import android.view.ViewGroup
+import com.angcyo.base.dslAHelper
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -14,7 +16,9 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave.R
+import com.angcyo.engrave.ble.BluetoothSearchHelper
 import com.angcyo.engrave.ble.DeviceConnectTipActivity
+import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.engrave.model.PreviewModel
@@ -316,43 +320,25 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
         //显示蓝牙界面
         viewHolder.throttleClick(R.id.device_tip_wrap_layout) {
-            /*if (laserPeckerModel.initializeData.value == true && engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+            if (laserPeckerModel.initializeData.value == true && engraveFlowLayoutHelper.isAttach()) {
                 //界面已经显示, 并且有设备连接, 则不允许切换蓝牙设备
                 return@throttleClick
             } else {
-                engraveCanvasFragment.fragment.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
-                    if (allGranted) {
-                        engraveCanvasFragment.fragment.fContext().bluetoothSearchListDialog {
-                            connectedDismiss = true
-                        }
-                    } else {
-                        //权限被禁用, 显示权限跳转提示框
-                        //toast(_string(R.string.permission_disabled))
-                        it.context.normalDialog {
-                            dialogTitle = _string(R.string.engrave_warn)
-                            dialogMessage = _string(R.string.ble_permission_disabled)
-
-                            positiveButton(_string(R.string.ui_enable_permission)) { dialog, dialogViewHolder ->
-                                dialog.dismiss()
-                                dialogViewHolder.context.toApplicationDetailsSettings()
-                            }
-                        }
-                    }
-                }
-            }*/
+                BluetoothSearchHelper.checkAndSearchDevice(fragment)
+            }
         }
 
         //显示设备设置界面
         viewHolder.throttleClick(R.id.device_setting_view) {
-            /*if (engraveCanvasFragment.engraveFlowLayoutHelper.isAttach()) {
+            if (engraveFlowLayoutHelper.isAttach()) {
                 return@throttleClick
             } else if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
-                engraveCanvasFragment.fragment.dslAHelper {
+                fragment.dslAHelper {
                     start(DeviceSettingFragment::class.java)
                 }
             } else {
                 viewHolder.clickCallView(R.id.device_tip_wrap_layout)
-            }*/
+            }
         }
     }
 
