@@ -67,6 +67,16 @@ val DslViewHolder.canvasControlAdapter: DslAdapter?
 
 //---
 
+/**图层列表rv*/
+val DslViewHolder.canvasLayerRv: DslRecyclerView?
+    get() = v(R.id.canvas_layer_view)
+
+/**[canvasLayerRv]*/
+val DslViewHolder.canvasLayerAdapter: DslAdapter?
+    get() = canvasLayerRv?._dslAdapter
+
+//---
+
 fun DslAdapterItem.drawCanvasRight(
     insertRight: Int = _dimen(R.dimen.lib_line),
     offsetTop: Int = _dimen(R.dimen.lib_drawable_padding),

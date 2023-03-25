@@ -124,6 +124,36 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         productLayoutHelper.bindProductLayout()
     }
 
+    //禁用之前是否是编辑item
+    private var _disableBeforeIsEditItem = false
+
+    /**禁用编辑item*/
+    fun disableEditItem(disable: Boolean) {
+        val editItem = renderControlHelper.editItem
+        if (editItem?.itemEnable == !disable) {
+            return
+        }
+
+        if (disable) {
+            //禁用
+            _disableBeforeIsEditItem = false
+            val item = _selectItem
+            if (item != null && item.itemTag == ControlEditItem.TAG_EDIT_ITEM) {
+                _disableBeforeIsEditItem = true
+                changeSelectItem(null)
+            }
+        }
+        editItem?.apply {
+            itemEnable = !disable
+            updateAdapterItem()
+        }
+        updateUndoLayout()
+        if (!disable && _disableBeforeIsEditItem) {
+            //启用, 恢复之前的编辑状态
+            renderControlHelper.bindControlLayout()
+        }
+    }
+
     private var _selectItem: DslAdapterItem? = null
 
     /**切换底部选中的item*/
@@ -524,7 +554,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
         }
         val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
 
-        vh.rv(R.id.canvas_layer_view)?.apply {
+        vh.canvasLayerRv?.apply {
             if (tabIndex == 0) {
                 //正常图层
                 if (_layerDragHelper == null) {
@@ -609,6 +639,15 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             }
         }
         updateLayerControlLayout()
+    }
+
+    /**更新图层布局*/
+    fun updateLayerListLayout() {
+        val vh = _rootViewHolder ?: return
+        if (vh.isVisible(R.id.canvas_layer_layout)) {
+            vh.canvasLayerAdapter?.updateAllItem()
+            updateLayerControlLayout()
+        }
     }
 
     /**更新图层下面的几个控制按钮*/

@@ -79,14 +79,6 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //监听设备状态, Z/R/S连接状态
         laserPeckerModel.deviceStateData.observe(fragment) {
-            /* val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
-             val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
-             val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
-             if (beforeZ != it?.zConnect || beforeR != it.rConnect || beforeS != it.sConnect) {
-                 //z轴连接状态改变后, 检查是否要限制z轴限制
-                 _showZRSLimit(canvasView)
-             }*/
-
             //设备模式提示
             val stateString = it?.toDeviceStateString()
             val beforeMode = laserPeckerModel.deviceStateData.beforeValue?.mode
