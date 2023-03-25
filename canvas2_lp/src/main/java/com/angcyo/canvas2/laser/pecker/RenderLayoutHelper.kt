@@ -4,12 +4,14 @@ import android.graphics.Matrix
 import com.angcyo.canvas.render.core.*
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
+import com.angcyo.canvas.render.core.component.PointTouchComponent
 import com.angcyo.canvas.render.data.TouchSelectorInfo
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.state.GroupStateStack
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.unit.IRenderUnit
+import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
@@ -26,10 +28,12 @@ import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
+import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex.*
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
+import com.angcyo.widget.base.showPopupMenu
 import com.angcyo.widget.recycler.renderDslAdapter
 
 /**
@@ -464,6 +468,60 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                         //恢复groupId
                         subRenderer.lpElementBean()?.groupId =
                             stateStack.valueMap[subRenderer.uuid]?.toString()
+                    }
+                }
+            }
+
+            override fun onPointTouchEvent(component: PointTouchComponent, type: Int) {
+                if (component.pointTag == PointTouchComponent.TAG_INITIAL) {
+                    if (type == PointTouchComponent.TOUCH_TYPE_CLICK) {
+                        //点击左上角
+                        val rect = acquireTempRectF()
+                        val renderViewBox = canvasRenderDelegate?.renderViewBox ?: return
+                        var def = true
+                        val primaryLimitBounds =
+                            canvasRenderDelegate?.renderManager?.limitRenderer?.findLimitInfo { it.tag == TAG_MAIN }?.bounds
+                        if (primaryLimitBounds != null) {
+                            rect.set(primaryLimitBounds)
+                            def = false
+                        }
+                        if (!def) {
+                            canvasRenderDelegate?.showRectBounds(rect, offsetRectTop = true)
+                        } else {
+                            val matrix = Matrix()
+                            matrix.setTranslate(0f, 0f)
+                            matrix.postScale(
+                                renderViewBox.getScaleX(),
+                                renderViewBox.getScaleY(),
+                                renderViewBox.getOriginPoint().x,
+                                renderViewBox.getOriginPoint().y
+                            )
+                            renderViewBox.changeRenderMatrix(matrix, true, Reason.user)
+                        }
+                    } else if (type == PointTouchComponent.TOUCH_TYPE_LONG_PRESS) {
+                        //长按左上角
+                        canvasRenderDelegate?.let { delegate ->
+                            val renderViewBox = delegate.renderViewBox
+                            delegate.view.longFeedback()
+                            delegate.view.showPopupMenu(R.menu.initial_menu) {
+                                offsetX = delegate.initialPointComponent.pointRect.right.toInt()
+                                offsetY =
+                                    -(delegate.view.mH() - delegate.initialPointComponent.pointRect.bottom.toInt())
+                                menuItemClickAction = {
+                                    when (it.itemId) {
+                                        R.id.menu_clear -> delegate.removeAllElementRenderer()
+                                        R.id.menu_reset -> renderViewBox.reset()
+                                        R.id.menu_best -> onPointTouchEvent(
+                                            component,
+                                            PointTouchComponent.TOUCH_TYPE_CLICK
+                                        )
+                                        R.id.menu_ratio_1 -> renderViewBox.scaleTo(1f, 1f)
+                                        R.id.menu_origin -> renderViewBox.translateTo(0f, 0f)
+                                    }
+                                    true
+                                }
+                            }
+                        }
                     }
                 }
             }

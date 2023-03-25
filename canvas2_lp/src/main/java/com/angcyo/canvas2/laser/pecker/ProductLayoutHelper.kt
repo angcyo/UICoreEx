@@ -39,6 +39,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         /**雕刻颜色*/
         const val ENGRAVE_COLOR = Color.RED
+
+        const val TAG_MAIN = "main"
     }
 
     @CallPoint
@@ -237,7 +239,12 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         )
         //物理尺寸用红色提示
         limitList.add(
-            LimitInfo(productInfo.bounds.toPath(), productInfo.bounds, ENGRAVE_COLOR)
+            LimitInfo(
+                productInfo.bounds.toPath(),
+                productInfo.bounds,
+                ENGRAVE_COLOR,
+                tag = TAG_MAIN
+            )
         )
 
         canvasRenderDelegate?.resetLimitRender(limitList)
@@ -256,7 +263,12 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 LimitInfo(limitPath, limitPath.computePathBounds(), ENGRAVE_COLOR)
             )
             limitList.add(
-                LimitInfo(productInfo.bounds.toPath(), productInfo.bounds, enableRender = false)
+                LimitInfo(
+                    productInfo.bounds.toPath(),
+                    productInfo.bounds,
+                    enableRender = false,
+                    tag = TAG_MAIN
+                )
             )
 
             canvasRenderDelegate?.resetLimitRender(limitList)
