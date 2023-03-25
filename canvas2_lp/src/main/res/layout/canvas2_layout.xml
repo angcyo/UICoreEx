@@ -30,7 +30,10 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/lib_theme_solid_gradient_round"
+        tools:layout_height="40dp"
+        tools:layout_width="140dp">
 
         <!--<include layout="@layout/lib_state_tip_layout" />
 

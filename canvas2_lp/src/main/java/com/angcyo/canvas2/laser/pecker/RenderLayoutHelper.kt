@@ -43,7 +43,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     /**调用入口*/
     @CallPoint
-    fun bindCanvasLayout(vh: DslViewHolder) {
+    fun bindRenderLayout(vh: DslViewHolder) {
         _rootViewHolder = vh
 
         //恢复设置
@@ -119,6 +119,9 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
         //undo
         updateUndoLayout()
+
+        //product
+        productLayoutHelper.bindProductLayout()
     }
 
     private var _selectItem: DslAdapterItem? = null
@@ -189,6 +192,9 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
     /**控制布局助手*/
     val renderControlHelper = RenderControlHelper(this)
+
+    /**产品布局助手*/
+    val productLayoutHelper = ProductLayoutHelper(this)
 
     internal var _rootViewHolder: DslViewHolder? = null
 
@@ -264,12 +270,18 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                             LPConstant.DATA_TYPE_GCODE -> {
                                 if (bean.paintStyle == 1) {
                                     //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
-                                    renderer.requestUpdateDrawableFlag(Reason.preview, renderDelegate)
+                                    renderer.requestUpdateDrawableFlag(
+                                        Reason.preview,
+                                        renderDelegate
+                                    )
                                 }
                             }
                             LPConstant.DATA_TYPE_BITMAP -> {
                                 if (bean.imageFilter == LPConstant.DATA_MODE_GCODE) {
-                                    renderer.requestUpdateDrawableFlag(Reason.preview, renderDelegate)
+                                    renderer.requestUpdateDrawableFlag(
+                                        Reason.preview,
+                                        renderDelegate
+                                    )
                                 }
                             }
                         }

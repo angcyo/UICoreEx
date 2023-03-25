@@ -53,7 +53,7 @@ object LPElementHelper {
     var POSITION_CUT_LEFT = 30f
 
     @MM
-    var POSITION_CUT_TOP = 30f * 5
+    var POSITION_CUT_TOP = POSITION_CUT_LEFT * 5
 
     /**分配一个位置, 和智能调整缩放*/
     fun assignLocation(bean: LPElementBean) {

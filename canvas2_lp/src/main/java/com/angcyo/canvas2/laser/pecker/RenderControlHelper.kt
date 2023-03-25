@@ -5,8 +5,6 @@ import android.graphics.Paint
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas.render.core.CanvasSelectorManager
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
@@ -30,7 +28,6 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.*
 import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*
 import com.angcyo.transition.dslTransition
@@ -43,13 +40,7 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/08
  */
-class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
-
-    val canvasRenderDelegate: CanvasRenderDelegate?
-        get() = renderLayoutHelper._rootViewHolder?.renderDelegate
-
-    val selectorManager: CanvasSelectorManager?
-        get() = canvasRenderDelegate?.selectorManager
+class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) : IControlHelper {
 
     /**编辑item*/
     val editItem: DslAdapterItem?
@@ -59,12 +50,10 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     val isEditEnable: Boolean
         get() = editItem == null || editItem?.itemEnable == true
 
-    val fragment: AbsLifecycleFragment
-        get() = renderLayoutHelper.canvasFragment.fragment
-
     //region ---基础---
 
     /**根据选中状态自动渲染/隐藏布局*/
+    @CallPoint
     fun bindControlLayout() {
         renderLayoutHelper.changeSelectItem(null)
         val selectorRenderer = selectorManager?.getTargetSelectorRenderer()
@@ -80,7 +69,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     fun showControlLayout(fromItem: DslAdapterItem?) {
         if (isEditEnable) {
             editItem?.updateItemSelected(fromItem == null || fromItem == editItem)
-            renderLayoutHelper._rootViewHolder?.apply {
+            _rootViewHolder?.apply {
                 //转场动画
                 dslTransition(itemView as ViewGroup) {
                     onCaptureStartValues = {
@@ -98,7 +87,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     fun hideControlLayout() {
         if (isEditEnable) {
             editItem?.updateItemSelected(false)
-            renderLayoutHelper._rootViewHolder?.apply {
+            _rootViewHolder?.apply {
                 //转场动画
                 dslTransition(itemView as ViewGroup) {
                     onCaptureStartValues = {
@@ -115,7 +104,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     /**追加控制item*/
     fun renderControlItems(renderer: BaseRenderer? = selectorManager?.getTargetSelectorRenderer()) {
         //控制item渲染
-        renderLayoutHelper._rootViewHolder?.canvasControlRv?.renderDslAdapter {
+        _rootViewHolder?.canvasControlRv?.renderDslAdapter {
             renderLayoutHelper.hookUpdateDepend(this)
 
             //渲染不同的控制item
@@ -150,7 +139,7 @@ class RenderControlHelper(val renderLayoutHelper: RenderLayoutHelper) {
     /**当有元素属性更新时, 触发更新显示*/
     @CallPoint
     fun updateControlLayout() {
-        val vh = renderLayoutHelper._rootViewHolder ?: return
+        val vh = _rootViewHolder ?: return
         if (vh.isVisible(R.id.canvas_control_layout)) {
             vh.canvasControlAdapter?.apply {
                 eachItem { index, item ->
