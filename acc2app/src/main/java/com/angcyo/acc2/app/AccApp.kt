@@ -4,6 +4,7 @@ import android.content.Context
 import com.angcyo.acc2.app.component.AccWindow
 import com.angcyo.acc2.app.helper.LogHelper
 import com.angcyo.acc2.app.http.AccGitee
+import com.angcyo.acc2.app.http.UserHelper
 import com.angcyo.acc2.app.http.bean.MemoryConfigBean
 import com.angcyo.acc2.core.AccPermission
 import com.angcyo.core.CoreApplication
@@ -20,6 +21,7 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.libCacheFile
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.Device
 import com.angcyo.library.utils.RUtils
 import com.angcyo.library.utils.fillTo
@@ -169,4 +171,19 @@ fun MemoryConfigBean.fillPks(): MemoryConfigBean {
         )
     }
     return this
+}
+
+/**[com.angcyo.library.ex.AppExKt.getCanUsedState]*/
+fun killApp(state: Any) {
+
+    if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {
+        //设备被忽略
+        return
+    }
+
+    toastQQ("此设备无法使用[$state]")
+    //kill
+    if (!isDebug()) {
+        UserHelper.exit()
+    }
 }

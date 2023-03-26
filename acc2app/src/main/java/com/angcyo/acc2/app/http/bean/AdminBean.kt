@@ -22,6 +22,8 @@ data class AdminBean(
     var debugDevices: List<String>? = null,
     var superDevices: List<String>? = null,
     var selfDevices: List<String>? = null,
+    //被禁止使用的设备列表
+    var disableDevices: List<String>? = null,
     //vip的设备列表
     var vip: List<String>? = null,
 )

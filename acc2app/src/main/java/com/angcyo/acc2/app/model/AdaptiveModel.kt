@@ -277,6 +277,11 @@ class AdaptiveModel : LifecycleViewModel() {
         return adminData.value?.vip?.contains(device) == true
     }
 
+    /**是否是被禁用的设备*/
+    fun isDisableDevice(device: String = Device.androidId): Boolean {
+        return adminData.value?.disableDevices?.contains(device) == true
+    }
+
     /**更新配置
      * [com.angcyo.acc2.app.AccMainActivity.onResume]*/
     fun updateOnResume() {

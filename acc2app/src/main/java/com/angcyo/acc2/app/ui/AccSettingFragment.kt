@@ -4,15 +4,13 @@ import android.os.Bundle
 import com.angcyo.acc2.app.AccAppDslFragment
 import com.angcyo.acc2.app.R
 import com.angcyo.acc2.app.app
-import com.angcyo.acc2.app.http.UserHelper.exit
+import com.angcyo.acc2.app.killApp
 import com.angcyo.dsladapter.find
 import com.angcyo.item.DslBottomButtonItem
 import com.angcyo.item.style.itemButtonText
 import com.angcyo.library.ex.getCanUsedState
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.Device
 
 /**
  *
@@ -106,21 +104,6 @@ open class AccSettingFragment : AccAppDslFragment() {
                     killApp(state)
                 }
             }
-        }
-    }
-
-    /**[com.angcyo.library.ex.AppExKt.getCanUsedState]*/
-    open fun killApp(state: Int) {
-
-        if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {
-            //设备被忽略
-            return
-        }
-
-        toastQQ("此设备无法使用[$state]")
-        //kill
-        if (!isDebug()) {
-            exit()
         }
     }
 }
