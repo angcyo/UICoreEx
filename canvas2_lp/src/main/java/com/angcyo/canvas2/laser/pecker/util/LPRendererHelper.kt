@@ -230,7 +230,7 @@ fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = render
 
         data = jsonArray {
             renderList?.forEach { renderer ->
-                val list = renderer.getSingleRendererList()
+                val list = renderer.getSingleRendererList(false)
                 list.forEach { sub ->
                     try {
                         sub.lpElement()?.let { element ->

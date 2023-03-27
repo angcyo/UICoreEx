@@ -5,9 +5,6 @@ import android.graphics.RectF
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.unit.InchRenderUnit
-import com.angcyo.library.unit.MmRenderUnit
-import com.angcyo.library.unit.PxRenderUnit
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.vmApp
@@ -31,6 +28,9 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.unit.InchRenderUnit
+import com.angcyo.library.unit.MmRenderUnit
+import com.angcyo.library.unit.PxRenderUnit
 import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
@@ -214,18 +214,19 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     canvasDelegate?.refresh()
                 }
             }
-            /*DslSwitchInfoItem()() {
+            DslSwitchInfoItem()() {
+                val smartAssistant = canvasDelegate?.controlManager?.smartAssistantComponent
                 itemInfoText = _string(R.string.canvas_smart_assistant)
-                itemSwitchChecked = canvasDelegate?.smartAssistant?.enable == true
+                itemSwitchChecked = smartAssistant?.isEnableComponent == true
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
-                    canvasDelegate?.smartAssistant?.enable = it
+                    smartAssistant?.isEnableComponent = it
                     LPConstant.CANVAS_SMART_ASSISTANT = it
                     if (it) {
                         UMEvent.SMART_ASSISTANT.umengEventValue()
                     }
                 }
-            }*/
+            }
         }
     }
 }

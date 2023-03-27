@@ -10,7 +10,6 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.state.GroupStateStack
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
@@ -30,6 +29,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex.*
+import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
@@ -244,7 +244,9 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             updateRenderUnit(LPConstant.renderUnit)
         }
         //智能指南恢复
-        //canvasDelegate.smartAssistant.enable = CanvasConstant.CANVAS_SMART_ASSISTANT
+        canvasRenderDelegate?.controlManager?.apply {
+            smartAssistantComponent.isEnableComponent = LPConstant.CANVAS_SMART_ASSISTANT
+        }
     }
 
     /**监听, 并赋值[IFragmentItem]*/
@@ -288,7 +290,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 finish: Boolean
             ) {
                 if (finish && reason.controlType.have(BaseControlPoint.CONTROL_TYPE_SCALE)) {
-                    val list = renderDelegate.renderManager.getAllElementRendererList(true)
+                    val list = renderDelegate.renderManager.getAllElementRendererList(true, false)
                     for (renderer in list) {
                         val bean = renderer.lpElementBean()
                         when (bean?.mtype) {
@@ -453,7 +455,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             /**群组状态的保存和恢复*/
             override fun onRendererSaveState(renderer: BaseRenderer, stateStack: IStateStack) {
                 if (stateStack is GroupStateStack) {
-                    for (subRenderer in renderer.getSingleRendererList()) {
+                    for (subRenderer in renderer.getSingleRendererList(false)) {
                         subRenderer.lpElementBean()?.apply {
                             //保存groupId
                             stateStack.valueMap[subRenderer.uuid] = groupId
@@ -464,7 +466,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
 
             override fun onRendererRestoreState(renderer: BaseRenderer, stateStack: IStateStack) {
                 if (stateStack is GroupStateStack) {
-                    for (subRenderer in renderer.getSingleRendererList()) {
+                    for (subRenderer in renderer.getSingleRendererList(false)) {
                         //恢复groupId
                         subRenderer.lpElementBean()?.groupId =
                             stateStack.valueMap[subRenderer.uuid]?.toString()
@@ -641,7 +643,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 renderDslAdapter {
                     hookUpdateDepend(this)
                     val allElementRendererList =
-                        delegate.renderManager.getAllElementRendererList(false)
+                        delegate.renderManager.getAllElementRendererList(false, false)
                     allElementRendererList.forEach { renderer ->
                         //后面添加的元素, 在顶部显示
                         CanvasLayerItem()(0) {
