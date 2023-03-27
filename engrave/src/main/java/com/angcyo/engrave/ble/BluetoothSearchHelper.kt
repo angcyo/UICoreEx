@@ -71,7 +71,8 @@ class BluetoothSearchHelper {
             return false
         }
 
-        /**检查蓝牙权限, 并显示搜索对话框*/
+        /**检查蓝牙权限, 并显示搜索对话框
+         * [fragment] [fragmentActivity] 二选一*/
         fun checkAndSearchDevice(
             fragment: Fragment? = null,
             fragmentActivity: FragmentActivity? = null,
