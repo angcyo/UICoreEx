@@ -2,7 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem
 
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas.render.unit.IRenderUnit
+import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 

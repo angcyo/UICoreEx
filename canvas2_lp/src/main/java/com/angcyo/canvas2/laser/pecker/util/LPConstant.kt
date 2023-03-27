@@ -1,10 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.util
 
 import android.graphics.Paint
-import com.angcyo.canvas.render.unit.IRenderUnit
-import com.angcyo.canvas.render.unit.InchRenderUnit
-import com.angcyo.canvas.render.unit.MmRenderUnit
-import com.angcyo.canvas.render.unit.PxRenderUnit
+import com.angcyo.library.unit.IRenderUnit
+import com.angcyo.library.unit.InchRenderUnit
+import com.angcyo.library.unit.MmRenderUnit
+import com.angcyo.library.unit.PxRenderUnit
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_BLACK_WHITE
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_DITHERING
 import com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_GCODE
