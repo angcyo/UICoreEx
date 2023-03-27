@@ -860,7 +860,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
                 itemStopAction = {
                     //停止雕刻, 直接完成
-                    engraveModel.stopEngrave()
+                    engraveModel.stopEngrave("来自点击按钮")
                 }
             }
         }

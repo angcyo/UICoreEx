@@ -170,7 +170,7 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
                     }
                 }
                 itemStopAction = {
-                    engraveModel.stopEngrave()
+                    engraveModel.stopEngrave("来自点击按钮")
                     ExitCmd().enqueue()
                     finish()
                 }

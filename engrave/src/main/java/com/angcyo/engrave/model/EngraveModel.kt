@@ -588,8 +588,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**停止雕刻*/
-    fun stopEngrave() {
-        "停止雕刻[${_engraveTaskId}]".writeEngraveLog()
+    fun stopEngrave(reason: String?) {
+        "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
         EngraveCmd.stopEngrave().enqueue()
         finishEngrave()
         ExitCmd().enqueue()
