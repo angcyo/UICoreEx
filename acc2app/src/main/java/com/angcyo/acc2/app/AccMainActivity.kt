@@ -99,7 +99,12 @@ open class AccMainActivity : BaseCoreAppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (isDebug()) {
+        val adaptiveModel = vmApp<AdaptiveModel>()
+        if (isDebug() || adaptiveModel.isSelfDevice() ||
+            adaptiveModel.isDebugDevice() ||
+            adaptiveModel.isVip() ||
+            adaptiveModel.isSuperAdmin()
+        ) {
             pinchGestureDetector.onTouchEvent(ev)
         }
         return super.dispatchTouchEvent(ev)
