@@ -33,6 +33,7 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.random.Random
 
 /**
  * 雕刻数据相关处理
@@ -58,11 +59,14 @@ class EngraveTransitionManager {
          * 4个字节 最大 4_294_967_295
          * */
         fun generateEngraveIndex(): Int {
-            val millis = System.currentTimeMillis() //13位毫秒
+            var millis = System.currentTimeMillis() //13位毫秒
             /*val s = millis / 1000 //10位秒
             val m = millis % 1000 //毫秒
             val r = nextInt(0, m.toInt()) //随机数
             return (s + m + r).toInt()*/
+            millis = (millis shl 16) or Random.nextLong(1, 0b1111111111111111)
+            //8位随机数255
+            //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
             return (millis and 0xfff_ffff).toInt()
         }
 
