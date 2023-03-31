@@ -157,7 +157,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**初始化*/
     private fun ICanvasRendererItem.initItem(renderer: BaseRenderer?) {
         itemRenderer = renderer
-        itemRenderDelegate = canvasRenderDelegate
+        itemRenderDelegate = renderDelegate
     }
 
     //endregion ---基础---
@@ -177,7 +177,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         LPBitmapHandler.handleBlackWhite(
-                            canvasRenderDelegate,
+                            renderDelegate,
                             it,
                             fragment,
                             renderer
@@ -200,7 +200,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         LPBitmapHandler.handleDithering(
-                            canvasRenderDelegate,
+                            renderDelegate,
                             it,
                             fragment,
                             renderer
@@ -222,7 +222,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleGCode(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handleGCode(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -240,7 +240,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemRenderer = renderer
                     itemImageFilter = EngraveConstant.DATA_MODE_GREY
                     itemClick = {
-                        LPBitmapHandler.handleGrey(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handleGrey(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -258,7 +258,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handlePrint(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handlePrint(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -276,7 +276,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleSeal(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handleSeal(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -295,7 +295,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleMesh(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handleMesh(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
                             updateAllItemBy { it is ImageFilterItem }
                         }
@@ -313,7 +313,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handleCrop(canvasRenderDelegate, it, fragment, renderer) {
+                        LPBitmapHandler.handleCrop(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
                         UMEvent.CANVAS_IMAGE_CROP.umengEventValue()
@@ -545,7 +545,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             initItem(renderer)
             itemEnable = renderer.isSelectorGroupRenderer() && renderer.rendererList.size() > 1
             itemClick = {
-                renderer.groupRendererGroup(canvasRenderDelegate, Reason.user, Strategy.normal)
+                renderer.groupRendererGroup(renderDelegate, Reason.user, Strategy.normal)
             }
         }
         CanvasIconItem()() { //解组
@@ -555,7 +555,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemEnable = renderer.isOnlyGroupRenderer()
             drawCanvasRight()
             itemClick = {
-                renderer.groupRendererDissolve(canvasRenderDelegate, Reason.user, Strategy.normal)
+                renderer.groupRendererDissolve(renderDelegate, Reason.user, Strategy.normal)
             }
         }
     }

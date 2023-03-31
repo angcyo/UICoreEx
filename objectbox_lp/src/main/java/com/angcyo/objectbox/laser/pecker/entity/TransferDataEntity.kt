@@ -121,12 +121,10 @@ data class TransferDataEntity(
     //---
 
     /**当前的数据, 属于那个图层. 图层决定了雕刻参数
-     * [com.angcyo.engrave.data.EngraveLayerInfo]
-     *
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerMode]
      *
-     * [com.angcyo.engrave.data.EngraveLayerInfo]
-     * [com.angcyo.engrave.transition.EngraveTransitionManager.engraveLayerList]
+     * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
+     * [com.angcyo.laserpacker.device.EngraveHelper.engraveLayerList]
      * */
     var layerMode: Int = -1,
 

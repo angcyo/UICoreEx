@@ -14,6 +14,7 @@ import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
 import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
+import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
 import com.angcyo.canvas2.laser.pecker.util.*
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
@@ -335,6 +336,13 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             ) {
                 renderControlHelper.bindControlLayout()
                 renderLayerListLayout()
+
+                //更新预览的范围
+                val peckerModel = renderFragment.engraveFlowLayoutHelper.laserPeckerModel
+                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
+                    //设备正在预览模式, 更新预览
+                    LPPreviewHelper.updatePreviewByRenderer(renderFragment, to)
+                }
             }
 
             override fun onRendererFlagsChange(
@@ -358,6 +366,15 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     renderer.lpElementBean()?.index = null //清空数据索引
 
                     needUpdateControlLayout = true
+
+                    //更新预览的范围
+                    val peckerModel = renderFragment.engraveFlowLayoutHelper.laserPeckerModel
+                    if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true &&
+                        delegate?.isRendererSelector(renderer) == true
+                    ) {
+                        //设备正在预览模式, 更新预览
+                        LPPreviewHelper.updatePreviewByRenderer(renderFragment, renderer.toListOf())
+                    }
                 }
                 if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
                     reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)

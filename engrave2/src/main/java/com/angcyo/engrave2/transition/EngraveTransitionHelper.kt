@@ -297,8 +297,6 @@ object EngraveTransitionHelper {
         engraveDataType: Int
     ) = TransferDataEntity().apply {
         this.engraveDataType = engraveDataType
-        //图层模式赋值, 和数据模式本质是一样的, 外部可以修改赋值
-        this.layerMode = engraveDataType
         initTransferDataIndex(this, provider, transferConfigEntity)
     }
 

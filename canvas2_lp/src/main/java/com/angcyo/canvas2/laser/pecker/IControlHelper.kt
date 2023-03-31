@@ -14,11 +14,11 @@ interface IControlHelper {
 
     val renderLayoutHelper: RenderLayoutHelper
 
-    val canvasRenderDelegate: CanvasRenderDelegate?
+    val renderDelegate: CanvasRenderDelegate?
         get() = renderLayoutHelper._rootViewHolder?.renderDelegate
 
     val selectorManager: CanvasSelectorManager?
-        get() = canvasRenderDelegate?.selectorManager
+        get() = renderDelegate?.selectorManager
 
     val fragment: AbsLifecycleFragment
         get() = renderLayoutHelper.renderFragment.fragment

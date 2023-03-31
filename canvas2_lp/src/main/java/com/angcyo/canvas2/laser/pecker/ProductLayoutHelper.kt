@@ -176,8 +176,9 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
 
         //监听雕刻任务
-        /*canvasView?.let {
-            val taskRenderer = EngraveTaskRenderer.install(it.canvasDelegate)
+        //todo 2023-3-31
+        renderDelegate?.let {
+            /*val taskRenderer = EngraveTaskRenderer.install(it.canvasDelegate)
             engraveModel.engraveStateData.observe(fragment, allowBackward = false) {
                 it?.let {
                     if (it.state != EngraveModel.ENGRAVE_STATE_FINISH) {
@@ -188,8 +189,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     }
                     taskRenderer.refresh()
                 }
-            }
-        }*/
+            }*/
+        }
 
         //发送一次初始化成功的事件
         laserPeckerModel.initializeData.value?.let {
@@ -227,7 +228,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**显示产品限制框*/
     private fun _showProductLimit(productInfo: LaserPeckerProductInfo?) {
         if (productInfo == null) {
-            canvasRenderDelegate?.clearLimitRender()
+            renderDelegate?.clearLimitRender()
         } else {
             _updateProductLimit(productInfo)
         }
@@ -250,8 +251,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             )
         )
 
-        canvasRenderDelegate?.resetLimitRender(limitList)
-        canvasRenderDelegate?.showRectBounds(productInfo.bounds, offsetRectTop = true)
+        renderDelegate?.resetLimitRender(limitList)
+        renderDelegate?.showRectBounds(productInfo.bounds, offsetRectTop = true)
     }
 
     /**显示Z/R/S轴限制框*/
@@ -274,8 +275,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 )
             )
 
-            canvasRenderDelegate?.resetLimitRender(limitList)
-            canvasRenderDelegate?.showRectBounds(productInfo.bounds, offsetRectTop = true)
+            renderDelegate?.resetLimitRender(limitList)
+            renderDelegate?.showRectBounds(productInfo.bounds, offsetRectTop = true)
         } else {
             _showProductLimit(productInfo)
         }

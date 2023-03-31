@@ -1,14 +1,17 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.graphics.RectF
+import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
+import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.engrave2.model.PreviewModel
+import com.angcyo.library.component._debounce
 import com.angcyo.library.ex.size
 
 /**
@@ -29,6 +32,30 @@ object LPPreviewHelper {
         PreviewModel.defaultPreviewInfo(result)
         updatePreviewInfo(result, rendererList)
         return result
+    }
+
+    /**使用[itemRenderer], 更新预览信息*/
+    fun updatePreviewByRenderer(
+        renderFragment: IEngraveRenderFragment,
+        rendererList: List<BaseRenderer>?,
+    ) {
+        val flowLayoutHelper = renderFragment.engraveFlowLayoutHelper
+        if (!flowLayoutHelper.isInitialize) {
+            return
+        }
+        if (!flowLayoutHelper.isAttach() &&
+            !renderFragment.engraveFlowLayoutHelper.isMinimumPreview
+        ) {
+            flowLayoutHelper.startPreview(renderFragment)
+            return
+        }
+        if (rendererList.isNullOrEmpty()) {
+            return
+        }
+        updatePreview(rendererList, sendCmd = false)
+        _debounce {
+            updatePreview(rendererList)
+        }
     }
 
     /**渲染初始化*/
@@ -59,6 +86,28 @@ object LPPreviewHelper {
                 //选中元素的情况下预览
                 originBounds = CanvasGroupRenderer.getRendererListRenderProperty(rendererList)
                     .getRenderBounds(RectF())
+            }
+        }
+    }
+
+    /**使用[rendererList]更新预览操作
+     * [updatePreview]*/
+    @AnyThread
+    private fun updatePreview(
+        rendererList: List<BaseRenderer>?,
+        async: Boolean = true,
+        sendCmd: Boolean = true
+    ) {
+        val laserPeckerModel = vmApp<LaserPeckerModel>()
+        val previewModel = vmApp<PreviewModel>()
+        previewModel.updatePreview(async, sendCmd) {
+            updatePreviewInfo(this, rendererList)
+
+            //有外设的情况下, z轴优先暂停滚动
+            zState = if (laserPeckerModel.haveExDevice()) {
+                PreviewInfo.Z_STATE_PAUSE
+            } else {
+                zState // def
             }
         }
     }

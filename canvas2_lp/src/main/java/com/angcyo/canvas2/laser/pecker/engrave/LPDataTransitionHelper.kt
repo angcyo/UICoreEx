@@ -104,6 +104,12 @@ object LPDataTransitionHelper {
         } else {
             "无法处理的元素[${element.classHash()}]".writeToLog(logLevel = L.WARN)
         }
+
+        //图层模式
+        result?.apply {
+            layerMode = bean._layerMode ?: -1
+        }
+
         return result
     }
 
