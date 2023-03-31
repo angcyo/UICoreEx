@@ -11,20 +11,19 @@ import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.state.GroupStateStack
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
-import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
+import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
+import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.util.*
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave.IEngraveCanvasFragment
-import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
@@ -41,7 +40,7 @@ import com.angcyo.widget.recycler.renderDslAdapter
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/03
  */
-class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
+class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
     //region ---基础---
 
@@ -255,7 +254,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
             observeItemUpdateDepend {
                 adapterItems.forEach {
                     if (it is IFragmentItem) {
-                        it.itemFragment = canvasFragment.fragment
+                        it.itemFragment = renderFragment.fragment
                     }
                 }
             }
@@ -313,7 +312,7 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                                 }
                             }
                             LPConstant.DATA_TYPE_BITMAP -> {
-                                if (bean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+                                if (bean.imageFilter == EngraveConstant.DATA_MODE_GCODE) {
                                     renderer.requestUpdateDrawableFlag(
                                         Reason.preview,
                                         renderDelegate
@@ -353,6 +352,11 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                 }
                 if (reason.controlType.have(BaseControlPoint.CONTROL_TYPE_DATA)) {
                     //数据改变, 比如切换了图片算法/填充/描边等
+
+                    val index = renderer.lpElementBean()?.index
+                    L.i("数据改变,清空索引:${index} $reason")
+                    renderer.lpElementBean()?.index = null //清空数据索引
+
                     needUpdateControlLayout = true
                 }
                 if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
@@ -667,31 +671,30 @@ class RenderLayoutHelper(val canvasFragment: IEngraveCanvasFragment) {
                     _layerDragHelper = null
                 }
                 renderDslAdapter {
-                    EngraveTransitionManager.engraveLayerList.forEach {
+                    EngraveHelper.engraveLayerList.forEach {
                         CanvasLayerNameItem()() {//雕刻图层
                             itemGroupExtend = true
                             itemChanging = true
                             itemLayerInfo = it
 
                             itemLoadSubList = {
-                                /*val itemList =
-                                    EngraveTransitionManager.getRendererList(canvasDelegate, it)
-                                        .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
-                                            CanvasBaseLayerItem().apply {//元素
-                                                initItem(renderer)
-                                                itemClick = {
-                                                    showItemRendererBounds()
-                                                    if (HawkEngraveKeys.enableItemEngraveParams) {
-                                                        //显示单元素雕刻参数
-                                                        engraveCanvasFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
-                                                            engraveCanvasFragment,
-                                                            renderer
-                                                        )
-                                                    }
+                                val itemList = LPEngraveHelper.getLayerRendererList(delegate, it)
+                                    .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
+                                        CanvasBaseLayerItem().apply {//元素
+                                            initItem(renderer)
+                                            itemClick = {
+                                                showItemRendererBounds()
+                                                if (HawkEngraveKeys.enableItemEngraveParams) {
+                                                    //显示单元素雕刻参数
+                                                    renderFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                                                        renderFragment,
+                                                        renderer
+                                                    )
                                                 }
                                             }
                                         }
-                                itemSubList.resetAll(itemList)*/
+                                    }
+                                itemSubList.resetAll(itemList)
                             }
                         }
                     }

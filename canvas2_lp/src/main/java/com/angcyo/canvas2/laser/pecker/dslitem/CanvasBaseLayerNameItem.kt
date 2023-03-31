@@ -16,8 +16,8 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.EngraveHelper
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
 import com.angcyo.widget.DslViewHolder
@@ -97,7 +97,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
                         LaserPeckerHelper.findProductSupportLaserTypeList()
                             .find {
                                 it.type == (bean.printType
-                                    ?: EngraveHelper.getProductLaserType()).toByte()
+                                    ?: DeviceHelper.getProductLaserType()).toByte()
                             }
                             ?.let { append(it.toText());append(" ") }
                     }

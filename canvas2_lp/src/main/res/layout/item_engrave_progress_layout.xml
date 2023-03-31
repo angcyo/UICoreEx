@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_sdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/lib_padding_right"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/progress" />
+
+    <!--<com.angcyo.engrave.widget.EngraveProgressView
+        android:id="@+id/engrave_progress_view"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/lib_text_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <com.angcyo.widget.progress.DslProgressBar
+        android:id="@+id/engrave_progress_view"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        app:enable_progress_flow_mode="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/lib_text_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:progress_bg_gradient_colors="@color/bg_primary_color"
+        app:progress_clip_mode="false"
+        app:progress_radius="@dimen/lib_radius_big"
+        app:progress_show_text="true"
+        tools:progress_value="50" />
+
+    <View
+        android:id="@+id/engrave_progress_text_view"
+        android:layout_width="50dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/engrave_progress_view"
+        app:layout_constraintRight_toRightOf="@id/engrave_progress_view" />
+
+    <com.angcyo.widget.text.DslTextView
+        android:id="@+id/engrave_layer_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/engrave_progress_view"
+        app:layout_constraintLeft_toLeftOf="@id/engrave_progress_view"
+        app:layout_constraintRight_toLeftOf="@id/engrave_progress_text_view"
+        app:layout_constraintTop_toTopOf="@id/engrave_progress_view"
+        tools:text="@string/progress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

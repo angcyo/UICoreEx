@@ -13,14 +13,14 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.engraveStrokeLoadingCaller
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.http.rx.doBack
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode

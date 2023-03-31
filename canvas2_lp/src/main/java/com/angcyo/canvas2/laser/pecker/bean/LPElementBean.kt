@@ -5,6 +5,7 @@ import android.widget.LinearLayout
 import com.angcyo.canvas2.laser.pecker.toTypeNameString
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
+import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -249,15 +250,15 @@ data class LPElementBean(
      * 图片滤镜 'black'(黑白) | 'seal'(印章) | 'gray'(灰度) | 'prints'(版画) | 'Jitter(抖动)' | 'gcode'
      * imageFilter 图片滤镜 1:黑白 | 2:印章 | 3:灰度 | 4:版画 | 5:抖动 | 6:gcode `2022-9-21`
      *
-     * [LPConstant.DATA_MODE_BLACK_WHITE]
-     * [LPConstant.DATA_MODE_SEAL]
-     * [LPConstant.DATA_MODE_GREY]
-     * [LPConstant.DATA_MODE_PRINT]
-     * [LPConstant.DATA_MODE_DITHERING]
-     * [LPConstant.DATA_MODE_GCODE]
+     * [EngraveConstant.DATA_MODE_BLACK_WHITE]
+     * [EngraveConstant.DATA_MODE_SEAL]
+     * [EngraveConstant.DATA_MODE_GREY]
+     * [EngraveConstant.DATA_MODE_PRINT]
+     * [EngraveConstant.DATA_MODE_DITHERING]
+     * [EngraveConstant.DATA_MODE_GCODE]
      *
      * */
-    var imageFilter: Int = LPConstant.DATA_MODE_GREY,
+    var imageFilter: Int = EngraveConstant.DATA_MODE_GREY,
 
     /** 对比度*/
     var contrast: Float = 0f,
@@ -356,23 +357,55 @@ data class LPElementBean(
 
     //region ---私有属性---
 
-    /**数据处理的模式, 处理成机器需要的数据. 通常情况下和雕刻图层一致
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_GCODE]
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_MODE_DITHERING]
-     *
-     * [com.angcyo.canvas.graphics.IGraphicsParser.initDataModeWithPaintStyle]
-     *
-     * [com.angcyo.engrave.data.EngraveLayerInfo]
-     * */
-    @Transient
-    var _dataMode: Int? = null,
-
     /**是否处于调试模式下*/
     var _debug: Boolean? = null
 
     //endregion ---私有属性---
 ) {
+
+    /**数据处理的模式, 处理成机器需要的数据. 通常情况下和雕刻图层一致
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_GCODE]
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_DITHERING]
+     *
+     * [com.angcyo.engrave.data.EngraveLayerInfo]
+     * */
+    val _layerMode: Int?
+        get() = when (mtype) {
+            LPConstant.DATA_TYPE_BITMAP -> when (imageFilter) {
+                EngraveConstant.DATA_MODE_PRINT,
+                EngraveConstant.DATA_MODE_SEAL,
+                EngraveConstant.DATA_MODE_BLACK_WHITE -> EngraveConstant.DATA_MODE_BLACK_WHITE
+                else -> imageFilter
+            }
+            LPConstant.DATA_TYPE_TEXT -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                //描边文本, 走GCode
+                EngraveConstant.DATA_MODE_GCODE
+            } else {
+                //否则就是黑白画
+                EngraveConstant.DATA_MODE_BLACK_WHITE
+            }
+            LPConstant.DATA_TYPE_QRCODE,
+            LPConstant.DATA_TYPE_BARCODE -> EngraveConstant.DATA_MODE_BLACK_WHITE
+            //填充线/描边线, 都是GCode
+            LPConstant.DATA_TYPE_LINE -> EngraveConstant.DATA_MODE_GCODE
+            LPConstant.DATA_TYPE_RECT,
+            LPConstant.DATA_TYPE_OVAL,
+            LPConstant.DATA_TYPE_LOVE,
+            LPConstant.DATA_TYPE_POLYGON,
+            LPConstant.DATA_TYPE_PENTAGRAM,
+            LPConstant.DATA_TYPE_PEN,
+            LPConstant.DATA_TYPE_PATH,
+            LPConstant.DATA_TYPE_SVG,
+            LPConstant.DATA_TYPE_GCODE -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                //描边SVG, 走GCode
+                EngraveConstant.DATA_MODE_GCODE
+            } else {
+                //否则就是黑白画
+                EngraveConstant.DATA_MODE_BLACK_WHITE
+            }
+            else -> null
+        }
 
     /**原始的宽高, 毫米*/
     @MM

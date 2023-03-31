@@ -6,6 +6,8 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.canvas2.laser.pecker.engraveColorBytes
+import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultGCodeOutputFile
+import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultSvgOutputFile
 import com.angcyo.gcode.GCodeAdjust
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.library.L
@@ -14,7 +16,6 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
-import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.filePath
 import com.angcyo.svg.SvgWriteHandler
 import java.io.File
@@ -29,14 +30,6 @@ import kotlin.math.max
 object CanvasDataHandleOperate {
 
     //region ---文件输出信息---
-
-    /**gcode文件输出*/
-    fun _defaultGCodeOutputFile() =
-        filePath(LPConstant.VECTOR_FILE_FOLDER, fileNameTime(suffix = LPConstant.GCODE_EXT)).file()
-
-    /**svg文件输出*/
-    fun _defaultSvgOutputFile() =
-        filePath(LPConstant.VECTOR_FILE_FOLDER, fileNameTime(suffix = LPConstant.SVG_EXT)).file()
 
     /**工程文件输出
      * [ensureExt] 是否要保证后缀为[LPConstant.PROJECT_EXT]*/

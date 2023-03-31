@@ -3,7 +3,7 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.dslitem)
     implementation project(allModule.dialog)
-    implementation project(allModule.engrave)
+    implementation project(allModule.engrave2)
     implementation project(allModule.component)
 
     //涂鸦
@@ -24,6 +24,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.4.1'
 
     compileOnly project(allModule.umeng_lp)
+    compileOnly project(allModule.objectbox_lp)
 
     //图片算法
     api "com.angcyo:opencv:${opencv_version}"

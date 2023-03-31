@@ -64,11 +64,11 @@
             android:text="雕刻" />
 
         <com.angcyo.widget.DslButton
-            android:id="@+id/state_button"
+            android:id="@+id/device_command_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="状态" />
+            android:text="设备指令" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/version_button"
@@ -76,14 +76,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="版本" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/preview_stop_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="结束预览"
-            android:visibility="gone" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/exit_button"
@@ -97,141 +89,28 @@
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="项目" />
+            android:text="项目列表" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/file_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="历史" />
+            android:text="雕刻历史" />
 
         <com.angcyo.widget.DslButton
-            android:id="@+id/clear_file_button"
+            android:id="@+id/arithmetic_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="清除历史" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/device_origin_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="切换设备中心点" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/four_points_preview_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4点预览" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/setting_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置"
-            android:visibility="gone" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/switch_origin_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="~原点" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/switch_unit_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="~单位" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/more_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="More" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/bounds_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bounds" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/smart_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Smart" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/translate_x_minus_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X(-)" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/translate_x_plus_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X(+)" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/translate_y_minus_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Y(-)" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/translate_y_plus_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Y(+)" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/scale_in_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/scale_out_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="算法处理" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/add_picture_text"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+文本" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/add_svg"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+SVG" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/add_gcode"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+GCode" />
+            android:text="随机+文本" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/random_add_svg"
@@ -248,39 +127,25 @@
             android:text="随机+GCode" />
 
         <com.angcyo.widget.DslButton
-            android:id="@+id/add_image_svg"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+图片转SVG" />
-
-        <com.angcyo.widget.DslButton
             android:id="@+id/preview_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="pv" />
+            android:text="截图" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/preview_override_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="截图(Override)" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/preview_rect_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="pvRect" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/pre_process_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="数据预处理" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/log_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="log" />
+            android:text="截图(Rect)" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/share_log_button"
@@ -288,13 +153,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="shareLog" />
-
-        <com.angcyo.widget.DslButton
-            android:id="@+id/test_button"
-            style="@style/DefaultButtonStyleNormal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/tip_button"
@@ -316,6 +174,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="open" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/test_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/result_text_view"

@@ -1,13 +1,21 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import android.graphics.Bitmap
+import android.graphics.Path
+import android.graphics.RectF
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.element.BaseElement
 import com.angcyo.canvas.render.element.IElement
+import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.util.RenderHelper
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
+import com.angcyo.engrave2.transition.IEngraveDataProvider
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 
@@ -15,7 +23,7 @@ import com.angcyo.library.unit.toPixel
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/08
  */
-interface ILaserPeckerElement : IElement {
+interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
     /**元素数据结构*/
     val elementBean: LPElementBean
@@ -40,6 +48,8 @@ interface ILaserPeckerElement : IElement {
             renderProperty.height = height
         }
     }
+
+    //---
 
     /**解析对应的[elementBean]变成可以绘制的元素*/
     fun parseElementBean()
@@ -86,4 +96,36 @@ interface ILaserPeckerElement : IElement {
         }
     }
 
+    //---
+
+    override fun getBitmapData(): Bitmap? {
+        return requestElementRenderDrawable(null)?.toBitmap()
+    }
+
+    override fun getPathData(): List<Path>? {
+        if (this is LPBitmapElement) {
+            return RenderHelper.translateToRender(pathList, renderProperty)
+        }
+        if (this is PathElement) {
+            return RenderHelper.translateToRender(pathList, renderProperty)
+        }
+        return super.getPathData()
+    }
+
+    override fun getRawData(): ByteArray? {
+        return super.getRawData()
+    }
+
+    override fun getDataIndex(): Int {
+        val index = elementBean.index ?: 0
+        if (index > 0) {
+            return index
+        }
+        elementBean.index = EngraveHelper.generateEngraveIndex()
+        return elementBean.index!!
+    }
+
+    override fun getDataBounds(): RectF {
+        return requestElementRenderProperty().getRenderBounds()
+    }
 }

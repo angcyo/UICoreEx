@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.util
 
+import android.net.Uri
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -15,14 +16,11 @@ import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.generateName
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.http.base.*
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.readText
-import com.angcyo.library.ex.size
-import com.angcyo.library.ex.toBase64Data
+import com.angcyo.library.ex.*
 import com.angcyo.library.utils.uuid
 import com.angcyo.library.utils.writeTo
 import java.io.File
@@ -217,15 +215,15 @@ fun deleteProjectFile(name: String = ".temp"): Boolean {
 }
 
 /**获取工程结构[LPProjectBean]*/
-fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = renderManager.elementRendererList): LPProjectBean {
+fun CanvasRenderDelegate.getProjectBean(
+    renderList: List<BaseRenderer>? = renderManager.elementRendererList,
+    overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat()
+): LPProjectBean {
     return LPProjectBean().apply {
         create_time = nowTime()
         update_time = nowTime()
 
-        val preview = preview(
-            overrideSize = HawkEngraveKeys.projectOutSize.toFloat(),
-            rendererList = renderList
-        )
+        val preview = preview(overrideSize = overrideSize, rendererList = renderList)
         preview_img = preview?.toBase64Data()
 
         data = jsonArray {
@@ -249,6 +247,13 @@ fun CanvasRenderDelegate.getProjectBean(renderList: List<BaseRenderer>? = render
 /**打开工程文件*/
 fun CanvasRenderDelegate.openProjectFile(file: File?, clearOld: Boolean = true): LPProjectBean? {
     val projectBean = file?.readText()?.toProjectBean()
+    openProjectBean(projectBean, clearOld)
+    return projectBean
+}
+
+/**打开工程文件*/
+fun CanvasRenderDelegate.openProjectUri(uri: Uri?, clearOld: Boolean = true): LPProjectBean? {
+    val projectBean = uri?.readString()?.toProjectBean()
     openProjectBean(projectBean, clearOld)
     return projectBean
 }

@@ -27,7 +27,8 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.*
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*
 import com.angcyo.transition.dslTransition
@@ -171,7 +172,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
                 itemRenderer = renderer
-                itemImageFilter = LPConstant.DATA_MODE_BLACK_WHITE
+                itemImageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -194,7 +195,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
                 itemRenderer = renderer
-                itemImageFilter = LPConstant.DATA_MODE_DITHERING
+                itemImageFilter = EngraveConstant.DATA_MODE_DITHERING
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -217,7 +218,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
                 itemRenderer = renderer
-                itemImageFilter = LPConstant.DATA_MODE_GCODE
+                itemImageFilter = EngraveConstant.DATA_MODE_GCODE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -237,7 +238,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
                     itemRenderer = renderer
-                    itemImageFilter = LPConstant.DATA_MODE_GREY
+                    itemImageFilter = EngraveConstant.DATA_MODE_GREY
                     itemClick = {
                         LPBitmapHandler.handleGrey(canvasRenderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
@@ -253,7 +254,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
                 itemRenderer = renderer
-                itemImageFilter = LPConstant.DATA_MODE_PRINT
+                itemImageFilter = EngraveConstant.DATA_MODE_PRINT
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -271,7 +272,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
                 itemRenderer = renderer
-                itemImageFilter = LPConstant.DATA_MODE_SEAL
+                itemImageFilter = EngraveConstant.DATA_MODE_SEAL
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {

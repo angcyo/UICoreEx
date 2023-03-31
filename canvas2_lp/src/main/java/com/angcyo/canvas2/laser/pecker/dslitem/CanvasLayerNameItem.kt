@@ -4,7 +4,7 @@ import android.view.View
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.containsPayload
-import com.angcyo.engrave.data.EngraveLayerInfo
+import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.ex.invisible
 import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder

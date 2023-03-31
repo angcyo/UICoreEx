@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_hdpi">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/perimeter_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/engrave_perimeter" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/perimeter_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/perimeter_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:padding="@dimen/lib_hdpi"
+        app:srcCompat="@drawable/engrave_left_right_svg" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/diameter_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/object_diameter" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/diameter_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/diameter_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+</LinearLayout>

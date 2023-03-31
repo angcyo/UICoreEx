@@ -12,8 +12,9 @@ import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
-import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.model.FscDeviceModel
+import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.unit.toMm
 
@@ -123,7 +124,7 @@ object LPElementHelper {
     ): CanvasElementRenderer {
         val elementBean = LPElementBean().apply {
             mtype = LPConstant.DATA_TYPE_BITMAP
-            imageFilter = LPConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+            imageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
 

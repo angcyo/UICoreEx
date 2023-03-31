@@ -1,0 +1,163 @@
+<resources>
+    <string name="permission_disabled">Permission disabled</string>
+
+    <string name="canvas_operate">Operate</string>
+    <string name="laser_type">Laser source</string>
+    <string name="object_diameter">Diameter</string>
+
+    <string name="blue_no_device_connected">Unconnected device</string>
+    <string name="device_ex_discontent_tips">The accessories of the %1$s are not connected. Please connect first!</string>
+    <string name="engrave_ex_discontent_tips">Check that the %1$s is not connected. Do you want to continue?</string>
+
+    <string name="print_v2_package_preview_over">Quit Preview</string>
+    <string name="start_engrave">Start</string>
+    <string name="print_laser_start_tips">Do not engrave on highly reflective material</string>
+    <string name="previewing">In preview …</string>
+    <string name="preview">Preview</string>
+    <string name="engrave_file_name">Filename</string>
+    <string name="transmitting">File in transit</string>
+    <string name="print_v2_package_print_state">Paused</string>
+    <string name="print_v2_package_print_over">Ended laser engraving</string>
+    <string name="engrave_pause">Pause</string>
+    <string name="engrave_finish">Engrave finish</string>
+    <string name="engrave_stop">Stop</string>
+    <string name="engrave_continue">Resume</string>
+    <string name="engrave_again">Repeat</string>
+    <string name="print_v2_package_Laser_home">Back Home</string>
+    <string name="file_setting">File Settings</string>
+    <string name="print_setting">Laser Settings</string>
+
+    <string name="start_preview">Start Preview</string>
+
+    <string name="engrave_move_state_tips">Do Not Move The Device</string>
+
+    <string name="print_file_name">Mode</string>
+    <string name="print_range">Size</string>
+    <string name="print_time">Time</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+
+    <!--打印部分-->
+    <string name="file_name">Named</string>
+    <string name="remaining_time">Remaining</string>
+
+    <string name="custom_material">Material</string>
+    <string name="custom_power">Power</string>
+    <string name="custom_speed">Depth</string>
+
+    <string name="preview_center">Show Center Point</string>
+    <string name="preview_continue">Continue Preview</string>
+    <string name="resolution_ratio">Resolution</string>
+
+    <string name="tips_fourteen_12">Time</string>
+    <string name="laser_brightness">Brightness</string>
+    <string name="v4_bmp_edit_tips">Image data processing, please wait</string>
+
+    <string name="work_time">Duration</string>
+    <string name="print_times">Pass</string>
+
+    <string name="device_z_model_flat">Slab</string>
+    <string name="device_z_model_car">Trolley</string>
+    <string name="device_z_model_cylinder">Cylinder</string>
+    <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
+
+    <string name="ui_slip_menu_history">History Documents</string>
+    <string name="device_history_title">Device data</string>
+    <string name="app_history_title">Local data</string>
+    <string name="delete_history">Delete history</string>
+    <string name="delete_history_succeed">Delete succeed</string>
+    <string name="delete_history_failed">Delete failed</string>
+
+    <string name="ui_next">Next</string>
+    <string name="send_file">Send File</string>
+
+    <string name="preview_scroll_continue">Scroll Preview</string>
+    <string name="preview_scroll_pause">Pause Scroll</string>
+    <string name="engrave_speed">Velocity</string>
+    <string name="engrave_precision">Acceleration</string>
+
+    <string name="size_safety_tips">Please verify that the laser workspace is secure</string>
+    <string name="size_safety_content">Always wear protective goggles and install protective cover</string>
+    <string name="print_stop">Are you sure you want to end the laser engraving?</string>
+
+    <string name="ui_finish">Finish</string>
+    <string name="ui_setting">Settings</string>
+    <string name="device_not_found">Device not Found</string>
+    <string name="device_not_found_des">Please make sure your machine is in the waiting state</string>
+    <string name="contact_me">Contact customer</string>
+    <string name="ui_quit">Quit</string>
+
+    <string name="preview_drag_tip">Drag the element position in the red border to achieve the dynamic preview effect of the laser projection box</string>
+    <string name="bracket_height_label">Lifting height</string>
+    <string name="bracket_not_connect">Support is not connected</string>
+
+    <string name="range_preview">Scope</string>
+    <string name="center_preview">Center</string>
+    <string name="pause_preview">Pause</string>
+    <string name="continue_preview">Continue</string>
+    <string name="scroll_preview">Scroll</string>
+    <string name="preview_parameter_setting">Parameter Settings</string>
+    <string name="filename_hint">A maximum of 28 bytes can be entered</string>
+    <string name="stop_transfer">End transmission</string>
+    <string name="engrave_tip">Do not carve on highly reflective materials</string>
+    <string name="engrave_layer_config">Carving layer</string>
+    <string name="back_creation">Creation</string>
+    <string name="progress">Progress</string>
+    <string name="share_community">Share</string>
+    <string name="canvas_normal_layer">Normal layer</string>
+    <string name="canvas_engrave_layer">Carving layer</string>
+    <string name="canvas_rename">Rename</string>
+    <string name="retry">Retry</string>
+
+    <string name="select_device">Select Device</string>
+    <string name="start_upgrade">Start Update</string>
+
+    <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
+    <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
+    <string name="engrave_perimeter">P</string>
+
+    <string name="device_engrave_ing_title">The current device is working</string>
+    <string name="device_engrave_ing_des">Do you want to end the sculpting task?</string>
+
+    <string name="focal_distance_tip">Please confirm the focal length</string>
+    <string name="focal_distance">FFD</string>
+    <string name="empty_data_transfer">No engraving data!</string>
+    <string name="no_data_transfer">No data needs to be transmitted!</string>
+    <string name="no_data_engrave">No data need radium carving!</string>
+
+    <string name="out_of_data_transfer">Data is too large!</string>
+    <string name="transfer_data_exception">Data transmission failure!</string>
+    <string name="device_angle">Device angle</string>
+    <string name="device_temp">Device temp</string>
+
+    <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
+    <string name="limit_engrave_count_tip">The number of carvings has reached the upper limit, maximum %1$s.</string>
+
+    <string name="engrave_module_single_pen">Single color pen</string>
+    <string name="engrave_module_color_pen">Color pen</string>
+    <string name="engrave_module_knife_cutting">Knife cutting</string>
+    <string name="engrave_module_cnc">CNC</string>
+
+    <string name="project_title">My creation</string>
+    <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
+
+    <string name="open_notify_tip">Turn on notifications to receive sculpted notifications progress?</string>
+    <string name="open_notify_channel_tip">Open the engraving channel to receive notification progress?</string>
+
+    <string name="material_title_limit">Enter up to 20 characters</string>
+    <string name="save_material_title">Material name</string>
+    <string name="engrave_feedback">Feedback</string>
+
+    <string name="delete_material_tip">After deletion, it is not recoverable, do you want to continue?</string>
+    <string name="engrave_skip_current">Skip the current engraving</string>
+
+    <string name="device_models">Models</string>
+    <string name="show_all_label">Detail</string>
+    <string name="hide_all_label">Collapse</string>
+
+    <string name="not_support_tip">Unsupported firmware version</string>
+    <string name="engrave_item_params_tip">In the single-element sculpting parameter mode, you need to configure the sculpting parameters of the element in the sculpting layer first!</string>
+
+    <string name="device_shutdown_tip">Device is shutdown</string>
+
+</resources>

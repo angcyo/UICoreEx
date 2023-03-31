@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!--核心区-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.angcyo.canvas.CanvasRenderView
+            android:id="@+id/canvas_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <LinearLayout
+            android:id="@+id/canvas_device_state_wrap_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_xhdpi"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!--<include layout="@layout/lib_state_tip_layout" />
+
+            <include layout="@layout/lib_state_tip_layout" />-->
+
+        </LinearLayout>
+
+        <com.angcyo.widget.layout.DslFlowLayout
+            android:id="@+id/control_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/canvas_view"
+            app:r_flow_item_horizontal_space="@dimen/lib_dpi"
+            app:r_flow_item_vertical_space="@dimen/lib_dpi">
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/engrave_preview_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="预览" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/engrave_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="雕刻" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/device_command_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备指令" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/version_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="版本" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/exit_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="退出" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/project_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="项目" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/file_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="雕刻历史" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/add_picture_text"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="随机+文本" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/random_add_svg"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="随机+SVG" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/random_add_gcode"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="随机+GCode" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/preview_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="截图" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/preview_override_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="截图(Override)" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/preview_rect_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="截图(Rect)" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/share_log_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="shareLog" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/tip_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tip" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/save_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/open_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="open" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/test_button"
+                style="@style/DefaultButtonStyleNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/result_text_view"
+                style="@style/LibBodyTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="angcyo" />
+
+        </com.angcyo.widget.layout.DslFlowLayout>
+
+        <!--绘图功能层-->
+        <com.angcyo.widget.recycler.DslRecyclerView
+            android:id="@+id/canvas_item_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/canvas_item_layout"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:r_layout_manager="h" />
+
+        <!--功能属性层-->
+        <LinearLayout
+            android:id="@+id/canvas_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/canvas_item_view">
+
+            <!--阴影-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/lib_bottom_tran_solid_gradient" />
+
+            <!--绘图功能控制选项-->
+            <LinearLayout
+                android:id="@+id/canvas_control_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lib_white"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/canvas_item_view"
+                tools:visibility="visible">
+
+                <!--功能控制项-->
+                <com.angcyo.widget.recycler.DslRecyclerView
+                    android:id="@+id/canvas_control_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/canvas_control_layout"
+                    android:minHeight="50dp"
+                    app:r_layout_manager="h" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--撤销回退, 动态添加-->
+        <LinearLayout
+            android:id="@+id/undo_wrap_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_xhdpi"
+            android:layout_marginBottom="@dimen/lib_hdpi"
+            android:background="@drawable/doodle_property_shape"
+            android:elevation="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/canvas_bottom_layout"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_height="60dp"
+            tools:layout_width="80dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--pad扩展区-->
+    <com.angcyo.widget.layout.DslSoftInputLayout
+        android:layout_width="@dimen/lib_fragment_detail_container_width"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/fragment_detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--设备连接信息-->
+            <include layout="@layout/layout_canvas_device_tip" />
+
+            <!--图层选择层-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/canvas_layer_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toTopOf="@id/canvas_bottom_layout"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/lib_white">
+
+                        <com.angcyo.tablayout.DslTabLayout
+                            android:id="@+id/layer_tab_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            app:layout_constraintBottom_toTopOf="@id/canvas_layer_view"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tab_deselect_color="@color/lib_text_color"
+                            app:tab_draw_indicator="false"
+                            app:tab_item_is_equ_width="true"
+                            app:tab_select_color="@color/lib_text_color">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/LibBodyTextStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/layer_tab_left_selector"
+                                android:gravity="center"
+                                android:text="@string/canvas_normal_layer" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/LibBodyTextStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/layer_tab_right_selector"
+                                android:gravity="center"
+                                android:text="@string/canvas_engrave_layer" />
+
+                        </com.angcyo.tablayout.DslTabLayout>
+
+                        <com.angcyo.widget.recycler.DslRecyclerView
+                            android:id="@+id/canvas_layer_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:layout_constraintBottom_toTopOf="@id/layer_control_layout"
+                            app:layout_constraintTop_toBottomOf="@id/layer_tab_view"
+                            app:layout_constraintVertical_weight="1"
+                            app:r_layout_manager="v" />
+
+                        <LinearLayout
+                            android:id="@+id/layer_control_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingVertical="@dimen/lib_sdpi"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/canvas_layer_view">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/layer_control_delete_view"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/lib_bg2_selector"
+                                android:padding="@dimen/lib_sdpi"
+                                app:srcCompat="@drawable/canvas_delete_svg"
+                                app:tint="@color/icon_disable_colors" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/layer_control_visible_view"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/lib_bg2_selector"
+                                android:padding="@dimen/lib_sdpi"
+                                app:srcCompat="@drawable/canvas_visible_svg"
+                                app:tint="@color/icon_disable_colors" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/layer_control_copy_view"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/lib_bg2_selector"
+                                android:padding="@dimen/lib_sdpi"
+                                app:srcCompat="@drawable/canvas_copy_svg"
+                                app:tint="@color/icon_disable_colors" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/layer_control_line_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/lib_line"
+                            android:background="@color/lib_line"
+                            app:layout_constraintBottom_toTopOf="@id/layer_control_layout" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!--雕刻参数-->
+            <FrameLayout
+                android:id="@+id/engrave_flow_wrap_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </com.angcyo.widget.layout.DslSoftInputLayout>
+
+
+</LinearLayout>

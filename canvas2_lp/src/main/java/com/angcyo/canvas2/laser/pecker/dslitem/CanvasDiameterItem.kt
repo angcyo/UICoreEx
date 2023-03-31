@@ -1,6 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.dslitem
 
-import com.angcyo.engrave.dslitem.BaseDiameterItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.BaseDiameterItem
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>

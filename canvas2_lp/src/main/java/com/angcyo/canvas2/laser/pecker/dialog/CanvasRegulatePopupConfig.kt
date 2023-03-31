@@ -14,11 +14,11 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL

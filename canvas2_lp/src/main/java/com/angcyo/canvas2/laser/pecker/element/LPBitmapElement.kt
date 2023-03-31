@@ -14,9 +14,10 @@ import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.canvas2.laser.pecker.util.CanvasDataHandleOperate
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultGCodeOutputFile
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.LTime
 import com.angcyo.library.app
@@ -48,7 +49,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     override fun createStateStack(): IStateStack = LPBitmapStateStack()
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
-        if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+        if (elementBean.imageFilter == EngraveConstant.DATA_MODE_GCODE) {
             paint.strokeWidth = 1f
             paint.style = Paint.Style.STROKE
             renderParams?.updateDrawPathPaintStrokeWidth(paint)
@@ -75,7 +76,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
             }
         }
         if (renderBitmap == null) {
-            if (elementBean.imageFilter != LPConstant.DATA_MODE_GCODE) {
+            if (elementBean.imageFilter != EngraveConstant.DATA_MODE_GCODE) {
                 //非GCode算法
                 val bitmap = originBitmap
                 if (elementBean.src.isNullOrBlank()) {
@@ -83,24 +84,24 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                     if (bitmap != null) {
                         LTime.tick()
                         renderBitmap = when (elementBean.imageFilter) {
-                            LPConstant.DATA_MODE_PRINT -> LPBitmapHandler.toPrint(
+                            EngraveConstant.DATA_MODE_PRINT -> LPBitmapHandler.toPrint(
                                 app(),
                                 bitmap,
                                 elementBean.printsThreshold
                             )
-                            LPConstant.DATA_MODE_BLACK_WHITE -> LPBitmapHandler.toBlackWhiteHandle(
+                            EngraveConstant.DATA_MODE_BLACK_WHITE -> LPBitmapHandler.toBlackWhiteHandle(
                                 bitmap,
                                 elementBean
                             )
-                            LPConstant.DATA_MODE_DITHERING -> LPBitmapHandler.toGrayHandle(
+                            EngraveConstant.DATA_MODE_DITHERING -> LPBitmapHandler.toGrayHandle(
                                 bitmap,
                                 elementBean
                             )
-                            LPConstant.DATA_MODE_GREY -> LPBitmapHandler.toGrayHandle(
+                            EngraveConstant.DATA_MODE_GREY -> LPBitmapHandler.toGrayHandle(
                                 bitmap,
                                 elementBean
                             )
-                            LPConstant.DATA_MODE_SEAL -> LPBitmapHandler.toSeal(
+                            EngraveConstant.DATA_MODE_SEAL -> LPBitmapHandler.toSeal(
                                 app(),
                                 bitmap,
                                 elementBean.sealThreshold
@@ -115,7 +116,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
             }
         }
         if (pathList == null) {
-            if (elementBean.imageFilter == LPConstant.DATA_MODE_GCODE) {
+            if (elementBean.imageFilter == EngraveConstant.DATA_MODE_GCODE) {
                 //GCode数据
                 var gcode = elementBean.data ?: elementBean.src
                 val bitmap = originBitmap
@@ -132,7 +133,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                     elementBean.data = gCodeText
                     gcode = gCodeText
 
-                    gCodeText.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+                    gCodeText.writeToFile(_defaultGCodeOutputFile())
                 }
 
                 //再次判断
@@ -154,7 +155,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         gcode: String?,
         keepVisibleSize: Boolean = true
     ) {
-        elementBean.imageFilter = LPConstant.DATA_MODE_GCODE
+        elementBean.imageFilter = EngraveConstant.DATA_MODE_GCODE
         elementBean.data = gcode
         this.pathList = pathList
         val bounds = RenderHelper.computePathBounds(pathList)
@@ -168,7 +169,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         bitmap: Bitmap,
         keepVisibleSize: Boolean = true
     ) {
-        elementBean.imageFilter = LPConstant.DATA_MODE_BLACK_WHITE
+        elementBean.imageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE
         renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
         updateOriginBitmap(bitmap, keepVisibleSize)
         delegate?.asyncManager?.addAsyncTask(renderer) {

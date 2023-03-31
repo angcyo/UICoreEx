@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/lib_padding_left"
+    android:paddingTop="@dimen/lib_hdpi"
+    android:paddingRight="@dimen/lib_padding_left"
+    android:paddingBottom="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/error_text_view"
+        style="@style/LibSubTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:gravity="center"
+        android:text="@string/transfer_data_exception"
+        android:textColor="@color/error" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/lib_retry_button"
+        style="@style/LibButtonBlackSolidStyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/lib_xhdpi"
+        android:minHeight="@dimen/lib_item_min_height"
+        android:paddingHorizontal="@dimen/lib_xxhdpi"
+        android:text="@string/retry" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/lib_button"
+        style="@style/LibButtonTransparentSolidStyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minHeight="@dimen/lib_item_min_height"
+        android:paddingHorizontal="@dimen/lib_xxhdpi"
+        android:text="@string/stop_transfer"
+        android:textColor="@color/text_general_color"
+        app:button_radius="@dimen/lib_radius_common" />
+
+</LinearLayout>
