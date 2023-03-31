@@ -16,7 +16,6 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -34,9 +33,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
-import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.*
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*

@@ -357,17 +357,22 @@ class DeviceSettingFragment : BaseDslFragment() {
 
             //---
 
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_txt_3)
-                itemDes = _string(R.string.device_setting_txt_4)
-                initItem()
+            if (isL4 || isC1) {
 
-                itemSwitchChecked = settingParser?.keyView == 1
-                itemSwitchChangedAction = {
-                    settingParser?.keyView = if (it) 1 else 0
-                    settingParser?.updateSetting()
+            } else {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_txt_3)
+                    itemDes = _string(R.string.device_setting_txt_4)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.keyView == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.keyView = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
+
             DslPropertySwitchItem()() {
                 itemLabel = _string(R.string.device_setting_txt_5)
                 itemDes = _string(R.string.device_setting_txt_6)

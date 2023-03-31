@@ -32,11 +32,11 @@ import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
 import com.angcyo.library.component.pad.isInPadMode

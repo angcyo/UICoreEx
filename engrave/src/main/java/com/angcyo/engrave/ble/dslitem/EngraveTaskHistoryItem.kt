@@ -2,8 +2,8 @@ package com.angcyo.engrave.ble.dslitem
 
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 

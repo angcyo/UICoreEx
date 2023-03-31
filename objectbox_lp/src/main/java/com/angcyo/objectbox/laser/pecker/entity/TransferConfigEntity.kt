@@ -47,9 +47,9 @@ data class TransferConfigEntity(
     var mergeGcodeData: Boolean = false,
 
     /**是否要强制指定数据处理的模式
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_GCODE]
+     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_DITHERING]
      * */
     var dataMode: Int? = null,
 )

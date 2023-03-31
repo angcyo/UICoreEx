@@ -21,6 +21,7 @@ import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL

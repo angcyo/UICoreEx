@@ -10,7 +10,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.component.getFile
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave.engraveLoadingAsync
+import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.Library
 import com.angcyo.library.component.ROpenFileHelper
