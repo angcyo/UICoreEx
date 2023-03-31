@@ -231,19 +231,19 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
     internal var _rootViewHolder: DslViewHolder? = null
 
-    val canvasRenderDelegate: CanvasRenderDelegate?
+    val delegate: CanvasRenderDelegate?
         get() = _rootViewHolder?.renderDelegate
 
     /**恢复界面渲染界面设置*/
     private fun restoreCanvasSetting() {
-        canvasRenderDelegate?.axisManager?.apply {
+        delegate?.axisManager?.apply {
             //绘制网格恢复
             enableRenderGrid = LPConstant.CANVAS_DRAW_GRID
             //单位恢复
             updateRenderUnit(LPConstant.renderUnit)
         }
         //智能指南恢复
-        canvasRenderDelegate?.controlManager?.apply {
+        delegate?.controlManager?.apply {
             smartAssistantComponent.isEnableComponent = LPConstant.CANVAS_SMART_ASSISTANT
         }
     }
@@ -389,7 +389,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderer: BaseRenderer
             ) {
                 renderer.lpTextElement()?.let {
-                    AddTextItem.amendInputText(canvasRenderDelegate, renderer)
+                    AddTextItem.amendInputText(delegate, renderer)
                 }
             }
 
@@ -397,7 +397,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 selectorManager: CanvasSelectorManager,
                 selectorInfo: TouchSelectorInfo
             ) {
-                canvasRenderDelegate?.view?.let { view ->
+                delegate?.view?.let { view ->
                     view.recyclerPopupWindow {
                         showOnViewBottom(view)
                         renderAdapter {
@@ -410,7 +410,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
                                     itemLongClick = null
                                     itemClick = {
-                                        canvasRenderDelegate?.selectorManager?.resetSelectorRenderer(
+                                        delegate?.selectorManager?.resetSelectorRenderer(
                                             listOf(renderer),
                                             Reason.user
                                         )
@@ -482,31 +482,36 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 if (component.pointTag == PointTouchComponent.TAG_INITIAL) {
                     if (type == PointTouchComponent.TOUCH_TYPE_CLICK) {
                         //点击左上角
-                        val rect = acquireTempRectF()
-                        val renderViewBox = canvasRenderDelegate?.renderViewBox ?: return
-                        var def = true
-                        val primaryLimitBounds =
-                            canvasRenderDelegate?.renderManager?.limitRenderer?.findLimitInfo { it.tag == TAG_MAIN }?.bounds
-                        if (primaryLimitBounds != null) {
-                            rect.set(primaryLimitBounds)
-                            def = false
-                        }
-                        if (!def) {
-                            canvasRenderDelegate?.showRectBounds(rect, offsetRectTop = true)
+                        if (delegate?.selectorManager?.isSelectorElement == true) {
+                            //如果选中了元素, 则显示元素的bounds
+                            delegate?.showRendererBounds(delegate?.selectorManager?.selectorComponent)
                         } else {
-                            val matrix = Matrix()
-                            matrix.setTranslate(0f, 0f)
-                            matrix.postScale(
-                                renderViewBox.getScaleX(),
-                                renderViewBox.getScaleY(),
-                                renderViewBox.getOriginPoint().x,
-                                renderViewBox.getOriginPoint().y
-                            )
-                            renderViewBox.changeRenderMatrix(matrix, true, Reason.user)
+                            val rect = acquireTempRectF()
+                            val renderViewBox = delegate?.renderViewBox ?: return
+                            var def = true
+                            val primaryLimitBounds =
+                                delegate?.renderManager?.limitRenderer?.findLimitInfo { it.tag == TAG_MAIN }?.bounds
+                            if (primaryLimitBounds != null) {
+                                rect.set(primaryLimitBounds)
+                                def = false
+                            }
+                            if (!def) {
+                                delegate?.showRectBounds(rect, offsetRectTop = true)
+                            } else {
+                                val matrix = Matrix()
+                                matrix.setTranslate(0f, 0f)
+                                matrix.postScale(
+                                    renderViewBox.getScaleX(),
+                                    renderViewBox.getScaleY(),
+                                    renderViewBox.getOriginPoint().x,
+                                    renderViewBox.getOriginPoint().y
+                                )
+                                renderViewBox.changeRenderMatrix(matrix, true, Reason.user)
+                            }
                         }
                     } else if (type == PointTouchComponent.TOUCH_TYPE_LONG_PRESS) {
                         //长按左上角
-                        canvasRenderDelegate?.let { delegate ->
+                        delegate?.let { delegate ->
                             val renderViewBox = delegate.renderViewBox
                             delegate.view.longFeedback()
                             delegate.view.showPopupMenu(R.menu.initial_menu) {
@@ -601,7 +606,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**显示/更新图层item*/
     fun renderLayerListLayout() {
         val vh = _rootViewHolder ?: return
-        val delegate = canvasRenderDelegate ?: return
+        val delegate = delegate ?: return
 
         if (!vh.isVisible(R.id.canvas_layer_layout)) {
             return
@@ -716,7 +721,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**更新图层下面的几个控制按钮*/
     fun updateLayerControlLayout() {
         val vh = _rootViewHolder ?: return
-        val delegate = canvasRenderDelegate ?: return
+        val delegate = delegate ?: return
         val tabIndex = _layerTabLayout?.currentItemIndex ?: 0
         vh.visible(R.id.layer_control_layout, tabIndex == 0)
         vh.visible(R.id.layer_control_line_view, tabIndex == 0)

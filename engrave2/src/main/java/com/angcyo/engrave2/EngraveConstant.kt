@@ -67,15 +67,6 @@ fun Int.toDataModeStr() = when (this) {
     else -> "DataMode-${this}"
 }
 
-/**激光类型字符串*/
-fun Byte?.toLaserTypeString() = when (this) {
-    LaserPeckerHelper.LASER_TYPE_WHITE -> _string(R.string.laser_type_white)
-    else -> _string(R.string.laser_type_blue)
-}
-
-/**分:秒 的时间格式*/
-fun Long?.toEngraveTime() = this?.toMinuteTime()
-
 /**将雕刻类型字符串化*/
 fun Int.toEngraveDataTypeStr() = when (this) {
     DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING -> "抖动"

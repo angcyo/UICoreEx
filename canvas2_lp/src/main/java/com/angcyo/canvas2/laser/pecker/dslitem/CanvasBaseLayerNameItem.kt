@@ -5,7 +5,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
@@ -16,8 +15,8 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
 import com.angcyo.widget.DslViewHolder
@@ -127,16 +126,6 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
     /**将画布移动显示到目标元素*/
     fun showItemRendererBounds() {
-        itemRenderer?.let {
-            if (it.isVisible) {
-                it.renderProperty?.getRenderBounds()?.let { bounds ->
-                    itemRenderDelegate?.showRectBounds(
-                        bounds,
-                        BaseControlPoint.DEFAULT_CONTROL_POINT_SIZE,
-                        false
-                    )
-                }
-            }
-        }
+        itemRenderDelegate?.showRendererBounds(itemRenderer)
     }
 }

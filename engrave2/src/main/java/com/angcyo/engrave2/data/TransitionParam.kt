@@ -19,7 +19,12 @@ data class TransitionParam(
 
     //---GCode算法需要的参数---
 
-    /**在处理图片转GCode时, 是否使用OpenCV的算法*/
+    /**是否仅使用图片转GCode的方式处理,
+     * 否则会自动优先先使用[android.graphics.Path]转GCode,
+     * 然后在使用[android.graphics.Bitmap]转GCode*/
+    val onlyUseBitmapToGCode: Boolean = false,
+
+    /**在处理图片转GCode时, 是否使用OpenCV的算法 */
     val useOpenCvHandleGCode: Boolean = true,
 
     /**转GCode时, 是否要自动开关激光*/

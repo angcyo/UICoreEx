@@ -21,6 +21,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.toLaserTypeString
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private

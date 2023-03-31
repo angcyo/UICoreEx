@@ -5,9 +5,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.engrave2.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug

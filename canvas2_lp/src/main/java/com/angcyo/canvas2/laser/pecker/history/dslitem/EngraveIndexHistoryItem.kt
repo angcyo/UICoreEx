@@ -3,8 +3,8 @@ package com.angcyo.canvas2.laser.pecker.history.dslitem
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.engrave2.toEngraveTime
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 

@@ -5,12 +5,14 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.device.DeviceConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
+import com.angcyo.library.LTime
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
@@ -53,6 +55,7 @@ object EngraveTransitionHelper {
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
         val bitmap = provider?.getBitmapData() ?: return null
+        LTime.tick()
         val transferDataEntity =
             createTransferDataEntity(provider, transferConfigEntity, DataCmd.ENGRAVE_TYPE_BITMAP)
         val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
@@ -79,7 +82,7 @@ object EngraveTransitionHelper {
             DeviceConstant.EXT_DATA_PREVIEW,
             true
         )
-
+        "transitionToBitmap[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -90,6 +93,8 @@ object EngraveTransitionHelper {
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
         val bitmap = provider?.getBitmapData() ?: return null
+        LTime.tick()
+
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
@@ -139,6 +144,8 @@ object EngraveTransitionHelper {
             DeviceConstant.EXT_DATA_PREVIEW,
             true
         )
+
+        "transitionToBitmapPath[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -150,6 +157,8 @@ object EngraveTransitionHelper {
         params: TransitionParam
     ): TransferDataEntity? {
         val bitmap = provider?.getBitmapData() ?: return null
+        LTime.tick()
+
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
@@ -160,7 +169,7 @@ object EngraveTransitionHelper {
         val bgColor = if (params.invert) Color.BLACK else Color.WHITE
         val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
         dpiBitmap.recycle()
-
+        val bitmapByteCount = dpiBitmap2.byteCount
         val operateBitmap = OpenCV.bitmapToDithering(app(), dpiBitmap2)!! //用灰度图进行抖动处理
         dpiBitmap2.recycle()
 
@@ -172,7 +181,7 @@ object EngraveTransitionHelper {
         )
 
         //白色1 黑色0
-        val pair = transition.covertBitmap2Dithering(dpiBitmap, true)
+        val pair = transition.covertBitmap2Dithering(operateBitmap, true)
         transferDataEntity.dataPath =
             pair.second.writeTransferDataPath("${transferDataEntity.index}")
 
@@ -192,6 +201,7 @@ object EngraveTransitionHelper {
             true
         )
 
+        "transitionToBitmapDithering[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmapByteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -203,6 +213,8 @@ object EngraveTransitionHelper {
         params: TransitionParam
     ): TransferDataEntity? {
         provider ?: return null
+        LTime.tick()
+
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
@@ -219,8 +231,8 @@ object EngraveTransitionHelper {
             DeviceConstant.EXT_PREVIEW
         )
 
-        if (pathList == null) {
-            //如果没有路径
+        if (params.onlyUseBitmapToGCode || pathList == null) {
+            //如果没有路径, 获取强制使用图片转GCode
             if (bitmap == null) {
                 //也没有图片
                 return null
@@ -246,6 +258,7 @@ object EngraveTransitionHelper {
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
         }
 
+        "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap?.byteCount?.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -256,6 +269,8 @@ object EngraveTransitionHelper {
         engraveDataType: Int
     ): TransferDataEntity? {
         provider ?: return null
+        LTime.tick()
+
         val data = provider.getRawData()
         val transferDataEntity = createTransferDataEntity(
             provider,
@@ -266,6 +281,7 @@ object EngraveTransitionHelper {
         //写入数据到路径, 用于发送到数据
         transferDataEntity.dataPath = data?.writeTransferDataPath("${transferDataEntity.index}")
 
+        "transitionToRaw[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} 转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -352,10 +368,10 @@ object EngraveTransitionHelper {
     //region ---文件输出信息---
 
     private fun saveGCodeEngraveData(transferDataEntity: TransferDataEntity, gCodeFile: File) {
+        transferDataEntity.lines = gCodeFile.lines()
         val gCodeText = gCodeFile.readText()
         gCodeFile.deleteSafe()
 
-        transferDataEntity.lines = gCodeFile.lines()
         transferDataEntity.dataPath =
             gCodeText.toByteArray().writeTransferDataPath("${transferDataEntity.index}")
 
