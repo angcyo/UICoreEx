@@ -13,8 +13,8 @@ import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.EngraveHelper
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel

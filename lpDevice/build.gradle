@@ -1,0 +1,21 @@
+ext {
+    M_SDK_LIB = 18
+}
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+    implementation project(allModule.core)
+    implementation project(allModule.dslitem)
+    implementation project(allModule.coroutine)
+    implementation project(allModule.glide) //load image
+    implementation project(allModule.pager) //image pager
+
+    //https://mvnrepository.com/artifact/com.airbnb.android/lottie
+    implementation "com.airbnb.android:lottie:5.2.0"
+
+    api project(allModule.fsc)
+
+    compileOnly project(allModule.umeng_lp)
+    compileOnly project(allModule.objectbox_lp) //数据库
+}

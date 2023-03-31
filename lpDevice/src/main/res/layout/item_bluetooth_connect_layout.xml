@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/lib_xhdpi"
+    android:paddingBottom="@dimen/lib_xhdpi">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bluetooth_connect_bg_selector"
+        android:padding="@dimen/lib_xhdpi">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/device_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/device_bg_shape"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/device_l1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/device_name_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/lib_hdpi"
+            android:textColor="@color/lib_main_to_theme_colors"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/device_flag_view"
+            app:layout_constraintLeft_toRightOf="@id/device_image_view"
+            app:layout_constraintTop_toTopOf="@id/device_image_view"
+            tools:text="LaserPecker-III105B94" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/device_flag_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/bluetooth_text_color_selector"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/device_image_view"
+            app:layout_constraintLeft_toLeftOf="@id/device_name_view"
+            app:layout_constraintTop_toBottomOf="@id/device_name_view"
+            tools:text="未连接设备" />
+
+        <com.angcyo.widget.image.ImageLoadingView
+            android:id="@+id/lib_loading_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="right|center_vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ble_loading_svg"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -9,23 +9,20 @@ import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE
-import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING
-import com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE
 import com.angcyo.canvas.utils.engraveSort
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.engrave.R
 import com.angcyo.engrave.data.*
 import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.toEngraveTypeOfDataMode
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.EngraveHelper.engraveLayerList
+import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.file
 import com.angcyo.library.ex.size
-import com.angcyo.library.utils.filePath
-import com.angcyo.library.utils.writeToFile
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -33,7 +30,6 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.random.Random
 
 /**
  * 雕刻数据相关处理
@@ -43,47 +39,6 @@ import kotlin.random.Random
 class EngraveTransitionManager {
 
     companion object {
-
-        /**雕刻传输数据缓存文件的文件夹*/
-        const val ENGRAVE_TRANSFER_FILE_FOLDER = "transfer"
-
-        fun String.toTransferData() = toByteArray(Charsets.ISO_8859_1)
-
-        fun ByteArray.toTransferData() = toString(Charsets.ISO_8859_1)
-
-        /**将字节数据写入到文件*/
-        fun ByteArray.writeTransferDataPath(fileName: String) =
-            writeToFile(filePath(ENGRAVE_TRANSFER_FILE_FOLDER, fileName).file())
-
-        /**生成一个雕刻需要用到的文件索引
-         * 4个字节 最大 4_294_967_295
-         * */
-        fun generateEngraveIndex(): Int {
-            var millis = System.currentTimeMillis() //13位毫秒
-            /*val s = millis / 1000 //10位秒
-            val m = millis % 1000 //毫秒
-            val r = nextInt(0, m.toInt()) //随机数
-            return (s + m + r).toInt()*/
-            millis = (millis shl 16) or Random.nextLong(1, 0b1111111111111111)
-            //8位随机数255
-            //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
-            return (millis and 0xfff_ffff).toInt()
-        }
-
-        /**生成一个雕刻的文件名*/
-        fun generateEngraveName(): String {
-            return "filename-${HawkEngraveKeys.lastEngraveCount + 1}"
-        }
-
-        /**图层, 以及图层数据*/
-        val engraveLayerList = listOf(
-            EngraveLayerInfo(DATA_MODE_BLACK_WHITE, _string(R.string.engrave_layer_fill)),
-            EngraveLayerInfo(DATA_MODE_DITHERING, _string(R.string.engrave_layer_bitmap)),
-            EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
-        )
-
-        /**获取图层, 获取雕刻的图层信息*/
-        fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.layerMode == mode }
 
         /**获取一个转换需要的额外参数, 在需要合并数据时需要
          * [rendererList] 需要是一个图层下的所有渲染器, 不能混合
@@ -392,7 +347,8 @@ class EngraveTransitionManager {
 
     /**合并数据*/
     fun _mergeTransferData(dataList: List<TransferDataEntity>): TransferDataEntity {
-        val resultTransferDataInfo = TransferDataEntity(index = generateEngraveIndex())
+        val resultTransferDataInfo =
+            TransferDataEntity(index = EngraveHelper.generateEngraveIndex())
 
         resultTransferDataInfo.dataPath = byteWriter {
             dataList.forEach {

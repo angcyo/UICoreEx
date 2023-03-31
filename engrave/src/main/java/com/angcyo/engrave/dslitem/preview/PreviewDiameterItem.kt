@@ -3,7 +3,7 @@ package com.angcyo.engrave.dslitem.preview
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.BaseDiameterItem
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.library.ex._string

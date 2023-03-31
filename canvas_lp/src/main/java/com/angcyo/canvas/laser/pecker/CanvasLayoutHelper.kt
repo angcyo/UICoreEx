@@ -31,11 +31,12 @@ import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
 import com.angcyo.library.component.pad.isInPadMode
@@ -926,7 +927,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     _layerDragHelper = null
                 }
                 renderDslAdapter {
-                    EngraveTransitionManager.engraveLayerList.forEach {
+                    EngraveHelper.engraveLayerList.forEach {
                         CanvasLayerNameItem()() {//雕刻图层
                             itemGroupExtend = true
                             itemChanging = true

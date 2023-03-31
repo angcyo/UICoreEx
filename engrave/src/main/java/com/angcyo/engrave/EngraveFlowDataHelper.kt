@@ -7,22 +7,19 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.core.component.DslLayout
-import com.angcyo.core.component.file.appFilePath
-import com.angcyo.core.component.renderLayout
 import com.angcyo.core.vmApp
-import com.angcyo.engrave.data.EngraveLayerInfo
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
-import com.angcyo.engrave.transition.IEngraveTransition
-import com.angcyo.glide.loadImage
-import com.angcyo.http.rx.runRx
-import com.angcyo.library.Library
-import com.angcyo.library.ex.*
+import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.MaterialHelper.createMaterialCode
+import com.angcyo.laserpacker.device.data.EngraveLayerInfo
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppString
-import com.angcyo.library.libCacheFile
-import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.*
 import com.angcyo.objectbox.laser.pecker.*
 import com.angcyo.objectbox.laser.pecker.entity.*
@@ -34,100 +31,6 @@ import kotlin.math.max
  * @since 2022/10/09
  */
 object EngraveFlowDataHelper {
-
-    /**临时的雕刻日志文件路径集合, 在分享之后清空*/
-    val tempEngraveLogPathList = mutableListOf<String>()
-
-    /**分享最近的雕刻日志*/
-    fun shareEngraveLog() {
-        toastQQ(_string(R.string.create_log_tip))
-        runRx({
-            val logList = mutableListOf(logPath())
-            Library.hawkPath?.let { logList.add(it) } //xml
-            logList.addAll(getTaskEngraveLogFilePath())
-            logList.addAll(tempEngraveLogPathList)
-
-            tempEngraveLogPathList.clear()
-            logList.zip(libCacheFile("LaserPecker-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
-                ?.shareFile()
-        })
-    }
-
-    /**截图之后的意见反馈*/
-    fun showEngraveScreenShotShare(path: String) {
-        tempEngraveLogPathList.clear()
-        tempEngraveLogPathList.add(path)
-        renderLayout(R.layout.layout_engrave_screen_shot_share) {
-            renderLayoutAction = {
-                img(R.id.lib_image_view)?.loadImage(path)
-                click(R.id.lib_close_view) {
-                    DslLayout.hide(this@renderLayout)
-                }
-                clickItem {
-                    DslLayout.hide(this@renderLayout)
-                    shareEngraveLog()
-                }
-            }
-        }
-    }
-
-    /**最后一次雕刻任务的数据日志文件路径*/
-    fun getTaskEngraveLogFilePath(): List<String> {
-        val result = mutableListOf<String>()
-        val task = EngraveTaskEntity::class.findLast(LPBox.PACKAGE_NAME) {
-            //no op
-        }
-        task?.dataIndexList?.forEach {
-            result.addAll(getIndexLogFilePath(it))
-        }
-        return result
-    }
-
-    /**获取指定索引对应的雕刻日志文件*/
-    fun getIndexLogFilePath(index: Any?): List<String> {
-        val result = mutableListOf<String>()
-        //.png
-        var path = appFilePath(
-            "$index${IEngraveTransition.EXT_PREVIEW}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
-        )
-        if (path.isFileExist()) {
-            result.add(path)
-        }
-        //.p.png
-        path = appFilePath(
-            "$index${IEngraveTransition.EXT_DATA_PREVIEW}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
-        )
-        if (path.isFileExist()) {
-            result.add(path)
-        }
-        //.bp
-        path = appFilePath(
-            "$index${IEngraveTransition.EXT_BP}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
-        )
-        if (path.isFileExist()) {
-            result.add(path)
-        }
-        //.dt
-        path = appFilePath(
-            "$index${IEngraveTransition.EXT_DT}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
-        )
-        if (path.isFileExist()) {
-            result.add(path)
-        }
-        //.gcode
-        path = appFilePath(
-            "$index${IEngraveTransition.EXT_GCODE}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
-        )
-        if (path.isFileExist()) {
-            result.add(path)
-        }
-        return result
-    }
 
     //region ---task---
 
@@ -327,7 +230,7 @@ object EngraveFlowDataHelper {
                 }
             }
             if (name.isEmpty()) {
-                name = EngraveTransitionManager.generateEngraveName()
+                name = EngraveHelper.generateEngraveName()
             }
         }
     }
@@ -434,7 +337,7 @@ object EngraveFlowDataHelper {
             }
         }
         val laserList = mutableListOf<EngraveLayerInfo>()
-        EngraveTransitionManager.engraveLayerList.forEach {
+        EngraveHelper.engraveLayerList.forEach {
             if (typeModeList.contains(it.layerMode)) {
                 laserList.add(it)
             }
@@ -451,7 +354,7 @@ object EngraveFlowDataHelper {
                     .and(TransferDataEntity_.index.equal(taskEntity.currentIndex))
             )
         }
-        EngraveTransitionManager.engraveLayerList.forEach {
+        EngraveHelper.engraveLayerList.forEach {
             if (transferData?.layerMode == it.layerMode) {
                 return it
             }
@@ -486,7 +389,7 @@ object EngraveFlowDataHelper {
     }
 
     fun getEngraveMaterNameByKey(materialKey: String?): String {
-        return EngraveHelper.getMaterialByKey(materialKey)?.name
+        return MaterialHelper.getMaterialByKey(materialKey)?.name
             ?: getAppString(materialKey ?: "custom")
             ?: _string(R.string.custom)
     }
@@ -521,8 +424,8 @@ object EngraveFlowDataHelper {
             )
         }
         config ?: return null
-        return EngraveHelper.materialList.find { it.code == config.materialCode } //这是内存数据, 切换不同设备之后可以就不一样了
-            ?: EngraveHelper.getMaterialByCode(taskId, config.materialCode) //这是数据库数据, 需要提前保存
+        return MaterialHelper.materialList.find { it.code == config.materialCode } //这是内存数据, 切换不同设备之后可以就不一样了
+            ?: MaterialHelper.getMaterialByCode(taskId, config.materialCode) //这是数据库数据, 需要提前保存
     }
 
     /**则查找相同产品的最近一次的雕刻信息*/
@@ -534,7 +437,7 @@ object EngraveFlowDataHelper {
                     .and(EngraveConfigEntity_.productName.equal("$productName"))
             )
         }
-        return EngraveHelper.materialList.find { it.code == config?.materialCode }
+        return MaterialHelper.materialList.find { it.code == config?.materialCode }
     }
 
     /**使用材质key, 创建对应的雕刻参数配置
@@ -547,7 +450,7 @@ object EngraveFlowDataHelper {
     ): List<EngraveConfigEntity> {
         val result = mutableListOf<EngraveConfigEntity>()
         val dpiScale = getTransferConfig(taskId)?.dpi?.toDpiScale() ?: 1f
-        val materialList = EngraveHelper.getMaterialList(
+        val materialList = MaterialHelper.getMaterialList(
             materialKey ?: "custom",
             dpiScale,
             defMaterial?.type
@@ -558,7 +461,7 @@ object EngraveFlowDataHelper {
 
         val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
         //每个图层都创建一个材质参数
-        EngraveTransitionManager.engraveLayerList.forEach { engraveLayerInfo ->
+        EngraveHelper.engraveLayerList.forEach { engraveLayerInfo ->
             //图层模式
             EngraveConfigEntity().apply {
                 this.taskId = taskId
@@ -627,7 +530,7 @@ object EngraveFlowDataHelper {
         }
 
         //重新初始化材质列表
-        EngraveHelper.initMaterial()
+        MaterialHelper.initMaterial()
         //重新构建参数配置信息
         generateEngraveConfigByMaterial(taskId, key, result.lastOrNull())
 
@@ -642,7 +545,7 @@ object EngraveFlowDataHelper {
         all.forEach { it.isDelete = true }
         all.lpSaveAllEntity()
         //重新初始化材质列表
-        EngraveHelper.initMaterial()
+        MaterialHelper.initMaterial()
         val materialEntity = findTaskMaterial(taskId)
         if (materialEntity?.key == materialKey) {
             EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
@@ -669,7 +572,7 @@ object EngraveFlowDataHelper {
             }
 
             //材质
-            val customMaterial = EngraveHelper.createCustomMaterial()
+            val customMaterial = MaterialHelper.createCustomMaterial()
             materialCode = customMaterial.code
 
             //功率
@@ -678,7 +581,7 @@ object EngraveFlowDataHelper {
             time = 1
 
             //光源
-            type = last?.type ?: EngraveHelper.getProductLaserType()
+            type = last?.type ?: DeviceHelper.getProductLaserType()
             precision = last?.precision ?: HawkEngraveKeys.lastPrecision
 
             //物理尺寸
@@ -703,7 +606,7 @@ object EngraveFlowDataHelper {
             depth = itemBean.printDepth ?: HawkEngraveKeys.lastDepth
             time = itemBean.printCount ?: 1
 
-            type = itemBean.printType?.toByte() ?: EngraveHelper.getProductLaserType()
+            type = itemBean.printType?.toByte() ?: DeviceHelper.getProductLaserType()
             precision = itemBean.printPrecision ?: HawkEngraveKeys.lastPrecision
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()

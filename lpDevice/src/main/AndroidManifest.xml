@@ -1,0 +1,33 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.angcyo.laserpacker.device">
+
+    <application>
+
+        <!--连接提示-->
+        <activity
+            android:name=".ble.DeviceConnectTipActivity"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:screenOrientation="behind"
+            android:theme="@style/DeviceConnectTipTheme" />
+
+        <!--固件升级-->
+        <activity
+            android:name=".firmware.FirmwareUpdateActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+
+            <!-- <intent-filter>
+                 <action android:name="android.intent.action.VIEW" />
+                 <category android:name="android.intent.category.DEFAULT" />
+
+                 <data android:scheme="file" />
+                 <data android:scheme="content" />
+                 <data android:mimeType="*/*" />
+             </intent-filter>-->
+        </activity>
+    </application>
+</manifest>

@@ -3,8 +3,8 @@ package com.angcyo.engrave.transition
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.toTransferData
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
+import com.angcyo.laserpacker.device.EngraveHelper.toTransferData
+import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity

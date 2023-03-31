@@ -14,6 +14,7 @@ dependencies {
     compileOnly project(allModule.umeng_lp)
 
     api project(allModule.fsc)
+    api project(allModule.lpDevice)
 
     //https://github.com/chrisbanes/PhotoView/
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'

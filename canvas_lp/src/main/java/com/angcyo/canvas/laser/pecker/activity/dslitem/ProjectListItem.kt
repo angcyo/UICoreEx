@@ -8,7 +8,7 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.glide.glide
 import com.angcyo.http.base.toJson
 import com.angcyo.library.component.lastContext

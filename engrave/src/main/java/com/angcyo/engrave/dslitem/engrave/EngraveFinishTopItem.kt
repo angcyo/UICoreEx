@@ -7,6 +7,7 @@ import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
 import com.angcyo.engrave.toEngraveTime
 import com.angcyo.item.DslTagGroupItem
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -30,12 +31,12 @@ class EngraveFinishTopItem : DslTagGroupItem() {
         //分享雕刻日志
         itemClick = if (isDebug()) {
             {
-                EngraveFlowDataHelper.shareEngraveLog()
+                DeviceHelper.shareEngraveLog()
             }
         } else {
             {
                 it.watchCount(5) {
-                    EngraveFlowDataHelper.shareEngraveLog()
+                    DeviceHelper.shareEngraveLog()
                 }
             }
         }

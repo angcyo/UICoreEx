@@ -7,6 +7,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.unit.toMm
@@ -27,7 +28,7 @@ object EngraveDataValidation {
         if (laserPeckerModel.isZOpen()) {
             //所有设备的第三轴模式下, 不允许雕刻GCode数据
             val gCodeLayer =
-                EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
+                EngraveHelper.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
             if (gCodeLayer != null) {
                 val rendererList =
                     EngraveTransitionManager.getRendererList(canvasDelegate, gCodeLayer, false)
@@ -48,7 +49,7 @@ object EngraveDataValidation {
             if (laserPeckerModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
                 val gCodeLayer =
-                    EngraveTransitionManager.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
+                    EngraveHelper.engraveLayerList.find { it.layerMode == CanvasConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {
                     val notGCodeRendererList = EngraveTransitionManager.getRendererListNot(
                         canvasDelegate,

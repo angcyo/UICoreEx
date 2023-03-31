@@ -14,7 +14,7 @@ import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem

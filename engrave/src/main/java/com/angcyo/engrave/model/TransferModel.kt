@@ -21,7 +21,7 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.transition.EmptyException

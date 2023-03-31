@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="engrave_warn">警告</string>
+    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
+    <string name="device_connected">已连接</string>
+    <string name="blue_connecting">蓝牙正在连接...</string>
+    <string name="blue_disconnecting">正在断开...</string>
+    <string name="blue_connect">蓝牙连接</string>
+    <string name="ui_slip_menu_model">模式设定</string>
+
+    <string name="device_setting_act_model_warning_tone">工作提示音</string>
+    <string name="device_setting_act_des_sound">开始工作和工作结束时会有提示音</string>
+    <string name="device_setting_act_model_security">安全状态</string>
+    <string name="device_setting_act_des_security">有保护罩状态下自动开启安全模式</string>
+    <string name="device_setting_act_model_free">自由模式</string>
+    <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
+    <string name="device_setting_act_model_preview_g_code">向量图</string>
+    <string name="device_setting_engrave_dir">雕刻方向</string>
+    <string name="device_setting_engrave_dir_des">默认为正向雕刻，打开按钮为反向手持雕刻</string>
+    <string name="device_g_code_pwr_label">使用GCode指令功率</string>
+    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
+    <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
+
+    <string name="device_ex_car_label">移动平台</string>
+    <string name="device_ex_car_des">--</string>
+    <string name="device_ex_direction_label">正转</string>
+    <string name="device_ex_direction_des">第三轴正转或者反转</string>
+    <string name="device_direction_forward">正转</string>
+    <string name="device_direction_reversal">反转</string>
+    <string name="device_s_batch_engrave_label">滑台多文件雕刻模式</string>
+    <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_ex_engrave_module">雕刻模块</string>
+    <string name="device_ex_pen_engrave_label">画笔模式</string>
+    <string name="device_module_calibration_label">模块校准</string>
+    <string name="device_module_calibration_des">校准后请锁紧你的模块</string>
+    <string name="start_calibration">开始校准</string>
+    <string name="finish_calibration">完成校准</string>
+    <string name="device_setting_txt_3">主机触摸按键</string>
+    <string name="device_setting_txt_4">该开关可控制主机上的预览和停止触摸按键的启用和禁用状态</string>
+    <string name="button_infra_red_title">红光常亮</string>
+    <string name="button_infra_red_content">因设备使用不可见光雕刻，当打开此按钮时，设备在工作时提供红外指示</string>
+    <string name="device_setting_txt_5">批量雕刻按键</string>
+    <string name="device_setting_txt_6">该开关可控制外接配件“批量雕刻按键”的启用和禁用状态</string>
+    <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
+
+    <string name="engrave_experimental">实验性</string>
+    <string name="create_log_tip">请稍等，正在生成日志...</string>
+
+    <string name="firmware_corrupted">固件已被损坏</string>
+    <string name="firmware_invalid">无效的固件</string>
+    <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
+    <string name="firmware_upgrade">固件升级</string>
+    <string name="firmware_version">固件版本</string>
+    <string name="firmware_time">固件时间</string>
+    <string name="device_firmware_version">设备固件版本</string>
+    <string name="upgrade_completed">升级完成!</string>
+    <string name="upgrade_duration">耗时</string>
+
+    <string name="data_exception">数据异常!</string>
+    <string name="blue_connected">蓝牙已连接</string>
+    <string name="blue_disconnected">蓝牙已断开</string>
+
+    <string name="engrave_layer_bitmap">图片</string>
+    <string name="engrave_layer_fill">填充</string>
+    <string name="engrave_layer_line">线条</string>
+
+    <string name="engrave_channel">雕刻通道</string>
+    <string name="engraving">镭雕中</string>
+
+</resources>

@@ -13,6 +13,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Private
@@ -149,7 +150,7 @@ interface IEngraveTransition {
         transferDataEntity.index = if (index > 0) {
             index
         } else {
-            EngraveTransitionManager.generateEngraveIndex()
+            EngraveHelper.generateEngraveIndex()
         }
         dataBean?.index = transferDataEntity.index
         dataBean?.dpi = transferConfigEntity.dpi

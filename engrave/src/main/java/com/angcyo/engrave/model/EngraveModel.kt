@@ -16,13 +16,13 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.engrave.EngraveNotifyHelper
-import com.angcyo.engrave.data.HawkEngraveKeys
 import com.angcyo.engrave.toLaserTypeString
 import com.angcyo.engrave.transition.EmptyException
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.EngraveNotifyHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
@@ -392,7 +392,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val taskId = task.taskId
 
         if (task.bigIndex == null) {
-            task.bigIndex = EngraveTransitionManager.generateEngraveIndex()
+            task.bigIndex = EngraveHelper.generateEngraveIndex()
             task.lpSaveEntity()
         }
 
@@ -622,7 +622,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val diameter =
             (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
 
-        val engraveLayer = EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)
+        val engraveLayer = EngraveHelper.getEngraveLayer(engraveConfigEntity.layerMode)
         buildString {
             append("开始雕刻指令:[${transferDataEntity?.taskId}][$index]")
 
@@ -731,7 +731,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun loopCheckDeviceState() {
         _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState() { bean, error ->
+            laserPeckerModel.queryDeviceState { bean, error ->
                 if (error != null || _listenerEngraveState) {
                     //出现了错误, 继续查询
                     loopCheckDeviceState()

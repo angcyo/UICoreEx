@@ -21,7 +21,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.*
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.library.ex.*
 import com.hingin.umeng.UMEvent

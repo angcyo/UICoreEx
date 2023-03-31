@@ -5,10 +5,9 @@ import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.EngraveHelper.findOptionIndex
-import com.angcyo.engrave.EngraveHelper.percentList
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -90,8 +89,8 @@ class EngravePropertyItem : DslAdapterItem() {
         itemHolder.click(R.id.power_view) {
             context.wheelDialog {
                 dialogTitle = powerLabel
-                wheelItems = percentList()
-                wheelSelectedIndex = findOptionIndex(wheelItems, power)
+                wheelItems = EngraveHelper.percentList()
+                wheelSelectedIndex = EngraveHelper.findOptionIndex(wheelItems, power)
                 wheelUnit = "%"
 
                 wheelItemSelectorAction = { dialog, index, item ->
@@ -109,8 +108,8 @@ class EngravePropertyItem : DslAdapterItem() {
         itemHolder.click(R.id.speed_view) {
             context.wheelDialog {
                 dialogTitle = speedLabel
-                wheelItems = percentList()
-                wheelSelectedIndex = findOptionIndex(wheelItems, depth)
+                wheelItems = EngraveHelper.percentList()
+                wheelSelectedIndex = EngraveHelper.findOptionIndex(wheelItems, depth)
                 wheelUnit = "%"
 
                 wheelItemSelectorAction = { dialog, index, item ->
@@ -127,8 +126,8 @@ class EngravePropertyItem : DslAdapterItem() {
         itemHolder.click(R.id.tims_view) {
             context.wheelDialog {
                 dialogTitle = timesLabel
-                wheelItems = percentList(50)//2022-10-21
-                wheelSelectedIndex = findOptionIndex(wheelItems, time)
+                wheelItems = EngraveHelper.percentList(50)//2022-10-21
+                wheelSelectedIndex = EngraveHelper.findOptionIndex(wheelItems, time)
 
                 wheelItemSelectorAction = { dialog, index, item ->
                     val times = getSelectedInt(index, time)

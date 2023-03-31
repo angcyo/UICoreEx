@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="permission_disabled">パーミッションが無効になっています</string>
-    <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
 
-    <string name="blue_disconnecting">切り離す...</string>
     <string name="canvas_operate">操作方法</string>
     <string name="laser_type">レーザー光源</string>
     <string name="object_diameter">対象物の直径</string>
@@ -11,12 +9,6 @@
     <string name="blue_no_device_connected">デバイスが接続されていません</string>
     <string name="device_ex_discontent_tips">%1$sアクセサリーが未接続、接続してください!</string>
     <string name="engrave_ex_discontent_tips">%1$sアクセサリーが未接続、続行しますか？</string>
-
-    <string name="blue_connect">Bluetooth接続</string>
-    <string name="device_connected">接続済み</string>
-    <string name="blue_connecting">Bluetooth接続中...</string>
-    <string name="blue_connected">Bluetooth接続済み</string>
-    <string name="blue_disconnected">Bluetooth接続切れ</string>
 
     <string name="preview_center">表示センター</string>
     <string name="preview_continue">プレビューを続ける</string>
@@ -35,7 +27,6 @@
     <string name="engrave_stop">レーザー彫刻を終了しました</string>
     <string name="engrave_continue">レーザー彫刻を続ける</string>
     <string name="start_preview">スタートプレビュー</string>
-    <string name="engraving">レーザー彫刻中</string>
     <string name="print_v2_package_print_state">一時停止</string>
     <string name="print_v2_package_print_over">レーザー彫刻終了</string>
     <string name="print_laser_start_tips">反射率の高い素材に彫刻をしないでください</string>
@@ -54,42 +45,6 @@
     <string name="engrave_speed">彫刻速度</string>
     <string name="engrave_precision">加速度レベル</string>
 
-    <string name="recycle_paper">エコ紙</string>
-    <string name="corrugated_paper">段ボール紙</string>
-    <string name="leather">革</string>
-    <string name="bamboo">竹</string>
-    <string name="wood">木</string>
-    <string name="cork">コルク</string>
-    <string name="plastic">プラスチック</string>
-    <string name="cloth">布地</string>
-    <string name="felt">フェルト</string>
-    <string name="opacity_acrylic">不透明なアクリル</string>
-    <string name="photosensitive_seal">光敏スタンプ</string>
-    <string name="fruit_peel">果物の皮</string>
-    <string name="custom">カスタム</string>
-    <string name="coke_can">コーラ缶</string>
-    <string name="stone">石材</string>
-    <string name="oxidized_metal">酸化金属</string>
-    <string name="pottery">陶磁器</string>
-    <string name="paint_coating">ラッカー塗装</string>
-    <string name="stainless_steel">ステンレス</string>
-    <string name="silicone">シリコーン</string>
-    <string name="painted_paperboard">塗装の段ボール</string>
-    <string name="wire_drawing_stainless_steel">ステンレスヘラライン</string>
-    <string name="pure_copper">銅</string>
-    <string name="aluminium_alloy">アルミニウム</string>
-    <string name="paper">紙</string>
-    <string name="metal">メタル</string>
-    <string name="glasses">ガラス</string>
-    <string name="jewelry">宝石</string>
-    <string name="food">グルメ</string>
-    <string name="iron">鉄</string>
-    <string name="aluminum">アルミニウム</string>
-    <string name="titanium">チタン</string>
-    <string name="magnesium">マグネシウム</string>
-    <string name="abs_pvc">ABS/PVC</string>
-
-    <string name="ui_slip_menu_model">モード設定</string>
     <string name="ui_slip_menu_history">履歴ファイル</string>
     <string name="device_history_title">デバイスのデータ</string>
     <string name="app_history_title">ローカルデータ</string>
@@ -109,41 +64,6 @@
     <string name="height">高さ</string>
 
     <string name="file_name">名称</string>
-
-    <string name="device_setting_act_model_warning_tone">動作ビープ音</string>
-    <string name="device_setting_act_des_sound">ジョブの開始と終了時にビープ音を鳴らす</string>
-    <string name="device_setting_act_model_security">安全状態</string>
-    <string name="device_setting_act_des_security">保護カバーがある場合は、自動的にセーフティモードが作動します</string>
-    <string name="device_setting_act_model_free">フリーモード</string>
-    <string name="device_setting_act_des_free">保護カバーなしの状態免責事項に同意します</string>
-    <string name="device_setting_act_model_preview_g_code">ベクター図</string>
-    <string name="device_setting_engrave_dir">彫刻方向</string>
-    <string name="device_setting_engrave_dir_des">デフォルトは順手彫り、ボタンをオンにすると逆手彫りになります</string>
-    <string name="device_g_code_pwr_label">GCodeコマンドパワーを使う</string>
-    <string name="device_g_code_pwr_des">オンにすると、GCodeの彫刻パワーはコマンドによって設定され、オフにすると、GCodeの彫刻パワーはアプリによって設定されます</string>
-    <string name="device_setting_act_des_preview_g_code">ベクトルファイルに合わせてカーソルが移動します</string>
-
-    <string name="device_ex_car_label">移動プラットフォーム</string>
-    <string name="device_ex_car_des">--</string>
-    <string name="device_ex_direction_label">正転</string>
-    <string name="device_ex_direction_des">第3軸正転・逆転</string>
-    <string name="device_direction_forward">正転</string>
-    <string name="device_direction_reversal">リバース</string>
-    <string name="device_s_batch_engrave_label">マルチファイル彫刻モード</string>
-    <string name="device_s_batch_engrave_des">--</string>
-    <string name="device_ex_engrave_module">彫刻モジュール</string>
-    <string name="device_ex_pen_engrave_label">ブラッシュモード</string>
-    <string name="device_module_calibration_label">モジュールキャリブレーション</string>
-    <string name="device_module_calibration_des">キャリブレーション後にモジュールをロックしてください</string>
-    <string name="start_calibration">キャリブレーションを開始します</string>
-    <string name="finish_calibration">キャリブレーションが完了しました</string>
-    <string name="device_setting_txt_3">本体タッチボタン</string>
-    <string name="device_setting_txt_4">本体のプレビュー、タッチボタンのON/OFFを操作するスイッチです</string>
-    <string name="button_infra_red_title">赤色光は常に点灯</string>
-    <string name="button_infra_red_content">デバイスは不可視光線を用いて彫刻を行うため、このボタンをオンにすると、デバイスが動作しているときに赤外線で表示することができます</string>
-    <string name="device_setting_txt_5">一括彫刻ボタン</string>
-    <string name="device_setting_txt_6">外部アクセサリー「一括彫刻ボタン」のON/OFFを操作するスイッチです。</string>
-    <string name="device_setting_blue_connect_auto">Bluetooth自動接続</string>
 
     <string name="engrave_file_name">ファイル名</string>
     <string name="ui_next">次へ</string>
@@ -174,9 +94,6 @@
     <string name="stop_transfer">送信完了しました</string>
     <string name="engrave_tip">反射率の高い素材に彫刻をしないでください</string>
     <string name="engrave_layer_config">彫刻レイヤー</string>
-    <string name="engrave_layer_bitmap">写真</string>
-    <string name="engrave_layer_fill">塗りつぶし</string>
-    <string name="engrave_layer_line">ライン</string>
     <string name="back_creation">創作に戻る</string>
     <string name="progress">進捗状況</string>
     <string name="share_community">コミュニティへ共有</string>
@@ -187,7 +104,6 @@
 
     <string name="select_device">デバイスを選択</string>
     <string name="start_upgrade">アップデートを開始する</string>
-    <string name="firmware_upgrade">ファームウェアのアップデート</string>
     <string name="engrave_perimeter">円周</string>
     <string name="engrave_bounds_warn">元素が彫刻エリアから外れた</string>
     <string name="engrave_overflow_bounds_message">彫刻エリア域外では、要素を赤枠にドラッグしてください</string>
@@ -197,25 +113,15 @@
 
     <string name="focal_distance_tip">焦点距離をご確認ください</string>
     <string name="focal_distance">焦点距離</string>
-    <string name="engrave_warn">警告</string>
     <string name="empty_data_transfer">彫刻データなし!</string>
     <string name="no_data_transfer">転送するデータがない!</string>
     <string name="no_data_engrave">レーザー彫刻するデータはありません!</string>
     <string name="out_of_data_transfer">データが大きすぎます!</string>
-    <string name="data_exception">データエラー!</string>
     <string name="transfer_data_exception">転送データエラー!</string>
 
     <string name="device_angle">機器水平角</string>
     <string name="device_temp">デバイス温度</string>
 
-    <string name="device_firmware_version">デバイスのファームウェアバージョン</string>
-    <string name="firmware_version">ファームウェアバージョン</string>
-    <string name="firmware_time">ファームウェアの時間</string>
-    <string name="upgrade_completed">アップデート完了!</string>
-    <string name="upgrade_duration">所要時間</string>
-    <string name="cannot_update_firmware_tip">このデバイスは、ファームウェアをアップデートできません.</string>
-    <string name="firmware_corrupted">ファームウェアが破損しています</string>
-    <string name="firmware_invalid">Invalid firmware</string>
     <string name="unsupported_firmware_tip">ファームウェアバージョン%1$sに対応していません。使用前にファームウェアを更新してください。</string>
     <string name="limit_engrave_count_tip">彫刻の数が上限に達しました。%1$s個まで対応できます</string>
 
@@ -225,11 +131,8 @@
     <string name="engrave_module_cnc">CNCモード</string>
 
     <string name="project_title">創作</string>
-    <string name="create_log_tip">れ履歴が生成しています。しばらくお待ちください...</string>
     <string name="engrave_stopping_tip">彫刻を停止しています。お待ちください...</string>
-    <string name="engrave_experimental">実験的</string>
 
-    <string name="engrave_channel">彫刻チャンネル</string>
     <string name="open_notify_tip">通知をオンにして、彫刻進捗の通知を受信します?</string>
     <string name="open_notify_channel_tip">彫刻チャンネルをオンにして、進捗状況の通知を受信します?</string>
 

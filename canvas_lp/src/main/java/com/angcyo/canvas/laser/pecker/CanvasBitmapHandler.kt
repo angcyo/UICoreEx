@@ -11,7 +11,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.crop.ui.cropDialog
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.engraveLoadingAsync
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.library.component.hawk.LibHawkKeys

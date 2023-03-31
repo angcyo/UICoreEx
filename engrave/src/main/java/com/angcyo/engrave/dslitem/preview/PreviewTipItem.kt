@@ -1,8 +1,8 @@
 package com.angcyo.engrave.dslitem.preview
 
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.component.watchCount
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -32,12 +32,12 @@ open class PreviewTipItem : DslAdapterItem() {
         //分享雕刻日志
         itemClick = if (isDebug()) {
             {
-                EngraveFlowDataHelper.shareEngraveLog()
+                DeviceHelper.shareEngraveLog()
             }
         } else {
             {
                 it.watchCount(5) {
-                    EngraveFlowDataHelper.shareEngraveLog()
+                    DeviceHelper.shareEngraveLog()
                 }
             }
         }

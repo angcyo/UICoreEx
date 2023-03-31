@@ -17,12 +17,12 @@ import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.DangerWarningDrawable
-import com.angcyo.engrave.ble.BluetoothSearchHelper
-import com.angcyo.engrave.ble.DeviceConnectTipActivity
-import com.angcyo.engrave.ble.DeviceSettingFragment
 import com.angcyo.engrave.model.EngraveModel
-import com.angcyo.engrave.model.FscDeviceModel
 import com.angcyo.engrave.model.PreviewModel
+import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
+import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
+import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
+import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
 import com.angcyo.library.ex.*

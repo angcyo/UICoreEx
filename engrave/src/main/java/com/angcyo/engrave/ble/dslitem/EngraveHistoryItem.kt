@@ -6,15 +6,15 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.engrave.model.PreviewModel
-import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.engrave.transition.IEngraveTransition
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.*
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
@@ -112,7 +112,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
             val itemList = mutableListOf<DslAdapterItem>()
 
             if (showAllEngraveLayerData()) {
-                EngraveTransitionManager.engraveLayerList.forEach { layerInfo ->
+                EngraveHelper.engraveLayerList.forEach { layerInfo ->
                     val findData =
                         itemTransferDataEntityList?.find { it.layerMode == layerInfo.layerMode }
                     if (findData != null) {
@@ -268,7 +268,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
     ) {
         list.add(EngraveLabelItem().apply {
             val label =
-                EngraveTransitionManager.getEngraveLayer(engraveConfigEntity.layerMode)?.label.or()
+                EngraveHelper.getEngraveLayer(engraveConfigEntity.layerMode)?.label.or()
             if (isDebug()) {
                 itemText = span {
                     append(label)

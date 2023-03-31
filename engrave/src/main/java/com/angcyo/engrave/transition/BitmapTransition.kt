@@ -17,10 +17,10 @@ import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.BitmapPath
-import com.angcyo.engrave.data.HawkEngraveKeys
-import com.angcyo.engrave.transition.EngraveTransitionManager.Companion.writeTransferDataPath
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
+import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF

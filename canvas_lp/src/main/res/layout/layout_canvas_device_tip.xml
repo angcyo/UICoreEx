@@ -47,6 +47,6 @@
         android:layout_margin="5dp"
         app:layout_constraintRight_toRightOf="@id/device_setting_view"
         app:layout_constraintTop_toTopOf="@id/device_setting_view"
-        tools:r_badge_text="" />
+        app:r_badge_text="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

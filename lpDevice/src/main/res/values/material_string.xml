@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recycle_paper">Recycle Paper</string>
+    <string name="corrugated_paper">Corrugated Paper</string>
+    <string name="leather">Leather</string>
+    <string name="bamboo">Bamboo</string>
+    <string name="wood">Wood</string>
+    <string name="cork">Cork</string>
+    <string name="plastic">Plastic</string>
+    <string name="cloth">Cloth</string>
+    <string name="felt">Felt</string>
+    <string name="opacity_acrylic">Opacity Acrylic</string>
+    <string name="photosensitive_seal">Photosensitive Seal</string>
+    <string name="fruit_peel">Fruit Peel</string>
+    <string name="custom">Custom</string>
+    <string name="coke_can">Coke Can</string>
+    <string name="stone">Stone</string>
+    <string name="oxidized_metal">Metal Oxide</string>
+    <string name="pottery">Pottery</string>
+    <string name="paint_coating">Paint Coating</string>
+    <string name="stainless_steel">Stainless Steel</string>
+    <string name="silicone">Silicone</string>
+    <string name="painted_paperboard">Painted Paperboard</string>
+    <string name="wire_drawing_stainless_steel">Wire Drawing Stainless Steel</string>
+    <string name="pure_copper">Pure Copper</string>
+    <string name="aluminium_alloy">Aluminium Alloy</string>
+    <string name="paper">Paper</string>
+    <string name="metal">Metal</string>
+    <string name="glasses">Glass</string>
+    <string name="jewelry">Jewelry</string>
+    <string name="food">Food</string>
+    <string name="iron">Iron</string>
+    <string name="aluminum">Aluminum</string>
+    <string name="titanium">Titanium</string>
+    <string name="magnesium">Magnesium</string>
+    <string name="abs_pvc">ABS/PVC</string>
+</resources>

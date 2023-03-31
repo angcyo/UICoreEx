@@ -1,8 +1,6 @@
 <resources>
     <string name="permission_disabled">Permission disabled</string>
-    <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
 
-    <string name="blue_disconnecting">Disconnecting...</string>
     <string name="canvas_operate">Operate</string>
     <string name="laser_type">Laser source</string>
     <string name="object_diameter">Diameter</string>
@@ -18,7 +16,6 @@
     <string name="preview">Preview</string>
     <string name="engrave_file_name">Filename</string>
     <string name="transmitting">File in transit</string>
-    <string name="engraving">Laser engraving</string>
     <string name="print_v2_package_print_state">Paused</string>
     <string name="print_v2_package_print_over">Ended laser engraving</string>
     <string name="engrave_pause">Pause</string>
@@ -44,41 +41,6 @@
     <string name="file_name">Named</string>
     <string name="remaining_time">Remaining</string>
 
-    <string name="recycle_paper">Recycle Paper</string>
-    <string name="corrugated_paper">Corrugated Paper</string>
-    <string name="leather">Leather</string>
-    <string name="bamboo">Bamboo</string>
-    <string name="wood">Wood</string>
-    <string name="cork">Cork</string>
-    <string name="plastic">Plastic</string>
-    <string name="cloth">Cloth</string>
-    <string name="felt">Felt</string>
-    <string name="opacity_acrylic">Opacity Acrylic</string>
-    <string name="photosensitive_seal">Photosensitive Seal</string>
-    <string name="fruit_peel">Fruit Peel</string>
-    <string name="custom">Custom</string>
-    <string name="coke_can">Coke Can</string>
-    <string name="stone">Stone</string>
-    <string name="oxidized_metal">Metal Oxide</string>
-    <string name="pottery">Pottery</string>
-    <string name="paint_coating">Paint Coating</string>
-    <string name="stainless_steel">Stainless Steel</string>
-    <string name="silicone">Silicone</string>
-    <string name="painted_paperboard">Painted Paperboard</string>
-    <string name="wire_drawing_stainless_steel">Wire Drawing Stainless Steel</string>
-    <string name="pure_copper">Pure Copper</string>
-    <string name="aluminium_alloy">Aluminium Alloy</string>
-    <string name="paper">Paper</string>
-    <string name="metal">Metal</string>
-    <string name="glasses">Glass</string>
-    <string name="jewelry">Jewelry</string>
-    <string name="food">Food</string>
-    <string name="iron">Iron</string>
-    <string name="aluminum">Aluminum</string>
-    <string name="titanium">Titanium</string>
-    <string name="magnesium">Magnesium</string>
-    <string name="abs_pvc">ABS/PVC</string>
-
     <string name="custom_material">Material</string>
     <string name="custom_power">Power</string>
     <string name="custom_speed">Depth</string>
@@ -93,11 +55,6 @@
 
     <string name="work_time">Duration</string>
     <string name="print_times">Pass</string>
-    <string name="blue_disconnected">BLE disconnect</string>
-    <string name="blue_connected">BLE connected</string>
-    <string name="blue_connecting">Bluetooth Connecting</string>
-    <string name="blue_connect">Bluetooth Device Connection</string>
-    <string name="device_connected">Connected</string>
 
     <string name="device_z_model_flat">Slab</string>
     <string name="device_z_model_car">Trolley</string>
@@ -111,44 +68,9 @@
     <string name="delete_history_succeed">Delete succeed</string>
     <string name="delete_history_failed">Delete failed</string>
 
-    <string name="ui_slip_menu_model">Mode Settings</string>
     <string name="ui_next">Next</string>
     <string name="send_file">Send File</string>
 
-    <string name="device_setting_act_model_warning_tone">Working Beep</string>
-    <string name="device_setting_act_des_sound">Warning beep description: there will be a warning beep when starting and finishing work.</string>
-    <string name="device_setting_act_model_security">Security Status</string>
-    <string name="device_setting_act_des_security">Automatic opening of safety mode under protective cover</string>
-    <string name="device_setting_act_model_free">Free Mode</string>
-    <string name="device_setting_act_des_free">Disclaimer consent is required in the absence of a protective cover</string>
-    <string name="device_setting_act_model_preview_g_code">GCode</string>
-    <string name="device_setting_engrave_dir">Engraving direction</string>
-    <string name="device_setting_engrave_dir_des">The default is forward engraving, and the open button is reverse handheld engraving</string>
-    <string name="device_g_code_pwr_label">Use G Code command power</string>
-    <string name="device_g_code_pwr_des">Turn on the option, the GCode engraving power takes the value from the command; turn off the option, the GCode engraving power takes the value from the App.</string>
-    <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
-
-    <string name="device_ex_car_label">Mobile platform</string>
-    <string name="device_ex_car_des">--</string>
-    <string name="device_ex_direction_label">Forward</string>
-    <string name="device_ex_direction_des">The third axis is forward or reversed</string>
-    <string name="device_direction_forward">Forward</string>
-    <string name="device_direction_reversal">Reverse</string>
-    <string name="device_s_batch_engrave_label">Slide Extension Multi-file Mode</string>
-    <string name="device_s_batch_engrave_des">--</string>
-    <string name="device_ex_engrave_module">Carving module</string>
-    <string name="device_ex_pen_engrave_label">Brush model</string>
-    <string name="device_module_calibration_label">Module calibration</string>
-    <string name="device_module_calibration_des">Please lock your module after calibration</string>
-    <string name="start_calibration">Start calibration</string>
-    <string name="finish_calibration">Finish calibration</string>
-    <string name="device_setting_txt_3">Touch Buttons</string>
-    <string name="device_setting_txt_4">This switch controls the enabling and disabling of preview and stop touch buttons on the main unit</string>
-    <string name="button_infra_red_title">Red Light Stay</string>
-    <string name="button_infra_red_content">Since the device uses invisible light engraving, when it is turned on, infrared instructions will be provided when the device is working.</string>
-    <string name="device_setting_txt_5">Batch Engraving Button</string>
-    <string name="device_setting_txt_6">This switch controls the enable and disable status of the outboard accessories \'Batch Engraving Key\'</string>
-    <string name="device_setting_blue_connect_auto">Automatic Bluetooth Connection</string>
     <string name="preview_scroll_continue">Scroll Preview</string>
     <string name="preview_scroll_pause">Pause Scroll</string>
     <string name="engrave_speed">Velocity</string>
@@ -179,9 +101,6 @@
     <string name="stop_transfer">End transmission</string>
     <string name="engrave_tip">Do not carve on highly reflective materials</string>
     <string name="engrave_layer_config">Carving layer</string>
-    <string name="engrave_layer_bitmap">Picture</string>
-    <string name="engrave_layer_fill">Fill</string>
-    <string name="engrave_layer_line">Line</string>
     <string name="back_creation">Creation</string>
     <string name="progress">Progress</string>
     <string name="share_community">Share</string>
@@ -192,7 +111,6 @@
 
     <string name="select_device">Select Device</string>
     <string name="start_upgrade">Start Update</string>
-    <string name="firmware_upgrade">Firmware Upgrade</string>
 
     <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
     <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
@@ -203,26 +121,15 @@
 
     <string name="focal_distance_tip">Please confirm the focal length</string>
     <string name="focal_distance">FFD</string>
-    <string name="engrave_warn">Warning</string>
     <string name="empty_data_transfer">No engraving data!</string>
     <string name="no_data_transfer">No data needs to be transmitted!</string>
     <string name="no_data_engrave">No data need radium carving!</string>
 
     <string name="out_of_data_transfer">Data is too large!</string>
-    <string name="data_exception">Data exception!</string>
     <string name="transfer_data_exception">Data transmission failure!</string>
     <string name="device_angle">Device angle</string>
     <string name="device_temp">Device temp</string>
 
-    <string name="device_firmware_version">Device firmware version</string>
-    <string name="firmware_version">Firmware version</string>
-    <string name="firmware_time">Firmware time</string>
-    <string name="upgrade_completed">Upgrade completed!</string>
-    <string name="upgrade_duration">Duration</string>
-    <string name="cannot_update_firmware_tip">This firmware cannot be updated for the current device.</string>
-
-    <string name="firmware_corrupted">The firmware has been corrupted</string>
-    <string name="firmware_invalid">Invalid firmware</string>
     <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
     <string name="limit_engrave_count_tip">The number of carvings has reached the upper limit, maximum %1$s.</string>
 
@@ -232,11 +139,8 @@
     <string name="engrave_module_cnc">CNC</string>
 
     <string name="project_title">My creation</string>
-    <string name="create_log_tip">Please wait, logs are being generated...</string>
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
-    <string name="engrave_experimental">Experimental</string>
 
-    <string name="engrave_channel">Engrave Channel</string>
     <string name="open_notify_tip">Turn on notifications to receive sculpted notifications progress?</string>
     <string name="open_notify_channel_tip">Open the engraving channel to receive notification progress?</string>
 

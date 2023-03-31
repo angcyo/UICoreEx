@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="engrave_warn">Warning</string>
+    <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
+    <string name="device_connected">Connected</string>
+    <string name="blue_connecting">Bluetooth Connecting</string>
+    <string name="blue_disconnecting">Disconnecting...</string>
+    <string name="blue_connect">Bluetooth Device Connection</string>
+    <string name="ui_slip_menu_model">Mode Settings</string>
+
+    <string name="device_setting_act_model_warning_tone">Working Beep</string>
+    <string name="device_setting_act_des_sound">Warning beep description: there will be a warning beep when starting and finishing work.</string>
+    <string name="device_setting_act_model_security">Security Status</string>
+    <string name="device_setting_act_des_security">Automatic opening of safety mode under protective cover</string>
+    <string name="device_setting_act_model_free">Free Mode</string>
+    <string name="device_setting_act_des_free">Disclaimer consent is required in the absence of a protective cover</string>
+    <string name="device_setting_act_model_preview_g_code">GCode</string>
+    <string name="device_setting_engrave_dir">Engraving direction</string>
+    <string name="device_setting_engrave_dir_des">The default is forward engraving, and the open button is reverse handheld engraving</string>
+    <string name="device_g_code_pwr_label">Use G Code command power</string>
+    <string name="device_g_code_pwr_des">Turn on the option, the GCode engraving power takes the value from the command; turn off the option, the GCode engraving power takes the value from the App.</string>
+    <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
+
+    <string name="device_ex_car_label">Mobile platform</string>
+    <string name="device_ex_car_des">--</string>
+    <string name="device_ex_direction_label">Forward</string>
+    <string name="device_ex_direction_des">The third axis is forward or reversed</string>
+    <string name="device_direction_forward">Forward</string>
+    <string name="device_direction_reversal">Reverse</string>
+    <string name="device_s_batch_engrave_label">Slide Extension Multi-file Mode</string>
+    <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_ex_engrave_module">Carving module</string>
+    <string name="device_ex_pen_engrave_label">Brush model</string>
+    <string name="device_module_calibration_label">Module calibration</string>
+    <string name="device_module_calibration_des">Please lock your module after calibration</string>
+    <string name="start_calibration">Start calibration</string>
+    <string name="finish_calibration">Finish calibration</string>
+    <string name="device_setting_txt_3">Touch Buttons</string>
+    <string name="device_setting_txt_4">This switch controls the enabling and disabling of preview and stop touch buttons on the main unit</string>
+    <string name="button_infra_red_title">Red Light Stay</string>
+    <string name="button_infra_red_content">Since the device uses invisible light engraving, when it is turned on, infrared instructions will be provided when the device is working.</string>
+    <string name="device_setting_txt_5">Batch Engraving Button</string>
+    <string name="device_setting_txt_6">This switch controls the enable and disable status of the outboard accessories \'Batch Engraving Key\'</string>
+    <string name="device_setting_blue_connect_auto">Automatic Bluetooth Connection</string>
+
+    <string name="engrave_experimental">Experimental</string>
+    <string name="create_log_tip">Please wait, logs are being generated...</string>
+
+    <string name="firmware_corrupted">The firmware has been corrupted</string>
+    <string name="firmware_invalid">Invalid firmware</string>
+    <string name="cannot_update_firmware_tip">This firmware cannot be updated for the current device.</string>
+    <string name="firmware_upgrade">Firmware Upgrade</string>
+    <string name="firmware_version">Firmware version</string>
+    <string name="firmware_time">Firmware time</string>
+    <string name="device_firmware_version">Device firmware version</string>
+    <string name="upgrade_completed">Upgrade completed!</string>
+    <string name="upgrade_duration">Duration</string>
+
+    <string name="data_exception">Data exception!</string>
+    <string name="blue_disconnected">BLE disconnect</string>
+    <string name="blue_connected">BLE connected</string>
+
+    <string name="engrave_layer_bitmap">Picture</string>
+    <string name="engrave_layer_fill">Fill</string>
+    <string name="engrave_layer_line">Line</string>
+
+    <string name="engrave_channel">Engrave Channel</string>
+    <string name="engraving">Laser engraving</string>
+
+</resources>

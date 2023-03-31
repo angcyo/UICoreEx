@@ -16,7 +16,7 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.find
-import com.angcyo.engrave.data.HawkEngraveKeys
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
@@ -34,6 +34,9 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
@@ -400,9 +403,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             printPower = printPower ?: HawkEngraveKeys.lastPower
             printDepth = printDepth ?: HawkEngraveKeys.lastDepth
             printPrecision = printPrecision ?: HawkEngraveKeys.lastPrecision
-            printType = printType ?: EngraveHelper.getProductLaserType().toInt()
+            printType = printType ?: DeviceHelper.getProductLaserType().toInt()
             printCount = printCount ?: 1
-            materialKey = materialKey ?: EngraveHelper.createCustomMaterial().key
+            materialKey = materialKey ?: MaterialHelper.createCustomMaterial().key
 
             //雕刻配置
             engraveConfigEntity =
@@ -414,9 +417,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             EngraveMaterialWheelItem()() {
                 itemTag = MaterialEntity::name.name
                 itemLabelText = _string(R.string.custom_material)
-                itemWheelList = EngraveHelper.unionMaterialList
-                itemSelectedIndex = EngraveHelper.indexOfMaterial(
-                    EngraveHelper.unionMaterialList,
+                itemWheelList = MaterialHelper.unionMaterialList
+                itemSelectedIndex = MaterialHelper.indexOfMaterial(
+                    MaterialHelper.unionMaterialList,
                     projectItemBean?.materialKey,
                     projectItemBean?.printType,
                 )
@@ -443,7 +446,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemText = _string(R.string.laser_type)
                     itemSegmentList = typeList
                     itemCurrentIndex = typeList.indexOfFirst {
-                        it.type == EngraveHelper.getProductLaserType()
+                        it.type == DeviceHelper.getProductLaserType()
                     }
                     observeItemChange {
                         val type = typeList[itemCurrentIndex].type
@@ -528,13 +531,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             //未初始化材质信息, 默认使用第一个
             val lastMaterial = EngraveFlowDataHelper.findLastMaterial()
             materialEntity =
-                if (lastMaterial != null && EngraveHelper.materialList.find { it.key == lastMaterial.key } != null) {
+                if (lastMaterial != null && MaterialHelper.materialList.find { it.key == lastMaterial.key } != null) {
                     //上一次设备推荐的材质, 在列表中
                     lastMaterial
                 } else {
                     //使用列表中第一个
-                    EngraveHelper.materialList.firstOrNull()
-                        ?: EngraveHelper.createCustomMaterial()
+                    MaterialHelper.materialList.firstOrNull()
+                        ?: MaterialHelper.createCustomMaterial()
                 }
             EngraveFlowDataHelper.generateEngraveConfigByMaterial(
                 taskId,
@@ -571,9 +574,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveMaterialWheelItem()() {
                     itemTag = MaterialEntity::name.name
                     itemLabelText = _string(R.string.custom_material)
-                    itemWheelList = EngraveHelper.unionMaterialList
-                    itemSelectedIndex = EngraveHelper.indexOfMaterial(
-                        EngraveHelper.unionMaterialList,
+                    itemWheelList = MaterialHelper.unionMaterialList
+                    itemSelectedIndex = MaterialHelper.indexOfMaterial(
+                        MaterialHelper.unionMaterialList,
                         materialEntity
                     )
                     itemEngraveConfigEntity = engraveConfigEntity

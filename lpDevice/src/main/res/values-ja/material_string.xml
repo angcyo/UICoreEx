@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recycle_paper">エコ紙</string>
+    <string name="corrugated_paper">段ボール紙</string>
+    <string name="leather">革</string>
+    <string name="bamboo">竹</string>
+    <string name="wood">木</string>
+    <string name="cork">コルク</string>
+    <string name="plastic">プラスチック</string>
+    <string name="cloth">布地</string>
+    <string name="felt">フェルト</string>
+    <string name="opacity_acrylic">不透明なアクリル</string>
+    <string name="photosensitive_seal">光敏スタンプ</string>
+    <string name="fruit_peel">果物の皮</string>
+    <string name="custom">カスタム</string>
+    <string name="coke_can">コーラ缶</string>
+    <string name="stone">石材</string>
+    <string name="oxidized_metal">酸化金属</string>
+    <string name="pottery">陶磁器</string>
+    <string name="paint_coating">ラッカー塗装</string>
+    <string name="stainless_steel">ステンレス</string>
+    <string name="silicone">シリコーン</string>
+    <string name="painted_paperboard">塗装の段ボール</string>
+    <string name="wire_drawing_stainless_steel">ステンレスヘラライン</string>
+    <string name="pure_copper">銅</string>
+    <string name="aluminium_alloy">アルミニウム</string>
+    <string name="paper">紙</string>
+    <string name="metal">メタル</string>
+    <string name="glasses">ガラス</string>
+    <string name="jewelry">宝石</string>
+    <string name="food">グルメ</string>
+    <string name="iron">鉄</string>
+    <string name="aluminum">アルミニウム</string>
+    <string name="titanium">チタン</string>
+    <string name="magnesium">マグネシウム</string>
+    <string name="abs_pvc">ABS/PVC</string>
+</resources>

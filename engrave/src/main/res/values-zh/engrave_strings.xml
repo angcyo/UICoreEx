@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="permission_disabled">权限被禁用</string>
-    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
 
-    <string name="blue_disconnecting">正在断开...</string>
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光光源</string>
     <string name="object_diameter">物体直径</string>
@@ -11,12 +9,6 @@
     <string name="blue_no_device_connected">未连接设备</string>
     <string name="device_ex_discontent_tips">%1$s配件未连接，请先连接!</string>
     <string name="engrave_ex_discontent_tips">检查到%1$s配件未连接，是否继续?</string>
-
-    <string name="blue_connect">蓝牙连接</string>
-    <string name="device_connected">已连接</string>
-    <string name="blue_connecting">蓝牙正在连接...</string>
-    <string name="blue_connected">蓝牙已连接</string>
-    <string name="blue_disconnected">蓝牙已断开</string>
 
     <string name="preview_center">显示中心</string>
     <string name="preview_continue">继续预览</string>
@@ -35,7 +27,6 @@
     <string name="engrave_stop">结束镭雕</string>
     <string name="engrave_continue">继续镭雕</string>
     <string name="start_preview">开始预览</string>
-    <string name="engraving">镭雕中</string>
     <string name="print_v2_package_print_state">已暂停</string>
     <string name="print_v2_package_print_over">已镭雕结束</string>
     <string name="print_laser_start_tips">请勿在高反光材质上雕刻</string>
@@ -54,42 +45,6 @@
     <string name="engrave_speed">雕刻速度</string>
     <string name="engrave_precision">加速级别</string>
 
-    <string name="recycle_paper">环保纸</string>
-    <string name="corrugated_paper">瓦楞纸</string>
-    <string name="leather">皮革</string>
-    <string name="bamboo">竹质</string>
-    <string name="wood">木质</string>
-    <string name="cork">软木</string>
-    <string name="plastic">塑料</string>
-    <string name="cloth">布料</string>
-    <string name="felt">毛毡布</string>
-    <string name="opacity_acrylic">不透明亚克力</string>
-    <string name="photosensitive_seal">光敏印章</string>
-    <string name="fruit_peel">果皮</string>
-    <string name="custom">自定义</string>
-    <string name="coke_can">可乐罐</string>
-    <string name="stone">石头</string>
-    <string name="oxidized_metal">氧化金属</string>
-    <string name="pottery">陶制品</string>
-    <string name="paint_coating">漆涂层</string>
-    <string name="stainless_steel">不锈钢</string>
-    <string name="silicone">硅胶</string>
-    <string name="painted_paperboard">漆面纸板</string>
-    <string name="wire_drawing_stainless_steel">拉丝不锈钢</string>
-    <string name="pure_copper">铜</string>
-    <string name="aluminium_alloy">铝合金</string>
-    <string name="paper">纸</string>
-    <string name="metal">金属</string>
-    <string name="glasses">玻璃</string>
-    <string name="jewelry">珠宝</string>
-    <string name="food">美食</string>
-    <string name="iron">铁</string>
-    <string name="aluminum">铝</string>
-    <string name="titanium">钛</string>
-    <string name="magnesium">镁</string>
-    <string name="abs_pvc">ABS/PVC</string>
-
-    <string name="ui_slip_menu_model">模式设定</string>
     <string name="ui_slip_menu_history">历史文档</string>
     <string name="device_history_title">设备数据</string>
     <string name="app_history_title">本地数据</string>
@@ -109,41 +64,6 @@
     <string name="height">高</string>
 
     <string name="file_name">命名</string>
-
-    <string name="device_setting_act_model_warning_tone">工作提示音</string>
-    <string name="device_setting_act_des_sound">开始工作和工作结束时会有提示音</string>
-    <string name="device_setting_act_model_security">安全状态</string>
-    <string name="device_setting_act_des_security">有保护罩状态下自动开启安全模式</string>
-    <string name="device_setting_act_model_free">自由模式</string>
-    <string name="device_setting_act_des_free">在无保护罩状态下需同意免责声明</string>
-    <string name="device_setting_act_model_preview_g_code">向量图</string>
-    <string name="device_setting_engrave_dir">雕刻方向</string>
-    <string name="device_setting_engrave_dir_des">默认为正向雕刻，打开按钮为反向手持雕刻</string>
-    <string name="device_g_code_pwr_label">使用GCode指令功率</string>
-    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
-    <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
-
-    <string name="device_ex_car_label">移动平台</string>
-    <string name="device_ex_car_des">--</string>
-    <string name="device_ex_direction_label">正转</string>
-    <string name="device_ex_direction_des">第三轴正转或者反转</string>
-    <string name="device_direction_forward">正转</string>
-    <string name="device_direction_reversal">反转</string>
-    <string name="device_s_batch_engrave_label">滑台多文件雕刻模式</string>
-    <string name="device_s_batch_engrave_des">--</string>
-    <string name="device_ex_engrave_module">雕刻模块</string>
-    <string name="device_ex_pen_engrave_label">画笔模式</string>
-    <string name="device_module_calibration_label">模块校准</string>
-    <string name="device_module_calibration_des">校准后请锁紧你的模块</string>
-    <string name="start_calibration">开始校准</string>
-    <string name="finish_calibration">完成校准</string>
-    <string name="device_setting_txt_3">主机触摸按键</string>
-    <string name="device_setting_txt_4">该开关可控制主机上的预览和停止触摸按键的启用和禁用状态</string>
-    <string name="button_infra_red_title">红光常亮</string>
-    <string name="button_infra_red_content">因设备使用不可见光雕刻，当打开此按钮时，设备在工作时提供红外指示</string>
-    <string name="device_setting_txt_5">批量雕刻按键</string>
-    <string name="device_setting_txt_6">该开关可控制外接配件“批量雕刻按键”的启用和禁用状态</string>
-    <string name="device_setting_blue_connect_auto">自动连接蓝牙</string>
 
     <string name="engrave_file_name">文件命名</string>
     <string name="ui_next">下一步</string>
@@ -174,9 +94,6 @@
     <string name="stop_transfer">结束传输</string>
     <string name="engrave_tip">请勿在高反光材质上雕刻</string>
     <string name="engrave_layer_config">雕刻图层</string>
-    <string name="engrave_layer_bitmap">图片</string>
-    <string name="engrave_layer_fill">填充</string>
-    <string name="engrave_layer_line">线条</string>
     <string name="back_creation">返回创作</string>
     <string name="progress">进度</string>
     <string name="share_community">分享到社区</string>
@@ -187,7 +104,6 @@
 
     <string name="select_device">选择设备</string>
     <string name="start_upgrade">开始升级</string>
-    <string name="firmware_upgrade">固件升级</string>
     <string name="engrave_perimeter">周长</string>
     <string name="engrave_bounds_warn">元素超出雕刻区域</string>
     <string name="engrave_overflow_bounds_message">超出雕刻区域，请将元素拖入调整到红色边框内</string>
@@ -197,25 +113,15 @@
 
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="focal_distance">焦距</string>
-    <string name="engrave_warn">警告</string>
     <string name="empty_data_transfer">无雕刻数据!</string>
     <string name="no_data_transfer">无数据需要传输!</string>
     <string name="no_data_engrave">无数据需要镭雕!</string>
     <string name="out_of_data_transfer">数据过大!</string>
-    <string name="data_exception">数据异常!</string>
     <string name="transfer_data_exception">传输数据异常!</string>
 
     <string name="device_angle">设备水平角度</string>
     <string name="device_temp">设备温度</string>
 
-    <string name="device_firmware_version">设备固件版本</string>
-    <string name="firmware_version">固件版本</string>
-    <string name="firmware_time">固件时间</string>
-    <string name="upgrade_completed">升级完成!</string>
-    <string name="upgrade_duration">耗时</string>
-    <string name="cannot_update_firmware_tip">当前设备无法更新此固件.</string>
-    <string name="firmware_corrupted">固件已被损坏</string>
-    <string name="firmware_invalid">无效的固件</string>
     <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
     <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
 
@@ -225,11 +131,8 @@
     <string name="engrave_module_cnc">CNC模式</string>
 
     <string name="project_title">我的创作</string>
-    <string name="create_log_tip">请稍等，正在生成日志...</string>
     <string name="engrave_stopping_tip">正在停止雕刻,请稍等...</string>
-    <string name="engrave_experimental">实验性</string>
 
-    <string name="engrave_channel">雕刻通道</string>
     <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>
     <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
 

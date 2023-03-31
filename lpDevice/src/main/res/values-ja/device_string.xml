@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
+    <string name="device_connected">接続済み</string>
+    <string name="blue_connecting">Bluetooth接続中...</string>
+    <string name="blue_disconnecting">切り離す...</string>
+    <string name="blue_connect">Bluetooth接続</string>
+    <string name="ui_slip_menu_model">モード設定</string>
+
+    <string name="device_setting_act_model_warning_tone">動作ビープ音</string>
+    <string name="device_setting_act_des_sound">ジョブの開始と終了時にビープ音を鳴らす</string>
+    <string name="device_setting_act_model_security">安全状態</string>
+    <string name="device_setting_act_des_security">保護カバーがある場合は、自動的にセーフティモードが作動します</string>
+    <string name="device_setting_act_model_free">フリーモード</string>
+    <string name="device_setting_act_des_free">保護カバーなしの状態免責事項に同意します</string>
+    <string name="device_setting_act_model_preview_g_code">ベクター図</string>
+    <string name="device_setting_engrave_dir">彫刻方向</string>
+    <string name="device_setting_engrave_dir_des">デフォルトは順手彫り、ボタンをオンにすると逆手彫りになります</string>
+    <string name="device_g_code_pwr_label">GCodeコマンドパワーを使う</string>
+    <string name="device_g_code_pwr_des">オンにすると、GCodeの彫刻パワーはコマンドによって設定され、オフにすると、GCodeの彫刻パワーはアプリによって設定されます</string>
+    <string name="device_setting_act_des_preview_g_code">ベクトルファイルに合わせてカーソルが移動します</string>
+
+    <string name="device_ex_car_label">移動プラットフォーム</string>
+    <string name="device_ex_car_des">--</string>
+    <string name="device_ex_direction_label">正転</string>
+    <string name="device_ex_direction_des">第3軸正転・逆転</string>
+    <string name="device_direction_forward">正転</string>
+    <string name="device_direction_reversal">リバース</string>
+    <string name="device_s_batch_engrave_label">マルチファイル彫刻モード</string>
+    <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_ex_engrave_module">彫刻モジュール</string>
+    <string name="device_ex_pen_engrave_label">ブラッシュモード</string>
+    <string name="device_module_calibration_label">モジュールキャリブレーション</string>
+    <string name="device_module_calibration_des">キャリブレーション後にモジュールをロックしてください</string>
+    <string name="start_calibration">キャリブレーションを開始します</string>
+    <string name="finish_calibration">キャリブレーションが完了しました</string>
+    <string name="device_setting_txt_3">本体タッチボタン</string>
+    <string name="device_setting_txt_4">本体のプレビュー、タッチボタンのON/OFFを操作するスイッチです</string>
+    <string name="button_infra_red_title">赤色光は常に点灯</string>
+    <string name="button_infra_red_content">デバイスは不可視光線を用いて彫刻を行うため、このボタンをオンにすると、デバイスが動作しているときに赤外線で表示することができます</string>
+    <string name="device_setting_txt_5">一括彫刻ボタン</string>
+    <string name="device_setting_txt_6">外部アクセサリー「一括彫刻ボタン」のON/OFFを操作するスイッチです。</string>
+    <string name="device_setting_blue_connect_auto">Bluetooth自動接続</string>
+
+    <string name="engrave_experimental">実験的</string>
+    <string name="create_log_tip">れ履歴が生成しています。しばらくお待ちください...</string>
+
+    <string name="firmware_corrupted">ファームウェアが破損しています</string>
+    <string name="firmware_invalid">Invalid firmware</string>
+    <string name="cannot_update_firmware_tip">このデバイスは、ファームウェアをアップデートできません.</string>
+    <string name="firmware_upgrade">ファームウェアのアップデート</string>
+    <string name="firmware_version">ファームウェアバージョン</string>
+    <string name="firmware_time">ファームウェアの時間</string>
+    <string name="device_firmware_version">デバイスのファームウェアバージョン</string>
+    <string name="upgrade_completed">アップデート完了!</string>
+    <string name="upgrade_duration">所要時間</string>
+
+    <string name="data_exception">データエラー!</string>
+    <string name="blue_connected">Bluetooth接続済み</string>
+    <string name="blue_disconnected">Bluetooth接続切れ</string>
+
+    <string name="engrave_layer_bitmap">写真</string>
+    <string name="engrave_layer_fill">塗りつぶし</string>
+    <string name="engrave_layer_line">ライン</string>
+
+    <string name="engrave_channel">彫刻チャンネル</string>
+    <string name="engraving">レーザー彫刻中</string>
+
+</resources>
