@@ -211,12 +211,6 @@ fun String.toElementBeanList() = fromJson<List<LPElementBean>>(listType(LPElemen
 
 //region---Delegate---
 
-/**删除项目文件*/
-fun deleteProjectFile(name: String = ".temp"): Boolean {
-    val file = _defaultProjectOutputFile(name, false)
-    return file.delete()
-}
-
 /**获取工程结构[LPProjectBean]*/
 fun CanvasRenderDelegate.getProjectBean(
     renderList: List<BaseRenderer>? = renderManager.elementRendererList,

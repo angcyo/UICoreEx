@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
-import com.angcyo.canvas.data.*
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.toBitmapItemData
 import com.angcyo.canvas.graphics.toGCodeItemData
@@ -21,6 +20,7 @@ import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.toCanvasProjectBean
 import com.angcyo.laserpacker.toCanvasProjectItemList
 import com.angcyo.library.L
@@ -34,12 +34,6 @@ import java.io.File
  */
 
 //---状态存储和恢复---
-
-/**删除项目文件*/
-fun deleteProjectFile(name: String = ".temp"): Boolean {
-    val file = _defaultProjectOutputFile(name, false)
-    return file.delete()
-}
 
 /**保存实例数据, 实际就是保存工程数据
  * [name] 保存的工程文件名, 请包含后缀

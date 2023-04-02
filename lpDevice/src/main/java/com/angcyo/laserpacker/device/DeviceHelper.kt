@@ -146,6 +146,13 @@ object DeviceHelper {
         if (ensureExt) name.ensureName(LPDataConstant.PROJECT_EXT) else name
     ).file()
 
+
+    /**删除项目文件*/
+    fun deleteProjectFile(name: String = ".temp"): Boolean {
+        val file = _defaultProjectOutputFile(name, false)
+        return file.delete()
+    }
+
     //endregion ---文件输出信息---
 
 }
