@@ -141,7 +141,7 @@ object LPElementHelper {
     }
 
     /**添加一个图片元素到画板
-     * [LPConstant.DATA_TYPE_BITMAP]*/
+     * [LPDataConstant.DATA_TYPE_BITMAP]*/
     fun addBitmapElement(delegate: CanvasRenderDelegate?, bitmap: Bitmap?) {
         delegate ?: return
         bitmap ?: return
@@ -151,9 +151,9 @@ object LPElementHelper {
     }
 
     /**添加一个文本/二维码/条形码元素到画板
-     * [LPConstant.DATA_TYPE_TEXT]
-     * [LPConstant.DATA_TYPE_QRCODE]
-     * [LPConstant.DATA_TYPE_BARCODE]
+     * [LPDataConstant.DATA_TYPE_TEXT]
+     * [LPDataConstant.DATA_TYPE_QRCODE]
+     * [LPDataConstant.DATA_TYPE_BARCODE]
      * */
     fun addTextElement(
         delegate: CanvasRenderDelegate?,
@@ -174,9 +174,9 @@ object LPElementHelper {
     }
 
     /**添加一个路径元素到画板
-     * [LPConstant.DATA_TYPE_GCODE]
-     * [LPConstant.DATA_TYPE_SVG]
-     * [LPConstant.DATA_TYPE_PATH]
+     * [LPDataConstant.DATA_TYPE_GCODE]
+     * [LPDataConstant.DATA_TYPE_SVG]
+     * [LPDataConstant.DATA_TYPE_PATH]
      *
      * [data] 原始数据
      * */
@@ -202,12 +202,12 @@ object LPElementHelper {
     }
 
     /**添加一个形状元素到画板
-     * [LPConstant.DATA_TYPE_LINE]
-     * [LPConstant.DATA_TYPE_RECT]
-     * [LPConstant.DATA_TYPE_OVAL]
-     * [LPConstant.DATA_TYPE_POLYGON]
-     * [LPConstant.DATA_TYPE_PENTAGRAM]
-     * [LPConstant.DATA_TYPE_LOVE]
+     * [LPDataConstant.DATA_TYPE_LINE]
+     * [LPDataConstant.DATA_TYPE_RECT]
+     * [LPDataConstant.DATA_TYPE_OVAL]
+     * [LPDataConstant.DATA_TYPE_POLYGON]
+     * [LPDataConstant.DATA_TYPE_PENTAGRAM]
+     * [LPDataConstant.DATA_TYPE_LOVE]
      * */
     fun addShapesElement(delegate: CanvasRenderDelegate?, type: Int) {
         delegate ?: return
