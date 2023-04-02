@@ -20,7 +20,9 @@ import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
-import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
+import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
+import com.angcyo.canvas2.laser.pecker.element.LPPathElement
+import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -113,20 +115,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 is CanvasSelectorComponent, is CanvasGroupRenderer -> renderGroupEditItems(renderer as CanvasGroupRenderer)
                 //单元素
                 else -> {
-                    val element = renderer?.renderElement
-                    if (element is ILaserPeckerElement) {
-                        when (element.elementBean.mtype) {
-                            LPDataConstant.DATA_TYPE_BITMAP -> renderBitmapEditItems(renderer)
-                            LPDataConstant.DATA_TYPE_TEXT -> renderTextEditItems(renderer)
-                            LPDataConstant.DATA_TYPE_LINE,
-                            LPDataConstant.DATA_TYPE_OVAL,
-                            LPDataConstant.DATA_TYPE_RECT,
-                            LPDataConstant.DATA_TYPE_POLYGON,
-                            LPDataConstant.DATA_TYPE_PENTAGRAM,
-                            LPDataConstant.DATA_TYPE_SVG,
-                            LPDataConstant.DATA_TYPE_GCODE,
-                            LPDataConstant.DATA_TYPE_LOVE -> renderPathEditItems(renderer)
-                        }
+                    when (renderer?.renderElement) {
+                        is LPBitmapElement -> renderBitmapEditItems(renderer)
+                        is LPTextElement -> renderTextEditItems(renderer)
+                        is LPPathElement -> renderPathEditItems(renderer)
                     }
                 }
             }
@@ -521,6 +513,19 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**群组, 多选*/
     fun DslAdapter.renderGroupEditItems(renderer: CanvasGroupRenderer) {
 
+        //群组栅格化
+        if (HawkEngraveKeys.enableRasterize) {
+            CanvasIconItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_text_rasterize_ico
+                itemText = _string(R.string.canvas_rasterize)
+                drawCanvasRight()
+                itemClick = {
+                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
+                }
+            }
+        }
+
         //对齐
         RendererAlignMenuItem()() {
             initItem(renderer)
@@ -533,7 +538,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             initItem(renderer)
             itemEnable = renderer.isSelectorGroupRenderer() &&
                     renderer.rendererList.size() >= 3//3个以上的元素才支持分布
-
             drawCanvasRight()
         }
 
