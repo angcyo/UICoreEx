@@ -12,15 +12,15 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.graphics.BitmapGraphicsParser
 import com.angcyo.canvas.graphics.IEngraveProvider
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.engraveColorBytes
 import com.angcyo.canvas.utils.toEngraveBitmap
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.data.BitmapPath
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
@@ -333,8 +333,8 @@ class BitmapTransition : IEngraveTransition {
     }
 
     /**将可视化数据处理成机器需要的线段数据或抖动数据
-     * [CanvasConstant.DATA_MODE_BLACK_WHITE] 线段数据
-     * [CanvasConstant.DATA_MODE_DITHERING] 抖动数据
+     * [LPDataConstant.DATA_MODE_BLACK_WHITE] 线段数据
+     * [LPDataConstant.DATA_MODE_DITHERING] 抖动数据
      * */
     override fun doTransitionTransferData(
         engraveProvider: IEngraveProvider,
@@ -349,7 +349,7 @@ class BitmapTransition : IEngraveTransition {
                 var dataMode = getDataMode(dataBean, transferConfigEntity)
                 var pxBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
 
-                if (dataMode == CanvasConstant.DATA_MODE_DITHERING) {
+                if (dataMode == LPDataConstant.DATA_MODE_DITHERING) {
                     //抖动数据, 重新计算
                     val old = pxBitmap
                     pxBitmap = BitmapGraphicsParser.handleDithering(old, dataBean) ?: pxBitmap
@@ -359,7 +359,7 @@ class BitmapTransition : IEngraveTransition {
 
                     if (HawkEngraveKeys.forceGrey || !vmApp<LaserPeckerModel>().isSupportDithering()) {
                         //不支持压缩数据, 则使用灰度图处理
-                        dataMode = CanvasConstant.DATA_MODE_GREY
+                        dataMode = LPDataConstant.DATA_MODE_GREY
                     }
                 }
 
@@ -370,7 +370,7 @@ class BitmapTransition : IEngraveTransition {
                 saveEngraveData(
                     transferDataEntity.index,
                     pxBitmap,
-                    IEngraveTransition.EXT_PREVIEW
+                    LPDataConstant.EXT_PREVIEW
                 )
 
                 var offsetLeft = 0
@@ -380,7 +380,7 @@ class BitmapTransition : IEngraveTransition {
                 rotateBounds.set(engraveProvider.getEngraveRotateBounds())
                 when (dataMode) {
                     //黑白数据, 发送线段数据
-                    CanvasConstant.DATA_MODE_BLACK_WHITE -> {
+                    LPDataConstant.DATA_MODE_BLACK_WHITE -> {
                         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP_PATH
                         //
                         val needMerge =
@@ -396,8 +396,8 @@ class BitmapTransition : IEngraveTransition {
                             0
                         }.toInt()
 
-                        if (dataBean.imageFilter == CanvasConstant.DATA_MODE_PRINT ||
-                            dataBean.imageFilter == CanvasConstant.DATA_MODE_SEAL
+                        if (dataBean.imageFilter == LPDataConstant.DATA_MODE_PRINT ||
+                            dataBean.imageFilter == LPDataConstant.DATA_MODE_SEAL
                         ) {
                             val bgColor = Color.WHITE
                             val old = pxBitmap
@@ -431,7 +431,7 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             listBitmapPath.toEngraveLog(),
-                            IEngraveTransition.EXT_BP
+                            LPDataConstant.EXT_BP
                         )
                         //3:保存一份数据的预览图
                         val previewBitmap = listBitmapPath.toEngraveBitmap(
@@ -443,12 +443,12 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            LPDataConstant.EXT_DATA_PREVIEW,
                             true
                         )
                     }
                     //色阶数据, 红色通道的灰度雕刻数据
-                    CanvasConstant.DATA_MODE_GREY -> {
+                    LPDataConstant.DATA_MODE_GREY -> {
                         transferDataEntity.engraveDataType = DataCmd.ENGRAVE_TYPE_BITMAP
                         val data = pxBitmap.engraveColorBytes()
                         transferDataEntity.dataPath =
@@ -459,7 +459,7 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            LPDataConstant.EXT_DATA_PREVIEW,
                             true
                         )
                     }
@@ -474,7 +474,7 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             pair.first,
-                            IEngraveTransition.EXT_DT
+                            LPDataConstant.EXT_DT
                         )
                         //3:保存一份数据的预览图
                         val previewBitmap =
@@ -482,7 +482,7 @@ class BitmapTransition : IEngraveTransition {
                         saveEngraveData(
                             transferDataEntity.index,
                             previewBitmap,
-                            IEngraveTransition.EXT_DATA_PREVIEW,
+                            LPDataConstant.EXT_DATA_PREVIEW,
                             true
                         )
                     }

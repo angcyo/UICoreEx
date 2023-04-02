@@ -9,7 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
@@ -50,7 +50,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
     /**预览的数据*/
-    var projectItemBean: CanvasProjectItemBean? = null
+    var projectItemBean: LPElementBean? = null
 
     var previewInfo: PreviewInfo? = null
 
@@ -116,7 +116,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     var _transferDataEntity: TransferDataEntity? = null
 
     /**开始路径预览*/
-    fun startPathPreview(dialogViewHolder: DslViewHolder, itemBean: CanvasProjectItemBean) {
+    fun startPathPreview(dialogViewHolder: DslViewHolder, itemBean: LPElementBean) {
         if (_transferDataEntity != null) {
             sendPreviewFlashBitmapCmd(dialogViewHolder, _transferDataEntity!!.index)
             return
@@ -207,7 +207,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
 @DSL
 fun Context.pathPreviewDialog(
-    projectItemBean: CanvasProjectItemBean,
+    projectItemBean: LPElementBean,
     config: PathPreviewDialogConfig.() -> Unit
 ): Dialog {
     return PathPreviewDialogConfig().run {

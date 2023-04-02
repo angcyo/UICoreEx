@@ -11,11 +11,11 @@ import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.util.scaleToSize
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
-import com.angcyo.canvas2.laser.pecker.util.toPaintStyle
-import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.toPaintStyle
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.toRadians
 import com.angcyo.library.unit.toPixel
@@ -50,24 +50,24 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             val height = bean.height.toPixel()
             return when (bean.mtype) {
                 //线
-                LPConstant.DATA_TYPE_LINE -> Path().apply {
+                LPDataConstant.DATA_TYPE_LINE -> Path().apply {
                     moveTo(0f, 0f)
                     lineTo(width, 0f)
                 }
                 //圆角矩形
-                LPConstant.DATA_TYPE_RECT -> Path().apply {
+                LPDataConstant.DATA_TYPE_RECT -> Path().apply {
                     val rx = bean.rx.toPixel()
                     val ry = bean.ry.toPixel()
                     addRoundRect(RectF(0f, 0f, width, height), rx, ry, Path.Direction.CW)
                 }
                 //爱心
-                LPConstant.DATA_TYPE_LOVE -> {
+                LPDataConstant.DATA_TYPE_LOVE -> {
                     val lovePath =
                         Sharp.loadPath("M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402")
                     lovePath.scaleToSize(width, height)
                 }
                 //椭圆
-                LPConstant.DATA_TYPE_OVAL -> Path().apply {
+                LPDataConstant.DATA_TYPE_OVAL -> Path().apply {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         addOval(
                             0f,
@@ -84,7 +84,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                     }
                 }
                 //星星
-                LPConstant.DATA_TYPE_PENTAGRAM -> Path().apply {
+                LPDataConstant.DATA_TYPE_PENTAGRAM -> Path().apply {
                     val side = bean.side //边数
                     val depth = bean.depth //深度, 决定内圈的半径 (内圈半径 = 固定外圈半径 * (1 - [depth] / 100))
                     val R = min(width, height) / 2 //五角星外圆的半径
@@ -120,7 +120,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                     close()
                 }
                 //多边形
-                LPConstant.DATA_TYPE_POLYGON -> Path().apply {
+                LPDataConstant.DATA_TYPE_POLYGON -> Path().apply {
                     val side = max(bean.side, 3) //边数 至少需要3边
                     val originX = width / 2
                     val originY = height / 2
@@ -198,13 +198,13 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         val data = elementBean.data
         if (!data.isNullOrEmpty()) {
             when (elementBean.mtype) {
-                LPConstant.DATA_TYPE_GCODE -> {
+                LPDataConstant.DATA_TYPE_GCODE -> {
                     val gCodeDrawable = GCodeHelper.parseGCode(data, paint)
                     if (gCodeDrawable != null) {
                         pathList = listOf(gCodeDrawable.gCodePath)
                     }
                 }
-                LPConstant.DATA_TYPE_SVG -> {
+                LPDataConstant.DATA_TYPE_SVG -> {
                     if (data.isSvgContent()) {
                         //svg标签数据
                         val sharpDrawable = Svg.loadSvgPathDrawable(data, -1, null, paint, 0, 0)

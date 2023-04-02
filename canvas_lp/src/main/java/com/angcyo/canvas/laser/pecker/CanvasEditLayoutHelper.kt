@@ -10,19 +10,19 @@ import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.core.renderer.GroupRenderer
 import com.angcyo.canvas.core.renderer.SelectGroupRenderer
-import com.angcyo.canvas.data.toPaintStyle
 import com.angcyo.canvas.graphics.IGraphicsParser
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.laser.pecker.dslitem.*
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.isJustGroupRenderer
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.*
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.fragment.AbsFragment
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.library.ex.*
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -47,7 +47,7 @@ object CanvasEditLayoutHelper {
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
                 itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE
+                itemImageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -65,7 +65,7 @@ object CanvasEditLayoutHelper {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
                 itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_DITHERING
+                itemImageFilter = LPDataConstant.DATA_MODE_DITHERING
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -83,7 +83,7 @@ object CanvasEditLayoutHelper {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
                 itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_GCODE
+                itemImageFilter = LPDataConstant.DATA_MODE_GCODE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -103,7 +103,7 @@ object CanvasEditLayoutHelper {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
                     itemRenderer = renderer
-                    itemImageFilter = CanvasConstant.DATA_MODE_GREY
+                    itemImageFilter = LPDataConstant.DATA_MODE_GREY
                     itemClick = {
                         CanvasBitmapHandler.handleGrey(it, fragment, renderer) {
                             itemIsSelected = false
@@ -119,7 +119,7 @@ object CanvasEditLayoutHelper {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
                 itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_PRINT
+                itemImageFilter = LPDataConstant.DATA_MODE_PRINT
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -137,7 +137,7 @@ object CanvasEditLayoutHelper {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
                 itemRenderer = renderer
-                itemImageFilter = CanvasConstant.DATA_MODE_SEAL
+                itemImageFilter = LPDataConstant.DATA_MODE_SEAL
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -287,9 +287,9 @@ object CanvasEditLayoutHelper {
     fun DslAdapter.renderShapeEditItems(fragment: AbsFragment, renderer: DataItemRenderer) {
         val dataBean = renderer.dataItem?.dataBean
         val type = dataBean?.mtype
-        if (type == CanvasConstant.DATA_TYPE_RECT ||
-            type == CanvasConstant.DATA_TYPE_POLYGON ||
-            type == CanvasConstant.DATA_TYPE_PENTAGRAM
+        if (type == LPDataConstant.DATA_TYPE_RECT ||
+            type == LPDataConstant.DATA_TYPE_POLYGON ||
+            type == LPDataConstant.DATA_TYPE_PENTAGRAM
         ) {
             //多边形/星星
             //属性调整

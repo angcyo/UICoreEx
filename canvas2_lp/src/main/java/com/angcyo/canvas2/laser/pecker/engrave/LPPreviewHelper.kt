@@ -62,9 +62,9 @@ object LPPreviewHelper {
     private fun updatePreviewInfo(info: PreviewInfo, rendererList: List<BaseRenderer>?) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         info.apply {
-            data = null
+            elementBean = null
             if (rendererList.size() == 1) {
-                data = rendererList?.firstOrNull()?.lpElementBean()
+                elementBean = rendererList?.firstOrNull()?.lpElementBean()
             }
             if (rendererList.isNullOrEmpty()) {
                 //未选中元素的情况下预览

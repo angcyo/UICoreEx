@@ -8,10 +8,6 @@ import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.canvas.data.CanvasOpenDataType
-import com.angcyo.canvas.data.CanvasProjectBean
-import com.angcyo.canvas.data.CanvasProjectItemBean
-import com.angcyo.canvas.data.toTypeNameString
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
@@ -19,7 +15,11 @@ import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateItem
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.EngraveModel
+import com.angcyo.laserpacker.CanvasOpenDataType
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
+import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.component._delay
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.uuid
@@ -133,12 +133,12 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
     /**是否需要自动开始*/
     fun needAutoStart(): Boolean {
         val data = _engraveData
-        if (data is CanvasProjectBean) {
+        if (data is LPProjectBean) {
             if (data._debug == true) {
                 //调试模式下, 不自动开始
                 return false
             }
-        } else if (data is CanvasProjectItemBean) {
+        } else if (data is LPElementBean) {
             if (data._debug == true) {
                 //调试模式下, 不自动开始
                 return false
@@ -153,10 +153,10 @@ class AutoEngraveActivity : BaseAppCompatActivity() {
             clearAllItems()
             AutoEngraveItem()() {
                 var bitmap: Bitmap? = null
-                if (data is CanvasProjectBean) {
+                if (data is LPProjectBean) {
                     itemShowName = data.file_name ?: "Untitled"
                     bitmap = data.preview_img?.toBitmapOfBase64()
-                } else if (data is CanvasProjectItemBean) {
+                } else if (data is LPElementBean) {
                     itemShowName = data.name ?: data.mtype.toTypeNameString()
                     bitmap = GraphicsHelper.parseRenderItemFrom(data, null)?.getEngraveBitmap()
                 }

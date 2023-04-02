@@ -3,10 +3,10 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity

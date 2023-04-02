@@ -137,8 +137,7 @@
     <string name="canvas_min_diameter">小直径</string>
     <string name="canvas_max_diameter">大直径</string>
     <string name="canvas_rotation_axis">旋转轴</string>
-    <string name="canvas_cone">圆锥</string>
-    <string name="canvas_ball">球体</string>
+
     <string name="canvas_sync_font">备份/同步字体</string>
 
     <string name="canvas_rename">重命名</string>

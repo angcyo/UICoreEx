@@ -3,10 +3,10 @@ package com.angcyo.canvas2.laser.pecker.dslitem.item
 import androidx.fragment.app.Fragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.component.getFile
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.L
 import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.ex.*
@@ -34,14 +34,14 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                 val filePath = ROpenFileHelper.parseData(uri)
                 L.i("选择文件:$filePath")
                 filePath?.let { path ->
-                    val isSvgExt = path.endsWith(LPConstant.SVG_EXT, true)
-                    val isGCodeExt = path.endsWith(LPConstant.GCODE_EXT, true)
+                    val isSvgExt = path.endsWith(LPDataConstant.SVG_EXT, true)
+                    val isGCodeExt = path.endsWith(LPDataConstant.GCODE_EXT, true)
                     if (isSvgExt) {
                         //.svg后缀
                         val text = path.file().readText()
                         LPElementHelper.addPathElement(
                             itemRenderDelegate,
-                            LPConstant.DATA_TYPE_SVG,
+                            LPDataConstant.DATA_TYPE_SVG,
                             text,
                             null
                         )
@@ -50,12 +50,12 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                         val text = path.file().readText()
                         LPElementHelper.addPathElement(
                             itemRenderDelegate,
-                            LPConstant.DATA_TYPE_GCODE,
+                            LPDataConstant.DATA_TYPE_GCODE,
                             text,
                             null
                         )
                     } else {
-                        val isTxtExt = path.endsWith(LPConstant.TXT_EXT, true)
+                        val isTxtExt = path.endsWith(LPDataConstant.TXT_EXT, true)
                         if (isTxtExt) {
                             //.txt后缀
                             val text = path.file().readText()
@@ -63,7 +63,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                                 //svg内容
                                 LPElementHelper.addPathElement(
                                     itemRenderDelegate,
-                                    LPConstant.DATA_TYPE_SVG,
+                                    LPDataConstant.DATA_TYPE_SVG,
                                     text,
                                     null
                                 )
@@ -71,7 +71,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                                 //gcode内容
                                 LPElementHelper.addPathElement(
                                     itemRenderDelegate,
-                                    LPConstant.DATA_TYPE_GCODE,
+                                    LPDataConstant.DATA_TYPE_GCODE,
                                     text,
                                     null
                                 )

@@ -2,10 +2,10 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.graphics.Typeface
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.ex._color

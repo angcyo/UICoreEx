@@ -10,13 +10,13 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.toTypeNameString
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
 import com.angcyo.widget.DslViewHolder
@@ -79,7 +79,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
         //item 名称
         itemHolder.tv(R.id.layer_item_name_view)?.text =
-            itemItemName ?: operateRenderer?.lpElementBean()?.mtype.toTypeNameString()
+            itemItemName ?: operateRenderer?.lpElementBean()?.mtype?.toTypeNameString()
 
         itemHolder.img(R.id.layer_item_drawable_view)
             ?.setImageDrawable(itemItemDrawable /*?: renderer?.preview(itemRenderParams)*/)

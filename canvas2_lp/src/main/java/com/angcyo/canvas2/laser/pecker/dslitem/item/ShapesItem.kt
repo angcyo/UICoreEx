@@ -1,8 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.laserpacker.LPDataConstant
 
 /**
  * 形状item
@@ -12,7 +12,7 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 class ShapesItem : CanvasIconItem() {
 
     /**形状类型*/
-    var itemShapeType: Int = LPConstant.DATA_TYPE_LINE
+    var itemShapeType: Int = LPDataConstant.DATA_TYPE_LINE
 
     init {
         itemClick = {

@@ -9,16 +9,18 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.renderElement
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.bean.LPProjectBean
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
-import com.angcyo.canvas2.laser.pecker.generateName
 import com.angcyo.http.base.*
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.generateName
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.uuid
@@ -37,23 +39,24 @@ object LPRendererHelper {
 
     /**解析对应的数据结构, 返回可以被渲染的元素*/
     fun parseElementBean(bean: LPElementBean): ILaserPeckerElement? = when (bean.mtype) {
-        LPConstant.DATA_TYPE_BITMAP -> LPBitmapElement(bean)
-        LPConstant.DATA_TYPE_TEXT,
-        LPConstant.DATA_TYPE_QRCODE,
-        LPConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
-        LPConstant.DATA_TYPE_LINE,
-        LPConstant.DATA_TYPE_RECT,
-        LPConstant.DATA_TYPE_OVAL,
-        LPConstant.DATA_TYPE_LOVE,
-        LPConstant.DATA_TYPE_POLYGON,
-        LPConstant.DATA_TYPE_PENTAGRAM,
-        LPConstant.DATA_TYPE_PEN,
-        LPConstant.DATA_TYPE_PATH,
-        LPConstant.DATA_TYPE_SVG,
-        LPConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
+        LPDataConstant.DATA_TYPE_BITMAP -> LPBitmapElement(bean)
+        LPDataConstant.DATA_TYPE_TEXT,
+        LPDataConstant.DATA_TYPE_QRCODE,
+        LPDataConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
+        LPDataConstant.DATA_TYPE_LINE,
+        LPDataConstant.DATA_TYPE_RECT,
+        LPDataConstant.DATA_TYPE_OVAL,
+        LPDataConstant.DATA_TYPE_LOVE,
+        LPDataConstant.DATA_TYPE_POLYGON,
+        LPDataConstant.DATA_TYPE_PENTAGRAM,
+        LPDataConstant.DATA_TYPE_PEN,
+        LPDataConstant.DATA_TYPE_PATH,
+        LPDataConstant.DATA_TYPE_SVG,
+        LPDataConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
         else -> null
     }
 
+    /**解析数据结构到对应的渲染器*/
     fun parseElementRenderer(bean: LPElementBean): CanvasElementRenderer? {
         return parseElementBean(bean)?.run {
             val renderer = CanvasElementRenderer()
@@ -210,7 +213,7 @@ fun String.toElementBeanList() = fromJson<List<LPElementBean>>(listType(LPElemen
 
 /**删除项目文件*/
 fun deleteProjectFile(name: String = ".temp"): Boolean {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+    val file = _defaultProjectOutputFile(name, false)
     return file.delete()
 }
 
@@ -283,7 +286,7 @@ fun CanvasRenderDelegate.saveProjectState(
     fileName: String = ".temp",
     async: Boolean = true
 ): String {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(fileName, false)
+    val file = _defaultProjectOutputFile(fileName, false)
     val save = Runnable {
         val bean = getProjectBean()
         val json = bean.toJson()
@@ -308,7 +311,7 @@ fun CanvasRenderDelegate.restoreProjectState(
     fileName: String = ".temp",
     async: Boolean = true
 ): String {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(fileName, false)
+    val file = _defaultProjectOutputFile(fileName, false)
     val restore = Runnable {
         openProjectFile(file, true)
     }
@@ -374,13 +377,3 @@ fun BaseRenderer.lpPathElement(): LPPathElement? {
 }
 
 //endregion---LpRenderer---
-
-//region---LPElementBean---
-
-/**是否加粗*/
-fun LPElementBean.isBold() = fontWeight == "bold"
-
-/**是否斜体*/
-fun LPElementBean.isItalic() = fontStyle == "italic"
-
-//endregion---LPElementBean---

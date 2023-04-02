@@ -1,6 +1,6 @@
-package com.angcyo.canvas2.laser.pecker.bean
+package com.angcyo.laserpacker.bean
 
-import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.laserpacker.device.R
 import com.angcyo.library.ex._string
 import com.angcyo.library.extend.IToText
 import com.angcyo.library.extend.IToValue

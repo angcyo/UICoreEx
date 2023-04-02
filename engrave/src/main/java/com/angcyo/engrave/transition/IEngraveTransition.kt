@@ -5,14 +5,14 @@ import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.MM
@@ -40,21 +40,6 @@ interface IEngraveTransition {
 
     companion object {
 
-        /**存放元素预览图的扩展名*/
-        const val EXT_PREVIEW = ".png"
-
-        /**存放元素转成数据后, 数据再次预览图的扩展名*/
-        const val EXT_DATA_PREVIEW = ".p.png"
-
-        /**图片路径数据*/
-        const val EXT_BP = ".bp"
-
-        /**抖动数据*/
-        const val EXT_DT = ".dt"
-
-        /**gcode数据*/
-        const val EXT_GCODE = ".gcode"
-
         /**保存雕刻数据到文件
          * [index] 需要保存的文件名(雕刻索引), 无扩展
          * [suffix] 文件后缀, 扩展名
@@ -72,7 +57,7 @@ interface IEngraveTransition {
         ): String? {
             //将雕刻数据写入文件
             return data.writeTo(
-                CanvasConstant.ENGRAVE_FILE_FOLDER,
+                LPDataConstant.ENGRAVE_FILE_FOLDER,
                 "${index}${suffix.ensureExtName()}",
                 false,
                 recycle
@@ -81,8 +66,8 @@ interface IEngraveTransition {
 
         /**通过雕刻索引, 获取对应的元素预览图片文件路径*/
         fun getEngravePreviewBitmapPath(index: Any?): String = appFilePath(
-            "${index}${EXT_PREVIEW.ensureExtName()}",
-            CanvasConstant.ENGRAVE_FILE_FOLDER
+            "${index}${LPDataConstant.EXT_PREVIEW.ensureExtName()}",
+            LPDataConstant.ENGRAVE_FILE_FOLDER
         )
 
         /**数据需要处理成什么格式, 丢给机器雕刻
@@ -97,20 +82,20 @@ interface IEngraveTransition {
                     transferConfigEntity
                 )
             }
-            return transferConfigEntity.dataMode ?: CanvasConstant.DATA_MODE_DITHERING
+            return transferConfigEntity.dataMode ?: LPDataConstant.DATA_MODE_DITHERING
         }
 
         /**数据处理的模式
-         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
-         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
-         * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
+         * [LPDataConstant.DATA_MODE_BLACK_WHITE]
+         * [LPDataConstant.DATA_MODE_GCODE]
+         * [LPDataConstant.DATA_MODE_DITHERING]
          * */
         fun getDataMode(
-            bean: CanvasProjectItemBean?,
+            bean: LPElementBean?,
             transferConfigEntity: TransferConfigEntity
         ): Int {
             return transferConfigEntity.dataMode ?: (bean?._dataMode
-                ?: CanvasConstant.DATA_MODE_DITHERING)
+                ?: LPDataConstant.DATA_MODE_DITHERING)
         }
     }
 

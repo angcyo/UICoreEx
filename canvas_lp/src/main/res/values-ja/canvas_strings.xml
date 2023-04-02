@@ -7,8 +7,7 @@
     <string name="canvas_min_diameter">小口径</string>
     <string name="canvas_max_diameter">大口径</string>
     <string name="canvas_rotation_axis">回転軸</string>
-    <string name="canvas_cone">コーン</string>
-    <string name="canvas_ball">球体</string>
+
     <string name="canvas_sync_font">フォントのバックアップ/同期</string>
 
     <string name="canvas_rename">リネーム</string>

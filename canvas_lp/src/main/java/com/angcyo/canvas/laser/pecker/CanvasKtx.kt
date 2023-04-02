@@ -13,12 +13,16 @@ import com.angcyo.canvas.graphics.toBitmapItemData
 import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.toCanvasProjectBean
+import com.angcyo.laserpacker.toCanvasProjectItemList
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
@@ -33,7 +37,7 @@ import java.io.File
 
 /**删除项目文件*/
 fun deleteProjectFile(name: String = ".temp"): Boolean {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+    val file = _defaultProjectOutputFile(name, false)
     return file.delete()
 }
 
@@ -42,7 +46,7 @@ fun deleteProjectFile(name: String = ".temp"): Boolean {
  * [async] 是否异步保存
  * */
 fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true): String {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+    val file = _defaultProjectOutputFile(name, false)
     val save = Runnable {
         val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
         val json = bean.toJson()
@@ -62,7 +66,7 @@ fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = tr
 /**恢复实例数据, 可自定义线程加载
  * [saveInstanceState]*/
 fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true): String {
-    val file = CanvasDataHandleOperate._defaultProjectOutputFile(name, false)
+    val file = _defaultProjectOutputFile(name, false)
     val restore = Runnable {
         openCanvasFile(file, true)
     }
@@ -98,7 +102,7 @@ fun CanvasDelegate.openCanvasFile(owner: LifecycleOwner, data: String, clearOld:
 /**异步加载, 带ui*/
 fun CanvasDelegate.openCanvasFile(
     owner: LifecycleOwner,
-    dataBean: CanvasProjectBean?,
+    dataBean: LPProjectBean?,
     clearOld: Boolean = true
 ) {
     dataBean?.let {
@@ -119,7 +123,7 @@ fun CanvasDelegate.openCanvasFile(data: String?, clearOld: Boolean = true) =
 
 /**直接加载*/
 @AnyThread
-fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolean = true): Boolean {
+fun CanvasDelegate.openCanvasFile(dataBean: LPProjectBean?, clearOld: Boolean = true): Boolean {
     if (clearOld) {
         removeAllItemRenderer(Strategy.init)
         undoManager.clear()
@@ -137,13 +141,13 @@ fun CanvasDelegate.openCanvasFile(dataBean: CanvasProjectBean?, clearOld: Boolea
 
 //---
 
-/**处理文件路径对应的数据, 解析成[CanvasProjectItemBean]*/
-fun String?.toCanvasProjectItemBeanOfFile(): CanvasProjectItemBean? {
+/**处理文件路径对应的数据, 解析成[LPElementBean]*/
+fun String?.toCanvasProjectItemBeanOfFile(): LPElementBean? {
     val path = this ?: return null
-    if (path.endsWith(CanvasConstant.GCODE_EXT)) {
+    if (path.endsWith(LPDataConstant.GCODE_EXT)) {
         val text = path.file().readText()
         return text.toGCodeItemData()
-    } else if (path.endsWith(CanvasConstant.SVG_EXT)) {
+    } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
         val text = path.file().readText()
         return text.toSvgItemData()
     } else if (path.isImageType()) {
@@ -168,11 +172,11 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
     return bitmap?.toBase64Data()
 }
 
-/**将[Bitmap]转换成[CanvasProjectItemBean]数据结构*/
-fun Bitmap?.toBlackWhiteBitmapItemData(): CanvasProjectItemBean? {
+/**将[Bitmap]转换成[LPElementBean]数据结构*/
+fun Bitmap?.toBlackWhiteBitmapItemData(): LPElementBean? {
     val bitmap = this ?: return null
     return toBitmapItemData {
-        imageFilter = CanvasConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+        imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
         blackThreshold = HawkEngraveKeys.lastBWThreshold
         src = bitmap.toBlackWhiteBitmap(HawkEngraveKeys.lastBWThreshold.toInt())
     }

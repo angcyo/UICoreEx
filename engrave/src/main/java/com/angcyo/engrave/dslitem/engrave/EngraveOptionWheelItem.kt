@@ -2,7 +2,7 @@ package com.angcyo.engrave.dslitem.engrave
 
 import android.content.Context
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
@@ -28,7 +28,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
     /**单元素参数配置*/
-    var itemEngraveItemBean: CanvasProjectItemBean? = null
+    var itemEngraveItemBean: LPElementBean? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_option_layout

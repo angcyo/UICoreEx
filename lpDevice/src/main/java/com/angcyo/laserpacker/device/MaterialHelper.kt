@@ -6,7 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
-import com.angcyo.laserpacker.device.DeviceConstant.DATA_MODE_DITHERING
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.ex.connect
@@ -37,7 +37,7 @@ object MaterialHelper {
     val unionMaterialList = mutableListOf<MaterialEntity>()
 
     /**设备连接上之后, 初始化材质推荐参数
-     * [com.angcyo.engrave.model.FscDeviceModel.initDevice]
+     * [com.angcyo.laserpacker.device.model.FscDeviceModel.initDevice]
      * */
     fun initMaterial() {
         materialList.resetAll(getProductMaterialList(vmApp<LaserPeckerModel>().productInfoData.value))
@@ -149,7 +149,7 @@ object MaterialHelper {
         code = buildString {
             append("${materialName}_")
             append(if (type == LaserPeckerHelper.LASER_TYPE_BLUE.toInt()) "blue_" else "white_")
-            append(if (layerMode == DATA_MODE_DITHERING) "bw_" else "gray_")
+            append(if (layerMode == LPDataConstant.DATA_MODE_DITHERING) "bw_" else "gray_")
             append(dpiScale.unitDecimal(1))
         }
     }

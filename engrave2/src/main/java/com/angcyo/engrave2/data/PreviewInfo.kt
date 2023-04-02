@@ -4,6 +4,7 @@ import android.graphics.RectF
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_CONTINUE
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_PAUSE
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_SCROLL
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.annotation.Pixel
 
 /**
@@ -42,7 +43,7 @@ data class PreviewInfo(
      * [com.angcyo.engrave.dslitem.preview.PreviewControlItem]
      * [com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewControlItem]
      * */
-    var data: Any? = null
+    var elementBean: LPElementBean? = null
 ) {
     companion object {
         /**第三轴状态:暂停滚动*/

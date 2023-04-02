@@ -3,10 +3,10 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 import android.graphics.Paint
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.lpElement
-import com.angcyo.canvas2.laser.pecker.util.toPaintStyle
-import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.laserpacker.toPaintStyle
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.widget.DslViewHolder
 
 /**

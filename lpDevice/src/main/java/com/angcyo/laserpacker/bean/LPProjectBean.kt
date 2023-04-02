@@ -1,4 +1,4 @@
-package com.angcyo.canvas2.laser.pecker.bean
+package com.angcyo.laserpacker.bean
 
 import com.angcyo.library.annotation.MM
 
@@ -23,7 +23,7 @@ data class LPProjectBean(
     var preview_img: String? = null,
 
     /**item list 的所有数据
-     * [com.angcyo.canvas.data.CanvasProjectItemBean]
+     * [com.angcyo.laserpacker.bean.LPElementBean]
      * */
     var data: String? = null,
 

@@ -67,4 +67,6 @@
     <string name="engrave_channel">雕刻通道</string>
     <string name="engraving">镭雕中</string>
 
+    <string name="canvas_cone">圆锥</string>
+    <string name="canvas_ball">球体</string>
 </resources>

@@ -3,13 +3,13 @@ package com.angcyo.engrave.auto
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.canvas.data.CanvasOpenDataType
-import com.angcyo.canvas.data.toCanvasProjectBean
-import com.angcyo.canvas.data.toCanvasProjectItemBean
-import com.angcyo.canvas.data.toTypeNameString
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.CanvasOpenDataType
+import com.angcyo.laserpacker.toCanvasProjectBean
+import com.angcyo.laserpacker.toCanvasProjectItemBean
+import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toBytes
@@ -26,7 +26,7 @@ import com.yanzhenjie.andserver.util.MediaType
 import java.io.InputStream
 
 /**
- * 自动雕刻支持[com.angcyo.canvas.data.CanvasProjectBean] 和 [com.angcyo.canvas.data.CanvasProjectItemBean] body json 数据格式
+ * 自动雕刻支持[com.angcyo.laserpacker.bean.LPProjectBean] 和 [com.angcyo.laserpacker.bean.LPElementBean] body json 数据格式
  *
  * [com.angcyo.engrave.auto.AutoEngraveHelper.init]
  *
@@ -68,7 +68,7 @@ class AutoEngraveWebsite : BasicWebsite() {
 
         //error
         if (engraveData == null) {
-            throw IllegalArgumentException("无效的数据, body可是[CanvasProjectBean](必须包含file_name字段)和[CanvasProjectItemBean]的json字符串")
+            throw IllegalArgumentException("无效的数据, body可是[CanvasProjectBean](必须包含file_name字段)和[LPElementBean]的json字符串")
         }
 
         //open

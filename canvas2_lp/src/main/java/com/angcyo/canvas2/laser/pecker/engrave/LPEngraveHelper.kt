@@ -5,10 +5,10 @@ import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.util.renderElement
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
-import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.engrave2.EngraveFlowDataHelper
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
@@ -130,7 +130,7 @@ object LPEngraveHelper {
             //数据dpi恢复
             val list = getLayerRendererList(delegate, null)
 
-            val isAllGCode = isAllSameLayerMode(list, EngraveConstant.DATA_MODE_GCODE)
+            val isAllGCode = isAllSameLayerMode(list, LPDataConstant.DATA_MODE_GCODE)
 
             if (isAllGCode) {
                 //全部是GCode则只能是1k

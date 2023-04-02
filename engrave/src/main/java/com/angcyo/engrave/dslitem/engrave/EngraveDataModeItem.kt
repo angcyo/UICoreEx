@@ -1,13 +1,13 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.data.DataTypeInfo
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.R
 import com.angcyo.item.DslCheckFlowItem
 import com.angcyo.item.style.itemCheckItems
 import com.angcyo.item.style.itemCheckedItems
 import com.angcyo.item.style.itemText
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 
@@ -26,10 +26,10 @@ class EngraveDataModeItem : DslCheckFlowItem() {
 
     /**数据模式列表*/
     var itemTypeList = mutableListOf(
-        DataTypeInfo(CanvasConstant.DATA_MODE_GREY, "图片"),
-        DataTypeInfo(CanvasConstant.DATA_MODE_BLACK_WHITE, "路径"),
-        DataTypeInfo(CanvasConstant.DATA_MODE_DITHERING, "抖动"),
-        DataTypeInfo(CanvasConstant.DATA_MODE_GCODE, "GCode")
+        DataTypeInfo(LPDataConstant.DATA_MODE_GREY, "图片"),
+        DataTypeInfo(LPDataConstant.DATA_MODE_BLACK_WHITE, "路径"),
+        DataTypeInfo(LPDataConstant.DATA_MODE_DITHERING, "抖动"),
+        DataTypeInfo(LPDataConstant.DATA_MODE_GCODE, "GCode")
     )
 
     /**待雕刻的准备数据*/

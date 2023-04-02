@@ -1,7 +1,7 @@
 package com.angcyo.engrave.dslitem.engrave
 
 import android.graphics.Typeface
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -30,7 +30,7 @@ class EngravePropertyItem : DslAdapterItem() {
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
 
     /**单元素参数配置*/
-    var itemEngraveItemBean: CanvasProjectItemBean? = null
+    var itemEngraveItemBean: LPElementBean? = null
 
     init {
         itemLayoutId = R.layout.item_engrave_property_layout

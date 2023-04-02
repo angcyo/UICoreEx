@@ -6,8 +6,8 @@ import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.util.*
+import com.angcyo.laserpacker.*
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.qrcode.createBarCode
@@ -26,7 +26,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     override fun createStateStack(): IStateStack = LPTextStateStack()
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
-        return if (elementBean.mtype == LPConstant.DATA_TYPE_TEXT) {
+        return if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
             super.requestElementRenderDrawable(renderParams)
         } else {
             if (codeBitmap == null) {
@@ -80,7 +80,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     }
 
     override fun updateOriginText(text: String?, keepVisibleSize: Boolean) {
-        if (elementBean.mtype == LPConstant.DATA_TYPE_TEXT) {
+        if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
             super.updateOriginText(text, keepVisibleSize)
         } else {
             textProperty.text = text
@@ -98,10 +98,10 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
 
     override fun parseElementBean() {
         val text = textProperty.text
-        if (elementBean.mtype == LPConstant.DATA_TYPE_QRCODE) {
+        if (elementBean.mtype == LPDataConstant.DATA_TYPE_QRCODE) {
             elementBean.coding = "${BarcodeFormat.QR_CODE}".lowercase()
             codeBitmap = text?.createQRCode()
-        } else if (elementBean.mtype == LPConstant.DATA_TYPE_BARCODE) {
+        } else if (elementBean.mtype == LPDataConstant.DATA_TYPE_BARCODE) {
             elementBean.coding = "${BarcodeFormat.CODE_128}".lowercase()
             codeBitmap = text?.createBarCode()
         }

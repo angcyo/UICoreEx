@@ -5,13 +5,11 @@ import android.os.Bundle
 import com.angcyo.base.removeThis
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.activity.dslitem.ProjectListItem
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
-import com.angcyo.canvas2.laser.pecker.bean.LPProjectBean
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
-import com.angcyo.canvas2.laser.pecker.util.toElementBean
 import com.angcyo.canvas2.laser.pecker.util.toProjectBean
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size
@@ -27,7 +25,7 @@ import java.io.File
 class ProjectListFragment : BaseDslFragment() {
 
     /**项目文件夹目录*/
-    val projectPathFile: File = File(appFolderPath(LPConstant.PROJECT_FILE_FOLDER))
+    val projectPathFile: File = File(appFolderPath(LPDataConstant.PROJECT_FILE_FOLDER))
 
     init {
         fragmentTitle = _string(R.string.project_title)
@@ -49,7 +47,7 @@ class ProjectListFragment : BaseDslFragment() {
 
         doBack {
             val projectList = mutableListOf<LPProjectBean>()
-            projectPathFile.listFiles()?.filter { it.name.endsWith(LPConstant.PROJECT_EXT) }
+            projectPathFile.listFiles()?.filter { it.name.endsWith(LPDataConstant.PROJECT_EXT) }
                 ?.sortedByDescending { it.lastModified() }?.apply {
                     val startIndex = page.requestPageIndex * page.requestPageSize
                     for ((index, file) in this.withIndex()) {

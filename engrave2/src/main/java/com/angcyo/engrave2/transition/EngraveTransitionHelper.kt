@@ -9,7 +9,7 @@ import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.laserpacker.device.DeviceConstant
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.library.LTime
@@ -20,8 +20,6 @@ import com.angcyo.library.app
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.*
 import com.angcyo.library.unit.IValueUnit
-import com.angcyo.library.utils.fileNameTime
-import com.angcyo.library.utils.filePath
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.opencv.OpenCV
@@ -54,7 +52,7 @@ object EngraveTransitionHelper {
         provider: IEngraveDataProvider?,
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
-        val bitmap = provider?.getBitmapData() ?: return null
+        val bitmap = provider?.getEngraveBitmapData() ?: return null
         LTime.tick()
         val transferDataEntity =
             createTransferDataEntity(provider, transferConfigEntity, DataCmd.ENGRAVE_TYPE_BITMAP)
@@ -64,7 +62,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             dpiBitmap,
-            DeviceConstant.EXT_PREVIEW
+            LPDataConstant.EXT_PREVIEW
         )
 
         val data = transition.covertBitmap2Bytes(dpiBitmap)
@@ -79,7 +77,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            DeviceConstant.EXT_DATA_PREVIEW,
+            LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
         "transitionToBitmap[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
@@ -92,7 +90,7 @@ object EngraveTransitionHelper {
         provider: IEngraveDataProvider?,
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
-        val bitmap = provider?.getBitmapData() ?: return null
+        val bitmap = provider?.getEngraveBitmapData() ?: return null
         LTime.tick()
 
         val transferDataEntity = createTransferDataEntity(
@@ -106,7 +104,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             dpiBitmap,
-            DeviceConstant.EXT_PREVIEW
+            LPDataConstant.EXT_PREVIEW
         )
 
         //val renderUnit = IValueUnit.MM_RENDER_UNIT
@@ -133,7 +131,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             bitmapPathList.toEngraveLog(),
-            DeviceConstant.EXT_BP
+            LPDataConstant.EXT_BP
         )
         //3:保存一份数据的预览图
         val previewBitmap =
@@ -141,7 +139,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            DeviceConstant.EXT_DATA_PREVIEW,
+            LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
 
@@ -156,7 +154,7 @@ object EngraveTransitionHelper {
         transferConfigEntity: TransferConfigEntity,
         params: TransitionParam
     ): TransferDataEntity? {
-        val bitmap = provider?.getBitmapData() ?: return null
+        val bitmap = provider?.getEngraveBitmapData() ?: return null
         LTime.tick()
 
         val transferDataEntity = createTransferDataEntity(
@@ -177,7 +175,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             operateBitmap,
-            DeviceConstant.EXT_PREVIEW
+            LPDataConstant.EXT_PREVIEW
         )
 
         //白色1 黑色0
@@ -189,7 +187,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             pair.first,
-            DeviceConstant.EXT_DT
+            LPDataConstant.EXT_DT
         )
         //3:保存一份数据的预览图
         val previewBitmap =
@@ -197,7 +195,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            DeviceConstant.EXT_DATA_PREVIEW,
+            LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
 
@@ -221,14 +219,14 @@ object EngraveTransitionHelper {
             DataCmd.ENGRAVE_TYPE_GCODE
         )
 
-        val pathList = provider.getPathData()
-        val bitmap = provider.getBitmapData()
+        val pathList = provider.getEngravePathData()
+        val bitmap = provider.getEngraveBitmapData()
 
         //1:保存一份原始可视化数据
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             bitmap,
-            DeviceConstant.EXT_PREVIEW
+            LPDataConstant.EXT_PREVIEW
         )
 
         if (params.onlyUseBitmapToGCode || pathList == null) {
@@ -244,21 +242,22 @@ object EngraveTransitionHelper {
                     renderUnit.convertValueToPixel(transferDataEntity.x.toFloat()).ceilInt()
                 val offsetY =
                     renderUnit.convertValueToPixel(transferDataEntity.y.toFloat()).ceilInt()*/
-                val bounds = provider.getDataBounds()
+                val bounds = provider.getEngraveDataBounds()
                 val gCodeFile = if (params.useOpenCvHandleGCode) {
                     transition.covertBitmap2GCode(bitmap, bounds)
                 } else {
                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                 }
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
+
+                "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]转换耗时:${LTime.time()}".writePerfLog()
             }
         } else {
             //path转GCode
             val gCodeFile = transition.covertPathStroke2GCode(pathList, params)
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
+            "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [path]转换耗时:${LTime.time()}".writePerfLog()
         }
-
-        "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap?.byteCount?.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -271,7 +270,7 @@ object EngraveTransitionHelper {
         provider ?: return null
         LTime.tick()
 
-        val data = provider.getRawData()
+        val data = provider.getEngraveRawData()
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
@@ -310,10 +309,10 @@ object EngraveTransitionHelper {
         transferDataEntity.taskId = configEntity.taskId
         transferDataEntity.dpi = configEntity.dpi
         transferDataEntity.name = configEntity.name
-        transferDataEntity.index = provider.getDataIndex()
+        transferDataEntity.index = provider.getEngraveDataIndex()
 
         @Pixel
-        val bounds = provider.getDataBounds()
+        val bounds = provider.getEngraveDataBounds()
 
         val dataLeft = bounds.left
         val dataTop = bounds.top
@@ -377,7 +376,7 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             gCodeText,
-            DeviceConstant.EXT_GCODE
+            LPDataConstant.EXT_GCODE
         )
 
         val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
@@ -387,24 +386,10 @@ object EngraveTransitionHelper {
         EngraveHelper.saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            DeviceConstant.EXT_DATA_PREVIEW,
+            LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
     }
-
-    /**gcode文件输出*/
-    fun _defaultGCodeOutputFile() =
-        filePath(
-            DeviceConstant.VECTOR_FILE_FOLDER,
-            fileNameTime(suffix = DeviceConstant.EXT_GCODE)
-        ).file()
-
-    /**svg文件输出*/
-    fun _defaultSvgOutputFile() =
-        filePath(
-            DeviceConstant.VECTOR_FILE_FOLDER,
-            fileNameTime(suffix = DeviceConstant.EXT_SVG)
-        ).file()
 
     //endregion ---文件输出信息---
 

@@ -4,7 +4,7 @@ import android.graphics.RectF
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataItemRenderer
@@ -305,7 +305,7 @@ class EngraveTransitionManager {
     @CallPoint
     @WorkerThread
     fun transitionTransferData(
-        itemDataBean: CanvasProjectItemBean,
+        itemDataBean: LPElementBean,
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
         val renderItem = GraphicsHelper.parseRenderItemFrom(itemDataBean, null) ?: return null

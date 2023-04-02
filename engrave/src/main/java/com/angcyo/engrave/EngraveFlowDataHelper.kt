@@ -4,11 +4,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.canvas.CanvasDelegate
-import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.EngraveTransitionManager
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
@@ -212,7 +212,7 @@ object EngraveFlowDataHelper {
 
                 val isAllGCode = EngraveTransitionManager.isAllSameLayerMode(
                     list,
-                    CanvasConstant.DATA_MODE_GCODE
+                    LPDataConstant.DATA_MODE_GCODE
                 )
 
                 if (isAllGCode) {
@@ -595,10 +595,10 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**构建一个雕刻参数信息从[CanvasProjectItemBean]*/
+    /**构建一个雕刻参数信息从[LPElementBean]*/
     fun generateEngraveConfig(
         taskId: String?,
-        itemBean: CanvasProjectItemBean
+        itemBean: LPElementBean
     ): EngraveConfigEntity {
         val layerMode = itemBean._dataMode ?: -1
         return generateEngraveConfig(taskId, layerMode).apply {

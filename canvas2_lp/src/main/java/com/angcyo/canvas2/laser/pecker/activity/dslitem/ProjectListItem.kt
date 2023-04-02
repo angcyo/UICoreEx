@@ -3,14 +3,14 @@ package com.angcyo.canvas2.laser.pecker.activity.dslitem
 import android.content.Context
 import android.graphics.Bitmap
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPProjectBean
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.glide.glide
 import com.angcyo.http.base.toJson
+import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo

@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
-import com.angcyo.canvas.data.toCanvasProjectBean
 import com.angcyo.canvas.graphics.toGCodeItemData
 import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.laser.pecker.BuildConfig
@@ -23,9 +22,11 @@ import com.angcyo.getData
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.device.firmware.FirmwareUpdateFragment
+import com.angcyo.laserpacker.toCanvasProjectBean
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
@@ -95,7 +96,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
         var path = filePath
-        if (path.endsWith(CanvasConstant.DXF_EXT, true)) {
+        if (path.endsWith(LPDataConstant.DXF_EXT, true)) {
             //dxf文件, 将dxf转成svg文件
             val svgFile = libCacheFile("${filePath.lastName().noExtName()}.svg")
             path = svgFile.absolutePath
@@ -107,7 +108,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             throw OutOfSizeException()
         }
         //
-        if (path.endsWith(CanvasConstant.PROJECT_EXT, true)) {
+        if (path.endsWith(LPDataConstant.PROJECT_EXT, true)) {
             //工程文件
             val text = file.readText()
             val canvasBean = text?.toCanvasProjectBean()
@@ -134,8 +135,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
                 return true
             }
-        } else if (path.endsWith(CanvasConstant.GCODE_EXT, true) ||
-            (path.endsWith(CanvasConstant.TXT_EXT, true) && file.readText()
+        } else if (path.endsWith(LPDataConstant.GCODE_EXT, true) ||
+            (path.endsWith(LPDataConstant.TXT_EXT, true) && file.readText()
                 ?.isGCodeContent() == true)
         ) {
             val text = file.readText()
@@ -159,8 +160,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.endsWith(CanvasConstant.SVG_EXT, true) ||
-            (path.endsWith(CanvasConstant.TXT_EXT, true) && file.readText()
+        } else if (path.endsWith(LPDataConstant.SVG_EXT, true) ||
+            (path.endsWith(LPDataConstant.TXT_EXT, true) && file.readText()
                 ?.isSvgContent() == true)
         ) {
             val text = file.readText()

@@ -5,7 +5,7 @@ import com.angcyo.http.rx.runRx
 import com.angcyo.item.style.addGridMedia
 import com.angcyo.item.style.clearGridMedia
 import com.angcyo.item.style.gridMediaSpanCount
-import com.angcyo.laserpacker.device.DeviceConstant
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.Library
@@ -41,7 +41,7 @@ class TransferDataItem : DslNineMediaItem() {
             logFilePathList = list
             clearGridMedia()
             list.forEach {
-                if (it.endsWith(DeviceConstant.EXT_PREVIEW)) {
+                if (it.endsWith(LPDataConstant.EXT_PREVIEW)) {
                     addGridMedia(it)
                 }
             }

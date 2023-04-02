@@ -15,24 +15,24 @@ interface IEngraveDataProvider {
     /**获取数据对应的图片, 用来生成雕刻数据
      * 这个图片应该是相对于0,0位置绘制的, 并且包含了旋转/缩放/倾斜等参数
      * */
-    fun getBitmapData(): Bitmap? = null
+    fun getEngraveBitmapData(): Bitmap? = null
 
     /**获取数据对应的矢量数据, 用来生成雕刻数据
      * 这个矢量应该是相对于0,0位置绘制的, 并且包含了旋转/缩放/倾斜等参数
      * */
-    fun getPathData(): List<Path>? = null
+    fun getEngravePathData(): List<Path>? = null
 
     /**获取转发的原始的数据, 不进行任务处理 */
-    fun getRawData(): ByteArray? = null
+    fun getEngraveRawData(): ByteArray? = null
 
     //---
 
     /**获取数据索引, 发给机器的数据索引
      * [com.angcyo.engrave2.EngraveHelper.generateEngraveIndex]*/
-    fun getDataIndex(): Int
+    fun getEngraveDataIndex(): Int
 
     /**获取数据在画布中的位置*/
     @Pixel
-    fun getDataBounds(): RectF
+    fun getEngraveDataBounds(): RectF
 
 }

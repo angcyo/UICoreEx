@@ -9,12 +9,13 @@ import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.util.element
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
-import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.model.FscDeviceModel
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.unit.toMm
 
@@ -26,7 +27,7 @@ import com.angcyo.library.unit.toMm
 object LPElementHelper {
 
     /**最小位置分配, 应该为设备最佳预览范围的左上角
-     * [com.angcyo.engrave.model.FscDeviceModel.initDevice]*/
+     * [com.angcyo.laserpacker.device.model.FscDeviceModel.initDevice]*/
     @MM
     var _minLeft = 0f
 
@@ -123,8 +124,8 @@ object LPElementHelper {
         init: LPElementBean.() -> Unit = {}
     ): CanvasElementRenderer {
         val elementBean = LPElementBean().apply {
-            mtype = LPConstant.DATA_TYPE_BITMAP
-            imageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+            mtype = LPDataConstant.DATA_TYPE_BITMAP
+            imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
 
@@ -157,7 +158,7 @@ object LPElementHelper {
     fun addTextElement(
         delegate: CanvasRenderDelegate?,
         text: CharSequence?,
-        type: Int = LPConstant.DATA_TYPE_TEXT
+        type: Int = LPDataConstant.DATA_TYPE_TEXT
     ) {
         delegate ?: return
         val elementBean = LPElementBean().apply {
@@ -214,12 +215,12 @@ object LPElementHelper {
             mtype = type
             width = LPPathElement.SHAPE_DEFAULT_WIDTH
             height = LPPathElement.SHAPE_DEFAULT_HEIGHT
-            if (mtype == LPConstant.DATA_TYPE_OVAL) {
+            if (mtype == LPDataConstant.DATA_TYPE_OVAL) {
                 rx = width!! / 2
                 ry = height!! / 2
-            } else if (mtype == LPConstant.DATA_TYPE_PENTAGRAM) {
+            } else if (mtype == LPDataConstant.DATA_TYPE_PENTAGRAM) {
                 side = 5
-            } else if (mtype == LPConstant.DATA_TYPE_POLYGON) {
+            } else if (mtype == LPDataConstant.DATA_TYPE_POLYGON) {
                 side = 3
             }
             paintStyle = if (isLineShape) {

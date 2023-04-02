@@ -3,7 +3,7 @@ package com.angcyo.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.canvas.data.CanvasProjectItemBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.EngraveDividerItem
 import com.angcyo.engrave.dslitem.preview.*
@@ -159,7 +159,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             //预览控制, 范围/中心点预览
             PreviewControlItem()() {
                 itemPathPreviewClick = {
-                    startPathPreview(it as? CanvasProjectItemBean)
+                    startPathPreview(it as? LPElementBean)
                 }
             }
             DslBlackButtonItem()() {
@@ -187,7 +187,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     }
 
     /**开始路径预览流程*/
-    fun startPathPreview(projectDataBean: CanvasProjectItemBean?) {
+    fun startPathPreview(projectDataBean: LPElementBean?) {
         projectDataBean ?: return
         pauseLoopCheckDeviceState = true
         viewHolder?.context?.pathPreviewDialog(projectDataBean) {

@@ -3,10 +3,7 @@ package com.angcyo.engrave.model
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.canvas.data.CanvasOpenDataType
-import com.angcyo.canvas.data.CanvasProjectBean
-import com.angcyo.canvas.data.CanvasProjectItemBean
-import com.angcyo.canvas.data.toCanvasProjectItemList
+import com.angcyo.canvas.data.resetLocationWithGravity
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.EngraveFlowDataHelper
@@ -15,6 +12,10 @@ import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.CanvasOpenDataType
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.toCanvasProjectItemList
 import com.angcyo.library.component.batchHandle
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.observe
@@ -40,8 +41,8 @@ class AutoEngraveModel : LifecycleViewModel() {
         /**正在雕刻*/
         const val STATE_ENGRAVE = 3
 
-        /**使用[com.angcyo.canvas.data.CanvasProjectItemBean.gravity]调整坐标位置*/
-        fun initLocationWithGravity(itemList: List<CanvasProjectItemBean>?): List<CanvasProjectItemBean>? {
+        /**使用[com.angcyo.laserpacker.bean.LPElementBean.gravity]调整坐标位置*/
+        fun initLocationWithGravity(itemList: List<LPElementBean>?): List<LPElementBean>? {
             //resetLocationWithGravity
             itemList ?: return null
             val peckerModel = vmApp<LaserPeckerModel>()
@@ -70,8 +71,8 @@ class AutoEngraveModel : LifecycleViewModel() {
     val peckerModel = vmApp<LaserPeckerModel>()
 
     /**需要自动雕刻的数据
-     * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
-     * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+     * 支持[com.angcyo.laserpacker.bean.LPElementBean]
+     * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
      *
      * [com.angcyo.engrave.auto.AutoEngraveActivity] 监听处理
      * */
@@ -132,16 +133,16 @@ class AutoEngraveModel : LifecycleViewModel() {
             //进入空闲模式
             ExitCmd().enqueue()
         }
-        if (engraveData is CanvasProjectBean) {
+        if (engraveData is LPProjectBean) {
             _autoEngraveTask = startAutoEngrave(taskId, engraveData)
-        } else if (engraveData is CanvasProjectItemBean) {
+        } else if (engraveData is LPElementBean) {
             _autoEngraveTask =
                 startAutoEngrave(taskId, initLocationWithGravity(listOf(engraveData)))
         }
     }
 
     /**开始自动雕刻*/
-    fun startAutoEngrave(taskId: String, projectBean: CanvasProjectBean): AutoEngraveTask {
+    fun startAutoEngrave(taskId: String, projectBean: LPProjectBean): AutoEngraveTask {
         val itemList = projectBean.data?.toCanvasProjectItemList()
         initLocationWithGravity(itemList)
         return startAutoEngrave(taskId, itemList, projectBean)
@@ -150,8 +151,8 @@ class AutoEngraveModel : LifecycleViewModel() {
     /**开始自动雕刻*/
     fun startAutoEngrave(
         taskId: String,
-        itemList: List<CanvasProjectItemBean>?,
-        projectBean: CanvasProjectBean? = null,
+        itemList: List<LPElementBean>?,
+        projectBean: LPProjectBean? = null,
     ): AutoEngraveTask {
         val task = AutoEngraveTask(taskId, projectBean)
         _autoEngraveTask = task
@@ -183,7 +184,7 @@ class AutoEngraveModel : LifecycleViewModel() {
     /**开始批量创建数据*/
     fun startCreateData(
         taskId: String,
-        itemBeanList: List<CanvasProjectItemBean>,
+        itemBeanList: List<LPElementBean>,
         action: (List<TransferDataEntity>) -> Unit = {}
     ) {
         doBack {
@@ -202,7 +203,7 @@ class AutoEngraveModel : LifecycleViewModel() {
     /**开始创建数据*/
     fun startCreateData(
         taskId: String,
-        itemBean: CanvasProjectItemBean,
+        itemBean: LPElementBean,
         action: (TransferDataEntity?) -> Unit = {}
     ) {
         doBack(true) {
@@ -236,7 +237,7 @@ class AutoEngraveModel : LifecycleViewModel() {
         //任务id
         val taskId: String,
         /**需要雕刻的数据, 工程数据. 里面包含子数据*/
-        val projectBean: CanvasProjectBean?,
+        val projectBean: LPProjectBean?,
 
         /**任务当前的状态
          * [STATE_NORMAL]

@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.canvas.render.core.Reason
@@ -11,9 +12,10 @@ import com.angcyo.canvas.render.element.IElement
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.util.RenderHelper
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.engrave2.transition.IEngraveDataProvider
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.unit.toMm
@@ -98,25 +100,29 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
     //---
 
-    override fun getBitmapData(): Bitmap? {
+    override fun getEngraveBitmapData(): Bitmap? {
         return requestElementRenderDrawable(null)?.toBitmap()
     }
 
-    override fun getPathData(): List<Path>? {
+    override fun getEngravePathData(): List<Path>? {
         if (this is LPBitmapElement) {
             return RenderHelper.translateToRender(pathList, renderProperty)
         }
         if (this is PathElement) {
+            if (elementBean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
+                //非描边的情况下, 获取Path数据返回空, 用pixel生成GCode
+                return null
+            }
             return RenderHelper.translateToRender(pathList, renderProperty)
         }
-        return super.getPathData()
+        return super.getEngravePathData()
     }
 
-    override fun getRawData(): ByteArray? {
-        return super.getRawData()
+    override fun getEngraveRawData(): ByteArray? {
+        return super.getEngraveRawData()
     }
 
-    override fun getDataIndex(): Int {
+    override fun getEngraveDataIndex(): Int {
         val index = elementBean.index ?: 0
         if (index > 0) {
             return index
@@ -125,7 +131,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         return elementBean.index!!
     }
 
-    override fun getDataBounds(): RectF {
+    override fun getEngraveDataBounds(): RectF {
         return requestElementRenderProperty().getRenderBounds()
     }
 }

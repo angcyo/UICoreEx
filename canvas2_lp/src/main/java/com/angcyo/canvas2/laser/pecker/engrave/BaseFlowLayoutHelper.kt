@@ -17,7 +17,6 @@ import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.getProjectBean
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
@@ -30,6 +29,7 @@ import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
@@ -165,7 +165,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             //长按标题分享工程
             viewHolder?.longClick(R.id.lib_title_view) {
                 engraveCanvasFragment?.renderDelegate?.apply {
-                    val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPConstant.PROJECT_EXT))
+                    val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPDataConstant.PROJECT_EXT))
                     val bean = getProjectBean()
                     val json = bean.toJson()
                     json.writeTo(file, false)

@@ -31,11 +31,12 @@ import com.angcyo.doodle.ui.doodleDialog
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.engrave.IEngraveCanvasFragment
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
@@ -402,9 +403,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     if (itemRenderer is DataItemRenderer) {
                         val dataBean = itemRenderer.dataItem?.dataBean
                         val type = dataBean?.mtype
-                        if (type == CanvasConstant.DATA_TYPE_QRCODE ||
-                            type == CanvasConstant.DATA_TYPE_BARCODE ||
-                            type == CanvasConstant.DATA_TYPE_TEXT
+                        if (type == LPDataConstant.DATA_TYPE_QRCODE ||
+                            type == LPDataConstant.DATA_TYPE_BARCODE ||
+                            type == LPDataConstant.DATA_TYPE_TEXT
                         ) {
                             AddTextItem.amendInputText(canvasView, itemRenderer)
                         }
@@ -693,19 +694,19 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
             if (itemRenderer is DataItemRenderer) {
                 val dataBean = itemRenderer.rendererItem?.dataBean
                 when (dataBean?.mtype) {
-                    CanvasConstant.DATA_TYPE_BITMAP -> renderImageEditItems(
+                    LPDataConstant.DATA_TYPE_BITMAP -> renderImageEditItems(
                         engraveCanvasFragment.fragment,
                         itemRenderer
                     )
-                    CanvasConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
-                    CanvasConstant.DATA_TYPE_LINE,
-                    CanvasConstant.DATA_TYPE_OVAL,
-                    CanvasConstant.DATA_TYPE_RECT,
-                    CanvasConstant.DATA_TYPE_POLYGON,
-                    CanvasConstant.DATA_TYPE_PENTAGRAM,
-                    CanvasConstant.DATA_TYPE_SVG,
-                    CanvasConstant.DATA_TYPE_GCODE,
-                    CanvasConstant.DATA_TYPE_LOVE -> renderShapeEditItems(
+                    LPDataConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
+                    LPDataConstant.DATA_TYPE_LINE,
+                    LPDataConstant.DATA_TYPE_OVAL,
+                    LPDataConstant.DATA_TYPE_RECT,
+                    LPDataConstant.DATA_TYPE_POLYGON,
+                    LPDataConstant.DATA_TYPE_PENTAGRAM,
+                    LPDataConstant.DATA_TYPE_SVG,
+                    LPDataConstant.DATA_TYPE_GCODE,
+                    LPDataConstant.DATA_TYPE_LOVE -> renderShapeEditItems(
                         engraveCanvasFragment.fragment,
                         itemRenderer
                     )

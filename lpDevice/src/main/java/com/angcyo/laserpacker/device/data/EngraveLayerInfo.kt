@@ -11,9 +11,9 @@ import com.angcyo.library.extend.IToValue
 data class EngraveLayerInfo(
     /**
      * 数据模式, 图层对应的数值
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_DITHERING] 抖动数据格式
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_GCODE] gcode数据格式
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_BLACK_WHITE] 线段数据格式
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_DITHERING] 抖动数据格式
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_GCODE] gcode数据格式
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_BLACK_WHITE] 线段数据格式
      * */
     val layerMode: Int,
     /**界面显示的标签*/

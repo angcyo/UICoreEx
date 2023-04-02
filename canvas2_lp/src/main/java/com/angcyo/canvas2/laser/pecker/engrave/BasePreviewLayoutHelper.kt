@@ -4,12 +4,12 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.*
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent

@@ -13,21 +13,21 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapter
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.engrave.model.EngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.library.annotation.CallPoint
@@ -161,7 +161,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             //长按标题分享工程
             viewHolder?.longClick(R.id.lib_title_view) {
                 engraveCanvasFragment?.canvasDelegate?.apply {
-                    val file = libCacheFile(fileNameTime("yyyy-MM-dd", CanvasConstant.PROJECT_EXT))
+                    val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPDataConstant.PROJECT_EXT))
                     val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
                     val json = bean.toJson()
                     json.writeTo(file, false)

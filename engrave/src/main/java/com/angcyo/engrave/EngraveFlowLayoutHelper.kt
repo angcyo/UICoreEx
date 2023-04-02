@@ -7,7 +7,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
@@ -33,6 +32,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.*
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
@@ -171,7 +171,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         //全部是GCode数据, 不能选择分辨率, 并且强制使用1k
         val isAllGCode = EngraveTransitionManager.isAllSameLayerMode(
             engraveCanvasFragment?.canvasDelegate,
-            CanvasConstant.DATA_MODE_GCODE
+            LPDataConstant.DATA_MODE_GCODE
         )
 
         renderDslAdapter {

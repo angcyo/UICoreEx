@@ -5,8 +5,8 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.angcyo.base.dslAHelper
-import com.angcyo.canvas.data.CanvasOpenDataType
 import com.angcyo.core.vmApp
+import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
@@ -28,8 +28,8 @@ class CanvasOpenModel : ViewModel() {
         var OPEN_ACTIVITY_FRAGMENT_CLASS: Class<out Fragment>? = null
 
         /**打开指定数据格式
-         * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
-         * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+         * 支持[com.angcyo.laserpacker.bean.LPElementBean]
+         * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
          * */
         fun open(bean: CanvasOpenDataType?, context: Context = lastContext): Boolean {
             return vmApp<CanvasOpenModel>().open(context, bean)
@@ -53,8 +53,8 @@ class CanvasOpenModel : ViewModel() {
     }
 
     /**需要打开的数据
-     * 支持[com.angcyo.canvas.data.CanvasProjectItemBean]
-     * 支持[com.angcyo.canvas.data.CanvasProjectBean]
+     * 支持[com.angcyo.laserpacker.bean.LPElementBean]
+     * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
      * */
     val openPendingData = vmDataOnce<CanvasOpenDataType?>()
 

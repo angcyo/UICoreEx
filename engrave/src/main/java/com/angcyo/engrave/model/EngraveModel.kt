@@ -11,7 +11,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
-import com.angcyo.canvas.utils.toDataModeStr
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -23,6 +22,7 @@ import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.toLaserTypeString
+import com.angcyo.laserpacker.toDataModeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private

@@ -1,10 +1,10 @@
 package com.angcyo.engrave.data
 
 import android.graphics.RectF
-import com.angcyo.canvas.data.CanvasProjectItemBean
 import com.angcyo.engrave.data.PreviewInfo.Companion.Z_STATE_CONTINUE
 import com.angcyo.engrave.data.PreviewInfo.Companion.Z_STATE_PAUSE
 import com.angcyo.engrave.data.PreviewInfo.Companion.Z_STATE_SCROLL
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.annotation.Pixel
 
 /**
@@ -49,7 +49,7 @@ data class PreviewInfo(
 
     /**预览的数据, 如果有,用于实现路径预览的判断条件
      * [com.angcyo.engrave.dslitem.preview.PreviewControlItem]*/
-    var itemDataBean: CanvasProjectItemBean? = null
+    var itemDataBean: LPElementBean? = null
 ) {
     companion object {
         /**第三轴状态:暂停滚动*/

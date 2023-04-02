@@ -2,7 +2,7 @@ package com.angcyo.engrave.transition
 
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.graphics.IEngraveProvider
-import com.angcyo.canvas.utils.CanvasConstant
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper.toTransferData
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.library.ex.size
@@ -25,7 +25,7 @@ class RawTransition : IEngraveTransition {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
         val data = dataBean?.data
-        if (dataBean?.mtype == CanvasConstant.DATA_TYPE_RAW && !data.isNullOrEmpty()) {
+        if (dataBean?.mtype == LPDataConstant.DATA_TYPE_RAW && !data.isNullOrEmpty()) {
 
             val transferDataEntity = createTransferDataEntity(engraveProvider, transferConfigEntity)
             if (data.isGCodeContent()) {

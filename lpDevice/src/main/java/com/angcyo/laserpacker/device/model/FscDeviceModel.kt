@@ -12,8 +12,8 @@ import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.laserpacker.device.DeviceConstant
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -231,7 +231,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
         //雕刻目录
         DebugFragment.DEBUG_ACTION_LIST.add(
-            DebugAction("engrave", appFolderPath(DeviceConstant.ENGRAVE_FILE_FOLDER))
+            DebugAction("engrave", appFolderPath(LPDataConstant.ENGRAVE_FILE_FOLDER))
         )
 
         //设备主动退出工作模式

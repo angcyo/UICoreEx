@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
 import com.angcyo.canvas.laser.pecker.data.MeshShapeInfo
 import com.angcyo.canvas.laser.pecker.dslitem.*
 import com.angcyo.canvas.utils.canvasDecimal
@@ -18,6 +17,7 @@ import com.angcyo.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
@@ -181,7 +181,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
 
                     val start = 0.1f //0.125f
                     val max = 5f
-                    val def = getFloatOrDef(KEY_LINE_SPACE, DEFAULT_LINE_SPACE)
+                    val def = getFloatOrDef(KEY_LINE_SPACE, LPDataConstant.DEFAULT_LINE_SPACE)
 
                     itemProgressTextFormatAction = {
                         (start + (max - start) * it._progressFraction).canvasDecimal(3)
@@ -236,7 +236,7 @@ class CanvasRegulatePopupConfig2 : MenuPopupConfig() {
                     _string(R.string.canvas_path_fill_line_space),
                     0f,
                     0f,
-                    DEFAULT_LINE_SPACE
+                    LPDataConstant.DEFAULT_LINE_SPACE
                 )
             }
             //路径填充的角度

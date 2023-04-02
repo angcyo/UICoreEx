@@ -6,17 +6,16 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.canvas2.laser.pecker.engraveColorBytes
-import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultGCodeOutputFile
-import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultSvgOutputFile
 import com.angcyo.gcode.GCodeAdjust
 import com.angcyo.gcode.GCodeWriteHandler
+import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
+import com.angcyo.laserpacker.device.DeviceHelper._defaultSvgOutputFile
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
-import com.angcyo.library.utils.filePath
 import com.angcyo.svg.SvgWriteHandler
 import java.io.File
 import java.io.FileOutputStream
@@ -28,17 +27,6 @@ import kotlin.math.max
  * @since 2023/03/10
  */
 object CanvasDataHandleOperate {
-
-    //region ---文件输出信息---
-
-    /**工程文件输出
-     * [ensureExt] 是否要保证后缀为[LPConstant.PROJECT_EXT]*/
-    fun _defaultProjectOutputFile(name: String, ensureExt: Boolean = true) = filePath(
-        LPConstant.PROJECT_FILE_FOLDER,
-        if (ensureExt) name.ensureName(LPConstant.PROJECT_EXT) else name
-    ).file()
-
-    //endregion ---文件输出信息---
 
     //region ---GCode---
 

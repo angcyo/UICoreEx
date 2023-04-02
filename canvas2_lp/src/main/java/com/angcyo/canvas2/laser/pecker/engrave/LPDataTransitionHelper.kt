@@ -2,16 +2,13 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.graphics.Paint
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas.render.util.renderElement
-import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
-import com.angcyo.canvas2.laser.pecker.element.LPPathElement
-import com.angcyo.canvas2.laser.pecker.element.LPTextElement
+import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
-import com.angcyo.canvas2.laser.pecker.util.toPaintStyleInt
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.L
 import com.angcyo.library.ex.classHash
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -33,76 +30,53 @@ object LPDataTransitionHelper {
         transferConfigEntity: TransferConfigEntity
     ): TransferDataEntity? {
         renderer ?: return null
-        val element = renderer.renderElement ?: return null
+        val element = renderer.lpElement() ?: return null
         val bean = renderer.lpElementBean() ?: return null
-        var result: TransferDataEntity? = null
-
-        if (element is LPPathElement) {//LPPathElement
-            if (bean.isLineShape && bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
-                //描边的线, 也就是虚线
-                result = EngraveTransitionHelper.transitionToGCode(
+        val result: TransferDataEntity? = when (bean._layerMode) {
+            LPDataConstant.DATA_MODE_GCODE -> {
+                //线条图层, 发送GCode数据
+                if (bean.isLineShape || bean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
+                    //虚线,实线,或者填充的图片, 都是GCode数据, 使用pixel转GCode
+                    EngraveTransitionHelper.transitionToGCode(
+                        element,
+                        transferConfigEntity,
+                        TransitionParam(useOpenCvHandleGCode = false, isSingleLine = true)
+                    )
+                } else {
+                    //其他情况下, 转GCode优先使用Path, 再使用OpenCV
+                    EngraveTransitionHelper.transitionToGCode(
+                        element,
+                        transferConfigEntity,
+                        TransitionParam()
+                    )
+                }
+            }
+            LPDataConstant.DATA_MODE_BLACK_WHITE -> {
+                //填充图层, 发送图片线段数据
+                EngraveTransitionHelper.transitionToBitmapPath(
                     element,
-                    transferConfigEntity,
-                    TransitionParam(useOpenCvHandleGCode = false, isSingleLine = true)
-                )
-            } else if (bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
-                result = EngraveTransitionHelper.transitionToGCode(
-                    element,
-                    transferConfigEntity,
-                    TransitionParam()
-                )
-            } else {
-                //黑白数据
-                result = EngraveTransitionHelper.transitionToBitmapPath(
-                    element,
-                    transferConfigEntity,
+                    transferConfigEntity
                 )
             }
-        } else if (element is LPBitmapElement) {//LPBitmapElement
-            if (bean._layerMode == EngraveConstant.DATA_MODE_GCODE) {
-                //GCode
-                result = EngraveTransitionHelper.transitionToGCode(
-                    element,
-                    transferConfigEntity,
-                    TransitionParam()
-                )
-            } else if (bean._layerMode == EngraveConstant.DATA_MODE_DITHERING) {
-                //抖动
-                result = EngraveTransitionHelper.transitionToBitmapDithering(
+            LPDataConstant.DATA_MODE_DITHERING -> {
+                //图片图层, 发送抖动线段数据
+                EngraveTransitionHelper.transitionToBitmapDithering(
                     element,
                     transferConfigEntity,
                     TransitionParam(invert = bean.inverse)
                 )
-            } else if (bean._layerMode == EngraveConstant.DATA_MODE_GREY) {
-                //灰度
-                result = EngraveTransitionHelper.transitionToBitmap(
-                    element,
-                    transferConfigEntity
-                )
-            } else {
-                //黑白线段
-                result = EngraveTransitionHelper.transitionToBitmapPath(
+            }
+            LPDataConstant.DATA_MODE_GREY -> {
+                //旧的图片图层, 发送图片数据
+                EngraveTransitionHelper.transitionToBitmap(
                     element,
                     transferConfigEntity
                 )
             }
-        } else if (element is LPTextElement) {//LPTextElement
-            if (bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
-                //描边的文本走GCode
-                result = EngraveTransitionHelper.transitionToGCode(
-                    element,
-                    transferConfigEntity,
-                    TransitionParam()
-                )
-            } else {
-                //否则就是黑白
-                result = EngraveTransitionHelper.transitionToBitmapPath(
-                    element,
-                    transferConfigEntity
-                )
+            else -> {
+                "无法处理的元素[${element.classHash()}]:${bean._layerMode}".writeToLog(logLevel = L.WARN)
+                null
             }
-        } else {
-            "无法处理的元素[${element.classHash()}]".writeToLog(logLevel = L.WARN)
         }
 
         //图层模式

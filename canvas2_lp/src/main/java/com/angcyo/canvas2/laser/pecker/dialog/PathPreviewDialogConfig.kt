@@ -12,7 +12,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.engrave.LPDataTransitionHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
@@ -24,6 +23,7 @@ import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.engrave2.model.TransferModel
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library._screenHeight

@@ -7,11 +7,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -47,7 +48,7 @@ object CanvasBitmapHandler {
                 CanvasRegulatePopupConfig2.KEY_PRINT_THRESHOLD,
                 item.dataBean.printsThreshold.toInt()
             )
-            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_PRINT
+            firstApply = renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_PRINT
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -73,7 +74,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             item.updateBitmapByMode(
                                 it.toBase64Data(),
-                                CanvasConstant.DATA_MODE_PRINT,
+                                LPDataConstant.DATA_MODE_PRINT,
                                 renderer
                             )
                         }
@@ -103,7 +104,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_ANGLE, item.dataBean.gcodeAngle)
             addRegulate(CanvasRegulatePopupConfig2.KEY_DIRECTION, item.dataBean.gcodeDirection)
             addRegulate(CanvasRegulatePopupConfig2.KEY_SUBMIT)
-            //firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GCODE
+            //firstApply = renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_GCODE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -157,7 +158,7 @@ object CanvasBitmapHandler {
                         }
                     }) {
                         it?.let {
-                            it.first.writeToFile(CanvasDataHandleOperate._defaultGCodeOutputFile())
+                            it.first.writeToFile(_defaultGCodeOutputFile())
                             beforeBounds.rotate(boundsRotate)
                             it.second?.gCodeBound?.let {
                                 val gcodeWidth = it.width()
@@ -177,7 +178,7 @@ object CanvasBitmapHandler {
                             }
                             item.updateBitmapByMode(
                                 it.first,
-                                CanvasConstant.DATA_MODE_GCODE,
+                                LPDataConstant.DATA_MODE_GCODE,
                                 renderer,
                                 beforeBounds.width(),
                                 beforeBounds.height()
@@ -210,7 +211,7 @@ object CanvasBitmapHandler {
                 item.dataBean.blackThreshold.toInt()
             )
             firstApply =
-                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_BLACK_WHITE
+                renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_BLACK_WHITE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -246,7 +247,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             item.updateBitmapByMode(
                                 it.toBase64Data(),
-                                CanvasConstant.DATA_MODE_BLACK_WHITE,
+                                LPDataConstant.DATA_MODE_BLACK_WHITE,
                                 renderer
                             )
                         }
@@ -275,7 +276,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST, item.dataBean.contrast)
             addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS, item.dataBean.brightness)
             firstApply =
-                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_DITHERING
+                renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_DITHERING
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -320,7 +321,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             item.updateBitmapByMode(
                                 it.toBase64Data(),
-                                CanvasConstant.DATA_MODE_DITHERING,
+                                LPDataConstant.DATA_MODE_DITHERING,
                                 renderer
                             )
                         }
@@ -346,7 +347,7 @@ object CanvasBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig2.KEY_CONTRAST, item.dataBean.contrast)
             addRegulate(CanvasRegulatePopupConfig2.KEY_BRIGHTNESS, item.dataBean.brightness)
             firstApply =
-                renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_GREY
+                renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_GREY
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -385,7 +386,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             item.updateBitmapByMode(
                                 it.toBase64Data(),
-                                CanvasConstant.DATA_MODE_GREY,
+                                LPDataConstant.DATA_MODE_GREY,
                                 renderer
                             )
                         }
@@ -400,7 +401,7 @@ object CanvasBitmapHandler {
             it?.let {
                 item.updateBitmapByMode(
                     it.toBase64Data(),
-                    CanvasConstant.DATA_MODE_GREY,
+                    LPDataConstant.DATA_MODE_GREY,
                     renderer
                 )
             }
@@ -423,7 +424,7 @@ object CanvasBitmapHandler {
                 CanvasRegulatePopupConfig2.KEY_SEAL_THRESHOLD,
                 item.dataBean.sealThreshold.toInt()
             )
-            firstApply = renderer.dataItem?.dataBean?.imageFilter != CanvasConstant.DATA_MODE_SEAL
+            firstApply = renderer.dataItem?.dataBean?.imageFilter != LPDataConstant.DATA_MODE_SEAL
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -450,7 +451,7 @@ object CanvasBitmapHandler {
                         it?.let {
                             item.updateBitmapByMode(
                                 it.toBase64Data(),
-                                CanvasConstant.DATA_MODE_SEAL,
+                                LPDataConstant.DATA_MODE_SEAL,
                                 renderer
                             )
                         }
@@ -486,7 +487,7 @@ object CanvasBitmapHandler {
                         item.updateBitmapOriginal(
                             result.toBase64Data(),
                             filter,
-                            CanvasConstant.DATA_MODE_BLACK_WHITE,
+                            LPDataConstant.DATA_MODE_BLACK_WHITE,
                             renderer,
                             result.width.toFloat(),
                             result.height.toFloat(),
@@ -560,7 +561,7 @@ object CanvasBitmapHandler {
                                     it.toBlackWhiteBitmap(item.dataBean.blackThreshold.toInt())
                                 item.updateBitmapMesh(
                                     filter,
-                                    CanvasConstant.DATA_MODE_BLACK_WHITE,
+                                    LPDataConstant.DATA_MODE_BLACK_WHITE,
                                     shape, minDiameter, maxDiameter, oldIsMesh, renderer
                                 )
                             })

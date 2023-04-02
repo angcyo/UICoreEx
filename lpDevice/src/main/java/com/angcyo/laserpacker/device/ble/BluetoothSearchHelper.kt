@@ -251,7 +251,7 @@ class BluetoothSearchHelper {
                     it is BluetoothConnectItem && it.itemFscDevice == state.device
                 }
                 if (state.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
-                    //读取设备版本, 移至: com.angcyo.engrave.model.FscDeviceModel.initDevice
+                    //读取设备版本, 移至: com.angcyo.laserpacker.device.model.FscDeviceModel.initDevice
                     if (connectedDismiss) {
                         targetWindow?.dismissWindow()
                     }

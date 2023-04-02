@@ -6,10 +6,13 @@ import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.renderLayout
 import com.angcyo.glide.loadImage
 import com.angcyo.http.rx.runRx
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.Library
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.fileNameTime
+import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -71,8 +74,8 @@ object DeviceHelper {
 
     /**通过雕刻索引, 获取对应的元素预览图片文件路径*/
     fun getEngravePreviewBitmapPath(index: Any?): String = appFilePath(
-        "${index}${DeviceConstant.EXT_PREVIEW.ensureExtName()}",
-        DeviceConstant.ENGRAVE_FILE_FOLDER
+        "${index}${LPDataConstant.EXT_PREVIEW.ensureExtName()}",
+        LPDataConstant.ENGRAVE_FILE_FOLDER
     )
 
     /**获取指定索引对应的雕刻日志文件*/
@@ -80,33 +83,33 @@ object DeviceHelper {
         val result = mutableListOf<String>()
         //.png
         var path = appFilePath(
-            "$index${DeviceConstant.EXT_PREVIEW}",
-            DeviceConstant.ENGRAVE_FILE_FOLDER
+            "$index${LPDataConstant.EXT_PREVIEW}",
+            LPDataConstant.ENGRAVE_FILE_FOLDER
         )
         if (path.isFileExist()) {
             result.add(path)
         }
         //.p.png
         path = appFilePath(
-            "$index${DeviceConstant.EXT_DATA_PREVIEW}",
-            DeviceConstant.ENGRAVE_FILE_FOLDER
+            "$index${LPDataConstant.EXT_DATA_PREVIEW}",
+            LPDataConstant.ENGRAVE_FILE_FOLDER
         )
         if (path.isFileExist()) {
             result.add(path)
         }
         //.bp
-        path = appFilePath("$index${DeviceConstant.EXT_BP}", DeviceConstant.ENGRAVE_FILE_FOLDER)
+        path = appFilePath("$index${LPDataConstant.EXT_BP}", LPDataConstant.ENGRAVE_FILE_FOLDER)
         if (path.isFileExist()) {
             result.add(path)
         }
         //.dt
-        path = appFilePath("$index${DeviceConstant.EXT_DT}", DeviceConstant.ENGRAVE_FILE_FOLDER)
+        path = appFilePath("$index${LPDataConstant.EXT_DT}", LPDataConstant.ENGRAVE_FILE_FOLDER)
         if (path.isFileExist()) {
             result.add(path)
         }
         //.gcode
         path =
-            appFilePath("$index${DeviceConstant.EXT_GCODE}", DeviceConstant.ENGRAVE_FILE_FOLDER)
+            appFilePath("$index${LPDataConstant.EXT_GCODE}", LPDataConstant.ENGRAVE_FILE_FOLDER)
         if (path.isFileExist()) {
             result.add(path)
         }
@@ -119,5 +122,30 @@ object DeviceHelper {
             .find { it.type.toInt() == HawkEngraveKeys.lastType }?.type
             ?: LaserPeckerHelper.LASER_TYPE_BLUE
     }
+
+    //region ---文件输出信息---
+
+    /**gcode文件输出*/
+    fun _defaultGCodeOutputFile() =
+        filePath(
+            LPDataConstant.VECTOR_FILE_FOLDER,
+            fileNameTime(suffix = LPDataConstant.EXT_GCODE)
+        ).file()
+
+    /**svg文件输出*/
+    fun _defaultSvgOutputFile() =
+        filePath(
+            LPDataConstant.VECTOR_FILE_FOLDER,
+            fileNameTime(suffix = LPDataConstant.EXT_SVG)
+        ).file()
+
+    /**工程文件输出
+     * [ensureExt] 是否要保证后缀为[LPDataConstant.PROJECT_EXT]*/
+    fun _defaultProjectOutputFile(name: String, ensureExt: Boolean = true) = filePath(
+        LPDataConstant.PROJECT_FILE_FOLDER,
+        if (ensureExt) name.ensureName(LPDataConstant.PROJECT_EXT) else name
+    ).file()
+
+    //endregion ---文件输出信息---
 
 }

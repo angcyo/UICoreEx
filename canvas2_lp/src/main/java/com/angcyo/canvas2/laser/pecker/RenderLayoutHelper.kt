@@ -20,8 +20,8 @@ import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.item.IFragmentItem
-import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.http.rx.doMain
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.L
@@ -182,37 +182,37 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     initItem()
                     itemIco = R.drawable.canvas_shape_line_ico
                     itemText = _string(R.string.canvas_line)
-                    itemShapeType = LPConstant.DATA_TYPE_LINE
+                    itemShapeType = LPDataConstant.DATA_TYPE_LINE
                 }
                 ShapesItem()() {
                     initItem()
                     itemIco = R.drawable.canvas_shape_oval_ico
                     itemText = _string(R.string.canvas_oval)
-                    itemShapeType = LPConstant.DATA_TYPE_OVAL
+                    itemShapeType = LPDataConstant.DATA_TYPE_OVAL
                 }
                 ShapesItem()() {
                     initItem()
                     itemIco = R.drawable.canvas_shape_rectangle_ico
                     itemText = _string(R.string.canvas_rectangle)
-                    itemShapeType = LPConstant.DATA_TYPE_RECT
+                    itemShapeType = LPDataConstant.DATA_TYPE_RECT
                 }
                 ShapesItem()() {
                     initItem()
                     itemIco = R.drawable.canvas_shape_polygon_ico
                     itemText = _string(R.string.canvas_polygon)
-                    itemShapeType = LPConstant.DATA_TYPE_POLYGON
+                    itemShapeType = LPDataConstant.DATA_TYPE_POLYGON
                 }
                 ShapesItem()() {
                     initItem()
                     itemIco = R.drawable.canvas_shape_pentagram_ico
                     itemText = _string(R.string.canvas_pentagram)
-                    itemShapeType = LPConstant.DATA_TYPE_PENTAGRAM
+                    itemShapeType = LPDataConstant.DATA_TYPE_PENTAGRAM
                 }
                 ShapesItem()() {
                     initItem()
                     itemIco = R.drawable.canvas_shape_love_ico
                     itemText = _string(R.string.canvas_love)
-                    itemShapeType = LPConstant.DATA_TYPE_LOVE
+                    itemShapeType = LPDataConstant.DATA_TYPE_LOVE
                 }
             }
         } else {
@@ -294,16 +294,16 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     for (renderer in list) {
                         val bean = renderer.lpElementBean()
                         when (bean?.mtype) {
-                            LPConstant.DATA_TYPE_LINE,
-                            LPConstant.DATA_TYPE_RECT,
-                            LPConstant.DATA_TYPE_OVAL,
-                            LPConstant.DATA_TYPE_LOVE,
-                            LPConstant.DATA_TYPE_POLYGON,
-                            LPConstant.DATA_TYPE_PENTAGRAM,
-                            LPConstant.DATA_TYPE_PEN,
-                            LPConstant.DATA_TYPE_PATH,
-                            LPConstant.DATA_TYPE_SVG,
-                            LPConstant.DATA_TYPE_GCODE -> {
+                            LPDataConstant.DATA_TYPE_LINE,
+                            LPDataConstant.DATA_TYPE_RECT,
+                            LPDataConstant.DATA_TYPE_OVAL,
+                            LPDataConstant.DATA_TYPE_LOVE,
+                            LPDataConstant.DATA_TYPE_POLYGON,
+                            LPDataConstant.DATA_TYPE_PENTAGRAM,
+                            LPDataConstant.DATA_TYPE_PEN,
+                            LPDataConstant.DATA_TYPE_PATH,
+                            LPDataConstant.DATA_TYPE_SVG,
+                            LPDataConstant.DATA_TYPE_GCODE -> {
                                 if (bean.paintStyle == 1) {
                                     //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
                                     renderer.requestUpdateDrawableFlag(
@@ -312,8 +312,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     )
                                 }
                             }
-                            LPConstant.DATA_TYPE_BITMAP -> {
-                                if (bean.imageFilter == EngraveConstant.DATA_MODE_GCODE) {
+                            LPDataConstant.DATA_TYPE_BITMAP -> {
+                                if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
                                     renderer.requestUpdateDrawableFlag(
                                         Reason.preview,
                                         renderDelegate

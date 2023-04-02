@@ -22,12 +22,11 @@ import com.angcyo.canvas2.laser.pecker.dslitem.control.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.*
-import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*
@@ -117,16 +116,16 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     val element = renderer?.renderElement
                     if (element is ILaserPeckerElement) {
                         when (element.elementBean.mtype) {
-                            LPConstant.DATA_TYPE_BITMAP -> renderBitmapEditItems(renderer)
-                            LPConstant.DATA_TYPE_TEXT -> renderTextEditItems(renderer)
-                            LPConstant.DATA_TYPE_LINE,
-                            LPConstant.DATA_TYPE_OVAL,
-                            LPConstant.DATA_TYPE_RECT,
-                            LPConstant.DATA_TYPE_POLYGON,
-                            LPConstant.DATA_TYPE_PENTAGRAM,
-                            LPConstant.DATA_TYPE_SVG,
-                            LPConstant.DATA_TYPE_GCODE,
-                            LPConstant.DATA_TYPE_LOVE -> renderPathEditItems(renderer)
+                            LPDataConstant.DATA_TYPE_BITMAP -> renderBitmapEditItems(renderer)
+                            LPDataConstant.DATA_TYPE_TEXT -> renderTextEditItems(renderer)
+                            LPDataConstant.DATA_TYPE_LINE,
+                            LPDataConstant.DATA_TYPE_OVAL,
+                            LPDataConstant.DATA_TYPE_RECT,
+                            LPDataConstant.DATA_TYPE_POLYGON,
+                            LPDataConstant.DATA_TYPE_PENTAGRAM,
+                            LPDataConstant.DATA_TYPE_SVG,
+                            LPDataConstant.DATA_TYPE_GCODE,
+                            LPDataConstant.DATA_TYPE_LOVE -> renderPathEditItems(renderer)
                         }
                     }
                 }
@@ -172,7 +171,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
                 itemRenderer = renderer
-                itemImageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE
+                itemImageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -195,7 +194,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
                 itemRenderer = renderer
-                itemImageFilter = EngraveConstant.DATA_MODE_DITHERING
+                itemImageFilter = LPDataConstant.DATA_MODE_DITHERING
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -218,7 +217,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
                 itemRenderer = renderer
-                itemImageFilter = EngraveConstant.DATA_MODE_GCODE
+                itemImageFilter = LPDataConstant.DATA_MODE_GCODE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -238,7 +237,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
                     itemRenderer = renderer
-                    itemImageFilter = EngraveConstant.DATA_MODE_GREY
+                    itemImageFilter = LPDataConstant.DATA_MODE_GREY
                     itemClick = {
                         LPBitmapHandler.handleGrey(renderDelegate, it, fragment, renderer) {
                             itemIsSelected = false
@@ -254,7 +253,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
                 itemRenderer = renderer
-                itemImageFilter = EngraveConstant.DATA_MODE_PRINT
+                itemImageFilter = LPDataConstant.DATA_MODE_PRINT
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -272,7 +271,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
                 itemRenderer = renderer
-                itemImageFilter = EngraveConstant.DATA_MODE_SEAL
+                itemImageFilter = LPDataConstant.DATA_MODE_SEAL
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
@@ -430,9 +429,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     fun DslAdapter.renderPathEditItems(renderer: BaseRenderer) {
         val elementBean = renderer.lpElementBean()
         val type = elementBean?.mtype
-        if (type == LPConstant.DATA_TYPE_RECT ||
-            type == LPConstant.DATA_TYPE_POLYGON ||
-            type == LPConstant.DATA_TYPE_PENTAGRAM
+        if (type == LPDataConstant.DATA_TYPE_RECT ||
+            type == LPDataConstant.DATA_TYPE_POLYGON ||
+            type == LPDataConstant.DATA_TYPE_PENTAGRAM
         ) {
             //多边形/星星
             //属性调整

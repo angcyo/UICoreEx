@@ -12,17 +12,17 @@ import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
-import com.angcyo.engrave2.EngraveConstant
-import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -150,7 +150,7 @@ object LPBitmapHandler {
                 CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
                 bean.printsThreshold.toInt()
             )
-            firstApply = bean.imageFilter != EngraveConstant.DATA_MODE_PRINT
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_PRINT
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -164,7 +164,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
                                 bean.printsThreshold.toInt()
                             ).toFloat()
-                            bean.imageFilter = EngraveConstant.DATA_MODE_PRINT
+                            bean.imageFilter = LPDataConstant.DATA_MODE_PRINT
                             LTime.tick()
                             val result = toPrint(context, bitmap, bean.printsThreshold)
                             "图片[${bitmap.byteCount.toSizeString()}]转版画耗时:${LTime.time()}".writePerfLog()
@@ -244,7 +244,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
                             "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
-                            gCodeText.writeToFile(EngraveTransitionHelper._defaultGCodeOutputFile())
+                            gCodeText.writeToFile(_defaultGCodeOutputFile())
 
                             element.updateOriginBitmapGCode(
                                 result.second?.gCodePath?.run { listOf(this) },
@@ -291,7 +291,7 @@ object LPBitmapHandler {
                 CanvasRegulatePopupConfig.KEY_BW_THRESHOLD,
                 bean.blackThreshold.toInt()
             )
-            firstApply = bean.imageFilter != EngraveConstant.DATA_MODE_BLACK_WHITE
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_BLACK_WHITE
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -308,7 +308,7 @@ object LPBitmapHandler {
                             bean.inverse = getBooleanOrDef(
                                 CanvasRegulatePopupConfig.KEY_BW_INVERT, bean.inverse
                             )
-                            bean.imageFilter = EngraveConstant.DATA_MODE_BLACK_WHITE
+                            bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                             LTime.tick()
                             val result = toBlackWhiteHandle(bitmap, bean)
                             "图片[${bitmap.byteCount.toSizeString()}]转黑白耗时:${LTime.time()}".writePerfLog()
@@ -348,7 +348,7 @@ object LPBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
             addRegulate(CanvasRegulatePopupConfig.KEY_CONTRAST, bean.contrast)
             addRegulate(CanvasRegulatePopupConfig.KEY_BRIGHTNESS, bean.brightness)
-            firstApply = bean.imageFilter != EngraveConstant.DATA_MODE_DITHERING
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_DITHERING
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -370,7 +370,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
                             )
-                            bean.imageFilter = EngraveConstant.DATA_MODE_DITHERING
+                            bean.imageFilter = LPDataConstant.DATA_MODE_DITHERING
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
@@ -407,7 +407,7 @@ object LPBitmapHandler {
             addRegulate(CanvasRegulatePopupConfig.KEY_SHAKE_INVERT, bean.inverse)
             addRegulate(CanvasRegulatePopupConfig.KEY_CONTRAST, bean.contrast)
             addRegulate(CanvasRegulatePopupConfig.KEY_BRIGHTNESS, bean.brightness)
-            firstApply = bean.imageFilter != EngraveConstant.DATA_MODE_GREY
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_GREY
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -429,7 +429,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
                             )
-                            bean.imageFilter = EngraveConstant.DATA_MODE_GREY
+                            bean.imageFilter = LPDataConstant.DATA_MODE_GREY
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
@@ -467,7 +467,7 @@ object LPBitmapHandler {
                 CanvasRegulatePopupConfig.KEY_SEAL_THRESHOLD,
                 bean.sealThreshold.toInt()
             )
-            firstApply = bean.imageFilter != EngraveConstant.DATA_MODE_SEAL
+            firstApply = bean.imageFilter != LPDataConstant.DATA_MODE_SEAL
             onApplyAction = { dismiss ->
                 if (dismiss) {
                     onDismissAction()
@@ -482,7 +482,7 @@ object LPBitmapHandler {
                         )
                         bean.sealThreshold = threshold.toFloat()
                         operateBitmap.let { bitmap ->
-                            bean.imageFilter = EngraveConstant.DATA_MODE_SEAL
+                            bean.imageFilter = LPDataConstant.DATA_MODE_SEAL
                             LTime.tick()
                             val result = toSeal(context, bitmap, bean.sealThreshold)
                             "图片[${bitmap.byteCount.toSizeString()}]转印章耗时:${LTime.time()}".writePerfLog()

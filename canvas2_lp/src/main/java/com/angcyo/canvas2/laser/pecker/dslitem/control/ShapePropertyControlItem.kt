@@ -6,12 +6,12 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.util.canvasDecimal
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig.Companion.STYLE_DECIMAL
 import com.angcyo.item.keyboard.keyboardNumberWindow
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
@@ -30,7 +30,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
 
     companion object {
         /**最小/最大的边数
-         * [com.angcyo.canvas.data.CanvasProjectItemBean.side]*/
+         * [com.angcyo.laserpacker.bean.LPElementBean.side]*/
         const val SHAPE_MIN_SIDE = 3
         const val SHAPE_MAX_SIDE = 50
 
@@ -69,8 +69,8 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                 renderUnit?.convertPixelToValue(cornerPixel)?.canvasDecimal(2)
 
             //边数
-            if (elementBean.mtype == LPConstant.DATA_TYPE_POLYGON ||
-                elementBean.mtype == LPConstant.DATA_TYPE_PENTAGRAM
+            if (elementBean.mtype == LPDataConstant.DATA_TYPE_POLYGON ||
+                elementBean.mtype == LPDataConstant.DATA_TYPE_PENTAGRAM
             ) {
                 itemHolder.visible(R.id.item_side_count_view)
                 itemHolder.visible(R.id.side_count_label_view)
@@ -80,7 +80,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
             }
 
             //深度
-            if (elementBean.mtype == LPConstant.DATA_TYPE_PENTAGRAM) {
+            if (elementBean.mtype == LPDataConstant.DATA_TYPE_PENTAGRAM) {
                 itemHolder.tv(R.id.side_count_label_view)?.text =
                     _string(R.string.canvas_angle_count)//角数
                 itemHolder.visible(R.id.item_depth_view)
@@ -93,7 +93,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
             }
 
             //圆角
-            if (elementBean.mtype == LPConstant.DATA_TYPE_RECT) {
+            if (elementBean.mtype == LPDataConstant.DATA_TYPE_RECT) {
                 itemHolder.visible(R.id.item_corner_view)
                 itemHolder.visible(R.id.corner_label_view)
             } else {

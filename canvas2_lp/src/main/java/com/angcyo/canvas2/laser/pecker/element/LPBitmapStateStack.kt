@@ -8,7 +8,7 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.BitmapStateStack
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
-import com.angcyo.engrave2.EngraveConstant
+import com.angcyo.laserpacker.LPDataConstant
 
 /**
  * 图片状态存储
@@ -24,12 +24,12 @@ class LPBitmapStateStack : BitmapStateStack() {
     var imageOriginal: String? = null
     var src: String? = null
 
-    var imageFilter = EngraveConstant.DATA_MODE_GREY
+    var imageFilter = LPDataConstant.DATA_MODE_GREY
     var inverse = false
     var contrast = 0f
     var brightness = 0f
-    var blackThreshold = EngraveConstant.DEFAULT_THRESHOLD
-    var printsThreshold = EngraveConstant.DEFAULT_THRESHOLD
+    var blackThreshold = LPDataConstant.DEFAULT_THRESHOLD
+    var printsThreshold = LPDataConstant.DEFAULT_THRESHOLD
 
     var data: String? = null
     var gcodeDirection = 0

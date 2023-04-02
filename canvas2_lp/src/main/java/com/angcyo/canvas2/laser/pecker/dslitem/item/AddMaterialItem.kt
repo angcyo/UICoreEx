@@ -4,10 +4,10 @@ import android.graphics.drawable.BitmapDrawable
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.canvasMaterialWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.gcode.GCodeDrawable
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.toBitmap
 import com.hingin.umeng.UMEvent
@@ -43,14 +43,14 @@ class AddMaterialItem : CanvasIconItem() {
                         //gcode
                         is GCodeDrawable -> LPElementHelper.addPathElement(
                             itemRenderDelegate,
-                            LPConstant.DATA_TYPE_GCODE,
+                            LPDataConstant.DATA_TYPE_GCODE,
                             data as String,
                             drawable.gCodePath.run { listOf(this) }
                         )
                         //svg
                         is SharpDrawable -> LPElementHelper.addPathElement(
                             itemRenderDelegate,
-                            LPConstant.DATA_TYPE_SVG,
+                            LPDataConstant.DATA_TYPE_SVG,
                             data as String,
                             drawable.pathList
                         )

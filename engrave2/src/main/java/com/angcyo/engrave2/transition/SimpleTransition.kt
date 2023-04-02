@@ -6,9 +6,9 @@ import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.engrave2.data.TransitionParam
-import com.angcyo.engrave2.transition.EngraveTransitionHelper._defaultGCodeOutputFile
 import com.angcyo.gcode.GCodeAdjust
 import com.angcyo.gcode.GCodeWriteHandler
+import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.bounds
@@ -106,7 +106,7 @@ class SimpleTransition : ITransition {
     private fun gCodeTranslation(
         gCode: String,
         rotateBounds: RectF,
-        outputFile: File = EngraveTransitionHelper._defaultGCodeOutputFile()
+        outputFile: File = _defaultGCodeOutputFile()
     ): File {
         val gCodeAdjust = GCodeAdjust()
         outputFile.writer().use { writer ->

@@ -8,7 +8,7 @@ import com.angcyo.library.extend.IJson
  */
 data class GcodeAdjustBean(
     /**GCode内容, 如果是图片转GCode, 则内容是图片的base64协议头数据
-     * [com.angcyo.canvas.data.CanvasProjectItemBean.imageOriginal]*/
+     * [com.angcyo.laserpacker.bean.LPElementBean.imageOriginal]*/
     var content: String? = null,
     /**需要调整到的坐标*/
     var left: Double = 0.0,

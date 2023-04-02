@@ -2,7 +2,7 @@ package com.angcyo.laserpacker.device.ble
 
 import android.os.Bundle
 import com.angcyo.core.fragment.BaseDslFragment
-import com.angcyo.laserpacker.device.DeviceConstant
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.ble.dslitem.TransferDataItem
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.page
@@ -27,7 +27,7 @@ class TransferDataFragment : BaseDslFragment() {
         super.onLoadData()
 
         //传输的数据所在文件夹
-        val transferFolder = folderPath(DeviceConstant.ENGRAVE_TRANSFER_FILE_FOLDER)
+        val transferFolder = folderPath(LPDataConstant.ENGRAVE_TRANSFER_FILE_FOLDER)
         val list = transferFolder.file().page(page)
 
         loadDataEnd(TransferDataItem::class, list) { file ->

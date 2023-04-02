@@ -6,13 +6,10 @@ import android.graphics.Path
 import android.view.Gravity
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
-import com.angcyo.canvas.data.CanvasProjectItemBean.Companion.DEFAULT_LINE_SPACE
-import com.angcyo.canvas.data.toPaintStyleInt
 import com.angcyo.canvas.graphics.IEngraveProvider
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.utils.CanvasConstant
-import com.angcyo.canvas.utils.CanvasConstant.DATA_TYPE_GCODE
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.isLineShape
 import com.angcyo.canvas.utils.parseGCode
@@ -20,8 +17,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.gcode.GCodeHelper
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
 import com.angcyo.library.ex.deleteSafe
@@ -49,10 +48,10 @@ class GCodeTransition : IEngraveTransition {
     ): TransferDataEntity? {
         val dataItem = engraveProvider.getEngraveDataItem()
         val dataBean = dataItem?.dataBean
-        if (getDataMode(dataBean, transferConfigEntity) == CanvasConstant.DATA_MODE_GCODE) {
+        if (getDataMode(dataBean, transferConfigEntity) == LPDataConstant.DATA_MODE_GCODE) {
 
             //需要处理成GCode数据
-            if (dataBean?.mtype == DATA_TYPE_GCODE &&
+            if (dataBean?.mtype == LPDataConstant.DATA_TYPE_GCODE &&
                 !dataBean.data.isNullOrEmpty() &&
                 !HawkEngraveKeys.enableGCodeTransform /*不激活gcode数据全转换*/
             ) {
@@ -63,7 +62,7 @@ class GCodeTransition : IEngraveTransition {
                     dataBean.data!!,
                     param
                 )
-            } else if (dataBean?.mtype == CanvasConstant.DATA_TYPE_LINE &&
+            } else if (dataBean?.mtype == LPDataConstant.DATA_TYPE_LINE &&
                 dataBean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()
             ) {
                 //线条转GCode使用图片的方式
@@ -137,7 +136,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, false)
+            saveEngraveData(index, bitmap, LPDataConstant.EXT_PREVIEW, false)
         }
     }
 
@@ -169,7 +168,7 @@ class GCodeTransition : IEngraveTransition {
         ).apply {
             //1: 存一份原始可视化数据
             val bitmap = engraveProvider.getEngraveBitmap()
-            saveEngraveData(index, bitmap, IEngraveTransition.EXT_PREVIEW, false)
+            saveEngraveData(index, bitmap, LPDataConstant.EXT_PREVIEW, false)
         }
     }
 
@@ -193,7 +192,7 @@ class GCodeTransition : IEngraveTransition {
             app(),
             pxBitmap,
             (rotateBounds.width() / 2).toMm().toDouble(),
-            lineSpace = DEFAULT_LINE_SPACE.toDouble(),
+            lineSpace = LPDataConstant.DEFAULT_LINE_SPACE.toDouble(),
             direction = 0,
             angle = 0.0,
             type = 2 //只获取轮廓
@@ -208,7 +207,7 @@ class GCodeTransition : IEngraveTransition {
             gCodeFile
         ).apply {
             //1: 存一份原始可视化数据
-            saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
+            saveEngraveData(index, pxBitmap, LPDataConstant.EXT_PREVIEW)
         }
     }
 
@@ -252,7 +251,7 @@ class GCodeTransition : IEngraveTransition {
             gCodeFile
         ).apply {
             //1: 存一份原始可视化数据
-            saveEngraveData(index, pxBitmap, IEngraveTransition.EXT_PREVIEW)
+            saveEngraveData(index, pxBitmap, LPDataConstant.EXT_PREVIEW)
         }
     }
 
@@ -274,7 +273,7 @@ class GCodeTransition : IEngraveTransition {
             pathGCodeText.toByteArray().writeTransferDataPath("${transferDataEntity.index}")
 
         //2:保存一份GCode文本数据/原始数据
-        saveEngraveData(transferDataEntity.index, pathGCodeText, IEngraveTransition.EXT_GCODE)
+        saveEngraveData(transferDataEntity.index, pathGCodeText, LPDataConstant.EXT_GCODE)
 
         val gCodeDrawable = GCodeHelper.parseGCode(pathGCodeText)
 
@@ -283,7 +282,7 @@ class GCodeTransition : IEngraveTransition {
         saveEngraveData(
             transferDataEntity.index,
             previewBitmap,
-            IEngraveTransition.EXT_DATA_PREVIEW,
+            LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
 

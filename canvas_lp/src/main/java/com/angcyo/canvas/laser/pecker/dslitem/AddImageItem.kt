@@ -6,10 +6,10 @@ import com.angcyo.canvas.graphics.addGCodeRender
 import com.angcyo.canvas.graphics.addSvgRender
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.canvas.laser.pecker.addBlackWhiteBitmapRender
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.component.getFile
 import com.angcyo.component.luban.luban
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.Library
@@ -72,16 +72,16 @@ class AddImageItem : CanvasControlItem2(), IFragmentItem {
                     getFile { uri ->
                         val filePath = ROpenFileHelper.parseData(uri)
                         filePath?.let { path ->
-                            if (path.endsWith(CanvasConstant.SVG_EXT, true) || (path.endsWith(
-                                    CanvasConstant.TXT_EXT,
+                            if (path.endsWith(LPDataConstant.SVG_EXT, true) || (path.endsWith(
+                                    LPDataConstant.TXT_EXT,
                                     true
                                 ) && path.file().readText()
                                     ?.isSvgContent() == true)
                             ) {
                                 //svg
                                 itemCanvasDelegate?.addSvgRender(path.file().readText())
-                            } else if (path.endsWith(CanvasConstant.GCODE_EXT, true) ||
-                                (path.endsWith(CanvasConstant.TXT_EXT, true) && path.file()
+                            } else if (path.endsWith(LPDataConstant.GCODE_EXT, true) ||
+                                (path.endsWith(LPDataConstant.TXT_EXT, true) && path.file()
                                     .readText()
                                     ?.isGCodeContent() == true)
                             ) {

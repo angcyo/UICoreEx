@@ -4,12 +4,12 @@ import android.widget.TextView
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.laser.pecker.R
-import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.canvasDecimal
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig.Companion.STYLE_DECIMAL
 import com.angcyo.item.keyboard.keyboardNumberWindow
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.dp
@@ -26,7 +26,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
 
     companion object {
         /**最小/最大的边数
-         * [com.angcyo.canvas.data.CanvasProjectItemBean.side]*/
+         * [com.angcyo.laserpacker.bean.LPElementBean.side]*/
         const val SHAPE_MIN_SIDE = 3
         const val SHAPE_MAX_SIDE = 50
 
@@ -64,8 +64,8 @@ class ShapePropertyControlItem : DslAdapterItem() {
                 valueUit.convertPixelToValue(cornerPixel).canvasDecimal(2)
 
             //边数
-            if (renderer.dataItem?.dataBean?.mtype == CanvasConstant.DATA_TYPE_POLYGON ||
-                renderer.dataItem?.dataBean?.mtype == CanvasConstant.DATA_TYPE_PENTAGRAM
+            if (renderer.dataItem?.dataBean?.mtype == LPDataConstant.DATA_TYPE_POLYGON ||
+                renderer.dataItem?.dataBean?.mtype == LPDataConstant.DATA_TYPE_PENTAGRAM
             ) {
                 itemHolder.visible(R.id.item_side_count_view)
                 itemHolder.visible(R.id.side_count_label_view)
@@ -75,7 +75,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
             }
 
             //深度
-            if (renderer.dataItem?.dataBean?.mtype == CanvasConstant.DATA_TYPE_PENTAGRAM) {
+            if (renderer.dataItem?.dataBean?.mtype == LPDataConstant.DATA_TYPE_PENTAGRAM) {
                 itemHolder.visible(R.id.item_depth_view)
                 itemHolder.visible(R.id.depth_label_view)
             } else {
@@ -84,7 +84,7 @@ class ShapePropertyControlItem : DslAdapterItem() {
             }
 
             //圆角
-            if (renderer.dataItem?.dataBean?.mtype == CanvasConstant.DATA_TYPE_RECT) {
+            if (renderer.dataItem?.dataBean?.mtype == LPDataConstant.DATA_TYPE_RECT) {
                 itemHolder.visible(R.id.item_corner_view)
                 itemHolder.visible(R.id.corner_label_view)
             } else {

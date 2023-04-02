@@ -4,9 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.text.InputType
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.dialog.InputDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -28,9 +28,9 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
     /**
      * [text] 文本内容
      * [type] 数据类型
-     * [com.angcyo.canvas.utils.LPConstant.DATA_TYPE_QRCODE]
-     * [com.angcyo.canvas.utils.LPConstant.DATA_TYPE_BARCODE]
-     * [com.angcyo.canvas.utils.LPConstant.DATA_TYPE_TEXT]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_QRCODE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_BARCODE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_TEXT]
      * */
     var onAddTextAction: (text: CharSequence, type: Int) -> Unit = { _, _ ->
 
@@ -40,7 +40,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
     var canSwitchType: Boolean = true
 
     /**选中的数据类型*/
-    var dataType: Int = LPConstant.DATA_TYPE_TEXT
+    var dataType: Int = LPDataConstant.DATA_TYPE_TEXT
 
     init {
         inputViewHeight = 100 * dpi
@@ -67,20 +67,20 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                     when (toIndex) {
                         1 -> {
                             //二维码 BarcodeFormat.QR_CODE
-                            dataType = LPConstant.DATA_TYPE_QRCODE
+                            dataType = LPDataConstant.DATA_TYPE_QRCODE
                             inputType = InputType.TYPE_CLASS_TEXT
                             digits = null
                         }
                         2 -> {
                             //条形码 BarcodeFormat.CODE_128
-                            dataType = LPConstant.DATA_TYPE_BARCODE
+                            dataType = LPDataConstant.DATA_TYPE_BARCODE
                             inputType =
                                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                             digits = _string(R.string.lib_barcode_digits)
                         }
                         else -> {
                             //文本
-                            dataType = LPConstant.DATA_TYPE_TEXT
+                            dataType = LPDataConstant.DATA_TYPE_TEXT
                             inputType = InputType.TYPE_CLASS_TEXT
                             digits = null
                         }
@@ -90,8 +90,8 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
             }
             setCurrentItem(
                 when (dataType) {
-                    LPConstant.DATA_TYPE_QRCODE -> 1
-                    LPConstant.DATA_TYPE_BARCODE -> 2
+                    LPDataConstant.DATA_TYPE_QRCODE -> 1
+                    LPDataConstant.DATA_TYPE_BARCODE -> 2
                     else -> 0
                 }
             )

@@ -2,10 +2,9 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.bean.LPElementBean
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave2.EngraveConstant
 import com.angcyo.engrave2.data.PreviewInfo
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.component.scaleDrawable
 import com.angcyo.library.ex.Action1
 import com.angcyo.library.ex._drawable
@@ -154,7 +153,7 @@ class PreviewControlItem : BasePreviewItem() {
         ) { viewHolder, item ->
             //进入路径预览
             val previewInfoData = previewModel.previewInfoData.value
-            itemPathPreviewClick?.invoke(previewInfoData?.data)
+            itemPathPreviewClick?.invoke(previewInfoData?.elementBean)
         }
     }
 
@@ -188,7 +187,7 @@ class PreviewControlItem : BasePreviewItem() {
             if (laserPeckerModel.isC1()) {
                 //C1不支持此操作
             } else if (laserPeckerModel.deviceSettingData.value?.gcodeView == QuerySettingParser.GCODE_PREVIEW &&
-                (previewInfoData?.data as? LPElementBean)?._layerMode == EngraveConstant.DATA_MODE_GCODE
+                previewInfoData?.elementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
             ) {
                 //开启了向量预览, 并且GCode数据模式下, 才有路径预览
                 itemList.add(pathPreviewItem!!)

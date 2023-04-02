@@ -66,4 +66,6 @@
     <string name="engrave_channel">彫刻チャンネル</string>
     <string name="engraving">レーザー彫刻中</string>
 
+    <string name="canvas_cone">コーン</string>
+    <string name="canvas_ball">球体</string>
 </resources>

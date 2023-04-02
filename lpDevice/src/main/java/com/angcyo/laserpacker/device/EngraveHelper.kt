@@ -4,9 +4,7 @@ import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
-import com.angcyo.laserpacker.device.DeviceConstant.DATA_MODE_BLACK_WHITE
-import com.angcyo.laserpacker.device.DeviceConstant.DATA_MODE_DITHERING
-import com.angcyo.laserpacker.device.DeviceConstant.DATA_MODE_GCODE
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ensureExtName
@@ -29,9 +27,15 @@ object EngraveHelper {
     /**图层, 以及图层顺序
      * 先 填充->抖动->GCode */
     val engraveLayerList = listOf(
-        EngraveLayerInfo(DATA_MODE_BLACK_WHITE, _string(R.string.engrave_layer_fill)),
-        EngraveLayerInfo(DATA_MODE_DITHERING, _string(R.string.engrave_layer_bitmap)),
-        EngraveLayerInfo(DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
+        EngraveLayerInfo(
+            LPDataConstant.DATA_MODE_BLACK_WHITE,
+            _string(R.string.engrave_layer_fill)
+        ),
+        EngraveLayerInfo(
+            LPDataConstant.DATA_MODE_DITHERING,
+            _string(R.string.engrave_layer_bitmap)
+        ),
+        EngraveLayerInfo(LPDataConstant.DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
     )
 
     /**获取图层, 获取雕刻的图层信息*/
@@ -47,7 +51,7 @@ object EngraveHelper {
 
     /**将字节数据写入到文件*/
     fun ByteArray.writeTransferDataPath(fileName: String) =
-        writeToFile(filePath(DeviceConstant.ENGRAVE_TRANSFER_FILE_FOLDER, fileName).file())
+        writeToFile(filePath(LPDataConstant.ENGRAVE_TRANSFER_FILE_FOLDER, fileName).file())
 
     /**生成一个雕刻需要用到的文件索引
      * 4个字节 最大 4_294_967_295
@@ -108,7 +112,7 @@ object EngraveHelper {
     ): String? {
         //将雕刻数据写入文件
         return data.writeTo(
-            DeviceConstant.ENGRAVE_FILE_FOLDER,
+            LPDataConstant.ENGRAVE_FILE_FOLDER,
             "${index}${suffix.ensureExtName()}",
             false,
             recycle

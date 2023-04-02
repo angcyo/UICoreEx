@@ -35,6 +35,7 @@ import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.form.checkItemThrowable
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.*
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
@@ -175,7 +176,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         //全部是GCode数据, 不能选择分辨率, 并且强制使用1k
         val isAllGCode = LPEngraveHelper.isAllSameLayerMode(
             delegate,
-            EngraveConstant.DATA_MODE_GCODE
+            LPDataConstant.DATA_MODE_GCODE
         )
 
         renderDslAdapter {
