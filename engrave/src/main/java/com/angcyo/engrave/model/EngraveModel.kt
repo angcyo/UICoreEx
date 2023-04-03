@@ -2,14 +2,12 @@ package com.angcyo.engrave.model
 
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
-import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -18,10 +16,7 @@ import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.transition.EmptyException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
-import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.EngraveNotifyHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.laserpacker.device.toLaserTypeString
+import com.angcyo.laserpacker.device.*
 import com.angcyo.laserpacker.toDataModeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -31,7 +26,6 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
-import com.angcyo.library.getAppString
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -760,10 +754,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //debug
         val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
-        val batchEngraveSupportFirmware = getAppString("lp_batch_engrave_firmware")
-        if (VersionMatcher.matches(version, batchEngraveSupportFirmware, false)) {
-            return true
-        }
-        return VersionMatcher.matches(version, HawkEngraveKeys.batchEngraveSupportFirmware, false)
+        return VersionMatcher.matches(version, DeviceHelper.batchEngraveSupportFirmware, false)
     }
 }

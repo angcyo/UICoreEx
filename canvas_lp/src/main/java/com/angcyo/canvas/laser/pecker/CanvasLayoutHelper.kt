@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
 import com.angcyo.canvas.Reason
@@ -217,7 +218,8 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
         canvasView.canvasDelegate.xAxis.drawGridLine = CanvasConstant.CANVAS_DRAW_GRID
         canvasView.canvasDelegate.yAxis.drawGridLine = CanvasConstant.CANVAS_DRAW_GRID
 
-        val closeCanvasItemsFun = HawkEngraveKeys.closeCanvasItemsFun
+        val closeCanvasItemsFun =
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeCanvasItemsFun
         _canvasView = canvasView
         adapter.render {
             hookUpdateDepend()

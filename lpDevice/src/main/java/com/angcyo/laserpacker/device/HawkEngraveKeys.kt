@@ -169,24 +169,6 @@ object HawkEngraveKeys {
 
     //
 
-    /**需要关闭的功能
-     * xx_xxx
-     * [com.angcyo.canvas.laser.pecker.CanvasLayoutHelper.bindItems]
-     * */
-    var closeCanvasItemsFun: String by HawkPropertyValue<Any, String>("")
-
-    /**需要关闭的图片算法功能
-     * xx_xxx
-     * [CanvasEditLayoutHelper.renderImageEditItems]
-     * */
-    var closeImageEditItemsFun: String by HawkPropertyValue<Any, String>("")
-
-    /**需要关闭的文本功能
-     * xx_xxx
-     * [CanvasEditLayoutHelper.renderTextEditItems]
-     * */
-    var closeTextEditItemsFun: String by HawkPropertyValue<Any, String>("")
-
     /**最大的下位机能接收的文件大小 字节, 30MB */
     var maxTransferDataSize: Long by HawkPropertyValue<Any, Long>(28_000_000)
 

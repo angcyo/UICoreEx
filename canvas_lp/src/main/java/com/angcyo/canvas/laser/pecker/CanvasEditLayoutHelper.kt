@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.Gravity
 import android.widget.LinearLayout
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
@@ -41,7 +42,8 @@ object CanvasEditLayoutHelper {
         fragment: AbsFragment,
         renderer: DataItemRenderer
     ) {
-        val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
+        val closeImageEditItemsFun =
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeImageEditItemsFun
         if (!closeImageEditItemsFun.have("_bw_")) {
             CanvasImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
@@ -194,7 +196,8 @@ object CanvasEditLayoutHelper {
     //region ---文本---
 
     fun DslAdapter.renderTextEditItems(renderer: DataItemRenderer) {
-        val closeTextEditItemsFun = HawkEngraveKeys.closeTextEditItemsFun
+        val closeTextEditItemsFun =
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun
         //字体
         if (!closeTextEditItemsFun.have("_typeface_")) {
             TypefaceSelectItem()() {

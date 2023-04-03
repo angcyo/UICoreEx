@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -157,7 +158,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     /**渲染图片编辑控制items*/
     private fun DslAdapter.renderBitmapEditItems(renderer: BaseRenderer) {
-        val closeImageEditItemsFun = HawkEngraveKeys.closeImageEditItemsFun
+        val closeImageEditItemsFun =
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeImageEditItemsFun
         if (!closeImageEditItemsFun.have("_bw_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
@@ -321,7 +323,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     /**渲染文本编辑控制items*/
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
-        val closeTextEditItemsFun = HawkEngraveKeys.closeTextEditItemsFun
+        val closeTextEditItemsFun =
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun
         //字体
         if (!closeTextEditItemsFun.have("_typeface_")) {
             TextTypefaceSelectItem()() {

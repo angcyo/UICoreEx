@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.component.DslLayout
 import com.angcyo.core.component.file.appFilePath
@@ -23,6 +24,13 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
  * @since 2023/03/30
  */
 object DeviceHelper {
+
+    //region---常量属性---
+
+    val batchEngraveSupportFirmware = HawkEngraveKeys.batchEngraveSupportFirmware
+        ?: LaserPeckerConfigHelper.readDeviceSettingConfig()?.lpBatchEngraveFirmware
+
+    //endregion---常量属性---
 
     /**临时的雕刻日志文件路径集合, 在分享之后清空*/
     val tempEngraveLogPathList = mutableListOf<String>()

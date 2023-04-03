@@ -89,7 +89,13 @@ class DeviceSettingFragment : BaseDslFragment() {
         val isL4 = productInfo?.isLIV() == true
 
         renderDslAdapter(reset = true) {
-            if (VersionMatcher.matches(productInfo?.version, config?.showBuzzerRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showBuzzerRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_warning_tone)
                     itemDes = _string(R.string.device_setting_act_des_sound)
@@ -103,7 +109,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            if (VersionMatcher.matches(productInfo?.version, config?.showSafeRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showSafeRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_security)
                     itemDes = _string(R.string.device_setting_act_des_security)
@@ -117,7 +123,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            if (VersionMatcher.matches(productInfo?.version, config?.showFreeRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showFreeRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_free)
                     itemDes = _string(R.string.device_setting_act_des_free)
@@ -133,7 +139,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
             //雕刻方向
             if (settingParser?.zFlag == 0 &&
-                VersionMatcher.matches(productInfo?.version, config?.showPrintDirRange, false)
+                VersionMatcher.matches(productInfo?.version, config?.showPrintDirRange, false, true)
             ) {
                 //第三轴打开的情况下, 不允许调整雕刻方向
                 DslPropertySwitchItem()() {
@@ -149,7 +155,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //GCode预览
-            if (VersionMatcher.matches(productInfo?.version, config?.showGcodeViewRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showGcodeViewRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
                     itemDes = _string(R.string.device_setting_act_des_preview_g_code)
@@ -164,7 +176,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            if (VersionMatcher.matches(productInfo?.version, config?.showGcodePowerRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showGcodePowerRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_g_code_pwr_label)
                     itemDes = _string(R.string.device_g_code_pwr_des)
@@ -178,7 +196,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //第三轴
-            if (VersionMatcher.matches(productInfo?.version, config?.showZFlagRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showZFlagRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_z_label)
                     itemDes = _string(R.string.device_ex_z_des)
@@ -226,7 +244,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //旋转轴
-            if (VersionMatcher.matches(productInfo?.version, config?.showRFlagRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showRFlagRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_r_label)
                     itemDes = _string(R.string.device_ex_r_des)
@@ -242,7 +260,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (VersionMatcher.matches(productInfo?.version, config?.showSFlagRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showSFlagRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_s_label)
                     itemDes = _string(R.string.device_ex_s_des)
@@ -277,7 +295,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (VersionMatcher.matches(productInfo?.version, config?.showSRepRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showSRepRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
                     itemDes = _string(R.string.device_s_batch_engrave_des)
@@ -311,7 +329,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            if (VersionMatcher.matches(productInfo?.version, config?.showDirRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showDirRange, false, true)) {
                 if (settingParser?.zFlag == 1 || settingParser?.rFlag == 1) {
                     //Z轴的时候, 才有正转/反转
                     DslPropertySwitchItem()() {
@@ -348,7 +366,13 @@ class DeviceSettingFragment : BaseDslFragment() {
             //---
 
             //主机触摸按键
-            if (VersionMatcher.matches(productInfo?.version, config?.showKeyViewRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showKeyViewRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_txt_3)
                     itemDes = _string(R.string.device_setting_txt_4)
@@ -363,7 +387,13 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //批量雕刻按键
-            if (VersionMatcher.matches(productInfo?.version, config?.showKeyPrintRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showKeyPrintRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_txt_5)
                     itemDes = _string(R.string.device_setting_txt_6)
@@ -378,7 +408,7 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //红光常亮
-            if (VersionMatcher.matches(productInfo?.version, config?.showIrDstRange, false)) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showIrDstRange, false, true)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.button_infra_red_title)
                     itemDes = _string(R.string.button_infra_red_content)
@@ -393,7 +423,13 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //自动连接蓝牙
-            if (VersionMatcher.matches(productInfo?.version, config?.showAutoConnectRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showAutoConnectRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_blue_connect_auto)
                     initItem()
@@ -409,7 +445,8 @@ class DeviceSettingFragment : BaseDslFragment() {
             if (HawkEngraveKeys.enableExperimental || VersionMatcher.matches(
                     productInfo?.version,
                     config?.showExperimentalRange,
-                    false
+                    false,
+                    true
                 )
             ) {
                 DslTextInfoItem()() {
@@ -428,7 +465,13 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //上传日志
-            if (VersionMatcher.matches(productInfo?.version, config?.showUploadLogRange, false)) {
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showUploadLogRange,
+                    false,
+                    true
+                )
+            ) {
                 createUploadLogItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
                     it.initItem()
                     this + it
@@ -439,7 +482,8 @@ class DeviceSettingFragment : BaseDslFragment() {
             if (VersionMatcher.matches(
                     productInfo?.version,
                     config?.showFirmwareUpdateRange,
-                    false
+                    false,
+                    true
                 )
             ) {
                 createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {

@@ -258,6 +258,7 @@ object LaserPeckerHelper {
             return VersionMatcher.matches(
                 softwareVersion,
                 LibLpHawkKeys.lpDeviceOriginCenter,
+                false,
                 false
             )
         }
@@ -268,7 +269,7 @@ object LaserPeckerHelper {
         } else {
             getAppString("lp_device_origin_center")
         }
-        if (VersionMatcher.matches(softwareVersion, lpDeviceOriginCenter, false)) {
+        if (VersionMatcher.matches(softwareVersion, lpDeviceOriginCenter, false, false)) {
             return true
         }
         return false
@@ -840,25 +841,20 @@ object LaserPeckerHelper {
         }
     }
 
+    /**支持的固件版本范围*/
+    fun supportFirmwareRange(): String? {
+        return LibLpHawkKeys.lpSupportFirmware ?: if (isDebug()) {
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.lpSupportFirmwareDebug
+        } else {
+            LaserPeckerConfigHelper.readDeviceSettingConfig()?.lpSupportFirmware
+        }
+    }
+
     /**当前的固件版本, 是否支持使用app*/
     fun isSupportFirmware(): Boolean {
         val productInfo = vmApp<LaserPeckerModel>().productInfoData.value ?: return true
         val version = productInfo.softwareVersion //固件版本
-
-        //首先使用自定义配置的
-        var lpSupportFirmware = LibLpHawkKeys.lpSupportFirmware
-        if (!lpSupportFirmware.isNullOrBlank()) {
-            if (VersionMatcher.matches(version, lpSupportFirmware)) {
-                //强制配置的固件版本支持信息
-                return true
-            }
-        }
-
-        //其次使用build配置的
-        lpSupportFirmware = getAppString("lp_support_firmware")
-        if (lpSupportFirmware.isNullOrEmpty()) {
-            return true
-        }
+        val lpSupportFirmware = supportFirmwareRange()
         return VersionMatcher.matches(version, lpSupportFirmware)
     }
 

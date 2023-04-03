@@ -18,10 +18,7 @@ import com.angcyo.engrave2.*
 import com.angcyo.engrave2.exception.EmptyException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
-import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.EngraveNotifyHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.laserpacker.device.toLaserTypeString
+import com.angcyo.laserpacker.device.*
 import com.angcyo.laserpacker.toDataModeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -31,7 +28,6 @@ import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
-import com.angcyo.library.getAppString
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
@@ -760,10 +756,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //debug
         val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
-        val batchEngraveSupportFirmware = getAppString("lp_batch_engrave_firmware")
-        if (VersionMatcher.matches(version, batchEngraveSupportFirmware, false)) {
-            return true
-        }
-        return VersionMatcher.matches(version, HawkEngraveKeys.batchEngraveSupportFirmware, false)
+        return VersionMatcher.matches(version, DeviceHelper.batchEngraveSupportFirmware, false)
     }
 }

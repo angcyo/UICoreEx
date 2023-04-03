@@ -34,6 +34,7 @@ data class DeviceSettingBean(
     var showKeyPrintRange: String? = null,
     /**设置项[红光常亮]*/
     var showIrDstRange: String? = null,
+    //region---Android端设置项---
     /**设置项[自动连接蓝牙]*/
     var showAutoConnectRange: String? = null,
     /**设置项[实验性]*/
@@ -42,4 +43,17 @@ data class DeviceSettingBean(
     var showUploadLogRange: String? = null,
     /**设置项[固件升级]*/
     var showFirmwareUpdateRange: String? = null,
+    /**创作版支持的固件范围*/
+    var lpSupportFirmware: String? = null,
+    /**[lpSupportFirmware]调试模式下使用*/
+    var lpSupportFirmwareDebug: String? = null,
+    /**额外使用批量雕刻指令的固件范围*/
+    var lpBatchEngraveFirmware: String? = null,
+    /**需要关闭的功能*/
+    var closeCanvasItemsFun: String? = null,
+    /**需要关闭的图片算法功能*/
+    var closeImageEditItemsFun: String? = null,
+    /**需要关闭的文本功能*/
+    var closeTextEditItemsFun: String? = null,
+    //endregion---Android端设置项---
 )

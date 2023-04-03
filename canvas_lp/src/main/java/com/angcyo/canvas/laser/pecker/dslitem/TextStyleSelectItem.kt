@@ -1,11 +1,11 @@
 package com.angcyo.canvas.laser.pecker.dslitem
 
 import android.graphics.Paint
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.items.data.DataTextItem
 import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.updateItemSelected
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
 import com.hingin.umeng.UMEvent
@@ -30,7 +30,8 @@ class TextStyleSelectItem : CanvasControlItem2() {
 
                 anchor.context.menuPopupWindow(anchor) {
                     renderAdapterAction = {
-                        val closeTextEditItemsFun = HawkEngraveKeys.closeTextEditItemsFun
+                        val closeTextEditItemsFun =
+                            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun
                         //
                         if (!closeTextEditItemsFun.have("_solid_")) {
                             TextStrokeStyleItem()() {
