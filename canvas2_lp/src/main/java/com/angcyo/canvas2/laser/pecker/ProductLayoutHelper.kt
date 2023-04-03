@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.canvas.render.data.LimitInfo
+import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
@@ -176,9 +177,8 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
 
         //监听雕刻任务
-        //todo 2023-3-31
         renderDelegate?.let {
-            /*val taskRenderer = EngraveTaskRenderer.install(it.canvasDelegate)
+            val taskRenderer = EngraveInfoRenderer.install(it)
             engraveModel.engraveStateData.observe(fragment, allowBackward = false) {
                 it?.let {
                     if (it.state != EngraveModel.ENGRAVE_STATE_FINISH) {
@@ -187,9 +187,9 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     } else {
                         taskRenderer.engraveTaskId = null
                     }
-                    taskRenderer.refresh()
+                    renderDelegate?.refresh()
                 }
-            }*/
+            }
         }
 
         //发送一次初始化成功的事件

@@ -185,6 +185,21 @@ object LPEngraveHelper {
         }
     }
 
+    /**通过数据索引[indexList], 获取对应的[BaseRenderer]*/
+    fun getRendererList(
+        delegate: CanvasRenderDelegate?,
+        indexList: List<String>?
+    ): List<BaseRenderer>? {
+        indexList ?: return null
+        val allRendererList = delegate?.getAllSingleElementRendererList() ?: return null
+        val result = mutableListOf<BaseRenderer>()
+        indexList.forEach { index ->
+            allRendererList.find { "${it.lpElementBean()?.index}" == index }
+                ?.let { item -> result.add(item) }
+        }
+        return result
+    }
+
 }
 
 /**排序规则从上到下, 从左到右
