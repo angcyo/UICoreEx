@@ -6,4 +6,6 @@
     <dimen name="invert_shape_padding">4dp</dimen>
     <dimen name="invert_shape_round">8dp</dimen>
 
+    <!--编辑框最大的输入长度-->
+    <integer name="canvas_edit_length">8</integer>
 </resources>
