@@ -113,9 +113,12 @@ object LPEngraveHelper {
         delegate: CanvasRenderDelegate?
     ): TransferConfigEntity {
         delegate ?: return EngraveFlowDataHelper.generateTransferConfig(taskId)
+        var newFileName = false
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME) {
             if (!taskId.isNullOrBlank()) {
                 apply(TransferConfigEntity_.taskId.equal("$taskId"))
+            } else {
+                newFileName = true
             }
         }.apply {
             //参数设置
@@ -143,7 +146,7 @@ object LPEngraveHelper {
                 }
             }
 
-            if (name.isEmpty()) {
+            if (name.isEmpty() || newFileName) {
                 name = EngraveHelper.generateEngraveName()
             }
         }

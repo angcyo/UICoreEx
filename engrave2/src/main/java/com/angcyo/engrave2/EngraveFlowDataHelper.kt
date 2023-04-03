@@ -184,9 +184,12 @@ object EngraveFlowDataHelper {
     /**构建或者获取生成数据需要的配置信息
      * [taskId] 可以为空*/
     fun generateTransferConfig(taskId: String?): TransferConfigEntity {
+        var newFileName = false
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME) {
             if (!taskId.isNullOrBlank()) {
                 apply(TransferConfigEntity_.taskId.equal("$taskId"))
+            } else {
+                newFileName = true
             }
         }.apply {
             //参数设置
@@ -222,7 +225,7 @@ object EngraveFlowDataHelper {
                     }
                 }
             }*/
-            if (name.isEmpty()) {
+            if (name.isEmpty() || newFileName) {
                 name = EngraveHelper.generateEngraveName()
             }
         }
