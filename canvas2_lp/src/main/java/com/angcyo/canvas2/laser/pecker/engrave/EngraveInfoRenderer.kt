@@ -116,7 +116,7 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
         _renderProgress(canvas, renderer, engraveTask)
         //3:再渲染元素的序号
         if (serialNumber >= 0) {
-            val visualBounds = renderer.getRenderBoundsOutside(delegate) ?: return
+            val visualBounds = renderer.getRendererBoundsOutside(delegate) ?: return
             _drawText(canvas, "$serialNumber", visualBounds, Gravity.LEFT or Gravity.TOP)
         }
     }
@@ -146,7 +146,7 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
         renderer ?: return
 
         val dataItemIndex = renderer.lpElementBean()?.index
-        val bounds = renderer.getRenderBoundsOutside(delegate) ?: return
+        val bounds = renderer.getRendererBoundsOutside(delegate) ?: return
 
         bounds.inset(borderInset, borderInset)
         _tempPath.rewind()
@@ -197,7 +197,7 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
         val progress =
             EngraveFlowDataHelper.getEngraveDataEntity(engraveTask.taskId, index)?.progress
                 ?: return
-        val visualBounds = renderer.getRenderBoundsOutside(delegate) ?: return
+        val visualBounds = renderer.getRendererBoundsOutside(delegate) ?: return
 
         //进度背景
 
