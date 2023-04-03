@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
-import com.angcyo.bluetooth.fsc.laserpacker.data.DeviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceSettingBean
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.http.gitee.Gitee
@@ -19,18 +20,26 @@ import com.angcyo.library.utils.writeTo
 object LaserPeckerConfigHelper {
 
     const val DEVICE_CONFIG_FILE_NAME = "lp_device_config.json"
+    const val DEVICE_SETTING_CONFIG_FILE_NAME = "lp_setting_config.json"
 
-    /**[lp_device_config.json]配置地址*/
+    /**[DEVICE_CONFIG_FILE_NAME]配置地址*/
     const val DEVICE_CONFIG_URL =
         "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_CONFIG_FILE_NAME}"
+
+    /**[DEVICE_SETTING_CONFIG_FILE_NAME]配置地址*/
+    const val DEVICE_SETTING_CONFIG_URL =
+        "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_SETTING_CONFIG_FILE_NAME}"
 
     /**入口*/
     @CallPoint
     fun init() {
         fetchDeviceConfig()
+        fetchDeviceSettingConfig()
     }
 
-    /**从网络中获取[lp_device_config.json]配置, 并且存储到本地*/
+    //region---拉取配置---
+
+    /**从网络中获取[DEVICE_CONFIG_FILE_NAME]配置, 并且存储到本地*/
     fun fetchDeviceConfig() {
         Gitee.getString(DEVICE_CONFIG_URL) { data, error ->
             data?.let {
@@ -40,12 +49,37 @@ object LaserPeckerConfigHelper {
         }
     }
 
-    /**从本地缓存中读取[lp_device_config.json]配置, 缓存没有, 则从[assets]中读取*/
+    /**从网络中获取[DEVICE_SETTING_CONFIG_FILE_NAME]配置, 并且存储到本地*/
+    fun fetchDeviceSettingConfig() {
+        Gitee.getString(DEVICE_SETTING_CONFIG_URL) { data, error ->
+            data?.let {
+                //写入到本地缓存
+                it.writeTo(libCacheFile(DEVICE_SETTING_CONFIG_FILE_NAME), false)
+            }
+        }
+    }
+
+    //endregion---拉取配置---
+
+    //region---读取配置---
+
+    /**从本地缓存中读取[DEVICE_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
     fun readDeviceConfig(): List<DeviceConfigBean>? {
         val json = libCacheFile(DEVICE_CONFIG_FILE_NAME).readText()
-            ?: lastContext.readAssets("lp_device_config.json") ?: return null
+            ?: lastContext.readAssets(DEVICE_CONFIG_FILE_NAME) ?: return null
         val configList =
             json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class)) ?: return null
         return configList
     }
+
+    /**从本地缓存中读取[DEVICE_SETTING_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
+    fun readDeviceSettingConfig(): DeviceSettingBean? {
+        val json = libCacheFile(DEVICE_SETTING_CONFIG_FILE_NAME).readText()
+            ?: lastContext.readAssets(DEVICE_SETTING_CONFIG_FILE_NAME) ?: return null
+        val settingBean = json.fromJson<DeviceSettingBean>() ?: return null
+        return settingBean
+    }
+
+    //endregion---读取配置---
+
 }

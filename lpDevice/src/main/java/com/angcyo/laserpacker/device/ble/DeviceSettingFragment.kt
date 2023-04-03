@@ -7,6 +7,7 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -25,6 +26,7 @@ import com.angcyo.item.style.*
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.FileUtils
@@ -41,7 +43,7 @@ class DeviceSettingFragment : BaseDslFragment() {
     companion object {
 
         /**上传日志的item*/
-        var createUploadLoadItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
+        var createUploadLogItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
 
         /**创建固件升级的item*/
@@ -79,70 +81,59 @@ class DeviceSettingFragment : BaseDslFragment() {
     fun renderData() {
         val settingParser = laserPeckerModel.deviceSettingData.value
         settingParser?.functionSetting()
-
         val productInfo = laserPeckerModel.productInfoData.value
-        val isC1 = productInfo?.isCI() == true
-        val isL2 = productInfo?.isLII() == true
-        val isL3 = productInfo?.isLIII() == true
-        val isL4 = productInfo?.isLIV() == true
-        val isC1CarFlag = isC1 && settingParser?.carFlag == 1
-
-        val ex = productInfo?.ex?.lowercase() ?: ""
-
-        //是否需要z轴开关
-        var zEx = ex.contains("z")
-        //是否需要r轴开关, 旋转轴
-        var rEx = ex.contains("r")
-        //是否需要s轴开关, 滑台
-        var sEx = ex.contains("s")
-        if (isC1CarFlag) {
-            //自动进入了移动平台模式
-            zEx = false
-            rEx = false
-            sEx = false
-        }
-
         val zModelList = productInfo?.zModeList
+        val config = LaserPeckerConfigHelper.readDeviceSettingConfig()
+
+        val isC1 = productInfo?.isCI() == true
+        val isL4 = productInfo?.isLIV() == true
 
         renderDslAdapter(reset = true) {
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_act_model_warning_tone)
-                itemDes = _string(R.string.device_setting_act_des_sound)
-                initItem()
+            if (VersionMatcher.matches(productInfo?.version, config?.showBuzzerRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_act_model_warning_tone)
+                    itemDes = _string(R.string.device_setting_act_des_sound)
+                    initItem()
 
-                itemSwitchChecked = settingParser?.buzzer == 1
-                itemSwitchChangedAction = {
-                    settingParser?.buzzer = if (it) 1 else 0
-                    settingParser?.updateSetting()
+                    itemSwitchChecked = settingParser?.buzzer == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.buzzer = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_act_model_security)
-                itemDes = _string(R.string.device_setting_act_des_security)
-                initItem()
 
-                itemSwitchChecked = settingParser?.safe == 1
-                itemSwitchChangedAction = {
-                    settingParser?.safe = if (it) 1 else 0
-                    settingParser?.updateSetting()
+            if (VersionMatcher.matches(productInfo?.version, config?.showSafeRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_act_model_security)
+                    itemDes = _string(R.string.device_setting_act_des_security)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.safe == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.safe = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_act_model_free)
-                itemDes = _string(R.string.device_setting_act_des_free)
-                initItem()
 
-                itemSwitchChecked = settingParser?.free == 1
-                itemSwitchChangedAction = {
-                    settingParser?.free = if (it) 1 else 0
-                    settingParser?.updateSetting()
+            if (VersionMatcher.matches(productInfo?.version, config?.showFreeRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_act_model_free)
+                    itemDes = _string(R.string.device_setting_act_des_free)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.free == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.free = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
+
             //雕刻方向
-            if (settingParser?.zFlag == 0 && (
-                        isL2 && productInfo?.version in 374..399 ||
-                                isL3 && productInfo?.version in 552..599
-                        )
+            if (settingParser?.zFlag == 0 &&
+                VersionMatcher.matches(productInfo?.version, config?.showPrintDirRange, false)
             ) {
                 //第三轴打开的情况下, 不允许调整雕刻方向
                 DslPropertySwitchItem()() {
@@ -158,9 +149,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //GCode预览
-            if (isC1) {
-                //C1不支持矢量预览
-            } else {
+            if (VersionMatcher.matches(productInfo?.version, config?.showGcodeViewRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_act_model_preview_g_code)
                     itemDes = _string(R.string.device_setting_act_des_preview_g_code)
@@ -174,7 +163,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
                 }
             }
-            if (isL4 || isC1) {
+
+            if (VersionMatcher.matches(productInfo?.version, config?.showGcodePowerRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_g_code_pwr_label)
                     itemDes = _string(R.string.device_g_code_pwr_des)
@@ -188,7 +178,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //第三轴
-            if (zEx) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showZFlagRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_z_label)
                     itemDes = _string(R.string.device_ex_z_des)
@@ -236,7 +226,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //旋转轴
-            if (rEx) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showRFlagRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_r_label)
                     itemDes = _string(R.string.device_ex_r_des)
@@ -252,7 +242,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (sEx) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showSFlagRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_s_label)
                     itemDes = _string(R.string.device_ex_s_des)
@@ -287,7 +277,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (sEx) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showSRepRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
                     itemDes = _string(R.string.device_s_batch_engrave_des)
@@ -321,8 +311,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //正转
-            if (zEx && settingParser != null) {
-                /*if (settingParser.zFlag == 1) {
+            if (VersionMatcher.matches(productInfo?.version, config?.showDirRange, false)) {
+                if (settingParser?.zFlag == 1 || settingParser?.rFlag == 1) {
                     //Z轴的时候, 才有正转/反转
                     DslPropertySwitchItem()() {
                         itemLabel = _string(R.string.device_ex_direction_label)
@@ -335,7 +325,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                             settingParser.updateSetting()
                         }
                     }
-                }*/
+                }
             }
             //C1 移动平台雕刻模式
             if (isC1) {
@@ -357,9 +347,8 @@ class DeviceSettingFragment : BaseDslFragment() {
 
             //---
 
-            if (isL4 || isC1) {
-
-            } else {
+            //主机触摸按键
+            if (VersionMatcher.matches(productInfo?.version, config?.showKeyViewRange, false)) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_setting_txt_3)
                     itemDes = _string(R.string.device_setting_txt_4)
@@ -373,40 +362,56 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_txt_5)
-                itemDes = _string(R.string.device_setting_txt_6)
-                initItem()
+            //批量雕刻按键
+            if (VersionMatcher.matches(productInfo?.version, config?.showKeyPrintRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_txt_5)
+                    itemDes = _string(R.string.device_setting_txt_6)
+                    initItem()
 
-                itemSwitchChecked = settingParser?.keyPrint == 1
-                itemSwitchChangedAction = {
-                    settingParser?.keyPrint = if (it) 1 else 0
-                    settingParser?.updateSetting()
+                    itemSwitchChecked = settingParser?.keyPrint == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.keyPrint = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.button_infra_red_title)
-                itemDes = _string(R.string.button_infra_red_content)
-                initItem()
 
-                itemSwitchChecked = settingParser?.irDst == 1
-                itemSwitchChangedAction = {
-                    settingParser?.irDst = if (it) 1 else 0
-                    settingParser?.updateSetting()
+            //红光常亮
+            if (VersionMatcher.matches(productInfo?.version, config?.showIrDstRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.button_infra_red_title)
+                    itemDes = _string(R.string.button_infra_red_content)
+                    initItem()
+
+                    itemSwitchChecked = settingParser?.irDst == 1
+                    itemSwitchChangedAction = {
+                        settingParser?.irDst = if (it) 1 else 0
+                        settingParser?.updateSetting()
+                    }
                 }
             }
-            DslPropertySwitchItem()() {
-                itemLabel = _string(R.string.device_setting_blue_connect_auto)
-                initItem()
 
-                itemSwitchChecked = HawkEngraveKeys.AUTO_CONNECT_DEVICE
-                itemSwitchChangedAction = {
-                    HawkEngraveKeys.AUTO_CONNECT_DEVICE = it
+            //自动连接蓝牙
+            if (VersionMatcher.matches(productInfo?.version, config?.showAutoConnectRange, false)) {
+                DslPropertySwitchItem()() {
+                    itemLabel = _string(R.string.device_setting_blue_connect_auto)
+                    initItem()
+
+                    itemSwitchChecked = HawkEngraveKeys.AUTO_CONNECT_DEVICE
+                    itemSwitchChangedAction = {
+                        HawkEngraveKeys.AUTO_CONNECT_DEVICE = it
+                    }
                 }
             }
 
             //实验性功能
-            if (HawkEngraveKeys.enableExperimental) {
+            if (HawkEngraveKeys.enableExperimental || VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showExperimentalRange,
+                    false
+                )
+            ) {
                 DslTextInfoItem()() {
                     itemInfoText = _string(R.string.engrave_experimental)
                     itemDarkIcon = R.drawable.lib_next
@@ -423,15 +428,24 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //上传日志
-            createUploadLoadItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
-                it.initItem()
-                this + it
+            if (VersionMatcher.matches(productInfo?.version, config?.showUploadLogRange, false)) {
+                createUploadLogItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+                    it.initItem()
+                    this + it
+                }
             }
 
             //固件升级
-            createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
-                it.initItem()
-                this + it
+            if (VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showFirmwareUpdateRange,
+                    false
+                )
+            ) {
+                createFirmwareUpdateItemAction?.invoke(this@DeviceSettingFragment, this)?.let {
+                    it.initItem()
+                    this + it
+                }
             }
 
             //

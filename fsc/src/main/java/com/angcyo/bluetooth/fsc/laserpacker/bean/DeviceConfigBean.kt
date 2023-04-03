@@ -1,6 +1,8 @@
-package com.angcyo.bluetooth.fsc.laserpacker.data
+package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import androidx.annotation.Keep
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.library.annotation.MM
 
 /**
