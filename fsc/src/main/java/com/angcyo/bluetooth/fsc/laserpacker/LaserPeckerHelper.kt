@@ -13,8 +13,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.*
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
-import com.angcyo.http.base.fromJson
-import com.angcyo.http.base.listType
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
@@ -22,7 +20,6 @@ import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.component.hawk.LibLpHawkKeys
-import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppString
 import com.angcyo.library.toastQQ
@@ -292,10 +289,7 @@ object LaserPeckerHelper {
         hardwareVersion: Int,
         center: Boolean? = null
     ): LaserPeckerProductInfo? {
-        val json = lastContext.readAssets("lp_device_config.json") ?: return null
-        val configList =
-            json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class)) ?: return null
-
+        val configList = LaserPeckerConfigHelper.readDeviceConfig() ?: return null
         val configBean = configList.find { bean ->
             VersionMatcher.matches(
                 softwareVersion,
