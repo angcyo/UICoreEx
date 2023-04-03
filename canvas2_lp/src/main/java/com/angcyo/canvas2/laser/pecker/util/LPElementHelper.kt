@@ -88,13 +88,6 @@ object LPElementHelper {
         _lastTopIndex = 0
     }
 
-    /**当前元素, 是否进行了路径填充*/
-    fun isPathFill(bean: LPElementBean?): Boolean {
-        bean ?: return false
-        return !bean.isLineShape &&
-                bean.gcodeFillStep > 0
-    }
-
     /**栅格化渲染器
      * [renderer] 需要被栅格化的渲染器*/
     fun rasterizeRenderer(renderer: BaseRenderer?, delegate: CanvasRenderDelegate?) {

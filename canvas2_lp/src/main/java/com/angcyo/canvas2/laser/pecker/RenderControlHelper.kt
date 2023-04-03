@@ -472,7 +472,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     drawCanvasRight()
                 }
                 itemUpdateCheckColorAction = {
-                    if (LPElementHelper.isPathFill(elementBean)) {
+                    if (LPPathElement.isPathFill(elementBean)) {
                         _color(R.color.colorAccent).alphaRatio(0.5f)
                     } else {
                         Color.TRANSPARENT
@@ -481,7 +481,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
-                        LPBitmapHandler.handlePathFill(it, fragment, renderer) {
+                        LPBitmapHandler.handlePathFill(renderDelegate, it, fragment, renderer) {
                             updateItemSelected(false)
                         }
                     }
@@ -499,7 +499,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     drawCanvasRight()
                 }
                 itemClick = {
-                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
+                    LPElementHelper.rasterizeRenderer(renderer, renderDelegate)
                 }
                 afterItemCount--
             }

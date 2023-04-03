@@ -1,11 +1,9 @@
 package com.angcyo.canvas2.laser.pecker.element
 
-import android.graphics.DashPathEffect
-import android.graphics.Path
-import android.graphics.PathEffect
-import android.graphics.RectF
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -21,6 +19,7 @@ import com.angcyo.library.ex.toRadians
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
 import com.angcyo.svg.Svg
+import com.angcyo.vector.VectorHelper
 import com.angcyo.vector.VectorWriteHandler
 import com.pixplicity.sharp.Sharp
 import kotlin.math.cos
@@ -153,22 +152,48 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                 else -> null
             }
         }
+
+        /**当前元素, 是否进行了路径填充
+         *
+         * */
+        fun isPathFill(bean: LPElementBean?): Boolean {
+            bean ?: return false
+            return !bean.isLineShape &&
+                    bean.gcodeFillStep > 0 &&
+                    bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()
+        }
+
     }
 
+    /**路径填充时的路径数据*/
+    var fillPathList: List<Path>? = null
+
     override fun createStateStack(): IStateStack = LPPathStateStack()
+
+    override fun getDrawPathList(): List<Path>? {
+        val result = mutableListOf<Path>()
+        pathList?.let {
+            result.addAll(it)
+        }
+        if (isPathFill(elementBean)) {
+            fillPathList?.let {
+                result.addAll(it)
+            }
+        }
+        return result
+    }
 
     override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
         paint.style = elementBean.paintStyle.toPaintStyle()
         if (pathList == null) {
             parseElementBean()
         }
-        val pathList = pathList ?: return null
+        pathList ?: return null
         paint.strokeWidth = 1f
         renderParams?.updateDrawPathPaintStrokeWidth(paint)
         val minWidth = max((renderParams ?: RenderParams()).drawMinWidth, paint.strokeWidth)
         val minHeight = max((renderParams ?: RenderParams()).drawMinHeight, paint.strokeWidth)
         return createPathDrawable(
-            pathList,
             paint,
             renderParams?.overrideSize,
             minWidth,
@@ -187,11 +212,6 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             parseElementBean()
         }
         updateOriginPathList(pathList)
-    }
-
-    override fun updateBeanFromElement(renderer: BaseRenderer) {
-        super.updateBeanFromElement(renderer)
-        elementBean.paintStyle = paint.style.toPaintStyleInt()
     }
 
     override fun parseElementBean() {
@@ -223,12 +243,51 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             createPath(elementBean)?.let { pathList = listOf(it) }
             updateOriginPathList(pathList)
         }
+
+        //路径填充
+        if (isPathFill(elementBean)) {
+            fillPathList = VectorHelper.pathFill(
+                pathList,
+                elementBean.gcodeFillStep,
+                elementBean.gcodeFillAngle,
+            )
+        }
     }
 
     override fun createDashPathEffect(): PathEffect {
         val dashWidth = elementBean.dashWidth.toPixel()
         val dashGap = elementBean.dashGap.toPixel()
         return DashPathEffect(floatArrayOf(dashWidth, dashGap), 0f)
+    }
+
+    override fun onUpdateElementAfter() {
+        if (elementBean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
+            //画笔填充后, 移除路径填充属性
+            fillPathList = null
+            elementBean.gcodeFillStep = 0f
+            elementBean.gcodeFillAngle = 0f
+        }
+    }
+
+    /**路径填充*/
+    fun updatePathFill(
+        renderer: BaseRenderer?,
+        delegate: CanvasRenderDelegate?,
+        gcodeFillStep: Float,
+        gcodeFillAngle: Float,
+    ) {
+        updateElement(renderer, delegate) {
+            //路径填充, 笔的样式必须要是描边
+            elementBean.paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+            elementBean.gcodeFillStep = gcodeFillStep
+            elementBean.gcodeFillAngle = gcodeFillAngle
+
+            fillPathList = VectorHelper.pathFill(
+                pathList,
+                gcodeFillStep,
+                gcodeFillAngle,
+            )
+        }
     }
 
 }

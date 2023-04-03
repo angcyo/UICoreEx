@@ -106,14 +106,14 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
     override fun getEngravePathData(): List<Path>? {
         if (this is LPBitmapElement) {
-            return RenderHelper.translateToRender(pathList, renderProperty)
+            return RenderHelper.translateToRender(getDrawPathList(), renderProperty)
         }
         if (this is PathElement) {
             if (elementBean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
                 //非描边的情况下, 获取Path数据返回空, 用pixel生成GCode
                 return null
             }
-            return RenderHelper.translateToRender(pathList, renderProperty)
+            return RenderHelper.translateToRender(getDrawPathList(), renderProperty)
         }
         return super.getEngravePathData()
     }

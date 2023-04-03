@@ -618,14 +618,18 @@ object LPBitmapHandler {
 
     /**路径填充*/
     fun handlePathFill(
+        delegate: CanvasRenderDelegate?,
         anchor: View,
         owner: LifecycleOwner,
         renderer: BaseRenderer,
         onDismissAction: () -> Unit = {}
     ) {
-        /*val item = renderer.getRendererRenderItem() ?: return
+        val element = renderer.lpPathElement() ?: return
+        val operatePathList = element.pathList ?: return
+        val bean = element.elementBean
         val context = anchor.context
-        context.canvasRegulateWindow2(anchor) {
+
+        context.canvasRegulateWindow(anchor) {
             val gcodeFillStepPixel = bean.gcodeFillStep
             val fillAngle = bean.gcodeFillAngle
             addRegulate(CanvasRegulatePopupConfig.KEY_PATH_FILL_LINE_SPACE, gcodeFillStepPixel)
@@ -646,13 +650,13 @@ object LPBitmapHandler {
                     )
 
                     owner.engraveLoadingAsync({
-                        item.updatePathFill(gcodeFillStep, gcodeFillAngle, renderer)
+                        element.updatePathFill(renderer, delegate, gcodeFillStep, gcodeFillAngle)
                     }) {
                         onDismissAction()
                     }
                 }
             }
-        }*/
+        }
     }
 
     //endregion---带参数调整对话框---

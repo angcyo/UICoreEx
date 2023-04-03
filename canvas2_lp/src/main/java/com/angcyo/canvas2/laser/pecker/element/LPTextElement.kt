@@ -33,7 +33,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
                 parseElementBean()
             }
             codeBitmap?.run {
-                createBitmapDrawable(this, paint, renderParams?.overrideSize)
+                createBitmapDrawable(paint, renderParams?.overrideSize, this)
             }
         }
     }

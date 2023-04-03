@@ -122,6 +122,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
         //设备错误码
         queryStateParser.error.toErrorStateString()?.let {
+            "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
+
             //查询到设备异常
             doMain {
                 toastQQ(it)
@@ -130,7 +132,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
             //查询错误日志
             QueryCmd.log.enqueue { bean, error ->
                 if (error == null) {
-                    bean?.parse<QueryLogParser>()?.log?.writeErrorLog()
+                    bean?.parse<QueryLogParser>()?.log?.let {
+                        "机器错误日志:$it".writeErrorLog()
+                    }
                 }
             }
         }
