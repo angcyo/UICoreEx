@@ -4,7 +4,7 @@ import android.graphics.Paint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
-import com.angcyo.core.component.file.writeToLog
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.laserpacker.LPDataConstant
@@ -74,7 +74,7 @@ object LPDataTransitionHelper {
                 )
             }
             else -> {
-                "无法处理的元素[${element.classHash()}]:${bean._layerMode}".writeToLog(logLevel = L.WARN)
+                "无法处理的元素[${element.classHash()}]:${bean._layerMode}".writeErrorLog(logLevel = L.WARN)
                 null
             }
         }
