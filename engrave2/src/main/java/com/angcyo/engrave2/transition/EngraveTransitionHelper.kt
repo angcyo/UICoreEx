@@ -197,7 +197,7 @@ object EngraveTransitionHelper {
             LPDataConstant.EXT_PREVIEW
         )
 
-        //白色1 黑色0
+        //白色1 黑色0; 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
         val pair = transition.covertBitmap2Dithering(operateBitmap, true)
         transferDataEntity.dataPath =
             pair.second.writeTransferDataPath("${transferDataEntity.index}")

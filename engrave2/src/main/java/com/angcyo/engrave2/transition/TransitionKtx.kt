@@ -336,7 +336,9 @@ fun String.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
     return lines().toEngraveDitheringBitmap(width, height)
 }
 
-/**将抖动数据 00011110001010\n00011110001010 描述字符串, 转换成可视化图片*/
+/**将抖动数据 00011110001010\n00011110001010 描述字符串, 转换成可视化图片
+ * 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
+ * */
 fun List<String>.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
     val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(result)
@@ -351,7 +353,7 @@ fun List<String>.toEngraveDitheringBitmap(width: Int, height: Int): Bitmap {
     forEach { line ->
         x = 0f
         line.forEach { char ->
-            if (char == '1') {
+            if (char == '0') {
                 //1绘制
                 canvas.drawCircle(x, y, 1f, paint)//绘制圆点
             }
