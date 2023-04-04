@@ -80,7 +80,14 @@ object EngraveTransitionHelper {
             LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
-        "toBitmap[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+
+        buildString {
+            append("toBitmap[${transferDataEntity.index}]->")
+            append(transferConfigEntity.name)
+            append(" dpi:${transferConfigEntity.dpi}")
+            append(" ${dpiBitmap.byteCount.toSizeString()}->${data.size().toSizeString()}")
+            append(" 转换耗时:${LTime.time()}")
+        }.writePerfLog()
         return transferDataEntity
     }
 
@@ -147,7 +154,7 @@ object EngraveTransitionHelper {
             append("toBitmapPath[${transferDataEntity.index}]->")
             append(transferConfigEntity.name)
             append(" dpi:${transferConfigEntity.dpi}")
-            append(" [${dpiBitmap.byteCount.toSizeString()}]->${data.size().toSizeString()}")
+            append(" ${dpiBitmap.byteCount.toSizeString()}->${data.size().toSizeString()}")
             append(" 转换耗时:${LTime.time()}")
         }.writePerfLog()
         return transferDataEntity
@@ -215,7 +222,7 @@ object EngraveTransitionHelper {
             append("toBitmapDithering[${transferDataEntity.index}]->")
             append(transferConfigEntity.name)
             append(" dpi:${transferConfigEntity.dpi}")
-            append(" [${bitmapByteCount.toSizeString()}]->${pair.second.size().toSizeString()}")
+            append(" ${bitmapByteCount.toSizeString()}->${pair.second.size().toSizeString()}")
             append(" 转换耗时:${LTime.time()}")
         }.writePerfLog()
         return transferDataEntity
@@ -273,7 +280,8 @@ object EngraveTransitionHelper {
                     append("toGCode[${transferDataEntity.index}]->")
                     append(transferConfigEntity.name)
                     append(" dpi:${transferConfigEntity.dpi}")
-                    append(" [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]->${fileSize.toSizeString()}")
+                    append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
+                    append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
                     append(" 转换耗时:${LTime.time()}")
                 }.writePerfLog()
             }
@@ -313,7 +321,13 @@ object EngraveTransitionHelper {
         //写入数据到路径, 用于发送到数据
         transferDataEntity.dataPath = data?.writeTransferDataPath("${transferDataEntity.index}")
 
-        "toRaw[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} 转换耗时:${LTime.time()}".writePerfLog()
+        buildString {
+            append("toRaw[${transferDataEntity.index}]->")
+            append(transferConfigEntity.name)
+            append(" dpi:${transferConfigEntity.dpi}")
+            append(" ${data.size().toSizeString()}")
+            append(" 转换耗时:${LTime.time()}")
+        }.writePerfLog()
         return transferDataEntity
     }
 
