@@ -329,7 +329,7 @@ class TransferModel : ViewModel() {
         val size = transferDataEntity.bytes()?.size ?: 0
         "开始传输数据:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}".writeEngraveLog()
         if (size <= 0) {
-            "传输数据为空:${transferDataEntity.index}".writeErrorLog()
+            "传输数据为空:[${taskId}]${transferDataEntity.index}".writeErrorLog()
             errorTransfer(transferState, EmptyException())
             action(transferState.error)
             return

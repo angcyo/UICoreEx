@@ -183,6 +183,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val task = EngraveFlowDataHelper.generateEngraveTask(taskId)
         if (task.dataIndexList.isNullOrEmpty()) {
             //无数据需要雕刻
+            "雕刻任务无数据[${taskId}]".writeEngraveLog()
             errorEngrave(EmptyException())
         } else {
             _startEngraveTask(task)

@@ -4,6 +4,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
@@ -12,8 +13,8 @@ import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.exception.TransferException
 import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.http.rx.doBack
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
@@ -104,7 +105,7 @@ object LPTransferHelper {
         rendererList.forEach { renderer ->
             //开始将[renderer]转换成数据
             LTime.tick()
-            "开始转换数据->${transferConfigEntity.name}".writeToLog()
+            "开始转换数据->${transferConfigEntity.name} ${renderer.lpElementBean()?.index} ${renderer.lpElementBean()?.name}".writePerfLog()
             LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
                 ?.let { transferDataEntity ->
                     resultDataList.add(transferDataEntity)
