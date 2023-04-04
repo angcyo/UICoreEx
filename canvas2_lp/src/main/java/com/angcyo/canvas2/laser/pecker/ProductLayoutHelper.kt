@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
+import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
@@ -143,23 +144,17 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //监听正在预览的矩形
         previewModel.previewInfoData.observe(fragment, allowBackward = false) { info ->
-            /*val canvasDelegate = canvasView?.canvasDelegate
+            val progressRenderer = renderDelegate?.renderManager?.progressRenderer
             if (info == null) {
-                canvasDelegate?.progressRenderer?.setVisible(false, Strategy.preview)
+                progressRenderer?.updateVisible(false, Reason.code, null)
             } else {
-                canvasDelegate?.progressRenderer?.apply {
-                    setVisible(true, Strategy.preview)
+                progressRenderer?.apply {
+                    updateVisible(true, Reason.code, null)
+                    renderBorder = true
                     borderColor = PREVIEW_COLOR
-                    if (info.isFourPointPreview) {
-                        //4点预览
-                        borderRect = info.originBounds
-                        borderRectRotate = info.rotate
-                    } else {
-                        //非4点预览
-                        borderRect = info.rotateBounds
-                    }
+                    borderBounds = info.originBounds
                 }
-            }*/
+            }
         }
 
         //监听范围预览
