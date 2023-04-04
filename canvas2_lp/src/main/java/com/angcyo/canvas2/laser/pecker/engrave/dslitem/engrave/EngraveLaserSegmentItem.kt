@@ -22,6 +22,7 @@ class EngraveLaserSegmentItem : EngraveSegmentScrollItem() {
         itemCurrentIndex = typeList.indexOfFirst {
             it.type == DeviceHelper.getProductLaserType()
         }
+        itemHidden = typeList.isEmpty() //自动隐藏
     }
 
     fun currentLaserTypeInfo() = typeList[itemCurrentIndex]
