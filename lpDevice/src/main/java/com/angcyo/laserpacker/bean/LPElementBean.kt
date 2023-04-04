@@ -503,7 +503,7 @@ data class LPElementBean(
     val isLineShape: Boolean
         get() = mtype == LPDataConstant.DATA_TYPE_LINE
 
-    /**构建一个图层名*/
+    /**构建一个图层名, 当前的元素, 在[list]中的不重名名称*/
     fun generateName(list: List<LPElementBean>) {
         if (name == null) {
             if (mtype >= 0) {
@@ -514,16 +514,16 @@ data class LPElementBean(
     }
 
     /**分配一个新的名字
-     * [newName] 新的名字*/
-    fun generateName(list: List<LPElementBean>, newName: String) {
+     * [baseName] 基础名字*/
+    private fun generateName(list: List<LPElementBean>, baseName: String, index: Int? = null) {
+        val newName = if (index == null) baseName else "$baseName $index" //需要检测的新名字
         val find = list.find { it != this && it.name == newName }
         if (find == null) {
             //未重名
             name = newName
         } else {
             //重名了
-            val typeCount = list.count { it != this && it.mtype == mtype }
-            generateName(list, "$newName($typeCount)")
+            generateName(list, baseName, if (index == null) 2 else index + 1)
         }
     }
 }
