@@ -143,7 +143,13 @@ object EngraveTransitionHelper {
             true
         )
 
-        "toBitmapPath[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+        buildString {
+            append("toBitmapPath[${transferDataEntity.index}]->")
+            append(transferConfigEntity.name)
+            append(" dpi:${transferConfigEntity.dpi}")
+            append(" [${dpiBitmap.byteCount.toSizeString()}]->${data.size().toSizeString()}")
+            append(" 转换耗时:${LTime.time()}")
+        }.writePerfLog()
         return transferDataEntity
     }
 
