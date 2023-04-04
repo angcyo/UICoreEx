@@ -191,7 +191,12 @@ data class EngravePreviewCmd(
             var overflowBounds = false
             var overflowLimit = false
             if (productInfo != null) {
-                tempRect.set(x, y, x + width, y + height)
+                tempRect.set(
+                    x.toInt().toFloat(),
+                    y.toInt().toFloat(),
+                    (x + width).toInt().toFloat(),
+                    (y + height).toInt().toFloat()
+                )//2023-4-4 修复预览时, 会出现小数点的情况
 
                 //
                 overflowBounds = getBoundsPath(productInfo)?.overflow(tempRect) == true
