@@ -377,7 +377,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                         delegate?.isRendererSelector(renderer) == true
                     ) {
                         //设备正在预览模式, 更新预览
-                        LPPreviewHelper.updatePreviewByRenderer(renderFragment, renderer.toListOf())
+                        LPPreviewHelper.updatePreviewByRenderer(
+                            renderFragment,
+                            delegate?.getSelectorSingleElementRendererList(true, false)
+                        )
                     }
                 }
                 if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
