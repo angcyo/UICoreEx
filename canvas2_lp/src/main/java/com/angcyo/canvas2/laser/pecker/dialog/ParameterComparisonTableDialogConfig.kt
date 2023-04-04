@@ -161,6 +161,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             text = "100"
             fontSize = textFontSize
             charSpacing = 0.2f
+            name = text
 
             //参数, 使用最后一次的默认
             //com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig
@@ -171,6 +172,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = labelTextFontSize
             text = "Power(%)"
+            name = text
 
             printPrecision = numberTextItem.elementBean.printPrecision
             printCount = numberTextItem.elementBean.printCount
@@ -179,6 +181,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = powerTextItem.elementBean.fontSize
             text = "Depth(%)"
+            name = text
             angle = -90f
 
             printPrecision = numberTextItem.elementBean.printPrecision
@@ -219,6 +222,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //最终结果
         val beanList = mutableListOf<LPElementBean>()
 
+        //存放网格item
+        val gridItemList = mutableListOf<LPElementBean>()
+
         //---数值
         val numberTextBeanList = mutableListOf<LPElementBean>()
 
@@ -244,6 +250,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
             val powerNumberItem = LPTextElement(createGridItemBean().apply {
                 text = "${(power + 1) * horizontalStep}"
+                name = "power[${text}]"
             })
             powerNumberItem.elementBean.left =
                 (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
@@ -261,6 +268,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     }
                     val depthNumberItem = LPTextElement(createGridItemBean().apply {
                         text = "${(depth + 1) * horizontalStep}"
+                        name = "depth[${text}]"
                     })
                     depthNumberItem.elementBean.left =
                         (gridLeft - elementMargin - depthNumberItem.getTextWidth()).toMm()
@@ -272,13 +280,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 val powerValue = (power + 1) * horizontalStep
                 val depthValue = (depth + 1) * verticalStep
                 if (powerValue * depthValue <= powerDepthThreshold) {
-                    beanList.add(LPElementBean().apply {
+                    gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle = Paint.Style.FILL.toPaintStyleInt()
                         width = max(2f, (gridWidth - gridMargin * 2)).toMm()
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
                         top = (y + gridMargin).toMm()
+                        name = "grid[${powerValue}:${depthValue}]"
 
                         //参数
                         dataMode = gridDataMode
@@ -325,7 +334,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             data = gcode
             left = gridLeft.toMm()
             top = gridTop.toMm()
+            name = "gridLine"
         })
+
+        //---数值
+        beanList.addAll(numberTextBeanList)
 
         //---文本
         powerTextItem.elementBean.left =
@@ -340,15 +353,15 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         beanList.add(depthTextItem.elementBean)
 
-        //---数值
-        beanList.addAll(numberTextBeanList)
+        //---格子
+        beanList.addAll(gridItemList)
 
         //组合在一起
         val groupId = uuid()
         for (bean in beanList) {
             bean.groupId = groupId
 
-            //一直打印参数
+            //一致打印参数
             bean.printType = gridPrintType.toInt()
         }
 
