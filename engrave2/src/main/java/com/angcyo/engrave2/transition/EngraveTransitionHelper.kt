@@ -211,7 +211,13 @@ object EngraveTransitionHelper {
             true
         )
 
-        "toBitmapDithering[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmapByteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+        buildString {
+            append("toBitmapDithering[${transferDataEntity.index}]->")
+            append(transferConfigEntity.name)
+            append(" dpi:${transferConfigEntity.dpi}")
+            append(" [${bitmapByteCount.toSizeString()}]->${pair.second.size().toSizeString()}")
+            append(" 转换耗时:${LTime.time()}")
+        }.writePerfLog()
         return transferDataEntity
     }
 
@@ -260,15 +266,30 @@ object EngraveTransitionHelper {
                 } else {
                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                 }
+                val fileSize = gCodeFile.length()
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
-                "toGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]转换耗时:${LTime.time()}".writePerfLog()
+                buildString {
+                    append("toGCode[${transferDataEntity.index}]->")
+                    append(transferConfigEntity.name)
+                    append(" dpi:${transferConfigEntity.dpi}")
+                    append(" [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]->${fileSize.toSizeString()}")
+                    append(" 转换耗时:${LTime.time()}")
+                }.writePerfLog()
             }
         } else {
             //path转GCode
             val gCodeFile = transition.covertPathStroke2GCode(pathList, params)
+            val fileSize = gCodeFile.length()
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
-            "toGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [path]转换耗时:${LTime.time()}".writePerfLog()
+
+            buildString {
+                append("toGCode[${transferDataEntity.index}]->")
+                append(transferConfigEntity.name)
+                append(" dpi:${transferConfigEntity.dpi}")
+                append(" [path]->${fileSize.toSizeString()}")
+                append(" 转换耗时:${LTime.time()}")
+            }.writePerfLog()
         }
         return transferDataEntity
     }
