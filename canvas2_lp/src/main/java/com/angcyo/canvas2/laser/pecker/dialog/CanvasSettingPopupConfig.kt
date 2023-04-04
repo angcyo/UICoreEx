@@ -13,14 +13,12 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.http.rx.doBack
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.HawkEngraveKeys
-import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
@@ -74,72 +72,27 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         it.context.addParameterComparisonTableDialog {
                             renderDelegate = delegate
                         }
-                        /*it.context.inputDialog {
-                            dialogTitle = "阈值"
-                            canInputEmpty = false
-                            hintInputString = "粒度数量,功率*深度阈值,网格间隙,字体大小"
-                            defaultInputString =
-                                "${HawkEngraveKeys.lastGridCount},${HawkEngraveKeys.lastPowerDepth},${HawkEngraveKeys.lastGridMargin},${HawkEngraveKeys.lastFontSize}"
-
-                            onInputResult = { dialog, inputText ->
-                                val list = inputText.toString().split(",")
-                                HawkEngraveKeys.lastGridCount = list.getOrNull(0)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastGridCount
-                                HawkEngraveKeys.lastPowerDepth = list.getOrNull(1)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastPowerDepth
-                                HawkEngraveKeys.lastGridMargin = list.getOrNull(2)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastGridMargin
-                                HawkEngraveKeys.lastFontSize = list.getOrNull(3)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastFontSize
-
-                                *//*engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                                    doBack {
-                                        HawkEngraveKeys.enableItemEngraveParams = true //必须
-                                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                        canvasDelegate?.addParameterComparisonTable(
-                                            previewBounds,
-                                            HawkEngraveKeys.lastGridCount,
-                                            HawkEngraveKeys.lastPowerDepth,
-                                            HawkEngraveKeys.lastGridMargin,
-                                            HawkEngraveKeys.lastFontSize,
-                                        )
-                                        loadEnd(true, null)
-                                    }
-                                }*//*
-                                false
-                            }
-                        }*/
                     }
                 }
             }
             if (HawkEngraveKeys.enableMultiplicationTable || enableFun.have("_MultiplicationTable_")) {
                 DslBlackButtonItem()() {
-                    itemButtonText = "添加乘法口诀表"
+                    itemButtonText = _string(R.string.add_multiplication_table)
                     itemClick = {
                         window.dismissWindow()
-                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                            doBack {
-                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                //canvasDelegate?.addMultiplicationTable(previewBounds)
-                                loadEnd(true, null)
-                            }
-                        }
+                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                        ParameterComparisonTableDialogConfig.addMultiplicationTable(delegate)
                     }
                 }
             }
 
             if (HawkEngraveKeys.enableVisualChartTable || enableFun.have("_VisualChartTable_")) {
                 DslBlackButtonItem()() {
-                    itemButtonText = "添加视力表"
+                    itemButtonText = _string(R.string.add_visual_chart)
                     itemClick = {
                         window.dismissWindow()
-                        engraveStrokeLoadingCaller { isCancel, loadEnd ->
-                            doBack {
-                                HawkEngraveKeys.enableSingleItemTransfer = true //必须
-                                //canvasDelegate?.addVisualChart(previewBounds)
-                                loadEnd(true, null)
-                            }
-                        }
+                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                        ParameterComparisonTableDialogConfig.addVisualChart(delegate)
                     }
                 }
             }

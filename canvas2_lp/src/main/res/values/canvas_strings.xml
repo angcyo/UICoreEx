@@ -172,4 +172,6 @@
     <string name="add_parameter_comparison_table_font_size">Font size</string>
     <string name="add_parameter_comparison_table_grid_margin">Grid margin</string>
 
+    <string name="add_multiplication_table">Add a table of multiplication</string>
+    <string name="add_visual_chart">Add an eye chart</string>
 </resources>

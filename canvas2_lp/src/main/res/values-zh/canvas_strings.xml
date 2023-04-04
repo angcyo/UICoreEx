@@ -155,4 +155,7 @@
     <string name="add_parameter_comparison_table_font_size">字体大小</string>
     <string name="add_parameter_comparison_table_grid_margin">格子边距</string>
 
+    <string name="add_multiplication_table">添加乘法口诀表</string>
+    <string name="add_visual_chart">添加视力表</string>
+
 </resources>

@@ -33,12 +33,15 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import java.io.StringWriter
 import kotlin.math.max
+import kotlin.math.pow
+import kotlin.random.Random
 
 /**
  * 添加一个功率深度参数对照表
@@ -49,6 +52,16 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
     @Keep
     companion object {
+
+        @Pixel
+        internal val tableBounds: RectF
+            get() = vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds ?: RectF(
+                0f,
+                0f,
+                160f.toPixel(),
+                160f.toPixel()
+            )
+
         /**功率深度阈值, 小于值才需要绘制格子*/
         internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(2400f)
 
@@ -65,6 +78,181 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**数字文本大小*/
         @MM
         internal var textFontSize: Float by HawkPropertyValue<Any, Float>(8f)
+
+        /**添加乘法口诀表*/
+        fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
+            delegate ?: return
+            HawkEngraveKeys.enableSingleItemTransfer = true //必须
+            val bounds = tableBounds
+
+            @Pixel
+            val padding = 5f.toPixel()
+            val horizontalGap = 3f.toPixel()
+            val verticalGap = 2f.toPixel()
+
+            val count = 9
+            val textWidthSum = bounds.width() - padding * 2 - (count - 1) * horizontalGap
+            val textHeightSum = bounds.height() - padding * 2 - (count - 1) * verticalGap
+
+            /* @Pixel
+             val textWidth = textWidthSum / count
+             val textHeight = textHeightSum / count*/
+
+            val textItem = LPTextElement(LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                text = "9 × 9=81"
+                fontSize = 4f
+                charSpacing = 0.2f
+
+                /*width = textWidth.toMm()
+                height = textHeight.toMm()*/
+            })
+
+            @Pixel
+            val textWidth = textItem.getTextWidth()
+            val textHeight = textItem.getTextHeight()
+
+            val textLeft = bounds.left + padding
+            val textTop = bounds.centerY() - (textHeight * count + verticalGap * (count - 1)) / 2
+
+            //LPElementBean
+            fun createItemBean(): LPElementBean = LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = textItem.elementBean.fontSize
+                charSpacing = textItem.elementBean.charSpacing
+                width = textItem.elementBean.width
+                height = textItem.elementBean.height
+            }
+
+            val beanList = mutableListOf<LPElementBean>()
+            for (x in 1..count) { //1~9 列
+                val left = textLeft + (x - 1) * (textWidth + horizontalGap)
+                for (y in x..count) { //x~9 行
+                    val top = textTop + (y - 1) * (textHeight + verticalGap)
+                    beanList.add(createItemBean().apply {
+                        text = "$x × $y=${x * y}"
+                        this.left = left.toMm()
+                        this.top = top.toMm()
+                    })
+                }
+            }
+
+            //组合在一起
+            val groupId = uuid()
+            for (bean in beanList) {
+                bean.groupId = groupId
+            }
+
+            LPRendererHelper.renderElementList(delegate, beanList, true, Strategy.normal)
+        }
+
+        /**添加视力表*/
+        fun addVisualChart(delegate: CanvasRenderDelegate?) {
+            delegate ?: return
+            HawkEngraveKeys.enableSingleItemTransfer = true //必须
+            val bounds = tableBounds
+
+            @Pixel
+            val padding = 5f.toPixel()
+            val horizontalGap = 3f.toPixel()
+            val verticalGap = 4f.toPixel()
+
+            var textLeft = bounds.left + padding
+            var textTop = bounds.top + padding
+
+            //每一行, 有多少个E, 从上到下
+            val lineSizeList = listOf(1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 8, 8, 8)
+
+            @MM
+            var maxFontSize = 20f //最上面一行的字体大小
+            val scaleFactor = 0.8f //每一行字体大小是上一行的多少倍
+            val lineCount = lineSizeList.size() //总共的行数
+            val minFontSize = maxFontSize * scaleFactor.pow(lineCount - 1)
+
+            //随机旋转的角度
+            val angleList = mutableListOf<Float>()
+            fun randomAngle(): Float {
+                if (angleList.size() >= 4) {
+                    val last = angleList.last()
+                    angleList.clear()
+                    angleList.add(last)
+                }
+                while (true) {
+                    val angle = when (Random.nextInt(0, 4)) { //[0~4)
+                        1 -> 90f
+                        2 -> 180f
+                        3 -> 270f
+                        else -> 0f
+                    }
+                    if (!angleList.contains(angle)) {
+                        angleList.add(angle)
+                        break
+                    }
+                }
+                return angleList.last()
+            }
+
+            val textItem = LPTextElement(LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                text = "E"
+                fontSize = minFontSize
+
+                /*width = textWidth.toMm()
+                height = textHeight.toMm()*/
+            })
+
+            //计算最后一行需要占用的宽度
+            val lastLineSize = lineSizeList.last()
+
+            @Pixel
+            val textAllWidth =
+                lastLineSize * textItem.getTextWidth() + (lastLineSize - 1) * horizontalGap
+            textLeft = bounds.centerX() - textAllWidth / 2
+
+            //LPElementBean
+            fun createItemBean(): LPElementBean = LPElementBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_TEXT
+                fontSize = textItem.elementBean.fontSize
+                text = textItem.elementBean.text
+                angle = randomAngle()
+                width = textItem.elementBean.width
+                height = textItem.elementBean.height
+            }
+
+            val beanList = mutableListOf<LPElementBean>()
+            for (line in 0 until lineCount) {
+                val lineSize = lineSizeList[line]
+                val lineTop = textTop
+                var lineHeight = 0f
+                for (size in 0 until lineSize) {
+                    beanList.add(createItemBean().apply {
+                        fontSize = maxFontSize
+
+                        val eWidth = textAllWidth / lineSize
+                        val centerX = textLeft + eWidth * size + eWidth / 2
+                        val item = LPTextElement(this)
+                        val itemWidth = item.getTextWidth()
+                        lineHeight = item.getTextHeight()
+
+                        left = (centerX - itemWidth / 2).toMm()
+                        top = lineTop.toMm()
+
+                        height = lineHeight.toMm()
+                        width = itemWidth.toMm()
+                    })
+                }
+                textTop = lineTop + lineHeight + verticalGap
+                maxFontSize *= scaleFactor
+            }
+
+            //组合在一起
+            val groupId = uuid()
+            for (bean in beanList) {
+                bean.groupId = groupId
+            }
+
+            LPRendererHelper.renderElementList(delegate, beanList, true, Strategy.normal)
+        }
     }
 
     var renderDelegate: CanvasRenderDelegate? = null
@@ -148,13 +336,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
 
-        @Pixel val bounds =
-            vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds ?: RectF(
-                0f,
-                0f,
-                160f.toPixel(),
-                160f.toPixel()
-            )
+        @Pixel val bounds = tableBounds
 
         val elementMargin = elementMargin.toPixel()
         val gridMargin = gridItemMargin.toPixel()
