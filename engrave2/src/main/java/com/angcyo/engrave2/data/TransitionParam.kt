@@ -17,6 +17,12 @@ data class TransitionParam(
     /**是否反色, 用来决定进入抖动算法前, 图片透明颜色应该使用什么颜色填充*/
     val invert: Boolean = false,
 
+    /**对比度 [-1~1]*/
+    var contrast: Float = 0f,
+
+    /**亮度 [-1~1]*/
+    var brightness: Float = 0f,
+
     //---GCode算法需要的参数---
 
     /**是否仅使用图片转GCode的方式处理,

@@ -63,7 +63,7 @@ object LPDataTransitionHelper {
                 EngraveTransitionHelper.transitionToBitmapDithering(
                     element,
                     transferConfigEntity,
-                    TransitionParam(invert = bean.inverse)
+                    TransitionParam(bean.inverse, bean.contrast, bean.brightness)
                 )
             }
             LPDataConstant.DATA_MODE_GREY -> {

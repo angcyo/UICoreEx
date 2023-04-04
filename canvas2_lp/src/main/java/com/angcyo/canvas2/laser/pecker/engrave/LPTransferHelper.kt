@@ -108,7 +108,7 @@ object LPTransferHelper {
             LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
                 ?.let { transferDataEntity ->
                     resultDataList.add(transferDataEntity)
-                    "转换传输数据耗时->${LTime.time()} ${transferDataEntity.name}[${transferDataEntity.index}]${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
+                    "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
                 }
         }
         return resultDataList

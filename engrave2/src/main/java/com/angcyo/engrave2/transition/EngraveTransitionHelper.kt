@@ -80,7 +80,7 @@ object EngraveTransitionHelper {
             LPDataConstant.EXT_DATA_PREVIEW,
             true
         )
-        "transitionToBitmap[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+        "toBitmap[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -143,7 +143,7 @@ object EngraveTransitionHelper {
             true
         )
 
-        "transitionToBitmapPath[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+        "toBitmapPath[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${dpiBitmap.byteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -163,12 +163,18 @@ object EngraveTransitionHelper {
             DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
         )
         //抖动处理图片
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)//这个图应该灰度图
-        val bgColor = if (params.invert) Color.BLACK else Color.WHITE
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val bgColor = Color.WHITE //if (params.invert) Color.BLACK else Color.WHITE
         val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
         dpiBitmap.recycle()
+
         val bitmapByteCount = dpiBitmap2.byteCount
-        val operateBitmap = OpenCV.bitmapToDithering(app(), dpiBitmap2)!! //用灰度图进行抖动处理
+        val operateBitmap = OpenCV.bitmapToDithering(
+            app(), dpiBitmap2,
+            params.invert,
+            params.contrast.toDouble(),
+            params.brightness.toDouble(),
+        )!! //用灰度图进行抖动处理
         dpiBitmap2.recycle()
 
         //1:保存一份原始可视化数据
@@ -199,7 +205,7 @@ object EngraveTransitionHelper {
             true
         )
 
-        "transitionToBitmapDithering[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmapByteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
+        "toBitmapDithering[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmapByteCount.toSizeString()}]转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
@@ -250,13 +256,13 @@ object EngraveTransitionHelper {
                 }
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
-                "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]转换耗时:${LTime.time()}".writePerfLog()
+                "toGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [${bitmap.byteCount.toSizeString()} opencv:${params.useOpenCvHandleGCode.toDC()}]转换耗时:${LTime.time()}".writePerfLog()
             }
         } else {
             //path转GCode
             val gCodeFile = transition.covertPathStroke2GCode(pathList, params)
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
-            "transitionToGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [path]转换耗时:${LTime.time()}".writePerfLog()
+            "toGCode[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} [path]转换耗时:${LTime.time()}".writePerfLog()
         }
         return transferDataEntity
     }
@@ -280,7 +286,7 @@ object EngraveTransitionHelper {
         //写入数据到路径, 用于发送到数据
         transferDataEntity.dataPath = data?.writeTransferDataPath("${transferDataEntity.index}")
 
-        "transitionToRaw[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} 转换耗时:${LTime.time()}".writePerfLog()
+        "toRaw[${transferDataEntity.index}]->${transferConfigEntity.name} dpi:${transferConfigEntity.dpi} 转换耗时:${LTime.time()}".writePerfLog()
         return transferDataEntity
     }
 
