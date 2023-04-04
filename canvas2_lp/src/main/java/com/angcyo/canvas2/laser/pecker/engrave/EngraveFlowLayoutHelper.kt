@@ -863,7 +863,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
                 itemStopAction = {
                     //停止雕刻, 直接完成
-                    engraveModel.stopEngrave("来自点击按钮")
+                    engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
+                        syncSingle { countDownLatch ->
+                            engraveModel.stopEngrave("来自点击按钮", countDownLatch)
+                        }
+                    })
                 }
             }
         }
