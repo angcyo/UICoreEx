@@ -3,6 +3,7 @@ package com.angcyo.canvas.laser.pecker
 import android.content.Context
 import android.graphics.RectF
 import android.view.View
+import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.graphics.addMultiplicationTable
@@ -15,16 +16,18 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.http.rx.doBack
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
+import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
@@ -46,6 +49,27 @@ import kotlin.math.min
  * @since 2022/05/16
  */
 class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
+
+    @Keep
+    companion object {
+        /**参数表网格数量
+         * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+         */
+        internal var lastGridCount: Int by HawkPropertyValue<Any, Int>(10)
+
+        /**功率*深度 <= this 时才需要添加到参数表
+         * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+         * */
+        internal var lastPowerDepth: Int by HawkPropertyValue<Any, Int>(2500)
+
+        /**[addParameterComparisonTable] 字体大小*/
+        @MM
+        internal var lastFontSize: Int by HawkPropertyValue<Any, Int>(0)
+
+        /**[addParameterComparisonTable] 网格间隙*/
+        @MM
+        internal var lastGridMargin: Int by HawkPropertyValue<Any, Int>(5)
+    }
 
     /**画布*/
     var canvasDelegate: CanvasDelegate? = null
@@ -81,18 +105,14 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                             canInputEmpty = false
                             hintInputString = "粒度数量,功率*深度阈值,网格间隙,字体大小"
                             defaultInputString =
-                                "${HawkEngraveKeys.lastGridCount},${HawkEngraveKeys.lastPowerDepth},${HawkEngraveKeys.lastGridMargin},${HawkEngraveKeys.lastFontSize}"
+                                "$lastGridCount,${lastPowerDepth},${lastGridMargin},${lastFontSize}"
 
                             onInputResult = { dialog, inputText ->
                                 val list = inputText.toString().split(",")
-                                HawkEngraveKeys.lastGridCount = list.getOrNull(0)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastGridCount
-                                HawkEngraveKeys.lastPowerDepth = list.getOrNull(1)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastPowerDepth
-                                HawkEngraveKeys.lastGridMargin = list.getOrNull(2)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastGridMargin
-                                HawkEngraveKeys.lastFontSize = list.getOrNull(3)?.toIntOrNull()
-                                    ?: HawkEngraveKeys.lastFontSize
+                                lastGridCount = list.getOrNull(0)?.toIntOrNull() ?: lastGridCount
+                                lastPowerDepth = list.getOrNull(1)?.toIntOrNull() ?: lastPowerDepth
+                                lastGridMargin = list.getOrNull(2)?.toIntOrNull() ?: lastGridMargin
+                                lastFontSize = list.getOrNull(3)?.toIntOrNull() ?: lastFontSize
 
                                 engraveStrokeLoadingCaller { isCancel, loadEnd ->
                                     doBack {
@@ -100,10 +120,10 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
                                         canvasDelegate?.addParameterComparisonTable(
                                             previewBounds,
-                                            HawkEngraveKeys.lastGridCount,
-                                            HawkEngraveKeys.lastPowerDepth,
-                                            HawkEngraveKeys.lastGridMargin,
-                                            HawkEngraveKeys.lastFontSize,
+                                            lastGridCount,
+                                            lastPowerDepth,
+                                            lastGridMargin,
+                                            lastFontSize
                                         )
                                         loadEnd(true, null)
                                     }

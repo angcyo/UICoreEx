@@ -76,24 +76,6 @@ object HawkEngraveKeys {
     /**黑白阈值*/
     var lastBWThreshold: Float by HawkPropertyValue<Any, Float>(DEFAULT_THRESHOLD)
 
-    /**参数表网格数量
-     * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
-     */
-    var lastGridCount: Int by HawkPropertyValue<Any, Int>(10)
-
-    /**功率*深度 <= this 时才需要添加到参数表
-     * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
-     * */
-    var lastPowerDepth: Int by HawkPropertyValue<Any, Int>(2500)
-
-    /**[addParameterComparisonTable] 字体大小*/
-    @MM
-    var lastFontSize: Int by HawkPropertyValue<Any, Int>(0)
-
-    /**[addParameterComparisonTable] 网格间隙*/
-    @MM
-    var lastGridMargin: Int by HawkPropertyValue<Any, Int>(5)
-
     //
 
     /**自动连接设备状态存储*/

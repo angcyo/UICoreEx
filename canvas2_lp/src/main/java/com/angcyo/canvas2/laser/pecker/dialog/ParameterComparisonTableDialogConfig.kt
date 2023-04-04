@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.RectF
+import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -46,6 +47,7 @@ import kotlin.math.max
  */
 class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
+    @Keep
     companion object {
         /**功率深度阈值, 小于值才需要绘制格子*/
         internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(2400f)
