@@ -38,6 +38,7 @@ import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.vmDataOnce
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
+import java.util.concurrent.CountDownLatch
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -584,9 +585,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**停止雕刻*/
-    fun stopEngrave(reason: String?) {
+    fun stopEngrave(reason: String?, countDownLatch: CountDownLatch? = null) {
         "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
-        EngraveCmd.stopEngrave().enqueue()
+        EngraveCmd.stopEngrave().enqueue { bean, error ->
+            countDownLatch?.countDown()
+        }
         finishEngrave()
         ExitCmd().enqueue()
     }

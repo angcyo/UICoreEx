@@ -104,6 +104,11 @@ data class EngraveCmd(
     //功能码
     override fun commandFunc(): Byte = ENGRAVE_FUNC
 
+    /**C1归位至多需要30s*/
+    override fun getReceiveTimeout(): Long {
+        return 30_000
+    }
+
     override fun toHexCommandString(): String {
         val check: String
         val cmd: String
