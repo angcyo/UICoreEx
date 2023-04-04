@@ -23,7 +23,7 @@ class ControlSettingItem : CanvasIconItem() {
 
             if (itemIsSelected) {
                 it.context.canvasSettingWindow(it) {
-                    this.canvasDelegate = itemRenderDelegate
+                    this.delegate = itemRenderDelegate
                     onDismiss = {
                         itemIsSelected = false
                         updateAdapterItem()

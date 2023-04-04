@@ -164,4 +164,12 @@
     <string name="save_project_title">Project name</string>
     <string name="project_title_limit">Enter a maximum of 20 characters</string>
     <string name="project_save_success_tip">Project saved successfully</string>
+
+    <string name="add_parameter_comparison_table">Add a parameter checktable</string>
+    <string name="add_parameter_comparison_table_threshold">Threshold</string>
+    <string name="add_parameter_comparison_table_columns">Columns</string>
+    <string name="add_parameter_comparison_table_rows">Rows</string>
+    <string name="add_parameter_comparison_table_font_size">Font size</string>
+    <string name="add_parameter_comparison_table_grid_margin">Grid margin</string>
+
 </resources>

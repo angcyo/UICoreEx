@@ -442,14 +442,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             // 激光光源选择
             val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
             if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
-                EngraveSegmentScrollItem()() {
-                    itemText = _string(R.string.laser_type)
-                    itemSegmentList = typeList
-                    itemCurrentIndex = typeList.indexOfFirst {
-                        it.type == DeviceHelper.getProductLaserType()
-                    }
+                EngraveLaserSegmentItem()() {
                     observeItemChange {
-                        val type = typeList[itemCurrentIndex].type
+                        val type = currentLaserTypeInfo().type
                         projectItemBean?.printType = type.toInt()
                         HawkEngraveKeys.lastType = type.toInt()
                         engraveConfigEntity?.type = type

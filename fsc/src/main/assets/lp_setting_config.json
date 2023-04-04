@@ -22,5 +22,6 @@
   "lpBatchEngraveFirmware": null,
   "closeCanvasItemsFun": null,
   "closeImageEditItemsFun": null,
-  "closeTextEditItemsFun": null
+  "closeTextEditItemsFun": null,
+  "enableFun": null
 }

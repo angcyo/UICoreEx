@@ -55,5 +55,7 @@ data class DeviceSettingBean(
     var closeImageEditItemsFun: String? = null,
     /**需要关闭的文本功能*/
     var closeTextEditItemsFun: String? = null,
+    /**需要激活的功能项*/
+    var enableFun: String? = null
     //endregion---Android端设置项---
 )

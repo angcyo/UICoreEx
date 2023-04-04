@@ -153,7 +153,7 @@ object HawkEngraveKeys {
     var enableMultiplicationTable: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
     /**是否激活视力表*/
-    var enableVisualChart: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+    var enableVisualChartTable: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
     /**是否激活后台雕刻, 在雕刻中可以关闭页面*/
     var enableBackEngrave: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())

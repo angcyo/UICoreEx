@@ -361,7 +361,13 @@ data class LPElementBean(
     //region ---私有属性---
 
     /**强行指定要雕刻的数据模式
-     * [_layerMode]*/
+     * [_layerMode]
+     *
+     * [LPDataConstant.DATA_MODE_GREY]
+     * [LPDataConstant.DATA_MODE_BLACK_WHITE]
+     * [LPDataConstant.DATA_MODE_DITHERING]
+     * [LPDataConstant.DATA_MODE_GCODE]
+     * */
     var dataMode: Int? = null,
 
     /**旧的兼容数据

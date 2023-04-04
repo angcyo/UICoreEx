@@ -36,7 +36,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     /**图片转成的[Path]数据, 原始数据*/
     var pathList: List<Path>? = null
 
-    override fun updateBeanToElement(renderer: BaseRenderer) {
+    override fun updateBeanToElement(renderer: BaseRenderer?) {
         super.updateBeanToElement(renderer)
         parseElementBean()
     }

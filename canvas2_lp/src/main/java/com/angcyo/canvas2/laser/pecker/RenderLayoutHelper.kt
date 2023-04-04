@@ -364,8 +364,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     //数据改变, 比如切换了图片算法/填充/描边等
 
                     val index = renderer.lpElementBean()?.index
-                    L.i("数据改变,清空索引:${index} $reason")
-                    renderer.lpElementBean()?.index = null //清空数据索引
+                    if (index != null) {
+                        L.i("数据改变,清空索引:${index} $reason")
+                        renderer.lpElementBean()?.index = null //清空数据索引
+                    }
 
                     needUpdateControlLayout = true
 

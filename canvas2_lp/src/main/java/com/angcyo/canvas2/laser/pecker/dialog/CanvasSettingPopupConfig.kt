@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.content.Context
 import android.graphics.RectF
 import android.view.View
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -10,24 +11,20 @@ import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
-import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.http.rx.doBack
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveStrokeLoadingCaller
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex._string
-import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.ex.*
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
 import com.angcyo.library.unit.PxRenderUnit
@@ -46,7 +43,7 @@ import kotlin.math.min
 class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
     /**画布*/
-    var canvasDelegate: CanvasRenderDelegate? = null
+    var delegate: CanvasRenderDelegate? = null
 
     init {
         contentLayoutId = R.layout.dialog_setting_layout
@@ -57,7 +54,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
     override fun initContentLayout(window: TargetWindow, viewHolder: DslViewHolder) {
         super.initContentLayout(window, viewHolder)
-        val canvasViewBox = canvasDelegate?.renderViewBox
+        val canvasViewBox = delegate?.renderViewBox
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
 
             val previewBounds =
@@ -68,13 +65,16 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     100f.toPixel()
                 )
 
-            if (HawkEngraveKeys.enableParameterComparisonTable) {
+            val enableFun = LaserPeckerConfigHelper.readDeviceSettingConfig()?.enableFun
+            if (HawkEngraveKeys.enableParameterComparisonTable || enableFun.have("_ParameterComparisonTable_")) {
                 DslBlackButtonItem()() {
-                    itemButtonText = "添加参数对照表"
+                    itemButtonText = _string(R.string.add_parameter_comparison_table)
                     itemClick = {
                         window.dismissWindow()
-
-                        it.context.inputDialog {
+                        it.context.addParameterComparisonTableDialog {
+                            renderDelegate = delegate
+                        }
+                        /*it.context.inputDialog {
                             dialogTitle = "阈值"
                             canInputEmpty = false
                             hintInputString = "粒度数量,功率*深度阈值,网格间隙,字体大小"
@@ -92,7 +92,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                 HawkEngraveKeys.lastFontSize = list.getOrNull(3)?.toIntOrNull()
                                     ?: HawkEngraveKeys.lastFontSize
 
-                                /*engraveStrokeLoadingCaller { isCancel, loadEnd ->
+                                *//*engraveStrokeLoadingCaller { isCancel, loadEnd ->
                                     doBack {
                                         HawkEngraveKeys.enableItemEngraveParams = true //必须
                                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
@@ -105,14 +105,14 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                                         )
                                         loadEnd(true, null)
                                     }
-                                }*/
+                                }*//*
                                 false
                             }
-                        }
+                        }*/
                     }
                 }
             }
-            if (HawkEngraveKeys.enableMultiplicationTable) {
+            if (HawkEngraveKeys.enableMultiplicationTable || enableFun.have("_MultiplicationTable_")) {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加乘法口诀表"
                     itemClick = {
@@ -128,7 +128,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 }
             }
 
-            if (HawkEngraveKeys.enableVisualChart) {
+            if (HawkEngraveKeys.enableVisualChartTable || enableFun.have("_VisualChartTable_")) {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加视力表"
                     itemClick = {
@@ -144,15 +144,15 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 }
             }
 
-            if (HawkEngraveKeys.enablePixelUnit) {
+            if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"
                     itemInfoText = _string(R.string.canvas_pixel_unit)
-                    itemSwitchChecked = canvasDelegate?.axisManager?.renderUnit is PxRenderUnit
+                    itemSwitchChecked = delegate?.axisManager?.renderUnit is PxRenderUnit
                     drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                     itemExtendLayoutId = R.layout.canvas_extent_switch_item
                     itemSwitchChangedAction = {
-                        canvasDelegate?.axisManager?.updateRenderUnit(
+                        delegate?.axisManager?.updateRenderUnit(
                             if (it) {
                                 (get("inch") as? DslSwitchInfoItem)?.apply {
                                     itemSwitchChecked = false
@@ -171,11 +171,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
             DslSwitchInfoItem()() {
                 itemTag = "inch"
                 itemInfoText = _string(R.string.canvas_inch_unit)
-                itemSwitchChecked = canvasDelegate?.axisManager?.renderUnit is InchRenderUnit
+                itemSwitchChecked = delegate?.axisManager?.renderUnit is InchRenderUnit
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemSwitchChangedAction = {
-                    canvasDelegate?.axisManager?.updateRenderUnit(
+                    delegate?.axisManager?.updateRenderUnit(
                         if (it) {
                             if (isShowDebug()) {
                                 (get("pixel") as? DslSwitchInfoItem)?.apply {
@@ -205,17 +205,17 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 itemSwitchChangedAction = {
                     LPConstant.CANVAS_DRAW_GRID = it
                     if (it) {
-                        canvasDelegate?.axisManager?.enableRenderGrid = true
-                        canvasDelegate?.axisManager?.enableRenderGrid = true
+                        delegate?.axisManager?.enableRenderGrid = true
+                        delegate?.axisManager?.enableRenderGrid = true
                     } else {
-                        canvasDelegate?.axisManager?.enableRenderGrid = false
-                        canvasDelegate?.axisManager?.enableRenderGrid = false
+                        delegate?.axisManager?.enableRenderGrid = false
+                        delegate?.axisManager?.enableRenderGrid = false
                     }
-                    canvasDelegate?.refresh()
+                    delegate?.refresh()
                 }
             }
             DslSwitchInfoItem()() {
-                val smartAssistant = canvasDelegate?.controlManager?.smartAssistantComponent
+                val smartAssistant = delegate?.controlManager?.smartAssistantComponent
                 itemInfoText = _string(R.string.canvas_smart_assistant)
                 itemSwitchChecked = smartAssistant?.isEnableComponent == true
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item

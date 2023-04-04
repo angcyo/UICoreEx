@@ -202,7 +202,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         )
     }
 
-    override fun updateBeanToElement(renderer: BaseRenderer) {
+    override fun updateBeanToElement(renderer: BaseRenderer?) {
         if (elementBean.isLineShape) {
             //elementBean.height = 1f.toMm()//线的高度 1px
             elementBean.height = 0f

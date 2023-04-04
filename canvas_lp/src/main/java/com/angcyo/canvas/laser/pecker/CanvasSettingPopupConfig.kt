@@ -130,7 +130,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 }
             }
 
-            if (HawkEngraveKeys.enableVisualChart) {
+            if (HawkEngraveKeys.enableVisualChartTable) {
                 DslBlackButtonItem()() {
                     itemButtonText = "添加视力表"
                     itemClick = {

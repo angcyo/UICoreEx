@@ -27,6 +27,43 @@ import com.angcyo.library.unit.toPixel
  */
 interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
+    companion object {
+
+        /**数据类型转换*/
+        fun LPElementBean.toRenderProperty(result: CanvasRenderProperty = CanvasRenderProperty()): CanvasRenderProperty {
+            result.anchorX = left.toPixel()
+            result.anchorY = top.toPixel()
+            result.width = width.toPixel()
+            result.height = height.toPixel()
+
+            result.angle = angle
+            result.scaleX = scaleX ?: result.scaleX
+            result.scaleY = scaleY ?: result.scaleY
+            result.skewX = skewX ?: result.skewX
+            result.skewY = skewY ?: result.skewY
+            result.flipX = flipX ?: result.flipX
+            result.flipY = flipY ?: result.flipY
+            return result
+        }
+
+        /**数据类型转换*/
+        fun CanvasRenderProperty.toElementBean(result: LPElementBean): LPElementBean {
+            result.left = anchorX.toMm()
+            result.top = anchorY.toMm()
+            result.width = width.toMm()
+            result.height = height.toMm()
+
+            result.angle = angle
+            result.scaleX = scaleX
+            result.scaleY = scaleY
+            result.skewX = skewX
+            result.skewY = skewY
+            result.flipX = flipX
+            result.flipY = flipY
+            return result
+        }
+    }
+
     /**元素数据结构*/
     val elementBean: LPElementBean
 
@@ -57,42 +94,18 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     fun parseElementBean()
 
     /**将[elementBean] 数据更新到 [CanvasRenderProperty]*/
-    fun updateBeanToElement(renderer: BaseRenderer) {
+    fun updateBeanToElement(renderer: BaseRenderer?) {
         if (this is BaseElement) {
-            renderProperty.anchorX = elementBean.left.toPixel()
-            renderProperty.anchorY = elementBean.top.toPixel()
-            renderProperty.width = elementBean.width.toPixel()
-            renderProperty.height = elementBean.height.toPixel()
-
-            renderProperty.angle = elementBean.angle
-            renderProperty.scaleX = elementBean.scaleX ?: renderProperty.scaleX
-            renderProperty.scaleY = elementBean.scaleY ?: renderProperty.scaleY
-            renderProperty.skewX = elementBean.skewX ?: renderProperty.skewX
-            renderProperty.skewY = elementBean.skewY ?: renderProperty.skewY
-            renderProperty.flipX = elementBean.flipX ?: renderProperty.flipX
-            renderProperty.flipY = elementBean.flipY ?: renderProperty.flipY
-
-            renderer.updateVisible(elementBean.isVisible, Reason.init, null)
-            renderer.updateLock(elementBean.isLock, Reason.init, null)
+            elementBean.toRenderProperty(renderProperty)
+            renderer?.updateVisible(elementBean.isVisible, Reason.init, null)
+            renderer?.updateLock(elementBean.isLock, Reason.init, null)
         }
     }
 
     /**将[CanvasRenderProperty] 数据同步到 [elementBean]*/
     fun updateBeanFromElement(renderer: BaseRenderer) {
         if (this is BaseElement) {
-            elementBean.left = renderProperty.anchorX.toMm()
-            elementBean.top = renderProperty.anchorY.toMm()
-            elementBean.width = renderProperty.width.toMm()
-            elementBean.height = renderProperty.height.toMm()
-
-            elementBean.angle = renderProperty.angle
-            elementBean.scaleX = renderProperty.scaleX
-            elementBean.scaleY = renderProperty.scaleY
-            elementBean.skewX = renderProperty.skewX
-            elementBean.skewY = renderProperty.skewY
-            elementBean.flipX = renderProperty.flipX
-            elementBean.flipY = renderProperty.flipY
-
+            renderProperty.toElementBean(elementBean)
             elementBean.isLock = renderer.isLock
             elementBean.isVisible = renderer.isVisible
         }

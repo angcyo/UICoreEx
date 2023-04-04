@@ -147,4 +147,12 @@
     <string name="save_project_title">项目名称</string>
     <string name="project_title_limit">最多输入20个字符</string>
     <string name="project_save_success_tip">项目保存成功</string>
+
+    <string name="add_parameter_comparison_table">添加参数对照表</string>
+    <string name="add_parameter_comparison_table_threshold">阈值</string>
+    <string name="add_parameter_comparison_table_columns">列数</string>
+    <string name="add_parameter_comparison_table_rows">行数</string>
+    <string name="add_parameter_comparison_table_font_size">字体大小</string>
+    <string name="add_parameter_comparison_table_grid_margin">格子边距</string>
+
 </resources>
