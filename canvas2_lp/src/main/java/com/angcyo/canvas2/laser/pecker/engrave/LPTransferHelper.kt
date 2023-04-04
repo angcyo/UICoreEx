@@ -18,6 +18,7 @@ import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -55,7 +56,12 @@ object LPTransferHelper {
                     canvasDelegate,
                     transferConfigEntity
                 )//数据已入库, 可以直接在数据库中查询
-                "已创建传输数据[$taskId]:$entityList".writeToLog()
+                val size = entityList.size()
+                if (size < 5) {
+                    "已创建传输数据[$taskId]:$entityList".writeToLog()
+                } else {
+                    "已创建传输数据[$taskId]:[$size]个".writeToLog()
+                }
                 EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
                 transferModel.startTransferData(transferState.taskId)
             } catch (e: Exception) {
