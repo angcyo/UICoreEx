@@ -1,14 +1,11 @@
 package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.content.Context
-import android.graphics.RectF
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
-import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
@@ -26,7 +23,6 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
 import com.angcyo.library.unit.PxRenderUnit
-import com.angcyo.library.unit.toPixel
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
@@ -52,16 +48,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
     override fun initContentLayout(window: TargetWindow, viewHolder: DslViewHolder) {
         super.initContentLayout(window, viewHolder)
-        val canvasViewBox = delegate?.renderViewBox
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
-
-            val previewBounds =
-                vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds ?: RectF(
-                    0f,
-                    0f,
-                    100f.toPixel(),
-                    100f.toPixel()
-                )
 
             val enableFun = LaserPeckerConfigHelper.readDeviceSettingConfig()?.enableFun
             if (HawkEngraveKeys.enableParameterComparisonTable || enableFun.have("_ParameterComparisonTable_")) {
