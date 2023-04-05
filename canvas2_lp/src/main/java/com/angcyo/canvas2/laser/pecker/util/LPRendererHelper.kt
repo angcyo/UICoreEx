@@ -211,33 +211,41 @@ fun String.toElementBeanList() = fromJson<List<LPElementBean>>(listType(LPElemen
 
 //region---Delegate---
 
-/**获取工程结构[LPProjectBean]*/
+/**获取工程结构[LPProjectBean]
+ *
+ * [java.lang.OutOfMemoryError]*/
 fun CanvasRenderDelegate.getProjectBean(
     renderList: List<BaseRenderer>? = renderManager.elementRendererList,
     overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat()
-): LPProjectBean {
-    return LPProjectBean().apply {
-        create_time = nowTime()
-        update_time = nowTime()
+): LPProjectBean? {
+    try {
+        val result = LPProjectBean().apply {
+            create_time = nowTime()
+            update_time = nowTime()
 
-        val preview = preview(overrideSize = overrideSize, rendererList = renderList)
-        preview_img = preview?.toBase64Data()
+            val preview = preview(overrideSize = overrideSize, rendererList = renderList)
+            preview_img = preview?.toBase64Data()
 
-        data = jsonArray {
-            renderList?.forEach { renderer ->
-                val list = renderer.getSingleRendererList(false)
-                list.forEach { sub ->
-                    try {
-                        sub.lpElement()?.let { element ->
-                            element.updateBeanFromElement(sub)
-                            add(element.elementBean.toJson().json())
+            data = jsonArray {
+                renderList?.forEach { renderer ->
+                    val list = renderer.getSingleRendererList(false)
+                    list.forEach { sub ->
+                        try {
+                            sub.lpElement()?.let { element ->
+                                element.updateBeanFromElement(sub)
+                                add(element.elementBean.toJson().json())
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
-            }
-        }.toString()
+            }.toString() //java.lang.OutOfMemoryError
+        }
+        return result
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
     }
 }
 
@@ -278,13 +286,20 @@ fun CanvasRenderDelegate.openProjectBean(
  * */
 fun CanvasRenderDelegate.saveProjectState(
     fileName: String = ".temp",
-    async: Boolean = true
+    async: Boolean = true,
+    result: (String, Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
 ): String {
     val file = _defaultProjectOutputFile(fileName, false)
     val save = Runnable {
-        val bean = getProjectBean()
-        val json = bean.toJson()
-        json.writeTo(file, false)
+        try {
+            val bean = getProjectBean()!!
+            val json = bean.toJson()
+            json.writeTo(file, false)
+            result(file.absolutePath, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            result(file.absolutePath, e)
+        }
     }
     if (async) {
         doBack {
