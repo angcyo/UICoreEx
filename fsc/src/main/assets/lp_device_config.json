@@ -206,7 +206,7 @@
     "name": "LP3",
     "softwareVersionRange": "5500~5599",
     "hardwareVersionRange": "",
-    "supportDitheringRange": "5513~5599",
+    "supportDitheringRange": "5509~5510 5514~5599",
     "ex": "z",
     "zDirList": "flat,cylinder",
     "focalDistance": 115,
