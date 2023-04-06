@@ -40,7 +40,10 @@ object LPDataTransitionHelper {
                     EngraveTransitionHelper.transitionToGCode(
                         element,
                         transferConfigEntity,
-                        TransitionParam(useOpenCvHandleGCode = false, isSingleLine = true)
+                        TransitionParam(
+                            useOpenCvHandleGCode = false,
+                            isSingleLine = bean.isLineShape
+                        )
                     )
                 } else {
                     //其他情况下, 转GCode优先使用Path, 再使用OpenCV

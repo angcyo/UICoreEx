@@ -2,6 +2,9 @@ package com.angcyo.engrave2.data
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
+import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.unit.toPixel
 
 /**转换需要的一些额外参数
  *
@@ -40,5 +43,9 @@ data class TransitionParam(
      * 如果是线条生成的图片, 则开启此开关, 会有优化处理. 尤其是虚线
      * 只在[useOpenCvHandleGCode=false]的情况下有效
      * */
-    val isSingleLine: Boolean = false
+    val isSingleLine: Boolean = false,
+
+    /**使用图片像素转GCode时, 扫描像素的步长*/
+    @Pixel
+    val pixelGCodeGapValue: Float = LibHawkKeys.pathPixelGapValue.toPixel()
 )
