@@ -446,7 +446,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         if (HawkEngraveKeys.enableRasterize) {
             afterItemCount++
         }
-        if (HawkEngraveKeys.enablePathFill) {
+        val enablePathFill = HawkEngraveKeys.enablePathFill && elementBean?.isLineShape == false
+        if (enablePathFill) {
             afterItemCount++
         }
         PathStyleItem()() {
@@ -466,7 +467,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemText = _string(R.string.canvas_fill_stroke)
             itemStyle = Paint.Style.FILL_AND_STROKE
         }*/
-        if (HawkEngraveKeys.enablePathFill && elementBean?.isLineShape == false) {
+        if (enablePathFill) {
             CanvasIconItem()() {
                 initItem(renderer)
                 itemIco = R.drawable.canvas_path_fill_svg
