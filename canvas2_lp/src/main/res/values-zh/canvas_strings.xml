@@ -158,4 +158,8 @@
     <string name="add_multiplication_table">添加乘法口诀表</string>
     <string name="add_visual_chart">添加视力表</string>
 
+    <string name="data_not_allowed">当前模式下, 不允许雕刻"%1$s"数据</string>
+    <string name="data_not_allowed_reverse">当前模式下, 不允许雕刻非"%1$s"数据</string>
+    <string name="data_not_allowed_height">当前模式下, 不允许雕刻高度大于%1$s mm的数据</string>
+
 </resources>

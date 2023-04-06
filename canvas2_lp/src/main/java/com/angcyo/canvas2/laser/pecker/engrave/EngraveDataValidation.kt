@@ -36,8 +36,7 @@ object EngraveDataValidation {
                     //不允许雕刻GCode
                     context?.messageDialog {
                         dialogTitle = _string(R.string.engrave_warn)
-                        dialogMessage =
-                            "当前模式下, 不允许雕刻\"${gCodeLayer.label}\"数据;\nData that is not allowed!"
+                        dialogMessage = _string(R.string.data_not_allowed, gCodeLayer.label)
                     }
                     return false
                 }
@@ -57,7 +56,7 @@ object EngraveDataValidation {
                         context?.messageDialog {
                             dialogTitle = _string(R.string.engrave_warn)
                             dialogMessage =
-                                "当前模式下, 不允许雕刻非\"${gCodeLayer.label}\"数据;\nData that is not allowed!"
+                                _string(R.string.data_not_allowed_reverse, gCodeLayer.label)
                         }
                         return false
                     }
@@ -83,7 +82,7 @@ object EngraveDataValidation {
                         context?.messageDialog {
                             dialogTitle = _string(R.string.engrave_warn)
                             dialogMessage =
-                                "当前模式下, 不允许雕刻高度大于${maxHeight.unitDecimal(0)}mm的数据;\nData that is not allowed!"
+                                _string(R.string.data_not_allowed_height, maxHeight.unitDecimal(0))
                         }
                         return false
                     }

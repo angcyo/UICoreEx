@@ -174,4 +174,9 @@
 
     <string name="add_multiplication_table">Add a table of multiplication</string>
     <string name="add_visual_chart">Add an eye chart</string>
+
+    <string name="data_not_allowed">In the current mode, engraving "%1$s" data is not allowed</string>
+    <string name="data_not_allowed_reverse">In the current mode, engraving of non-"%1$s" data is not allowed</string>
+    <string name="data_not_allowed_height">In the current mode, engraving of data with a height greater than %1$s mm is not allowed</string>
+
 </resources>
