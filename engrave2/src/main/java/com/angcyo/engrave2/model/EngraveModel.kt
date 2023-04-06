@@ -707,11 +707,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**更新雕刻进度和次数
      * [progress] 当前索引的雕刻进度*/
     fun updateEngraveProgress(index: Int, printTimes: Int?, progress: Int) {
-        _engraveTaskEntity?.apply {
-            val engraveProgress = EngraveFlowDataHelper.calcEngraveProgress(taskId)
-            EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
-        }
-
         val currentProgress = clamp(progress, 0, 100)
         EngraveFlowDataHelper.updateEngraveProgress(
             _engraveTaskEntity?.taskId,
@@ -720,10 +715,16 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             currentProgress
         )
         _engraveTaskEntity?.let {
+            val engraveProgress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
+
             it.currentProgress = currentProgress
-            it.progress = EngraveFlowDataHelper.calcEngraveProgress(it.taskId)
+            it.progress = engraveProgress
             it.lpSaveEntity()
             engraveStateData.postValue(it)
+
+            EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
+
+            "雕刻进度[${it.taskId}]:${index} ${currentProgress}/${it.progress}".writeEngraveLog()
         }
     }
 
