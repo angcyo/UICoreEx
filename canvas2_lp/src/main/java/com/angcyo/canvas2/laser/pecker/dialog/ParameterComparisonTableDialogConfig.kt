@@ -79,6 +79,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         @MM
         internal var textFontSize: Float by HawkPropertyValue<Any, Float>(8f)
 
+        /**强行指定格子的数据类型*/
+        internal var gridDataMode: Int by HawkPropertyValue<Any, Int>(LPDataConstant.DATA_MODE_BLACK_WHITE)
+
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
             delegate ?: return
@@ -313,9 +316,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     /**不同类型元素之间的距离*/
     @MM
     var elementMargin = 2f
-
-    /**强行指定格子的数据类型*/
-    var gridDataMode = LPDataConstant.DATA_MODE_BLACK_WHITE
 
     /**指定激光类型
      * [LaserPeckerHelper.LASER_TYPE_BLUE]
