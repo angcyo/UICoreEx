@@ -40,7 +40,7 @@
     <string name="button_infra_red_title">붉은 빛 항상 켜짐</string>
     <string name="button_infra_red_content">장치가 보이지 않는 빛의 각인을 사용하기 때문에 이 버튼을 켜면 장치가 작동 중일 때 적외선 지시가 제공됩니다.</string>
     <string name="device_setting_txt_5">대량 각인 버튼</string>
-    <string name="device_setting_txt_6">이 스위치는 외부 부속품의 '대량 각인 버튼'의 사용 가능 및 사용 불가능 상태를 제어합니다.</string>
+    <string name="device_setting_txt_6">이 스위치는 외부 부속품의 \'대량 각인 버튼\'의 사용 가능 및 사용 불가능 상태를 제어합니다.</string>
     <string name="device_setting_blue_connect_auto">블루투스 자동 연결</string>
 
     <string name="engrave_experimental">실험성</string>
