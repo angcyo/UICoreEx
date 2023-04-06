@@ -19,6 +19,7 @@ import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -59,7 +60,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
     val isOverflowBounds: Boolean
         get() = itemRenderer?.renderProperty?.getRenderBounds().isOverflowProductBounds()
 
-    /**是否需要参数先死*/
+    /**是否需要显示雕刻参数参数*/
     var itemShowEngraveParams = true
 
     //endregion ---计算属性---
@@ -109,6 +110,14 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
                     append(_string(R.string.print_times));append(":")
                     append(bean.printCount ?: 1);append(" ")
+
+                    if (isDebug()) {
+                        //显示数据索引, 方便调试
+                        bean.index?.let {
+                            appendLine()
+                            append("$it")
+                        }
+                    }
                 }
             }
         } else {

@@ -29,6 +29,8 @@ class CanvasLayerItem : CanvasBaseLayerItem() {
     //endregion ---core---
 
     init {
+        itemShowEngraveParams = false
+
         itemLayoutId = R.layout.item_canvas_layer_layout
 
         itemClick = {
