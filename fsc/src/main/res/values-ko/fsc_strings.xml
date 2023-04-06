@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="safety_tips">안전 팁</string>
+    <string name="device_exception">설비 이상</string>
+    <string name="ex_tips_one">모드 설정으로 들어가서 [프리 모드]를 켜십시오.</string>
+    <string name="ex_tips_two">비상 정지! 범위를 벗어났습니다.레이저 조정 중 자동 조정을 사용하여 레이저 포커스의 위치를 재설정한 후 다시 시도하십시오.</string>
+    <string name="ex_tips_three">비상정지! 레이저 작동 온도가 너무 높습니다</string>
+    <string name="ex_tips_four">비상정지! 기계가 부딪히거나 흔들릴 수 있습니다</string>
+    <string name="ex_tips_five">비상정지! 초음파 센서가 각인 범위에 들어가는 물체를 감지</string>
+    <string name="ex_tips_six">비상정지! 데이터 오류</string>
+    <string name="ex_tips_seven">비상정지! 파일번호 조회오류</string>
+    <string name="ex_tips_eight">비상정지! 자이로 자가진단 오류</string>
+    <string name="ex_tips_nine">비상정지! 플래시 자가진단 오류</string>
+    <string name="ex_tips_ten">비상정지! 사이즈 이상</string>
+
+    <string name="laser_type_white">백색광</string>
+    <string name="laser_type_blue">블루라이트</string>
+
+    <string name="preview_state_gcode">미리보기 벡터 그림</string>
+    <string name="preview_state_range">미리 보기 범위</string>
+    <string name="preview_state_z_pause">멀티모드 타임아웃</string>
+    <string name="preview_state_z_pause2">%1$s暂停</string>
+    <string name="preview_state_z_continue">멀티모드 계속</string>
+    <string name="preview_state_z_continue2">%1$s 계속</string>
+    <string name="preview_state_z_scroll">멀티모드 스크롤</string>
+    <string name="preview_state_center">미리 보기 센터</string>
+    <string name="preview_state_points">4시 범위 미리 보기</string>
+    <string name="preview_state_bracket">지지대 조정</string>
+
+    <string name="engrave_state_pause">레이저 스톱</string>
+    <string name="engrave_state_stop">레이저 각인 끝</string>
+    <string name="engrave_state_ing">레이저 각인 중</string>
+
+    <string name="blue_no_device_connected">연결되지 않은 장치</string>
+    <string name="device_busy_tip">장비가 사용중이니 잠시 후에 다시 시도해 주세요!</string>
+    <string name="device_init_fail_tip">기기 초기화에 실패했습니다!</string>
+    <string name="command_too_long_tip">명령이 너무 깁니다!</string>
+    <string name="command_send_error_tip">통신이 이상합니다, 잠시 후에 다시 시도해 주세요!</string>
+
+    <string name="work_mode_focusing">초점 조절 모드</string>
+    <string name="work_mode_file_download">파일 다운로드 모드</string>
+    <string name="work_mode_shutdown">종료 상태</string>
+    <string name="work_mode_setup">설정 모드</string>
+    <string name="work_mode_download">다운로드 모드</string>
+
+    <string name="laser_not_plugged_tip">레이저 헤드가 제대로 꽂혀 있지 않습니다</string>
+
+    <string name="device_ex_z_label">멀티모드</string>
+    <string name="device_ex_z_des">규칙적인 직육면체 및 원통체 표면에 장면을 각인하는 파라미터 설정을 지원합니다(사이즈 제한: 폭은 100mm 이내</string>
+    <string name="device_ex_r_label">회전축</string>
+    <string name="device_ex_r_des">--</string>
+    <string name="device_ex_s_label">슬라이더</string>
+    <string name="device_ex_s_des">--</string>
+</resources>

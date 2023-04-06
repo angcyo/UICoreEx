@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_disabled">권한이 비활성화됨</string>
+
+    <string name="canvas_operate">조작하다</string>
+    <string name="laser_type">레이저 광원</string>
+    <string name="object_diameter">물체의 지름</string>
+
+    <string name="blue_no_device_connected">연결되지 않은 장치</string>
+    <string name="device_ex_discontent_tips">%1$s 위젯이 연결되지 않았습니다. 먼저 연결하십시오!</string>
+    <string name="engrave_ex_discontent_tips">%1$s달러 s 위젯이 연결되지 않았습니다. 계속하시겠습니까?</string>
+
+    <string name="preview_center">디스플레이 센터</string>
+    <string name="preview_continue">계속 미리 보기</string>
+    <string name="print_v2_package_preview_over">미리 보기 끝</string>
+    <string name="laser_brightness">레이저 광도</string>
+    <string name="previewing">미리 보는 중...</string>
+    <string name="preview">미리 보기</string>
+    <string name="print_setting">레이저 각인 설치</string>
+    <string name="file_setting">파일 설정</string>
+    <string name="transmitting">파일 전송 중</string>
+    <string name="v4_bmp_edit_tips">이미지 데이터 처리 중이니 잠시만 기다려 주세요</string>
+    <string name="remaining_time">남은 시간</string>
+    <string name="start_engrave">레이저 각인 시작</string>
+    <string name="engrave_pause">레이저 각인 일시 정지</string>
+    <string name="engrave_finish">레이저 각인 끝</string>
+    <string name="engrave_stop">레이저 각인 완성</string>
+    <string name="engrave_continue">레이저 각인 계속.</string>
+    <string name="start_preview">미리 보기 시작</string>
+    <string name="print_v2_package_print_state">일시 중지됨</string>
+    <string name="print_v2_package_print_over">이미 완성된 레이저 각인</string>
+    <string name="print_laser_start_tips">반사율이 높은 재질에 각인하지 마십시오</string>
+    <string name="engrave_move_state_tips">설비를 이동하지 마시오</string>
+    <string name="custom_material">재질</string>
+    <string name="custom_power">출력</string>
+    <string name="custom_speed">깊이</string>
+    <string name="print_times">횟수</string>
+    <string name="resolution_ratio">해상도</string>
+    <string name="tips_fourteen_12">시간</string>
+    <string name="work_time">가공시간</string>
+    <string name="engrave_again">한 번 더 각인하다</string>
+    <string name="print_v2_package_Laser_home">홈 페이지로 돌아가기</string>
+    <string name="preview_scroll_continue">스크롤 미리 보기</string>
+    <string name="preview_scroll_pause">스크롤 일시 중지</string>
+    <string name="engrave_speed">각인 속도</string>
+    <string name="engrave_precision">가속 단계</string>
+
+    <string name="ui_slip_menu_history">히스토리 문서</string>
+    <string name="device_history_title">장치 데이터</string>
+    <string name="app_history_title">로컬 데이터</string>
+    <string name="delete_history">히스토리 삭제</string>
+    <string name="delete_history_succeed">삭제 성공</string>
+    <string name="delete_history_failed">삭제 실패</string>
+
+    <string name="device_z_model_flat">태블릿</string>
+    <string name="device_z_model_car">차</string>
+    <string name="device_z_model_cylinder">원기둥</string>
+    <string name="device_setting_tips_fourteen_11">조각 패턴:</string>
+
+    <string name="print_file_name">패턴</string>
+    <string name="print_range">레이저 사이즈</string>
+    <string name="print_time">실제 소요시간</string>
+    <string name="width">폭</string>
+    <string name="height">높다</string>
+
+    <string name="file_name">이름설정</string>
+
+    <string name="engrave_file_name">파일 이름 지정</string>
+    <string name="ui_next">다음</string>
+    <string name="send_file">파일 보내기</string>
+
+    <string name="size_safety_tips">레이저 작업 구역의 안전을 확인하십시오.</string>
+    <string name="size_safety_content">레이저 작업 공간이 안전한지 반드시 확인하세요.\n 반드시 고글과 케이스를 착용하십시오.</string>
+    <string name="print_stop">라듐 조각은 정말 끝날까요？</string>
+
+    <string name="ui_quit">로그아웃</string>
+    <string name="ui_finish">완성</string>
+    <string name="ui_setting">설정</string>
+    <string name="device_not_found">장치를 찾을 수 없습니다</string>
+    <string name="device_not_found_des">기계가 연결 대기 중인지 확인하십시오</string>
+    <string name="contact_me">고객 센터 연락</string>
+
+    <string name="preview_drag_tip">빨간색 테두리 안에서 요소 위치를 끌어다 놓으면 레이저 투영 틀 모멘트 미리보기 효과</string>
+    <string name="bracket_height_label">승강 높이</string>
+    <string name="bracket_not_connect">브래킷이 연결되지 않음</string>
+
+    <string name="range_preview">범위</string>
+    <string name="center_preview">중심점</string>
+    <string name="pause_preview">일시 정지</string>
+    <string name="continue_preview">계속</string>
+    <string name="scroll_preview">굴러가다</string>
+    <string name="preview_parameter_setting">파라미터 설정</string>
+    <string name="filename_hint">최대 28바이트 입력</string>
+    <string name="stop_transfer">전송 종료</string>
+    <string name="engrave_tip">반사율이 높은 재질에 각인하지 마십시오</string>
+    <string name="engrave_layer_config">레이어 각인</string>
+
+    <string name="back_creation">새로 만들기로 돌아감</string>
+    <string name="progress">진도</string>
+    <string name="share_community">커뮤니티에 공유하기</string>
+    <string name="canvas_normal_layer">정상 레이어</string>
+    <string name="canvas_engrave_layer">레이어 각인</string>
+    <string name="canvas_rename">이름 변경</string>
+    <string name="retry">재시도하다</string>
+
+    <string name="select_device">장치 선택</string>
+    <string name="start_upgrade">업그레이드 시작</string>
+    <string name="engrave_perimeter">둘레</string>
+    <string name="engrave_bounds_warn">요소가 각인 영역을 벗어남</string>
+    <string name="engrave_overflow_bounds_message">각인 영역을 벗어남. 요소를 빨간색 테두리 안으로 끌어다 놓으십시오</string>
+
+    <string name="device_engrave_ing_title">현재 장치 작업 중</string>
+    <string name="device_engrave_ing_des">현재 조각 작업을 끝낼지 여부입니다?</string>
+
+    <string name="focal_distance_tip">초점거리를 확인하세요</string>
+    <string name="focal_distance">초점거리</string>
+    <string name="empty_data_transfer">조각 데이터 없음!</string>
+    <string name="no_data_transfer">무수한 데이터를 전송해야 한다!</string>
+    <string name="no_data_engrave">무수한 증거가 라듐 조각의 수요에 필요하였다!</string>
+    <string name="out_of_data_transfer">데이터가 지나치게 크다.!</string>
+    <string name="transfer_data_exception">전송 데이터 이상!</string>
+
+    <string name="device_angle">설비 수평 각도</string>
+    <string name="device_temp">설비온도</string>
+
+    <string name="unsupported_firmware_tip">지원되지 않는 펌웨어 버전은%1$s달러 s입니다. 펌웨어를 업데이트한 후에 사용하십시오.</string>
+    <string name="limit_engrave_count_tip">조각 개수 (%1$s)는 최대%1개입니다.</string>
+
+    <string name="engrave_module_single_pen">단색펜 모드</string>
+    <string name="engrave_module_color_pen">색연필 모드</string>
+    <string name="engrave_module_knife_cutting">커터 모드</string>
+    <string name="engrave_module_cnc">CNC 모드</string>
+
+    <string name="project_title">나의 만들기</string>
+    <string name="engrave_stopping_tip">조각 작업을 중지합니다. 잠시만 기다려 주십시오...</string>
+
+    <string name="open_notify_tip">알림 열기, 조각 알림 받기 진행?</string>
+    <string name="open_notify_channel_tip">조각 채널을 열어서 진행 상황을 알릴수 있습니까?</string>
+
+    <string name="material_title_limit">최대 20자 입력</string>
+    <string name="save_material_title">소재명</string>
+    <string name="engrave_feedback">피드백 문제</string>
+
+    <string name="delete_material_tip">삭제한 후 복구할 수 없습니다. 계속하시겠습니까?</string>
+    <string name="engrave_skip_current">현재 각인 건너뛰기</string>
+
+    <string name="device_models">기종</string>
+    <string name="show_all_label">상세 표시</string>
+    <string name="hide_all_label">접어두기</string>
+
+    <string name="not_support_tip">지원되지 않는 펌웨어 버전</string>
+    <string name="engrave_item_params_tip">단일 요소 조각 인자 모드에서, 먼저 조각 레이어에서 요소의 조각 인자를 설정해야 합니다!</string>
+
+    <string name="device_shutdown_tip">장치가 꺼졌습니다.</string>
+</resources>
