@@ -4,13 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
-import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.BuildConfig
@@ -654,6 +651,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      *
      * @return true 数据合法, 允许雕刻*/
     fun checkTransferData(): Boolean {
+
+        //固件版本验证
         val fContext = engraveCanvasFragment?.fragment?.fContext()
         if (!LaserPeckerHelper.isSupportFirmware()) {
             val version = vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion
@@ -667,6 +666,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             return false
         }
 
+        //雕刻数据量验证
         val delegate = engraveCanvasFragment?.renderDelegate
         if (delegate != null) {
             val allRendererList = LPEngraveHelper.getLayerRendererList(delegate)
@@ -678,9 +678,14 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 return false
             }
 
-            if (!HawkEngraveKeys.enableSingleItemTransfer &&
-                allRendererList.size() > HawkEngraveKeys.maxEngraveItemCountLimit
-            ) {
+            val maxEngraveItemCountLimit = if ("maxEngraveItemCountLimit".hawkHave()) {
+                HawkEngraveKeys.maxEngraveItemCountLimit
+            } else {
+                LaserPeckerConfigHelper.readDeviceSettingConfig()?.maxEngraveItemCount
+                    ?: HawkEngraveKeys.maxEngraveItemCountLimit
+            }
+
+            if (!HawkEngraveKeys.enableSingleItemTransfer && allRendererList.size() > maxEngraveItemCountLimit) {
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
                     dialogMessage = _string(
@@ -691,6 +696,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 return false
             }
         }
+
         //验证数据
         return EngraveDataValidation.validation(
             engraveCanvasFragment?.fragment?.fContext(),

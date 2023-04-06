@@ -23,5 +23,6 @@
   "closeCanvasItemsFun": null,
   "closeImageEditItemsFun": null,
   "closeTextEditItemsFun": null,
-  "enableFun": null
+  "enableFun": null,
+  "maxEngraveItemCount": 30
 }
