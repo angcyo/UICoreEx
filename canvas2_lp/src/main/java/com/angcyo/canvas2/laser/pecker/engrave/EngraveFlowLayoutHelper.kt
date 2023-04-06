@@ -192,12 +192,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 //并非全部是GCode数据
                 TransferDataPxItem()() {
                     itemPxList =
-                        if ((laserPeckerModel.isL3() || laserPeckerModel.isC1()) &&
-                            laserPeckerModel.deviceSettingData.value?.zFlag == 1
-                        ) {
+                        if (laserPeckerModel.deviceSettingData.value?.zFlag == 1) {
                             //L3 C1 z轴打开的情况下, 取消4k 2023-1-4 / 2023-3-10
                             LaserPeckerHelper.findProductSupportPxList()
-                                .filter { it.px != LaserPeckerHelper.PX_4K }
+                                .filter { it.px < LaserPeckerHelper.PX_4K } //2023-4-6 z轴不支持4K及以上
                         } else {
                             LaserPeckerHelper.findProductSupportPxList()
                         }
