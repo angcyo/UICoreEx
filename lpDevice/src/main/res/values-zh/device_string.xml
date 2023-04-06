@@ -69,4 +69,8 @@
 
     <string name="canvas_cone">圆锥</string>
     <string name="canvas_ball">球体</string>
+
+    <string name="ui_quit">退出</string>
+    <string name="ui_finish">完成</string>
+    <string name="ui_setting">设置</string>
 </resources>

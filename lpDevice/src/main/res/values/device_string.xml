@@ -70,4 +70,7 @@
     <string name="canvas_cone">Circular cone</string>
     <string name="canvas_ball">Sphere</string>
 
+    <string name="ui_quit">Quit</string>
+    <string name="ui_finish">Finish</string>
+    <string name="ui_setting">Settings</string>
 </resources>

@@ -73,9 +73,6 @@
     <string name="size_safety_content">レーザー作業場所の安全性を確認してください\n必ずゴーグルと保護カバーを装着してください</string>
     <string name="print_stop">レーザー彫刻を終了しますか？</string>
 
-    <string name="ui_quit">終了</string>
-    <string name="ui_finish">完了</string>
-    <string name="ui_setting">セットアップ</string>
     <string name="device_not_found">お使いのデバイスが見つかりません</string>
     <string name="device_not_found_des">お使いのデバイスが接続待ちの状態であることをご確認ください</string>
     <string name="contact_me">カスタマーサービスまでお問い合わせ</string>

@@ -69,7 +69,7 @@
     <string name="canvas_cone">コーン</string>
     <string name="canvas_ball">球体</string>
 
-    <string name="ui_quit">終了</string>
-    <string name="ui_finish">完了</string>
-    <string name="ui_setting">セットアップ</string>
+    <string name="ui_quit">로그아웃</string>
+    <string name="ui_finish">완성</string>
+    <string name="ui_setting">설정</string>
 </resources>

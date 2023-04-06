@@ -80,12 +80,9 @@
     <string name="size_safety_content">Always wear protective goggles and install protective cover</string>
     <string name="print_stop">Are you sure you want to end the laser engraving?</string>
 
-    <string name="ui_finish">Finish</string>
-    <string name="ui_setting">Settings</string>
     <string name="device_not_found">Device not Found</string>
     <string name="device_not_found_des">Please make sure your machine is in the waiting state</string>
     <string name="contact_me">Contact customer</string>
-    <string name="ui_quit">Quit</string>
 
     <string name="preview_drag_tip">Drag the element position in the red border to achieve the dynamic preview effect of the laser projection box</string>
     <string name="bracket_height_label">Lifting height</string>

@@ -73,9 +73,6 @@
     <string name="size_safety_content">레이저 작업 공간이 안전한지 반드시 확인하세요.\n 반드시 고글과 케이스를 착용하십시오.</string>
     <string name="print_stop">라듐 조각은 정말 끝날까요？</string>
 
-    <string name="ui_quit">로그아웃</string>
-    <string name="ui_finish">완성</string>
-    <string name="ui_setting">설정</string>
     <string name="device_not_found">장치를 찾을 수 없습니다</string>
     <string name="device_not_found_des">기계가 연결 대기 중인지 확인하십시오</string>
     <string name="contact_me">고객 센터 연락</string>
