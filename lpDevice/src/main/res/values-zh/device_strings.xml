@@ -73,4 +73,8 @@
     <string name="ui_quit">退出</string>
     <string name="ui_finish">完成</string>
     <string name="ui_setting">设置</string>
+
+    <string name="device_not_found">找不到你的设备</string>
+    <string name="device_not_found_des">请确保你的机器在待连接状态</string>
+    <string name="contact_me">联系客服</string>
 </resources>

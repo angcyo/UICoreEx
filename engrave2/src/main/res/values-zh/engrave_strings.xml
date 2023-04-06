@@ -73,10 +73,6 @@
     <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
     <string name="print_stop">确定要结束镭雕吗？</string>
 
-    <string name="device_not_found">找不到你的设备</string>
-    <string name="device_not_found_des">请确保你的机器在待连接状态</string>
-    <string name="contact_me">联系客服</string>
-
     <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
     <string name="bracket_height_label">升降高度</string>
     <string name="bracket_not_connect">支架未连接</string>
