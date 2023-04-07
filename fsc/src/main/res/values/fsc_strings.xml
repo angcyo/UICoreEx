@@ -54,4 +54,8 @@
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">Slide Extension</string>
     <string name="device_ex_s_des">--</string>
+
+    <string name="device_z_model_flat">Slab</string>
+    <string name="device_z_model_car">Trolley</string>
+    <string name="device_z_model_cylinder">Cylinder</string>
 </resources>

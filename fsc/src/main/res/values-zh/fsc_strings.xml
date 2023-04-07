@@ -52,4 +52,10 @@
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">滑台</string>
     <string name="device_ex_s_des">--</string>
+
+    <string name="device_z_model_flat">平板</string>
+    <string name="device_z_model_car">小车</string>
+    <string name="device_z_model_cylinder">圆柱</string>
+
+
 </resources>

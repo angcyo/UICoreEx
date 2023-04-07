@@ -52,11 +52,6 @@
     <string name="delete_history_succeed">删除成功</string>
     <string name="delete_history_failed">删除失败</string>
 
-    <string name="device_z_model_flat">平板</string>
-    <string name="device_z_model_car">小车</string>
-    <string name="device_z_model_cylinder">圆柱</string>
-    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
-
     <string name="print_file_name">模式</string>
     <string name="print_range">镭雕尺寸</string>
     <string name="print_time">实际耗时</string>
@@ -96,8 +91,6 @@
     <string name="canvas_rename">重命名</string>
     <string name="retry">重试</string>
 
-    <string name="select_device">选择设备</string>
-    <string name="start_upgrade">开始升级</string>
     <string name="engrave_perimeter">周长</string>
     <string name="engrave_bounds_warn">元素超出雕刻区域</string>
     <string name="engrave_overflow_bounds_message">超出雕刻区域，请将元素拖入调整到红色边框内</string>
@@ -132,7 +125,6 @@
 
     <string name="material_title_limit">最多输入20个字符</string>
     <string name="save_material_title">材质名称</string>
-    <string name="engrave_feedback">反馈问题</string>
 
     <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
     <string name="engrave_skip_current">跳过当前的雕刻</string>

@@ -52,11 +52,6 @@
     <string name="delete_history_succeed">삭제 성공</string>
     <string name="delete_history_failed">삭제 실패</string>
 
-    <string name="device_z_model_flat">태블릿</string>
-    <string name="device_z_model_car">차</string>
-    <string name="device_z_model_cylinder">원기둥</string>
-    <string name="device_setting_tips_fourteen_11">조각 패턴:</string>
-
     <string name="print_file_name">패턴</string>
     <string name="print_range">레이저 사이즈</string>
     <string name="print_time">실제 소요시간</string>
@@ -95,8 +90,6 @@
     <string name="canvas_rename">이름 변경</string>
     <string name="retry">재시도하다</string>
 
-    <string name="select_device">장치 선택</string>
-    <string name="start_upgrade">업그레이드 시작</string>
     <string name="engrave_perimeter">둘레</string>
     <string name="engrave_bounds_warn">요소가 각인 영역을 벗어남</string>
     <string name="engrave_overflow_bounds_message">각인 영역을 벗어남. 요소를 빨간색 테두리 안으로 끌어다 놓으십시오</string>
@@ -131,7 +124,6 @@
 
     <string name="material_title_limit">최대 20자 입력</string>
     <string name="save_material_title">소재명</string>
-    <string name="engrave_feedback">피드백 문제</string>
 
     <string name="delete_material_tip">삭제한 후 복구할 수 없습니다. 계속하시겠습니까?</string>
     <string name="engrave_skip_current">현재 각인 건너뛰기</string>

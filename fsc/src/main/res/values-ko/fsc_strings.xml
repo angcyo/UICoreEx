@@ -52,4 +52,9 @@
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">슬라이더</string>
     <string name="device_ex_s_des">--</string>
+
+    <string name="device_z_model_flat">태블릿</string>
+    <string name="device_z_model_car">차</string>
+    <string name="device_z_model_cylinder">원기둥</string>
+
 </resources>

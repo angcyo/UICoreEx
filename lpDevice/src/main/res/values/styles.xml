@@ -5,6 +5,9 @@
     <color name="bluetooth_bg_color">#F9F9F9</color>
     <color name="device_bg_color">#ECECEC</color>
 
+    <color name="canvas_ico_dark">#a5a5a5</color>
+
+
     <style name="DeviceConnectTipTheme" parent="LibDialogActivity">
 
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>

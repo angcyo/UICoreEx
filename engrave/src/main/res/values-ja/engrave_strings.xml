@@ -52,11 +52,6 @@
     <string name="delete_history_succeed">削除しました</string>
     <string name="delete_history_failed">削除に失敗しました</string>
 
-    <string name="device_z_model_flat">フラット</string>
-    <string name="device_z_model_car">トロリー</string>
-    <string name="device_z_model_cylinder">円筒形</string>
-    <string name="device_setting_tips_fourteen_11">彫刻モード:</string>
-
     <string name="print_file_name">モード</string>
     <string name="print_range">レーザー彫刻サイズ</string>
     <string name="print_time">実際の使用時間</string>
@@ -95,8 +90,6 @@
     <string name="canvas_rename">リネーム</string>
     <string name="retry">再試行</string>
 
-    <string name="select_device">デバイスを選択</string>
-    <string name="start_upgrade">アップデートを開始する</string>
     <string name="engrave_perimeter">円周</string>
     <string name="engrave_bounds_warn">元素が彫刻エリアから外れた</string>
     <string name="engrave_overflow_bounds_message">彫刻エリア域外では、要素を赤枠にドラッグしてください</string>
@@ -131,7 +124,6 @@
 
     <string name="material_title_limit">20文字まで入力可能</string>
     <string name="save_material_title">材料名</string>
-    <string name="engrave_feedback">フィードバック</string>
 
     <string name="delete_material_tip">削除すると、復元出来ません。続行しますか？</string>
     <string name="engrave_skip_current">現在の彫刻をスキップする</string>

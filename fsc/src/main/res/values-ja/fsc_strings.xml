@@ -52,4 +52,8 @@
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">滑り台</string>
     <string name="device_ex_s_des">--</string>
+
+    <string name="device_z_model_flat">フラット</string>
+    <string name="device_z_model_car">トロリー</string>
+    <string name="device_z_model_cylinder">円筒形</string>
 </resources>

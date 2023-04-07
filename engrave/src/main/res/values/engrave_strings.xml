@@ -56,11 +56,6 @@
     <string name="work_time">Duration</string>
     <string name="print_times">Pass</string>
 
-    <string name="device_z_model_flat">Slab</string>
-    <string name="device_z_model_car">Trolley</string>
-    <string name="device_z_model_cylinder">Cylinder</string>
-    <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
-
     <string name="ui_slip_menu_history">History Documents</string>
     <string name="device_history_title">Device data</string>
     <string name="app_history_title">Local data</string>
@@ -102,9 +97,6 @@
     <string name="canvas_rename">Rename</string>
     <string name="retry">Retry</string>
 
-    <string name="select_device">Select Device</string>
-    <string name="start_upgrade">Start Update</string>
-
     <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
     <string name="engrave_overflow_bounds_message">Cannot be sculpted out of area, please drag the element into the red border</string>
     <string name="engrave_perimeter">P</string>
@@ -139,7 +131,6 @@
 
     <string name="material_title_limit">Enter up to 20 characters</string>
     <string name="save_material_title">Material name</string>
-    <string name="engrave_feedback">Feedback</string>
 
     <string name="delete_material_tip">After deletion, it is not recoverable, do you want to continue?</string>
     <string name="engrave_skip_current">Skip the current engraving</string>

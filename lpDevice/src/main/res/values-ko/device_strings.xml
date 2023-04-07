@@ -77,4 +77,11 @@
     <string name="device_not_found">장치를 찾을 수 없습니다</string>
     <string name="device_not_found_des">기계가 연결 대기 중인지 확인하십시오</string>
     <string name="contact_me">고객 센터 연락</string>
+
+    <string name="device_setting_tips_fourteen_11">조각 패턴:</string>
+
+    <string name="select_device">장치 선택</string>
+    <string name="start_upgrade">업그레이드 시작</string>
+    <string name="engrave_feedback">피드백 문제</string>
+
 </resources>
