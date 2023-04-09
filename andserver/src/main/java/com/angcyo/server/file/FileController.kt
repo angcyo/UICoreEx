@@ -38,7 +38,14 @@ class FileController {
     @PostMapping("/uploadFiles")
     fun handleFileUpload(@RequestParam("files") files: Array<MultipartFile>?): String? {
         // 处理上传的文件
-        return "success"
+        files?.let {
+            return buildString {
+                it.forEach {
+                    appendLine(handleFileUpload(it))
+                }
+            }
+        }
+        return "no file!"
     }
 
     /**接收字符串的接口*/
