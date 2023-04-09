@@ -5,7 +5,7 @@ import com.angcyo.library.getAppName
 import com.angcyo.server.def.AndServerService
 
 /**
- * 文件服务
+ * 文件服务, 用来提供浏览手机文件的服务
  *
  * [com.angcyo.server.file.FileWebConfig]
  * [com.angcyo.server.LogFileInterceptor]
