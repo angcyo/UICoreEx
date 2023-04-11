@@ -22,7 +22,7 @@ import com.angcyo.library.ex.colorChannel
 import com.angcyo.library.ex.readAssets
 import com.angcyo.svg.Svg
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.widget.base.createPaint
+import com.angcyo.library.ex.createPaint
 import com.angcyo.widget.recycler.DslRecyclerView
 import com.pixplicity.sharp.SharpDrawable
 

@@ -8,7 +8,7 @@ import com.angcyo.canvas.core.RenderParams
 import com.angcyo.canvas.core.renderer.BaseOverlayRenderer
 import com.angcyo.canvas.graphics.dataItemIndex
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
-import com.angcyo.widget.base.createPaint
+import com.angcyo.library.ex.createPaint
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library._refreshRateRatio
 import com.angcyo.library.annotation.Pixel

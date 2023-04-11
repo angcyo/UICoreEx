@@ -15,7 +15,7 @@ import com.angcyo.library._refreshRateRatio
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
-import com.angcyo.widget.base.createPaint
+import com.angcyo.library.ex.createPaint
 
 /**
  * 雕刻中的一些信息渲染

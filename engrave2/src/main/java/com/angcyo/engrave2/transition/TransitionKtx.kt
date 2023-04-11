@@ -16,7 +16,7 @@ import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
-import com.angcyo.widget.base.createPaint
+import com.angcyo.library.ex.createPaint
 import java.io.File
 import kotlin.experimental.or
 import kotlin.math.max
