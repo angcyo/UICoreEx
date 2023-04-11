@@ -13,11 +13,13 @@
         style="@style/LibTitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="@dimen/lib_xhdpi"
         android:text="@string/invert_title"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="长文本测试长文本测试长文本测试长文本测试长文本测试长文本测试" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lib_des_view"
@@ -73,12 +75,13 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/des_view"
             style="@style/LibDesTextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/lib_xhdpi"
             android:text="@string/invert_not_recommend_criterion"
             app:layout_constraintBottom_toTopOf="@id/icon_view"
             app:layout_constraintLeft_toRightOf="@id/image_view"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/image_view" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -94,13 +97,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tip_view"
             style="@style/LibTitleTextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:layout_marginHorizontal="@dimen/lib_xhdpi"
             android:text="@string/invert_not_recommend"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/icon_view"
             app:layout_constraintLeft_toRightOf="@id/icon_view"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/icon_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -131,12 +135,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/des_view"
             style="@style/LibDesTextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/lib_xhdpi"
             android:text="@string/invert_recommend_criterion"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@id/icon_view"
             app:layout_constraintLeft_toRightOf="@id/image_view"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/image_view" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -152,13 +158,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tip_view"
             style="@style/LibTitleTextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/lib_xhdpi"
+            android:layout_marginHorizontal="@dimen/lib_xhdpi"
             android:text="@string/invert_recommend"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/icon_view"
             app:layout_constraintLeft_toRightOf="@id/icon_view"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/icon_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
