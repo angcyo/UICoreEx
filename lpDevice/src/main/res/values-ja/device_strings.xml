@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="engrave_warn">警告</string>
     <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
     <string name="device_connected">接続済み</string>
     <string name="blue_connecting">Bluetooth接続中...</string>
