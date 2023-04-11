@@ -15,10 +15,9 @@ import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
-import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
-import com.angcyo.gcode.GCodeHelper
+import com.angcyo.engrave2.transition.toGCodePath
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
@@ -28,7 +27,7 @@ import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toSizeString
-import com.angcyo.library.unit.toMm
+import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
 import com.hingin.rn.image.ImageProcess
@@ -96,7 +95,7 @@ object LPBitmapHandler {
         return OpenCV.bitmapToGCode(
             context,
             bitmap,
-            bitmap.width.toMm().toDouble(),
+            (1 / 1f.toPixel()).toDouble(),
             lineSpace = bean.gcodeLineSpace.toDouble(),
             direction = bean.gcodeDirection,
             angle = bean.gcodeAngle.toDouble(),
@@ -242,12 +241,15 @@ object LPBitmapHandler {
                             val gCodeText = gcodeFile.readText()
                             gcodeFile.deleteSafe()
                             LTime.tick()
-                            val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
-                            "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
-                            gCodeText.writeToFile(_defaultGCodeOutputFile())
+                            //val result = gCodeText to GCodeHelper.parseGCode(gCodeText)
+                            val path = gCodeText.toGCodePath()
+                            val result = gCodeText to path
+                            val outputFile = _defaultGCodeOutputFile()
+                            gCodeText.writeToFile(outputFile)
+                            "解析GCode数据[${gCodeText.length.toSizeString()}]耗时:${LTime.time()} ${outputFile.absolutePath}".writePerfLog()
 
                             element.updateOriginBitmapGCode(
-                                result.second?.gCodePath?.run { listOf(this) },
+                                result.second?.run { listOf(this) },
                                 result.first,
                                 false
                             )

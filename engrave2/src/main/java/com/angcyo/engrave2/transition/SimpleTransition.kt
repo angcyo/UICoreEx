@@ -15,7 +15,7 @@ import com.angcyo.library.ex.bounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.unit.IValueUnit
-import com.angcyo.library.unit.toMm
+import com.angcyo.library.unit.toPixel
 import com.angcyo.opencv.OpenCV
 import java.io.File
 import java.io.FileOutputStream
@@ -46,7 +46,7 @@ class SimpleTransition : ITransition {
         val file = OpenCV.bitmapToGCode(
             app(),
             bitmap,
-            (bounds.width() / 2).toMm().toDouble(),
+            (1 / 1f.toPixel()).toDouble(),
             direction = 0,
             angle = 0.0,
             type = 2 //只获取轮廓

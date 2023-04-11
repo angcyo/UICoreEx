@@ -8,7 +8,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.TransitionParam
-import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
@@ -426,7 +425,8 @@ object EngraveTransitionHelper {
             LPDataConstant.EXT_GCODE
         )
 
-        val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
+        //val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
+        val gCodeDrawable = gCodeText.toGCodePath()?.toDrawable()
 
         //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
         val previewBitmap = gCodeDrawable?.toBitmap()

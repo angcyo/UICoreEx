@@ -7,22 +7,16 @@ import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.drawRight
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
-import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.app
-import com.angcyo.library.ex._color
-import com.angcyo.library.ex._dimen
-import com.angcyo.library.ex.colorChannel
-import com.angcyo.library.ex.readAssets
+import com.angcyo.library.ex.*
 import com.angcyo.svg.Svg
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.library.ex.createPaint
 import com.angcyo.widget.recycler.DslRecyclerView
 import com.pixplicity.sharp.SharpDrawable
 
@@ -108,7 +102,8 @@ fun loadAssetsSvgPath(
 }
 
 /**扩展*/
-fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
+@Deprecated("请使用性能更好的Jni方法:[String.toGCodePath]")
+private fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
     parseGCode(gCodeText, createPaint(Color.BLACK))
 
 /**扩展*/

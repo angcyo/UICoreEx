@@ -8,7 +8,7 @@ import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.gcode.GCodeHelper
+import com.angcyo.engrave2.transition.toGCodePath
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.toPaintStyle
@@ -219,9 +219,12 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         if (!data.isNullOrEmpty()) {
             when (elementBean.mtype) {
                 LPDataConstant.DATA_TYPE_GCODE -> {
-                    val gCodeDrawable = GCodeHelper.parseGCode(data, paint)
+                    /*val gCodeDrawable = GCodeHelper.parseGCode(data, paint)
                     if (gCodeDrawable != null) {
                         pathList = listOf(gCodeDrawable.gCodePath)
+                    }*/
+                    data.toGCodePath()?.let {
+                        pathList = listOf(it)
                     }
                 }
                 LPDataConstant.DATA_TYPE_SVG -> {

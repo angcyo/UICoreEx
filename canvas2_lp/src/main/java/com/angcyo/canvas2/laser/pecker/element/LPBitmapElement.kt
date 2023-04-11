@@ -10,11 +10,10 @@ import com.angcyo.canvas.render.element.BitmapElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas.render.util.RenderHelper
-import com.angcyo.canvas2.laser.pecker.parseGCode
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.gcode.GCodeHelper
+import com.angcyo.engrave2.transition.toGCodePath
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
@@ -141,9 +140,10 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                     "GCode数据为空, 无法渲染...".writeToLog()
                 } else {
                     LTime.tick()
-                    val result = GCodeHelper.parseGCode(gcode)
+                    /*val result = GCodeHelper.parseGCode(gcode)
+                    result?.gCodePath?.let { pathList = listOf(it) }*/
+                    gcode.toGCodePath()?.let { pathList = listOf(it) }
                     "解析GCode数据[${gcode.length.toSizeString()}]耗时:${LTime.time()}".writePerfLog()
-                    result?.gCodePath?.let { pathList = listOf(it) }
                 }
             }
         }
