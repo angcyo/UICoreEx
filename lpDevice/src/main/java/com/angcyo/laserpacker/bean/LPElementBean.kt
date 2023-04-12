@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.bean
 
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -94,10 +95,10 @@ data class LPElementBean(
     var icon: String? = null,
 
     /**数据类型, 线条类型的长度放在[width]属性中
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_TEXT]
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_RECT]
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_OVAL]
-     * [com.angcyo.canvas2.laser.pecker.util.LPConstant.DATA_TYPE_LINE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_TEXT]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_RECT]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_OVAL]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_TYPE_LINE]
      * */
     var mtype: Int = -1,
 
@@ -369,6 +370,10 @@ data class LPElementBean(
 
     //region ---私有属性---
 
+    /**V2中直接使用图片对象, 而不是转换成base64损耗性能*/
+    @Transient var _srcBitmap: Bitmap? = null,
+    @Transient var _imageOriginalBitmap: Bitmap? = null,
+
     /**强行指定要雕刻的数据模式
      * [_layerMode]
      *
@@ -413,8 +418,8 @@ data class LPElementBean(
         ) {
             dataMode
         } else {
-            when (mtype) {
-                LPDataConstant.DATA_TYPE_BITMAP -> when (imageFilter) {
+            when {
+                mtype == LPDataConstant.DATA_TYPE_BITMAP -> when (imageFilter) {
                     LPDataConstant.DATA_MODE_PRINT,
                     LPDataConstant.DATA_MODE_SEAL,
                     LPDataConstant.DATA_MODE_BLACK_WHITE -> LPDataConstant.DATA_MODE_BLACK_WHITE
@@ -427,26 +432,18 @@ data class LPElementBean(
                     }
                     else -> imageFilter
                 }
-                LPDataConstant.DATA_TYPE_TEXT -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                mtype == LPDataConstant.DATA_TYPE_TEXT -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
                     //描边文本, 走GCode
                     LPDataConstant.DATA_MODE_GCODE
                 } else {
                     //否则就是黑白画
                     LPDataConstant.DATA_MODE_BLACK_WHITE
                 }
-                LPDataConstant.DATA_TYPE_QRCODE,
-                LPDataConstant.DATA_TYPE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+                mtype == LPDataConstant.DATA_TYPE_QRCODE ||
+                        mtype == LPDataConstant.DATA_TYPE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
                 //填充线/描边线, 都是GCode
-                LPDataConstant.DATA_TYPE_LINE -> LPDataConstant.DATA_MODE_GCODE
-                LPDataConstant.DATA_TYPE_RECT,
-                LPDataConstant.DATA_TYPE_OVAL,
-                LPDataConstant.DATA_TYPE_LOVE,
-                LPDataConstant.DATA_TYPE_POLYGON,
-                LPDataConstant.DATA_TYPE_PENTAGRAM,
-                LPDataConstant.DATA_TYPE_PEN,
-                LPDataConstant.DATA_TYPE_PATH,
-                LPDataConstant.DATA_TYPE_SVG,
-                LPDataConstant.DATA_TYPE_GCODE -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                isLineShape -> LPDataConstant.DATA_MODE_GCODE
+                isPathElement -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
                     //描边SVG, 走GCode
                     LPDataConstant.DATA_MODE_GCODE
                 } else {
@@ -456,6 +453,19 @@ data class LPElementBean(
                 else -> null
             }
         }
+
+    /**[com.angcyo.canvas2.laser.pecker.element.LPPathElement]*/
+    val isPathElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_PATH ||
+                mtype == LPDataConstant.DATA_TYPE_SVG ||
+                mtype == LPDataConstant.DATA_TYPE_GCODE ||
+                mtype == LPDataConstant.DATA_TYPE_LINE ||
+                mtype == LPDataConstant.DATA_TYPE_RECT ||
+                mtype == LPDataConstant.DATA_TYPE_OVAL ||
+                mtype == LPDataConstant.DATA_TYPE_LOVE ||
+                mtype == LPDataConstant.DATA_TYPE_POLYGON ||
+                mtype == LPDataConstant.DATA_TYPE_PENTAGRAM ||
+                mtype == LPDataConstant.DATA_TYPE_PEN
 
     /**原始的宽高, 毫米*/
     @MM

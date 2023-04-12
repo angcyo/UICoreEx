@@ -25,7 +25,7 @@ class LogFileInterceptor : HandlerInterceptor {
 
         /**以下后缀, 全部返回字符串内容*/
         val STRING_BODY_LIST =
-            mutableListOf(".log", ".gcode", ".txt", ".bp", ".lp", ".svg", ".temp")
+            mutableListOf(".log", ".gcode", ".txt", ".bp", ".lp", ".svg", ".temp", ".lptemp")
     }
 
     override fun onIntercept(

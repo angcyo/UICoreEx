@@ -59,7 +59,6 @@
     <string name="canvas_grey">グレースケール</string>
     <string name="canvas_seal">スタンプ</string>
 
-    <string name="canvas_font_text">レーザーペッカー</string>
     <string name="canvas_invert">リフレクトカラー</string>
     <string name="canvas_threshold">境界値</string>
     <string name="canvas_contrast">コントラスト</string>
@@ -83,7 +82,6 @@
     <string name="canvas_back">ボトムに固定</string>
     <string name="canvas_sort">アレンジする</string>
 
-    <string name="canvas_import_font">導入</string>
     <string name="canvas_invalid_font">無効なフォント</string>
     <string name="canvas_font_exist">フォントがすでに存在します</string>
     <string name="canvas_cannot_import">導入できません</string>
@@ -128,24 +126,11 @@
     <string name="canvas_best">フィット</string>
 
     <string name="canvas_item_outof_limit">素材の数は上限に達しました!</string>
-
-    <string name="canvas_open">開ける</string>
-    <string name="font_import_fail">フォントインポート障害</string>
-    <string name="font_import_success">フォントインポートの成功</string>
-
     <string name="canvas_min_diameter">小径</string>
     <string name="canvas_max_diameter">大直径</string>
     <string name="canvas_rotation_axis">回転シャフト</string>
 
     <string name="canvas_sync_font">バックアップ/同期フォント</string>
-
-    <string name="canvas_rename">名前を変更します</string>
-    <string name="canvas_delete_project">プロジェクトを削除します</string>
-    <string name="canvas_delete_project_tip">削除後に回復しないでください、あなたは続けますか？</string>
-
-    <string name="save_project_title">プロジェクト名</string>
-    <string name="project_title_limit">最大20文字を入力します</string>
-    <string name="project_save_success_tip">プロジェクトの保存が成功しました</string>
 
     <string name="add_parameter_comparison_table">パラメーター制御テーブルを追加します</string>
     <string name="add_parameter_comparison_table_threshold">しきい値</string>

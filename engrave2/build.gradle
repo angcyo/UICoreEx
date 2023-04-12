@@ -3,18 +3,10 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core) //model
-    implementation project(allModule.objectbox_lp) //数据库
     api project(allModule.fsc)
     api project(allModule.lpDevice)
 
     implementation project(allModule.dslitem)
-    compileOnly project(allModule.umeng_lp)
-
-    api project(allModule.vector)//GCode SVG
-
-    //图片算法, 抖动/GCode
-    implementation "com.angcyo:bitmapHandle:${opencv_version}"
-    implementation "com.angcyo:opencv:${opencv_version}"
 
     /*
     implementation project(allModule.transition)

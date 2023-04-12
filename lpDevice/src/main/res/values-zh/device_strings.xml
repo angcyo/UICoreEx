@@ -84,4 +84,18 @@
     <string name="start_upgrade">开始升级</string>
     <string name="engrave_feedback">反馈问题</string>
 
+    <string name="empty_data_transfer">无雕刻数据!</string>
+    <string name="out_of_data_transfer">数据过大!</string>
+    <string name="transfer_data_exception">传输数据异常!</string>
+    <string name="canvas_open">打开</string>
+    <string name="font_import_fail">字体导入失败</string>
+    <string name="font_import_success">字体导入成功</string>
+    <string name="canvas_import_font">导入</string>
+    <string name="canvas_rename">重命名</string>
+    <string name="project_title">我的创作</string>
+    <string name="canvas_delete_project">删除项目</string>
+    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
+    <string name="save_project_title">项目名称</string>
+    <string name="project_title_limit">最多输入20个字符</string>
+    <string name="project_save_success_tip">项目保存成功</string>
 </resources>

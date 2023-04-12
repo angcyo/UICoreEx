@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="permission_disabled">권한이 비활성화됨</string>
-
     <string name="canvas_operate">조작하다</string>
     <string name="laser_type">레이저 광원</string>
     <string name="object_diameter">물체의 지름</string>
@@ -87,7 +85,6 @@
     <string name="share_community">커뮤니티에 공유하기</string>
     <string name="canvas_normal_layer">정상 레이어</string>
     <string name="canvas_engrave_layer">레이어 각인</string>
-    <string name="canvas_rename">이름 변경</string>
     <string name="retry">재시도하다</string>
 
     <string name="engrave_perimeter">둘레</string>
@@ -99,11 +96,8 @@
 
     <string name="focal_distance_tip">초점거리를 확인하세요</string>
     <string name="focal_distance">초점거리</string>
-    <string name="empty_data_transfer">조각 데이터 없음!</string>
     <string name="no_data_transfer">무수한 데이터를 전송해야 한다!</string>
     <string name="no_data_engrave">무수한 증거가 라듐 조각의 수요에 필요하였다!</string>
-    <string name="out_of_data_transfer">데이터가 지나치게 크다.!</string>
-    <string name="transfer_data_exception">전송 데이터 이상!</string>
 
     <string name="device_angle">설비 수평 각도</string>
     <string name="device_temp">설비온도</string>
@@ -116,7 +110,6 @@
     <string name="engrave_module_knife_cutting">커터 모드</string>
     <string name="engrave_module_cnc">CNC 모드</string>
 
-    <string name="project_title">나의 만들기</string>
     <string name="engrave_stopping_tip">조각 작업을 중지합니다. 잠시만 기다려 주십시오...</string>
 
     <string name="open_notify_tip">알림 열기, 조각 알림 받기 진행?</string>

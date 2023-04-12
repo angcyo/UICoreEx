@@ -12,7 +12,6 @@ import com.angcyo.canvas.items.data.DataPathItem
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
 import com.angcyo.canvas.utils.isLineShape
-import com.angcyo.canvas.utils.parseGCode
 import com.angcyo.core.vmApp
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
@@ -20,6 +19,7 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.parseGCode
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app

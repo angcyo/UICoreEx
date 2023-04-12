@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="canvas_open_label">@string/app_name</string>
-    <string name="canvas_open">Open</string>
-
     <string name="canvas_min_diameter">Small D</string>
     <string name="canvas_max_diameter">Large D</string>
     <string name="canvas_rotation_axis">Rotation axis</string>
     <string name="canvas_sync_font">Backing up / synchronizing fonts</string>
-
-    <string name="canvas_rename">Rename</string>
-    <string name="canvas_delete_project">Delete</string>
-    <string name="canvas_delete_project_tip">Unrecoverable after deletion, continue?</string>
-
-    <string name="save_project_title">Project name</string>
-    <string name="project_title_limit">Enter a maximum of 20 characters</string>
-    <string name="project_save_success_tip">Project saved successfully</string>
 </resources>

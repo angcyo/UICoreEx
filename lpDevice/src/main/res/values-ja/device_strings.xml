@@ -84,4 +84,20 @@
     <string name="start_upgrade">アップデートを開始する</string>
     <string name="engrave_feedback">フィードバック</string>
 
+    <string name="empty_data_transfer">彫刻データなし!</string>
+    <string name="out_of_data_transfer">データが大きすぎます!</string>
+    <string name="transfer_data_exception">転送データエラー!</string>
+    <string name="canvas_open">開く</string>
+    <string name="font_import_fail">フォントインポート障害</string>
+    <string name="font_import_success">フォントインポートの成功</string>
+    <string name="canvas_font_text">レーザーペッカー</string>
+    <string name="canvas_import_font">導入</string>
+    <string name="canvas_rename">リネーム</string>
+    <string name="project_title">創作</string>
+    <string name="canvas_delete_project">項目を削除</string>
+    <string name="canvas_delete_project_tip">削除されたアイテムは復元できません。続行しますか？</string>
+    <string name="save_project_title">項目名</string>
+    <string name="project_title_limit">20文字まで入力可能</string>
+    <string name="project_save_success_tip">項目が保存されました</string>
+
 </resources>

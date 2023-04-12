@@ -15,7 +15,7 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.*
-import com.angcyo.engrave2.exception.EmptyException
+import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.*

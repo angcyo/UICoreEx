@@ -55,8 +55,15 @@ object LPDataConstant {
     /**2023-04-12 第二版工程结构文件后缀, 使用zip结构存储¬*/
     const val PROJECT_EXT2 = ".lp2"
 
+    /**默认的结构工程文件存储名*/
+    const val PROJECT_V1_TEMP_NAME = ".lptemp"
+    const val PROJECT_V2_TEMP_NAME = ".lp2temp"
+
     /**第二版结构中, 工程默认的结构数据放在zip包里面此流中*/
     const val PROJECT_V2_DEFAULT_NAME = ".lpproject"
+
+    /**第二版结构中, 预览图放在zip包里面此流中*/
+    const val PROJECT_V2_PREVIEW_NAME = "preview.png"
 
     /**V2: 所有资源存放的基础路径*/
     const val PROJECT_V2_BASE_URI = "res/"

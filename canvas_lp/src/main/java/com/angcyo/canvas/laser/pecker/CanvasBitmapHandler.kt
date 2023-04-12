@@ -8,13 +8,14 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.items.data.DataBitmapItem
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.utils.CanvasDataHandleOperate
-import com.angcyo.canvas.utils.parseGCode
+import com.angcyo.laserpacker.parseGCode
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.toBlackWhiteBitmap
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate

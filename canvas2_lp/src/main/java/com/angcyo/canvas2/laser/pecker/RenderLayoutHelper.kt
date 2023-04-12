@@ -16,7 +16,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.canvas2.laser.pecker.dslitem.item.*
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
-import com.angcyo.canvas2.laser.pecker.manager.saveProjectState
+import com.angcyo.canvas2.laser.pecker.manager.saveProjectStateV2
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -299,18 +299,9 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     val list = renderDelegate.renderManager.getAllElementRendererList(true, false)
                     for (renderer in list) {
                         val bean = renderer.lpElementBean()
-                        when (bean?.mtype) {
-                            LPDataConstant.DATA_TYPE_LINE,
-                            LPDataConstant.DATA_TYPE_RECT,
-                            LPDataConstant.DATA_TYPE_OVAL,
-                            LPDataConstant.DATA_TYPE_LOVE,
-                            LPDataConstant.DATA_TYPE_POLYGON,
-                            LPDataConstant.DATA_TYPE_PENTAGRAM,
-                            LPDataConstant.DATA_TYPE_PEN,
-                            LPDataConstant.DATA_TYPE_PATH,
-                            LPDataConstant.DATA_TYPE_SVG,
-                            LPDataConstant.DATA_TYPE_GCODE -> {
-                                if (bean.paintStyle == 1) {
+                        when {
+                            bean?.isPathElement == true -> {
+                                if (bean.paintStyle == 1 || bean.isLineShape) {
                                     //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
                                     renderer.requestUpdateDrawableFlag(
                                         Reason.preview,
@@ -318,7 +309,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     )
                                 }
                             }
-                            LPDataConstant.DATA_TYPE_BITMAP -> {
+                            bean?.mtype == LPDataConstant.DATA_TYPE_BITMAP -> {
                                 if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
                                     renderer.requestUpdateDrawableFlag(
                                         Reason.preview,
@@ -453,17 +444,20 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             override fun onElementRendererListChange(
                 from: List<BaseRenderer>,
                 to: List<BaseRenderer>,
-                op: List<BaseRenderer>
+                op: List<BaseRenderer>,
+                reason: Reason
             ) {
-                if (!renderDelegate.asyncManager.hasAsyncTask()) {
-                    renderDelegate.saveProjectState()
+                if ((reason.reason == Reason.REASON_CODE ||
+                            reason.reason == Reason.REASON_USER) && !renderDelegate.asyncManager.hasAsyncTask()
+                ) {
+                    renderDelegate.saveProjectStateV2()
                 }
                 renderLayerListLayout()
             }
 
             override fun onAsyncStateChange(uuid: String, state: Int) {
                 if (!renderDelegate.asyncManager.hasAsyncTask()) {
-                    renderDelegate.saveProjectState()
+                    renderDelegate.saveProjectStateV2()
                 }
             }
 
@@ -548,7 +542,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     -(delegate.view.mH() - delegate.initialPointComponent.pointRect.bottom.toInt())
                                 menuItemClickAction = {
                                     when (it.itemId) {
-                                        R.id.menu_clear -> delegate.removeAllElementRenderer()
+                                        R.id.menu_clear -> delegate.removeAllElementRenderer(Reason.user)
                                         R.id.menu_reset -> renderViewBox.reset()
                                         R.id.menu_best -> onPointTouchEvent(
                                             component,
@@ -671,6 +665,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     }
                                     delegate.renderManager.arrangeElementSortWith(
                                         list,
+                                        Reason.user,
                                         Strategy.normal
                                     )
                                 }
@@ -761,7 +756,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             vh.enable(R.id.layer_control_copy_view, list.isNotEmpty())
 
             vh.click(R.id.layer_control_delete_view) {
-                delegate.renderManager.removeElementRenderer(list, Strategy.normal)
+                delegate.renderManager.removeElementRenderer(list, Reason.user, Strategy.normal)
             }
             vh.click(R.id.layer_control_visible_view) {
                 delegate.renderManager.updateRendererVisible(list, false, Reason.user, delegate)

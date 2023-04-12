@@ -1,32 +1,26 @@
-package com.angcyo.canvas.laser.pecker.activity
+package com.angcyo.laserpacker.open
 
 import android.graphics.Color
 import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
-import com.angcyo.canvas.graphics.toGCodeItemData
-import com.angcyo.canvas.graphics.toSvgItemData
-import com.angcyo.canvas.laser.pecker.BuildConfig
-import com.angcyo.canvas.laser.pecker.R
-import com.angcyo.canvas.laser.pecker.mode.CanvasOpenModel
-import com.angcyo.canvas.laser.pecker.toBlackWhiteBitmapItemData
-import com.angcyo.canvas.utils.*
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.updateAdapterState
-import com.angcyo.engrave.transition.OutOfSizeException
-import com.angcyo.gcode.GCodeHelper
 import com.angcyo.getData
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
-import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.*
+import com.angcyo.laserpacker.device.BuildConfig
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.firmware.FirmwareUpdateFragment
-import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.laserpacker.project.readProjectBean
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
@@ -42,7 +36,7 @@ import java.io.File
 
 /**
  * 文件打开的预览界面
- * [com.angcyo.canvas.laser.pecker.activity.CanvasOpenActivity]
+ * [com.angcyo.laserpacker.open.CanvasOpenActivity]
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/10/12
  */
@@ -108,23 +102,24 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             throw OutOfSizeException()
         }
         //
-        if (path.endsWith(LPDataConstant.PROJECT_EXT, true)) {
+        if (path.endsWith(LPDataConstant.PROJECT_EXT, true) ||
+            path.endsWith(LPDataConstant.PROJECT_EXT2, true)
+        ) {
             //工程文件
-            val text = file.readText()
-            val canvasBean = text?.toProjectBean()
+            val projectBean = file.readProjectBean()
 
-            if (canvasBean != null) {
+            if (projectBean != null) {
                 adapter?.render {
                     clearAllItems()
                     CanvasOpenPreviewItem()() {
                         itemFilePath = path
-                        itemShowName = canvasBean.file_name
-                        itemDrawable =
-                            canvasBean.preview_img?.toBitmapOfBase64()?.toDrawable(resources)
-                                ?: getAppIcon()
+                        itemShowName = projectBean.file_name
+                        itemDrawable = projectBean._previewImgBitmap?.toDrawable(resources)
+                            ?: projectBean.preview_img?.toBitmapOfBase64()?.toDrawable(resources)
+                                    ?: getAppIcon()
 
                         openAction = {
-                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, canvasBean)
+                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, projectBean)
                             finish()
                         }
 
@@ -146,10 +141,10 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    itemDrawable = GCodeHelper.parseGCode(text)
+                    itemDrawable = text?.toGCodePath()?.toDrawable()
 
                     openAction = {
-                        val itemData = text.toGCodeItemData()
+                        val itemData = text.toGCodeElementBean()
                         canvasOpenModel.open(this@CanvasOpenPreviewActivity, itemData)
                         finish()
                     }
@@ -174,7 +169,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                     itemDrawable = parseSvg(text)
 
                     openAction = {
-                        val itemData = text.toSvgItemData()
+                        val itemData = text.toSvgElementBean()
                         canvasOpenModel.open(this@CanvasOpenPreviewActivity, itemData)
                         finish()
                     }
@@ -249,7 +244,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
 
                     openAction = {
                         this@CanvasOpenPreviewActivity.engraveLoadingAsync({
-                            bitmap.toBlackWhiteBitmapItemData()
+                            bitmap.toBitmapElementBeanV2()
                         }) {
                             canvasOpenModel.open(this@CanvasOpenPreviewActivity, it)
                             finish()
@@ -272,14 +267,15 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         if (BuildConfig.DEBUG) {
             return
         }
-        if ((text?.byteSize() ?: 0) > HawkEngraveKeys.openFileByteCount) {
+        //2023-4-12 使用Jni解析文件, 速度快, 取消限制
+        /*if ((text?.byteSize() ?: 0) > HawkEngraveKeys.openFileByteCount) {
             //超过了字节限制
             throw OutOfSizeException()
         }
         if ((text?.lines()?.size() ?: 0) > HawkEngraveKeys.openFileLineCount) {
             //超过了行数限制
             throw OutOfSizeException()
-        }
+        }*/
     }
 
 }

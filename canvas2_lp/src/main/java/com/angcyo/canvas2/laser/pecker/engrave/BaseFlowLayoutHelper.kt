@@ -14,7 +14,7 @@ import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
-import com.angcyo.canvas2.laser.pecker.util.getProjectBean
+import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
@@ -24,7 +24,6 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
-import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
@@ -42,7 +41,6 @@ import com.angcyo.library.libCacheFile
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
-import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.span.span
 
 /**
@@ -163,10 +161,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             viewHolder?.longClick(R.id.lib_title_view) {
                 engraveCanvasFragment?.renderDelegate?.apply {
                     val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPDataConstant.PROJECT_EXT))
-                    val bean = getProjectBean()
-                    val json = bean.toJson()
-                    json.writeTo(file, false)
-                    file.shareFile()
+                    LPProjectManager().saveProjectV1To(file, this).shareFile()
                 }
             }
         }

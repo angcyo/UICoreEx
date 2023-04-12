@@ -1,6 +1,4 @@
 <resources>
-    <string name="permission_disabled">Permission disabled</string>
-
     <string name="canvas_operate">Operate</string>
     <string name="laser_type">Laser source</string>
     <string name="object_diameter">Diameter</string>
@@ -94,7 +92,6 @@
     <string name="share_community">Share</string>
     <string name="canvas_normal_layer">Normal layer</string>
     <string name="canvas_engrave_layer">Carving layer</string>
-    <string name="canvas_rename">Rename</string>
     <string name="retry">Retry</string>
 
     <string name="engrave_bounds_warn">The element is outside the sculpted area</string>
@@ -106,12 +103,9 @@
 
     <string name="focal_distance_tip">Please confirm the focal length</string>
     <string name="focal_distance">FFD</string>
-    <string name="empty_data_transfer">No engraving data!</string>
     <string name="no_data_transfer">No data needs to be transmitted!</string>
     <string name="no_data_engrave">No data need radium carving!</string>
 
-    <string name="out_of_data_transfer">Data is too large!</string>
-    <string name="transfer_data_exception">Data transmission failure!</string>
     <string name="device_angle">Device angle</string>
     <string name="device_temp">Device temp</string>
 
@@ -123,7 +117,6 @@
     <string name="engrave_module_knife_cutting">Knife cutting</string>
     <string name="engrave_module_cnc">CNC</string>
 
-    <string name="project_title">My creation</string>
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
 
     <string name="open_notify_tip">Turn on notifications to receive sculpted notifications progress?</string>

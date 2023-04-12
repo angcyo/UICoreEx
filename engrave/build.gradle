@@ -6,22 +6,15 @@ dependencies {
     implementation project(allModule.glide)
     implementation project(allModule.dslitem)
     implementation project(allModule.transition)
-    implementation project(allModule.objectbox_lp) //数据库
     implementation project(allModule.canvas)
     implementation project(allModule.dialog2)
     implementation project(allModule.pager) //
-
-    compileOnly project(allModule.umeng_lp)
 
     api project(allModule.fsc)
     api project(allModule.lpDevice)
 
     //https://github.com/chrisbanes/PhotoView/
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-
-    //图片算法, 这里只编译, 在canvas_lp中依赖
-    compileOnly "com.angcyo:bitmapHandle:${opencv_version}"
-    compileOnly "com.angcyo:opencv:${opencv_version}"
 
     //https://mvnrepository.com/artifact/com.airbnb.android/lottie
     implementation "com.airbnb.android:lottie:5.2.0"

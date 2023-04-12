@@ -101,18 +101,6 @@ fun loadAssetsSvgPath(
     }
 }
 
-/**扩展*/
-@Deprecated("请使用性能更好的Jni方法:[String.toGCodePath]")
-private fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
-    parseGCode(gCodeText, createPaint(Color.BLACK))
-
-/**扩展*/
-fun parseSvg(svgText: String?): SharpDrawable? = if (svgText.isNullOrEmpty()) {
-    null
-} else {
-    Svg.loadSvgPathDrawable(svgText, -1, null, createPaint(Color.BLACK), 0, 0)
-}
-
 /**从图片中, 获取雕刻需要用到的像素信息*/
 fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
     return colorChannel(channelType) { color, channelValue ->

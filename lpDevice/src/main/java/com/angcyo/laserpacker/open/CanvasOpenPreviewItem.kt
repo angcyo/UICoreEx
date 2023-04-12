@@ -1,12 +1,12 @@
-package com.angcyo.canvas.laser.pecker.activity
+package com.angcyo.laserpacker.open
 
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.core.view.isVisible
-import com.angcyo.canvas.laser.pecker.R
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
+import com.angcyo.laserpacker.device.R
 import com.angcyo.library.ex.*
 import com.angcyo.widget.DslViewHolder
 import java.io.File

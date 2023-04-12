@@ -39,6 +39,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
 import com.angcyo.library.component.pad.isInPadMode

@@ -17,12 +17,12 @@ import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
-import com.angcyo.engrave2.transition.toGCodePath
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
+import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.deleteSafe

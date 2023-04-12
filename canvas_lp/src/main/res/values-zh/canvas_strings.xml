@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="canvas_open">打开</string>
-    <string name="font_import_fail">字体导入失败</string>
-    <string name="font_import_success">字体导入成功</string>
-
     <string name="canvas_min_diameter">小直径</string>
     <string name="canvas_max_diameter">大直径</string>
     <string name="canvas_rotation_axis">旋转轴</string>
     <string name="canvas_sync_font">备份/同步字体</string>
-
-    <string name="canvas_rename">重命名</string>
-    <string name="canvas_delete_project">删除项目</string>
-    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
-
-    <string name="save_project_title">项目名称</string>
-    <string name="project_title_limit">最多输入20个字符</string>
-    <string name="project_save_success_tip">项目保存成功</string>
 </resources>

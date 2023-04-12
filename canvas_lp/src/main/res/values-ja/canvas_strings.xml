@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="canvas_open">開く</string>
     <string name="font_import_fail">フォントの導入に失敗しました</string>
     <string name="font_import_success">フォントの導入に成功しました</string>
 
@@ -9,12 +8,4 @@
     <string name="canvas_rotation_axis">回転軸</string>
 
     <string name="canvas_sync_font">フォントのバックアップ/同期</string>
-
-    <string name="canvas_rename">リネーム</string>
-    <string name="canvas_delete_project">項目を削除</string>
-    <string name="canvas_delete_project_tip">削除されたアイテムは復元できません。続行しますか？</string>
-
-    <string name="save_project_title">項目名</string>
-    <string name="project_title_limit">20文字まで入力可能</string>
-    <string name="project_save_success_tip">項目が保存されました</string>
 </resources>

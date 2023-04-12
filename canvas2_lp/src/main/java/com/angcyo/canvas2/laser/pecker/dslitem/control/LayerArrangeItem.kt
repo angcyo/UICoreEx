@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import com.angcyo.canvas.render.core.CanvasRenderManager
+import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
@@ -47,7 +48,12 @@ class LayerArrangeItem : CanvasIconItem() {
 
         itemClick = {
             itemRenderer?.let {
-                itemRenderDelegate?.renderManager?.arrangeElement(it, itemArrange, Strategy.normal)
+                itemRenderDelegate?.renderManager?.arrangeElement(
+                    it,
+                    itemArrange,
+                    Reason.user,
+                    Strategy.normal
+                )
             }
         }
 

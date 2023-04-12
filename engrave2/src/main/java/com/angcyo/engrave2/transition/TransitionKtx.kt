@@ -3,7 +3,6 @@ package com.angcyo.engrave2.transition
 import android.graphics.*
 import android.view.Gravity
 import android.widget.LinearLayout
-import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
@@ -11,7 +10,6 @@ import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
@@ -578,10 +576,6 @@ fun Bitmap.toGCode(
     }
     return outputFile
 }
-
-/**将GCode字符串, 转换成Android的[Path]
- * [Path.toDrawable]*/
-fun String.toGCodePath() = BitmapHandle.parseGCode(this, lastContext)
 
 /**扩展*/
 @Deprecated("请使用性能更好的Jni方法:[String.toGCodePath]")

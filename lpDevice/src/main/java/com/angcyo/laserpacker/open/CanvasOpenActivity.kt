@@ -1,4 +1,4 @@
-package com.angcyo.canvas.laser.pecker.activity
+package com.angcyo.laserpacker.open
 
 import android.app.Activity
 import android.os.Bundle
@@ -8,7 +8,7 @@ import com.angcyo.library.ex.*
 import com.angcyo.putData
 
 /**
- * 使用[CanvasDemo]打开文件
+ * 注册一个: 使用[xxx]打开文件 的Activity
  *
  * 支持的后缀列表
  * [.jpg] [.jpeg] [.png]

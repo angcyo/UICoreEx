@@ -1,4 +1,4 @@
-package com.angcyo.canvas.laser.pecker.mode
+package com.angcyo.laserpacker.open
 
 import android.app.Activity
 import android.content.Context
@@ -9,11 +9,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.lastContext
-import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.vmDataOnce
 
 /**
- * 用来实现[Canvas]的打开文件和导入文件数据转发
+ * 用来实现[android.graphics.Canvas]的打开文件和导入文件数据转发
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/07/15
  */

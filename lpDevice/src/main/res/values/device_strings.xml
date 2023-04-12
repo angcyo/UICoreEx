@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="canvas_open_label">@string/app_name</string>
+
     <string name="engrave_warn">Warning</string>
     <string name="ble_permission_disabled">Relevant permissions are disabled, please turn on Bluetooth and location and other related permissions!</string>
     <string name="device_connected">Connected</string>
@@ -84,4 +86,19 @@
     <string name="start_upgrade">Start Update</string>
     <string name="engrave_feedback">Feedback</string>
 
+    <string name="empty_data_transfer">No engraving data!</string>
+    <string name="out_of_data_transfer">Data is too large!</string>
+    <string name="transfer_data_exception">Data transmission failure!</string>
+    <string name="canvas_open">Open</string>
+    <string name="font_import_fail">Font import failed</string>
+    <string name="font_import_success">Font imported successfully</string>
+    <string name="canvas_font_text">LaserPecker</string>
+    <string name="canvas_import_font">Import</string>
+    <string name="canvas_rename">Rename</string>
+    <string name="project_title">My creation</string>
+    <string name="canvas_delete_project">Delete</string>
+    <string name="canvas_delete_project_tip">Unrecoverable after deletion, continue?</string>
+    <string name="save_project_title">Project name</string>
+    <string name="project_title_limit">Enter a maximum of 20 characters</string>
+    <string name="project_save_success_tip">Project saved successfully</string>
 </resources>

@@ -1,19 +1,18 @@
-package com.angcyo.canvas2.laser.pecker.activity.dslitem
+package com.angcyo.laserpacker.project.dslitem
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
-import com.angcyo.http.base.toJson
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.laserpacker.device.R
+import com.angcyo.laserpacker.project.LPProjectHelper
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
-import com.angcyo.library.utils.writeTo
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -48,7 +47,7 @@ class ProjectListItem : DslAdapterItem() {
     var itemProjectBean: LPProjectBean? = null
         set(value) {
             field = value
-            _bitmap = value?.preview_img?.toBitmapOfBase64()
+            _bitmap = value?._previewImgBitmap ?: value?.preview_img?.toBitmapOfBase64()
         }
 
     private var _bitmap: Bitmap? = null
@@ -76,15 +75,8 @@ class ProjectListItem : DslAdapterItem() {
                     itemText = _string(R.string.canvas_rename)
                     itemClick = {
                         lastContext.inputProjectNameDialog(itemProjectBean?.file_name) {
-                            itemProjectBean?.apply {
-                                file_name = "$it"
-                                toJson()?.writeTo(
-                                    itemProjectBean?._filePath,
-                                    false
-                                )?.let {
-                                    item.updateAdapterItem()
-                                }
-                            }
+                            LPProjectHelper.renameProjectName(itemProjectBean, "$it")
+                            item.updateAdapterItem()
                         }
                     }
                 }

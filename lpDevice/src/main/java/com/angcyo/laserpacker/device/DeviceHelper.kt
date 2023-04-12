@@ -162,13 +162,13 @@ object DeviceHelper {
     ).file()
 
     /**删除项目文件*/
-    fun deleteProjectFile(name: String = ".temp"): Boolean {
+    fun deleteProjectFile(name: String = LPDataConstant.PROJECT_V1_TEMP_NAME): Boolean {
         val file = _defaultProjectOutputFile(name, false)
         return file.delete()
     }
 
     /**删除项目文件*/
-    fun deleteProjectFileV2(name: String = ".temp"): Boolean {
+    fun deleteProjectFileV2(name: String = LPDataConstant.PROJECT_V2_TEMP_NAME): Boolean {
         val file = _defaultProjectOutputFile(name, false)
         return file.delete()
     }

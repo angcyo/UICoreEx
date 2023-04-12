@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.bean
 
+import android.graphics.Bitmap
 import com.angcyo.library.annotation.MM
 
 /**
@@ -22,9 +23,6 @@ data class LPProjectBean(
      * */
     var preview_img: String? = null,
 
-    /**V2: 预览图在zip包中的资源路径, 日后可以支持http协议*/
-    var previewImgUri: String? = null,
-
     /**item list 的所有数据
      * [com.angcyo.laserpacker.bean.LPElementBean]
      * */
@@ -43,6 +41,10 @@ data class LPProjectBean(
     var version: Int = 1,
 
     //---
+
+    /**预览图
+     * [preview_img]*/
+    @Transient var _previewImgBitmap: Bitmap? = null,
 
     /**本地对应的文件路径, 如果有*/
     var _filePath: String? = null,

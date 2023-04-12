@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="permission_disabled">权限被禁用</string>
-
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光光源</string>
     <string name="object_diameter">物体直径</string>
@@ -87,7 +85,6 @@
     <string name="share_community">分享到社区</string>
     <string name="canvas_normal_layer">正常图层</string>
     <string name="canvas_engrave_layer">雕刻图层</string>
-    <string name="canvas_rename">重命名</string>
     <string name="retry">重试</string>
 
     <string name="engrave_perimeter">周长</string>
@@ -99,11 +96,8 @@
 
     <string name="focal_distance_tip">请确认焦距</string>
     <string name="focal_distance">焦距</string>
-    <string name="empty_data_transfer">无雕刻数据!</string>
     <string name="no_data_transfer">无数据需要传输!</string>
     <string name="no_data_engrave">无数据需要镭雕!</string>
-    <string name="out_of_data_transfer">数据过大!</string>
-    <string name="transfer_data_exception">传输数据异常!</string>
 
     <string name="device_angle">设备水平角度</string>
     <string name="device_temp">设备温度</string>
@@ -116,7 +110,6 @@
     <string name="engrave_module_knife_cutting">刀切割模式</string>
     <string name="engrave_module_cnc">CNC模式</string>
 
-    <string name="project_title">我的创作</string>
     <string name="engrave_stopping_tip">正在停止雕刻,请稍等...</string>
 
     <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>

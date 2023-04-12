@@ -4,25 +4,18 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
-import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.graphics.GraphicsHelper
-import com.angcyo.canvas.graphics.toBitmapItemData
-import com.angcyo.canvas.graphics.toGCodeItemData
-import com.angcyo.canvas.graphics.toSvgItemData
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.doBack
-import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.*
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
-import com.angcyo.laserpacker.generateName
-import com.angcyo.laserpacker.toProjectBean
-import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
@@ -39,7 +32,7 @@ import java.io.File
  * [name] 保存的工程文件名, 请包含后缀
  * [async] 是否异步保存
  * */
-fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = true): String {
+fun CanvasDelegate.saveInstanceState(name: String = ".lp", async: Boolean = true): String {
     val file = _defaultProjectOutputFile(name, false)
     val save = Runnable {
         val bean = getCanvasDataBean(null, HawkEngraveKeys.projectOutSize)
@@ -59,7 +52,7 @@ fun CanvasDelegate.saveInstanceState(name: String = ".temp", async: Boolean = tr
 
 /**恢复实例数据, 可自定义线程加载
  * [saveInstanceState]*/
-fun CanvasDelegate.restoreInstanceState(name: String = ".temp", async: Boolean = true): String {
+fun CanvasDelegate.restoreInstanceState(name: String = ".lp", async: Boolean = true): String {
     val file = _defaultProjectOutputFile(name, false)
     val restore = Runnable {
         openCanvasFile(file, true)
@@ -140,10 +133,10 @@ fun String?.toCanvasProjectItemBeanOfFile(): LPElementBean? {
     val path = this ?: return null
     if (path.endsWith(LPDataConstant.GCODE_EXT)) {
         val text = path.file().readText()
-        return text.toGCodeItemData()
+        return text.toGCodeElementBean()
     } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
         val text = path.file().readText()
-        return text.toSvgItemData()
+        return text.toSvgElementBean()
     } else if (path.isImageType()) {
         val bitmap = path.toBitmap()
         return bitmap.toBlackWhiteBitmapItemData()
@@ -151,29 +144,6 @@ fun String?.toCanvasProjectItemBeanOfFile(): LPElementBean? {
         L.w("无法处理的文件路径:${path}")
     }
     return null
-}
-
-/**转成黑白图片*/
-fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): String? {
-    this ?: return null
-    /*return OpenCV.bitmapToBlackWhite(
-        this,
-        bmpThreshold,
-        if (invert) 1 else 0
-    ).toBase64Data()*/
-    //toBlackWhiteHandle(bmpThreshold, invert)
-    val bitmap = BitmapHandle.toBlackWhiteHandle(this, bmpThreshold, invert)
-    return bitmap?.toBase64Data()
-}
-
-/**将[Bitmap]转换成[LPElementBean]数据结构*/
-fun Bitmap?.toBlackWhiteBitmapItemData(): LPElementBean? {
-    val bitmap = this ?: return null
-    return toBitmapItemData {
-        imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
-        blackThreshold = HawkEngraveKeys.lastBWThreshold
-        src = bitmap.toBlackWhiteBitmap(HawkEngraveKeys.lastBWThreshold.toInt())
-    }
 }
 
 /**添加一个黑白算法处理过的图片*/

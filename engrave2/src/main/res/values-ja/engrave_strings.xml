@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="permission_disabled">パーミッションが無効になっています</string>
-
     <string name="canvas_operate">操作方法</string>
     <string name="laser_type">レーザー光源</string>
     <string name="object_diameter">対象物の直径</string>
@@ -87,7 +85,6 @@
     <string name="share_community">コミュニティへ共有</string>
     <string name="canvas_normal_layer">通常のレイヤー</string>
     <string name="canvas_engrave_layer">彫刻レイヤー</string>
-    <string name="canvas_rename">リネーム</string>
     <string name="retry">再試行</string>
 
     <string name="engrave_perimeter">円周</string>
@@ -99,11 +96,8 @@
 
     <string name="focal_distance_tip">焦点距離をご確認ください</string>
     <string name="focal_distance">焦点距離</string>
-    <string name="empty_data_transfer">彫刻データなし!</string>
     <string name="no_data_transfer">転送するデータがない!</string>
     <string name="no_data_engrave">レーザー彫刻するデータはありません!</string>
-    <string name="out_of_data_transfer">データが大きすぎます!</string>
-    <string name="transfer_data_exception">転送データエラー!</string>
 
     <string name="device_angle">機器水平角</string>
     <string name="device_temp">デバイス温度</string>
@@ -116,7 +110,6 @@
     <string name="engrave_module_knife_cutting">カットモード</string>
     <string name="engrave_module_cnc">CNCモード</string>
 
-    <string name="project_title">創作</string>
     <string name="engrave_stopping_tip">彫刻を停止しています。お待ちください...</string>
 
     <string name="open_notify_tip">通知をオンにして、彫刻進捗の通知を受信します?</string>

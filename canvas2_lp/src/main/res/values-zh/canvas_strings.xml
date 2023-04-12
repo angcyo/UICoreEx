@@ -59,7 +59,6 @@
     <string name="canvas_grey">灰度</string>
     <string name="canvas_seal">印章</string>
 
-    <string name="canvas_font_text">LaserPecker</string>
     <string name="canvas_invert">反色</string>
     <string name="canvas_threshold">阈值</string>
     <string name="canvas_contrast">对比度</string>
@@ -83,7 +82,6 @@
     <string name="canvas_back">置为底层</string>
     <string name="canvas_sort">排列</string>
 
-    <string name="canvas_import_font">导入</string>
     <string name="canvas_invalid_font">无效的字体</string>
     <string name="canvas_font_exist">字体已存在</string>
     <string name="canvas_cannot_import">无法导入</string>
@@ -129,24 +127,11 @@
     <string name="canvas_best">适应</string>
 
     <string name="canvas_item_outof_limit">元素数量超出限制!</string>
-
-    <string name="canvas_open">打开</string>
-    <string name="font_import_fail">字体导入失败</string>
-    <string name="font_import_success">字体导入成功</string>
-
     <string name="canvas_min_diameter">小直径</string>
     <string name="canvas_max_diameter">大直径</string>
     <string name="canvas_rotation_axis">旋转轴</string>
 
     <string name="canvas_sync_font">备份/同步字体</string>
-
-    <string name="canvas_rename">重命名</string>
-    <string name="canvas_delete_project">删除项目</string>
-    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
-
-    <string name="save_project_title">项目名称</string>
-    <string name="project_title_limit">最多输入20个字符</string>
-    <string name="project_save_success_tip">项目保存成功</string>
 
     <string name="add_parameter_comparison_table">添加参数对照表</string>
     <string name="add_parameter_comparison_table_threshold">阈值</string>

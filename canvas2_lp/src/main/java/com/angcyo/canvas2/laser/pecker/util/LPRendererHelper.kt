@@ -1,6 +1,5 @@
 package com.angcyo.canvas2.laser.pecker.util
 
-import android.net.Uri
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -13,21 +12,12 @@ import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
-import com.angcyo.http.base.*
-import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.generateName
-import com.angcyo.laserpacker.toElementBeanList
-import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.size
 import com.angcyo.library.utils.uuid
-import com.angcyo.library.utils.writeTo
-import java.io.File
 
 /**
  * LP渲染器操作助手
@@ -41,7 +31,14 @@ object LPRendererHelper {
 
     /**解析对应的数据结构, 返回可以被渲染的元素*/
     fun parseElementBean(bean: LPElementBean): ILaserPeckerElement? = when (bean.mtype) {
-        LPDataConstant.DATA_TYPE_BITMAP -> LPBitmapElement(bean)
+        LPDataConstant.DATA_TYPE_BITMAP -> LPBitmapElement(bean).apply {
+            if (bean._srcBitmap != null) {
+                renderBitmap = bean._srcBitmap
+            }
+            if (bean._imageOriginalBitmap != null) {
+                originBitmap = bean._imageOriginalBitmap
+            }
+        }
         LPDataConstant.DATA_TYPE_TEXT,
         LPDataConstant.DATA_TYPE_QRCODE,
         LPDataConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)

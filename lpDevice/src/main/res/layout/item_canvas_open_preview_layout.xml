@@ -38,7 +38,7 @@
             android:text="@string/canvas_font_text"
             android:visibility="gone"
             tools:background="@color/transparent20"
-            tools:srcCompat="@drawable/canvas_device_warn_svg"
+            tools:srcCompat="@drawable/ic_question_svg"
             tools:visibility="visible" />
 
     </FrameLayout>

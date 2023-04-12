@@ -29,5 +29,49 @@
                  <data android:mimeType="*/*" />
              </intent-filter>-->
         </activity>
+
+        <!--使用Canvas打开文件-->
+        <activity
+            android:name="com.angcyo.laserpacker.open.CanvasOpenActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|smallestScreenSize"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/canvas_open_label"
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:taskAffinity="${applicationId}"
+            android:theme="@android:style/Theme.NoDisplay">
+
+            <!--使用xxx打开-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <!--发送给xxx-->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <!--首选项 https://blog.csdn.net/zengd0/article/details/72633236-->
+            <!--清除首选项 getPackageManager().clearPackagePreferredActivities(packageName);-->
+            <!--android.content.pm.PackageManager.addPreferredActivity-->
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+            </intent-filter>
+
+        </activity>
+
+        <!--打开文件的预览界面-->
+        <activity
+            android:name="com.angcyo.laserpacker.open.CanvasOpenPreviewActivity"
+            android:exported="false"
+            android:screenOrientation="behind" />
     </application>
 </manifest>

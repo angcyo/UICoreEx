@@ -13,10 +13,10 @@ import com.angcyo.canvas.render.util.RenderHelper
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.engrave2.transition.toGCodePath
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
+import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
 import com.angcyo.library.app
 import com.angcyo.library.ex.deleteSafe

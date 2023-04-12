@@ -1,15 +1,15 @@
-package com.angcyo.canvas2.laser.pecker.activity
+package com.angcyo.laserpacker.project
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.removeThis
-import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.activity.dslitem.ProjectListItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.laserpacker.device.R
+import com.angcyo.laserpacker.open.CanvasOpenModel
+import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size
@@ -47,28 +47,26 @@ class ProjectListFragment : BaseDslFragment() {
 
         doBack {
             val projectList = mutableListOf<LPProjectBean>()
-            projectPathFile.listFiles()?.filter { it.name.endsWith(LPDataConstant.PROJECT_EXT) }
-                ?.sortedByDescending { it.lastModified() }?.apply {
-                    val startIndex = page.requestPageIndex * page.requestPageSize
-                    for ((index, file) in this.withIndex()) {
-                        if (index >= startIndex) {
-                            val json = file.readText()
-                            json.toProjectBean()?.let {
-                                it._filePath = file.absolutePath
-                                projectList.add(it)
-                            }
-                        }
-                        if (projectList.size() >= page.requestPageSize) {
-                            break
-                        }
+            projectPathFile.listFiles()?.filter {
+                it.name.endsWith(LPDataConstant.PROJECT_EXT, true) ||
+                        it.name.endsWith(LPDataConstant.PROJECT_EXT2, true)
+            }?.sortedByDescending { it.lastModified() }?.apply {
+                val startIndex = page.requestPageIndex * page.requestPageSize
+                for ((index, file) in this.withIndex()) {
+                    if (index >= startIndex) {
+                        file.readProjectBean()?.let { projectList.add(it) }
+                    }
+                    if (projectList.size() >= page.requestPageSize) {
+                        break
                     }
                 }
+            }
             loadDataEnd(ProjectListItem::class, projectList) { bean ->
                 itemProjectBean = bean
 
                 itemClick = {
                     itemProjectBean?.let {
-                        //CanvasOpenModel.open(it)
+                        CanvasOpenModel.open(it)
                         removeThis()
                     }
                 }
