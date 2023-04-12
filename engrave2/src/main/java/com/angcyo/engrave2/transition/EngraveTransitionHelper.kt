@@ -11,6 +11,7 @@ import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
+import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.MM
@@ -427,7 +428,8 @@ object EngraveTransitionHelper {
         )
 
         //val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
-        val gCodeDrawable = gCodeText.toGCodePath()?.toDrawable()
+        val gCodeDrawable =
+            gCodeText.toGCodePath()?.toDrawable(HawkEngraveKeys.projectOutSize.toFloat())
 
         //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
         val previewBitmap = gCodeDrawable?.toBitmap()

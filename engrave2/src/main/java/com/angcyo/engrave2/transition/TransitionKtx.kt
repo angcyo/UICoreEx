@@ -380,7 +380,7 @@ fun Bitmap.toGCode(
     offsetX: Float = 0f, //偏移距离
     offsetY: Float = 0f,//偏移距离
     @Pixel
-    gapValue: Float = 1f,//这里的gap用像素单位, 表示采样间隙
+    gapValue: Float = 1f,//这里的gap用像素单位, 表示采样间隙, 推荐使用1
     threshold: Int = 255, //255白色不输出GCode
     outputFile: File = libCacheFile(),
     isFirst: Boolean = true,
@@ -395,8 +395,16 @@ fun Bitmap.toGCode(
     gCodeWriteHandler.isPixelValue = true
     gCodeWriteHandler.unit = mmValueUnit
     gCodeWriteHandler.isAutoCnc = autoCnc
-    gCodeWriteHandler.gapValue = gapValue
-    gCodeWriteHandler.gapMaxValue = gCodeWriteHandler.gapValue
+
+    var pixelStep = gapValue.toInt()//1 * dpi //横纵像素采样率
+    if (isSingleLine) {
+        gCodeWriteHandler.gapValue = 1f
+        gCodeWriteHandler.gapMaxValue = gCodeWriteHandler.gapValue * 2f
+        pixelStep = gCodeWriteHandler.gapValue.toInt()
+    } else {
+        gCodeWriteHandler.gapValue = gapValue
+        gCodeWriteHandler.gapMaxValue = gCodeWriteHandler.gapValue
+    }
 
     val width = bitmap.width
     val height = bitmap.height
@@ -416,8 +424,6 @@ fun Bitmap.toGCode(
     } else {
         Gravity.TOP
     }
-
-    val pixelStep = gapValue.toInt()//1 * dpi //横纵像素采样率
 
     //反向读取数据, Z形方式
     var isReverseDirection = false

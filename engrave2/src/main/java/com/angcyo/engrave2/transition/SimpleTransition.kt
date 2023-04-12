@@ -71,7 +71,7 @@ class SimpleTransition : ITransition {
             scanGravity,
             bounds.left,
             bounds.top,
-            params.pixelGCodeGapValue,
+            gapValue = params.pixelGCodeGapValue,
             autoCnc = params.isAutoCnc,
             isSingleLine = params.isSingleLine
         )
