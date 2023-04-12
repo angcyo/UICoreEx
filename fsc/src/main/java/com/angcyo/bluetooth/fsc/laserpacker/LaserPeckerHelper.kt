@@ -585,7 +585,13 @@ object LaserPeckerHelper {
     fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
         vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.let {
-            result.addAll(it)
+            it.filterTo(result) {
+                if (it.debug) {
+                    isDebug()
+                } else {
+                    true
+                }
+            }
         }
         return result
     }

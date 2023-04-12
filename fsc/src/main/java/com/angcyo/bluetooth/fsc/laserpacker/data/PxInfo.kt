@@ -61,7 +61,7 @@ data class PxInfo(
     /**dpi对应的数据需要缩放的比例*/
     val dpiScale: Float = dpi.toDpiScale()
 
-    override fun toText(): CharSequence = des
+    override fun toText(): CharSequence = if (debug) "${des}'" else des
 
     override fun toValue(): Int = dpi.toDpiInt()
 

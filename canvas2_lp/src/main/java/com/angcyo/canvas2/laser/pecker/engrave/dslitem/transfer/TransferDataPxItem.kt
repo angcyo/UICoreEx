@@ -3,17 +3,18 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
-import kotlin.math.max
 
 /**
- * 数据分辨率选择
+ * 数据分辨率选择, Dpi
  *
  * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1K]
  * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.PX_1_3K]
@@ -29,9 +30,7 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
-            val index = itemPxList?.indexOfFirst { it.dpi == value?.dpi } ?: 0
-            //默认选中
-            itemCurrentIndex = max(index, 0)
+            selectorCurrentDpi(value?.dpi)
         }
 
     /**分辨率列表*/
@@ -61,6 +60,15 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
         //super.onItemChangeListener(item)
         val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
         itemTransferConfigEntity?.dpi = dpi
+    }
+
+    fun selectorCurrentDpi(dpi: Float?) {
+        itemCurrentIndex = if (dpi == null) {
+            0
+        } else {
+            val index = itemPxList?.indexOfFirst { it.dpi == dpi } ?: 0
+            clamp(index, 0, itemPxList.size())
+        }
     }
 
 }

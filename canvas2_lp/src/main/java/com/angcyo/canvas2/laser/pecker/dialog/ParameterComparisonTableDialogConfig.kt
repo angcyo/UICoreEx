@@ -16,6 +16,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.BaseRecyclerDialogConfig
@@ -284,6 +285,18 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 observeItemChange {
                     val type = currentLaserTypeInfo().type
                     gridPrintType = type
+                }
+            }
+
+            //分辨率dpi
+            TransferDataPxItem()() {
+                itemPxList = LaserPeckerHelper.findProductSupportPxList()
+                selectorCurrentDpi(HawkEngraveKeys.lastDpi)
+                itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
+                observeItemChange {
+                    //保存最后一次选择的dpi
+                    val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
+                    HawkEngraveKeys.lastDpi = dpi
                 }
             }
 
