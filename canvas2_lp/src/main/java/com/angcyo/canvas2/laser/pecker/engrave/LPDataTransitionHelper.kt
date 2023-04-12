@@ -41,6 +41,7 @@ object LPDataTransitionHelper {
                         element,
                         transferConfigEntity,
                         TransitionParam(
+                            onlyUseBitmapToGCode = bean.isLineShape,
                             useOpenCvHandleGCode = false,
                             isSingleLine = bean.isLineShape
                         )

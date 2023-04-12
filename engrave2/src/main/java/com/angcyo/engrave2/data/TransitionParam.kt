@@ -28,7 +28,7 @@ data class TransitionParam(
 
     //---GCode算法需要的参数---
 
-    /**是否仅使用图片转GCode的方式处理,
+    /**是否仅使用图片转GCode的方式处理, 这样会强制忽略[android.graphics.Path]的转换
      * 否则会自动优先先使用[android.graphics.Path]转GCode,
      * 然后在使用[android.graphics.Bitmap]转GCode*/
     val onlyUseBitmapToGCode: Boolean = false,
