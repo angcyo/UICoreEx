@@ -21,8 +21,8 @@ import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.generateName
-import com.angcyo.laserpacker.toCanvasProjectBean
-import com.angcyo.laserpacker.toCanvasProjectItemList
+import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
@@ -113,7 +113,7 @@ fun CanvasDelegate.openCanvasFile(file: File?, clearOld: Boolean = true) =
 
 /**直接从字符串中加载*/
 fun CanvasDelegate.openCanvasFile(data: String?, clearOld: Boolean = true) =
-    openCanvasFile(data?.toCanvasProjectBean(), clearOld)
+    openCanvasFile(data?.toProjectBean(), clearOld)
 
 /**直接加载*/
 @AnyThread
@@ -123,7 +123,7 @@ fun CanvasDelegate.openCanvasFile(dataBean: LPProjectBean?, clearOld: Boolean = 
         undoManager.clear()
     }
     projectName = dataBean?.file_name ?: projectName
-    val result = dataBean?.data?.toCanvasProjectItemList()?.let { items ->
+    val result = dataBean?.data?.toElementBeanList()?.let { items ->
         /*items.forEach { itemData ->
             GraphicsHelper.renderItemDataBean(this, itemData, false, false, Strategy.init)
         }*/

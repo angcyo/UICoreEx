@@ -7,8 +7,8 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.CanvasOpenDataType
-import com.angcyo.laserpacker.toCanvasProjectBean
-import com.angcyo.laserpacker.toCanvasProjectItemBean
+import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.laserpacker.toElementBean
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.toBitmapOfBase64
@@ -48,7 +48,7 @@ class AutoEngraveWebsite : BasicWebsite() {
             throw IllegalArgumentException("无效的请求体")
         }
         var engraveData: CanvasOpenDataType? = null
-        val projectBean = bodyString.toCanvasProjectBean()
+        val projectBean = bodyString.toProjectBean()
         var name = "Untitled"
 
         val fileName = projectBean?.file_name
@@ -58,7 +58,7 @@ class AutoEngraveWebsite : BasicWebsite() {
             name = fileName
         } else {
             //可能是com.angcyo.canvas.data.CanvasProjectItemBean数据
-            val projectItemBean = bodyString.toCanvasProjectItemBean()
+            val projectItemBean = bodyString.toElementBean()
             if (projectItemBean != null && projectItemBean.mtype != -1) {
                 //单个的item数据
                 engraveData = projectItemBean

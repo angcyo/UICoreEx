@@ -26,7 +26,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.device.firmware.FirmwareUpdateFragment
-import com.angcyo.laserpacker.toCanvasProjectBean
+import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
@@ -111,7 +111,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         if (path.endsWith(LPDataConstant.PROJECT_EXT, true)) {
             //工程文件
             val text = file.readText()
-            val canvasBean = text?.toCanvasProjectBean()
+            val canvasBean = text?.toProjectBean()
 
             if (canvasBean != null) {
                 adapter?.render {

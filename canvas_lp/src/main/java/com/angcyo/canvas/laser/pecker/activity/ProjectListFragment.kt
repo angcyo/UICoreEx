@@ -10,7 +10,7 @@ import com.angcyo.engrave.R
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.laserpacker.toCanvasProjectBean
+import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size
@@ -54,7 +54,7 @@ class ProjectListFragment : BaseDslFragment() {
                     for ((index, file) in this.withIndex()) {
                         if (index >= startIndex) {
                             val json = file.readText()
-                            json.toCanvasProjectBean()?.let {
+                            json.toProjectBean()?.let {
                                 it._filePath = file.absolutePath
                                 projectList.add(it)
                             }

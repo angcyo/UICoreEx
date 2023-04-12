@@ -126,6 +126,9 @@ data class LPElementBean(
      * */
     var data: String? = null,
 
+    /**[LPDataConstant.PROJECT_V2_BASE_URI]*/
+    var dataUri: String? = null,
+
     /**是否可见*/
     var isVisible: Boolean = true,
 
@@ -244,9 +247,15 @@ data class LPElementBean(
     /** 原图数据 (data:image/xxx;base64,xxx) */
     var imageOriginal: String? = null,
 
+    /**[LPDataConstant.PROJECT_V2_BASE_URI]*/
+    var imageOriginalUri: String? = null,
+
     /**滤镜后显示图 string, 带协议头
      * [data] gcode数据*/
     var src: String? = null,
+
+    /**[LPDataConstant.PROJECT_V2_BASE_URI]*/
+    var srcUri: String? = null,
 
     /**图片滤镜
      * 图片滤镜 'black'(黑白) | 'seal'(印章) | 'gray'(灰度) | 'prints'(版画) | 'Jitter(抖动)' | 'gcode'

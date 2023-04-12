@@ -15,7 +15,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.laserpacker.toCanvasProjectItemList
+import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.library.component.batchHandle
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.viewmodel.observe
@@ -143,7 +143,7 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始自动雕刻*/
     fun startAutoEngrave(taskId: String, projectBean: LPProjectBean): AutoEngraveTask {
-        val itemList = projectBean.data?.toCanvasProjectItemList()
+        val itemList = projectBean.data?.toElementBeanList()
         initLocationWithGravity(itemList)
         return startAutoEngrave(taskId, itemList, projectBean)
     }

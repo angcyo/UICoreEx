@@ -3,7 +3,7 @@ package com.angcyo.laserpacker.bean
 import com.angcyo.library.annotation.MM
 
 /**
- * LP工程结构, 里面包含很多子元素[com.angcyo.canvas2.laser.pecker.bean.LPElementBean]
+ * LP工程结构, 里面包含很多子元素[com.angcyo.laserpacker.bean.LPElementBean]
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/06
  */
@@ -21,6 +21,9 @@ data class LPProjectBean(
      * Canvas: trying to draw too large(141018708bytes) bitmap.
      * */
     var preview_img: String? = null,
+
+    /**V2: 预览图在zip包中的资源路径, 日后可以支持http协议*/
+    var previewImgUri: String? = null,
 
     /**item list 的所有数据
      * [com.angcyo.laserpacker.bean.LPElementBean]

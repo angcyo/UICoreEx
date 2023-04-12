@@ -47,10 +47,19 @@ object LPDataConstant {
     const val TXT_EXT = ".txt"
 
     /**工程文件后缀
-     * [String.toCanvasProjectBean]
+     * [String.toProjectBean]
      * [com.angcyo.laserpacker.bean.LPProjectBean]
      * */
     const val PROJECT_EXT = ".lp"
+
+    /**2023-04-12 第二版工程结构文件后缀, 使用zip结构存储¬*/
+    const val PROJECT_EXT2 = ".lp2"
+
+    /**第二版结构中, 工程默认的结构数据放在zip包里面此流中*/
+    const val PROJECT_V2_DEFAULT_NAME = ".lpproject"
+
+    /**V2: 所有资源存放的基础路径*/
+    const val PROJECT_V2_BASE_URI = "res/"
 
     /**
      * dxf文件后缀
@@ -199,16 +208,15 @@ object LPDataConstant {
  * */
 typealias CanvasOpenDataType = Any
 
-/**json字符串转换成[CanvasProjectBean]*/
-fun String.toCanvasProjectBean() = fromJson<LPProjectBean>()
+/**json字符串转换成[LPProjectBean]*/
+fun String.toProjectBean() = fromJson<LPProjectBean>()
 
-/**json字符串转换成[CanvasProjectItemBean]*/
-fun String.toCanvasProjectItemBean() = fromJson<LPElementBean>()
+/**json字符串转换成[LPElementBean]*/
+fun String.toElementBean() = fromJson<LPElementBean>()
 
-/**json字符串转换成[List<CanvasProjectItemBean>]*/
-fun String.toCanvasProjectItemList() =
+/**json字符串转换成[List<LPElementBean>]*/
+fun String.toElementBeanList() =
     fromJson<List<LPElementBean>>(listType(LPElementBean::class.java))
-
 
 //---
 

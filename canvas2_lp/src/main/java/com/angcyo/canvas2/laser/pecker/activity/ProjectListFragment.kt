@@ -5,11 +5,11 @@ import android.os.Bundle
 import com.angcyo.base.removeThis
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.activity.dslitem.ProjectListItem
-import com.angcyo.canvas2.laser.pecker.util.toProjectBean
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size

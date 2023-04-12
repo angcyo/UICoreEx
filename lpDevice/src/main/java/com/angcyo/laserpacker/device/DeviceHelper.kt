@@ -154,9 +154,21 @@ object DeviceHelper {
         if (ensureExt) name.ensureName(LPDataConstant.PROJECT_EXT) else name
     ).file()
 
+    /**工程文件输出
+     * [ensureExt] 是否要保证后缀为[LPDataConstant.PROJECT_EXT]*/
+    fun _defaultProjectOutputFileV2(name: String, ensureExt: Boolean = true) = filePath(
+        LPDataConstant.PROJECT_FILE_FOLDER,
+        if (ensureExt) name.ensureName(LPDataConstant.PROJECT_EXT2) else name
+    ).file()
 
     /**删除项目文件*/
     fun deleteProjectFile(name: String = ".temp"): Boolean {
+        val file = _defaultProjectOutputFile(name, false)
+        return file.delete()
+    }
+
+    /**删除项目文件*/
+    fun deleteProjectFileV2(name: String = ".temp"): Boolean {
         val file = _defaultProjectOutputFile(name, false)
         return file.delete()
     }
