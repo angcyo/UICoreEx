@@ -1,5 +1,6 @@
 package com.angcyo.engrave2.transition
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -178,18 +179,36 @@ object EngraveTransitionHelper {
         )
         //抖动处理图片
         val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-        val bgColor = Color.WHITE //if (params.invert) Color.BLACK else Color.WHITE
-        val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
-        dpiBitmap.recycle()
+        var bitmapByteCount = 0
+        val operateBitmap: Bitmap
 
-        val bitmapByteCount = dpiBitmap2.byteCount
-        val operateBitmap = OpenCV.bitmapToDithering(
-            app(), dpiBitmap2,
-            params.invert,
-            params.contrast.toDouble(),
-            params.brightness.toDouble(),
-        )!! //用灰度图进行抖动处理
-        dpiBitmap2.recycle()
+        if (params.isBitmapInvert) {
+            //图片已经反色, 则添加反色背景后直接进行抖动处理
+            val bgColor = Color.WHITE//图片已经反色, 则透明背景变成白色, 白色不雕刻
+            val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
+            dpiBitmap.recycle()
+            bitmapByteCount = dpiBitmap2.byteCount
+            operateBitmap = OpenCV.bitmapToDithering(
+                app(), dpiBitmap2,
+                false,
+                0.0,
+                0.0,
+            )!! //用灰度图进行抖动处理
+            dpiBitmap2.recycle()
+        } else {
+            //未反色的图片
+            val bgColor = if (params.invert) Color.BLACK else Color.WHITE //白色不雕刻
+            val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
+            dpiBitmap.recycle()
+            bitmapByteCount = dpiBitmap2.byteCount
+            operateBitmap = OpenCV.bitmapToDithering(
+                app(), dpiBitmap2,
+                params.invert,
+                params.contrast.toDouble(),
+                params.brightness.toDouble(),
+            )!! //用未反色的图进行抖动处理
+            dpiBitmap2.recycle()
+        }
 
         //1:保存一份原始可视化数据
         EngraveHelper.saveEngraveData(
