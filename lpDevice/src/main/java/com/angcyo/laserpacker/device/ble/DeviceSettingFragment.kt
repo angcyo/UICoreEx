@@ -88,6 +88,14 @@ class DeviceSettingFragment : BaseDslFragment() {
         val isC1 = productInfo?.isCI() == true
         val isL4 = productInfo?.isLIV() == true
 
+        //强制隐藏Z/S/R开关
+        var forceHideZSR = false
+        forceHideZSR = laserPeckerModel.isPenMode()
+
+        //强制隐藏批量雕刻按键
+        var forceHideKeyPrint = false
+        forceHideKeyPrint = isC1 && (settingParser?.zFlag == 1 || settingParser?.rFlag == 1)
+
         renderDslAdapter(reset = true) {
             if (VersionMatcher.matches(
                     productInfo?.version,
@@ -196,7 +204,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //第三轴
-            if (VersionMatcher.matches(productInfo?.version, config?.showZFlagRange, false, true)) {
+            if (!forceHideZSR && VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showZFlagRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_z_label)
                     itemDes = _string(R.string.device_ex_z_des)
@@ -244,7 +258,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //旋转轴
-            if (VersionMatcher.matches(productInfo?.version, config?.showRFlagRange, false, true)) {
+            if (!forceHideZSR && VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showRFlagRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_r_label)
                     itemDes = _string(R.string.device_ex_r_des)
@@ -260,7 +280,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台
-            if (VersionMatcher.matches(productInfo?.version, config?.showSFlagRange, false, true)) {
+            if (!forceHideZSR && VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showSFlagRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_ex_s_label)
                     itemDes = _string(R.string.device_ex_s_des)
@@ -295,7 +321,13 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
             //滑台批量雕刻
-            if (VersionMatcher.matches(productInfo?.version, config?.showSRepRange, false, true)) {
+            if (!forceHideZSR && VersionMatcher.matches(
+                    productInfo?.version,
+                    config?.showSRepRange,
+                    false,
+                    true
+                )
+            ) {
                 DslPropertySwitchItem()() {
                     itemLabel = _string(R.string.device_s_batch_engrave_label)
                     itemDes = _string(R.string.device_s_batch_engrave_des)
@@ -387,7 +419,7 @@ class DeviceSettingFragment : BaseDslFragment() {
             }
 
             //批量雕刻按键
-            if (VersionMatcher.matches(
+            if (!forceHideKeyPrint && VersionMatcher.matches(
                     productInfo?.version,
                     config?.showKeyPrintRange,
                     false,
