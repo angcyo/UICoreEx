@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
@@ -47,9 +48,11 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
                 } else {
                     EngraveFlowDataHelper.generateTask(entity.index, entity.taskId)
                 }
+                "生成历史流程id[$flowTaskId]".writeEngraveLog()
             }
         }
         appHistoryEngraveTaskEntity?.let {
+            "设置历史流程id[$flowTaskId]->[${it.taskId}]".writeEngraveLog()
             flowTaskId = it.taskId
         }
         if (to != ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {

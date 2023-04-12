@@ -15,7 +15,6 @@ import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
-import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
@@ -274,13 +273,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (old == null) {
             flowTaskId = uuid()
         }
-        "生成流程id[$old]->[$flowTaskId]".writeToLog()
+        "生成流程id[$old]->[$flowTaskId]".writeEngraveLog()
         return flowTaskId!!
     }
 
     /**清空流程id*/
     open fun clearFlowId() {
-        "清空流程id[$flowTaskId]".writeToLog()
+        "清空流程id[$flowTaskId]".writeEngraveLog()
         flowTaskId = null
     }
 
@@ -606,6 +605,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
             //如果是, 恢复界面, 如果不是, 则只是弹窗提示
             if (transferData != null && transferData.isTransfer && transferData.taskId != null) {
+                "恢复流程id[$flowTaskId]->[${transferData.taskId}]".writeEngraveLog()
                 flowTaskId = transferData.taskId
                 engraveFlow = ENGRAVE_FLOW_ENGRAVING
                 showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
