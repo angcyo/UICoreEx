@@ -122,9 +122,16 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
             return RenderHelper.translateToRender(getDrawPathList(), renderProperty)
         }
         if (this is PathElement) {
-            if (elementBean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
-                //非描边的情况下, 获取Path数据返回空, 用pixel生成GCode
+            if (elementBean.isLineShape) {
+                if (elementBean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                    //描边的线, 用pixel生成GCode.
+                    return null
+                }
+            } else if (elementBean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
+                //填充的图形, 用pixel生成GCode.
                 return null
+            } else {
+                //其他都用path转GCode
             }
             return RenderHelper.translateToRender(getDrawPathList(), renderProperty)
         }
