@@ -806,7 +806,11 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         updateIViewTitle(_string(R.string.engraving))
         if (HawkEngraveKeys.enableBackEngrave) {
             engraveBackFlow = 0
-            showCloseView(true, _string(R.string.back_creation))
+            if (this is HistoryEngraveFlowLayoutHelper) {
+                showCloseView(true, _string(R.string.ui_minimum))
+            } else {
+                showCloseView(true, _string(R.string.back_creation))
+            }
         } else {
             engraveBackFlow = ENGRAVE_FLOW_BEFORE_CONFIG
             showCloseView(false)
