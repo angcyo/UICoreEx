@@ -3,6 +3,8 @@ package com.angcyo.server.def
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.angcyo.core.component.model.DataShareModel
+import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.*
@@ -166,7 +168,9 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
     fun address(): String {
         return if (RNetwork.isConnect()) {
             val address: InetAddress = NetUtils.localIPAddress ?: return "无网络"
-            "http:/$address:${serverPort}"
+            "http:/$address:${serverPort}".apply {
+                vmApp<DataShareModel>().shareServerAddressOnceData.postValue(this)
+            }
         } else {
             "无网络"
         }

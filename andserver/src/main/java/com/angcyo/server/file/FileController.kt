@@ -1,5 +1,7 @@
 package com.angcyo.server.file
 
+import com.angcyo.core.component.model.DataShareModel
+import com.angcyo.core.vmApp
 import com.angcyo.library.ex.copyToFile
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.libCacheFile
@@ -27,8 +29,11 @@ class FileController {
         // 处理上传的文件
         file?.let {
             //file.name //这个值就是 file 字符串
-            val filePath = libCacheFile(file.filename ?: file.name).absolutePath
+            val cacheFile = libCacheFile(file.filename ?: file.name)
+            val filePath = cacheFile.absolutePath
             it.stream.copyToFile(filePath)
+
+            vmApp<DataShareModel>().shareFileOnceData.postValue(cacheFile)
             return "success:${filePath}"
         }
         return "no file!"
