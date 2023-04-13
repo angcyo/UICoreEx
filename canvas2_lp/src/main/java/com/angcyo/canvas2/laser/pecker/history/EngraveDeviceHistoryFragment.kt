@@ -11,6 +11,7 @@ import com.angcyo.dsladapter.toEmpty
 import com.angcyo.dsladapter.toError
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.lpRemoveEntity
 
 /**
  * 设备历史文档界面
@@ -77,7 +78,9 @@ class EngraveDeviceHistoryFragment : BaseHistoryFragment() {
     fun loadDataEnd(list: List<EngraveDataEntity>) {
         loadDataEnd(EngraveIndexHistoryItem::class.java, list) { bean ->
             itemEngraveDataEntity = bean
-            initItemClickEvent()
+            initItemClickEvent {
+                bean.lpRemoveEntity()
+            }
         }
     }
 }

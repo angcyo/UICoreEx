@@ -29,6 +29,8 @@ inline fun <reified T> T.lpSaveEntity(): Long {
     return saveEntity(LPBox.PACKAGE_NAME)
 }
 
+inline fun <reified T> T.lpRemoveEntity() = deleteEntity(LPBox.PACKAGE_NAME)
+
 /**批量保存或者更新
  * id不为0时, 就是更新*/
 inline fun <reified T> Collection<T>.lpSaveAllEntity() {

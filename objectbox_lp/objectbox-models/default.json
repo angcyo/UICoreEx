@@ -196,7 +196,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "16:2707242451395739492",
+      "lastPropertyId": "17:3924613914218944727",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -279,6 +279,11 @@
           "id": "16:2707242451395739492",
           "name": "moduleState",
           "type": 5
+        },
+        {
+          "id": "17:3924613914218944727",
+          "name": "createTime",
+          "type": 6
         }
       ],
       "relations": []

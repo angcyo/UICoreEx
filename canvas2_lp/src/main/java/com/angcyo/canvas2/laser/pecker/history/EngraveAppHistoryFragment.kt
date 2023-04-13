@@ -4,6 +4,7 @@ import com.angcyo.canvas2.laser.pecker.history.dslitem.EngraveTaskHistoryItem
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity_
+import com.angcyo.objectbox.laser.pecker.lpRemoveEntity
 import com.angcyo.objectbox.page
 
 /**
@@ -25,7 +26,9 @@ class EngraveAppHistoryFragment : BaseHistoryFragment() {
     fun loadDataEnd(list: List<EngraveTaskEntity>) {
         loadDataEnd(EngraveTaskHistoryItem::class.java, list) { bean ->
             itemEngraveTaskEntity = bean
-            initItemClickEvent()
+            initItemClickEvent {
+                bean.lpRemoveEntity()
+            }
         }
     }
 }

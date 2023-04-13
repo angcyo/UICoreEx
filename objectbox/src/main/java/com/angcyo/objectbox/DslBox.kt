@@ -492,10 +492,18 @@ inline fun <reified T> T.deleteEntity(packageName: String = defaultBoxStore()): 
     return boxOf(T::class.java, packageName).remove(this)
 }
 
+/**[deleteEntity]*/
+inline fun <reified T> T.removeEntity(packageName: String = defaultBoxStore()) =
+    deleteEntity(packageName)
+
 /**删除所有*/
 inline fun <reified T> Collection<T>.deleteAllEntity(packageName: String = defaultBoxStore()) {
     return boxOf(T::class.java, packageName).remove(this)
 }
+
+/**[deleteAllEntity]*/
+inline fun <reified T> Collection<T>.removeAllEntity(packageName: String = defaultBoxStore()) =
+    deleteAllEntity(packageName)
 
 /**获取所有记录*/
 inline fun <reified T : Any> KClass<T>.removeAll(

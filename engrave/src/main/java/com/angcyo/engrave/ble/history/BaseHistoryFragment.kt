@@ -27,6 +27,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.component.batchHandle
 import com.angcyo.library.ex._string
 import com.angcyo.library.toastQQ
+import com.angcyo.objectbox.laser.pecker.lpRemoveAllEntity
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -79,9 +80,11 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
                         //删除机器记录
                         batchDeleteIndex(itemTransferDataEntityList?.map { it.index }) {
                             if (it == null) {
-                                /*_adapter.render {
+                                //指令删除成功, 清空本地数据库
+                                itemTransferDataEntityList?.lpRemoveAllEntity()
+                                _adapter.render {
                                     item.removeAdapterItem()
-                                }*/
+                                }
                             }
                         }
                     }

@@ -227,6 +227,7 @@ fun QueryStateParser.toDeviceStateString(): String? {
                 else -> builder.append(_string(R.string.engrave_state_ing))
             }
         }
+
         QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW -> {
             when (workState) {
                 0x01 -> builder.append(_string(R.string.preview_state_gcode))
@@ -241,6 +242,7 @@ fun QueryStateParser.toDeviceStateString(): String? {
                             0x04 -> builder.append(
                                 _string(R.string.preview_state_z_pause2, type.toDeviceStr())
                             )
+
                             0x05 -> builder.append(
                                 _string(R.string.preview_state_z_continue2, type.toDeviceStr())
                             )
@@ -252,12 +254,14 @@ fun QueryStateParser.toDeviceStateString(): String? {
                         }
                     }
                 }
+
                 0x06 -> builder.append(_string(R.string.preview_state_bracket))
                 0x07 -> builder.append(_string(R.string.preview_state_center))
                 0x08 -> builder.append(_string(R.string.preview_state_points))
                 0x0A -> builder.append(_string(R.string.preview_state_z_scroll))
             }
         }
+
         QueryStateParser.WORK_MODE_FOCUSING -> builder.append(_string(R.string.work_mode_focusing))
         QueryStateParser.WORK_MODE_FILE_DOWNLOAD -> builder.append(_string(R.string.work_mode_file_download))
         QueryStateParser.WORK_MODE_SHUTDOWN -> builder.append(_string(R.string.work_mode_shutdown))
@@ -295,7 +299,8 @@ fun Int.toErrorStateString() = when (this) {
     8 -> _string(R.string.ex_tips_eight)
     9 -> _string(R.string.ex_tips_nine)
     10 -> _string(R.string.ex_tips_ten)
-    else -> null
+    0 -> null
+    else -> "error $this"
 }
 
 /**转成对应设备字符串*/

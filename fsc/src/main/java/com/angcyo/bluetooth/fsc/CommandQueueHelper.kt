@@ -10,7 +10,7 @@ import com.angcyo.library.ex.have
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
 import com.angcyo.library.toastQQ
-import java.util.*
+import java.util.LinkedList
 
 /**
  * 蓝牙指令发送队列

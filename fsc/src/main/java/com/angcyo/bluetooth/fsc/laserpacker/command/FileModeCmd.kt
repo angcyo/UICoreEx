@@ -45,7 +45,11 @@ data class FileModeCmd(
     override fun commandFunc(): Byte = 0x05
 
     /**给足时间接收数据, 10分钟*/
-    override fun getReceiveTimeout(): Long = 10 * 60_000
+    override fun getReceiveTimeout(): Long = if (state == 0x01.toByte()) {
+        10 * 60_000
+    } else {
+        super.getReceiveTimeout()
+    }
 
     /**返回:
      * 2022-05-30 18:39:15.348
@@ -78,6 +82,7 @@ data class FileModeCmd(
                 append(toHexCommandString().removeAll())
                 append(" 进入文件传输模式:数据大小:${dataSize}bytes state:$state")
             }
+
             0x02.toByte() -> append(" 传输结束! $dataSize")
             0x04.toByte() -> append(" 擦除所有文件!")
             0x06.toByte() -> append(" 擦除文件:$dataSize")

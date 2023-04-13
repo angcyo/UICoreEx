@@ -2,6 +2,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
 import androidx.annotation.Px
+import com.angcyo.library.ex.nowTime
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -105,7 +106,12 @@ data class EngraveConfigEntity(
 
     /**打印次数, 最大255*/
     var time: Int = 1,
+
+    /**创建时间*/
+    var createTime: Long = nowTime()
 ) {
+
+    /**加速级别/雕刻精度转换成雕刻速度*/
     fun toEngravingSpeed(): Int {
         val max = 5
         val current = precision

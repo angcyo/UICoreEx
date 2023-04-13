@@ -1,22 +1,30 @@
 package com.angcyo.canvas2.laser.pecker.history.dslitem
 
 import android.graphics.Color
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.Pixel
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.or
+import com.angcyo.library.ex.setBounds
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.visible
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -146,6 +154,9 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         val transferDataEntityList = itemTransferDataEntityList
         val transferDataEntity = transferDataEntityList?.lastOrNull()
         val engraveConfigEntityList = itemEngraveConfigEntityList
+        val engraveConfigEntity = engraveConfigEntityList?.lastOrNull()
+        val isPenMode = vmApp<DeviceStateModel>().isPenMode(engraveConfigEntity?.moduleState)
+
         renderLabelDesList {
 
             if (transferDataEntity != null) {
@@ -158,9 +169,21 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                     )
                 }
 
-                //分辨率
-                val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
-                add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.des))
+                if (!isPenMode) {
+                    //材质
+                    engraveConfigEntity?.let {
+                        add(
+                            formatLabelDes(
+                                _string(R.string.custom_material),
+                                EngraveFlowDataHelper.getEngraveMaterNameByKey(it.materialKey)
+                            )
+                        )
+                    }
+
+                    //分辨率
+                    val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
+                    add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.des))
+                }
 
                 //尺寸
                 val transferDataSize = itemTransferDataEntityList.size()
@@ -187,18 +210,6 @@ open class EngraveHistoryItem : DslTagGroupItem() {
             onInitEngraveTime(this)
 
             //---
-
-            engraveConfigEntityList?.apply {
-                firstOrNull()?.let {
-                    //材质
-                    add(
-                        formatLabelDes(
-                            _string(R.string.custom_material),
-                            EngraveFlowDataHelper.getEngraveMaterNameByKey(it.materialKey)
-                        )
-                    )
-                }
-            }
 
             /*   if (engraveConfigEntityList.firstOrNull() != null) {
                    if (engraveConfigEntity.precision > 0) {
