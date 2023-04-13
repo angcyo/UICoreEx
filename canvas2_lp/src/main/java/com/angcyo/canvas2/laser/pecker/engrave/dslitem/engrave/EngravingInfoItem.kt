@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
@@ -38,17 +39,20 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
         renderLabelDesList {
             engraveConfigEntity?.let {
-                //材质:
-                add(
-                    LabelDesData(
-                        _string(R.string.custom_material),
-                        EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)
+                if (!deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
+                    //材质:
+                    add(
+                        LabelDesData(
+                            _string(R.string.custom_material),
+                            EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)
+                        )
                     )
-                )
-                //分辨率: 1k
-                val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
-                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-                add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
+
+                    //分辨率: 1k
+                    val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
+                    val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+                    add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
+                }
 
                 //雕刻精度
                 if (laserPeckerModel.isC1()) {
@@ -65,17 +69,36 @@ open class EngravingInfoItem : DslTagGroupItem() {
                         )
                     )
                 }
+                if (deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
+                    //画笔模式
+                    add(
+                        LabelDesData(
+                            _string(R.string.engrave_speed),
+                            "${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"
+                        )
+                    )
+                } else {
+                    //功率:
+                    add(
+                        LabelDesData(
+                            _string(R.string.custom_power),
+                            "${engraveConfigEntity.power}%"
+                        )
+                    )
 
-                //功率:
-                add(LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%"))
+                    //深度:
+                    add(
+                        LabelDesData(
+                            _string(R.string.custom_speed),
+                            "${engraveConfigEntity.depth}%"
+                        )
+                    )
 
-                //深度:
-                add(LabelDesData(_string(R.string.custom_speed), "${engraveConfigEntity.depth}%"))
-
-                //雕刻次数
-                val times = engraveConfigEntity.time
-                val printTimes = engraveDataEntity?.printTimes ?: 0
-                add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                    //雕刻次数
+                    val times = engraveConfigEntity.time
+                    val printTimes = engraveDataEntity?.printTimes ?: 0
+                    add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                }
 
                 //加工时间
                 val startEngraveTime = engraveTaskEntity?.startTime ?: 0

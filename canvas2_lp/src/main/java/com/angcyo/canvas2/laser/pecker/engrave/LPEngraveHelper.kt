@@ -1,17 +1,19 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -167,7 +169,7 @@ object LPEngraveHelper {
             precision = bean.printPrecision ?: HawkEngraveKeys.lastPrecision
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
-
+            productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
             lpSaveEntity()
         }
     }

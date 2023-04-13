@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.data.LabelDesData
@@ -28,21 +29,48 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                 EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerMode)
 
             engraveConfigEntity?.let {
-                //功率:
-                add(LabelDesData(_string(R.string.custom_power), "${engraveConfigEntity.power}%"))
+                if (deviceStateModel.isPenMode(it.moduleState)) {
+                    //握笔模块下,只有 加速级别 雕刻速度
+                    add(
+                        LabelDesData(
+                            _string(R.string.engrave_precision),
+                            "${engraveConfigEntity.precision}"
+                        )
+                    )
 
-                //深度:
-                add(LabelDesData(_string(R.string.custom_speed), "${engraveConfigEntity.depth}%"))
+                    add(
+                        LabelDesData(
+                            _string(R.string.engrave_speed),
+                            "${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"
+                        )
+                    )
+                } else {
+                    //功率:
+                    add(
+                        LabelDesData(
+                            _string(R.string.custom_power),
+                            "${engraveConfigEntity.power}%"
+                        )
+                    )
 
-                //雕刻次数
-                val transferDataEntity = transferDataEntityList.firstOrNull()
-                val times = engraveConfigEntity.time
-                val engraveDataEntity = EngraveFlowDataHelper.getEngraveDataEntity(
-                    itemTaskId,
-                    transferDataEntity?.index ?: 0
-                )
-                val printTimes = engraveDataEntity?.printTimes ?: 0
-                add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                    //深度:
+                    add(
+                        LabelDesData(
+                            _string(R.string.custom_speed),
+                            "${engraveConfigEntity.depth}%"
+                        )
+                    )
+
+                    //雕刻次数
+                    val transferDataEntity = transferDataEntityList.firstOrNull()
+                    val times = engraveConfigEntity.time
+                    val engraveDataEntity = EngraveFlowDataHelper.getEngraveDataEntity(
+                        itemTaskId,
+                        transferDataEntity?.index ?: 0
+                    )
+                    val printTimes = engraveDataEntity?.printTimes ?: 0
+                    add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                }
             }
         }
     }

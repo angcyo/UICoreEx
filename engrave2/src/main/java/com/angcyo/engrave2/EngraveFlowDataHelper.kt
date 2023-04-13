@@ -1,12 +1,12 @@
 package com.angcyo.engrave2
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.MaterialHelper.createMaterialCode
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
@@ -15,9 +15,35 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppString
-import com.angcyo.objectbox.*
-import com.angcyo.objectbox.laser.pecker.*
-import com.angcyo.objectbox.laser.pecker.entity.*
+import com.angcyo.objectbox.countBy
+import com.angcyo.objectbox.ensureEntity
+import com.angcyo.objectbox.equalString
+import com.angcyo.objectbox.findAll
+import com.angcyo.objectbox.findFirst
+import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
+import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity_
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
+import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity_
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity_
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity_
+import com.angcyo.objectbox.laser.pecker.entity.TransferMonitorEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferMonitorEntity_
+import com.angcyo.objectbox.laser.pecker.lpRemoveAllEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveAllEntity
+import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.objectbox.laser.pecker.lpUpdateOrCreateEntity
+import com.angcyo.objectbox.queryOrCreateEntity
+import com.angcyo.objectbox.removeAll
 import kotlin.math.max
 
 /**
@@ -470,6 +496,7 @@ object EngraveFlowDataHelper {
                 } ?: defMaterial
                 findMaterial?.let {
                     materialCode = it.code
+                    this.deviceAddress = LaserPeckerHelper.lastDeviceAddress()
                     this.productName = productName
                     this.materialKey = it.key
                     type = it.type.toByte()

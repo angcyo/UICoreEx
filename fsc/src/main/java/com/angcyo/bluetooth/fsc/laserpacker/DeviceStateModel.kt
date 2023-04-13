@@ -213,8 +213,8 @@ class DeviceStateModel : ViewModel() {
             laserPeckerModel.isC1() //C1
 
     /**是否是C1的握笔模块*/
-    fun isPenMode(): Boolean {
-        return deviceStateData.value?.moduleState == 4 /*|| isDebugType()*/
+    fun isPenMode(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
+        return moduleState == 4 /*|| isDebugType()*/
     }
 
     /**激光是否异常, 比如C1未插好激光头*/

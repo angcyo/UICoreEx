@@ -566,33 +566,35 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemTipTextColor = _color(R.color.error)
                 }
             } else {
-                //材质选择
-                EngraveMaterialWheelItem()() {
-                    itemTag = MaterialEntity::name.name
-                    itemLabelText = _string(R.string.custom_material)
-                    itemWheelList = MaterialHelper.unionMaterialList
-                    itemSelectedIndex = MaterialHelper.indexOfMaterial(
-                        MaterialHelper.unionMaterialList,
-                        materialEntity
-                    )
-                    itemEngraveConfigEntity = engraveConfigEntity
+                if (!deviceStateModel.isPenMode()) {//握笔模块, 不需要材质
+                    //材质选择
+                    EngraveMaterialWheelItem()() {
+                        itemTag = MaterialEntity::name.name
+                        itemLabelText = _string(R.string.custom_material)
+                        itemWheelList = MaterialHelper.unionMaterialList
+                        itemSelectedIndex = MaterialHelper.indexOfMaterial(
+                            MaterialHelper.unionMaterialList,
+                            materialEntity
+                        )
+                        itemEngraveConfigEntity = engraveConfigEntity
 
-                    itemSaveAction = {
-                        showSaveMaterialDialog(taskId, materialEntity) {
-                            //刷新界面, 使用自定义的材质信息
+                        itemSaveAction = {
+                            showSaveMaterialDialog(taskId, materialEntity) {
+                                //刷新界面, 使用自定义的材质信息
+                                renderFlowItems()
+                            }
+                        }
+
+                        itemDeleteAction = { key ->
+                            showDeleteMaterialDialog(taskId, key) {
+                                renderFlowItems()
+                            }
+                        }
+
+                        //刷新界面
+                        observeItemChange {
                             renderFlowItems()
                         }
-                    }
-
-                    itemDeleteAction = { key ->
-                        showDeleteMaterialDialog(taskId, key) {
-                            renderFlowItems()
-                        }
-                    }
-
-                    //刷新界面
-                    observeItemChange {
-                        renderFlowItems()
                     }
                 }
 

@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas2.laser.pecker.R
@@ -23,6 +24,7 @@ class EngraveFinishTopItem : DslTagGroupItem() {
     var itemTaskId: String? = null
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_top_layout
@@ -55,37 +57,26 @@ class EngraveFinishTopItem : DslTagGroupItem() {
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
 
         renderLabelDesList {
-            add(
-                labelDes(
-                    _string(R.string.custom_material),
-                    EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
-                )
-            )
 
-            val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
-            val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-            add(formatLabelDes(_string(R.string.resolution_ratio), findPxInfo.des))
+            if (deviceStateModel.isPenMode(engraveConfigEntity?.moduleState)) {
+                //C1握笔模块
+            } else {
+                add(
+                    labelDes(
+                        _string(R.string.custom_material),
+                        EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
+                    )
+                )
+
+                val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
+                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+                add(formatLabelDes(_string(R.string.resolution_ratio), findPxInfo.des))
+            }
 
             val startEngraveTime = taskEntity?.startTime ?: 0
             val endEngraveTime = taskEntity?.finishTime ?: 0
             val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
             add(labelDes(_string(R.string.work_time), engraveTime))
-
-            //雕刻精度
-            if (engraveConfigEntity != null && laserPeckerModel.isC1()) {
-                add(
-                    labelDes(
-                        _string(R.string.engrave_speed),
-                        "${engraveConfigEntity.toEngravingSpeed()}%"
-                    )
-                )
-                add(
-                    labelDes(
-                        _string(R.string.engrave_precision),
-                        "${engraveConfigEntity.precision}"
-                    )
-                )
-            }
         }
     }
 

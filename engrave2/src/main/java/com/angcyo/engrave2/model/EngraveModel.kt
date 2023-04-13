@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
@@ -100,7 +101,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         //监听雕刻状态
         deviceStateModel.deviceStateData.observe(this) { queryState ->
             queryState?.let {
-                if (deviceStateModel.isLoop && _engraveTaskId != null) {
+                if (_engraveTaskId != null) {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
@@ -422,7 +423,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     typeList.add(engraveConfigEntity.type)
 
                     //保存外接设备名
-                    engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+                    initDefaultEngraveConfigInfo(engraveConfigEntity)
                     engraveConfigEntity.lpSaveEntity()
                 }
 
@@ -659,8 +660,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             append("\n->$engraveConfigEntity")
         }.writeEngraveLog()
 
-        //保存外接设备名
-        engraveConfigEntity.exDevice = laserPeckerModel.getExDevice()
+        initDefaultEngraveConfigInfo(engraveConfigEntity)
         engraveConfigEntity.lpSaveEntity()
 
         val taskEntity = _engraveTaskEntity
@@ -717,6 +717,22 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 }
             }
         }
+    }
+
+    /**初始化默认的雕刻信息*/
+    private fun initDefaultEngraveConfigInfo(entity: EngraveConfigEntity) {
+        //保存外接设备名
+        entity.exDevice = laserPeckerModel.getExDevice()
+        //使用的模块
+        entity.moduleState =
+            deviceStateModel.deviceStateData.value?.moduleState ?: entity.moduleState
+        //固件版本
+        entity.softwareVersion =
+            laserPeckerModel.productInfoData.value?.softwareVersion ?: entity.softwareVersion
+
+        //
+        entity.deviceAddress = LaserPeckerHelper.lastDeviceAddress() ?: entity.deviceAddress
+        entity.productName = laserPeckerModel.productInfoData.value?.name ?: entity.productName
     }
 
     /**更新雕刻进度和次数

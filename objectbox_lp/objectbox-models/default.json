@@ -196,7 +196,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "14:7222560289421744271",
+      "lastPropertyId": "16:2707242451395739492",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -269,6 +269,16 @@
           "id": "14:7222560289421744271",
           "name": "deviceAddress",
           "type": 9
+        },
+        {
+          "id": "15:5671064666034650162",
+          "name": "softwareVersion",
+          "type": 5
+        },
+        {
+          "id": "16:2707242451395739492",
+          "name": "moduleState",
+          "type": 5
         }
       ],
       "relations": []

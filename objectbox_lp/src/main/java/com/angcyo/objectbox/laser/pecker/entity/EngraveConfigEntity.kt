@@ -57,6 +57,9 @@ data class EngraveConfigEntity(
      * */
     var exDevice: String? = null,
 
+    /**固件版本号, 用来识别雕刻时所用的机器*/
+    var softwareVersion: Int = -1,
+
     //---L4专属---
 
     /**雕刻激光类型选择，0为1064nm激光 (白光-雕)，1为450nm激光 (蓝光-烧)。(L3max新增)
@@ -64,8 +67,6 @@ data class EngraveConfigEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE]
      * */
     var type: Byte = -1,
-
-    //---L4专属---
 
     /**雕刻物体直径, 这里用像素作为单位
      * 在[com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig]时,会从
@@ -79,6 +80,11 @@ data class EngraveConfigEntity(
     var diameterPixel: Float = -1f,
 
     //---C1专属---
+
+    /**
+     * 雕刻模块识别位（C1专用位）
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.moduleState]*/
+    var moduleState: Int = -1,
 
     /**加速级别/雕刻精度[1~5]
      * 1: 速度快/精度低
