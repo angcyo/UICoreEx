@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
@@ -578,7 +579,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         ExitCmd().enqueue { bean, error ->
             deviceStateModel.pauseLoopCheckState(false)
             countDownLatch?.countDown()
-            if (error == null) {
+            if (error == null || error is NoDeviceException /*无设备连接*/) {
                 //退出成功
                 finishEngrave()
             }

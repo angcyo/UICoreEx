@@ -145,5 +145,6 @@
     <string name="data_not_allowed">현재 모드에서는 조각 "%1$s"데이터가 허용되지 않습니다.</string>
     <string name="data_not_allowed_reverse">현재 모드에서 "%1$s"데이터가 없어지지 않습니다.</string>
     <string name="data_not_allowed_height">현재 모드에서는 조각 높이의 높이가있는 데이터가%1$s mm보다 큽니다.</string>
+    <string name="data_not_allowed_multi">현재 모드에서 여러 요소가 여러 요소를 찾을 수 없습니다.</string>
 
 </resources>

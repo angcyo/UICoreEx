@@ -145,4 +145,6 @@
     <string name="data_not_allowed">現在のモードでは、「%1$s」データの彫刻は許可されていません</string>
     <string name="data_not_allowed_reverse">現在のモードでは、「%1$s」データが非彫刻を刻むことは許可されていません</string>
     <string name="data_not_allowed_height">現在のモードでは、彫刻の高さの高さのデータは%1$s mmを超えています</string>
+    <string name="data_not_allowed_multi">現在のモードでは、複数の要素が複数の要素を刻むことは許可されていません</string>
+
 </resources>

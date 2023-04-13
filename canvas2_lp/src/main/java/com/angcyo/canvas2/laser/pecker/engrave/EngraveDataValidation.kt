@@ -93,6 +93,18 @@ object EngraveDataValidation {
             }
         }
 
+        if (laserPeckerModel.isZOpen()) {
+            //2023-4-13 Z轴模式下, 只能发送一个文件并雕刻
+            val rendererList = LPEngraveHelper.getLayerRendererList(canvasDelegate)
+            if (rendererList.size > 1) {
+                context?.messageDialog {
+                    dialogTitle = _string(R.string.engrave_warn)
+                    dialogMessage = _string(R.string.data_not_allowed_multi)
+                }
+                return false
+            }
+        }
+
         return true
     }
 
