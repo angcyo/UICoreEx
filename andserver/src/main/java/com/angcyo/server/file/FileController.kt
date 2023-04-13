@@ -56,6 +56,7 @@ class FileController {
     /**接收字符串的接口*/
     @PostMapping("/body")
     fun handleMessage(@RequestBody body: String): String {
+        vmApp<DataShareModel>().shareTextOnceData.postValue(body)
         return "${nowTimeString()} 成功:${body}"
     }
 }
