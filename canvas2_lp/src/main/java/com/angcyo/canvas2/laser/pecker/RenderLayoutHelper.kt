@@ -1,8 +1,14 @@
 package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Matrix
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
-import com.angcyo.canvas.render.core.*
+import com.angcyo.canvas.render.core.BaseCanvasRenderListener
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.core.CanvasSelectorManager
+import com.angcyo.canvas.render.core.CanvasUndoManager
+import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.core.component.PointTouchComponent
@@ -12,8 +18,21 @@ import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.state.GroupStateStack
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
-import com.angcyo.canvas2.laser.pecker.dslitem.*
-import com.angcyo.canvas2.laser.pecker.dslitem.item.*
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasBaseLayerItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
+import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddBitmapItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddDoodleItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddMaterialItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddShapesItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddTextItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlLayerItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlOperateItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlSettingItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.ShapesItem
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
 import com.angcyo.canvas2.laser.pecker.manager.saveProjectStateV2
@@ -23,23 +42,44 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
-import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.DragCallbackHelper
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.DslAdapterStatusItem
+import com.angcyo.dsladapter.eachItem
+import com.angcyo.dsladapter.findItemByTag
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.ex.longFeedback
+import com.angcyo.library.ex.mH
+import com.angcyo.library.ex.resetAll
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.base.showPopupMenu
 import com.angcyo.widget.recycler.renderDslAdapter
+import kotlin.collections.List
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.listOf
+import kotlin.collections.mapTo
+import kotlin.collections.mutableListOf
+import kotlin.collections.reversed
+import kotlin.collections.set
 
 /**
  * 画板界面
@@ -309,6 +349,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     )
                                 }
                             }
+
                             bean?.mtype == LPDataConstant.DATA_TYPE_BITMAP -> {
                                 if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
                                     renderer.requestUpdateDrawableFlag(
@@ -335,8 +376,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderLayerListLayout()
 
                 //更新预览的范围
-                val peckerModel = renderFragment.engraveFlowLayoutHelper.laserPeckerModel
-                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
+                val deviceStateModel = renderFragment.engraveFlowLayoutHelper.deviceStateModel
+                if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
                     LPPreviewHelper.updatePreviewByRenderer(renderFragment, to)
                 }
@@ -367,8 +408,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     needUpdateControlLayout = true
 
                     //更新预览的范围
-                    val peckerModel = renderFragment.engraveFlowLayoutHelper.laserPeckerModel
-                    if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true &&
+                    val deviceStateModel = renderFragment.engraveFlowLayoutHelper.deviceStateModel
+                    if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true &&
                         delegate?.isRendererSelector(renderer) == true
                     ) {
                         //设备正在预览模式, 更新预览
@@ -548,6 +589,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                             component,
                                             PointTouchComponent.TOUCH_TYPE_CLICK
                                         )
+
                                         R.id.menu_ratio_1 -> renderViewBox.scaleTo(1f, 1f)
                                         R.id.menu_origin -> renderViewBox.translateTo(0f, 0f)
                                     }

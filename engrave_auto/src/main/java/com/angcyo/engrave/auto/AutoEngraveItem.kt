@@ -1,6 +1,7 @@
 package com.angcyo.engrave.auto
 
 import android.graphics.drawable.Drawable
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
@@ -54,7 +55,7 @@ class AutoEngraveItem : DslAdapterItem() {
                 setProgress(progress)
             }
         }
-        val isPause = vmApp<LaserPeckerModel>().deviceStateData.value?.isEngravePause() == true
+        val isPause = vmApp<DeviceStateModel>().deviceStateData.value?.isEngravePause() == true
         itemHolder.tv(R.id.pause_button)?.text = if (isPause) {
             _string(R.string.engrave_continue)
         } else {

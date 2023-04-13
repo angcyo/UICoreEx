@@ -5,7 +5,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.padHexString
+import com.angcyo.library.ex.removeAll
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toByteArray
+import com.angcyo.library.ex.toHexString
 
 /**
  * 雕刻/打印指令
@@ -106,7 +112,7 @@ data class EngraveCmd(
 
     /**C1归位至多需要30s*/
     override fun getReceiveTimeout(): Long {
-        return 30_000
+        return LaserPeckerHelper.DEFAULT_MAX_RECEIVE_TIMEOUT
     }
 
     override fun toHexCommandString(): String {
@@ -183,6 +189,7 @@ data class EngraveCmd(
                 append(" 次数:$time")
                 append(" state:$state x:$x y:$y type:$type 直径:${diameter} 加速级别:${precision}")
             }
+
             0x02.toByte() -> append(" 继续雕刻!")
             0x03.toByte() -> append(" 停止雕刻!")
             0x04.toByte() -> append(" 暂停雕刻!")

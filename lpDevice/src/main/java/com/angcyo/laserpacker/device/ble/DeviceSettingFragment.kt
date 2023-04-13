@@ -7,6 +7,8 @@ import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.ReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -22,12 +24,21 @@ import com.angcyo.dsladapter.drawBottom
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslSegmentTabItem
 import com.angcyo.item.DslTextInfoItem
-import com.angcyo.item.style.*
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.item.style.itemDes
+import com.angcyo.item.style.itemInfoText
+import com.angcyo.item.style.itemLabel
+import com.angcyo.item.style.itemSelectIndexChangeAction
+import com.angcyo.item.style.itemSwitchChangedAction
+import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.component.VersionMatcher
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.FileUtils
 import kotlin.math.max
@@ -53,6 +64,7 @@ class DeviceSettingFragment : BaseDslFragment() {
     }
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     init {
         fragmentTitle = _string(R.string.ui_slip_menu_model)
@@ -90,7 +102,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         //强制隐藏Z/S/R开关
         var forceHideZSR = false
-        forceHideZSR = laserPeckerModel.isPenMode()
+        forceHideZSR = deviceStateModel.isPenMode()
 
         //强制隐藏批量雕刻按键
         var forceHideKeyPrint = false

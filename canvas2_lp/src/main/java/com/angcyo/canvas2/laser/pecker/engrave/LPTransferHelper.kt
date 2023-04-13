@@ -14,7 +14,7 @@ import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint

@@ -16,7 +16,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toProjectBean

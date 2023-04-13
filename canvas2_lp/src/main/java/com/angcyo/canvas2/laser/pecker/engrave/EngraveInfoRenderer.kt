@@ -10,7 +10,7 @@ import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._refreshRateRatio
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.*

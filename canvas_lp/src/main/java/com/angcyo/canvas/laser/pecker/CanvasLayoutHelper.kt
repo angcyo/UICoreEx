@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.CanvasView
@@ -14,7 +15,15 @@ import com.angcyo.canvas.core.CanvasUndoManager
 import com.angcyo.canvas.core.ICanvasListener
 import com.angcyo.canvas.core.IRenderer
 import com.angcyo.canvas.core.renderer.GroupRenderer
-import com.angcyo.canvas.graphics.*
+import com.angcyo.canvas.graphics.GraphicsHelper
+import com.angcyo.canvas.graphics.addGCodeRender
+import com.angcyo.canvas.graphics.addLineRender
+import com.angcyo.canvas.graphics.addLoveRender
+import com.angcyo.canvas.graphics.addOvalRender
+import com.angcyo.canvas.graphics.addPentagramRender
+import com.angcyo.canvas.graphics.addPolygonRender
+import com.angcyo.canvas.graphics.addRectRender
+import com.angcyo.canvas.graphics.addSvgRender
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.canvas.items.renderer.BaseItemRenderer
 import com.angcyo.canvas.items.renderer.IItemRenderer
@@ -24,26 +33,46 @@ import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderGroupEditItem
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderImageEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderShapeEditItems
 import com.angcyo.canvas.laser.pecker.CanvasEditLayoutHelper.renderTextEditItems
-import com.angcyo.canvas.laser.pecker.dslitem.*
+import com.angcyo.canvas.laser.pecker.dslitem.AddImageItem
+import com.angcyo.canvas.laser.pecker.dslitem.AddTextItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasArrangeItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasBaseLayerItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasControlItem2
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasEditControlItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasLayerItem
+import com.angcyo.canvas.laser.pecker.dslitem.CanvasLayerNameItem
 import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.doodle.ui.doodleDialog
-import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.DragCallbackHelper
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.DslAdapterStatusItem
+import com.angcyo.dsladapter._dslAdapter
+import com.angcyo.dsladapter.eachItem
+import com.angcyo.dsladapter.findItem
+import com.angcyo.dsladapter.findItemByTag
 import com.angcyo.dsladapter.item.IFragmentItem
+import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.engrave.IEngraveCanvasFragment
 import com.angcyo.engrave.transition.EngraveTransitionManager
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._debounce
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.ex.resetAll
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.transition.dslTransition
@@ -485,8 +514,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                     updateLayerLayout(vh, canvasView)
                 }
 
-                val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
-                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true &&
+                val deviceStateModel =
+                    engraveCanvasFragment.engraveFlowLayoutHelper.deviceStateModel
+                if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true &&
                     itemRenderer == canvasView.canvasDelegate.getSelectedRenderer() &&
                     reason.flag > Reason.REASON_FLAG_STYLE
                 ) {
@@ -549,8 +579,9 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                 updateItemControlLayout(itemRenderer)
 
                 //预览选中的元素边框
-                val peckerModel = engraveCanvasFragment.engraveFlowLayoutHelper.laserPeckerModel
-                if (peckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
+                val deviceStateModel =
+                    engraveCanvasFragment.engraveFlowLayoutHelper.deviceStateModel
+                if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
                     updatePreviewByItem(vh, itemRenderer)
                 }
@@ -701,6 +732,7 @@ class CanvasLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragment) {
                         engraveCanvasFragment.fragment,
                         itemRenderer
                     )
+
                     LPDataConstant.DATA_TYPE_TEXT -> renderTextEditItems(itemRenderer)
                     LPDataConstant.DATA_TYPE_LINE,
                     LPDataConstant.DATA_TYPE_OVAL,

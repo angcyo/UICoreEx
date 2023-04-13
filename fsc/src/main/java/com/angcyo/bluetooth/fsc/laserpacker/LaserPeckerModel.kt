@@ -7,20 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.*
 import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
-import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
-import com.angcyo.core.component.file.writeErrorLog
-import com.angcyo.core.vmApp
-import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
-import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.*
 
 /**
@@ -29,23 +23,8 @@ import com.angcyo.viewmodel.*
  */
 class LaserPeckerModel : ViewModel(), IViewModel {
 
-    /**当前设备的模式, 用来记录设备上一次的工作模式
-     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_IDLE]
-     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE]
-     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW]*/
-    val deviceModelData: MutableLiveData<Int> = vmData(QueryStateParser.WORK_MODE_IDLE)
-
     /**设备版本*/
     val deviceVersionData: MutableLiveData<QueryVersionParser?> = vmDataNull()
-
-    /**设备状态,蓝牙断开后,清空设备状态
-     * [com.angcyo.laserpacker.device.model.FscDeviceModel.initDevice]
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
-     * */
-    val deviceStateData: MutableHoldLiveData<QueryStateParser?> = vmHoldDataNull()
-
-    /**设备状态切换记录*/
-    val deviceStateStackData = vmData(mutableListOf<QueryStateParser>())
 
     /**设备设置状态
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sendInitCommand]
@@ -73,12 +52,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**预览的时候, 矩形是否溢出了*/
     val overflowInfoData = vmDataNull<OverflowInfo>()
 
-    /**更新设备模式*/
-    @AnyThread
-    fun updateDeviceModel(model: Int) {
-        deviceModelData.updateValue(model)
-    }
-
     /**更新设备版本, 设备信息.*/
     @AnyThread
     fun updateDeviceVersion(queryVersionParser: QueryVersionParser) {
@@ -94,52 +67,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         productInfo?.deviceAddress = LaserPeckerHelper.initDeviceAddress
         productInfoData.postValue(productInfo)
         deviceVersionData.postValue(queryVersionParser)
-    }
-
-    /**设备当前的工作状态*/
-    @AnyThread
-    fun updateDeviceState(queryStateParser: QueryStateParser) {
-        queryStateParser.deviceAddress = LaserPeckerHelper.initDeviceAddress
-        "设备状态:$queryStateParser".writeBleLog(L.INFO)
-
-        //记录设备状态改变
-        val stackList = deviceStateStackData.value
-        val lastState = stackList!!.lastOrNull()
-        if (lastState?.deviceAddress != queryStateParser.deviceAddress) {
-            //设备不一样
-            stackList.clear()
-            stackList.add(queryStateParser)
-            deviceStateStackData.updateValue(stackList)
-        } else {
-            //相同设备, 状态不一样才记录
-            if (lastState?.mode != queryStateParser.mode &&
-                lastState?.workState != queryStateParser.workState
-            ) {
-                stackList.add(queryStateParser)
-                deviceStateStackData.updateValue(stackList)
-            }
-        }
-
-        //设备错误码
-        queryStateParser.error.toErrorStateString()?.let {
-            "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
-
-            //查询到设备异常
-            doMain {
-                toastQQ(it)
-            }
-
-            //查询错误日志
-            QueryCmd.log.enqueue { bean, error ->
-                if (error == null) {
-                    bean?.parse<QueryLogParser>()?.log?.let {
-                        "机器错误日志:$it".writeErrorLog()
-                    }
-                }
-            }
-        }
-        deviceStateData.updateValue(queryStateParser)
-        updateDeviceModel(queryStateParser.mode)
     }
 
     @AnyThread
@@ -174,10 +101,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     /**是否连接了扩展设备*/
     fun haveExDevice(): Boolean = isZOpen() || isROpen() || isSOpen()
 
-    /**是否需要显示外设提示*/
-    fun needShowExDeviceTipItem(): Boolean =
-        haveExDevice() || isSRepMode() || isPenMode() || isCarOpen() || isC1() //C1
-
     /**z轴是否打开, 需要先打开设置, 再连接上 */
     fun isZOpen(): Boolean {
         return deviceSettingData.value?.zFlag == 1 //&& (deviceStateData.value?.zConnect == 1 || isDebug())
@@ -203,11 +126,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         return deviceSettingData.value?.sRep == 1
     }
 
-    /**是否是C1的握笔模块*/
-    fun isPenMode(): Boolean {
-        return deviceStateData.value?.moduleState == 4 /*|| isDebugType()*/
-    }
-
     //---
 
     fun isL1() = productInfoData.value?.isLI() == true
@@ -221,53 +139,6 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun isC1() = productInfoData.value?.isCI() == true
 
     fun isSupportDithering() = productInfoData.value?.supportDithering == true
-
-    /**激光是否异常, 比如C1未插好激光头*/
-    fun isLaserException(): Boolean {
-        return deviceStateData.value?.moduleState == 255
-    }
-
-    //---
-
-    /**空闲模式*/
-    fun isIdleMode(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_IDLE
-    }
-
-    /**关机状态, 设备已关机*/
-    fun isShutdownMode(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_SHUTDOWN
-    }
-
-    /**雕刻预览模式, 并且非显示中心*/
-    fun isEngravePreviewMode(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                deviceState.workState != 0x07
-    }
-
-    /**是否是雕刻预览模式下的显示中心*/
-    fun isEngravePreviewShowCenterMode(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                deviceState.workState == 0x07
-    }
-
-    /**是否是雕刻预览模式下的显示中心*/
-    fun isEngravePreviewPause(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                deviceState.workState == 0x04
-    }
-
-    /**Z轴滚动预览中*/
-    fun isEngravePreviewZ(): Boolean {
-        val deviceState = deviceStateData.value
-        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW &&
-                deviceState.workState == 0x05
-    }
 
     //<editor-fold desc="Command">
 
@@ -338,46 +209,5 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         cmd?.enqueue(flag, address, progress, action)
     }
 
-    /**查询设备状态*/
-    fun queryDeviceState(
-        flag: Int = CommandQueueHelper.FLAG_NORMAL,
-        block: IReceiveBeanAction = { _, _ -> }
-    ) {
-        QueryCmd.workState.enqueue(flag) { bean, error ->
-            bean?.let {
-                it.parse<QueryStateParser>()?.let {
-                    updateDeviceState(it)
-                }
-            }
-            block(bean, error)
-        }
-    }
-
     //</editor-fold desc="Command">
-}
-
-/**发送退出指令, 如果需要*/
-fun checkExitIfNeed() {
-    val queryStateParser = vmApp<LaserPeckerModel>().deviceStateData.value
-    if (queryStateParser?.isModeEngrave() == true || queryStateParser?.isModeIdle() == true) {
-    } else {
-        //进入空闲模式, 才能开始打印
-        ExitCmd().enqueue()
-    }
-}
-
-/**静态方法, 异步查询设备状态*/
-fun asyncQueryDeviceState(
-    flag: Int = CommandQueueHelper.FLAG_ASYNC,
-    block: IReceiveBeanAction = { _, _ -> }
-) {
-    vmApp<LaserPeckerModel>().queryDeviceState(flag, block)
-}
-
-/**同步查询设备状态*/
-fun syncQueryDeviceState(
-    flag: Int = CommandQueueHelper.FLAG_NORMAL,
-    block: IReceiveBeanAction = { _, _ -> }
-) {
-    vmApp<LaserPeckerModel>().queryDeviceState(flag, block)
 }

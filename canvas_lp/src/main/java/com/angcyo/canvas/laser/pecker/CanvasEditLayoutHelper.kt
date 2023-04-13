@@ -22,7 +22,7 @@ import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.*
 import com.angcyo.fragment.AbsFragment
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.library.ex.*
 import com.hingin.umeng.UMEvent

@@ -95,7 +95,7 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.bracket_stop_svg,
             false
         ) { viewHolder, item ->
-            if (laserPeckerModel.isIdleMode() && _needRestartPreview) {
+            if (deviceStateModel.isIdleMode() && _needRestartPreview) {
                 previewModel.updatePreview(restore = true) {
                     isCenterPreview = false
                     zState = null
@@ -116,7 +116,7 @@ class PreviewControlItem : BasePreviewItem() {
             R.drawable.preview_pause_svg,
             false
         ) { viewHolder, item ->
-            if (laserPeckerModel.isIdleMode() && _needRestartPreview) {
+            if (deviceStateModel.isIdleMode() && _needRestartPreview) {
                 previewModel.updatePreview(restore = true) {
                     isCenterPreview = false
                     zState = null
@@ -169,7 +169,7 @@ class PreviewControlItem : BasePreviewItem() {
 
         //
         val previewInfoData = previewModel.previewInfoData.value
-        val deviceStateData = laserPeckerModel.deviceStateData.value
+        val deviceStateData = deviceStateModel.deviceStateData.value
 
         itemList.clear()
         if (laserPeckerModel.haveExDevice()) {

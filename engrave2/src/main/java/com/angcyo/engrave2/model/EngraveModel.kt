@@ -2,29 +2,29 @@ package com.angcyo.engrave2.model
 
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
-import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.*
-import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.*
+import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.toDataModeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.component.VersionMatcher
-import com.angcyo.library.component._delay
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toMsTime
@@ -79,6 +79,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
 
+    val deviceStateModel = vmApp<DeviceStateModel>()
+
     val fscBleApiModel = vmApp<FscBleApiModel>()
 
     /**雕刻状态通知*/
@@ -94,14 +96,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     val _engraveTaskEntity: EngraveTaskEntity?
         get() = EngraveFlowDataHelper.getEngraveTask(_engraveTaskId)
 
-    //是否要监听设备的雕刻状态
-    var _listenerEngraveState: Boolean = false
-
     init {
         //监听雕刻状态
-        laserPeckerModel.deviceStateData.observe(this) { queryState ->
+        deviceStateModel.deviceStateData.observe(this) { queryState ->
             queryState?.let {
-                if (_listenerEngraveState && _engraveTaskId != null) {
+                if (deviceStateModel.isLoop && _engraveTaskId != null) {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
@@ -207,7 +206,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }.writeEngraveLog()
         engraveNext()
         //loop
-        loopCheckDeviceState()
+        deviceStateModel.startLoopCheckState()
     }
 
     /**完成当前索引的雕刻任务*/
@@ -302,7 +301,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
 
             //loop
-            loopCheckDeviceState()
+            deviceStateModel.startLoopCheckState()
         }
     }
 
@@ -312,9 +311,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val task = EngraveFlowDataHelper.getEngraveTask(taskId)
         task?.apply {
             _engraveTaskId = task.taskId
-            _listenerEngraveState = true
             //loop
-            loopCheckDeviceState()
+            deviceStateModel.startLoopCheckState()
         }
     }
 
@@ -322,7 +320,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     @CallPoint
     fun engraveNext() {
         val task = _engraveTaskEntity ?: return
-        _listenerEngraveState = true
         val taskId = task.taskId
 
         if (task.currentIndex > 0) {
@@ -386,7 +383,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     @CallPoint
     fun batchEngrave(retryCount: Int = 0) {
         val task = _engraveTaskEntity ?: return
-        _listenerEngraveState = true
         val taskId = task.taskId
 
         if (task.bigIndex == null) {
@@ -521,7 +517,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
-        _listenerEngraveState = false
 
         EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
 
@@ -543,21 +538,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
-
-        //更新设备状态
-        _delay(HawkEngraveKeys.minQueryDelayTime) {
-            if (_engraveTaskEntity == null || _engraveTaskEntity?.state == ENGRAVE_STATE_FINISH) {
-                syncQueryDeviceState { bean, error ->
-                    //no op
-                }
-            }
-        }
     }
 
     /**完成了一个索引的雕刻, 需要传输下一个索引, 并且雕刻下一个*/
     fun finishIndexEngrave() {
         val engraveTaskEntity = _engraveTaskEntity ?: return
-        _listenerEngraveState = false
         engraveTaskEntity.state = ENGRAVE_STATE_INDEX_FINISH
         engraveTaskEntity.lpSaveEntity()
 
@@ -588,11 +573,41 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**停止雕刻*/
     fun stopEngrave(reason: String?, countDownLatch: CountDownLatch? = null) {
         "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
-        EngraveCmd.stopEngrave().enqueue { bean, error ->
+        deviceStateModel.pauseLoopCheckState(true)
+        ExitCmd().enqueue { bean, error ->
+            deviceStateModel.pauseLoopCheckState(false)
             countDownLatch?.countDown()
+            if (error == null) {
+                //退出成功
+                finishEngrave()
+            }
         }
-        finishEngrave()
-        ExitCmd().enqueue()
+
+        /*
+        listenerIdleMode { idle, error ->
+            countDownLatch?.countDown()
+            deviceStateModel.pauseLoopCheckState(false)
+            if (idle) {
+                finishEngrave()
+            }
+        }*/
+
+        /*EngraveCmd.stopEngrave().enqueue { bean, error ->
+            if (error == null) {
+                //停止成功
+                ExitCmd().enqueue { bean, error ->
+                    deviceStateModel.pauseLoopCheckState(false)
+                    countDownLatch?.countDown()
+                    if (error == null) {
+                        //退出成功
+                        finishEngrave()
+                    }
+                }
+            } else {
+                deviceStateModel.pauseLoopCheckState(false)
+                countDownLatch?.countDown()
+            }
+        }*/
     }
 
     /**雕刻失败, 错误信息在
@@ -725,19 +740,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
 
             "雕刻进度[${it.taskId}]:${index} ${currentProgress}/${it.progress}".writeEngraveLog()
-        }
-    }
-
-    /**持续检查工作作态*/
-    fun loopCheckDeviceState() {
-        _delay(HawkEngraveKeys.minQueryDelayTime) {
-            //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState() { bean, error ->
-                if (error != null || _listenerEngraveState) {
-                    //出现了错误, 继续查询
-                    loopCheckDeviceState()
-                }
-            }
         }
     }
 

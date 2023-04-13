@@ -6,7 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.MaterialHelper.createMaterialCode
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo

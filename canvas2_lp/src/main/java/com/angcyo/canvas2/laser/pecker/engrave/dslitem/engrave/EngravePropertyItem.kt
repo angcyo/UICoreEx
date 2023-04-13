@@ -7,7 +7,7 @@ import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi

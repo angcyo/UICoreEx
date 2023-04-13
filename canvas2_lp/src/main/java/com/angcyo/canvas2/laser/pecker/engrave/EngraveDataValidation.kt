@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.content.Context
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -24,6 +25,8 @@ object EngraveDataValidation {
     fun validation(context: Context?, canvasDelegate: CanvasRenderDelegate?): Boolean {
         canvasDelegate ?: return true
         val laserPeckerModel = vmApp<LaserPeckerModel>()
+        val deviceStateModel = vmApp<DeviceStateModel>()
+
         val layerList = EngraveHelper.engraveLayerList
 
         if (laserPeckerModel.isZOpen()) {
@@ -45,7 +48,7 @@ object EngraveDataValidation {
 
         val isC1 = laserPeckerModel.isC1()
         if (isC1) {
-            if (laserPeckerModel.isPenMode()) {
+            if (deviceStateModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
                 val gCodeLayer = layerList.find { it.layerMode == LPDataConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {

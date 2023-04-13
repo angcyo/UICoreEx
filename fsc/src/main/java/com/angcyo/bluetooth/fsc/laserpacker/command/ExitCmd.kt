@@ -18,6 +18,10 @@ data class ExitCmd(
     //功能码
     override fun commandFunc(): Byte = 0xff.toByte()
 
+    override fun getReceiveTimeout(): Long {
+        return LaserPeckerHelper.DEFAULT_MAX_RECEIVE_TIMEOUT
+    }
+
     override fun toHexCommandString(): String {
         val dataLength = 8 //数据长度
         val data = buildString {

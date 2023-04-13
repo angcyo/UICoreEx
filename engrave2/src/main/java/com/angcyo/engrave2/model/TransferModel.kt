@@ -25,7 +25,7 @@ import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint

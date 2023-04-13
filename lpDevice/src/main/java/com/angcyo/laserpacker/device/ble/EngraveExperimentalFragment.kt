@@ -5,7 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys

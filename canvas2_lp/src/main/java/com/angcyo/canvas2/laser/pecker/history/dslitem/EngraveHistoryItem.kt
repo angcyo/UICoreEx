@@ -12,7 +12,7 @@ import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.annotation.Pixel

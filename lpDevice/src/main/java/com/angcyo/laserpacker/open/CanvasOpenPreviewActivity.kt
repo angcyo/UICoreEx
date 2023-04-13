@@ -15,7 +15,7 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
 import com.angcyo.laserpacker.*
 import com.angcyo.laserpacker.device.BuildConfig
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.device.exception.OutOfSizeException

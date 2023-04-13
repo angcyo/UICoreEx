@@ -5,6 +5,7 @@ import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -26,7 +27,14 @@ import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._color
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.computePathBounds
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.removeFromParent
+import com.angcyo.library.ex.toPath
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.loading.DangerWarningView
 import com.angcyo.widget.span.span
@@ -85,10 +93,10 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
 
         //监听设备状态, Z/R/S连接状态
-        laserPeckerModel.deviceStateData.observe(fragment) {
+        deviceStateModel.deviceStateData.observe(fragment) {
             //设备模式提示
             val stateString = it?.toDeviceStateString()
-            val beforeMode = laserPeckerModel.deviceStateData.beforeValue?.mode
+            val beforeMode = deviceStateModel.deviceStateData.beforeValue?.mode
             val mode = it?.mode
 
             if (stateString.isNullOrEmpty()) {
@@ -199,6 +207,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
@@ -291,7 +300,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**显示连接的设备信息提示*/
     private fun bindDeviceConnectTipLayout() {
         val viewHolder = _rootViewHolder ?: return
-        if (laserPeckerModel.deviceStateData.value == null) {
+        if (deviceStateModel.deviceStateData.value == null) {
             //无设备连接
             viewHolder.img(R.id.device_image_view)
                 ?.setImageResource(R.drawable.canvas_device_warn_svg)

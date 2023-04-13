@@ -14,7 +14,7 @@ import com.angcyo.laserpacker.*
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.L
 import com.angcyo.library.ex.*

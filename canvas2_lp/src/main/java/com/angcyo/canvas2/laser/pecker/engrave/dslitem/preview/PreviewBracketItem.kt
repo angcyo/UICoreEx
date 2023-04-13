@@ -11,7 +11,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string

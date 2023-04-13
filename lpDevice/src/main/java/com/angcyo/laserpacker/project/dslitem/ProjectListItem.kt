@@ -8,7 +8,7 @@ import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
 import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.project.LPProjectHelper
 import com.angcyo.library.component.lastContext

@@ -15,7 +15,7 @@ import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode

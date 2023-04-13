@@ -4,6 +4,7 @@ import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.Px
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -92,6 +93,8 @@ data class EngravePreviewCmd(
             includeLimitPath: Boolean = true,
         ): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
+            val deviceStateModel = vmApp<DeviceStateModel>()
+
             val limitPath = if (peckerModel.isZOpen()) {
                 //Z轴打开
                 productInfo?.zLimitPath
@@ -104,7 +107,7 @@ data class EngravePreviewCmd(
             } else if (peckerModel.isCarOpen()) {
                 //C1平台移动模式
                 productInfo?.carLimitPath
-            } else if (peckerModel.isPenMode()) {
+            } else if (deviceStateModel.isPenMode()) {
                 //画笔模块
                 productInfo?.penBounds?.let { rect ->
                     Path().apply { addRect(rect, Path.Direction.CW) }
@@ -123,6 +126,7 @@ data class EngravePreviewCmd(
          * */
         fun getBoundsPath(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Path? {
             val peckerModel = vmApp<LaserPeckerModel>()
+            val deviceStateModel = vmApp<DeviceStateModel>()
             val boundsPath = if (peckerModel.isZOpen()) {
                 productInfo?.zLimitPath
             } else if (peckerModel.isROpen()) {
@@ -131,7 +135,7 @@ data class EngravePreviewCmd(
                 productInfo?.sLimitPath
             } else if (peckerModel.isCarOpen()) {
                 productInfo?.carLimitPath
-            } else if (peckerModel.isPenMode()) {
+            } else if (deviceStateModel.isPenMode()) {
                 productInfo?.penBounds?.let { rect ->
                     Path().apply { addRect(rect, Path.Direction.CW) }
                 }
@@ -605,6 +609,7 @@ data class EngravePreviewCmd(
                     val name = nameBytes.toHexString(false)
                     append(name)
                 }
+
                 0x02.toByte(), 0x07.toByte() /*中心点预览*/ -> {
                     //表示范围预览，name内容为长宽。
                     //先宽
@@ -651,6 +656,7 @@ data class EngravePreviewCmd(
                     append(" ")
                     append(y)
                 }
+
                 else -> {
                     append(d1.toHexString())
                     append(d2.toHexString())
@@ -689,17 +695,20 @@ data class EngravePreviewCmd(
                 nameBytes[3] = d4
                 append(" ${nameBytes.toHexInt()}")
             }
+
             0x02.toByte() -> {
                 append("范围预览:")
                 val rect = getPreviewRange()
                 append("$rect w:${rect.width()} h:${rect.height()} 直径:$diameter")
             }
+
             0x03.toByte() -> append("结束预览")
             0x04.toByte() -> {
                 append("第三轴暂停预览:")
                 val rect = getPreviewRange()
                 append("$rect w:${rect.width()} h:${rect.height()} 直径:$diameter")
             }
+
             0x05.toByte() -> append("第三轴继续预览")
             0x06.toByte() -> {
                 if (vmApp<LaserPeckerModel>().productInfoData.value?.isLI_Z() == true) {
@@ -728,20 +737,24 @@ data class EngravePreviewCmd(
                     }
                 }
             }
+
             0x07.toByte() -> {
                 val rect = getPreviewRange()
                 append("显示中心:${rect} cx:${rect.centerX()} cy:${rect.centerY()}")
             }
+
             0x08.toByte() -> {
                 append(" 4点预览")
                 val rectPoint = getFourPoint()
                 append(" lt:${rectPoint.leftTop} rt:${rectPoint.rightTop} rb:${rectPoint.rightBottom} lb:${rectPoint.leftBottom}")
             }
+
             0x09.toByte() -> when (d1) {
                 0x01.toByte() -> append("开始对笔")
                 0x02.toByte() -> append("完成对笔")
                 else -> append("对笔控制")
             }
+
             else -> append("Unknown")
         }
         append(" x:$x y:$y px:$px pwr:$pwr diameter:${diameter}")

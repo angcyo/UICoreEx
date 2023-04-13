@@ -5,6 +5,7 @@ import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -25,7 +26,13 @@ import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._color
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.removeFromParent
+import com.angcyo.library.ex.toPath
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.DangerWarningView
@@ -48,6 +55,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
@@ -95,21 +103,21 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
             }
         }
 
-/*
-        //监听Z轴/R轴/S轴设置状态
-        laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
-            val beforeZ = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
-            val beforeR = laserPeckerModel.deviceSettingData.beforeValue?.rFlag ?: 0
-            val beforeS = laserPeckerModel.deviceSettingData.beforeValue?.sFlag ?: 0
-            if (beforeZ != it?.zFlag || beforeR != it.rFlag || beforeS != it.sFlag) {
-                //z轴开关改变后, 检查是否要限制z轴限制
-                _showZRSLimit(canvasView)
-            }
-        }
-*/
+        /*
+                //监听Z轴/R轴/S轴设置状态
+                laserPeckerModel.deviceSettingData.observe(engraveCanvasFragment.fragment) {
+                    val beforeZ = laserPeckerModel.deviceSettingData.beforeValue?.zFlag ?: 0
+                    val beforeR = laserPeckerModel.deviceSettingData.beforeValue?.rFlag ?: 0
+                    val beforeS = laserPeckerModel.deviceSettingData.beforeValue?.sFlag ?: 0
+                    if (beforeZ != it?.zFlag || beforeR != it.rFlag || beforeS != it.sFlag) {
+                        //z轴开关改变后, 检查是否要限制z轴限制
+                        _showZRSLimit(canvasView)
+                    }
+                }
+        */
 
         //监听设备状态, Z/R/S连接状态
-        laserPeckerModel.deviceStateData.observe(fragment) {
+        deviceStateModel.deviceStateData.observe(fragment) {
             /* val beforeZ = laserPeckerModel.deviceStateData.beforeValue?.zConnect ?: 0
              val beforeR = laserPeckerModel.deviceStateData.beforeValue?.rConnect ?: 0
              val beforeS = laserPeckerModel.deviceStateData.beforeValue?.sConnect ?: 0
@@ -120,7 +128,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
             //设备模式提示
             val stateString = it?.toDeviceStateString()
-            val beforeMode = laserPeckerModel.deviceStateData.beforeValue?.mode
+            val beforeMode = deviceStateModel.deviceStateData.beforeValue?.mode
             val mode = it?.mode
 
             if (stateString.isNullOrEmpty()) {
@@ -302,7 +310,7 @@ class EngraveProductLayoutHelper(val engraveCanvasFragment: IEngraveCanvasFragme
 
     /**显示连接的设备信息提示*/
     fun initDeviceConnectTipLayout(viewHolder: DslViewHolder) {
-        if (laserPeckerModel.deviceStateData.value == null) {
+        if (deviceStateModel.deviceStateData.value == null) {
             //无设备连接
             viewHolder.img(R.id.device_image_view)
                 ?.setImageResource(R.drawable.canvas_device_warn_svg)

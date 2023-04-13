@@ -20,7 +20,7 @@ import com.angcyo.engrave.transition.IEngraveTransition.Companion.getDataMode
 import com.angcyo.engrave.transition.IEngraveTransition.Companion.saveEngraveData
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF

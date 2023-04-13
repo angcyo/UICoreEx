@@ -16,7 +16,7 @@ import com.angcyo.dsladapter.*
 import com.angcyo.dsladapter.filter.SortAfterFilterInterceptor
 import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
 import com.angcyo.item.component.SearchAdapterFilter
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.*

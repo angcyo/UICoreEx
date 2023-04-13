@@ -1,6 +1,5 @@
 package com.angcyo.bluetooth.fsc
 
-import android.os.Debug
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.WorkerThread
@@ -8,6 +7,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.copyTo
@@ -338,4 +338,22 @@ fun listenerReceivePacket(
         start()
     }
     return waitReceivePacket
+}
+
+/**监听设备进入空闲状态, 需要主动查询设备状态*/
+fun listenerIdleMode(
+    receiveTimeout: Long = 10 * 60 * 1_000,
+    action: (idle: Boolean, error: Exception?) -> Unit
+): WaitReceivePacket {
+    return listenerReceivePacket(receiveTimeout) { receivePacket, bean, error ->
+        try {
+            val isIdle = bean?.parse<QueryStateParser>()?.mode == QueryStateParser.WORK_MODE_IDLE
+            if (isIdle || (error != null && error !is ReceiveCancelException)) {
+                receivePacket.isCancel = true
+            }
+            action(isIdle, error)
+        } catch (e: Exception) {
+            //no op
+        }
+    }
 }

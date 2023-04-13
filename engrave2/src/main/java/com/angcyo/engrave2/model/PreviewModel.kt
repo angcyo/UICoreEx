@@ -4,13 +4,14 @@ import android.graphics.RectF
 import androidx.annotation.AnyThread
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
@@ -83,10 +84,11 @@ class PreviewModel : LifecycleViewModel() {
 
     val engraveModel = vmApp<EngraveModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     init {
         //监听设备状态
-        laserPeckerModel.deviceStateData.observe(this) { queryState ->
+        deviceStateModel.deviceStateData.observe(this) { queryState ->
             if (queryState?.isModeEngravePreview() == true) {
                 //no op
             } else {

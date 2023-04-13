@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -27,15 +29,21 @@ import com.angcyo.http.base.toJson
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.component._delay
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._drawable
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.hawkGetBoolean
+import com.angcyo.library.ex.hawkPut
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toast
@@ -117,6 +125,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
@@ -126,12 +135,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //ble
     val fscBleApiModel = vmApp<FscBleApiModel>()
-
-    /**是否循环检测设备状态*/
-    var loopCheckDeviceState: Boolean = false
-
-    /**是否暂停循环查询状态, 暂停不会退出循环*/
-    var pauseLoopCheckDeviceState: Boolean = false
 
     /**是否处于最小化预览*/
     var isMinimumPreview: Boolean = false
@@ -188,10 +191,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         //重新分配一个id
         _engraveItemRenderer = null
         clearFlowId()
-        loopCheckDeviceState = false
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面
-            if (laserPeckerModel.deviceStateData.value?.isModeEngravePreview() == true) {
+            if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
                 //关闭界面时, 如果在预览状态, 则退出预览, 并清除预览信息
                 if (!isMinimumPreview) {
                     previewModel.previewInfoData.value = null
@@ -259,12 +261,11 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (from == ENGRAVE_FLOW_PREVIEW) {
             //从预览中切换~
             if (!isMinimumPreview) {
-                loopCheckDeviceState = false
                 previewModel.clearPreviewInfo()
             }
         }
         if (to != ENGRAVE_FLOW_ENGRAVING && to != ENGRAVE_FLOW_TRANSMITTING) {
-            loopCheckDeviceState = false
+            deviceStateModel.pauseLoopCheckState(true)
         }
         onEngraveFlowChangedAction(from, to)
     }
@@ -293,7 +294,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     @CallPoint
     open fun bindDeviceState() {
         //模式改变监听, 改变预览控制按钮的文本
-        laserPeckerModel.deviceStateData.observe(this) {
+        deviceStateModel.deviceStateData.observe(this) {
             if (it?.isModeEngrave() == true) {
                 //雕刻模式下, 需要刷新雕刻进度和雕刻时间
                 _dslAdapter?.updateAllItem()
@@ -319,13 +320,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
 
         //检查是否处于关机状态
-        if (laserPeckerModel.isShutdownMode()) {
+        if (deviceStateModel.isShutdownMode()) {
             toast(_string(R.string.device_shutdown_tip))
             return false
         }
 
         //检查是否激光头异常
-        if (laserPeckerModel.isLaserException()) {
+        if (deviceStateModel.isLaserException()) {
             toast(_string(R.string.laser_not_plugged_tip))
             return false
         }
@@ -403,23 +404,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
-    /**持续检查工作作态*/
-    fun delayLoopQueryDeviceState() {
-        _delay(HawkEngraveKeys.minQueryDelayTime) {
-            //延迟1秒后, 继续查询状态
-            if (pauseLoopCheckDeviceState) {
-                delayLoopQueryDeviceState()
-            } else {
-                laserPeckerModel.queryDeviceState { bean, error ->
-                    if (error != null || loopCheckDeviceState) {
-                        //出现了错误, 继续查询
-                        delayLoopQueryDeviceState()
-                    }
-                }
-            }
-        }
-    }
-
     /**显示焦距提示*/
     fun showFocalDistance(context: Context?, action: () -> Unit) {
         val KEY = "${KEY_FOCAL_DISTANCE_TIPS}${getAppVersionCode()}"
@@ -471,8 +455,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**第三轴未连接连接*/
     fun exDeviceNoConnectType(): Int {
         var noConnectType = 0
-        if (laserPeckerModel.needShowExDeviceTipItem()) {
-            val stateParser = laserPeckerModel.deviceStateData.value
+        if (deviceStateModel.needShowExDeviceTipItem()) {
+            val stateParser = deviceStateModel.deviceStateData.value
             if (laserPeckerModel.isZOpen()) {
                 val connect = stateParser?.zConnect == 1
                 if (!connect) {
@@ -506,7 +490,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 )
 
                 onDismissListener = {
-                    laserPeckerModel.queryDeviceState()
+                    deviceStateModel.startLoopCheckState()
                 }
             }
         }
@@ -537,7 +521,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
 
                 onDismissListener = {
-                    laserPeckerModel.queryDeviceState()
+                    deviceStateModel.startLoopCheckState()
                 }
             }
         } else {
@@ -551,7 +535,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * 主要检测当前设备是否正在雕刻中
      * */
     fun checkStartPreview(): Boolean {
-        if (laserPeckerModel.deviceStateData.value?.isModeEngrave() == true) {
+        if (deviceStateModel.deviceStateData.value?.isModeEngrave() == true) {
             engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
                 dialogTitle = _string(R.string.device_engrave_ing_title)
                 dialogMessage = _string(R.string.device_engrave_ing_des)
@@ -572,32 +556,15 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         return true
     }
 
-    /**检查是否需要循环查询设备的状态,
-     * 如果是其他app控制的机器状态, 则需要循环查询*/
-    fun checkLoopQueryDeviceState(needStartLoop: Boolean = false) {
-        val stateParser = laserPeckerModel.deviceStateData.value ?: return
-        if (engraveModel._listenerEngraveState) {
-            //已在循环查询状态
-            return
-        }
-        if (needStartLoop || !stateParser.isModeIdle()) {
-            //非空闲状态
-            if (!loopCheckDeviceState) {
-                loopCheckDeviceState = true
-                delayLoopQueryDeviceState()
-            }
-        }
-    }
-
     /**恢复雕刻状态, 请在初始化指令发送完成之后, 再去检查
      * [checkStartPreview]
      * @return true 需要恢复状态*/
     fun checkRestoreEngrave(engraveFragment: IEngraveCanvasFragment): Boolean {
-        val stateParser = laserPeckerModel.deviceStateData.value ?: return false
+        val stateParser = deviceStateModel.deviceStateData.value ?: return false
         if (stateParser.isModeEngrave()) {
             if (stateParser.isEngraveStop()) {
                 toastQQ(_string(R.string.engrave_stopping_tip))
-                checkLoopQueryDeviceState()
+                deviceStateModel.startLoopCheckState()
                 return true
             }
 

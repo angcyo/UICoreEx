@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
@@ -10,7 +11,6 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.*
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -75,7 +75,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     /**渲染预览前配置界面*/
     fun renderPreviewBeforeItems() {
         renderDslAdapter {
-            if (laserPeckerModel.needShowExDeviceTipItem()) {
+            if (deviceStateModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
             /*if (laserPeckerModel.isC1()) {
@@ -128,11 +128,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             }
             //预览情况下, 一直显示设备扩展信息, 因为有焦距提示
             PreviewExDeviceTipItem()()
-            if (laserPeckerModel.isPenMode()) {
+            if (deviceStateModel.isPenMode()) {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {
                     onCalibrationAction = {
-                        pauseLoopCheckDeviceState = it == 1
+                        deviceStateModel.pauseLoopCheckState(it == 1)
                         syncQueryDeviceState { bean, error ->
                             if (error == null) {
                                 //刷新界面
@@ -185,16 +185,16 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         }
 
         //轮询查询状态
-        checkLoopQueryDeviceState(true)
+        deviceStateModel.startLoopCheckState()
     }
 
     /**开始路径预览流程*/
     fun startPathPreview(elementBean: LPElementBean?) {
         elementBean ?: return
-        pauseLoopCheckDeviceState = true
+        deviceStateModel.startLoopCheckState()
         viewHolder?.context?.pathPreviewDialog(elementBean) {
             onDismissListener = {
-                pauseLoopCheckDeviceState = false
+                deviceStateModel.pauseLoopCheckState(false)
             }
         }
     }

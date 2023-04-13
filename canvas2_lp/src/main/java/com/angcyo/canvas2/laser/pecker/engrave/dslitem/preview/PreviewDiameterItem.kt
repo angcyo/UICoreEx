@@ -4,7 +4,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.BaseDiameterItem
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity

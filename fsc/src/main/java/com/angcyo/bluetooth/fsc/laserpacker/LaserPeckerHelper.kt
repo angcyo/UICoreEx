@@ -21,7 +21,6 @@ import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.*
-import com.angcyo.library.getAppString
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.utils.LogFile
@@ -38,11 +37,6 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
  * @since 2022/03/24
  */
 object LaserPeckerHelper {
-
-    /** 中心点在物理设备中心
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.isDeviceOriginCenter]*/
-    const val DEFAULT_ORIGIN_CENTER =
-        "250~252 270~270 300~313 350~357 370~372 4000~4099 5500~5507 5510~5512"
 
     /**初始化指令, 失败后重试的次数*/
     var INIT_RETRY_COUNT = 3
@@ -98,6 +92,9 @@ object LaserPeckerHelper {
 
     //数据返回超时时长, 毫秒
     const val DEFAULT_RECEIVE_TIMEOUT = 3_000L
+
+    //指令返回超时最大时长, 毫秒
+    const val DEFAULT_MAX_RECEIVE_TIMEOUT = 30_000L
 
     //设备支持的分辨率, 请优先使用dpi
     const val PX_4K: Byte = 0x01
@@ -251,30 +248,6 @@ object LaserPeckerHelper {
         return bitmap.scale(newWidth, newHeight)
     }
 
-    /**中心点在物理中心*/
-    fun isDeviceOriginCenter(softwareVersion: Int): Boolean {
-        //优先使用自定义配置的
-        if (LibLpHawkKeys.lpDeviceOriginCenter != null) {
-            return VersionMatcher.matches(
-                softwareVersion,
-                LibLpHawkKeys.lpDeviceOriginCenter,
-                false,
-                false
-            )
-        }
-
-        //其次使用build配置的
-        val lpDeviceOriginCenter = if (BuildConfig.DEBUG) {
-            DEFAULT_ORIGIN_CENTER
-        } else {
-            getAppString("lp_device_origin_center")
-        }
-        if (VersionMatcher.matches(softwareVersion, lpDeviceOriginCenter, false, false)) {
-            return true
-        }
-        return false
-    }
-
     /**
      * 根据固件软件版本号[softwareVersion], 解析出对应的产品信息.
      * 解析产品信息
@@ -343,19 +316,23 @@ object LaserPeckerHelper {
                 wPhys = LibLpHawkKeys.l1Width ?: configBean.widthPhys
                 hPhys = LibLpHawkKeys.l1Height ?: configBean.heightPhys
             }
+
             LII, LII_M_ -> {
                 wPhys = LibLpHawkKeys.l2Width ?: configBean.widthPhys
                 hPhys = LibLpHawkKeys.l2Height ?: configBean.heightPhys
             }
+
             LIII, LIII_YT -> {
                 wPhys = LibLpHawkKeys.l3Width ?: configBean.widthPhys
                 hPhys = LibLpHawkKeys.l3Height ?: configBean.heightPhys
             }
+
             LIII_MAX, LIV -> {
                 //160*160
                 wPhys = LibLpHawkKeys.l4Width ?: configBean.widthPhys
                 hPhys = LibLpHawkKeys.l4Height ?: configBean.heightPhys
             }
+
             CI -> {
                 wPhys = LibLpHawkKeys.c1Width ?: configBean.widthPhys
                 hPhys = if (hardwareVersion == 800) LibLpHawkKeys.c1LHeight
@@ -749,6 +726,8 @@ object LaserPeckerHelper {
         end: (Throwable?) -> Unit = {}
     ) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
+        val deviceStateModel = vmApp<DeviceStateModel>()
+
         initDeviceName = name
         initDeviceAddress = address
 
@@ -814,7 +793,7 @@ object LaserPeckerHelper {
         }.flow { chain ->
             //通知设备工作状态
             queryStateParser?.let {
-                laserPeckerModel.updateDeviceState(it)
+                deviceStateModel.updateDeviceState(it)
             }
             chain(null)
         }.start {

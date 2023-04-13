@@ -6,7 +6,7 @@ import com.angcyo.canvas.utils.CanvasConstant
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave.EngraveFlowDataHelper
 import com.angcyo.engrave.R
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.engrave.model.PreviewModel

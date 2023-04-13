@@ -4,23 +4,24 @@ import android.app.Dialog
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
-import com.angcyo.laserpacker.device.HawkEngraveKeys
 import com.angcyo.engrave.data.PreviewInfo
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.engrave.model.AutoEngraveModel
 import com.angcyo.engrave.model.PreviewModel
 import com.angcyo.engrave.model.TransferModel
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
@@ -48,6 +49,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     val transferModel = vmApp<TransferModel>()
     val previewModel = vmApp<PreviewModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**预览的数据*/
     var projectItemBean: LPElementBean? = null
@@ -60,7 +62,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         dialogLayoutId = R.layout.dialog_path_preview_layout
         previewInfo = previewModel.previewInfoData.value
 
-        laserPeckerModel.deviceStateData.observe(this, allowBackward = false) {
+        deviceStateModel.deviceStateData.observe(this, allowBackward = false) {
             if (it != null) {
                 if (it.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW && it.workState == 0x01) {
                     //向量预览中...
@@ -193,7 +195,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                 return@_delay
             }
             //延迟1秒后, 继续查询状态
-            laserPeckerModel.queryDeviceState() { bean, error ->
+            deviceStateModel.queryDeviceState { bean, error ->
                 _isDelayCheck = false
                 if (error == null) {
                     //没有错误, 继续查询

@@ -20,7 +20,7 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime

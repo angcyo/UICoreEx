@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device
 
 import android.graphics.Bitmap
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp

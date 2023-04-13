@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -25,6 +26,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**雕刻配置信息, 用来显示光源等信息*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
@@ -76,7 +78,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
             }
             //C1握笔模块
             laserPeckerModel.isC1() -> {
-                val moduleState = laserPeckerModel.deviceStateData.value?.moduleState
+                val moduleState = deviceStateModel.deviceStateData.value?.moduleState
                 if (moduleState == null) {
                     null
                 } else {
@@ -100,13 +102,14 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                             6 -> append(_string(R.string.engrave_module_knife_cutting))
                             //7 CNC模式
                             7 -> append(_string(R.string.engrave_module_cnc))
-                            else -> append("Unknown $moduleState")
+                            else -> append("Unknown$moduleState")
                         }
                         appendFocalDistance()
                         appendSupportTip()
                     }
                 }
             }
+
             else -> span {
                 appendEngraveConfig()
             }

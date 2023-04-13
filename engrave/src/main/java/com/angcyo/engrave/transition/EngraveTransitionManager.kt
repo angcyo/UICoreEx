@@ -17,7 +17,7 @@ import com.angcyo.engrave.toEngraveTypeOfDataMode
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.engraveLayerList
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint

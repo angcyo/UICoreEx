@@ -1,5 +1,6 @@
 package com.angcyo.engrave.dslitem.preview
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
@@ -15,6 +16,7 @@ abstract class BasePreviewItem : DslAdapterItem() {
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     //雕刻模式
     val engraveModel = vmApp<EngraveModel>()
@@ -27,6 +29,6 @@ abstract class BasePreviewItem : DslAdapterItem() {
 
     /**查询设备状态*/
     fun queryDeviceStateCmd() {
-        laserPeckerModel.queryDeviceState()
+        deviceStateModel.queryDeviceState()
     }
 }

@@ -13,7 +13,7 @@ import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM

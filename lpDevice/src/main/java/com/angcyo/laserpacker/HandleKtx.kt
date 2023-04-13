@@ -8,7 +8,7 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.createPaint
 import com.angcyo.library.ex.toBase64Data

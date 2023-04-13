@@ -15,7 +15,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp

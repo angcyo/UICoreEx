@@ -1,6 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex._color
@@ -18,9 +18,9 @@ class DeviceInfoTipItem : PreviewTipItem() {
 
         /**设备角度/温度信息*/
         fun deviceInfoTip(): CharSequence = span {
-            //产品模式
-            val laserPeckerModel = vmApp<LaserPeckerModel>()
-            val stateParser = laserPeckerModel.deviceStateData.value
+            val deviceStateModel = vmApp<DeviceStateModel>()
+
+            val stateParser = deviceStateModel.deviceStateData.value
             val angle = stateParser?.angle ?: 0
             if (angle != 0) {
                 append(_string(R.string.device_angle))

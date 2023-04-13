@@ -1,6 +1,7 @@
 package com.angcyo.engrave.model
 
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.canvas.data.resetLocationWithGravity
@@ -69,6 +70,7 @@ class AutoEngraveModel : LifecycleViewModel() {
     val engraveModel = vmApp<EngraveModel>()
 
     val peckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**需要自动雕刻的数据
      * 支持[com.angcyo.laserpacker.bean.LPElementBean]
@@ -127,7 +129,7 @@ class AutoEngraveModel : LifecycleViewModel() {
 
     /**开始雕刻, 创建数据/发送数据/雕刻*/
     fun startEngrave(taskId: String, engraveData: CanvasOpenDataType? = null) {
-        if (peckerModel.deviceStateData.value?.isModeIdle() == true) {
+        if (deviceStateModel.deviceStateData.value?.isModeIdle() == true) {
             //非空闲模式
         } else {
             //进入空闲模式

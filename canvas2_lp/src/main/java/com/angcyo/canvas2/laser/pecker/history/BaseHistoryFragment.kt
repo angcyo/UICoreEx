@@ -5,7 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
@@ -46,9 +46,9 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
         //监听雕刻状态, 结束后刷新数据
-        val peckerModel = vmApp<LaserPeckerModel>()
-        peckerModel.deviceStateData.observe {
-            if (peckerModel.deviceStateData.beforeValue?.isEngraveStop() != true && it?.isEngraveStop() == true) {
+        val deviceStateModel = vmApp<DeviceStateModel>()
+        deviceStateModel.deviceStateData.observe {
+            if (deviceStateModel.deviceStateData.beforeValue?.isEngraveStop() != true && it?.isEngraveStop() == true) {
                 _adapter.updateAllItem()
             }
         }

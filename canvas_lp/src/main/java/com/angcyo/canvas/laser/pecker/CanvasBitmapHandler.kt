@@ -13,7 +13,7 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toBlackWhiteBitmap
 import com.angcyo.library.component.hawk.LibHawkKeys

@@ -1,5 +1,6 @@
 package com.angcyo.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
@@ -22,6 +23,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
     var itemTaskId: String? = null
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_info_layout
@@ -80,7 +82,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 val engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
                 add(LabelDesData(_string(R.string.work_time), engraveTime))
 
-                if (laserPeckerModel.deviceStateData.value?.isEngraving() == true) {
+                if (deviceStateModel.deviceStateData.value?.isEngraving() == true) {
                     //雕刻中才显示,剩余时长
                     val duration = EngraveFlowDataHelper.calcEngraveProgressDuration(itemTaskId)
                     if (duration > 3000) {

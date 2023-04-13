@@ -21,9 +21,9 @@ data class MiniReceiveParser(
     var hex: String? = null,
     var length: Int = -1,
     var func: Byte = -1, //功能码
-    var d1: Byte = -1,
-    var d2: Byte = -1,
-    var d3: Byte = -1,
+    var d1: Byte = -1, //state
+    var d2: Byte = -1, //custom
+    var d3: Byte = -1, //res
     var d4: Byte = -1,
     var d5: Byte = -1,
     //额外的输出log

@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.annotation.Implementation

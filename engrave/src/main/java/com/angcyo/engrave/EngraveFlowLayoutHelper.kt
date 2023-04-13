@@ -1,6 +1,7 @@
 package com.angcyo.engrave
 
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -106,10 +107,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                 engraveFlow = ENGRAVE_FLOW_FINISH
                                 renderFlowItems()
                             }
+
                             EngraveModel.ENGRAVE_STATE_INDEX_FINISH -> {
                                 //当前索引雕刻完成, 传输下一个文件
                                 startTransferNext()
                             }
+
                             else -> {
                                 renderFlowItems()
                             }
@@ -372,7 +375,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             //已经在显示其他流程
             return
         }
-        if (laserPeckerModel.deviceStateData.value?.isModeIdle() != true) {
+        if (deviceStateModel.deviceStateData.value?.isModeIdle() != true) {
             //设备非空闲
             return
         }
@@ -475,7 +478,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
 
             //雕刻参数
-            if (laserPeckerModel.isPenMode()) {
+            if (deviceStateModel.isPenMode()) {
                 //雕刻速度, 非雕刻深度
                 EngraveOptionWheelItem()() {
                     itemTag = MaterialEntity.SPEED
@@ -555,7 +558,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
             }
-            if (laserPeckerModel.needShowExDeviceTipItem()) {
+            if (deviceStateModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
             }
 
@@ -649,7 +652,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
 
                 //雕刻参数
-                if (laserPeckerModel.isPenMode()) {
+                if (deviceStateModel.isPenMode()) {
                     //握笔模块, 雕刻速度, 非雕刻深度
                     engraveConfigEntity.power = 100 //功率必须100%
                     engraveConfigEntity.lpSaveEntity()

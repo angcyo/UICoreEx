@@ -1,4 +1,4 @@
-package com.angcyo.laserpacker.device
+package com.angcyo.bluetooth.fsc.laserpacker
 
 import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper

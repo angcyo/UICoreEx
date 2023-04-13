@@ -9,7 +9,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.unit.PointValueUnit

@@ -5,6 +5,7 @@ import android.graphics.RectF
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -13,7 +14,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -63,6 +64,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
     val bleApiModel = vmApp<FscBleApiModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
+    val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**最后一次触发自动连接的时间, 毫秒*/
     var lastConnectTime: Long = -1
@@ -99,7 +101,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
                     //蓝牙断开后,清空设备状态
                     laserPeckerModel.apply {
-                        deviceStateData.postValue(null)
+                        deviceStateModel.deviceStateData.postValue(null)
                         initializeData.updateValue(false)
                     }
 
@@ -205,7 +207,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
                     appendLine()
                     appendLine("设备状态↓")
-                    appendLine("${laserPeckerModel.deviceStateData.value}")
+                    appendLine("${deviceStateModel.deviceStateData.value}")
 
                     appendLine()
                     appendLine("设备设置↓")
@@ -218,7 +220,7 @@ class FscDeviceModel : LifecycleViewModel() {
                 DslLastDeviceInfoItem.saveDeviceInfo()
 
                 laserPeckerModel.productInfoData.value?.let {
-                    LaserPeckerHelper.updateProductInfo(it, laserPeckerModel.deviceStateData.value)
+                    LaserPeckerHelper.updateProductInfo(it, deviceStateModel.deviceStateData.value)
                     MaterialHelper.initMaterial()
                 }
             }
