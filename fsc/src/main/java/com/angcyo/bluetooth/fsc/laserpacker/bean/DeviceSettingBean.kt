@@ -59,5 +59,8 @@ data class DeviceSettingBean(
     var enableFun: String? = null,
     /**[com.angcyo.laserpacker.device.HawkEngraveKeys.maxEngraveItemCountLimit]*/
     var maxEngraveItemCount: Int? = null,
+    /**用来更新Hawk的值, 指令.
+     * [@key#int=value|@key#int=value|@key#int=value]*/
+    var updateHawkCommand: String? = null,
     //endregion---Android端设置项---
 )

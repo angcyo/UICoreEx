@@ -1,7 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import androidx.annotation.Keep
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.library.L
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
@@ -172,6 +172,15 @@ object HawkEngraveKeys {
 
     /**最大显示传输文件预览图的数量*/
     var maxShowTransferImageCount: Int by HawkPropertyValue<Any, Int>(3)
+
+    /**用来控制雕刻数据的日志输出级别
+     * [com.angcyo.engrave2.transition.EngraveTransitionHelper]
+     * [L.NONE]     //不输出日志
+     * [L.DEBUG]    //输出基础日志
+     * [L.INFO]     //输出详细日志
+     * [L.WARN]     //输出全部日志
+     * */
+    var engraveDataLogLevel: Int by HawkPropertyValue<Any, Int>(L.WARN)
 
     //---功能固件范围配置---
 

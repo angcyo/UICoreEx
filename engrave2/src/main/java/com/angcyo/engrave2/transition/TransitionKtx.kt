@@ -3,6 +3,7 @@ package com.angcyo.engrave2.transition
 import android.graphics.*
 import android.view.Gravity
 import android.widget.LinearLayout
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
@@ -10,6 +11,7 @@ import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.byteWriter
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.unit.IValueUnit
@@ -241,10 +243,34 @@ fun List<BitmapPath>.toEngraveLog(): String = buildString {
 
 //region ---抖动数据生成---
 
+/**[compress] 是否要使用压缩数据*/
+fun Bitmap.toBitmapByteJni(
+    outputFilePath: String?, //数据写入到此文件
+    logFilePath: String? = null,  //日志写入到此文件
+    grayThreshold: Int = LibHawkKeys.grayThreshold,
+    compress: Boolean = true
+) = BitmapHandle.toPixelBytes(this, grayThreshold, compress, outputFilePath, logFilePath)
+
+/**将[logFilePath]文件转换成图片*/
+fun String?.toEngraveDitheringBitmapJni(width: Int, height: Int): Bitmap? {
+    this ?: return null
+    val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(result)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        this.style = Paint.Style.FILL
+        strokeWidth = 1f
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+    }
+    BitmapHandle.parsePixelLogToBitmap(this, canvas, paint)
+    return result
+}
+
 /**[bitmap] 图片转抖动数据, 在黑色金属上雕刻效果正确, 在纸上雕刻时反的
  * [threshold] 颜色阈值, 此值以下的色值视为黑色0
  * 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
  * */
+@Deprecated("请使用性能更好的Jni方法:[Bitmap.toBitmapByteJni]")
 fun Bitmap.toBitmapByte(threshold: Int): Pair<List<String>, ByteArray> {
     val bitmap = this
     val width = bitmap.width
@@ -295,6 +321,7 @@ fun Bitmap.toBitmapByte(threshold: Int): Pair<List<String>, ByteArray> {
 }
 
 /**[toBitmapByte]不压缩*/
+@Deprecated("请使用性能更好的Jni方法:[Bitmap.toBitmapByteJni]")
 fun Bitmap.toBitmapByteUncompress(threshold: Int): Pair<List<String>, ByteArray> {
     val bitmap = this
     val width = bitmap.width

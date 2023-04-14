@@ -2,6 +2,7 @@ package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
@@ -12,21 +13,31 @@ import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toGCodePath
+import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.ex.*
+import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.addBgColor
+import com.angcyo.library.ex.ceil
+import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.fileSizeString
+import com.angcyo.library.ex.floor
+import com.angcyo.library.ex.lines
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.toDC
+import com.angcyo.library.ex.toDrawable
+import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.opencv.OpenCV
 import java.io.File
-import kotlin.io.readText
 import kotlin.math.max
 
 /**
@@ -61,11 +72,13 @@ object EngraveTransitionHelper {
         val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
 
         //1:保存一份原始可视化数据
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            dpiBitmap,
-            LPDataConstant.EXT_PREVIEW
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.DEBUG) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                dpiBitmap,
+                LPDataConstant.EXT_PREVIEW
+            )
+        }
 
         val data = transition.covertBitmap2Bytes(dpiBitmap)
         //2: 数据没有log
@@ -74,14 +87,16 @@ object EngraveTransitionHelper {
         transferDataEntity.dataPath =
             data.writeTransferDataPath("${transferDataEntity.index}")
 
-        //3:数据的预览图片
-        val previewBitmap = data.toEngraveBitmap(dpiBitmap.width, dpiBitmap.height)
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            previewBitmap,
-            LPDataConstant.EXT_DATA_PREVIEW,
-            true
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN) {
+            //3:数据的预览图片
+            val previewBitmap = data.toEngraveBitmap(dpiBitmap.width, dpiBitmap.height)
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                previewBitmap,
+                LPDataConstant.EXT_DATA_PREVIEW,
+                true
+            )
+        }
 
         buildString {
             append("toBitmap[${transferDataEntity.index}]->")
@@ -110,11 +125,13 @@ object EngraveTransitionHelper {
         val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
 
         //1:保存一份原始可视化数据
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            dpiBitmap,
-            LPDataConstant.EXT_PREVIEW
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.DEBUG) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                dpiBitmap,
+                LPDataConstant.EXT_PREVIEW
+            )
+        }
 
         //val renderUnit = IValueUnit.MM_RENDER_UNIT
         //renderUnit.convertValueToPixel(transferDataEntity.x.toFloat()).ceilInt()
@@ -137,20 +154,29 @@ object EngraveTransitionHelper {
         transferDataEntity.lines = bitmapPathList.size
 
         //2:路径数据写入日志
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            bitmapPathList.toEngraveLog(),
-            LPDataConstant.EXT_BP
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                bitmapPathList.toEngraveLog(),
+                LPDataConstant.EXT_BP
+            )
+        }
+
         //3:保存一份数据的预览图
-        val previewBitmap =
-            bitmapPathList.toEngraveBitmap(dpiBitmap.width, dpiBitmap.height, offsetLeft, offsetTop)
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            previewBitmap,
-            LPDataConstant.EXT_DATA_PREVIEW,
-            true
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN) {
+            val previewBitmap = bitmapPathList.toEngraveBitmap(
+                dpiBitmap.width,
+                dpiBitmap.height,
+                offsetLeft,
+                offsetTop
+            )
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                previewBitmap,
+                LPDataConstant.EXT_DATA_PREVIEW,
+                true
+            )
+        }
 
         buildString {
             append("toBitmapPath[${transferDataEntity.index}]->")
@@ -211,12 +237,42 @@ object EngraveTransitionHelper {
         }
 
         //1:保存一份原始可视化数据
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.DEBUG) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                operateBitmap,
+                LPDataConstant.EXT_PREVIEW
+            )
+        }
+
+        //开始转换成机器数据
+        val dataPath = EngraveHelper.getTransferDataPath("${transferDataEntity.index}")
+        val dtPath = if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO)
+            EngraveHelper.getSaveEngraveDataFilePath(
+                transferDataEntity.index,
+                LPDataConstant.EXT_DT
+            ) else null //抖动图的日志输出路径
+        transition.covertBitmap2DitheringJni(
             operateBitmap,
-            LPDataConstant.EXT_PREVIEW
+            dataPath,//数据输出
+            dtPath,//日志输出
+            LibHawkKeys.grayThreshold,
+            true
         )
 
+        //3:保存一份数据的预览图
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN) {
+            val previewBitmap =
+                dtPath.toEngraveDitheringBitmapJni(operateBitmap.width, operateBitmap.height)
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                previewBitmap,
+                LPDataConstant.EXT_DATA_PREVIEW,
+                true
+            )
+        }
+
+        /*//2023-4-14 废弃
         //白色1 黑色0; 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
         val pair = transition.covertBitmap2Dithering(operateBitmap, true)
         transferDataEntity.dataPath =
@@ -236,13 +292,13 @@ object EngraveTransitionHelper {
             previewBitmap,
             LPDataConstant.EXT_DATA_PREVIEW,
             true
-        )
+        )*/
 
         buildString {
             append("toBitmapDithering[${transferDataEntity.index}]->")
             append(transferConfigEntity.name)
             append(" dpi:${transferConfigEntity.dpi}")
-            append(" ${bitmapByteCount.toSizeString()}->${pair.second.size().toSizeString()}")
+            append(" ${bitmapByteCount.toSizeString()}->${dataPath.fileSizeString()}")
             append(" 转换耗时:${LTime.time()}")
         }.writePerfLog()
         return transferDataEntity
@@ -268,11 +324,13 @@ object EngraveTransitionHelper {
         val bitmap = provider.getEngraveBitmapData()
 
         //1:保存一份原始可视化数据
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            bitmap,
-            LPDataConstant.EXT_PREVIEW
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.DEBUG) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                bitmap,
+                LPDataConstant.EXT_PREVIEW
+            )
+        }
 
         if (params.onlyUseBitmapToGCode || pathList == null) {
             //如果没有路径, 获取强制使用图片转GCode
@@ -440,24 +498,28 @@ object EngraveTransitionHelper {
             gCodeText.toByteArray().writeTransferDataPath("${transferDataEntity.index}")
 
         //2:保存一份GCode文本数据/原始数据
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            gCodeText,
-            LPDataConstant.EXT_GCODE
-        )
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                gCodeText,
+                LPDataConstant.EXT_GCODE
+            )
+        }
 
-        //val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
-        val gCodeDrawable =
-            gCodeText.toGCodePath()?.toDrawable(HawkEngraveKeys.projectOutSize.toFloat())
+        if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN) {
+            //val gCodeDrawable = GCodeHelper.parseGCode(gCodeText)
+            val gCodeDrawable =
+                gCodeText.toGCodePath()?.toDrawable(HawkEngraveKeys.projectOutSize.toFloat())
 
-        //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
-        val previewBitmap = gCodeDrawable?.toBitmap()
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            previewBitmap,
-            LPDataConstant.EXT_DATA_PREVIEW,
-            true
-        )
+            //3:保存一份GCode的图片数据/预览数据, 数据的预览图片
+            val previewBitmap = gCodeDrawable?.toBitmap()
+            EngraveHelper.saveEngraveData(
+                transferDataEntity.index,
+                previewBitmap,
+                LPDataConstant.EXT_DATA_PREVIEW,
+                true
+            )
+        }
     }
 
     //endregion ---文件输出信息---

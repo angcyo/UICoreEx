@@ -42,6 +42,14 @@ class SimpleTransition : ITransition {
         }
     }
 
+    override fun covertBitmap2DitheringJni(
+        bitmap: Bitmap,
+        outputFilePath: String?,
+        logFilePath: String?,
+        grayThreshold: Int,
+        compress: Boolean
+    ): Boolean = bitmap.toBitmapByteJni(outputFilePath, logFilePath, grayThreshold, compress)
+
     override fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF): File {
         val file = OpenCV.bitmapToGCode(
             app(),

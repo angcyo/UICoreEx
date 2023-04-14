@@ -23,7 +23,22 @@ interface ITransition {
 
     /**将图片[bitmap]转换成的抖动数据
      * [compress] 是否要压缩数据, 将8个像素合并成1位, 否则1个像素1字节*/
+    @Deprecated("请使用性能更好的[covertBitmap2DitheringJni]方法")
     fun covertBitmap2Dithering(bitmap: Bitmap, compress: Boolean): Pair<List<String>, ByteArray>
+
+    /**[outputFilePath] 抖动后的数据输出路径
+     * [logFilePath] 010101日志输出路径
+     * [grayThreshold] 灰度阈值, 小于等于此值视为黑色
+     * [compress] 是否要压缩数据
+     *
+     * [covertBitmap2Dithering]*/
+    fun covertBitmap2DitheringJni(
+        bitmap: Bitmap,
+        outputFilePath: String?, //数据写入到此文件
+        logFilePath: String?,  //日志写入到此文件
+        grayThreshold: Int,
+        compress: Boolean
+    ): Boolean
 
     /**将图片[bitmap]转换成的GCode数据
      * [bounds] 用来平移GCode到这个坐标*/

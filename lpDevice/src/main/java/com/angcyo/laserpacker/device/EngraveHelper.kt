@@ -3,6 +3,7 @@ package com.angcyo.laserpacker.device
 import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
@@ -52,7 +53,11 @@ object EngraveHelper {
 
     /**将字节数据写入到文件*/
     fun ByteArray.writeTransferDataPath(fileName: String) =
-        writeToFile(filePath(LPDataConstant.ENGRAVE_TRANSFER_FILE_FOLDER, fileName).file())
+        writeToFile(getTransferDataPath(fileName).file())
+
+    /**获取一个传输数据的文件路径*/
+    fun getTransferDataPath(fileName: String) =
+        filePath(LPDataConstant.ENGRAVE_TRANSFER_FILE_FOLDER, fileName)
 
     /**生成一个雕刻需要用到的文件索引
      * 4个字节 最大 4_294_967_295
@@ -118,6 +123,12 @@ object EngraveHelper {
             false,
             recycle
         )
+    }
+
+    /** 单独返回文件路径
+     * [saveEngraveData]*/
+    fun getSaveEngraveDataFilePath(index: Any?, suffix: String = "engrave"): String {
+        return appFilePath("${index}${suffix.ensureExtName()}", LPDataConstant.ENGRAVE_FILE_FOLDER)
     }
 
     //endregion ---雕刻---

@@ -2,11 +2,13 @@ package com.angcyo.bluetooth.fsc.laserpacker
 
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceSettingBean
+import com.angcyo.core.Debug
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.http.gitee.Gitee
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.ex.HAWK_SPLIT_CHAR
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.readText
 import com.angcyo.library.libCacheFile
@@ -57,6 +59,11 @@ object LaserPeckerConfigHelper {
                 //写入到本地缓存
                 _deviceSettingBean = null
                 it.writeTo(libCacheFile(DEVICE_SETTING_CONFIG_FILE_NAME), false)
+                readDeviceSettingConfig()?.let {
+                    if (!it.updateHawkCommand.isNullOrBlank()) {
+                        Debug.parseHawkKeys(it.updateHawkCommand?.split(HAWK_SPLIT_CHAR))
+                    }
+                }
             }
         }
     }
