@@ -28,6 +28,7 @@ import kotlin.math.max
 //region ---图片数据生成---
 
 /**从图片中, 获取雕刻需要用到的像素信息*/
+@Deprecated("请使用性能更好的Jni方法:[Bitmap.toColorBytes]")
 fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
     return colorChannel(channelType) { color, channelValue ->
         if (color == Color.TRANSPARENT) {
@@ -36,6 +37,10 @@ fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
             channelValue
         }
     }
+}
+
+fun Bitmap.toColorBytes(outputFilePath: String?, channelType: Int = Color.GRAY): Boolean {
+    return BitmapHandle.toColorBytes(this, channelType, outputFilePath)
 }
 
 /**机器雕刻的色彩数据可视化*/
@@ -64,6 +69,18 @@ fun ByteArray.toEngraveBitmap(width: Int, height: Int): Bitmap {
 
 //region ---图片线段数据生成---
 
+/**[toBitmapPath]*/
+fun Bitmap.toBitmapPathJni(
+    outputFilePath: String?,
+    logFilePath: String?,
+    grayThreshold: Int
+): Int = BitmapHandle.toBitmapPath(
+    this,
+    grayThreshold,
+    outputFilePath,
+    logFilePath
+)
+
 /**[bitmap] 图片转路径数据
  * [threshold] 颜色阈值, 此值以下的色值视为黑色0
  *
@@ -74,6 +91,7 @@ fun ByteArray.toEngraveBitmap(width: Int, height: Int): Bitmap {
  *
  * [Bitmap.eachPixel]
  * */
+@Deprecated("请使用性能更好的[toBitmapPathJni]方法")
 fun Bitmap.toBitmapPath(
     threshold: Int,
     offsetLeft: Int = 0,

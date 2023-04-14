@@ -28,8 +28,18 @@ class SimpleTransition : ITransition {
 
     override fun covertBitmap2Bytes(bitmap: Bitmap) = bitmap.engraveColorBytes()
 
+    override fun covertBitmap2BytesJni(bitmap: Bitmap, outputFilePath: String?): Boolean =
+        bitmap.toColorBytes(outputFilePath)
+
     override fun covertBitmap2BP(bitmap: Bitmap): List<BitmapPath> =
         bitmap.toBitmapPath(LibHawkKeys.grayThreshold)
+
+    override fun covertBitmap2BPJni(
+        bitmap: Bitmap,
+        outputFilePath: String?,
+        logFilePath: String?,
+        grayThreshold: Int
+    ): Int = bitmap.toBitmapPathJni(outputFilePath, logFilePath, grayThreshold)
 
     override fun covertBitmap2Dithering(
         bitmap: Bitmap,
