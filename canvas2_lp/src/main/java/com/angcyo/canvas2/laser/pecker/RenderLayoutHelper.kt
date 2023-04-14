@@ -59,6 +59,7 @@ import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.ex.longFeedback
@@ -72,13 +73,6 @@ import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.base.showPopupMenu
 import com.angcyo.widget.recycler.renderDslAdapter
-import kotlin.collections.List
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.listOf
-import kotlin.collections.mapTo
-import kotlin.collections.mutableListOf
-import kotlin.collections.reversed
 import kotlin.collections.set
 
 /**
@@ -150,7 +144,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     }
                 }
             }
-            if (isDebugType()) {
+            if (isDebug()) {
                 if (!closeCanvasItemsFun.have("_operate_")) {
                     ControlOperateItem()() {
                         initItem()
@@ -511,7 +505,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 if (groupType == CanvasGroupRenderer.GROUP_TYPE_GROUP) {
                     //群组时, 使用统一的groupId
                     groupId = uuid()
-                } else if (groupType == CanvasGroupRenderer.GROUP_TYPE_GROUP) {
+                } else {
                     //解组时, 清除groupId
                 }
                 for (renderer in subRendererList) {
