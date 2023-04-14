@@ -109,6 +109,8 @@
     <string name="canvas_rasterize">ラスタライズ</string>
 
     <string name="canvas_side">角の数</string>
+    <string name="canvas_side_count">副業</string>
+    <string name="canvas_angle_count">角度番号</string>
     <string name="canvas_depth">深さ</string>
     <string name="canvas_corner">円角</string>
 
