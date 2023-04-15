@@ -24,4 +24,7 @@ interface IEngraveRenderFragment {
     /**流程布局的容器*/
     val flowLayoutContainer: ViewGroup?
 
+    /**警示动画布局的容器*/
+    val dangerLayoutContainer: ViewGroup?
+
 }

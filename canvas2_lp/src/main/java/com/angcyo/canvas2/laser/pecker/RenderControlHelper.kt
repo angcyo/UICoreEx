@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.Reason
@@ -19,7 +20,19 @@ import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.dialog.canvasFontWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
-import com.angcyo.canvas2.laser.pecker.dslitem.control.*
+import com.angcyo.canvas2.laser.pecker.dslitem.control.AlignDeviceItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.EditControlItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.ImageFilterItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.LayerSortMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.PathStyleItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.RendererAlignMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.RendererFlatMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.ShapePropertyControlItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.TextAlignMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.TextOrientationItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.TextPropertyControlItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.TextStyleMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.TextTypefaceSelectItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
@@ -28,11 +41,19 @@ import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
-import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.eachItem
+import com.angcyo.dsladapter.updateAllItemBy
+import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._color
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.size
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
@@ -86,9 +107,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
     }
 
-    /**隐藏控制布局*/
-    fun hideControlLayout() {
-        if (isEditEnable) {
+    /**隐藏控制布局
+     * [force] 是否强制隐藏*/
+    fun hideControlLayout(force: Boolean = false) {
+        if (isEditEnable || force) {
             editItem?.updateItemSelected(false)
             _rootViewHolder?.apply {
                 //转场动画

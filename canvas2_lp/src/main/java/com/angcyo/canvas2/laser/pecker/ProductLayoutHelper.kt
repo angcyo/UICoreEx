@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Color
 import android.graphics.Path
-import android.view.ViewGroup
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
@@ -17,7 +16,6 @@ import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
-import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
@@ -29,14 +27,11 @@ import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.alphaRatio
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.removeFromParent
 import com.angcyo.library.ex.toPath
 import com.angcyo.viewmodel.observe
-import com.angcyo.widget.loading.DangerWarningView
 import com.angcyo.widget.span.span
 
 /**
@@ -58,6 +53,9 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     @CallPoint
     fun bindProductLayout() {
+        //警示提示动画
+        dangerWarningHelper.bindDangerWarning(renderLayoutHelper.renderFragment)
+
         val fragment = fragment
 
         //状态管理
@@ -113,27 +111,11 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 laserPeckerModel.overflowInfoData.postValue(null)
             }
 
-            //警示提示动画
             it?.let {
-                val rootLayout = _rootViewHolder?.itemView as ViewGroup
-                //提示
-                if (it.isModeEngravePreview()) {
-                    //预览模式
-                    showDangerWaring(rootLayout, PREVIEW_COLOR.alphaRatio(0.4f))
-                } else if (it.isModeEngrave()) {
-                    //雕刻模式
-                    showDangerWaring(rootLayout, ENGRAVE_COLOR.alphaRatio(0.4f))
-                } else {
-                    //空闲
-                    dangerWarningView?.removeFromParent()
-                }
-
                 //有设备连接
                 //stateLayoutManager.removeState(connectStateInfo)
                 bindDeviceConnectTipLayout()
             }.elseNull {
-                dangerWarningView?.removeFromParent()
-
                 //无设备连接
                 //stateLayoutManager.updateState(connectStateInfo)
                 bindDeviceConnectTipLayout()
@@ -215,13 +197,13 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     //预览模式
     val previewModel = vmApp<PreviewModel>()
 
-    //雕刻提示
-    var dangerWarningView: DangerWarningView? = null
-
     //---
 
     //状态管理
     val stateLayoutManager = StateLayoutManager()
+
+    //警示提示动画
+    val dangerWarningHelper = DangerWarningHelper()
 
     //雕刻状态信息
     val engraveStateInfo = StateLayoutInfo()
@@ -283,17 +265,6 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             renderDelegate?.showRectBounds(productInfo.bounds, offsetRectTop = true)
         } else {
             _showProductLimit(productInfo)
-        }
-    }
-
-    /**显示危险提示view*/
-    private fun showDangerWaring(rootLayout: ViewGroup, color: Int) {
-        if (dangerWarningView == null) {
-            dangerWarningView = DangerWarningView(rootLayout.context)
-        }
-        dangerWarningView?.firstDrawable<DangerWarningDrawable>()?.warnColor = color
-        if (dangerWarningView?.parent == null) {
-            rootLayout.addView(dangerWarningView, -1, -1)
         }
     }
 

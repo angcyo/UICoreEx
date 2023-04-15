@@ -181,7 +181,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             //禁用
             _disableBeforeIsEditItem = false
             val item = _selectItem
-            if (item != null && item.itemTag == ControlEditItem.TAG_EDIT_ITEM) {
+            if (editItem?.itemIsSelected == true || (item != null && item.itemTag == ControlEditItem.TAG_EDIT_ITEM)) {
+                renderControlHelper.hideControlLayout(true)
                 _disableBeforeIsEditItem = true
                 changeSelectItem(null)
             }
@@ -194,6 +195,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         if (!disable && _disableBeforeIsEditItem) {
             //启用, 恢复之前的编辑状态
             renderControlHelper.bindControlLayout()
+            changeSelectItem(renderControlHelper.editItem) //切换到编辑状态
         }
     }
 
@@ -202,10 +204,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**切换底部选中的item*/
     @CallPoint
     fun changeSelectItem(toItem: DslAdapterItem?) {
-        if (_selectItem == toItem) {
+        val oldItem = _selectItem
+        if (oldItem == toItem) {
             return
         }
-        _selectItem?.updateItemSelected(false)
+        oldItem?.updateItemSelected(false)
         _selectItem = toItem
     }
 

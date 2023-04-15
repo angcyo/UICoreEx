@@ -172,12 +172,18 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
 
     override val fragment: AbsLifecycleFragment
         get() = this
+
     override val renderDelegate: CanvasRenderDelegate?
         get() = null
+
     override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
         get() = _engraveFlowLayoutHelper.apply {
             engraveCanvasFragment = this@BaseHistoryFragment
         }
+
     override val flowLayoutContainer: ViewGroup?
         get() = _vh.group(R.id.lib_content_overlay_wrap_layout) ?: _vh.itemView as ViewGroup
+
+    override val dangerLayoutContainer: ViewGroup?
+        get() = null
 }
