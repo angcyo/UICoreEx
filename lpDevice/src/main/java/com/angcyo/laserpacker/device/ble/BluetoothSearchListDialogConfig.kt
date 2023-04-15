@@ -5,6 +5,7 @@ import android.content.Context
 import com.angcyo.dialog.BaseDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.laserpacker.device.R
+import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
@@ -47,6 +48,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 }
 
 /**蓝牙搜索列表对话框*/
+@DSL
 fun Context.bluetoothSearchListDialog(config: BluetoothSearchListDialogConfig.() -> Unit) {
     return BluetoothSearchListDialogConfig(this).run {
         configBottomDialog(this@bluetoothSearchListDialog)
