@@ -73,10 +73,12 @@ fun ByteArray.toEngraveBitmap(width: Int, height: Int): Bitmap {
 fun Bitmap.toBitmapPathJni(
     outputFilePath: String?,
     logFilePath: String?,
-    grayThreshold: Int
+    grayThreshold: Int,
+    alphaThreshold: Int,
 ): Long = BitmapHandle.toBitmapPath(
     this,
     grayThreshold,
+    alphaThreshold,
     outputFilePath,
     logFilePath
 )
@@ -266,8 +268,16 @@ fun Bitmap.toBitmapByteJni(
     outputFilePath: String?, //数据写入到此文件
     logFilePath: String? = null,  //日志写入到此文件
     grayThreshold: Int = LibHawkKeys.grayThreshold,
+    alphaThreshold: Int = LibHawkKeys.alphaThreshold,
     compress: Boolean = true
-) = BitmapHandle.toPixelBytes(this, grayThreshold, compress, outputFilePath, logFilePath)
+) = BitmapHandle.toPixelBytes(
+    this,
+    grayThreshold,
+    alphaThreshold,
+    compress,
+    outputFilePath,
+    logFilePath
+)
 
 /**将[logFilePath]文件转换成图片*/
 fun String?.toEngraveDitheringBitmapJni(width: Int, height: Int): Bitmap? {

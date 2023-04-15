@@ -138,8 +138,13 @@ object EngraveTransitionHelper {
                 LPDataConstant.EXT_BP
             ) else null //路径图的日志输出路径
         transferDataEntity.lines =
-            transition.covertBitmap2BPJni(dpiBitmap, dataPath, logPath, LibHawkKeys.grayThreshold)
-                .toInt()
+            transition.covertBitmap2BPJni(
+                dpiBitmap,
+                dataPath,
+                logPath,
+                LibHawkKeys.grayThreshold,
+                LibHawkKeys.alphaThreshold
+            ).toInt()
 
         doBack {
             //1:保存一份原始可视化数据
@@ -287,6 +292,7 @@ object EngraveTransitionHelper {
             dataPath,//数据输出
             logPath,//日志输出
             LibHawkKeys.grayThreshold,
+            LibHawkKeys.alphaThreshold,
             true
         )
 
