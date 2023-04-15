@@ -74,7 +74,7 @@ fun Bitmap.toBitmapPathJni(
     outputFilePath: String?,
     logFilePath: String?,
     grayThreshold: Int
-): Int = BitmapHandle.toBitmapPath(
+): Long = BitmapHandle.toBitmapPath(
     this,
     grayThreshold,
     outputFilePath,

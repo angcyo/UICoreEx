@@ -35,7 +35,7 @@ interface ITransition {
         outputFilePath: String?, //数据写入到此文件
         logFilePath: String?,  //日志写入到此文件
         grayThreshold: Int,
-    ): Int
+    ): Long
 
     /**将图片[bitmap]转换成的抖动数据
      * [compress] 是否要压缩数据, 将8个像素合并成1位, 否则1个像素1字节*/

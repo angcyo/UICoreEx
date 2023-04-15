@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writePerfLog
+import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.http.rx.doBack
@@ -79,12 +80,13 @@ object EngraveTransitionHelper {
         transferDataEntity.dataPath = dataPath
         transition.covertBitmap2BytesJni(dpiBitmap, transferDataEntity.dataPath)
         buildString {
-            append("toBitmap[$index]->")
+            append("转图片[$index]->")
             append(transferConfigEntity.name)
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}]")
             append(" dpi:${transferConfigEntity.dpi}")
             append(" ${dpiBitmap.byteCount.toSizeString()}->${transferDataEntity.dataPath.fileSizeString()}")
-            append(" 转换耗时:${LTime.time()}")
-        }.writePerfLog()
+            append(" 耗时:${LTime.time()}")
+        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
 
         doBack {
             //1:保存一份原始可视化数据
@@ -137,6 +139,7 @@ object EngraveTransitionHelper {
             ) else null //路径图的日志输出路径
         transferDataEntity.lines =
             transition.covertBitmap2BPJni(dpiBitmap, dataPath, logPath, LibHawkKeys.grayThreshold)
+                .toInt()
 
         doBack {
             //1:保存一份原始可视化数据
@@ -211,12 +214,13 @@ object EngraveTransitionHelper {
          }*/
 
         buildString {
-            append("toBitmapPath[$index]->")
+            append("转路径[$index]->")
             append(transferConfigEntity.name)
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}]")
             append(" dpi:${transferConfigEntity.dpi}")
             append(" ${dpiBitmap.byteCount.toSizeString()}->${dataPath.fileSizeString()}")
-            append(" 转换耗时:${LTime.time()}")
-        }.writePerfLog()
+            append(" 耗时:${LTime.time()}")
+        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
         return transferDataEntity
     }
 
@@ -287,12 +291,13 @@ object EngraveTransitionHelper {
         )
 
         buildString {
-            append("toBitmapDithering[$index]->")
+            append("转抖动[$index]->")
             append(transferConfigEntity.name)
+            append(" [${operateBitmap.width} x ${operateBitmap.height}]")
             append(" dpi:${transferConfigEntity.dpi}")
             append(" ${bitmapByteCount.toSizeString()}->${dataPath.fileSizeString()}")
-            append(" 转换耗时:${LTime.time()}")
-        }.writePerfLog()
+            append(" 耗时:${LTime.time()}")
+        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
 
         doBack {
             //1:保存一份原始可视化数据
@@ -394,13 +399,14 @@ object EngraveTransitionHelper {
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
                 buildString {
-                    append("toGCode[$index]->")
+                    append("转GCode[$index]->")
                     append(transferConfigEntity.name)
+                    append(" [${bitmap.width} x ${bitmap.height}]")
                     append(" dpi:${transferConfigEntity.dpi}")
                     append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
                     append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
-                    append(" 转换耗时:${LTime.time()}")
-                }.writePerfLog()
+                    append(" 耗时:${LTime.time()}")
+                }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
             }
         } else {
             //path转GCode
@@ -409,12 +415,12 @@ object EngraveTransitionHelper {
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
             buildString {
-                append("toGCode[$index]->")
+                append("转GCode[$index]->")
                 append(transferConfigEntity.name)
                 append(" dpi:${transferConfigEntity.dpi}")
                 append(" [path]->${fileSize.toSizeString()}")
-                append(" 转换耗时:${LTime.time()}")
-            }.writePerfLog()
+                append(" 耗时:${LTime.time()}")
+            }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
         }
         return transferDataEntity
     }
@@ -443,7 +449,7 @@ object EngraveTransitionHelper {
             append(transferConfigEntity.name)
             append(" dpi:${transferConfigEntity.dpi}")
             append(" ${data.size().toSizeString()}")
-            append(" 转换耗时:${LTime.time()}")
+            append(" 耗时:${LTime.time()}")
         }.writePerfLog()
         return transferDataEntity
     }

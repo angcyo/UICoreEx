@@ -39,7 +39,7 @@ class SimpleTransition : ITransition {
         outputFilePath: String?,
         logFilePath: String?,
         grayThreshold: Int
-    ): Int = bitmap.toBitmapPathJni(outputFilePath, logFilePath, grayThreshold)
+    ): Long = bitmap.toBitmapPathJni(outputFilePath, logFilePath, grayThreshold)
 
     override fun covertBitmap2Dithering(
         bitmap: Bitmap,
