@@ -60,7 +60,6 @@ import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.isDebug
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.ex.longFeedback
 import com.angcyo.library.ex.mH
@@ -136,7 +135,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
             if (!closeCanvasItemsFun.have("_layer_")) {
                 if (isInPadMode()) {
-                    //updateLayerListLayout(vh, canvasView)
+                    renderLayerListLayout()
                 } else {
                     ControlLayerItem()() {
                         initItem()
