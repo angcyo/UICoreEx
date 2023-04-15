@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
 import android.net.Uri
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -12,14 +13,18 @@ import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.generateName
+import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
 import com.angcyo.laserpacker.toElementBeanList
+import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.laserpacker.toSvgElementBean
+import com.angcyo.library.L
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
 import java.io.File
@@ -41,7 +46,7 @@ class LPProjectManager {
 
     /**打开工程文件*/
     fun openProjectFile(
-        delegate: CanvasRenderDelegate,
+        delegate: CanvasRenderDelegate?,
         file: File?,
         clearOld: Boolean = true
     ): LPProjectBean? {
@@ -56,7 +61,7 @@ class LPProjectManager {
 
     /**打开工程文件*/
     fun openProjectFileV2(
-        delegate: CanvasRenderDelegate,
+        delegate: CanvasRenderDelegate?,
         zipFile: File?,
         clearOld: Boolean = true
     ): LPProjectBean? {
@@ -90,10 +95,11 @@ class LPProjectManager {
 
     /**打开工程文件*/
     fun openProjectBean(
-        delegate: CanvasRenderDelegate,
+        delegate: CanvasRenderDelegate?,
         projectBean: LPProjectBean?,
         clearOld: Boolean = true
     ): Boolean {
+        delegate ?: return false
         projectBean ?: return false
         if (projectBean.version == 2) {
             //V2版本
@@ -118,12 +124,12 @@ class LPProjectManager {
 
     /**打开工程文件*/
     fun openProjectBeanV2(
-        delegate: CanvasRenderDelegate,
+        delegate: CanvasRenderDelegate?,
         zipFile: ZipFile,
         projectBean: LPProjectBean?,
         clearOld: Boolean = true
     ): Boolean {
-        if (clearOld) {
+        if (clearOld && delegate != null) {
             delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
             delegate.undoManager.clear()
         }
@@ -439,4 +445,24 @@ fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV2]*/
 fun CanvasRenderDelegate.restoreProjectStateV2() {
     LPProjectManager().restoreProjectV2(this)
+}
+
+/**处理文件路径对应的数据, 解析成[LPElementBean]*/
+fun String?.toElementBeanOfFile(): CanvasOpenDataType? {
+    val path = this?.lowercase() ?: return null
+    if (path.endsWith(LPDataConstant.GCODE_EXT)) {
+        val text = path.file().readText()
+        return text.toGCodeElementBean()
+    } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
+        val text = path.file().readText()
+        return text.toSvgElementBean()
+    } else if (path.isImageType()) {
+        val bitmap = path.toBitmap()
+        return bitmap.toBlackWhiteBitmapItemData()
+    } else if (path.endsWith(LPDataConstant.PROJECT_EXT) || path.endsWith(LPDataConstant.PROJECT_EXT2)) {
+        return LPProjectManager().openProjectFile(null, path.file())
+    } else {
+        L.w("无法处理的文件路径:${path}")
+    }
+    return null
 }

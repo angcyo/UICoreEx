@@ -39,9 +39,11 @@ object LPRendererHelper {
                 originBitmap = bean._imageOriginalBitmap
             }
         }
+
         LPDataConstant.DATA_TYPE_TEXT,
         LPDataConstant.DATA_TYPE_QRCODE,
         LPDataConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
+
         LPDataConstant.DATA_TYPE_LINE,
         LPDataConstant.DATA_TYPE_RECT,
         LPDataConstant.DATA_TYPE_OVAL,
@@ -52,6 +54,7 @@ object LPRendererHelper {
         LPDataConstant.DATA_TYPE_PATH,
         LPDataConstant.DATA_TYPE_SVG,
         LPDataConstant.DATA_TYPE_GCODE -> LPPathElement(bean)
+
         else -> null
     }
 
@@ -69,11 +72,12 @@ object LPRendererHelper {
      * [selected] 是否要选中渲染器
      * @return 返回渲染器集合*/
     fun renderElementList(
-        delegate: CanvasRenderDelegate,
+        delegate: CanvasRenderDelegate?,
         beanList: List<LPElementBean>,
         selected: Boolean,
         strategy: Strategy
     ): List<BaseRenderer> {
+        delegate ?: return emptyList()
         val result = mutableListOf<BaseRenderer>()
 
         //组内子元素

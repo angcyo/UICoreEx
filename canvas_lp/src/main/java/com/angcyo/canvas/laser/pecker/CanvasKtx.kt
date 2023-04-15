@@ -4,20 +4,22 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.canvas.Strategy
 import com.angcyo.canvas.graphics.GraphicsHelper
 import com.angcyo.canvas.items.data.DataItemRenderer
 import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.doBack
-import com.angcyo.laserpacker.*
-import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultProjectOutputFile
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
-import com.angcyo.library.L
-import com.angcyo.library.ex.*
+import com.angcyo.laserpacker.generateName
+import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
+import com.angcyo.laserpacker.toElementBeanList
+import com.angcyo.laserpacker.toProjectBean
+import com.angcyo.library.ex.readString
+import com.angcyo.library.ex.readText
 import com.angcyo.library.utils.writeTo
 import java.io.File
 
@@ -127,24 +129,6 @@ fun CanvasDelegate.openCanvasFile(dataBean: LPProjectBean?, clearOld: Boolean = 
 }
 
 //---
-
-/**处理文件路径对应的数据, 解析成[LPElementBean]*/
-fun String?.toCanvasProjectItemBeanOfFile(): LPElementBean? {
-    val path = this ?: return null
-    if (path.endsWith(LPDataConstant.GCODE_EXT)) {
-        val text = path.file().readText()
-        return text.toGCodeElementBean()
-    } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
-        val text = path.file().readText()
-        return text.toSvgElementBean()
-    } else if (path.isImageType()) {
-        val bitmap = path.toBitmap()
-        return bitmap.toBlackWhiteBitmapItemData()
-    } else {
-        L.w("无法处理的文件路径:${path}")
-    }
-    return null
-}
 
 /**添加一个黑白算法处理过的图片*/
 fun CanvasDelegate.addBlackWhiteBitmapRender(bitmap: Bitmap?): DataItemRenderer? {
