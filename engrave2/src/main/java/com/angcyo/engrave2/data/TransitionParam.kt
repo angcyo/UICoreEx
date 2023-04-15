@@ -18,7 +18,7 @@ data class TransitionParam(
     //---抖动算法需要的参数---
 
     /**进行图片转抖动时, 图片是否已经反色了*/
-    val isBitmapInvert: Boolean = false,
+    val isBitmapInvert: Boolean = true,
 
     /**是否反色, 用来决定进入抖动算法前, 图片透明颜色应该使用什么颜色填充*/
     val invert: Boolean = false,
