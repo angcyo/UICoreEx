@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -20,16 +21,21 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
+import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.exception.TransferException
-import com.angcyo.http.rx.doBack
-import com.angcyo.http.rx.doMain
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.connect
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toDC
+import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -148,8 +154,8 @@ class TransferModel : ViewModel() {
 
     //
 
-/*
-    */
+    /*
+        */
     /**开始创建机器需要的传输数据*//*
     @CallPoint
     @AnyThread
@@ -287,7 +293,13 @@ class TransferModel : ViewModel() {
                         transferDataEntity.isTransfer = true
                         transferDataEntity.lpSaveEntity()
                         "索引已存在[${transferDataEntity.index}], 跳过传输!".writeEngraveLog()
-                        _transferNext(transferState)//下一个
+
+                        if (HawkEngraveKeys.enableSingleItemTransfer) {
+                            //激活了单文件传输, 则传输完一个文件, 雕刻一个文件
+                            _transferFinish(transferState)//传输完成
+                        } else {
+                            _transferNext(transferState)//下一个
+                        }
                     } else {
                         if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                             //状态正常
@@ -307,7 +319,12 @@ class TransferModel : ViewModel() {
         val taskId: String? = transferState.taskId
         transferState.state = TransferState.TRANSFER_STATE_FINISH
         transferState.error = null
-        transferState.progress = 100
+        if (HawkEngraveKeys.enableSingleItemTransfer) {
+            //单文件单传, 传输进度需要计算
+            transferState.progress = calcTransferProgress(taskId, 100)
+        } else {
+            transferState.progress = 100
+        }
         transferStateOnceData.postValue(transferState)
         EngraveFlowDataHelper.finishTransferData(taskId)
         L.i("数据传输任务完成:${taskId}")
