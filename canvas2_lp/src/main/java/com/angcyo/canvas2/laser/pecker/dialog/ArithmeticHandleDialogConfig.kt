@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.view.View
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
@@ -13,13 +14,17 @@ import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog.numberInputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.data.TransitionParam
+import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
+import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.DSL
+import com.angcyo.library.ex.MB
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.widget.DslViewHolder
@@ -35,6 +40,9 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
     /**需要处理的元素*/
     var renderElement: ILaserPeckerElement? = null
+
+    val fscBleApiModel = vmApp<FscBleApiModel>()
+    val transferModel = vmApp<TransferModel>()
 
     init {
         dialogLayoutId = R.layout.dialog_arithmetic_handle_layout
@@ -62,6 +70,17 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
             }
         }
 
+        if (renderElement != null) {
+            initTransitionLayout(dialog, dialogViewHolder)
+        }
+
+        if (fscBleApiModel.haveDeviceConnected()) {
+            initTransferLayout(dialog, dialogViewHolder)
+        }
+    }
+
+    /**算法转换测试*/
+    private fun initTransitionLayout(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         val transferConfigEntity = TransferConfigEntity().apply {
             taskId = "ArithmeticHandle-${nowTimeString()}"
             name = EngraveHelper.generateEngraveName()
@@ -82,7 +101,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         val itemList = mutableListOf<DslAdapterItem>()
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_grey
-            itemText = "转普通图片算法"
+            itemText = "转普通"
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmap(renderElement, transferConfigEntity)
@@ -91,7 +110,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         })
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_black_white
-            itemText = "转线段图片算法"
+            itemText = "转线段"
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmapPath(
@@ -103,7 +122,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         })
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_dithering
-            itemText = "转抖动图片算法"
+            itemText = "转抖动"
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmapDithering(
@@ -116,7 +135,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         })
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_gcode
-            itemText = "转GCode算法"
+            itemText = "转GCode"
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToGCode(
@@ -130,6 +149,43 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         dialogViewHolder.flow(R.id.lib_flow_layout)?.resetDslItem(itemList)
     }
 
+    /**数据传输测试*/
+    private fun initTransferLayout(dialog: Dialog, dialogViewHolder: DslViewHolder) {
+        dialogViewHolder.visible(R.id.lib_button_flow_layout)
+        dialogViewHolder.click(R.id.send5_button) {
+            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+        }
+        dialogViewHolder.click(R.id.send10_button) {
+            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+        }
+        dialogViewHolder.click(R.id.send20_button) {
+            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+        }
+        dialogViewHolder.click(R.id.send30_button) {
+            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+        }
+        dialogViewHolder.click(R.id.send_custom_button) {
+            it.context.numberInputDialog {
+                hintInputString = "指定大小(MB)"
+                maxInputLength = 3
+                onInputResult = { dialog, inputText ->
+                    inputText.toString().toLongOrNull()?.let {
+                        transferModel.transferDataTest(it * MB, ::sendProgressMessage)
+                    }
+                    false
+                }
+            }
+        }
+    }
+
+    private fun sendProgressMessage(message: CharSequence?) {
+        message?.let {
+            doMain {
+                _dialogViewHolder?.tv(R.id.send_message_view)?.text = it
+            }
+        }
+    }
+
     private fun wrapLoading(action: () -> Unit) {
         engraveLoadingAsync({
             action()
@@ -140,7 +196,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 /**算法处理对话框*/
 @DSL
 fun Context.arithmeticHandleDialogConfig(
-    renderElement: ILaserPeckerElement,
+    renderElement: ILaserPeckerElement?,
     config: ArithmeticHandleDialogConfig.() -> Unit = {}
 ) {
     return ArithmeticHandleDialogConfig(this).run {

@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/lib_bg_press"
                 android:padding="@dimen/lib_xhdpi"
-                android:text="选择单元素后, 点击下方按钮, 测试对应算法耗时."
+                android:text="选择单元素后, 点击下方算法按钮, 测试对应算法耗时."
                 app:layout_constraintTop_toBottomOf="@id/dpi_wrap_layout" />
 
         </androidx.core.widget.NestedScrollView>
@@ -65,6 +65,90 @@
             app:r_flow_preview_item_count="4"
             app:r_flow_preview_item_layout_id="@layout/dsl_tag_item"
             app:r_flow_single_line="true" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/wrap_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="300dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/lib_button_flow_layout"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lib_flow_layout">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/send_message_view"
+                style="@style/LibBodyTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lib_bg_press"
+                android:padding="@dimen/lib_xhdpi"
+                android:text="连接设备后, 点击下方发送按钮, 测试设备传输速率及耗时."
+                app:layout_constraintTop_toBottomOf="@id/dpi_wrap_layout" />
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.angcyo.widget.layout.DslFlowLayout
+            android:id="@+id/lib_button_flow_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/lib_hdpi"
+            android:paddingVertical="@dimen/lib_xhdpi"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/wrap_layout2"
+            app:r_flow_equ_width="true"
+            app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
+            app:r_flow_single_line="true"
+            tools:visibility="gone">
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/send5_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:tag="5"
+                android:text="发送5MB" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/send10_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:tag="10"
+                android:text="10MB" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/send20_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:tag="20"
+                android:text="20MB" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/send30_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:tag="30"
+                android:text="30MB" />
+
+            <com.angcyo.widget.DslButton
+                android:id="@+id/send_custom_button"
+                style="@style/DefaultButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:text="自定义" />
+
+        </com.angcyo.widget.layout.DslFlowLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.*
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
-import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
-import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
+import com.angcyo.core.component.file.writePerfLog
+import com.angcyo.core.component.model.DataShareModel
+import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
+import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.exception.EmptyException
@@ -28,20 +28,17 @@ import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.L
+import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.clamp
-import com.angcyo.library.ex.connect
-import com.angcyo.library.ex.nowTime
-import com.angcyo.library.ex.toDC
-import com.angcyo.library.ex.toMsTime
-import com.angcyo.library.ex.toSizeString
-import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import com.angcyo.viewmodel.vmDataOnce
+import com.angcyo.widget.span.span
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 数据传输模式
@@ -356,8 +353,10 @@ class TransferModel : ViewModel() {
             action(transferState.error)
             return
         }
+        LTime.tick()
         val fileModeCmd = FileModeCmd(size)
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
+            "进入大数据模式[${(error == null).toDC()}],耗时:${LTime.time()}".writePerfLog()
             error?.let {
                 "进入文件传输模式异常:${it} [${transferDataEntity.index}] ${size.toSizeString()}".writeErrorLog()
                 errorTransfer(transferState, TransferException(error))
@@ -408,7 +407,8 @@ class TransferModel : ViewModel() {
                                     if (result.isFileTransferSuccess()) {
                                         //文件传输完成
                                         val nowTime = nowTime()
-                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTransferTime).toMsTime()}".writeEngraveLog()
+                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTransferTime).toMsTime()}"
+                                            .writeEngraveLog().writePerfLog()
 
                                         transferDataEntity.deviceAddress =
                                             LaserPeckerHelper.lastDeviceAddress()
@@ -447,6 +447,83 @@ class TransferModel : ViewModel() {
                 //end传输指令
             }
             //end file mode cmd
+        }
+    }
+
+    /**传输数据测试
+     * [size] 需要传输的数据大小, 单位:字节byte
+     * */
+    fun transferDataTest(size: Long, progressAction: (CharSequence?) -> Unit) {
+        LTime.tick()
+        val sizeString = size.toSizeString()
+        val sizeInt = size.toInt()
+        val fileModeCmd = FileModeCmd(sizeInt)
+        fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
+            span {
+                append("进入大数据[$sizeString]模式[${(error == null).toDC()}],")
+                append("耗时:${LTime.time()}") {
+                    foregroundColor = EngraveTransitionHelper.accentColor
+                }
+                bean?.parse<FileTransferParser>()?.let {
+                    if (it.isIntoFileMode()) {
+                        //成功进入大数据模式, 开始发送数据
+                        LTime.tick()
+                        val dataCmd = DataCmd(ByteArray(0), ByteArray(sizeInt))
+                        var minSpeed = Float.MAX_VALUE
+                        var maxSpeed = Float.MIN_VALUE
+                        dataCmd.enqueue(progress = {
+                            //进度[0~100]
+                            val progress = it.sendPacketPercentage
+                            //byte/s
+                            val sendSpeed = it.sendSpeed
+                            minSpeed = min(minSpeed, sendSpeed)
+                            maxSpeed = max(maxSpeed, sendSpeed)
+                            progressAction(
+                                span {
+                                    append("发送[${sizeString}]进度:")
+                                    append("${progress}%") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                    append(" 速度:")
+                                    append("${sendSpeed.toLong().toSizeString()}/s") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                    append(" 最慢:")
+                                    append("${minSpeed.toLong().toSizeString()}/s") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                    append(" 最快:")
+                                    append("${maxSpeed.toLong().toSizeString()}/s") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                    append(" 平均:")
+                                    append("${(minSpeed + maxSpeed).toLong().toSizeString()}/s") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                }
+                            )
+                        }) { bean, error ->
+                            val result = bean?.parse<FileTransferParser>()
+                            span {
+                                append("传输[$sizeString]")
+                                append(" 平均速率:")
+                                append("${(minSpeed + maxSpeed).toLong().toSizeString()}/s") {
+                                    foregroundColor = EngraveTransitionHelper.accentColor
+                                }
+                                append(" 结束[${result?.isFileTransferSuccess().toDC()}]")
+                                append(" 耗时:${LTime.time()}") {
+                                    foregroundColor = EngraveTransitionHelper.accentColor
+                                }
+                            }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+                        }
+                    } else {
+                        appendln()
+                        append("未成功进入数据传输模式") {
+                            foregroundColor = EngraveTransitionHelper.accentColor
+                        }
+                    }
+                }
+            }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
         }
     }
 }
