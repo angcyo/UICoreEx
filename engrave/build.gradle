@@ -18,6 +18,8 @@ dependencies {
 
     //https://mvnrepository.com/artifact/com.airbnb.android/lottie
     implementation "com.airbnb.android:lottie:5.2.0"
+
+    compileOnly project(allModule.umeng_lp) //只编译不需要代码
 }
 
 //apply from: allGradle.libfscaar

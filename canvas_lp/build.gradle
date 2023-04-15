@@ -12,6 +12,7 @@ dependencies {
     implementation project(allModule.crop)
     //选择图片
     compileOnly project(allModule.picker)
+    compileOnly project(allModule.umeng_lp) //只编译不需要代码
 
     api project(allModule.dialog2)
     api project(allModule.canvas)
