@@ -14,6 +14,7 @@ import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
+import com.angcyo.library.ex.toStr
 import java.io.ByteArrayOutputStream
 import kotlin.math.roundToLong
 
@@ -277,13 +278,13 @@ class WaitReceivePacket(
 }
 
 /**接收超时异常*/
-class ReceiveTimeOutException(message: String) : Exception(message)
+class ReceiveTimeOutException(message: CharSequence) : Exception(message.toStr())
 
 /**接收取消异常*/
-class ReceiveCancelException(message: String) : Exception(message)
+class ReceiveCancelException(message: CharSequence) : Exception(message.toStr())
 
 /**接收校验异常*/
-class ReceiveVerifyException(message: String) : Exception(message)
+class ReceiveVerifyException(message: CharSequence) : Exception(message.toStr())
 
 /**发包的进度*/
 typealias ISendProgressAction = (bean: ReceivePacket) -> Unit

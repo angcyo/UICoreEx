@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
+import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
@@ -24,6 +25,7 @@ import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.deleteSafe
@@ -40,6 +42,7 @@ import com.angcyo.library.unit.IValueUnit
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.opencv.OpenCV
+import com.angcyo.widget.span.span
 import java.io.File
 import kotlin.math.max
 
@@ -60,6 +63,9 @@ object EngraveTransitionHelper {
     /**数据转换*/
     var transition: ITransition = SimpleTransition()
 
+    /**日志输出的强调颜色*/
+    var accentColor = _color(R.color.error)
+
     //region ---核心---
 
     /**将[provider]转换成图片雕刻数据, 一般灰度图走这个数据
@@ -79,14 +85,20 @@ object EngraveTransitionHelper {
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
         transition.covertBitmap2BytesJni(dpiBitmap, transferDataEntity.dataPath)
-        buildString {
-            append("转图片[$index]->")
+        span {
+            append("转图片") {
+                foregroundColor = accentColor
+            }
+            append("[$index]->")
             append(transferConfigEntity.name)
-            append(" [${dpiBitmap.width} x ${dpiBitmap.height}]")
-            append(" dpi:${transferConfigEntity.dpi}")
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+                foregroundColor = accentColor
+            }
             append(" ${dpiBitmap.byteCount.toSizeString()}->${transferDataEntity.dataPath.fileSizeString()}")
-            append(" 耗时:${LTime.time()}")
-        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+            append(" 耗时:${LTime.time()}") {
+                foregroundColor = accentColor
+            }
+        }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
 
         doBack {
             //1:保存一份原始可视化数据
@@ -218,14 +230,20 @@ object EngraveTransitionHelper {
              )
          }*/
 
-        buildString {
-            append("转路径[$index]->")
+        span {
+            append("转路径") {
+                foregroundColor = accentColor
+            }
+            append("[$index]->")
             append(transferConfigEntity.name)
-            append(" [${dpiBitmap.width} x ${dpiBitmap.height}]")
-            append(" dpi:${transferConfigEntity.dpi}")
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+                foregroundColor = accentColor
+            }
             append(" ${dpiBitmap.byteCount.toSizeString()}->${dataPath.fileSizeString()}")
-            append(" 耗时:${LTime.time()}")
-        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+            append(" 耗时:${LTime.time()}") {
+                foregroundColor = accentColor
+            }
+        }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
         return transferDataEntity
     }
 
@@ -296,14 +314,20 @@ object EngraveTransitionHelper {
             true
         )
 
-        buildString {
-            append("转抖动[$index]->")
+        span {
+            append("转抖动") {
+                foregroundColor = accentColor
+            }
+            append("[$index]->")
             append(transferConfigEntity.name)
-            append(" [${operateBitmap.width} x ${operateBitmap.height}]")
-            append(" dpi:${transferConfigEntity.dpi}")
+            append(" [${operateBitmap.width} x ${operateBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+                foregroundColor = accentColor
+            }
             append(" ${bitmapByteCount.toSizeString()}->${dataPath.fileSizeString()}")
-            append(" 耗时:${LTime.time()}")
-        }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+            append(" 耗时:${LTime.time()}") {
+                foregroundColor = accentColor
+            }
+        }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
 
         doBack {
             //1:保存一份原始可视化数据
@@ -404,15 +428,21 @@ object EngraveTransitionHelper {
                 val fileSize = gCodeFile.length()
                 saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
-                buildString {
-                    append("转GCode[$index]->")
+                span {
+                    append("转GCode") {
+                        foregroundColor = accentColor
+                    }
+                    append("[$index]->")
                     append(transferConfigEntity.name)
-                    append(" [${bitmap.width} x ${bitmap.height}]")
-                    append(" dpi:${transferConfigEntity.dpi}")
+                    append(" [${bitmap.width} x ${bitmap.height}] dpi:${transferConfigEntity.dpi}") {
+                        foregroundColor = accentColor
+                    }
                     append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
                     append(" ${bitmap.byteCount.toSizeString()}->${fileSize.toSizeString()}")
-                    append(" 耗时:${LTime.time()}")
-                }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+                    append(" 耗时:${LTime.time()}") {
+                        foregroundColor = accentColor
+                    }
+                }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
             }
         } else {
             //path转GCode
@@ -420,13 +450,18 @@ object EngraveTransitionHelper {
             val fileSize = gCodeFile.length()
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
-            buildString {
-                append("转GCode[$index]->")
+            span {
+                append("转GCode") {
+                    foregroundColor = accentColor
+                }
+                append("[$index]->")
                 append(transferConfigEntity.name)
                 append(" dpi:${transferConfigEntity.dpi}")
                 append(" [path]->${fileSize.toSizeString()}")
-                append(" 耗时:${LTime.time()}")
-            }.writePerfLog().apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
+                append(" 耗时:${LTime.time()}") {
+                    foregroundColor = accentColor
+                }
+            }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
         }
         return transferDataEntity
     }
@@ -450,13 +485,16 @@ object EngraveTransitionHelper {
         //写入数据到路径, 用于发送到数据
         transferDataEntity.dataPath = data?.writeTransferDataPath("${transferDataEntity.index}")
 
-        buildString {
-            append("toRaw[${transferDataEntity.index}]->")
+        span {
+            append("toRaw") {
+                foregroundColor = accentColor
+            }
+            append("[${transferDataEntity.index}]->")
             append(transferConfigEntity.name)
             append(" dpi:${transferConfigEntity.dpi}")
             append(" ${data.size().toSizeString()}")
             append(" 耗时:${LTime.time()}")
-        }.writePerfLog()
+        }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
         return transferDataEntity
     }
 

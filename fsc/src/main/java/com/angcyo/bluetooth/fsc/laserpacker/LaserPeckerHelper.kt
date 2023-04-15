@@ -856,7 +856,7 @@ fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).i
  * [log] 是否还需要输出到控制台
  * [String.writeErrorLog]
  * */
-fun String.writeBleLog(logLevel: Int = L.DEBUG): String = writeToLog(LogFile.ble, logLevel)
+fun CharSequence.writeBleLog(logLevel: Int = L.DEBUG) = writeToLog(LogFile.ble, logLevel)
 
 /**写入雕刻日志, 记录数据传输的索引及信息和雕刻的索引及信息*/
-fun String.writeEngraveLog(logLevel: Int = L.DEBUG): String = writeToLog(LogFile.engrave, logLevel)
+fun CharSequence.writeEngraveLog(logLevel: Int = L.DEBUG) = writeToLog(LogFile.engrave, logLevel)

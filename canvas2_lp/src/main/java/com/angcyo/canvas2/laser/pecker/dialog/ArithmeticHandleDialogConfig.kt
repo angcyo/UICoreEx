@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas2.laser.pecker.R
@@ -50,7 +51,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         }
 
         //接收返回消息
-        val messageBuilder = StringBuilder()
+        val messageBuilder = SpannableStringBuilder()
         vmApp<DataShareModel>().shareTextOnceData.observe(this) { message ->
             message?.let {
                 if (messageBuilder.isNotBlank()) {
