@@ -3,11 +3,11 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core) //model
-    api project(allModule.fsc)
     api project(allModule.lpDevice)
 
     implementation project(allModule.dslitem)
 
+    compileOnly project(allModule.umeng_lp) //只编译不需要代码
     /*
     implementation project(allModule.transition)
     implementation project(allModule.dialog2)

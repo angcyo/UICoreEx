@@ -22,7 +22,7 @@ dependencies {
     //扭曲支持
     api "com.angcyo:imageProcess:${opencv_version}"
 
-    api project(allModule.umeng_lp)
+    compileOnly project(allModule.umeng_lp) //只编译不需要代码
     api project(allModule.objectbox_lp) //数据库
 
     //矢量处理

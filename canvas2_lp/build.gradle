@@ -20,4 +20,6 @@ dependencies {
     implementation project(allModule.qrcode)
     //无法访问[com.google.zxing.BarcodeFormat]
     compileOnly 'com.google.zxing:core:3.4.1'
+
+    compileOnly project(allModule.umeng_lp) //只编译不需要代码
 }
