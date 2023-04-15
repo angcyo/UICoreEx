@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_white_top_round_bg_shape"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/dialog_title_layout"
+        layout="@layout/lib_dialog_base_title_layout" />
+
+    <View
+        android:id="@+id/dialog_title_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line_px"
+        android:background="@color/lib_line" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_white_top_round_bg_shape"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/lib_xhdpi">
+
+        <FrameLayout
+            android:id="@+id/dpi_wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_height="100dp" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/wrap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="300dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/lib_flow_layout"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dpi_wrap_layout">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/dialog_message_view"
+                style="@style/LibBodyTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lib_bg_press"
+                android:padding="@dimen/lib_xhdpi"
+                android:text="选择单元素后, 点击下方按钮, 测试对应算法耗时."
+                app:layout_constraintTop_toBottomOf="@id/dpi_wrap_layout" />
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.angcyo.widget.layout.DslFlowLayout
+            android:id="@+id/lib_flow_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/wrap_layout"
+            app:r_flow_equ_width="true"
+            app:r_flow_preview_item_count="4"
+            app:r_flow_preview_item_layout_id="@layout/dsl_tag_item"
+            app:r_flow_single_line="true" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
