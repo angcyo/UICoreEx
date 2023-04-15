@@ -538,20 +538,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
             //
             if (isDebug()) {
-                DslLastDeviceInfoItem()() {
-                    itemClick = {
-                        dslFHelper {
-                            fileSelector({
-                                showFileMd5 = true
-                                showFileMenu = true
-                                showHideFile = true
-                                targetPath =
-                                    FileUtils.appRootExternalFolder().absolutePath
-                                        ?: storageDirectory
-                            })
-                        }
-                    }
-                }
+                DslLastDeviceInfoItem()()
             }
         }
     }
