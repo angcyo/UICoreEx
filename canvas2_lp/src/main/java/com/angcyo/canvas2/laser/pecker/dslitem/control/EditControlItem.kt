@@ -8,14 +8,16 @@ import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.canvas.render.util.canvasDecimal
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.item.keyboard.DirectionAdjustPopupConfig
+import com.angcyo.item.keyboard.directionAdjustWindow
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.ex.gone
+import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -45,7 +47,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
         get() = selectorComponent?.renderProperty
 
     init {
-        itemLayoutId = R.layout.item_canvas_edit_control_layout
+        itemLayoutId = R.layout.item_render_edit_control_layout
     }
 
     override fun onItemBind(
@@ -215,6 +217,35 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
                     val dy = newY - bounds.top
 
                     renderer.translate(0f, dy, Reason.user, Strategy.normal, itemRenderDelegate)
+                }
+            }
+        }
+        //方向微调控制
+        itemHolder.click(R.id.canvas_direction_view) {
+            val delegate = itemRenderDelegate ?: return@click
+            val renderer = selectorComponent ?: return@click
+
+            val translateControl = delegate.controlManager.translateControl
+            translateControl.startControl(renderer)
+
+            itemHolder.context.directionAdjustWindow(it) {
+                onDismiss = {
+                    translateControl.endControl()
+                    false
+                }
+                onDirectionAdjustAction = { direction, step ->
+                    translateControl.isControlHappen = true
+                    translateControl.handleControl = true
+                    var dx = 0f
+                    var dy = 0f
+                    val value = unit.convertValueToPixel(step.toFloat())
+                    when (direction) {
+                        DirectionAdjustPopupConfig.DIRECTION_LEFT -> dx = -value
+                        DirectionAdjustPopupConfig.DIRECTION_RIGHT -> dx = value
+                        DirectionAdjustPopupConfig.DIRECTION_UP -> dy = -value
+                        DirectionAdjustPopupConfig.DIRECTION_DOWN -> dy = value
+                    }
+                    translateControl.translateBy(dx, dy)
                 }
             }
         }

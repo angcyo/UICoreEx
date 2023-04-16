@@ -326,4 +326,15 @@
         app:layout_constraintTop_toBottomOf="@id/item_axis_y_view"
         tools:layout_width="100dp" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/canvas_direction_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/lib_bg2_selector"
+        android:padding="@dimen/lib_hdpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/axis_y_label_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/lib_direction_svg" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
