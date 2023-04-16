@@ -12,7 +12,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.parseResultPacketLog
 import com.angcyo.bluetooth.fsc.laserpacker.data.*
 import com.angcyo.bluetooth.fsc.laserpacker.parse.*
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
+import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
@@ -629,6 +631,9 @@ object LaserPeckerHelper {
         progress: ISendProgressAction? = null,
         action: IReceiveBeanAction?
     ): WaitReceivePacket {
+        val dataShareModel = vmApp<DataShareModel>()
+        dataShareModel.shareStateOnceData.postValue(StateBarDrawable.STATE_ING) //通讯中
+
         val uuid = command.uuid
         val commandLogString = command.toCommandLogString()
         "发送指令:$address->$uuid $commandLogString".writeBleLog()
@@ -660,6 +665,9 @@ object LaserPeckerHelper {
             command.getReceiveTimeout(), //数据返回超时时长
             progress
         ) { bean, error ->
+            //通讯结束
+            dataShareModel.shareStateOnceData.postValue(if (error == null) StateBarDrawable.STATE_NORMAL else StateBarDrawable.STATE_ERROR)
+
             val result = bean?.receivePacket?.toHexString(false) ?: ""
             val resultDes = result.parseResultPacketLog(func, state)
             "指令返回:${uuid}->$result\n$resultDes".writeBleLog()

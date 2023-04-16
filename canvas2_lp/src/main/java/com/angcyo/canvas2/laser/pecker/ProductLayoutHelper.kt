@@ -14,8 +14,10 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
+import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
@@ -32,6 +34,7 @@ import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toPath
 import com.angcyo.viewmodel.observe
+import com.angcyo.widget.StateBarView
 import com.angcyo.widget.span.span
 
 /**
@@ -60,6 +63,14 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //状态管理
         stateLayoutManager.group = _rootViewHolder?.group(R.id.canvas_device_state_wrap_layout)
+
+        //监听通讯状态
+        vmApp<DataShareModel>().shareStateOnceData.observe(fragment) { state ->
+            if (state != null) {
+                _rootViewHolder?.v<StateBarView>(R.id.state_bar_view)
+                    ?.firstDrawable<StateBarDrawable>()?.state = state
+            }
+        }
 
         //监听产品信息
         laserPeckerModel.productInfoData.observe(fragment) { productInfo ->
