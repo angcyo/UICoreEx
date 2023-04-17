@@ -49,7 +49,7 @@
         android:layout_marginStart="@dimen/lib_hdpi"
         android:background="@drawable/lib_bg2_selector"
         android:padding="@dimen/lib_dpi"
-        app:srcCompat="@drawable/canvas_control_point_delete"
+        app:srcCompat="@drawable/canvas_render_control_point_delete"
         app:tint="#333333" />
 
     <!--保存材质-->
