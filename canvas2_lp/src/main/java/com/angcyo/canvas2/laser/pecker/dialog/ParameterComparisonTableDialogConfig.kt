@@ -6,14 +6,18 @@ import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
+import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
@@ -27,12 +31,12 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.uuid
@@ -264,12 +268,22 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     init {
         dialogTitle = _string(R.string.add_parameter_comparison_table)
 
+        val needPreview = !isInPadMode()
+        if (needPreview) {
+            dialogMaxHeight = "0.9sh"
+        }
+
         positiveButton { dialog, dialogViewHolder ->
             dialog.dismiss()
             addParameterComparisonTable()
         }
 
         onRenderAdapterAction = {
+            if (needPreview) {
+                TablePreviewItem()() {
+                    parameterComparisonTableDialogConfig = this@ParameterComparisonTableDialogConfig
+                }
+            }
 
             //图层选择
             LayerSegmentItem()() {
@@ -341,11 +355,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     val labelTextFontSize: Float
         get() = textFontSize * 2
 
-    /**添加 功率 深度, 雕刻参数对照表. 耗时操作, 建议在子线程中执行*/
-    @WorkerThread
-    private fun addParameterComparisonTable() {
-        val delegate = renderDelegate ?: return
-
+    fun parseParameterComparisonTable(): List<BaseRenderer> {
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
 
@@ -561,8 +571,24 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //一致打印参数
             bean.printType = gridPrintType.toInt()
         }
+        return LPRendererHelper.renderElementList(
+            null,
+            beanList,
+            true,
+            Strategy.normal
+        )
+    }
 
-        LPRendererHelper.renderElementList(delegate, beanList, true, Strategy.normal)
+    /**添加 功率 深度, 雕刻参数对照表. 耗时操作, 建议在子线程中执行*/
+    @WorkerThread
+    private fun addParameterComparisonTable() {
+        val delegate = renderDelegate ?: return
+        delegate.renderManager.addElementRenderer(
+            parseParameterComparisonTable(),
+            true,
+            Reason.user,
+            Strategy.normal
+        )
     }
 }
 

@@ -85,7 +85,6 @@ object LPRendererHelper {
         selected: Boolean,
         strategy: Strategy
     ): List<BaseRenderer> {
-        delegate ?: return emptyList()
         val result = mutableListOf<BaseRenderer>()
 
         //组内子元素
@@ -93,9 +92,11 @@ object LPRendererHelper {
 
         //分配名称
         val allElementBeanList = mutableListOf<LPElementBean>()
-        for (element in delegate.renderManager.getAllSingleElementList()) {
-            if (element is ILaserPeckerElement) {
-                allElementBeanList.add(element.elementBean)
+        if (delegate != null) {
+            for (element in delegate.renderManager.getAllSingleElementList()) {
+                if (element is ILaserPeckerElement) {
+                    allElementBeanList.add(element.elementBean)
+                }
             }
         }
         allElementBeanList.addAll(beanList)
@@ -139,7 +140,7 @@ object LPRendererHelper {
                 }
             }
         }
-        delegate.renderManager.addElementRenderer(result, selected, Reason.user, strategy)
+        delegate?.renderManager?.addElementRenderer(result, selected, Reason.user, strategy)
         return result
     }
 

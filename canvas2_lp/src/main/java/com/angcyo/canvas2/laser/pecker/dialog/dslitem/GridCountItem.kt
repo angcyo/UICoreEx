@@ -4,8 +4,10 @@ import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.eachItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex.clamp
 import com.angcyo.widget.DslViewHolder
@@ -73,7 +75,7 @@ class GridCountItem : DslAdapterItem() {
         }
 
         itemHolder.click(R.id.threshold_text_view) {
-            itemHolder.context.keyboardNumberWindow(it) {
+            lastContext.keyboardNumberWindow(it) {
                 onDismiss = this@GridCountItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
@@ -89,8 +91,17 @@ class GridCountItem : DslAdapterItem() {
 
     /**popup销毁后, 刷新item*/
     fun onPopupDismiss(window: TargetWindow): Boolean {
+        updateTablePreview()
         updateAdapterItem()
         return false
+    }
+
+    fun updateTablePreview() {
+        itemDslAdapter?.eachItem { index, dslAdapterItem ->
+            if (dslAdapterItem is TablePreviewItem) {
+                dslAdapterItem.updatePreview()
+            }
+        }
     }
 
 }
