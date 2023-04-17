@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.util
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Path
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -13,7 +14,6 @@ import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
@@ -129,7 +129,7 @@ object LPElementHelper {
         elementBean.init()//init
 
         return LPRendererHelper.parseElementRenderer(elementBean)!!.apply {
-            element<LPBitmapElement>()?.updateOriginBitmapSrc(delegate, this, bitmap)
+            element<LPBitmapElement>()?.updateOriginBitmap(bitmap, true)
         }
     }
 

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -20,7 +21,6 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
@@ -526,7 +526,7 @@ object LPBitmapHandler {
                 result?.let {
                     owner.engraveLoadingAsync({
                         //剪切完之后, 默认黑白处理
-                        element.updateOriginBitmapSrc(delegate, renderer, result, false)
+                        element.updateOriginBitmap(result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
                         result
                     }) {
@@ -603,7 +603,7 @@ object LPBitmapHandler {
                         "图片[${operateBitmap.byteCount.toSizeString()}]扭曲耗时:${LTime.time()}".writePerfLog()
 
                         result?.let {
-                            element.updateOriginBitmapSrc(delegate, renderer, result, false)
+                            element.updateOriginBitmap(result, false)
                         }
                         addBitmapStateToStack(delegate, renderer, undoState)
 

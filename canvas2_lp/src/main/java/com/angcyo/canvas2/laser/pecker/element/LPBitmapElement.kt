@@ -88,23 +88,28 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                                 bitmap,
                                 elementBean.printsThreshold
                             )
+
                             LPDataConstant.DATA_MODE_BLACK_WHITE -> LPBitmapHandler.toBlackWhiteHandle(
                                 bitmap,
                                 elementBean
                             )
+
                             LPDataConstant.DATA_MODE_DITHERING -> LPBitmapHandler.toGrayHandle(
                                 bitmap,
                                 elementBean
                             )
+
                             LPDataConstant.DATA_MODE_GREY -> LPBitmapHandler.toGrayHandle(
                                 bitmap,
                                 elementBean
                             )
+
                             LPDataConstant.DATA_MODE_SEAL -> LPBitmapHandler.toSeal(
                                 app(),
                                 bitmap,
                                 elementBean.sealThreshold
                             )
+
                             else -> null
                         }
                         "图片[${bitmap.byteCount.toSizeString()}]算法处理[${elementBean.imageFilter}]耗时:${LTime.time()}".writePerfLog()
@@ -162,15 +167,21 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 
+    override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
+        super.updateOriginBitmap(bitmap, keepVisibleSize)
+        //更新原图, 默认是黑白画处理
+        elementBean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
+        renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
+    }
+
     /**更新原始图片, 并且自动处理成默认的黑白数据, 以及转成对应的base64数据*/
+    @Deprecated("V2工程结构, 不再使用BASE64数据")
     fun updateOriginBitmapSrc(
         delegate: CanvasRenderDelegate?,
         renderer: BaseRenderer,
         bitmap: Bitmap,
         keepVisibleSize: Boolean = true
     ) {
-        elementBean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
-        renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
         updateOriginBitmap(bitmap, keepVisibleSize)
         delegate?.asyncManager?.addAsyncTask(renderer) {
             elementBean.imageOriginal = bitmap.toBase64Data()
