@@ -154,7 +154,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
                     //有权限, 自动激活蓝牙
-                    return BluetoothAdapter.getDefaultAdapter().enable()
+                    if (BluetoothAdapter.getDefaultAdapter().enable()) {
+                        return true
+                    }
                 }
             }
 
