@@ -3,6 +3,7 @@ package com.angcyo.engrave2.model
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
@@ -267,6 +268,8 @@ class TransferModel : ViewModel() {
     fun stopTransfer() {
         _transferState?.state = TransferState.TRANSFER_STATE_CANCEL
         transferStateOnceData.postValue(_transferState)
+        _transferTask?._receiveTask?.isCancel = true
+        _transferTask = null
         //need?
         //CommandQueueHelper.clearCommand()
     }
@@ -342,6 +345,9 @@ class TransferModel : ViewModel() {
         }
     }
 
+    /**传输的任务, 用来停止发送*/
+    private var _transferTask: CommandQueueHelper.CommandInfo? = null
+
     /**传输数据
      * [action] 成功或者失败的回调*/
     fun transferData(
@@ -393,7 +399,7 @@ class TransferModel : ViewModel() {
                             }.writeEngraveLog()
 
                             val startTransferTime = nowTime()//开始传输的时间
-                            dataCmd.enqueue(progress = {
+                            _transferTask = dataCmd.enqueue(progress = {
                                 //进度
                                 val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
                                 EngraveFlowDataHelper.updateTransferDataProgress(
@@ -407,6 +413,7 @@ class TransferModel : ViewModel() {
                                     transferStateOnceData.value = transferState
                                 }
                             }) { bean, error ->
+                                _transferTask = null
                                 val result = bean?.parse<FileTransferParser>()
                                 buildString {
                                     append("传输结束:$result $error ")

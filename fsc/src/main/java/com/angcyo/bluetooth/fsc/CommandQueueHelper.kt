@@ -218,20 +218,21 @@ fun ICommand.enqueue(
             }
         }
     }
-) {
-    CommandQueueHelper.addCommand(
-        CommandQueueHelper.CommandInfo(
-            this,
-            flag,
-            address,
-            object : IReceiveListener {
-                override fun onPacketProgress(bean: ReceivePacket) {
-                    progress(bean)
-                }
+): CommandQueueHelper.CommandInfo {
+    val commandInfo = CommandQueueHelper.CommandInfo(
+        this,
+        flag,
+        address,
+        object : IReceiveListener {
+            override fun onPacketProgress(bean: ReceivePacket) {
+                progress(bean)
+            }
 
-                override fun onReceive(bean: ReceivePacket?, error: Exception?) {
-                    action(bean, error)
-                }
-            })
-    )
+            override fun onReceive(bean: ReceivePacket?, error: Exception?) {
+                action(bean, error)
+            }
+        })
+
+    CommandQueueHelper.addCommand(commandInfo)
+    return commandInfo
 }

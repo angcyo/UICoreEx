@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -21,7 +22,6 @@ import com.angcyo.canvas.CanvasDelegate
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.engrave.EngraveFlowDataHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.engrave.data.TransferState
 import com.angcyo.engrave.toEngraveDataTypeStr
 import com.angcyo.engrave.transition.EmptyException
@@ -32,7 +32,13 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.connect
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toDC
+import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -349,7 +355,7 @@ class TransferModel : ViewModel() {
             }
             if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                 //传输指令
-                bean?.parse<FileTransferParser>()?.let {
+                bean?.parse<FileTransferParser>()?.also {
                     if (it.isIntoFileMode()) {
                         //成功进入大数据模式
                         val dataCmd = getTransferDataCmd(transferDataEntity)
