@@ -25,9 +25,11 @@ import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.laserpacker.toSvgElementBean
 import com.angcyo.library.L
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.writeTo
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.zip.ZipFile
 
 /**
@@ -38,6 +40,12 @@ import java.util.zip.ZipFile
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class LPProjectManager {
+
+    companion object {
+
+        /**是否正在存储工程*/
+        val isSaveBoolean = AtomicBoolean(false)
+    }
 
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
     var projectName: String? = null
@@ -318,20 +326,24 @@ class LPProjectManager {
                                     val imageOriginalBitmap = sub.lpBitmapElement()?.originBitmap
                                         ?: elementBean.imageOriginal?.toBitmapOfBase64()
                                     if (imageOriginalBitmap != null) {
-                                        val uri =
-                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                        elementBean.imageOriginalUri = uri
-                                        writeEntry(uri, imageOriginalBitmap)
+                                        if (imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                            val uri =
+                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                            elementBean.imageOriginalUri = uri
+                                            writeEntry(uri, imageOriginalBitmap)
+                                        }
                                     }
 
                                     //滤镜后的图
                                     val srcBitmap = sub.lpBitmapElement()?.renderBitmap
                                         ?: elementBean.src?.toBitmapOfBase64()
                                     if (srcBitmap != null) {
-                                        val uri =
-                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                        elementBean.srcUri = uri
-                                        writeEntry(uri, srcBitmap)
+                                        if (srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                            val uri =
+                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                            elementBean.srcUri = uri
+                                            writeEntry(uri, srcBitmap)
+                                        }
                                     }
 
                                     //清空数据, 使用uri代替
@@ -365,6 +377,7 @@ class LPProjectManager {
         async: Boolean = true,
         result: (String, Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
     ): String {
+        isSaveBoolean.set(true)
         val file = DeviceHelper._defaultProjectOutputFile(fileName, false)
         val save = Runnable {
             try {
@@ -373,6 +386,7 @@ class LPProjectManager {
                 e.printStackTrace()
                 result(file.absolutePath, e)
             }
+            isSaveBoolean.set(false)
         }
         if (async) {
             doBack {
@@ -397,6 +411,7 @@ class LPProjectManager {
         async: Boolean = true,
         result: (String, Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
     ): String {
+        isSaveBoolean.set(true)
         val file = DeviceHelper._defaultProjectOutputFileV2(fileName, false)
         val tempFile = DeviceHelper._defaultProjectOutputFileV2("${fileName}.${nowTime()}", false)
         val zipFilePath = file.absolutePath
@@ -411,6 +426,7 @@ class LPProjectManager {
                 e.printStackTrace()
                 result(zipFilePath, e)
             }
+            isSaveBoolean.set(false)
         }
         if (async) {
             doBack {
@@ -429,7 +445,14 @@ class LPProjectManager {
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV1]*/
 @Deprecated("V1格式不支持大数据存储, 请使用V2格式")
 fun CanvasRenderDelegate.saveProjectState(async: Boolean = true) {
-    LPProjectManager().saveProjectV1(this, async = async)
+    if (LPProjectManager.isSaveBoolean.get()) {
+        return
+    }
+    try {
+        LPProjectManager().saveProjectV1(this, async = async)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV1]*/
@@ -439,12 +462,28 @@ fun CanvasRenderDelegate.restoreProjectState() {
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV2]*/
 fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
-    LPProjectManager().saveProjectV2(this, async = async)
+    if (LPProjectManager.isSaveBoolean.get()) {
+        return
+    }
+    try {
+        LPProjectManager().saveProjectV2(this, async = async)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV2]*/
 fun CanvasRenderDelegate.restoreProjectStateV2() {
-    LPProjectManager().restoreProjectV2(this)
+    try {
+        LPProjectManager().restoreProjectV2(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+/**[com.angcyo.laserpacker.device.DeviceHelper.deleteProjectFileV2]*/
+fun deleteProjectFileV2() {
+    DeviceHelper.deleteProjectFileV2()
 }
 
 /**处理文件路径对应的数据, 解析成[LPElementBean]*/
