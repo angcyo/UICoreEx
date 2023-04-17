@@ -347,6 +347,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
         val closeTextEditItemsFun =
             LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun
+        val isText = renderer.lpElementBean()?.mtype == LPDataConstant.DATA_TYPE_TEXT
+        if (!isText) {
+            //非文本类型, 不显示文本相关属性
+            return
+        }
         //字体
         if (!closeTextEditItemsFun.have("_typeface_")) {
             TextTypefaceSelectItem()() {
