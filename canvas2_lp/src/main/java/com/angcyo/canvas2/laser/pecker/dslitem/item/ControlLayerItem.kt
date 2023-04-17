@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
-import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
@@ -28,7 +28,7 @@ class ControlLayerItem : CanvasIconItem() {
         itemTag = TAG_LAYER_ITEM
         itemClick = {
             //隐藏或者显示图层布局
-            itemRenderLayoutHelper?._rootViewHolder?.gone(R.id.canvas_layer_layout, itemIsSelected)
+            itemRenderLayoutHelper?.showLayerLayout(!itemIsSelected)
             updateItemSelected(!itemIsSelected)
 
             if (itemIsSelected) {

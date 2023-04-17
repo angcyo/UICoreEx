@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Matrix
+import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.render.core.BaseCanvasRenderListener
@@ -61,6 +62,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isShowDebug
+import com.angcyo.library.ex.isTouchDown
 import com.angcyo.library.ex.longFeedback
 import com.angcyo.library.ex.mH
 import com.angcyo.library.ex.resetAll
@@ -324,6 +326,13 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
         renderDelegate?.addCanvasRenderListener(object :
             BaseCanvasRenderListener() {
+
+            override fun onDispatchTouchEvent(event: MotionEvent) {
+                if (event.isTouchDown()) {
+                    //点击空白处, 隐藏图层控制布局
+                    showLayerLayout(false)
+                }
+            }
 
             /**画笔缩放比例改变后, 反向放大画笔绘制*/
             override fun onRenderBoxMatrixUpdate(
@@ -662,6 +671,14 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
     var _layerDragHelper: DragCallbackHelper? = null
     var _layerTabLayout: DslTabLayout? = null
+
+    /**隐藏或者显示图层布局*/
+    fun showLayerLayout(visible: Boolean) {
+        _rootViewHolder?.visible(R.id.canvas_layer_layout, visible)
+        if (!visible) {
+            findTagItem(ControlLayerItem.TAG_LAYER_ITEM)?.updateItemSelected(false)
+        }
+    }
 
     /**显示/更新图层item*/
     fun renderLayerListLayout() {
