@@ -87,6 +87,16 @@ object LPPreviewHelper {
                 originBounds = CanvasGroupRenderer.getRendererListRenderProperty(rendererList)
                     .getRenderBounds(RectF())
             }
+
+            //约束最小宽高
+            originBounds?.let {
+                if (it.width() <= 0) {
+                    it.right = it.left + 1
+                }
+                if (it.height() <= 0) {
+                    it.bottom = it.top + 1
+                }
+            }
         }
     }
 

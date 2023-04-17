@@ -61,7 +61,6 @@ class PreviewModel : LifecycleViewModel() {
 
             @Pixel
             val rect = RectF(left.toPixel(), top.toPixel(), right.toPixel(), bottom.toPixel())
-
             result.originBounds = RectF(rect)
             return result
         }
