@@ -6,8 +6,12 @@ import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
-import com.angcyo.laserpacker.*
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.isBold
+import com.angcyo.laserpacker.isItalic
+import com.angcyo.laserpacker.toPaintStyle
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.qrcode.createBarCode
@@ -105,9 +109,27 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         if (elementBean.mtype == LPDataConstant.DATA_TYPE_QRCODE) {
             elementBean.coding = "${BarcodeFormat.QR_CODE}".lowercase()
             codeBitmap = text?.createQRCode()
+            updateOriginWidthHeight(codeBitmap)
         } else if (elementBean.mtype == LPDataConstant.DATA_TYPE_BARCODE) {
             elementBean.coding = "${BarcodeFormat.CODE_128}".lowercase()
             codeBitmap = text?.createBarCode()
+            updateOriginWidthHeight(codeBitmap)
         }
+    }
+
+    private fun updateOriginWidthHeight(bitmap: Bitmap?) {
+        bitmap ?: return
+        elementBean.width = bitmap.width.toMm()
+        elementBean.height = bitmap.height.toMm()
+    }
+
+    override fun updateOriginWidthHeight(
+        newWidth: Float,
+        newHeight: Float,
+        keepVisibleSize: Boolean
+    ) {
+        super.updateOriginWidthHeight(newWidth, newHeight, keepVisibleSize)
+        elementBean.width = renderProperty.width.toMm()
+        elementBean.height = renderProperty.height.toMm()
     }
 }

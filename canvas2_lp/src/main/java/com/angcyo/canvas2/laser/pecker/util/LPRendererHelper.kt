@@ -58,11 +58,19 @@ object LPRendererHelper {
         else -> null
     }
 
-    /**解析数据结构到对应的渲染器*/
-    fun parseElementRenderer(bean: LPElementBean): CanvasElementRenderer? {
+    /**解析数据结构到对应的渲染器
+     * [assignLocation] 是否要重新分配位置*/
+    fun parseElementRenderer(
+        bean: LPElementBean,
+        assignLocation: Boolean = false
+    ): CanvasElementRenderer? {
         return parseElementBean(bean)?.run {
             val renderer = CanvasElementRenderer()
             updateBeanToElement(renderer)
+            if (assignLocation) {
+                LPElementHelper.assignLocation(bean)
+                updateBeanToElement(renderer)
+            }
             renderer.renderElement = this
             renderer
         }

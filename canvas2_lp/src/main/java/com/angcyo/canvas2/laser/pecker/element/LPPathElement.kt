@@ -1,6 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.element
 
-import android.graphics.*
+import android.graphics.DashPathEffect
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PathEffect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Build
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -16,6 +20,7 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.scaleToSize
 import com.angcyo.library.ex.toRadians
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
 import com.angcyo.svg.Svg
@@ -149,6 +154,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                     }
                     close()
                 }
+
                 else -> null
             }
         }
@@ -227,6 +233,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                         pathList = listOf(it)
                     }
                 }
+
                 LPDataConstant.DATA_TYPE_SVG -> {
                     if (data.isSvgContent()) {
                         //svg标签数据
@@ -291,6 +298,16 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                 gcodeFillAngle,
             )
         }
+    }
+
+    override fun updateOriginWidthHeight(
+        newWidth: Float,
+        newHeight: Float,
+        keepVisibleSize: Boolean
+    ) {
+        super.updateOriginWidthHeight(newWidth, newHeight, keepVisibleSize)
+        elementBean.width = renderProperty.width.toMm()
+        elementBean.height = renderProperty.height.toMm()
     }
 
 }

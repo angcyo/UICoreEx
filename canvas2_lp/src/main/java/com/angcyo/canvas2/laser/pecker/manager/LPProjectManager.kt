@@ -220,9 +220,13 @@ class LPProjectManager {
     }
 
     /**打开一个[LPElementBean]元素*/
-    fun openElementBean(delegate: CanvasRenderDelegate, bean: LPElementBean?): Boolean {
+    fun openElementBean(
+        delegate: CanvasRenderDelegate,
+        bean: LPElementBean?,
+        assignLocation: Boolean
+    ): Boolean {
         bean ?: return false
-        return LPRendererHelper.parseElementRenderer(bean)?.apply {
+        return LPRendererHelper.parseElementRenderer(bean, assignLocation)?.apply {
             delegate.renderManager.addElementRenderer(this, true, Reason.user, Strategy.normal)
             LPRendererHelper.generateName(delegate)
         } != null

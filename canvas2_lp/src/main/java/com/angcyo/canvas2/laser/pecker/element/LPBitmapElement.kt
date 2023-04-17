@@ -23,6 +23,7 @@ import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.writeToFile
 
 /**
@@ -170,6 +171,8 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
         super.updateOriginBitmap(bitmap, keepVisibleSize)
         //更新原图, 默认是黑白画处理
+        elementBean.width = bitmap.width.toMm()
+        elementBean.height = bitmap.height.toMm()
         elementBean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
         renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
     }

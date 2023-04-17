@@ -121,15 +121,17 @@ object LPElementHelper {
             imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
-
-        if (assignLocation) {
-            assignLocation(elementBean)//分配位置
-        }
-
         elementBean.init()//init
-
         return LPRendererHelper.parseElementRenderer(elementBean)!!.apply {
-            element<LPBitmapElement>()?.updateOriginBitmap(bitmap, true)
+            val renderer = this
+            element<LPBitmapElement>()?.apply {
+                updateOriginBitmap(bitmap, true)
+                if (assignLocation) {
+                    assignLocation(elementBean)
+                    updateBeanToElement(renderer)
+                    updateRenderProperty()
+                }
+            }
         }
     }
 
@@ -159,9 +161,7 @@ object LPElementHelper {
             this.text = "$text"
             paintStyle = Paint.Style.FILL.toPaintStyleInt()
         }
-        assignLocation(elementBean)
-
-        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean, true)!!
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }
@@ -185,9 +185,7 @@ object LPElementHelper {
             this.data = data
             paintStyle = Paint.Style.STROKE.toPaintStyleInt()
         }
-        assignLocation(elementBean)
-
-        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!.apply {
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean, true)!!.apply {
             element<LPPathElement>()?.pathList = pathList
         }
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
@@ -222,9 +220,7 @@ object LPElementHelper {
                 Paint.Style.STROKE.toPaintStyleInt()
             }
         }
-        assignLocation(elementBean)
-
-        val renderer = LPRendererHelper.parseElementRenderer(elementBean)!!
+        val renderer = LPRendererHelper.parseElementRenderer(elementBean, true)!!
         delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
         LPRendererHelper.generateName(delegate)
     }
