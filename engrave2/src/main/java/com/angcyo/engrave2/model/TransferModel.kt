@@ -6,13 +6,17 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.enqueue
-import com.angcyo.bluetooth.fsc.laserpacker.*
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
+import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
+import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
@@ -30,7 +34,13 @@ import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.connect
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toDC
+import com.angcyo.library.ex.toMsTime
+import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -457,6 +467,12 @@ class TransferModel : ViewModel() {
         LTime.tick()
         val sizeString = size.toSizeString()
         val sizeInt = size.toInt()
+        span {
+            append("请稍等,正在进入大数据模式:")
+            append("[$sizeString]") {
+                foregroundColor = EngraveTransitionHelper.accentColor
+            }
+        }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
         val fileModeCmd = FileModeCmd(sizeInt)
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             span {
@@ -469,15 +485,21 @@ class TransferModel : ViewModel() {
                         //成功进入大数据模式, 开始发送数据
                         LTime.tick()
                         val dataCmd = DataCmd(ByteArray(0), ByteArray(sizeInt))
-                        var minSpeed = Float.MAX_VALUE
-                        var maxSpeed = Float.MIN_VALUE
+                        var minSpeed: Float? = null
+                        var maxSpeed: Float? = null
+                        val speedList = mutableListOf<Float>()
                         dataCmd.enqueue(progress = {
                             //进度[0~100]
                             val progress = it.sendPacketPercentage
                             //byte/s
                             val sendSpeed = it.sendSpeed
-                            minSpeed = min(minSpeed, sendSpeed)
-                            maxSpeed = max(maxSpeed, sendSpeed)
+                            maxSpeed =
+                                if (maxSpeed == null) sendSpeed else max(maxSpeed!!, sendSpeed)
+                            if (progress > 2) {
+                                minSpeed =
+                                    if (minSpeed == null) sendSpeed else min(minSpeed!!, sendSpeed)
+                                speedList.add(sendSpeed)
+                            }
                             progressAction(
                                 span {
                                     append("发送[${sizeString}]进度:")
@@ -489,15 +511,15 @@ class TransferModel : ViewModel() {
                                         foregroundColor = EngraveTransitionHelper.accentColor
                                     }
                                     append(" 最慢:")
-                                    append("${minSpeed.toLong().toSizeString()}/s") {
+                                    append("${(minSpeed ?: 0).toLong().toSizeString()}/s") {
                                         foregroundColor = EngraveTransitionHelper.accentColor
                                     }
                                     append(" 最快:")
-                                    append("${maxSpeed.toLong().toSizeString()}/s") {
+                                    append("${(maxSpeed ?: 0).toLong().toSizeString()}/s") {
                                         foregroundColor = EngraveTransitionHelper.accentColor
                                     }
                                     append(" 平均:")
-                                    append("${(minSpeed + maxSpeed).toLong().toSizeString()}/s") {
+                                    append("${(speedList.average()).toLong().toSizeString()}/s") {
                                         foregroundColor = EngraveTransitionHelper.accentColor
                                     }
                                 }
@@ -507,7 +529,7 @@ class TransferModel : ViewModel() {
                             span {
                                 append("传输[$sizeString]")
                                 append(" 平均速率:")
-                                append("${(minSpeed + maxSpeed).toLong().toSizeString()}/s") {
+                                append("${(speedList.average()).toLong().toSizeString()}/s") {
                                     foregroundColor = EngraveTransitionHelper.accentColor
                                 }
                                 append(" 结束[${result?.isFileTransferSuccess().toDC()}]")

@@ -153,28 +153,37 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
     private fun initTransferLayout(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         dialogViewHolder.visible(R.id.lib_button_flow_layout)
         dialogViewHolder.click(R.id.send5_button) {
-            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+            transferDataTest(dialogViewHolder, it.tag)
         }
         dialogViewHolder.click(R.id.send10_button) {
-            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+            transferDataTest(dialogViewHolder, it.tag)
         }
         dialogViewHolder.click(R.id.send20_button) {
-            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+            transferDataTest(dialogViewHolder, it.tag)
         }
         dialogViewHolder.click(R.id.send30_button) {
-            transferModel.transferDataTest(it.tag.toString().toLong() * MB, ::sendProgressMessage)
+            transferDataTest(dialogViewHolder, it.tag)
         }
         dialogViewHolder.click(R.id.send_custom_button) {
             it.context.numberInputDialog {
                 hintInputString = "指定大小(MB)"
                 maxInputLength = 3
                 onInputResult = { dialog, inputText ->
-                    inputText.toString().toLongOrNull()?.let {
-                        transferModel.transferDataTest(it * MB, ::sendProgressMessage)
-                    }
+                    transferDataTest(dialogViewHolder, inputText)
                     false
                 }
             }
+        }
+    }
+
+    private fun transferDataTest(dialogViewHolder: DslViewHolder, size: Any) {
+        dialogViewHolder.enable(R.id.lib_button_flow_layout, false)
+        transferModel.transferDataTest(
+            (size.toString().toLongOrNull() ?: 0) * MB,
+            ::sendProgressMessage
+        )
+        dialogViewHolder.postDelay(1_000) {
+            dialogViewHolder.enable(R.id.lib_button_flow_layout, true)
         }
     }
 
