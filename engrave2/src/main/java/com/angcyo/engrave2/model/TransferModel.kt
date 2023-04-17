@@ -488,6 +488,7 @@ class TransferModel : ViewModel() {
                         var minSpeed: Float? = null
                         var maxSpeed: Float? = null
                         val speedList = mutableListOf<Float>()
+                        val startTime = nowTime()
                         dataCmd.enqueue(progress = {
                             //进度[0~100]
                             val progress = it.sendPacketPercentage
@@ -520,6 +521,9 @@ class TransferModel : ViewModel() {
                                     }
                                     append(" 平均:")
                                     append("${(speedList.average()).toLong().toSizeString()}/s") {
+                                        foregroundColor = EngraveTransitionHelper.accentColor
+                                    }
+                                    append(" 耗时:${LTime.time(startTime)}") {
                                         foregroundColor = EngraveTransitionHelper.accentColor
                                     }
                                 }
