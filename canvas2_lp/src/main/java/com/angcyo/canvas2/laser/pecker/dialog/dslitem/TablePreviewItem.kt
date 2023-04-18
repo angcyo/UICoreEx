@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
 import android.graphics.Bitmap
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
@@ -44,7 +45,10 @@ class TablePreviewItem : DslAdapterItem() {
 
     fun updatePreview() {
         itemPreviewBitmap =
-            CanvasGroupRenderer.createRenderBitmap(parameterComparisonTableDialogConfig?.parseParameterComparisonTable())
+            CanvasGroupRenderer.createRenderBitmap(
+                parameterComparisonTableDialogConfig?.parseParameterComparisonTable(),
+                HawkEngraveKeys.projectOutSize.toFloat()
+            )
         updateAdapterItem()
     }
 
