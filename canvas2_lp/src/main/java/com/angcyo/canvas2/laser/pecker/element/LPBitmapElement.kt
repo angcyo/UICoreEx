@@ -40,11 +40,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         super.updateBeanToElement(renderer)
         parseElementBean()
     }
-
-    override fun updateBeanFromElement(renderer: BaseRenderer) {
-        super.updateBeanFromElement(renderer)
-    }
-
+    
     override fun createStateStack(): IStateStack = LPBitmapStateStack()
 
     override fun getDrawPathList(): List<Path>? = pathList

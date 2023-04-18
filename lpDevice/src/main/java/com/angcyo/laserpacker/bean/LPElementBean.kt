@@ -3,10 +3,10 @@ package com.angcyo.laserpacker.bean
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.widget.LinearLayout
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.annotation.Implementation
@@ -423,6 +423,7 @@ data class LPElementBean(
                     LPDataConstant.DATA_MODE_PRINT,
                     LPDataConstant.DATA_MODE_SEAL,
                     LPDataConstant.DATA_MODE_BLACK_WHITE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+
                     LPDataConstant.DATA_MODE_DITHERING -> if (vmApp<LaserPeckerModel>().isSupportDithering() && !HawkEngraveKeys.forceGrey) {
                         //支持抖动
                         LPDataConstant.DATA_MODE_DITHERING
@@ -430,8 +431,10 @@ data class LPElementBean(
                         //不支持抖动, 则发送灰度图片
                         LPDataConstant.DATA_MODE_GREY
                     }
+
                     else -> imageFilter
                 }
+
                 mtype == LPDataConstant.DATA_TYPE_TEXT -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
                     //描边文本, 走GCode
                     LPDataConstant.DATA_MODE_GCODE
@@ -439,6 +442,7 @@ data class LPElementBean(
                     //否则就是黑白画
                     LPDataConstant.DATA_MODE_BLACK_WHITE
                 }
+
                 mtype == LPDataConstant.DATA_TYPE_QRCODE ||
                         mtype == LPDataConstant.DATA_TYPE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
                 //填充线/描边线, 都是GCode
@@ -450,6 +454,7 @@ data class LPElementBean(
                     //否则就是黑白画
                     LPDataConstant.DATA_MODE_BLACK_WHITE
                 }
+
                 else -> null
             }
         }

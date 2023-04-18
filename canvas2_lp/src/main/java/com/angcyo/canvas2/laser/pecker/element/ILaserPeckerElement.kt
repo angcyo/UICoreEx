@@ -103,11 +103,13 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     }
 
     /**将[CanvasRenderProperty] 数据同步到 [elementBean]*/
-    fun updateBeanFromElement(renderer: BaseRenderer) {
+    fun updateBeanFromElement(renderer: BaseRenderer?) {
         if (this is BaseElement) {
             renderProperty.toElementBean(elementBean)
-            elementBean.isLock = renderer.isLock
-            elementBean.isVisible = renderer.isVisible
+            if (renderer != null) {
+                elementBean.isLock = renderer.isLock
+                elementBean.isVisible = renderer.isVisible
+            }
         }
     }
 

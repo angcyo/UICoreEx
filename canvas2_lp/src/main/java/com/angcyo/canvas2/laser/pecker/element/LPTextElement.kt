@@ -46,6 +46,11 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         }
     }
 
+    override fun onUpdateElementAfter() {
+        super.onUpdateElementAfter()
+        updateBeanFromElement(null)
+    }
+
     override fun updateBeanToElement(renderer: BaseRenderer?) {
         super.updateBeanToElement(renderer)
         textProperty.text = elementBean.text
@@ -68,7 +73,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         updateOriginText(elementBean.text)
     }
 
-    override fun updateBeanFromElement(renderer: BaseRenderer) {
+    override fun updateBeanFromElement(renderer: BaseRenderer?) {
         super.updateBeanFromElement(renderer)
         elementBean.text = textProperty.text
         elementBean.fontFamily = textProperty.fontFamily
