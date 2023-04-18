@@ -28,10 +28,11 @@ class ControlLayerItem : CanvasIconItem() {
         itemTag = TAG_LAYER_ITEM
         itemClick = {
             //隐藏或者显示图层布局
-            itemRenderLayoutHelper?.showLayerLayout(!itemIsSelected)
-            updateItemSelected(!itemIsSelected)
+            val selected = !itemIsSelected
+            updateItemSelected(selected)
+            itemRenderLayoutHelper?.showLayerLayout(selected)
 
-            if (itemIsSelected) {
+            if (selected) {
                 //选中之后, 渲染图层item rv
                 itemRenderLayoutHelper?.renderLayerListLayout()
             }
