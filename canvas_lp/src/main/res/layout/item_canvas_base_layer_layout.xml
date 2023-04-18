@@ -73,9 +73,9 @@
         android:padding="@dimen/lib_sdpi"
         android:scaleType="fitCenter"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/layer_item_drawable_view"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/layer_item_drawable_view"
         app:srcCompat="@drawable/canvas_device_warn_svg"
         tools:visibility="visible" />
 

@@ -24,7 +24,7 @@
         android:id="@+id/layer_item_drawable_view"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
         app:layout_constraintLeft_toRightOf="@id/layer_item_invisible_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
@@ -73,9 +73,9 @@
         android:padding="@dimen/lib_sdpi"
         android:scaleType="fitCenter"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/layer_item_drawable_view"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/layer_item_drawable_view"
         app:srcCompat="@drawable/canvas_device_warn_svg"
         tools:visibility="visible" />
 
