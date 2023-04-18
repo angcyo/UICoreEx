@@ -52,6 +52,7 @@ class GridCountItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val count = clamp(value.toInt(), 1, 100)
                     itemColumns = count
@@ -66,6 +67,7 @@ class GridCountItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val count = clamp(value.toInt(), 1, 100)
                     itemRows = count
@@ -80,6 +82,7 @@ class GridCountItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val count = clamp(value, 1f, 99999f)
                     itemPowerDepthThreshold = count

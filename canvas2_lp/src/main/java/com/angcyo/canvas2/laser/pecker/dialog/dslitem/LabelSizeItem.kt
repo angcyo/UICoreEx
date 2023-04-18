@@ -48,6 +48,7 @@ class LabelSizeItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val v = clamp(value, 1f, 100f)
                     itemTextFontSize = v
@@ -62,6 +63,7 @@ class LabelSizeItem : DslAdapterItem() {
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
                     val v = clamp(value, 1f, 100f)
                     itemGridItemMargin = v
