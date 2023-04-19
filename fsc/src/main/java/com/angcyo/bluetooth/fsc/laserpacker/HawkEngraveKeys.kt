@@ -188,6 +188,9 @@ object HawkEngraveKeys {
     /**图片尺寸小于这个值时, 才开启预览日志输出*/
     var engraveBitmapLogSize: Int by HawkPropertyValue<Any, Int>(2000)
 
+    /**是否检查32位的手机, 如果是32位的手机, 有些功能不开放*/
+    var checkCpu32: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     //---功能固件范围配置---
 
     /**

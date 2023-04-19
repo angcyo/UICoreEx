@@ -54,6 +54,7 @@ import com.angcyo.library.ex.alphaRatio
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.size
+import com.angcyo.library.utils.BuildHelper.isCpu64
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.hingin.umeng.UMEvent
@@ -182,6 +183,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     private fun DslAdapter.renderBitmapEditItems(renderer: BaseRenderer) {
         val closeImageEditItemsFun =
             LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeImageEditItemsFun
+
+        //隐藏某些功能, 在32位的设备上
+        val hideIn32 = HawkEngraveKeys.checkCpu32 && !isCpu64
+
         if (!closeImageEditItemsFun.have("_bw_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
@@ -205,7 +210,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("_dithering_")) {
+        if (!hideIn32 && !closeImageEditItemsFun.have("_dithering_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
@@ -228,7 +233,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("_gcode_")) {
+        if (!hideIn32 && !closeImageEditItemsFun.have("_gcode_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
@@ -247,7 +252,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
 
-        if (isDebugType()) {
+        if (hideIn32 || isDebugType()) {
             if (!closeImageEditItemsFun.have("_grey_")) {
                 ImageFilterItem()() {
                     itemIco = R.drawable.canvas_bitmap_grey
@@ -264,7 +269,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("_print_")) {
+        if (!hideIn32 && !closeImageEditItemsFun.have("_print_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
@@ -282,7 +287,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!closeImageEditItemsFun.have("_seal_")) {
+        if (!hideIn32 && !closeImageEditItemsFun.have("_seal_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
