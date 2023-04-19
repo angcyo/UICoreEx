@@ -1,15 +1,22 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
+import android.net.Uri
 import androidx.fragment.app.Fragment
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
-import com.angcyo.component.getFile
+import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.L
 import com.angcyo.library.component.ROpenFileHelper
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.file
+import com.angcyo.library.ex.isImageType
+import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.library.utils.isSvgContent
@@ -30,69 +37,15 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
         itemText = _string(R.string.canvas_photo)
 
         itemClick = {
-            itemFragment?.parentFragmentManager?.getFile { uri ->
-                val filePath = ROpenFileHelper.parseData(uri)
-                L.i("选择文件:$filePath")
-                filePath?.let { path ->
-                    val isSvgExt = path.endsWith(LPDataConstant.SVG_EXT, true)
-                    val isGCodeExt = path.endsWith(LPDataConstant.GCODE_EXT, true)
-                    if (isSvgExt) {
-                        //.svg后缀
-                        val text = path.file().readText()
-                        LPElementHelper.addPathElement(
-                            itemRenderDelegate,
-                            LPDataConstant.DATA_TYPE_SVG,
-                            text,
-                            null
-                        )
-                    } else if (isGCodeExt) {
-                        //.gcode后缀
-                        val text = path.file().readText()
-                        LPElementHelper.addPathElement(
-                            itemRenderDelegate,
-                            LPDataConstant.DATA_TYPE_GCODE,
-                            text,
-                            null
-                        )
-                    } else {
-                        val isTxtExt = path.endsWith(LPDataConstant.TXT_EXT, true)
-                        if (isTxtExt) {
-                            //.txt后缀
-                            val text = path.file().readText()
-                            if (text?.isSvgContent() == true) {
-                                //svg内容
-                                LPElementHelper.addPathElement(
-                                    itemRenderDelegate,
-                                    LPDataConstant.DATA_TYPE_SVG,
-                                    text,
-                                    null
-                                )
-                            } else if (text?.isGCodeContent() == true) {
-                                //gcode内容
-                                LPElementHelper.addPathElement(
-                                    itemRenderDelegate,
-                                    LPDataConstant.DATA_TYPE_GCODE,
-                                    text,
-                                    null
-                                )
-                            } else {
-                                toastQQ(_string(R.string.not_support))
-                            }
-                        } else if (path.isImageType()) {
-                            //图片
-                            /*itemFragment?.engraveLoadingAsync({
-                                *//*val newPath = path.luban()
-                                L.i("${path}->${newPath}")
-                                //压缩后
-                                val newBitmap = newPath.toBitmap() ?: return@engraveLoadingAsync
-                                //itemCanvasDelegate?.addBlackWhiteBitmapRender(newBitmap)
-                                newBitmap.recycle()*//*
-                            })*/
-                            LPElementHelper.addBitmapElement(
-                                itemRenderDelegate,
-                                filePath.toBitmap()
-                            )
-                            UMEvent.CANVAS_IMAGE.umengEventValue()
+            itemFragment?.parentFragmentManager?.getFiles(HawkEngraveKeys.maxSelectorPhotoCount) { uriList ->
+                if (!uriList.isNullOrEmpty()) {
+                    var haveNotSupport = false
+                    for (uri in uriList) {
+                        haveNotSupport = haveNotSupport || !addUri(uri)
+                    }
+                    if (haveNotSupport) {
+                        if (uriList.size() > 1) {
+                            toastQQ(_string(R.string.not_support_part))
                         } else {
                             toastQQ(_string(R.string.not_support))
                         }
@@ -100,5 +53,76 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                 }
             }
         }
+    }
+
+    private fun addUri(uri: Uri?): Boolean {
+        val filePath = ROpenFileHelper.parseData(uri)
+        L.i("选择文件:$filePath")
+        filePath?.let { path ->
+            val isSvgExt = path.endsWith(LPDataConstant.SVG_EXT, true)
+            val isGCodeExt = path.endsWith(LPDataConstant.GCODE_EXT, true)
+            if (isSvgExt) {
+                //.svg后缀
+                val text = path.file().readText()
+                LPElementHelper.addPathElement(
+                    itemRenderDelegate,
+                    LPDataConstant.DATA_TYPE_SVG,
+                    text,
+                    null
+                )
+            } else if (isGCodeExt) {
+                //.gcode后缀
+                val text = path.file().readText()
+                LPElementHelper.addPathElement(
+                    itemRenderDelegate,
+                    LPDataConstant.DATA_TYPE_GCODE,
+                    text,
+                    null
+                )
+            } else {
+                val isTxtExt = path.endsWith(LPDataConstant.TXT_EXT, true)
+                if (isTxtExt) {
+                    //.txt后缀
+                    val text = path.file().readText()
+                    if (text?.isSvgContent() == true) {
+                        //svg内容
+                        LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPDataConstant.DATA_TYPE_SVG,
+                            text,
+                            null
+                        )
+                    } else if (text?.isGCodeContent() == true) {
+                        //gcode内容
+                        LPElementHelper.addPathElement(
+                            itemRenderDelegate,
+                            LPDataConstant.DATA_TYPE_GCODE,
+                            text,
+                            null
+                        )
+                    } else {
+                        return false
+                    }
+                } else if (path.isImageType()) {
+                    //图片
+                    /*itemFragment?.engraveLoadingAsync({
+                        *//*val newPath = path.luban()
+                                L.i("${path}->${newPath}")
+                                //压缩后
+                                val newBitmap = newPath.toBitmap() ?: return@engraveLoadingAsync
+                                //itemCanvasDelegate?.addBlackWhiteBitmapRender(newBitmap)
+                                newBitmap.recycle()*//*
+                            })*/
+                    LPElementHelper.addBitmapElement(
+                        itemRenderDelegate,
+                        filePath.toBitmap()
+                    )
+                    UMEvent.CANVAS_IMAGE.umengEventValue()
+                } else {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }

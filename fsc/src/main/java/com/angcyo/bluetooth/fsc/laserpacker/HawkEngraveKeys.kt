@@ -65,6 +65,9 @@ object HawkEngraveKeys {
     /**最后一次传输的dpi*/
     var lastDpi: Float by HawkPropertyValue<Any, Float>(LaserPeckerHelper.DPI_254)
 
+    /**最大的选择添加图片的数量*/
+    var maxSelectorPhotoCount: Int by HawkPropertyValue<Any, Int>(9)
+
     //
 
     /**版画阈值*/
