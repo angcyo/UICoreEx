@@ -41,7 +41,7 @@ object LayerHelper {
         return if (layerId != null) {
             engraveLayerList.find { it.layerId == layerId }
         } else {
-            getEngraveLayerInfo(mode.toLayerId())
+            engraveLayerList.find { it.layerId == mode.toLayerId() }
         }
     }
 
