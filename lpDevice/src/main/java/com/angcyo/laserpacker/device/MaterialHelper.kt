@@ -124,6 +124,8 @@ object MaterialHelper {
                 precision = HawkEngraveKeys.lastPrecision
                 layerId = layerInfo.layerId
                 createMaterialCode(key!!)
+
+                result.add(this)
             }
         }
         return result
