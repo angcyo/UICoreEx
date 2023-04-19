@@ -27,7 +27,9 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.RecyclerItemFlowAnimator
 import com.angcyo.dsladapter.find
+import com.angcyo.dsladapter.itemIndexPosition
 import com.angcyo.engrave2.*
 import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.model.EngraveModel
@@ -613,6 +615,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             )
                         observeItemChange {
                             selectLayerId = layerList[itemCurrentIndex].layerId
+                            val itemIndexPosition = it.itemIndexPosition()
+                            if (itemIndexPosition != -1) {
+                                RecyclerItemFlowAnimator(
+                                    itemIndexPosition + 1,
+                                    -2
+                                ).start(it.itemDslAdapter?._recyclerView)//图层改变后, 动画提示参数变化
+                            }
                             renderFlowItems()
                         }
                     }
