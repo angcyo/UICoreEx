@@ -152,6 +152,24 @@ data class LaserPeckerProductInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CI]
      * */
     fun isCI(): Boolean = name == LaserPeckerHelper.CI
+
+    //---
+
+    fun isL1() = isLI()
+
+    fun isL2() = isLII()
+
+    fun isL3() = isLIII()
+
+    fun isL4() = isLIV()
+
+    fun isC1() = isCI()
+
+    /**是否是C系列*/
+    fun isCSeries() = isC1()
+
+    /**是否是lp系列*/
+    fun isLPSeries() = isL1() || isL2() || isL3() || isL4()
 }
 
 

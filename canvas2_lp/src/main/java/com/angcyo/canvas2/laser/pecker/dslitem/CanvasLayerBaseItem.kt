@@ -1,6 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dslitem
 
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
@@ -14,9 +16,13 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.toTypeNameString
+import com.angcyo.library.ex.Action
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.isDebug
@@ -26,13 +32,25 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/09/29
  */
-open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
+open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
 
     //region ---core---
 
     override var itemRenderer: BaseRenderer? = null
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
+
+    val itemRenderParams = RenderParams(overrideSize = 30 * dp)
+
+    /**是否需要显示雕刻参数参数*/
+    var itemShowEngraveParams = true
+
+    /**切割类型改变的回调*/
+    var onItemCutTypeChangeAction: Action? = null
+
+    //endregion ---core---
+
+    //region ---计算属性---
 
     val operateRenderer: BaseRenderer?
         get() = if (itemRenderer is CanvasGroupRenderer) {
@@ -41,12 +59,6 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
             itemRenderer
         }
 
-    val itemRenderParams = RenderParams(overrideSize = 30 * dp)
-
-    //endregion ---core---
-
-    //region ---计算属性---
-
     val itemLayerHide: Boolean get() = itemRenderer?.isVisible == false
 
     val itemLayerLock: Boolean get() = itemRenderer?.isLock == true
@@ -54,14 +66,18 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
     val itemItemDrawable: Drawable?
         get() = itemRenderer?.requestRenderDrawable(itemRenderParams.overrideSize)
 
+    /**操作的元素结构*/
+    val operateElementBean: LPElementBean? get() = operateRenderer?.lpElementBean()
+
     val itemItemName: CharSequence? get() = itemRenderer?.lpElementBean()?.name
 
     /**当前的[itemRenderer]范围是否超出设备物理尺寸*/
     val isOverflowBounds: Boolean
         get() = itemRenderer?.renderProperty?.getRenderBounds().isOverflowProductBounds()
 
-    /**是否需要显示雕刻参数参数*/
-    var itemShowEngraveParams = true
+    /**是否要显示切割按钮*/
+    val itemShowSlicingView: Boolean
+        get() = operateElementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
 
     //endregion ---计算属性---
 
@@ -80,7 +96,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
 
         //item 名称
         itemHolder.tv(R.id.layer_item_name_view)?.text =
-            itemItemName ?: operateRenderer?.lpElementBean()?.mtype?.toTypeNameString()
+            itemItemName ?: operateElementBean?.mtype?.toTypeNameString()
 
         itemHolder.img(R.id.layer_item_drawable_view)
             ?.setImageDrawable(itemItemDrawable /*?: renderer?.preview(itemRenderParams)*/)
@@ -90,7 +106,7 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
             itemHolder.visible(R.id.layer_item_params_view)
             itemHolder.tv(R.id.layer_item_params_view)?.text = buildString {
                 renderer.lpElementBean()?.let { bean ->
-                    if (vmApp<LaserPeckerModel>().isC1()) {
+                    if (vmApp<LaserPeckerModel>().isCSeries()) {
                         append(_string(R.string.engrave_precision));append(":")
                         append(bean.printPrecision ?: HawkEngraveKeys.lastPrecision);append(" ")
                     } else {
@@ -124,12 +140,32 @@ open class CanvasBaseLayerItem : DslAdapterItem(), ICanvasRendererItem {
             itemHolder.gone(R.id.layer_item_params_view)
         }
 
+        //超范围警告
         itemHolder.visible(R.id.layer_item_warn_view, isOverflowBounds)
         itemHolder.click(R.id.layer_item_warn_view) {
             it.context.messageDialog {
                 dialogTitle = _string(R.string.engrave_bounds_warn)
                 dialogMessage = _string(R.string.engrave_overflow_bounds_message)
             }
+        }
+
+        //转换切割图层
+        itemHolder.invisible(R.id.layer_slicing_view, !itemShowSlicingView)
+        itemHolder.img(R.id.layer_slicing_view)?.imageTintList = ColorStateList.valueOf(
+            if (operateElementBean?._layerId == LayerHelper.LAYER_CUT) {
+                _color(R.color.colorAccent)
+            } else {
+                _color(R.color.lib_text_color)
+            }
+        )
+
+        itemHolder.click(R.id.layer_slicing_view) {
+            if (operateElementBean?._layerId == LayerHelper.LAYER_CUT) {
+                operateElementBean?.layerId = null
+            } else {
+                operateElementBean?.layerId = LayerHelper.LAYER_CUT
+            }
+            onItemCutTypeChangeAction?.invoke()
         }
     }
 

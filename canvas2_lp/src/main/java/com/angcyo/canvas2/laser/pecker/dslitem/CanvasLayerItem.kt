@@ -13,7 +13,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/09
  */
-class CanvasLayerItem : CanvasBaseLayerItem() {
+class CanvasLayerItem : CanvasLayerBaseItem() {
 
     //region ---core---
 

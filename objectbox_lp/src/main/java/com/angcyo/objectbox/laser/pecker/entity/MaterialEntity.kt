@@ -57,14 +57,12 @@ data class MaterialEntity(
 
     /**当前的配置, 属于那个图层.
      * 图片一个推荐参数, 黑白和GCode参数相同
-     * [com.angcyo.engrave.data.EngraveLayerInfo]
+     * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerId]
      *
-     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.layerMode]
+     * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
+     * [com.angcyo.laserpacker.device.LayerHelper.getEngraveLayerList]
      * */
-    var layerMode: Int = -1,
-
-    /**[layerMode] 用字符串包含的方式匹配*/
-    var layerModeStr: String? = null,
+    var layerId: String? = null,
 
     /**dpi 缩放的比例,
      * 1K 1.3K 2K 4K 对应 缩放比例 1 1.3 2 4*/

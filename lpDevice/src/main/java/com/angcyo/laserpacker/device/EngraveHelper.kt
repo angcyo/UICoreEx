@@ -7,8 +7,6 @@ import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.data.EngraveLayerInfo
-import com.angcyo.library.ex._string
 import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.ex.file
 import com.angcyo.library.unit.IValueUnit
@@ -23,27 +21,6 @@ import kotlin.random.Random
  * @since 2023/03/30
  */
 object EngraveHelper {
-
-    //region ---图层---
-
-    /**图层, 以及图层顺序
-     * 先 填充->抖动->GCode */
-    val engraveLayerList = listOf(
-        EngraveLayerInfo(
-            LPDataConstant.DATA_MODE_BLACK_WHITE,
-            _string(R.string.engrave_layer_fill)
-        ),
-        EngraveLayerInfo(
-            LPDataConstant.DATA_MODE_DITHERING,
-            _string(R.string.engrave_layer_bitmap)
-        ),
-        EngraveLayerInfo(LPDataConstant.DATA_MODE_GCODE, _string(R.string.engrave_layer_line))
-    )
-
-    /**获取图层, 获取雕刻的图层信息*/
-    fun getEngraveLayer(mode: Int?) = engraveLayerList.find { it.layerMode == mode }
-
-    //endregion ---图层---
 
     //region ---雕刻---
 

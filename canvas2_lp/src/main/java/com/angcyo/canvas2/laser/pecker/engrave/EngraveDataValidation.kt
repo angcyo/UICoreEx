@@ -8,7 +8,8 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.toDataMode
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.unit.toMm
@@ -27,11 +28,12 @@ object EngraveDataValidation {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         val deviceStateModel = vmApp<DeviceStateModel>()
 
-        val layerList = EngraveHelper.engraveLayerList
+        val layerList = LayerHelper.getEngraveLayerList()
 
         if (laserPeckerModel.isZOpen()) {
             //所有设备的第三轴模式下, 不允许雕刻GCode数据
-            val gCodeLayer = layerList.find { it.layerMode == LPDataConstant.DATA_MODE_GCODE }
+            val gCodeLayer =
+                layerList.find { it.layerId.toDataMode() == LPDataConstant.DATA_MODE_GCODE }
             if (gCodeLayer != null) {
                 val rendererList =
                     LPEngraveHelper.getLayerRendererList(canvasDelegate, gCodeLayer, false)
@@ -46,11 +48,12 @@ object EngraveDataValidation {
             }
         }
 
-        val isC1 = laserPeckerModel.isC1()
-        if (isC1) {
+        val isCSeries = laserPeckerModel.isCSeries()
+        if (isCSeries) {
             if (deviceStateModel.isPenMode()) {
                 //C1的握笔模式下, 只允许雕刻GCode数据
-                val gCodeLayer = layerList.find { it.layerMode == LPDataConstant.DATA_MODE_GCODE }
+                val gCodeLayer =
+                    layerList.find { it.layerId.toDataMode() == LPDataConstant.DATA_MODE_GCODE }
                 if (gCodeLayer != null) {
                     val notGCodeRendererList =
                         LPEngraveHelper.getLayerRendererListNot(canvasDelegate, gCodeLayer, false)

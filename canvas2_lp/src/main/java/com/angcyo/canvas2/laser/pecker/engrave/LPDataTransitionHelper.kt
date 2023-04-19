@@ -55,6 +55,7 @@ object LPDataTransitionHelper {
                     )
                 }
             }
+
             LPDataConstant.DATA_MODE_BLACK_WHITE -> {
                 //填充图层, 发送图片线段数据
                 EngraveTransitionHelper.transitionToBitmapPath(
@@ -62,6 +63,7 @@ object LPDataTransitionHelper {
                     transferConfigEntity
                 )
             }
+
             LPDataConstant.DATA_MODE_DITHERING -> {
                 //图片图层, 发送抖动线段数据
                 EngraveTransitionHelper.transitionToBitmapDithering(
@@ -75,6 +77,7 @@ object LPDataTransitionHelper {
                     )
                 )
             }
+
             LPDataConstant.DATA_MODE_GREY -> {
                 //旧的图片图层, 发送图片数据
                 EngraveTransitionHelper.transitionToBitmap(
@@ -82,6 +85,7 @@ object LPDataTransitionHelper {
                     transferConfigEntity
                 )
             }
+
             else -> {
                 "无法处理的元素[${element.classHash()}]:${bean._layerMode}".writeErrorLog(logLevel = L.WARN)
                 null
@@ -90,7 +94,7 @@ object LPDataTransitionHelper {
 
         //图层模式
         result?.apply {
-            layerMode = bean._layerMode ?: -1
+            layerId = bean._layerId
         }
 
         return result

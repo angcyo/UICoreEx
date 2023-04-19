@@ -191,7 +191,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         super.onIViewRemove()
         //重新分配一个id
         _engraveItemRenderer = null
-        clearFlowId()
+        clearFlowId("流程界面关闭")
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             //在预览界面
             if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
@@ -275,18 +275,18 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * 每次发送数据之前, 都生成一个新的任务.
      * 在任务完成后清空id
      * */
-    open fun generateFlowId(): String {
+    open fun generateFlowId(reason: String): String {
         val old = flowTaskId
         if (old == null) {
             flowTaskId = uuid()
         }
-        "生成流程id[$old]->[$flowTaskId]".writeEngraveLog()
+        "生成流程id[$old]->[$flowTaskId]:${reason}".writeEngraveLog()
         return flowTaskId!!
     }
 
     /**清空流程id*/
-    open fun clearFlowId() {
-        "清空流程id[$flowTaskId]".writeEngraveLog()
+    open fun clearFlowId(reason: String) {
+        "清空流程id[$flowTaskId]:${reason}".writeEngraveLog()
         flowTaskId = null
     }
 

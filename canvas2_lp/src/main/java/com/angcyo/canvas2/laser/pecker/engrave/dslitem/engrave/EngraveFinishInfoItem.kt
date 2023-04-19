@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.library.ex._string
 
 /**
@@ -13,8 +14,8 @@ import com.angcyo.library.ex._string
  */
 class EngraveFinishInfoItem : EngravingInfoItem() {
 
-    /**雕刻图层模式*/
-    var itemLayerMode: Int = -1
+    /**雕刻图层id*/
+    var itemLayerId: String? = LayerHelper.LAYER_FILL
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_info_layout
@@ -24,9 +25,9 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
     override fun initLabelDesList() {
         renderLabelDesList {
             val engraveConfigEntity =
-                EngraveFlowDataHelper.getEngraveConfig(itemTaskId, itemLayerMode)
+                EngraveFlowDataHelper.getEngraveConfig(itemTaskId, itemLayerId)
             val transferDataEntityList =
-                EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerMode)
+                EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerId)
 
             engraveConfigEntity?.let {
                 if (deviceStateModel.isPenMode(it.moduleState)) {

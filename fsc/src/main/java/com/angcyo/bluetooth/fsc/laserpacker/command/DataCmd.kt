@@ -70,6 +70,9 @@ data class DataCmd(
         /**图片抖动数据类型*/
         const val ENGRAVE_TYPE_BITMAP_DITHERING = 0x60
 
+        /**GCode数据类型, 切割*/
+        const val ENGRAVE_TYPE_GCODE_CUT = 0x70
+
         //---
 
         /**
@@ -164,6 +167,7 @@ data class DataCmd(
          * [y] GCode起始坐标, 相对于坐标原点
          * [width] GCode的宽度2字节
          * [height] GCode的高度2字节
+         * [isCut] 是否是切割
          *
          * 0x20时为GCODE数据
          * */
@@ -177,12 +181,18 @@ data class DataCmd(
             lines: Int,
             gcodeData: ByteArray?,
             dpi: Float,
+            isCut: Boolean
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
             val head = byteWriter {
-                //0x20时为GCODE数据
-                write(ENGRAVE_TYPE_GCODE)
+                if (isCut) {
+                    //0x70时为GCODE切割数据
+                    write(ENGRAVE_TYPE_GCODE_CUT)
+                } else {
+                    //0x20时为GCODE数据
+                    write(ENGRAVE_TYPE_GCODE)
+                }
 
                 //宽,2字节
                 write(width and 0xff00 shr 8 and 0xff) //高8位
@@ -227,7 +237,11 @@ data class DataCmd(
                 padLength(64) //需要64个字节
 
                 //日志
-                logBuilder.append("0x20 GCode->")
+                if (isCut) {
+                    logBuilder.append("0x70 GCode切割->")
+                } else {
+                    logBuilder.append("0x20 GCode->")
+                }
                 logBuilder.append(" index:$index")
                 logBuilder.append(" lines:$lines")
                 logBuilder.append(" name:$name")

@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.MaterialHelper.createMaterialCode
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
@@ -98,7 +99,7 @@ object EngraveFlowDataHelper {
             lpSaveEntity()
 
             //复制一份雕刻参数
-            getEngraveConfig(oldTaskId, layerMode)?.let { entity ->
+            getEngraveConfig(oldTaskId, layerId)?.let { entity ->
                 entity.entityId = 0
                 entity.taskId = newTaskId
                 entity.lpSaveEntity()
@@ -336,11 +337,11 @@ object EngraveFlowDataHelper {
     }
 
     /**获取图层下的所有传输数据*/
-    fun getLayerTransferData(taskId: String?, layerMode: Int): List<TransferDataEntity> {
+    fun getLayerTransferData(taskId: String?, layerId: String?): List<TransferDataEntity> {
         return TransferDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(
                 TransferDataEntity_.taskId.equal("$taskId")
-                    .and(TransferDataEntity_.layerMode.equal(layerMode))
+                    .and(TransferDataEntity_.layerId.equal(layerId))
             )
         }
     }
@@ -352,16 +353,10 @@ object EngraveFlowDataHelper {
     /**获取当前任务有多少个图层需要雕刻*/
     fun getEngraveLayerList(taskId: String?): List<EngraveLayerInfo> {
         val dataList = getTransferDataList(taskId)
-        val typeModeList = mutableListOf<Int>()
-        dataList.forEach {
-            if (!typeModeList.contains(it.layerMode)) {
-                typeModeList.add(it.layerMode)
-            }
-        }
         val laserList = mutableListOf<EngraveLayerInfo>()
-        EngraveHelper.engraveLayerList.forEach {
-            if (typeModeList.contains(it.layerMode)) {
-                laserList.add(it)
+        LayerHelper.getEngraveLayerList(true).forEach { layerInfo ->
+            dataList.find { it.layerId == layerInfo.layerId }?.let {
+                laserList.add(layerInfo)
             }
         }
         return laserList
@@ -376,8 +371,8 @@ object EngraveFlowDataHelper {
                     .and(TransferDataEntity_.index.equal(taskEntity.currentIndex))
             )
         }
-        EngraveHelper.engraveLayerList.forEach {
-            if (transferData?.layerMode == it.layerMode) {
+        LayerHelper.getEngraveLayerList(true).forEach {
+            if (transferData?.layerId == it.layerId) {
                 return it
             }
         }
@@ -397,7 +392,7 @@ object EngraveFlowDataHelper {
             val engraveConfigEntity = EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.taskId.equal("$taskId")
-                        .and(EngraveConfigEntity_.layerMode.equal(engraveLayerInfo?.layerMode ?: 0))
+                        .and(EngraveConfigEntity_.layerId.equal(engraveLayerInfo?.layerId))
                 )
             }
             return engraveConfigEntity
@@ -429,7 +424,7 @@ object EngraveFlowDataHelper {
         val result = mutableListOf<EngraveConfigEntity>()
         getTransferDataList(taskId).let {
             for (data in it) {
-                result.add(generateEngraveConfig(taskId, data.layerMode))
+                result.add(generateEngraveConfig(taskId, data.layerId))
             }
         }
         return result
@@ -483,16 +478,15 @@ object EngraveFlowDataHelper {
 
         val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
         //每个图层都创建一个材质参数
-        EngraveHelper.engraveLayerList.forEach { engraveLayerInfo ->
+        LayerHelper.getEngraveLayerList().forEach { engraveLayerInfo ->
             //图层模式
             EngraveConfigEntity().apply {
                 this.taskId = taskId
-                layerMode = engraveLayerInfo.layerMode
+                layerId = engraveLayerInfo.layerId
 
                 //材质
                 val findMaterial = materialList.find {
-                    it.layerModeStr?.contains("$layerMode") == true ||
-                            it.layerMode == layerMode
+                    it.layerId == engraveLayerInfo.layerId
                 } ?: defMaterial
                 findMaterial?.let {
                     materialCode = it.code
@@ -534,7 +528,7 @@ object EngraveFlowDataHelper {
                 this.productName = productName
                 this.key = key
                 name = materialName
-                layerMode = it.layerMode
+                layerId = it.layerId
                 dpiScale = 0f
 
                 type = it.type.toInt()
@@ -578,10 +572,10 @@ object EngraveFlowDataHelper {
     }
 
     /**构建或者获取对应雕刻图层的雕刻配置信息*/
-    fun generateEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity {
+    fun generateEngraveConfig(taskId: String?, layerId: String?): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
-            this.layerMode = layerMode
+            this.layerId = layerId
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
 
@@ -590,12 +584,13 @@ object EngraveFlowDataHelper {
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.productName.equal("$productName")
-                        .and(EngraveConfigEntity_.layerMode.equal(layerMode))
+                        .and(EngraveConfigEntity_.layerId.equal(layerId))
                 )
             }
 
             //材质
-            val customMaterial = MaterialHelper.createCustomMaterial()
+            val customMaterial =
+                MaterialHelper.createCustomMaterial().find { it.layerId == layerId }!!
             materialCode = customMaterial.code
 
             //功率
@@ -613,7 +608,7 @@ object EngraveFlowDataHelper {
         }) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerMode.equal(layerMode))
+                    .and(EngraveConfigEntity_.layerId.equal(layerId))
             )
         }
     }
@@ -626,11 +621,11 @@ object EngraveFlowDataHelper {
     }
 
     /**获取图层的雕刻配置*/
-    fun getEngraveConfig(taskId: String?, layerMode: Int): EngraveConfigEntity? {
+    fun getEngraveConfig(taskId: String?, layerId: String?): EngraveConfigEntity? {
         return EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerMode.equal(layerMode))
+                    .and(EngraveConfigEntity_.layerId.equal(layerId))
             )
         }
     }
@@ -847,7 +842,7 @@ object EngraveFlowDataHelper {
                 )
             }
             transferData?.let {
-                getEngraveConfig(taskId, it.layerMode)?.let { engraveConfigEntity ->
+                getEngraveConfig(taskId, it.layerId)?.let { engraveConfigEntity ->
                     sum += engraveConfigEntity.time * 100
                 }
             }

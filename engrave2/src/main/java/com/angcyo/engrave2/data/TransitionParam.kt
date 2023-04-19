@@ -40,7 +40,7 @@ data class TransitionParam(
     val useOpenCvHandleGCode: Boolean = true,
 
     /**转GCode时, 是否要自动开关激光*/
-    val isAutoCnc: Boolean = vmApp<LaserPeckerModel>().isC1(),
+    val isAutoCnc: Boolean = vmApp<LaserPeckerModel>().isCSeries(),
 
     /**图片转GCode时, 是否是简单的线生成的图片.
      * 如果是线条生成的图片, 则开启此开关, 会有优化处理. 尤其是虚线

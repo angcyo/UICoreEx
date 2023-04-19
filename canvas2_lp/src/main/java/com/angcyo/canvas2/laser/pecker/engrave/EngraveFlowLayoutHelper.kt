@@ -83,9 +83,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 //数据传输进度通知
                 if (it.error == null && it.state == TransferState.TRANSFER_STATE_FINISH) {
                     //默认选中第1个雕刻图层
-                    selectLayerMode =
-                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerMode
-                            ?: 0
+                    selectLayerId =
+                        EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerId
+                            ?: LayerHelper.LAYER_FILL
                 }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
                     //在[renderTransmitting] 中 engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
@@ -128,9 +128,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //
 
-    /**当前选中的图层模式
+    /**当前选中的图层id
      * [EngraveLayerConfigItem]*/
-    var selectLayerMode: Int = 0
+    var selectLayerId: String = LayerHelper.LAYER_FILL
 
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
@@ -187,7 +187,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemTransferConfigEntity = transferConfigEntity
 
                 observeItemChange {
-                    clearFlowId()
+                    clearFlowId("传输文件名改变")
                     delegate?.dispatchAllRendererDataChange(Reason.user)
                 }
             }
@@ -206,7 +206,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemTransferConfigEntity = transferConfigEntity
 
                     observeItemChange {
-                        clearFlowId()
+                        clearFlowId("传输Dpi改变")
                         delegate?.dispatchAllRendererDataChange(Reason.user)
                     }
                 }
@@ -231,7 +231,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                             //不是画布上的数据, 可能是恢复的数据
                                         } else {
                                             HawkEngraveKeys.lastDpi = transferConfigEntity.dpi
-                                            val flowId = generateFlowId()//每次发送数据之前, 都生成一个新的任务
+                                            val flowId =
+                                                generateFlowId("准备发送文件")//每次发送数据之前, 都生成一个新的任务
                                             transferConfigEntity.taskId = flowId
                                             transferConfigEntity.lpSaveEntity()
                                             onStartEngraveTransferData(flowId)
@@ -407,7 +408,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             printPrecision = printPrecision ?: HawkEngraveKeys.lastPrecision
             printType = printType ?: DeviceHelper.getProductLaserType().toInt()
             printCount = printCount ?: 1
-            materialKey = materialKey ?: MaterialHelper.createCustomMaterial().key
+
+            val itemLayerId = _layerId
+            materialKey = materialKey ?: MaterialHelper.createCustomMaterial()
+                .find { it.layerId == itemLayerId }?.key
 
             //雕刻配置
             engraveConfigEntity = LPEngraveHelper.generateEngraveConfig("$index", projectItemBean)
@@ -456,7 +460,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
 
-            if (laserPeckerModel.isC1()) {
+            if (laserPeckerModel.isCSeries()) {
                 //C1 加速级别选择
                 EngraveOptionWheelItem()() {
                     itemTag = EngraveConfigEntity::precision.name
@@ -512,10 +516,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         val taskId = flowTaskId
 
         val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
-        val findLayer = layerList.find { it.layerMode == selectLayerMode }
+        val findLayer = layerList.find { it.layerId == selectLayerId }
         if (findLayer == null) {
             //选中的图层不存在, 则使用第一个
-            selectLayerMode = layerList.firstOrNull()?.layerMode ?: selectLayerMode
+            selectLayerId = layerList.firstOrNull()?.layerId ?: selectLayerId
         }
 
         //默认选中材质
@@ -533,24 +537,24 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 } else {
                     //使用列表中第一个
                     MaterialHelper.materialList.firstOrNull()
-                        ?: MaterialHelper.createCustomMaterial()
+                        ?: MaterialHelper.createCustomMaterial().first()
                 }
             EngraveFlowDataHelper.generateEngraveConfigByMaterial(
                 taskId,
                 materialEntity.key,
                 materialEntity
             ).find {
-                it.layerMode == selectLayerMode
-            } ?: EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerMode)
+                it.layerId == selectLayerId
+            } ?: EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerId)
         } else {
-            EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerMode)
+            EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerId)
         }
 
         renderDslAdapter {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_tip)
             }
-            if (!laserPeckerModel.isC1()) {
+            if (!laserPeckerModel.isCSeries()) {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
             }
@@ -605,10 +609,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         itemCurrentIndex =
                             max(
                                 0,
-                                layerList.indexOf(layerList.find { it.layerMode == selectLayerMode })
+                                layerList.indexOf(layerList.find { it.layerId == selectLayerId })
                             )
                         observeItemChange {
-                            selectLayerMode = layerList[itemCurrentIndex].layerMode
+                            selectLayerId = layerList[itemCurrentIndex].layerId
                             renderFlowItems()
                         }
                     }
@@ -633,7 +637,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
 
-                if (laserPeckerModel.isC1()) {
+                if (laserPeckerModel.isCSeries()) {
                     //C1 加速级别选择
                     EngraveOptionWheelItem()() {
                         itemTag = EngraveConfigEntity::precision.name
@@ -820,7 +824,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             PreviewTipItem()() {
                 itemTip = _string(R.string.engrave_move_state_tips)
             }
-            if (!laserPeckerModel.isC1()) {
+            if (!laserPeckerModel.isCSeries()) {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
             }
@@ -903,7 +907,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                     EngraveFinishInfoItem()() {
                         itemTaskId = taskId
-                        itemLayerMode = engraveLayerInfo.layerMode
+                        itemLayerId = engraveLayerInfo.layerId
                     }
                 }
             }

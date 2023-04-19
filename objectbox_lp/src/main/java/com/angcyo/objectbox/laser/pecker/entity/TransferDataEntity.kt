@@ -124,9 +124,9 @@ data class TransferDataEntity(
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.layerMode]
      *
      * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
-     * [com.angcyo.laserpacker.device.EngraveHelper.engraveLayerList]
+     * [com.angcyo.laserpacker.device.LayerHelper.getEngraveLayerList]
      * */
-    var layerMode: Int = -1,
+    var layerId: String? = null,
 
     //---
 

@@ -63,6 +63,7 @@
     <string name="engrave_layer_bitmap">图片</string>
     <string name="engrave_layer_fill">填充</string>
     <string name="engrave_layer_line">线条</string>
+    <string name="engrave_layer_cut">切割</string>
 
     <string name="engrave_channel">雕刻通道</string>
     <string name="engraving">镭雕中</string>

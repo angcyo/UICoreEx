@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -10,11 +11,10 @@ import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
-import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.http.rx.doBack
-import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
@@ -86,14 +86,20 @@ object LPTransferHelper {
             //从上往下的雕刻顺序
             val rendererList = LPEngraveHelper.getLayerRendererList(delegate, null, true)
             resultDataList.addAll(
-                transitionTransferData(rendererList, transferConfigEntity)
+                transitionTransferData(rendererList, transferConfigEntity, null)
             )
         } else {
             //规定的图层雕刻顺序
-            EngraveHelper.engraveLayerList.forEach { engraveLayerInfo ->
+            LayerHelper.getEngraveLayerList().forEach { engraveLayerInfo ->
                 val rendererList =
                     LPEngraveHelper.getLayerRendererList(delegate, engraveLayerInfo, false)
-                resultDataList.addAll(transitionTransferData(rendererList, transferConfigEntity))
+                resultDataList.addAll(
+                    transitionTransferData(
+                        rendererList,
+                        transferConfigEntity,
+                        engraveLayerInfo.layerId
+                    )
+                )
             }
         }
         //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
@@ -102,18 +108,24 @@ object LPTransferHelper {
         return resultDataList
     }
 
-    /**将渲染的item[BaseItemRenderer], 转换成[TransferDataEntity]*/
+    /**将渲染的item[BaseRenderer], 转换成[TransferDataEntity]
+     *
+     * [layerId] 指定图层的id, 不指定则从元素中获取
+     * */
     private fun transitionTransferData(
         rendererList: List<BaseRenderer>,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        layerId: String?
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
         rendererList.forEach { renderer ->
             //开始将[renderer]转换成数据
             LTime.tick()
-            "开始转换数据->${transferConfigEntity.name} ${renderer.lpElementBean()?.index} ${renderer.lpElementBean()?.name}".writePerfLog()
+            val elementBean = renderer.lpElementBean()
+            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} ${elementBean?.name}".writePerfLog()
             LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
                 ?.let { transferDataEntity ->
+                    transferDataEntity.layerId = layerId ?: elementBean?._layerId
                     resultDataList.add(transferDataEntity)
                     "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
                 }

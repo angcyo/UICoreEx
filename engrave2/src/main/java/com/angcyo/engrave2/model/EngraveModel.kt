@@ -22,7 +22,6 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.*
 import com.angcyo.laserpacker.device.exception.EmptyException
-import com.angcyo.laserpacker.toDataModeStr
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Private
@@ -359,13 +358,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
                     ?: EngraveFlowDataHelper.generateEngraveConfig(
                         taskId,
-                        transferDataEntity?.layerMode ?: 0
+                        transferDataEntity?.layerId
                     )
             } else {
-                EngraveFlowDataHelper.generateEngraveConfig(
-                    taskId,
-                    transferDataEntity?.layerMode ?: 0
-                )
+                EngraveFlowDataHelper.generateEngraveConfig(taskId, transferDataEntity?.layerId)
             }
             doMain {
                 _startEngraveIndex(nextIndex)
@@ -410,7 +406,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 val engraveConfigEntity = if (task.enableItemEngraveParams)
                     EngraveFlowDataHelper.getEngraveConfig(it.index)
                 else
-                    EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerMode)
+                    EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerId)
 
                 //---
                 engraveConfigEntity?.let {
@@ -639,7 +635,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val diameter =
             (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
 
-        val engraveLayer = EngraveHelper.getEngraveLayer(engraveConfigEntity.layerMode)
+        val engraveLayer = LayerHelper.getEngraveLayerInfo(engraveConfigEntity.layerId)
         buildString {
             append("开始雕刻指令:[${transferDataEntity?.taskId}][$index]")
 
@@ -649,7 +645,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             }
 
             if (engraveLayer?.label.isNullOrBlank()) {
-                append(" mode:${engraveConfigEntity.layerMode.toDataModeStr()}")
+                append(" layerId:${engraveConfigEntity.layerId}")
             } else {
                 append(" layer:${engraveLayer?.label}")
             }
@@ -774,7 +770,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             return false
         }
 
-        if (laserPeckerModel.isL4() || laserPeckerModel.isC1()) {
+        if (laserPeckerModel.isL4() || laserPeckerModel.isCSeries()) {
             return true
         }
 

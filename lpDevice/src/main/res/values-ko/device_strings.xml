@@ -63,6 +63,7 @@
     <string name="engrave_layer_bitmap">그림</string>
     <string name="engrave_layer_fill">채우기</string>
     <string name="engrave_layer_line">선</string>
+    <string name="engrave_layer_cut">자르다</string>
 
     <string name="engrave_channel">각인 채널</string>
     <string name="engraving">레이저 각인 중</string>

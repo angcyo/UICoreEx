@@ -1,7 +1,7 @@
 [
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 3,
     "code": "recycle_paper_blue_bw_1",
     "_name": "环保纸-黑白",
@@ -12,7 +12,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "recycle_paper_blue_bw_2",
     "_name": "环保纸-黑白",
@@ -23,7 +23,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "recycle_paper_blue_bw_4",
     "_name": "环保纸-黑白",
@@ -34,7 +34,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 15,
     "code": "recycle_paper_blue_bw_1",
     "_name": "环保纸-灰度",
@@ -45,7 +45,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 1,
     "code": "recycle_paper_blue_bw_2",
     "_name": "环保纸-灰度",
@@ -56,7 +56,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 1,
     "code": "recycle_paper_blue_bw_4",
     "_name": "环保纸-灰度",
@@ -67,7 +67,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 5,
     "code": "leather_blue_bw_1",
     "_name": "皮革-黑白",
@@ -78,7 +78,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "leather_blue_bw_2",
     "_name": "皮革-黑白",
@@ -89,7 +89,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "leather_blue_bw_4",
     "_name": "皮革-黑白",
@@ -100,7 +100,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 15,
     "code": "leather_blue_bw_1",
     "_name": "皮革-灰度",
@@ -111,7 +111,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 5,
     "code": "leather_blue_bw_2",
     "_name": "皮革-灰度",
@@ -122,7 +122,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 1,
     "code": "leather_blue_bw_4",
     "_name": "皮革-灰度",
@@ -133,7 +133,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 5,
     "code": "wood_blue_bw_1",
     "_name": "木质-黑白",
@@ -144,7 +144,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "wood_blue_bw_2",
     "_name": "木质-黑白",
@@ -155,7 +155,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "wood_blue_bw_4",
     "_name": "木质-黑白",
@@ -166,7 +166,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 20,
     "code": "wood_blue_bw_1",
     "_name": "木质-灰度",
@@ -177,7 +177,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 10,
     "code": "wood_blue_bw_2",
     "_name": "木质-灰度",
@@ -188,7 +188,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 3,
     "code": "wood_blue_bw_4",
     "_name": "木质-灰度",
@@ -199,7 +199,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 3,
     "code": "cork_blue_bw_1",
     "_name": "软木-黑白",
@@ -210,7 +210,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "cork_blue_bw_2",
     "_name": "软木-黑白",
@@ -221,7 +221,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 1,
     "code": "cork_blue_bw_4",
     "_name": "软木-黑白",
@@ -232,7 +232,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 15,
     "code": "cork_blue_bw_1",
     "_name": "软木-灰度",
@@ -243,7 +243,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 3,
     "code": "cork_blue_bw_2",
     "_name": "软木-灰度",
@@ -254,7 +254,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 1,
     "code": "cork_blue_bw_4",
     "_name": "软木-灰度",
@@ -265,7 +265,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 60,
     "code": "oxidized_metal_blue_bw_1",
     "_name": "氧化金属-黑白",
@@ -276,7 +276,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 50,
     "code": "oxidized_metal_blue_bw_2",
     "_name": "氧化金属-黑白",
@@ -287,7 +287,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 40,
     "code": "oxidized_metal_blue_bw_4",
     "_name": "氧化金属-黑白",
@@ -298,7 +298,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 50,
     "code": "oxidized_metal_blue_bw_1",
     "_name": "氧化金属-灰度",
@@ -309,7 +309,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 40,
     "code": "oxidized_metal_blue_bw_2",
     "_name": "氧化金属-灰度",
@@ -320,7 +320,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 30,
     "code": "oxidized_metal_blue_bw_4",
     "_name": "氧化金属-灰度",
@@ -331,7 +331,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 80,
     "code": "stainless_steel_blue_bw_1",
     "_name": "不锈钢-黑白",
@@ -342,7 +342,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 60,
     "code": "stainless_steel_blue_bw_2",
     "_name": "不锈钢-黑白",
@@ -353,7 +353,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "1,6",
+    "layerId": "layerFill",
     "depth": 40,
     "code": "stainless_steel_blue_bw_4",
     "_name": "不锈钢-黑白",
@@ -364,7 +364,7 @@
   },
   {
     "dpiScale": 1,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 100,
     "code": "stainless_steel_blue_bw_1",
     "_name": "不锈钢-灰度",
@@ -375,7 +375,7 @@
   },
   {
     "dpiScale": 2,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 100,
     "code": "stainless_steel_blue_bw_2",
     "_name": "不锈钢-灰度",
@@ -386,7 +386,7 @@
   },
   {
     "dpiScale": 4,
-    "layerModeStr": "5",
+    "layerId": "layerPicture",
     "depth": 100,
     "code": "stainless_steel_blue_bw_4",
     "_name": "不锈钢-灰度",

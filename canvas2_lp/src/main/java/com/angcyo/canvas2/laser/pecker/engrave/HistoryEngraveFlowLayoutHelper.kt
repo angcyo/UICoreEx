@@ -22,14 +22,14 @@ class HistoryEngraveFlowLayoutHelper : EngraveFlowLayoutHelper() {
     var deviceHistoryEngraveDataEntity: EngraveDataEntity? = null
         set(value) {
             field = value
-            clearFlowId()
+            clearFlowId("设置设备历史雕刻数据")
         }
 
     /**app历史雕刻的数据*/
     var appHistoryEngraveTaskEntity: EngraveTaskEntity? = null
         set(value) {
             field = value
-            clearFlowId()
+            clearFlowId("设置App历史雕刻数据")
         }
 
     /**传输的数据, 如果没有传输的数据

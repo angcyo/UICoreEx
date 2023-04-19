@@ -50,7 +50,7 @@ class EngraveFinishTopItem : DslTagGroupItem() {
         val layerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
         val engraveConfigEntity = EngraveFlowDataHelper.getEngraveConfig(
             itemTaskId,
-            layerList.firstOrNull()?.layerMode ?: 0
+            layerList.firstOrNull()?.layerId
         )
 
         val transferDataList = EngraveFlowDataHelper.getTransferDataList(itemTaskId)

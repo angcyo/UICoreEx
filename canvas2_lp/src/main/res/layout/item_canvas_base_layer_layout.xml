@@ -8,8 +8,9 @@
     tools:background="@drawable/lib_tran_circle_shape"
     tools:layout_width="200dp">
 
+    <!--点了之后切换到切割图层-->
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/layer_item_invisible_view"
+        android:id="@+id/layer_slicing_view"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/lib_bg2_selector"
@@ -18,7 +19,8 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
-        app:srcCompat="@drawable/canvas_invisible_svg" />
+        app:srcCompat="@drawable/canvas_slicing_ico"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/layer_item_drawable_view"
@@ -26,7 +28,7 @@
         android:layout_height="30dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@id/layer_item_name_view"
-        app:layout_constraintLeft_toRightOf="@id/layer_item_invisible_view"
+        app:layout_constraintLeft_toRightOf="@id/layer_slicing_view"
         app:layout_constraintTop_toTopOf="@id/layer_item_name_view"
         tools:srcCompat="@drawable/canvas_placeholder_svg" />
 

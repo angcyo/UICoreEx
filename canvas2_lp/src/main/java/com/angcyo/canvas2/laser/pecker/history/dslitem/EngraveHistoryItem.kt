@@ -16,7 +16,7 @@ import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -115,13 +115,15 @@ open class EngraveHistoryItem : DslTagGroupItem() {
             val engraveConfigEntityList = itemEngraveConfigEntityList
             val itemList = mutableListOf<DslAdapterItem>()
 
+            val includeCutLayer =
+                needCheckCut(engraveConfigEntityList?.lastOrNull()?.softwareVersion)
             if (showAllEngraveLayerData()) {
-                EngraveHelper.engraveLayerList.forEach { layerInfo ->
+                LayerHelper.getEngraveLayerList(includeCutLayer).forEach { layerInfo ->
                     val findData =
-                        itemTransferDataEntityList?.find { it.layerMode == layerInfo.layerMode }
+                        itemTransferDataEntityList?.find { it.layerId == layerInfo.layerId }
                     if (findData != null) {
                         //对应的图层有对应的数据, 才显示对应的雕刻参数信息
-                        engraveConfigEntityList?.find { it.layerMode == layerInfo.layerMode }
+                        engraveConfigEntityList?.find { it.layerId == layerInfo.layerId }
                             ?.let { engraveConfigEntity ->
                                 createEngraveConfig(itemList, engraveConfigEntity)
                             }
@@ -129,7 +131,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                 }
             } else {
                 //只能显示单个数据的信息
-                engraveConfigEntityList?.find { it.layerMode == lastEngraveDataEntity?.layerMode }
+                engraveConfigEntityList?.find { it.layerId == lastEngraveDataEntity?.layerId }
                     ?.let { engraveConfigEntity ->
                         createEngraveConfig(itemList, engraveConfigEntity)
                     }
@@ -229,6 +231,12 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         }
     }
 
+    private fun needCheckCut(softwareVersion: Int?): Boolean {
+        return LaserPeckerHelper.parseProductInfo(
+            softwareVersion ?: 0, 0
+        )?.isCSeries() == true
+    }
+
     private fun widthHeightLabelDes(width: Float, height: Float): LabelDesData {
         val w = valueUnit.formatValue(valueUnit.convertPixelToValue(width), true, true)
         val h = valueUnit.formatValue(valueUnit.convertPixelToValue(height), true, true)
@@ -253,7 +261,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         engraveConfigEntity: EngraveConfigEntity
     ) {
         list.add(EngraveLabelItem().apply {
-            val label = EngraveHelper.getEngraveLayer(engraveConfigEntity.layerMode)?.label.or()
+            val label = LayerHelper.getEngraveLayerInfo(engraveConfigEntity.layerId)?.label.or()
             if (isDebug()) {
                 itemText = span {
                     append(label)
@@ -272,7 +280,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         })
         list.add(EngraveFinishInfoItem().apply {
             itemTaskId = engraveConfigEntity.taskId
-            itemLayerMode = engraveConfigEntity.layerMode
+            itemLayerId = engraveConfigEntity.layerId
         })
     }
 

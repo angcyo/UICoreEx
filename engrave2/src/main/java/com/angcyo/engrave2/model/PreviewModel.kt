@@ -114,7 +114,7 @@ class PreviewModel : LifecycleViewModel() {
                 //非第三轴预览模式下
                 if (previewInfo.isCenterPreview) {
                     //需要中心点预览
-                    if (laserPeckerModel.isC1()) {
+                    if (laserPeckerModel.isCSeries()) {
                         //C1设备显示中心点
                         _previewShowCenter(originBounds, async)
                     } else {

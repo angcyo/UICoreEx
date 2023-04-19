@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.toLayerId
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.annotation.Implementation
@@ -366,6 +367,9 @@ data class LPElementBean(
     var printDepth: Int? = null,
     var printCount: Int? = null,
 
+    /**图层id, 只在切割图层时需要赋值, 其他图层会通过[_layerMode]获取*/
+    var layerId: String? = null,
+
     //endregion ---雕刻参数---
 
     //region ---私有属性---
@@ -392,7 +396,7 @@ data class LPElementBean(
      *
      * [com.angcyo.canvas.graphics.IGraphicsParser.initDataModeWithPaintStyle]
      *
-     * [com.angcyo.engrave.data.EngraveLayerInfo]
+     * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
      * */
     @Transient
     var _dataMode: Int? = null,
@@ -458,6 +462,10 @@ data class LPElementBean(
                 else -> null
             }
         }
+
+    /**图层id*/
+    val _layerId: String?
+        get() = layerId ?: _layerMode?.toLayerId()
 
     /**[com.angcyo.canvas2.laser.pecker.element.LPPathElement]*/
     val isPathElement: Boolean

@@ -9,20 +9,15 @@ import com.angcyo.library.extend.IToValue
  * @since 2022/09/27
  */
 data class EngraveLayerInfo(
-    /**
-     * 数据模式, 图层对应的数值
-     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_DITHERING] 抖动数据格式
-     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_GCODE] gcode数据格式
-     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_BLACK_WHITE] 线段数据格式
-     * */
-    val layerMode: Int,
+    /**图层id, 图层的唯一标识符*/
+    val layerId: String,
     /**界面显示的标签*/
     val label: CharSequence
 ) : IToText, IToValue {
 
     override fun toText(): CharSequence = label
 
-    override fun toValue(): Any = layerMode
+    override fun toValue(): Any = layerId
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -30,13 +25,13 @@ data class EngraveLayerInfo(
 
         other as EngraveLayerInfo
 
-        if (layerMode != other.layerMode) return false
+        if (layerId != other.layerId) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return layerMode
+        return layerId.hashCode()
     }
 
 }

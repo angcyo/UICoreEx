@@ -4,18 +4,27 @@ import android.graphics.RectF
 import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.IReceiveBeanAction
+import com.angcyo.bluetooth.fsc.ISendProgressAction
 import com.angcyo.bluetooth.fsc.R
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
-import com.angcyo.bluetooth.fsc.laserpacker.parse.*
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.model.toFourPoint
 import com.angcyo.library.toast
-import com.angcyo.viewmodel.*
+import com.angcyo.viewmodel.IViewModel
+import com.angcyo.viewmodel.MutableHoldLiveData
+import com.angcyo.viewmodel.vmData
+import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
+import com.angcyo.viewmodel.vmHoldDataNull
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -74,14 +83,14 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         "设备设置状态:$querySettingParser".writeBleLog(L.INFO)
         if (QuerySettingParser.Z_MODEL_STR.isBlank()) {
             //本地未初始化第三轴模式
-            QuerySettingParser.Z_MODEL_STR = if (querySettingParser.zDir == 1 || isC1()) {
+            QuerySettingParser.Z_MODEL_STR = if (querySettingParser.zDir == 1 || isCSeries()) {
                 //圆柱, C1只有圆柱
                 QuerySettingParser.Z_MODEL_CYLINDER
             } else {
                 //平板
                 QuerySettingParser.Z_MODEL_FLAT
             }
-        } else if (isC1()) {
+        } else if (isCSeries()) {
             QuerySettingParser.Z_MODEL_STR = QuerySettingParser.Z_MODEL_CYLINDER
         }
         deviceSettingData.postValue(querySettingParser)
@@ -137,6 +146,12 @@ class LaserPeckerModel : ViewModel(), IViewModel {
     fun isL4() = productInfoData.value?.isLIV() == true
 
     fun isC1() = productInfoData.value?.isCI() == true
+
+    /**是否是C系列*/
+    fun isCSeries() = productInfoData.value?.isCI() == true
+
+    /**是否是lp系列*/
+    fun isLPSeries() = isL1() || isL2() || isL3() || isL4()
 
     fun isSupportDithering() = productInfoData.value?.supportDithering == true
 

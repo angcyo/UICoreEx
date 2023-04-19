@@ -63,6 +63,7 @@
     <string name="engrave_layer_bitmap">写真</string>
     <string name="engrave_layer_fill">塗りつぶし</string>
     <string name="engrave_layer_line">ライン</string>
+    <string name="engrave_layer_cut">切る</string>
 
     <string name="engrave_channel">彫刻チャンネル</string>
     <string name="engraving">レーザー彫刻中</string>

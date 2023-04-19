@@ -167,7 +167,7 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
     /**雕刻布局*/
     val _engraveFlowLayoutHelper = HistoryEngraveFlowLayoutHelper().apply {
         backPressedDispatcherOwner = this@BaseHistoryFragment
-        clearFlowId()
+        clearFlowId("初始化历史雕刻流程")
     }
 
     override val fragment: AbsLifecycleFragment

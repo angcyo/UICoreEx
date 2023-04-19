@@ -55,7 +55,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                 }
 
                 //雕刻精度
-                if (laserPeckerModel.isC1()) {
+                if (laserPeckerModel.isCSeries()) {
                     /*add(
                         LabelDesData(
                             _string(R.string.engrave_speed),

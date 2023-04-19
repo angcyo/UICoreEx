@@ -210,7 +210,7 @@ class DeviceStateModel : ViewModel() {
             laserPeckerModel.isSRepMode() ||
             isPenMode() ||
             laserPeckerModel.isCarOpen() ||
-            laserPeckerModel.isC1() //C1
+            laserPeckerModel.isCSeries() //C1
 
     /**是否是C1的握笔模块*/
     fun isPenMode(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {

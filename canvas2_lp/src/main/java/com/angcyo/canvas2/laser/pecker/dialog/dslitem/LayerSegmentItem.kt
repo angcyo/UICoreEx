@@ -4,7 +4,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemCurrentIndex
-import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.library.ex._string
 
 /**
@@ -16,12 +16,12 @@ class LayerSegmentItem : EngraveSegmentScrollItem() {
 
     init {
         itemText = _string(R.string.engrave_layer_config)
-        itemSegmentList = EngraveHelper.engraveLayerList
+        itemSegmentList = LayerHelper.getEngraveLayerList(false)
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
     }
 
-    fun currentLayerInfo() = EngraveHelper.engraveLayerList[itemCurrentIndex]
+    fun currentLayerInfo() = LayerHelper.getEngraveLayerList(false)[itemCurrentIndex]
 }

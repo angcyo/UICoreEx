@@ -19,8 +19,8 @@ import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.state.GroupStateStack
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper.Companion.TAG_MAIN
-import com.angcyo.canvas2.laser.pecker.dslitem.CanvasBaseLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerBaseItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasLayerNameItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
@@ -54,6 +54,7 @@ import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
@@ -754,7 +755,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     _layerDragHelper = null
                 }
                 renderDslAdapter {
-                    EngraveHelper.engraveLayerList.forEach {
+                    LayerHelper.getEngraveLayerList().forEach {
                         CanvasLayerNameItem()() {//雕刻图层
                             itemGroupExtend = true
                             itemChanging = true
@@ -763,8 +764,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                             itemLoadSubList = {
                                 val itemList = LPEngraveHelper.getLayerRendererList(delegate, it)
                                     .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
-                                        CanvasBaseLayerItem().apply {//元素
+                                        CanvasLayerBaseItem().apply {//元素
                                             initItem(renderer)
+                                            onItemCutTypeChangeAction = {
+                                                //切换类型
+                                                renderLayerListLayout()
+                                            }
                                             itemClick = {
                                                 showItemRendererBounds()
                                                 if (HawkEngraveKeys.enableItemEngraveParams) {

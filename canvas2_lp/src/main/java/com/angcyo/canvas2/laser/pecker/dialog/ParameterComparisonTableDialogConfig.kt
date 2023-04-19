@@ -30,7 +30,8 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.toDataMode
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
@@ -84,8 +85,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         @MM
         internal var textFontSize: Float by HawkPropertyValue<Any, Float>(8f)
 
-        /**强行指定格子的数据类型*/
-        internal var gridDataMode: Int by HawkPropertyValue<Any, Int>(LPDataConstant.DATA_MODE_BLACK_WHITE)
+        /**强行指定格子的数据类型, 图层id*/
+        internal var gridLayerId: String by HawkPropertyValue<Any, String>(LayerHelper.LAYER_FILL)
 
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
@@ -287,10 +288,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //图层选择
             LayerSegmentItem()() {
-                itemCurrentIndex =
-                    EngraveHelper.engraveLayerList.indexOfFirst { it.layerMode == gridDataMode }
+                itemCurrentIndex = LayerHelper.getEngraveLayerList(false)
+                    .indexOfFirst { it.layerId == gridLayerId }
                 observeItemChange {
-                    gridDataMode = currentLayerInfo().layerMode
+                    gridLayerId = currentLayerInfo().layerId
                 }
             }
 
@@ -497,7 +498,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         name = "grid[${powerValue}:${depthValue}]"
 
                         //参数
-                        dataMode = gridDataMode
+                        dataMode = gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = numberTextItem.elementBean.printCount
                         printPower = powerValue

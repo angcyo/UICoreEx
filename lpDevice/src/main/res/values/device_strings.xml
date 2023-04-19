@@ -65,6 +65,7 @@
     <string name="engrave_layer_bitmap">Picture</string>
     <string name="engrave_layer_fill">Fill</string>
     <string name="engrave_layer_line">Line</string>
+    <string name="engrave_layer_cut">Cut</string>
 
     <string name="engrave_channel">Engrave Channel</string>
     <string name="engraving">Laser engraving</string>

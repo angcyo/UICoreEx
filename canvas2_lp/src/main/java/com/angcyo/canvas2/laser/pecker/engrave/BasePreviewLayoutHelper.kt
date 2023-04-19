@@ -7,7 +7,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
-import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.*
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.ModuleCalibrationItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBracketItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewControlItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewDiameterItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTipItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -122,7 +128,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             } else {
                 PreviewTipItem()()
             }
-            if (!laserPeckerModel.isC1()) {
+            if (!laserPeckerModel.isCSeries()) {
                 //非C1显示, 设备水平角度
                 renderDeviceInfoIfNeed()
             }
@@ -146,7 +152,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     itemPreviewConfigEntity = previewConfigEntity
                 }
             }
-            if (laserPeckerModel.isC1()) {
+            if (laserPeckerModel.isCSeries()) {
                 //C1没有升降支架
             } else {
                 PreviewBracketItem()()

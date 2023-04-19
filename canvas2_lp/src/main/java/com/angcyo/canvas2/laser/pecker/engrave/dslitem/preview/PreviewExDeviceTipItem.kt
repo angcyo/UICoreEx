@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -45,7 +46,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
         val isForward = laserPeckerModel.deviceSettingData.value?.dir == 1 //正转
         itemTip = when {
             //第三轴
-            !laserPeckerModel.isC1() && laserPeckerModel.isZOpen() -> span {
+            !laserPeckerModel.isCSeries() && laserPeckerModel.isZOpen() -> span {
                 append(_string(R.string.device_ex_z_label))
                 append(":")
                 append(
@@ -77,7 +78,7 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 appendEngraveConfig()
             }
             //C1握笔模块
-            laserPeckerModel.isC1() -> {
+            laserPeckerModel.isCSeries() -> {
                 val moduleState = deviceStateModel.deviceStateData.value?.moduleState
                 if (moduleState == null) {
                     null
@@ -127,7 +128,8 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 append(" ${it.wave}nm ${it.power.ensureInt()}w")
             }
         } else {
-            itemEngraveConfigEntity?.apply {
+            (itemEngraveConfigEntity?.type ?: HawkEngraveKeys.lastType.toByte()).also { type ->
+                //多种光,则显示当前选择的光
                 val laser = laserTypeList.find { it.type == type }
                 laser?.let {
                     append(" ${it.wave}nm ${it.power.ensureInt()}w")

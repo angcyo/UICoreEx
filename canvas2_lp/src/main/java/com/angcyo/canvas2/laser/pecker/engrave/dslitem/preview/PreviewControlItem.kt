@@ -176,7 +176,7 @@ class PreviewControlItem : BasePreviewItem() {
             itemList.add(pausePreviewItem!!)
             itemList.add(continuePreviewItem!!)
 
-            if (laserPeckerModel.isC1() && !laserPeckerModel.isZOpen()) {
+            if (laserPeckerModel.isCSeries() && !laserPeckerModel.isZOpen()) {
                 //C1专属 第三轴滚动 //2023-4-14 z轴下, 不显示滚动按钮
                 itemList.add(scrollPreviewItem!!)
             }
@@ -184,7 +184,7 @@ class PreviewControlItem : BasePreviewItem() {
             itemList.add(rangePreviewItem!!)
             itemList.add(centerPreviewItem!!)
 
-            if (laserPeckerModel.isC1()) {
+            if (laserPeckerModel.isCSeries()) {
                 //C1不支持此操作
             } else if (laserPeckerModel.deviceSettingData.value?.gcodeView == QuerySettingParser.GCODE_PREVIEW &&
                 previewInfoData?.elementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE

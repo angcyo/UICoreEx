@@ -7,10 +7,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
-import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.resetAll
@@ -67,12 +65,31 @@ object MaterialHelper {
             L.w("读取材质:${json}")
             val list = app().readAssets(json)
                 ?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
-            list?.let { result.addAll(list) }
+            list?.let {
+                result.addAll(list)
+                for (materialEntity in list) {
+                    if (materialEntity.layerId == LayerHelper.LAYER_FILL) {
+                        //填充图层, 和GCode图层/切割的参数一致
+                        materialEntity.copy().apply {
+                            layerId = LayerHelper.LAYER_LINE
+                            result.add(this)
+
+                            if (vmApp<LaserPeckerModel>().isCSeries()) {
+                                //切割图层, 也使用GCode图层的参数
+                                materialEntity.copy().apply {
+                                    layerId = LayerHelper.LAYER_CUT
+                                    result.add(this)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if (result.isEmpty()) {
             //如果为空, 则创建一个自定义的材质参数
-            result.add(createCustomMaterial())
+            result.addAll(createCustomMaterial())
         }
         return result
     }
@@ -94,18 +111,22 @@ object MaterialHelper {
     }
 
     /**创建一个自定义的材质*/
-    fun createCustomMaterial(): MaterialEntity {
+    fun createCustomMaterial(): List<MaterialEntity> {
         //自定义, 自动记住了上一次的值
-        return MaterialEntity().apply {
-            resId = R.string.custom
-            key = "custom"
-            type = DeviceHelper.getProductLaserType().toInt()
-            power = HawkEngraveKeys.lastPower
-            depth = HawkEngraveKeys.lastDepth
-            precision = HawkEngraveKeys.lastPrecision
-            layerModeStr = EngraveHelper.engraveLayerList.connect { "${it.layerMode}" }
-            createMaterialCode(key!!)
+        val result = mutableListOf<MaterialEntity>()
+        for (layerInfo in LayerHelper.getEngraveLayerList()) {
+            MaterialEntity().apply {
+                resId = R.string.custom
+                key = "custom"
+                type = DeviceHelper.getProductLaserType().toInt()
+                power = HawkEngraveKeys.lastPower
+                depth = HawkEngraveKeys.lastDepth
+                precision = HawkEngraveKeys.lastPrecision
+                layerId = layerInfo.layerId
+                createMaterialCode(key!!)
+            }
         }
+        return result
     }
 
 
@@ -150,7 +171,7 @@ object MaterialHelper {
         code = buildString {
             append("${materialName}_")
             append(if (type == LaserPeckerHelper.LASER_TYPE_BLUE.toInt()) "blue_" else "white_")
-            append(if (layerMode == LPDataConstant.DATA_MODE_DITHERING) "bw_" else "gray_")
+            append(layerId)
             append(dpiScale.unitDecimal(1))
         }
     }

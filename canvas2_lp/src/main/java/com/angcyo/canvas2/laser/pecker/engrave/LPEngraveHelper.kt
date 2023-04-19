@@ -49,13 +49,14 @@ object LPEngraveHelper {
      * */
     fun getLayerRendererList(
         delegate: CanvasRenderDelegate,
-        layerInfo: EngraveLayerInfo? = null, /**/
+        layerInfo: EngraveLayerInfo? = null, /*需要获取的图层*/
         sort: Boolean = false
     ): List<BaseRenderer> {
         val rendererList = delegate.getSelectorOrAllElementRendererList(true, false)
 
         val resultList = rendererList.filter { it.isVisible && it.renderElement != null }.filter {
-            layerInfo == null || it.lpElementBean()?._layerMode == layerInfo.layerMode
+            val elementBean = it.lpElementBean()
+            layerInfo == null || elementBean?._layerId == layerInfo.layerId
         }
 
         return if (sort) {
@@ -159,8 +160,8 @@ object LPEngraveHelper {
         taskId: String?,
         bean: LPElementBean
     ): EngraveConfigEntity {
-        val layerMode = bean._layerMode ?: -1
-        return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerMode).apply {
+        val layerId = bean._layerId
+        return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId).apply {
             power = bean.printPower ?: HawkEngraveKeys.lastPower
             depth = bean.printDepth ?: HawkEngraveKeys.lastDepth
             time = bean.printCount ?: 1
