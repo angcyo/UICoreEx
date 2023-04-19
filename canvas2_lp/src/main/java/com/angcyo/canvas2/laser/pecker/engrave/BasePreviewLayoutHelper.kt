@@ -179,6 +179,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         //不允许雕刻
                     } else {
                         //让设备进入空闲模式
+                        deviceStateModel.pauseLoopCheckState(true)
                         ExitCmd().enqueue()
                         syncQueryDeviceState()
 
