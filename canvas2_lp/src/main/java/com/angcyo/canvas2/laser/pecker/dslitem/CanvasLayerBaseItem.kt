@@ -75,9 +75,11 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
     val isOverflowBounds: Boolean
         get() = itemRenderer?.renderProperty?.getRenderBounds().isOverflowProductBounds()
 
+    protected val laserPeckerModel = vmApp<LaserPeckerModel>()
+
     /**是否要显示切割按钮*/
     val itemShowSlicingView: Boolean
-        get() = operateElementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
+        get() = laserPeckerModel.isCSeries() && operateElementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
 
     //endregion ---计算属性---
 
