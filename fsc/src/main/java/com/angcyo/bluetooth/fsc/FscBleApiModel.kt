@@ -171,12 +171,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
             return false
         }
 
-        /**蓝牙需要的权限列表*/
+        /**蓝牙需要的权限列表
+         * https://developer.android.google.cn/guide/topics/connectivity/bluetooth?hl=zh_cn*/
         fun bluetoothPermissionList(): List<String> {
             val result = mutableListOf<String>()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                //位置权限是必须的
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                //如果您的应用适配 Android 9（API 级别 28）或更低版本，则您可以声明 ACCESS_COARSE_LOCATION 权限而非 ACCESS_FINE_LOCATION 权限。
                 result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                //位置权限是必须的
                 result.add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
