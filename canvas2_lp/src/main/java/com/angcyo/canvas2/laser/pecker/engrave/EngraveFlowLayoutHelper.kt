@@ -398,6 +398,13 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
     }
 
+    /**如果是在单元素参数配置界面, 则隐藏界面*/
+    fun hideIfInEngraveItemParamsConfig() {
+        _engraveItemRenderer?.let {
+            hide()
+        }
+    }
+
     /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
     fun renderEngraveItemParamsConfig() {
         updateIViewTitle(_string(R.string.print_setting))

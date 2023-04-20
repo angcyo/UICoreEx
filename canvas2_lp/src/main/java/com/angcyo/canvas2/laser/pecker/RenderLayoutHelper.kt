@@ -676,6 +676,9 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     fun showLayerLayout(visible: Boolean) {
         _rootViewHolder?.visible(R.id.canvas_layer_layout, visible)
         if (!visible) {
+            if (!isInPadMode()) {
+                renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+            }
             findTagItem(ControlLayerItem.TAG_LAYER_ITEM)?.updateItemSelected(false)
         }
     }
@@ -692,6 +695,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         _layerTabLayout = vh.v(R.id.layer_tab_view)
         _layerTabLayout?.configTabLayoutConfig {
             onSelectIndexChange = { fromIndex, selectIndexList, reselect, fromUser ->
+                val toIndex = selectIndexList.firstOrNull() ?: 0
+                if (toIndex != 1) {
+                    if (!isInPadMode()) {
+                        renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+                    }
+                }
                 vh.post {
                     //刷新界面
                     renderLayerListLayout()
