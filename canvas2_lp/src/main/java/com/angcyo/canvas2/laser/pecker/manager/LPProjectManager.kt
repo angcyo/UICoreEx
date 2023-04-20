@@ -9,6 +9,7 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
+import com.angcyo.engrave2.exception.EmptyException
 import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
@@ -244,6 +245,9 @@ class LPProjectManager {
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat()
     ): LPProjectBean? {
+        if (renderList.isNullOrEmpty()) {
+            return null
+        }
         try {
             val result = LPProjectBean().apply {
                 create_time = nowTime()
@@ -279,8 +283,8 @@ class LPProjectManager {
     }
 
     /**将工程保存到指定文件[file]*/
-    fun saveProjectV1To(file: File, delegate: CanvasRenderDelegate): File {
-        val bean = getProjectBean(delegate)!!
+    fun saveProjectV1To(file: File, delegate: CanvasRenderDelegate): File? {
+        val bean = getProjectBean(delegate) ?: return null
         bean.file_name = bean.file_name ?: file.name
         val json = bean.toJson()
         json.writeTo(file, false)
@@ -293,7 +297,10 @@ class LPProjectManager {
         delegate: CanvasRenderDelegate,
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
-    ): File {
+    ): File? {
+        if (renderList.isNullOrEmpty()) {
+            return null
+        }
         zipFileWrite(zipFile.absolutePath) {
             //开始写入数据流
 
@@ -421,11 +428,16 @@ class LPProjectManager {
         val zipFilePath = file.absolutePath
         val save = Runnable {
             try {
-                saveProjectV2To(tempFile, delegate, renderList, overrideSize)
-                file.delete()
-                tempFile.renameTo(file)
-                tempFile.delete()
-                result(zipFilePath, null)
+                val saveFile = saveProjectV2To(tempFile, delegate, renderList, overrideSize)
+                if (saveFile == null) {
+                    //保存失败
+                    result(zipFilePath, EmptyException())
+                } else {
+                    file.delete()
+                    tempFile.renameTo(file)
+                    tempFile.delete()
+                    result(zipFilePath, null)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 result(zipFilePath, e)

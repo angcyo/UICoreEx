@@ -169,7 +169,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             viewHolder?.longClick(R.id.lib_title_view) {
                 engraveCanvasFragment?.renderDelegate?.apply {
                     val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPDataConstant.PROJECT_EXT))
-                    LPProjectManager().saveProjectV1To(file, this).shareFile()
+                    LPProjectManager().saveProjectV1To(file, this)?.shareFile()
                 }
             }
         }
