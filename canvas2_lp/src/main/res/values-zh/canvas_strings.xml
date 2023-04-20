@@ -149,5 +149,7 @@
     <string name="data_not_allowed_multi">当前模式下, 不允许雕刻多个元素</string>
 
     <string name="canvas_side">边数</string>
+    <string name="project_exist_tip">项目已存在, 是否覆盖?</string>
+    <string name="project_restore_tip">是否恢复之前的项目?</string>
 
 </resources>

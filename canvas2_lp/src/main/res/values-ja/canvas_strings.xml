@@ -149,4 +149,7 @@
     <string name="data_not_allowed_height">現在のモードでは、彫刻の高さの高さのデータは%1$s mmを超えています</string>
     <string name="data_not_allowed_multi">現在のモードでは、複数の要素が複数の要素を刻むことは許可されていません</string>
 
+    <string name="project_exist_tip">プロジェクトが存在します、それはカバーされていますか？</string>
+    <string name="project_restore_tip">前のプロジェクトを復元しますか？</string>
+
 </resources>

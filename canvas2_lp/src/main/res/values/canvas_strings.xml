@@ -152,5 +152,7 @@
     <string name="data_not_allowed_multi">In current mode, carving multiple elements is not allowed</string>
 
     <string name="canvas_side">Edges</string>
+    <string name="project_exist_tip">Project already exists, overwrite?</string>
+    <string name="project_restore_tip">Whether to restore the previous project?</string>
 
 </resources>
