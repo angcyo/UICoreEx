@@ -177,8 +177,18 @@ object DeviceHelper {
 
     /**删除项目文件*/
     fun deleteProjectFileV2(name: String = LPDataConstant.PROJECT_V2_TEMP_NAME): Boolean {
-        val file = _defaultProjectOutputFile(name, false)
+        val file = _defaultProjectOutputFileV2(name, false)
         return file.delete()
+    }
+
+    fun haveProjectFile(name: String = LPDataConstant.PROJECT_V1_TEMP_NAME): Boolean {
+        val file = _defaultProjectOutputFile(name, false)
+        return file.exists()
+    }
+
+    fun haveProjectFileV2(name: String = LPDataConstant.PROJECT_V2_TEMP_NAME): Boolean {
+        val file = _defaultProjectOutputFileV2(name, false)
+        return file.exists()
     }
 
     //endregion ---文件输出信息---
