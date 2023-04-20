@@ -22,6 +22,8 @@ import kotlin.random.Random
  */
 object EngraveHelper {
 
+    private var engraveIndex: Long = 1
+
     //region ---雕刻---
 
     fun String.toTransferData() = toByteArray(Charsets.ISO_8859_1)
@@ -40,15 +42,15 @@ object EngraveHelper {
      * 4个字节 最大 4_294_967_295
      * */
     fun generateEngraveIndex(): Int {
-        var millis = System.currentTimeMillis() //13位毫秒
+        var nano = System.nanoTime() //13位毫秒
         /*val s = millis / 1000 //10位秒
         val m = millis % 1000 //毫秒
         val r = nextInt(0, m.toInt()) //随机数
         return (s + m + r).toInt()*/
-        millis = (millis shl 16) or Random.nextLong(1, 0b1111111111111111)
+        nano = (nano shl 16) or Random.nextLong(1, 0b1111111111111111) + engraveIndex++
         //8位随机数255
         //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
-        return (millis and 0xfff_ffff).toInt()
+        return (nano and 0xfff_ffff).toInt()
     }
 
     /**生成一个雕刻的文件名*/
