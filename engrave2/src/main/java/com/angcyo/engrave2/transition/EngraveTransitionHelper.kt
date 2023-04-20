@@ -588,9 +588,9 @@ object EngraveTransitionHelper {
         buildString {
             append("${transferDataEntity.index}->")
             append("坐标[${provider.getEngraveDataName()}]:")
-            append(" ${transferDataEntity.dpi}")
             append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
             append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")
+            append(" ${transferDataEntity.dpi}")
         }.writeToLog()
     }
 
