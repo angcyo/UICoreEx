@@ -362,7 +362,7 @@ class TransferModel : ViewModel() {
     }
 
     private fun transferFinishCheck() {
-        MainExecutor.delay(_transferFinishRunnable, LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT)
+        MainExecutor.delay(_transferFinishRunnable, DataCmd.MAX_RECEIVE_TIMEOUT)
     }
 
     private fun removeTransferFinishCheck() {

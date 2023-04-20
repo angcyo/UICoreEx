@@ -198,8 +198,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 //关闭界面时, 如果在预览状态, 则退出预览, 并清除预览信息
                 if (!isMinimumPreview) {
                     previewModel.previewInfoData.value = null
+                    deviceStateModel.startLoopCheckState(false)
                     ExitCmd().enqueue()
-                    syncQueryDeviceState()
                 }
             }
         }

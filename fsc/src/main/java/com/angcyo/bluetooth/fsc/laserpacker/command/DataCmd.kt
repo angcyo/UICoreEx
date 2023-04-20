@@ -39,6 +39,9 @@ data class DataCmd(
         /**雕刻文件名称占用字节数量*/
         const val DEFAULT_NAME_BYTE_COUNT = 28
 
+        /**数据传输超时时长, 30分钟*/
+        const val MAX_RECEIVE_TIMEOUT = 30 * 60 * 1_000L
+
         //---支持的雕刻数据类型---
 
         /**雕刻图片数据类型.
@@ -441,7 +444,7 @@ data class DataCmd(
     }
 
     override fun getReceiveTimeout(): Long {
-        return 30 * 60 * 1_000 //30分钟
+        return MAX_RECEIVE_TIMEOUT //30分钟
     }
 
     override fun equals(other: Any?): Boolean {
