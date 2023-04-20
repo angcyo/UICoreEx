@@ -499,6 +499,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 ) {
                     renderDelegate.saveProjectStateV2()
                 }
+                renderFragment.engraveFlowLayoutHelper._engraveItemRenderer?.let {
+                    //当前正在配置参数的元素被删除时, 隐藏参数配置界面
+                    if (!renderDelegate.getSingleElementRendererListIn(to).contains(it)) {
+                        renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+                    }
+                }
                 renderLayerListLayout()
             }
 
