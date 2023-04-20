@@ -76,6 +76,12 @@ class EngraveDeviceHistoryFragment : BaseHistoryFragment() {
 
     /**加载结束, 渲染界面*/
     fun loadDataEnd(list: List<EngraveDataEntity>) {
+        parentFragment?.let {
+            if (it is EngraveHistoryFragment) {
+                it.showRightDeleteIcoView(list.isNotEmpty())
+            }
+        }
+
         loadDataEnd(EngraveIndexHistoryItem::class.java, list) { bean ->
             itemEngraveDataEntity = bean
             initItemClickEvent {

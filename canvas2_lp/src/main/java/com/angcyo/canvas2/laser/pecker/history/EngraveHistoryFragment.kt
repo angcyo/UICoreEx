@@ -61,13 +61,9 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
         }
     }
 
-    override fun onTabLayoutIndexChange(
-        fromIndex: Int,
-        toIndex: Int,
-        reselect: Boolean,
-        fromUser: Boolean
-    ) {
-        rightIcoView?.visible(toIndex == 1)
+    /**是否显示右边删除按钮*/
+    fun showRightDeleteIcoView(visible: Boolean = true) {
+        rightIcoView?.visible(visible)
     }
 
     /**删除设备所有记录*/
@@ -79,6 +75,7 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
 
                     if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
                         toast(_string(R.string.delete_history_succeed))
+                        showRightDeleteIcoView(false)
                         getPageFragment(
                             1,
                             EngraveDeviceHistoryFragment::class.java
