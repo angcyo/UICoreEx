@@ -12,7 +12,10 @@ data class EngraveLayerInfo(
     /**图层id, 图层的唯一标识符*/
     val layerId: String,
     /**界面显示的标签*/
-    val label: CharSequence
+    val label: CharSequence,
+    /**分组状态保持
+     * [com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.renderLayerListLayout]*/
+    var isGroupExtend: Boolean = true
 ) : IToText, IToValue {
 
     override fun toText(): CharSequence = label

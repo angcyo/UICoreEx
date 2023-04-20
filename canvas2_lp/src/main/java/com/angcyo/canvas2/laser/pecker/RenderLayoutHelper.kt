@@ -53,7 +53,6 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
@@ -755,35 +754,34 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     _layerDragHelper = null
                 }
                 renderDslAdapter {
-                    LayerHelper.getEngraveLayerList().forEach {
+                    LayerHelper.getEngraveLayerList().forEach { layerInfo ->
                         CanvasLayerNameItem()() {//雕刻图层
-                            itemGroupExtend = true
+                            itemGroupExtend = layerInfo.isGroupExtend
                             itemChanging = true
-                            itemLayerInfo = it
+                            itemLayerInfo = layerInfo
 
-                            itemLoadSubList = {
-                                val itemList = LPEngraveHelper.getLayerRendererList(delegate, it)
-                                    .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
-                                        CanvasLayerBaseItem().apply {//元素
-                                            initItem(renderer)
-                                            onItemCutTypeChangeAction = {
-                                                //切换类型
-                                                renderLayerListLayout()
-                                            }
-                                            itemClick = {
-                                                showItemRendererBounds()
-                                                if (HawkEngraveKeys.enableItemEngraveParams) {
-                                                    //显示单元素雕刻参数
-                                                    renderFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
-                                                        renderFragment,
-                                                        renderer
-                                                    )
-                                                }
+                            //直接加载子元素
+                            val itemList = LPEngraveHelper.getLayerRendererList(delegate, layerInfo)
+                                .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
+                                    CanvasLayerBaseItem().apply {//元素
+                                        initItem(renderer)
+                                        onItemCutTypeChangeAction = {
+                                            //切换类型
+                                            renderLayerListLayout()
+                                        }
+                                        itemClick = {
+                                            showItemRendererBounds()
+                                            if (HawkEngraveKeys.enableItemEngraveParams) {
+                                                //显示单元素雕刻参数
+                                                renderFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                                                    renderFragment,
+                                                    renderer
+                                                )
                                             }
                                         }
                                     }
-                                itemSubList.resetAll(itemList)
-                            }
+                                }
+                            itemSubList.resetAll(itemList)
                         }
                     }
                 }

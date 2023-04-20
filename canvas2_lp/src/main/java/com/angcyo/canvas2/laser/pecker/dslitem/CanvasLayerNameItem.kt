@@ -53,6 +53,7 @@ class CanvasLayerNameItem : DslAdapterItem() {
                         .start()
                 }
                 itemGroupExtend = !itemGroupExtend
+                itemLayerInfo?.isGroupExtend = itemGroupExtend
             }
         }
     }
