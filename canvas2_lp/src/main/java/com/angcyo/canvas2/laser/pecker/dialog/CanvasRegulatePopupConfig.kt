@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.util.canvasDecimal
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.*
@@ -18,7 +19,6 @@ import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.MeshShapeInfo
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
@@ -134,6 +134,9 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         onDismiss = {
             if (!regulateList.contains(KEY_SUBMIT)) {
                 //在没有确定按钮的情况下, 销毁窗口时需要apply一下
+                onApplyAction(true)
+            } else if (!_valueChange) {
+                //值没有改变, 可能是点击了窗口外
                 onApplyAction(true)
             }
             false
@@ -334,6 +337,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     property[key] = -1f + 2 * fraction
                 }
             }
+
             KEY_BRIGHTNESS -> CanvasSeekBarItem()() {
                 itemInfoText = _string(R.string.canvas_brightness) //-1~1   0-255
                 initItem()
@@ -350,6 +354,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     property[key] = -1f + 2 * fraction
                 }
             }
+
             else -> CanvasSeekBarItem()() {
                 itemInfoText = _string(R.string.canvas_threshold) //0-255
                 initItem()
