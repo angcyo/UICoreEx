@@ -87,6 +87,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**雕刻状态通知*/
     val engraveStateData = vmDataOnce<EngraveTaskEntity>()
 
+    /**是否发送过雕刻指令*/
+    private var isSendEngraveCmd = false
+
     //缓存
     var _engraveTaskId: String? = null
 
@@ -101,9 +104,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         //监听雕刻状态
         deviceStateModel.deviceStateData.observe(this) { queryState ->
             queryState?.let {
-                if (_engraveTaskId != null) {
+                if (_engraveTaskId != null && isSendEngraveCmd) {
                     //有任务在执行
                     if (queryState.isModeIdle()) {
+                        isSendEngraveCmd = false
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
                             //机器空闲了, 可能一个数据雕刻结束了
                             if (_lastEngraveIndex > 0) {
@@ -205,13 +209,14 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         buildString {
             append("开始雕刻下一个:[${taskId}]")
         }.writeEngraveLog()
-        engraveNext()
         //loop
-        deviceStateModel.startLoopCheckState()
+        deviceStateModel.startLoopCheckPauseState()
+        engraveNext()
     }
 
     /**完成当前索引的雕刻任务*/
     fun finishCurrentIndexEngrave() {
+        isSendEngraveCmd = false
         val task = _engraveTaskEntity ?: return
         val index = task.currentIndex
         buildString {
@@ -291,6 +296,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             //通知开始雕刻
             engraveStateData.postValue(this)
 
+            //loop
+            deviceStateModel.startLoopCheckPauseState()
+
             //
             if (isBatchEngraveSupport()) {
                 batchEngrave()
@@ -300,9 +308,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 }.writeEngraveLog()
                 engraveNext()
             }
-
-            //loop
-            deviceStateModel.startLoopCheckState()
         }
     }
 
@@ -313,7 +318,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task?.apply {
             _engraveTaskId = task.taskId
             //loop
-            deviceStateModel.startLoopCheckState()
+            deviceStateModel.startLoopCheckPauseState()
         }
     }
 
@@ -447,6 +452,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         engraveStateData.value = task
         task.lpSaveEntity()
 
+        isSendEngraveCmd = false
         EngraveCmd.batchEngrave(
             task.bigIndex!!,
             indexList,
@@ -461,9 +467,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             _lastEngraveCmdError = error
             if (error == null) {
                 //雕刻指令发送成功, 机器开始雕刻
+                isSendEngraveCmd = true
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
+                deviceStateModel.pauseLoopCheckState(false)
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${indexList}] $error".writeErrorLog()
@@ -511,6 +519,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave() {
+        isSendEngraveCmd = false
         "完成雕刻[${_engraveTaskId}]".writeEngraveLog()
 
         _lastEngraveTimes = 1
@@ -540,6 +549,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**完成了一个索引的雕刻, 需要传输下一个索引, 并且雕刻下一个*/
     fun finishIndexEngrave() {
+        isSendEngraveCmd = false
         val engraveTaskEntity = _engraveTaskEntity ?: return
         engraveTaskEntity.state = ENGRAVE_STATE_INDEX_FINISH
         engraveTaskEntity.lpSaveEntity()
@@ -611,6 +621,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**雕刻失败, 错误信息在
      * [com.angcyo.engrave.model.EngraveModel._lastEngraveCmdError]*/
     fun errorEngrave(error: Exception?) {
+        isSendEngraveCmd = false
         _lastEngraveCmdError = error
         val task = _engraveTaskEntity ?: return
         "雕刻异常[${task.taskId}]:${error}".writeEngraveLog()
@@ -665,7 +676,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             it.state = ENGRAVE_STATE_START
             it.lpSaveEntity()
         }
-
+        isSendEngraveCmd = false
         EngraveCmd(
             index,
             engraveConfigEntity.power.toByte(),
@@ -682,11 +693,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             "雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error
             if (error == null) {
+                isSendEngraveCmd = true
                 _lastEngraveIndex = index //赋值, 如果机器雕刻过快, 可以不会进入progress状态
                 //雕刻指令发送成功, 机器开始雕刻
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
+                deviceStateModel.pauseLoopCheckState(false)
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${index}] $error".writeErrorLog()

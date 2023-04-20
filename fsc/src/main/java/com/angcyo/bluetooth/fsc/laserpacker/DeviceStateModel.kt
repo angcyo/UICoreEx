@@ -75,6 +75,12 @@ class DeviceStateModel : ViewModel() {
 
     private var isLooping = false
 
+    /**开始循环并暂停*/
+    fun startLoopCheckPauseState() {
+        queryMode = queryMode.add(QUERY_MODE_LOOP).add(QUERY_MODE_PAUSE)
+        loopCheckDeviceState()
+    }
+
     /**开始循环查询设备状态*/
     fun startLoopCheckState(start: Boolean = true, removePause: Boolean = true) {
         queryMode = if (!start) {
@@ -158,7 +164,7 @@ class DeviceStateModel : ViewModel() {
 
         //空闲状态, 自动停止循环查询
         if (queryStateParser.mode == QueryStateParser.WORK_MODE_IDLE) {
-            startLoopCheckState(false)
+            pauseLoopCheckState(true)
         } else if (queryStateParser.mode == QueryStateParser.WORK_MODE_FILE_DOWNLOAD ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_SHUTDOWN ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_DOWNLOAD ||

@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.ReceiveCancelException
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
@@ -164,6 +165,8 @@ class TransferModel : ViewModel() {
     /**缓存*/
     var _transferState: TransferState? = null
 
+    val deviceStateModel = vmApp<DeviceStateModel>()
+
     //
 
     /*
@@ -285,6 +288,13 @@ class TransferModel : ViewModel() {
         transferStateOnceData.postValue(transferState)
     }
 
+    /**传输异常*/
+    fun errorTransfer(error: Throwable?) {
+        _transferState?.let {
+            errorTransfer(it, error)
+        }
+    }
+
     //
 
     /**继续查找并传输下一个需要传输的数据*/
@@ -318,13 +328,13 @@ class TransferModel : ViewModel() {
                     } else {
                         if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                             //状态正常
-                            transferData(transferState, transferDataEntity)
+                            wrapTransferData(transferState, transferDataEntity)
                         }
                     }
                 }
             } else {
                 //不检查直接传输数据
-                transferData(transferState, transferDataEntity)
+                wrapTransferData(transferState, transferDataEntity)
             }
         }
     }
@@ -372,6 +382,24 @@ class TransferModel : ViewModel() {
     /**传输的任务, 用来停止发送*/
     private var _transferTask: CommandQueueHelper.CommandInfo? = null
 
+    /**
+     * 发送数据之前, 需要先退出当前的模式
+     * [transferData]*/
+    private fun wrapTransferData(
+        transferState: TransferState,
+        transferDataEntity: TransferDataEntity
+    ) {
+        transferData(transferState, transferDataEntity)
+
+        /*ExitCmd().enqueue { bean, error ->
+            if (error == null) {
+                transferData(transferState, transferDataEntity)
+            } else {
+                errorTransfer(transferState, error)
+            }
+        }*/
+    }
+
     /**传输数据
      * [action] 成功或者失败的回调*/
     fun transferData(
@@ -398,14 +426,14 @@ class TransferModel : ViewModel() {
         transferDataEntity.lpSaveEntity()
 
         val fileModeCmd = FileModeCmd(size)
-        fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
+        _transferTask = fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             "进入大数据模式[${(error == null).toDC()}],耗时:${LTime.time()}".writePerfLog()
             error?.let {
                 "进入文件传输模式异常:${it} [${transferDataEntity.index}] ${size.toSizeString()}".writeErrorLog()
                 errorTransfer(transferState, TransferException(error))
                 action(transferState.error)
             }
-            if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+            if (error == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
                 //传输指令
                 bean?.parse<FileTransferParser>()?.let {
                     if (it.isIntoFileMode()) {

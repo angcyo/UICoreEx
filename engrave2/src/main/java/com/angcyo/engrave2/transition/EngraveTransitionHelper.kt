@@ -29,6 +29,7 @@ import com.angcyo.library.ex._color
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.ceil
 import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.lines
@@ -157,6 +158,11 @@ object EngraveTransitionHelper {
                 LibHawkKeys.grayThreshold,
                 LibHawkKeys.alphaThreshold
             ).toInt()
+
+        if (dataPath.file().length() <= 0) {
+            //数据大小为0, 重试1次
+            return transitionToBitmapPath(provider, transferConfigEntity)
+        }
 
         doBack {
             //1:保存一份原始可视化数据

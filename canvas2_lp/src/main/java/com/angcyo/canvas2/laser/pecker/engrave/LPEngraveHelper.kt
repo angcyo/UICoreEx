@@ -34,7 +34,7 @@ object LPEngraveHelper {
         delegate ?: return null
         val result = mutableListOf<BaseRenderer>()
 
-        val rendererList = delegate.getSelectorOrAllElementRendererList(false, false)
+        val rendererList = delegate.getSelectorOrAllElementRendererList(true, false)
         rendererList.filterTo(result) { renderer ->
             renderer.isVisible &&
                     !renderer.renderProperty?.getRenderBounds().isOverflowProductBounds()

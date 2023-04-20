@@ -40,6 +40,7 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.*
+import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.library.L
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
@@ -273,22 +274,37 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         renderFlowItems()
     }
 
-    /**开始雕刻下一个*/
+    /**开始雕刻下一个,
+     * 2023-4-20 雕刻下一个文件时, 需要进入空闲状态*/
     fun startEngraveNext() {
-        engraveFlow = ENGRAVE_FLOW_ENGRAVING
-        engraveModel.startEngraveNext(flowTaskId)
-        renderFlowItems()
+        ExitCmd().enqueue { bean, error ->
+            if (error != null) {
+                toastQQ(error.message)
+                transferModel.errorTransfer(TransferException(error))
+            } else {
+                //
+                engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                engraveModel.startEngraveNext(flowTaskId)
+                renderFlowItems()
+            }
+        }
     }
 
     /**开始自动传输数据*/
     fun renderAutoTransfer() {
-        val flowId = flowTaskId
-        onStartEngraveTransferData(flowId)
-        transferModel.startTransferData(flowId)
-
         //last
         engraveFlow = ENGRAVE_FLOW_TRANSMITTING
         renderFlowItems()
+        ExitCmd().enqueue { bean, error ->
+            if (error != null) {
+                toastQQ(error.message)
+                transferModel.errorTransfer(TransferException(error))
+            } else {
+                val flowId = flowTaskId
+                onStartEngraveTransferData(flowId)
+                transferModel.startTransferData(flowId)
+            }
+        }
     }
 
     /**渲染传输中的界面

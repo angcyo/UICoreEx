@@ -9,7 +9,6 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
-import com.angcyo.engrave2.exception.EmptyException
 import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
@@ -19,6 +18,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
 import com.angcyo.laserpacker.toElementBeanList

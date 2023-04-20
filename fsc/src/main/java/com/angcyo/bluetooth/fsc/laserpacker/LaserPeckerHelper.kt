@@ -220,11 +220,12 @@ object LaserPeckerHelper {
         dpi: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Bitmap {
-        if (productInfo == null) {
-            return bitmap
-        }
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height
+
+        if (productInfo == null) {
+            return bitmap.scale(bitmapWidth, bitmapHeight)
+        }
 
         val bounds = productInfo.bounds
         val productWidth = bounds.width()
