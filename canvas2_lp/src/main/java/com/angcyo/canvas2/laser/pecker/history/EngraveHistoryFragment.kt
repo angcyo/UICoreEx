@@ -1,15 +1,26 @@
 package com.angcyo.canvas2.laser.pecker.history
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.DangerWarningHelper
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveFlowLayoutHelper
 import com.angcyo.core.fragment.BasePagerFragment
+import com.angcyo.dialog.normalDialog
 import com.angcyo.fragment.AbsLifecycleFragment
+import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.gone
+import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.ex.visible
+import com.angcyo.library.toast
 
 /**
  * 历史文档界面
@@ -27,13 +38,59 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
     }
 
     //警示提示动画
-    val dangerWarningHelper = DangerWarningHelper()
+    private val dangerWarningHelper = DangerWarningHelper()
+    private var rightIcoView: View? = null
 
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
         //
         dangerWarningHelper.bindDangerWarning(this)
+        //
+        appendRightItem(ico = R.drawable.canvas_delete_ico, action = {
+            rightIcoView = this
+            gone()
+        }) {
+            fContext().normalDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(R.string.canvas_delete_project_tip)
+                positiveButton { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                    deleteAllHistory()
+                }
+            }
+        }
     }
+
+    override fun onTabLayoutIndexChange(
+        fromIndex: Int,
+        toIndex: Int,
+        reselect: Boolean,
+        fromUser: Boolean
+    ) {
+        rightIcoView?.visible(toIndex == 1)
+    }
+
+    /**删除设备所有记录*/
+    private fun deleteAllHistory() {
+        engraveLoadingAsyncTimeout({
+            syncSingle { countDownLatch ->
+                FileModeCmd.deleteAllHistory().enqueue { bean, error ->
+                    countDownLatch.countDown()
+
+                    if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
+                        toast(_string(R.string.delete_history_succeed))
+                        getPageFragment(
+                            1,
+                            EngraveDeviceHistoryFragment::class.java
+                        ).startRefresh() //刷新设备历史
+                    }
+                    error?.let { toast(it.message) }
+                }
+            }
+        })
+    }
+
+    //---
 
     override val fragment: AbsLifecycleFragment
         get() = this
