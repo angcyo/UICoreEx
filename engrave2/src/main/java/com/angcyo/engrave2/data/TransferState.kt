@@ -1,5 +1,8 @@
 package com.angcyo.engrave2.data
 
+import com.angcyo.engrave2.data.TransferState.Companion.TRANSFER_STATE_FINISH
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+
 /**
  * 数据传输状态数据结构
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -16,6 +19,8 @@ data class TransferState(
     var progress: Int = 0,
     /**传输是否有异常信息, 此时的状态依旧是[TRANSFER_STATE_FINISH]*/
     var error: Throwable? = null,
+    /**具体传输的数据*/
+    var transferDataEntity: TransferDataEntity? = null
 ) {
     companion object {
         const val TRANSFER_STATE_NORMAL = 0

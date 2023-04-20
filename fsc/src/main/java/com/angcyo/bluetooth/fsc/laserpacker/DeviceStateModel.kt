@@ -104,7 +104,7 @@ class DeviceStateModel : ViewModel() {
         isLooping = true
         _delay(HawkEngraveKeys.minQueryDelayTime) {
             //延迟1秒后, 继续查询状态
-            if (isPause) {
+            if (isPause || !isLoop) {
                 //暂停状态, 循环继续, 但是指令不发送
                 isLooping = false
                 loopCheckDeviceState()

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_CLEAR_BEFORE
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
+import com.angcyo.bluetooth.fsc.ReceiveCancelException
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -36,6 +37,7 @@ import com.angcyo.laserpacker.toEngraveDataTypeStr
 import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.MainExecutor
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.nowTime
@@ -290,6 +292,7 @@ class TransferModel : ViewModel() {
     fun _transferNext(transferState: TransferState) {
         val taskId: String? = transferState.taskId
         val transferDataEntity = EngraveFlowDataHelper.getNeedTransferData(taskId)
+        transferState.transferDataEntity = transferDataEntity
         if (transferState.state == TransferState.TRANSFER_STATE_CANCEL) {
             //
             "传输被取消[${taskId}]:$transferState".writeEngraveLog()
@@ -347,6 +350,25 @@ class TransferModel : ViewModel() {
         }
     }
 
+    private val _transferFinishRunnable = Runnable {
+        _transferState?.let { transferState ->
+            "传输超时结束:[${transferState.taskId}]:${transferState.transferDataEntity?.index}".writeErrorLog()
+            _transferTask?._receiveTask?.isCancel = true
+            _transferTask = null
+            removeTransferFinishCheck()
+
+            _transferFinish(transferState)//传输完成
+        }
+    }
+
+    private fun transferFinishCheck() {
+        MainExecutor.delay(_transferFinishRunnable, LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT)
+    }
+
+    private fun removeTransferFinishCheck() {
+        MainExecutor.remove(_transferFinishRunnable)
+    }
+
     /**传输的任务, 用来停止发送*/
     private var _transferTask: CommandQueueHelper.CommandInfo? = null
 
@@ -372,6 +394,9 @@ class TransferModel : ViewModel() {
             return
         }
         LTime.tick()
+        transferDataEntity.deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+        transferDataEntity.lpSaveEntity()
+
         val fileModeCmd = FileModeCmd(size)
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             "进入大数据模式[${(error == null).toDC()}],耗时:${LTime.time()}".writePerfLog()
@@ -414,44 +439,52 @@ class TransferModel : ViewModel() {
                                     transferState.progress = progress
                                     transferStateOnceData.value = transferState
                                 }
+                                if (progress >= 100) {
+                                    //进度达到100%时, 进行传输超时检查, 防止机器假死
+                                    transferFinishCheck()
+                                }
                             }) { bean, error ->
                                 _transferTask = null
-                                val result = bean?.parse<FileTransferParser>()
-                                buildString {
-                                    append("传输结束:$result $error ")
-                                    append("Success:${result?.isFileTransferSuccess().toDC()}")
-                                }.writeBleLog(L.WARN)
+                                removeTransferFinishCheck()
 
-                                result?.let {
-                                    if (result.isFileTransferSuccess()) {
-                                        //文件传输完成
-                                        val nowTime = nowTime()
-                                        "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTransferTime).toMsTime()}"
-                                            .writeEngraveLog().writePerfLog()
+                                if (error is ReceiveCancelException) {
+                                    //cancel
+                                } else {
+                                    val result = bean?.parse<FileTransferParser>()
+                                    buildString {
+                                        append("传输结束:$result $error ")
+                                        append("Success:${result?.isFileTransferSuccess().toDC()}")
+                                    }.writeBleLog(L.WARN)
 
-                                        transferDataEntity.deviceAddress =
-                                            LaserPeckerHelper.lastDeviceAddress()
-                                        transferDataEntity.isTransfer = true
-                                        transferDataEntity.lpSaveEntity()
+                                    result?.let {
+                                        if (result.isFileTransferSuccess()) {
+                                            //文件传输完成
+                                            val nowTime = nowTime()
+                                            "传输完成[$taskId][${transferDataEntity.index}],耗时:${(nowTime - startTransferTime).toMsTime()}"
+                                                .writeEngraveLog().writePerfLog()
 
-                                        if (HawkEngraveKeys.enableSingleItemTransfer) {
-                                            //激活了单文件传输, 则传输完一个文件, 雕刻一个文件
-                                            _transferFinish(transferState)//传输完成
-                                        } else {
-                                            _transferNext(transferState)
+                                            transferDataEntity.isTransfer = true
+                                            transferDataEntity.lpSaveEntity()
+
+                                            if (HawkEngraveKeys.enableSingleItemTransfer) {
+                                                //激活了单文件传输, 则传输完一个文件, 雕刻一个文件
+                                                _transferFinish(transferState)//传输完成
+                                            } else {
+                                                _transferNext(transferState)
+                                            }
+
+                                            action(null)
+                                        } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                                            "数据接收未完成:[${transferDataEntity.index}]".writeErrorLog()
+                                            errorTransfer(transferState, TransferException())
+                                            action(transferState.error)
                                         }
-
-                                        action(null)
-                                    } else if (transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                        "数据接收未完成:[${transferDataEntity.index}]".writeErrorLog()
+                                    }
+                                    if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
+                                        "发送数据失败:[${transferDataEntity.index}]".writeErrorLog()
                                         errorTransfer(transferState, TransferException())
                                         action(transferState.error)
                                     }
-                                }
-                                if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                    "发送数据失败:[${transferDataEntity.index}]".writeErrorLog()
-                                    errorTransfer(transferState, TransferException())
-                                    action(transferState.error)
                                 }
                             }
                             //end data cmd
