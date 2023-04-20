@@ -1,6 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.EngraveModel
@@ -21,6 +23,8 @@ class EngravingControlItem : DslAdapterItem() {
 
     var itemStopAction: () -> Unit = {}
 
+    var deviceStateModel = vmApp<DeviceStateModel>()
+
     init {
         itemLayoutId = R.layout.item_engrave_control_layout
     }
@@ -35,7 +39,8 @@ class EngravingControlItem : DslAdapterItem() {
 
         val taskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
 
-        val isPause = taskEntity?.state == EngraveModel.ENGRAVE_STATE_PAUSE
+        val isPause = taskEntity?.state == EngraveModel.ENGRAVE_STATE_PAUSE ||
+                deviceStateModel.deviceStateData.value?.isEngravePause() == true
         itemHolder.tv(R.id.pause_button)?.text = if (isPause) {
             _string(R.string.engrave_continue)
         } else {
