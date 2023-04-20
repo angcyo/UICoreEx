@@ -57,4 +57,7 @@
     <string name="device_z_model_car">차</string>
     <string name="device_z_model_cylinder">원기둥</string>
 
+    <string name="command_timeout_tip">지시 시간 초과</string>
+    <string name="command_cancel_tip">지침</string>
+
 </resources>

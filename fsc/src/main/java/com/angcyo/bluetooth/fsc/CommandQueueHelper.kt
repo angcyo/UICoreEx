@@ -80,7 +80,8 @@ object CommandQueueHelper {
     /**开始执行队列*/
     @Synchronized
     fun start() {
-        if (_currentCommand == null) {
+        if (_currentCommand == null || _currentCommand?._receiveTask?.isCancel == true) {
+            _currentCommand = null
             val commandInfo = linkedList.poll()
             if (commandInfo == null) {
                 //无指令需要执行
@@ -120,14 +121,14 @@ object CommandQueueHelper {
     fun clearCommand() {
         linkedList.forEach {
             try {
-                it.listener?.onReceive(null, ReceiveCancelException("ReceiveCancel!"))
+                it.listener?.onReceive(null, ReceiveCancelException())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
         linkedList.clear()
         try {
-            _currentCommand?.listener?.onReceive(null, ReceiveCancelException("ReceiveCancel!"))
+            _currentCommand?.listener?.onReceive(null, ReceiveCancelException())
         } catch (e: Exception) {
             e.printStackTrace()
         }

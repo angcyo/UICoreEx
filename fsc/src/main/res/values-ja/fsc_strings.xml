@@ -56,4 +56,7 @@
     <string name="device_z_model_flat">フラット</string>
     <string name="device_z_model_car">トロリー</string>
     <string name="device_z_model_cylinder">円筒形</string>
+
+    <string name="command_timeout_tip">命令タイムアウト</string>
+    <string name="command_cancel_tip">命令</string>
 </resources>

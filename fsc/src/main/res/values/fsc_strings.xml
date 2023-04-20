@@ -58,4 +58,7 @@
     <string name="device_z_model_flat">Slab</string>
     <string name="device_z_model_car">Trolley</string>
     <string name="device_z_model_cylinder">Cylinder</string>
+
+    <string name="command_timeout_tip">Command timeout</string>
+    <string name="command_cancel_tip">Command cancel</string>
 </resources>

@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.toHexInt
@@ -67,7 +68,7 @@ class WaitReceivePacket(
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
             end()
-            listener.onReceive(null, ReceiveTimeOutException("指令超时".writeBleLog()))
+            listener.onReceive(null, ReceiveTimeOutException())
         }
     }
 
@@ -95,6 +96,9 @@ class WaitReceivePacket(
         _isFinish = true
         handle.removeCallbacks(_timeOutRunnable)
         api.removePacketListener(this)
+        if (isCancel) {
+            listener.onReceive(null, ReceiveCancelException())
+        }
     }
 
     @WorkerThread
@@ -278,10 +282,12 @@ class WaitReceivePacket(
 }
 
 /**接收超时异常*/
-class ReceiveTimeOutException(message: CharSequence) : Exception(message.toStr())
+class ReceiveTimeOutException(message: CharSequence = _string(R.string.command_timeout_tip).writeBleLog()) :
+    Exception(message.toStr())
 
 /**接收取消异常*/
-class ReceiveCancelException(message: CharSequence) : Exception(message.toStr())
+class ReceiveCancelException(message: CharSequence = _string(R.string.command_cancel_tip).writeBleLog()) :
+    Exception(message.toStr())
 
 /**接收校验异常*/
 class ReceiveVerifyException(message: CharSequence) : Exception(message.toStr())

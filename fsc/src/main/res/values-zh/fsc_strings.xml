@@ -57,5 +57,8 @@
     <string name="device_z_model_car">小车</string>
     <string name="device_z_model_cylinder">圆柱</string>
 
+    <string name="command_timeout_tip">指令超时</string>
+    <string name="command_cancel_tip">指令取消</string>
+
 
 </resources>
