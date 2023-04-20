@@ -35,4 +35,7 @@ interface IEngraveDataProvider {
     @Pixel
     fun getEngraveDataBounds(): RectF
 
+    /**获取数据的名称, 用来log输出*/
+    fun getEngraveDataName(): String?
+
 }

@@ -156,4 +156,6 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     override fun getEngraveDataBounds(): RectF {
         return requestElementRenderProperty().getRenderBounds()
     }
+
+    override fun getEngraveDataName(): String? = elementBean.name
 }

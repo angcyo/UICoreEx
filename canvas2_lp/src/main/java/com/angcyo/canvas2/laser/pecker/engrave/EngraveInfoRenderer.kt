@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.graphics.*
 import android.view.Gravity
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.IRenderer
 import com.angcyo.canvas.render.data.RenderParams
@@ -10,12 +11,10 @@ import com.angcyo.canvas2.laser.pecker.ProductLayoutHelper
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._refreshRateRatio
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex.*
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
-import com.angcyo.library.ex.createPaint
 
 /**
  * 雕刻中的一些信息渲染
@@ -78,6 +77,9 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
     }
 
     override fun renderOnOutside(canvas: Canvas, params: RenderParams) {
+        if (!HawkEngraveKeys.enableRenderEngraveInfo) {
+            return
+        }
         val taskId = engraveTaskId ?: return
         val engraveTask = EngraveFlowDataHelper.getEngraveTask(taskId) ?: return
         val indexList = engraveTask.dataIndexList

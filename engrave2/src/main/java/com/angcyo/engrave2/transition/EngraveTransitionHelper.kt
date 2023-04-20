@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.core.component.file.writePerfLog
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.R
@@ -583,6 +584,14 @@ object EngraveTransitionHelper {
             transferDataEntity.width = rect.width()
             transferDataEntity.height = rect.height()
         }
+
+        buildString {
+            append("${transferDataEntity.index}->")
+            append("坐标[${provider.getEngraveDataName()}]:")
+            append(" ${transferDataEntity.dpi}")
+            append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
+            append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")
+        }.writeToLog()
     }
 
     //endregion ---辅助方法---
