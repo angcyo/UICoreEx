@@ -333,3 +333,17 @@ fun List<LPElementBean>.generateName() {
         it.generateName(this)
     }
 }
+
+/**构建一个分组的名称*/
+fun List<LPElementBean>.generateGroupName(baseName: String = "Group", index: Int? = null): String {
+    val list = this
+    val newName = if (index == null) baseName else "$baseName $index" //需要检测的新名字
+    val find = list.find { it.groupName == newName }
+    return if (find == null) {
+        //未重名
+        newName
+    } else {
+        //重名了
+        generateGroupName(baseName, if (index == null) 2 else index + 1)
+    }
+}

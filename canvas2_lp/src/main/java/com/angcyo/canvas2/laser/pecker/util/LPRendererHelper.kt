@@ -14,6 +14,7 @@ import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.laserpacker.generateName
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.size
@@ -109,6 +110,7 @@ object LPRendererHelper {
 
             parseElementRenderer(bean)?.let { renderer ->
                 val groupId = bean.groupId
+                val groupName = bean.groupName ?: allElementBeanList.generateGroupName()
                 if (groupId == null) {
                     //当前元素不带分组信息
                     result.add(renderer)
@@ -122,6 +124,7 @@ object LPRendererHelper {
                         //往后找相同groupId的元素
                         val subBean = beanList[i]
                         if (subBean.groupId == groupId) {
+                            subBean.groupName = groupName
                             jumpList.add(subBean)
                             parseElementRenderer(subBean)?.let { subRenderer ->
                                 subRendererList.add(subRenderer)
@@ -131,6 +134,7 @@ object LPRendererHelper {
 
                     if (subRendererList.size() > 1) {
                         //如果组内元素大于1个
+
                         groupRenderer.resetGroupRendererList(subRendererList, Reason.init, null)
                         result.add(groupRenderer)
                     } else {

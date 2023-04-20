@@ -109,6 +109,9 @@ data class LPElementBean(
     /**相同id的视为在同一组 string `2023-1-6`*/
     var groupId: String? = null,
 
+    /**[groupId]*/
+    var groupName: String? = null,
+
     /**填充颜色, 形状的颜色*/
     var fill: String? = null,
 

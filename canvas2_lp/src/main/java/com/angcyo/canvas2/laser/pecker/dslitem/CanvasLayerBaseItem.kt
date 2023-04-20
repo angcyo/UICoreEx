@@ -69,7 +69,14 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
     /**操作的元素结构*/
     val operateElementBean: LPElementBean? get() = operateRenderer?.lpElementBean()
 
-    val itemItemName: CharSequence? get() = itemRenderer?.lpElementBean()?.name
+    val itemItemName: CharSequence?
+        get() = itemRenderer?.run {
+            if (this is CanvasGroupRenderer) {
+                operateElementBean?.groupName
+            } else {
+                lpElementBean()?.name
+            }
+        }
 
     /**当前的[itemRenderer]范围是否超出设备物理尺寸*/
     val isOverflowBounds: Boolean

@@ -7,10 +7,13 @@ import android.graphics.Path
 import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.drawRight
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.app
 import com.angcyo.library.ex.*
 import com.angcyo.svg.Svg
@@ -107,5 +110,39 @@ fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
         } else {
             channelValue
         }
+    }
+}
+
+/**获取所有元素Bean结构*/
+fun CanvasRenderDelegate?.getAllElementBean(): List<LPElementBean> {
+    return this?.getAllSingleElementRendererList().getAllElementBean()
+}
+
+fun List<BaseRenderer>?.getAllElementBean(): List<LPElementBean> {
+    val result = mutableListOf<LPElementBean>()
+    this?.forEach {
+        it.lpElementBean()?.let {
+            result.add(it)
+        }
+    }
+    return result
+}
+
+fun List<LPElementBean>.updateGroupInfo(groupId: String?, groupName: String?) {
+    forEach {
+        it.groupName = groupName
+        it.groupId = groupId
+    }
+}
+
+fun List<LPElementBean>.updateGroupName(name: String?) {
+    forEach {
+        it.groupName = name
+    }
+}
+
+fun List<LPElementBean>.updateGroupId(groupId: String?) {
+    forEach {
+        it.groupId = groupId
     }
 }

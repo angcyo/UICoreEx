@@ -54,6 +54,7 @@ import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.pad.isInPadMode
@@ -513,15 +514,15 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 groupType: Int
             ) {
                 var groupId: String? = null
+                var groupName: String? = null
                 if (groupType == CanvasGroupRenderer.GROUP_TYPE_GROUP) {
                     //群组时, 使用统一的groupId
                     groupId = uuid()
+                    groupName = delegate?.getAllElementBean()?.generateGroupName()
                 } else {
                     //解组时, 清除groupId
                 }
-                for (renderer in subRendererList) {
-                    renderer.lpElementBean()?.groupId = groupId
-                }
+                subRendererList.getAllElementBean().updateGroupInfo(groupId, groupName)
             }
 
             /**群组状态的保存和恢复*/

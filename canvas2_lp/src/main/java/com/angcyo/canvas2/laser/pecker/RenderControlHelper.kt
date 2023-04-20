@@ -584,6 +584,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             initItem(renderer)
             itemEnable = renderer.isSelectorGroupRenderer() && renderer.rendererList.size() > 1
             itemClick = {
+                //com.angcyo.canvas.render.core.BaseCanvasRenderListener#onRendererGroupChange
                 renderer.groupRendererGroup(renderDelegate, Reason.user, Strategy.normal)
             }
         }
@@ -594,6 +595,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemEnable = renderer.isOnlyGroupRenderer()
             drawCanvasRight()
             itemClick = {
+                //com.angcyo.canvas.render.core.BaseCanvasRenderListener#onRendererGroupChange
                 renderer.groupRendererDissolve(renderDelegate, Reason.user, Strategy.normal)
             }
         }

@@ -1,8 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.dslitem
 
 import com.angcyo.canvas.render.core.Reason
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.canvas2.laser.pecker.getAllElementBean
+import com.angcyo.canvas2.laser.pecker.updateGroupName
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._string
@@ -39,16 +41,21 @@ class CanvasLayerItem : CanvasLayerBaseItem() {
 
         //长按重命名
         itemLongClick = { view ->
-            operateRenderer?.lpElementBean()?.let { bean ->
-                view.context.inputDialog {
-                    dialogTitle = _string(R.string.canvas_rename)
-                    maxInputLength = 10
-                    defaultInputString = itemItemName
-                    onInputResult = { dialog, inputText ->
-                        bean.name = "$inputText"
-                        updateAdapterItem()
-                        false
+
+            view.context.inputDialog {
+                dialogTitle = _string(R.string.canvas_rename)
+                maxInputLength = 10
+                defaultInputString = itemItemName
+                onInputResult = { dialog, inputText ->
+                    val newName = "$inputText"
+                    val renderer = itemRenderer
+                    if (renderer is CanvasGroupRenderer) {
+                        renderer.rendererList.getAllElementBean().updateGroupName(newName)
+                    } else {
+                        operateElementBean?.name = newName
                     }
+                    updateAdapterItem()
+                    false
                 }
             }
             true
