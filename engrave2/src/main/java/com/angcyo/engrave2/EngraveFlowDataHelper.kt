@@ -169,13 +169,21 @@ object EngraveFlowDataHelper {
     }
 
     /**更新数据传输进度和速率*/
-    fun updateTransferDataProgress(taskId: String?, progress: Int, speed: Float) {
+    fun updateTransferDataProgress(
+        taskId: String?,
+        progress: Int,
+        speed: Float,
+        averageSpeed: Float
+    ) {
         TransferMonitorEntity::class.lpUpdateOrCreateEntity({
             apply(TransferMonitorEntity_.taskId.equal("$taskId"))
         }) {
             dataTransferProgress = progress
             dataTransferSpeed = speed
-            dataTransferMaxSpeed = max(speed, dataTransferMaxSpeed)
+            dataAverageTransferSpeed = averageSpeed
+            if (progress >= 2) {
+                dataTransferMaxSpeed = max(speed, dataTransferMaxSpeed)
+            }
         }
     }
 

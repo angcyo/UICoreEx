@@ -454,13 +454,19 @@ class TransferModel : ViewModel() {
                             }.writeEngraveLog()
 
                             val startTransferTime = nowTime()//开始传输的时间
+                            val speedList = mutableListOf<Float>() //用来计算平均速率
                             _transferTask = dataCmd.enqueue(progress = {
                                 //进度
                                 val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
+                                val sendSpeed = it.sendSpeed
+                                if (progress > 2) {
+                                    speedList.add(sendSpeed)
+                                }
                                 EngraveFlowDataHelper.updateTransferDataProgress(
                                     taskId,
                                     progress,
-                                    it.sendSpeed
+                                    sendSpeed,
+                                    speedList.average().toFloat()
                                 )
                                 doMain {
                                     //及时回调

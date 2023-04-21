@@ -327,11 +327,17 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
         } else {
             renderDslAdapter {
+                val monitorEntity = EngraveFlowDataHelper.getTransferMonitor(flowTaskId)
                 DataTransmittingItem()() {
                     itemProgress = taskStateData?.progress ?: 0
+                    val remainingDuration = monitorEntity?.timeRemainingDuration()
+                    itemRemainingTime = if (remainingDuration.isNullOrEmpty()) {
+                        null
+                    } else {
+                        "${_string(R.string.remaining_time)}:${remainingDuration}"
+                    }
                 }
                 if (isDebug()) {
-                    val monitorEntity = EngraveFlowDataHelper.getTransferMonitor(flowTaskId)
                     if (monitorEntity != null) {
                         PreviewTipItem()() {
                             itemTip = span {
@@ -354,7 +360,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         append("${monitorEntity.dataTransferDuration(nowTime())} ")
                                     }
                                     if (monitorEntity.dataTransferSpeed > 0) {
-                                        append(" 速率:${monitorEntity.speedString()} :${monitorEntity.maxSpeedString()}")
+                                        append(" 速率:${monitorEntity.speedString()} :${monitorEntity.averageSpeedString()} :${monitorEntity.maxSpeedString()}")
                                     } else {
                                         append(" 传输中... ")
                                     }

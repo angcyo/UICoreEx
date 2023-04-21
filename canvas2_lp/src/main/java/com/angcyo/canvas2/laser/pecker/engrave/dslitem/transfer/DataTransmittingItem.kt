@@ -15,6 +15,9 @@ class DataTransmittingItem : DslAdapterItem() {
     /**进度*/
     var itemProgress: Int = 0
 
+    /**剩余时长提示*/
+    var itemRemainingTime: CharSequence? = null
+
     init {
         itemLayoutId = R.layout.item_data_transmitting_layout
     }
@@ -37,5 +40,7 @@ class DataTransmittingItem : DslAdapterItem() {
                 setProgress(itemProgress.toFloat())
             }
         }
+
+        itemHolder.tv(R.id.lib_text_view)?.text = itemRemainingTime
     }
 }

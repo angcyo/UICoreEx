@@ -16,6 +16,17 @@
         app:progress_clip_mode="false"
         app:progress_radius="@dimen/lib_radius_big"
         app:progress_show_text="true"
-        tools:progress_value="1" />
+        tools:progress_value="50" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibTitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/lib_progress_bar"
+        app:layout_constraintLeft_toLeftOf="@id/lib_progress_bar"
+        app:layout_constraintRight_toRightOf="@id/lib_progress_bar"
+        app:layout_constraintTop_toTopOf="@id/lib_progress_bar"
+        tools:text="@string/remaining_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

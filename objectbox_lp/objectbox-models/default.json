@@ -571,7 +571,7 @@
     },
     {
       "id": "11:7833260621013857816",
-      "lastPropertyId": "11:4739151550581876079",
+      "lastPropertyId": "12:4315274201643703636",
       "name": "TransferMonitorEntity",
       "properties": [
         {
@@ -623,6 +623,11 @@
         {
           "id": "11:4739151550581876079",
           "name": "dataTransferMaxSpeed",
+          "type": 7
+        },
+        {
+          "id": "12:4315274201643703636",
+          "name": "dataAverageTransferSpeed",
           "type": 7
         }
       ],

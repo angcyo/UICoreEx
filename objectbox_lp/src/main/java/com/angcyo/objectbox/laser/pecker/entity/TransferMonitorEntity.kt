@@ -42,6 +42,9 @@ data class TransferMonitorEntity(
     /**数据发送速率 byte/s*/
     var dataTransferSpeed: Float = -1f,
 
+    /**传输平均缩率 byte/s*/
+    var dataAverageTransferSpeed: Float = -1f,
+
     /**数据发送最高的速率 byte/s*/
     var dataTransferMaxSpeed: Float = -1f,
 ) {
@@ -70,6 +73,14 @@ data class TransferMonitorEntity(
         return "${dataTransferMaxSpeed.toLong().toSizeString()}/s"
     }
 
+    /**平均传输速率*/
+    fun averageSpeedString(): String {
+        if (dataAverageTransferSpeed < 0) {
+            return ""
+        }
+        return "${dataAverageTransferSpeed.toLong().toSizeString()}/s"
+    }
+
     /**数据生成耗时*/
     fun dataMakeDuration(): String {
         return (dataMakeFinishTime - dataMakeStartTime).toMsTime()!!
@@ -78,6 +89,28 @@ data class TransferMonitorEntity(
     /**数据传输耗时*/
     fun dataTransferDuration(endTime: Long = dataTransferFinishTime): String {
         return (endTime - dataTransferStartTime).toMsTime()!!
+    }
+
+    /**通过平均速率总大小, 计算出剩余时间, 毫秒*/
+    fun timeRemaining(): Long {
+        /*if (!dataAverageTransferSpeed.isFinite() || dataAverageTransferSpeed <= 0) {
+            return -1
+        }
+        return ((dataTransferSize * (100 - dataTransferProgress) / 100f) / dataAverageTransferSpeed).toLong()*/
+
+        if (!dataTransferSpeed.isFinite() || dataTransferSpeed <= 0) {
+            return -1
+        }
+        return ((dataTransferSize * (100 - dataTransferProgress) / 100f) / dataTransferSpeed * 1000).toLong()
+    }
+
+    /**剩余耗时*/
+    fun timeRemainingDuration(): String {
+        val timeRemaining = timeRemaining()
+        if (timeRemaining <= 0) {
+            return ""
+        }
+        return timeRemaining.toMsTime()!!
     }
 
 }
