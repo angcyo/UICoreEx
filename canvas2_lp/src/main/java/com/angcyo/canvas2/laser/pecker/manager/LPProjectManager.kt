@@ -347,14 +347,16 @@ class LPProjectManager {
                                     }
 
                                     //滤镜后的图
-                                    val srcBitmap = sub.lpBitmapElement()?.renderBitmap
-                                        ?: elementBean.src?.toBitmapOfBase64()
-                                    if (srcBitmap != null) {
-                                        if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
-                                            val uri =
-                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                                            elementBean.srcUri = uri
-                                            writeEntry(uri, srcBitmap)
+                                    if (HawkEngraveKeys.saveFilterBitmap) {
+                                        val srcBitmap = sub.lpBitmapElement()?.renderBitmap
+                                            ?: elementBean.src?.toBitmapOfBase64()
+                                        if (srcBitmap != null) {
+                                            if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                                val uri =
+                                                    LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                                elementBean.srcUri = uri
+                                                writeEntry(uri, srcBitmap)
+                                            }
                                         }
                                     }
 

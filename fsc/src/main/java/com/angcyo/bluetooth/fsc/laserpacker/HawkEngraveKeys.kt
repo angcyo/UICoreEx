@@ -191,6 +191,9 @@ object HawkEngraveKeys {
     /**是否检查32位的手机, 如果是32位的手机, 有些功能不开放*/
     var checkCpu32: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**保存工程时, 是否要保存过滤后的图片*/
+    var saveFilterBitmap: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //---功能固件范围配置---
 
     /**
