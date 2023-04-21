@@ -357,9 +357,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         get() = textFontSize * 2
 
     fun parseParameterComparisonTable(): List<BaseRenderer> {
-        HawkEngraveKeys.enableItemEngraveParams = true //必须
-        HawkEngraveKeys.enableSingleItemTransfer = true //必须
-
         @Pixel val bounds = tableBounds
 
         val elementMargin = elementMargin.toPixel()
@@ -584,6 +581,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     @WorkerThread
     private fun addParameterComparisonTable() {
         val delegate = renderDelegate ?: return
+        HawkEngraveKeys.enableItemEngraveParams = true //必须
+        HawkEngraveKeys.enableSingleItemTransfer = true //必须
         delegate.renderManager.addElementRenderer(
             parseParameterComparisonTable(),
             true,
