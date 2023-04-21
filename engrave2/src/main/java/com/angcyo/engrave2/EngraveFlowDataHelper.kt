@@ -181,7 +181,7 @@ object EngraveFlowDataHelper {
             dataTransferProgress = progress
             dataTransferSpeed = speed
             dataAverageTransferSpeed = averageSpeed
-            if (progress >= 2) {
+            if (progress >= 10) {
                 dataTransferMaxSpeed = max(speed, dataTransferMaxSpeed)
             }
         }
@@ -902,5 +902,4 @@ object EngraveFlowDataHelper {
     }
 
     //endregion ---雕刻相关---
-
 }

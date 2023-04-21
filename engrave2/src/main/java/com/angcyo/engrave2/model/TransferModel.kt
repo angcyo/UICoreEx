@@ -459,7 +459,7 @@ class TransferModel : ViewModel() {
                                 //进度
                                 val progress = calcTransferProgress(taskId, it.sendPacketPercentage)
                                 val sendSpeed = it.sendSpeed
-                                if (progress > 2) {
+                                if (progress > 10) {
                                     speedList.add(sendSpeed)
                                 }
                                 EngraveFlowDataHelper.updateTransferDataProgress(
