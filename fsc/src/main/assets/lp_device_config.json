@@ -367,6 +367,12 @@
         "dpi": 1270,
         "px": 1,
         "des": "5K",
+        "debug": false
+      },
+      {
+        "dpi": 2540,
+        "px": 1,
+        "des": "10K",
         "debug": true
       }
     ]

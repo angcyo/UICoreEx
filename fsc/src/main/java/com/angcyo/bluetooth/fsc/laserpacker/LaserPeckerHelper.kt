@@ -143,6 +143,9 @@ object LaserPeckerHelper {
     /**5K [PX_4K]*/
     const val DPI_1270 = 1270f
 
+    /**10K [PX_4K]*/
+    const val DPI_2540 = 2540f
+
     //雕刻激光类型选择
     const val LASER_TYPE_WHITE = 0x01.toByte() //1为1064nm激光 (白光-雕)
 
@@ -209,6 +212,7 @@ object LaserPeckerHelper {
             DPI_889 -> PxInfo(DPI_889, PX_4K, "4K$_d")
             DPI_1016 -> PxInfo(DPI_1016, PX_4K, "4K$_d")
             DPI_1270 -> PxInfo(DPI_1270, PX_4K, "5K$_d")
+            DPI_2540 -> PxInfo(DPI_2540, PX_4K, "10K$_d")
             else -> PxInfo(DPI_254, PX_1K, "1K$_d")
         }
     }

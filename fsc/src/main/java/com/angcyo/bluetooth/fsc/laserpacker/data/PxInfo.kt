@@ -39,6 +39,7 @@ data class PxInfo(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_635]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_846]
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_1270]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_2540]
      * */
     val dpi: Float,
 
