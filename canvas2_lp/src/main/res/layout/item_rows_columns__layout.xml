@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_padding_right">
+
+    <com.angcyo.widget.edit.DslEditText
+        android:id="@+id/lib_edit_view"
+        style="@style/LibSingleEditStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_item_min_height"
+        android:background="@null"
+        android:gravity="center"
+        android:hint="行:列 行:列"
+        android:inputType="textWebEmailAddress"
+        android:maxLines="1"
+        android:minHeight="@dimen/lib_min_item_height"
+        android:singleLine="true"
+        app:r_draw_left="追加行列: "
+        app:r_draw_left_color="@color/text_general_color"
+        app:r_focus_drawable="@drawable/lib_bottom_focus_shape"
+        app:r_hide_soft_input_on_lost_focus="true"
+        app:r_no_focus_drawable="@drawable/lib_bottom_no_focus_shape" />
+
+</FrameLayout>

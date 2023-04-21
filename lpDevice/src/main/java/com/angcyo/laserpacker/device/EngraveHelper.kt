@@ -47,7 +47,9 @@ object EngraveHelper {
         val m = millis % 1000 //毫秒
         val r = nextInt(0, m.toInt()) //随机数
         return (s + m + r).toInt()*/
-        nano = (nano shl 16) or Random.nextLong(1, 0b1111111111111111) + engraveIndex++
+        //nano = (nano shl 16) or Random.nextLong(1, 0b1111111111111111) + engraveIndex++
+        val randomBits = 16
+        nano = (nano shl randomBits) or Random.nextBits(randomBits) + engraveIndex++
         //8位随机数255
         //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
         return (nano and 0xfff_ffff).toInt()

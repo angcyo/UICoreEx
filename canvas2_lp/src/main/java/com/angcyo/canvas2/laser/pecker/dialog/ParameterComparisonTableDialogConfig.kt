@@ -17,6 +17,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
@@ -87,6 +88,38 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**强行指定格子的数据类型, 图层id*/
         internal var gridLayerId: String by HawkPropertyValue<Any, String>(LayerHelper.LAYER_FILL)
+
+        /**额外追加的行列范围
+         * [行:列 行:列 行:列] */
+        internal var rowsColumnsRange: String by HawkPropertyValue<Any, String>("")
+
+        /**行列是否在指定的范围内*/
+        fun isRowColumnInRange(row: Int, column: Int): Boolean {
+            rowsColumnsRange.split(" ").forEach { rls -> //行:列
+                val rlList = rls.split(":") //行 列
+                val r = rlList.getOrNull(0)?.toIntOrNull()
+                val c = rlList.getOrNull(1)?.toIntOrNull()
+                if (r == null && c == null) {
+                    //无效数据
+                } else if (r == null) {
+                    //列所有
+                    if (c == column) {
+                        return true
+                    }
+                } else if (c == null) {
+                    //行所有
+                    if (r == row) {
+                        return true
+                    }
+                } else {
+                    //行列都指定
+                    if (r == row && c == column) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
 
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
@@ -286,6 +319,33 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
             }
 
+            //格子数量选择
+            GridCountItem()() {
+                itemColumns = horizontalGridCount
+                itemRows = verticalGridCount
+                itemPowerDepthThreshold = powerDepthThreshold
+
+                onItemChangeAction = {
+                    horizontalGridCount = itemColumns
+                    verticalGridCount = itemRows
+                    powerDepthThreshold = itemPowerDepthThreshold
+                }
+            }
+
+            //额外的行列范围
+            RowsColumnsRangeItem()()
+
+            //字体大小, 边距
+            LabelSizeItem()() {
+                itemTextFontSize = textFontSize
+                itemGridItemMargin = gridItemMargin
+
+                onItemChangeAction = {
+                    textFontSize = itemTextFontSize
+                    gridItemMargin = itemGridItemMargin
+                }
+            }
+
             //图层选择
             LayerSegmentItem()() {
                 itemCurrentIndex = LayerHelper.getEngraveLayerList(false)
@@ -312,30 +372,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     //保存最后一次选择的dpi
                     val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
                     HawkEngraveKeys.lastDpi = dpi
-                }
-            }
-
-            //格子数量选择
-            GridCountItem()() {
-                itemColumns = horizontalGridCount
-                itemRows = verticalGridCount
-                itemPowerDepthThreshold = powerDepthThreshold
-
-                onItemChangeAction = {
-                    horizontalGridCount = itemColumns
-                    verticalGridCount = itemRows
-                    powerDepthThreshold = itemPowerDepthThreshold
-                }
-            }
-
-            //字体大小, 边距
-            LabelSizeItem()() {
-                itemTextFontSize = textFontSize
-                itemGridItemMargin = gridItemMargin
-
-                onItemChangeAction = {
-                    textFontSize = itemTextFontSize
-                    gridItemMargin = itemGridItemMargin
                 }
             }
         }
@@ -484,7 +520,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
                 val powerValue = (power + 1) * horizontalStep
                 val depthValue = (depth + 1) * verticalStep
-                if (powerValue * depthValue <= powerDepthThreshold) {
+                if (powerValue * depthValue <= powerDepthThreshold ||
+                    isRowColumnInRange(depth + 1, power + 1)
+                ) {
                     gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle = Paint.Style.FILL.toPaintStyleInt()

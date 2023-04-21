@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/lib_padding_right"
-    android:paddingVertical="@dimen/lib_hdpi">
+    android:paddingVertical="@dimen/lib_dpi">
 
     <LinearLayout
         android:layout_width="0dp"
