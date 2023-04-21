@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
@@ -15,7 +16,6 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
 import com.angcyo.laserpacker.*
 import com.angcyo.laserpacker.device.BuildConfig
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.device.exception.OutOfSizeException
@@ -76,7 +76,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
 
                 //support
                 if (openFilePath == null) {
-                    adapter?.updateAdapterState(IllegalStateException("not support!"))
+                    adapter?.updateAdapterState(IllegalStateException("not support!\n${path?.lastName()}"))
                 }
             } catch (e: Exception) {
                 adapter?.updateAdapterState(e)
