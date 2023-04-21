@@ -12,6 +12,7 @@ import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
+import com.angcyo.engrave2.BuildConfig
 import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.http.rx.doBack
@@ -141,9 +142,10 @@ object EngraveTransitionHelper {
             transferConfigEntity,
             DataCmd.ENGRAVE_TYPE_BITMAP_PATH
         )
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
-
         val index = transferDataEntity.index
+        //testSaveBitmap(index, bitmap)
+
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
 
@@ -271,6 +273,8 @@ object EngraveTransitionHelper {
             DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
         )
         val index = transferDataEntity.index
+
+        //testSaveBitmap(index, bitmap)
 
         //抖动处理图片
         val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
@@ -592,6 +596,7 @@ object EngraveTransitionHelper {
             append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
             append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")
             append(" ${transferDataEntity.dpi}")
+            append(" :${bounds}")
         }.writeToLog()
     }
 
@@ -631,6 +636,16 @@ object EngraveTransitionHelper {
                     true
                 )
             }
+        }
+    }
+
+    private fun testSaveBitmap(index: Int, bitmap: Bitmap) {
+        if (BuildConfig.DEBUG) {
+            EngraveHelper.saveEngraveData(
+                "${index}-test",
+                bitmap,
+                LPDataConstant.EXT_PREVIEW
+            )
         }
     }
 
