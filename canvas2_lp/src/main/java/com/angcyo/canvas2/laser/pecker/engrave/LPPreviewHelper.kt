@@ -46,7 +46,9 @@ object LPPreviewHelper {
         if (!flowLayoutHelper.isAttach() &&
             !renderFragment.engraveFlowLayoutHelper.isMinimumPreview
         ) {
-            flowLayoutHelper.startPreview(renderFragment)
+            if (!rendererList.isNullOrEmpty()) {
+                flowLayoutHelper.startPreview(renderFragment)
+            }
             return
         }
         if (rendererList.isNullOrEmpty()) {
