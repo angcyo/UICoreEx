@@ -140,7 +140,7 @@ object LaserPeckerHelper {
     /**[PX_4K]*/
     const val DPI_1016 = 1016f
 
-    /**5K [PX_4K]*/
+    /**5K [PX_4K], 宣传8k*/
     const val DPI_1270 = 1270f
 
     /**10K [PX_4K]*/
@@ -211,7 +211,7 @@ object LaserPeckerHelper {
             DPI_846 -> PxInfo(DPI_846, PX_4K, "4K$_d")
             DPI_889 -> PxInfo(DPI_889, PX_4K, "4K$_d")
             DPI_1016 -> PxInfo(DPI_1016, PX_4K, "4K$_d")
-            DPI_1270 -> PxInfo(DPI_1270, PX_4K, "5K$_d")
+            DPI_1270 -> PxInfo(DPI_1270, PX_4K, "8K$_d")
             DPI_2540 -> PxInfo(DPI_2540, PX_4K, "10K$_d")
             else -> PxInfo(DPI_254, PX_1K, "1K$_d")
         }
