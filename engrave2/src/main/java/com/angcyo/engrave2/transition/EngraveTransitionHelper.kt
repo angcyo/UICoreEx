@@ -130,7 +130,8 @@ object EngraveTransitionHelper {
      * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]*/
     fun transitionToBitmapPath(
         provider: IEngraveDataProvider?,
-        transferConfigEntity: TransferConfigEntity
+        transferConfigEntity: TransferConfigEntity,
+        retryCount: Int = 0, /*失败后重试的次数*/
     ): TransferDataEntity? {
         val bitmap = provider?.getEngraveBitmapData() ?: return null
         LTime.tick()
@@ -160,9 +161,9 @@ object EngraveTransitionHelper {
                 LibHawkKeys.alphaThreshold
             ).toInt()
 
-        if (dataPath.file().length() <= 0) {
+        if (dataPath.file().length() <= 0 && retryCount <= HawkEngraveKeys.engraveRetryCount) {
             //数据大小为0, 重试1次
-            return transitionToBitmapPath(provider, transferConfigEntity)
+            return transitionToBitmapPath(provider, transferConfigEntity, retryCount + 1)
         }
 
         doBack {
