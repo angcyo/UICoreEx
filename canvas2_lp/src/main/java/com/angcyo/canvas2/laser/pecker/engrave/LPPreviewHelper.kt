@@ -43,17 +43,16 @@ object LPPreviewHelper {
         if (!flowLayoutHelper.isInitialize) {
             return
         }
-        if (!flowLayoutHelper.isAttach() &&
-            !renderFragment.engraveFlowLayoutHelper.isMinimumPreview
-        ) {
-            if (!rendererList.isNullOrEmpty()) {
-                flowLayoutHelper.startPreview(renderFragment)
-            }
-            return
-        }
         if (rendererList.isNullOrEmpty()) {
             return
         }
+        if (renderFragment.engraveFlowLayoutHelper.isMinimumPreview) {
+            //最小化了
+        } else if (!flowLayoutHelper.isAttach()) {
+            //未附着
+        }
+        //flowLayoutHelper.startPreview(renderFragment)
+
         updatePreview(rendererList, sendCmd = false)
         _debounce {
             updatePreview(rendererList)
