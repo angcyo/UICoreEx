@@ -326,6 +326,10 @@ object EngraveTransitionHelper {
             true
         )
 
+        //抖动图, 需要严格使用图片的宽高否则雕刻出来的数据会异常
+        transferDataEntity.width = operateBitmap.width
+        transferDataEntity.height = operateBitmap.height
+
         span {
             append("转抖动") {
                 foregroundColor = accentColor
@@ -586,6 +590,8 @@ object EngraveTransitionHelper {
             ).resultRect!!
             transferDataEntity.x = rect.left
             transferDataEntity.y = rect.top
+
+            //如果是抖动图, 这里的宽高需要使用图片的原始宽高, 否则会导致图片数据异常
             transferDataEntity.width = rect.width()
             transferDataEntity.height = rect.height()
         }
@@ -595,7 +601,10 @@ object EngraveTransitionHelper {
             append("坐标[${provider.getEngraveDataName()}]:")
             append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
             append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")
-            append(" ${transferDataEntity.dpi}")
+            if (engraveDataType != DataCmd.ENGRAVE_TYPE_GCODE) {
+                //GCode只有1k, 所以不需要日志
+                append(" ${transferDataEntity.dpi}")
+            }
             append(" :${bounds}")
         }.writeToLog()
     }
