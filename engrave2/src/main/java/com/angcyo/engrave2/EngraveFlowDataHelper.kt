@@ -349,7 +349,7 @@ object EngraveFlowDataHelper {
         return TransferDataEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(
                 TransferDataEntity_.taskId.equal("$taskId")
-                    .and(TransferDataEntity_.layerId.equal(layerId))
+                    .and(TransferDataEntity_.layerId.equal(layerId ?: ""))
             )
         }
     }
@@ -400,7 +400,7 @@ object EngraveFlowDataHelper {
             val engraveConfigEntity = EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.taskId.equal("$taskId")
-                        .and(EngraveConfigEntity_.layerId.equal(engraveLayerInfo?.layerId))
+                        .and(EngraveConfigEntity_.layerId.equal(engraveLayerInfo?.layerId ?: ""))
                 )
             }
             return engraveConfigEntity
@@ -592,7 +592,7 @@ object EngraveFlowDataHelper {
             val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.productName.equal("$productName")
-                        .and(EngraveConfigEntity_.layerId.equal(layerId))
+                        .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
                 )
             }
 
@@ -616,7 +616,7 @@ object EngraveFlowDataHelper {
         }) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerId.equal(layerId))
+                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
             )
         }
     }
@@ -633,7 +633,7 @@ object EngraveFlowDataHelper {
         return EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
-                    .and(EngraveConfigEntity_.layerId.equal(layerId))
+                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
             )
         }
     }
