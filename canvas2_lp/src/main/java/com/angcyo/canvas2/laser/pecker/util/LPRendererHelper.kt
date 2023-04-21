@@ -37,7 +37,7 @@ object LPRendererHelper {
                 renderBitmap = bean._srcBitmap
             }
             if (bean._imageOriginalBitmap != null) {
-                originBitmap = bean._imageOriginalBitmap
+                bean._imageOriginalBitmap?.let { updateOriginBitmap(it, false) }
             }
         }
 
