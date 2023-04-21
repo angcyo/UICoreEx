@@ -765,7 +765,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
 
-            "雕刻进度[${it.taskId}]:${index} ${currentProgress}/${it.progress}".writeEngraveLog()
+            "雕刻进度[${it.taskId}]:${index} ${currentProgress}%/${it.progress}%".writeEngraveLog()
         }
     }
 
