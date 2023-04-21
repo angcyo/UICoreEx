@@ -28,6 +28,7 @@ import com.angcyo.laserpacker.toSvgElementBean
 import com.angcyo.library.L
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
+import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.writeTo
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
@@ -260,7 +261,7 @@ class LPProjectManager {
                 preview_img = preview?.toBase64Data()
 
                 data = jsonArray {
-                    renderList?.forEach { renderer ->
+                    renderList.forEach { renderer ->
                         val list = renderer.getSingleRendererList(false)
                         list.forEach { sub ->
                             try {
@@ -317,7 +318,7 @@ class LPProjectManager {
                 writeEntry(LPDataConstant.PROJECT_V2_PREVIEW_NAME, preview)
 
                 data = jsonArray {
-                    renderList?.forEach { renderer ->
+                    renderList.forEach { renderer ->
                         val list = renderer.getSingleRendererList(false)
                         list.forEach { sub ->
                             try {
@@ -337,7 +338,7 @@ class LPProjectManager {
                                     val imageOriginalBitmap = sub.lpBitmapElement()?.originBitmap
                                         ?: elementBean.imageOriginal?.toBitmapOfBase64()
                                     if (imageOriginalBitmap != null) {
-                                        if (imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                        if (BuildHelper.isCpu64 || imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
                                             val uri =
                                                 LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
                                             elementBean.imageOriginalUri = uri
@@ -349,7 +350,7 @@ class LPProjectManager {
                                     val srcBitmap = sub.lpBitmapElement()?.renderBitmap
                                         ?: elementBean.src?.toBitmapOfBase64()
                                     if (srcBitmap != null) {
-                                        if (srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                        if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
                                             val uri =
                                                 LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
                                             elementBean.srcUri = uri
