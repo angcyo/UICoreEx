@@ -725,6 +725,9 @@ object LaserPeckerHelper {
      * [lastDeviceAddress]*/
     var initDeviceAddress: String? = null
 
+    /**初始化的时候, 设备是否正忙*/
+    var isInitDeviceBusy = false
+
     /**发送初始化的指令, 读取设备的基础信息
      * [name] 蓝牙设备的名称
      * [address] 蓝牙设备的地址
@@ -738,6 +741,8 @@ object LaserPeckerHelper {
         count: Int = 0,
         end: (Throwable?) -> Unit = {}
     ) {
+        isInitDeviceBusy = false
+
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         val deviceStateModel = vmApp<DeviceStateModel>()
 
@@ -754,7 +759,10 @@ object LaserPeckerHelper {
                             if (it.usbConnect == QueryStateParser.CONNECT_TYPE_USB) {
                                 //设备被USB占用, 则断开设备
                                 if (!isAutoConnect || !RBackground.isBackground()) {
-                                    //toastQQ(_string(R.string.device_busy_tip))
+                                    isInitDeviceBusy = true
+                                    if (!laserPeckerModel.deviceBusyOnceData.hasObservers()) {
+                                        toastQQ(_string(R.string.device_busy_tip))
+                                    }
                                     laserPeckerModel.deviceBusyOnceData.postValue(true)
                                 }
                                 doBack {

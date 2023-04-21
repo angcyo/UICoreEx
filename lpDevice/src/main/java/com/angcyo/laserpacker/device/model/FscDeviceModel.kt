@@ -6,6 +6,7 @@ import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -14,7 +15,6 @@ import com.angcyo.core.vmApp
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -96,7 +96,10 @@ class FscDeviceModel : LifecycleViewModel() {
                         !deviceConnectState.isActiveDisConnected
                     ) {
                         //连接成功过, 并且非主动断开蓝牙设备, 则toast提示
-                        toastQQ(_string(R.string.blue_disconnected))
+                        if (!LaserPeckerHelper.isInitDeviceBusy) {
+                            LaserPeckerHelper.isInitDeviceBusy = false
+                            toastQQ(_string(R.string.blue_disconnected))
+                        }
                     }
 
                     //蓝牙断开后,清空设备状态
