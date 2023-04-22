@@ -16,6 +16,10 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.DirectionAdjustPopupConfig
 import com.angcyo.item.keyboard.directionAdjustWindow
 import com.angcyo.item.keyboard.keyboardNumberWindow
+import com.angcyo.item.style.INewItem
+import com.angcyo.item.style.NewItemConfig
+import com.angcyo.item.style.itemHaveNew
+import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.library.ex.gone
 import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.widget.DslViewHolder
@@ -25,7 +29,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/08
  */
-class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
+class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
 
     override var itemRenderer: BaseRenderer? = null
 
@@ -46,8 +50,11 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
     private val renderProperty: CanvasRenderProperty?
         get() = selectorComponent?.renderProperty
 
+    override var newItemConfig: NewItemConfig = NewItemConfig()
+
     init {
         itemLayoutId = R.layout.item_render_edit_control_layout
+        itemNewHawkKeyStr = "direction_edit"
     }
 
     override fun onItemBind(
@@ -224,6 +231,8 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem {
         itemHolder.click(R.id.canvas_direction_view) {
             val delegate = itemRenderDelegate ?: return@click
             val renderer = selectorComponent ?: return@click
+            itemHaveNew = false
+            updateAdapterItem()
 
             val translateControl = delegate.controlManager.translateControl
             translateControl.startControl(renderer)
