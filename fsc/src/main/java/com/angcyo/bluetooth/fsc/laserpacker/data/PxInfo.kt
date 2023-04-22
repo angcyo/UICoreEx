@@ -60,7 +60,7 @@ data class PxInfo(
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
-    val dpiScale: Float = dpi.toDpiScale()
+    val _dpiScale: Float = dpi.toDpiScale()
 
     override fun toText(): CharSequence = if (debug) "${des}'" else des
 
@@ -69,13 +69,13 @@ data class PxInfo(
     /**设备dpi对应的像素宽度*/
     fun devicePxWidth(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Float {
         val deviceWidthPx = ((productInfo?.widthPhys ?: 100) / 0.1).floor()
-        return (deviceWidthPx * dpiScale).toFloat()
+        return (deviceWidthPx * _dpiScale).toFloat()
     }
 
     /**设备dpi对应的像素高度*/
     fun devicePxHeight(productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): Float {
         val deviceHeightPx = ((productInfo?.heightPhys ?: 100) / 0.1).floor()
-        return (deviceHeightPx * dpiScale).toFloat()
+        return (deviceHeightPx * _dpiScale).toFloat()
     }
 
     /**宽度值转换*/
