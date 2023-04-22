@@ -13,7 +13,7 @@ import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.utils.FileTextData
 import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.writeToFile
-import kotlin.random.Random
+import kotlin.math.absoluteValue
 
 /**
  * 图层助手
@@ -22,7 +22,8 @@ import kotlin.random.Random
  */
 object EngraveHelper {
 
-    private var engraveIndex: Long = 1
+    private var engraveIndex: Int = 1
+    private var lastEngraveIndex: Int = 1
 
     //region ---雕刻---
 
@@ -42,17 +43,24 @@ object EngraveHelper {
      * 4个字节 最大 4_294_967_295
      * */
     fun generateEngraveIndex(): Int {
-        var nano = System.nanoTime() //13位毫秒
-        /*val s = millis / 1000 //10位秒
+        /*System.currentTimeMillis()//13位毫秒 1682135311648
+        var nano = System.nanoTime() //15位毫秒 //269520350402700
+        *//*val s = millis / 1000 //10位秒
         val m = millis % 1000 //毫秒
         val r = nextInt(0, m.toInt()) //随机数
-        return (s + m + r).toInt()*/
+        return (s + m + r).toInt()*//*
         //nano = (nano shl 16) or Random.nextLong(1, 0b1111111111111111) + engraveIndex++
         val randomBits = 16
         nano = (nano shl randomBits) or Random.nextBits(randomBits) + engraveIndex++
         //8位随机数255
         //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
-        return (nano and 0xfff_ffff).toInt()
+        return (nano and 0xfff_ffff).toInt()*/
+        var index = (System.nanoTime() shr 4).toInt().absoluteValue
+        if (index == lastEngraveIndex) {
+            index += engraveIndex++
+        }
+        lastEngraveIndex = index
+        return index
     }
 
     /**生成一个雕刻的文件名*/
