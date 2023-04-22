@@ -218,7 +218,11 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     override fun hide(end: (() -> Unit)?) {
-        if (cancelable && engraveFlow == ENGRAVE_FLOW_PREVIEW && engraveBackFlow <= 0 && fscBleApiModel.haveDeviceConnected()) {
+        if (cancelable /*可以返回*/ &&
+            engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ &&
+            engraveBackFlow <= 0 /*回退栈*/ &&
+            fscBleApiModel.haveDeviceConnected() /*有设备连接*/
+        ) {
             //预览中, 等待机器完全退出之后, 再关闭界面
             engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
                 ExitCmd().enqueue { bean, error ->
