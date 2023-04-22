@@ -11,6 +11,7 @@ import com.angcyo.widget.base.setInputText
 
 /**
  * 额外需要追加的行列范围
+ * [com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig.Companion.isRowColumnInRange]
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/04/21
  */

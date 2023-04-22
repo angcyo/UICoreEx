@@ -96,7 +96,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**行列是否在指定的范围内*/
         fun isRowColumnInRange(row: Int, column: Int): Boolean {
             rowsColumnsRange.split(" ").forEach { rls -> //行:列
-                val rlList = rls.split(":") //行 列
+                val rlList = if (rls.contains(":")) rls.split(":") else rls.split(".") //行 列
                 val r = rlList.getOrNull(0)?.toIntOrNull()
                 val c = rlList.getOrNull(1)?.toIntOrNull()
                 if (r == null && c == null) {
@@ -113,7 +113,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     }
                 } else {
                     //行列都指定
-                    if (r == row && c == column) {
+                    val cList =
+                        rlList.subList(1, rlList.size).map { it.toIntOrNull() ?: -1 } //所有指定的列
+                    if (r == row && cList.contains(column)) {
                         return true
                     }
                 }

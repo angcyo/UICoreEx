@@ -8,4 +8,6 @@
 
     <!--编辑框最大的输入长度-->
     <integer name="canvas_edit_length">8</integer>
+
+    <string name="number_range_digits">: .1234567890</string>
 </resources>
