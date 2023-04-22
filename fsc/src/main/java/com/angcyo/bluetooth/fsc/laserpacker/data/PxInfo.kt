@@ -60,7 +60,8 @@ data class PxInfo(
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
-    val _dpiScale: Float = dpi.toDpiScale()
+    val _dpiScale: Float
+        get() = dpi.toDpiScale()
 
     override fun toText(): CharSequence = if (debug) "${des}'" else des
 

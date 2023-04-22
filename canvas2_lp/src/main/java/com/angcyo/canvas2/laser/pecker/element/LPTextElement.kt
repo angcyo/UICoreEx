@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.graphics.Canvas
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -33,15 +33,15 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
 
     override fun createStateStack(): IStateStack = LPTextStateStack()
 
-    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
-        return if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
-            super.requestElementRenderDrawable(renderParams)
+    override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
+        if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
+            super.onRenderInside(renderer, canvas, params)
         } else {
             if (codeBitmap == null) {
                 parseElementBean()
             }
-            codeBitmap?.run {
-                createBitmapDrawable(paint, renderParams?.overrideSize, this)
+            codeBitmap?.also {
+                renderBitmap(canvas, paint, it)
             }
         }
     }

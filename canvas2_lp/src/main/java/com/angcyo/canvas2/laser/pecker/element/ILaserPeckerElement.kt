@@ -116,7 +116,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     //---
 
     override fun getEngraveBitmapData(): Bitmap? {
-        return requestElementRenderDrawable(null)?.toBitmap()
+        return requestElementDrawable(null, null)?.toBitmap()
     }
 
     override fun getEngravePathData(): List<Path>? {

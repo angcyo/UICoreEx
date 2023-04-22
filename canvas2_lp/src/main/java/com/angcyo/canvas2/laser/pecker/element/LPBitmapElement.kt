@@ -1,9 +1,9 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.drawable.Drawable
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
@@ -40,29 +40,24 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         super.updateBeanToElement(renderer)
         parseElementBean()
     }
-    
+
     override fun createStateStack(): IStateStack = LPBitmapStateStack()
 
     override fun getDrawPathList(): List<Path>? = pathList
 
-    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
+    override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             paint.strokeWidth = 1f
             paint.style = Paint.Style.STROKE
-            renderParams?.updateDrawPathPaintStrokeWidth(paint)
-            return createPathDrawable(
-                paint,
-                renderParams?.overrideSize,
-                (renderParams ?: RenderParams()).drawMinWidth,
-                (renderParams ?: RenderParams()).drawMinHeight,
-                false
-            )
+            params.updateDrawPathPaintStrokeWidth(paint)
+            renderPath(canvas, paint, false, getDrawPathList())
+            return
         }
         val bitmap = renderBitmap ?: originBitmap
         if (bitmap == null) {
             parseElementBean()
         }
-        return super.requestElementRenderDrawable(renderParams)
+        super.onRenderInside(renderer, canvas, params)
     }
 
     override fun parseElementBean() {

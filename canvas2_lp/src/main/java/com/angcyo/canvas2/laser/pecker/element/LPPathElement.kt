@@ -1,11 +1,11 @@
 package com.angcyo.canvas2.laser.pecker.element
 
+import android.graphics.Canvas
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PathEffect
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.os.Build
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
@@ -189,23 +189,14 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         return result
     }
 
-    override fun requestElementRenderDrawable(renderParams: RenderParams?): Drawable? {
-        paint.style = elementBean.paintStyle.toPaintStyle()
+    override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
         if (pathList == null) {
             parseElementBean()
         }
-        pathList ?: return null
+        paint.style = elementBean.paintStyle.toPaintStyle()
         paint.strokeWidth = 1f
-        renderParams?.updateDrawPathPaintStrokeWidth(paint)
-        val minWidth = max((renderParams ?: RenderParams()).drawMinWidth, paint.strokeWidth)
-        val minHeight = max((renderParams ?: RenderParams()).drawMinHeight, paint.strokeWidth)
-        return createPathDrawable(
-            paint,
-            renderParams?.overrideSize,
-            minWidth,
-            minHeight,
-            elementBean.isLineShape
-        )
+        params.updateDrawPathPaintStrokeWidth(paint)
+        renderPath(canvas, paint, elementBean.isLineShape, getDrawPathList())
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer?) {

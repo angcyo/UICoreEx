@@ -31,6 +31,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import kotlin.math.max
 
 /**
  * https://docs.qq.com/doc/DWE1MVnVOQ3RJSXZ1
@@ -259,6 +260,10 @@ object LaserPeckerHelper {
             val height = pxInfo.devicePxHeight(productInfo)
             newHeight = (height * scaleHeight).floor().toInt()
         }
+
+        //最小一个像素, 否则会崩溃
+        newWidth = max(1, newWidth)
+        newHeight = max(1, newHeight)
 
         //图片缩放到指定宽高
         return bitmap.scale(newWidth, newHeight)

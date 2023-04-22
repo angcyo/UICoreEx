@@ -349,7 +349,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                             bean?.isPathElement == true -> {
                                 if (bean.paintStyle == 1 || bean.isLineShape) {
                                     //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
-                                    renderer.requestUpdateDrawableFlag(
+                                    renderer.requestUpdatePropertyFlag(
                                         Reason.preview,
                                         renderDelegate
                                     )
@@ -358,7 +358,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
                             bean?.mtype == LPDataConstant.DATA_TYPE_BITMAP -> {
                                 if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
-                                    renderer.requestUpdateDrawableFlag(
+                                    renderer.requestUpdatePropertyFlag(
                                         Reason.preview,
                                         renderDelegate
                                     )
@@ -425,9 +425,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                         )
                     }
                 }
-                if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_DRAWABLE) ||
-                    reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)
-                ) {
+                if (reason.renderFlag.have(BaseRenderer.RENDERER_FLAG_REQUEST_PROPERTY)) {
                     renderLayerListLayout()
                     needUpdateControlLayout = true
                 }
