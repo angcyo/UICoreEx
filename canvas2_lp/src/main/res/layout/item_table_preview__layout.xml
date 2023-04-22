@@ -7,6 +7,7 @@
         android:id="@+id/lib_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/lib_xxhdpi"
         android:scaleType="fitCenter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

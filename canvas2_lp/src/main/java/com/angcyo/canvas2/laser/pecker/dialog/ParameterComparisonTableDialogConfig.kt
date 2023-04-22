@@ -40,6 +40,7 @@ import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IValueUnit
@@ -92,6 +93,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**额外追加的行列范围
          * [行:列 行:列 行:列] */
         internal var rowsColumnsRange: String by HawkPropertyValue<Any, String>("")
+
+        /**按键大小*/
+        internal var keyboardNumSize = 45 * dpi
 
         /**行列是否在指定的范围内*/
         fun isRowColumnInRange(row: Int, column: Int): Boolean {

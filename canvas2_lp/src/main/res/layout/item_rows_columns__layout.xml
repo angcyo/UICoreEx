@@ -15,7 +15,7 @@
         android:layout_height="@dimen/lib_min_item_height"
         android:background="@null"
         android:digits="@string/number_range_digits"
-        android:gravity="center"
+        android:gravity="left|center_vertical"
         android:hint="行.列 行.列.列.列"
         android:inputType="textWebEmailAddress"
         android:maxLines="1"

@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.eachItem
@@ -48,6 +49,7 @@ class GridCountItem : DslAdapterItem() {
 
         itemHolder.click(R.id.columns_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
                 onDismiss = this@GridCountItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
@@ -63,6 +65,7 @@ class GridCountItem : DslAdapterItem() {
 
         itemHolder.click(R.id.rows_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
                 onDismiss = this@GridCountItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
@@ -78,6 +81,7 @@ class GridCountItem : DslAdapterItem() {
 
         itemHolder.click(R.id.threshold_text_view) {
             lastContext.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
                 onDismiss = this@GridCountItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入

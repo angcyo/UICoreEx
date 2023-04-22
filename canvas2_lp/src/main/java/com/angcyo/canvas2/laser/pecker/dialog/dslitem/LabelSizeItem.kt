@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.eachItem
@@ -44,6 +45,7 @@ class LabelSizeItem : DslAdapterItem() {
 
         itemHolder.click(R.id.font_size_view) {
             itemHolder.context.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
                 onDismiss = this@LabelSizeItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
@@ -59,6 +61,7 @@ class LabelSizeItem : DslAdapterItem() {
 
         itemHolder.click(R.id.grid_margin_view) {
             itemHolder.context.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
                 onDismiss = this@LabelSizeItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
