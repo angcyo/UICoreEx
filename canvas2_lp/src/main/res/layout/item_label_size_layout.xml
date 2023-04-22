@@ -37,11 +37,36 @@
             android:singleLine="true"
             tools:text="100100100100100" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/LibDesTextStyle"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.angcyo.widget.text.DslTextView
+            style="@style/LibBodyTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="mm" />
+            android:text="@string/canvas_word_spacing" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/char_space_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="4"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
 
     </LinearLayout>
 
@@ -49,7 +74,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/lib_xxhdpi"
         android:layout_weight="1"
         android:orientation="horizontal">
 

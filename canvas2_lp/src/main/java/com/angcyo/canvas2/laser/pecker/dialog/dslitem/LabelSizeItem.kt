@@ -42,6 +42,8 @@ class LabelSizeItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.tv(R.id.font_size_view)?.text = "${itemTextFontSize.toInt()}"
         itemHolder.tv(R.id.grid_margin_view)?.text = "${itemGridItemMargin.toInt()}"
+        itemHolder.tv(R.id.char_space_view)?.text =
+            "${ParameterComparisonTableDialogConfig.charSpace}"
 
         itemHolder.click(R.id.font_size_view) {
             itemHolder.context.keyboardNumberWindow(it) {
@@ -54,6 +56,20 @@ class LabelSizeItem : DslAdapterItem() {
                 onNumberResultAction = { value ->
                     val v = clamp(value, 1f, 100f)
                     itemTextFontSize = v
+                    onItemChangeAction()
+                }
+            }
+        }
+
+        itemHolder.click(R.id.char_space_view) {
+            itemHolder.context.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
+                onDismiss = this@LabelSizeItem::onPopupDismiss
+                keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
+                onNumberResultAction = { value ->
+                    ParameterComparisonTableDialogConfig.charSpace = value
                     onItemChangeAction()
                 }
             }

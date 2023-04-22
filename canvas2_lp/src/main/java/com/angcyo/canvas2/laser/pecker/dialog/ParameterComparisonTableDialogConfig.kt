@@ -87,6 +87,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         @MM
         internal var textFontSize: Float by HawkPropertyValue<Any, Float>(8f)
 
+        /**字间距*/
+        @MM
+        internal var charSpace: Float by HawkPropertyValue<Any, Float>(0.5f)
+
         /**强行指定格子的数据类型, 图层id*/
         internal var gridLayerId: String by HawkPropertyValue<Any, String>(LayerHelper.LAYER_FILL)
 
@@ -407,7 +411,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val numberTextItem = LPTextElement(LPElementBean().apply {
             text = "100"
             fontSize = textFontSize
-            charSpacing = 0.2f
+            charSpacing = charSpace
             name = text
 
             //参数, 使用最后一次的默认
@@ -421,6 +425,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             text = "Power(%)"
             name = text
 
+            charSpacing = numberTextItem.elementBean.charSpacing
             printPrecision = numberTextItem.elementBean.printPrecision
             printCount = numberTextItem.elementBean.printCount
         })
@@ -431,6 +436,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             name = text
             angle = -90f
 
+            charSpacing = numberTextItem.elementBean.charSpacing
             printPrecision = numberTextItem.elementBean.printPrecision
             printCount = numberTextItem.elementBean.printCount
         })
