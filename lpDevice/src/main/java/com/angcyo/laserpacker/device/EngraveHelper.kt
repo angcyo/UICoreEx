@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.file.writeTo
 import com.angcyo.core.vmApp
+import com.angcyo.coroutine.sleep
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.ex.file
@@ -63,7 +64,7 @@ object EngraveHelper {
         lastEngraveIndex = index*/
 
         val index = System.currentTimeMillis().toInt().absoluteValue
-        Thread.sleep(1)//强行等待1毫秒
+        sleep(HawkEngraveKeys.transferIndexSleep)//强行等待1毫秒
         return index
     }
 

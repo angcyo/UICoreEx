@@ -194,6 +194,9 @@ object HawkEngraveKeys {
     /**保存工程时, 是否要保存过滤后的图片*/
     var saveFilterBitmap: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**传输数据索引生成时需要休眠的时长, 防止撞索引*/
+    var transferIndexSleep: Long by HawkPropertyValue<Any, Long>(1)
+
     //---功能固件范围配置---
 
     /**

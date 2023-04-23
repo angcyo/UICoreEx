@@ -9,6 +9,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.coroutine.sleep
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.model.TransferModel
@@ -128,6 +129,7 @@ object LPTransferHelper {
                     transferDataEntity.layerId = layerId ?: elementBean?._layerId
                     resultDataList.add(transferDataEntity)
                     "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
+                    sleep(HawkEngraveKeys.transferIndexSleep)
                 }
         }
         return resultDataList
