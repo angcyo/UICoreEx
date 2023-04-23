@@ -44,7 +44,6 @@ import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
-import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
@@ -336,9 +335,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     init {
         dialogTitle = _string(R.string.add_parameter_comparison_table)
 
-        val needPreview = !isInPadMode()
+        val needPreview = true //!isInPadMode()
         if (needPreview) {
-            dialogMaxHeight = "0.9sh"
+            dialogMaxHeight = "0.95sh"
         }
 
         positiveButton { dialog, dialogViewHolder ->
