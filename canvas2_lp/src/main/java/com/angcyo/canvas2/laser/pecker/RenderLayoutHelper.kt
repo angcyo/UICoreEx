@@ -331,7 +331,9 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             override fun onDispatchTouchEvent(event: MotionEvent) {
                 if (event.isTouchDown()) {
                     //点击空白处, 隐藏图层控制布局
-                    showLayerLayout(false)
+                    if (!isInPadMode()) {
+                        showLayerLayout(false)
+                    }
                 }
             }
 
