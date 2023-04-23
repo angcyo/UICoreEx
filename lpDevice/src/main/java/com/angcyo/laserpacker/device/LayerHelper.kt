@@ -74,6 +74,9 @@ fun Int?.toLayerId(): String? {
     }
 }
 
+/**[EngraveLayerInfo]*/
+fun String?.toLayerInfo() = LayerHelper.getEngraveLayerInfo(layerId = this)
+
 /**将图层id转换成对应的数据模式*/
 fun String?.toDataMode(): Int {
     return when (this) {

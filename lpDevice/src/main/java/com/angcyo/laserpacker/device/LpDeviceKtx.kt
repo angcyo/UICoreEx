@@ -16,7 +16,11 @@ import com.angcyo.dialog.loading
 import com.angcyo.drawable.loading.TGStrokeLoadingDrawable
 import com.angcyo.library.IActivityProvider
 import com.angcyo.library.L
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.setBgDrawable
+import com.angcyo.library.ex.toColorInt
+import com.angcyo.library.ex.toMinuteTime
 import com.angcyo.library.toastQQ
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -131,11 +135,29 @@ fun Context.engraveStrokeLoading(
     return dialog
 }
 
-/**激光类型字符串*/
-fun Byte?.toLaserTypeString() = when (this) {
-    LaserPeckerHelper.LASER_TYPE_WHITE -> _string(R.string.laser_type_white)
-    else -> _string(R.string.laser_type_blue)
+/**激光类型字符串
+ * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo]*/
+fun Byte?.toLaserTypeString(includeWave: Boolean = false) = buildString {
+    val laserType = this@toLaserTypeString
+    append(
+        when (laserType) {
+            LaserPeckerHelper.LASER_TYPE_WHITE -> _string(R.string.laser_type_white)
+            else -> _string(R.string.laser_type_blue)
+        }
+    )
+    if (includeWave) {
+        append(laserType.toLaserWave())
+    }
 }
+
+/**转换成波长*/
+fun Byte?.toLaserWave() = when (this) {
+    LaserPeckerHelper.LASER_TYPE_WHITE -> 1064
+    else -> 450
+}
+
+fun Int?.toLaserTypeString(includeWave: Boolean = false) =
+    this?.toByte()?.toLaserTypeString(includeWave)
 
 /**分:秒 的时间格式*/
 fun Long?.toEngraveTime() = this?.toMinuteTime()

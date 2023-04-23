@@ -15,10 +15,10 @@ import com.angcyo.widget.base.setInputText
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/04/21
  */
-class AppointPowerDepthItem : DslAdapterItem() {
+class PTCLabelItem : DslAdapterItem() {
 
     init {
-        itemLayoutId = R.layout.item_power_depth__layout
+        itemLayoutId = R.layout.item_ptc_label_layout
     }
 
     override fun onItemBind(
@@ -30,12 +30,11 @@ class AppointPowerDepthItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         itemHolder.ev(R.id.lib_edit_view)?.apply {
             clearListeners()
-            setInputText(ParameterComparisonTableDialogConfig.appointPowerDepth, false)
+            setInputText(ParameterComparisonTableDialogConfig.labelText, false)
             onTextChange {
-                ParameterComparisonTableDialogConfig.appointPowerDepth = "$it"
+                ParameterComparisonTableDialogConfig.labelText = "$it"
                 itemDslAdapter.updateTablePreview()
             }
         }
     }
-
 }

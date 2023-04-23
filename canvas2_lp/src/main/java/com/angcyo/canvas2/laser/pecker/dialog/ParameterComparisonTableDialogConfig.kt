@@ -18,6 +18,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.AppointPowerDepthItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PTCLabelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
@@ -36,6 +37,8 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.toDataMode
+import com.angcyo.laserpacker.device.toLaserTypeString
+import com.angcyo.laserpacker.device.toLayerInfo
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
@@ -106,10 +109,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
          * [功率 功率 功率 功率.深度 深度 深度] */
         internal var appointPowerDepth: String by HawkPropertyValue<Any, String>("")
 
+        /**参数表的Label*/
+        internal var labelText: String? by HawkPropertyValue<Any, String?>("%1")
+
         /**需要隐藏的元素*/
-        internal const val HIDE_POWER = 0b1
-        internal const val HIDE_DEPTH = HIDE_POWER shl 1
-        internal const val HIDE_GRID = HIDE_DEPTH shl 1
+        internal const val HIDE_POWER = 0b1 //1: 隐藏顶部功率
+        internal const val HIDE_DEPTH = HIDE_POWER shl 1 //2: 隐藏左边深度
+        internal const val HIDE_GRID = HIDE_DEPTH shl 1 //4: 隐藏网格
+        internal const val HIDE_LABEL = HIDE_GRID shl 1 //8: 隐藏左上角标签
 
         internal var hideFunInt: Int by HawkPropertyValue<Any, Int>(0)
 
@@ -365,6 +372,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //强制指定功率深度
             AppointPowerDepthItem()()
 
+            //备注标签
+            PTCLabelItem()()
+
             //字体大小, 边距
             LabelSizeItem()() {
                 itemTextFontSize = textFontSize
@@ -392,6 +402,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 observeItemChange {
                     val type = currentLaserTypeInfo().type
                     gridPrintType = type
+
+                    updateTablePreview()
                 }
             }
 
@@ -404,6 +416,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     //保存最后一次选择的dpi
                     val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
                     HawkEngraveKeys.lastDpi = dpi
+
+                    updateTablePreview()
                 }
             }
         }
@@ -422,7 +436,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     /**标签 Power/Depth 文本字体大小*/
     @MM
     val labelTextFontSize: Float
-        get() = textFontSize * 2
+        get() = textFontSize * 1.5f
 
     fun parseParameterComparisonTable(): List<BaseRenderer> {
         @Pixel val bounds = tableBounds
@@ -462,6 +476,31 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             printPrecision = numberTextItem.elementBean.printPrecision
             printCount = numberTextItem.elementBean.printCount
         })
+        //左上角标签文本
+        val labelTextItem = LPTextElement(LPElementBean().apply {
+            mtype = LPDataConstant.DATA_TYPE_TEXT
+            fontSize = powerTextItem.elementBean.fontSize * 0.5f
+            val defaultLabel = buildString {
+                append(gridLayerId.toLayerInfo()?.label ?: "")
+                append(" ${gridPrintType.toLaserTypeString(true)}")
+                append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).des}")
+            }
+            text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
+                "%1",
+                defaultLabel
+            )
+            name = text
+
+            charSpacing = numberTextItem.elementBean.charSpacing
+            printPrecision = numberTextItem.elementBean.printPrecision
+            printCount = numberTextItem.elementBean.printCount
+        })
+
+        val offsetTop = if (!hideFunInt.have(HIDE_LABEL)) {
+            labelTextItem.getTextHeight() + elementMargin
+        } else {
+            0f
+        }
 
         //LPElementBean
         fun createGridItemBean(): LPElementBean = LPElementBean().apply {
@@ -480,7 +519,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val depthTextWidth = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextWidth()
         val depthTextHeight = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextHeight()
         val leftTextWidth = depthTextHeight + numberTextItem.getTextWidth() + elementMargin
-        val topTextHeight = powerTextHeight + numberTextItem.getTextHeight() + elementMargin
+        val topTextHeight =
+            offsetTop + powerTextHeight + numberTextItem.getTextHeight() + elementMargin
 
         //格子开始的地方
         val gridLeft = bounds.left + elementMargin + leftTextWidth
@@ -566,7 +606,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             powerNumberItem.elementBean.left =
                 (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
             powerNumberItem.elementBean.top =
-                (bounds.top + powerTextHeight + elementMargin).toMm()
+                (bounds.top + offsetTop + powerTextHeight + elementMargin).toMm()
             numberTextBeanList.add(powerNumberItem.elementBean)
 
             if (powerIndex == 0 && depthValueList.isEmpty()) {
@@ -665,10 +705,18 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //---数值
         beanList.addAll(numberTextBeanList)
 
+        //Label
+        labelTextItem.elementBean.left =
+            (bounds.centerX() - labelTextItem.getTextWidth() / 2).toMm()
+        labelTextItem.elementBean.top = bounds.top.toMm()
+        if (!hideFunInt.have(HIDE_LABEL)) {
+            beanList.add(labelTextItem.elementBean)
+        }
+
         //---文本
         powerTextItem.elementBean.left =
             (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
-        powerTextItem.elementBean.top = (bounds.top).toMm()
+        powerTextItem.elementBean.top = (bounds.top + offsetTop).toMm()
         if (!hideFunInt.have(HIDE_POWER)) {
             beanList.add(powerTextItem.elementBean)
         }

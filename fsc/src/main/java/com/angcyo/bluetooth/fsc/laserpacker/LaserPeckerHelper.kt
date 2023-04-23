@@ -148,6 +148,7 @@ object LaserPeckerHelper {
     const val DPI_2540 = 2540f
 
     //雕刻激光类型选择
+    /**[com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo]*/
     const val LASER_TYPE_WHITE = 0x01.toByte() //1为1064nm激光 (白光-雕)
 
     const val LASER_TYPE_BLUE = 0x00.toByte() //0为450nm激光 (蓝光-烧)
