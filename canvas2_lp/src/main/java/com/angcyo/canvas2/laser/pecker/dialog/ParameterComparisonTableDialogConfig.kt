@@ -149,6 +149,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
             delegate ?: return
+            HawkEngraveKeys.enableTransferIndexCheck = false //可选, 关闭索引检查, 每次都重新传输 = true //必须
             HawkEngraveKeys.enableSingleItemTransfer = true //必须
             val bounds = tableBounds
 
@@ -216,6 +217,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**添加视力表*/
         fun addVisualChart(delegate: CanvasRenderDelegate?) {
             delegate ?: return
+            HawkEngraveKeys.enableTransferIndexCheck = false //可选, 关闭索引检查, 每次都重新传输
             HawkEngraveKeys.enableSingleItemTransfer = true //必须
             val bounds = tableBounds
 
@@ -702,6 +704,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     @WorkerThread
     private fun addParameterComparisonTable() {
         val delegate = renderDelegate ?: return
+        HawkEngraveKeys.enableTransferIndexCheck = false //可选, 关闭索引检查, 每次都重新传输
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
         delegate.renderManager.addElementRenderer(
