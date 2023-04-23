@@ -14,14 +14,18 @@ import com.angcyo.library.ex._string
  */
 class LayerSegmentItem : EngraveSegmentScrollItem() {
 
+    /**是否要包含切割图层*/
+    var itemIncludeCutLayer = true
+
     init {
         itemText = _string(R.string.engrave_layer_config)
-        itemSegmentList = LayerHelper.getEngraveLayerList(false)
+        itemSegmentList = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
     }
 
-    fun currentLayerInfo() = LayerHelper.getEngraveLayerList(false)[itemCurrentIndex]
+    /**当前图层信息*/
+    fun currentLayerInfo() = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)[itemCurrentIndex]
 }

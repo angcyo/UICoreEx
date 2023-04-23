@@ -3,9 +3,9 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
+import com.angcyo.canvas2.laser.pecker.dialog.updateTablePreview
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.eachItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.MM
@@ -94,17 +94,8 @@ class LabelSizeItem : DslAdapterItem() {
 
     /**popup销毁后, 刷新item*/
     fun onPopupDismiss(window: TargetWindow): Boolean {
-        updateTablePreview()
+        itemDslAdapter.updateTablePreview()
         updateAdapterItem()
         return false
     }
-
-    fun updateTablePreview() {
-        itemDslAdapter?.eachItem { index, dslAdapterItem ->
-            if (dslAdapterItem is TablePreviewItem) {
-                dslAdapterItem.updatePreview()
-            }
-        }
-    }
-
 }

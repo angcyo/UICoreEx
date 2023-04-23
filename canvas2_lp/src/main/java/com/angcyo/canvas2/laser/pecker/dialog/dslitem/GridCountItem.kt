@@ -3,9 +3,9 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
+import com.angcyo.canvas2.laser.pecker.dialog.updateTablePreview
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.eachItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.component.lastContext
@@ -46,6 +46,8 @@ class GridCountItem : DslAdapterItem() {
         itemHolder.tv(R.id.columns_text_view)?.text = "$itemColumns"
         itemHolder.tv(R.id.rows_text_view)?.text = "$itemRows"
         itemHolder.tv(R.id.threshold_text_view)?.text = "${itemPowerDepthThreshold.toInt()}"
+        itemHolder.tv(R.id.hide_fun_view)?.text =
+            "${ParameterComparisonTableDialogConfig.hideFunInt}"
 
         itemHolder.click(R.id.columns_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
@@ -94,21 +96,28 @@ class GridCountItem : DslAdapterItem() {
                 }
             }
         }
-    }
 
-    /**popup销毁后, 刷新item*/
-    fun onPopupDismiss(window: TargetWindow): Boolean {
-        updateTablePreview()
-        updateAdapterItem()
-        return false
-    }
-
-    fun updateTablePreview() {
-        itemDslAdapter?.eachItem { index, dslAdapterItem ->
-            if (dslAdapterItem is TablePreviewItem) {
-                dslAdapterItem.updatePreview()
+        //需要隐藏的功能
+        itemHolder.click(R.id.hide_fun_view) {
+            lastContext.keyboardNumberWindow(it) {
+                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
+                onDismiss = this@GridCountItem::onPopupDismiss
+                keyboardBindTextView = it as? TextView
+                bindPendingDelay = -1 //关闭限流输入
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
+                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
+                onNumberResultAction = { value ->
+                    ParameterComparisonTableDialogConfig.hideFunInt = value.toInt()
+                    onItemChangeAction()
+                }
             }
         }
     }
 
+    /**popup销毁后, 刷新item*/
+    fun onPopupDismiss(window: TargetWindow): Boolean {
+        itemDslAdapter.updateTablePreview()
+        updateAdapterItem()
+        return false
+    }
 }

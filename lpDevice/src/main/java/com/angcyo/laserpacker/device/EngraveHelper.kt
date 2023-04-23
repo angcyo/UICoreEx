@@ -55,11 +55,15 @@ object EngraveHelper {
         //8位随机数255
         //16位随机数65535 碰撞概率:7 9 8 11 14 14 10 11
         return (nano and 0xfff_ffff).toInt()*/
-        var index = (System.nanoTime() shr 4).toInt().absoluteValue
+
+        /*var index = (System.nanoTime() shr 4).toInt().absoluteValue
         if (index == lastEngraveIndex) {
             index += engraveIndex++
         }
-        lastEngraveIndex = index
+        lastEngraveIndex = index*/
+
+        val index = System.currentTimeMillis().toInt().absoluteValue
+        Thread.sleep(1)//强行等待1毫秒
         return index
     }
 

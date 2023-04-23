@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:orientation="horizontal">
 
         <com.angcyo.widget.text.DslTextView
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/lib_xxhdpi"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:orientation="horizontal">
 
         <com.angcyo.widget.text.DslTextView
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/lib_xxhdpi"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:orientation="horizontal">
 
         <com.angcyo.widget.text.DslTextView
@@ -100,6 +100,22 @@
             android:paddingVertical="@dimen/lib_sdpi"
             android:singleLine="true"
             tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/hide_fun_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_dpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="5"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="111" />
 
     </LinearLayout>
 

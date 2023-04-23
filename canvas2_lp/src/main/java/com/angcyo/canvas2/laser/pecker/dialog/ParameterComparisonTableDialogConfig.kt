@@ -14,6 +14,7 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.AppointPowerDepthItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
@@ -26,6 +27,8 @@ import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.BaseRecyclerDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.eachItem
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.laserpacker.LPDataConstant
@@ -41,6 +44,7 @@ import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.have
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IValueUnit
@@ -97,6 +101,17 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         /**额外追加的行列范围
          * [行:列 行:列 行:列] */
         internal var rowsColumnsRange: String by HawkPropertyValue<Any, String>("")
+
+        /**直接指定要生成的功率和深度
+         * [功率 功率 功率 功率.深度 深度 深度] */
+        internal var appointPowerDepth: String by HawkPropertyValue<Any, String>("")
+
+        /**需要隐藏的元素*/
+        internal const val HIDE_POWER = 0b1
+        internal const val HIDE_DEPTH = HIDE_POWER shl 1
+        internal const val HIDE_GRID = HIDE_DEPTH shl 1
+
+        internal var hideFunInt: Int by HawkPropertyValue<Any, Int>(0)
 
         /**按键大小*/
         internal var keyboardNumSize = 45 * dpi
@@ -345,6 +360,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //额外的行列范围
             RowsColumnsRangeItem()()
 
+            //强制指定功率深度
+            AppointPowerDepthItem()()
+
             //字体大小, 边距
             LabelSizeItem()() {
                 itemTextFontSize = textFontSize
@@ -358,10 +376,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //图层选择
             LayerSegmentItem()() {
-                itemCurrentIndex = LayerHelper.getEngraveLayerList(false)
+                itemIncludeCutLayer = true
+                itemCurrentIndex = LayerHelper.getEngraveLayerList(itemIncludeCutLayer)
                     .indexOfFirst { it.layerId == gridLayerId }
                 observeItemChange {
                     gridLayerId = currentLayerInfo().layerId
+                    updateTablePreview()
                 }
             }
 
@@ -454,9 +474,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             printDepth = numberTextItem.elementBean.printDepth
         }
 
-        val powerTextHeight = powerTextItem.getTextHeight()
-        val depthTextWidth = depthTextItem.getTextWidth()
-        val depthTextHeight = depthTextItem.getTextHeight()
+        val powerTextHeight = if (hideFunInt.have(HIDE_POWER)) 0f else powerTextItem.getTextHeight()
+        val depthTextWidth = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextWidth()
+        val depthTextHeight = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextHeight()
         val leftTextWidth = depthTextHeight + numberTextItem.getTextWidth() + elementMargin
         val topTextHeight = powerTextHeight + numberTextItem.getTextHeight() + elementMargin
 
@@ -494,15 +514,51 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         @Pixel
         var x = gridLeft
         var y = gridTop
-        for (power in 0 until horizontalGridCount) {
-            //功率
-            x = gridLeft + power * gridWidth
 
-            if (power > 0) {
+        //需要创建的功率和深度的数值
+        val powerValueList = mutableListOf<Int>()
+        val depthValueList = mutableListOf<Int>()
+
+        //默认功率和深度
+        for (power in 0 until horizontalGridCount) {
+            powerValueList.add((power + 1) * horizontalStep)
+        }
+        for (depth in 0 until verticalGridCount) {
+            depthValueList.add((depth + 1) * verticalStep)
+        }
+
+        if (appointPowerDepth.isNotBlank()) {
+            //指定功率和深度
+            val splitList = if (appointPowerDepth.contains(":")) appointPowerDepth.split(":")
+            else appointPowerDepth.split(".") //功率 深度
+            splitList.getOrNull(0)?.split(" ")?.filter { it.isNotBlank() }
+                ?.apply {
+                    powerValueList.clear()
+                    mapTo(powerValueList) {
+                        it.toIntOrNull() ?: 0
+                    }
+                }
+            splitList.getOrNull(1)?.split(" ")?.filter { it.isNotBlank() }
+                ?.apply {
+                    depthValueList.clear()
+                    mapTo(depthValueList) {
+                        it.toIntOrNull() ?: 0
+                    }
+                }
+        }
+
+        powerValueList.forEachIndexed { powerIndex, powerValue ->
+            if (powerIndex >= horizontalGridCount) {
+                return@forEachIndexed
+            }
+            //功率值文本
+            x = gridLeft + powerIndex * gridWidth
+
+            if (powerIndex > 0) {
                 powerList.add(x)
             }
             val powerNumberItem = LPTextElement(createGridItemBean().apply {
-                text = "${(power + 1) * horizontalStep}"
+                text = "$powerValue"
                 name = "power[${text}]"
             })
             powerNumberItem.elementBean.left =
@@ -511,16 +567,26 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 (bounds.top + powerTextHeight + elementMargin).toMm()
             numberTextBeanList.add(powerNumberItem.elementBean)
 
-            for (depth in 0 until verticalGridCount) {
-                //深度
-                y = gridTop + depth * gridHeight
+            if (powerIndex == 0 && depthValueList.isEmpty()) {
+                //没有深度值时, 画一根线
+                depthList.add(gridTop)
+            }
+            depthValueList.forEachIndexed { depthIndex, depthValue ->
+                if (depthIndex >= verticalGridCount) {
+                    return@forEachIndexed
+                }
+                //深度值文本
+                y = gridTop + depthIndex * gridHeight
 
-                if (power == 0) {
-                    if (depth > 0) {
+                if (powerIndex == 0) {
+                    if (depthIndex > 0) {
                         depthList.add(y)
+                    } else if (depthValueList.size() <= 1) {
+                        //只有一个深度值时, 在尾部画一根线
+                        depthList.add(gridTop + (depthIndex + 1) * gridHeight)
                     }
                     val depthNumberItem = LPTextElement(createGridItemBean().apply {
-                        text = "${(depth + 1) * horizontalStep}"
+                        text = "$depthValue"
                         name = "depth[${text}]"
                     })
                     depthNumberItem.elementBean.left =
@@ -530,14 +596,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     numberTextBeanList.add(depthNumberItem.elementBean)
                 }
 
-                val powerValue = (power + 1) * horizontalStep
-                val depthValue = (depth + 1) * verticalStep
+                //格子数据
                 if (powerValue * depthValue <= powerDepthThreshold ||
-                    isRowColumnInRange(depth + 1, power + 1)
+                    isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
                     gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
-                        paintStyle = Paint.Style.FILL.toPaintStyleInt()
+                        paintStyle = if (gridLayerId == LayerHelper.LAYER_CUT)
+                            Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
                         width = max(2f, (gridWidth - gridMargin * 2)).toMm()
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
@@ -558,7 +624,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //---横竖线
         val gCodeHandler = GCodeWriteHandler()
         gCodeHandler.unit = IValueUnit.MM_UNIT
-        gCodeHandler.isAutoCnc = false
+        gCodeHandler.isAutoCnc = vmApp<LaserPeckerModel>().isCSeries()
         val gCodeWriter = StringWriter()
         gCodeHandler.writer = gCodeWriter
         gCodeHandler.onPathStart()
@@ -582,15 +648,17 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         gCodeWriter.flush()
         gCodeWriter.close()
 
-        val gcode = gCodeWriter.toString()
-        beanList.add(createGridItemBean().apply {
-            mtype = LPDataConstant.DATA_TYPE_GCODE
-            paintStyle = Paint.Style.STROKE.toPaintStyleInt()
-            data = gcode
-            left = gridLeft.toMm()
-            top = gridTop.toMm()
-            name = "gridLine"
-        })
+        if (!hideFunInt.have(HIDE_GRID)) {
+            val gcode = gCodeWriter.toString()
+            beanList.add(createGridItemBean().apply {
+                mtype = LPDataConstant.DATA_TYPE_GCODE
+                paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                data = gcode
+                left = gridLeft.toMm()
+                top = gridTop.toMm()
+                name = "gridLine"
+            })
+        }
 
         //---数值
         beanList.addAll(numberTextBeanList)
@@ -599,14 +667,17 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         powerTextItem.elementBean.left =
             (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
         powerTextItem.elementBean.top = (bounds.top).toMm()
-        beanList.add(powerTextItem.elementBean)
+        if (!hideFunInt.have(HIDE_POWER)) {
+            beanList.add(powerTextItem.elementBean)
+        }
 
         //左边的深度文本, 旋转了-90度, 所以需要特殊处理
         depthTextItem.elementBean.left =
             (gridLeft - numberTextItem.getTextWidth() - elementMargin * 2 - depthTextHeight).toMm()
         depthTextItem.elementBean.top = (gridTop + gridHeightSum / 2 + depthTextWidth / 2).toMm()
-
-        beanList.add(depthTextItem.elementBean)
+        if (!hideFunInt.have(HIDE_DEPTH)) {
+            beanList.add(depthTextItem.elementBean)
+        }
 
         //---格子
         beanList.addAll(gridItemList)
@@ -639,6 +710,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             Reason.user,
             Strategy.normal
         )
+    }
+}
+
+fun DslAdapter?.updateTablePreview() {
+    this?.eachItem { index, dslAdapterItem ->
+        if (dslAdapterItem is TablePreviewItem) {
+            dslAdapterItem.updatePreview()
+        }
     }
 }
 
