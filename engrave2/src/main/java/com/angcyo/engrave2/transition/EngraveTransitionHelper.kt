@@ -88,6 +88,11 @@ object EngraveTransitionHelper {
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
         transition.covertBitmap2BytesJni(dpiBitmap, transferDataEntity.dataPath)
+
+        //灰度图, 需要严格使用图片的宽高否则雕刻出来的数据会异常
+        transferDataEntity.width = dpiBitmap.width
+        transferDataEntity.height = dpiBitmap.height
+
         span {
             append("转图片") {
                 foregroundColor = accentColor
@@ -193,52 +198,6 @@ object EngraveTransitionHelper {
 
             dpiBitmap.recycle()
         }
-
-
-        /* //val renderUnit = IValueUnit.MM_RENDER_UNIT
-         //renderUnit.convertValueToPixel(transferDataEntity.x.toFloat()).ceilInt()
-         //renderUnit.convertValueToPixel(transferDataEntity.y.toFloat()).ceilInt()
-         val offsetLeft = 0
-         val offsetTop = 0
-
-         val bitmapPathList = transition.covertBitmap2BP(dpiBitmap)
-
-         //要传输的数据路径
-         val data = byteWriter {
-             bitmapPathList.forEach {
-                 write(it.x, 2)
-                 write(it.y, 2)
-                 write(it.len, 2)
-             }
-         }
-         transferDataEntity.dataPath =
-             data.writeTransferDataPath("$index")
-         transferDataEntity.lines = bitmapPathList.size
-
-         //2:路径数据写入日志
-         if (HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
-             EngraveHelper.saveEngraveData(
-                 index,
-                 bitmapPathList.toEngraveLog(),
-                 LPDataConstant.EXT_BP
-             )
-         }
-
-         //3:保存一份数据的预览图
-         if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN && !ignoreBitmapLog(dpiBitmap)) {
-             val previewBitmap = bitmapPathList.toEngraveBitmap(
-                 dpiBitmap.width,
-                 dpiBitmap.height,
-                 offsetLeft,
-                 offsetTop
-             )
-             EngraveHelper.saveEngraveData(
-                 index,
-                 previewBitmap,
-                 LPDataConstant.EXT_DATA_PREVIEW,
-                 true
-             )
-         }*/
 
         span {
             append("转路径") {
@@ -369,27 +328,6 @@ object EngraveTransitionHelper {
             operateBitmap.recycle()
         }
 
-        /*//2023-4-14 废弃
-        //白色1 黑色0; 白色传1, 1不出光. 黑色传0, 0出光, 数据压缩
-        val pair = transition.covertBitmap2Dithering(operateBitmap, true)
-        transferDataEntity.dataPath =
-            pair.second.writeTransferDataPath("${transferDataEntity.index}")
-
-        //路径数据写入日志
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            pair.first,
-            LPDataConstant.EXT_DT
-        )
-        //3:保存一份数据的预览图
-        val previewBitmap =
-            pair.first.toEngraveDitheringBitmap(operateBitmap.width, operateBitmap.height)
-        EngraveHelper.saveEngraveData(
-            transferDataEntity.index,
-            previewBitmap,
-            LPDataConstant.EXT_DATA_PREVIEW,
-            true
-        )*/
         return transferDataEntity
     }
 
