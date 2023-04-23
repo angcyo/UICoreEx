@@ -68,7 +68,7 @@ fun MutableList<EngraveLayerInfo>.removeCutLayer(): MutableList<EngraveLayerInfo
 fun Int?.toLayerId(): String? {
     return when (this) {
         LPDataConstant.DATA_MODE_BLACK_WHITE -> LayerHelper.LAYER_FILL
-        LPDataConstant.DATA_MODE_DITHERING -> LayerHelper.LAYER_PICTURE
+        LPDataConstant.DATA_MODE_GREY, LPDataConstant.DATA_MODE_DITHERING -> LayerHelper.LAYER_PICTURE
         LPDataConstant.DATA_MODE_GCODE -> LayerHelper.LAYER_LINE
         else -> null
     }
