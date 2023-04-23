@@ -176,8 +176,13 @@ class PreviewControlItem : BasePreviewItem() {
             itemList.add(pausePreviewItem!!)
             itemList.add(continuePreviewItem!!)
 
-            if (laserPeckerModel.isCSeries() && !laserPeckerModel.isZOpen()) {
-                //C1专属 第三轴滚动 //2023-4-14 z轴下, 不显示滚动按钮
+            if (laserPeckerModel.isCSeries() &&
+                !laserPeckerModel.isZOpen() &&
+                !laserPeckerModel.isROpen()
+            ) {
+                //C1专属 第三轴滚动
+                //2023-4-14 z轴下, 不显示滚动按钮
+                //2023-4-23 r轴下, 不显示滚动按钮
                 itemList.add(scrollPreviewItem!!)
             }
         } else {
