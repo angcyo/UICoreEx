@@ -142,7 +142,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         _lastEngraveIndex = queryState.index
 
                         if (_lastEngraveTimes != queryState.printTimes) {
-                            _logEngraveDuration(queryState.index, _lastEngraveTimes)
+                            _logEngraveDuration(
+                                queryState.index,
+                                _lastEngraveTimes,
+                                "雕刻次数不一致:${_lastEngraveTimes}/${queryState.printTimes}"
+                            )
                             _lastEngraveTimes = queryState.printTimes
                             _engraveTaskEntity?.apply {
                                 indexPrintStartTime = nowTime()
@@ -170,14 +174,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**打印一下*/
-    fun _logEngraveDuration(index: Int, printTimes: Int) {
+    fun _logEngraveDuration(index: Int, printTimes: Int, reason: String?) {
         val nowTime = nowTime()
         val duration = nowTime - (_engraveTaskEntity?.indexPrintStartTime ?: 0)
         buildString {
-            append("雕刻完成:${_engraveTaskId} ")
-            append("索引:${index} ")
+            append("雕刻完成[${_engraveTaskId}]")
+            append(":${index} ")
             append("第${printTimes}次 ")
-            append("耗时:${duration.toMsTime()}")
+            append("耗时:${duration.toMsTime()} ")
+            append(reason ?: "")
         }.writeEngraveLog(L.INFO)
     }
 
@@ -236,13 +241,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**雕刻完成后, 触发下一个雕刻*/
     fun _checkEngraveNextOnIdle(index: Int, printTimes: Int?, progress: Int) {
+        deviceStateModel.pauseLoopCheckState(true)
+
         val nowTime = nowTime()
         UMEvent.ENGRAVE.umengEventValue {
             val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
             put(UMEvent.KEY_DURATION, duration.toString())
         }
-        _logEngraveDuration(index, _lastEngraveTimes)
+        _logEngraveDuration(index, _lastEngraveTimes, "机器空闲状态")
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
         //强制更新进度到100
@@ -252,7 +259,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         EngraveFlowDataHelper.finishIndexEngrave(_engraveTaskId, index)
 
         if (isBatchEngraveSupport()) {
-            finishEngrave()
+            finishEngrave("批量雕刻指令完成")
         } else {
             if (HawkEngraveKeys.enableSingleItemTransfer &&
                 !isAllEngraveFinish(_engraveTaskId)
@@ -338,7 +345,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         if (nextIndex == null) {
             //雕刻完成
-            finishEngrave()
+            finishEngrave("无下一个数据")
         } else {
             //开始雕刻
             val engraveDataEntity = _generateEngraveData(taskId, nextIndex)
@@ -518,9 +525,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**完成雕刻*/
     @CallPoint
-    fun finishEngrave() {
+    fun finishEngrave(reason: String?) {
+        deviceStateModel.pauseLoopCheckState(true)
+
         isSendEngraveCmd = false
-        "完成雕刻[${_engraveTaskId}]".writeEngraveLog()
+        "完成雕刻[${_engraveTaskId}]:${reason ?: ""}".writeEngraveLog()
 
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
@@ -583,11 +592,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
         deviceStateModel.pauseLoopCheckState(true)
         ExitCmd().enqueue { bean, error ->
-            deviceStateModel.pauseLoopCheckState(false)
             countDownLatch?.countDown()
             if (error == null || error is NoDeviceException /*无设备连接*/) {
                 //退出成功
-                finishEngrave()
+                finishEngrave(reason)
+            } else {
+                deviceStateModel.pauseLoopCheckState(false)
             }
         }
 
@@ -765,7 +775,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
 
-            "雕刻进度[${it.taskId}]:${index} ${currentProgress}%/${it.progress}%".writeEngraveLog()
+            "雕刻进度[${it.taskId}]:${index} ${currentProgress}%/${it.progress}% ${printTimes ?: ""}".writeEngraveLog()
         }
     }
 

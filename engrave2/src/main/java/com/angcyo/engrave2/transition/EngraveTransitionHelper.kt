@@ -205,6 +205,7 @@ object EngraveTransitionHelper {
             }
             append("[$index]->")
             append(transferConfigEntity.name)
+            append(" ${transferDataEntity.lines}行 ")
             append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${transferConfigEntity.dpi}") {
                 foregroundColor = accentColor
             }
@@ -388,6 +389,7 @@ object EngraveTransitionHelper {
                     }
                     append("[$index]->")
                     append(transferConfigEntity.name)
+                    append(" ${transferDataEntity.lines}行 ")
                     append(" [${bitmap.width} x ${bitmap.height}] dpi:${transferConfigEntity.dpi}") {
                         foregroundColor = accentColor
                     }
@@ -410,6 +412,7 @@ object EngraveTransitionHelper {
                 }
                 append("[$index]->")
                 append(transferConfigEntity.name)
+                append(" ${transferDataEntity.lines}行 ")
                 append(" dpi:${transferConfigEntity.dpi}")
                 append(" [path]->${fileSize.toSizeString()}")
                 append(" 耗时:${LTime.time()}") {
