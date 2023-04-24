@@ -237,9 +237,14 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
             val translateControl = delegate.controlManager.translateControl
             translateControl.startControl(renderer)
 
+            //显示xy坐标
+            renderer.showLocationRender(Reason.preview, null)
             itemHolder.context.directionAdjustWindow(it) {
                 onDismiss = {
                     translateControl.endControl()
+
+                    //显示wh大小
+                    renderer.showSizeRender(Reason.preview, null)
                     false
                 }
                 onDirectionAdjustAction = { direction, step ->
