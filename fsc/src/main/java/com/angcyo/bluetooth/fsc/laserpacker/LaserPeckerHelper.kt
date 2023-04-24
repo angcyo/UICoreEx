@@ -93,12 +93,6 @@ object LaserPeckerHelper {
     //校验位的占用字节数量
     const val CHECK_SIZE = 2
 
-    //数据返回超时时长, 毫秒
-    const val DEFAULT_RECEIVE_TIMEOUT = 3_000L
-
-    //指令返回超时最大时长, 毫秒
-    const val DEFAULT_MAX_RECEIVE_TIMEOUT = 30_000L
-
     //设备支持的分辨率, 请优先使用dpi
     const val PX_4K: Byte = 0x01
     const val PX_2K: Byte = 0x02

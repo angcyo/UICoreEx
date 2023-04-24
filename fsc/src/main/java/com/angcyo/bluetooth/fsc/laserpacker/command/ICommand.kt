@@ -1,8 +1,12 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.IReceiveBeanAction
+import com.angcyo.bluetooth.fsc.ISendProgressAction
+import com.angcyo.bluetooth.fsc.ReceivePacket
+import com.angcyo.bluetooth.fsc.ReceiveTimeOutException
+import com.angcyo.bluetooth.fsc.WaitReceivePacket
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.packetHeadSize
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.toastQQ
@@ -55,7 +59,7 @@ interface ICommand {
     fun toHexCommandString(): String = ""
 
     /**获取指令超时时长, 毫秒*/
-    fun getReceiveTimeout(): Long = DEFAULT_RECEIVE_TIMEOUT
+    fun getReceiveTimeout(): Long = HawkEngraveKeys.receiveTimeout
 
     /**转换成日志*/
     fun toCommandLogString(): String

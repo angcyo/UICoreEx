@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.library.ex.padHexString
@@ -19,7 +20,7 @@ data class ExitCmd(
     override fun commandFunc(): Byte = 0xff.toByte()
 
     override fun getReceiveTimeout(): Long {
-        return LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
+        return HawkEngraveKeys.receiveTimeout
     }
 
     override fun toHexCommandString(): String {

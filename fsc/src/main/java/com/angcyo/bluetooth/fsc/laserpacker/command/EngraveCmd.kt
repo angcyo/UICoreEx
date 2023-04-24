@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.R
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
@@ -112,7 +113,7 @@ data class EngraveCmd(
 
     /**C1归位至多需要30s*/
     override fun getReceiveTimeout(): Long {
-        return LaserPeckerHelper.DEFAULT_MAX_RECEIVE_TIMEOUT
+        return HawkEngraveKeys.receiveTimeoutMax
     }
 
     override fun toHexCommandString(): String {

@@ -21,6 +21,12 @@ object HawkEngraveKeys {
     /**默认的阈值*/
     val DEFAULT_THRESHOLD: Float = LibHawkKeys.grayThreshold.toFloat()
 
+    /**超时时长*/
+    val receiveTimeout: Long by HawkPropertyValue<Any, Long>(3_000)
+
+    /**[receiveTimeout]最大*/
+    val receiveTimeoutMax: Long by HawkPropertyValue<Any, Long>(30_000)
+
     //---
 
     /**循环查询状态最小延迟间隔, 毫秒*/
