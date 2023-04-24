@@ -282,7 +282,7 @@ class WaitReceivePacket(
 }
 
 /**接收超时异常*/
-class ReceiveTimeOutException(message: CharSequence = _string(R.string.command_timeout_tip).writeBleLog()) :
+class ReceiveTimeOutException(message: CharSequence = _string(R.string.device_busy_tip).writeBleLog()) :
     Exception(message.toStr())
 
 /**接收取消异常*/

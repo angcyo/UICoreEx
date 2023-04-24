@@ -19,7 +19,7 @@ data class ExitCmd(
     override fun commandFunc(): Byte = 0xff.toByte()
 
     override fun getReceiveTimeout(): Long {
-        return LaserPeckerHelper.DEFAULT_MAX_RECEIVE_TIMEOUT
+        return LaserPeckerHelper.DEFAULT_RECEIVE_TIMEOUT
     }
 
     override fun toHexCommandString(): String {
