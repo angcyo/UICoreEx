@@ -52,6 +52,7 @@ import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
+import com.angcyo.library.utils.BuildHelper
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.pow
@@ -652,7 +653,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         name = "grid[${powerValue}:${depthValue}]"
 
                         //参数
-                        dataMode = gridLayerId.toDataMode()
+                        dataMode = if (HawkEngraveKeys.checkCpu32 &&
+                            !BuildHelper.isCpu64 &&
+                            gridLayerId == LayerHelper.LAYER_PICTURE
+                        ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
+                        else gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = numberTextItem.elementBean.printCount
                         printPower = powerValue
