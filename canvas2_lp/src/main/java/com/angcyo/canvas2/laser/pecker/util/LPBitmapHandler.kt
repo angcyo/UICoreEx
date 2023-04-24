@@ -25,6 +25,7 @@ import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
@@ -87,7 +88,8 @@ object LPBitmapHandler {
     /**印章处理*/
     fun toSeal(context: Context, bitmap: Bitmap, sealThreshold: Float): Bitmap? {
         //先黑白画?还是后黑白画?
-        return OpenCV.bitmapToSeal(context, bitmap, sealThreshold.toInt())
+        val bgBitmap = bitmap.addBgColor(Color.WHITE)
+        return OpenCV.bitmapToSeal(context, bgBitmap, sealThreshold.toInt())
     }
 
     /**转GCode处理*/
