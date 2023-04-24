@@ -14,7 +14,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.core.component.fileSelector
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
@@ -40,7 +39,6 @@ import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.FileUtils
 import kotlin.math.max
 
 
@@ -98,6 +96,7 @@ class DeviceSettingFragment : BaseDslFragment() {
         val config = LaserPeckerConfigHelper.readDeviceSettingConfig()
 
         val isC1 = productInfo?.isCI() == true
+        val isCSeries = productInfo?.isCSeries() == true
         val isL4 = productInfo?.isLIV() == true
 
         //强制隐藏Z/S/R开关
@@ -231,8 +230,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChangedAction = {
                         settingParser?.clearFlag()
                         settingParser?.zFlag = if (it) 1 else 0
-                        settingParser?.updateSetting()
-                        renderData()
+                        updateSettingTimeout(settingParser, isCSeries)
                     }
                 }
                 if (!zModelList.isNullOrEmpty() && zModelList.size() > 1) {
@@ -286,8 +284,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     itemSwitchChangedAction = {
                         settingParser?.clearFlag()
                         settingParser?.rFlag = if (it) 1 else 0
-                        settingParser?.updateSetting()
-                        renderData()
+                        updateSettingTimeout(settingParser, isCSeries)
                     }
                 }
             }
@@ -309,26 +306,8 @@ class DeviceSettingFragment : BaseDslFragment() {
                         settingParser?.clearFlag()
                         settingParser?.sFlag = if (it) 1 else 0
 
-                        if (isL4) {
-                            //L4 调整滑台开关需要等待设备返回
-                            this@DeviceSettingFragment.engraveLoadingAsyncTimeout({
-                                syncSingle { countDownLatch ->
-                                    settingParser?.receiveTimeout = 1 * 60 * 1000
-                                    settingParser?.updateSetting { bean, error ->
-                                        settingParser.receiveTimeout = null
-                                        error?.let {
-                                            toastQQ(it.message)
-                                        }
-                                        countDownLatch.countDown()
-                                    }
-                                }
-                            }) {
-                                renderData()
-                            }
-                        } else {
-                            settingParser?.updateSetting()
-                            renderData()
-                        }
+                        //L4 调整滑台开关需要等待设备返回
+                        updateSettingTimeout(settingParser, isL4)
                     }
                 }
             }
@@ -545,6 +524,28 @@ class DeviceSettingFragment : BaseDslFragment() {
 
     fun DslAdapterItem.initItem() {
         drawBottom()
+    }
+
+    fun updateSettingTimeout(settingParser: QuerySettingParser?, timeout: Boolean) {
+        if (timeout) {
+            engraveLoadingAsyncTimeout({
+                syncSingle { countDownLatch ->
+                    settingParser?.receiveTimeout = 1 * 60 * 1000
+                    settingParser?.updateSetting { bean, error ->
+                        settingParser.receiveTimeout = null
+                        error?.let {
+                            toastQQ(it.message)
+                        }
+                        countDownLatch.countDown()
+                    }
+                }
+            }) {
+                renderData()
+            }
+        } else {
+            settingParser?.updateSetting()
+            renderData()
+        }
     }
 
     fun QuerySettingParser.updateSetting(
