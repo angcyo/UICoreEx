@@ -125,7 +125,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         return deviceSettingData.value?.sFlag == 1 //&& (deviceStateData.value?.sConnect == 1 || isDebug())
     }
 
-    /**C1 移动平台雕刻 */
+    /**C1 移动平台雕刻
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isCarMode]*/
     fun isCarOpen(): Boolean {
         return deviceSettingData.value?.carFlag == 1 //&& (deviceStateData.value?.carConnect == 1 || isDebug())
     }

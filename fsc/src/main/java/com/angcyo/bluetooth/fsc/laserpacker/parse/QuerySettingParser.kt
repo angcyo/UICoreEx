@@ -1,6 +1,5 @@
 package com.angcyo.bluetooth.fsc.laserpacker.parse
 
-import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.command.BaseCommand

@@ -223,6 +223,12 @@ class DeviceStateModel : ViewModel() {
         return moduleState == 4 /*|| isDebugType()*/
     }
 
+    /**是否是C1的小车模式
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isCarOpen]*/
+    fun isCarMode(): Boolean {
+        return deviceStateData.value?.carConnect == 1
+    }
+
     /**激光是否异常, 比如C1未插好激光头*/
     fun isLaserException(): Boolean {
         return deviceStateData.value?.moduleState == 255

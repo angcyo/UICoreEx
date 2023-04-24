@@ -101,7 +101,7 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         //强制隐藏Z/S/R开关
         var forceHideZSR = false
-        forceHideZSR = deviceStateModel.isPenMode()
+        forceHideZSR = deviceStateModel.isPenMode() || deviceStateModel.isCarMode()
 
         //强制隐藏批量雕刻按键
         var forceHideKeyPrint = false
