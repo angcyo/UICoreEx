@@ -200,6 +200,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                     previewModel.previewInfoData.value = null
                     deviceStateModel.startLoopCheckState(false)
                     ExitCmd().enqueue()
+                    syncQueryDeviceState()//因为已经停止轮询了, 所以需要手动查询一次
                 }
             }
         }
