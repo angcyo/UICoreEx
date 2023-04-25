@@ -112,7 +112,7 @@ object HawkEngraveKeys {
     var enableTransferIndexCheck: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**激活第三方GCode数据全转换*/
-    var enableGCodeTransform: Boolean by HawkPropertyValue<Any, Boolean>(false)
+    var enableGCodeTransform: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**是否激活压缩输出GCode*/
     var enableGCodeShrink: Boolean by HawkPropertyValue<Any, Boolean>(true)
