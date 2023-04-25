@@ -2,9 +2,11 @@ package com.angcyo.bluetooth.fsc.laserpacker.parse
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.BaseCommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.core.vmApp
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex.padHexString
@@ -112,19 +114,22 @@ data class QuerySettingParser(
                     throw IllegalStateException("非查询指令!")
                 }
 
+                val laserPeckerModel = vmApp<LaserPeckerModel>()
+                val productInfo = laserPeckerModel.productInfoData.value
+
                 free = readInt(1, free)
                 buzzer = readInt(1, free)
                 view = readInt(1, view)
                 gcodeView = readInt(1, gcodeView)
                 safe = readInt(1, safe)
                 custom = readInt(1, custom)
-                zFlag = readInt(1, zFlag)
+                zFlag = if (productInfo?.isSupportZ() == true) readInt(1, zFlag) else 0
                 zDir = readInt(1, zDir)
                 keyView = readInt(1, keyView)
                 irDst = readInt(1, irDst)
                 keyPrint = readInt(1, keyPrint)
-                rFlag = readInt(1, rFlag)
-                sFlag = readInt(1, sFlag)
+                rFlag = if (productInfo?.isSupportR() == true) readInt(1, rFlag) else 0
+                sFlag = if (productInfo?.isSupportS() == true) readInt(1, sFlag) else 0
                 dir = readInt(1, dir)
                 gcodePower = readInt(1, gcodePower)
                 sRep = readInt(1, sRep)

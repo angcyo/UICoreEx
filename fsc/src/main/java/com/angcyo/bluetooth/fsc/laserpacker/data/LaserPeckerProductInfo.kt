@@ -170,6 +170,10 @@ data class LaserPeckerProductInfo(
 
     /**是否是lp系列*/
     fun isLPSeries() = isL1() || isL2() || isL3() || isL4()
+
+    fun isSupportZ() = ex?.split(",")?.contains("z") == true
+    fun isSupportS() = ex?.split(",")?.contains("s") == true
+    fun isSupportR() = ex?.split(",")?.contains("r") == true
 }
 
 
