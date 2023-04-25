@@ -99,7 +99,8 @@ object LPBitmapHandler {
         return BitmapHandle.toSealHandle(
             bitmap,
             sealThreshold.toInt(),
-            alphaThreshold = LibHawkKeys.alphaThreshold
+            Color.BLACK,
+            LibHawkKeys.alphaThreshold,
         )
     }
 
