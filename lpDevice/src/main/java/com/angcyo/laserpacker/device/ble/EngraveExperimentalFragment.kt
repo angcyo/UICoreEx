@@ -3,9 +3,9 @@ package com.angcyo.laserpacker.device.ble
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
@@ -38,14 +38,6 @@ class EngraveExperimentalFragment : DebugFragment() {
         renderDslAdapter {
 
             renderDebugAction(DebugAction().apply {
-                label = "激活GCode G2/G3指令输出"
-                des = "激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令."
-                key = LibLpHawkKeys::enableVectorArc.name
-                type = Boolean::class.java
-                defValue = LibLpHawkKeys.enableVectorArc
-            })
-
-            renderDebugAction(DebugAction().apply {
                 label = "激活传输数据时的索引检查"
                 des = "激活后,如果设备上已存在数据,则不重新传输."
                 key = HawkEngraveKeys::enableTransferIndexCheck.name
@@ -59,6 +51,14 @@ class EngraveExperimentalFragment : DebugFragment() {
                 key = HawkEngraveKeys::enableGCodeTransform.name
                 type = Boolean::class.java
                 defValue = HawkEngraveKeys.enableGCodeTransform
+            })
+
+            renderDebugAction(DebugAction().apply {
+                label = "激活GCode G2/G3指令输出"
+                des = "激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令."
+                key = LibLpHawkKeys::enableVectorArc.name
+                type = Boolean::class.java
+                defValue = LibLpHawkKeys.enableVectorArc
             })
 
             renderDebugAction(DebugAction().apply {
