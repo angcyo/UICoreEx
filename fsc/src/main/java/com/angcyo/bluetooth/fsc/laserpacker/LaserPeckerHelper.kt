@@ -839,6 +839,10 @@ object LaserPeckerHelper {
                     sendInitCommand(name, address, isAutoConnect, count + 1, end)
                 }
             } else {
+                //初始化失败, 断开蓝牙
+                doBack {
+                    vmApp<FscBleApiModel>().disconnectAll()
+                }
                 end(it)
             }
         }
