@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -13,11 +14,18 @@ import com.angcyo.canvas.render.element.PathElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.util.RenderHelper
 import com.angcyo.engrave2.transition.IEngraveDataProvider
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
+import com.angcyo.library.ex.computePathBounds
+import com.angcyo.library.ex.getTranslateX
+import com.angcyo.library.ex.getTranslateY
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.updateTranslate
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 
@@ -158,4 +166,40 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     }
 
     override fun getEngraveDataName(): String? = elementBean.name
+
+    override fun getEngraveGCode(): String? {
+        if (this is LPBitmapElement && elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
+            return elementBean.data
+        }
+        if (this is LPPathElement && !LPPathElement.isPathFill(elementBean)) {
+            if (elementBean.mtype == LPDataConstant.DATA_TYPE_GCODE) {
+                return elementBean.data
+            }
+        }
+        return null
+    }
+
+    override fun getEngraveGCodeMatrix(): Matrix {
+        val renderMatrix = requestElementRenderProperty().getRenderMatrix()
+        if (this is BaseElement) {
+            val pathList = getDrawPathList()
+            if (!pathList.isNullOrEmpty()) {
+                val bounds = pathList.computePathBounds(acquireTempRectF())
+                val dx = -bounds.left
+                val dy = -bounds.top
+
+                val matrix = Matrix()
+                matrix.setTranslate(dx, dy)
+                bounds.release()
+
+                matrix.postConcat(renderMatrix)
+
+                //强制使用mm单位
+                matrix.updateTranslate(matrix.getTranslateX().toMm(), matrix.getTranslateY().toMm())
+
+                return matrix
+            }
+        }
+        return renderMatrix
+    }
 }

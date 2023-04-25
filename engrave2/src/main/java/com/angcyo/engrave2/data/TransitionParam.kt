@@ -1,5 +1,6 @@
 package com.angcyo.engrave2.data
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.Pixel
@@ -50,5 +51,9 @@ data class TransitionParam(
 
     /**使用图片像素转GCode时, 扫描像素的步长*/
     @Pixel
-    val pixelGCodeGapValue: Float = LibHawkKeys.pathPixelGapValue.toPixel()
+    val pixelGCodeGapValue: Float = LibHawkKeys.pathPixelGapValue.toPixel(),
+
+    /**是否激活压缩输出GCode
+     * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
+    val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
 )

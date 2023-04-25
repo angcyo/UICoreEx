@@ -1,6 +1,7 @@
 package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.library.annotation.Pixel
@@ -37,5 +38,14 @@ interface IEngraveDataProvider {
 
     /**获取数据的名称, 用来log输出*/
     fun getEngraveDataName(): String?
+
+    //
+
+    /**获取原始的GCode内容, 未经过任何处理的数据. 如果没有数据依旧会用
+     * [com.angcyo.engrave2.transition.IEngraveDataProvider.getEngravePathData] 进行GCode输出*/
+    fun getEngraveGCode(): String?
+
+    /**获取GCode[getEngraveGCode]需要进行的转换矩阵*/
+    fun getEngraveGCodeMatrix(): Matrix
 
 }

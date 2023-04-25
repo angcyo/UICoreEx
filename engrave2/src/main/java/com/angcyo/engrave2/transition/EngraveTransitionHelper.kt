@@ -402,12 +402,21 @@ object EngraveTransitionHelper {
             }
         } else {
             //path转GCode
-            val gCodeFile = transition.covertPathStroke2GCode(pathList, params)
+            val gcodeText = provider.getEngraveGCode()
+            val adjust = !HawkEngraveKeys.enableGCodeTransform && !gcodeText.isNullOrBlank()
+
+            val gCodeFile = if (adjust) {
+                //使用GCode原始数据调整
+                transition.adjustGCode(gcodeText!!, provider.getEngraveGCodeMatrix(), params)
+            } else {
+                transition.covertPathStroke2GCode(pathList, params)
+            }
+
             val fileSize = gCodeFile.length()
             saveGCodeEngraveData(transferDataEntity, gCodeFile)
 
             span {
-                append("转GCode") {
+                append("${if (adjust) "调整" else "转"}GCode") {
                     foregroundColor = accentColor
                 }
                 append("[$index]->")

@@ -1,6 +1,7 @@
 package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.engrave2.data.BitmapPath
@@ -71,4 +72,7 @@ interface ITransition {
     /**将路径[pathList]转换成的GCode数据
      * [pathList] 数据应该是所有缩放/旋转/倾斜之后的数据*/
     fun covertPathStroke2GCode(pathList: List<Path>, params: TransitionParam): File
+
+    /**调整原始的GCode数据, 单位会被强制转换成mm单位*/
+    fun adjustGCode(gcodeText: String, matrix: Matrix, params: TransitionParam): File
 }

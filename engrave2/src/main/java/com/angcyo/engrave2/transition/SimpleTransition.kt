@@ -1,12 +1,13 @@
 package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import android.view.Gravity
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.engrave2.data.TransitionParam
-import com.angcyo.gcode.GCodeAdjust
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.library.app
@@ -107,6 +108,7 @@ class SimpleTransition : ITransition {
         val outputFile = _defaultGCodeOutputFile()
         FileOutputStream(outputFile, false).writer().use { writer ->
             gCodeHandler.writer = writer
+            gCodeHandler.enableGCodeShrink = params.enableGCodeShrink
             gCodeHandler.pathStrokeToVector(
                 pathList,
                 true,
@@ -119,22 +121,33 @@ class SimpleTransition : ITransition {
         return outputFile
     }
 
+    /**调整GCode*/
+    override fun adjustGCode(gcodeText: String, matrix: Matrix, params: TransitionParam): File {
+        val outputFile = _defaultGCodeOutputFile()
+        BitmapHandle.adjustGCode(
+            gcodeText,
+            matrix,
+            outputFile.absolutePath,
+            params.enableGCodeShrink
+        )
+        return outputFile
+    }
 
     /**GCode数据坐标平移
      * [gCode] 原始的GCode数据
      * [rotateBounds] 旋转后的bounds, 用来确定Left,Top坐标
      * [rotate] 旋转角度, 配合[bounds]实现平移
      * */
-    private fun gCodeTranslation(
-        gCode: String,
-        rotateBounds: RectF,
-        outputFile: File = _defaultGCodeOutputFile()
-    ): File {
-        val gCodeAdjust = GCodeAdjust()
+    private fun gCodeTranslation(gCode: String, rotateBounds: RectF): File {
+        val matrix = Matrix()
+        matrix.setTranslate(rotateBounds.left, rotateBounds.top)
+        return adjustGCode(gCode, matrix, TransitionParam())
+        /*val gCodeAdjust = GCodeAdjust()
+        val outputFile = _defaultGCodeOutputFile()
         outputFile.writer().use { writer ->
             gCodeAdjust.gCodeTranslation(gCode, rotateBounds.left, rotateBounds.top, writer)
         }
-        return outputFile
+        return outputFile*/
     }
 
 }

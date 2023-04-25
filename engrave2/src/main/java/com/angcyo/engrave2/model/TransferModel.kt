@@ -409,14 +409,16 @@ class TransferModel : ViewModel() {
     ) {
         val taskId = transferDataEntity.taskId
         val size = transferDataEntity.bytes()?.size ?: 0
-        "开始传输数据:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}".writeEngraveLog()
+        val sizeString = size.toSizeString()
+
+        "开始传输数据:[$taskId][${transferDataEntity.index}] $sizeString".writeEngraveLog()
         if (size <= 0) {
             "传输数据为空:[${taskId}]${transferDataEntity.index}".writeErrorLog()
             errorTransfer(transferState, EmptyException())
             action(transferState.error)
             return
         } else if (size > HawkEngraveKeys.maxTransferDataSize) {
-            "传输数据过大:${transferDataEntity.index}${size.toSizeString()}".writeErrorLog()
+            "传输数据过大:${transferDataEntity.index}$sizeString".writeErrorLog()
             errorTransfer(transferState, OutOfSizeException())
             action(transferState.error)
             return
@@ -427,9 +429,9 @@ class TransferModel : ViewModel() {
 
         val fileModeCmd = FileModeCmd(size)
         _transferTask = fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
-            "进入大数据模式[${(error == null).toDC()}],耗时:${LTime.time()}".writePerfLog()
+            "进入大数据模式[${(error == null).toDC()}]:$sizeString,耗时:${LTime.time()}".writePerfLog()
             error?.let {
-                "进入文件传输模式异常:${it} [${transferDataEntity.index}] ${size.toSizeString()}".writeErrorLog()
+                "进入文件传输模式异常:${it} [${transferDataEntity.index}] $sizeString".writeErrorLog()
                 errorTransfer(transferState, TransferException(error))
                 action(transferState.error)
             }
@@ -448,7 +450,7 @@ class TransferModel : ViewModel() {
                             action(transferState.error)
                         } else {
                             buildString {
-                                append("开始传输:[$taskId][${transferDataEntity.index}] ${size.toSizeString()}")
+                                append("开始传输:[$taskId][${transferDataEntity.index}] $sizeString")
                                 append(" ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}")
                                 append(" $transferDataEntity")
                             }.writeEngraveLog()

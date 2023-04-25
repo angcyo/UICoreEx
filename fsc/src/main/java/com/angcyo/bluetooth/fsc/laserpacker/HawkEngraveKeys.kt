@@ -114,6 +114,9 @@ object HawkEngraveKeys {
     /**激活第三方GCode数据全转换*/
     var enableGCodeTransform: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**是否激活压缩输出GCode*/
+    var enableGCodeShrink: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     /**激活元素从上往下的雕刻顺序*/
     var enableItemTopOrder: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
