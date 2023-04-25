@@ -86,10 +86,21 @@ object LPBitmapHandler {
     }
 
     /**印章处理*/
+    @Deprecated("使用[toSealHandle]")
     fun toSeal(context: Context, bitmap: Bitmap, sealThreshold: Float): Bitmap? {
         //先黑白画?还是后黑白画?
         val bgBitmap = bitmap.addBgColor(Color.WHITE)
         return OpenCV.bitmapToSeal(context, bgBitmap, sealThreshold.toInt())
+    }
+
+    /**印章处理*/
+    fun toSealHandle(bitmap: Bitmap, sealThreshold: Float): Bitmap? {
+        //先黑白画?还是后黑白画?
+        return BitmapHandle.toSealHandle(
+            bitmap,
+            sealThreshold.toInt(),
+            alphaThreshold = LibHawkKeys.alphaThreshold
+        )
     }
 
     /**转GCode处理*/
@@ -508,7 +519,7 @@ object LPBitmapHandler {
                         operateBitmap.let { bitmap ->
                             bean.imageFilter = LPDataConstant.DATA_MODE_SEAL
                             LTime.tick()
-                            val result = toSeal(context, bitmap, bean.sealThreshold)
+                            val result = toSealHandle(bitmap, bean.sealThreshold)
                             element.updateOriginWidthHeight(
                                 bitmap.width.toFloat(),
                                 bitmap.height.toFloat(),

@@ -287,7 +287,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!hideIn32 && !closeImageEditItemsFun.have("_seal_")) {
+        if (!closeImageEditItemsFun.have("_seal_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)

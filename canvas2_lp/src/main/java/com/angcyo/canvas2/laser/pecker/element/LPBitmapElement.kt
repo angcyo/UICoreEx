@@ -96,8 +96,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
                                 elementBean
                             )
 
-                            LPDataConstant.DATA_MODE_SEAL -> LPBitmapHandler.toSeal(
-                                app(),
+                            LPDataConstant.DATA_MODE_SEAL -> LPBitmapHandler.toSealHandle(
                                 bitmap,
                                 elementBean.sealThreshold
                             )
