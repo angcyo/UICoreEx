@@ -52,6 +52,7 @@ import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.alphaRatio
 import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.BuildHelper.isCpu64
@@ -456,6 +457,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     fun DslAdapter.renderPathEditItems(renderer: BaseRenderer) {
         val elementBean = renderer.lpElementBean()
         val type = elementBean?.mtype
+        val isLineShape = elementBean?.isLineShape == true
         if (type == LPDataConstant.DATA_TYPE_RECT ||
             type == LPDataConstant.DATA_TYPE_POLYGON ||
             type == LPDataConstant.DATA_TYPE_PENTAGRAM
@@ -472,13 +474,16 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemIco = R.drawable.canvas_style_stroke_ico
             itemText = _string(R.string.canvas_stroke)
             itemStyle = Paint.Style.STROKE
+            if (!isDebug()) {
+                itemEnable = !isLineShape
+            }
         }
 
         var afterItemCount = 0 //后面item的数量, 用来控制是否需要绘制分割线
         if (HawkEngraveKeys.enableRasterize) {
             afterItemCount++
         }
-        val enablePathFill = HawkEngraveKeys.enablePathFill && elementBean?.isLineShape == false
+        val enablePathFill = HawkEngraveKeys.enablePathFill && !isLineShape
         if (enablePathFill) {
             afterItemCount++
         }
