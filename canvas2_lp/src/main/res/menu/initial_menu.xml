@@ -6,6 +6,10 @@
         android:title="@string/canvas_clear" />
 
     <item
+        android:id="@+id/menu_select_all"
+        android:title="@string/canvas_select_all" />
+
+    <item
         android:id="@+id/menu_reset"
         android:title="@string/canvas_reset" />
 

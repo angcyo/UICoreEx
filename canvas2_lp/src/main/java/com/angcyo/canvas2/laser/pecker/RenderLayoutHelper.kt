@@ -561,6 +561,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                     -(delegate.view.mH() - delegate.initialPointComponent.pointRect.bottom.toInt())
                                 menuItemClickAction = {
                                     when (it.itemId) {
+                                        R.id.menu_select_all -> delegate.selectAllElementRenderer(
+                                            Reason.user
+                                        )
+
                                         R.id.menu_clear -> delegate.removeAllElementRenderer(Reason.user)
                                         R.id.menu_reset -> renderViewBox.reset()
                                         R.id.menu_best -> onPointTouchEvent(

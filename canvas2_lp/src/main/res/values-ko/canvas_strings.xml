@@ -122,6 +122,7 @@
     <string name="invert_recommend_criterion">각인색은 재료색보다 옅습니다</string>
 
     <string name="canvas_clear">비우다</string>
+    <string name="canvas_select_all">모두</string>
     <string name="canvas_origin">원점</string>
     <string name="canvas_reset">리셋</string>
     <string name="canvas_best">적용</string>

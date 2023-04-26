@@ -123,6 +123,7 @@
     <string name="invert_recommend_criterion">刻印の色は素材の色より明るいです</string>
 
     <string name="canvas_clear">クリア</string>
+    <string name="canvas_select_all">全て</string>
     <string name="canvas_origin">原点</string>
     <string name="canvas_reset">リセット</string>
     <string name="canvas_best">フィット</string>
