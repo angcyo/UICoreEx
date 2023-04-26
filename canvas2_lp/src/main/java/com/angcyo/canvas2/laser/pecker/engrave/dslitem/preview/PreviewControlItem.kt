@@ -4,7 +4,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.data.PreviewInfo
-import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.component.scaleDrawable
 import com.angcyo.library.ex.Action1
 import com.angcyo.library.ex._drawable
@@ -153,7 +152,7 @@ class PreviewControlItem : BasePreviewItem() {
         ) { viewHolder, item ->
             //进入路径预览
             val previewInfoData = previewModel.previewInfoData.value
-            itemPathPreviewClick?.invoke(previewInfoData?.elementBean)
+            itemPathPreviewClick?.invoke(previewInfoData?.rendererUuid)
         }
     }
 
@@ -192,7 +191,7 @@ class PreviewControlItem : BasePreviewItem() {
             if (laserPeckerModel.isCSeries()) {
                 //C1不支持此操作
             } else if (laserPeckerModel.deviceSettingData.value?.gcodeView == QuerySettingParser.GCODE_PREVIEW &&
-                previewInfoData?.elementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
+                previewInfoData?.rendererUuid != null
             ) {
                 //开启了向量预览, 并且GCode数据模式下, 才有路径预览
                 itemList.add(pathPreviewItem!!)

@@ -11,6 +11,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.engrave2.model.PreviewModel
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.component._debounce
 import com.angcyo.library.ex.size
 
@@ -63,9 +64,12 @@ object LPPreviewHelper {
     private fun updatePreviewInfo(info: PreviewInfo, rendererList: List<BaseRenderer>?) {
         val laserPeckerModel = vmApp<LaserPeckerModel>()
         info.apply {
-            elementBean = null
+            rendererUuid = null
             if (rendererList.size() == 1) {
-                elementBean = rendererList?.firstOrNull()?.lpElementBean()
+                val renderer = rendererList?.firstOrNull()
+                if (renderer?.lpElementBean()?._layerMode == LPDataConstant.DATA_MODE_GCODE) {
+                    rendererUuid = renderer.uuid
+                }
             }
             if (rendererList.isNullOrEmpty()) {
                 //未选中元素的情况下预览

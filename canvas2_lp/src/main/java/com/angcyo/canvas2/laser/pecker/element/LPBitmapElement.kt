@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.drawable.Drawable
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.BitmapElement
@@ -44,6 +45,18 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     override fun createStateStack(): IStateStack = LPBitmapStateStack()
 
     override fun getDrawPathList(): List<Path>? = pathList
+
+    override fun requestElementDrawable(
+        renderer: BaseRenderer?,
+        renderParams: RenderParams?
+    ): Drawable? {
+        if (getDrawBitmap() == null && getDrawPathList() == null) {
+            return null
+        }
+        return createPictureDrawable(renderParams) {
+            onRenderInside(renderer, this, renderParams ?: RenderParams())
+        }
+    }
 
     override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {

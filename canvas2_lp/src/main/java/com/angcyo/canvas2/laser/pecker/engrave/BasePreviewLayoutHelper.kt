@@ -16,7 +16,6 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTi
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
-import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -167,7 +166,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             //预览控制, 范围/中心点预览
             PreviewControlItem()() {
                 itemPathPreviewClick = {
-                    startPathPreview(it as? LPElementBean)
+                    startPathPreview("$it")
                 }
             }
             DslBlackButtonItem()() {
@@ -196,10 +195,12 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     }
 
     /**开始路径预览流程*/
-    fun startPathPreview(elementBean: LPElementBean?) {
-        elementBean ?: return
-        deviceStateModel.startLoopCheckState()
-        viewHolder?.context?.pathPreviewDialog(elementBean) {
+    fun startPathPreview(renderUuid: String?) {
+        renderUuid ?: return
+        engraveCanvasFragment?.renderDelegate ?: return
+        deviceStateModel.pauseLoopCheckState(true)
+        viewHolder?.context?.pathPreviewDialog(renderUuid) {
+            renderDelegate = engraveCanvasFragment?.renderDelegate
             onDismissListener = {
                 deviceStateModel.pauseLoopCheckState(false)
             }

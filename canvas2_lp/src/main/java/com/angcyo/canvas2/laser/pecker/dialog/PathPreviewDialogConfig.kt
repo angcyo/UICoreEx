@@ -12,12 +12,13 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.LPDataTransitionHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
-import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElement
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
@@ -49,18 +50,21 @@ import kotlin.math.min
  */
 class PathPreviewDialogConfig : DslDialogConfig() {
 
+    var renderDelegate: CanvasRenderDelegate? = null
+    var renderUuid: String? = null
+
     /**自动雕刻模式*/
-    val transferModel = vmApp<TransferModel>()
-    val previewModel = vmApp<PreviewModel>()
-    val laserPeckerModel = vmApp<LaserPeckerModel>()
-    val deviceStateModel = vmApp<DeviceStateModel>()
+    private val transferModel = vmApp<TransferModel>()
+    private val previewModel = vmApp<PreviewModel>()
+    private val laserPeckerModel = vmApp<LaserPeckerModel>()
+    private val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**预览的数据*/
-    var elementBean: LPElementBean? = null
+    private var elementBean: LPElementBean? = null
 
-    var previewInfo: PreviewInfo? = null
+    private var previewInfo: PreviewInfo? = null
 
-    val uuid = uuid()
+    private val uuid = uuid()
 
     init {
         dialogLayoutId = R.layout.dialog_path_preview_layout
@@ -80,41 +84,39 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
-        elementBean?.let { itemBean ->
-            val renderer = LPRendererHelper.parseElementRenderer(itemBean)
-            val element = renderer?.lpElement() ?: return
+        val renderer = renderDelegate?.renderManager?.findElementRenderer(renderUuid)
+        val itemBean = renderer?.lpElementBean() ?: return
+        val element = renderer?.lpElement() ?: return
 
-            dialogViewHolder.img(R.id.lib_image_view)?.apply {
-                setImageDrawable(element.requestElementDrawable(renderer, null))
-                rotation = itemBean.angle
-            }
+        dialogViewHolder.img(R.id.lib_image_view)?.apply {
+            setImageDrawable(element.requestElementDrawable(renderer, null))
+        }
 
-            //激光亮度
-            dialogViewHolder.group(R.id.brightness_wrap_layout)
-                ?.appendDslItem(PreviewBrightnessItem().apply {
-                    observeItemChange {
-                        itemBean.index?.let { _previewFlashBitmapCmd(it) }
-                    }
-                })
-
-            dialogViewHolder.click(R.id.cancel_button) {
-                dialog.cancel()
-            }
-
-            dialogViewHolder.click(R.id.start_button) {
-                val index = itemBean.index
-                if (index != null) {
-                    TransferModel.checkIndex(index) {
-                        if (it) {
-                            //索引已存在, 直接预览
-                            sendPreviewFlashBitmapCmd(dialogViewHolder, index)
-                        } else {
-                            startPathPreview(dialogViewHolder, renderer)
-                        }
-                    }
-                } else {
-                    startPathPreview(dialogViewHolder, renderer)
+        //激光亮度
+        dialogViewHolder.group(R.id.brightness_wrap_layout)
+            ?.appendDslItem(PreviewBrightnessItem().apply {
+                observeItemChange {
+                    itemBean.index?.let { _previewFlashBitmapCmd(it) }
                 }
+            })
+
+        dialogViewHolder.click(R.id.cancel_button) {
+            dialog.cancel()
+        }
+
+        dialogViewHolder.click(R.id.start_button) {
+            val index = itemBean.index
+            if (index != null) {
+                TransferModel.checkIndex(index) {
+                    if (it) {
+                        //索引已存在, 直接预览
+                        sendPreviewFlashBitmapCmd(dialogViewHolder, index)
+                    } else {
+                        startPathPreview(dialogViewHolder, renderer)
+                    }
+                }
+            } else {
+                startPathPreview(dialogViewHolder, renderer)
             }
         }
     }
@@ -222,12 +224,12 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
 @DSL
 fun Context.pathPreviewDialog(
-    elementBean: LPElementBean,
+    uuid: String,
     config: PathPreviewDialogConfig.() -> Unit
 ): Dialog {
     return PathPreviewDialogConfig().run {
         dialogContext = this@pathPreviewDialog
-        this.elementBean = elementBean
+        renderUuid = uuid
         configBottomDialog()
         if (isInPadMode()) {
             dialogWidth = min(_screenWidth, _screenHeight) * 3 / 5
