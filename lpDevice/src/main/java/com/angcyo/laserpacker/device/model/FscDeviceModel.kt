@@ -202,23 +202,25 @@ class FscDeviceModel : LifecycleViewModel() {
         laserPeckerModel.initializeOnceData.observe(this) {
             if (it == true) {
                 //保存设备信息到log
-                DslLastDeviceInfoItem.additional_info = buildString {
-                    appendLine()
-                    appendLine()
-                    appendLine("设备版本↓")
-                    appendLine("${laserPeckerModel.deviceVersionData.value}")
+                DslLastDeviceInfoItem.additionalInfoAction = {
+                    buildString {
+                        appendLine()
+                        appendLine()
+                        appendLine("设备版本↓")
+                        appendLine("${laserPeckerModel.deviceVersionData.value}")
 
-                    appendLine()
-                    appendLine("设备状态↓")
-                    appendLine("${deviceStateModel.deviceStateData.value}")
+                        appendLine()
+                        appendLine("设备状态↓")
+                        appendLine("${deviceStateModel.deviceStateData.value}")
 
-                    appendLine()
-                    appendLine("设备设置↓")
-                    appendLine("${laserPeckerModel.deviceSettingData.value}")
+                        appendLine()
+                        appendLine("设备设置↓")
+                        appendLine("${laserPeckerModel.deviceSettingData.value}")
 
-                    appendLine()
-                    appendLine("产品信息↓")
-                    appendLine("${laserPeckerModel.productInfoData.value}")
+                        appendLine()
+                        appendLine("产品信息↓")
+                        appendLine("${laserPeckerModel.productInfoData.value}")
+                    }
                 }
                 DslLastDeviceInfoItem.saveDeviceInfo()
 
