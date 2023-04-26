@@ -75,14 +75,19 @@ class DeviceStateModel : ViewModel() {
 
     private var isLooping = false
 
+    /**自动等到设备空闲后, 再退出*/
+    var waitForExit = false
+
     /**开始循环并暂停*/
     fun startLoopCheckPauseState() {
+        waitForExit = false
         queryMode = queryMode.add(QUERY_MODE_LOOP).add(QUERY_MODE_PAUSE)
         loopCheckDeviceState()
     }
 
     /**开始循环查询设备状态*/
     fun startLoopCheckState(start: Boolean = true, removePause: Boolean = true) {
+        waitForExit = false
         queryMode = if (!start) {
             0x0
         } else {
@@ -164,7 +169,11 @@ class DeviceStateModel : ViewModel() {
 
         //空闲状态, 自动停止循环查询
         if (queryStateParser.mode == QueryStateParser.WORK_MODE_IDLE) {
-            pauseLoopCheckState(true)
+            if (waitForExit) {
+                startLoopCheckState(false)
+            } else {
+                pauseLoopCheckState(true)
+            }
         } else if (queryStateParser.mode == QueryStateParser.WORK_MODE_FILE_DOWNLOAD ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_SHUTDOWN ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_DOWNLOAD ||
