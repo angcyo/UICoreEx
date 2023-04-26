@@ -517,7 +517,7 @@ class TransferModel : ViewModel() {
                                         }
                                     }
                                     if (result == null && transferState.state == TransferState.TRANSFER_STATE_NORMAL) {
-                                        "发送数据失败:[${transferDataEntity.index}]".writeErrorLog()
+                                        "发送数据失败,无效的返回值:[${transferDataEntity.index}] error:${error}".writeErrorLog()
                                         errorTransfer(transferState, TransferException())
                                         action(transferState.error)
                                     }

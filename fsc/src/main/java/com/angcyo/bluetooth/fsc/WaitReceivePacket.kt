@@ -123,6 +123,8 @@ class WaitReceivePacket(
         TcpSend().apply {
             val wifiAddress = LibLpHawkKeys.wifiAddress
             val list = wifiAddress?.split(":")
+            sendBufferSize = LibLpHawkKeys.wifiBufferSize
+            sendDelay = LibLpHawkKeys.wifiSendDelay
             address = list?.getOrNull(0)
             list?.getOrNull(1)?.toIntOrNull()?.let {
                 port = it

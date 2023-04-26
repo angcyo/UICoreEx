@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.CommandQueueHelper.FLAG_NORMAL
 import com.angcyo.bluetooth.fsc.laserpacker.command.ICommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.library.L
 import com.angcyo.library.ex.className
 import com.angcyo.library.ex.have
@@ -149,6 +150,9 @@ object CommandQueueHelper {
                     next()
                 }
                 try {
+                    error?.let {
+                        it.stackTraceToString().writeErrorLog()
+                    }
                     commandInfo.listener?.onReceive(bean, error)
                 } catch (e: Exception) {
                     e.printStackTrace()
