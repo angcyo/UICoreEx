@@ -10,9 +10,12 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
+import com.angcyo.http.tcp.TcpSend
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.toStr
@@ -76,11 +79,20 @@ class WaitReceivePacket(
      * [com.angcyo.bluetooth.fsc.WaitReceivePacket.onPacketSend]*/
     var receivePacket: ReceivePacket? = null
 
+    /**是否要使用wifi传输*/
+    fun useWifi(): Boolean {
+        return LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
+    }
+
     /**开始数据发送, 并等待*/
     fun start() {
         api.addPacketListener(this)
         if (autoSend) {
-            api.send(address, sendPacket)
+            if (useWifi()) {
+                startWithWifi()
+            } else {
+                api.send(address, sendPacket)
+            }
         }
         if (receiveTimeout > 0) {
             if (!isDebuggerConnected()) {
@@ -101,8 +113,44 @@ class WaitReceivePacket(
         }
     }
 
+    /**错误返回*/
+    fun error(e: Exception) {
+        listener.onReceive(null, e)
+    }
+
+    /**使用wifi传输并发送数据*/
+    private fun startWithWifi() {
+        TcpSend().apply {
+            val wifiAddress = LibLpHawkKeys.wifiAddress
+            val list = wifiAddress?.split(":")
+            address = list?.getOrNull(0)
+            list?.getOrNull(1)?.toIntOrNull()?.let {
+                port = it
+            }
+            onSendProgressAction = { progress ->
+                onReceiveProgress(progress)
+            }
+            onSendAction = { receiveBytes, error ->
+                if (error != null) {
+                    end()
+                    error(error)
+                } else {
+                    if (receiveBytes != null) {
+                        onReceive(receiveBytes)
+                    } else {
+                        end()
+                        error(ReceiveVerifyException("no receive!"))
+                    }
+                }
+            }
+            sendBytes = sendPacket
+            onReceiveStart(sendPacket.size().toLong())
+            startSend()
+        }
+    }
+
     @WorkerThread
-    fun _checkReceiveFinish() {
+    private fun _checkReceiveFinish() {
         val bytes = _receiveStream.toByteArray()
 
         //数据头的位置 [AABB] 开始的位置
@@ -171,8 +219,7 @@ class WaitReceivePacket(
                                 //数据校验通过
                                 listener.onReceive(receivePacket, null)
                             } else {
-                                listener.onReceive(
-                                    null,
+                                error(
                                     ReceiveVerifyException("数据校验失败: 计算值:$sumString 比较值:$checkString")
                                 )
                             }
@@ -207,32 +254,7 @@ class WaitReceivePacket(
     ) {
         super.onPacketSend(packetProgress, address, strValue, data)
         if (!_isFinish) {
-            if (receivePacket == null) {
-                receivePacket = ReceivePacket().apply {
-                    this.address = address
-                    this.sendPacket = this@WaitReceivePacket.sendPacket
-                    this.sendStartTime = System.currentTimeMillis()
-                }
-            }
-
-            receivePacket?.apply {
-                sendPacketCount++
-                val nowTime = System.currentTimeMillis()
-                val duration = nowTime - sendStartTime
-                val sendSize = packetProgress.sendBytesSize * 1f
-                if (duration > 0) {
-                    //每毫秒发送的字节数量
-                    val speed = sendSize / duration
-                    //剩余需要发送的字节大小
-                    val remainingSize = sendPacket.size - packetProgress.sendBytesSize
-                    sendSpeed = speed * 1000
-                    remainingTime = (remainingSize / speed).roundToLong()
-                } else {
-                    sendSpeed = sendSize
-                    remainingTime = 0
-                }
-                //listener.onPacketProgress(this) //need?
-            }
+            onReceiveStart(packetProgress.sendBytesSize)
         }
     }
 
@@ -244,16 +266,7 @@ class WaitReceivePacket(
         sendByte: ByteArray
     ) {
         super.onSendPacketProgress(packetProgress, address, percentage, sendByte)
-        if (!_isFinish) {
-            receivePacket?.apply {
-                sendPacketPercentage = percentage
-                if (percentage >= 100) {
-                    sendFinishTime = System.currentTimeMillis()
-                }
-
-                listener.onPacketProgress(this)
-            }
-        }
+        onReceiveProgress(percentage)
     }
 
     //接收到的所有数据流
@@ -266,6 +279,40 @@ class WaitReceivePacket(
         data: ByteArray
     ) {
         super.onPacketReceived(address, strValue, dataHexString, data)
+        onReceive(data)
+    }
+
+    /**开始接收数据, 初始化工作*/
+    private fun onReceiveStart(sendBytesSize: Long) {
+        if (receivePacket == null) {
+            receivePacket = ReceivePacket().apply {
+                this.address = address
+                this.sendPacket = this@WaitReceivePacket.sendPacket
+                this.sendStartTime = System.currentTimeMillis()
+            }
+        }
+        receivePacket?.apply {
+            sendPacketCount++
+            val nowTime = System.currentTimeMillis()
+            val duration = nowTime - sendStartTime
+            val sendSize = sendBytesSize * 1f
+            if (duration > 0) {
+                //每毫秒发送的字节数量
+                val speed = sendSize / duration
+                //剩余需要发送的字节大小
+                val remainingSize = sendPacket.size - sendBytesSize
+                sendSpeed = speed * 1000
+                remainingTime = (remainingSize / speed).roundToLong()
+            } else {
+                sendSpeed = sendSize
+                remainingTime = 0
+            }
+            //listener.onPacketProgress(this) //need?
+        }
+    }
+
+    /**接收数据*/
+    private fun onReceive(data: ByteArray) {
         if (!_isFinish) {
             receivePacket?.apply {
                 receivePacketCount++
@@ -275,6 +322,19 @@ class WaitReceivePacket(
             }
             _receiveStream.write(data)
             _checkReceiveFinish()
+        }
+    }
+
+    /**[percentage] 发送的进度[0~100]*/
+    private fun onReceiveProgress(percentage: Int) {
+        if (!_isFinish) {
+            receivePacket?.apply {
+                sendPacketPercentage = percentage
+                if (percentage >= 100) {
+                    sendFinishTime = System.currentTimeMillis()
+                }
+                listener.onPacketProgress(this)
+            }
         }
     }
 

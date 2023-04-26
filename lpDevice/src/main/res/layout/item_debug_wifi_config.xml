@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/lib_padding_left"
+    android:paddingVertical="@dimen/lib_hdpi">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_label_view"
+        style="@style/LibTitleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/lib_xhdpi"
+        android:text="激活WIFI传输"
+        app:layout_constraintBottom_toTopOf="@id/lib_edit_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/lib_switch_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.angcyo.github.SwitchButton
+        android:id="@+id/lib_switch_view"
+        android:layout_width="48dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical|right"
+        app:layout_constraintBottom_toBottomOf="@id/lib_label_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lib_label_view"
+        app:sb_checked_color="@color/colorPrimary"
+        tools:sb_checked="true" />
+
+    <com.angcyo.widget.edit.DslEditText
+        android:id="@+id/lib_edit_view"
+        style="@style/ItemEditStyle"
+        android:layout_width="match_parent"
+        android:background="@drawable/lib_bottom_line_selector"
+        android:hint="服务地址: ip:port"
+        android:paddingHorizontal="@dimen/lib_dpi"
+        android:paddingVertical="@dimen/lib_dpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lib_label_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
