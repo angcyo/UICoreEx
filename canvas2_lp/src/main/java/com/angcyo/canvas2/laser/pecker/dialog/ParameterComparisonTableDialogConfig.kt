@@ -37,7 +37,7 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.toDataMode
-import com.angcyo.laserpacker.device.toLaserTypeString
+import com.angcyo.laserpacker.device.toLaserWave
 import com.angcyo.laserpacker.device.toLayerInfo
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.DSL
@@ -478,7 +478,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     append(" ")
                 }
                 append(gridLayerId.toLayerInfo()?.label ?: "")
-                append(" ${gridPrintType.toLaserTypeString(true)}")
+                append(" ${gridPrintType.toLaserWave()}nm")
                 append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).des}")
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
