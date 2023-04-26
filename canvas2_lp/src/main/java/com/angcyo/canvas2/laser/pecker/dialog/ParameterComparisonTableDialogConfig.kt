@@ -71,10 +71,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         @Pixel
         internal val tableBounds: RectF
             get() = vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds ?: RectF(
-                0f,
-                0f,
-                160f.toPixel(),
-                160f.toPixel()
+                0f, 0f, 160f.toPixel(), 160f.toPixel()
             )
 
         /**功率深度阈值, 小于值才需要绘制格子*/
@@ -160,8 +157,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             HawkEngraveKeys.enableSingleItemTransfer = true //必须
             val bounds = tableBounds
 
-            @Pixel
-            val padding = 5f.toPixel()
+            @Pixel val padding = 5f.toPixel()
             val horizontalGap = 3f.toPixel()
             val verticalGap = 2f.toPixel()
 
@@ -183,8 +179,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 height = textHeight.toMm()*/
             })
 
-            @Pixel
-            val textWidth = textItem.getTextWidth()
+            @Pixel val textWidth = textItem.getTextWidth()
             val textHeight = textItem.getTextHeight()
 
             val textLeft = bounds.left + padding
@@ -228,8 +223,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             HawkEngraveKeys.enableSingleItemTransfer = true //必须
             val bounds = tableBounds
 
-            @Pixel
-            val padding = 5f.toPixel()
+            @Pixel val padding = 5f.toPixel()
             val horizontalGap = 3f.toPixel()
             val verticalGap = 4f.toPixel()
 
@@ -239,8 +233,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //每一行, 有多少个E, 从上到下
             val lineSizeList = listOf(1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 8, 8, 8)
 
-            @MM
-            var maxFontSize = 20f //最上面一行的字体大小
+            @MM var maxFontSize = 20f //最上面一行的字体大小
             val scaleFactor = 0.8f //每一行字体大小是上一行的多少倍
             val lineCount = lineSizeList.size() //总共的行数
             val minFontSize = maxFontSize * scaleFactor.pow(lineCount - 1)
@@ -280,8 +273,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //计算最后一行需要占用的宽度
             val lastLineSize = lineSizeList.last()
 
-            @Pixel
-            val textAllWidth =
+            @Pixel val textAllWidth =
                 lastLineSize * textItem.getTextWidth() + (lastLineSize - 1) * horizontalGap
             textLeft = bounds.centerX() - textAllWidth / 2
 
@@ -481,13 +473,16 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = powerTextItem.elementBean.fontSize * 0.5f
             val defaultLabel = buildString {
+                vmApp<LaserPeckerModel>().productInfoData.value?.name?.let {
+                    append(it)
+                    append(" ")
+                }
                 append(gridLayerId.toLayerInfo()?.label ?: "")
                 append(" ${gridPrintType.toLaserTypeString(true)}")
                 append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).des}")
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
-                "%1",
-                defaultLabel
+                "%1", defaultLabel
             )
             name = text
 
@@ -544,8 +539,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val numberTextBeanList = mutableListOf<LPElementBean>()
 
         //横竖线
-        @Pixel
-        val powerList = mutableListOf<Float>() //功率分割线, 竖线
+        @Pixel val powerList = mutableListOf<Float>() //功率分割线, 竖线
         val depthList = mutableListOf<Float>() //深度分割线, 横线
 
         val max = 100
@@ -553,8 +547,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val verticalStep = max / verticalGridCount
 
         //--格子
-        @Pixel
-        var x = gridLeft
+        @Pixel var x = gridLeft
         var y = gridTop
 
         //需要创建的功率和深度的数值
@@ -573,20 +566,18 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //指定功率和深度
             val splitList = if (appointPowerDepth.contains(":")) appointPowerDepth.split(":")
             else appointPowerDepth.split(".") //功率 深度
-            splitList.getOrNull(0)?.split(" ")?.filter { it.isNotBlank() }
-                ?.apply {
-                    powerValueList.clear()
-                    mapTo(powerValueList) {
-                        it.toIntOrNull() ?: 0
-                    }
+            splitList.getOrNull(0)?.split(" ")?.filter { it.isNotBlank() }?.apply {
+                powerValueList.clear()
+                mapTo(powerValueList) {
+                    it.toIntOrNull() ?: 0
                 }
-            splitList.getOrNull(1)?.split(" ")?.filter { it.isNotBlank() }
-                ?.apply {
-                    depthValueList.clear()
-                    mapTo(depthValueList) {
-                        it.toIntOrNull() ?: 0
-                    }
+            }
+            splitList.getOrNull(1)?.split(" ")?.filter { it.isNotBlank() }?.apply {
+                depthValueList.clear()
+                mapTo(depthValueList) {
+                    it.toIntOrNull() ?: 0
                 }
+            }
         }
 
         powerValueList.forEachIndexed { powerIndex, powerValue ->
@@ -639,13 +630,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
 
                 //格子数据
-                if (powerValue * depthValue <= powerDepthThreshold ||
-                    isRowColumnInRange(depthIndex + 1, powerIndex + 1)
+                if (powerValue * depthValue <= powerDepthThreshold || isRowColumnInRange(
+                        depthIndex + 1, powerIndex + 1
+                    )
                 ) {
                     gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
-                        paintStyle = if (gridLayerId == LayerHelper.LAYER_CUT)
-                            Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
+                        paintStyle =
+                            if (gridLayerId == LayerHelper.LAYER_CUT) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
                         width = max(2f, (gridWidth - gridMargin * 2)).toMm()
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
@@ -653,11 +645,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         name = "grid[${powerValue}:${depthValue}]"
 
                         //参数
-                        dataMode = if (HawkEngraveKeys.checkCpu32 &&
-                            !BuildHelper.isCpu64 &&
-                            gridLayerId == LayerHelper.LAYER_PICTURE
-                        ) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
-                        else gridLayerId.toDataMode()
+                        dataMode =
+                            if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LayerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
+                            else gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = numberTextItem.elementBean.printCount
                         printPower = powerValue
@@ -745,10 +735,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             bean.printType = gridPrintType.toInt()
         }
         return LPRendererHelper.renderElementList(
-            null,
-            beanList,
-            true,
-            Strategy.normal
+            null, beanList, true, Strategy.normal
         )
     }
 
@@ -760,10 +747,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
         delegate.renderManager.addElementRenderer(
-            parseParameterComparisonTable(),
-            true,
-            Reason.user,
-            Strategy.normal
+            parseParameterComparisonTable(), true, Reason.user, Strategy.normal
         )
     }
 }
