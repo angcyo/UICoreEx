@@ -147,7 +147,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         }
                     }
                 }
-            } else {
+            } else if (!laserPeckerModel.isL3()) { //L3只有白光, 不支持亮度调节
                 PreviewBrightnessItem()() {
                     itemPreviewConfigEntity = previewConfigEntity
                 }
