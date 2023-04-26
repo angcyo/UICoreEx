@@ -37,7 +37,13 @@ object LPRendererHelper {
                 renderBitmap = bean._srcBitmap
             }
             if (bean._imageOriginalBitmap != null) {
-                bean._imageOriginalBitmap?.let { updateOriginBitmap(it, false) }
+                bean._imageOriginalBitmap?.let { bitmap ->
+                    if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
+                        originBitmap = bitmap
+                    } else {
+                        updateOriginBitmap(bitmap, false)
+                    }
+                }
             }
         }
 
@@ -178,6 +184,12 @@ object LPRendererHelper {
             rootRenderer.lpElement()?.apply {
                 updateBeanFromElement(rootRenderer)
                 val newBean = elementBean.copy()
+
+                if (this is LPBitmapElement) {
+                    newBean._srcBitmap = renderBitmap
+                    newBean._imageOriginalBitmap = originBitmap
+                }
+
                 if (newBean.groupId != null) {
                     newBean.groupId = groupId
                 }
