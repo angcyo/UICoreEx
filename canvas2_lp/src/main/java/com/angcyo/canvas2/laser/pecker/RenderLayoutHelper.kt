@@ -337,40 +337,6 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 }
             }
 
-            /**画笔缩放比例改变后, 反向放大画笔绘制*/
-            override fun onRenderBoxMatrixUpdate(
-                newMatrix: Matrix,
-                reason: Reason,
-                finish: Boolean
-            ) {
-                if (finish && reason.controlType.have(BaseControlPoint.CONTROL_TYPE_SCALE)) {
-                    val list = renderDelegate.renderManager.getAllElementRendererList(true, false)
-                    for (renderer in list) {
-                        val bean = renderer.lpElementBean()
-                        when {
-                            bean?.isPathElement == true -> {
-                                if (bean.paintStyle == 1 || bean.isLineShape) {
-                                    //描边的矢量图形, 画布缩放后, 反向放大画笔绘制
-                                    renderer.requestUpdatePropertyFlag(
-                                        Reason.preview,
-                                        renderDelegate
-                                    )
-                                }
-                            }
-
-                            bean?.mtype == LPDataConstant.DATA_TYPE_BITMAP -> {
-                                if (bean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
-                                    renderer.requestUpdatePropertyFlag(
-                                        Reason.preview,
-                                        renderDelegate
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
             override fun onRenderUndoChange(undoManager: CanvasUndoManager) {
                 updateUndoLayout()
             }
