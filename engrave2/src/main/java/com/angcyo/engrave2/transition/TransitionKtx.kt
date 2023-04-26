@@ -8,7 +8,6 @@ import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.gcode.GCodeWriteHandler
-import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -467,10 +466,10 @@ fun Bitmap.toGCode(
     //是否是斜线
     val isObliqueLine = isSingleLine && width > 1 && height > 1
 
-    if (isDebuggerConnected()) {
+    /*if (isDebuggerConnected()) {
         val pixels = bitmap.getPixels()
         L.i(pixels)
-    }
+    }*/
     val data = bitmap.engraveColorBytes()
 
     val scanGravity = gravity ?: if (width > height) {
