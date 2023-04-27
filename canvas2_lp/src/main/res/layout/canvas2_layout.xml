@@ -393,6 +393,7 @@
 
     <!--内容动态层-->
     <com.angcyo.widget.layout.DslSoftInputLayout
+        android:id="@+id/lib_soft_input_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="4dp"

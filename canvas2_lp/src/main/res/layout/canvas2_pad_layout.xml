@@ -264,6 +264,7 @@
 
     <!--pad扩展区-->
     <com.angcyo.widget.layout.DslSoftInputLayout
+        android:id="@+id/lib_soft_input_layout"
         android:layout_width="@dimen/lib_fragment_detail_container_width"
         android:layout_height="match_parent">
 
