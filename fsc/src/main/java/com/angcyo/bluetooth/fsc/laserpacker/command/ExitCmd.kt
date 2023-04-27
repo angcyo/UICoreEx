@@ -13,14 +13,15 @@ import com.angcyo.library.ex.toHexString
  * @since 2022/05/30
  */
 data class ExitCmd(
-    val custom: Byte = 0 //自定义的数据
+    val custom: Byte = 0, //自定义的数据
+    var timeout: Long? = null /*超时时长, 不指定使用默认*/
 ) : BaseCommand() {
 
     //功能码
     override fun commandFunc(): Byte = 0xff.toByte()
 
     override fun getReceiveTimeout(): Long {
-        return HawkEngraveKeys.receiveTimeout
+        return timeout ?: HawkEngraveKeys.receiveTimeout
     }
 
     override fun toHexCommandString(): String {

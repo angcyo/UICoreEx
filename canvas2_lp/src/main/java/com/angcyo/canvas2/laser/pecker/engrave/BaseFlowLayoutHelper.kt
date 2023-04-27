@@ -740,10 +740,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     /**异步超时发送退出指令*/
-    fun asyncTimeoutExitCmd(action: IReceiveBeanAction) {
+    fun asyncTimeoutExitCmd(timeout: Long? = null, action: IReceiveBeanAction) {
         engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
             syncSingle { countDownLatch ->
-                ExitCmd().enqueue { bean, error ->
+                ExitCmd(timeout = timeout).enqueue { bean, error ->
                     countDownLatch.countDown()
                     action(bean, error)
                 }

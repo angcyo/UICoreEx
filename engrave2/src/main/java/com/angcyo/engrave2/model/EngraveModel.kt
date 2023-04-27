@@ -593,7 +593,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
         deviceStateModel.waitForExit = true
         deviceStateModel.pauseLoopCheckState(true)
-        ExitCmd().enqueue { bean, error ->
+        ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
             countDownLatch?.countDown()
             syncQueryDeviceState()
             if (error == null || error is NoDeviceException /*无设备连接*/) {
