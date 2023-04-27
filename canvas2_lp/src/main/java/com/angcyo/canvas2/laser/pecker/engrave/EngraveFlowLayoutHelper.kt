@@ -711,31 +711,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                         observeMaterialChange()
                     }
                 }
-                /*EngraveOptionWheelItem()() {
-                    itemTag = MaterialEntity::power.name
-                    itemLabelText = _string(R.string.custom_power)
-                    itemWheelList = percentList()
-                    itemEngraveConfigEntity = engraveConfigEntity
-                    itemSelectedIndex =
-                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.power)
-                }
-                EngraveOptionWheelItem()() {
-                    itemTag = MaterialEntity::depth.name
-                    itemLabelText = _string(R.string.custom_speed)
-                    itemWheelList = percentList()
-                    itemEngraveConfigEntity = engraveConfigEntity
-                    itemSelectedIndex =
-                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.depth)
-                }
-                //次数
-                EngraveOptionWheelItem()() {
-                    itemLabelText = _string(R.string.print_times)
-                    itemWheelList = percentList(255)
-                    itemTag = EngraveConfigEntity::time.name
-                    itemEngraveConfigEntity = engraveConfigEntity
-                    itemSelectedIndex =
-                        EngraveHelper.findOptionIndex(itemWheelList, engraveConfigEntity.time)
-                }*/
             }
 
             EngraveConfirmItem()() {
