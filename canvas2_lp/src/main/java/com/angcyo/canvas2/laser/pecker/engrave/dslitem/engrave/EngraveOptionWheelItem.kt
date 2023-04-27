@@ -1,13 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.content.Context
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.laserpacker.bean.LPElementBean
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -50,7 +50,9 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                     itemEngraveConfigEntity?.apply {
                         val materialEntity = itemWheelList?.get(index) as? MaterialEntity
                         EngraveFlowDataHelper.generateEngraveConfigByMaterial(
-                            taskId, materialEntity?.key, materialEntity
+                            taskId,
+                            materialEntity?.key,
+                            materialEntity
                         )
                     }
                     //单文件雕刻参数
@@ -63,6 +65,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         materialKey = materialEntity?.key
                     }
                 }
+
                 MaterialEntity::power.name -> {
                     itemEngraveConfigEntity?.apply {
                         power = getSelectedInt(index, power)
@@ -76,6 +79,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printPower = HawkEngraveKeys.lastPower
                     }
                 }
+
                 MaterialEntity::depth.name -> {
                     itemEngraveConfigEntity?.apply {
                         depth = getSelectedInt(index, depth)
@@ -89,6 +93,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printDepth = HawkEngraveKeys.lastDepth
                     }
                 }
+
                 MaterialEntity.SPEED -> {
                     itemEngraveConfigEntity?.apply {
                         depth = EngraveCmd.speedToDepth(
@@ -108,6 +113,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printDepth = HawkEngraveKeys.lastDepth
                     }
                 }
+
                 EngraveConfigEntity::time.name -> {
                     itemEngraveConfigEntity?.apply {
                         time = getSelectedInt(index, time)
@@ -118,6 +124,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printCount = getSelectedInt(index, printCount ?: 1)
                     }
                 }
+
                 EngraveConfigEntity::precision.name -> {
                     itemEngraveConfigEntity?.apply {
                         precision = getSelectedInt(index, precision)

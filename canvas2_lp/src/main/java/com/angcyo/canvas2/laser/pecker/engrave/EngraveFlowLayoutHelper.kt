@@ -550,12 +550,14 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             selectLayerId = layerList.firstOrNull()?.layerId ?: selectLayerId
         }
 
-        //默认选中材质
+        //默认选中材质, 获取任务之前已经选中的材质, 如果有
         var materialEntity = EngraveFlowDataHelper.findTaskMaterial(taskId)
-        "材质:${taskId} $materialEntity".writeToLog(logLevel = L.WARN)
+        "任务:${taskId} 已选材质:$materialEntity".writeToLog(logLevel = L.INFO)
 
-        //雕刻配置信息
-        val engraveConfigEntity = if (materialEntity == null) {
+        //当前选中图层的雕刻配置
+        var engraveConfigEntity: EngraveConfigEntity? = null
+
+        if (materialEntity == null) {
             //未初始化材质信息, 默认使用第一个
             val lastMaterial = EngraveFlowDataHelper.findLastMaterial()
             materialEntity =
@@ -567,16 +569,30 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     MaterialHelper.materialList.firstOrNull()
                         ?: MaterialHelper.createCustomMaterial().first()
                 }
-            EngraveFlowDataHelper.generateEngraveConfigByMaterial(
+
+            "任务:${taskId} 默认材质:$materialEntity".writeToLog(logLevel = L.INFO)
+
+            //雕刻配置信息
+            engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfigByMaterial(
                 taskId,
                 materialEntity.key,
                 materialEntity
             ).find {
+                //如果找到了对应图层的配置, 则使用, 否则构建一个
                 it.layerId == selectLayerId
-            } ?: EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerId)
+            }
         } else {
-            EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerId)
+            //如果有材质, 则从材质中获取对应图层的配置
         }
+
+        if (engraveConfigEntity == null) {
+            //如果没有材质中没有找到对应图层的配置, 则构建一个
+            engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(taskId, selectLayerId)
+        }
+
+        /*"任务:${taskId} 图层[$selectLayerId] 材质:${materialEntity} 参数:${engraveConfigEntity}".writeToLog(
+            logLevel = L.INFO
+        )*/
 
         renderDslAdapter {
             PreviewTipItem()() {
@@ -850,7 +866,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemClick = {
                         //强制退出
                         engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
-                            ExitCmd().enqueue { bean, error ->
+                            ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
                                 loadEnd(bean, error)
                                 if (error != null) {
                                     toastQQ(error.message)

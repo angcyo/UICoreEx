@@ -465,7 +465,7 @@ object EngraveFlowDataHelper {
         return MaterialHelper.materialList.find { it.code == config?.materialCode }
     }
 
-    /**使用材质key, 创建对应的雕刻参数配置
+    /**使用材质key, 创建所有图层对应的雕刻参数配置
      * [defMaterial] 默认的参数配置
      * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.key]*/
     fun generateEngraveConfigByMaterial(
@@ -478,7 +478,7 @@ object EngraveFlowDataHelper {
         val materialList = MaterialHelper.getMaterialList(
             materialKey ?: "custom",
             dpiScale,
-            defMaterial?.type
+            null
         ) //各个图层的雕刻参数
         EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
@@ -497,15 +497,15 @@ object EngraveFlowDataHelper {
                     it.layerId == engraveLayerInfo.layerId
                 } ?: defMaterial
                 findMaterial?.let {
-                    materialCode = it.code
+                    materialCode = findMaterial.code
                     this.deviceAddress = LaserPeckerHelper.lastDeviceAddress()
                     this.productName = productName
-                    this.materialKey = it.key
-                    type = it.type.toByte()
+                    this.materialKey = findMaterial.key
+                    type = findMaterial.type.toByte()
 
-                    precision = it.precision
-                    power = it.power
-                    depth = it.depth
+                    precision = findMaterial.precision
+                    power = findMaterial.power
+                    depth = findMaterial.depth
 
                     //物理尺寸
                     val previewConfigEntity = generatePreviewConfig(taskId)
@@ -531,18 +531,18 @@ object EngraveFlowDataHelper {
         val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
         val key = "${materialName}_${nowTime()}"
 
-        configList.forEach {
+        configList.forEach { configEntity ->
             MaterialEntity().apply {
                 this.productName = productName
                 this.key = key
                 name = materialName
-                layerId = it.layerId
+                layerId = configEntity.layerId
                 dpiScale = 0f
 
-                type = it.type.toInt()
-                precision = it.precision
-                power = it.power
-                depth = it.depth
+                type = configEntity.type.toInt()
+                precision = configEntity.precision
+                power = configEntity.power
+                depth = configEntity.depth
 
                 //code
                 createMaterialCode("${key}_${nowTime()}")
@@ -556,7 +556,7 @@ object EngraveFlowDataHelper {
 
         //重新初始化材质列表
         MaterialHelper.initMaterial()
-        //重新构建参数配置信息
+        //使用保存的材质, 重新构建参数配置信息
         generateEngraveConfigByMaterial(taskId, key, result.lastOrNull())
 
         return result

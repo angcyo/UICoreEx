@@ -41,7 +41,7 @@ data class MaterialEntity(
      * 然后通过资源id, 获取国际化的本地资源*/
     var resIdStr: String? = null,
 
-    /**等同于[resIdStr]*/
+    /**等同于[resIdStr], 只不过没有国际化, 用户自定义的名称*/
     var key: String? = null,
 
     /**强制显示的材质名称, 不指定则使用[resId]*/

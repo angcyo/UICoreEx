@@ -42,7 +42,15 @@ object MaterialHelper {
         materialList.resetAll(getProductMaterialList(vmApp<LaserPeckerModel>().productInfoData.value))
         unionMaterialList.clear()
         materialList.filterTo(unionMaterialList) { entity ->
-            unionMaterialList.find { it.key == entity.key && it.type == entity.type /*名称一样, 并且光源一样*/ } == null
+            unionMaterialList.find {
+                if (it.isCustomMaterial) {
+                    //用户自定义的材质, 只需要key一样即可, 不根据光源不一样分开存储
+                    it.key == entity.key
+                } else {
+                    //系统推荐的材质, 不同的光源可能材质名称一样, 所以需要区分
+                    it.key == entity.key && it.type == entity.type
+                }
+            } == null
         }
     }
 

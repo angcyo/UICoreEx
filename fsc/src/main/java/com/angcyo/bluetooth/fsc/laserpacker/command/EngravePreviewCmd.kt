@@ -104,7 +104,7 @@ data class EngravePreviewCmd(
             } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
                 //S轴打开
                 productInfo?.sLimitPath
-            } else if (peckerModel.isCarOpen()) {
+            } else if (peckerModel.isCarConnect()) {
                 //C1平台移动模式
                 productInfo?.carLimitPath
             } else if (deviceStateModel.isPenMode()) {
@@ -133,7 +133,7 @@ data class EngravePreviewCmd(
                 productInfo?.rLimitPath
             } else if (peckerModel.isSOpen() || peckerModel.isSRepMode()) {
                 productInfo?.sLimitPath
-            } else if (peckerModel.isCarOpen()) {
+            } else if (peckerModel.isCarConnect()) {
                 productInfo?.carLimitPath
             } else if (deviceStateModel.isPenMode()) {
                 productInfo?.penBounds?.let { rect ->

@@ -74,7 +74,7 @@ object LPPreviewHelper {
             if (rendererList.isNullOrEmpty()) {
                 //未选中元素的情况下预览
                 val productInfo = laserPeckerModel.productInfoData.value
-                val bounds = if (laserPeckerModel.isCarOpen()) {
+                val bounds = if (laserPeckerModel.isCarConnect()) {
                     //小车模式下
                     productInfo?.carPreviewBounds
                 } else if (laserPeckerModel.haveExDevice()) {

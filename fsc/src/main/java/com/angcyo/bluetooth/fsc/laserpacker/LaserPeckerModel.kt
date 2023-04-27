@@ -14,6 +14,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.OverflowInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
+import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
@@ -103,7 +104,7 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         isZOpen() -> QuerySettingParser.EX_Z
         isROpen() -> QuerySettingParser.EX_R
         isSOpen() -> QuerySettingParser.EX_S
-        isCarOpen() -> QuerySettingParser.EX_CAR
+        isCarConnect() -> QuerySettingParser.EX_CAR
         else -> null
     }
 
@@ -127,8 +128,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     /**C1 移动平台雕刻
      * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isCarMode]*/
-    fun isCarOpen(): Boolean {
-        return deviceSettingData.value?.carFlag == 1 //&& (deviceStateData.value?.carConnect == 1 || isDebug())
+    fun isCarConnect(): Boolean {
+        //return deviceSettingData.value?.carFlag == 1 //&& (deviceStateData.value?.carConnect == 1 || isDebug())
+        return vmApp<DeviceStateModel>().isCarMode()
     }
 
     /**滑台多文件雕刻模式*/

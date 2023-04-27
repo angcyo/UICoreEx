@@ -1,13 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.graphics.Typeface
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -133,7 +133,9 @@ class EngravePropertyItem : DslAdapterItem() {
                     val times = getSelectedInt(index, time)
                     itemEngraveConfigEntity?.time = times
                     itemEngraveItemBean?.printCount = times
-                    itemChanging = true
+                    //itemChanging = true //雕刻次数改变时, 不通知刷新
+                    itemEngraveConfigEntity?.lpSaveEntity() //所以需要主动保存
+                    updateAdapterItem()
                     false
                 }
             }

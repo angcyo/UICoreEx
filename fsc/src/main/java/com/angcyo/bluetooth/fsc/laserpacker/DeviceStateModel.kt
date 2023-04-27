@@ -224,7 +224,7 @@ class DeviceStateModel : ViewModel() {
     fun needShowExDeviceTipItem(): Boolean = laserPeckerModel.haveExDevice() ||
             laserPeckerModel.isSRepMode() ||
             isPenMode() ||
-            laserPeckerModel.isCarOpen() ||
+            laserPeckerModel.isCarConnect() ||
             laserPeckerModel.isCSeries() //C1
 
     /**是否是C1的握笔模块*/
@@ -233,7 +233,7 @@ class DeviceStateModel : ViewModel() {
     }
 
     /**是否是C1的小车模式
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isCarOpen]*/
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.isCarConnect]*/
     fun isCarMode(): Boolean {
         return deviceStateData.value?.carConnect == 1
     }
