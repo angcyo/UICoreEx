@@ -70,7 +70,7 @@ class PreviewBracketItem : DslAdapterItem() {
                 longIncrementStep = incrementStep * 10
                 onFormatValueAction = {
                     val fl = it.toFloatOrNull()
-                    if (fl == null || fl == 0f) {
+                    if (fl == null || fl == 0f || it.endsWith(".") || !it.contains(".")) {
                         it
                     } else {
                         maxOf(fl, 0.1f).unitDecimal(1)
