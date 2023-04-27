@@ -54,7 +54,7 @@ class PreviewBracketItem : DslAdapterItem() {
         val valueUnit = LPConstant.renderUnit
         val value = valueUnit.convertPixelToValue(heightPixel)
 
-        itemHolder.tv(R.id.bracket_height_view)?.text = value.unitDecimal()
+        itemHolder.tv(R.id.bracket_height_view)?.text = value.unitDecimal(1)
         itemHolder.tv(R.id.unit_label_view)?.text = valueUnit.getUnit()
 
         //
@@ -69,7 +69,7 @@ class PreviewBracketItem : DslAdapterItem() {
                 incrementStep = 0.1f
                 longIncrementStep = incrementStep * 10
                 onFormatValueAction = {
-                    it.toFloatOrNull()?.unitDecimal() ?: "0"
+                    maxOf((it.toFloatOrNull() ?: 0f), 0.1f).unitDecimal(1)
                 }
                 onNumberResultAction = { number ->
                     val numberPixel = valueUnit.convertValueToPixel(number)
