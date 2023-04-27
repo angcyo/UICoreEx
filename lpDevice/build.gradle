@@ -12,7 +12,7 @@ dependencies {
     implementation project(allModule.pager) //image pager
 
     //https://mvnrepository.com/artifact/com.airbnb.android/lottie
-    implementation "com.airbnb.android:lottie:5.2.0"
+    api "com.airbnb.android:lottie:5.2.0"
 
     //蓝牙设备
     api project(allModule.fsc)
