@@ -16,6 +16,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
@@ -90,7 +91,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     ModuleCalibrationItem()()
                 }
             }*/
-            if (laserPeckerModel.isROpen()) {
+            if (laserPeckerModel.isROpen() || isDebugType()) {
                 //旋转轴, 提前设置物理直径
                 val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(flowTaskId)
                 PreviewDiameterItem()() {

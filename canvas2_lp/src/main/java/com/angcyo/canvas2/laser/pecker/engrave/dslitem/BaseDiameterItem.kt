@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem
 
 import android.widget.TextView
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
@@ -56,10 +57,11 @@ abstract class BaseDiameterItem : DslAdapterItem() {
         itemHolder.tv(R.id.diameter_unit_view)?.text = unit.getUnit()
 
         itemHolder.tv(R.id.diameter_label_view)?.text = itemDiameterLabel
-        itemHolder.tv(R.id.diameter_text_view)?.text =
-            unit.convertPixelToValue(itemDiameter).unitDecimal()
+        itemHolder.tv(R.id.diameter_text_view)?.text = unit.convertPixelToValue(itemDiameter)
+            .unitDecimal(HawkEngraveKeys.diameterPrecision, ensureInt = false)
         itemHolder.tv(R.id.perimeter_text_view)?.text =
-            unit.convertPixelToValue(itemDiameter.toPerimeter()).unitDecimal()
+            unit.convertPixelToValue(itemDiameter.toPerimeter())
+                .unitDecimal(HawkEngraveKeys.diameterPrecision, ensureInt = false)
 
         //
         bindPerimeter(itemHolder)

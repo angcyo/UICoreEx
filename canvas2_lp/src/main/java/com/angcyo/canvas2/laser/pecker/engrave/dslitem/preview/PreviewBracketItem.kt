@@ -69,7 +69,12 @@ class PreviewBracketItem : DslAdapterItem() {
                 incrementStep = 0.1f
                 longIncrementStep = incrementStep * 10
                 onFormatValueAction = {
-                    maxOf((it.toFloatOrNull() ?: 0f), 0.1f).unitDecimal(1)
+                    val fl = it.toFloatOrNull()
+                    if (fl == null || fl == 0f) {
+                        it
+                    } else {
+                        maxOf(fl, 0.1f).unitDecimal(1)
+                    }
                 }
                 onNumberResultAction = { number ->
                     val numberPixel = valueUnit.convertValueToPixel(number)
@@ -125,8 +130,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架上升*/
     fun bracketUpCmd(
-        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
-        action: IReceiveBeanAction? = null
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP, action: IReceiveBeanAction? = null
     ) {
         val cmd = EngravePreviewCmd.previewBracketUpCmd(step)
         cmd.enqueue { bean, error ->
@@ -139,8 +143,7 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架下降*/
     fun bracketDownCmd(
-        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
-        action: IReceiveBeanAction? = null
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP, action: IReceiveBeanAction? = null
     ) {
         val cmd = EngravePreviewCmd.previewBracketDownCmd(step)
         cmd.enqueue { bean, error ->

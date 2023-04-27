@@ -222,11 +222,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     override fun hide(end: (() -> Unit)?) {
-        if (cancelable /*可以返回*/ &&
-            engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ &&
-            engraveBackFlow <= 0 /*回退栈*/ &&
-            fscBleApiModel.haveDeviceConnected() /*有设备连接*/
-        ) {
+        if (cancelable /*可以返回*/ && engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ && engraveBackFlow <= 0 /*回退栈*/ && fscBleApiModel.haveDeviceConnected() /*有设备连接*/) {
             //预览中, 等待机器完全退出之后, 再关闭界面
             engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
                 ExitCmd().enqueue { bean, error ->
@@ -256,9 +252,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     open fun onEngraveFlowChanged(from: Int, to: Int) {
         //非输入框界面, 禁止输入键盘弹出
         engraveCanvasFragment?.fragment?._vh?.enable(
-            R.id.lib_soft_input_layout,
-            to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG,
-            false
+            R.id.lib_soft_input_layout, to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG, false
         )
 
         if (to != ENGRAVE_FLOW_ITEM_CONFIG) {
@@ -396,7 +390,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             //旋转轴打开的情况下,提前设置物理直径
             ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
         } else {
-            ENGRAVE_FLOW_PREVIEW
+            ENGRAVE_FLOW_PREVIEW //ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
+            //ENGRAVE_FLOW_PREVIEW_BEFORE_CONFIG
         }
         showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
     }
@@ -495,8 +490,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                 dialogMessage = _string(
-                    R.string.device_ex_discontent_tips,
-                    noConnectType.toDeviceStr()
+                    R.string.device_ex_discontent_tips, noConnectType.toDeviceStr()
                 )
 
                 onDismissListener = {
@@ -515,8 +509,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             viewHolder?.context?.messageDialog {
                 dialogMessageLeftIco = _drawable(R.mipmap.safe_tips)
                 dialogMessage = _string(
-                    R.string.engrave_ex_discontent_tips,
-                    noConnectType.toDeviceStr()
+                    R.string.engrave_ex_discontent_tips, noConnectType.toDeviceStr()
                 )
 
                 negativeButtonText = _string(R.string.dialog_negative)
@@ -580,8 +573,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
             //设备正在雕刻中, 则通过index查询是否是本机app发送的任务
             val transferData = EngraveFlowDataHelper.getTransferData(
-                stateParser.index,
-                deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+                stateParser.index, deviceAddress = LaserPeckerHelper.lastDeviceAddress()
             )
 
             //如果是, 恢复界面, 如果不是, 则只是弹窗提示
@@ -635,8 +627,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             fContext?.messageDialog {
                 dialogTitle = _string(R.string.engrave_warn)
                 dialogMessage = _string(
-                    R.string.unsupported_firmware_tip,
-                    version?.toLaserPeckerVersionName() ?: "0"
+                    R.string.unsupported_firmware_tip, version?.toLaserPeckerVersionName() ?: "0"
                 )
             }
             return false
@@ -665,8 +656,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 fContext?.messageDialog {
                     dialogTitle = _string(R.string.engrave_warn)
                     dialogMessage = _string(
-                        R.string.limit_engrave_count_tip,
-                        HawkEngraveKeys.maxEngraveItemCountLimit
+                        R.string.limit_engrave_count_tip, HawkEngraveKeys.maxEngraveItemCountLimit
                     )
                 }
                 return false
@@ -675,8 +665,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         //验证数据
         return EngraveDataValidation.validation(
-            engraveCanvasFragment?.fragment?.fContext(),
-            delegate
+            engraveCanvasFragment?.fragment?.fContext(), delegate
         )
     }
 

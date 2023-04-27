@@ -56,6 +56,9 @@ object HawkEngraveKeys {
     @Pixel
     var lastDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
+    /**物理尺寸输入的精度, 小数点后几位*/
+    var diameterPrecision: Int by HawkPropertyValue<Any, Int>(2)
+
     /**短径, 小直径*/
     var lastMinDiameterPixel: Float by HawkPropertyValue<Any, Float>(300f)
 
