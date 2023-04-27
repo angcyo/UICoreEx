@@ -67,6 +67,8 @@ object MaterialHelper {
             )
         })
 
+        val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
+
         //系统的推荐参数
         product.laserTypeList.forEach {
             val json = "argument/${name}_${it.wave}_${it.power.ensureInt()}.json"
@@ -82,7 +84,7 @@ object MaterialHelper {
                             layerId = LayerHelper.LAYER_LINE
                             result.add(this)
 
-                            if (vmApp<LaserPeckerModel>().isCSeries()) {
+                            if (isCSeries) {
                                 //切割图层, 也使用GCode图层的参数
                                 materialEntity.copy().apply {
                                     layerId = LayerHelper.LAYER_CUT

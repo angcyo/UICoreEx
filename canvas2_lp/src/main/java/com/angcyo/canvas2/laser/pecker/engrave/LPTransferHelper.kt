@@ -3,12 +3,14 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.core.vmApp
 import com.angcyo.coroutine.sleep
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
@@ -119,6 +121,7 @@ object LPTransferHelper {
         layerId: String?
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
+        val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
         rendererList.forEach { renderer ->
             //开始将[renderer]转换成数据
             LTime.tick()
@@ -130,7 +133,11 @@ object LPTransferHelper {
             if (transferDataEntity == null) {
                 "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
             } else {
-                transferDataEntity.layerId = layerId
+                if (!isCSeries && layerId == LayerHelper.LAYER_CUT) {
+                    transferDataEntity.layerId = LayerHelper.LAYER_LINE
+                } else {
+                    transferDataEntity.layerId = layerId
+                }
                 resultDataList.add(transferDataEntity)
                 "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
             }
