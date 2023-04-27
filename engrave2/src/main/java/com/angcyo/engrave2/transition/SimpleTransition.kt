@@ -16,6 +16,7 @@ import com.angcyo.library.ex.bounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.unit.IValueUnit
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.opencv.OpenCV
 import java.io.File
@@ -121,7 +122,9 @@ class SimpleTransition : ITransition {
         return outputFile
     }
 
-    /**调整GCode*/
+    /**调整GCode
+     * 会强制将G21英寸单位转换成G20毫米单位
+     * */
     override fun adjustGCode(gcodeText: String, matrix: Matrix, params: TransitionParam): File {
         val outputFile = _defaultGCodeOutputFile()
         BitmapHandle.adjustGCode(
@@ -140,7 +143,7 @@ class SimpleTransition : ITransition {
      * */
     private fun gCodeTranslation(gCode: String, rotateBounds: RectF): File {
         val matrix = Matrix()
-        matrix.setTranslate(rotateBounds.left, rotateBounds.top)
+        matrix.setTranslate(rotateBounds.left.toMm(), rotateBounds.top.toMm())
         return adjustGCode(gCode, matrix, TransitionParam())
         /*val gCodeAdjust = GCodeAdjust()
         val outputFile = _defaultGCodeOutputFile()
@@ -149,5 +152,4 @@ class SimpleTransition : ITransition {
         }
         return outputFile*/
     }
-
 }
