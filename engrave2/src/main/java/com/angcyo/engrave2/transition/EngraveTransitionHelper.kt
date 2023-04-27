@@ -547,7 +547,7 @@ object EngraveTransitionHelper {
         }
 
         buildString {
-            append("${transferDataEntity.index}->")
+            append("初始化传输实体[${configEntity.taskId}]:${transferDataEntity.index}->")
             append("坐标[${provider.getEngraveDataName()}]:")
             append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
             append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")

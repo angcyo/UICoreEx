@@ -123,14 +123,18 @@ object LPTransferHelper {
             //开始将[renderer]转换成数据
             LTime.tick()
             val elementBean = renderer.lpElementBean()
-            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} ${elementBean?.name}".writePerfLog()
-            LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
-                ?.let { transferDataEntity ->
-                    transferDataEntity.layerId = layerId ?: elementBean?._layerId
-                    resultDataList.add(transferDataEntity)
-                    "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
-                    sleep(HawkEngraveKeys.transferIndexSleep)
-                }
+            val layerId = layerId ?: elementBean?._layerId
+            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $layerId".writePerfLog()
+            val transferDataEntity =
+                LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
+            if (transferDataEntity == null) {
+                "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
+            } else {
+                transferDataEntity.layerId = layerId
+                resultDataList.add(transferDataEntity)
+                "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
+            }
+            sleep(HawkEngraveKeys.transferIndexSleep)
         }
         return resultDataList
     }
