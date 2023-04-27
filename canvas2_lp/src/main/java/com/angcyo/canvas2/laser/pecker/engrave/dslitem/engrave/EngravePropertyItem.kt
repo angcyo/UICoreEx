@@ -32,6 +32,12 @@ class EngravePropertyItem : DslAdapterItem() {
     /**单元素参数配置*/
     var itemEngraveItemBean: LPElementBean? = null
 
+    /**是否要显示雕刻次数*/
+    var itemShowTimes: Boolean = true
+
+    /**需要显示的文本标签*/
+    var itemLabelText: CharSequence? = null
+
     init {
         itemLayoutId = R.layout.item_engrave_property_layout
     }
@@ -44,6 +50,8 @@ class EngravePropertyItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         val context = itemHolder.context
+
+        itemHolder.tv(R.id.lib_label_view)?.text = itemLabelText
 
         //属性
         val powerLabel = _string(R.string.custom_power)
@@ -71,11 +79,12 @@ class EngravePropertyItem : DslAdapterItem() {
                 foregroundColor = _color(R.color.colorAccent)
             }
             append("%")
-
         }
+
+        itemHolder.visible(R.id.times_view, itemShowTimes)
         val timesLabel = _string(R.string.print_times)
         val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
-        itemHolder.tv(R.id.tims_view)?.text = span {
+        itemHolder.tv(R.id.times_view)?.text = span {
             append(timesLabel)
             appendln()
             append("$time") {
@@ -123,7 +132,7 @@ class EngravePropertyItem : DslAdapterItem() {
                 }
             }
         }
-        itemHolder.click(R.id.tims_view) {
+        itemHolder.click(R.id.times_view) {
             context.wheelDialog {
                 dialogTitle = timesLabel
                 wheelItems = EngraveHelper.percentList(50)//2022-10-21

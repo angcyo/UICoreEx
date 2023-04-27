@@ -23,6 +23,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLaserSegmentItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePropertyItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.core.vmApp
@@ -411,6 +412,13 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
                     updateTablePreview()
                 }
+            }
+
+            //其他数据的参数
+            //功率/深度/次数
+            EngravePropertyItem()() {
+                itemShowTimes = false
+                itemLabelText = "其它元素参数"
             }
         }
     }
