@@ -526,7 +526,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave(reason: String?) {
-        deviceStateModel.pauseLoopCheckState(true)
+        deviceStateModel.pauseLoopCheckState(false)
 
         isSendEngraveCmd = false
         "完成雕刻[${_engraveTaskId}]:${reason ?: ""}".writeEngraveLog()
