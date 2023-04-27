@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 import android.widget.TextView
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.EngravePreviewParser
@@ -11,17 +12,16 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
+import com.angcyo.library.ex.isTouchFinish
 import com.angcyo.library.toast
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
-import com.angcyo.library.ex.isTouchFinish
 
 /**
  * 支架控制item
@@ -66,10 +66,15 @@ class PreviewBracketItem : DslAdapterItem() {
                 }
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
+                incrementStep = 0.1f
+                longIncrementStep = incrementStep * 10
+                onFormatValueAction = {
+                    it.toFloatOrNull()?.unitDecimal() ?: "0"
+                }
                 onNumberResultAction = { number ->
                     val numberPixel = valueUnit.convertValueToPixel(number)
                     var size = numberPixel.toMm()
-                    size = clamp(size, 1f, EngravePreviewCmd.BRACKET_MAX_STEP.toFloat())
+                    size = clamp(size, 0.1f, EngravePreviewCmd.BRACKET_MAX_STEP.toFloat())
                     HawkEngraveKeys.lastBracketHeight = size
                 }
             }
@@ -81,6 +86,7 @@ class PreviewBracketItem : DslAdapterItem() {
                     _isLongPressHappen = false
                     bracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
+
                 DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
                     _isLongPressHappen = true
                     bracketUpCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
@@ -98,6 +104,7 @@ class PreviewBracketItem : DslAdapterItem() {
                     _isLongPressHappen = false
                     bracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
+
                 DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
                     _isLongPressHappen = true
                     bracketDownCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
