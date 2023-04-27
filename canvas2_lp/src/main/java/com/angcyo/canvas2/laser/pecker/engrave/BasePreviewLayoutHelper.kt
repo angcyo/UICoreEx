@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
@@ -17,6 +18,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.toastQQ
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -197,10 +199,15 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     /**开始路径预览流程*/
     fun startPathPreview(renderUuid: String?) {
         renderUuid ?: return
-        engraveCanvasFragment?.renderDelegate ?: return
+        val delegate = engraveCanvasFragment?.renderDelegate ?: return
+        val itemRenderer = delegate.renderManager.findElementRenderer(renderUuid)
+        if (itemRenderer?.renderProperty?.getRenderBounds().isOverflowProductBounds()) {
+            toastQQ(_string(R.string.engrave_bounds_warn))
+            return
+        }
         deviceStateModel.pauseLoopCheckState(true)
         viewHolder?.context?.pathPreviewDialog(renderUuid) {
-            renderDelegate = engraveCanvasFragment?.renderDelegate
+            renderDelegate = delegate
             onDismissListener = {
                 deviceStateModel.pauseLoopCheckState(false)
             }

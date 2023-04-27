@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.LPDataTransitionHelper
@@ -26,7 +27,6 @@ import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.engrave2.model.TransferModel
-import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
@@ -59,9 +59,6 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     private val laserPeckerModel = vmApp<LaserPeckerModel>()
     private val deviceStateModel = vmApp<DeviceStateModel>()
 
-    /**预览的数据*/
-    private var elementBean: LPElementBean? = null
-
     private var previewInfo: PreviewInfo? = null
 
     private val uuid = uuid()
@@ -86,10 +83,20 @@ class PathPreviewDialogConfig : DslDialogConfig() {
         super.initDialogView(dialog, dialogViewHolder)
         val renderer = renderDelegate?.renderManager?.findElementRenderer(renderUuid)
         val itemBean = renderer?.lpElementBean() ?: return
-        val element = renderer?.lpElement() ?: return
+        val element = renderer.lpElement() ?: return
 
         dialogViewHolder.img(R.id.lib_image_view)?.apply {
-            setImageDrawable(element.requestElementDrawable(renderer, null))
+            post {
+                setImageDrawable(
+                    element.requestElementDrawable(
+                        renderer,
+                        RenderParams(
+                            overrideSize = min(measuredWidth, measuredHeight).toFloat(),
+                            overrideSizeNotZoomIn = true
+                        )
+                    )
+                )
+            }
         }
 
         //激光亮度
