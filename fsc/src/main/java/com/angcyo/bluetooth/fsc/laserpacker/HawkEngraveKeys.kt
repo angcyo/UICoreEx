@@ -161,6 +161,9 @@ object HawkEngraveKeys {
     /**是否激活实验性功能*/
     var enableExperimental: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
+    /**是否激活Z轴的无差别px选择*/
+    var enableZFlagPx: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**最大的下位机能接收的文件大小 字节, 30MB */
