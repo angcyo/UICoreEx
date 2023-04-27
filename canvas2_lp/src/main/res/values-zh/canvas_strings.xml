@@ -121,11 +121,14 @@
     <string name="invert_recommend">推荐反色</string>
     <string name="invert_recommend_criterion">雕刻色比材料色浅</string>
 
-    <string name="canvas_clear">清空</string>
-    <string name="canvas_select_all">所有</string>
-    <string name="canvas_origin">原点</string>
-    <string name="canvas_reset">复位</string>
-    <string name="canvas_best">适应</string>
+    <string name="canvas_clear">清空所有</string>
+    <string name="canvas_select_all">选中所有</string>
+    <string name="canvas_show_all">显示所有</string>
+    <string name="canvas_hide_other">隐藏其它</string>
+    <string name="canvas_origin">画布原点</string>
+    <string name="canvas_reset">画布复位</string>
+    <string name="canvas_best">画布适应</string>
+    <string name="canvas_ratio_1">画布缩放100%</string>
 
     <string name="canvas_item_outof_limit">元素数量超出限制!</string>
     <string name="canvas_min_diameter">小直径</string>

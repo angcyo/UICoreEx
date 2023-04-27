@@ -124,11 +124,14 @@
 
     <string name="canvas_outline">Outline</string>
 
-    <string name="canvas_clear">Clear</string>
-    <string name="canvas_select_all">All</string>
-    <string name="canvas_origin">Origin</string>
-    <string name="canvas_reset">Reset</string>
-    <string name="canvas_best">Adapt</string>
+    <string name="canvas_clear">Clear all</string>
+    <string name="canvas_select_all">Select all</string>
+    <string name="canvas_show_all">Show all</string>
+    <string name="canvas_hide_other">Hide other</string>
+    <string name="canvas_origin">Canvas origin</string>
+    <string name="canvas_reset">Canvas reset</string>
+    <string name="canvas_best">Canvas adapt</string>
+    <string name="canvas_ratio_1">Canvas zoom 100%</string>
 
     <string name="canvas_item_outof_limit">Number of elements exceeds limit!</string>
     <string name="canvas_min_diameter">Small D</string>

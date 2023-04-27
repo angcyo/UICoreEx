@@ -122,11 +122,14 @@
     <string name="invert_recommend">アンチカラー推奨</string>
     <string name="invert_recommend_criterion">刻印の色は素材の色より明るいです</string>
 
-    <string name="canvas_clear">クリア</string>
-    <string name="canvas_select_all">全て</string>
-    <string name="canvas_origin">原点</string>
-    <string name="canvas_reset">リセット</string>
-    <string name="canvas_best">フィット</string>
+    <string name="canvas_clear">すべてをクリアします</string>
+    <string name="canvas_select_all">すべてを選択してください</string>
+    <string name="canvas_show_all">すべてを表示します</string>
+    <string name="canvas_hide_other">隠された他</string>
+    <string name="canvas_origin">キャンバス起源</string>
+    <string name="canvas_reset">キャンバスリセット</string>
+    <string name="canvas_best">キャンバスの適応</string>
+    <string name="canvas_ratio_1">スケーリング100%</string>
 
     <string name="canvas_item_outof_limit">素材の数は上限に達しました!</string>
     <string name="canvas_min_diameter">小径</string>

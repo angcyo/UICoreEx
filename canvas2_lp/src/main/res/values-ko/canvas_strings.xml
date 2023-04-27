@@ -121,11 +121,14 @@
     <string name="invert_recommend">색반전을 추천하다</string>
     <string name="invert_recommend_criterion">각인색은 재료색보다 옅습니다</string>
 
-    <string name="canvas_clear">비우다</string>
-    <string name="canvas_select_all">모두</string>
-    <string name="canvas_origin">원점</string>
-    <string name="canvas_reset">리셋</string>
-    <string name="canvas_best">적용</string>
+    <string name="canvas_clear">모든 것을 정리하십시오</string>
+    <string name="canvas_select_all">모두 선택하십시오</string>
+    <string name="canvas_show_all">모든 것을 보여주십시오</string>
+    <string name="canvas_hide_other">숨겨진 기타</string>
+    <string name="canvas_origin">캔버스 원점</string>
+    <string name="canvas_reset">캔버스 재설정</string>
+    <string name="canvas_best">캔버스 적응</string>
+    <string name="canvas_ratio_1">스케일링100%</string>
 
     <string name="canvas_item_outof_limit">원소의 수가 제한을 초과하다!</string>
     <string name="canvas_min_diameter">소구경</string>

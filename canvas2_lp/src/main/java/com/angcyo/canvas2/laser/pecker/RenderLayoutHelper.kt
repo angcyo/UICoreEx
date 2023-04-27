@@ -565,6 +565,18 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                             Reason.user
                                         )
 
+                                        R.id.menu_show_all -> delegate.hideAllNoSelectElementRenderer(
+                                            false,
+                                            Reason.user,
+                                            delegate
+                                        )
+
+                                        R.id.menu_hide_other -> delegate.hideAllNoSelectElementRenderer(
+                                            true,
+                                            Reason.user,
+                                            delegate
+                                        )
+
                                         R.id.menu_clear -> delegate.removeAllElementRenderer(Reason.user)
                                         R.id.menu_reset -> renderViewBox.reset()
                                         R.id.menu_best -> onPointTouchEvent(
