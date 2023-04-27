@@ -1,8 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
-import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
@@ -181,12 +179,16 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     } else {
                         //让设备进入空闲模式
                         deviceStateModel.pauseLoopCheckState(true)
-                        ExitCmd().enqueue()
-                        syncQueryDeviceState()
-
-                        engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                        engraveBackFlow = 0
-                        renderFlowItems()
+                        asyncTimeoutExitCmd { bean, error ->
+                            if (error == null) {
+                                syncQueryDeviceState()
+                                engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                engraveBackFlow = 0
+                                renderFlowItems()
+                            } else {
+                                toastQQ(error.message)
+                            }
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import android.content.Context
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -35,6 +36,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
+import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
@@ -48,6 +50,7 @@ import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.size
+import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
@@ -734,6 +737,18 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 itemTip = info
             }
         }
+    }
+
+    /**异步超时发送退出指令*/
+    fun asyncTimeoutExitCmd(action: IReceiveBeanAction) {
+        engraveCanvasFragment?.fragment?.engraveLoadingAsyncTimeout({
+            syncSingle { countDownLatch ->
+                ExitCmd().enqueue { bean, error ->
+                    countDownLatch.countDown()
+                    action(bean, error)
+                }
+            }
+        })
     }
 }
 
