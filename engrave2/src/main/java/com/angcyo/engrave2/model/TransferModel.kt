@@ -411,7 +411,7 @@ class TransferModel : ViewModel() {
         val size = transferDataEntity.bytes()?.size ?: 0
         val sizeString = size.toSizeString()
 
-        "开始传输数据:[$taskId][${transferDataEntity.index}] $sizeString".writeEngraveLog()
+        "开始传输数据:[单传${HawkEngraveKeys.enableSingleItemTransfer.toDC()}]:[$taskId][${transferDataEntity.index}] $sizeString".writeEngraveLog()
         if (size <= 0) {
             "传输数据为空:[${taskId}]${transferDataEntity.index}".writeErrorLog()
             errorTransfer(transferState, EmptyException())

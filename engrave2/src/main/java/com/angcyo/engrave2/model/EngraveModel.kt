@@ -29,6 +29,7 @@ import com.angcyo.library.annotation.Private
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -443,7 +444,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
 
         buildString {
-            append("开始批量雕刻任务:${taskId} 大索引:${task.bigIndex} 小索引:$indexList")
+            append("开始批量雕刻任务:[单参${_engraveTaskEntity?.enableItemEngraveParams.toDC()}]:[${taskId}] 大索引:${task.bigIndex} 小索引:$indexList")
             append(" power:${powerList}")
             append(" depth:${depthList}")
             append(" time:${timeList}")
@@ -659,7 +660,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         val engraveLayer = LayerHelper.getEngraveLayerInfo(engraveConfigEntity.layerId)
         buildString {
-            append("开始雕刻指令:[${transferDataEntity?.taskId}][$index]")
+            append("开始雕刻指令:[单参${_engraveTaskEntity?.enableItemEngraveParams.toDC()}]:[${transferDataEntity?.taskId}][$index]")
 
             //雕刻数据类型
             transferDataEntity?.engraveDataType?.let {
