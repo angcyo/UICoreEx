@@ -476,6 +476,7 @@ fun String.trimEngraveName(): String {
 fun Int.toEngraveTypeStr() = when (this) {
     DataCmd.ENGRAVE_TYPE_BITMAP -> "雕刻图片数据"
     DataCmd.ENGRAVE_TYPE_GCODE -> "雕刻GCode数据"
+    DataCmd.ENGRAVE_TYPE_GCODE_CUT -> "雕刻GCode切割数据"
     DataCmd.ENGRAVE_TYPE_PATH -> "雕刻路径数据"
     DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> "雕刻图片路径数据"
     DataCmd.ENGRAVE_TYPE_BITMAP_CROP -> "雕刻图片裁剪数据"
