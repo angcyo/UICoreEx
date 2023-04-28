@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -83,10 +84,11 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         get() = itemRenderer?.renderProperty?.getRenderBounds().isOverflowProductBounds()
 
     protected val laserPeckerModel = vmApp<LaserPeckerModel>()
+    protected val deviceStateModel = vmApp<DeviceStateModel>()
 
     /**是否要显示切割按钮*/
     val itemShowSlicingView: Boolean
-        get() = laserPeckerModel.isCSeries() && operateElementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
+        get() = deviceStateModel.haveCutLayer() && operateElementBean?._layerMode == LPDataConstant.DATA_MODE_GCODE
 
     //endregion ---计算属性---
 
