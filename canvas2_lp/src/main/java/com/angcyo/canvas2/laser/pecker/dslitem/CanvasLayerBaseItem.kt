@@ -176,6 +176,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
             } else {
                 operateElementBean?.layerId = LayerHelper.LAYER_CUT
             }
+            operateElementBean?.index = null // 重置索引
             onItemCutTypeChangeAction?.invoke()
         }
     }
