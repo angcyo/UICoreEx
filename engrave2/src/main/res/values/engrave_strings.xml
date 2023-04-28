@@ -112,11 +112,6 @@
     <string name="unsupported_firmware_tip">Unsupported firmware version%1$s, Please update the firmware before use.</string>
     <string name="limit_engrave_count_tip">The number of carvings has reached the upper limit, maximum %1$s.</string>
 
-    <string name="engrave_module_single_pen">Single color pen</string>
-    <string name="engrave_module_color_pen">Color pen</string>
-    <string name="engrave_module_knife_cutting">Knife cutting</string>
-    <string name="engrave_module_cnc">CNC</string>
-
     <string name="engrave_stopping_tip">Engraving is stopping, please wait...</string>
 
     <string name="open_notify_tip">Turn on notifications to receive sculpted notifications progress?</string>

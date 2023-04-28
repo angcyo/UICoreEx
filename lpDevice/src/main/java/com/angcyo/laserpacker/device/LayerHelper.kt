@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
@@ -47,7 +48,7 @@ object LayerHelper {
 
     /**图层列表
      * [includeCutLayer] 是否要切割图层*/
-    fun getEngraveLayerList(includeCutLayer: Boolean = vmApp<LaserPeckerModel>().isCSeries()): List<EngraveLayerInfo> {
+    fun getEngraveLayerList(includeCutLayer: Boolean = vmApp<DeviceStateModel>().haveCutLayer()): List<EngraveLayerInfo> {
         _resultLayerList.clear()
         _resultLayerList.addAll(engraveLayerList)
         if (!includeCutLayer) {

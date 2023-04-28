@@ -60,4 +60,9 @@
     <string name="command_timeout_tip">지시 시간 초과</string>
     <string name="command_cancel_tip">지침</string>
 
+    <string name="engrave_module_single_pen">단색펜 모드</string>
+    <string name="engrave_module_color_pen">색연필 모드</string>
+    <string name="engrave_module_knife_cutting">커터 모드</string>
+    <string name="engrave_module_cnc">CNC 모드</string>
+
 </resources>

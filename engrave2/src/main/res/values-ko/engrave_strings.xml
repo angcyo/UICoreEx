@@ -106,11 +106,6 @@
     <string name="unsupported_firmware_tip">지원되지 않는 펌웨어 버전은%1$s달러 s입니다. 펌웨어를 업데이트한 후에 사용하십시오.</string>
     <string name="limit_engrave_count_tip">조각 개수 (%1$s)는 최대%1개입니다.</string>
 
-    <string name="engrave_module_single_pen">단색펜 모드</string>
-    <string name="engrave_module_color_pen">색연필 모드</string>
-    <string name="engrave_module_knife_cutting">커터 모드</string>
-    <string name="engrave_module_cnc">CNC 모드</string>
-
     <string name="engrave_stopping_tip">조각 작업을 중지합니다. 잠시만 기다려 주십시오...</string>
 
     <string name="open_notify_tip">알림 열기, 조각 알림 받기 진행?</string>

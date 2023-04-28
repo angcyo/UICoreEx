@@ -105,11 +105,6 @@
     <string name="unsupported_firmware_tip">ファームウェアバージョン%1$sに対応していません。使用前にファームウェアを更新してください。</string>
     <string name="limit_engrave_count_tip">彫刻の数が上限に達しました。%1$s個まで対応できます</string>
 
-    <string name="engrave_module_single_pen">モノクロペンモード</string>
-    <string name="engrave_module_color_pen">カラーペンモード</string>
-    <string name="engrave_module_knife_cutting">カットモード</string>
-    <string name="engrave_module_cnc">CNCモード</string>
-
     <string name="engrave_stopping_tip">彫刻を停止しています。お待ちください...</string>
 
     <string name="open_notify_tip">通知をオンにして、彫刻進捗の通知を受信します?</string>

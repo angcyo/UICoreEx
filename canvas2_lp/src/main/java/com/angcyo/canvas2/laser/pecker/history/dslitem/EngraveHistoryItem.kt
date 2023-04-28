@@ -115,8 +115,10 @@ open class EngraveHistoryItem : DslTagGroupItem() {
             val engraveConfigEntityList = itemEngraveConfigEntityList
             val itemList = mutableListOf<DslAdapterItem>()
 
-            val includeCutLayer =
-                needCheckCut(engraveConfigEntityList?.lastOrNull()?.softwareVersion)
+            val includeCutLayer = needCheckCut(
+                engraveConfigEntityList?.lastOrNull()?.softwareVersion,
+                engraveConfigEntityList?.lastOrNull()?.moduleState
+            )
             if (showAllEngraveLayerData()) {
                 LayerHelper.getEngraveLayerList(includeCutLayer).forEach { layerInfo ->
                     val findData =
@@ -231,10 +233,10 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         }
     }
 
-    private fun needCheckCut(softwareVersion: Int?): Boolean {
+    private fun needCheckCut(softwareVersion: Int?, moduleState: Int?): Boolean {
         return LaserPeckerHelper.parseProductInfo(
             softwareVersion ?: 0, 0
-        )?.isCSeries() == true
+        )?.isCSeries() == true && vmApp<DeviceStateModel>().isCutModule(moduleState)
     }
 
     private fun widthHeightLabelDes(width: Float, height: Float): LabelDesData {

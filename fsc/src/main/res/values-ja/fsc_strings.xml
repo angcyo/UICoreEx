@@ -59,4 +59,9 @@
 
     <string name="command_timeout_tip">命令タイムアウト</string>
     <string name="command_cancel_tip">命令</string>
+
+    <string name="engrave_module_single_pen">モノクロペンモード</string>
+    <string name="engrave_module_color_pen">カラーペンモード</string>
+    <string name="engrave_module_knife_cutting">カットモード</string>
+    <string name="engrave_module_cnc">CNCモード</string>
 </resources>

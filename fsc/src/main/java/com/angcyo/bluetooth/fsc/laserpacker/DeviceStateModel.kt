@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
+import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
@@ -17,6 +18,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.component._delay
+import com.angcyo.library.ex._string
 import com.angcyo.library.ex.add
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.remove
@@ -218,6 +220,29 @@ class DeviceStateModel : ViewModel() {
         deviceModelData.updateValue(model)
     }
 
+    /**获取当前安装的模块, 主要针对C1*/
+    fun getDeviceModuleLabel(moduleState: Int? = deviceStateData.value?.moduleState): String {
+        return when (moduleState) {
+            //0 5W激光
+            0 -> "5W 450nm"
+            //1 10W激光
+            1 -> "10W 450nm"
+            //2 20W激光
+            2 -> "20W 450nm"
+            //3 1064激光
+            3 -> "2W 1064nm"
+            //4 单色笔模式
+            4 -> _string(R.string.engrave_module_single_pen)
+            //5 彩色笔模式
+            5 -> _string(R.string.engrave_module_color_pen)
+            //6 刀切割模式
+            6 -> _string(R.string.engrave_module_knife_cutting)
+            //7 CNC模式
+            7 -> _string(R.string.engrave_module_cnc)
+            else -> "Unknown$moduleState"
+        }
+    }
+
     //---
 
     /**是否需要显示外设提示*/
@@ -230,6 +255,18 @@ class DeviceStateModel : ViewModel() {
     /**是否是C1的握笔模块*/
     fun isPenMode(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
         return moduleState == 4 /*|| isDebugType()*/
+    }
+
+    /**是否是切割模块*/
+    fun isCutModule(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
+        val cut = LaserPeckerConfigHelper.readDeviceSettingConfig()?.cutLayerModule?.split(",")
+            ?.contains("$moduleState") == true
+        return cut
+    }
+
+    /**是否有切割图层*/
+    fun haveCutLayer(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
+        return laserPeckerModel.isCSeries() && isCutModule(moduleState)
     }
 
     /**是否是C1的小车模式

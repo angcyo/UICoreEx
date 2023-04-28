@@ -61,4 +61,9 @@
 
     <string name="command_timeout_tip">Command timeout</string>
     <string name="command_cancel_tip">Command cancel</string>
+
+    <string name="engrave_module_single_pen">Single color pen</string>
+    <string name="engrave_module_color_pen">Color pen</string>
+    <string name="engrave_module_knife_cutting">Knife cutting</string>
+    <string name="engrave_module_cnc">CNC</string>
 </resources>
