@@ -24,6 +24,7 @@ dependencies {
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 
     //https://mvnrepository.com/artifact/androidx.palette
+    //https://mvnrepository.com/artifact/androidx.palette/palette
     //api 'androidx.palette:palette:1.0.0'
     api 'androidx.palette:palette-ktx:1.0.0'
 

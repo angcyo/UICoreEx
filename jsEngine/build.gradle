@@ -6,5 +6,5 @@ dependencies {
     //The minCompileSdk (33) specified in a
     //https://developer.android.com/jetpack/androidx/releases/javascriptengine
     //https://mvnrepository.com/artifact/androidx.javascriptengine/javascriptengine
-    api "androidx.javascriptengine:javascriptengine:1.0.0-alpha02"
+    api "androidx.javascriptengine:javascriptengine:1.0.0-alpha05"
 }

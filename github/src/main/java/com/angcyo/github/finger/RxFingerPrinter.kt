@@ -66,7 +66,7 @@ class RxFingerPrinter(private val fragmentActivity: FragmentActivity) : Lifecycl
                 .add(fragment, TAG)
                 .commitAllowingStateLoss()
             fragmentManager.executePendingTransactions()
-            fragment.lifecycle.addListener(this)
+            fragment.fragmentLifecycle.addListener(this)
         }
         return fragment
     }

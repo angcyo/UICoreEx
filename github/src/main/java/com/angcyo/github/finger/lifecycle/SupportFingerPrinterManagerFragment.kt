@@ -8,31 +8,31 @@ import androidx.fragment.app.Fragment
  */
 
 @SuppressLint("ValidFragment")
-class SupportFingerPrinterManagerFragment(val lifecycle: ActivityFragmentLifecycle = ActivityFragmentLifecycle()) :
+class SupportFingerPrinterManagerFragment(val fragmentLifecycle: ActivityFragmentLifecycle = ActivityFragmentLifecycle()) :
     Fragment() {
 
     override fun onStart() {
         super.onStart()
-        lifecycle.onStart()
+        fragmentLifecycle.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycle.onResume()
+        fragmentLifecycle.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        lifecycle.onPause()
+        fragmentLifecycle.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        lifecycle.onStop()
+        fragmentLifecycle.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycle.onDestroy()
+        fragmentLifecycle.onDestroy()
     }
 }
