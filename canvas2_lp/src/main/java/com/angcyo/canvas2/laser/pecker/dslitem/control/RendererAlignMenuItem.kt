@@ -2,8 +2,8 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.view.Gravity
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.library.ex._string
 
 /**
@@ -18,7 +18,7 @@ class RendererAlignMenuItem : CanvasIconItem() {
         itemText = _string(R.string.canvas_align)
 
         itemClick = {
-            it.context.menuPopupWindow(it) {
+            it.context.canvasMenuPopupWindow(it) {
                 renderAdapterAction = {
                     RendererAlignItem()() {
                         itemIco = R.drawable.canvas_align_left_ico

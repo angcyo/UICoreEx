@@ -4,7 +4,7 @@ import android.graphics.Paint
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.dialog.popup.menuPopupWindow
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
@@ -27,7 +27,7 @@ class TextStyleMenuItem : BaseTextControlItem() {
             if (itemIsSelected) {
                 UMEvent.CANVAS_SHAPE.umengEventValue()
 
-                anchor.context.menuPopupWindow(anchor) {
+                anchor.context.canvasMenuPopupWindow(anchor) {
                     renderAdapterAction = {
                         val closeTextEditItemsFun =
                             LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun

@@ -2,7 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.graphics.Paint
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.dialog.popup.menuPopupWindow
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
@@ -23,7 +23,7 @@ class TextAlignMenuItem : BaseTextControlItem() {
 
             if (itemIsSelected) {
                 UMEvent.CANVAS_SHAPE.umengEventValue()
-                anchor.context.menuPopupWindow(anchor) {
+                anchor.context.canvasMenuPopupWindow(anchor) {
                     renderAdapterAction = {
                         TextAlignItem()() {
                             initItem()

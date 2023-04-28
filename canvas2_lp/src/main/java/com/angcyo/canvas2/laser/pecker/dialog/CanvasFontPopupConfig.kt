@@ -21,14 +21,22 @@ import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
 import com.angcyo.library.component.FontManager
-import com.angcyo.library.ex.*
+import com.angcyo.library.component.pad.isInPadMode
+import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.decode
+import com.angcyo.library.ex.getDisplayName
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.recycler.scrollToFirst
 import com.angcyo.widget.tab
+import kotlin.math.max
 
 /**
  * 画图字体选择
@@ -55,6 +63,10 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
 
     init {
         popupLayoutId = R.layout.dialog_font_layout
+
+        if (isInPadMode()) {
+            width = max(_screenWidth, _screenHeight) / 2
+        }
     }
 
     override fun initLayout(window: TargetWindow, viewHolder: DslViewHolder) {
@@ -70,10 +82,12 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                             //系统字体
                             renderAdapterFontList(FontManager.getSystemFontList())
                         }
+
                         2 -> {
                             //自定义
                             renderAdapterFontList(FontManager.getCustomFontList())
                         }
+
                         else -> {
                             //推荐
                             renderAdapterFontList(FontManager.getPrimaryFontList())
@@ -215,7 +229,8 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
     //更新字体
     fun updatePaintTypeface(typeface: Typeface?) {
         val renderer = itemRenderer ?: return
-        itemRenderer?.element<TextElement>()?.updatePaintTypeface(typeface, renderer, itemRenderDelegate)
+        itemRenderer?.element<TextElement>()
+            ?.updatePaintTypeface(typeface, renderer, itemRenderDelegate)
     }
 }
 

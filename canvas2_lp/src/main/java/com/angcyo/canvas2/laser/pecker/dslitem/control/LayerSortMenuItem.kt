@@ -2,11 +2,11 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import com.angcyo.canvas.render.core.CanvasRenderManager
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.canvas2.laser.pecker.drawCanvasRight
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.dialog.popup.MenuPopupConfig
-import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._string
 
@@ -23,7 +23,7 @@ class LayerSortMenuItem : CanvasIconItem() {
         itemEnable = true
         drawCanvasRight()
         itemClick = {
-            it.context.menuPopupWindow(it) {
+            it.context.canvasMenuPopupWindow(it) {
                 renderAdapterAction = {
                     LayerArrangeItem()() {
                         itemArrange = CanvasRenderManager.ARRANGE_FORWARD

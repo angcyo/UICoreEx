@@ -2,8 +2,8 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.widget.LinearLayout
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.dialog.popup.menuPopupWindow
 import com.angcyo.library.ex._string
 
 /**
@@ -18,7 +18,7 @@ class RendererFlatMenuItem : CanvasIconItem() {
         itemText = _string(R.string.canvas_flat)
 
         itemClick = {
-            it.context.menuPopupWindow(it) {
+            it.context.canvasMenuPopupWindow(it) {
                 renderAdapterAction = {
                     RendererFlatItem()() {
                         itemIco = R.drawable.canvas_flat_horizontal_svg
