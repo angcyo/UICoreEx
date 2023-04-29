@@ -16,7 +16,7 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.engrave.LPDataTransitionHelper
+import com.angcyo.canvas2.laser.pecker.engrave.LPTransferHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -89,8 +89,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
             post {
                 setImageDrawable(
                     element.requestElementDrawable(
-                        renderer,
-                        RenderParams(
+                        renderer, RenderParams(
                             overrideSize = min(measuredWidth, measuredHeight).toFloat(),
                             overrideSizeNotZoomIn = true
                         )
@@ -152,7 +151,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                     dpi = LaserPeckerHelper.DPI_254
                 }
 
-                LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
+                LPTransferHelper.transitionRenderer(renderer, transferConfigEntity)
                     .let { transferDataEntity ->
                         if (transferDataEntity == null) {
                             toast(_string(R.string.data_exception))
@@ -166,8 +165,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                                 } else {
                                     _transferDataEntity = transferDataEntity
                                     sendPreviewFlashBitmapCmd(
-                                        dialogViewHolder,
-                                        transferDataEntity.index
+                                        dialogViewHolder, transferDataEntity.index
                                     )
                                 }
                             }
@@ -200,8 +198,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
     }
 
     fun _previewFlashBitmapCmd(index: Int) {
-        EngravePreviewCmd.previewFlashBitmapCmd(index, HawkEngraveKeys.lastPwrProgress)
-            .enqueue()
+        EngravePreviewCmd.previewFlashBitmapCmd(index, HawkEngraveKeys.lastPwrProgress).enqueue()
     }
 
     var _isDelayCheck = false
@@ -231,8 +228,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
 @DSL
 fun Context.pathPreviewDialog(
-    uuid: String,
-    config: PathPreviewDialogConfig.() -> Unit
+    uuid: String, config: PathPreviewDialogConfig.() -> Unit
 ): Dialog {
     return PathPreviewDialogConfig().run {
         dialogContext = this@pathPreviewDialog

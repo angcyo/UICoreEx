@@ -1,11 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import android.graphics.Paint
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
@@ -14,13 +16,19 @@ import com.angcyo.core.vmApp
 import com.angcyo.coroutine.sleep
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
+import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.engrave2.model.TransferModel
+import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.toEngraveDataTypeStr
+import com.angcyo.laserpacker.toPaintStyleInt
+import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.ex.classHash
 import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -34,13 +42,77 @@ import com.angcyo.objectbox.saveAllEntity
  */
 object LPTransferHelper {
 
+    /**将[renderer]转换成对应的传输数据
+     * [com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement]
+     * [com.angcyo.engrave2.transition.IEngraveDataProvider]
+     * */
+    fun transitionRenderer(
+        renderer: BaseRenderer?, transferConfigEntity: TransferConfigEntity
+    ): TransferDataEntity? {
+        renderer ?: return null
+        val element = renderer.lpElement() ?: return null
+        val bean = renderer.lpElementBean() ?: return null
+        val result: TransferDataEntity? = when (bean._layerMode) {
+            LPDataConstant.DATA_MODE_GCODE -> {
+                //线条图层, 发送GCode数据
+                if (bean.isLineShape || bean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
+                    //虚线,实线,或者填充的图片, 都是GCode数据, 使用pixel转GCode
+                    EngraveTransitionHelper.transitionToGCode(
+                        element, transferConfigEntity, TransitionParam(
+                            onlyUseBitmapToGCode = bean.isLineShape && bean.paintStyle == android.graphics.Paint.Style.STROKE.toPaintStyleInt(),
+                            useOpenCvHandleGCode = false,
+                            isSingleLine = bean.isLineShape
+                        )
+                    )
+                } else {
+                    //其他情况下, 转GCode优先使用Path, 再使用OpenCV
+                    EngraveTransitionHelper.transitionToGCode(
+                        element, transferConfigEntity, TransitionParam()
+                    )
+                }
+            }
+
+            LPDataConstant.DATA_MODE_BLACK_WHITE -> {
+                //填充图层, 发送图片线段数据
+                EngraveTransitionHelper.transitionToBitmapPath(element, transferConfigEntity)
+            }
+
+            LPDataConstant.DATA_MODE_DITHERING -> {
+                //图片图层, 发送抖动线段数据
+                EngraveTransitionHelper.transitionToBitmapDithering(
+                    element, transferConfigEntity, TransitionParam(
+                        bean.imageFilter == LPDataConstant.DATA_MODE_DITHERING,
+                        bean.inverse,
+                        bean.contrast,
+                        bean.brightness
+                    )
+                )
+            }
+
+            LPDataConstant.DATA_MODE_GREY -> {
+                //旧的图片图层, 发送图片数据
+                EngraveTransitionHelper.transitionToBitmap(element, transferConfigEntity)
+            }
+
+            else -> {
+                "无法处理的元素[${element.classHash()}]:${bean._layerMode}".writeErrorLog(logLevel = L.WARN)
+                null
+            }
+        }
+
+        //图层模式
+        result?.apply {
+            layerId = bean._layerId
+        }
+
+        return result
+    }
+
     /**开始创建机器需要的传输数据*/
     @CallPoint
     @AnyThread
     fun startCreateTransferData(
-        transferModel: TransferModel,
-        taskId: String?,
-        canvasDelegate: CanvasRenderDelegate?
+        transferModel: TransferModel, taskId: String?, canvasDelegate: CanvasRenderDelegate?
     ) {
         canvasDelegate ?: return
         //清空之前之前的所有传输数据
@@ -55,10 +127,8 @@ object LPTransferHelper {
                 EngraveFlowDataHelper.onStartCreateTransferData(taskId)
                 transferModel.transferStateOnceData.postValue(transferState)
                 val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
-                val entityList = transitionTransferData(
-                    canvasDelegate,
-                    transferConfigEntity
-                )//数据已入库, 可以直接在数据库中查询
+                val entityList =
+                    transitionTransferData(canvasDelegate, transferConfigEntity)//数据已入库, 可以直接在数据库中查询
                 val size = entityList.size()
                 if (size < 5) {
                     "已创建传输数据[$taskId]:$entityList".writeToLog()
@@ -80,17 +150,14 @@ object LPTransferHelper {
     @CallPoint
     @WorkerThread
     private fun transitionTransferData(
-        delegate: CanvasRenderDelegate,
-        transferConfigEntity: TransferConfigEntity
+        delegate: CanvasRenderDelegate, transferConfigEntity: TransferConfigEntity
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
 
         if (HawkEngraveKeys.enableItemTopOrder) {
             //从上往下的雕刻顺序
             val rendererList = LPEngraveHelper.getLayerRendererList(delegate, null, true)
-            resultDataList.addAll(
-                transitionTransferData(rendererList, transferConfigEntity, null)
-            )
+            resultDataList.addAll(transitionTransferData(rendererList, transferConfigEntity, null))
         } else {
             //规定的图层雕刻顺序
             LayerHelper.getEngraveLayerList().forEach { engraveLayerInfo ->
@@ -98,9 +165,7 @@ object LPTransferHelper {
                     LPEngraveHelper.getLayerRendererList(delegate, engraveLayerInfo, false)
                 resultDataList.addAll(
                     transitionTransferData(
-                        rendererList,
-                        transferConfigEntity,
-                        engraveLayerInfo.layerId
+                        rendererList, transferConfigEntity, engraveLayerInfo.layerId
                     )
                 )
             }
@@ -128,8 +193,7 @@ object LPTransferHelper {
             val elementBean = renderer.lpElementBean()
             val layerId = layerId ?: elementBean?._layerId
             "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $layerId".writePerfLog()
-            val transferDataEntity =
-                LPDataTransitionHelper.transitionRenderer(renderer, transferConfigEntity)
+            val transferDataEntity = transitionRenderer(renderer, transferConfigEntity)
             if (transferDataEntity == null) {
                 "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
             } else {
