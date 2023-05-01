@@ -2,7 +2,11 @@ package com.angcyo.laserpacker.device.firmware
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import com.angcyo.bluetooth.fsc.*
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.ReceiveCancelException
+import com.angcyo.bluetooth.fsc.WaitReceivePacket
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -10,6 +14,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.FirmwareUpdateCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.FirmwareUpdateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toFirmwareVersionString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
+import com.angcyo.bluetooth.fsc.listenerReceivePacket
+import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.normalDialog
@@ -21,7 +27,12 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.library.L
 import com.angcyo.library.component.VersionMatcher
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.elseNull
+import com.angcyo.library.ex.fullTime
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toElapsedTime
+import com.angcyo.library.ex.toTime
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.loading.TGStrokeLoadingView
@@ -120,12 +131,10 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
         itemHolder.gone(
-            R.id.device_button,
-            apiModel.haveDeviceConnected() || itemIsFinish || itemIsUpdating
+            R.id.device_button, apiModel.haveDeviceConnected() || itemIsFinish || itemIsUpdating
         )
         itemHolder.gone(
-            R.id.start_button,
-            itemIsFinish || itemIsUpdating || itemFirmwareInfo == null
+            R.id.start_button, itemIsFinish || itemIsUpdating || itemFirmwareInfo == null
         )
 
         if (itemIsUpdating) {
@@ -133,7 +142,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)
                 ?.firstDrawable<BaseTGLoadingDrawable>()?.apply {
                     isIndeterminate = itemUpdateProgress <= 0
-                    progress = itemUpdateProgress
+                    progress = itemUpdateProgress.toFloat()
                 }
         }
 
@@ -220,8 +229,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             itemIsUpdating = true
             _startTime = nowTime()
             ExitCmd().enqueue()//先进入空闲模式
-            FirmwareUpdateCmd.update(info.data.size, info.version)
-                .enqueue { bean, error ->
+            FirmwareUpdateCmd.update(info.data.size, info.version).enqueue { bean, error ->
                     bean?.parse<FirmwareUpdateParser>()?.let {
                         //进入模式成功, 开始发送数据
                         DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
