@@ -93,7 +93,7 @@ open class LoopRecyclerView(context: Context, attributeSet: AttributeSet? = null
         val result = super.dispatchTouchEvent(ev)
         when (ev.action) {
             MotionEvent.ACTION_DOWN -> pause()
-            MotionEvent.ACTION_UP -> _startInner()
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> _startInner()
         }
         return result
     }
