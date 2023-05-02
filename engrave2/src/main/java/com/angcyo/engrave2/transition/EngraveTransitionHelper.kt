@@ -515,10 +515,12 @@ object EngraveTransitionHelper {
         }
 
         @MM
+        val originX = mmValueUnit.convertPixelToValue(dataLeft)
+        val originY = mmValueUnit.convertPixelToValue(dataTop)
         val originWidth = mmValueUnit.convertPixelToValue(dataWidth)
         val originHeight = mmValueUnit.convertPixelToValue(dataHeight)
-        transferDataEntity.originX = mmValueUnit.convertPixelToValue(dataLeft)
-        transferDataEntity.originY = mmValueUnit.convertPixelToValue(dataTop)
+        transferDataEntity.originX = originX
+        transferDataEntity.originY = originY
         transferDataEntity.originWidth = originWidth
         transferDataEntity.originHeight = originHeight
 
@@ -526,10 +528,8 @@ object EngraveTransitionHelper {
         val engraveDataType = transferDataEntity.engraveDataType
         if (engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
             //mm单位
-            transferDataEntity.x =
-                (mmValueUnit.convertPixelToValue(dataLeft) * 10).floor().toInt()
-            transferDataEntity.y =
-                (mmValueUnit.convertPixelToValue(dataTop) * 10).floor().toInt()
+            transferDataEntity.x = (originX * 10).floor().toInt()
+            transferDataEntity.y = (originY * 10).floor().toInt()
             transferDataEntity.width = (originWidth * 10).ceil().toInt()
             transferDataEntity.height = (originHeight * 10).ceil().toInt()
         } else {
