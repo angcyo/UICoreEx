@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device
 
+import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -35,6 +36,13 @@ object DeviceHelper {
 
     //region---常量属性---
 
+    /**预览的提示颜色和蚂蚁线的颜色*/
+    const val PREVIEW_COLOR = Color.BLUE
+
+    /**雕刻颜色*/
+    const val ENGRAVE_COLOR = Color.RED
+
+    /**批量雕刻指令支持的固件范围*/
     val batchEngraveSupportFirmware = HawkEngraveKeys.batchEngraveSupportFirmware
         ?: LaserPeckerConfigHelper.readDeviceSettingConfig()?.lpBatchEngraveFirmware
 

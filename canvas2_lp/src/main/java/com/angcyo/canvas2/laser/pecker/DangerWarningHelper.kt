@@ -4,11 +4,11 @@ import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.alphaRatio
 import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.removeFromParent
-import com.angcyo.viewmodel.observe
 import com.angcyo.widget.loading.DangerWarningView
 
 /**
@@ -37,10 +37,10 @@ class DangerWarningHelper {
                     //no op
                 } else if (it.isModeEngravePreview()) {
                     //预览模式
-                    showDangerWaring(rootLayout, ProductLayoutHelper.PREVIEW_COLOR.alphaRatio(0.4f))
+                    showDangerWaring(rootLayout, DeviceHelper.PREVIEW_COLOR.alphaRatio(0.4f))
                 } else if (it.isModeEngrave()) {
                     //雕刻模式
-                    showDangerWaring(rootLayout, ProductLayoutHelper.ENGRAVE_COLOR.alphaRatio(0.4f))
+                    showDangerWaring(rootLayout, DeviceHelper.ENGRAVE_COLOR.alphaRatio(0.4f))
                 } else {
                     //空闲
                     dangerWarningView?.removeFromParent()

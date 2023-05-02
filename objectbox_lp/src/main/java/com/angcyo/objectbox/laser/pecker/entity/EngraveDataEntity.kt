@@ -37,7 +37,8 @@ data class EngraveDataEntity(
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.time] 总次数*/
     var printTimes: Int = 1,
 
-    /**当前索引的雕刻进度[0~100]*/
+    /**当前索引的雕刻进度[0~100]
+     * 100: 也可以理解为雕刻完成*/
     var progress: Int = 0,
 
     //---

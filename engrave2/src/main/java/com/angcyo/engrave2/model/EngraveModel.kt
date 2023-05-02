@@ -19,6 +19,7 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.*
+import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.device.*
@@ -528,10 +529,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     /**完成雕刻*/
     @CallPoint
     fun finishEngrave(reason: String?) {
+        val taskId = _engraveTaskId
         deviceStateModel.pauseLoopCheckState(false)
 
         isSendEngraveCmd = false
-        "完成雕刻[${_engraveTaskId}]:${reason ?: ""}".writeEngraveLog()
+        "完成雕刻[$taskId]:${reason ?: ""}".writeEngraveLog()
 
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
@@ -556,6 +558,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
+
+        //鸟瞰图
+        EngraveTransitionHelper.saveTaskAerialView(engraveTaskEntity.taskId)
     }
 
     /**完成了一个索引的雕刻, 需要传输下一个索引, 并且雕刻下一个*/
@@ -567,6 +572,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //post
         engraveStateData.postValue(engraveTaskEntity)
+
+        //鸟瞰图
+        EngraveTransitionHelper.saveTaskAerialView(engraveTaskEntity.taskId)
     }
 
     /**暂停雕刻*/

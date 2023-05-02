@@ -2,6 +2,7 @@ package com.angcyo.engrave2.transition
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Rect
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -13,10 +14,12 @@ import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.BuildConfig
+import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
 import com.angcyo.laserpacker.toGCodePath
@@ -30,6 +33,8 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.ceil
+import com.angcyo.library.ex.createOverrideBitmapCanvas
+import com.angcyo.library.ex.createPaint
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileSizeString
@@ -48,6 +53,7 @@ import com.angcyo.opencv.OpenCV
 import com.angcyo.widget.span.span
 import java.io.File
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 雕刻数据转换助手工具类
@@ -605,6 +611,95 @@ object EngraveTransitionHelper {
                 bitmap,
                 LPDataConstant.EXT_PREVIEW
             )
+        }
+    }
+
+
+    /**[saveTaskAerialView]*/
+    fun saveTaskAerialView(taskId: String?) {
+        val transferDataList = EngraveFlowDataHelper.getTransferDataList(taskId)
+        saveTaskAerialView(taskId, transferDataList)
+    }
+
+    /**保存一份任务雕刻鸟瞰图*/
+    fun saveTaskAerialView(taskId: String?, transferDataList: List<TransferDataEntity>) {
+        if (transferDataList.size() < 1) {
+            //数据个数大于1, 生成坐标的鸟瞰图
+            return
+        }
+        doBack {
+            var left: Int? = null
+            var top: Int? = null
+            var right: Int? = null
+            var bottom: Int? = null
+            val mmValueUnit = IValueUnit.MM_RENDER_UNIT
+            val rectList = mutableListOf<Rect>()
+            val isTransferList = mutableListOf<Boolean>()
+            val isEngraveList = mutableListOf<Boolean>()
+            for (transferData in transferDataList) {
+                val l: Int
+                val t: Int
+                val r: Int
+                val b: Int
+                if (transferData.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
+                    //mm但我
+                    l = mmValueUnit.convertValueToPixel(transferData.x / 10f).toInt()
+                    t = mmValueUnit.convertValueToPixel(transferData.y / 10f).toInt()
+                    r = l + mmValueUnit.convertValueToPixel(transferData.width / 10f).toInt()
+                    b = t + mmValueUnit.convertValueToPixel(transferData.height / 10f).toInt()
+                } else {
+                    l = transferData.x
+                    t = transferData.y
+                    r = l + transferData.width
+                    b = t + transferData.height
+                }
+
+                left = min(left ?: l, l)
+                top = min(top ?: t, t)
+                right = max(right ?: r, r)
+                bottom = max(bottom ?: b, b)
+
+                rectList.add(Rect(l, t, r, b))
+
+                //是否已经传输完成
+                val transferDataEntity =
+                    EngraveFlowDataHelper.getTransferData(taskId, transferData.index)
+                isTransferList.add(transferDataEntity?.isTransfer == true)
+
+                //是否已经雕刻完成
+                val engraveDataEntity =
+                    EngraveFlowDataHelper.getEngraveDataEntity(taskId, transferData.index)
+                isEngraveList.add(engraveDataEntity?.progress == 100)
+            }
+            //鸟瞰图
+            createOverrideBitmapCanvas(
+                (right!! - left!!).toFloat(),
+                (bottom!! - top!!).toFloat(),
+                HawkEngraveKeys.projectOutSize.toFloat(),
+                null, {
+                    preTranslate(-left.toFloat(), -top.toFloat())
+                }
+            ) {
+                val paint = createPaint()
+                rectList.forEachIndexed { index, rect ->
+                    paint.color = if (isEngraveList[index]) {
+                        DeviceHelper.ENGRAVE_COLOR
+                    } else if (isTransferList[index]) {
+                        DeviceHelper.PREVIEW_COLOR
+                    } else {
+                        Color.BLACK
+                    }
+                    drawRect(rect, paint)
+                }
+            }?.let { bitmap ->
+                //保存鸟瞰图
+                EngraveHelper.saveEngraveData(
+                    taskId,
+                    bitmap,
+                    LPDataConstant.EXT_DATA_PREVIEW,
+                    true
+                )
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.angcyo.canvas2.laser.pecker
 
-import android.graphics.Color
 import android.graphics.Path
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
@@ -20,6 +19,7 @@ import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
@@ -45,11 +45,6 @@ import com.angcyo.widget.span.span
 class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) : IControlHelper {
 
     companion object {
-        /**预览的提示颜色和蚂蚁线的颜色*/
-        const val PREVIEW_COLOR = Color.BLUE
-
-        /**雕刻颜色*/
-        const val ENGRAVE_COLOR = Color.RED
 
         const val TAG_MAIN = "main"
     }
@@ -152,7 +147,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 progressRenderer?.apply {
                     updateVisible(true, Reason.code, null)
                     renderBorder = true
-                    borderColor = PREVIEW_COLOR
+                    borderColor = DeviceHelper.PREVIEW_COLOR
                     borderBounds = info.originBounds
                 }
             }
@@ -236,14 +231,14 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         //最佳预览尺寸用蓝色提示
         val limitPath: Path = productInfo.limitPath
         limitList.add(
-            LimitInfo(limitPath, limitPath.computePathBounds(), PREVIEW_COLOR)
+            LimitInfo(limitPath, limitPath.computePathBounds(), DeviceHelper.PREVIEW_COLOR)
         )
         //物理尺寸用红色提示
         limitList.add(
             LimitInfo(
                 productInfo.bounds.toPath(),
                 productInfo.bounds,
-                ENGRAVE_COLOR,
+                DeviceHelper.ENGRAVE_COLOR,
                 tag = TAG_MAIN
             )
         )
@@ -261,7 +256,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             //追加显示Z轴显示框
             val limitList = mutableListOf<LimitInfo>()
             limitList.add(
-                LimitInfo(limitPath, limitPath.computePathBounds(), ENGRAVE_COLOR)
+                LimitInfo(limitPath, limitPath.computePathBounds(), DeviceHelper.ENGRAVE_COLOR)
             )
             limitList.add(
                 LimitInfo(

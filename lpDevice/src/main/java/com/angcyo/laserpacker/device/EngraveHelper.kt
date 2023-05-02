@@ -17,7 +17,7 @@ import com.angcyo.library.utils.writeToFile
 import kotlin.math.absoluteValue
 
 /**
- * 图层助手
+ * 雕刻助手
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/30
  */

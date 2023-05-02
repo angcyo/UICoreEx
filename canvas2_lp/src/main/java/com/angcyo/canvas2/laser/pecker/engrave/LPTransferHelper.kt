@@ -1,12 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.graphics.Paint
-import android.graphics.Rect
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.util.lpElement
@@ -23,7 +21,6 @@ import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.toEngraveDataTypeStr
@@ -32,16 +29,11 @@ import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex.classHash
-import com.angcyo.library.ex.createOverrideBitmapCanvas
-import com.angcyo.library.ex.createPaint
 import com.angcyo.library.ex.size
-import com.angcyo.library.unit.IValueUnit
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.saveAllEntity
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * 业务相关的数据传输助手工具类
@@ -157,65 +149,10 @@ object LPTransferHelper {
         if (resultDataList.size() > 1 && HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
             //数据个数大于1, 生成坐标的鸟瞰图
             val taskId = transferConfigEntity.taskId
-            doBack {
-                var left: Int? = null
-                var top: Int? = null
-                var right: Int? = null
-                var bottom: Int? = null
-                val mmValueUnit = IValueUnit.MM_RENDER_UNIT
-                val rectList = mutableListOf<Rect>()
-                for (transferData in resultDataList) {
-                    val l: Int
-                    val t: Int
-                    val r: Int
-                    val b: Int
-                    if (transferData.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
-                        //mm但我
-                        l = mmValueUnit.convertValueToPixel(transferData.x / 10f).toInt()
-                        t = mmValueUnit.convertValueToPixel(transferData.y / 10f).toInt()
-                        r = l + mmValueUnit.convertValueToPixel(transferData.width / 10f).toInt()
-                        b = t + mmValueUnit.convertValueToPixel(transferData.height / 10f).toInt()
-                    } else {
-                        l = transferData.x
-                        t = transferData.y
-                        r = l + transferData.width
-                        b = t + transferData.height
-                    }
-
-                    left = min(left ?: l, l)
-                    top = min(top ?: t, t)
-                    right = max(right ?: r, r)
-                    bottom = max(bottom ?: b, b)
-
-                    rectList.add(Rect(l, t, r, b))
-                }
-                //鸟瞰图
-                createOverrideBitmapCanvas(
-                    (right!! - left!!).toFloat(),
-                    (bottom!! - top!!).toFloat(),
-                    HawkEngraveKeys.projectOutSize.toFloat(),
-                    null, {
-                        preTranslate(-left.toFloat(), -top.toFloat())
-                    }
-                ) {
-                    val paint = createPaint()
-                    rectList.forEach {
-                        drawRect(it, paint)
-                    }
-                }?.let { bitmap ->
-                    //保存鸟瞰图
-                    EngraveHelper.saveEngraveData(
-                        taskId,
-                        bitmap,
-                        LPDataConstant.EXT_DATA_PREVIEW,
-                        true
-                    )
-                }
-            }
+            EngraveTransitionHelper.saveTaskAerialView(taskId, resultDataList)
         }
         return resultDataList
     }
-
 
     /**将[renderer]转换成对应的传输数据
      * [com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement]
