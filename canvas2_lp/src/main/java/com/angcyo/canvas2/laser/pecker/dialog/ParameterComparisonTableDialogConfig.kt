@@ -638,9 +638,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
 
                 //格子数据
-                if (powerValue * depthValue <= powerDepthThreshold || isRowColumnInRange(
-                        depthIndex + 1, powerIndex + 1
-                    )
+                if (powerValue * depthValue <= powerDepthThreshold ||
+                    isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
                     gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
@@ -741,6 +740,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //一致打印参数
             bean.printType = gridPrintType.toInt()
+            if (bean.dataMode == null) {
+                bean.printPower = HawkEngraveKeys.lastPower
+                bean.printDepth = HawkEngraveKeys.lastDepth
+            }
         }
         return LPRendererHelper.renderElementList(
             null, beanList, true, Strategy.normal
