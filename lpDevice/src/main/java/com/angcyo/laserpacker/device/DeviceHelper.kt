@@ -82,9 +82,20 @@ object DeviceHelper {
         val task = EngraveTaskEntity::class.findLast(LPBox.PACKAGE_NAME) {
             //no op
         }
-        task?.dataIndexList?.forEach {
-            result.addAll(getIndexLogFilePath(it))
+        task?.apply {
+            val path = appFilePath(
+                "$taskId${LPDataConstant.EXT_DATA_PREVIEW}",
+                LPDataConstant.ENGRAVE_FILE_FOLDER
+            )
+            if (path.isFileExist()) {
+                //鸟瞰图
+                result.add(path)
+            }
+            dataIndexList?.forEach {
+                result.addAll(getIndexLogFilePath(it))
+            }
         }
+        //task
         return result
     }
 
