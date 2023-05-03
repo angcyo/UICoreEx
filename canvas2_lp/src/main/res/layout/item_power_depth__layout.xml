@@ -20,7 +20,7 @@
         android:inputType="textWebEmailAddress"
         android:maxLines="1"
         android:singleLine="true"
-        app:r_draw_left="指定[P/D]: "
+        app:r_draw_left="指定(P/D): "
         app:r_draw_left_color="@color/text_general_color"
         app:r_focus_drawable="@drawable/lib_bottom_focus_shape"
         app:r_hide_soft_input_on_lost_focus="true"

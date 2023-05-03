@@ -359,11 +359,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
             }
 
-            //额外的行列范围
-            RowsColumnsRangeItem()()
-
             //强制指定功率深度
             AppointPowerDepthItem()()
+
+            //额外的行列范围
+            RowsColumnsRangeItem()()
 
             //备注标签
             PTCLabelItem()()

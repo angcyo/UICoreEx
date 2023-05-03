@@ -16,7 +16,7 @@
         android:background="@null"
         android:digits="@string/number_range_digits"
         android:gravity="left|center_vertical"
-        android:hint="行.列 行.列.列.列"
+        android:hint="行. 行.列 行.列.列.列 .列"
         android:inputType="textWebEmailAddress"
         android:maxLines="1"
         android:singleLine="true"
@@ -25,6 +25,6 @@
         app:r_focus_drawable="@drawable/lib_bottom_focus_shape"
         app:r_hide_soft_input_on_lost_focus="true"
         app:r_no_focus_drawable="@drawable/lib_bottom_no_focus_shape"
-        tools:text="1.1 2:2 3 3" />
+        tools:text="1. 1.1 2:2 3 3 .1" />
 
 </FrameLayout>
