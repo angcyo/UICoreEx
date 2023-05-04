@@ -1,6 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
+import android.view.Gravity
 import android.widget.TextView
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -8,9 +10,11 @@ import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.util.alignInBounds
 import com.angcyo.canvas.render.util.canvasDecimal
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.DirectionAdjustPopupConfig
@@ -234,32 +238,49 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
             itemHaveNew = false
             updateAdapterItem()
 
-            val translateControl = delegate.controlManager.translateControl
-            translateControl.startControl(renderer)
-
             //显示xy坐标
             renderer.showLocationRender(Reason.preview, null)
             itemHolder.context.directionAdjustWindow(it) {
+                showDirectionCenterButton =
+                    vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds != null
                 onDismiss = {
-                    translateControl.endControl()
-
                     //显示wh大小
                     renderer.showSizeRender(Reason.preview, null)
                     false
                 }
                 onDirectionAdjustAction = { direction, step ->
-                    translateControl.isControlHappen = true
-                    translateControl.handleControl = true
-                    var dx = 0f
-                    var dy = 0f
-                    val value = unit.convertValueToPixel(step.toFloat())
-                    when (direction) {
-                        DirectionAdjustPopupConfig.DIRECTION_LEFT -> dx = -value
-                        DirectionAdjustPopupConfig.DIRECTION_RIGHT -> dx = value
-                        DirectionAdjustPopupConfig.DIRECTION_UP -> dy = -value
-                        DirectionAdjustPopupConfig.DIRECTION_DOWN -> dy = value
+                    if (direction == DirectionAdjustPopupConfig.DIRECTION_ROTATE_CW || direction == DirectionAdjustPopupConfig.DIRECTION_ROTATE_CCW) {
+                        renderer.showRotateRender(Reason.preview, null)
+                        renderer.rotateBy(
+                            if (direction == DirectionAdjustPopupConfig.DIRECTION_ROTATE_CW) step else -step,
+                            Reason.user,
+                            Strategy.normal,
+                            delegate
+                        )
+                    } else if (direction == DirectionAdjustPopupConfig.DIRECTION_CENTER) {
+                        renderer.showLocationRender(Reason.preview, null)
+                        vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds?.let { bounds ->
+                            //设备居中
+                            renderer.alignInBounds(
+                                itemRenderDelegate,
+                                bounds,
+                                Gravity.CENTER,
+                                Strategy.normal
+                            )
+                        }
+                    } else {
+                        renderer.showLocationRender(Reason.preview, null)
+                        var dx = 0f
+                        var dy = 0f
+                        val value = unit.convertValueToPixel(step)
+                        when (direction) {
+                            DirectionAdjustPopupConfig.DIRECTION_LEFT -> dx = -value
+                            DirectionAdjustPopupConfig.DIRECTION_RIGHT -> dx = value
+                            DirectionAdjustPopupConfig.DIRECTION_UP -> dy = -value
+                            DirectionAdjustPopupConfig.DIRECTION_DOWN -> dy = value
+                        }
+                        renderer.translate(dx, dy, Reason.user, Strategy.normal, delegate)
                     }
-                    translateControl.translateBy(dx, dy)
                 }
             }
         }
