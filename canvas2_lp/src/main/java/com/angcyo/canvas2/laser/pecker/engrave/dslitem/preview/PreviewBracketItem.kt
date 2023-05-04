@@ -40,8 +40,6 @@ class PreviewBracketItem : DslAdapterItem() {
         itemLayoutId = R.layout.item_preview_bracket_layout
     }
 
-    var _isLongPressHappen = false
-
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
@@ -88,16 +86,14 @@ class PreviewBracketItem : DslAdapterItem() {
         itemHolder.longTouch(R.id.bracket_up_view) { view, event, eventType ->
             when (eventType) {
                 DslViewHolder.EVENT_TYPE_CLICK -> {
-                    _isLongPressHappen = false
                     bracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
 
                 DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
-                    _isLongPressHappen = true
                     bracketUpCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && _isLongPressHappen) {
+            if (event.isTouchFinish() && eventType != DslViewHolder.EVENT_TYPE_CLICK) {
                 bracketStopCmd()
             }
             true
@@ -106,16 +102,14 @@ class PreviewBracketItem : DslAdapterItem() {
         itemHolder.longTouch(R.id.bracket_down_view) { view, event, eventType ->
             when (eventType) {
                 DslViewHolder.EVENT_TYPE_CLICK -> {
-                    _isLongPressHappen = false
                     bracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
 
                 DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
-                    _isLongPressHappen = true
                     bracketDownCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && _isLongPressHappen) {
+            if (event.isTouchFinish() && eventType != DslViewHolder.EVENT_TYPE_CLICK) {
                 bracketStopCmd()
             }
             true
