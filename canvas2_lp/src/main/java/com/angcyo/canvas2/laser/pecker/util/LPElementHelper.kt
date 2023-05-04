@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.util
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Path
+import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
@@ -119,6 +120,10 @@ object LPElementHelper {
         val elementBean = LPElementBean().apply {
             mtype = LPDataConstant.DATA_TYPE_BITMAP
             imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
+
+            //自动获取黑白阈值
+            HawkEngraveKeys.lastBWThreshold = BitmapHandle.getBitmapThreshold(bitmap).toFloat()
+
             blackThreshold = HawkEngraveKeys.lastBWThreshold
         }
         elementBean.init()//init

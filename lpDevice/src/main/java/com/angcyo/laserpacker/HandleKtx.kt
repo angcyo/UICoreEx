@@ -83,15 +83,18 @@ fun Bitmap?.toBitmapItemData(action: LPElementBean.() -> Unit = {}): LPElementBe
 
 /**第二版, 直接使用图片对象*/
 fun Bitmap?.toBitmapElementBeanV2(
-    bmpThreshold: Int = HawkEngraveKeys.lastBWThreshold.toInt(),
+    bmpThreshold: Int? = null, //不指定阈值时, 自动从图片中获取
     invert: Boolean = false
 ): LPElementBean? {
     this ?: return null
     val bean = LPElementBean()
     bean.mtype = LPDataConstant.DATA_TYPE_BITMAP
+    bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
     bean._imageOriginalBitmap = this
-    bean._srcBitmap =
-        BitmapHandle.toBlackWhiteHandle(this, bmpThreshold, invert)
+    val threshold = bmpThreshold ?: BitmapHandle.getBitmapThreshold(this)
+    HawkEngraveKeys.lastBWThreshold = threshold.toFloat()
+    bean.blackThreshold = HawkEngraveKeys.lastBWThreshold
+    bean._srcBitmap = BitmapHandle.toBlackWhiteHandle(this, threshold, invert)
     return bean
 }
 
