@@ -47,6 +47,7 @@ import com.angcyo.library.ex.toDrawable
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.ex.withBitmapPaint
 import com.angcyo.library.unit.IValueUnit
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.opencv.OpenCV
@@ -614,7 +615,6 @@ object EngraveTransitionHelper {
         }
     }
 
-
     /**[saveTaskAerialView]*/
     fun saveTaskAerialView(taskId: String?) {
         val transferDataList = EngraveFlowDataHelper.getTransferDataList(taskId)
@@ -632,27 +632,15 @@ object EngraveTransitionHelper {
             var top: Int? = null
             var right: Int? = null
             var bottom: Int? = null
-            val mmValueUnit = IValueUnit.MM_RENDER_UNIT
             val rectList = mutableListOf<Rect>()
             val isTransferList = mutableListOf<Boolean>()
             val isEngraveList = mutableListOf<Boolean>()
+            val engraveFinishReasonList = mutableListOf<Int>()
             for (transferData in transferDataList) {
-                val l: Int
-                val t: Int
-                val r: Int
-                val b: Int
-                if (transferData.engraveDataType == DataCmd.ENGRAVE_TYPE_GCODE) {
-                    //mm但我
-                    l = mmValueUnit.convertValueToPixel(transferData.x / 10f).toInt()
-                    t = mmValueUnit.convertValueToPixel(transferData.y / 10f).toInt()
-                    r = l + mmValueUnit.convertValueToPixel(transferData.width / 10f).toInt()
-                    b = t + mmValueUnit.convertValueToPixel(transferData.height / 10f).toInt()
-                } else {
-                    l = transferData.x
-                    t = transferData.y
-                    r = l + transferData.width
-                    b = t + transferData.height
-                }
+                val l = transferData.x
+                val t = transferData.y
+                val r = l + transferData.width
+                val b = t + transferData.height
 
                 left = min(left ?: l, l)
                 top = min(top ?: t, t)
@@ -670,20 +658,27 @@ object EngraveTransitionHelper {
                 val engraveDataEntity =
                     EngraveFlowDataHelper.getEngraveDataEntity(taskId, transferData.index)
                 isEngraveList.add(engraveDataEntity?.progress == 100)
+                engraveFinishReasonList.add(engraveDataEntity?.finishReason ?: -1)
             }
             //鸟瞰图
+            val paint = createPaint()
+            val paintWidth = paint.strokeWidth
             createOverrideBitmapCanvas(
-                (right!! - left!!).toFloat(),
-                (bottom!! - top!!).toFloat(),
+                right!! - left!! + paintWidth,
+                bottom!! - top!! + paintWidth,
                 HawkEngraveKeys.projectOutSize.toFloat(),
                 null, {
                     preTranslate(-left.toFloat(), -top.toFloat())
+                    postTranslate(paintWidth / 2, paintWidth / 2)
                 }
             ) {
-                val paint = createPaint()
                 rectList.forEachIndexed { index, rect ->
                     paint.color = if (isEngraveList[index]) {
-                        DeviceHelper.ENGRAVE_COLOR
+                        when (engraveFinishReasonList[index]) {
+                            EngraveDataEntity.FINISH_REASON_INDEX -> Color.YELLOW
+                            EngraveDataEntity.FINISH_REASON_SKIP -> Color.GREEN
+                            else -> DeviceHelper.ENGRAVE_COLOR
+                        }
                     } else if (isTransferList[index]) {
                         DeviceHelper.PREVIEW_COLOR
                     } else {

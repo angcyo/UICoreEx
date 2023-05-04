@@ -116,7 +116,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             if (_lastEngraveIndex > 0) {
                                 EngraveFlowDataHelper.finishIndexEngrave(
                                     _engraveTaskId,
-                                    _lastEngraveIndex
+                                    _lastEngraveIndex,
+                                    EngraveDataEntity.FINISH_REASON_IDLE
                                 )
                             }
                             if (_lastEngraveCmdError == null) {
@@ -125,7 +126,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                                 _checkEngraveNextOnIdle(
                                     queryState.index,
                                     printTimes,
-                                    100
+                                    100,
+                                    EngraveDataEntity.FINISH_REASON_IDLE
                                 )
                             }
                         }
@@ -136,7 +138,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                             if (_lastEngraveIndex > 0) {
                                 EngraveFlowDataHelper.finishIndexEngrave(
                                     _engraveTaskId,
-                                    _lastEngraveIndex
+                                    _lastEngraveIndex,
+                                    EngraveDataEntity.FINISH_REASON_INDEX
                                 )
                             }
                         }
@@ -233,7 +236,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }.writeEngraveLog(L.INFO)
 
         //更新雕刻进度
-        _checkEngraveNextOnIdle(index, null, 100)
+        _checkEngraveNextOnIdle(index, null, 100, EngraveDataEntity.FINISH_REASON_SKIP)
     }
 
     /**所有的索引, 是否都雕刻完成了*/
@@ -243,7 +246,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**雕刻完成后, 触发下一个雕刻*/
-    fun _checkEngraveNextOnIdle(index: Int, printTimes: Int?, progress: Int) {
+    fun _checkEngraveNextOnIdle(index: Int, printTimes: Int?, progress: Int, reason: Int) {
         deviceStateModel.pauseLoopCheckState(true)
 
         val nowTime = nowTime()
@@ -259,7 +262,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         updateEngraveProgress(index, printTimes, progress)
 
         //完成指定索引的雕刻
-        EngraveFlowDataHelper.finishIndexEngrave(_engraveTaskId, index)
+        EngraveFlowDataHelper.finishIndexEngrave(_engraveTaskId, index, reason)
 
         if (isBatchEngraveSupport()) {
             finishEngrave("批量雕刻指令完成")
@@ -340,7 +343,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         if (task.currentIndex > 0) {
             //之前的雕刻索引
-            EngraveFlowDataHelper.finishIndexEngrave(taskId, task.currentIndex)
+            EngraveFlowDataHelper.finishIndexEngrave(taskId, task.currentIndex, null)
         }
 
         //查找下一个未完成雕刻的索引

@@ -49,11 +49,25 @@ data class EngraveDataEntity(
     /**前雕刻索引完成的时间, 毫秒*/
     var finishTime: Long = -1,
 
+    /**完成雕刻的原因*/
+    var finishReason: Int = -1,
+
     //---
 
     /**是否是来自设备历史的数据*/
     var isFromDeviceHistory: Boolean = false
 ) {
+
+    companion object {
+        /**完成雕刻的原因: 机器进入空闲*/
+        const val FINISH_REASON_IDLE = 1
+
+        /**完成雕刻的原因: 机器雕刻索引改变*/
+        const val FINISH_REASON_INDEX = 2
+
+        /**完成雕刻的原因: 直接跳过雕刻*/
+        const val FINISH_REASON_SKIP = 4
+    }
 
     /**清空数据*/
     fun clearEngraveData() {

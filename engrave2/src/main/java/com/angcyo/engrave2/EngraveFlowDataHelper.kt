@@ -734,15 +734,19 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**完成指定索引的雕刻*/
-    fun finishIndexEngrave(taskId: String?, index: Int) {
-        EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+    /**完成指定索引的雕刻
+     * [com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity.FINISH_REASON_IDLE]*/
+    fun finishIndexEngrave(taskId: String?, index: Int, finishReason: Int?) {
+        EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveDataEntity_.taskId.equal("$taskId")
                     .and(EngraveDataEntity_.index.equal(index))
             )
         }?.apply {
             this.progress = 100
+            finishReason?.let {
+                this.finishReason = it
+            }
             this.finishTime = nowTime()
             lpSaveEntity()
         }
