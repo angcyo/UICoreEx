@@ -175,7 +175,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 itemClick = {
                     //下一步, 数据配置界面
 
-                    if (checkOverflowBounds() || !checkTransferData()) {
+                    if (!checkCanNext()) {
                         //不允许雕刻
                     } else {
                         //让设备进入空闲模式

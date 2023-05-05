@@ -220,7 +220,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.send_file)
                 itemClick = {
-                    if (!checkItemThrowable() && !checkOverflowBounds() && checkTransferData()) {
+                    if (!checkItemThrowable() && checkCanNext()) {
                         //下一步, 数据传输界面
 
                         //退出打印模式, 进入空闲模式

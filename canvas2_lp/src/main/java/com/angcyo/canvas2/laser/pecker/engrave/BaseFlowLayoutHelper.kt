@@ -534,6 +534,20 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     //---
 
+    /**检查是否可以进行下一步*/
+    fun checkCanNext(): Boolean {
+        if (checkOverflowBounds()) {
+            return false
+        }
+        if (!checkTransferData()) {
+            return false
+        }
+        if (!checkStartPreview()) {
+            return false
+        }
+        return true
+    }
+
     /**检查设备状态, 返回设备是否可以开始预览.
      * 主要检测当前设备是否正在雕刻中
      * */
