@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device
 
 import android.graphics.Color
+import android.os.Build
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -19,6 +20,7 @@ import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.zip
+import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.fileNameTime
@@ -61,8 +63,11 @@ object DeviceHelper {
             logList.addAll(tempEngraveLogPathList)
 
             tempEngraveLogPathList.clear()
-            logList.zip(libCacheFile("LaserPecker-log-${nowTimeString("yyyy-MM-dd")}.zip").absolutePath)
-                ?.shareFile()
+            logList.zip(libCacheFile(buildString {
+                append("LaserPecker-log-")
+                append(nowTimeString("yyyy-MM-dd_HH-mm-ss"))
+                append("_${getAppVersionCode()}_${Build.MODEL}.zip")
+            }).absolutePath)?.shareFile()
         })
     }
 
