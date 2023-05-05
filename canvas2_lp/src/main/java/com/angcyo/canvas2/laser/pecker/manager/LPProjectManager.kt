@@ -423,7 +423,7 @@ class LPProjectManager {
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
         async: Boolean = true,
-        result: (String, Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
+        result: (zipFilePath: String, error: Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
     ): String {
         isSaveBoolean.set(true)
         val file = DeviceHelper._defaultProjectOutputFileV2(fileName, false)
@@ -485,7 +485,11 @@ fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
         return
     }
     try {
-        LPProjectManager().saveProjectV2(this, async = async)
+        LPProjectManager().saveProjectV2(this, async = async) { zipFilePath, exception ->
+            if (exception != null) {
+                //保存失败
+            }
+        }
     } catch (e: Exception) {
         e.printStackTrace()
     }
