@@ -58,7 +58,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
 
     init {
         itemLayoutId = R.layout.item_render_edit_control_layout
-        itemNewHawkKeyStr = "direction_edit"
+        itemNewHawkKeyStr = "direction_edit_rotate"
     }
 
     override fun onItemBind(
