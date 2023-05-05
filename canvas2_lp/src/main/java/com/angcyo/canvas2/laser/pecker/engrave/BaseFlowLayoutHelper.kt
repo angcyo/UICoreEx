@@ -571,6 +571,15 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
             return false
         }
+        if (checkUnsafe()) {
+            return false
+        }
+        return true
+    }
+
+    /**检查是否处于不安全状态*/
+    fun checkUnsafe(): Boolean {
+        val fContext = engraveCanvasFragment?.fragment?.fContext()
         if (deviceStateModel.isUnsafe()) {
             //不安全状态, 禁止操作
             fContext?.messageDialog {
@@ -580,9 +589,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                     dialog.dismiss()
                 }
             }
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     /**恢复雕刻状态, 请在初始化指令发送完成之后, 再去检查

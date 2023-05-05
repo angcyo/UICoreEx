@@ -883,7 +883,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemTaskId = flowTaskId
                 itemPauseAction = { isPause ->
                     if (isPause) {
-                        engraveModel.continueEngrave()
+                        if (!checkUnsafe()) {
+                            engraveModel.continueEngrave()
+                        }
                     } else {
                         engraveModel.pauseEngrave()
                     }
