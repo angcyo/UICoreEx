@@ -135,7 +135,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         //雕刻中, 更新对应的雕刻进度
                         if (_lastEngraveIndex != queryState.index) {
                             _startEngraveIndex(queryState.index)
-                            if (_lastEngraveIndex > 0) {
+                            if (_lastEngraveIndex > 0 && !HawkEngraveKeys.enableSingleItemTransfer) {
+                                //单元素雕刻, 一定要等待机器进入空闲才算完成雕刻
                                 EngraveFlowDataHelper.finishIndexEngrave(
                                     _engraveTaskId,
                                     _lastEngraveIndex,
@@ -481,6 +482,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             if (error == null) {
                 //雕刻指令发送成功, 机器开始雕刻
                 isSendEngraveCmd = true
+                _lastEngraveIndex = indexList.firstOrNull() ?: _lastEngraveIndex
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
