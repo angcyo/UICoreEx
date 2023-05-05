@@ -292,6 +292,12 @@ class DeviceStateModel : ViewModel() {
         return deviceState?.mode == QueryStateParser.WORK_MODE_SHUTDOWN
     }
 
+    /**是否处于雕刻预览中*/
+    fun isEngravePreview(): Boolean {
+        val deviceState = deviceStateData.value
+        return deviceState?.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW
+    }
+
     /**雕刻预览模式, 并且非显示中心*/
     fun isEngravePreviewMode(): Boolean {
         val deviceState = deviceStateData.value
@@ -320,6 +326,14 @@ class DeviceStateModel : ViewModel() {
                 deviceState.workState == 0x05
     }
 
+    /**自动检查, 是否需要发送退出指令
+     * 目前在预览中, 杀掉APP机器需要退出
+     * */
+    fun exitIfNeed() {
+        if (isEngravePreview()) {
+            ExitCmd().enqueue(CommandQueueHelper.FLAG_ASYNC)
+        }
+    }
 }
 
 /**发送退出指令, 如果需要*/
