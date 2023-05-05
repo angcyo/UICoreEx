@@ -538,8 +538,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * 主要检测当前设备是否正在雕刻中
      * */
     fun checkStartPreview(): Boolean {
+        val fContext = engraveCanvasFragment?.fragment?.fContext()
         if (deviceStateModel.deviceStateData.value?.isModeEngrave() == true) {
-            engraveCanvasFragment?.fragment?.fContext()?.messageDialog {
+            fContext?.messageDialog {
                 dialogTitle = _string(R.string.device_engrave_ing_title)
                 dialogMessage = _string(R.string.device_engrave_ing_des)
 
@@ -551,6 +552,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
 
                 negativeButton(_string(R.string.dialog_negative)) { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                }
+            }
+            return false
+        }
+        if (deviceStateModel.isUnsafe()) {
+            //不安全状态, 禁止操作
+            fContext?.messageDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(R.string.ex_tips_one2)
+                positiveButtonListener = { dialog, dialogViewHolder ->
                     dialog.dismiss()
                 }
             }

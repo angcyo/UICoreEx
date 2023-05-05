@@ -21,6 +21,9 @@
     <string name="device_g_code_pwr_des">옵션을 켜면 GCode 각인 전력은 명령에서 값을 가져옵니다. 옵션을 끄면 GCode 각인 전력은 App에서 값을 가져옵니다.</string>
     <string name="device_setting_act_des_preview_g_code">커서가 벡터 그림 파일 경로로 이동합니다</string>
 
+    <string name="ui_disclaimer">면책성명</string>
+    <string name="ui_disclaimer_content2">경고 : "자유 모드"스위치가 켜지면 보호 커버 보호에서 장치를 사용할 수 있으므로 안전 위험을 초래할 수 있으므로 현재 작업을 수행 해야하는지 확인하십시오. ; 안전 보호 커버의 보호하에 포기해야한다는 것을 확인한 경우, 운영이 안전 규범을 충족 하고이 운영으로 인한 안전 및 법적 위험이 완전히 책임이 있음에 동의하십시오. 보안 및 법적 책임에 동의하십시오.</string>
+
     <string name="device_ex_car_label">모바일 플랫폼</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">정회전</string>

@@ -4,6 +4,7 @@
     <string name="safety_tips">안전 팁</string>
     <string name="device_exception">설비 이상</string>
     <string name="ex_tips_one">모드 설정으로 들어가서 [프리 모드]를 켜십시오.</string>
+    <string name="ex_tips_one2">비 안전 상태, [Freedom Mode]를 여는 후 작동 할 수 있습니다.</string>
     <string name="ex_tips_two">비상 정지! 범위를 벗어났습니다.레이저 조정 중 자동 조정을 사용하여 레이저 포커스의 위치를 재설정한 후 다시 시도하십시오.</string>
     <string name="ex_tips_three">비상정지! 레이저 작동 온도가 너무 높습니다</string>
     <string name="ex_tips_four">비상정지! 기계가 부딪히거나 흔들릴 수 있습니다</string>

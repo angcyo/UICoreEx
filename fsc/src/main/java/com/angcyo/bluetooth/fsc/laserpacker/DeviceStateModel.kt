@@ -98,7 +98,9 @@ class DeviceStateModel : ViewModel() {
             }
             queryMode.add(QUERY_MODE_LOOP)
         }
-        loopCheckDeviceState()
+        if (start) {
+            loopCheckDeviceState()
+        }
     }
 
     /**暂停轮询状态查询*/
@@ -153,18 +155,19 @@ class DeviceStateModel : ViewModel() {
 
         //记录设备状态改变
         val stackList = deviceStateStackData.value
-        val lastState = stackList!!.lastOrNull()
+        var lastState = stackList?.lastOrNull()
         if (lastState?.deviceAddress != queryStateParser.deviceAddress) {
             //设备不一样
-            stackList.clear()
-            stackList.add(queryStateParser)
+            lastState = null
+            stackList?.clear()
+            stackList?.add(queryStateParser)
             deviceStateStackData.updateValue(stackList)
         } else {
             //相同设备, 状态不一样才记录
             if (lastState?.mode != queryStateParser.mode &&
                 lastState?.workState != queryStateParser.workState
             ) {
-                stackList.add(queryStateParser)
+                stackList?.add(queryStateParser)
                 deviceStateStackData.updateValue(stackList)
             }
         }
@@ -194,21 +197,30 @@ class DeviceStateModel : ViewModel() {
 
         //设备错误码
         queryStateParser.error.toErrorStateString()?.let {
-            "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
-
             //查询到设备异常
-            doMain {
-                toastQQ(it)
-            }
+            if (lastState?.error != queryStateParser.error) {
+                "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
+                
+                //错误码不一样, 才提示
+                doMain {
+                    toastQQ(it)
+                }
 
-            //查询错误日志
-            QueryCmd.log.enqueue { bean, error ->
-                if (error == null) {
-                    bean?.parse<QueryLogParser>()?.log?.let {
-                        "机器错误日志:$it".writeErrorLog()
+                if (queryStateParser.error != 1) {
+                    //查询错误日志
+                    QueryCmd.log.enqueue { bean, error ->
+                        if (error == null) {
+                            bean?.parse<QueryLogParser>()?.log?.let {
+                                "机器错误日志:$it".writeErrorLog()
+                            }
+                        }
                     }
                 }
             }
+        }
+        if (queryStateParser.error == 1) {
+            //非安全状态下, 开始轮询状态, 知道进入安全状态
+            startLoopCheckState(true)
         }
         deviceStateData.updateValue(queryStateParser)
         updateDeviceModel(queryStateParser.mode)
@@ -244,6 +256,10 @@ class DeviceStateModel : ViewModel() {
     }
 
     //---
+
+
+    /**设备是否处理不安全状态, 此状态下禁止操作预览/打印*/
+    fun isUnsafe() = deviceStateData.value?.error == 1
 
     /**是否需要显示外设提示*/
     fun needShowExDeviceTipItem(): Boolean = laserPeckerModel.haveExDevice() ||

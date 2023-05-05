@@ -17,6 +17,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
+import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.drawBottom
@@ -150,8 +151,28 @@ class DeviceSettingFragment : BaseDslFragment() {
 
                     itemSwitchChecked = settingParser?.free == 1
                     itemSwitchChangedAction = {
-                        settingParser?.free = if (it) 1 else 0
-                        settingParser?.updateSetting()
+                        if (it) {
+                            //开启自由模式, 需要弹窗确认
+                            fContext().normalDialog {
+                                cancelable = false
+                                dialogTitle = _string(R.string.ui_disclaimer)
+                                dialogMessage = _string(R.string.ui_disclaimer_content2)
+                                positiveButton { dialog, dialogViewHolder ->
+                                    dialog.dismiss()
+                                    settingParser?.free = if (it) 1 else 0
+                                    settingParser?.updateSetting()
+                                    syncQueryDeviceState()
+                                }
+                                negativeButton { dialog, dialogViewHolder ->
+                                    dialog.dismiss()
+                                    updateSwitchChecked(false)
+                                    syncQueryDeviceState()
+                                }
+                            }
+                        } else {
+                            settingParser?.free = if (it) 1 else 0
+                            settingParser?.updateSetting()
+                        }
                     }
                 }
             }

@@ -21,6 +21,9 @@
     <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
     <string name="device_setting_act_des_preview_g_code">光标将按向量图文件路径移动</string>
 
+    <string name="ui_disclaimer">免责声明</string>
+    <string name="ui_disclaimer_content2">警告：当“自由模式”开关被打开后，您的设备将被允许在脱离保护罩的防护下使用，由此可能会给您带来安全风险，因此请务必确认是否有必要执行当前操作；如果您确认要放弃在安全保护罩的防护下使用，请务必确保您的操作符合安全规范，而且同意由此操作导致的安全和法律风险完全由本人负责，LaserPecker的厂商和代理商将不负有任何安全和法律责任。</string>
+
     <string name="device_ex_car_label">移动平台</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">正转</string>

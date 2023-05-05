@@ -21,6 +21,9 @@
     <string name="device_g_code_pwr_des">オンにすると、GCodeの彫刻パワーはコマンドによって設定され、オフにすると、GCodeの彫刻パワーはアプリによって設定されます</string>
     <string name="device_setting_act_des_preview_g_code">ベクトルファイルに合わせてカーソルが移動します</string>
 
+    <string name="ui_disclaimer">免責事項</string>
+    <string name="ui_disclaimer_content2">警告する：「自由モード」スイッチがオンになったら、あなたの設備は保護カバーから離れたモードの下で使用することが許されます。これによってあなたに安全リスクを与える可能性がありますので、必ず今操作する必要があるかどうか確認してください。安全保護カバーの防護の下で使用することを諦めると確認されたら、必ずあなたの操作が安全規格に適合することを確認してください。安全と法律上のリスクは完全に本人が責任を負います。LaserPeckerのメーカーと代理店はいかなる安全と法律責任を負いません。</string>
+
     <string name="device_ex_car_label">移動プラットフォーム</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">正転</string>

@@ -206,6 +206,9 @@ data class QueryStateParser(
     /**设备是否处于空闲模式*/
     fun isModeIdle() = mode == WORK_MODE_IDLE
 
+    /**空闲状态, 并且没有错误*/
+    fun isModeIdleAndNoError() = mode == WORK_MODE_IDLE && error == 0
+
     /**设备是否处于雕刻模式*/
     fun isModeEngrave() = mode == WORK_MODE_ENGRAVE
 
@@ -288,8 +291,9 @@ fun QueryStateParser.toDeviceStateString(): String? {
     return builder.toString()
 }
 
+/**机器错误码对应的提示语*/
 fun Int.toErrorStateString() = when (this) {
-    1 -> _string(R.string.ex_tips_one)
+    1 -> _string(R.string.ex_tips_one2)
     2 -> _string(R.string.ex_tips_two)
     3 -> _string(R.string.ex_tips_three)
     4 -> _string(R.string.ex_tips_four)

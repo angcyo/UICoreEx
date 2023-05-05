@@ -23,6 +23,9 @@
     <string name="device_g_code_pwr_des">Turn on the option, the GCode engraving power takes the value from the command; turn off the option, the GCode engraving power takes the value from the App.</string>
     <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
 
+    <string name="ui_disclaimer">Disclaimer</string>
+    <string name="ui_disclaimer_content2">Warning: When the "Free Mode" switch is turned on, your device will be allowed to be used under the protection of the protective cover, which may bring you safety risks, so be sure to confirm whether it is necessary to perform the current operation; if You confirm that you need to give up under the protection of the safety protective cover, please make sure your operations meet the safety norms, and agree that the safety and legal risks caused by this operation are completely responsible. Security and legal responsibility.</string>
+
     <string name="device_ex_car_label">Mobile platform</string>
     <string name="device_ex_car_des">--</string>
     <string name="device_ex_direction_label">Forward</string>

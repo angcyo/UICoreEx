@@ -4,6 +4,7 @@
     <string name="safety_tips">Safety tips</string>
     <string name="device_exception">Exception</string>
     <string name="ex_tips_one">Please turn on [free mode]</string>
+    <string name="ex_tips_one2">Unsafe state, can be operated after turn on [Free Mode]</string>
     <string name="ex_tips_two">Emergency stop!Out of bounds.Please reset the position of the laser focus using the automatic adjustment in the laser adjustment and try again.</string>
     <string name="ex_tips_three">Emergency stop！Laser operating temperature is too high</string>
     <string name="ex_tips_four">Emergency stop！The machine may be bumped or shaken</string>
