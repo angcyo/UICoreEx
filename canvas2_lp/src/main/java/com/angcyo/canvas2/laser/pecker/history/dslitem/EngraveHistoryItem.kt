@@ -196,7 +196,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                     val originWidth = transferDataEntity.originWidth
                     val originHeight = transferDataEntity.originHeight
                     if (originWidth != null && originHeight != null) {
-                        add(widthHeightLabelDes(originWidth, originHeight))
+                        add(widthHeightLabelDes(originWidth, originHeight, true))
                     }
                 } else if (transferDataSize > 1) {
                     //有多个数据时, 显示旋转后的实际宽高
@@ -205,7 +205,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                     val previewWidth = previewInfo?.originBounds?.width()
                     val previewHeight = previewInfo?.originBounds?.height()
                     if (previewWidth != null && previewHeight != null) {
-                        add(widthHeightLabelDes(previewWidth, previewHeight))
+                        add(widthHeightLabelDes(previewWidth, previewHeight, false))
                     }
                 }
             }
@@ -239,9 +239,17 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         )?.isCSeries() == true && vmApp<DeviceStateModel>().isCutModule(moduleState)
     }
 
-    private fun widthHeightLabelDes(width: Float, height: Float): LabelDesData {
-        val w = valueUnit.formatValue(valueUnit.convertPixelToValue(width), true, true)
-        val h = valueUnit.formatValue(valueUnit.convertPixelToValue(height), true, true)
+    private fun widthHeightLabelDes(width: Float, height: Float, isMm: Boolean): LabelDesData {
+        val w = valueUnit.formatValue(
+            if (isMm) width else valueUnit.convertPixelToValue(width),
+            true,
+            true
+        )
+        val h = valueUnit.formatValue(
+            if (isMm) height else valueUnit.convertPixelToValue(height),
+            true,
+            true
+        )
         return formatLabelDes(
             _string(R.string.print_range),
             buildString {
