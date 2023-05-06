@@ -16,6 +16,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ErrorMessageProvider
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionParameters
@@ -126,19 +127,25 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
                     true
                 ) == true
             ) {
-                "text/x-ssa"
+                MimeTypes.TEXT_SSA
             } else if (subtitleUri?.endsWith(
                     ".xml",
                     true
                 ) == true
             ) {
-                "application/ttml+xml"
+                MimeTypes.APPLICATION_TTML
             } else if (subtitleUri?.endsWith(
                     ".vtt",
                     true
                 ) == true
             ) {
-                "text/vtt"
+                MimeTypes.TEXT_VTT
+            } else if (subtitleUri?.endsWith(
+                    ".srt",
+                    true
+                ) == true
+            ) {
+                MimeTypes.APPLICATION_SUBRIP
             } else {
                 null
             }

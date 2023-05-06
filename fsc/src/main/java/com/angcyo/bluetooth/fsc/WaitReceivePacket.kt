@@ -10,12 +10,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
-import com.angcyo.http.tcp.TcpSend
+import com.angcyo.http.tcp.Tcp
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
-import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.toStr
@@ -45,6 +44,13 @@ class WaitReceivePacket(
     //调用者线程回调, 通常在子线程
     val listener: IReceiveListener
 ) : IPacketListener {
+
+    companion object {
+        /**是否要使用wifi传输*/
+        fun useWifi(): Boolean {
+            return LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
+        }
+    }
 
     val handle = Handler(Looper.getMainLooper())
 
@@ -79,9 +85,36 @@ class WaitReceivePacket(
      * [com.angcyo.bluetooth.fsc.WaitReceivePacket.onPacketSend]*/
     var receivePacket: ReceivePacket? = null
 
-    /**是否要使用wifi传输*/
-    fun useWifi(): Boolean {
-        return LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
+    private val wifiApi = vmApp<WifiApiModel>()
+
+    private val wifiListener = object : Tcp.TcpListener {
+
+        override fun onConnectStateChanged(tcp: Tcp, state: Int) {
+            if (state == Tcp.CONNECT_STATE_ERROR) {
+                end()
+                error(IllegalArgumentException())
+            } else if (state == Tcp.CONNECT_STATE_CONNECTED || state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+                wifiApi.tcp.send(sendPacket)//发送数据
+            }
+        }
+
+        override fun onSendStateChanged(tcp: Tcp, state: Int, allSize: Int, error: Exception?) {
+            if (state == Tcp.SEND_STATE_ERROR) {
+                end()
+                error(error ?: IllegalArgumentException())
+            } else if (state == Tcp.SEND_STATE_START) {
+                onSendPacket(0)
+            }
+        }
+
+        override fun onReceiveBytes(tcp: Tcp, bytes: ByteArray) {
+            onReceive(bytes)
+        }
+
+        override fun onSendProgress(tcp: Tcp, allSize: Int, sendSize: Int, progress: Float) {
+            onSendPacket(sendSize.toLong())
+            onSendPacketProgress(progress.toInt())
+        }
     }
 
     /**开始数据发送, 并等待*/
@@ -108,6 +141,7 @@ class WaitReceivePacket(
         _isFinish = true
         handle.removeCallbacks(_timeOutRunnable)
         api.removePacketListener(this)
+        wifiApi.tcp.listeners.remove(wifiListener)
         if (isCancel) {
             listener.onReceive(null, ReceiveCancelException())
         }
@@ -120,7 +154,19 @@ class WaitReceivePacket(
 
     /**使用wifi传输并发送数据*/
     private fun startWithWifi() {
-        TcpSend().apply {
+        val wifiAddress = LibLpHawkKeys.wifiAddress
+        val list = wifiAddress?.split(":")
+
+        wifiApi.tcp.address = list?.getOrNull(0)
+        list?.getOrNull(1)?.toIntOrNull()?.let {
+            wifiApi.tcp.port = it
+        }
+        wifiApi.tcp.bufferSize = LibLpHawkKeys.wifiBufferSize
+        wifiApi.tcp.sendDelay = LibLpHawkKeys.wifiSendDelay
+        wifiApi.tcp.listeners.add(wifiListener)
+        wifiApi.tcp.connect()
+
+        /*TcpSend().apply {
             val wifiAddress = LibLpHawkKeys.wifiAddress
             val list = wifiAddress?.split(":")
             sendBufferSize = LibLpHawkKeys.wifiBufferSize
@@ -148,7 +194,7 @@ class WaitReceivePacket(
             sendBytes = sendPacket
             onReceiveStart(sendPacket.size().toLong())
             startSend()
-        }
+        }*/
     }
 
     @WorkerThread
@@ -256,7 +302,7 @@ class WaitReceivePacket(
     ) {
         super.onPacketSend(packetProgress, address, strValue, data)
         if (!_isFinish) {
-            onReceiveStart(packetProgress.sendBytesSize)
+            onSendPacket(packetProgress.sendBytesSize)
         }
     }
 
@@ -268,7 +314,7 @@ class WaitReceivePacket(
         sendByte: ByteArray
     ) {
         super.onSendPacketProgress(packetProgress, address, percentage, sendByte)
-        onReceiveProgress(percentage)
+        onSendPacketProgress(percentage)
     }
 
     //接收到的所有数据流
@@ -285,7 +331,7 @@ class WaitReceivePacket(
     }
 
     /**开始接收数据, 初始化工作*/
-    private fun onReceiveStart(sendBytesSize: Long) {
+    private fun onSendPacket(sendBytesSize: Long) {
         if (receivePacket == null) {
             receivePacket = ReceivePacket().apply {
                 this.address = address
@@ -328,7 +374,7 @@ class WaitReceivePacket(
     }
 
     /**[percentage] 发送的进度[0~100]*/
-    private fun onReceiveProgress(percentage: Int) {
+    private fun onSendPacketProgress(percentage: Int) {
         if (!_isFinish) {
             receivePacket?.apply {
                 sendPacketPercentage = percentage
