@@ -94,7 +94,10 @@ fun Bitmap?.toBitmapElementBeanV2(
     val threshold = bmpThreshold ?: BitmapHandle.getBitmapThreshold(this)
     HawkEngraveKeys.lastBWThreshold = threshold.toFloat()
     bean.blackThreshold = HawkEngraveKeys.lastBWThreshold
-    bean._srcBitmap = BitmapHandle.toBlackWhiteHandle(this, threshold, invert)
+    bean.sealThreshold = bean.blackThreshold
+    bean.printsThreshold = bean.blackThreshold
+    bean._srcBitmap =
+        BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
     return bean
 }
 
