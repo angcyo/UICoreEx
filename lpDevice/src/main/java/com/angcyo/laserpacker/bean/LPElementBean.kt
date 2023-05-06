@@ -283,13 +283,13 @@ data class LPElementBean(
     var brightness: Float = 0f,
 
     /**黑白阈值*/
-    var blackThreshold: Float = LPDataConstant.DEFAULT_THRESHOLD,
+    var blackThreshold: Float = HawkEngraveKeys.lastBWThreshold,
 
     /**印章阈值*/
-    var sealThreshold: Float = LPDataConstant.DEFAULT_THRESHOLD,
+    var sealThreshold: Float = HawkEngraveKeys.lastSealThreshold,
 
     /**版画阈值*/
-    var printsThreshold: Float = LPDataConstant.DEFAULT_THRESHOLD,
+    var printsThreshold: Float = HawkEngraveKeys.lastPrintThreshold,
 
     /**是否反色*/
     var inverse: Boolean = false,

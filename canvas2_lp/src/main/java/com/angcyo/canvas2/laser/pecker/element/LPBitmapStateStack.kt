@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Path
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -28,8 +29,9 @@ class LPBitmapStateStack : BitmapStateStack() {
     var inverse = false
     var contrast = 0f
     var brightness = 0f
-    var blackThreshold = LPDataConstant.DEFAULT_THRESHOLD
-    var printsThreshold = LPDataConstant.DEFAULT_THRESHOLD
+    var blackThreshold = HawkEngraveKeys.lastBWThreshold
+    var printsThreshold = HawkEngraveKeys.lastPrintThreshold
+    var sealThreshold = HawkEngraveKeys.lastSealThreshold
 
     var data: String? = null
     var gcodeDirection = 0
@@ -60,6 +62,7 @@ class LPBitmapStateStack : BitmapStateStack() {
             brightness = elementBean.brightness
             blackThreshold = elementBean.blackThreshold
             printsThreshold = elementBean.printsThreshold
+            sealThreshold = elementBean.sealThreshold
 
             data = elementBean.data
             gcodeDirection = elementBean.gcodeDirection
@@ -93,6 +96,7 @@ class LPBitmapStateStack : BitmapStateStack() {
             elementBean.brightness = brightness
             elementBean.blackThreshold = blackThreshold
             elementBean.printsThreshold = printsThreshold
+            elementBean.sealThreshold = sealThreshold
 
             elementBean.data = data
             elementBean.gcodeDirection = gcodeDirection

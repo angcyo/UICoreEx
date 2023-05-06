@@ -7,7 +7,6 @@ import com.angcyo.http.base.listType
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.component.hawk.LibHawkKeys
 
 /**
  * 数据相关的常量
@@ -17,9 +16,6 @@ import com.angcyo.library.component.hawk.LibHawkKeys
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 object LPDataConstant {
-
-    /**默认的阈值*/
-    val DEFAULT_THRESHOLD: Float = LibHawkKeys.grayThreshold.toFloat()
 
     /**默认的GCode线距*/
     const val DEFAULT_LINE_SPACE = 5.0f
