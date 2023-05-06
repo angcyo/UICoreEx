@@ -163,7 +163,9 @@ object IntentUtil {
         ).setMimeType(
             checkNotNull(intent.getStringExtra(SUBTITLE_MIME_TYPE_EXTRA + extrasKeySuffix))
         ).setLanguage(intent.getStringExtra(SUBTITLE_LANGUAGE_EXTRA + extrasKeySuffix))
-            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT).build()
+            .setLabel(intent.getStringExtra(SUBTITLE_LANGUAGE_EXTRA + extrasKeySuffix))
+            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+            .build()
     }
 
     private fun populateDrmPropertiesFromIntent(
