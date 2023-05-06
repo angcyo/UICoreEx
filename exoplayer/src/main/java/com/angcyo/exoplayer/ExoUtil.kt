@@ -18,7 +18,6 @@ import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.offline.DownloadManager
 import com.angcyo.library.ex.file
 import com.angcyo.library.utils.appFolderPath
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull
 import java.io.File
 import java.net.CookieHandler
 import java.net.CookieManager
@@ -46,13 +45,13 @@ object ExoUtil {
 
     private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
 
-    private var dataSourceFactory: @MonotonicNonNull DataSource.Factory? = null
-    private var httpDataSourceFactory: @MonotonicNonNull DataSource.Factory? = null
-    private var downloadCache: @MonotonicNonNull Cache? = null
-    private var databaseProvider: @MonotonicNonNull DatabaseProvider? = null
-    private var downloadDirectory: @MonotonicNonNull File? = null
-    private var downloadManager: @MonotonicNonNull DownloadManager? = null
-    private var downloadTracker: @MonotonicNonNull DownloadTracker? = null
+    private var dataSourceFactory: DataSource.Factory? = null
+    private var httpDataSourceFactory: DataSource.Factory? = null
+    private var downloadCache: Cache? = null
+    private var databaseProvider: DatabaseProvider? = null
+    private var downloadDirectory: File? = null
+    private var downloadManager: DownloadManager? = null
+    private var downloadTracker: DownloadTracker? = null
 
     /** Returns whether extension renderers should be used.  */
     fun useExtensionRenderers(): Boolean {

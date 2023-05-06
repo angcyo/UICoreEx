@@ -12,7 +12,17 @@ dependencies {
 
     // For media playback using ExoPlayer
     implementation "androidx.media3:media3-exoplayer:$media3_version"
+    // For building media playback UIs
+    implementation "androidx.media3:media3-ui:$media3_version"
+    // For loading data using the Cronet network stack
+    implementation "androidx.media3:media3-datasource-cronet:$media3_version"
 
+    /*// Common functionality for loading data
+    implementation "androidx.media3:media3-datasource:$media3_version"
+    // Common functionality used across multiple media libraries
+    implementation "androidx.media3:media3-common:$media3_version"*/
+
+/*
     // For DASH playback support with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-dash:$media3_version"
     // For HLS playback support with ExoPlayer
@@ -22,15 +32,12 @@ dependencies {
     // For ad insertion using the Interactive Media Ads SDK with ExoPlayer
     implementation "androidx.media3:media3-exoplayer-ima:$media3_version"
 
-    // For loading data using the Cronet network stack
-    implementation "androidx.media3:media3-datasource-cronet:$media3_version"
     // For loading data using the OkHttp network stack
     implementation "androidx.media3:media3-datasource-okhttp:$media3_version"
+
     // For loading data using librtmp
     implementation "androidx.media3:media3-datasource-rtmp:$media3_version"
 
-    // For building media playback UIs
-    implementation "androidx.media3:media3-ui:$media3_version"
     // For building media playback UIs for Android TV using the Jetpack Leanback library
     implementation "androidx.media3:media3-ui-leanback:$media3_version"
 
@@ -57,9 +64,5 @@ dependencies {
     // Common functionality for media database components
     implementation "androidx.media3:media3-database:$media3_version"
     // Common functionality for media decoders
-    implementation "androidx.media3:media3-decoder:$media3_version"
-    // Common functionality for loading data
-    implementation "androidx.media3:media3-datasource:$media3_version"
-    // Common functionality used across multiple media libraries
-    implementation "androidx.media3:media3-common:$media3_version"
+    implementation "androidx.media3:media3-decoder:$media3_version"*/
 }
