@@ -2,6 +2,7 @@ package com.angcyo.exoplayer
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -53,7 +54,7 @@ import kotlin.math.max
  * @author angcyo
  * @date 2023/05/05
  */
-class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibilityListener {
+open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibilityListener {
 
     companion object {
 
@@ -62,9 +63,10 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             subtitleUri: String? = null, /*字幕地址*/
             subtitleLanguage: String? = null, /*字幕语言*/
             subtitleMimeType: String? = null, /*字幕类型*/
+            cls: Class<*>? = SingleExoPlayerActivity::class.java,
             context: Context = lastContext
         ) {
-            play(url.toUri(), subtitleUri, subtitleLanguage, subtitleMimeType, context)
+            play(url.toUri(), subtitleUri, subtitleLanguage, subtitleMimeType, cls, context)
         }
 
         /**播放单个视频*/
@@ -73,10 +75,11 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             subtitleUri: String? = null,
             subtitleLanguage: String? = null,
             subtitleMimeType: String? = null,
+            cls: Class<*>? = SingleExoPlayerActivity::class.java,
             context: Context = lastContext
         ) {
             uri ?: return
-            val intent = Intent(context, SingleExoPlayerActivity::class.java)
+            val intent = Intent(context, cls)
             intent.baseConfig(context)
             intent.action = IntentUtil.ACTION_VIEW
             intent.data = uri
@@ -97,9 +100,10 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             subtitleUriList: List<String?>? = null,
             subtitleLanguageList: List<String?>? = null,
             subtitleMimeTypeList: List<String?>? = null,
+            cls: Class<*>? = SingleExoPlayerActivity::class.java,
             context: Context = lastContext
         ) {
-            val intent = Intent(context, SingleExoPlayerActivity::class.java)
+            val intent = Intent(context, cls)
             intent.baseConfig(context)
             intent.action = IntentUtil.ACTION_VIEW_LIST
             for ((index, uri) in uriList.withIndex()) {
@@ -181,10 +185,9 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
         translucentStatusBar()
 
         dataSourceFactory = ExoUtil.getDataSourceFactory(/* context= */ this)
-
         setContentView(R.layout.activity_single_exo_player)
-        initDefaultView()
 
+        //custom的控件
         debugTextView = findViewById(R.id.debug_text_view)
         titleWrapView = findViewById(R.id.lib_title_wrap_layout)
         titleBackView = findViewById(R.id.lib_back_view)
@@ -192,11 +195,16 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             finish()
         }
 
+        //播放组件
         playerView = findViewById(R.id.player_view)
         playerView?.setControllerVisibilityListener(this)
         playerView?.setErrorMessageProvider(PlayerErrorMessageProvider())
         playerView?.requestFocus()
 
+        //设置默认ui
+        initDefaultView()
+
+        //恢复播放
         if (savedInstanceState != null) {
             trackSelectionParameters = TrackSelectionParameters.fromBundle(
                 savedInstanceState.getBundle(KEY_TRACK_SELECTION_PARAMETERS)!!
@@ -212,9 +220,21 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
 
     /**Exo库中默认控件设置*/
     protected fun initDefaultView() {
+
+        //进度条颜色
         val progressBar = findViewById<ProgressBar>(androidx.media3.ui.R.id.exo_buffering)
         //progressBar?.progressTintList = ColorStateList.valueOf(_color(R.color.colorAccent))
         progressBar?.indeterminateTintList = ColorStateList.valueOf(_color(R.color.colorAccent))
+
+        //全屏按钮
+        playerView?.setFullscreenButtonClickListener {
+            requestedOrientation = if (it) {
+                //全屏
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
