@@ -3,12 +3,13 @@ package com.angcyo.exoplayer
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.AudioAttributes
@@ -31,9 +32,15 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.util.DebugTextViewHelper
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.ui.PlayerView
+import com.angcyo.base.enableLayoutFullScreen
+import com.angcyo.base.translucentStatusBar
 import com.angcyo.exoplayer.IntentUtil.createMediaItemsFromIntent
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex.baseConfig
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.mH
+import com.angcyo.library.ex.mimeType
 import com.angcyo.library.ex.toUri
 import com.angcyo.library.toastQQ
 import kotlin.math.max
@@ -49,30 +56,92 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
 
     companion object {
 
-        fun play(url: String, context: Context = lastContext) {
-            play(url.toUri(), context)
+        fun play(
+            url: String,
+            subtitleUri: String? = null, /*字幕地址*/
+            subtitleLanguage: String? = null, /*字幕语言*/
+            subtitleMimeType: String? = null, /*字幕类型*/
+            context: Context = lastContext
+        ) {
+            play(url.toUri(), subtitleUri, subtitleLanguage, subtitleMimeType, context)
         }
 
         /**播放单个视频*/
-        fun play(uri: Uri?, context: Context = lastContext) {
+        fun play(
+            uri: Uri?,
+            subtitleUri: String? = null,
+            subtitleLanguage: String? = null,
+            subtitleMimeType: String? = null,
+            context: Context = lastContext
+        ) {
             uri ?: return
             val intent = Intent(context, SingleExoPlayerActivity::class.java)
             intent.baseConfig(context)
             intent.action = IntentUtil.ACTION_VIEW
             intent.data = uri
+            subtitleUri?.let {
+                intent.putExtra(IntentUtil.SUBTITLE_URI_EXTRA, subtitleUri)
+                intent.putExtra(IntentUtil.SUBTITLE_LANGUAGE_EXTRA, subtitleLanguage)
+                intent.putExtra(
+                    IntentUtil.SUBTITLE_MIME_TYPE_EXTRA,
+                    subtitleUriMimeType(subtitleMimeType, subtitleUri)
+                )
+            }
             context.startActivity(intent)
         }
 
         /**播放多个视频*/
-        fun playList(uriList: List<Uri>, context: Context = lastContext) {
+        fun playList(
+            uriList: List<Uri>,
+            subtitleUriList: List<String?>? = null,
+            subtitleLanguageList: List<String?>? = null,
+            subtitleMimeTypeList: List<String?>? = null,
+            context: Context = lastContext
+        ) {
             val intent = Intent(context, SingleExoPlayerActivity::class.java)
             intent.baseConfig(context)
             intent.action = IntentUtil.ACTION_VIEW_LIST
-            for ((uri, index) in uriList.withIndex()) {
-                val key = "${IntentUtil.URI_EXTRA}_$index"
+            for ((index, uri) in uriList.withIndex()) {
+                val extrasKeySuffix = "_$index"
+                val key = "${IntentUtil.URI_EXTRA}${extrasKeySuffix}"
                 intent.putExtra(key, "$uri")
+                subtitleUriList?.getOrNull(index)?.let { subtitleUri ->
+                    intent.putExtra(IntentUtil.SUBTITLE_URI_EXTRA, subtitleUri)
+                    intent.putExtra(
+                        IntentUtil.SUBTITLE_LANGUAGE_EXTRA,
+                        subtitleLanguageList?.getOrNull(index)
+                    )
+                    intent.putExtra(
+                        IntentUtil.SUBTITLE_MIME_TYPE_EXTRA,
+                        subtitleUriMimeType(subtitleMimeTypeList?.getOrNull(index), subtitleUri)
+                    )
+                }
             }
             context.startActivity(intent)
+        }
+
+        fun subtitleUriMimeType(subtitleMimeType: String?, subtitleUri: String?): String? {
+            return subtitleMimeType ?: subtitleUri?.mimeType() ?: if (subtitleUri?.endsWith(
+                    ".ass",
+                    true
+                ) == true
+            ) {
+                "text/x-ssa"
+            } else if (subtitleUri?.endsWith(
+                    ".xml",
+                    true
+                ) == true
+            ) {
+                "application/ttml+xml"
+            } else if (subtitleUri?.endsWith(
+                    ".vtt",
+                    true
+                ) == true
+            ) {
+                "text/vtt"
+            } else {
+                null
+            }
         }
     }
 
@@ -84,12 +153,12 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
     private val KEY_AUTO_PLAY = "auto_play"
 
     protected var playerView: PlayerView? = null
-    protected var debugRootView: LinearLayout? = null
     protected var debugTextView: TextView? = null
+    protected var titleWrapView: View? = null
+    protected var titleBackView: View? = null
 
     protected var player: ExoPlayer? = null
 
-    private var selectTracksButton: Button? = null
     private var dataSourceFactory: DataSource.Factory? = null
     private var mediaItems: List<MediaItem>? = null
     private var trackSelectionParameters: TrackSelectionParameters? = null
@@ -101,13 +170,20 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableLayoutFullScreen()
+        translucentStatusBar()
+
         dataSourceFactory = ExoUtil.getDataSourceFactory(/* context= */ this)
 
         setContentView(R.layout.activity_single_exo_player)
+        initDefaultView()
 
-        debugRootView = findViewById(R.id.controls_root)
         debugTextView = findViewById(R.id.debug_text_view)
-        selectTracksButton = findViewById(R.id.select_tracks_button)
+        titleWrapView = findViewById(R.id.lib_title_wrap_layout)
+        titleBackView = findViewById(R.id.lib_back_view)
+        titleBackView?.setOnClickListener {
+            finish()
+        }
 
         playerView = findViewById(R.id.player_view)
         playerView?.setControllerVisibilityListener(this)
@@ -125,6 +201,13 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             trackSelectionParameters = TrackSelectionParameters.Builder( /* context= */this).build()
             clearStartPosition()
         }
+    }
+
+    /**Exo库中默认控件设置*/
+    protected fun initDefaultView() {
+        val progressBar = findViewById<ProgressBar>(androidx.media3.ui.R.id.exo_buffering)
+        //progressBar?.progressTintList = ColorStateList.valueOf(_color(R.color.colorAccent))
+        progressBar?.indeterminateTintList = ColorStateList.valueOf(_color(R.color.colorAccent))
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -199,6 +282,16 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
         outState.putLong(KEY_POSITION, startPosition)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        /*if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //切换到横屏
+            fullscreen(true)
+        } else {
+            fullscreen(false)
+        }*/
+    }
+
     //---
 
     protected fun clearStartPosition() {
@@ -211,7 +304,7 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
         if (player != null) {
             updateTrackSelectorParameters()
             updateStartPosition()
-            debugViewHelper!!.stop()
+            debugViewHelper?.stop()
             debugViewHelper = null
             player?.release()
             player = null
@@ -258,8 +351,10 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
             player?.setAudioAttributes(AudioAttributes.DEFAULT,  /* handleAudioFocus= */true)
             player?.playWhenReady = startAutoPlay
             playerView?.player = player
-            debugViewHelper = DebugTextViewHelper(player!!, debugTextView!!)
-            debugViewHelper?.start()
+            if (isDebug()) {
+                debugViewHelper = DebugTextViewHelper(player!!, debugTextView!!)
+                debugViewHelper?.start()
+            }
         }
         val haveStartPosition = startItemIndex != C.INDEX_UNSET
         if (haveStartPosition) {
@@ -267,7 +362,6 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
         }
         player?.setMediaItems(mediaItems!!,  /* resetPosition= */!haveStartPosition)
         player?.prepare()
-        updateButtonVisibility()
         return true
     }
 
@@ -369,12 +463,22 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
 
     //---
 
-    private fun updateButtonVisibility() {
-        selectTracksButton?.isEnabled = false
-    }
-
-    private fun showControls() {
-        debugRootView?.visibility = View.VISIBLE
+    private fun showTitleControlLayout(visibility: Int = View.VISIBLE) {
+        titleWrapView?.apply {
+            if (getVisibility() != visibility) {
+                //动画控制显示
+                if (visibility == View.VISIBLE) {
+                    setVisibility(View.VISIBLE)
+                    translationY = -mH().toFloat()
+                    animate().translationY(0f).setDuration(300).start()
+                } else {
+                    animate()
+                        .translationY(-mH().toFloat()).setDuration(300)
+                        .withEndAction { setVisibility(View.INVISIBLE) }
+                        .start()
+                }
+            }
+        }
     }
 
     //---
@@ -382,9 +486,8 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
     private inner class PlayerEventListener : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: @Player.State Int) {
             if (playbackState == Player.STATE_ENDED) {
-                showControls()
+                showTitleControlLayout()
             }
-            updateButtonVisibility()
         }
 
         override fun onPlayerError(error: PlaybackException) {
@@ -392,13 +495,11 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
                 player?.seekToDefaultPosition()
                 player?.prepare()
             } else {
-                updateButtonVisibility()
-                showControls()
+                showTitleControlLayout()
             }
         }
 
         override fun onTracksChanged(tracks: Tracks) {
-            updateButtonVisibility()
             if (tracks === lastSeenTracks) {
                 return
             }
@@ -426,7 +527,7 @@ class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerVisibi
     //region ---callback---
 
     override fun onVisibilityChanged(visibility: Int) {
-        debugRootView?.visibility = visibility;
+        showTitleControlLayout(visibility)
     }
 
     //endregion ---callback---

@@ -55,12 +55,13 @@ object IntentUtil {
         if (ACTION_VIEW_LIST == intent.action) {
             var index = 0
             while (intent.hasExtra(URI_EXTRA + "_" + index)) {
-                val uri = Uri.parse(intent.getStringExtra(URI_EXTRA + "_" + index))
+                val extrasKeySuffix = "_$index" //扩展后缀
+                val uri = Uri.parse(intent.getStringExtra(URI_EXTRA + extrasKeySuffix))
                 mediaItems.add(
                     createMediaItemFromIntent(
                         uri,
-                        intent,  /* extrasKeySuffix= */
-                        "_$index"
+                        intent,
+                        extrasKeySuffix /* extrasKeySuffix= */
                     )
                 )
                 index++
@@ -152,7 +153,8 @@ object IntentUtil {
 
 
     private fun createSubtitleConfiguration(
-        intent: Intent, extrasKeySuffix: String
+        intent: Intent,
+        extrasKeySuffix: String
     ): MediaItem.SubtitleConfiguration? {
         return if (!intent.hasExtra(SUBTITLE_URI_EXTRA + extrasKeySuffix)) {
             null
@@ -161,12 +163,13 @@ object IntentUtil {
         ).setMimeType(
             checkNotNull(intent.getStringExtra(SUBTITLE_MIME_TYPE_EXTRA + extrasKeySuffix))
         ).setLanguage(intent.getStringExtra(SUBTITLE_LANGUAGE_EXTRA + extrasKeySuffix))
-            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-            .build()
+            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT).build()
     }
 
     private fun populateDrmPropertiesFromIntent(
-        builder: MediaItem.Builder, intent: Intent, extrasKeySuffix: String
+        builder: MediaItem.Builder,
+        intent: Intent,
+        extrasKeySuffix: String
     ): MediaItem.Builder {
         val schemeKey = DRM_SCHEME_EXTRA + extrasKeySuffix
         val drmSchemeExtra = intent.getStringExtra(schemeKey) ?: return builder

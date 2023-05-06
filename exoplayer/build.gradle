@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 
 dependencies {
     implementation project(allModule.library)
+    implementation project(allModule.fragment)
     //implementation project(allModule.core)
 
     def media3_version = "1.0.1"
