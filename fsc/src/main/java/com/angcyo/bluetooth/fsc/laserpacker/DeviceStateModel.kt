@@ -17,7 +17,8 @@ import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
-import com.angcyo.library.component._delay
+import com.angcyo.library.component._removeMainRunnable
+import com.angcyo.library.component.onMainOnce
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.add
 import com.angcyo.library.ex.have
@@ -80,6 +81,23 @@ class DeviceStateModel : ViewModel() {
     /**自动等到设备空闲后, 再退出*/
     var waitForExit = false
 
+    /**查询状态的动作*/
+    private val _queryStateRunnable = Runnable {
+        //延迟1秒后, 继续查询状态
+        if (isLoop) {
+            if (isPause) {
+                //暂停状态, 循环继续, 但是指令不发送
+                isLooping = false
+                loopCheckDeviceState()
+            } else {
+                queryDeviceState { bean, error ->
+                    isLooping = false
+                    loopCheckDeviceState()
+                }
+            }
+        }
+    }
+
     /**开始循环并暂停*/
     fun startLoopCheckPauseState() {
         waitForExit = false
@@ -100,15 +118,19 @@ class DeviceStateModel : ViewModel() {
         }
         if (start) {
             loopCheckDeviceState()
+        } else {
+            _removeMainRunnable(_queryStateRunnable)
         }
     }
 
     /**暂停轮询状态查询*/
     fun pauseLoopCheckState(pause: Boolean = true) {
-        queryMode = if (pause) {
-            queryMode.add(QUERY_MODE_PAUSE)
+        if (pause) {
+            queryMode = queryMode.add(QUERY_MODE_PAUSE)
+            _removeMainRunnable(_queryStateRunnable)
         } else {
-            queryMode.remove(QUERY_MODE_PAUSE)
+            queryMode = queryMode.remove(QUERY_MODE_PAUSE)
+            loopCheckDeviceState()
         }
     }
 
@@ -117,19 +139,7 @@ class DeviceStateModel : ViewModel() {
         if (isLooping) return
         if (!isLoop) return
         isLooping = true
-        _delay(HawkEngraveKeys.minQueryDelayTime) {
-            //延迟1秒后, 继续查询状态
-            if (isPause || !isLoop) {
-                //暂停状态, 循环继续, 但是指令不发送
-                isLooping = false
-                loopCheckDeviceState()
-            } else {
-                queryDeviceState { bean, error ->
-                    isLooping = false
-                    loopCheckDeviceState()
-                }
-            }
-        }
+        onMainOnce(HawkEngraveKeys.minQueryDelayTime, _queryStateRunnable)
     }
 
     /**查询设备状态*/
@@ -200,7 +210,7 @@ class DeviceStateModel : ViewModel() {
             //查询到设备异常
             if (lastState?.error != queryStateParser.error) {
                 "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
-                
+
                 //错误码不一样, 才提示
                 doMain {
                     toastQQ(it)
@@ -346,6 +356,7 @@ class DeviceStateModel : ViewModel() {
      * 目前在预览中, 杀掉APP机器需要退出
      * */
     fun exitIfNeed() {
+        startLoopCheckState(false)
         if (isEngravePreview()) {
             ExitCmd().enqueue(CommandQueueHelper.FLAG_ASYNC)
         }
