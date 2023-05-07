@@ -635,6 +635,7 @@ object EngraveTransitionHelper {
             val rectList = mutableListOf<Rect>()
             val isTransferList = mutableListOf<Boolean>()
             val isEngraveList = mutableListOf<Boolean>()
+            val engraveStartTimeList = mutableListOf<Long>()
             val engraveFinishReasonList = mutableListOf<Int>()
             for (transferData in transferDataList) {
                 val l = transferData.x
@@ -658,6 +659,7 @@ object EngraveTransitionHelper {
                 val engraveDataEntity =
                     EngraveFlowDataHelper.getEngraveDataEntity(taskId, transferData.index)
                 isEngraveList.add(engraveDataEntity?.progress == 100)
+                engraveStartTimeList.add(engraveDataEntity?.startTime ?: -1)
                 engraveFinishReasonList.add(engraveDataEntity?.finishReason ?: -1)
             }
             //鸟瞰图
@@ -674,14 +676,20 @@ object EngraveTransitionHelper {
             ) {
                 rectList.forEachIndexed { index, rect ->
                     paint.color = if (isEngraveList[index]) {
+                        //雕刻完成
                         when (engraveFinishReasonList[index]) {
                             EngraveDataEntity.FINISH_REASON_INDEX -> Color.YELLOW
                             EngraveDataEntity.FINISH_REASON_SKIP -> Color.GREEN
                             else -> DeviceHelper.ENGRAVE_COLOR
                         }
-                    } else if (isTransferList[index]) {
+                    } else if (engraveStartTimeList[index] > 0) {
+                        //开始过雕刻, 蓝色
                         DeviceHelper.PREVIEW_COLOR
+                    } else if (isTransferList[index]) {
+                        //传输完成, 白色
+                        Color.WHITE
                     } else {
+                        //只是创建了数据
                         Color.BLACK
                     }
                     drawRect(rect, paint)
