@@ -36,6 +36,7 @@ class AppointPowerDepthItem : DslAdapterItem() {
                 itemDslAdapter.updateTablePreview()
             }
         }
+        itemHolder.focused()
     }
 
 }

@@ -474,12 +474,6 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderLayerListLayout()
             }
 
-            override fun onAsyncStateChange(uuid: String, state: Int) {
-                if (!renderDelegate.asyncManager.hasAsyncTask()) {
-                    renderDelegate.saveProjectStateV2()
-                }
-            }
-
             override fun onRendererGroupChange(
                 groupRenderer: CanvasGroupRenderer,
                 subRendererList: List<BaseRenderer>,

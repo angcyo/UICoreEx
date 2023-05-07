@@ -6,6 +6,7 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBoolean
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
@@ -31,7 +32,6 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.writeTo
 import java.io.File
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.zip.ZipFile
 
 /**
@@ -42,12 +42,6 @@ import java.util.zip.ZipFile
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class LPProjectManager {
-
-    companion object {
-
-        /**是否正在存储工程*/
-        val isSaveBoolean = AtomicBoolean(false)
-    }
 
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
     var projectName: String? = null
@@ -458,13 +452,13 @@ class LPProjectManager {
         return zipFilePath
     }
 
-//endregion ---保存---
+    //endregion ---保存---
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV1]*/
 @Deprecated("V1格式不支持大数据存储, 请使用V2格式")
 fun CanvasRenderDelegate.saveProjectState(async: Boolean = true) {
-    if (LPProjectManager.isSaveBoolean.get()) {
+    if (isSaveBoolean.get()) {
         return
     }
     try {
@@ -481,18 +475,7 @@ fun CanvasRenderDelegate.restoreProjectState() {
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV2]*/
 fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
-    if (LPProjectManager.isSaveBoolean.get()) {
-        return
-    }
-    try {
-        LPProjectManager().saveProjectV2(this, async = async) { zipFilePath, exception ->
-            if (exception != null) {
-                //保存失败
-            }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    LPProjectAutoSaveManager.autoSave(this, async)
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV2]*/
