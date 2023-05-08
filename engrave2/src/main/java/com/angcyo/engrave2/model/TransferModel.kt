@@ -352,7 +352,7 @@ class TransferModel : ViewModel() {
         }
         transferStateOnceData.postValue(transferState)
         EngraveFlowDataHelper.finishTransferData(taskId)
-        L.i("数据传输任务完成:${taskId}")
+        "数据传输任务完成:${taskId},流转!".writeEngraveLog()
 
         //进入空闲模式
         ExitCmd().enqueue { bean, error ->
