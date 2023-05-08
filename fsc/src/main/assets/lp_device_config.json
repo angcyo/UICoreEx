@@ -1,8 +1,61 @@
 [
   {
     "name": "LP1",
-    "softwareVersionRange": "100~199 1000~1099 150~199 1500~1599 200~299 2000~2099 250~269 2500~2599 270~299",
-    "hardwareVersionRange": "",
+    "softwareVersionRange": "100~199 1000~1099 1500~1599",
+    "focalDistance": 200,
+    "widthPhys": 100,
+    "heightPhys": 100,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 0.5,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      }
+    ]
+  },
+  {
+    "name": "LP1",
+    "des": "LP1-Pro",
+    "softwareVersionRange": "200~249 2000~2099",
+    "focalDistance": 200,
+    "widthPhys": 100,
+    "heightPhys": 100,
+    "zMaxHeight": 2000,
+    "rMaxHeight": 628,
+    "sMaxHeight": 300,
+    "carMaxHeight": 2000,
+    "laserTypeList": [
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 0.5,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      }
+    ]
+  },
+  {
+    "name": "LP1",
+    "des": "LP1-Z",
+    "softwareVersionRange": "250~269 2500~2599 270~299",
     "supportDitheringRange": "253~269 272~299",
     "focalDistance": 200,
     "widthPhys": 100,
