@@ -96,6 +96,8 @@
     <string name="font_import_success">글꼴 가져오기 성공</string>
     <string name="canvas_font_text">레이저패커</string>
     <string name="canvas_import_font">가져오기</string>
+    <string name="canvas_backups_font">지원</string>
+    <string name="canvas_export_font">내보내다</string>
     <string name="canvas_rename">이름 변경</string>
     <string name="project_title">나의 만들기</string>
     <string name="canvas_delete_project">항목 삭제</string>

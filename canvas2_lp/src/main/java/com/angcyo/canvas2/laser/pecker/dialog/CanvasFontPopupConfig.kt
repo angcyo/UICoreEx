@@ -22,6 +22,7 @@ import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
+import com.angcyo.http.rx.runRx
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.FontManager
@@ -29,8 +30,12 @@ import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.decode
-import com.angcyo.library.ex.getDisplayName
+import com.angcyo.library.ex.getShowName
 import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.zip
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.library.toast
 import com.angcyo.widget.DslViewHolder
@@ -86,7 +91,9 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
 
                         2 -> {
                             //自定义
-                            renderAdapterFontList(FontManager.getCustomFontList())
+                            val customFontList = FontManager.getCustomFontList()
+                            renderAdapterFontList(customFontList)
+                            checkShowBackupsView()
                         }
 
                         else -> {
@@ -115,6 +122,19 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
             }
         }
 
+        //备份字体
+        viewHolder.click(R.id.export_view) {
+            runRx({
+                val fontList = mutableListOf(FontManager.defaultCustomFontFolder)
+                fontList.addAll(FontManager.customFontFolderList)
+                fontList.zip(libCacheFile(buildString {
+                    append("LP-${_string(R.string.canvas_font)}_")
+                    append(nowTimeString("yyyy-MM-dd_HH-mm-ss"))
+                    append(".zip")
+                }).absolutePath)?.shareFile()
+            })
+        }
+
         /*
         //同步SD上的字体
         viewHolder.click(R.id.sync_font_button) {
@@ -130,6 +150,17 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                 }
             }
         }*/
+    }
+
+    /**检查是否要显示备份字体按钮*/
+    fun checkShowBackupsView() {
+        val viewHolder = _popupViewHolder ?: return
+        val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
+        val customFontList = FontManager.getCustomFontList()
+        viewHolder.visible(
+            R.id.export_view,
+            tabLayout?.currentItemIndex == 2 && customFontList.isNotEmpty()
+        )
     }
 
     /**选择字体文件, 2023-5-8支持多选字体*/
@@ -164,17 +195,17 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                         }
                     }
                 }
+                checkShowBackupsView()
             }
         }
     }
 
     fun importFont(uri: Uri): TypefaceInfo? {
         try {
-            "准备导入字体[${uri.getDisplayName()}]:${"$uri".decode()}".writeBleLog()
+            "准备导入字体[${uri.getShowName()}]:${"$uri".decode()}".writeBleLog()
             val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(uri)
             if (typefaceInfo != null) {
                 //ui
-
                 return typefaceInfo
             }
             return null
@@ -228,6 +259,7 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                         it.context.actionPopupWindow(it) {
                             addAction(_string(R.string.canvas_delete_font)) { window, view ->
                                 if (FontManager.deleteCustomFont(info)) {
+                                    checkShowBackupsView()
                                     render {
                                         removeAdapterItem()
                                     }

@@ -98,6 +98,8 @@
     <string name="font_import_success">Font imported successfully</string>
     <string name="canvas_font_text">LaserPecker</string>
     <string name="canvas_import_font">Import</string>
+    <string name="canvas_backups_font">Backups</string>
+    <string name="canvas_export_font">Export</string>
     <string name="canvas_rename">Rename</string>
     <string name="project_title">My creation</string>
     <string name="canvas_delete_project">Delete</string>

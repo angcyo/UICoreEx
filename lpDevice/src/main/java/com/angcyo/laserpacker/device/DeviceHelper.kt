@@ -64,7 +64,7 @@ object DeviceHelper {
 
             tempEngraveLogPathList.clear()
             logList.zip(libCacheFile(buildString {
-                append("LaserPecker-log-")
+                append("LP-log-")
                 append(nowTimeString("yyyy-MM-dd_HH-mm-ss"))
                 append("_${getAppVersionCode()}_${Build.MODEL}.zip")
             }).absolutePath)?.shareFile()
