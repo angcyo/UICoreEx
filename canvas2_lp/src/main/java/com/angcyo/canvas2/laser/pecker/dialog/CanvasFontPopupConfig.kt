@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.content.Context
 import android.graphics.Typeface
+import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
@@ -13,7 +14,7 @@ import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.TypefaceItem
-import com.angcyo.component.getFile
+import com.angcyo.component.getFiles
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
@@ -131,21 +132,24 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
         }*/
     }
 
-    /**选择字体文件*/
+    /**选择字体文件, 2023-5-8支持多选字体*/
     fun selectFont(context: FragmentActivity, viewHolder: DslViewHolder) {
         val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
-        context.supportFragmentManager.getFile("*/*") {
-            if (it != null) {
-                try {
-                    "准备导入字体[${it.getDisplayName()}]:${"$it".decode()}".writeBleLog()
-                    val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(it)
-                    if (typefaceInfo != null) {
-                        //ui
+        context.supportFragmentManager.getFiles { list ->
+            if (!list.isNullOrEmpty()) {
+                var lastTypefaceInfo: TypefaceInfo? = null
+                for (uri in list) {
+                    val typefaceInfo = importFont(uri)
+                    lastTypefaceInfo = typefaceInfo ?: lastTypefaceInfo
+
+                    if (typefaceInfo == null) {
+                        toast(_string(R.string.canvas_invalid_font))
+                    } else {
                         if (!typefaceInfo.isRepeat) {
                             if (tabLayout?.currentItemIndex == 2) {
                                 viewHolder.rv(R.id.lib_recycler_view)
                                     ?.renderDslAdapter(true, false) {
-                                        typefaceItem(typefaceInfo, index = 0)
+                                        typefaceItem(typefaceInfo, index = 0) //插入到第一个位置
                                         onDispatchUpdatesOnce {
                                             viewHolder.rv(R.id.lib_recycler_view)
                                                 ?.scrollToFirst()
@@ -158,15 +162,26 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                         } else {
                             toast(_string(R.string.canvas_font_exist))
                         }
-                    } else {
-                        error("is not font.")
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    "导入字体失败[${"$it".decode()}]:${e}".writeErrorLog()
-                    toast(_string(R.string.canvas_invalid_font))
                 }
             }
+        }
+    }
+
+    fun importFont(uri: Uri): TypefaceInfo? {
+        try {
+            "准备导入字体[${uri.getDisplayName()}]:${"$uri".decode()}".writeBleLog()
+            val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(uri)
+            if (typefaceInfo != null) {
+                //ui
+
+                return typefaceInfo
+            }
+            return null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "导入字体失败[${"$uri".decode()}]:${e}".writeErrorLog()
+            return null
         }
     }
 
