@@ -71,6 +71,7 @@
     <string name="canvas_direction">방향</string>
     <string name="canvas_inch_unit">영국식 단위</string>
     <string name="canvas_pixel_unit">픽셀</string>
+    <string name="canvas_cloud_storage">클라우드 스토리지</string>
     <string name="canvas_grid">격자</string>
     <string name="canvas_smart_assistant">스마트 가이드</string>
     <string name="canvas_preview">미리 보기</string>

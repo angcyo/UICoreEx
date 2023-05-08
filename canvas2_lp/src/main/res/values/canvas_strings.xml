@@ -63,6 +63,7 @@
     <string name="canvas_direction">Direction</string>
     <string name="canvas_inch_unit">Inch</string>
     <string name="canvas_pixel_unit">Pixel</string>
+    <string name="canvas_cloud_storage">Cloud storage</string>
     <string name="canvas_grid">Grid</string>
     <string name="canvas_smart_assistant">Smart Assistant</string>
     <string name="canvas_preview">Preview</string>

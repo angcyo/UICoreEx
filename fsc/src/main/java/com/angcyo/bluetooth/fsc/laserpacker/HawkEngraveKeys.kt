@@ -167,6 +167,9 @@ object HawkEngraveKeys {
     /**是否激活Z轴的无差别px选择*/
     var enableZFlagPx: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**是否激活云端存储功能*/
+    var enableCloudStorage: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     //
 
     /**最大的下位机能接收的文件大小 字节, 30MB */

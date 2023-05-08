@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.content.Context
 import android.view.View
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -15,11 +16,15 @@ import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.have
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
 import com.angcyo.library.unit.PxRenderUnit
@@ -83,7 +88,17 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     }
                 }
             }
-
+            if (isDebug()) {
+                DslSwitchInfoItem()() {
+                    itemInfoText = _string(R.string.canvas_cloud_storage)
+                    itemSwitchChecked = HawkEngraveKeys.enableCloudStorage
+                    drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
+                    itemExtendLayoutId = R.layout.canvas_extent_switch_item
+                    itemSwitchChangedAction = {
+                        HawkEngraveKeys.enableCloudStorage = it
+                    }
+                }
+            }
             if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
                 DslSwitchInfoItem()() {
                     itemTag = "pixel"

@@ -71,6 +71,7 @@
     <string name="canvas_direction">方向</string>
     <string name="canvas_inch_unit">インペリアル</string>
     <string name="canvas_pixel_unit">ピクセル</string>
+    <string name="canvas_cloud_storage">クラウドストレージ</string>
     <string name="canvas_grid">グリッド</string>
     <string name="canvas_smart_assistant">スマートガイド</string>
     <string name="canvas_preview">プレビュー</string>
