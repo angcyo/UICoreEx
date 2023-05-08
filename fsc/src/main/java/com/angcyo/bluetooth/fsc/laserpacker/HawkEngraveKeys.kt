@@ -172,8 +172,8 @@ object HawkEngraveKeys {
     /**最大的下位机能接收的文件大小 字节, 30MB */
     var maxTransferDataSize: Long by HawkPropertyValue<Any, Long>(28_000_000)
 
-    /**最大的外部导入文件大小 字节, 5MB */
-    var openFileDataSize: Long by HawkPropertyValue<Any, Long>(5_242_880)
+    /**最大的外部导入文件大小 字节, 50MB */
+    var openFileDataSize: Long by HawkPropertyValue<Any, Long>(50_242_880)
 
     /**最大的外部导入文件行数, 2W行 */
     var openFileLineCount: Long by HawkPropertyValue<Any, Long>(2_0000)
@@ -219,4 +219,7 @@ object HawkEngraveKeys {
      * resValue "string", "lp_batch_engrave_firmware", '"650~699 6500~6599"'
      * */
     var batchEngraveSupportFirmware: String? by HawkPropertyValue<Any, String?>(null)
+
+    /**是否激活雕刻参数配置信息使用icon*/
+    var enableConfigIcon: Boolean by HawkPropertyValue<Any, Boolean>(true)
 }

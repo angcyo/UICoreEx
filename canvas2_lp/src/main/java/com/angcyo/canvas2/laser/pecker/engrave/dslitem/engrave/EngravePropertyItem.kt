@@ -9,6 +9,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.ex._color
+import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -58,7 +59,11 @@ class EngravePropertyItem : DslAdapterItem() {
         val power = itemEngraveConfigEntity?.power ?: (itemEngraveItemBean?.printPower
             ?: HawkEngraveKeys.lastPower)
         itemHolder.tv(R.id.power_view)?.text = span {
-            append(powerLabel)
+            if (HawkEngraveKeys.enableConfigIcon) {
+                appendDrawable(_drawable(R.drawable.engrave_config_power_svg))
+            } else {
+                append(powerLabel)
+            }
             appendln()
             append("$power") {
                 fontSize = 40 * dpi
@@ -71,7 +76,11 @@ class EngravePropertyItem : DslAdapterItem() {
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
         itemHolder.tv(R.id.speed_view)?.text = span {
-            append(speedLabel)
+            if (HawkEngraveKeys.enableConfigIcon) {
+                appendDrawable(_drawable(R.drawable.engrave_config_depth_svg))
+            } else {
+                append(speedLabel)
+            }
             appendln()
             append("$depth") {
                 fontSize = 40 * dpi
@@ -85,7 +94,11 @@ class EngravePropertyItem : DslAdapterItem() {
         val timesLabel = _string(R.string.print_times)
         val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
         itemHolder.tv(R.id.times_view)?.text = span {
-            append(timesLabel)
+            if (HawkEngraveKeys.enableConfigIcon) {
+                appendDrawable(_drawable(R.drawable.engrave_config_times_svg))
+            } else {
+                append(timesLabel)
+            }
             appendln()
             append("$time") {
                 fontSize = 40 * dpi

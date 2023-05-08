@@ -47,20 +47,10 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                     )
                 } else {
                     //功率:
-                    add(
-                        LabelDesData(
-                            _string(R.string.custom_power),
-                            "${engraveConfigEntity.power}%"
-                        )
-                    )
+                    add(powerData(engraveConfigEntity.power))
 
                     //深度:
-                    add(
-                        LabelDesData(
-                            _string(R.string.custom_speed),
-                            "${engraveConfigEntity.depth}%"
-                        )
-                    )
+                    add(depthData(engraveConfigEntity.depth))
 
                     //雕刻次数
                     val transferDataEntity = transferDataEntityList.firstOrNull()
@@ -70,7 +60,7 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                         transferDataEntity?.index ?: 0
                     )
                     val printTimes = engraveDataEntity?.printTimes ?: 0
-                    add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                    add(timesData(printTimes, times))
                 }
             }
         }

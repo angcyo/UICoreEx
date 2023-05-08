@@ -41,17 +41,12 @@ open class EngravingInfoItem : DslTagGroupItem() {
             engraveConfigEntity?.let {
                 if (!deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
                     //材质:
-                    add(
-                        LabelDesData(
-                            _string(R.string.custom_material),
-                            EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)
-                        )
-                    )
+                    add(materialData(EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)))
 
                     //分辨率: 1k
                     val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
                     val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-                    add(LabelDesData(_string(R.string.resolution_ratio), findPxInfo.des))
+                    add(resolutionData(findPxInfo.des))
                 }
 
                 //雕刻精度
@@ -79,40 +74,28 @@ open class EngravingInfoItem : DslTagGroupItem() {
                     )
                 } else {
                     //功率:
-                    add(
-                        LabelDesData(
-                            _string(R.string.custom_power),
-                            "${engraveConfigEntity.power}%"
-                        )
-                    )
+                    add(powerData(engraveConfigEntity.power))
 
                     //深度:
-                    add(
-                        LabelDesData(
-                            _string(R.string.custom_speed),
-                            "${engraveConfigEntity.depth}%"
-                        )
-                    )
+                    add(depthData(engraveConfigEntity.depth))
 
                     //雕刻次数
                     val times = engraveConfigEntity.time
                     val printTimes = engraveDataEntity?.printTimes ?: 0
-                    add(LabelDesData(_string(R.string.print_times), "${printTimes}/${times}"))
+                    add(timesData(printTimes, times))
                 }
 
                 //加工时间
                 val startEngraveTime = engraveTaskEntity?.startTime ?: 0
                 val engraveTime = (nowTime() - startEngraveTime).toEngraveTime()
-                add(LabelDesData(_string(R.string.work_time), engraveTime))
+                add(workTimeData(engraveTime))
 
                 if (deviceStateModel.deviceStateData.value?.isEngraving() == true) {
                     //雕刻中才显示,剩余时长
                     val duration = EngraveFlowDataHelper.calcEngraveProgressDuration(itemTaskId)
                     if (duration > 3000) {
                         //大于3秒才显示
-                        add(
-                            LabelDesData(_string(R.string.remaining_time), duration.toEngraveTime())
-                        )
+                        add(remainingTimesData(duration.toEngraveTime()))
                     }
                 }
             }

@@ -10,7 +10,6 @@ import com.angcyo.item.DslTagGroupItem
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.component.watchCount
-import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 
 /**
@@ -61,22 +60,17 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             if (deviceStateModel.isPenMode(engraveConfigEntity?.moduleState)) {
                 //C1握笔模块
             } else {
-                add(
-                    labelDes(
-                        _string(R.string.custom_material),
-                        EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)
-                    )
-                )
+                add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)))
 
                 val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
                 val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-                add(formatLabelDes(_string(R.string.resolution_ratio), findPxInfo.des))
+                add(resolutionData(findPxInfo.des))
             }
 
             val startEngraveTime = taskEntity?.startTime ?: 0
             val endEngraveTime = taskEntity?.finishTime ?: 0
             val engraveTime = (endEngraveTime - startEngraveTime).toEngraveTime()
-            add(labelDes(_string(R.string.work_time), engraveTime))
+            add(workTimeData(engraveTime))
         }
     }
 

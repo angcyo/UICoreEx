@@ -36,6 +36,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
             android:paddingVertical="@dimen/lib_hdpi"
+            android:tooltipText="@string/custom_power"
             tools:text="功率\n99%" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -47,6 +48,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
             android:paddingVertical="@dimen/lib_hdpi"
+            android:tooltipText="@string/custom_speed"
             tools:text="深度\n99%" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -58,9 +60,9 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/lib_spacing_extra"
             android:paddingVertical="@dimen/lib_hdpi"
+            android:tooltipText="@string/print_times"
             tools:text="次数\n99"
             tools:visibility="gone" />
-
 
     </com.angcyo.widget.layout.DslFlowLayout>
 
