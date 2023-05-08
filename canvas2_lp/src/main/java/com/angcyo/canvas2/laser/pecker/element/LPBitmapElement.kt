@@ -176,8 +176,19 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         //更新原图, 默认是黑白画处理
         elementBean.width = bitmap.width.toMm()
         elementBean.height = bitmap.height.toMm()
-        elementBean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
-        renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
+
+        //2023-5-8 移除默认处理
+        elementBean.src = null
+        elementBean.data = null
+        renderBitmap = null
+        pathList = null
+        //elementBean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
+        //renderBitmap = LPBitmapHandler.toBlackWhiteHandle(bitmap, elementBean)
+        parseElementBean()
+        if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
+            val bounds = RenderHelper.computePathBounds(pathList)
+            updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
+        }
     }
 
     /**更新原始图片, 并且自动处理成默认的黑白数据, 以及转成对应的base64数据*/
