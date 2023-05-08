@@ -272,6 +272,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     /**开始雕刻下一个,
      * 2023-4-20 雕刻下一个文件时, 需要进入空闲状态*/
     fun startEngraveNext() {
+        deviceStateModel.pauseLoopCheckState(true)
         ExitCmd().enqueue { bean, error ->
             if (error != null) {
                 toastQQ(error.message)

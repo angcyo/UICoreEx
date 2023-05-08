@@ -98,13 +98,6 @@ class DeviceStateModel : ViewModel() {
         }
     }
 
-    /**开始循环并暂停*/
-    fun startLoopCheckPauseState() {
-        waitForExit = false
-        queryMode = queryMode.add(QUERY_MODE_LOOP).add(QUERY_MODE_PAUSE)
-        loopCheckDeviceState()
-    }
-
     /**开始循环查询设备状态*/
     fun startLoopCheckState(start: Boolean = true, removePause: Boolean = true) {
         waitForExit = false
@@ -119,7 +112,7 @@ class DeviceStateModel : ViewModel() {
         if (start) {
             loopCheckDeviceState()
         } else {
-            _removeMainRunnable(_queryStateRunnable)
+            removeLoopCheck()
         }
     }
 
@@ -127,7 +120,7 @@ class DeviceStateModel : ViewModel() {
     fun pauseLoopCheckState(pause: Boolean = true) {
         if (pause) {
             queryMode = queryMode.add(QUERY_MODE_PAUSE)
-            _removeMainRunnable(_queryStateRunnable)
+            removeLoopCheck()
         } else {
             queryMode = queryMode.remove(QUERY_MODE_PAUSE)
             loopCheckDeviceState()
@@ -140,6 +133,12 @@ class DeviceStateModel : ViewModel() {
         if (!isLoop) return
         isLooping = true
         onMainOnce(HawkEngraveKeys.minQueryDelayTime, _queryStateRunnable)
+    }
+
+    /**移除循环检查*/
+    private fun removeLoopCheck() {
+        _removeMainRunnable(_queryStateRunnable)
+        isLooping = false
     }
 
     /**查询设备状态*/

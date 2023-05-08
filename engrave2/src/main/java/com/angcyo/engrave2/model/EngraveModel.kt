@@ -135,7 +135,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         //雕刻中, 更新对应的雕刻进度
                         if (_lastEngraveIndex != queryState.index) {
                             _startEngraveIndex(queryState.index)
-                            if (_lastEngraveIndex > 0 && !HawkEngraveKeys.enableSingleItemTransfer) {
+                            if (_lastEngraveIndex != -1) {
                                 //单元素雕刻, 一定要等待机器进入空闲才算完成雕刻
                                 EngraveFlowDataHelper.finishIndexEngrave(
                                     _engraveTaskId,
@@ -221,8 +221,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         buildString {
             append("开始雕刻下一个:[${taskId}]")
         }.writeEngraveLog()
-        //loop
-        deviceStateModel.startLoopCheckPauseState()
         engraveNext()
     }
 
@@ -310,9 +308,6 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             //通知开始雕刻
             engraveStateData.postValue(this)
 
-            //loop
-            deviceStateModel.startLoopCheckPauseState()
-
             //
             if (isBatchEngraveSupport()) {
                 batchEngrave()
@@ -332,7 +327,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task?.apply {
             _engraveTaskId = task.taskId
             //loop
-            deviceStateModel.startLoopCheckPauseState()
+            deviceStateModel.startLoopCheckState()
         }
     }
 
@@ -486,7 +481,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
-                deviceStateModel.pauseLoopCheckState(false)
+                deviceStateModel.startLoopCheckState()
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${indexList}] $error".writeErrorLog()
@@ -724,7 +719,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
-                deviceStateModel.pauseLoopCheckState(false)
+                deviceStateModel.startLoopCheckState()
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${index}] $error".writeErrorLog()
