@@ -25,5 +25,6 @@
   "closeImageEditItemsFun": null,
   "closeTextEditItemsFun": null,
   "enableFun": null,
-  "maxEngraveItemCount": 30
+  "maxEngraveItemCount": 30,
+  "updateHawkCommand": "@openFileDataSize#l=50242880"
 }
