@@ -43,7 +43,7 @@ class LabelSizeItem : DslAdapterItem() {
         itemHolder.tv(R.id.font_size_view)?.text = "${itemTextFontSize.toInt()}"
         itemHolder.tv(R.id.grid_margin_view)?.text = "${itemGridItemMargin.toInt()}"
         itemHolder.tv(R.id.char_space_view)?.text =
-            "${ParameterComparisonTableDialogConfig.charSpace}"
+            "${ParameterComparisonTableDialogConfig.ptcCharSpace}"
 
         itemHolder.click(R.id.font_size_view) {
             itemHolder.context.keyboardNumberWindow(it) {
@@ -69,7 +69,7 @@ class LabelSizeItem : DslAdapterItem() {
                 bindPendingDelay = -1 //关闭限流输入
                 removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
                 onNumberResultAction = { value ->
-                    ParameterComparisonTableDialogConfig.charSpace = value
+                    ParameterComparisonTableDialogConfig.ptcCharSpace = value
                     onItemChangeAction()
                 }
             }

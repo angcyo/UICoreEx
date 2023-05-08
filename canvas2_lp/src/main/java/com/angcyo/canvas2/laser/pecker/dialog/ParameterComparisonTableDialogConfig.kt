@@ -90,11 +90,17 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**数字文本大小*/
         @MM
-        internal var textFontSize: Float by HawkPropertyValue<Any, Float>(8f)
+        internal var pctTextFontSize: Float by HawkPropertyValue<Any, Float>(8f)
+
+        /**标签文本字体缩放比例,相对于[pctTextFontSize]*/
+        internal var pctLabelTextFontScale: Float by HawkPropertyValue<Any, Float>(1.5f)
+
+        /**标题文本字体缩放比例,相对于[pctTextFontSize]*/
+        internal var pctTitleTextFontScale: Float by HawkPropertyValue<Any, Float>(1.2f)
 
         /**字间距*/
         @MM
-        internal var charSpace: Float by HawkPropertyValue<Any, Float>(0.5f)
+        internal var ptcCharSpace: Float by HawkPropertyValue<Any, Float>(0.5f)
 
         /**强行指定格子的数据类型, 图层id*/
         internal var gridLayerId: String by HawkPropertyValue<Any, String>(LayerHelper.LAYER_FILL)
@@ -370,11 +376,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //字体大小, 边距
             LabelSizeItem()() {
-                itemTextFontSize = textFontSize
+                itemTextFontSize = pctTextFontSize
                 itemGridItemMargin = gridItemMargin
 
                 onItemChangeAction = {
-                    textFontSize = itemTextFontSize
+                    pctTextFontSize = itemTextFontSize
                     gridItemMargin = itemGridItemMargin
                 }
             }
@@ -436,7 +442,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
     /**标签 Power/Depth 文本字体大小*/
     @MM
     val labelTextFontSize: Float
-        get() = textFontSize * 1.5f
+        get() = pctTextFontSize * pctLabelTextFontScale
+
+    @MM
+    val titleTextFontSize: Float
+        get() = pctTextFontSize * pctTitleTextFontScale
 
     fun parseParameterComparisonTable(): List<BaseRenderer> {
         @Pixel val bounds = tableBounds
@@ -446,8 +456,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         val numberTextItem = LPTextElement(LPElementBean().apply {
             text = "100"
-            fontSize = textFontSize
-            charSpacing = charSpace
+            fontSize = pctTextFontSize
+            charSpacing = ptcCharSpace
             name = text
 
             //参数, 使用最后一次的默认
@@ -479,7 +489,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //左上角标签文本
         val labelTextItem = LPTextElement(LPElementBean().apply {
             mtype = LPDataConstant.DATA_TYPE_TEXT
-            fontSize = powerTextItem.elementBean.fontSize * 0.5f
+            fontSize = titleTextFontSize
             val defaultLabel = buildString {
                 vmApp<LaserPeckerModel>().productInfoData.value?.name?.let {
                     append(it)
