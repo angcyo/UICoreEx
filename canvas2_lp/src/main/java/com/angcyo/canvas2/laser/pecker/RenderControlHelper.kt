@@ -46,6 +46,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.eachItem
 import com.angcyo.dsladapter.updateAllItemBy
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.ex._color
@@ -401,6 +402,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
+                itemNewHawkKeyStr = "rasterize"
                 itemClick = {
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                 }
@@ -412,6 +414,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_curve_ico
                 itemText = _string(R.string.canvas_curve)
+                itemNewHawkKeyStr = "curve"
             }
         }
         if (!closeTextEditItemsFun.have("_orientation_")) {
@@ -435,6 +438,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             CanvasIconItem()() {
                 initItem(renderer)
                 itemText = "紧凑"
+                itemNewHawkKeyStr = "compact"
                 itemIco = R.drawable.canvas_text_style
                 itemIsSelected =
                     renderer.element<TextElement>()?.textProperty?.isCompactText == true
@@ -536,6 +540,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
+                itemNewHawkKeyStr = "rasterize"
                 if (afterItemCount <= 0) {
                     drawCanvasRight()
                 }
@@ -560,6 +565,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
+                itemNewHawkKeyStr = "rasterize"
                 drawCanvasRight()
                 itemClick = {
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
