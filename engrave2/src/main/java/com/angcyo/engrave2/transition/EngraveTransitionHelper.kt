@@ -686,10 +686,10 @@ object EngraveTransitionHelper {
                         //开始过雕刻, 蓝色
                         DeviceHelper.PREVIEW_COLOR
                     } else if (isTransferList[index]) {
-                        //传输完成, 白色
+                        //传输完成, 黑色
                         Color.BLACK
                     } else {
-                        //只是创建了数据
+                        //只是创建了数据, 白色
                         Color.WHITE
                     }
                     drawRect(rect, paint)
