@@ -166,6 +166,8 @@ class FscDeviceModel : LifecycleViewModel() {
                             UMEvent.KEY_DURATION,
                             (nowTime - deviceConnectState.connectTime).toString()
                         )
+                        put(UMEvent.KEY_DEVICE_NAME, deviceConnectState.device.name)
+                        put(UMEvent.KEY_DEVICE_ADDRESS_NAME, deviceConnectState.device.address)
                     }
                 }
             }
@@ -227,6 +229,11 @@ class FscDeviceModel : LifecycleViewModel() {
                 laserPeckerModel.productInfoData.value?.let {
                     LaserPeckerHelper.updateProductInfo(it, deviceStateModel.deviceStateData.value)
                     MaterialHelper.initMaterial()
+
+                    //固件版本
+                    UMEvent.CONNECT_DEVICE.umengEventValue {
+                        put(UMEvent.KEY_DEVICE_VERSION, "${it.version}")
+                    }
                 }
             }
         }

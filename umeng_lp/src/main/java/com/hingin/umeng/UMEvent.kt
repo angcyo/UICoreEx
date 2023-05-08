@@ -23,6 +23,18 @@ object UMEvent {
     //事件持续的时长 毫秒差值
     const val KEY_DURATION = "key_duration"
 
+    //手机型号包含api版本
+    const val KEY_PHONE_NAME = "key_phone_name"
+
+    //硬件设备型号
+    const val KEY_DEVICE_NAME = "key_device_name"
+
+    //硬件设备蓝牙mac地址
+    const val KEY_DEVICE_ADDRESS_NAME = "key_device_address_name"
+
+    //硬件固件版本
+    const val KEY_DEVICE_VERSION = "key_device_version"
+
     /**创作事件*/
     const val CREATE = "create"
 

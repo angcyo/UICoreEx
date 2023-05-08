@@ -6,20 +6,37 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.normalDialog
-import com.angcyo.dsladapter.*
+import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter.DslAdapterStatusItem
+import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.filter.SortAfterFilterInterceptor
-import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
+import com.angcyo.dsladapter.findItem
+import com.angcyo.dsladapter.itemIndexPosition
+import com.angcyo.dsladapter.renderAdapterEmptyStatus
+import com.angcyo.dsladapter.updateAdapterState
+import com.angcyo.dsladapter.updateItem
 import com.angcyo.item.component.SearchAdapterFilter
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
+import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
 import com.angcyo.library.annotation.CallPoint
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.Action
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.cancelAnimator
+import com.angcyo.library.ex.find
+import com.angcyo.library.ex.infinite
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.rotateAnimation
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.toApplicationDetailsSettings
+import com.angcyo.library.utils.Device
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetChild
@@ -207,6 +224,7 @@ class BluetoothSearchHelper {
                 UMEvent.SEARCH_DEVICE.umengEventValue {
                     last_search_time = nowTime()
                     put(UMEvent.KEY_START_TIME, last_search_time.toString())
+                    put(UMEvent.KEY_PHONE_NAME, "${Device.api} ${Device.deviceName}")
                 }
             }
         }
