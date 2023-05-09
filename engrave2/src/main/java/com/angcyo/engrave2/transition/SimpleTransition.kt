@@ -76,7 +76,8 @@ class SimpleTransition : ITransition {
         )
         val gCodeText = file.readText()
         file.deleteSafe()
-        return gCodeTranslation(gCodeText, bounds)
+        //添加关闭激光的指令
+        return gCodeTranslation("$gCodeText\nM2", bounds)
     }
 
     override fun covertBitmapPixel2GCode(
