@@ -17,6 +17,38 @@ import com.angcyo.widget.base.setInputText
  */
 class RowsColumnsRangeItem : DslAdapterItem() {
 
+    companion object {
+        /**行列是否在指定的范围内*/
+        fun isRowColumnInRange(row: Int, column: Int): Boolean {
+            ParameterComparisonTableDialogConfig.rowsColumnsRange.split(" ").forEach { rls -> //行:列
+                val rlList = if (rls.contains(":")) rls.split(":") else rls.split(".") //行 列
+                val r = rlList.getOrNull(0)?.toIntOrNull()
+                val c = rlList.getOrNull(1)?.toIntOrNull()
+                if (r == null && c == null) {
+                    //无效数据
+                } else if (r == null) {
+                    //列所有
+                    if (c == column) {
+                        return true
+                    }
+                } else if (c == null) {
+                    //行所有
+                    if (r == row) {
+                        return true
+                    }
+                } else {
+                    //行列都指定
+                    val cList =
+                        rlList.subList(1, rlList.size).map { it.toIntOrNull() ?: -1 } //所有指定的列
+                    if (r == row && cList.contains(column)) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+    }
+
     init {
         itemLayoutId = R.layout.item_rows_columns__layout
     }
@@ -37,5 +69,4 @@ class RowsColumnsRangeItem : DslAdapterItem() {
             }
         }
     }
-
 }

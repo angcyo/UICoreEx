@@ -19,6 +19,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LabelSizeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LayerSegmentItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PTCLabelItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.PrintCountItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.RowsColumnsRangeItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.TablePreviewItem
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
@@ -109,6 +110,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
          * [行:列 行:列 行:列] */
         internal var rowsColumnsRange: String by HawkPropertyValue<Any, String>("")
 
+        /**雕刻次数配置
+         * [行.列.次数 行.列.次数] */
+        internal var pctPrintCount: String by HawkPropertyValue<Any, String>("")
+
         /**直接指定要生成的功率和深度
          * [功率 功率 功率 功率.深度 深度 深度] */
         internal var appointPowerDepth: String by HawkPropertyValue<Any, String>("")
@@ -126,36 +131,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**按键大小*/
         internal var keyboardNumSize = 45 * dpi
-
-        /**行列是否在指定的范围内*/
-        fun isRowColumnInRange(row: Int, column: Int): Boolean {
-            rowsColumnsRange.split(" ").forEach { rls -> //行:列
-                val rlList = if (rls.contains(":")) rls.split(":") else rls.split(".") //行 列
-                val r = rlList.getOrNull(0)?.toIntOrNull()
-                val c = rlList.getOrNull(1)?.toIntOrNull()
-                if (r == null && c == null) {
-                    //无效数据
-                } else if (r == null) {
-                    //列所有
-                    if (c == column) {
-                        return true
-                    }
-                } else if (c == null) {
-                    //行所有
-                    if (r == row) {
-                        return true
-                    }
-                } else {
-                    //行列都指定
-                    val cList =
-                        rlList.subList(1, rlList.size).map { it.toIntOrNull() ?: -1 } //所有指定的列
-                    if (r == row && cList.contains(column)) {
-                        return true
-                    }
-                }
-            }
-            return false
-        }
 
         /**添加乘法口诀表*/
         fun addMultiplicationTable(delegate: CanvasRenderDelegate?) {
@@ -370,6 +345,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //额外的行列范围
             RowsColumnsRangeItem()()
+
+            //雕刻次数
+            PrintCountItem()()
 
             //备注标签
             PTCLabelItem()()
@@ -649,7 +627,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
                 //格子数据
                 if (powerValue * depthValue <= powerDepthThreshold ||
-                    isRowColumnInRange(depthIndex + 1, powerIndex + 1)
+                    RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
                     gridItemList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
@@ -666,7 +644,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                             if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LayerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
                             else gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
-                        printCount = numberTextItem.elementBean.printCount
+                        printCount = PrintCountItem.getPrintCount(depthIndex, powerIndex)
                         printPower = powerValue
                         printDepth = depthValue
                     })
