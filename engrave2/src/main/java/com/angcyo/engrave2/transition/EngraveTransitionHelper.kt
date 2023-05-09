@@ -689,7 +689,7 @@ object EngraveTransitionHelper {
                         //传输完成, 黑色
                         Color.BLACK
                     } else {
-                        //只是创建了数据, 白色
+                        //只是创建了数据, 白色/灰色
                         Color.GRAY
                     }
                     drawRect(rect, paint)
