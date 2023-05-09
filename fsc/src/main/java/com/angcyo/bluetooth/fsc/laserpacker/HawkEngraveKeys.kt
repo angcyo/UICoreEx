@@ -213,7 +213,7 @@ object HawkEngraveKeys {
     var saveFilterBitmap: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**传输数据索引生成时需要休眠的时长, 防止撞索引*/
-    var transferIndexSleep: Long by HawkPropertyValue<Any, Long>(6)
+    var transferIndexSleep: Long by HawkPropertyValue<Any, Long>(60)
 
     //---功能固件范围配置---
 

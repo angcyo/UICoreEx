@@ -22,7 +22,9 @@ class ControlOperateItem : CanvasIconItem() {
             val list = itemRenderDelegate?.selectorManager?.getSelectorRendererList(true, false)
             val renderer = list?.firstOrNull()
             val element = renderer?.lpElement()
-            it.context.arithmeticHandleDialogConfig(element)
+            it.context.arithmeticHandleDialogConfig(element) {
+                canvasRenderDelegate = itemRenderDelegate
+            }
         }
     }
 }

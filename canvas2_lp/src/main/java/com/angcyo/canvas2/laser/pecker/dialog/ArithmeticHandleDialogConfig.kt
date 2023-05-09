@@ -6,9 +6,11 @@ import android.text.SpannableStringBuilder
 import android.view.View
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
+import com.angcyo.canvas2.laser.pecker.engrave.LPTransferHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
@@ -21,11 +23,13 @@ import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex.MB
 import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
@@ -37,6 +41,9 @@ import com.angcyo.widget.flow
  * @since 2023/04/15
  */
 class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(context) {
+
+    /**渲染代理*/
+    var canvasRenderDelegate: CanvasRenderDelegate? = null
 
     /**需要处理的元素*/
     var renderElement: ILaserPeckerElement? = null
@@ -76,6 +83,17 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
         if (fscBleApiModel.haveDeviceConnected()) {
             initTransferLayout(dialog, dialogViewHolder)
+        }
+
+        dialogViewHolder.click(R.id.create_data_button) {
+            canvasRenderDelegate?.let {
+                val taskId = "test-${uuid()}"
+                LPTransferHelper.startCreateTransferData(transferModel, taskId, it)
+            }
+        }
+
+        dialogViewHolder.click(R.id.share_log_button) {
+            DeviceHelper.shareEngraveLog()
         }
     }
 
