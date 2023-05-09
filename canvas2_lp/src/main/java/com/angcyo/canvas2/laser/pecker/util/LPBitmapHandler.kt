@@ -54,7 +54,9 @@ object LPBitmapHandler {
             bitmap,
             blackThreshold.toInt(),
             inverse,
-            alphaThreshold = LibHawkKeys.alphaThreshold
+            alphaBgColor = if (HawkEngraveKeys.enableRemoveBWAlpha) if (inverse) Color.BLACK else Color.WHITE else Color.TRANSPARENT,
+            alphaThreshold = LibHawkKeys.alphaThreshold,
+            whiteReplaceColor = if (HawkEngraveKeys.enableBitmapHandleBgAlpha) Color.TRANSPARENT else Color.WHITE
         )
     }
 
@@ -101,6 +103,7 @@ object LPBitmapHandler {
             sealThreshold.toInt(),
             Color.BLACK,
             LibHawkKeys.alphaThreshold,
+            if (HawkEngraveKeys.enableBitmapHandleBgAlpha) 0x00 else 0xff
         )
     }
 

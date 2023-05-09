@@ -225,4 +225,10 @@ object HawkEngraveKeys {
 
     /**是否激活雕刻参数配置信息使用icon*/
     var enableConfigIcon: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    /**是否激活黑白算法处理时, 移除透明颜色*/
+    var enableRemoveBWAlpha: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**图片算法处理时, 是否使用透明背景, 否则默认是白色*/
+    var enableBitmapHandleBgAlpha: Boolean by HawkPropertyValue<Any, Boolean>(true)
 }
