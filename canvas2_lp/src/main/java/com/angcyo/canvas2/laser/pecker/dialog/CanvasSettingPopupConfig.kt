@@ -23,7 +23,7 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
-import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
@@ -88,7 +88,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     }
                 }
             }
-            if (isDebug()) {
+            if (isDebugType()) {
                 DslSwitchInfoItem()() {
                     itemInfoText = _string(R.string.canvas_cloud_storage)
                     itemSwitchChecked = HawkEngraveKeys.enableCloudStorage
