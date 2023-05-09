@@ -30,6 +30,7 @@ import com.angcyo.library.L
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.BuildHelper
+import com.angcyo.library.utils.fileType
 import com.angcyo.library.utils.writeTo
 import java.io.File
 import java.util.zip.ZipFile
@@ -495,17 +496,18 @@ fun deleteProjectFileV2() {
 /**处理文件路径对应的数据, 解析成[LPElementBean]*/
 fun String?.toElementBeanOfFile(): CanvasOpenDataType? {
     val path = this?.lowercase() ?: return null
+    val file = path.file()
     if (path.endsWith(LPDataConstant.GCODE_EXT)) {
-        val text = path.file().readText()
+        val text = file.readText()
         return text.toGCodeElementBean()
     } else if (path.endsWith(LPDataConstant.SVG_EXT)) {
-        val text = path.file().readText()
+        val text = file.readText()
         return text.toSvgElementBean()
-    } else if (path.isImageType()) {
+    } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
         return bitmap.toBlackWhiteBitmapItemData()
     } else if (path.endsWith(LPDataConstant.PROJECT_EXT) || path.endsWith(LPDataConstant.PROJECT_EXT2)) {
-        return LPProjectManager().openProjectFile(null, path.file())
+        return LPProjectManager().openProjectFile(null, file)
     } else {
         L.w("无法处理的文件路径:${path}")
     }
