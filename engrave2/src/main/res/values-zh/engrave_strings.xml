@@ -91,6 +91,7 @@
     <string name="engrave_perimeter">周长</string>
     <string name="engrave_bounds_warn">元素超出雕刻区域</string>
     <string name="engrave_overflow_bounds_message">超出雕刻区域，请将元素拖入调整到红色边框内</string>
+    <string name="engrave_overflow_bounds_message_strict">超出雕刻区域，请将元素拖入调整到蓝色边框内</string>
 
     <string name="device_engrave_ing_title">当前设备正在工作中</string>
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>

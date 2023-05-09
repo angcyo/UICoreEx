@@ -17,6 +17,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
@@ -156,7 +157,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         itemHolder.click(R.id.layer_item_warn_view) {
             it.context.messageDialog {
                 dialogTitle = _string(R.string.engrave_bounds_warn)
-                dialogMessage = _string(R.string.engrave_overflow_bounds_message)
+                dialogMessage = overflowBoundsMessage
             }
         }
 

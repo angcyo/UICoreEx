@@ -91,7 +91,7 @@
     <string name="engrave_perimeter">둘레</string>
     <string name="engrave_bounds_warn">요소가 각인 영역을 벗어남</string>
     <string name="engrave_overflow_bounds_message">각인 영역을 벗어남. 요소를 빨간색 테두리 안으로 끌어다 놓으십시오</string>
-
+    <string name="engrave_overflow_bounds_message_strict">조각 구역을 넘어 요소를 파란색 프레임으로 끌어 가십시오.</string>
     <string name="device_engrave_ing_title">현재 장치 작업 중</string>
     <string name="device_engrave_ing_des">현재 조각 작업을 끝낼지 여부입니다?</string>
 

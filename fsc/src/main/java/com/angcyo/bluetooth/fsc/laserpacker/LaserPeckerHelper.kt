@@ -884,7 +884,9 @@ object LaserPeckerHelper {
 }
 
 /**当前矩形, 是否超出了设备物理雕刻范围*/
-fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).isOverflowBounds
+fun RectF?.isOverflowProductBounds() = EngravePreviewCmd.adjustRectRange(this).run {
+    isOverflowBounds || (HawkEngraveKeys.enableDataBoundsStrict && isOverflowLimit)
+}
 
 /**将日志写入到[ble.log]
  * [log] 是否还需要输出到控制台

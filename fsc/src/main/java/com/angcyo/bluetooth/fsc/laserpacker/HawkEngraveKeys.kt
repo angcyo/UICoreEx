@@ -231,4 +231,7 @@ object HawkEngraveKeys {
 
     /**图片算法处理时, 是否使用透明背景, 否则默认是白色*/
     var enableBitmapHandleBgAlpha: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    /**激活数据bounds严格模式, 则超出最佳范围就不允许预览和雕刻*/
+    var enableDataBoundsStrict: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }

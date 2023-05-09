@@ -31,6 +31,7 @@ import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
+import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
@@ -643,7 +644,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             val fContext = engraveCanvasFragment?.fragment?.fContext()
             fContext?.messageDialog {
                 dialogTitle = _string(R.string.engrave_warn)
-                dialogMessage = _string(R.string.engrave_overflow_bounds_message)
+                dialogMessage = overflowBoundsMessage
             }
         }
 

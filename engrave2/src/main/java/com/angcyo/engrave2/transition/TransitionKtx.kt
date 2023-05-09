@@ -4,6 +4,8 @@ import android.graphics.*
 import android.view.Gravity
 import android.widget.LinearLayout
 import com.angcyo.bitmap.handle.BitmapHandle
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.engrave2.R
 import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
@@ -643,3 +645,11 @@ private fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
     parseGCode(gCodeText, createPaint(Color.BLACK))
 
 //endregion ---GCode数据生成---
+
+/**超范围提示信息*/
+val overflowBoundsMessage: CharSequence
+    get() = if (HawkEngraveKeys.enableDataBoundsStrict) {
+        _string(R.string.engrave_overflow_bounds_message_strict)
+    } else {
+        _string(R.string.engrave_overflow_bounds_message)
+    }

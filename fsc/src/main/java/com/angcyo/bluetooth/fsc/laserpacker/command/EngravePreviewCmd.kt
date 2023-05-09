@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.Px
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -310,7 +311,7 @@ data class EngravePreviewCmd(
         ): EngravePreviewCmd? {
             val overflowInfo = adjustRectRange(x, y, width, height, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
-            if (overflowInfo.isOverflowBounds) {
+            if (overflowInfo.isOverflowBounds || (HawkEngraveKeys.enableDataBoundsStrict && overflowInfo.isOverflowLimit)) {
                 //超出物理范围, 不发送指令
                 return null
             }

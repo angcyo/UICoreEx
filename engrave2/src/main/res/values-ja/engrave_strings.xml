@@ -90,6 +90,7 @@
     <string name="engrave_perimeter">円周</string>
     <string name="engrave_bounds_warn">元素が彫刻エリアから外れた</string>
     <string name="engrave_overflow_bounds_message">彫刻エリア域外では、要素を赤枠にドラッグしてください</string>
+    <string name="engrave_overflow_bounds_message_strict">彫刻エリアを越えて、要素を青いフレームにドラッグしてください</string>
 
     <string name="device_engrave_ing_title">このデバイスが動作中です</string>
     <string name="device_engrave_ing_des">彫刻タスクを終了しますか?</string>
