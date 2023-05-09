@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.view.View
+import androidx.core.widget.NestedScrollView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -33,6 +34,7 @@ import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
+import com.angcyo.widget.base.scrollToEnd
 import com.angcyo.widget.flow
 
 /**
@@ -74,6 +76,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
                 }
                 messageBuilder.append(it)
                 dialogViewHolder.tv(R.id.dialog_message_view)?.text = messageBuilder
+                dialogViewHolder.v<NestedScrollView>(R.id.wrap_layout)?.scrollToEnd()
             }
         }
 
@@ -209,6 +212,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         message?.let {
             doMain {
                 _dialogViewHolder?.tv(R.id.send_message_view)?.text = it
+                _dialogViewHolder?.v<NestedScrollView>(R.id.wrap_layout2)?.scrollToEnd()
             }
         }
     }
