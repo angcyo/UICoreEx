@@ -61,9 +61,25 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
         }
     }
 
+    private var _lastVisible = false
+
     /**是否显示右边删除按钮*/
     fun showRightDeleteIcoView(visible: Boolean = true) {
+        _lastVisible = visible
         rightIcoView?.visible(visible)
+    }
+
+    override fun onTabLayoutIndexChange(
+        fromIndex: Int,
+        toIndex: Int,
+        reselect: Boolean,
+        fromUser: Boolean
+    ) {
+        if (toIndex == 0) {
+            rightIcoView?.visible(false)
+        } else {
+            rightIcoView?.visible(_lastVisible)
+        }
     }
 
     /**删除设备所有记录*/
