@@ -196,7 +196,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         paint.style = elementBean.paintStyle.toPaintStyle()
         paint.strokeWidth = 1f
         params.updateDrawPathPaintStrokeWidth(paint)
-        renderPath(canvas, paint, elementBean.isLineShape, getDrawPathList())
+        renderPath(canvas, paint, elementBean.isLineShape, getDrawPathList(), params._renderMatrix)
     }
 
     override fun updateBeanToElement(renderer: BaseRenderer?) {

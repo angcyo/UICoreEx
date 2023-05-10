@@ -63,7 +63,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
             paint.strokeWidth = 1f
             paint.style = Paint.Style.STROKE
             params.updateDrawPathPaintStrokeWidth(paint)
-            renderPath(canvas, paint, false, getDrawPathList())
+            renderPath(canvas, paint, false, getDrawPathList(), params._renderMatrix)
             return
         }
         val bitmap = renderBitmap ?: originBitmap

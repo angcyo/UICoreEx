@@ -41,7 +41,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
                 parseElementBean()
             }
             codeBitmap?.also {
-                renderBitmap(canvas, paint, it)
+                renderBitmap(canvas, paint, it, params._renderMatrix)
             }
         }
     }
