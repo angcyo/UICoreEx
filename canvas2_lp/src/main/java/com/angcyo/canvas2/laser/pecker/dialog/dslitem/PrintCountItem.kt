@@ -28,7 +28,16 @@ class PrintCountItem : DslAdapterItem() {
                     val r = list.getOrNull(0)?.toIntOrNull()
                     val c = list.getOrNull(1)?.toIntOrNull()
                     val p = list.getOrNull(2)?.toIntOrNull()
+
+                    if (r == null && (c == null || c == powerIndex)) {
+                        //所有行
+                        result = p ?: result
+                    } else if (c == null && (r == null || r == depthIndex)) {
+                        //所有列
+                        result = p ?: result
+                    }
                     if (r == depthIndex && c == powerIndex) {
+                        //全匹配
                         result = p ?: result
                         return result
                     }
