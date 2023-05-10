@@ -138,7 +138,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {
                     onCalibrationAction = {
-                        deviceStateModel.pauseLoopCheckState(it == 1)
+                        deviceStateModel.pauseLoopCheckState(it == 1, "握笔校准")
                         syncQueryDeviceState { bean, error ->
                             if (error == null) {
                                 //刷新界面
@@ -179,7 +179,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         //不允许雕刻
                     } else {
                         //让设备进入空闲模式
-                        deviceStateModel.pauseLoopCheckState(true)
+                        deviceStateModel.pauseLoopCheckState(true, "预览界面下一步")
                         asyncTimeoutExitCmd { bean, error ->
                             if (error == null) {
                                 syncQueryDeviceState()
@@ -196,7 +196,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         }
 
         //轮询查询状态
-        deviceStateModel.startLoopCheckState()
+        deviceStateModel.startLoopCheckState(reason = "预览界面")
     }
 
     /**开始路径预览流程*/
@@ -208,11 +208,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             toastQQ(_string(R.string.engrave_bounds_warn))
             return
         }
-        deviceStateModel.pauseLoopCheckState(true)
+        deviceStateModel.pauseLoopCheckState(true, "开始路径预览")
         viewHolder?.context?.pathPreviewDialog(renderUuid) {
             renderDelegate = delegate
             onDismissListener = {
-                deviceStateModel.pauseLoopCheckState(false)
+                deviceStateModel.pauseLoopCheckState(false, "结束路径预览")
             }
         }
     }

@@ -668,6 +668,7 @@ object EngraveFlowDataHelper {
 
     /**获取一个雕刻任务*/
     fun getEngraveTask(taskId: String?): EngraveTaskEntity? {
+        taskId ?: return null
         return EngraveTaskEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(EngraveTaskEntity_.taskId.equal("$taskId"))
         }

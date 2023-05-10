@@ -14,6 +14,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
@@ -99,32 +100,41 @@ class DeviceStateModel : ViewModel() {
     }
 
     /**开始循环查询设备状态*/
-    fun startLoopCheckState(start: Boolean = true, removePause: Boolean = true) {
+    fun startLoopCheckState(start: Boolean = true, removePause: Boolean = true, reason: String?) {
         waitForExit = false
         queryMode = if (!start) {
             0x0
         } else {
             if (removePause) {
-                pauseLoopCheckState(false)
+                pauseLoopCheckState(false, reason)
             }
             queryMode.add(QUERY_MODE_LOOP)
         }
         if (start) {
+            "开始轮询查询设备状态:$reason".writeToLog()
             loopCheckDeviceState()
         } else {
+            "结束轮询查询设备状态:$reason".writeToLog()
             removeLoopCheck()
         }
     }
 
     /**暂停轮询状态查询*/
-    fun pauseLoopCheckState(pause: Boolean = true) {
+    fun pauseLoopCheckState(pause: Boolean = true, reason: String?) {
         if (pause) {
+            "暂停轮询查询设备状态:$reason".writeToLog()
             queryMode = queryMode.add(QUERY_MODE_PAUSE)
             removeLoopCheck()
         } else {
+            "继续轮询查询设备状态:$reason".writeToLog()
             queryMode = queryMode.remove(QUERY_MODE_PAUSE)
             loopCheckDeviceState()
         }
+    }
+
+    /**暂停轮询, 如果在可以的情况下*/
+    fun pauseLoopCheckStateIfNeed(pause: Boolean = true, reason: String?) {
+
     }
 
     /**持续检查工作作态*/
@@ -184,19 +194,19 @@ class DeviceStateModel : ViewModel() {
         //空闲状态, 自动停止循环查询
         if (queryStateParser.mode == QueryStateParser.WORK_MODE_IDLE) {
             if (waitForExit) {
-                startLoopCheckState(false)
+                startLoopCheckState(false, reason = "waitForExit")
             } else {
-                pauseLoopCheckState(true)
+                pauseLoopCheckState(true, reason = "空闲状态")
             }
         } else if (queryStateParser.mode == QueryStateParser.WORK_MODE_FILE_DOWNLOAD ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_SHUTDOWN ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_DOWNLOAD ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_SETUP
         ) {
-            pauseLoopCheckState(true)
+            pauseLoopCheckState(true, reason = "不支持轮询的模式")
         } else if (isPause) {
             //其他模式下, 如果处理暂停状态, 则继续轮询
-            pauseLoopCheckState(false)
+            pauseLoopCheckState(false, "恢复轮询状态")
         } else if (queryStateParser.mode == QueryStateParser.WORK_MODE_ENGRAVE ||
             queryStateParser.mode == QueryStateParser.WORK_MODE_ENGRAVE_PREVIEW
         ) {
@@ -229,7 +239,7 @@ class DeviceStateModel : ViewModel() {
         }
         if (queryStateParser.error == 1) {
             //非安全状态下, 开始轮询状态, 知道进入安全状态
-            startLoopCheckState(true)
+            startLoopCheckState(true, reason = "非安全状态")
         }
         deviceStateData.updateValue(queryStateParser)
         updateDeviceModel(queryStateParser.mode)
@@ -355,7 +365,7 @@ class DeviceStateModel : ViewModel() {
      * 目前在预览中, 杀掉APP机器需要退出
      * */
     fun exitIfNeed() {
-        startLoopCheckState(false)
+        startLoopCheckState(false, reason = "exitIfNeed")
         if (isEngravePreview()) {
             ExitCmd().enqueue(CommandQueueHelper.FLAG_ASYNC)
         }

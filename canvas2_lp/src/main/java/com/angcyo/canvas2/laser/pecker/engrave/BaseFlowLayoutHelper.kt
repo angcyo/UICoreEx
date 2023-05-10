@@ -269,7 +269,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
         }
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
-            deviceStateModel.pauseLoopCheckState(true)
+            deviceStateModel.pauseLoopCheckState(true, "进入传输配置界面")
         }
         onEngraveFlowChangedAction(from, to)
     }
@@ -495,7 +495,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 )
 
                 onDismissListener = {
-                    deviceStateModel.startLoopCheckState()
+                    deviceStateModel.startLoopCheckState(reason = "外设未连接")
                 }
             }
         }
@@ -525,7 +525,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
                 }
 
                 onDismissListener = {
-                    deviceStateModel.startLoopCheckState()
+                    deviceStateModel.startLoopCheckState(reason = "外设未连接")
                 }
             }
         } else {
@@ -603,7 +603,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         if (stateParser.isModeEngrave()) {
             if (stateParser.isEngraveStop()) {
                 toastQQ(_string(R.string.engrave_stopping_tip))
-                deviceStateModel.startLoopCheckState()
+                deviceStateModel.startLoopCheckState(reason = "恢复雕刻中")
                 return true
             }
 

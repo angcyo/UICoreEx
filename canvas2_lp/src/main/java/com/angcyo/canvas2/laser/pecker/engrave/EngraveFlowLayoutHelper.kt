@@ -168,7 +168,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     /**渲染传输数据配置界面*/
     fun renderTransferConfig() {
-        deviceStateModel.pauseLoopCheckState(true)
+        deviceStateModel.pauseLoopCheckState(true, "传输配置界面")
 
         updateIViewTitle(_string(R.string.file_setting))
         engraveBackFlow = ENGRAVE_FLOW_PREVIEW
@@ -232,9 +232,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                 if (delegate == null) {
                                     //不是画布上的数据, 可能是恢复的数据
                                 } else {
+                                    engraveModel.clearEngrave()
                                     HawkEngraveKeys.lastDpi = transferConfigEntity.dpi
-                                    val flowId =
-                                        generateFlowId("准备发送文件")//每次发送数据之前, 都生成一个新的任务
+                                    //每次发送数据之前, 都生成一个新的任务
+                                    val flowId = generateFlowId("准备发送文件")
                                     transferConfigEntity.taskId = flowId
                                     transferConfigEntity.lpSaveEntity()
                                     onStartEngraveTransferData(flowId)
@@ -272,7 +273,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     /**开始雕刻下一个,
      * 2023-4-20 雕刻下一个文件时, 需要进入空闲状态*/
     fun startEngraveNext() {
-        deviceStateModel.pauseLoopCheckState(true)
+        deviceStateModel.pauseLoopCheckState(true, "雕刻下一个文件")
         ExitCmd().enqueue { bean, error ->
             if (error != null) {
                 toastQQ(error.message)

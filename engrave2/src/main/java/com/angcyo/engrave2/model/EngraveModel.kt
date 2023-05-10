@@ -246,8 +246,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**雕刻完成后, 触发下一个雕刻*/
     fun _checkEngraveNextOnIdle(index: Int, printTimes: Int?, progress: Int, reason: Int) {
-        deviceStateModel.pauseLoopCheckState(true)
-
+        deviceStateModel.pauseLoopCheckState(true, "雕刻完成,暂停检查状态")
         val nowTime = nowTime()
         UMEvent.ENGRAVE.umengEventValue {
             val duration = nowTime - (_engraveTaskEntity?.startTime ?: 0)
@@ -327,7 +326,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task?.apply {
             _engraveTaskId = task.taskId
             //loop
-            deviceStateModel.startLoopCheckState()
+            deviceStateModel.startLoopCheckState(reason = "恢复雕刻任务")
         }
     }
 
@@ -481,7 +480,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
-                deviceStateModel.startLoopCheckState()
+                deviceStateModel.startLoopCheckState(reason = "批量雕刻指令")
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${indexList}] $error".writeErrorLog()
@@ -530,24 +529,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     @CallPoint
     fun finishEngrave(reason: String?) {
         val taskId = _engraveTaskId
-        deviceStateModel.pauseLoopCheckState(false)
-
-        isSendEngraveCmd = false
+        deviceStateModel.pauseLoopCheckState(false, "雕刻完成")
         "完成雕刻[$taskId]:${reason ?: ""}".writeEngraveLog()
 
-        _lastEngraveTimes = 1
-        _lastEngraveIndex = -1
-
-        EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
-
-        //
-        val engraveTaskEntity = _engraveTaskEntity ?: return
-        //clear
-        _engraveTaskId = null
-        engraveTaskEntity.currentIndex = -1
-        engraveTaskEntity.finishTime = nowTime()
-        engraveTaskEntity.state = ENGRAVE_STATE_FINISH
-        engraveTaskEntity.lpSaveEntity()
+        val engraveTaskEntity = clearEngrave() ?: return
 
         //雕刻次数+1
         HawkEngraveKeys.lastEngraveCount++
@@ -561,6 +546,27 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         //鸟瞰图
         EngraveTransitionHelper.saveTaskAerialView(engraveTaskEntity.taskId)
+    }
+
+    /**清理雕刻的缓存*/
+    fun clearEngrave(): EngraveTaskEntity? {
+        isSendEngraveCmd = false
+
+        _lastEngraveTimes = 1
+        _lastEngraveIndex = -1
+
+        EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
+
+        //
+        val engraveTaskEntity = _engraveTaskEntity ?: return null
+        //clear
+        _engraveTaskId = null
+        engraveTaskEntity.currentIndex = -1
+        engraveTaskEntity.finishTime = nowTime()
+        engraveTaskEntity.state = ENGRAVE_STATE_FINISH
+        engraveTaskEntity.lpSaveEntity()
+
+        return engraveTaskEntity
     }
 
     /**完成了一个索引的雕刻, 需要传输下一个索引, 并且雕刻下一个*/
@@ -601,7 +607,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun stopEngrave(reason: String?, countDownLatch: CountDownLatch? = null) {
         "停止雕刻[${_engraveTaskId}]:$reason".writeEngraveLog()
         deviceStateModel.waitForExit = true
-        deviceStateModel.pauseLoopCheckState(true)
+        deviceStateModel.pauseLoopCheckState(true, "停止雕刻")
         ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
             countDownLatch?.countDown()
             syncQueryDeviceState()
@@ -719,7 +725,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
                 }
-                deviceStateModel.startLoopCheckState()
+                deviceStateModel.startLoopCheckState(reason = "雕刻指令")
             } else if (error is CommandException) {
                 //指令异常
                 "雕刻失败:[${index}] $error".writeErrorLog()
