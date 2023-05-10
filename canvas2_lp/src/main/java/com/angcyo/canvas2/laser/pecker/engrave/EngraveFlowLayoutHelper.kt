@@ -116,7 +116,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                             EngraveModel.ENGRAVE_STATE_INDEX_FINISH -> {
                                 //当前索引雕刻完成, 传输下一个文件
-                                startTransferNext()
+                                if (HawkEngraveKeys.enableSingleItemTransfer) {
+                                    startTransferNext()
+                                }
                             }
 
                             else -> {
