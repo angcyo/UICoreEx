@@ -103,13 +103,8 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                     }
                 }
             }
-            /*setCurrentItem(
-                when (dataType) {
-                    CanvasConstant.DATA_TYPE_QRCODE -> 1
-                    CanvasConstant.DATA_TYPE_BARCODE -> 2
-                    else -> 0
-                }
-            )*/
+            //default
+            renderAdapterFontList(FontManager.getPrimaryFontList())
         }
 
         //导入字体
@@ -136,22 +131,6 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
 
             }
         }
-
-        /*
-        //同步SD上的字体
-        viewHolder.click(R.id.sync_font_button) {
-            viewHolder.context.requestSdCardPermission {
-                if (it) {
-                    FontManager.customFontFolderList.firstOrNull()?.let { folder ->
-                        FontManager.backupFontTo(folder)
-                        FontManager.loadCustomFont(folder)
-                        renderAdapterFontList(FontManager.getCustomFontList())
-
-                        toast("Success")
-                    }
-                }
-            }
-        }*/
     }
 
     /**检查是否要显示备份字体按钮*/
