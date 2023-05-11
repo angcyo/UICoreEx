@@ -187,9 +187,6 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                                                     ?.scrollToFirst()
                                             }
                                         }
-                                } else {
-                                    //
-                                    tabLayout?.setCurrentItem(2)
                                 }
                             } else {
                                 toast(_string(R.string.canvas_font_exist))
@@ -199,6 +196,10 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                 }
                 if (typefaceInfoList.isEmpty()) {
                     toast(_string(R.string.canvas_invalid_font))
+                } else {
+                    if (tabLayout?.currentItemIndex != 2) {
+                        tabLayout?.setCurrentItem(2)
+                    }
                 }
                 checkShowBackupsView()
             }
