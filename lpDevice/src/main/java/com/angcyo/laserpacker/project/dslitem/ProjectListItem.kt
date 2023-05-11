@@ -2,13 +2,13 @@ package com.angcyo.laserpacker.project.dslitem
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.itemsDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
 import com.angcyo.laserpacker.bean.LPProjectBean
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.project.LPProjectHelper
 import com.angcyo.library.component.lastContext
@@ -22,6 +22,9 @@ import com.angcyo.widget.DslViewHolder
 class ProjectListItem : DslAdapterItem() {
 
     companion object {
+
+        /**获取工程状态同步资源*/
+        var getProjectListSyncStateRes: (item: ProjectListItem) -> Int? = { null }
 
         /**输入工程名的对话框*/
         fun Context.inputProjectNameDialog(
@@ -40,7 +43,6 @@ class ProjectListItem : DslAdapterItem() {
                 }
             }
         }
-
     }
 
     /**[itemProjectFile]对应的数据结构*/
@@ -108,6 +110,12 @@ class ProjectListItem : DslAdapterItem() {
             }
         } else {
             itemHolder.gone(R.id.lib_share_view)
+        }
+
+        //同步状态
+        getProjectListSyncStateRes(this).let {
+            itemHolder.visible(R.id.lib_sync_view, it != null)
+            itemHolder.img(R.id.lib_sync_view)?.setImageResource(it ?: 0)
         }
     }
 }

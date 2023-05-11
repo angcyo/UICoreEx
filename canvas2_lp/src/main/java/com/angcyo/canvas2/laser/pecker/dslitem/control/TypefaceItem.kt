@@ -1,8 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.graphics.Typeface
-import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -11,6 +11,12 @@ import com.angcyo.widget.DslViewHolder
  * @since 2022/04/18
  */
 class TypefaceItem : DslAdapterItem() {
+
+    companion object {
+
+        /**获取字体状态同步资源*/
+        var getTypefaceItemSyncStateRes: (item: TypefaceItem) -> Int? = { null }
+    }
 
     /**显示的名字*/
     var displayName: String? = null
@@ -41,6 +47,11 @@ class TypefaceItem : DslAdapterItem() {
         }
         itemHolder.tv(R.id.name_view)?.apply {
             text = displayName
+        }
+        //同步状态
+        getTypefaceItemSyncStateRes(this).let {
+            itemHolder.visible(R.id.lib_sync_view, it != null)
+            itemHolder.img(R.id.lib_sync_view)?.setImageResource(it ?: 0)
         }
     }
 }
