@@ -22,7 +22,7 @@ import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
-import com.angcyo.http.rx.runRx
+import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.FontManager
@@ -124,15 +124,17 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
 
         //备份字体
         viewHolder.click(R.id.export_view) {
-            runRx({
+            engraveLoadingAsync({
                 val fontList = mutableListOf(FontManager.defaultCustomFontFolder)
                 fontList.addAll(FontManager.customFontFolderList)
                 fontList.zip(libCacheFile(buildString {
                     append("LP-${_string(R.string.canvas_font)}_")
-                    append(nowTimeString("yyyy-MM-dd_HH-mm-ss"))
-                    append(".zip")
+                    append(nowTimeString("yyyy-MM-dd"))
+                    append(FontManager.FONT_LIST_EXT)
                 }).absolutePath)?.shareFile()
-            })
+            }) {
+
+            }
         }
 
         /*
