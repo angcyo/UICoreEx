@@ -205,6 +205,14 @@ object LPDataConstant {
 
 }
 
+/**是否是GCode类型*/
+fun String?.isGCodeType(): Boolean {
+    this ?: return false
+    return endsWith(LPDataConstant.EXT_GCODE, true) ||
+            endsWith(".nc", true) ||
+            endsWith(".gc", true)
+}
+
 /**
  * 支持[com.angcyo.laserpacker.bean.LPElementBean]
  * 支持[com.angcyo.laserpacker.bean.LPProjectBean]

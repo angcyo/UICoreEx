@@ -131,7 +131,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
                 return true
             }
-        } else if (path.endsWith(LPDataConstant.GCODE_EXT, true) ||
+        } else if (path.isGCodeType() ||
             (path.endsWith(LPDataConstant.TXT_EXT, true) && file.readText()
                 ?.isGCodeContent() == true)
         ) {
@@ -142,7 +142,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    itemDrawable = text?.toGCodePath()?.toDrawable()
+                    itemDrawable = text?.toGCodePathDrawable()
 
                     openAction = {
                         val itemData = text.toGCodeElementBean()

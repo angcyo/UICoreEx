@@ -9,6 +9,7 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.isGCodeType
 import com.angcyo.library.L
 import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.ex._string
@@ -60,7 +61,7 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
         L.i("选择文件:$filePath")
         filePath?.let { path ->
             val isSvgExt = path.endsWith(LPDataConstant.SVG_EXT, true)
-            val isGCodeExt = path.endsWith(LPDataConstant.GCODE_EXT, true)
+            val isGCodeExt = path.isGCodeType()
             if (isSvgExt) {
                 //.svg后缀
                 val text = path.file().readText()

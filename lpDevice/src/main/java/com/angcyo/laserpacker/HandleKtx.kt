@@ -30,6 +30,10 @@ fun GCodeHelper.parseGCode(gCodeText: String?): GCodeDrawable? =
  * [Path.toDrawable]*/
 fun String.toGCodePath() = BitmapHandle.parseGCode(this, lastContext)
 
+/**[toGCodePath]*/
+fun String.toGCodePathDrawable(paint: Paint = createPaint(), overrideSize: Float? = null) =
+    toGCodePath().toDrawable(overrideSize, paint)
+
 /**扩展*/
 fun parseSvg(svgText: String?): SharpDrawable? = if (svgText.isNullOrEmpty()) {
     null
