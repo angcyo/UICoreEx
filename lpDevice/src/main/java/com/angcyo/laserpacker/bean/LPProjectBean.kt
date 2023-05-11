@@ -42,6 +42,14 @@ data class LPProjectBean(
 
     //---
 
+    /**工程保存的上一次雕刻参数*/
+    var lastPower: Int = -1,
+    var lastDepth: Int = -1,
+    var lastType: Int = -1,
+    var lastDpi: Float = -1f,
+
+    //---
+
     /**预览图
      * [preview_img]*/
     @Transient var _previewImgBitmap: Bitmap? = null,

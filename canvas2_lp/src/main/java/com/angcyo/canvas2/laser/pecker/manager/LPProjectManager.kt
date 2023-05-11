@@ -134,11 +134,28 @@ class LPProjectManager {
         projectBean: LPProjectBean?,
         clearOld: Boolean = true
     ): Boolean {
+        projectBean ?: return false
+
         if (clearOld && delegate != null) {
             delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
             delegate.undoManager.clear()
         }
-        val result = projectBean?.data?.toElementBeanList()?.let { beanList ->
+
+        //last
+        if (projectBean.lastType > 0) {
+            HawkEngraveKeys.lastType = projectBean.lastType
+        }
+        if (projectBean.lastPower > 0) {
+            HawkEngraveKeys.lastPower = projectBean.lastPower
+        }
+        if (projectBean.lastDepth > 0) {
+            HawkEngraveKeys.lastDepth = projectBean.lastDepth
+        }
+        if (projectBean.lastDpi > 0) {
+            HawkEngraveKeys.lastDpi = projectBean.lastDpi
+        }
+
+        val result = projectBean.data?.toElementBeanList()?.let { beanList ->
             beanList.generateName()
             for (bean in beanList) {
 
@@ -251,6 +268,12 @@ class LPProjectManager {
                 file_name = projectName
                 version = 1
 
+                //last
+                lastType = HawkEngraveKeys.lastType
+                lastPower = HawkEngraveKeys.lastPower
+                lastDepth = HawkEngraveKeys.lastDepth
+                lastDpi = HawkEngraveKeys.lastDpi
+
                 val preview =
                     delegate.preview(overrideSize = overrideSize, rendererList = renderList)
                 preview_img = preview?.toBase64Data()
@@ -305,6 +328,12 @@ class LPProjectManager {
                 update_time = nowTime()
                 file_name = projectName ?: zipFile.name
                 version = 2
+
+                //last
+                lastType = HawkEngraveKeys.lastType
+                lastPower = HawkEngraveKeys.lastPower
+                lastDepth = HawkEngraveKeys.lastDepth
+                lastDpi = HawkEngraveKeys.lastDpi
 
                 val preview =
                     delegate.preview(overrideSize = overrideSize, rendererList = renderList)
