@@ -7,7 +7,11 @@ import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
 import com.angcyo.laserpacker.device.R
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.ClickAction
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.extName
+import com.angcyo.library.ex.lastName
+import com.angcyo.library.ex.noExtName
 import com.angcyo.widget.DslViewHolder
 import java.io.File
 
@@ -25,8 +29,17 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
     /**文件路径*/
     var itemFilePath: String? = null
 
+    /**是否是字体类型*/
+    var itemIsFontType: Boolean = false
+
     /**需要预览字体, 设置字体后, 同时会开启文件名编辑功能*/
     var itemTypeface: Typeface? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                itemIsFontType = true
+            }
+        }
 
     /**需要预览图片*/
     var itemDrawable: Drawable? = null
@@ -57,6 +70,8 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
                 isVisible = true
                 this.typeface = it
             }
+        }
+        if (itemIsFontType) {
             itemHolder.tv(R.id.open_button)?.text = _string(R.string.canvas_import_font)
         }
         //

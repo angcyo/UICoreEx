@@ -25,6 +25,7 @@ import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
 import com.angcyo.library.component._delay
+import com.angcyo.library.component.isFontListType
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppIcon
 import com.angcyo.library.libCacheFile
@@ -192,22 +193,26 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
-        } else if (path.isFontType()) {
+        } else if (path.isFontType() || path.isFontListType()) {
             //字体
             adapter?.render {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    itemTypeface = path.toTypeface()
-
+                    if (path.isFontType()) {
+                        itemTypeface = path.toTypeface()
+                    } else {
+                        itemDrawable = _drawable(R.drawable.core_file_icon_font)
+                    }
+                    itemIsFontType = true
                     //导入字体
                     openAction = {
                         if (itemFilePath != path) {
                             path.file().renameTo(File(itemFilePath!!))
                         }
 
-                        val typefaceInfo = FontManager.importCustomFont(itemFilePath)
-                        if (typefaceInfo == null) {
+                        val typefaceInfoList = FontManager.importCustomFont(itemFilePath)
+                        if (typefaceInfoList.isEmpty()) {
                             //导入失败
                             updateAdapterState(IllegalStateException(_string(R.string.font_import_fail)))
                         } else {

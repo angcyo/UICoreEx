@@ -170,51 +170,49 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
         val tabLayout = viewHolder.tab(R.id.lib_tab_layout)
         context.supportFragmentManager.getFiles { list ->
             if (!list.isNullOrEmpty()) {
-                var lastTypefaceInfo: TypefaceInfo? = null
+                val typefaceInfoList = mutableListOf<TypefaceInfo>()
                 for (uri in list) {
-                    val typefaceInfo = importFont(uri)
-                    lastTypefaceInfo = typefaceInfo ?: lastTypefaceInfo
+                    val infoList = importFont(uri)
+                    infoList?.let {
+                        typefaceInfoList.addAll(it)
 
-                    if (typefaceInfo == null) {
-                        toast(_string(R.string.canvas_invalid_font))
-                    } else {
-                        if (!typefaceInfo.isRepeat) {
-                            if (tabLayout?.currentItemIndex == 2) {
-                                viewHolder.rv(R.id.lib_recycler_view)
-                                    ?.renderDslAdapter(true, false) {
-                                        typefaceItem(typefaceInfo, index = 0) //插入到第一个位置
-                                        onDispatchUpdatesOnce {
-                                            viewHolder.rv(R.id.lib_recycler_view)
-                                                ?.scrollToFirst()
+                        for (typefaceInfo in it) {
+                            if (!typefaceInfo.isRepeat) {
+                                if (tabLayout?.currentItemIndex == 2) {
+                                    viewHolder.rv(R.id.lib_recycler_view)
+                                        ?.renderDslAdapter(true, false) {
+                                            typefaceItem(typefaceInfo, index = 0) //插入到第一个位置
+                                            onDispatchUpdatesOnce {
+                                                viewHolder.rv(R.id.lib_recycler_view)
+                                                    ?.scrollToFirst()
+                                            }
                                         }
-                                    }
+                                } else {
+                                    //
+                                    tabLayout?.setCurrentItem(2)
+                                }
                             } else {
-                                //
-                                tabLayout?.setCurrentItem(2)
+                                toast(_string(R.string.canvas_font_exist))
                             }
-                        } else {
-                            toast(_string(R.string.canvas_font_exist))
                         }
                     }
+                }
+                if (typefaceInfoList.isEmpty()) {
+                    toast(_string(R.string.canvas_invalid_font))
                 }
                 checkShowBackupsView()
             }
         }
     }
 
-    fun importFont(uri: Uri): TypefaceInfo? {
-        try {
+    fun importFont(uri: Uri): List<TypefaceInfo>? {
+        return try {
             "准备导入字体[${uri.getShowName()}]:${"$uri".decode()}".writeBleLog()
-            val typefaceInfo: TypefaceInfo? = FontManager.importCustomFont(uri)
-            if (typefaceInfo != null) {
-                //ui
-                return typefaceInfo
-            }
-            return null
+            FontManager.importCustomFont(uri)
         } catch (e: Exception) {
             e.printStackTrace()
             "导入字体失败[${"$uri".decode()}]:${e}".writeErrorLog()
-            return null
+            null
         }
     }
 
