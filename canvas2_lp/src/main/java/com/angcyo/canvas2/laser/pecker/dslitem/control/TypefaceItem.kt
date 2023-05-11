@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 import android.graphics.Typeface
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -17,6 +18,10 @@ class TypefaceItem : DslAdapterItem() {
         /**获取字体状态同步资源*/
         var getTypefaceItemSyncStateRes: (item: TypefaceItem) -> Int? = { null }
     }
+
+    /**字体的信息*/
+    val itemTypefaceInfo: TypefaceInfo?
+        get() = itemData as? TypefaceInfo?
 
     /**显示的名字*/
     var displayName: String? = null
