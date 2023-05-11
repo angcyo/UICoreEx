@@ -23,7 +23,6 @@ import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
-import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isShowDebug
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit
@@ -88,15 +87,13 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     }
                 }
             }
-            if (isDebugType()) {
-                DslSwitchInfoItem()() {
-                    itemInfoText = _string(R.string.canvas_cloud_storage)
-                    itemSwitchChecked = HawkEngraveKeys.enableCloudStorage
-                    drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
-                    itemExtendLayoutId = R.layout.canvas_extent_switch_item
-                    itemSwitchChangedAction = {
-                        HawkEngraveKeys.enableCloudStorage = it
-                    }
+            DslSwitchInfoItem()() {
+                itemInfoText = _string(R.string.canvas_cloud_storage)
+                itemSwitchChecked = HawkEngraveKeys.enableCloudStorage
+                drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
+                itemExtendLayoutId = R.layout.canvas_extent_switch_item
+                itemSwitchChangedAction = {
+                    HawkEngraveKeys.enableCloudStorage = it
                 }
             }
             if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
