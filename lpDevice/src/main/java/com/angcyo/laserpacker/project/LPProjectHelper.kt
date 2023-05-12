@@ -4,7 +4,13 @@ import com.angcyo.http.base.toJson
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.toProjectBean
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex.file
+import com.angcyo.library.ex.readEntryBitmap
+import com.angcyo.library.ex.readEntryString
+import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.replaceZipEntry
+import com.angcyo.library.ex.toBitmapOfBase64
+import com.angcyo.library.ex.zipFileRead
 import com.angcyo.library.utils.writeTo
 import java.io.File
 
@@ -55,7 +61,9 @@ fun File?.readProjectBean(): LPProjectBean? {
         projectBean
     } else {
         val json = file.readText()
-        json?.toProjectBean()
+        json?.toProjectBean()?.apply {
+            _previewImgBitmap = preview_img?.toBitmapOfBase64()
+        }
     }?.apply {
         _filePath = file.absolutePath
     }

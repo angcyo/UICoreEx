@@ -21,6 +21,7 @@ import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
+import com.angcyo.laserpacker.project.readProjectBean
 import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toGCodeElementBean
@@ -43,6 +44,17 @@ import java.util.zip.ZipFile
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 class LPProjectManager {
+
+    companion object {
+
+        /**从文件路径中, 解析出[LPProjectBean]
+         *
+         * [com.angcyo.laserpacker.project.LPProjectHelperKt.readProjectBean]
+         * [File.readProjectBean]*/
+        fun parseProjectBean(filePath: String?): LPProjectBean? {
+            return filePath?.file()?.readProjectBean()
+        }
+    }
 
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
     var projectName: String? = null
@@ -136,23 +148,25 @@ class LPProjectManager {
     ): Boolean {
         projectBean ?: return false
 
-        if (clearOld && delegate != null) {
-            delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
-            delegate.undoManager.clear()
-        }
+        if (delegate != null) {
+            //last
+            if (projectBean.lastType > 0) {
+                HawkEngraveKeys.lastType = projectBean.lastType
+            }
+            if (projectBean.lastPower > 0) {
+                HawkEngraveKeys.lastPower = projectBean.lastPower
+            }
+            if (projectBean.lastDepth > 0) {
+                HawkEngraveKeys.lastDepth = projectBean.lastDepth
+            }
+            if (projectBean.lastDpi > 0) {
+                HawkEngraveKeys.lastDpi = projectBean.lastDpi
+            }
 
-        //last
-        if (projectBean.lastType > 0) {
-            HawkEngraveKeys.lastType = projectBean.lastType
-        }
-        if (projectBean.lastPower > 0) {
-            HawkEngraveKeys.lastPower = projectBean.lastPower
-        }
-        if (projectBean.lastDepth > 0) {
-            HawkEngraveKeys.lastDepth = projectBean.lastDepth
-        }
-        if (projectBean.lastDpi > 0) {
-            HawkEngraveKeys.lastDpi = projectBean.lastDpi
+            if (clearOld) {
+                delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
+                delegate.undoManager.clear()
+            }
         }
 
         val result = projectBean.data?.toElementBeanList()?.let { beanList ->
