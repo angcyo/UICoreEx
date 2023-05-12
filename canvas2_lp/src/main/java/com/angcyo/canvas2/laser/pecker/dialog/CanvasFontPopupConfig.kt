@@ -16,10 +16,13 @@ import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.TypefaceItem
 import com.angcyo.component.getFiles
 import com.angcyo.core.component.file.writeErrorLog
+import com.angcyo.core.component.model.DataShareModel
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.popup.actionPopupWindow
 import com.angcyo.dsladapter.DslAdapter
+import com.angcyo.dsladapter._dslAdapter
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.selectItem
 import com.angcyo.laserpacker.device.engraveLoadingAsync
@@ -38,6 +41,7 @@ import com.angcyo.library.ex.zip
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.model.TypefaceInfo
 import com.angcyo.library.toast
+import com.angcyo.library.utils.isChildClassOf
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.recycler.scrollToFirst
@@ -129,6 +133,17 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                 }).absolutePath)?.shareFile()
             }) {
 
+            }
+        }
+
+        //监听同步更新的状态
+        vmApp<DataShareModel>().shareUpdateAdapterItemOnceData.observe(this) {
+            it?.let {
+                if (it is Class<*> && it.isChildClassOf(TypefaceItem::class.java)) {
+                    if (tabLayout?.currentItemIndex == 2) {
+                        _recyclerView?._dslAdapter?.updateAllItem()
+                    }
+                }
             }
         }
     }

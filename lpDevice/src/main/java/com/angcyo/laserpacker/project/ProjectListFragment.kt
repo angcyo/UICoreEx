@@ -3,7 +3,9 @@ package com.angcyo.laserpacker.project
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.removeThis
+import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.fragment.BaseDslFragment
+import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
@@ -14,6 +16,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.appFolderPath
+import com.angcyo.library.utils.isChildClassOf
 import com.angcyo.widget.recycler.resetLayoutManager
 import java.io.File
 
@@ -40,6 +43,15 @@ class ProjectListFragment : BaseDslFragment() {
     override fun initBaseView(savedInstanceState: Bundle?) {
         super.initBaseView(savedInstanceState)
         _recycler.resetLayoutManager("SV2")
+
+        //监听同步更新的状态
+        vmApp<DataShareModel>().shareUpdateAdapterItemOnceData.observe(this) {
+            it?.let {
+                if (it is Class<*> && it.isChildClassOf(ProjectListItem::class.java)) {
+                    _adapter.updateAllItem()
+                }
+            }
+        }
     }
 
     override fun onLoadData() {
