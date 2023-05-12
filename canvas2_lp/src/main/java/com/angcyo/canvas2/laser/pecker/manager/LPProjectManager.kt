@@ -358,12 +358,6 @@ class LPProjectManager {
                 lastDepth = HawkEngraveKeys.lastDepth
                 lastDpi = HawkEngraveKeys.lastDpi
 
-                val preview =
-                    delegate.preview(overrideSize = overrideSize, rendererList = renderList)
-                //preview_img = preview?.toBase64Data()
-                //previewImgUri = LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
-                writeEntry(LPDataConstant.PROJECT_V2_PREVIEW_NAME, preview)
-
                 data = jsonArray {
                     renderList.forEach { renderer ->
                         val list = renderer.getSingleRendererList(false)
@@ -419,6 +413,14 @@ class LPProjectManager {
                         }
                     }
                 }.toString() //java.lang.OutOfMemoryError
+
+                //last write
+
+                val preview =
+                    delegate.preview(overrideSize = overrideSize, rendererList = renderList)
+                //preview_img = preview?.toBase64Data()
+                //previewImgUri = LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                writeEntry(LPDataConstant.PROJECT_V2_PREVIEW_NAME, preview)
             }
             val json = projectBean.toJson()
             writeEntry(LPDataConstant.PROJECT_V2_DEFAULT_NAME, json)
