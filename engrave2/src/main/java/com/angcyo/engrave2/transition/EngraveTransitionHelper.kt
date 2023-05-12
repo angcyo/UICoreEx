@@ -39,6 +39,7 @@ import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.floor
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBitmap
@@ -476,9 +477,14 @@ object EngraveTransitionHelper {
     //region ---辅助方法---
 
     /**是否需要忽略图片日志*/
-    private fun ignoreBitmapLog(bitmap: Bitmap) =
-        bitmap.width >= HawkEngraveKeys.engraveBitmapLogSize ||
-                bitmap.height >= HawkEngraveKeys.engraveBitmapLogSize
+    private fun ignoreBitmapLog(bitmap: Bitmap): Boolean {
+        return if (isDebug()) {
+            false
+        } else {
+            bitmap.width >= HawkEngraveKeys.engraveBitmapLogSize ||
+                    bitmap.height >= HawkEngraveKeys.engraveBitmapLogSize
+        }
+    }
 
     /**创建一个传输的数据[TransferDataEntity], 并进行一些初始化
      * [engraveDataType] 雕刻数据的类型, 需要提前赋值, 后续需要此条件*/
