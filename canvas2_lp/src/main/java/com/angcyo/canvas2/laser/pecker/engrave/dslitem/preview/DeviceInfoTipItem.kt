@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex._color
@@ -27,7 +28,7 @@ class DeviceInfoTipItem : PreviewTipItem() {
                 append(":$angle° ")
             }
             val temp = stateParser?.temp ?: 0
-            if (temp >= 60) {
+            if (temp >= HawkEngraveKeys.minTempShowThreshold) {
                 append(_string(R.string.device_temp))
                 append(":$temp° ")
             }

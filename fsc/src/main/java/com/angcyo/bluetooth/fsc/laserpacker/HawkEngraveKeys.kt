@@ -32,6 +32,9 @@ object HawkEngraveKeys {
     /**循环查询状态最小延迟间隔, 毫秒*/
     var minQueryDelayTime: Long by HawkPropertyValue<Any, Long>(1_000)
 
+    /**最小温度显示阈值*/
+    var minTempShowThreshold: Long by HawkPropertyValue<Any, Long>(0)
+
     /**最后一次设置的支架升降高度*/
     @MM
     var lastBracketHeight: Float by HawkPropertyValue<Any, Float>(1f)
