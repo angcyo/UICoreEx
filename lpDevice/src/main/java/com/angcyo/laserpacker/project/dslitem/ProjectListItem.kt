@@ -67,7 +67,7 @@ class ProjectListItem : DslAdapterItem() {
                             dialogMessage = _string(R.string.canvas_delete_project_tip)
                             needPositiveButton { dialog, dialogViewHolder ->
                                 dialog.dismiss()
-                                itemProjectBean?._filePath?.file()?.deleteSafe()
+                                itemProjectBean?._filePath?.file()?.deleteFlag()
                                 item.removeAdapterItemJust()
                             }
                         }
@@ -76,8 +76,10 @@ class ProjectListItem : DslAdapterItem() {
                 addDialogItem {
                     itemText = _string(R.string.canvas_rename)
                     itemClick = {
-                        lastContext.inputProjectNameDialog(itemProjectBean?.file_name) {
-                            LPProjectHelper.renameProjectName(itemProjectBean, "$it")
+                        lastContext.inputProjectNameDialog(
+                            itemProjectBean?._filePath?.fileName()?.noExtName()
+                        ) {
+                            LPProjectHelper.renameProjectFileName(itemProjectBean, "$it")
                             item.updateAdapterItem()
                         }
                     }
@@ -95,7 +97,9 @@ class ProjectListItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.lib_text_view)?.text = itemProjectBean?.file_name
+        val file = itemProjectBean?._filePath?.file()
+
+        itemHolder.tv(R.id.lib_text_view)?.text = file?.name?.noExtName()
         itemHolder.img(R.id.lib_image_view)?.glide {
             load(_bitmap)
         }
@@ -106,7 +110,7 @@ class ProjectListItem : DslAdapterItem() {
         if (isDebug()) {
             itemHolder.click(R.id.lib_share_view) {
                 //share
-                itemProjectBean?._filePath?.file()?.shareFile()
+                file?.shareFile()
             }
         } else {
             itemHolder.gone(R.id.lib_share_view)

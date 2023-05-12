@@ -8,6 +8,7 @@ import com.angcyo.library.ex.file
 import com.angcyo.library.ex.readEntryBitmap
 import com.angcyo.library.ex.readEntryString
 import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.renameKeepExt
 import com.angcyo.library.ex.replaceZipEntry
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.zipFileRead
@@ -22,6 +23,15 @@ import java.io.File
  * Copyright (c) 2020 angcyo. All rights reserved.
  */
 object LPProjectHelper {
+
+    /**重命名工程的文件名*/
+    fun renameProjectFileName(projectBean: LPProjectBean?, newName: String): Boolean {
+        projectBean ?: return false
+        val filePath = projectBean._filePath ?: return false
+        val newFile = filePath.file().renameKeepExt(newName)
+        projectBean._filePath = newFile?.absolutePath
+        return newFile != null
+    }
 
     /**重命名工程*/
     fun renameProjectName(projectBean: LPProjectBean?, newName: String): Boolean {
