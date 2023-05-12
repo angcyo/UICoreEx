@@ -40,6 +40,12 @@ data class LPProjectBean(
     /**数据内容版本*/
     var version: Int = 1,
 
+    /**固件版本号*/
+    var swVersion: Int = 0,
+
+    /**硬件版本号*/
+    var hwVersion: Int = 0,
+
     //---
 
     /**工程保存的上一次雕刻参数*/

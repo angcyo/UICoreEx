@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.manager
 
 import android.net.Uri
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
@@ -10,6 +11,7 @@ import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBo
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
+import com.angcyo.core.vmApp
 import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
@@ -277,10 +279,14 @@ class LPProjectManager {
         }
         try {
             val result = LPProjectBean().apply {
+                val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
+
                 create_time = nowTime()
                 update_time = nowTime()
                 file_name = projectName
                 version = 1
+                swVersion = productInfo?.softwareVersion ?: swVersion
+                hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
                 //last
                 lastType = HawkEngraveKeys.lastType
@@ -338,10 +344,13 @@ class LPProjectManager {
             //开始写入数据流
 
             val projectBean = LPProjectBean().apply {
+                val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
                 create_time = nowTime()
                 update_time = nowTime()
                 file_name = projectName ?: zipFile.name
                 version = 2
+                swVersion = productInfo?.softwareVersion ?: swVersion
+                hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
                 //last
                 lastType = HawkEngraveKeys.lastType
