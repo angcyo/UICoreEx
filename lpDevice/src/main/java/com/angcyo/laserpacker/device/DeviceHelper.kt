@@ -13,6 +13,7 @@ import com.angcyo.http.rx.runRx
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.Library
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.eachFile
 import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.ex.ensureName
 import com.angcyo.library.ex.file
@@ -23,12 +24,14 @@ import com.angcyo.library.ex.zip
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
+import java.io.File
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -164,6 +167,15 @@ object DeviceHelper {
     }
 
     //region ---文件输出信息---
+
+    /**项目的保存文件夹全路径*/
+    val projectFolderPath: String
+        get() = appFolderPath(LPDataConstant.PROJECT_FILE_FOLDER)
+
+    /**枚举项目目录下的所有文件*/
+    fun eachProjectFolderFile(block: (File) -> Unit) {
+        projectFolderPath.file().eachFile(block = block)
+    }
 
     /**gcode文件输出*/
     fun _defaultGCodeOutputFile() =
