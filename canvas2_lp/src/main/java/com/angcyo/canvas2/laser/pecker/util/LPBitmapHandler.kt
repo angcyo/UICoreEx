@@ -84,7 +84,21 @@ object LPBitmapHandler {
 
     /**版画处理*/
     fun toPrint(context: Context, bitmap: Bitmap, printsThreshold: Float): Bitmap? {
-        return OpenCV.bitmapToPrint(context, toGrayHandle(bitmap)!!, printsThreshold.toInt())
+        val grayHandle = toGrayHandle(bitmap)!!
+        val print = OpenCV.bitmapToPrint(context, grayHandle, printsThreshold.toInt())
+        grayHandle.recycle()
+        return if (print != null) {
+            val result = BitmapHandle.replaceColors(
+                print,
+                0,
+                intArrayOf(Color.WHITE),
+                if (HawkEngraveKeys.enableBitmapHandleBgAlpha) Color.TRANSPARENT else Color.WHITE
+            )
+            print.recycle()
+            result
+        } else {
+            null
+        }
     }
 
     /**印章处理*/
