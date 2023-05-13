@@ -23,7 +23,7 @@ class DeviceInfoTipItem : PreviewTipItem() {
 
             val stateParser = deviceStateModel.deviceStateData.value
             val angle = stateParser?.angle ?: 0
-            if (angle != 0) {
+            if (angle != HawkEngraveKeys.angleShowThreshold) {
                 append(_string(R.string.device_angle))
                 append(":$angle° ")
             }

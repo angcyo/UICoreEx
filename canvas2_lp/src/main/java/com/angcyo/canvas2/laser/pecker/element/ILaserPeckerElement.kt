@@ -24,7 +24,6 @@ import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.getTranslateX
 import com.angcyo.library.ex.getTranslateY
-import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.updateTranslate
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
@@ -124,7 +123,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     //---
 
     override fun getEngraveBitmapData(): Bitmap? {
-        return requestElementDrawable(null, null)?.toBitmap()
+        return requestElementBitmap(null, null)
     }
 
     override fun getEngravePathData(): List<Path>? {
@@ -161,8 +160,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         return elementBean.index!!
     }
 
-    override fun getEngraveDataBounds(): RectF {
-        return requestElementRenderProperty().getRenderBounds()
+    override fun getEngraveDataBounds(bounds: RectF): RectF {
+        return requestElementRenderProperty().getRenderBounds(bounds)
     }
 
     override fun getEngraveDataName(): String? = elementBean.name

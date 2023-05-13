@@ -28,7 +28,9 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.classHash
+import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.size
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -55,30 +57,34 @@ object LPTransferHelper {
         "开始创建传输数据[$taskId]".writeToLog()
         EngraveFlowDataHelper.removeTransferDataState(taskId)
         transferModel.stopTransfer()
-        doBack {
-            //传输状态, 开始创建数据
-            "即将创建传输数据[$taskId]".writeToLog()
-            val transferState = TransferState(taskId, progress = -1)
-            try {
-                EngraveFlowDataHelper.onStartCreateTransferData(taskId)
-                transferModel.transferStateOnceData.postValue(transferState)
-                val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
-                //数据已入库, 可以直接在数据库中查询
-                val entityList = transitionTransferData(canvasDelegate, transferConfigEntity)
-                val size = entityList.size()
-                if (size < 5) {
-                    "已创建传输数据[$taskId]:$entityList".writeToLog()
-                } else {
-                    "已创建传输数据[$taskId]:[$size]个".writeToLog()
+
+        canvasDelegate.refresh()
+        canvasDelegate.view.postDelay(LibHawkKeys.minPostDelay) {//2023-5-13 漂移, 漏打, 神一样的BUG, 需要鬼一样的代码
+            doBack {
+                //传输状态, 开始创建数据
+                "即将创建传输数据[$taskId]".writeToLog()
+                val transferState = TransferState(taskId, progress = -1)
+                try {
+                    EngraveFlowDataHelper.onStartCreateTransferData(taskId)
+                    transferModel.transferStateOnceData.postValue(transferState)
+                    val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
+                    //数据已入库, 可以直接在数据库中查询
+                    val entityList = transitionTransferData(canvasDelegate, transferConfigEntity)
+                    val size = entityList.size()
+                    if (size < 5) {
+                        "已创建传输数据[$taskId]:$entityList".writeToLog()
+                    } else {
+                        "已创建传输数据[$taskId]:[$size]个".writeToLog()
+                    }
+                    EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
+                    transferModel.startTransferData(transferState.taskId)
+                } catch (e: Exception) {
+                    "$e".writeErrorLog()
+                    transferModel.errorTransfer(transferState, TransferException())
                 }
-                EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
-                transferModel.startTransferData(transferState.taskId)
-            } catch (e: Exception) {
-                "$e".writeErrorLog()
-                transferModel.errorTransfer(transferState, TransferException())
             }
+            "请等待数据创建完成[$taskId]".writeToLog()
         }
-        "请等待数据创建完成[$taskId]".writeToLog()
     }
 
     /**相同类型的[TransferDataInfo]会合并在一起, 会根据列表顺序, 生成对应顺序的数据
@@ -97,7 +103,7 @@ object LPTransferHelper {
             resultDataList.addAll(transitionTransferData(rendererList, transferConfigEntity, null))
         } else {
             //规定的图层雕刻顺序
-            LayerHelper.getEngraveLayerList().forEach { engraveLayerInfo ->
+            for (engraveLayerInfo in LayerHelper.getEngraveLayerList()) {
                 val rendererList =
                     LPEngraveHelper.getLayerRendererList(delegate, engraveLayerInfo, false)
                 resultDataList.addAll(
@@ -126,25 +132,25 @@ object LPTransferHelper {
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
         val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
-        rendererList.forEach { renderer ->
+        for (renderer in rendererList) {
             //开始将[renderer]转换成数据
+            sleep(HawkEngraveKeys.transferIndexSleep)
             LTime.tick()
             val elementBean = renderer.lpElementBean()
-            val layerId = layerId ?: elementBean?._layerId
-            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $layerId".writePerfLog()
+            val elementLayerId = layerId ?: elementBean?._layerId
+            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $elementLayerId".writePerfLog()
             val transferDataEntity = transitionRenderer(renderer, transferConfigEntity)
             if (transferDataEntity == null) {
                 "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
             } else {
-                if (!isCSeries && layerId == LayerHelper.LAYER_CUT) {
+                if (!isCSeries && elementLayerId == LayerHelper.LAYER_CUT) {
                     transferDataEntity.layerId = LayerHelper.LAYER_LINE
                 } else {
-                    transferDataEntity.layerId = layerId
+                    transferDataEntity.layerId = elementLayerId
                 }
                 resultDataList.add(transferDataEntity)
                 "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
             }
-            sleep(HawkEngraveKeys.transferIndexSleep)
         }
         if (resultDataList.size() > 1 && HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
             //数据个数大于1, 生成坐标的鸟瞰图

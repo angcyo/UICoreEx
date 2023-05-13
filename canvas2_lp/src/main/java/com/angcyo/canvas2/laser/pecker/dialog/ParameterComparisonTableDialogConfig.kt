@@ -307,6 +307,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
     var renderDelegate: CanvasRenderDelegate? = null
 
+    val laserPeckerModel = vmApp<LaserPeckerModel>()
+
     init {
         dialogTitle = _string(R.string.add_parameter_comparison_table)
 
@@ -375,12 +377,16 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
 
             //激光类型选择
-            EngraveLaserSegmentItem()() {
-                observeItemChange {
-                    val type = currentLaserTypeInfo().type
-                    gridPrintType = type
+            if (laserPeckerModel.isL4()) {
+                //只有L4才有激光类型
+                EngraveLaserSegmentItem()() {
+                    observeItemChange {
+                        val type = currentLaserTypeInfo().type
+                        gridPrintType = type
+                        HawkEngraveKeys.lastType = type.toInt()
 
-                    updateTablePreview()
+                        updateTablePreview()
+                    }
                 }
             }
 
@@ -469,7 +475,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = titleTextFontSize
             val defaultLabel = buildString {
-                vmApp<LaserPeckerModel>().productInfoData.value?.name?.let {
+                laserPeckerModel.productInfoData.value?.name?.let {
                     append(it)
                     append(" ")
                 }
@@ -655,7 +661,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //---横竖线
         val gCodeHandler = GCodeWriteHandler()
         gCodeHandler.unit = IValueUnit.MM_UNIT
-        gCodeHandler.isAutoCnc = vmApp<LaserPeckerModel>().isCSeries()
+        gCodeHandler.isAutoCnc = laserPeckerModel.isCSeries()
         val gCodeWriter = StringWriter()
         gCodeHandler.writer = gCodeWriter
         gCodeHandler.onPathStart()

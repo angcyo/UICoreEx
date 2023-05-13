@@ -3,12 +3,14 @@ package com.angcyo.engrave2.transition
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.component.model.DataShareModel
@@ -30,6 +32,8 @@ import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
 import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.ceil
@@ -178,6 +182,7 @@ object EngraveTransitionHelper {
 
         if (dataPath.file().length() <= 0 && retryCount <= HawkEngraveKeys.engraveRetryCount) {
             //数据大小为0, 重试1次
+            "[$index]数据大小为0,bitmap:[${bitmap.width},${bitmap.height}],重试${retryCount}次".writeErrorLog()
             return transitionToBitmapPath(provider, transferConfigEntity, retryCount + 1)
         }
 
@@ -382,7 +387,7 @@ object EngraveTransitionHelper {
                     renderUnit.convertValueToPixel(transferDataEntity.x.toFloat()).ceilInt()
                 val offsetY =
                     renderUnit.convertValueToPixel(transferDataEntity.y.toFloat()).ceilInt()*/
-                val bounds = provider.getEngraveDataBounds()
+                val bounds = provider.getEngraveDataBounds(RectF())
                 val gCodeFile = if (params.useOpenCvHandleGCode) {
                     transition.covertBitmap2GCode(bitmap, bounds)
                 } else {
@@ -510,7 +515,8 @@ object EngraveTransitionHelper {
         transferDataEntity.index = provider.getEngraveDataIndex()
 
         @Pixel
-        val bounds = provider.getEngraveDataBounds()
+        val bounds = acquireTempRectF()
+        provider.getEngraveDataBounds(bounds)
 
         val dataLeft = bounds.left
         val dataTop = bounds.top
@@ -570,6 +576,9 @@ object EngraveTransitionHelper {
             }
             append(" :${bounds}")
         }.writeToLog()
+
+        //last
+        bounds.release()
     }
 
     //endregion ---辅助方法---

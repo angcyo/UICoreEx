@@ -169,8 +169,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         //
                     } else if (queryState.error != 0) {
                         //有异常, 暂停雕刻
-                        "雕刻中出现异常码[${queryState.error}],暂停雕刻[${_engraveTaskId}].".writeEngraveLog()
-                        pauseEngrave()
+                        val pause = !HawkEngraveKeys.ignoreEngraveError
+                        "雕刻中出现异常码[${queryState.error}],暂停雕刻[${pause.toDC()}]${_engraveTaskId}".writeEngraveLog()
+                            .writeErrorLog()
+                        if (pause) {
+                            isSendEngraveCmd = false
+                            pauseEngrave()
+                        }
                     } else {
                         //
                         L.w("未处理的雕刻模式:${queryState.mode} ${queryState.workState}")

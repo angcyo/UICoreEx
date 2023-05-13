@@ -359,7 +359,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         append("${monitorEntity.dataTransferDuration(nowTime())} ")
                                     }
                                     if (monitorEntity.dataTransferSpeed > 0) {
-                                        append(" 速率:${monitorEntity.speedString()} :${monitorEntity.averageSpeedString()} :${monitorEntity.maxSpeedString()}")
+                                        append(" 速率:${monitorEntity.speedString()} ${monitorEntity.averageSpeedString()} ${monitorEntity.maxSpeedString()}")
                                     } else {
                                         append(" 传输中... ")
                                     }

@@ -414,8 +414,18 @@ class TransferModel : ViewModel() {
         "开始传输数据:[单传${HawkEngraveKeys.enableSingleItemTransfer.toDC()}]:[$taskId][${transferDataEntity.index}] $sizeString".writeEngraveLog()
         if (size <= 0) {
             "传输数据为空:[${taskId}]${transferDataEntity.index}".writeErrorLog()
-            errorTransfer(transferState, EmptyException())
-            action(transferState.error)
+            val emptyException = EmptyException()
+            if (HawkEngraveKeys.enableSingleItemTransfer && HawkEngraveKeys.ignoreEngraveError) {
+                //激活了文件单传, 并且忽略错误, 则传输完成
+                transferDataEntity.isTransfer = true
+                transferDataEntity.lpSaveEntity()
+
+                _transferNext(transferState)
+                action(emptyException)
+            } else {
+                errorTransfer(transferState, emptyException)
+                action(transferState.error)
+            }
             return
         } else if (size > HawkEngraveKeys.maxTransferDataSize) {
             "传输数据过大:${transferDataEntity.index}$sizeString".writeErrorLog()

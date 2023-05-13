@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component._runMainRunnableDelay
@@ -12,16 +13,18 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 object LPProjectAutoSaveManager {
 
-    /**自动保存延迟时长*/
-    var autoSaveDelay = 1_000L
-
-    /**是否正在存储工程*/
+    /**是否正在存储工程
+     * [com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV2]*/
     val isSaveBoolean = AtomicBoolean(false)
 
     private var autoSaveRunnable: AutoSaveRunnable? = null
 
     /**自动保存工程*/
     fun autoSave(renderDelegate: CanvasRenderDelegate, async: Boolean) {
+        if (!HawkEngraveKeys.enableProjectAutoSave) {
+            //未激活自动保存
+            return
+        }
         if (isSaveBoolean.get()) {
             //正在保存
             return
@@ -29,7 +32,7 @@ object LPProjectAutoSaveManager {
         removeAutoSave()
         autoSaveRunnable = AutoSaveRunnable(renderDelegate, async)
         if (async) {
-            _runMainRunnableDelay(autoSaveDelay, autoSaveRunnable!!)
+            _runMainRunnableDelay(HawkEngraveKeys.autoSaveProjectDelay, autoSaveRunnable!!)
         } else {
             //立即保存
             autoSaveRunnable?.run()
