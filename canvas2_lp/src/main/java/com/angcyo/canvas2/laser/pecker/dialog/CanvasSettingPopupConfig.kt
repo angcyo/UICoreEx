@@ -11,6 +11,8 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
+import com.angcyo.dsladapter.item.itemHaveNewFlag
+import com.angcyo.dsladapter.item.itemNewFlagHawkKeyStr
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
@@ -92,8 +94,10 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 itemSwitchChecked = HawkEngraveKeys.enableCloudStorage
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
+                itemNewFlagHawkKeyStr = "CloudStorage"
                 itemSwitchChangedAction = {
                     HawkEngraveKeys.enableCloudStorage = it
+                    itemHaveNewFlag = false
                 }
             }
             if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
