@@ -573,6 +573,8 @@ class DeviceSettingFragment : BaseDslFragment() {
         action: IReceiveBeanAction = { bean: ReceivePacket?, error: Exception? ->
             error?.let {
                 toastQQ(it.message)
+                //失败之后, 重新初始化设备状态
+                LaserPeckerHelper.initDeviceSetting()
             }
         }
     ) {

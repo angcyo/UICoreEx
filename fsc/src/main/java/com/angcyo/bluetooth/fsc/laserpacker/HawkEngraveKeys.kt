@@ -33,7 +33,10 @@ object HawkEngraveKeys {
     var minQueryDelayTime: Long by HawkPropertyValue<Any, Long>(1_000)
 
     /**最小温度显示阈值*/
-    var minTempShowThreshold: Long by HawkPropertyValue<Any, Long>(0)
+    var minTempShowThreshold: Int by HawkPropertyValue<Any, Int>(0)
+
+    /**倾斜角度显示阈值, 角度不等于这个值时, 则显示*/
+    var angleShowThreshold: Int by HawkPropertyValue<Any, Int>(0)
 
     /**最后一次设置的支架升降高度*/
     @MM
@@ -216,7 +219,7 @@ object HawkEngraveKeys {
     var saveFilterBitmap: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**传输数据索引生成时需要休眠的时长, 防止撞索引*/
-    var transferIndexSleep: Long by HawkPropertyValue<Any, Long>(0)
+    var transferIndexSleep: Long by HawkPropertyValue<Any, Long>(6)
 
     //---功能固件范围配置---
 
@@ -237,4 +240,13 @@ object HawkEngraveKeys {
 
     /**激活数据bounds严格模式, 则超出最佳范围就不允许预览和雕刻*/
     var enableDataBoundsStrict: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**激活工程的自动保存, 如:添加数据后自动save*/
+    var enableProjectAutoSave: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**自动保存限流延迟*/
+    var autoSaveProjectDelay: Long by HawkPropertyValue<Any, Long>(3_000)
+
+    /**是否忽略雕刻过程遇到的错误, 不忽略则会进入暂停雕刻*/
+    var ignoreEngraveError: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }

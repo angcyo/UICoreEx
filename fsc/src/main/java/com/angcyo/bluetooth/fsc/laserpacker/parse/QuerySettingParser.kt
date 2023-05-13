@@ -225,6 +225,7 @@ data class QuerySettingParser(
     /**清理设备标识*/
     fun clearFlag() {
         //互斥标识
+        gcodeView = GCODE_RECT_PREVIEW
         zFlag = 0
         rFlag = 0
         sFlag = 0

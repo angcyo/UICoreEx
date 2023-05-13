@@ -16,7 +16,6 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
-import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.onMainOnce
@@ -132,11 +131,6 @@ class DeviceStateModel : ViewModel() {
         }
     }
 
-    /**暂停轮询, 如果在可以的情况下*/
-    fun pauseLoopCheckStateIfNeed(pause: Boolean = true, reason: String?) {
-
-    }
-
     /**持续检查工作作态*/
     private fun loopCheckDeviceState() {
         if (isLooping) return
@@ -221,11 +215,9 @@ class DeviceStateModel : ViewModel() {
                 "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
 
                 //错误码不一样, 才提示
-                doMain {
-                    toastQQ(it)
-                }
-
                 if (queryStateParser.error != 1) {
+                    toastQQ(it)
+
                     //查询错误日志
                     QueryCmd.log.enqueue { bean, error ->
                         if (error == null) {
