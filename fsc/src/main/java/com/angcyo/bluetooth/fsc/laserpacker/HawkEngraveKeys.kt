@@ -242,7 +242,7 @@ object HawkEngraveKeys {
     var enableDataBoundsStrict: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**激活工程的自动保存, 如:添加数据后自动save*/
-    var enableProjectAutoSave: Boolean by HawkPropertyValue<Any, Boolean>(false)
+    var enableProjectAutoSave: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**自动保存限流延迟*/
     var autoSaveProjectDelay: Long by HawkPropertyValue<Any, Long>(3_000)

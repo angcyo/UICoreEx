@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 import com.angcyo.library.ex.*
 import com.angcyo.library.extend.IToDrawable
+import com.angcyo.library.extend.IToRightDrawable
 import com.angcyo.library.extend.IToText
 import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.R
@@ -41,7 +42,8 @@ data class MaterialEntity(
      * 然后通过资源id, 获取国际化的本地资源*/
     var resIdStr: String? = null,
 
-    /**等同于[resIdStr], 只不过没有国际化, 用户自定义的名称*/
+    /**等同于[resIdStr], 只不过没有国际化, 用户自定义的名称
+     * 用来标识同一组材质的关键字段*/
     var key: String? = null,
 
     /**强制显示的材质名称, 不指定则使用[resId]*/
@@ -93,7 +95,7 @@ data class MaterialEntity(
      * */
     var depth: Int = 10,
 
-    ) : IToText, IToDrawable {
+    ) : IToText, IToDrawable, IToRightDrawable {
 
     companion object {
 
@@ -115,6 +117,9 @@ data class MaterialEntity(
             0x01 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(whiteColor)
             else -> null
         }
+
+        /**获取材质状态同步资源*/
+        var getMaterialItemSyncStateRes: (item: MaterialEntity) -> Int? = { null }
     }
 
     /**是否是自定义的材质*/
@@ -130,5 +135,14 @@ data class MaterialEntity(
         return if (isCustomMaterial) {
             _drawable(R.drawable.material_edit_ico)
         } else createLaserTypeDrawable(type)
+    }
+
+    override fun toRightDrawable(): Drawable? {
+        val res = getMaterialItemSyncStateRes(this)
+        return if (res == null || !isCustomMaterial) {
+            null
+        } else {
+            _drawable(res)
+        }
     }
 }
