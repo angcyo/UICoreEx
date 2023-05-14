@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.component.dslPermissions
+import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
@@ -224,7 +225,14 @@ class BluetoothSearchHelper {
                 UMEvent.SEARCH_DEVICE.umengEventValue {
                     last_search_time = nowTime()
                     put(UMEvent.KEY_START_TIME, last_search_time.toString())
-                    put(UMEvent.KEY_PHONE_NAME, "${Device.api} ${Device.deviceName}")
+                    put(UMEvent.KEY_TIME_ZONE, LanguageModel.timeZoneId)
+                    put(UMEvent.KEY_PHONE_API, "${Device.api}")
+                    put(UMEvent.KEY_PHONE_DEVICE, Device.deviceName)
+                    put(UMEvent.KEY_PHONE_LANGUAGE, LanguageModel.getCurrentLanguageTag())
+                    put(
+                        UMEvent.KEY_PHONE_NAME,
+                        "${Device.deviceName} ${Device.api} ${LanguageModel.getCurrentLanguageTag()} ${LanguageModel.timeZoneId}"
+                    )
                 }
             }
         }

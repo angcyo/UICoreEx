@@ -23,10 +23,22 @@ object UMEvent {
     //事件持续的时长 毫秒差值
     const val KEY_DURATION = "key_duration"
 
-    //手机型号包含api版本
+    //手机型号包含api版本等全信息
     const val KEY_PHONE_NAME = "key_phone_name"
 
-    //硬件设备型号
+    //单纯的设备型号
+    const val KEY_PHONE_DEVICE = "key_phone_device"
+
+    //单独的api版本
+    const val KEY_PHONE_API = "key_phone_api"
+
+    //单独的手机语言
+    const val KEY_PHONE_LANGUAGE = "key_phone_language"
+
+    //单独的时区
+    const val KEY_TIME_ZONE = "key_time_zone"
+
+    //连接的硬件设备型号
     const val KEY_DEVICE_NAME = "key_device_name"
 
     //硬件设备蓝牙mac地址
