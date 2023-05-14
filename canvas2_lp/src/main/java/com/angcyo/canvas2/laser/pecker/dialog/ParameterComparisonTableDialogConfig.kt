@@ -650,7 +650,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                             if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LayerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
                             else gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
-                        printCount = PrintCountItem.getPrintCount(depthIndex, powerIndex)
+                        printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
                         printPower = powerValue
                         printDepth = depthValue
                     })
