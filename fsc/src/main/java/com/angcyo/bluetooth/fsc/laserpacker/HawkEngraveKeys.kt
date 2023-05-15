@@ -252,4 +252,7 @@ object HawkEngraveKeys {
 
     /**是否激活流畅模式, 关闭多余的动画*/
     var enableLowMode: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**是否激活移动网络同步数据*/
+    var enableMobileNetworkSync: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }
