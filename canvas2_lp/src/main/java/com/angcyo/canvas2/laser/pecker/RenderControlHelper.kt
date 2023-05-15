@@ -513,6 +513,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 initItem(renderer)
                 itemIco = R.drawable.canvas_path_fill_svg
                 itemText = _string(R.string.canvas_path_fill)
+                itemNewHawkKeyStr = "pathFill"
                 if (afterItemCount <= 0) {
                     drawCanvasRight()
                 }
