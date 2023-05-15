@@ -433,6 +433,18 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         get() = pctTextFontSize * pctTitleTextFontScale
 
     fun parseParameterComparisonTable(): List<BaseRenderer> {
+        //最终结果
+        val beanList = mutableListOf<LPElementBean>()
+        //标签集合
+        val labelBeanList = mutableListOf<LPElementBean>()
+        //功率集合
+        val powerBeanList = mutableListOf<LPElementBean>()
+        //深度集合
+        val depthBeanList = mutableListOf<LPElementBean>()
+        //存放网格item
+        val gridBeanList = mutableListOf<LPElementBean>()
+
+        //
         @Pixel val bounds = tableBounds
 
         val elementMargin = elementMargin.toPixel()
@@ -531,15 +543,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val gridWidth = gridWidthSum / horizontalGridCount
         val gridHeight = gridHeightSum / verticalGridCount
 
-        //最终结果
-        val beanList = mutableListOf<LPElementBean>()
-
-        //存放网格item
-        val gridItemList = mutableListOf<LPElementBean>()
-
-        //---数值
-        val numberTextBeanList = mutableListOf<LPElementBean>()
-
         //横竖线
         @Pixel val powerList = mutableListOf<Float>() //功率分割线, 竖线
         val depthList = mutableListOf<Float>() //深度分割线, 横线
@@ -600,7 +603,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
             powerNumberItem.elementBean.top =
                 (bounds.top + offsetTop + powerTextHeight + elementMargin).toMm()
-            numberTextBeanList.add(powerNumberItem.elementBean)
+            powerBeanList.add(powerNumberItem.elementBean)
 
             if (powerIndex == 0 && depthValueList.isEmpty()) {
                 //没有深度值时, 画一根线
@@ -628,14 +631,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         (gridLeft - elementMargin - depthNumberItem.getTextWidth()).toMm()
                     depthNumberItem.elementBean.top =
                         (y + gridHeight / 2 - depthNumberItem.getTextHeight() / 2).toMm()
-                    numberTextBeanList.add(depthNumberItem.elementBean)
+                    depthBeanList.add(depthNumberItem.elementBean)
                 }
 
                 //格子数据
                 if (powerValue * depthValue <= powerDepthThreshold ||
                     RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
-                    gridItemList.add(LPElementBean().apply {
+                    gridBeanList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle =
                             if (gridLayerId == LayerHelper.LAYER_CUT) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
@@ -697,15 +700,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             })
         }
 
-        //---数值
-        beanList.addAll(numberTextBeanList)
-
         //Label
         labelTextItem.elementBean.left =
             (bounds.centerX() - labelTextItem.getTextWidth() / 2).toMm()
         labelTextItem.elementBean.top = bounds.top.toMm()
         if (!hideFunInt.have(HIDE_LABEL)) {
-            beanList.add(labelTextItem.elementBean)
+            labelBeanList.add(labelTextItem.elementBean)
         }
 
         //---文本
@@ -713,7 +713,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
         powerTextItem.elementBean.top = (bounds.top + offsetTop).toMm()
         if (!hideFunInt.have(HIDE_POWER)) {
-            beanList.add(powerTextItem.elementBean)
+            labelBeanList.add(powerTextItem.elementBean)
         }
 
         //左边的深度文本, 旋转了-90度, 所以需要特殊处理
@@ -721,11 +721,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             (gridLeft - numberTextItem.getTextWidth() - elementMargin * 2 - depthTextHeight).toMm()
         depthTextItem.elementBean.top = (gridTop + gridHeightSum / 2 + depthTextWidth / 2).toMm()
         if (!hideFunInt.have(HIDE_DEPTH)) {
-            beanList.add(depthTextItem.elementBean)
+            labelBeanList.add(depthTextItem.elementBean)
         }
 
-        //---格子
-        beanList.addAll(gridItemList)
+        //归一
+        beanList.addAll(labelBeanList)
+        beanList.addAll(powerBeanList)
+        beanList.addAll(depthBeanList)
+        beanList.addAll(gridBeanList)
 
         //组合在一起
         val groupId = uuid()
