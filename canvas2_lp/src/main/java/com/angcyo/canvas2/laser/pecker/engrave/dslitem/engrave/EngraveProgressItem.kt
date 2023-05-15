@@ -1,10 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.view.Gravity
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.size
 import com.angcyo.widget.DslViewHolder
@@ -58,6 +58,7 @@ class EngraveProgressItem : DslAdapterItem() {
         }*/
 
         itemHolder.v<DslProgressBar>(R.id.engrave_progress_view)?.apply {
+            enableProgressFlowMode = !HawkEngraveKeys.enableLowMode
             val progress = EngraveFlowDataHelper.calcEngraveProgress(itemTaskId)
             setProgress(progress.toFloat())
         }

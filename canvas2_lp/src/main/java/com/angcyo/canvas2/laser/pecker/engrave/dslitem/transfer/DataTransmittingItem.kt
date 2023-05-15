@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
@@ -31,7 +32,7 @@ class DataTransmittingItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.v<DslProgressBar>(R.id.lib_progress_bar)?.apply {
-            enableProgressFlowMode = true
+            enableProgressFlowMode = !HawkEngraveKeys.enableLowMode
             if (itemProgress == -1) {
                 showProgressText = false
                 setProgress(100f, animDuration = 0)

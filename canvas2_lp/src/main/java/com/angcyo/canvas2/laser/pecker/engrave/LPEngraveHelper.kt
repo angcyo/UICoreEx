@@ -15,6 +15,8 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -207,20 +209,29 @@ object LPEngraveHelper {
 
 /**排序规则从上到下, 从左到右
  * 比较它的两个参数的顺序。
- * 如果两个参数相等，则返回零;
- * 如果第一个参数小于第二个参数，则返回负数;
- * 如果第一个参数大于第二个参数，则返回正数;
+ * 如果两个参数相等，则返回零,0;
+ * 如果第一个参数小于第二个参数，则返回负数,-1;
+ * 如果第一个参数大于第二个参数，则返回正数,1;
  * 从小到大的自然排序
  * */
 fun List<BaseRenderer>.engraveSort(): List<BaseRenderer> {
     //return sortedBy { it.getRotateBounds().top }
-    return sortedWith { left, right ->
-        val leftBounds = left.renderProperty!!.getRenderBounds()
-        val rightBounds = right.renderProperty!!.getRenderBounds()
-        if (leftBounds.top == rightBounds.top) {
-            leftBounds.left.compareTo(rightBounds.left)
-        } else {
-            leftBounds.top.compareTo(rightBounds.top)
+    val bounds1 = acquireTempRectF()
+    val bounds2 = acquireTempRectF()
+    val result = sortedWith { left, right ->
+        try {
+            val leftBounds = left.renderProperty!!.getRenderBounds(bounds1)
+            val rightBounds = right.renderProperty!!.getRenderBounds(bounds2)
+            if (leftBounds.top == rightBounds.top) {
+                leftBounds.left.compareTo(rightBounds.left)
+            } else {
+                leftBounds.top.compareTo(rightBounds.top)
+            }
+        } catch (e: Exception) {
+            0
         }
     }
+    bounds1.release()
+    bounds2.release()
+    return result
 }

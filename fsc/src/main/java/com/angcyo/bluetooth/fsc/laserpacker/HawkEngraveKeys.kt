@@ -249,4 +249,7 @@ object HawkEngraveKeys {
 
     /**是否忽略雕刻过程遇到的错误, 不忽略则会进入暂停雕刻*/
     var ignoreEngraveError: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**是否激活流畅模式, 关闭多余的动画*/
+    var enableLowMode: Boolean by HawkPropertyValue<Any, Boolean>(true)
 }

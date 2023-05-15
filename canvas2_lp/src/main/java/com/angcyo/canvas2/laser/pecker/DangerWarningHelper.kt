@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.view.ViewGroup
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.core.vmApp
 import com.angcyo.drawable.DangerWarningDrawable
 import com.angcyo.laserpacker.device.DeviceHelper
@@ -37,15 +38,22 @@ class DangerWarningHelper {
                     //no op
                 } else if (it.isModeEngravePreview()) {
                     //预览模式
-                    showDangerWaring(rootLayout, DeviceHelper.PREVIEW_COLOR.alphaRatio(0.4f))
+                    if (!HawkEngraveKeys.enableLowMode) {
+                        showDangerWaring(rootLayout, DeviceHelper.PREVIEW_COLOR.alphaRatio(0.4f))
+                    } else {
+                        Unit
+                    }
                 } else if (it.isModeEngrave()) {
                     //雕刻模式
-                    showDangerWaring(rootLayout, DeviceHelper.ENGRAVE_COLOR.alphaRatio(0.4f))
+                    if (!HawkEngraveKeys.enableLowMode) {
+                        showDangerWaring(rootLayout, DeviceHelper.ENGRAVE_COLOR.alphaRatio(0.4f))
+                    } else {
+                        Unit
+                    }
                 } else {
                     //空闲
                     dangerWarningView?.removeFromParent()
                 }
-
             }.elseNull {
                 dangerWarningView?.removeFromParent()
             }

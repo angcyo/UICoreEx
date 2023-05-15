@@ -4,6 +4,7 @@ import android.graphics.Path
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -109,7 +110,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 //模式改变
                 engraveStateInfo.text = stateString
                 engraveStateInfo.updateAnim = beforeMode != mode
-                stateLayoutManager.updateState(engraveStateInfo)
+                updateState(engraveStateInfo)
             }
 
             if (it?.isModeEngravePreview() != true) {
@@ -123,7 +124,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 bindDeviceConnectTipLayout()
             }.elseNull {
                 //无设备连接
-                //stateLayoutManager.updateState(connectStateInfo)
+                //updateState(connectStateInfo)
                 bindDeviceConnectTipLayout()
             }
         }
@@ -140,15 +141,17 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //监听正在预览的矩形
         previewModel.previewInfoData.observe(fragment, allowBackward = false) { info ->
-            val progressRenderer = renderDelegate?.renderManager?.progressRenderer
-            if (info == null) {
-                progressRenderer?.updateVisible(false, Reason.code, null)
-            } else {
-                progressRenderer?.apply {
-                    updateVisible(true, Reason.code, null)
-                    renderBorder = true
-                    borderColor = DeviceHelper.PREVIEW_COLOR
-                    borderBounds = info.originBounds
+            if (!HawkEngraveKeys.enableLowMode) {
+                val progressRenderer = renderDelegate?.renderManager?.progressRenderer
+                if (info == null) {
+                    progressRenderer?.updateVisible(false, Reason.code, null)
+                } else {
+                    progressRenderer?.apply {
+                        updateVisible(true, Reason.code, null)
+                        renderBorder = true
+                        borderColor = DeviceHelper.PREVIEW_COLOR
+                        borderBounds = info.originBounds
+                    }
                 }
             }
         }
@@ -161,7 +164,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 } else {
                     _string(R.string.out_of_limit)
                 }
-                stateLayoutManager.updateState(previewOverflowStateInfo)
+                updateState(previewOverflowStateInfo)
             } else {
                 stateLayoutManager.removeState(previewOverflowStateInfo)
             }
@@ -178,7 +181,9 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     } else {
                         taskRenderer.engraveTaskId = null
                     }
-                    renderDelegate?.refresh()
+                    if (HawkEngraveKeys.enableRenderEngraveInfo) {
+                        renderDelegate?.refresh()
+                    }
                 }
             }
         }
@@ -189,6 +194,15 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 laserPeckerModel.initializeOnceData.postValue(true)
             }
         }
+    }
+
+    /**更新动画*/
+    private fun updateState(stateInfo: StateLayoutInfo) {
+        val anim = !HawkEngraveKeys.enableLowMode
+        stateInfo.clipAnim = anim
+        stateInfo.rotateAnim = anim
+
+        stateLayoutManager.updateState(stateInfo)
     }
 
     //region ---内部操作---
