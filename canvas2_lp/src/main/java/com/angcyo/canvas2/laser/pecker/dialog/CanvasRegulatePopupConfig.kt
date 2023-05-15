@@ -9,11 +9,13 @@ import com.angcyo.canvas.render.util.canvasDecimal
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.*
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.appendDrawable
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.enableItemTags
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.item.DslSeekBarInfoItem
 import com.angcyo.item.style.*
@@ -27,6 +29,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.DslRecyclerView
+import com.angcyo.widget.span.span
 
 /**
  * 属性调整弹窗
@@ -129,14 +132,13 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
     /**值是否发生过改变*/
     var _valueChange: Boolean = false
 
+    /**是否是点击按钮触发的销毁*/
+    private var _dismissFromSubmit: Boolean = false
+
     init {
         minHorizontalOffset = 20 * dpi
         onDismiss = {
-            if (!regulateList.contains(KEY_SUBMIT)) {
-                //在没有确定按钮的情况下, 销毁窗口时需要apply一下
-                onApplyAction(true)
-            } else if (!_valueChange) {
-                //值没有改变, 可能是点击了窗口外
+            if (!_dismissFromSubmit) {
                 onApplyAction(true)
             }
             false
@@ -168,16 +170,22 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
                     val def = getBooleanOrDef(KEY_OUTLINE, true)
                     property[KEY_OUTLINE] = def
-                    itemSwitchChecked = def
+                    //itemSwitchChecked = def
 
                     itemSwitchChangedAction = {
                         property[KEY_OUTLINE] = it
+                        enableItemTags(!it, listOf(KEY_LINE_SPACE, KEY_ANGLE, KEY_DIRECTION))
+                    }
+
+                    viewHolder.post {
+                        updateSwitchChecked(def, true)
                     }
                 }
             }
 
             if (regulateList.contains(KEY_LINE_SPACE)) {
                 CanvasSeekBarItem()() {
+                    itemTag = KEY_LINE_SPACE
                     itemInfoText = _string(R.string.canvas_line_space) //0.125-5
                     initItem()
 
@@ -203,6 +211,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             }
             if (regulateList.contains(KEY_ANGLE)) {
                 CanvasSeekBarItem()() {
+                    itemTag = KEY_ANGLE
                     itemInfoText = _string(R.string.canvas_angle) //0-90
                     initItem()
 
@@ -222,6 +231,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             //2023-3-9 废弃:因为可以手动调整方向
             if (regulateList.contains(KEY_DIRECTION)) {
                 CanvasGCodeDirectionItem()() {
+                    itemTag = KEY_DIRECTION
                     itemText = _string(R.string.canvas_direction) //0:0 1:90 2:180 3:270
                     itemDirection = getIntOrDef(KEY_DIRECTION, 0)
                     property[KEY_DIRECTION] = itemDirection
@@ -305,11 +315,11 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                         _valueChange = true //2023-3-10 need?
                         onApplyAction(false)
                         onApplyAction(true)
+                        _dismissFromSubmit = true //2023-5-15
                         window.dismissWindow()
                     }
                 }
             }
-
         }
 
         if (firstApply) {
@@ -322,7 +332,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
     fun DslAdapter.renderThresholdItem(key: String, defValue: Float = 140f) {
         when (key) {
             KEY_CONTRAST -> CanvasSeekBarItem()() {
-                itemInfoText = _string(R.string.canvas_contrast) //-1~1   0-255
+                itemInfoTooltipText = _string(R.string.canvas_contrast) //-1~1   0-255
+                itemInfoText = span {
+                    appendDrawable(R.drawable.canvas_regulate_contrast)
+                }
                 initItem()
 
                 itemProgressTextFormatAction = {
@@ -339,7 +352,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             }
 
             KEY_BRIGHTNESS -> CanvasSeekBarItem()() {
-                itemInfoText = _string(R.string.canvas_brightness) //-1~1   0-255
+                itemInfoTooltipText = _string(R.string.canvas_brightness) //-1~1   0-255
+                itemInfoText = span {
+                    appendDrawable(R.drawable.canvas_regulate_brightness)
+                }
                 initItem()
 
                 itemProgressTextFormatAction = {
