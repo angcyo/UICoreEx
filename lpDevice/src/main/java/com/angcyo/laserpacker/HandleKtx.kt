@@ -118,6 +118,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                     DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
                         mtype = LPDataConstant.DATA_TYPE_RECT
+                        name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
                             width = rect.width().toMm()
@@ -134,6 +135,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         val matrix = drawElement.matrix
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         mtype = LPDataConstant.DATA_TYPE_SVG
+                        name = drawElement.dataName
                         /*mtype = LPDataConstant.DATA_TYPE_LINE*/
                         (drawElement.element as? RectF)?.let { rect ->
                             /*angle = VectorHelper.angle(
@@ -166,6 +168,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                     DrawElement.DrawType.OVAL -> LPElementBean().apply {
                         val matrix = drawElement.matrix
                         mtype = LPDataConstant.DATA_TYPE_OVAL
+                        name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         (drawElement.element as? RectF)?.let { rect ->
                             width = rect.width().toMm()
@@ -179,6 +182,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                     DrawElement.DrawType.PATH -> LPElementBean().apply {
                         val matrix = drawElement.matrix
                         mtype = LPDataConstant.DATA_TYPE_SVG
+                        name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         data = drawElement.data
                         drawElement.pathBounds?.let { rect ->
@@ -193,6 +197,7 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                     DrawElement.DrawType.TEXT -> LPElementBean().apply {
                         val matrix = drawElement.matrix
                         mtype = LPDataConstant.DATA_TYPE_TEXT
+                        name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         fontSize = drawElement.paint.textSize.toMm()
 
