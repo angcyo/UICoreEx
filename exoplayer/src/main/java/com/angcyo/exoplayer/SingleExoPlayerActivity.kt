@@ -17,6 +17,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ErrorMessageProvider
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -219,7 +220,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
     }
 
     /**Exo库中默认控件设置*/
-    protected fun initDefaultView() {
+    protected open fun initDefaultView() {
 
         //进度条颜色
         val progressBar = findViewById<ProgressBar>(androidx.media3.ui.R.id.exo_buffering)
@@ -321,13 +322,13 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
 
     //---
 
-    protected fun clearStartPosition() {
+    protected open fun clearStartPosition() {
         startAutoPlay = true
         startItemIndex = C.INDEX_UNSET
         startPosition = C.TIME_UNSET
     }
 
-    protected fun releasePlayer() {
+    protected open fun releasePlayer() {
         if (player != null) {
             updateTrackSelectorParameters()
             updateStartPosition()
@@ -340,13 +341,13 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
         }
     }
 
-    private fun updateTrackSelectorParameters() {
+    protected open fun updateTrackSelectorParameters() {
         if (player != null) {
             trackSelectionParameters = player?.trackSelectionParameters
         }
     }
 
-    private fun updateStartPosition() {
+    protected open fun updateStartPosition() {
         player?.let { player ->
             startAutoPlay = player.playWhenReady
             startItemIndex = player.currentMediaItemIndex
@@ -357,7 +358,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
     /**
      * @return Whether initialization was successful.
      */
-    protected fun initializePlayer(): Boolean {
+    protected open fun initializePlayer(): Boolean {
         if (player == null) {
             val intent = intent
             mediaItems = createMediaItems(intent)
@@ -392,8 +393,51 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
         return true
     }
 
+    /**构建播放列表
+     * [subtitleUriMap] 字幕列表 [中文:uri]*/
+    protected open fun buildMediaItems(
+        videoUri: String,
+        subtitleUriMap: Map<String, String>
+    ): List<MediaItem> {
+        val mediaItems = mutableListOf<MediaItem>()
+        if (videoUri.isBlank()) {
+            return mediaItems
+        }
+
+        //字幕列表
+        val subtitleConfigurationList = mutableListOf<MediaItem.SubtitleConfiguration>()
+        if (subtitleUriMap.isNotEmpty()) {
+            subtitleUriMap.forEach { entry ->
+                MediaItem.SubtitleConfiguration.Builder(
+                    Uri.parse(entry.value)
+                ).setMimeType(subtitleUriMimeType(null, entry.value))
+                    .setLanguage(entry.key)
+                    .setLabel(entry.key)
+                    .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    .build().apply {
+                        subtitleConfigurationList.add(this)
+                    }
+            }
+        }
+
+        //播放列表
+        val builder = MediaItem.Builder()
+            .setUri(videoUri)
+            //.setMimeType(mimeType)
+            .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
+
+        if (subtitleConfigurationList.isNotEmpty()) {
+            builder.setSubtitleConfigurations(subtitleConfigurationList)
+        }
+
+        mediaItems.add(builder.build())
+
+        return mediaItems
+    }
+
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    private fun setRenderersFactory(
+    protected open fun setRenderersFactory(
         playerBuilder: ExoPlayer.Builder,
         preferExtensionDecoders: Boolean
     ) {
@@ -403,7 +447,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class) // SSAI configuration
-    private fun createMediaSourceFactory(): MediaSource.Factory {
+    protected open fun createMediaSourceFactory(): MediaSource.Factory {
         val drmSessionManagerProvider = DefaultDrmSessionManagerProvider()
         drmSessionManagerProvider.setDrmHttpDataSourceFactory(
             ExoUtil.getHttpDataSourceFactory( /* context= */this)
@@ -413,7 +457,8 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
             .setDrmSessionManagerProvider(drmSessionManagerProvider)
     }
 
-    private fun createMediaItems(intent: Intent): List<MediaItem> {
+    /**创建播放列表从[intent]*/
+    protected open fun createMediaItems(intent: Intent): List<MediaItem> {
         val action = intent.action
         val actionIsListView: Boolean = IntentUtil.ACTION_VIEW_LIST == action
         if (!actionIsListView && IntentUtil.ACTION_VIEW != action) {
@@ -449,7 +494,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
         return mediaItems
     }
 
-    private fun createMediaItems(
+    protected open fun createMediaItems(
         intent: Intent,
         downloadTracker: DownloadTracker
     ): List<MediaItem> {
@@ -466,7 +511,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    private fun maybeSetDownloadProperties(
+    protected open fun maybeSetDownloadProperties(
         item: MediaItem,
         downloadRequest: DownloadRequest?
     ): MediaItem {
@@ -490,7 +535,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
 
     //---
 
-    private fun showTitleControlLayout(visibility: Int = View.VISIBLE) {
+    protected open fun showTitleControlLayout(visibility: Int = View.VISIBLE) {
         titleWrapView?.apply {
             if (getVisibility() != visibility) {
                 //动画控制显示
@@ -510,7 +555,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
 
     //---
 
-    private inner class PlayerEventListener : Player.Listener {
+    protected open inner class PlayerEventListener : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: @Player.State Int) {
             if (playbackState == Player.STATE_ENDED) {
                 showTitleControlLayout()
@@ -544,7 +589,7 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
         }
     }
 
-    private class PlayerErrorMessageProvider : ErrorMessageProvider<PlaybackException> {
+    protected open class PlayerErrorMessageProvider : ErrorMessageProvider<PlaybackException> {
         override fun getErrorMessage(e: PlaybackException): android.util.Pair<Int, String> {
             val errorString = "Playback failed"
             return android.util.Pair.create(0, errorString)

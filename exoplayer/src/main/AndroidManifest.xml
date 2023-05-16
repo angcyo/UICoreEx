@@ -6,7 +6,7 @@
         <activity
             android:name=".SingleExoPlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/SinglePlayerTheme">
             <intent-filter>
