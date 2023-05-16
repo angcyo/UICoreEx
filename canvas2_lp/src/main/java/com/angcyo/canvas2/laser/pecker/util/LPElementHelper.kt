@@ -253,8 +253,9 @@ object LPElementHelper {
     }
 
     /**添加元素集合到画板*/
-    fun addElementList(delegate: CanvasRenderDelegate?, beanList: List<LPElementBean>) {
+    fun addElementList(delegate: CanvasRenderDelegate?, beanList: List<LPElementBean>?) {
         delegate ?: return
+        beanList ?: return
         val rendererList = LPRendererHelper.parseElementRendererList(beanList, true)
         delegate.renderManager.addElementRenderer(rendererList, true, Reason.user, Strategy.normal)
     }

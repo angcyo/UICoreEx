@@ -105,6 +105,9 @@ object LPRendererHelper {
         strategy: Strategy
     ): List<BaseRenderer> {
         val result = mutableListOf<BaseRenderer>()
+        if (beanList.isEmpty()) {
+            return result
+        }
 
         //组内子元素
         val jumpList = mutableListOf<LPElementBean>()

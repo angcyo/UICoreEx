@@ -69,6 +69,9 @@ object LPDataConstant {
      * [com.angcyo.kabeja.library.Dxf]*/
     const val DXF_EXT = ".dxf"
 
+    /**单个或者多个[LPElementBean]json结构的数据*/
+    const val LPBEAN_EXT = ".lpbean"
+
     //endregion ---支持的文件类型---
 
     //region ---数据类型---

@@ -258,6 +258,43 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 }
             }
             return true
+        } else if (path.endsWith(LPDataConstant.LPBEAN_EXT, true)) {
+            //LPElementBean
+            val text = file.readText()
+            if (text.isNullOrBlank()) {
+                return false
+            } else if (text.startsWith("[") || text.startsWith("{")) {
+
+            } else {
+                //无效的格式
+                return false
+            }
+            adapter?.render {
+                clearAllItems()
+                CanvasOpenPreviewItem()() {
+                    itemFilePath = path
+
+                    val beanList = if (text.startsWith("[")) {
+                        //List<LPElementBean>
+                        text.toElementBeanList()
+                    } else {
+                        //LPElementBean
+                        text.toElementBean()?.toListOf()
+                    }
+
+                    itemDrawable = convertElementBeanListToDrawable?.invoke(beanList)
+
+                    openAction = {
+                        canvasOpenModel.open(this@CanvasOpenPreviewActivity, beanList)
+                        finish()
+                    }
+
+                    cancelAction = {
+                        finish()
+                    }
+                }
+            }
+            return true
         } else if (path.isImageType()) {
             //图片, 导入的图片不进行压缩处理
             adapter?.render {

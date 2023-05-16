@@ -11,6 +11,8 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.isGCodeType
 import com.angcyo.laserpacker.parseSvgElementList
+import com.angcyo.laserpacker.toElementBean
+import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.library.L
 import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.ex._string
@@ -19,6 +21,7 @@ import com.angcyo.library.ex.isImageType
 import com.angcyo.library.ex.readText
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.toListOf
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.library.utils.isSvgContent
@@ -95,6 +98,20 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                     text,
                     null
                 )
+            } else if (path.endsWith(LPDataConstant.LPBEAN_EXT, true)) {
+                //.lpbean后缀
+                val text = path.file().readText()
+                if (text.isNullOrBlank()) {
+                    return false
+                }
+                val beanList = if (text.startsWith("[")) {
+                    //List<LPElementBean>
+                    text.toElementBeanList()
+                } else {
+                    //LPElementBean
+                    text.toElementBean()?.toListOf()
+                }
+                LPElementHelper.addElementList(itemRenderDelegate, beanList)
             } else {
                 val isTxtExt = path.endsWith(LPDataConstant.TXT_EXT, true)
                 if (isTxtExt) {
