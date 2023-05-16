@@ -262,9 +262,22 @@ class LPProjectManager {
         } != null
     }
 
-//endregion ---打开---
+    /**打开一组[LPElementBean]元素*/
+    fun openElementBeanList(
+        delegate: CanvasRenderDelegate,
+        beanList: List<LPElementBean>?,
+        assignLocation: Boolean
+    ): Boolean {
+        beanList ?: return false
+        return LPRendererHelper.parseElementRendererList(beanList, assignLocation).apply {
+            delegate.renderManager.addElementRenderer(this, true, Reason.user, Strategy.normal)
+            LPRendererHelper.generateName(delegate)
+        }.isNotEmpty()
+    }
 
-//region ---保存---
+    //endregion ---打开---
+
+    //region ---保存---
 
     /**获取工程结构[LPProjectBean]
      *

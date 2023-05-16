@@ -216,6 +216,7 @@ fun String?.isGCodeType(): Boolean {
 /**
  * 支持[com.angcyo.laserpacker.bean.LPElementBean]
  * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
+ * 支持[List<LPProjectBean>]
  * */
 typealias CanvasOpenDataType = Any
 

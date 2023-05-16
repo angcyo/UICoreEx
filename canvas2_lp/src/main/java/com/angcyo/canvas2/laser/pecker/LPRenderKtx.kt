@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.angcyo.canvas.CanvasRenderView
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -146,3 +147,5 @@ fun List<LPElementBean>.updateGroupId(groupId: String?) {
         it.groupId = groupId
     }
 }
+
+fun List<LPElementBean>.toRendererList() = LPRendererHelper.parseElementRendererList(this, false)

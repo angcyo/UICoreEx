@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.open
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
@@ -15,6 +16,7 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.kabeja.library.Dxf
 import com.angcyo.laserpacker.*
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.BuildConfig
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsync
@@ -42,6 +44,11 @@ import java.io.File
  * @since 2022/10/12
  */
 class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
+
+    companion object {
+        /**转换*/
+        var convertElementBeanListToDrawable: ((list: List<LPElementBean>?) -> Drawable?)? = null
+    }
 
     init {
         activityLayoutId = R.layout.activity_open_preview_layout
@@ -170,11 +177,21 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                 clearAllItems()
                 CanvasOpenPreviewItem()() {
                     itemFilePath = path
-                    itemDrawable = parseSvg(text)
+                    var beanList: List<LPElementBean>? = null
+                    itemDrawable = if (HawkEngraveKeys.enableImportGroup) {
+                        beanList = parseSvgElementList(text)
+                        convertElementBeanListToDrawable?.invoke(beanList)
+                    } else {
+                        parseSvg(text)
+                    }
 
                     openAction = {
-                        val itemData = text.toSvgElementBean()
-                        canvasOpenModel.open(this@CanvasOpenPreviewActivity, itemData)
+                        if (beanList.isNullOrEmpty()) {
+                            val itemData = text.toSvgElementBean()
+                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, itemData)
+                        } else {
+                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, beanList)
+                        }
                         finish()
                     }
 
