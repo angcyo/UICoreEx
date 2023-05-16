@@ -128,6 +128,7 @@ data class LPElementBean(
     /**原始的数据, 如svg文件内容, gcode文件内容
      * [LPDataConstant.DATA_TYPE_RAW] 真实数据的类型
      * [Charsets.ISO_8859_1]
+     * [path]
      * */
     var data: String? = null,
 
@@ -233,7 +234,7 @@ data class LPElementBean(
     //region ---SVG path数据---
 
     /**SVG数据
-     * "[['M',0,0],['L',11,11]]"
+     * "M0,0L100,100Z"
      * */
     var path: String? = null,
 

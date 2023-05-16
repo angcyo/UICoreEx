@@ -255,4 +255,7 @@ object HawkEngraveKeys {
 
     /**是否激活移动网络同步数据*/
     var enableMobileNetworkSync: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**导入外部文件格式时, 是否要使用分组*/
+    var enableImportGroup: Boolean by HawkPropertyValue<Any, Boolean>(true)
 }

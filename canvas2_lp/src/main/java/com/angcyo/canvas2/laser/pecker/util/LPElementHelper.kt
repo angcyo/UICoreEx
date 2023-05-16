@@ -57,8 +57,7 @@ object LPElementHelper {
     @MM
     var POSITION_CUT_TOP = POSITION_CUT_LEFT * 5
 
-    /**分配一个位置, 和智能调整缩放*/
-    fun assignLocation(bean: LPElementBean) {
+    private fun initLocation() {
         if (_lastLeft > POSITION_CUT_LEFT) {
             //换行
             _lastLeft = 0f
@@ -70,6 +69,11 @@ object LPElementHelper {
         }
         _lastLeft += POSITION_STEP
         _lastTop += POSITION_STEP
+    }
+
+    /**分配一个位置, 和智能调整缩放*/
+    fun assignLocation(bean: LPElementBean) {
+        initLocation()
 
         val bounds = FscDeviceModel.productAssignLocationBounds
         if (bounds == null) {
@@ -78,6 +82,27 @@ object LPElementHelper {
         } else {
             bean.left = bounds.centerX().toMm() - bean._width / 2
             bean.top = bounds.centerY().toMm() - bean._height / 2
+        }
+    }
+
+    /**分配位置*/
+    fun assignLocation(rendererList: List<BaseRenderer>) {
+        for (renderer in rendererList) {
+            renderer.getRendererBounds()?.let { renderBounds ->
+                initLocation()
+
+                val bounds = FscDeviceModel.productAssignLocationBounds
+                var tx = 0f
+                var ty = 0f
+                if (bounds == null) {
+                    tx = _minLeft + _lastLeft - renderBounds.left
+                    ty = _minTop + _lastTop - renderBounds.top
+                } else {
+                    tx = bounds.centerX() - renderBounds.width() / 2
+                    ty = bounds.centerY() - renderBounds.height() / 2
+                }
+                renderer.translate(tx, ty, Reason.code, Strategy.preview, null)
+            }
         }
     }
 
@@ -202,13 +227,19 @@ object LPElementHelper {
             mtype = type
             width = LPPathElement.SHAPE_DEFAULT_WIDTH
             height = LPPathElement.SHAPE_DEFAULT_HEIGHT
-            if (mtype == LPDataConstant.DATA_TYPE_OVAL) {
-                rx = width!! / 2
-                ry = height!! / 2
-            } else if (mtype == LPDataConstant.DATA_TYPE_PENTAGRAM) {
-                side = 5
-            } else if (mtype == LPDataConstant.DATA_TYPE_POLYGON) {
-                side = 3
+            when (mtype) {
+                LPDataConstant.DATA_TYPE_OVAL -> {
+                    rx = width!! / 2
+                    ry = height!! / 2
+                }
+
+                LPDataConstant.DATA_TYPE_PENTAGRAM -> {
+                    side = 5
+                }
+
+                LPDataConstant.DATA_TYPE_POLYGON -> {
+                    side = 3
+                }
             }
             paintStyle = if (isLineShape) {
                 Paint.Style.FILL.toPaintStyleInt()
@@ -221,4 +252,10 @@ object LPElementHelper {
         LPRendererHelper.generateName(delegate)
     }
 
+    /**添加元素集合到画板*/
+    fun addElementList(delegate: CanvasRenderDelegate?, beanList: List<LPElementBean>) {
+        delegate ?: return
+        val rendererList = LPRendererHelper.parseElementRendererList(beanList, true)
+        delegate.renderManager.addElementRenderer(rendererList, true, Reason.user, Strategy.normal)
+    }
 }

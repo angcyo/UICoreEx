@@ -262,7 +262,7 @@ fun String?.toPaintAlign(): Paint.Align = when (this) {
 
 //---
 
-/**文本样式*/
+/**画笔样式*/
 fun Paint.Style.toPaintStyleInt(): Int = when (this) {
     Paint.Style.FILL -> 0
     Paint.Style.STROKE -> 1

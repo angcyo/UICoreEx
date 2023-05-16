@@ -85,7 +85,10 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**处理文件路径*/
+    /**处理文件路径
+     *
+     * [com.angcyo.canvas2.laser.pecker.dslitem.item.AddBitmapItem.addUri]
+     * */
     @ThreadDes("耗时方法, 请在子线程中调用")
     @Throws(OutOfSizeException::class)
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {

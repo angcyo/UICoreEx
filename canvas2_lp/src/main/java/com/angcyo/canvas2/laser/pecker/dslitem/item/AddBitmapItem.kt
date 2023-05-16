@@ -10,6 +10,7 @@ import com.angcyo.component.getFiles
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.isGCodeType
+import com.angcyo.laserpacker.parseSvgElementList
 import com.angcyo.library.L
 import com.angcyo.library.component.ROpenFileHelper
 import com.angcyo.library.ex._string
@@ -26,6 +27,9 @@ import com.hingin.umeng.umengEventValue
 
 /**
  * 添加图片, 支持svg/gcode/等支持的文件格式
+ *
+ * [com.angcyo.laserpacker.open.CanvasOpenPreviewActivity.handleFilePath]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/03/03
  */
@@ -65,12 +69,23 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
             if (isSvgExt) {
                 //.svg后缀
                 val text = path.file().readText()
-                LPElementHelper.addPathElement(
-                    itemRenderDelegate,
-                    LPDataConstant.DATA_TYPE_SVG,
-                    text,
-                    null
-                )
+
+                if (HawkEngraveKeys.enableImportGroup) {
+                    val elementList = parseSvgElementList(text)
+                    if (elementList.isNullOrEmpty()) {
+                        //no op
+                        return false
+                    } else {
+                        LPElementHelper.addElementList(itemRenderDelegate, elementList)
+                    }
+                } else {
+                    LPElementHelper.addPathElement(
+                        itemRenderDelegate,
+                        LPDataConstant.DATA_TYPE_SVG,
+                        text,
+                        null
+                    )
+                }
             } else if (isGCodeExt) {
                 //.gcode后缀
                 val text = path.file().readText()

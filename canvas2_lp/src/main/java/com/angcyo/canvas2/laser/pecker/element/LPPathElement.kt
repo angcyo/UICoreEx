@@ -240,6 +240,11 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
                     }
                 }
             }
+        } else if (!elementBean.path.isNullOrBlank()) {
+            //path数据
+            val path = Sharp.loadPath(elementBean.path)
+            pathList = listOf(path)
+            updateOriginPathList(pathList)
         } else {
             createPath(elementBean)?.let { pathList = listOf(it) }
             updateOriginPathList(pathList)

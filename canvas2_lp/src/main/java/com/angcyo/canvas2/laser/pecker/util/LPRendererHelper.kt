@@ -83,6 +83,18 @@ object LPRendererHelper {
         }
     }
 
+    /**[parseElementRenderer]*/
+    fun parseElementRendererList(
+        beanList: List<LPElementBean>,
+        assignLocation: Boolean = false
+    ): List<BaseRenderer> {
+        val list = renderElementList(null, beanList, false, Strategy.preview)
+        if (assignLocation) {
+            LPElementHelper.assignLocation(list)
+        }
+        return list
+    }
+
     /**渲染元素列表
      * [selected] 是否要选中渲染器
      * @return 返回渲染器集合*/

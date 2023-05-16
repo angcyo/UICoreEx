@@ -1,20 +1,42 @@
 package com.angcyo.laserpacker
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.RectF
 import com.angcyo.bitmap.handle.BitmapHandle
+import com.angcyo.bitmap.handle.BuildConfig
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.library.L
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.ex.abs
 import com.angcyo.library.ex.createPaint
+import com.angcyo.library.ex.getScaleX
+import com.angcyo.library.ex.getScaleY
+import com.angcyo.library.ex.getSkewX
+import com.angcyo.library.ex.getSkewY
 import com.angcyo.library.ex.toBase64Data
+import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.toDegrees
 import com.angcyo.library.ex.toDrawable
+import com.angcyo.library.ex.uuid
+import com.angcyo.library.unit.toMm
+import com.angcyo.svg.DrawElement
 import com.angcyo.svg.Svg
+import com.angcyo.svg.SvgElementListener
+import com.pixplicity.sharp.Sharp
 import com.pixplicity.sharp.SharpDrawable
+import kotlin.math.absoluteValue
+import kotlin.math.atan2
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -52,6 +74,152 @@ fun Bitmap?.toBlackWhiteBitmap(bmpThreshold: Int, invert: Boolean = false): Stri
     //toBlackWhiteHandle(bmpThreshold, invert)
     val bitmap = BitmapHandle.toBlackWhiteHandle(this, bmpThreshold, invert)
     return bitmap?.toBase64Data()
+}
+
+/**将SVG数据, 拆成一组[LPElementBean]*/
+fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
+    return if (svgText.isNullOrEmpty()) {
+        null
+    } else {
+        val result = mutableListOf<LPElementBean>()
+        val groupId = uuid()
+        val sharp = Sharp.loadString(svgText)
+
+        /**[com.angcyo.canvas.render.core.component.CanvasRenderProperty.qrDecomposition]*/
+        fun qrElement(bean: LPElementBean, matrix: Matrix?) {
+            matrix ?: return
+            if (!matrix.isIdentity) {
+                L.d("qrElement:$matrix")
+            }
+            val sx = matrix.getScaleX()
+            val sy = matrix.getScaleY()
+            val angle = atan2(matrix.getSkewY(), sx).toDegrees()
+            val denom = sx.pow(2f) + matrix.getSkewY().pow(2f)
+
+            val scaleX = sqrt(denom)
+            val scaleY = (sx * sy - matrix.getSkewX() * matrix.getSkewY()) / scaleX
+
+            val skewX =
+                atan2((sx * matrix.getSkewX() + matrix.getSkewY() * sy), denom) //x倾斜的角度, 弧度单位
+            val skewY = 0.0f//y倾斜的角度, 弧度单位
+
+            bean.angle = (angle + 360) % 360
+            bean.flipX = scaleX < 0
+            bean.flipY = scaleY < 0
+            bean.scaleX = scaleX.absoluteValue  //flip单独控制
+            bean.scaleY = scaleY.absoluteValue  //flip单独控制
+            bean.skewX = skewX.toDegrees()
+            bean.skewY = skewY
+        }
+
+        sharp.setOnElementListener(object : SvgElementListener() {
+            override fun onCanvasDraw(canvas: Canvas, drawElement: DrawElement): Boolean {
+                when (drawElement.type) {
+                    DrawElement.DrawType.ROUND_RECT -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        mtype = LPDataConstant.DATA_TYPE_RECT
+                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        (drawElement.element as? RectF)?.let { rect ->
+                            width = rect.width().toMm()
+                            height = rect.height().toMm()
+                            left = rect.left.toMm()
+                            top = rect.top.toMm()
+                        }
+                        rx = drawElement.rx.toMm()
+                        ry = drawElement.ry.toMm()
+                        qrElement(this, matrix)
+                    }
+
+                    DrawElement.DrawType.LINE -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        mtype = LPDataConstant.DATA_TYPE_SVG
+                        /*mtype = LPDataConstant.DATA_TYPE_LINE*/
+                        (drawElement.element as? RectF)?.let { rect ->
+                            /*angle = VectorHelper.angle(
+                                rect.left,
+                                rect.top,
+                                rect.right,
+                                rect.bottom
+                            )
+                            width = VectorHelper.spacing(
+                                rect.left,
+                                rect.top,
+                                rect.right,
+                                rect.bottom
+                            ).toMm()
+                            height = 0f
+                            left = rect.left.toMm()
+                            top = rect.top.toMm()*/
+                            val l = min(rect.left, rect.right)
+                            val t = min(rect.top, rect.bottom)
+
+                            path = "M${rect.left},${rect.top}L${rect.right},${rect.bottom}"
+                            width = rect.width().abs().toMm()
+                            height = rect.height().abs().toMm()
+                            left = l.toMm()
+                            top = t.toMm()
+                        }
+                        qrElement(this, matrix)
+                    }
+
+                    DrawElement.DrawType.OVAL -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        mtype = LPDataConstant.DATA_TYPE_OVAL
+                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        (drawElement.element as? RectF)?.let { rect ->
+                            width = rect.width().toMm()
+                            height = rect.height().toMm()
+                            left = rect.left.toMm()
+                            top = rect.top.toMm()
+                        }
+                        qrElement(this, matrix)
+                    }
+
+                    DrawElement.DrawType.PATH -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        mtype = LPDataConstant.DATA_TYPE_SVG
+                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        data = drawElement.data
+                        drawElement.pathBounds?.let { rect ->
+                            width = rect.width().toMm()
+                            height = rect.height().toMm()
+                            left = rect.left.toMm()
+                            top = rect.top.toMm()
+                        }
+                        qrElement(this, matrix)
+                    }
+
+                    DrawElement.DrawType.TEXT -> LPElementBean().apply {
+                        val matrix = drawElement.matrix
+                        mtype = LPDataConstant.DATA_TYPE_TEXT
+                        paintStyle = drawElement.paint.style.toPaintStyleInt()
+                        fontSize = drawElement.paint.textSize.toMm()
+
+                        (drawElement.element as? Sharp.SvgHandler.SvgText)?.let { text ->
+                            this.text = text.text
+                            val rect = text.bounds
+                            left = rect.left.toMm()
+                            top = rect.top.toMm()
+                        }
+                        qrElement(this, matrix)
+                    }
+
+                    else -> null
+                }?.apply {
+                    this.groupId = groupId
+                    result.add(this)
+                }
+                return true
+            }
+        })
+        val sharpPicture = sharp.sharpPicture
+        if (BuildConfig.DEBUG) {
+            val bitmap = sharpPicture.drawable.toBitmap()
+            L.d("svg size:${bitmap?.width}x${bitmap?.height}")
+        }
+        result
+    }
 }
 
 //---
