@@ -15,8 +15,12 @@ import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.L
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.abs
+import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.createPaint
+import com.angcyo.library.ex.elseNull
 import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.getSkewX
@@ -185,11 +189,21 @@ fun parseSvgElementList(svgText: String?): List<LPElementBean>? {
                         name = drawElement.dataName
                         paintStyle = drawElement.paint.style.toPaintStyleInt()
                         data = drawElement.data
-                        drawElement.pathBounds?.let { rect ->
+                        (drawElement.element as? Path)?.let {
+                            val rect = acquireTempRectF()
+                            it.computePathBounds(rect, true)
                             width = rect.width().toMm()
                             height = rect.height().toMm()
                             left = rect.left.toMm()
                             top = rect.top.toMm()
+                            rect.release()
+                        }.elseNull {
+                            drawElement.pathBounds?.let { rect ->
+                                width = rect.width().toMm()
+                                height = rect.height().toMm()
+                                left = rect.left.toMm()
+                                top = rect.top.toMm()
+                            }
                         }
                         qrElement(this, matrix)
                     }
