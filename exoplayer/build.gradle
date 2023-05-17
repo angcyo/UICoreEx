@@ -11,11 +11,11 @@ dependencies {
     //https://mvnrepository.com/artifact/androidx.media3/media3-exoplayer
 
     // Common functionality used across multiple media libraries
-    implementation "androidx.media3:media3-common:$media3_version"
+    api "androidx.media3:media3-common:$media3_version"
     // For media playback using ExoPlayer
-    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    api "androidx.media3:media3-exoplayer:$media3_version"
     // For building media playback UIs
-    implementation "androidx.media3:media3-ui:$media3_version"
+    api "androidx.media3:media3-ui:$media3_version"
 
     // Common functionality for media database components
     implementation "androidx.media3:media3-database:$media3_version"
