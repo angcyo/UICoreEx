@@ -44,6 +44,7 @@ import com.angcyo.library.ex.baseConfig
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.mH
 import com.angcyo.library.ex.mimeType
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toUri
 import com.angcyo.library.toastQQ
 import kotlin.math.max
@@ -394,10 +395,13 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
     }
 
     /**构建播放列表
-     * [subtitleUriMap] 字幕列表 [中文:uri]*/
+     * [subtitleLabelList] 字幕标签列表 [中文:uri]
+     * [subtitleUriList] 字幕地址列表 [中文:uri]
+     * */
     protected open fun buildMediaItems(
         videoUri: String,
-        subtitleUriMap: Map<String, String>
+        subtitleLabelList: List<String>,
+        subtitleUriList: List<String>,
     ): List<MediaItem> {
         val mediaItems = mutableListOf<MediaItem>()
         if (videoUri.isBlank()) {
@@ -406,13 +410,14 @@ open class SingleExoPlayerActivity : AppCompatActivity(), PlayerView.ControllerV
 
         //字幕列表
         val subtitleConfigurationList = mutableListOf<MediaItem.SubtitleConfiguration>()
-        if (subtitleUriMap.isNotEmpty()) {
-            subtitleUriMap.forEach { entry ->
+        if (subtitleLabelList.size() == subtitleUriList.size()) {
+            subtitleLabelList.forEachIndexed { index, label ->
+                val uri = subtitleUriList[index]
                 MediaItem.SubtitleConfiguration.Builder(
-                    Uri.parse(entry.value)
-                ).setMimeType(subtitleUriMimeType(null, entry.value))
-                    .setLanguage(entry.key)
-                    .setLabel(entry.key)
+                    Uri.parse(uri)
+                ).setMimeType(subtitleUriMimeType(null, uri))
+                    .setLanguage(label)
+                    .setLabel(label)
                     .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                     .build().apply {
                         subtitleConfigurationList.add(this)
