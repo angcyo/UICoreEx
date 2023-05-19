@@ -471,7 +471,18 @@
         "px": 1,
         "des": "4K"
       }
-    ]
+    ],
+    "layer": {
+      "layerPicture": {
+        "dpiList": [
+          {
+            "dpi": 254,
+            "px": 4,
+            "des": "1K"
+          }
+        ]
+      }
+    }
   },
   {
     "name": "LX1",
@@ -513,6 +524,17 @@
         "px": 1,
         "des": "4K"
       }
-    ]
+    ],
+    "layer": {
+      "layerPicture": {
+        "dpiList": [
+          {
+            "dpi": 254,
+            "px": 4,
+            "des": "1K"
+          }
+        ]
+      }
+    }
   }
 ]
