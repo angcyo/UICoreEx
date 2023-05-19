@@ -33,5 +33,5 @@
     <string name="aluminum">알루미늄</string>
     <string name="titanium">티타늄</string>
     <string name="magnesium">마그네슘</string>
-    <string name="abs_pvc">아크릴로니트릴 부타디엔 스티렌/폴리염화 비닐</string>
+    <string name="abs_pvc">ABS/PVC</string>
 </resources>
