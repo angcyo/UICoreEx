@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="safety_tips">Consejos de seguridad</string>
+    <string name="device_exception">Dispositivo anormal</string>
+    <string name="ex_tips_one">请进入模式设定，开启[自由模式]</string>
+    <string name="ex_tips_one2">非安全状态，开启[自由模式]后可操作</string>
+    <string name="ex_tips_two">紧急停止! 范围越界。请使用激光调节中的自动调整重置激光焦点的位置后再重试。</string>
+    <string name="ex_tips_three">紧急停止! 激光工作温度过高</string>
+    <string name="ex_tips_four">紧急停止! 机器可能遭到撞击或摇晃</string>
+    <string name="ex_tips_five">紧急停止! 超声波传感器检测到有物体进入雕刻范围</string>
+    <string name="ex_tips_six">紧急停止! 数据错误</string>
+    <string name="ex_tips_seven">紧急停止! 文件编号查询错误</string>
+    <string name="ex_tips_eight">紧急停止! 陀螺仪自检错误</string>
+    <string name="ex_tips_nine">紧急停止! flash自检错误</string>
+    <string name="ex_tips_ten">紧急停止! 尺寸异常</string>
+
+    <string name="laser_type_white">Luz blanca</string>
+    <string name="laser_type_blue">Luz azul</string>
+
+    <string name="preview_state_gcode">Diagrama vectorial de previsualización</string>
+    <string name="preview_state_range">Alcance de previsualización</string>
+    <string name="preview_state_z_pause">Tercer eje pausa</string>
+    <string name="preview_state_z_pause2">%1$s暂停</string>
+    <string name="preview_state_z_continue">Tercer eje continua</string>
+    <string name="preview_state_z_continue2">%1$s继续</string>
+    <string name="preview_state_z_scroll">Tercer eje rueda</string>
+    <string name="preview_state_center">Centro de previsualización</string>
+    <string name="preview_state_points">Previsualización de alcance de 4 puntos</string>
+    <string name="preview_state_bracket">Ajuste del soporte</string>
+
+    <string name="engrave_state_pause">Grabado láser pausa</string>
+    <string name="engrave_state_stop">El grabado está terminado </string>
+    <string name="engrave_state_ing">Grabando</string>
+
+    <string name="blue_no_device_connected">Dispositivos no conectados</string>
+    <string name="device_busy_tip">设备正忙, 请稍后重试!</string>
+    <string name="device_init_fail_tip">¡La inicialización del dispositivo ha fallido!</string>
+    <string name="command_too_long_tip">¡Comando demasiado largo!</string>
+    <string name="command_send_error_tip">通信异常, 请稍后重试!</string>
+
+    <string name="work_mode_focusing">Modo de enfoque</string>
+    <string name="work_mode_file_download">Modo de descargas de archivos</string>
+    <string name="work_mode_shutdown">Estado desactivado</string>
+    <string name="work_mode_setup">Modo de ajustes</string>
+    <string name="work_mode_download">Modo de descargas</string>
+
+    <string name="laser_not_plugged_tip">El cabezal láser no se inserta correctamente</string>
+
+    <string name="device_ex_z_label">Tercer eje</string>
+    <string name="device_ex_z_des">Es posible establecer la configuración de parámetros para grabar escenas en la superficie de objetos rectangulares y cilíndricos regulares (límites de tamaño: la anchura está limitada a menos de 100 mm</string>
+    <string name="device_ex_r_label">旋转抓手</string>
+    <string name="device_ex_r_des">--</string>
+    <string name="device_ex_s_label">Extensión deslizante</string>
+    <string name="device_ex_s_des">--</string>
+
+    <string name="device_z_model_flat">Placa</string>
+    <string name="device_z_model_car">Carro</string>
+    <string name="device_z_model_cylinder">Cilindro</string>
+
+    <string name="command_timeout_tip">指令超时</string>
+    <string name="command_cancel_tip">指令取消</string>
+
+    <string name="engrave_module_single_pen">Modo de lápiz monocromático</string>
+    <string name="engrave_module_color_pen">Modo de lápiz de color</string>
+    <string name="engrave_module_knife_cutting">Modo de corte de cuchillo</string>
+    <string name="engrave_module_cnc">Modo CNC</string>
+</resources>

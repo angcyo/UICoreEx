@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="engrave_warn">Avertissement</string>
+    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
+    <string name="device_connected">Connecté</string>
+    <string name="blue_connecting">蓝牙正在连接...</string>
+    <string name="blue_disconnecting">正在断开...</string>
+    <string name="blue_connect">Connexion Bluetooth</string>
+    <string name="ui_slip_menu_model">Réglage du mode</string>
+
+    <string name="device_setting_act_model_warning_tone">Bip de travail</string>
+    <string name="device_setting_act_des_sound">Un signal sonore est émis au début et à la fin du travail.</string>
+    <string name="device_setting_act_model_security">Statut de sécurité</string>
+    <string name="device_setting_act_des_security">Ouverture automatique du mode sécurité sous le capot de protection.</string>
+    <string name="device_setting_act_model_free">Mode libre</string>
+    <string name="device_setting_act_des_free">Clause de non-responsabilité à convenir dans l\'état non protégé</string>
+    <string name="device_setting_act_model_preview_g_code">Diagramme vectoriel</string>
+    <string name="device_setting_engrave_dir">Direction de la gravure</string>
+    <string name="device_setting_engrave_dir_des">Par défaut</string>
+    <string name="device_g_code_pwr_label">Utiliser la puissance de la commande GCode</string>
+    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
+    <string name="device_setting_act_des_preview_g_code">Le curseur se déplace en fonction du chemin d\'accès au fichier de la carte vectorielle.</string>
+
+    <string name="ui_disclaimer">免责声明</string>
+    <string name="ui_disclaimer_content2">警告：当“自由模式”开关被打开后，您的设备将被允许在脱离保护罩的防护下使用，由此可能会给您带来安全风险，因此请务必确认是否有必要执行当前操作；如果您确认要放弃在安全保护罩的防护下使用，请务必确保您的操作符合安全规范，而且同意由此操作导致的安全和法律风险完全由本人负责，LaserPecker的厂商和代理商将不负有任何安全和法律责任。</string>
+
+    <string name="device_ex_car_label">Plate-forme mobile</string>
+    <string name="device_ex_car_des">--</string>
+    <string name="device_ex_direction_label">En avant</string>
+    <string name="device_ex_direction_des">Rouleau électrique polyvalent rotation avant ou arrière</string>
+    <string name="device_direction_forward">En avant</string>
+    <string name="device_direction_reversal">En arrière</string>
+    <string name="device_s_batch_engrave_label">Extension de la glissière mode multi-fichier</string>
+    <string name="device_s_batch_engrave_des">--</string>
+    <string name="device_ex_engrave_module">Module de gravure</string>
+    <string name="device_ex_pen_engrave_label">Mode peinture</string>
+    <string name="device_module_calibration_label">Calibration du module</string>
+    <string name="device_module_calibration_des">Verrouillez votre module après la calibration</string>
+    <string name="start_calibration">Lancer la calibration</string>
+    <string name="finish_calibration">Terminer la calibration</string>
+    <string name="device_setting_txt_3">Bouton tactile</string>
+    <string name="device_setting_txt_4">Ce commutateur contrôle l\'activation et la désactivation des boutons tactiles de prévisualisation et d\'arrêt sur l\'unité principale.</string>
+    <string name="button_infra_red_title">Lumière rouge allumée en permanence</string>
+    <string name="button_infra_red_content">En raison de l\'utilisation de la gravure à lumière invisible</string>
+    <string name="device_setting_txt_5">Bouton de gravure par lots</string>
+    <string name="device_setting_txt_6">Cet interrupteur permet d\'activer et de désactiver l\'accessoire externe "Bouton de gravure par lots".</string>
+    <string name="device_setting_blue_connect_auto">Connexion Bluetooth automatique</string>
+
+    <string name="engrave_experimental">Expérimental</string>
+    <string name="create_log_tip">请稍等，正在生成日志...</string>
+
+    <string name="firmware_corrupted">Le micrologiciel a été endommagé.</string>
+    <string name="firmware_invalid">无效的固件</string>
+    <string name="cannot_update_firmware_tip">Le micrologiciel ne peut pas être mis à jour pour l\'appareil actuel.</string>
+    <string name="firmware_upgrade">Mise à jour du micrologiciel</string>
+    <string name="firmware_version"> Version du firmware</string>
+    <string name="firmware_time">Heure du micrologiciel</string>
+    <string name="device_firmware_version">Version du micrologiciel de l\'appareil</string>
+    <string name="upgrade_completed">升级完成!</string>
+    <string name="upgrade_duration">Temps de consommation</string>
+
+    <string name="data_exception">数据异常!</string>
+    <string name="blue_connected">Bluetooth connecté</string>
+    <string name="blue_disconnected">Bluetooth déconnecté</string>
+
+    <string name="engrave_layer_bitmap">Album</string>
+    <string name="engrave_layer_fill">Remplissage</string>
+    <string name="engrave_layer_line">Ligne</string>
+    <string name="engrave_layer_cut">découper </string>
+
+    <string name="engrave_channel">Canal de gravure</string>
+    <string name="engraving">Gravure laser en cours</string>
+
+    <string name="canvas_cone">Cone</string>
+    <string name="canvas_ball">Sphere</string>
+
+    <string name="ui_quit">Quitter</string>
+    <string name="ui_finish">Terminer</string>
+    <string name="ui_setting">Paramètres</string>
+
+    <string name="device_not_found">Impossible de trouver votre appareil.</string>
+    <string name="device_not_found_des">Veuillez vous assurer que votre appareil est dans l\'état "To Be Connected".</string>
+    <string name="contact_me">Contacter le service clientèle.</string>
+
+    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+
+    <string name="select_device">Sélectionner un appareil</string>
+    <string name="start_upgrade">Démarrer la mise à jour</string>
+    <string name="engrave_feedback">Question en retour</string>
+
+    <string name="empty_data_transfer">无雕刻数据!</string>
+    <string name="out_of_data_transfer">数据过大!</string>
+    <string name="transfer_data_exception">传输数据异常!</string>
+    <string name="canvas_open">Ouvre</string>
+    <string name="font_import_fail">Importation des polices a échoué</string>
+    <string name="font_import_success">Importation de polices a réussi</string>
+    <string name="canvas_import_font">Importation</string>
+    <string name="canvas_backups_font">备份</string>
+    <string name="canvas_export_font">Exporter</string>
+    <string name="canvas_rename">Renommer</string>
+    <string name="project_title"> Mes créations</string>
+    <string name="canvas_delete_project">Supprimer le projet</string>
+    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
+    <string name="save_project_title">Titre du projet</string>
+    <string name="project_title_limit">Saisir jusqu\'à 20 caractères</string>
+    <string name="project_save_success_tip">Sauvegarde réussie</string>
+</resources>

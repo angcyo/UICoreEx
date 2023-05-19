@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="canvas_tips">Recordatorio</string>
+    <string name="canvas_exit_edit">放弃编辑?</string>
+    <string name="canvas_title">Crear</string>
+
+    <string name="canvas_width">Anchura</string>
+    <string name="canvas_height">Altura</string>
+    <string name="canvas_axis_x">Eje X</string>
+    <string name="canvas_axis_y">Eje Y</string>
+    <string name="canvas_rotate">Rotación</string>
+
+    <!--libcanvas-->
+    <string name="canvas_image">Álbum</string>
+    <string name="canvas_text">Texto</string>
+    <string name="canvas_input_text">Introduzca el texto</string>
+    <string name="canvas_shapes">Forma</string>
+    <string name="canvas_material">Imágenes prediseñadas</string>
+    <string name="canvas_doodle">Graffiti </string>
+    <string name="canvas_barcode">Código de barras</string>
+    <string name="canvas_qrcode">Código QR</string>
+    <string name="canvas_edit">Editar</string>
+    <string name="canvas_layer">Capa </string>
+    <string name="canvas_undo">Revocar</string>
+    <string name="canvas_redo">Rehacer</string>
+    <string name="canvas_setting">Ajustes</string>
+    <string name="canvas_line">Línea</string>
+    <string name="canvas_oval">Elipse</string>
+    <string name="canvas_polygon">Polígono</string>
+    <string name="canvas_rectangle">Rectángulo</string>
+    <string name="canvas_pentagram"> Estrella</string>
+    <string name="canvas_love">Corazón</string>
+    <string name="canvas_stroke">Perfilar</string>
+    <string name="canvas_fill">Llenado</string>
+    <string name="canvas_path_fill">Trayectoria de llenado</string>
+    <string name="canvas_fill_stroke">填充&amp;描边</string>
+
+    <string name="canvas_solid">Macizo</string>
+    <string name="canvas_hollow">Hueco</string>
+    <string name="canvas_bold">Negrita</string>
+    <string name="canvas_italic">Cursiva</string>
+    <string name="canvas_under_line">Subrayado</string>
+    <string name="canvas_delete_line">Tachado</string>
+    <string name="canvas_font">Fuente</string>
+    <string name="canvas_standard">Disposición horizontal</string>
+    <string name="canvas_vertical">Disposición vertical</string>
+    <string name="canvas_align_left">Alineación izquierda</string>
+    <string name="canvas_align_horizontal">Centrado horizontal</string>
+    <string name="canvas_align_right">Alineación derecha</string>
+    <string name="canvas_align_center">Centrado</string>
+    <string name="canvas_bounds_center">Con el equipo colocado en el centro</string>
+    <string name="canvas_align_top">Alineación de la parte superior</string>
+    <string name="canvas_align_vertical">Centrado vertical</string>
+    <string name="canvas_align_bottom">Alineación de la parte inferior</string>
+    <string name="canvas_prints">Grabado</string>
+    <string name="canvas_gcode">G-code</string>
+    <string name="canvas_black_white">Pintura monocromática</string>
+    <string name="canvas_dithering">Vacilación</string>
+    <string name="canvas_grey">Gris</string>
+    <string name="canvas_seal">Sello</string>
+
+    <string name="canvas_invert">Color inverso</string>
+    <string name="canvas_threshold">Valor de umbral</string>
+    <string name="canvas_contrast">Relación de contraste</string>
+    <string name="canvas_brightness">Luminosidad</string>
+    <string name="canvas_line_space">Espaciado</string>
+    <string name="canvas_path_fill_line_space">Espaciado de llenado</string>
+    <string name="canvas_path_fill_angle">Ángulo de llenado</string>
+    <string name="canvas_outline">Marco</string>
+    <string name="canvas_angle">Ángulo </string>
+    <string name="canvas_direction">Dirección</string>
+    <string name="canvas_inch_unit">Sistema inglés</string>
+    <string name="canvas_pixel_unit">Píxel</string>
+    <string name="canvas_cloud_storage">云端存储</string>
+    <string name="canvas_grid">Cuadrícula</string>
+    <string name="canvas_smart_assistant">Guía inteligente</string>
+    <string name="canvas_preview">Vista previa </string>
+    <string name="canvas_regulate">Ajuste</string>
+    <string name="canvas_confirm">Confirmación </string>
+    <string name="canvas_forward">Enviar hacia adelante</string>
+    <string name="canvas_backward">Enviar hacia atrás</string>
+    <string name="canvas_front">Ponga en la capa superior</string>
+    <string name="canvas_back">Ponga en la capa inferior</string>
+    <string name="canvas_sort">Distribuir</string>
+
+    <string name="canvas_invalid_font">Fuente inválida</string>
+    <string name="canvas_font_exist">La fuente ya existe</string>
+    <string name="canvas_cannot_import">No se puede importar</string>
+    <string name="canvas_delete_font">Eliminar fuente</string>
+
+    <string name="canvas_photo">Álbum</string>
+    <string name="out_of_limit">Superar al óptimo límite</string>
+    <string name="out_of_bounds">Superar al límite de grabado</string>
+    <string name="canvas_crop">Cortar</string>
+    <string name="canvas_mesh">Retorcer</string>
+    <string name="canvas_system">Sistema</string>
+    <string name="canvas_custom">Personalizar</string>
+    <string name="canvas_style">Estilo</string>
+    <string name="canvas_align">Alinear </string>
+    <string name="canvas_flat">Distribuir por igual</string>
+    <string name="canvas_flat_horizontal">Distribución horizontal por igual</string>
+    <string name="canvas_flat_vertical">Distribución vertical por igual</string>
+    <string name="canvas_group_dissolve">Descomponer</string>
+    <string name="canvas_group_group">Componer</string>
+
+    <string name="canvas_font_size">Tamaño de fuente</string>
+    <string name="canvas_word_spacing">Espacio entre caracteres</string>
+    <string name="canvas_line_spacing">Interlineado</string>
+    <string name="canvas_curve">Curva</string>
+    <string name="canvas_rasterize">Rasterización</string>
+
+    <string name="canvas_side_count">Número de lados</string>
+    <string name="canvas_angle_count">角数</string>
+    <string name="canvas_depth">Profundidad</string>
+    <string name="canvas_corner">Esquina redonda</string>
+
+    <string name="invert_title">Descripción del color inverso</string>
+    <string name="invert_des">1.先按照正常流程测试雕刻材料\n2.看雕刻效果深浅（与材料色对比）\n3.判断是否勾选反色</string>
+    <string name="invert_criterion">Criterio de determinación</string>
+    <string name="invert_not_recommend">No se recomienda el color inverso</string>
+    <string name="invert_not_recommend_criterion">El color del grabado es más oscuro que el del material</string>
+    <string name="invert_recommend">Se recomienda el color inverso</string>
+    <string name="invert_recommend_criterion">El color del grabado es más claro que el del material</string>
+
+    <string name="canvas_clear">清空所有</string>
+    <string name="canvas_select_all">选中所有</string>
+    <string name="canvas_show_all">显示所有</string>
+    <string name="canvas_hide_other">隐藏其它</string>
+    <string name="canvas_origin">画布原点</string>
+    <string name="canvas_reset">画布复位</string>
+    <string name="canvas_best">画布适应</string>
+    <string name="canvas_ratio_1">画布缩放100%</string>
+
+    <string name="canvas_item_outof_limit">元素数量超出限制!</string>
+    <string name="canvas_min_diameter">Diámetro pequeño</string>
+    <string name="canvas_max_diameter">Diámetro grande</string>
+    <string name="canvas_rotation_axis">Eje giratoria</string>
+
+    <string name="canvas_sync_font">Copia de seguridad/sincronización de fuentes</string>
+
+    <string name="add_parameter_comparison_table">添加参数对照表</string>
+    <string name="add_parameter_comparison_table_threshold">Valor de umbral</string>
+    <string name="add_parameter_comparison_table_columns">列数</string>
+    <string name="add_parameter_comparison_table_rows">行数</string>
+    <string name="add_parameter_comparison_table_font_size">字体大小</string>
+    <string name="add_parameter_comparison_table_grid_margin">格子边距</string>
+
+    <string name="add_multiplication_table">添加乘法口诀表</string>
+    <string name="add_visual_chart">添加视力表</string>
+
+    <string name="data_not_allowed">当前模式下, 不允许雕刻"%1$s"数据</string>
+    <string name="data_not_allowed_reverse">当前模式下, 不允许雕刻非"%1$s"数据</string>
+    <string name="data_not_allowed_height">当前模式下, 不允许雕刻高度大于%1$s mm的数据</string>
+    <string name="data_not_allowed_multi">当前模式下, 不允许雕刻多个元素</string>
+
+    <string name="canvas_side">Número de lados</string>
+    <string name="project_exist_tip">项目已存在, 是否覆盖?</string>
+    <string name="project_restore_tip">是否恢复之前的项目?</string>
+
+</resources>

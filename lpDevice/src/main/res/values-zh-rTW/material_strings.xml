@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recycle_paper">环保纸</string>
+    <string name="corrugated_paper">瓦楞纸</string>
+    <string name="leather">皮革</string>
+    <string name="bamboo">竹质</string>
+    <string name="wood">木质</string>
+    <string name="cork">软木</string>
+    <string name="plastic">塑料</string>
+    <string name="cloth">布料</string>
+    <string name="felt">毛毡布</string>
+    <string name="opacity_acrylic">不透明亚克力</string>
+    <string name="photosensitive_seal">光敏印章</string>
+    <string name="fruit_peel">果皮</string>
+    <string name="custom">自定义</string>
+    <string name="coke_can">可乐罐</string>
+    <string name="stone">石头</string>
+    <string name="oxidized_metal">氧化金属</string>
+    <string name="pottery">陶制品</string>
+    <string name="paint_coating">漆涂层</string>
+    <string name="stainless_steel">不锈钢</string>
+    <string name="silicone">硅胶</string>
+    <string name="painted_paperboard">漆面纸板</string>
+    <string name="wire_drawing_stainless_steel">拉丝不锈钢</string>
+    <string name="pure_copper">铜</string>
+    <string name="aluminium_alloy">铝合金</string>
+    <string name="paper">纸</string>
+    <string name="metal">金属</string>
+    <string name="glasses">玻璃</string>
+    <string name="jewelry">珠宝</string>
+    <string name="food">美食</string>
+    <string name="iron">铁</string>
+    <string name="aluminum">铝</string>
+    <string name="titanium">钛</string>
+    <string name="magnesium">镁</string>
+    <string name="abs_pvc">ABS/PVC</string>
+</resources>

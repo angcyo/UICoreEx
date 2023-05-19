@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="canvas_operate">Betrieb</string>
+    <string name="laser_type">Lichtquelle des Lasers</string>
+    <string name="object_diameter">Durchmesser des Objekts</string>
+
+    <string name="blue_no_device_connected">Gerät nicht angeschlossen</string>
+    <string name="device_ex_discontent_tips">%1$s配件未连接，请先连接!</string>
+    <string name="engrave_ex_discontent_tips">检查到%1$s配件未连接，是否继续?</string>
+
+    <string name="preview_center">Anzeigezentrum</string>
+    <string name="preview_continue">Vorschau fortsetzen</string>
+    <string name="print_v2_package_preview_over">Vorschau beenden</string>
+    <string name="laser_brightness">Helligkeit des Lasers</string>
+    <string name="previewing">预览中…</string>
+    <string name="preview">Vorschau</string>
+    <string name="print_setting">Einstellungen für die Lasergravur</string>
+    <string name="file_setting">Dateieinstellungen</string>
+    <string name="transmitting">Datei wird übertragen</string>
+    <string name="v4_bmp_edit_tips">Einen Moment. Bilddaten wird verarbeitet.</string>
+    <string name="remaining_time">Verbleibende Zeit</string>
+    <string name="start_engrave">Lasergravur starten</string>
+    <string name="engrave_pause">Lasergravur pausieren</string>
+    <string name="engrave_finish">Lasergravur ist abgeschlossen</string>
+    <string name="engrave_stop">Lasergravur beenden</string>
+    <string name="engrave_continue">Lasergravur fortsetzen</string>
+    <string name="start_preview">Vorschau anzeigen</string>
+    <string name="print_v2_package_print_state">Angehalten</string>
+    <string name="print_v2_package_print_over">Lasergravur ist bereits abgeschlossen.</string>
+    <string name="print_laser_start_tips">Gravieren Sie nicht auf stark reflektierenden Materialien</string>
+    <string name="engrave_move_state_tips">Bitte bewegen Sie das Gerät nicht</string>
+    <string name="custom_material">Material</string>
+    <string name="custom_power">Leistung</string>
+    <string name="custom_speed">Tiefe</string>
+    <string name="print_times">Durchgang</string>
+    <string name="resolution_ratio">Auflösung</string>
+    <string name="tips_fourteen_12">Zeit</string>
+    <string name="work_time">Bearbeitungszeit</string>
+    <string name="engrave_again">Wiederholen</string>
+    <string name="print_v2_package_Laser_home">Zurück zur Startseite</string>
+    <string name="preview_scroll_continue">Drehende Vorschau</string>
+    <string name="preview_scroll_pause">Drehen pausieren</string>
+    <string name="engrave_speed">Graviergeschwindigkeit</string>
+    <string name="engrave_precision">Beschleunigungsstufen</string>
+
+    <string name="ui_slip_menu_history">Archiv</string>
+    <string name="device_history_title">Gerätedaten</string>
+    <string name="app_history_title">Lokale Daten</string>
+    <string name="delete_history">Verlauf löschen</string>
+    <string name="delete_history_succeed">Erfolgreich gelöscht</string>
+    <string name="delete_history_failed">Löschen fehlgeschlagen</string>
+
+    <string name="print_file_name">Modus</string>
+    <string name="print_range">Größe der Lasergravur</string>
+    <string name="print_time">Tatsächliche Bearbeitungszeit</string>
+    <string name="width">Breite</string>
+    <string name="height">Höhe</string>
+
+    <string name="file_name">Benennen</string>
+
+    <string name="engrave_file_name">Datei benennen</string>
+    <string name="ui_next">Nächster Schritt</string>
+    <string name="send_file">Datei senden</string>
+
+    <string name="size_safety_tips">Vergewissern Sie sich</string>
+    <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
+    <string name="print_stop">确定要结束镭雕吗？</string>
+
+    <string name="preview_drag_tip">Ziehen Sie die Position des Elements innerhalb des roten Rahmens</string>
+    <string name="bracket_height_label">Höhe anpassen</string>
+    <string name="bracket_not_connect">Halterung nicht angeschlossen</string>
+
+    <string name="range_preview">Bereich</string>
+    <string name="center_preview">Mittelpunkt</string>
+    <string name="pause_preview">Pause</string>
+    <string name="continue_preview">Weiter</string>
+    <string name="scroll_preview">Scrollen</string>
+    <string name="preview_parameter_setting">Einstellung der Parameter</string>
+    <string name="filename_hint">Eingabe von bis zu 28 Bytes</string>
+    <string name="stop_transfer">Übertragung beenden</string>
+    <string name="engrave_tip">Gravieren Sie nicht auf stark reflektierenden Materialien</string>
+    <string name="engrave_layer_config">Gravurebenen</string>
+
+    <string name="back_creation">Zurück zum Erstellen</string>
+    <string name="progress">Fortschritt</string>
+    <string name="share_community">An Gemeinschaft weiterleiten</string>
+    <string name="canvas_normal_layer">Normale Ebenen</string>
+    <string name="canvas_engrave_layer">Gravurebenen</string>
+    <string name="retry">Erneut versuchen</string>
+
+    <string name="engrave_perimeter">Umfang</string>
+    <string name="engrave_bounds_warn">Elemente befinden sich außerhalb des Gravurbereichs</string>
+    <string name="engrave_overflow_bounds_message">Außerhalb des Gravurbereichs. Bitte ziehen Sie das Element hinein</string>
+    <string name="engrave_overflow_bounds_message_strict">超出雕刻区域，请将元素拖入调整到蓝色边框内</string>
+
+    <string name="device_engrave_ing_title">Das Gerät ist gerade in Betrieb</string>
+    <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
+
+    <string name="focal_distance_tip">Bitte überprüfen Sie die Brennweite</string>
+    <string name="focal_distance">Brennweite</string>
+    <string name="no_data_transfer">无数据需要传输!</string>
+    <string name="no_data_engrave">无数据需要镭雕!</string>
+
+    <string name="device_angle">Horizontalwinkel des Geräts</string>
+    <string name="device_temp">Temperatur des Geräts</string>
+
+    <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
+    <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
+
+    <string name="engrave_stopping_tip">正在停止雕刻,请稍等...</string>
+
+    <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>
+    <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
+
+    <string name="material_title_limit">Eingabe von bis zu 20 Zeichen</string>
+    <string name="save_material_title">Name des Materials</string>
+
+    <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
+    <string name="engrave_skip_current">Aktuelle Gravur überspringen</string>
+
+    <string name="device_models">LP-Modell</string>
+    <string name="show_all_label">Einzelheiten</string>
+    <string name="hide_all_label">Zusammenklappen</string>
+
+    <string name="not_support_tip">Nicht unterstützte Firmware-Version</string>
+    <string name="engrave_item_params_tip">单元素雕刻参数模式下,需要先在雕刻图层中配置好元素的雕刻参数!</string>
+
+    <string name="device_shutdown_tip">Gerät ist ausgeschaltet</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recycle_paper">Papier recyclé</string>
+    <string name="corrugated_paper">Carton ondulé</string>
+    <string name="leather">Cuir</string>
+    <string name="bamboo">Bambou</string>
+    <string name="wood">Bois</string>
+    <string name="cork">Liège</string>
+    <string name="plastic">Plastiques</string>
+    <string name="cloth">Tissus</string>
+    <string name="felt">Tissu en feutre</string>
+    <string name="opacity_acrylic">Acrylique opaque</string>
+    <string name="photosensitive_seal">Sceau photosensible</string>
+    <string name="fruit_peel">Peau de fruit</string>
+    <string name="custom">Personnaliser</string>
+    <string name="coke_can">Canettes de Coca-Cola</string>
+    <string name="stone">Pierre</string>
+    <string name="oxidized_metal">Oxyde métallique</string>
+    <string name="pottery">Poterie</string>
+    <string name="paint_coating">Revêtement laqué</string>
+    <string name="stainless_steel">Acier inoxydable</string>
+    <string name="silicone">Carton laqué</string>
+    <string name="painted_paperboard">Acier inoxydable brossé</string>
+    <string name="wire_drawing_stainless_steel">Silicone </string>
+    <string name="pure_copper">Cuivre</string>
+    <string name="aluminium_alloy">Alliage d\'aluminium</string>
+    <string name="paper">Papier</string>
+    <string name="metal">Métal</string>
+    <string name="glasses">Verre</string>
+    <string name="jewelry">Bijoux</string>
+    <string name="food">Aliments</string>
+    <string name="iron">Fer</string>
+    <string name="aluminum">Aluminium</string>
+    <string name="titanium">Titane</string>
+    <string name="magnesium">Magnésium</string>
+    <string name="abs_pvc">ABS/PVC</string>
+</resources>
