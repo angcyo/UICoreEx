@@ -447,6 +447,7 @@ object LaserPeckerHelper {
                 }
             }
             this.zModeList = modeList
+            this.deviceConfigBean = configBean
         }
     }
 
@@ -587,6 +588,27 @@ object LaserPeckerHelper {
             }
         }
         return result
+    }
+
+    /**优先使用图层对应的分辨率列表*/
+    fun findProductLayerSupportPxList(layerIdList: List<String>): List<PxInfo> {
+        if (layerIdList.isEmpty()) {
+            //no op
+        } else {
+            val configBean = vmApp<LaserPeckerModel>().productInfoData.value?.deviceConfigBean
+            if (configBean != null) {
+                configBean.layer?.let { map ->
+                    for (layerId in layerIdList) {
+                        val layerConfig = map[layerId]
+                        if (layerConfig?.dpiList != null) {
+                            return layerConfig.dpiList!!
+                        }
+                    }
+                }
+            }
+        }
+
+        return findProductSupportPxList()
     }
 
     /**返回设备支持的光源列表*/

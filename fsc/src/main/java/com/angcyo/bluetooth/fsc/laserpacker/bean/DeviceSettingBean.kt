@@ -34,8 +34,10 @@ data class DeviceSettingBean(
     var showKeyPrintRange: String? = null,
     /**设置项[红光常亮]*/
     var showIrDstRange: String? = null,
-    /**支持切割图层的模块,号分割多个*/
+    /**LX1支持切割图层的模块,号分割多个
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isCutModule]*/
     var cutLayerModule: String? = null,
+
     //region---Android端设置项---
     /**设置项[自动连接蓝牙]*/
     var showAutoConnectRange: String? = null,

@@ -207,7 +207,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                             LaserPeckerHelper.findProductSupportPxList()
                                 .filter { it.px > LaserPeckerHelper.PX_4K } //2023-4-6 z轴不支持4K及以上
                         } else {
-                            LaserPeckerHelper.findProductSupportPxList()
+                            LaserPeckerHelper.findProductLayerSupportPxList(
+                                LPEngraveHelper.getSelectElementLayerList(delegate)
+                            )
                         }
 
                     itemTransferConfigEntity = transferConfigEntity

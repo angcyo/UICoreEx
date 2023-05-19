@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.data
 import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 
@@ -112,6 +113,9 @@ data class LaserPeckerProductInfo(
 
     /**第三轴的模式列表*/
     var zModeList: List<ZModel>? = null,
+
+    /**产品对应的配置表*/
+    var deviceConfigBean: DeviceConfigBean? = null
 ) {
 
     /**

@@ -91,6 +91,21 @@ object LPEngraveHelper {
         }
     }
 
+    /**获取选中元素的图层信息列表*/
+    fun getSelectElementLayerList(delegate: CanvasRenderDelegate?): List<String> {
+        val result = mutableListOf<String>()
+        delegate ?: return result
+        val list = getLayerRendererList(delegate, null)
+        for (renderer in list) {
+            renderer.lpElementBean()?._layerId?.let {
+                if (!result.contains(it)) {
+                    result.add(it)
+                }
+            }
+        }
+        return result
+    }
+
     /**[isAllSameLayerMode]*/
     fun isAllSameLayerMode(delegate: CanvasRenderDelegate?, layerMode: Int): Boolean {
         delegate ?: return false

@@ -48,4 +48,27 @@ data class DeviceConfigBean(
     var carMaxWidth: Int = 0,
     var carMaxHeight: Int = 0,
     var penMaxHeight: Int = 0,
-)
+
+    //2023-5-19 图层信息
+
+    /**[key] 图层id
+     * [value] [LayerConfigBean]
+     *
+     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_FILL]
+     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_PICTURE]
+     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_LINE]
+     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_CUT]
+     * */
+    var layer: HashMap<String, LayerConfigBean>? = null
+) {
+
+    /**是否有特殊图层配置*/
+    fun haveLayerConfig(): Boolean {
+        return layer?.isNotEmpty() == true
+    }
+
+    /**指定的图层[layerId] 是否有特殊的配置*/
+    fun haveLayerConfig(layerId: String): Boolean {
+        return layer?.get(layerId) != null
+    }
+}
