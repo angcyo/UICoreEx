@@ -152,7 +152,8 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
         }
     }
 
-    private fun DslViewHolder.isLockRatio() = view(R.id.item_lock_view)?.isSelected == true
+    private fun DslViewHolder.isLockRatio() = view(R.id.item_lock_view)?.isSelected == true &&
+            selectorComponent?.isSupportControlPoint(BaseControlPoint.CONTROL_TYPE_HEIGHT) == true
 
     /**绑定宽高事件*/
     private fun bindWidthHeight(itemHolder: DslViewHolder) {
@@ -168,7 +169,13 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
                     val newWidth = unit.convertValueToPixel(toWidth)
                     val lockRatio = itemHolder.isLockRatio()
 
-                    val sx = newWidth / bounds.width()
+                    val boundsWidth = bounds.width()
+                    val sx = if (boundsWidth <= 0) {
+                        newWidth / bounds.height()
+                    } else {
+                        newWidth / boundsWidth
+                    }
+
                     val sy = if (lockRatio) sx else 1f
 
                     renderer.scale(sx, sy, Reason.user.apply {
