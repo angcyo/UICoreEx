@@ -22,6 +22,8 @@ import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
 import com.angcyo.library.component.hawk.LibLpHawkKeys
+import com.angcyo.library.component.pool.acquireTempMatrix
+import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
@@ -31,6 +33,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.pixplicity.sharp.Sharp
 import kotlin.math.max
 
 /**
@@ -380,7 +383,17 @@ object LaserPeckerHelper {
         penBounds.set(left, top, right, penBottom)
 
         //最佳预览范围设置
-        if (configBean.bestWidthPhys > 0 && configBean.bestHeightPhys > 0) {
+        if (!configBean.bestPhysPath.isNullOrBlank()) {
+            //path
+            val path = Sharp.loadPath(configBean.bestPhysPath) //bestPhysPath里面是mm单位
+            limitPath.set(path)
+            val scaleMatrix = acquireTempMatrix()
+            val scale = mmValueUnit.convertValueToPixel(1f)
+            scaleMatrix.setScale(scale, scale)//缩放到像素单位
+            limitPath.transform(scaleMatrix)
+            limitPath.computePathBounds(previewBounds)
+            scaleMatrix.release()
+        } else if (configBean.bestWidthPhys > 0 && configBean.bestHeightPhys > 0) {
             val lOffset = (wPhys - configBean.bestWidthPhys) / 2 //mm
             val tOffset = (hPhys - configBean.bestHeightPhys) / 2 //mm
             val l = mmValueUnit.convertValueToPixel(lOffset.toFloat()).floor()

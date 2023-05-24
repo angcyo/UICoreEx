@@ -38,6 +38,12 @@ data class DeviceConfigBean(
     @MM
     var bestWidthPhys: Int = 0,
     var bestHeightPhys: Int = 0,
+
+    /**最佳尺寸的svg path.
+     * [M10,10L100,100] 值是mm单位*/
+    @MM
+    var bestPhysPath: String? = null,
+
     /**有效范围宽高比例, 在[bestWidthPhys] [bestHeightPhys]中*/
     var validWidthRatio: Float = 0f,
     var validHeightRatio: Float = 0f,
