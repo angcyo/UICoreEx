@@ -57,12 +57,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                             "${engraveConfigEntity.toEngravingSpeed()}%"
                         )
                     )*/
-                    add(
-                        LabelDesData(
-                            _string(R.string.engrave_precision),
-                            "${engraveConfigEntity.precision}"
-                        )
-                    )
+                    add(precisionData("${engraveConfigEntity.precision}"))
                 }
                 if (deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
                     //画笔模式

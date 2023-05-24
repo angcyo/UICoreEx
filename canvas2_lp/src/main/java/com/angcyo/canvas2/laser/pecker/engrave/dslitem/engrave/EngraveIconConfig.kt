@@ -22,6 +22,7 @@ object EngraveIconConfig {
     val iconAlignment = DynamicDrawableSpan.ALIGN_BOTTOM
 }
 
+/**材质*/
 fun materialData(des: CharSequence?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -34,6 +35,7 @@ fun materialData(des: CharSequence?) = LabelDesData(
     _string(R.string.custom_material)
 )
 
+/**分辨率*/
 fun resolutionData(des: CharSequence?) = LabelDesData(span {
     if (HawkEngraveKeys.enableConfigIcon) {
         appendDrawable(R.drawable.engrave_config_dpi_svg)
@@ -42,6 +44,16 @@ fun resolutionData(des: CharSequence?) = LabelDesData(span {
     }
 }, des, _string(R.string.resolution_ratio))
 
+/**加速级别*/
+fun precisionData(des: CharSequence?) = LabelDesData(span {
+    if (HawkEngraveKeys.enableConfigIcon) {
+        appendDrawable(R.drawable.engrave_config_precision_svg)
+    } else {
+        append(_string(R.string.engrave_precision))
+    }
+}, des, _string(R.string.engrave_precision))
+
+/**功率*/
 fun powerData(des: Any?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -52,6 +64,7 @@ fun powerData(des: Any?) = LabelDesData(
     }, "${des}%", _string(R.string.custom_power)
 )
 
+/**深度*/
 fun depthData(des: Any?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -62,6 +75,7 @@ fun depthData(des: Any?) = LabelDesData(
     }, "${des}%", _string(R.string.custom_speed)
 )
 
+/**次数*/
 fun timesData(printTimes: Any?, times: Any?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -72,6 +86,7 @@ fun timesData(printTimes: Any?, times: Any?) = LabelDesData(
     }, "${printTimes}/${times}", _string(R.string.print_times)
 )
 
+/**加工时长*/
 fun workTimeData(des: CharSequence?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -82,6 +97,7 @@ fun workTimeData(des: CharSequence?) = LabelDesData(
     }, des, _string(R.string.work_time)
 )
 
+/**剩余时长*/
 fun remainingTimesData(des: CharSequence?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
