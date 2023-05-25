@@ -61,6 +61,34 @@ class LPProjectManager {
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
     var projectName: String? = null
 
+    /**恢复工程对应的默认参数*/
+    fun restoreProjectLastParams(projectBean: LPProjectBean?) {
+        projectBean ?: return
+        //last
+        if (projectBean.lastType > 0) {
+            HawkEngraveKeys.lastType = projectBean.lastType
+        }
+        if (projectBean.lastPower > 0) {
+            HawkEngraveKeys.lastPower = projectBean.lastPower
+        }
+        if (projectBean.lastDepth > 0) {
+            HawkEngraveKeys.lastDepth = projectBean.lastDepth
+        }
+        if (projectBean.lastDpi > 0) {
+            HawkEngraveKeys.lastDpi = projectBean.lastDpi
+        }
+    }
+
+    /**保存工程对应的默认参数*/
+    fun saveProjectLastParams(projectBean: LPProjectBean?) {
+        projectBean ?: return
+        //last
+        projectBean.lastType = HawkEngraveKeys.lastType
+        projectBean.lastPower = HawkEngraveKeys.lastPower
+        projectBean.lastDepth = HawkEngraveKeys.lastDepth
+        projectBean.lastDpi = HawkEngraveKeys.lastDpi
+    }
+
     //region ---打开---
 
     /**打开工程文件*/
@@ -151,19 +179,7 @@ class LPProjectManager {
         projectBean ?: return false
 
         if (delegate != null) {
-            //last
-            if (projectBean.lastType > 0) {
-                HawkEngraveKeys.lastType = projectBean.lastType
-            }
-            if (projectBean.lastPower > 0) {
-                HawkEngraveKeys.lastPower = projectBean.lastPower
-            }
-            if (projectBean.lastDepth > 0) {
-                HawkEngraveKeys.lastDepth = projectBean.lastDepth
-            }
-            if (projectBean.lastDpi > 0) {
-                HawkEngraveKeys.lastDpi = projectBean.lastDpi
-            }
+            restoreProjectLastParams(projectBean)
 
             if (clearOld) {
                 delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
@@ -302,10 +318,7 @@ class LPProjectManager {
                 hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
                 //last
-                lastType = HawkEngraveKeys.lastType
-                lastPower = HawkEngraveKeys.lastPower
-                lastDepth = HawkEngraveKeys.lastDepth
-                lastDpi = HawkEngraveKeys.lastDpi
+                saveProjectLastParams(this)
 
                 val preview =
                     delegate.preview(overrideSize = overrideSize, rendererList = renderList)
@@ -366,10 +379,7 @@ class LPProjectManager {
                 hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
                 //last
-                lastType = HawkEngraveKeys.lastType
-                lastPower = HawkEngraveKeys.lastPower
-                lastDepth = HawkEngraveKeys.lastDepth
-                lastDpi = HawkEngraveKeys.lastDpi
+                saveProjectLastParams(this)
 
                 data = jsonArray {
                     renderList.forEach { renderer ->
