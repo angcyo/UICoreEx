@@ -501,6 +501,8 @@ object CanvasDataHandleOperate {
         offsetTop: Float = 0f,
         pathStep: Float = 1f,
         append: Boolean = false,
+        fillPathStep: Float = 1f, //填充的线距
+        fillAngle: Float = 0f, //填充线的角度
     ): File {
         val newPathList = pathList.transform(bounds, rotate)
         //转换成Svg, 使用像素单位
@@ -516,7 +518,9 @@ object CanvasDataHandleOperate {
                 writeLast,
                 offsetLeft,
                 offsetTop,
-                pathStep
+                pathStep,
+                fillPathStep,
+                fillAngle
             )
         }
         return outputFile
