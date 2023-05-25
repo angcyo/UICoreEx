@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.R
+import com.angcyo.library.L
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
@@ -27,26 +28,33 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
          * 也可以通过硬件版本获取设备类型[com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.parseProductName]*/
         fun getDeviceType(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String {
             val prefix = LaserPeckerHelper.PRODUCT_PREFIX
-            return when {
+            val result = when {
                 name == LaserPeckerHelper.CI ||
                         name?.startsWith("$prefix-CI") == true ||
                         name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true ||
                         name?.startsWith(LaserPeckerHelper.CI) == true ||
                         name?.startsWith(LaserPeckerHelper.CI_OLD) == true -> LaserPeckerHelper.CI
+
                 name == LaserPeckerHelper.LIV ||
                         name?.startsWith("$prefix-IV") == true ||
                         name?.startsWith(LaserPeckerHelper.LIV) == true -> LaserPeckerHelper.LIV
+
                 name == LaserPeckerHelper.LIII ||
                         name?.startsWith("$prefix-III") == true ||
                         name?.startsWith(LaserPeckerHelper.LIII) == true -> LaserPeckerHelper.LIII
+
                 name == LaserPeckerHelper.LII ||
                         name?.startsWith("$prefix-II") == true ||
                         name?.startsWith(LaserPeckerHelper.LII) == true -> LaserPeckerHelper.LII
+
                 name == LaserPeckerHelper.LI ||
                         name?.startsWith("$prefix-I") == true ||
                         name?.startsWith(LaserPeckerHelper.LI) == true -> LaserPeckerHelper.LI
+
                 else -> LaserPeckerHelper.LI
             }
+            L.d("格式化蓝牙名称:$name->$result")
+            return result
         }
 
         /**根据设备名, 获取设备对应的图片资源
@@ -70,26 +78,32 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
                     "$prefix-CI",
                     "${LaserPeckerHelper.CI}-"
                 )
+
                 name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true -> name.replace(
                     "$prefix-${LaserPeckerHelper.CI}",
                     "${LaserPeckerHelper.CI}-"
                 )
+
                 name?.startsWith("$prefix-IV") == true -> name.replace(
                     "$prefix-IV",
                     "${LaserPeckerHelper.LIV}-"
                 )
+
                 name?.startsWith("$prefix-III") == true -> name.replace(
                     "$prefix-III",
                     "${LaserPeckerHelper.LIII}-"
                 )
+
                 name?.startsWith("$prefix-II") == true -> name.replace(
                     "$prefix-II",
                     "${LaserPeckerHelper.LII}-"
                 )
+
                 name?.startsWith("$prefix-I") == true -> name.replace(
                     "$prefix-I",
                     "${LaserPeckerHelper.LI}-"
                 )
+
                 else -> name
             }
         }
@@ -119,18 +133,22 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
                         imageAssetsFolder = "lottie/L4/images"
                         setAnimation("lottie/L4/data.json")
                     }
+
                     LaserPeckerHelper.LIII -> {
                         imageAssetsFolder = "lottie/L3/images"
                         setAnimation("lottie/L3/data.json")
                     }
+
                     LaserPeckerHelper.LII -> {
                         imageAssetsFolder = "lottie/L2/images"
                         setAnimation("lottie/L2/data.json")
                     }
+
                     LaserPeckerHelper.LI -> {
                         imageAssetsFolder = "lottie/L1/images"
                         setAnimation("lottie/L1/data.json")
                     }
+
                     else -> {
                         imageAssetsFolder = "lottie/L1/images"
                         setAnimation("lottie/L1/data.json")
