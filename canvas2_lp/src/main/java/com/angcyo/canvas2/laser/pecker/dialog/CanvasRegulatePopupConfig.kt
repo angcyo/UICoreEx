@@ -24,6 +24,7 @@ import com.angcyo.laserpacker.bean.MeshShapeInfo
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -98,6 +99,14 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
         /**单独的确定按钮*/
         const val KEY_SUBMIT = "key_submit"
+
+        /**图片偏移量, 正负1英寸*/
+        @MM
+        const val KEY_OUTLINE_OFFSET = "key_outline_offset"
+
+        /**图片偏移是否保留空洞*/
+        const val KEY_OUTLINE_HOLE = "key_outline_hole"
+
     }
 
     /**需要调整的项目, 需要啥就添加对应的项
@@ -129,6 +138,10 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
      * */
     var onApplyAction: (dismiss: Boolean) -> Unit = {}
 
+    /**[dismiss] 是否销毁了弹窗
+     * [submit] 是否点击了提交按钮*/
+    var onSubmitAction: (dismiss: Boolean, submit: Boolean) -> Unit = { _, _ -> }
+
     /**值是否发生过改变*/
     var _valueChange: Boolean = false
 
@@ -141,6 +154,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
             if (!_dismissFromSubmit) {
                 onApplyAction(true)
             }
+            onSubmitAction(true, false)
             false
         }
     }
@@ -307,6 +321,36 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 renderDiameterItem(KEY_MAX_DIAMETER)
             }
 
+            //轮廓
+            if (regulateList.contains(KEY_OUTLINE_OFFSET)) {
+                //偏移距离
+                CanvasOutlineOffsetItem()() {
+                    initItem()
+                    itemShowProgressText = false
+                    itemValue = getFloatOrDef(KEY_OUTLINE_OFFSET, 0f)
+                    property[KEY_OUTLINE_OFFSET] = itemValue
+
+                    itemValueChangeAction = {
+                        property[KEY_OUTLINE_OFFSET] = it
+                    }
+                }
+            }
+            if (regulateList.contains(KEY_OUTLINE_HOLE)) {
+                //保留空洞
+                CanvasSwitchItem()() {
+                    itemInfoText = _string(R.string.canvas_outline_hole)
+                    initItem()
+
+                    val def = getBooleanOrDef(KEY_OUTLINE_HOLE, true)
+                    property[KEY_OUTLINE_HOLE] = def
+                    itemSwitchChecked = def
+
+                    itemSwitchChangedAction = {
+                        property[KEY_OUTLINE_HOLE] = it
+                    }
+                }
+            }
+
             //确认按钮
             if (regulateList.contains(KEY_SUBMIT)) {
                 DslBlackButtonItem()() {
@@ -315,6 +359,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                         _valueChange = true //2023-3-10 need?
                         onApplyAction(false)
                         onApplyAction(true)
+                        onSubmitAction(false, true)
                         _dismissFromSubmit = true //2023-5-15
                         window.dismissWindow()
                     }
@@ -497,6 +542,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
     val valueChangedRunnable = Runnable {
         _valueChange = true
         onApplyAction(false)
+        onSubmitAction(false, false)
     }
 
     var shakeDelay: Long = 600L

@@ -66,7 +66,6 @@
     <string name="canvas_line_space">간격</string>
     <string name="canvas_path_fill_line_space">간격 채우기</string>
     <string name="canvas_path_fill_angle">각도 채우기</string>
-    <string name="canvas_outline">윤곽</string>
     <string name="canvas_angle">각도</string>
     <string name="canvas_direction">방향</string>
     <string name="canvas_inch_unit">영국식 단위</string>
@@ -102,6 +101,7 @@
     <string name="canvas_flat_vertical">수직균분</string>
     <string name="canvas_group_dissolve">해체</string>
     <string name="canvas_group_group">편성</string>
+    <string name="canvas_outline">오프셋</string>
 
     <string name="canvas_font_size">글꼴 크기</string>
     <string name="canvas_word_spacing">글꼴 간격</string>

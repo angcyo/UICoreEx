@@ -103,6 +103,9 @@
     <string name="canvas_flat_vertical">Vertical Average</string>
     <string name="canvas_group_dissolve">Unpack</string>
     <string name="canvas_group_group">Group</string>
+    <string name="canvas_outline">Outline</string>
+    <string name="canvas_outline_hole">Preserves the internal contours of the bitmap</string>
+    <string name="canvas_outline_offset_tip">Offset distance(mm)</string>
 
     <string name="canvas_font_size">Font size</string>
     <string name="canvas_word_spacing">Word space</string>
@@ -122,8 +125,6 @@
     <string name="invert_not_recommend_criterion">The carving color is darker than the material</string>
     <string name="invert_recommend">Recommend</string>
     <string name="invert_recommend_criterion">The carving color is lighter than the material color</string>
-
-    <string name="canvas_outline">Outline</string>
 
     <string name="canvas_clear">Clear all</string>
     <string name="canvas_select_all">Select all</string>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.layout.RConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/lib_bg_selector"
+    android:minHeight="@dimen/lib_item_height"
+    android:paddingTop="@dimen/lib_hdpi"
+    android:paddingBottom="@dimen/lib_hdpi"
+    tools:r_background="@color/transparent20">
+
+    <com.angcyo.widget.text.DslTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/lib_drawable_padding"
+        android:paddingLeft="@dimen/lib_padding_left"
+        android:paddingRight="@dimen/lib_padding_right"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/value_text_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="偏移距离(mm)" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/value_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/lib_padding_right"
+        android:background="@drawable/lib_keyboard_number_increment_selector"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:paddingHorizontal="@dimen/lib_xhdpi"
+        android:paddingVertical="@dimen/lib_sdpi"
+        android:singleLine="true"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="25.4" />
+
+    <com.angcyo.widget.progress.DslSeekBar
+        android:id="@+id/lib_seek_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/lib_hdpi"
+        android:paddingTop="@dimen/lib_hdpi"
+        app:layout_constraintTop_toBottomOf="@id/lib_text_view"
+        app:sb_checked_color="@color/colorPrimary"
+        tools:progress_show_text="true"
+        tools:progress_value="0"
+        tools:seek_show_thumb_text="true" />
+
+</com.angcyo.widget.layout.RConstraintLayout>

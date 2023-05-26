@@ -104,6 +104,9 @@ object UMEvent {
     /**创作图片-扭曲*/
     const val CANVAS_IMAGE_MESH = "canvas_image_mesh"
 
+    /**创作图片-轮廓*/
+    const val CANVAS_IMAGE_OUTLINE = "canvas_image_outline"
+
     //endregion ---origin---
 
     //region ---rn---

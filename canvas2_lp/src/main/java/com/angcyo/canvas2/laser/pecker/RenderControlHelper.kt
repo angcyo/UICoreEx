@@ -46,6 +46,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.eachItem
 import com.angcyo.dsladapter.updateAllItemBy
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.CallPoint
@@ -212,7 +213,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!hideIn32 && !closeImageEditItemsFun.have("_dithering_")) {
+        if (!closeImageEditItemsFun.have("_dithering_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
@@ -254,7 +255,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
 
-        if (hideIn32 || isDebugType()) {
+        if (isDebugType()) {
             if (!closeImageEditItemsFun.have("_grey_")) {
                 ImageFilterItem()() {
                     itemIco = R.drawable.canvas_bitmap_grey
@@ -271,7 +272,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
-        if (!hideIn32 && !closeImageEditItemsFun.have("_print_")) {
+        if (!closeImageEditItemsFun.have("_print_")) {
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
@@ -327,6 +328,30 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 drawCanvasRight()
             }
         }
+        //偏移
+        if (!closeImageEditItemsFun.have("_outline_")) {
+            //偏移用的是过滤后的图
+            ImageFilterItem()() {
+                itemIco = R.drawable.crop_auto_side_icon
+                itemText = _string(R.string.canvas_outline)
+                itemNewHawkKeyStr = "outline"
+                itemClick = {
+                    itemHaveNew = false
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        LPBitmapHandler.handleOutline(renderDelegate, it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_OUTLINE.umengEventValue()
+                    }
+                }
+                if (closeImageEditItemsFun.have("_crop_")) {
+                    //右边线
+                    drawCanvasRight()
+                }
+            }
+        }
+        //剪裁
         if (!closeImageEditItemsFun.have("_crop_")) {
             //剪裁用的是原图
             ImageFilterItem()() {

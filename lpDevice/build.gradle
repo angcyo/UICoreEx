@@ -19,6 +19,8 @@ dependencies {
     //图片算法
     api "com.angcyo:opencv:${opencv_version}"
     api "com.angcyo:bitmapHandle:${opencv_version}"
+    //2023-5-26 Rust重构实现
+    api "com.angcyo:RustHandle:${opencv_version}"
     //扭曲支持
     api "com.angcyo:imageProcess:${opencv_version}"
 

@@ -306,4 +306,19 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         elementBean.height = renderProperty.height.toMm()
     }
 
+    /**更新元素的路径数据*/
+    fun updateElementPathData(
+        data: String?,
+        renderer: BaseRenderer?,
+        keepVisibleSize: Boolean = false
+    ) {
+        elementBean.data = data
+        if (data.isNullOrBlank()) {
+            pathList = null
+        }
+        parseElementBean()
+        updateOriginPathList(pathList, keepVisibleSize)
+        renderer?.updateRenderProperty()
+    }
+
 }

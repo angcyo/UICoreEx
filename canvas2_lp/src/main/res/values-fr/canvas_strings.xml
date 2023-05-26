@@ -66,7 +66,6 @@
     <string name="canvas_line_space">Espacement</string>
     <string name="canvas_path_fill_line_space">Distance de remplissage</string>
     <string name="canvas_path_fill_angle">Angle de remplissage</string>
-    <string name="canvas_outline">Cadre</string>
     <string name="canvas_angle">Angle</string>
     <string name="canvas_direction">Direction</string>
     <string name="canvas_inch_unit">Système anglais</string>
@@ -102,6 +101,7 @@
     <string name="canvas_flat_vertical">Equisé verticale</string>
     <string name="canvas_group_dissolve">Dégroupage</string>
     <string name="canvas_group_group">Groupement</string>
+    <string name="canvas_outline">Contour</string>
 
     <string name="canvas_font_size">Taille de la police</string>
     <string name="canvas_word_spacing">Espace des caractères</string>

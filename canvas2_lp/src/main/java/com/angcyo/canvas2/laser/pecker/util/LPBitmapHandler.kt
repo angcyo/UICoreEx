@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Paint
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
@@ -12,6 +13,7 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
@@ -21,8 +23,10 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
+import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.LTime
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.addBgColor
@@ -31,6 +35,7 @@ import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 import com.angcyo.opencv.OpenCV
+import com.angcyo.rust.handle.RustBitmapHandle
 import com.hingin.rn.image.ImageProcess
 import java.io.File
 
@@ -84,7 +89,15 @@ object LPBitmapHandler {
 
     /**版画处理*/
     fun toPrint(context: Context, bitmap: Bitmap, printsThreshold: Float): Bitmap? {
-        val grayHandle = toGrayHandle(bitmap)!!
+        val result = RustBitmapHandle.bitmapPrint(
+            bitmap,
+            printsThreshold.toInt(),
+            LibHawkKeys.alphaThreshold,
+            false,
+            whiteReplaceColor = if (HawkEngraveKeys.enableBitmapHandleBgAlpha) Color.TRANSPARENT else Color.WHITE
+        )
+        return result
+        /*val grayHandle = toGrayHandle(bitmap)!!
         val print = OpenCV.bitmapToPrint(context, grayHandle, printsThreshold.toInt())
         grayHandle.recycle()
         return if (print != null) {
@@ -98,7 +111,7 @@ object LPBitmapHandler {
             result
         } else {
             null
-        }
+        }*/
     }
 
     /**印章处理*/
@@ -711,6 +724,104 @@ object LPBitmapHandler {
                         element.updatePathFill(renderer, delegate, gcodeFillStep, gcodeFillAngle)
                     }) {
                         onDismissAction()
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**偏移*/
+    fun handleOutline(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.getDrawBitmap() ?: return
+        val context = anchor.context
+        var outlineSpan = 2f
+        var keepHole = true
+
+        var svgRenderer: CanvasElementRenderer? = null
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET, outlineSpan)
+            addRegulate(CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE, keepHole)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
+            firstApply = true
+            realTimeApply = true
+            onSubmitAction = { dismiss, submit ->
+                if (dismiss) {
+                    onDismissAction()
+                    svgRenderer?.let { svgRenderer ->
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                    }
+                } else if (submit) {
+                    svgRenderer?.let { svgRenderer ->
+                        delegate?.renderManager?.removeAfterRendererList(svgRenderer)
+                        if (svgRenderer.lpElementBean()?.data.isNullOrBlank()) {
+                            //空数据
+                        } else {
+                            //有效数据
+                            delegate?.renderManager?.addElementRenderer(
+                                svgRenderer,
+                                false,
+                                Reason.user,
+                                Strategy.normal
+                            )
+                        }
+                    }
+                } else {
+                    owner.engraveLoadingAsync({
+                        outlineSpan = getFloatOrDef(
+                            CanvasRegulatePopupConfig.KEY_OUTLINE_OFFSET,
+                            outlineSpan
+                        )
+                        keepHole = getBooleanOrDef(
+                            CanvasRegulatePopupConfig.KEY_OUTLINE_HOLE,
+                            keepHole
+                        )
+                        operateBitmap.let { bitmap ->
+                            LTime.tick()
+                            val svgPath = RustBitmapHandle.bitmapOutline(
+                                bitmap,
+                                outlineSpan.toPixel().toInt(),
+                                keepHole
+                            )
+                            "图片[${
+                                bitmap.byteCount.toSizeString()
+                            }]提取轮廓耗时:${LTime.time()}".writePerfLog()
+
+                            if (svgRenderer == null) {
+                                val elementBean = LPElementBean().apply {
+                                    mtype = LPDataConstant.DATA_TYPE_SVG
+                                    this.data = svgPath
+                                    paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                                    layerId = LayerHelper.LAYER_CUT
+                                }
+                                svgRenderer =
+                                    LPRendererHelper.parseElementRenderer(elementBean, true)
+                            } else {
+                                svgRenderer?.lpPathElement()
+                                    ?.updateElementPathData(svgPath, svgRenderer)
+                            }
+                            val rendererBounds = renderer.getRendererBounds()
+                            svgRenderer?.translateCenterTo(
+                                rendererBounds?.centerX() ?: 0f,
+                                rendererBounds?.centerY() ?: 0f,
+                                Reason.code,
+                                Strategy.preview,
+                                null
+                            )
+                            svgRenderer
+                        }
+                    }) {
+                        it?.let {
+                            delegate?.renderManager?.addAfterRendererList(it)
+                        }
                     }
                 }
             }
