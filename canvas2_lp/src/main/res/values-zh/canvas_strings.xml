@@ -101,7 +101,7 @@
     <string name="canvas_flat_vertical">垂直均分</string>
     <string name="canvas_group_dissolve">解组</string>
     <string name="canvas_group_group">编组</string>
-    <string name="canvas_outline">偏移</string>
+    <string name="canvas_outline">轮廓</string>
     <string name="canvas_outline_hole">保留位图内部轮廓</string>
     <string name="canvas_outline_offset_tip">偏移距离(mm)</string>
 
