@@ -21,7 +21,7 @@ import com.angcyo.widget.progress.DslSeekBar
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/05/26
  */
-class CanvasOutlineOffsetItem : DslSeekBarInfoItem() {
+open class CanvasOutlineOffsetItem : DslSeekBarInfoItem() {
 
     /**值改变的通知*/
     var itemValueChangeAction: (value: Float) -> Unit = {}
@@ -29,16 +29,16 @@ class CanvasOutlineOffsetItem : DslSeekBarInfoItem() {
     /**当前的值*/
     var itemValue: Float = 0f
 
-    private val inchUnit = InchValueUnit()
+    protected val inchUnit = InchValueUnit()
 
-    private val maxValue = inchUnit.convertValueToPixel(1f).toMm()
-    private val minValue = -maxValue
+    protected var maxValue = inchUnit.convertValueToPixel(1f).toMm()
+    protected var minValue = -maxValue
 
     init {
         itemLayoutId = R.layout.item_outline_offset_layout
         itemInfoText = _string(R.string.canvas_outline_offset_tip)
         itemProgressTextFormatAction = {
-            itemValue.unitDecimal(1)
+            formatValue(itemValue)
         }
     }
 
@@ -76,8 +76,8 @@ class CanvasOutlineOffsetItem : DslSeekBarInfoItem() {
         //super.onItemChangeListener(item)
     }
 
-    fun bindValue(itemHolder: DslViewHolder) {
-        itemHolder.tv(R.id.value_text_view)?.text = itemValue.unitDecimal(1)
+    open fun bindValue(itemHolder: DslViewHolder) {
+        itemHolder.tv(R.id.value_text_view)?.text = formatValue(itemValue)
         itemHolder.click(R.id.value_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
                 onDismiss = this@CanvasOutlineOffsetItem::onPopupDismiss
@@ -89,8 +89,12 @@ class CanvasOutlineOffsetItem : DslSeekBarInfoItem() {
         }
     }
 
+    open fun formatValue(value: Float): String {
+        return value.unitDecimal(1)
+    }
+
     /**更新值*/
-    fun updateValue(value: Float) {
+    open fun updateValue(value: Float) {
         itemValue = clamp(value, minValue, maxValue)
         itemValueChangeAction(itemValue)
         updateAdapterItem()

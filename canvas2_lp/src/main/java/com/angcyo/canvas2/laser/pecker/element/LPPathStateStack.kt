@@ -3,12 +3,12 @@ package com.angcyo.canvas2.laser.pecker.element
 import android.graphics.Path
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.PathStateStack
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.Strategy
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>

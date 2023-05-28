@@ -10,13 +10,13 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
+import com.angcyo.canvas2.laser.pecker.dialog.magicWandDialog
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.crop.ui.cropDialog
@@ -28,6 +28,7 @@ import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.LTime
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.deleteSafe
@@ -570,44 +571,6 @@ object LPBitmapHandler {
         }
     }
 
-    /**图片剪裁*/
-    fun handleCrop(
-        delegate: CanvasRenderDelegate?,
-        anchor: View,
-        owner: LifecycleOwner,
-        renderer: BaseRenderer,
-        onDismissAction: () -> Unit = {}
-    ) {
-        val element = renderer.lpBitmapElement() ?: return
-        val operateBitmap = element.originBitmap ?: return
-        val bean = element.elementBean
-
-        //用来恢复的状态
-        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
-
-        anchor.context.cropDialog {
-            cropBitmap = operateBitmap
-            onDismissListener = {
-                onDismissAction()
-            }
-
-            onCropResultAction = { result ->
-                result?.let {
-                    owner.engraveLoadingAsync({
-                        //剪切完之后, 默认黑白处理
-                        element.updateOriginBitmap(result, false)
-                        addBitmapStateToStack(delegate, renderer, undoState)
-                        result
-                    }) {
-                        renderer.requestUpdatePropertyFlag(Reason.user.apply {
-                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
-                        }, delegate)
-                    }
-                }
-            }
-        }
-    }
-
     /**图片扭曲*/
     fun handleMesh(
         delegate: CanvasRenderDelegate?,
@@ -829,5 +792,80 @@ object LPBitmapHandler {
     }
 
     //endregion---带参数调整对话框---
+
+    /**图片剪裁*/
+    fun handleCrop(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.originBitmap ?: return
+        val bean = element.elementBean
+
+        //用来恢复的状态
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
+
+        anchor.context.cropDialog {
+            cropBitmap = operateBitmap
+            onDismissListener = {
+                onDismissAction()
+            }
+
+            onCropResultAction = { result ->
+                result?.let {
+                    owner.engraveLoadingAsync({
+                        //剪切完之后, 默认黑白处理
+                        element.updateOriginBitmap(result, false)
+                        addBitmapStateToStack(delegate, renderer, undoState)
+                        result
+                    }) {
+                        renderer.requestUpdatePropertyFlag(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
+                    }
+                }
+            }
+        }
+    }
+
+    /**图片魔棒*/
+    fun handleMagicWand(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpBitmapElement() ?: return
+        val operateBitmap = element.getDrawBitmap() ?: return
+
+        //用来恢复的状态
+        val undoState = LPBitmapStateStack().apply { saveState(renderer, delegate) }
+
+        anchor.context.magicWandDialog {
+            originBitmap = operateBitmap
+            onDismissListener = {
+                onDismissAction()
+            }
+
+            onMagicResultAction = { result ->
+                result?.let {
+                    owner.engraveLoadingAsync({
+                        //魔棒完之后, 默认黑白处理
+                        element.updateOriginBitmap(result, false)
+                        addBitmapStateToStack(delegate, renderer, undoState)
+                        result
+                    }) {
+                        renderer.requestUpdatePropertyFlag(Reason.user.apply {
+                            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                        }, delegate)
+                    }
+                }
+            }
+        }
+    }
 
 }

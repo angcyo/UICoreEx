@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.util.element
@@ -17,6 +16,7 @@ import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.unit.toMm
 
 /**

@@ -5,7 +5,6 @@ import android.widget.TextView
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
@@ -24,6 +23,7 @@ import com.angcyo.item.style.INewItem
 import com.angcyo.item.style.NewItemConfig
 import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex.gone
 import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.widget.DslViewHolder

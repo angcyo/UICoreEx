@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lib_white">
+
+    <!--核心层-->
+    <com.angcyo.widget.image.TouchImageView
+        android:id="@+id/lib_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tolerance_wrap_layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/tolerance_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/lib_title_wrap_layout"
+        tools:layout_height="80dp" />
+
+    <FrameLayout
+        android:id="@+id/lib_title_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/crop_item_layout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_cancel_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/lib_bg2_selector"
+            android:padding="8dp"
+            app:srcCompat="@drawable/crop_cancel_icon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_title_text_view"
+            style="@style/LibTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/canvas_magic_wand" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_confirm_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/lib_bg2_selector"
+            android:padding="8dp"
+            app:srcCompat="@drawable/crop_confirm_icon" />
+
+    </FrameLayout>
+
+    <!--撤销回退, 动态添加-->
+    <LinearLayout
+        android:id="@+id/undo_wrap_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:layout_marginBottom="@dimen/lib_hdpi"
+        android:background="@drawable/doodle_property_shape"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/tolerance_wrap_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_height="60dp"
+        tools:layout_width="80dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

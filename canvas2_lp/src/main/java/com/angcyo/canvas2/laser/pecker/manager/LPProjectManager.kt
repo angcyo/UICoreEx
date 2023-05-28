@@ -5,7 +5,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBoolean
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
@@ -30,6 +29,7 @@ import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.laserpacker.toSvgElementBean
 import com.angcyo.library.L
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.*
 import com.angcyo.library.utils.BuildHelper

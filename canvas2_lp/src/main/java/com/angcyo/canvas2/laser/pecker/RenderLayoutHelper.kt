@@ -9,7 +9,6 @@ import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
 import com.angcyo.canvas.render.core.CanvasUndoManager
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.core.component.PointTouchComponent
@@ -57,6 +56,7 @@ import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.ex._string

@@ -107,6 +107,9 @@ object UMEvent {
     /**创作图片-轮廓*/
     const val CANVAS_IMAGE_OUTLINE = "canvas_image_outline"
 
+    /**创作图片-魔棒*/
+    const val CANVAS_MAGIC_WAND = "canvas_magic_wand"
+
     //endregion ---origin---
 
     //region ---rn---

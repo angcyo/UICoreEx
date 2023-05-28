@@ -8,7 +8,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -50,6 +49,7 @@ import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.alphaRatio
@@ -326,6 +326,29 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     }
                 }
                 drawCanvasRight()
+            }
+        }
+        //魔棒
+        if (!closeImageEditItemsFun.have("_magicWand_")) {
+            //偏移用的是过滤后的图
+            ImageFilterItem()() {
+                itemIco = R.drawable.canvas_magic_wand
+                itemText = _string(R.string.canvas_magic_wand)
+                itemNewHawkKeyStr = "magicWand"
+                itemClick = {
+                    itemHaveNew = false
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        LPBitmapHandler.handleMagicWand(renderDelegate, it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_MAGIC_WAND.umengEventValue()
+                    }
+                }
+                if (closeImageEditItemsFun.have("_outline_") && closeImageEditItemsFun.have("_crop_")) {
+                    //右边线
+                    drawCanvasRight()
+                }
             }
         }
         //偏移

@@ -4,12 +4,12 @@ import android.graphics.Path
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
-import com.angcyo.canvas.render.core.Strategy
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.BitmapStateStack
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.library.component.Strategy
 
 /**
  * 图片状态存储
