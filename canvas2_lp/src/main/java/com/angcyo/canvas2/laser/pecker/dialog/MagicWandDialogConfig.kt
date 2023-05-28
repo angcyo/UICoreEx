@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.MagicToleranceItem
+import com.angcyo.core.component.DslMagnifier
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.doodle.ui.dslitem.DoodleIconItem
@@ -35,6 +36,9 @@ class MagicWandDialogConfig(context: Context? = null) : DslDialogConfig(context)
 
     /**图片的回调*/
     var onMagicResultAction: (bitmap: Bitmap?) -> Unit = {}
+
+    /**放大镜*/
+    private val dslMagnifier = DslMagnifier()
 
     private val undoManager = UndoManager().apply {
         onUndoRedoChangeAction = {
@@ -72,6 +76,17 @@ class MagicWandDialogConfig(context: Context? = null) : DslDialogConfig(context)
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
         updateResultImage(originBitmap, dialogViewHolder)
+
+        //放大镜
+        dslMagnifier.init(
+            dialogViewHolder.group(R.id.image_wrap_layout),
+            dialogViewHolder.view(R.id.lib_image_view)
+        )
+        dialogViewHolder.v<TouchImageView>(R.id.lib_image_view)?.apply {
+            touchAction = { _, motionEvent ->
+                dslMagnifier.show(motionEvent)
+            }
+        }
 
         //
         dialogViewHolder.group(R.id.tolerance_wrap_layout)?.let { layout ->

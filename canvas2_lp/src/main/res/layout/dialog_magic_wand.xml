@@ -7,12 +7,18 @@
     android:background="@color/lib_white">
 
     <!--核心层-->
-    <com.angcyo.widget.image.TouchImageView
-        android:id="@+id/lib_image_view"
+    <FrameLayout
+        android:id="@+id/image_wrap_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/tolerance_wrap_layout"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.angcyo.widget.image.TouchImageView
+            android:id="@+id/lib_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/tolerance_wrap_layout"
