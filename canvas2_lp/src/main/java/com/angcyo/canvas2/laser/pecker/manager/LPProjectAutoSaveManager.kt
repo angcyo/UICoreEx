@@ -60,6 +60,8 @@ object LPProjectAutoSaveManager {
                     if (exception != null) {
                         //保存失败
                     }
+                    //保存完之后, 刷新界面
+                    renderDelegate.refresh()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

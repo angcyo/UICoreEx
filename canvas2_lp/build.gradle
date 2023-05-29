@@ -22,4 +22,7 @@ dependencies {
     compileOnly 'com.google.zxing:core:3.4.1'
 
     compileOnly project(allModule.umeng_lp) //只编译不需要代码
+
+    //toSvgPathContent
+    implementation project(allModule.path) //2023-5-29
 }

@@ -460,8 +460,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 op: List<BaseRenderer>,
                 reason: Reason
             ) {
-                if ((reason.reason == Reason.REASON_CODE ||
-                            reason.reason == Reason.REASON_USER) && !renderDelegate.asyncManager.hasAsyncTask()
+                if ((reason.reason == Reason.REASON_CODE || reason.reason == Reason.REASON_USER)
+                    && !renderDelegate.asyncManager.hasAsyncTask()
                 ) {
                     renderDelegate.saveProjectStateV2()
                 }

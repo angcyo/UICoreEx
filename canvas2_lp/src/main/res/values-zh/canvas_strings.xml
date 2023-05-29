@@ -112,6 +112,11 @@
     <string name="canvas_line_spacing">行间距</string>
     <string name="canvas_curve">曲线</string>
     <string name="canvas_rasterize">栅格化</string>
+    <string name="canvas_union">合并</string>
+    <string name="canvas_op_union">合并图形</string>
+    <string name="canvas_op_difference">排除顶层</string>
+    <string name="canvas_op_intersect">图形相交</string>
+    <string name="canvas_op_xor">排除相交</string>
 
     <string name="canvas_side_count">边数</string>
     <string name="canvas_angle_count">角数</string>

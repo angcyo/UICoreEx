@@ -114,6 +114,11 @@
     <string name="canvas_line_spacing">Line space</string>
     <string name="canvas_curve">Curve</string>
     <string name="canvas_rasterize">Rasterize</string>
+    <string name="canvas_union">Union</string>
+    <string name="canvas_op_union">Merge graphs</string>
+    <string name="canvas_op_difference">Exclude the top level</string>
+    <string name="canvas_op_intersect">Graphs intersect</string>
+    <string name="canvas_op_xor">Intersection is excluded</string>
 
     <string name="canvas_side_count">Edges</string>
     <string name="canvas_angle_count">Corners</string>

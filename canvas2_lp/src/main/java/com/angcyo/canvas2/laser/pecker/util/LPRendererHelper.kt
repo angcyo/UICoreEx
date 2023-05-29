@@ -77,6 +77,7 @@ object LPRendererHelper {
             if (assignLocation) {
                 LPElementHelper.assignLocation(bean)
                 updateBeanToElement(renderer)
+                renderer.updateRenderProperty()
             }
             renderer.renderElement = this
             renderer

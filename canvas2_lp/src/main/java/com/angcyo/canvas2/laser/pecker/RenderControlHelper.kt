@@ -24,6 +24,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.control.EditControlItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.ImageFilterItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.LayerSortMenuItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.PathStyleItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.PathUnionMenuItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.RendererAlignMenuItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.RendererFlatMenuItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.ShapePropertyControlItem
@@ -619,6 +620,13 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemClick = {
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
                 }
+            }
+        }
+
+        //合并
+        if (PathUnionMenuItem.isAllShape(renderer)) {
+            PathUnionMenuItem()() {
+                initItem(renderer)
             }
         }
 
