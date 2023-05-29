@@ -293,7 +293,8 @@ class DeviceStateModel : ViewModel() {
 
     /**是否有切割图层*/
     fun haveCutLayer(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
-        return laserPeckerModel.isCSeries() && isCutModule(moduleState)
+        return (laserPeckerModel.isCSeries() && isCutModule(moduleState)) ||
+                (HawkEngraveKeys.enableLp4Cut && laserPeckerModel.isL4())
     }
 
     /**是否是C1的小车模式
