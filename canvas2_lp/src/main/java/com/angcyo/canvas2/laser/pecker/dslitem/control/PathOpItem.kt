@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -72,7 +73,11 @@ class PathOpItem : CanvasIconItem() {
                 val elementBean = LPElementBean().apply {
                     mtype = LPDataConstant.DATA_TYPE_SVG
                     this.data = svgContent
-                    paintStyle = Paint.Style.STROKE.toPaintStyleInt()
+                    paintStyle = if (HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) {
+                        Paint.Style.FILL.toPaintStyleInt()
+                    } else {
+                        Paint.Style.STROKE.toPaintStyleInt()
+                    }
                 }
                 LPRendererHelper.parseElementRenderer(elementBean, false)?.apply {
                     originBounds?.let {

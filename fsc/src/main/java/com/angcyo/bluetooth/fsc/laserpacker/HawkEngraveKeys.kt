@@ -265,4 +265,7 @@ object HawkEngraveKeys {
     /**是否激活LP4的切割图层*/
     var enableLp4Cut: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**是否激活op xor操作后的fill操作*/
+    var enableXorFill: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
 }
