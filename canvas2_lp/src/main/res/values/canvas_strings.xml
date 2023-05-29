@@ -104,8 +104,8 @@
     <string name="canvas_group_dissolve">Unpack</string>
     <string name="canvas_group_group">Group</string>
     <string name="canvas_outline">Outline</string>
-    <string name="canvas_magic_wand">Magic Wand</string>
-    <string name="canvas_magic_wand_tolerance">Tolerance</string>
+    <string name="canvas_magic_wand">Magic eraser</string>
+    <string name="canvas_magic_wand_tolerance">Chromatic aberration</string>
     <string name="canvas_outline_hole">Preserves the internal contours of the bitmap</string>
     <string name="canvas_outline_offset_tip">Offset distance(mm)</string>
 

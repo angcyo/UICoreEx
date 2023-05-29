@@ -102,8 +102,8 @@
     <string name="canvas_group_dissolve">解组</string>
     <string name="canvas_group_group">编组</string>
     <string name="canvas_outline">轮廓</string>
-    <string name="canvas_magic_wand">魔棒</string>
-    <string name="canvas_magic_wand_tolerance">容差</string>
+    <string name="canvas_magic_wand">魔术橡皮</string>
+    <string name="canvas_magic_wand_tolerance">色差</string>
     <string name="canvas_outline_hole">保留位图内部轮廓</string>
     <string name="canvas_outline_offset_tip">偏移距离(mm)</string>
 
