@@ -10,6 +10,8 @@ import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.ex._string
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -47,6 +49,7 @@ class PathUnionMenuItem : CanvasIconItem() {
         itemClick = {
             itemHaveNew = false
             updateAdapterItem()
+            UMEvent.CANVAS_PATH_UNION.umengEventValue()
 
             it.context.canvasMenuPopupWindow(it) {
                 renderAdapterAction = {

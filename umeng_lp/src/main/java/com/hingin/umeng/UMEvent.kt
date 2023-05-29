@@ -110,6 +110,9 @@ object UMEvent {
     /**创作图片-魔棒*/
     const val CANVAS_MAGIC_WAND = "canvas_magic_wand"
 
+    /**创作-布尔运算*/
+    const val CANVAS_PATH_UNION = "canvas_path_union"
+
     //endregion ---origin---
 
     //region ---rn---
