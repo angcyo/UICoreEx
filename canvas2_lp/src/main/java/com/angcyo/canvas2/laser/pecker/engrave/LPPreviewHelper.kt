@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.graphics.RectF
 import androidx.annotation.AnyThread
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -54,8 +55,12 @@ object LPPreviewHelper {
         }
         //flowLayoutHelper.startPreview(renderFragment)
 
-        updatePreview(rendererList, sendCmd = false)
-        _debounce {
+        if (HawkEngraveKeys.enablePreviewDebounce) {
+            updatePreview(rendererList, sendCmd = false)
+            _debounce {
+                updatePreview(rendererList)
+            }
+        } else {
             updatePreview(rendererList)
         }
     }

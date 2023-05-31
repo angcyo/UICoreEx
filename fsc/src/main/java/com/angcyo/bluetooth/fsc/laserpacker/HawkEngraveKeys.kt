@@ -268,4 +268,7 @@ object HawkEngraveKeys {
     /**是否激活op xor操作后的fill操作*/
     var enableXorFill: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**激活预览指令的抖动处理*/
+    var enablePreviewDebounce: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
 }
