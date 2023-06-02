@@ -41,6 +41,15 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
     companion object {
 
+        /**窗口销毁触发*/
+        const val APPLY_TYPE_DISMISS = 0
+
+        /**点击提交按钮*/
+        const val APPLY_TYPE_SUBMIT = 1
+
+        /**值改变*/
+        const val APPLY_TYPE_CHANGE = 2
+
         //属性key
 
         /**版画阈值*/
@@ -140,6 +149,16 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
      * */
     var onApplyAction: (dismiss: Boolean) -> Unit = {}
 
+    /**相同类型的回调
+     * [onApplyAction]
+     * [onSubmitAction]
+     *
+     * [APPLY_TYPE_DISMISS] submit后不会触发dismiss类型
+     * [APPLY_TYPE_SUBMIT]
+     * [APPLY_TYPE_CHANGE]
+     * */
+    var onApplyValueAction: (type: Int) -> Unit = {}
+
     /**[dismiss] 和 [submit] 互斥触发
      * [dismiss] 是否销毁了弹窗
      * [submit] 是否点击了提交按钮*/
@@ -156,6 +175,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         onDismiss = {
             if (!_dismissFromSubmit) {
                 onApplyAction(true)
+                onApplyValueAction(APPLY_TYPE_DISMISS)
             }
             onSubmitAction(true, false)
             false
@@ -370,7 +390,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
                     itemValueChangeAction = {
                         property[KEY_CURVATURE] = it
-                        
+
                         _valueChange = true
                         if (realTimeApply) {
                             //实时预览
@@ -388,10 +408,11 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     itemButtonText = _string(R.string.dialog_positive)
                     itemClick = {
                         _valueChange = true //2023-3-10 need?
+                        _dismissFromSubmit = true //2023-5-15
                         onApplyAction(false)
                         onApplyAction(true)
                         onSubmitAction(false, true)
-                        _dismissFromSubmit = true //2023-5-15
+                        onApplyValueAction(APPLY_TYPE_SUBMIT)
                         window.dismissWindow()
                     }
                 }
@@ -574,6 +595,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         _valueChange = true
         onApplyAction(false)
         onSubmitAction(false, false)
+        onApplyValueAction(APPLY_TYPE_CHANGE)
     }
 
     var shakeDelay: Long = 600L
