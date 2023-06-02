@@ -6,6 +6,8 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.widget.DslViewHolder
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 改变文本画笔风格的item, 并且支持互斥
@@ -24,6 +26,11 @@ class TextStrokeStyleItem : BaseTextControlItem() {
 
         itemSingleSelectMutex = true
         itemClick = {
+            if (itemStyle == Paint.Style.STROKE) {
+                UMEvent.CANVAS_TEXT_STROKE.umengEventValue()
+            } else {
+                UMEvent.CANVAS_TEXT_FILL.umengEventValue()
+            }
             updateTextProperty {
                 paintStyle = itemStyle
             }

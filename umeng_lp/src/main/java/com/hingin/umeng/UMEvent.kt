@@ -113,6 +113,22 @@ object UMEvent {
     /**创作-布尔运算*/
     const val CANVAS_PATH_UNION = "canvas_path_union"
 
+    /**创作栅格化*/
+    const val CANVAS_RASTERIZE = "canvas_rasterize"
+
+    /**创作文本, 曲线*/
+    const val CANVAS_TEXT_CURVE = "canvas_text_curve"
+
+    /**创作文本, 描边*/
+    const val CANVAS_TEXT_STROKE = "canvas_text_stroke"
+
+    /**创作文本, 填充*/
+    const val CANVAS_TEXT_FILL = "canvas_text_fill"
+    const val CANVAS_TEXT_BOLD = "canvas_text_bold"
+    const val CANVAS_TEXT_ITALIC = "canvas_text_italic"
+    const val CANVAS_TEXT_UNDER_LINE = "canvas_text_under_line"
+    const val CANVAS_TEXT_DELETE_LINE = "canvas_text_delete_line"
+
     //endregion ---origin---
 
     //region ---rn---

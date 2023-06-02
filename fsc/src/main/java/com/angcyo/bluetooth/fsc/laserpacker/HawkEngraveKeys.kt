@@ -271,4 +271,6 @@ object HawkEngraveKeys {
     /**激活预览指令的抖动处理*/
     var enablePreviewDebounce: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
+    /**是否激活灰度图片*/
+    var enableGrey: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }

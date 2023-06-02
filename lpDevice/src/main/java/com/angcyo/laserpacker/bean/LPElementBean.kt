@@ -200,6 +200,10 @@ data class LPElementBean(
     /**文本颜色*/
     var textColor: String? = null,
 
+    /**2023-6-2
+     * 曲线文本曲率[-360~360], 0表示正常文本*/
+    var curvature: Float = 0f,
+
     //endregion ---文本类型---
 
     //region ---形状---
