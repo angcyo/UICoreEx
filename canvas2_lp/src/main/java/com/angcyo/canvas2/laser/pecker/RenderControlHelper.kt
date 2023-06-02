@@ -40,6 +40,7 @@ import com.angcyo.canvas2.laser.pecker.element.LPTextElement
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -466,6 +467,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemIco = R.drawable.canvas_text_curve_ico
             itemText = _string(R.string.canvas_curve)
             itemNewHawkKeyStr = "curve"
+            itemEnable = renderer.lpTextElement()?.isSupportCurve == true
             itemClick = {
                 itemHaveNew = false
                 LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {

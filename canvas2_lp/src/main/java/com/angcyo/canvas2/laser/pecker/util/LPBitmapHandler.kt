@@ -13,8 +13,12 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
+import com.angcyo.canvas.render.renderer.PathRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig
+import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_CHANGE
+import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_DISMISS
+import com.angcyo.canvas2.laser.pecker.dialog.CanvasRegulatePopupConfig.Companion.APPLY_TYPE_SUBMIT
 import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.dialog.magicWandDialog
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
@@ -30,8 +34,11 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.LTime
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.pool.acquireTempMatrix
+import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
@@ -802,25 +809,57 @@ object LPBitmapHandler {
         val bean = element.elementBean
         val context = anchor.context
 
+        val tipRenderer = PathRenderer()
+        tipRenderer.pathPaint.color = Color.MAGENTA
+        delegate?.renderManager?.addAfterRendererList(tipRenderer)
+
+        //保存状态
+        val undoState = element.createStateStack()
+        undoState.saveState(renderer, delegate)
+
         context.canvasRegulateWindow(anchor) {
             val curvature = bean.curvature
             addRegulate(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
             addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
-            firstApply = false
+            firstApply = curvature != 0f
             realTimeApply = true
-            onSubmitAction = { dismiss, submit ->
-                if (dismiss) {
-                    //no
-                    onDismissAction()
-                } else if (submit) {
-                    onDismissAction()
-                } else {
-                    val curvature = getFloatOrDef(
-                        CanvasRegulatePopupConfig.KEY_CURVATURE,
-                        curvature
-                    )
-                    element.updateTextProperty(renderer, delegate, false) {
-                        this.curvature = curvature
+            onApplyValueAction = { type ->
+                when (type) {
+                    APPLY_TYPE_DISMISS -> {
+                        undoState.restoreState(renderer, Reason.user, Strategy.undo, delegate)
+                        delegate?.renderManager?.removeAfterRendererList(tipRenderer)
+                        onDismissAction()
+                    }
+
+                    APPLY_TYPE_SUBMIT -> {
+                        val redoState = element.createStateStack()
+                        redoState.saveState(renderer, delegate)
+                        delegate?.addStateToStack(renderer, undoState, redoState)
+                        delegate?.renderManager?.removeAfterRendererList(tipRenderer)
+                        onDismissAction()
+                    }
+
+                    APPLY_TYPE_CHANGE -> {
+                        val curvature =
+                            getFloatOrDef(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
+                        element.updateCurvature(curvature, renderer, delegate)
+                        val path = element.curveTextDrawInfo?.run {
+                            getTextDrawInnerCirclePath().apply {
+                                val renderBounds = element.renderProperty.getRenderBounds()
+                                val matrix = acquireTempMatrix()
+                                val y = if (curvature > 0) {
+                                    renderBounds.top + textHeight
+                                } else {
+                                    renderBounds.bottom
+                                }
+                                getTranslateMatrix(renderBounds.centerX(), y, matrix)
+                                transform(matrix)
+                                matrix.release()
+                            }
+                        }
+                        val scale = delegate?.renderViewBox?.getScale() ?: 1f
+                        tipRenderer.pathPaint.strokeWidth = dp / scale
+                        tipRenderer.updatePath(path, delegate)
                     }
                 }
             }
