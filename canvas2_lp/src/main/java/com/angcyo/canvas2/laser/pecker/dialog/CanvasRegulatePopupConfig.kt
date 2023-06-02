@@ -107,6 +107,8 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         /**图片偏移是否保留空洞*/
         const val KEY_OUTLINE_HOLE = "key_outline_hole"
 
+        /**曲线文本曲率*/
+        const val KEY_CURVATURE = "key_curvature"
     }
 
     /**需要调整的项目, 需要啥就添加对应的项
@@ -138,7 +140,8 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
      * */
     var onApplyAction: (dismiss: Boolean) -> Unit = {}
 
-    /**[dismiss] 是否销毁了弹窗
+    /**[dismiss] 和 [submit] 互斥触发
+     * [dismiss] 是否销毁了弹窗
      * [submit] 是否点击了提交按钮*/
     var onSubmitAction: (dismiss: Boolean, submit: Boolean) -> Unit = { _, _ -> }
 
@@ -332,6 +335,12 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
                     itemValueChangeAction = {
                         property[KEY_OUTLINE_OFFSET] = it
+
+                        _valueChange = true
+                        if (realTimeApply) {
+                            //实时预览
+                            checkValueChangedRunnable()
+                        }
                     }
                 }
             }
@@ -350,6 +359,28 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                     }
                 }
             }
+
+            if (regulateList.contains(KEY_CURVATURE)) {
+                //曲线
+                CanvasTextCurvatureItem()() {
+                    initItem()
+                    itemShowProgressText = false
+                    itemValue = getFloatOrDef(KEY_CURVATURE, 0f)
+                    property[KEY_CURVATURE] = itemValue
+
+                    itemValueChangeAction = {
+                        property[KEY_CURVATURE] = it
+                        
+                        _valueChange = true
+                        if (realTimeApply) {
+                            //实时预览
+                            checkValueChangedRunnable()
+                        }
+                    }
+                }
+            }
+
+            //---last---
 
             //确认按钮
             if (regulateList.contains(KEY_SUBMIT)) {

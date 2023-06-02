@@ -62,6 +62,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         textProperty.isCompactText = elementBean.isCompactText
         textProperty.textAlign = elementBean.textAlign
         textProperty.textColor = elementBean.textColor
+        textProperty.curvature = elementBean.curvature
 
         textProperty.isUnderlineText = elementBean.underline
         textProperty.isStrikeThruText = elementBean.linethrough
@@ -84,6 +85,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         elementBean.isCompactText = textProperty.isCompactText
         elementBean.textAlign = textProperty.textAlign
         elementBean.textColor = textProperty.textColor
+        elementBean.curvature = textProperty.curvature
 
         elementBean.underline = textProperty.isUnderlineText
         elementBean.linethrough = textProperty.isStrikeThruText

@@ -256,7 +256,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
 
-        if (isDebugType()) {
+        //灰度
+        if (isDebugType() || HawkEngraveKeys.enableGrey) {
             if (!closeImageEditItemsFun.have("_grey_")) {
                 ImageFilterItem()() {
                     itemIco = R.drawable.canvas_bitmap_grey
@@ -453,17 +454,24 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemText = _string(R.string.canvas_rasterize)
                 itemNewHawkKeyStr = "rasterize"
                 itemClick = {
+                    itemHaveNew = false
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
+                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
                 }
             }
         }
         //曲线
-        if (isDebugType()) {
-            CanvasIconItem()() {
-                initItem(renderer)
-                itemIco = R.drawable.canvas_text_curve_ico
-                itemText = _string(R.string.canvas_curve)
-                itemNewHawkKeyStr = "curve"
+        CanvasIconItem()() {
+            initItem(renderer)
+            itemIco = R.drawable.canvas_text_curve_ico
+            itemText = _string(R.string.canvas_curve)
+            itemNewHawkKeyStr = "curve"
+            itemClick = {
+                itemHaveNew = false
+                LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
+                    itemIsSelected = false
+                }
+                UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
             }
         }
         if (!closeTextEditItemsFun.have("_orientation_")) {
@@ -595,7 +603,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     drawCanvasRight()
                 }
                 itemClick = {
+                    itemHaveNew = false
                     LPElementHelper.rasterizeRenderer(renderer, renderDelegate)
+                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
                 }
                 afterItemCount--
             }
@@ -618,7 +628,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemNewHawkKeyStr = "rasterize"
                 drawCanvasRight()
                 itemClick = {
+                    itemHaveNew = false
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
+                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
                 }
             }
         }

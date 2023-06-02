@@ -693,7 +693,6 @@ object LPBitmapHandler {
         }
     }
 
-
     /**偏移*/
     fun handleOutline(
         delegate: CanvasRenderDelegate?,
@@ -791,6 +790,43 @@ object LPBitmapHandler {
         }
     }
 
+    /**曲线文本*/
+    fun handleCurveText(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val element = renderer.lpTextElement() ?: return
+        val bean = element.elementBean
+        val context = anchor.context
+
+        context.canvasRegulateWindow(anchor) {
+            val curvature = bean.curvature
+            addRegulate(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
+            addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
+            firstApply = false
+            realTimeApply = true
+            onSubmitAction = { dismiss, submit ->
+                if (dismiss) {
+                    //no
+                    onDismissAction()
+                } else if (submit) {
+                    onDismissAction()
+                } else {
+                    val curvature = getFloatOrDef(
+                        CanvasRegulatePopupConfig.KEY_CURVATURE,
+                        curvature
+                    )
+                    element.updateTextProperty(renderer, delegate, false) {
+                        this.curvature = curvature
+                    }
+                }
+            }
+        }
+    }
+
     //endregion---带参数调整对话框---
 
     /**图片剪裁*/
@@ -867,5 +903,4 @@ object LPBitmapHandler {
             }
         }
     }
-
 }
