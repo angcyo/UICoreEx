@@ -43,7 +43,7 @@
     <string name="engrave_speed">彫刻速度</string>
     <string name="engrave_precision">加速度レベル</string>
 
-    <string name="ui_slip_menu_history">履歴ファイル</string>
+    <string name="ui_slip_menu_history">彫刻履歴</string>
     <string name="device_history_title">デバイスのデータ</string>
     <string name="app_history_title">ローカルデータ</string>
     <string name="delete_history">履歴を削除する</string>
@@ -80,6 +80,7 @@
     <string name="stop_transfer">送信完了しました</string>
     <string name="engrave_tip">反射率の高い素材に彫刻をしないでください</string>
     <string name="engrave_layer_config">彫刻レイヤー</string>
+
     <string name="back_creation">創作に戻る</string>
     <string name="progress">進捗状況</string>
     <string name="share_community">コミュニティへ共有</string>

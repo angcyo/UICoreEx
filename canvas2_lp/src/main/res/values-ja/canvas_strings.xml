@@ -60,7 +60,7 @@
     <string name="canvas_seal">スタンプ</string>
 
     <string name="canvas_invert">リフレクトカラー</string>
-    <string name="canvas_threshold">境界値</string>
+    <string name="canvas_threshold">しきい値</string>
     <string name="canvas_contrast">コントラスト</string>
     <string name="canvas_brightness">明るさ</string>
     <string name="canvas_line_space">行間</string>
@@ -101,16 +101,22 @@
     <string name="canvas_flat_vertical">垂直均等割り</string>
     <string name="canvas_group_dissolve">グループを解除</string>
     <string name="canvas_group_group">グループ化</string>
-    <string name="canvas_outline">オフセット</string>
+    <string name="canvas_outline">コンター</string>
+    <string name="canvas_magic_wand">マジック消しゴム</string>
+    <string name="canvas_magic_wand_tolerance">色の違い</string>
 
     <string name="canvas_font_size">字号</string>
     <string name="canvas_word_spacing">文字間隔</string>
     <string name="canvas_line_spacing">行間隔</string>
     <string name="canvas_curve">曲線</string>
     <string name="canvas_rasterize">ラスタライズ</string>
+    <string name="canvas_union">合成</string>
+    <string name="canvas_op_union">パターンを合成する</string>
+    <string name="canvas_op_difference">トップレイヤーを除く</string>
+    <string name="canvas_op_intersect">パターンを交差する</string>
+    <string name="canvas_op_xor">交差点を除く</string>
 
-    <string name="canvas_side">角の数</string>
-    <string name="canvas_side_count">副業</string>
+    <string name="canvas_side_count">角の数</string>
     <string name="canvas_angle_count">角度番号</string>
     <string name="canvas_depth">深さ</string>
     <string name="canvas_corner">円角</string>
@@ -156,5 +162,6 @@
 
     <string name="project_exist_tip">プロジェクトが存在します、それはカバーされていますか？</string>
     <string name="project_restore_tip">前のプロジェクトを復元しますか？</string>
+    <string name="canvas_side">角の数</string>
 
 </resources>

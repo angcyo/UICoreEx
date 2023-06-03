@@ -21,9 +21,9 @@
     <string name="preview_state_gcode">ベクターイメージのプレビュー</string>
     <string name="preview_state_range">プレビュー範囲</string>
     <string name="preview_state_z_pause">第3軸一時停止</string>
-    <string name="preview_state_z_pause2">%1$s一時停止</string>
+    <string name="preview_state_z_pause2">%1$s暂停</string>
     <string name="preview_state_z_continue">第3軸継続</string>
-    <string name="preview_state_z_continue2">%1$s一時停止</string>
+    <string name="preview_state_z_continue2">%1$s继续</string>
     <string name="preview_state_z_scroll">第3軸スクロール</string>
     <string name="preview_state_center">プレビュー表示センター</string>
     <string name="preview_state_points">4点範囲プレビュー</string>

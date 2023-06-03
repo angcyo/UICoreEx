@@ -22,7 +22,7 @@
     <string name="device_setting_act_des_preview_g_code">ベクトルファイルに合わせてカーソルが移動します</string>
 
     <string name="ui_disclaimer">免責事項</string>
-    <string name="ui_disclaimer_content2">警告する：「自由モード」スイッチがオンになったら、あなたの設備は保護カバーから離れたモードの下で使用することが許されます。これによってあなたに安全リスクを与える可能性がありますので、必ず今操作する必要があるかどうか確認してください。安全保護カバーの防護の下で使用することを諦めると確認されたら、必ずあなたの操作が安全規格に適合することを確認してください。安全と法律上のリスクは完全に本人が責任を負います。LaserPeckerのメーカーと代理店はいかなる安全と法律責任を負いません。</string>
+    <string name="ui_disclaimer_content2">警告：「フリーモード」スイッチをオンにすると、お使いのデバイスは保護カバーを装着しない場合でも使用できるようになります。安全上のリスクが生じる可能性がありますので、現在の操作が必要であることを確認してください。保護カバーを使用しないことを確認した場合は、安全規則を遵守する上で操作し、操作に生じる安全上および法律上のリスクについては、お客様が単独で責任を負い、LaserPeckerの製造・販売元は一切の責任を負わないことに同意する必要があります。。</string>
 
     <string name="device_ex_car_label">移動プラットフォーム</string>
     <string name="device_ex_car_des">--</string>
@@ -94,7 +94,6 @@
     <string name="canvas_open">開く</string>
     <string name="font_import_fail">フォントインポート障害</string>
     <string name="font_import_success">フォントインポートの成功</string>
-    <string name="canvas_font_text">レーザーペッカー</string>
     <string name="canvas_import_font">導入</string>
     <string name="canvas_backups_font">バックアップ</string>
     <string name="canvas_export_font">輸出</string>
@@ -105,5 +104,4 @@
     <string name="save_project_title">項目名</string>
     <string name="project_title_limit">20文字まで入力可能</string>
     <string name="project_save_success_tip">項目が保存されました</string>
-
 </resources>
