@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="engrave_warn">경고</string>
-    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
+    <string name="ble_permission_disabled">해당 권한이 비활성화되었으니 블루투스와 위치 등 관련 권한을 열어주세요!</string>
     <string name="device_connected">연결됨</string>
-    <string name="blue_connecting">蓝牙正在连接...</string>
-    <string name="blue_disconnecting">正在断开...</string>
+    <string name="blue_connecting">블루투스 연결 중...</string>
+    <string name="blue_disconnecting">연결 끊는 중...</string>
     <string name="blue_connect">블루투스 연결</string>
     <string name="ui_slip_menu_model">모드 설정</string>
 
     <string name="device_setting_act_model_warning_tone">작업 안내음</string>
-    <string name="device_setting_act_des_sound">직업을 시작하고 작업을 마치면 알림음이 울립니다</string>
+    <string name="device_setting_act_des_sound">일을 시작하고 일을 마치면 알림음이 울림</string>
     <string name="device_setting_act_model_security">안전 상태</string>
     <string name="device_setting_act_des_security">커버가 있는 상태에서 자동으로 안전 모드 켜짐</string>
-    <string name="device_setting_act_model_free">자율 모드</string>
-    <string name="device_setting_act_des_free">커버가 없는 상태에서는 면책성명에 동의해야 합니다</string>
-    <string name="device_setting_act_model_preview_g_code">벡터 그래픽</string>
-    <string name="device_setting_engrave_dir">조각 방향</string>
-    <string name="device_setting_engrave_dir_des">기본값은 정방향 조각</string>
-    <string name="device_g_code_pwr_label">G-Code 명령 공률 사용</string>
-    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
-    <string name="device_setting_act_des_preview_g_code">커서가 벡터 그래픽 파일 경로로 이동합니다</string>
+    <string name="device_setting_act_model_free">프리모드</string>
+    <string name="device_setting_act_des_free">보호덮개가 없는 상태에서는 면책성명에 동의해야 합니다.</string>
+    <string name="device_setting_act_model_preview_g_code">G-Code</string>
+    <string name="device_setting_engrave_dir">각인 방향</string>
+    <string name="device_setting_engrave_dir_des">기본값은 정방향 각인, 열림 버튼은 역방향으로 각인합니다.</string>
+    <string name="device_g_code_pwr_label">GCode 명령 전력 사용</string>
+    <string name="device_g_code_pwr_des">옵션을 켜면 G 코드 조각 전력이 명령의 값을 가져오고, 옵션을 해제하면 G 코드 조각 전력이 App의 값을 가져옵니다.</string>
+    <string name="device_setting_act_des_preview_g_code">커서가 벡터 그림 파일 경로로 이동합니다</string>
 
-    <string name="ui_disclaimer">免责声明</string>
-    <string name="ui_disclaimer_content2">警告：当“自由模式”开关被打开后，您的设备将被允许在脱离保护罩的防护下使用，由此可能会给您带来安全风险，因此请务必确认是否有必要执行当前操作；如果您确认要放弃在安全保护罩的防护下使用，请务必确保您的操作符合安全规范，而且同意由此操作导致的安全和法律风险完全由本人负责，LaserPecker的厂商和代理商将不负有任何安全和法律责任。</string>
+    <string name="ui_disclaimer">면책성명</string>
+    <string name="ui_disclaimer_content2">경고: "자유 모드" 스위치가 켜져 있으면 보호 덮개 없이 장치를 사용할 수 있으므로 보안 위험이 발생할 수 있으므로 현재 작업을 수행해야 하는지 확인하십시오. 안전 실드에 따라 사용을 포기하고 싶다는 것을 확인하는 경우 작업이 안전 규정을 준수하는지 확인해야 하며 이 작업으로 인해 발생하는 안전 및 법적 위험에 대한 책임은 전적으로 귀하에게 있으며 Laser Pecker의 제조업체 및 대리점은 안전 및 법적 책임에 대해 책임을 지지 않습니다.</string>
 
     <string name="device_ex_car_label">모바일 플랫폼</string>
     <string name="device_ex_car_des">--</string>
-    <string name="device_ex_direction_label">시계바늘 방향으로 회전</string>
-    <string name="device_ex_direction_des">다목적 전동 롤러 시계바늘 방향으로 회전 또는 반대방향으로 회전</string>
-    <string name="device_direction_forward">시계바늘 방향으로 회전</string>
-    <string name="device_direction_reversal">시계바늘 반대방향으로 회전</string>
-    <string name="device_s_batch_engrave_label">슬라이드하여 다중 파일 조각 모드</string>
+    <string name="device_ex_direction_label">정방향 회전</string>
+    <string name="device_ex_direction_des">멀티모드 정방향 회전 또는 역방향 회전</string>
+    <string name="device_direction_forward">정방향 회전</string>
+    <string name="device_direction_reversal">역방향 회전</string>
+    <string name="device_s_batch_engrave_label">슬라이드 익스텐션 다중 파일 각인 모드</string>
     <string name="device_s_batch_engrave_des">--</string>
-    <string name="device_ex_engrave_module">조각 모드</string>
+    <string name="device_ex_engrave_module">각인 모듈</string>
     <string name="device_ex_pen_engrave_label">브러시 모드</string>
-    <string name="device_module_calibration_label">모듈 교정</string>
+    <string name="device_module_calibration_label">모듈 보정</string>
     <string name="device_module_calibration_des">교정 후에 당신의 모듈을 꼭 잠가 주세요.</string>
     <string name="start_calibration">교정 시작</string>
-    <string name="finish_calibration">교정 완료됨</string>
+    <string name="finish_calibration">교정 완료</string>
     <string name="device_setting_txt_3">본체 터치 버튼</string>
     <string name="device_setting_txt_4">이 스위치는 본체의 미리보기와 터치 버튼의 사용 및 사용 안 함 상태를 제어합니다</string>
-    <string name="button_infra_red_title">빨간색 표시등이 계속 켜져 있음</string>
-    <string name="button_infra_red_content">보이지 않는 빛을 새기는 기기를 사용하기 때문에</string>
-    <string name="device_setting_txt_5">대량 조각 버튼</string>
-    <string name="device_setting_txt_6">이 스위치는 외부 부속품의 "대량 조각 버튼"의 사용 가능 및 사용 안 함 상태를 제어합니다.</string>
+    <string name="button_infra_red_title">붉은 빛 항상 켜짐</string>
+    <string name="button_infra_red_content">장치가 보이지 않는 빛의 각인을 사용하기 때문에 이 버튼을 켜면 장치가 작동 중일 때 적외선 지시가 제공됩니다.</string>
+    <string name="device_setting_txt_5">대량 각인 버튼</string>
+    <string name="device_setting_txt_6">이 스위치는 "대량 각인 버튼"의 사용 가능 및 사용 불가능 상태를 제어합니다.</string>
     <string name="device_setting_blue_connect_auto">블루투스 자동 연결</string>
 
     <string name="engrave_experimental">실험성</string>
-    <string name="create_log_tip">请稍等，正在生成日志...</string>
+    <string name="create_log_tip">기다려주세요, 로그 생성 중...</string>
 
     <string name="firmware_corrupted">펌웨어가 이미 손상되었습니다.</string>
-    <string name="firmware_invalid">无效的固件</string>
+    <string name="firmware_invalid">잘못된 펌웨어</string>
     <string name="cannot_update_firmware_tip">현재 장치에서 펌웨어를 업데이트할 수 없습니다.</string>
-    <string name="firmware_upgrade">하드웨어 업그레이드</string>
+    <string name="firmware_upgrade">펌웨어 업그레이드</string>
     <string name="firmware_version">펌웨어 버전</string>
     <string name="firmware_time">펌웨어 시간</string>
     <string name="device_firmware_version">기기 펌웨어 버전</string>
-    <string name="upgrade_completed">升级完成!</string>
-    <string name="upgrade_duration">소모 시간</string>
+    <string name="upgrade_completed">업그레이드 완료!</string>
+    <string name="upgrade_duration">소요시간</string>
 
-    <string name="data_exception">数据异常!</string>
+    <string name="data_exception">데이터 이상!</string>
     <string name="blue_connected">블루투스 연결됨</string>
     <string name="blue_disconnected">블루투스가 끊겼습니다.</string>
 
-    <string name="engrave_layer_bitmap">사진</string>
+    <string name="engrave_layer_bitmap">이미지</string>
     <string name="engrave_layer_fill">채우기</string>
-    <string name="engrave_layer_line">라인</string>
-    <string name="engrave_layer_cut">새기다</string>
+    <string name="engrave_layer_line">선</string>
+    <string name="engrave_layer_cut">컷팅</string>
 
-    <string name="engrave_channel">조각 통로</string>
-    <string name="engraving">레이저 각인중</string>
+    <string name="engrave_channel">각인 채널</string>
+    <string name="engraving">레이저 각인 중</string>
 
-    <string name="canvas_cone">원추</string>
-    <string name="canvas_ball">콘</string>
+    <string name="canvas_cone">원뿔</string>
+    <string name="canvas_ball">구체</string>
 
     <string name="ui_quit">로그아웃</string>
-    <string name="ui_finish">완료</string>
+    <string name="ui_finish">완성</string>
     <string name="ui_setting">설정</string>
 
-    <string name="device_not_found">기기를 찾을 수 없습니다</string>
+    <string name="device_not_found">장치를 찾을 수 없습니다</string>
     <string name="device_not_found_des">기계가 연결 대기 중인지 확인하십시오.</string>
     <string name="contact_me">고객 센터 연락</string>
 
-    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+    <string name="device_setting_tips_fourteen_11">각인모드</string>
 
     <string name="select_device">기기 선택</string>
     <string name="start_upgrade">업그레이드 시작</string>
-    <string name="engrave_feedback">문제 피드백</string>
+    <string name="engrave_feedback">피드백</string>
 
-    <string name="empty_data_transfer">无雕刻数据!</string>
-    <string name="out_of_data_transfer">数据过大!</string>
-    <string name="transfer_data_exception">传输数据异常!</string>
+    <string name="empty_data_transfer">각인 데이터 없음!</string>
+    <string name="out_of_data_transfer">데이터가 너무 큽니다!</string>
+    <string name="transfer_data_exception">전송 데이터 이상!</string>
     <string name="canvas_open">열기</string>
-    <string name="font_import_fail">글꼴 불러오기 실패</string>
-    <string name="font_import_success">글꼴 불러오기 성공</string>
-    <string name="canvas_import_font">불러오기</string>
-    <string name="canvas_backups_font">备份</string>
-    <string name="canvas_export_font">보내기</string>
-    <string name="canvas_rename">이름 바꾸기</string>
-    <string name="project_title">나의 만들기</string>
-    <string name="canvas_delete_project">아이템 삭제</string>
-    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
-    <string name="save_project_title">아이템 명칭</string>
+    <string name="font_import_fail">글꼴 가져오기 실패</string>
+    <string name="font_import_success">글꼴 가져오기 성공</string>
+    <string name="canvas_import_font">가져오기</string>
+    <string name="canvas_backups_font">백업</string>
+    <string name="canvas_export_font">내보내기</string>
+    <string name="canvas_rename">이름 변경</string>
+    <string name="project_title">나의 창작</string>
+    <string name="canvas_delete_project">항목 삭제</string>
+    <string name="canvas_delete_project_tip">삭제 후 복구할 수 없는데 계속하시겠습니까?</string>
+    <string name="save_project_title">프로젝트 이름</string>
     <string name="project_title_limit">최대 20자 입력</string>
-    <string name="project_save_success_tip">아이템 저장 성공</string>
+    <string name="project_save_success_tip">프로젝트 저장 성공</string>
 </resources>
