@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -14,6 +15,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -58,7 +60,11 @@ object LPEngraveHelper {
 
         val resultList = rendererList.filter { it.isVisible && it.renderElement != null }.filter {
             val elementBean = it.lpElementBean()
-            layerInfo == null || elementBean?._layerId == layerInfo.layerId
+            layerInfo == null || /*不指定图层, 则返回所有元素*/
+                    elementBean?._layerId == layerInfo.layerId || /*指定图层, 则返回对应的图层元素*/
+                    (layerInfo.layerId == LayerHelper.LAYER_LINE &&
+                            !vmApp<DeviceStateModel>().haveCutLayer() &&
+                            elementBean?._layerId == LayerHelper.LAYER_FILL) /*线条图层, 在不支持切割图层时, 需要返回切割图层元素*/
         }
 
         return if (sort) {

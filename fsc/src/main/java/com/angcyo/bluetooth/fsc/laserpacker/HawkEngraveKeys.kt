@@ -262,6 +262,9 @@ object HawkEngraveKeys {
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)
 
+    /**是否强制开启切割图层, 不管什么设备*/
+    var enableForceCut: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     /**是否激活LP4的切割图层*/
     var enableLp4Cut: Boolean by HawkPropertyValue<Any, Boolean>(true)
 

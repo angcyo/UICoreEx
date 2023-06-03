@@ -174,7 +174,9 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         itemHolder.click(R.id.layer_slicing_view) {
             if (operateElementBean?._layerId == LayerHelper.LAYER_CUT) {
                 operateElementBean?.layerId = null
+                operateElementBean?.isCut = false
             } else {
+                operateElementBean?.isCut = true
                 operateElementBean?.layerId = LayerHelper.LAYER_CUT
             }
             operateElementBean?.index = null // 重置索引
