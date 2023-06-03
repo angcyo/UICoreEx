@@ -502,6 +502,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIsSelected =
                     renderer.element<TextElement>()?.textProperty?.isCompactText == true
                 itemClick = {
+                    itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
 
                     renderer.element<TextElement>()
@@ -584,6 +585,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     }
                 }
                 itemClick = {
+                    itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
                     if (itemIsSelected) {
                         LPBitmapHandler.handlePathFill(renderDelegate, it, fragment, renderer) {
