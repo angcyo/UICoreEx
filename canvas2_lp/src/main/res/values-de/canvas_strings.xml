@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="canvas_tips">Hinweis</string>
-    <string name="canvas_exit_edit">放弃编辑?</string>
+    <string name="canvas_exit_edit">Aufgeben des Editierens?</string>
     <string name="canvas_title">Erstellen</string>
 
     <string name="canvas_width">Breite</string>
@@ -33,7 +33,7 @@
     <string name="canvas_stroke">Strich</string>
     <string name="canvas_fill">Füllen</string>
     <string name="canvas_path_fill">Pfad-Füllung</string>
-    <string name="canvas_fill_stroke">填充&amp;描边</string>
+    <string name="canvas_fill_stroke">Füllung &amp;; Kontur</string>
 
     <string name="canvas_solid">Massiv</string>
     <string name="canvas_hollow">Hohl</string>
@@ -70,7 +70,7 @@
     <string name="canvas_direction">Richtung</string>
     <string name="canvas_inch_unit">Inch</string>
     <string name="canvas_pixel_unit">Pixel</string>
-    <string name="canvas_cloud_storage">云端存储</string>
+    <string name="canvas_cloud_storage">Cloud-Speicher</string>
     <string name="canvas_grid">Raster</string>
     <string name="canvas_smart_assistant">Intelligente Anleitung</string>
     <string name="canvas_preview">Vorschau</string>
@@ -101,60 +101,69 @@
     <string name="canvas_flat_vertical">Vertikal verteilen</string>
     <string name="canvas_group_dissolve">Aufheben</string>
     <string name="canvas_group_group">Gruppieren</string>
-    <string name="canvas_outline">Umriss</string>
+    <string name="canvas_outline">Kontur</string>
+    <string name="canvas_magic_wand">Magischer Radiergummi</string>
+    <string name="canvas_magic_wand_tolerance">Farbunterschied</string>
+    <string name="canvas_outline_hole">Behält die Innenkonturen der Bitmap bei</string>
+    <string name="canvas_outline_offset_tip">Versatzabstand (mm)</string>
 
     <string name="canvas_font_size">Schriftgröße</string>
     <string name="canvas_word_spacing">Wortabstand</string>
     <string name="canvas_line_spacing">Zeilenabstand</string>
     <string name="canvas_curve">Kurve</string>
     <string name="canvas_rasterize">Rasterung</string>
+    <string name="canvas_union">Zusammenführen</string>
+    <string name="canvas_op_union">Union</string>
+    <string name="canvas_op_difference">Subtrahieren</string>
+    <string name="canvas_op_intersect">Fragment</string>
+    <string name="canvas_op_xor">Kombinieren</string>
 
     <string name="canvas_side_count">Seite</string>
-    <string name="canvas_angle_count">角数</string>
+    <string name="canvas_angle_count">Anzahl der Ecken</string>
     <string name="canvas_depth">Tiefe</string>
     <string name="canvas_corner">Abgerundet</string>
 
     <string name="invert_title">Anweisung für Farbumkehr</string>
-    <string name="invert_des">1.先按照正常流程测试雕刻材料\n2.看雕刻效果深浅（与材料色对比）\n3.判断是否勾选反色</string>
+    <string name="invert_des">1. Testen Sie das Gravurmaterial nach dem normalen Prozess\n 2. Achten Sie auf die Tiefe des Gravureffekts (im Vergleich zur Farbe des Materials)\n 3. Bestimmen Sie, ob die umgekehrte Farbe überprüft werden soll</string>
     <string name="invert_criterion">Urteilsgrundlage</string>
     <string name="invert_not_recommend">Farbumkehr ist nicht zu empfohlen</string>
     <string name="invert_not_recommend_criterion">Die Gravurfarbe ist dunkler als die Materialfarbe</string>
     <string name="invert_recommend">Farbumkehr wird empfohlen</string>
     <string name="invert_recommend_criterion">Die Gravurfarbe ist heller als die Materialfarbe</string>
 
-    <string name="canvas_clear">清空所有</string>
-    <string name="canvas_select_all">选中所有</string>
-    <string name="canvas_show_all">显示所有</string>
-    <string name="canvas_hide_other">隐藏其它</string>
-    <string name="canvas_origin">画布原点</string>
-    <string name="canvas_reset">画布复位</string>
-    <string name="canvas_best">画布适应</string>
-    <string name="canvas_ratio_1">画布缩放100%</string>
+    <string name="canvas_clear">Alles leeren</string>
+    <string name="canvas_select_all">Alles prüfen</string>
+    <string name="canvas_show_all">Alles anzeigen</string>
+    <string name="canvas_hide_other">Sonstiges ausblenden</string>
+    <string name="canvas_origin">Herkunft des Maltuchs</string>
+    <string name="canvas_reset">Zurücksetzen der Arbeitsfläche</string>
+    <string name="canvas_best">Leinwand-Adaption</string>
+    <string name="canvas_ratio_1">Leinwand-Zoom 100%</string>
 
-    <string name="canvas_item_outof_limit">元素数量超出限制!</string>
+    <string name="canvas_item_outof_limit">Die Anzahl der Elemente überschreitet das Limit!</string>
     <string name="canvas_min_diameter">Kleiner Durchmesser</string>
     <string name="canvas_max_diameter">Großer Durchmesser</string>
     <string name="canvas_rotation_axis">Drehachse</string>
 
     <string name="canvas_sync_font">Schriftarten sichern/synchronisieren</string>
 
-    <string name="add_parameter_comparison_table">添加参数对照表</string>
+    <string name="add_parameter_comparison_table">Hinzufügen einer Parameterprüftabelle</string>
     <string name="add_parameter_comparison_table_threshold">Schwellenwert</string>
-    <string name="add_parameter_comparison_table_columns">列数</string>
-    <string name="add_parameter_comparison_table_rows">行数</string>
-    <string name="add_parameter_comparison_table_font_size">字体大小</string>
-    <string name="add_parameter_comparison_table_grid_margin">格子边距</string>
+    <string name="add_parameter_comparison_table_columns">Die Anzahl der Spalten</string>
+    <string name="add_parameter_comparison_table_rows">Anzahl der Zeilen</string>
+    <string name="add_parameter_comparison_table_font_size">Schriftgrad</string>
+    <string name="add_parameter_comparison_table_grid_margin">Karierte Ränder</string>
 
-    <string name="add_multiplication_table">添加乘法口诀表</string>
-    <string name="add_visual_chart">添加视力表</string>
+    <string name="add_multiplication_table">Füge eine Tabelle mit Multiplikationstipps hinzu</string>
+    <string name="add_visual_chart">Hinzufügen eines Augendiagramms</string>
 
-    <string name="data_not_allowed">当前模式下, 不允许雕刻"%1$s"数据</string>
-    <string name="data_not_allowed_reverse">当前模式下, 不允许雕刻非"%1$s"数据</string>
-    <string name="data_not_allowed_height">当前模式下, 不允许雕刻高度大于%1$s mm的数据</string>
-    <string name="data_not_allowed_multi">当前模式下, 不允许雕刻多个元素</string>
+    <string name="data_not_allowed">Im aktuellen Modus ist das Gravieren von "%1$s"-Daten nicht zulässig</string>
+    <string name="data_not_allowed_reverse">Im aktuellen Modus ist das Gravieren von Nicht-"%1$s"-Daten nicht zulässig</string>
+    <string name="data_not_allowed_height">Im aktuellen Modus ist das Gravieren von Daten mit einer Höhe von mehr als %1$s mm nicht zulässig</string>
+    <string name="data_not_allowed_multi">Im aktuellen Modus dürfen nicht mehrere Elemente geformt werden</string>
 
     <string name="canvas_side">Seite</string>
-    <string name="project_exist_tip">项目已存在, 是否覆盖?</string>
-    <string name="project_restore_tip">是否恢复之前的项目?</string>
+    <string name="project_exist_tip">Das Projekt existiert bereits, ist es überschrieben?</string>
+    <string name="project_restore_tip">Möchten Sie frühere Elemente wiederherstellen?</string>
 
 </resources>

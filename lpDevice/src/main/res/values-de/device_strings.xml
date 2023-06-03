@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="engrave_warn">Warnung</string>
-    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
+    <string name="ble_permission_disabled">Relevante Berechtigungen sind deaktiviert, bitte schalten Sie Bluetooth und Standort und andere damit verbundene Berechtigungen ein!</string>
     <string name="device_connected">Verbunden</string>
-    <string name="blue_connecting">蓝牙正在连接...</string>
-    <string name="blue_disconnecting">正在断开...</string>
+    <string name="blue_connecting">Bluetooth verbindet...</string>
+    <string name="blue_disconnecting">Trennend...</string>
     <string name="blue_connect">Bluetooth-Verbindung</string>
     <string name="ui_slip_menu_model">Moduseinstellungen</string>
 
@@ -18,11 +18,11 @@
     <string name="device_setting_engrave_dir">Gravurrichtung</string>
     <string name="device_setting_engrave_dir_des">Die voreingestellt Gravurrichtung ist die Vorwärtsgravur. Schalten Sie diesen den Knopf an</string>
     <string name="device_g_code_pwr_label">G-Code-Befehlsleistung verwenden</string>
-    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
+    <string name="device_g_code_pwr_des">Aktivieren Sie die Option G-Code-Gravurleistung übernimmt den Wert aus dem Befehl. Wenn Sie die Option deaktivieren, wird die G-Code-Gravurleistung von der App übernommen.</string>
     <string name="device_setting_act_des_preview_g_code">Der Cursor wird sich entsprechend dem Pfad der Vektordatei bewegen</string>
 
-    <string name="ui_disclaimer">免责声明</string>
-    <string name="ui_disclaimer_content2">警告：当“自由模式”开关被打开后，您的设备将被允许在脱离保护罩的防护下使用，由此可能会给您带来安全风险，因此请务必确认是否有必要执行当前操作；如果您确认要放弃在安全保护罩的防护下使用，请务必确保您的操作符合安全规范，而且同意由此操作导致的安全和法律风险完全由本人负责，LaserPecker的厂商和代理商将不负有任何安全和法律责任。</string>
+    <string name="ui_disclaimer">Verzichtserklärung</string>
+    <string name="ui_disclaimer_content2">Warnung: Wenn der Schalter „Freier Modus“ eingeschaltet ist, kann Ihr Gerät ohne die Schutzhülle verwendet werden, was zu Sicherheitsrisiken führen kann. Bitte bestätigen Sie daher unbedingt, ob die aktuelle Aktion erforderlich ist. Wenn Sie bestätigen, dass Sie bei der Handhabung auf die Schutzhülle verzichten möchten, stellen Sie bitte sicher, dass Sie die Sicherheitsvorschriften einhalten und erklären Sie sich damit einverstanden,, dass Sie die volle Verantwortung für die Sicherheits- und Rechtsrisiken tragen, die durch diese Handhabung verursacht werden, und dass die Hersteller und Händler von LaserPecker keine Haftung für Sicherheit und rechtliche Haftung übernehmen.</string>
 
     <string name="device_ex_car_label">Bewegliche Plattform</string>
     <string name="device_ex_car_des">--</string>
@@ -47,19 +47,19 @@
     <string name="device_setting_blue_connect_auto">Bluetooth automatisch verbinden</string>
 
     <string name="engrave_experimental">Experimentell</string>
-    <string name="create_log_tip">请稍等，正在生成日志...</string>
+    <string name="create_log_tip">Bitte warten, es werden Protokolle generiert...</string>
 
     <string name="firmware_corrupted">Firmware ist beschädigt</string>
-    <string name="firmware_invalid">无效的固件</string>
+    <string name="firmware_invalid">Ungültige Firmware</string>
     <string name="cannot_update_firmware_tip">Diese Firmware kann auf diesem Gerät nicht aktualisiert werden.</string>
     <string name="firmware_upgrade">Firmware-Upgrade</string>
     <string name="firmware_version">Firmware-Version</string>
     <string name="firmware_time">Zeit der Firmware</string>
     <string name="device_firmware_version">Firmwareversion des Geräts</string>
-    <string name="upgrade_completed">升级完成!</string>
+    <string name="upgrade_completed">Upgrade abgeschlossen!</string>
     <string name="upgrade_duration">Zeitaufwand für das Upgrade</string>
 
-    <string name="data_exception">数据异常!</string>
+    <string name="data_exception">Daten-Anomalien!</string>
     <string name="blue_connected">Bluetooth ist verbunden</string>
     <string name="blue_disconnected">Bluetooth ist getrennt</string>
 
@@ -82,25 +82,25 @@
     <string name="device_not_found_des">Vergewissern Sie sich</string>
     <string name="contact_me">Kontaktieren Sie den Kundendienst</string>
 
-    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+    <string name="device_setting_tips_fourteen_11">Gravur-Modus:</string>
 
     <string name="select_device">Gerät auswählen</string>
     <string name="start_upgrade">Upgrade starten</string>
     <string name="engrave_feedback">Problem melden</string>
 
-    <string name="empty_data_transfer">无雕刻数据!</string>
-    <string name="out_of_data_transfer">数据过大!</string>
-    <string name="transfer_data_exception">传输数据异常!</string>
+    <string name="empty_data_transfer">Keine Sculpting-Daten!</string>
+    <string name="out_of_data_transfer">Die Daten sind zu groß!</string>
+    <string name="transfer_data_exception">Übertragungsdaten abnormal!</string>
     <string name="canvas_open">Öffnen</string>
     <string name="font_import_fail">Schriftartimport fehlgeschlagen</string>
     <string name="font_import_success">Schriftarten erfolgreich importiert</string>
     <string name="canvas_import_font">Importieren</string>
-    <string name="canvas_backups_font">备份</string>
+    <string name="canvas_backups_font">Sicherungskopie</string>
     <string name="canvas_export_font">Exportieren</string>
     <string name="canvas_rename">Umbenennen</string>
     <string name="project_title">Meine Werke</string>
     <string name="canvas_delete_project">Elemente löschen</string>
-    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
+    <string name="canvas_delete_project_tip">Es kann nach dem Löschen nicht wiederhergestellt werden, möchten Sie fortfahren?</string>
     <string name="save_project_title">Projektname</string>
     <string name="project_title_limit">Eingabe von bis zu 20 Zeichen</string>
     <string name="project_save_success_tip">Projekt erfolgreich gespeichert</string>

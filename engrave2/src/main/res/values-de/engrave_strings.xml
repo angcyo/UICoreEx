@@ -5,14 +5,14 @@
     <string name="object_diameter">Durchmesser des Objekts</string>
 
     <string name="blue_no_device_connected">Gerät nicht angeschlossen</string>
-    <string name="device_ex_discontent_tips">%1$s配件未连接，请先连接!</string>
-    <string name="engrave_ex_discontent_tips">检查到%1$s配件未连接，是否继续?</string>
+    <string name="device_ex_discontent_tips">%1$s Zubehör nicht angeschlossen, bitte zuerst anschließen!</string>
+    <string name="engrave_ex_discontent_tips">Überprüfen Sie, ob das %1$s-Zubehör nicht angeschlossen ist, möchten Sie fortfahren?</string>
 
     <string name="preview_center">Anzeigezentrum</string>
     <string name="preview_continue">Vorschau fortsetzen</string>
     <string name="print_v2_package_preview_over">Vorschau beenden</string>
     <string name="laser_brightness">Helligkeit des Lasers</string>
-    <string name="previewing">预览中…</string>
+    <string name="previewing">In der Vorschau...</string>
     <string name="preview">Vorschau</string>
     <string name="print_setting">Einstellungen für die Lasergravur</string>
     <string name="file_setting">Dateieinstellungen</string>
@@ -63,8 +63,8 @@
     <string name="send_file">Datei senden</string>
 
     <string name="size_safety_tips">Vergewissern Sie sich</string>
-    <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
-    <string name="print_stop">确定要结束镭雕吗？</string>
+    <string name="size_safety_content">Vergewissern Sie sich, dass der Laserarbeitsbereich sicher ist. Tragen Sie unbedingt eine Schutzbrille und eine Schutzhülle.</string>
+    <string name="print_stop">Bist du sicher, dass du den Radium Eagle beenden willst?</string>
 
     <string name="preview_drag_tip">Ziehen Sie die Position des Elements innerhalb des roten Rahmens</string>
     <string name="bracket_height_label">Höhe anpassen</string>
@@ -91,31 +91,31 @@
     <string name="engrave_perimeter">Umfang</string>
     <string name="engrave_bounds_warn">Elemente befinden sich außerhalb des Gravurbereichs</string>
     <string name="engrave_overflow_bounds_message">Außerhalb des Gravurbereichs. Bitte ziehen Sie das Element hinein</string>
-    <string name="engrave_overflow_bounds_message_strict">超出雕刻区域，请将元素拖入调整到蓝色边框内</string>
+    <string name="engrave_overflow_bounds_message_strict">Ziehen Sie das Element über den geformten Bereich hinaus in den blauen Rahmen der Anpassung</string>
 
     <string name="device_engrave_ing_title">Das Gerät ist gerade in Betrieb</string>
-    <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
+    <string name="device_engrave_ing_des">Beenden Sie die aktuelle Sculpting-Aufgabe?</string>
 
     <string name="focal_distance_tip">Bitte überprüfen Sie die Brennweite</string>
     <string name="focal_distance">Brennweite</string>
-    <string name="no_data_transfer">无数据需要传输!</string>
-    <string name="no_data_engrave">无数据需要镭雕!</string>
+    <string name="no_data_transfer">Es müssen keine Daten übertragen werden!</string>
+    <string name="no_data_engrave">Für eine Radiumschnitzerei sind keine Daten erforderlich!</string>
 
     <string name="device_angle">Horizontalwinkel des Geräts</string>
     <string name="device_temp">Temperatur des Geräts</string>
 
-    <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
-    <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
+    <string name="unsupported_firmware_tip">Nicht unterstützte Firmware-Version %1$s, bitte aktualisieren Sie die Firmware vor der Verwendung.</string>
+    <string name="limit_engrave_count_tip">Die Anzahl der Gravuren hat die Obergrenze erreicht, maximal %1$s.</string>
 
-    <string name="engrave_stopping_tip">正在停止雕刻,请稍等...</string>
+    <string name="engrave_stopping_tip">Beenden Sie die Gravur, bitte warten...</string>
 
-    <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>
-    <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
+    <string name="open_notify_tip">Aktivieren Sie Benachrichtigungen, um den Fortschritt von Sculpted-Benachrichtigungen zu erhalten?</string>
+    <string name="open_notify_channel_tip">Öffnen Sie den Sculpting-Kanal, um über den Fortschritt informiert zu werden?</string>
 
     <string name="material_title_limit">Eingabe von bis zu 20 Zeichen</string>
     <string name="save_material_title">Name des Materials</string>
 
-    <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
+    <string name="delete_material_tip">Nach dem Löschen kann es nicht wiederhergestellt werden, möchten Sie fortfahren?</string>
     <string name="engrave_skip_current">Aktuelle Gravur überspringen</string>
 
     <string name="device_models">LP-Modell</string>
@@ -123,7 +123,7 @@
     <string name="hide_all_label">Zusammenklappen</string>
 
     <string name="not_support_tip">Nicht unterstützte Firmware-Version</string>
-    <string name="engrave_item_params_tip">单元素雕刻参数模式下,需要先在雕刻图层中配置好元素的雕刻参数!</string>
+    <string name="engrave_item_params_tip">Im Einzelelement-Sculpting-Parametermodus müssen Sie zuerst die Sculpting-Parameter des Elements in der Sculpting-Ebene konfigurieren!</string>
 
     <string name="device_shutdown_tip">Gerät ist ausgeschaltet</string>
 </resources>
