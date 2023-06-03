@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="engrave_warn">Advertencia</string>
-    <string name="ble_permission_disabled">相关权限被禁用,请打开蓝牙和位置等相关权限!</string>
+    <string name="ble_permission_disabled">Los permisos relevantes están deshabilitados, active Bluetooth y ubicación y otros permisos relacionados.</string>
     <string name="device_connected">Conectado </string>
-    <string name="blue_connecting">蓝牙正在连接...</string>
-    <string name="blue_disconnecting">正在断开...</string>
+    <string name="blue_connecting">Bluetooth se está conectando...</string>
+    <string name="blue_disconnecting">Desconectar...</string>
     <string name="blue_connect">Conexión del dispositivo Bluetooth</string>
     <string name="ui_slip_menu_model">Configuración del modo</string>
 
@@ -18,11 +18,11 @@
     <string name="device_setting_engrave_dir">Dirección grabador</string>
     <string name="device_setting_engrave_dir_des">Grabado frontal predeterminado</string>
     <string name="device_g_code_pwr_label">Use la potencia de los comandos de GCode</string>
-    <string name="device_g_code_pwr_des">打开选项,GCode雕刻功率从指令中取值;关闭选项,GCode雕刻功率从App中取值.</string>
+    <string name="device_g_code_pwr_des">Active la opción, la potencia de grabado de G Code toma el valor del comando; Desactive la opción y la potencia de grabado de G Code se tomará de la aplicación.</string>
     <string name="device_setting_act_des_preview_g_code">El cursor se moverá según la ruta del archivo del diagrama vectorial</string>
 
-    <string name="ui_disclaimer">免责声明</string>
-    <string name="ui_disclaimer_content2">警告：当“自由模式”开关被打开后，您的设备将被允许在脱离保护罩的防护下使用，由此可能会给您带来安全风险，因此请务必确认是否有必要执行当前操作；如果您确认要放弃在安全保护罩的防护下使用，请务必确保您的操作符合安全规范，而且同意由此操作导致的安全和法律风险完全由本人负责，LaserPecker的厂商和代理商将不负有任何安全和法律责任。</string>
+    <string name="ui_disclaimer">Renuncia</string>
+    <string name="ui_disclaimer_content2">Advertencia: Cuando el interruptor del "Modo Libre" está encendido, su dispositivo podrá funcionar sin la cubierta de protección, lo que puede suponer un riesgo para la seguridad. Por eso, por favor confirme si la operación actual es necesaria; Si confirma proceder con esta operación sin la protección de la cubierta de protección, por favor, asegúrese de que su operación sigue las Normas de Seguridad, y acepta que usted es el único responsable de cualquier riesgo de seguridad y legal resultante de esta operación y que el fabricante y distribuidor de LaserPecker no se hace responsable de cualquier responsabilidad de seguridad o legal.</string>
 
     <string name="device_ex_car_label">Plataforma móvil</string>
     <string name="device_ex_car_des">--</string>
@@ -47,19 +47,19 @@
     <string name="device_setting_blue_connect_auto">Conectar Bluetooth automáticamente</string>
 
     <string name="engrave_experimental">Experimental</string>
-    <string name="create_log_tip">请稍等，正在生成日志...</string>
+    <string name="create_log_tip">Por favor, espere, se están generando registros...</string>
 
     <string name="firmware_corrupted">El firmware está dañado</string>
-    <string name="firmware_invalid">无效的固件</string>
+    <string name="firmware_invalid">Firmware no válido</string>
     <string name="cannot_update_firmware_tip">El dispositivo actual no se puede actualizar el nuevo firmware </string>
     <string name="firmware_upgrade">Actualizar firmware</string>
     <string name="firmware_version">Versión de firmware</string>
     <string name="firmware_time">Tiempo del firmware</string>
     <string name="device_firmware_version">Versión del firmware del dispositivo</string>
-    <string name="upgrade_completed">升级完成!</string>
+    <string name="upgrade_completed">¡Actualización completa!</string>
     <string name="upgrade_duration">Tiempo transcurrido</string>
 
-    <string name="data_exception">数据异常!</string>
+    <string name="data_exception">¡Anomalías en los datos!</string>
     <string name="blue_connected">El Bluetooth está conectado</string>
     <string name="blue_disconnected">El Bluetooth está desconectado</string>
 
@@ -82,25 +82,25 @@
     <string name="device_not_found_des">Asegúrese de que su máquina está en el estado para ser conectado</string>
     <string name="contact_me">Contacte con el servicio al cliente</string>
 
-    <string name="device_setting_tips_fourteen_11">雕刻模式:</string>
+    <string name="device_setting_tips_fourteen_11">Modo de grabado:</string>
 
     <string name="select_device">Seleccionar dispositivo</string>
     <string name="start_upgrade">Iniciar actualización</string>
     <string name="engrave_feedback">Resultados de los comentarios</string>
 
-    <string name="empty_data_transfer">无雕刻数据!</string>
-    <string name="out_of_data_transfer">数据过大!</string>
-    <string name="transfer_data_exception">传输数据异常!</string>
+    <string name="empty_data_transfer">¡Sin datos de escultura!</string>
+    <string name="out_of_data_transfer">¡Los datos son demasiado grandes!</string>
+    <string name="transfer_data_exception">¡Datos de transmisión anormales!</string>
     <string name="canvas_open">Abrir</string>
     <string name="font_import_fail">Fallo al importar fuentes</string>
     <string name="font_import_success">La fuente se ha importado con éxito</string>
     <string name="canvas_import_font">Importar</string>
-    <string name="canvas_backups_font">备份</string>
+    <string name="canvas_backups_font">copia de seguridad</string>
     <string name="canvas_export_font">Exportar</string>
     <string name="canvas_rename">Cambiar nombre</string>
     <string name="project_title">Mis creaciones</string>
     <string name="canvas_delete_project">Eliminar el proyecto</string>
-    <string name="canvas_delete_project_tip">删除后不可恢复, 是否继续?</string>
+    <string name="canvas_delete_project_tip">No se puede recuperar después de la eliminación, ¿desea continuar?</string>
     <string name="save_project_title">Nombre del proyecto </string>
     <string name="project_title_limit">Introduzca hasta 20 caracteres</string>
     <string name="project_save_success_tip"> Se guarda el proyecto correctamente</string>
