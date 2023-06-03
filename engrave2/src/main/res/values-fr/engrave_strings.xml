@@ -2,29 +2,29 @@
 <resources>
     <string name="canvas_operate">Opération</string>
     <string name="laser_type">Source de lumière laser</string>
-    <string name="object_diameter">Diamètre de l'objet</string>
+    <string name="object_diameter">Diamètre de l\'objet</string>
 
-    <string name="blue_no_device_connected">L'appareil n'est pas connecté</string>
+    <string name="blue_no_device_connected">L\'appareil n\'est pas connecté</string>
     <string name="device_ex_discontent_tips">%1$s accessoire non connecté, veuillez vous connecter d’abord!</string>
     <string name="engrave_ex_discontent_tips">Vérifiez que l’accessoire %1$s n’est pas connecté, voulez-vous continuer ?</string>
 
-    <string name="preview_center">Centre d'affichage</string>
-    <string name="preview_continue">Continuer l'aperçu</string>
-    <string name="print_v2_package_preview_over">Fin de l'aperçu</string>
+    <string name="preview_center">Centre d\'affichage</string>
+    <string name="preview_continue">Continuer l\'aperçu</string>
+    <string name="print_v2_package_preview_over">Fin de l\'aperçu</string>
     <string name="laser_brightness">Luminosité du laser</string>
     <string name="previewing">En avant-première...</string>
     <string name="preview">Aperçu</string>
     <string name="print_setting">Paramètres de gravure laser</string>
     <string name="file_setting">Paramètres du fichier</string>
     <string name="transmitting">Transfert de fichiers en cours</string>
-    <string name="v4_bmp_edit_tips">Les données de l'image sont en cours de traitement</string>
+    <string name="v4_bmp_edit_tips">Les données de l\'image sont en cours de traitement</string>
     <string name="remaining_time">Estimation du temps restant</string>
     <string name="start_engrave">Démarrer la gravure</string>
     <string name="engrave_pause">Pause la gravure</string>
     <string name="engrave_finish">Fin de la gravure</string>
     <string name="engrave_stop">Mettre fin à l’aigle au radium</string>
     <string name="engrave_continue">Continuer la gravure</string>
-    <string name="start_preview">Démarrer l'aperçu</string>
+    <string name="start_preview">Démarrer l\'aperçu</string>
     <string name="print_v2_package_print_state">Suspendu</string>
     <string name="print_v2_package_print_over">La gravure au laser est terminée</string>
     <string name="print_laser_start_tips">Ne pas graver sur des matériaux hautement réfléchissants</string>
@@ -38,15 +38,15 @@
     <string name="work_time">Temps de traitement</string>
     <string name="engrave_again">Répéter</string>
     <string name="print_v2_package_Laser_home">Vitesse de gravure</string>
-    <string name="preview_scroll_continue">Faire défiler l'aperçu</string>
+    <string name="preview_scroll_continue">Faire défiler l\'aperçu</string>
     <string name="preview_scroll_pause">Mettre en pause le défilement</string>
     <string name="engrave_speed">Vitesse de gravure</string>
-    <string name="engrave_precision">Niveau d'accélération</string>
+    <string name="engrave_precision">Niveau d\'accélération</string>
 
     <string name="ui_slip_menu_history">Documents historiques</string>
-    <string name="device_history_title">Données relatives à l'appareil</string>
+    <string name="device_history_title">Données relatives à l\'appareil</string>
     <string name="app_history_title">Données locales</string>
-    <string name="delete_history">Supprimer l'historique</string>
+    <string name="delete_history">Supprimer l\'historique</string>
     <string name="delete_history_succeed">Suppression réussie</string>
     <string name="delete_history_failed">Suppression échouée</string>
 
@@ -62,11 +62,11 @@
     <string name="ui_next">Suivant</string>
     <string name="send_file">Envoi de fichiers</string>
 
-    <string name="size_safety_tips">Veuillez vérifier que l'espace laser est sécurisé.</string>
+    <string name="size_safety_tips">Veuillez vérifier que l\'espace laser est sécurisé.</string>
     <string name="size_safety_content">Assurez-vous de confirmer que l’espace de travail laser est sûr. Assurez-vous de porter des lunettes de protection et une housse de protection.</string>
     <string name="print_stop">Êtes-vous sûr de vouloir mettre fin à l’aigle au radium?</string>
 
-    <string name="preview_drag_tip">Faites glisser la position de l'image dans la zone de prévisualisation pour réaliser l'effet de prévisualisation dynamique du cadre de protection laser.</string>
+    <string name="preview_drag_tip">Faites glisser la position de l\'image dans la zone de prévisualisation pour réaliser l\'effet de prévisualisation dynamique du cadre de protection laser.</string>
     <string name="bracket_height_label">Hauteur de levage</string>
     <string name="bracket_not_connect">Support électrique non connecté</string>
 
@@ -76,7 +76,7 @@
     <string name="continue_preview"> Continuer</string>
     <string name="scroll_preview">Rouler</string>
     <string name="preview_parameter_setting">Paramètres</string>
-    <string name="filename_hint">Entrer jusqu'à 28 octets</string>
+    <string name="filename_hint">Entrer jusqu\'à 28 octets</string>
     <string name="stop_transfer">Fin du transfert</string>
     <string name="engrave_tip">Ne pas graver sur des matériaux hautement réfléchissants</string>
     <string name="engrave_layer_config">Couche de gravure</string>
@@ -89,11 +89,11 @@
     <string name="retry">Réessayer</string>
 
     <string name="engrave_perimeter">Circonférence</string>
-    <string name="engrave_bounds_warn">L'élément est hors de la zone de gravure.</string>
+    <string name="engrave_bounds_warn">L\'élément est hors de la zone de gravure.</string>
     <string name="engrave_overflow_bounds_message">En dehors de la zone de gravure</string>
     <string name="engrave_overflow_bounds_message_strict">Au-delà de la zone sculptée, faites glisser l’élément dans la bordure bleue de réglage</string>
 
-    <string name="device_engrave_ing_title">L'appareil est en cours de fonctionnement.</string>
+    <string name="device_engrave_ing_title">L\'appareil est en cours de fonctionnement.</string>
     <string name="device_engrave_ing_des">Mettre fin à la tâche de sculpture en cours ?</string>
 
     <string name="focal_distance_tip">Veuillez confirmer la longueur focale</string>
@@ -101,8 +101,8 @@
     <string name="no_data_transfer">Aucune donnée à transférer!</string>
     <string name="no_data_engrave">Aucune donnée requise pour une sculpture au radium!</string>
 
-    <string name="device_angle">Angle horizontal de l'appareil</string>
-    <string name="device_temp">Température de l'appareil</string>
+    <string name="device_angle">Angle horizontal de l\'appareil</string>
+    <string name="device_temp">Température de l\'appareil</string>
 
     <string name="unsupported_firmware_tip">Version du firmware non prise en charge %1$s, veuillez mettre à jour le firmware avant utilisation.</string>
     <string name="limit_engrave_count_tip">Le nombre de gravures a atteint la limite supérieure, maximum %1$s.</string>
@@ -112,7 +112,7 @@
     <string name="open_notify_tip">Activer les notifications pour recevoir la progression des notifications sculptées ?</string>
     <string name="open_notify_channel_tip">Ouvrir le canal de sculpture pour être informé des progrès ?</string>
 
-    <string name="material_title_limit">Saisir jusqu'à 20 caractères</string>
+    <string name="material_title_limit">Saisir jusqu\'à 20 caractères</string>
     <string name="save_material_title">Nom du matériau</string>
 
     <string name="delete_material_tip">Après la suppression, il n’est pas récupérable, voulez-vous continuer?</string>
@@ -125,5 +125,5 @@
     <string name="not_support_tip">Versions de micrologiciel non prises en charge</string>
     <string name="engrave_item_params_tip">En mode paramètre de sculpture à élément unique, vous devez d’abord configurer les paramètres de sculpture de l’élément dans le calque de sculpture !</string>
 
-    <string name="device_shutdown_tip">L'appareil est éteint</string>
+    <string name="device_shutdown_tip">L\'appareil est éteint</string>
 </resources>

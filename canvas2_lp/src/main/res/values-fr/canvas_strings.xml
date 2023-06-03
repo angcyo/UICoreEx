@@ -48,7 +48,7 @@
     <string name="canvas_align_horizontal">Centré horizontal</string>
     <string name="canvas_align_right">Aligner à droite</string>
     <string name="canvas_align_center">Centré</string>
-    <string name="canvas_bounds_center">Placer l'appareil au milieu</string>
+    <string name="canvas_bounds_center">Placer l\'appareil au milieu</string>
     <string name="canvas_align_top">Aligner en haut</string>
     <string name="canvas_align_vertical">Centré verticalement</string>
     <string name="canvas_align_bottom">Aligner en bas</string>
@@ -76,15 +76,15 @@
     <string name="canvas_preview">Aperçu</string>
     <string name="canvas_regulate">Ajustement</string>
     <string name="canvas_confirm">Confirmation</string>
-    <string name="canvas_forward">Monter d'un calque</string>
-    <string name="canvas_backward">Descendre d'un calque</string>
+    <string name="canvas_forward">Monter d\'un calque</string>
+    <string name="canvas_backward">Descendre d\'un calque</string>
     <string name="canvas_front">Régler au sommet</string>
     <string name="canvas_back">Régler au fond</string>
     <string name="canvas_sort">Disposition</string>
 
     <string name="canvas_invalid_font">Police non valide</string>
     <string name="canvas_font_exist">Police existe déjà</string>
-    <string name="canvas_cannot_import">Impossible d'importer</string>
+    <string name="canvas_cannot_import">Impossible d\'importer</string>
     <string name="canvas_delete_font">Supprimer la police</string>
 
     <string name="canvas_photo">Album</string>
@@ -126,7 +126,7 @@
     <string name="invert_title">Description des couleurs inversées</string>
     <string name="invert_des">1. Testez le matériau de gravure selon le processus normal\n 2. Regardez la profondeur de l’effet de gravure (par rapport à la couleur du matériau)\n 3. Déterminez s’il faut vérifier la couleur inversée</string>
     <string name="invert_criterion">Base de jugement</string>
-    <string name="invert_not_recommend">La couleur inversée n'est pas recommandée</string>
+    <string name="invert_not_recommend">La couleur inversée n\'est pas recommandée</string>
     <string name="invert_not_recommend_criterion">La couleur de la gravure est plus foncée que la couleur du matériau</string>
     <string name="invert_recommend">La couleur inversée est recommandée</string>
     <string name="invert_recommend_criterion">La couleur de la gravure est plus claire que la couleur du matériau</string>

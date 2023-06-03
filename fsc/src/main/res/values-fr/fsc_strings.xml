@@ -2,7 +2,7 @@
 <resources>
 
     <string name="safety_tips">Message de sécurité</string>
-    <string name="device_exception">Anomalie de l'appareil</string>
+    <string name="device_exception">Anomalie de l\'appareil</string>
     <string name="ex_tips_one">Veuillez entrer les paramètres du mode et activer [Mode libre]</string>
     <string name="ex_tips_one2">Dans l’état non sécurisé, il peut être utilisé après l’activation du [mode libre]</string>
     <string name="ex_tips_two">Arrêt d’urgence! La plage est hors limites. Veuillez utiliser le réglage automatique dans le réglage laser pour réinitialiser la position de la mise au point laser et réessayer.</string>
@@ -25,7 +25,7 @@
     <string name="preview_state_z_continue">Rouleau électrique polyvalent Continue</string>
     <string name="preview_state_z_continue2">%1$s continue</string>
     <string name="preview_state_z_scroll">Rouleau électrique polyvalent Rouler</string>
-    <string name="preview_state_center">Prévisualisation du centre d'affichage</string>
+    <string name="preview_state_center">Prévisualisation du centre d\'affichage</string>
     <string name="preview_state_points">Aperçu de la gamme en 4 points</string>
     <string name="preview_state_bracket">Réglage du support électrique</string>
 
@@ -33,22 +33,22 @@
     <string name="engrave_state_stop">Fin de la gravure</string>
     <string name="engrave_state_ing">Gravure laser en cours</string>
 
-    <string name="blue_no_device_connected">L'appareil n'est pas connecté</string>
+    <string name="blue_no_device_connected">L\'appareil n\'est pas connecté</string>
     <string name="device_busy_tip">L’appareil est occupé, veuillez réessayer plus tard!</string>
-    <string name="device_init_fail_tip">Échec de l'initialisation de l'appareil!</string>
+    <string name="device_init_fail_tip">Échec de l\'initialisation de l\'appareil!</string>
     <string name="command_too_long_tip">Commande trop longue！</string>
     <string name="command_send_error_tip">Exception de communication, veuillez réessayer plus tard!</string>
 
     <string name="work_mode_focusing">Mode de mise au point</string>
     <string name="work_mode_file_download">Mode de téléchargement de fichiers</string>
-    <string name="work_mode_shutdown">État d'arrêt</string>
+    <string name="work_mode_shutdown">État d\'arrêt</string>
     <string name="work_mode_setup">Mode de réglage</string>
     <string name="work_mode_download">Mode de téléchargement</string>
 
-    <string name="laser_not_plugged_tip">La tête laser n'est pas insérée correctement</string>
+    <string name="laser_not_plugged_tip">La tête laser n\'est pas insérée correctement</string>
 
     <string name="device_ex_z_label">Rouleau électrique polyvalent</string>
-    <string name="device_ex_z_des">Prise en charge du paramétrage de la scène de gravure sur la surface d'objets cubiques et cylindriques réguliers (limite de taille : la largeur du cubique est inférieure ou égale à 100 mm</string>
+    <string name="device_ex_z_des">Prise en charge du paramétrage de la scène de gravure sur la surface d\'objets cubiques et cylindriques réguliers (limite de taille : la largeur du cubique est inférieure ou égale à 100 mm</string>
     <string name="device_ex_r_label">Faites pivoter la pince</string>
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">Extension de la glissière</string>

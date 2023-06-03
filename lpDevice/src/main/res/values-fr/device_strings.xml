@@ -13,16 +13,16 @@
     <string name="device_setting_act_model_security">Statut de sécurité</string>
     <string name="device_setting_act_des_security">Ouverture automatique du mode sécurité sous le capot de protection.</string>
     <string name="device_setting_act_model_free">Mode libre</string>
-    <string name="device_setting_act_des_free">Clause de non-responsabilité à convenir dans l'état non protégé</string>
+    <string name="device_setting_act_des_free">Clause de non-responsabilité à convenir dans l\'état non protégé</string>
     <string name="device_setting_act_model_preview_g_code">Diagramme vectoriel</string>
     <string name="device_setting_engrave_dir">Direction de la gravure</string>
     <string name="device_setting_engrave_dir_des">Par défaut</string>
     <string name="device_g_code_pwr_label">Utiliser la puissance de la commande GCode</string>
     <string name="device_g_code_pwr_des">Activez l’option, la puissance de gravure G Code prend la valeur de la commande; Désactivez l’option et le pouvoir de gravure du code G est pris à partir de l’application.</string>
-    <string name="device_setting_act_des_preview_g_code">Le curseur se déplace en fonction du chemin d'accès au fichier de la carte vectorielle.</string>
+    <string name="device_setting_act_des_preview_g_code">Le curseur se déplace en fonction du chemin d\'accès au fichier de la carte vectorielle.</string>
 
     <string name="ui_disclaimer">démenti</string>
-    <string name="ui_disclaimer_content2">Avertissement : Lorsque le commutateur "Mode libre" est activé, votre appareil peut fonctionner sans le couvercle de protection, ce qui peut présenter un risque pour la sécurité. Veuillez vérifier si l'opération en cours est nécessaire ; si vous confirmez l'opération sans la protection du couvercle de protection, veuillez vous assurer que votre opération respecte les règles de sécurité, et acceptez que vous êtes seul responsable de tout risque juridique et de sécurité résultant de cette opération et que le fabricant et le distributeur de LaserPecker ne seront pas tenus responsables de toute responsabilité juridique ou de sécurité.</string>
+    <string name="ui_disclaimer_content2">Avertissement : Lorsque le commutateur "Mode libre" est activé, votre appareil peut fonctionner sans le couvercle de protection, ce qui peut présenter un risque pour la sécurité. Veuillez vérifier si l\'opération en cours est nécessaire ; si vous confirmez l\'opération sans la protection du couvercle de protection, veuillez vous assurer que votre opération respecte les règles de sécurité, et acceptez que vous êtes seul responsable de tout risque juridique et de sécurité résultant de cette opération et que le fabricant et le distributeur de LaserPecker ne seront pas tenus responsables de toute responsabilité juridique ou de sécurité.</string>
 
     <string name="device_ex_car_label">Plate-forme mobile</string>
     <string name="device_ex_car_des">--</string>
@@ -39,11 +39,11 @@
     <string name="start_calibration">Lancer la calibration</string>
     <string name="finish_calibration">Terminer la calibration</string>
     <string name="device_setting_txt_3">Bouton tactile</string>
-    <string name="device_setting_txt_4">Ce commutateur contrôle l'activation et la désactivation des boutons tactiles de prévisualisation et d'arrêt sur l'unité principale.</string>
+    <string name="device_setting_txt_4">Ce commutateur contrôle l\'activation et la désactivation des boutons tactiles de prévisualisation et d\'arrêt sur l\'unité principale.</string>
     <string name="button_infra_red_title">Lumière rouge allumée en permanence</string>
-    <string name="button_infra_red_content">En raison de l'utilisation de la gravure à lumière invisible</string>
+    <string name="button_infra_red_content">En raison de l\'utilisation de la gravure à lumière invisible</string>
     <string name="device_setting_txt_5">Bouton de gravure par lots</string>
-    <string name="device_setting_txt_6">Cet interrupteur permet d'activer et de désactiver l'accessoire externe "Bouton de gravure par lots".</string>
+    <string name="device_setting_txt_6">Cet interrupteur permet d\'activer et de désactiver l\'accessoire externe "Bouton de gravure par lots".</string>
     <string name="device_setting_blue_connect_auto">Connexion Bluetooth automatique</string>
 
     <string name="engrave_experimental">Expérimental</string>
@@ -51,11 +51,11 @@
 
     <string name="firmware_corrupted">Le micrologiciel a été endommagé.</string>
     <string name="firmware_invalid">Micrologiciel non valide</string>
-    <string name="cannot_update_firmware_tip">Le micrologiciel ne peut pas être mis à jour pour l'appareil actuel.</string>
+    <string name="cannot_update_firmware_tip">Le micrologiciel ne peut pas être mis à jour pour l\'appareil actuel.</string>
     <string name="firmware_upgrade">Mise à jour du micrologiciel</string>
     <string name="firmware_version"> Version du firmware</string>
     <string name="firmware_time">Heure du micrologiciel</string>
-    <string name="device_firmware_version">Version du micrologiciel de l'appareil</string>
+    <string name="device_firmware_version">Version du micrologiciel de l\'appareil</string>
     <string name="upgrade_completed">Mise à niveau terminée!</string>
     <string name="upgrade_duration">Temps de consommation</string>
 
@@ -79,7 +79,7 @@
     <string name="ui_setting">Paramètres</string>
 
     <string name="device_not_found">Impossible de trouver votre appareil.</string>
-    <string name="device_not_found_des">Veuillez vous assurer que votre appareil est dans l'état "To Be Connected".</string>
+    <string name="device_not_found_des">Veuillez vous assurer que votre appareil est dans l\'état "To Be Connected".</string>
     <string name="contact_me">Contacter le service clientèle.</string>
 
     <string name="device_setting_tips_fourteen_11">Mode de gravure :</string>
@@ -102,6 +102,6 @@
     <string name="canvas_delete_project">Supprimer le projet</string>
     <string name="canvas_delete_project_tip">Il ne peut pas être récupéré après la suppression, voulez-vous continuer?</string>
     <string name="save_project_title">Titre du projet</string>
-    <string name="project_title_limit">Saisir jusqu'à 20 caractères</string>
+    <string name="project_title_limit">Saisir jusqu\'à 20 caractères</string>
     <string name="project_save_success_tip">Sauvegarde réussie</string>
 </resources>

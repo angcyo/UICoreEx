@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="canvas_font_text">LaserPecker</string>
+
     <string name="canvas_tips">Tips</string>
     <string name="canvas_exit_edit">Discard?</string>
     <string name="canvas_title">Creation</string>
