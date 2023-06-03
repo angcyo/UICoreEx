@@ -467,13 +467,19 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemIco = R.drawable.canvas_text_curve_ico
             itemText = _string(R.string.canvas_curve)
             itemNewHawkKeyStr = "curve"
-            itemEnable = renderer.lpTextElement()?.isSupportCurve == true
+            val lpTextElement = renderer.lpTextElement()
+            itemEnable = lpTextElement?.isSupportCurve == true
             itemClick = {
-                itemHaveNew = false
-                LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
-                    itemIsSelected = false
+                itemEnable = lpTextElement?.isSupportCurve == true
+                if (itemEnable) {
+                    itemHaveNew = false
+                    LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
+                        itemIsSelected = false
+                    }
+                    UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
+                } else {
+                    updateAdapterItem()
                 }
-                UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
             }
         }
         if (!closeTextEditItemsFun.have("_orientation_")) {
