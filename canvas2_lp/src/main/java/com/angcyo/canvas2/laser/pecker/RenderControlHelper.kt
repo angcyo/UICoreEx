@@ -72,6 +72,12 @@ import com.hingin.umeng.umengEventValue
  */
 class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) : IControlHelper {
 
+    companion object {
+
+        /**曲线文本item*/
+        const val TAG_CURVE_ITEM = "tag_curve_item"
+    }
+
     /**编辑item*/
     val editItem: DslAdapterItem?
         get() = renderLayoutHelper.findTagItem(ControlEditItem.TAG_EDIT_ITEM)
@@ -466,6 +472,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             initItem(renderer)
             itemIco = R.drawable.canvas_text_curve_ico
             itemText = _string(R.string.canvas_curve)
+            itemTag = TAG_CURVE_ITEM
             itemNewHawkKeyStr = "curve"
             val lpTextElement = renderer.lpTextElement()
             itemEnable = lpTextElement?.isSupportCurve == true

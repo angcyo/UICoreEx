@@ -20,6 +20,7 @@ class TextOrientationItem : BaseTextControlItem() {
             updateTextProperty {
                 orientation = itemOrientation
             }
+            updateCurveTextItem()
         }
     }
 
@@ -32,5 +33,4 @@ class TextOrientationItem : BaseTextControlItem() {
         itemIsSelected = itemRenderer?.textElement?.textProperty?.orientation == itemOrientation
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
-
 }

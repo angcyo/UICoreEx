@@ -3,8 +3,10 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 import com.angcyo.canvas.render.data.TextProperty
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.util.element
+import com.angcyo.canvas2.laser.pecker.RenderControlHelper
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
+import com.angcyo.dsladapter.findItemByTag
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -24,6 +26,16 @@ abstract class BaseTextControlItem : CanvasIconItem() {
             block
         )
         updateAdapterItem()
+    }
+
+    /**更新曲线文本item的可用性*/
+    fun updateCurveTextItem() {
+        itemRenderer?.element<TextElement>()?.let {
+            itemDslAdapter?.findItemByTag(RenderControlHelper.TAG_CURVE_ITEM)?.let { item ->
+                item.itemEnable = it.isSupportCurve
+                item.updateAdapterItem()
+            }
+        }
     }
 
     /**初始化*/
