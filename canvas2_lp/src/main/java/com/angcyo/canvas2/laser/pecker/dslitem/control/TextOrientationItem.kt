@@ -19,6 +19,9 @@ class TextOrientationItem : BaseTextControlItem() {
         itemClick = {
             updateTextProperty {
                 orientation = itemOrientation
+                if (itemOrientation == LinearLayout.VERTICAL) {
+                    curvature = 0f
+                }
             }
             updateCurveTextItem()
         }
