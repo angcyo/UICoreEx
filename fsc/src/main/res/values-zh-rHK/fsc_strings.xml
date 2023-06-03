@@ -2,67 +2,67 @@
 <resources>
 
     <string name="safety_tips">安全提示</string>
-    <string name="device_exception">设备异常</string>
+    <string name="device_exception">設備異常</string>
     <string name="ex_tips_one">请进入模式设定，开启[自由模式]</string>
     <string name="ex_tips_one2">非安全状态，开启[自由模式]后可操作</string>
-    <string name="ex_tips_two">紧急停止! 范围越界。请使用激光调节中的自动调整重置激光焦点的位置后再重试。</string>
-    <string name="ex_tips_three">紧急停止! 激光工作温度过高</string>
-    <string name="ex_tips_four">紧急停止! 机器可能遭到撞击或摇晃</string>
-    <string name="ex_tips_five">紧急停止! 超声波传感器检测到有物体进入雕刻范围</string>
-    <string name="ex_tips_six">紧急停止! 数据错误</string>
-    <string name="ex_tips_seven">紧急停止! 文件编号查询错误</string>
-    <string name="ex_tips_eight">紧急停止! 陀螺仪自检错误</string>
-    <string name="ex_tips_nine">紧急停止! flash自检错误</string>
-    <string name="ex_tips_ten">紧急停止! 尺寸异常</string>
+    <string name="ex_tips_two">緊急停止! 範圍越界。</string>
+    <string name="ex_tips_three">緊急停止! 激光工作溫度過高</string>
+    <string name="ex_tips_four">緊急停止! 機器可能遭到撞擊或搖晃</string>
+    <string name="ex_tips_five">緊急停止! 超聲波傳感器檢測到有物體進入雕刻範圍</string>
+    <string name="ex_tips_six">緊急停止! 數據錯誤</string>
+    <string name="ex_tips_seven">緊急停止! 文件編號查詢錯誤</string>
+    <string name="ex_tips_eight">緊急停止! 陀螺儀自檢錯誤</string>
+    <string name="ex_tips_nine">緊急停止! flash自檢錯誤</string>
+    <string name="ex_tips_ten">緊急停止! 尺寸異常</string>
 
     <string name="laser_type_white">白光</string>
-    <string name="laser_type_blue">蓝光</string>
+    <string name="laser_type_blue">藍光</string>
 
-    <string name="preview_state_gcode">预览向量图</string>
-    <string name="preview_state_range">预览范围</string>
-    <string name="preview_state_z_pause">第三轴暂停</string>
+    <string name="preview_state_gcode">預覽向量圖</string>
+    <string name="preview_state_range">預覽範圍</string>
+    <string name="preview_state_z_pause">第三軸暫停</string>
     <string name="preview_state_z_pause2">%1$s暂停</string>
-    <string name="preview_state_z_continue">第三轴继续</string>
+    <string name="preview_state_z_continue">第三軸繼續</string>
     <string name="preview_state_z_continue2">%1$s继续</string>
-    <string name="preview_state_z_scroll">第三轴滚动</string>
-    <string name="preview_state_center">预览显示中心</string>
-    <string name="preview_state_points">4点范围预览</string>
-    <string name="preview_state_bracket">支架调整</string>
+    <string name="preview_state_z_scroll">第三軸滾動</string>
+    <string name="preview_state_center">預覽顯示中心</string>
+    <string name="preview_state_points">4點範圍預覽</string>
+    <string name="preview_state_bracket">支架調整</string>
 
-    <string name="engrave_state_pause">镭雕暂停</string>
-    <string name="engrave_state_stop">镭雕结束</string>
-    <string name="engrave_state_ing">镭雕中</string>
+    <string name="engrave_state_pause">鐳雕暫停</string>
+    <string name="engrave_state_stop">鐳雕結束</string>
+    <string name="engrave_state_ing">鐳雕中</string>
 
-    <string name="blue_no_device_connected">未连接设备</string>
+    <string name="blue_no_device_connected">未連接設備</string>
     <string name="device_busy_tip">设备正忙, 请稍后重试!</string>
-    <string name="device_init_fail_tip">设备初始化失败!</string>
-    <string name="command_too_long_tip">指令过长!</string>
+    <string name="device_init_fail_tip">設備初始化失敗!</string>
+    <string name="command_too_long_tip">指令過長!</string>
     <string name="command_send_error_tip">通信异常, 请稍后重试!</string>
 
-    <string name="work_mode_focusing">调焦模式</string>
-    <string name="work_mode_file_download">文件下载模式</string>
-    <string name="work_mode_shutdown">关机状态</string>
-    <string name="work_mode_setup">设置模式</string>
-    <string name="work_mode_download">下载模式</string>
+    <string name="work_mode_focusing">調焦模式</string>
+    <string name="work_mode_file_download">文件下載模式</string>
+    <string name="work_mode_shutdown">關機狀態</string>
+    <string name="work_mode_setup">設置模式</string>
+    <string name="work_mode_download">下載模式</string>
 
-    <string name="laser_not_plugged_tip">激光头未插好</string>
+    <string name="laser_not_plugged_tip">激光頭未插好</string>
 
-    <string name="device_ex_z_label">第三轴</string>
-    <string name="device_ex_z_des">支持在规则长方体和圆柱体物体表面雕刻场景的参数设置（尺寸限制:宽度限制为100mm以内，长度为5m以内，圆柱体横截面周长在5m以内）</string>
-    <string name="device_ex_r_label">旋转抓手</string>
+    <string name="device_ex_z_label">第三軸</string>
+    <string name="device_ex_z_des">支持在規則長方體和圓柱體物體表面雕刻場景的參數設置（尺寸限制:寬度限制為100mm以內，長度為5m以內，圓柱體橫截面周長在5m以內）</string>
+    <string name="device_ex_r_label">旋轉抓手</string>
     <string name="device_ex_r_des">--</string>
     <string name="device_ex_s_label">滑台</string>
     <string name="device_ex_s_des">--</string>
 
     <string name="device_z_model_flat">平板</string>
-    <string name="device_z_model_car">小车</string>
-    <string name="device_z_model_cylinder">圆柱</string>
+    <string name="device_z_model_car">小車</string>
+    <string name="device_z_model_cylinder">圓柱</string>
 
-    <string name="command_timeout_tip">指令超时</string>
+    <string name="command_timeout_tip">指令超時</string>
     <string name="command_cancel_tip">指令取消</string>
 
-    <string name="engrave_module_single_pen">单色笔模式</string>
-    <string name="engrave_module_color_pen">彩色笔模式</string>
+    <string name="engrave_module_single_pen">單色筆模式</string>
+    <string name="engrave_module_color_pen">彩色筆模式</string>
     <string name="engrave_module_knife_cutting">刀切割模式</string>
     <string name="engrave_module_cnc">CNC模式</string>
 </resources>

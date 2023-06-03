@@ -2,107 +2,107 @@
 <resources>
     <string name="canvas_operate">操作</string>
     <string name="laser_type">激光光源</string>
-    <string name="object_diameter">物体直径</string>
+    <string name="object_diameter">物體直徑</string>
 
-    <string name="blue_no_device_connected">未连接设备</string>
+    <string name="blue_no_device_connected">未連接設備</string>
     <string name="device_ex_discontent_tips">%1$s配件未连接，请先连接!</string>
     <string name="engrave_ex_discontent_tips">检查到%1$s配件未连接，是否继续?</string>
 
-    <string name="preview_center">显示中心</string>
-    <string name="preview_continue">继续预览</string>
-    <string name="print_v2_package_preview_over">结束预览</string>
+    <string name="preview_center">顯示中心</string>
+    <string name="preview_continue">繼續預覽</string>
+    <string name="print_v2_package_preview_over">結束預覽</string>
     <string name="laser_brightness">激光亮度</string>
-    <string name="previewing">预览中…</string>
-    <string name="preview">预览</string>
-    <string name="print_setting">镭雕设置</string>
-    <string name="file_setting">文件设置</string>
-    <string name="transmitting">文件传输中</string>
-    <string name="v4_bmp_edit_tips">图片数据处理中，请稍等</string>
-    <string name="remaining_time">剩余时长</string>
-    <string name="start_engrave">开始镭雕</string>
-    <string name="engrave_pause">暂停镭雕</string>
-    <string name="engrave_finish">镭雕结束</string>
-    <string name="engrave_stop">结束镭雕</string>
-    <string name="engrave_continue">继续镭雕</string>
-    <string name="start_preview">开始预览</string>
-    <string name="print_v2_package_print_state">已暂停</string>
-    <string name="print_v2_package_print_over">已镭雕结束</string>
-    <string name="print_laser_start_tips">请勿在高反光材质上雕刻</string>
-    <string name="engrave_move_state_tips">请勿移动设备</string>
-    <string name="custom_material">材质</string>
+    <string name="previewing">預覽中…</string>
+    <string name="preview">預覽</string>
+    <string name="print_setting">鐳雕設置</string>
+    <string name="file_setting">文件設置</string>
+    <string name="transmitting">文件傳輸中</string>
+    <string name="v4_bmp_edit_tips">圖片數據處理中，請稍等</string>
+    <string name="remaining_time">剩餘時長</string>
+    <string name="start_engrave">開始鐳雕</string>
+    <string name="engrave_pause">暫停鐳雕</string>
+    <string name="engrave_finish">鐳雕結束</string>
+    <string name="engrave_stop">結束鐳雕</string>
+    <string name="engrave_continue">繼續鐳雕</string>
+    <string name="start_preview">開始預覽</string>
+    <string name="print_v2_package_print_state">已暫停</string>
+    <string name="print_v2_package_print_over">已鐳雕結束</string>
+    <string name="print_laser_start_tips">請勿在高反光材質上雕刻</string>
+    <string name="engrave_move_state_tips">請勿移動設備</string>
+    <string name="custom_material">材質</string>
     <string name="custom_power">功率</string>
     <string name="custom_speed">深度</string>
-    <string name="print_times">次数</string>
+    <string name="print_times">次數</string>
     <string name="resolution_ratio">分辨率</string>
-    <string name="tips_fourteen_12">时间</string>
-    <string name="work_time">加工时间</string>
+    <string name="tips_fourteen_12">時間</string>
+    <string name="work_time">加工時間</string>
     <string name="engrave_again">再雕一次</string>
-    <string name="print_v2_package_Laser_home">返回首页</string>
-    <string name="preview_scroll_continue">滚动预览</string>
-    <string name="preview_scroll_pause">暂停滚动</string>
+    <string name="print_v2_package_Laser_home">返回首頁</string>
+    <string name="preview_scroll_continue">滾動預覽</string>
+    <string name="preview_scroll_pause">暫停滾動</string>
     <string name="engrave_speed">雕刻速度</string>
-    <string name="engrave_precision">加速级别</string>
+    <string name="engrave_precision">加速級別</string>
 
-    <string name="ui_slip_menu_history">历史雕刻</string>
-    <string name="device_history_title">设备数据</string>
-    <string name="app_history_title">本地数据</string>
-    <string name="delete_history">删除历史</string>
-    <string name="delete_history_succeed">删除成功</string>
-    <string name="delete_history_failed">删除失败</string>
+    <string name="ui_slip_menu_history">歷史雕刻</string>
+    <string name="device_history_title">設備數據</string>
+    <string name="app_history_title">本地數據</string>
+    <string name="delete_history">刪除歷史</string>
+    <string name="delete_history_succeed">刪除成功</string>
+    <string name="delete_history_failed">刪除失敗</string>
 
     <string name="print_file_name">模式</string>
-    <string name="print_range">镭雕尺寸</string>
-    <string name="print_time">实际耗时</string>
-    <string name="width">宽</string>
+    <string name="print_range">鐳雕尺寸</string>
+    <string name="print_time">實際耗時</string>
+    <string name="width">寬</string>
     <string name="height">高</string>
 
     <string name="file_name">命名</string>
 
     <string name="engrave_file_name">文件命名</string>
     <string name="ui_next">下一步</string>
-    <string name="send_file">发送文件</string>
+    <string name="send_file">發送文件</string>
 
-    <string name="size_safety_tips">请确认激光工作区安全</string>
+    <string name="size_safety_tips">請確認激光工作區安全</string>
     <string name="size_safety_content">请务必确认激光工作区是否安全。\n请务必佩戴护目镜并安装保护罩。</string>
-    <string name="print_stop">确定要结束镭雕吗？</string>
+    <string name="print_stop">確定要結束鐳雕嗎？</string>
 
-    <string name="preview_drag_tip">在红色边框内拖动元素位置可实现激光投影框动态预览效果</string>
+    <string name="preview_drag_tip">在紅色邊框內拖動元素位置可實現激光投影框動態預覽效果</string>
     <string name="bracket_height_label">升降高度</string>
-    <string name="bracket_not_connect">支架未连接</string>
+    <string name="bracket_not_connect">支架未連接</string>
 
-    <string name="range_preview">范围</string>
-    <string name="center_preview">中心点</string>
-    <string name="pause_preview">暂停</string>
-    <string name="continue_preview">继续</string>
-    <string name="scroll_preview">滚动</string>
-    <string name="preview_parameter_setting">参数设置</string>
-    <string name="filename_hint">最多输入28个字节</string>
-    <string name="stop_transfer">结束传输</string>
-    <string name="engrave_tip">请勿在高反光材质上雕刻</string>
-    <string name="engrave_layer_config">雕刻图层</string>
+    <string name="range_preview">範圍</string>
+    <string name="center_preview">中心點</string>
+    <string name="pause_preview">暫停</string>
+    <string name="continue_preview">繼續</string>
+    <string name="scroll_preview">滾動</string>
+    <string name="preview_parameter_setting">參數設置</string>
+    <string name="filename_hint">最多輸入28個字節</string>
+    <string name="stop_transfer">結束傳輸</string>
+    <string name="engrave_tip">請勿在高反光材質上雕刻</string>
+    <string name="engrave_layer_config">雕刻圖層</string>
 
-    <string name="back_creation">返回创作</string>
-    <string name="progress">进度</string>
-    <string name="share_community">分享到社区</string>
-    <string name="canvas_normal_layer">正常图层</string>
-    <string name="canvas_engrave_layer">雕刻图层</string>
-    <string name="retry">重试</string>
+    <string name="back_creation">返回創作</string>
+    <string name="progress">進度</string>
+    <string name="share_community">分享到社區</string>
+    <string name="canvas_normal_layer">正常圖層</string>
+    <string name="canvas_engrave_layer">雕刻圖層</string>
+    <string name="retry">重試</string>
 
-    <string name="engrave_perimeter">周长</string>
-    <string name="engrave_bounds_warn">元素超出雕刻区域</string>
-    <string name="engrave_overflow_bounds_message">超出雕刻区域，请将元素拖入调整到红色边框内</string>
-    <string name="engrave_overflow_bounds_message_strict">超出雕刻区域，请将元素拖入调整到蓝色边框内</string>
+    <string name="engrave_perimeter">周長</string>
+    <string name="engrave_bounds_warn">元素超出雕刻區域</string>
+    <string name="engrave_overflow_bounds_message">超出雕刻區域，請將元素拖入調整到紅色邊框內</string>
+    <string name="engrave_overflow_bounds_message_strict">超出雕刻區域，請將元素拖入調整到藍色邊框內</string>
 
-    <string name="device_engrave_ing_title">当前设备正在工作中</string>
+    <string name="device_engrave_ing_title">當前設備正在工作中</string>
     <string name="device_engrave_ing_des">是否结束当前雕刻任务?</string>
 
-    <string name="focal_distance_tip">请确认焦距</string>
+    <string name="focal_distance_tip">請確認焦距</string>
     <string name="focal_distance">焦距</string>
-    <string name="no_data_transfer">无数据需要传输!</string>
-    <string name="no_data_engrave">无数据需要镭雕!</string>
+    <string name="no_data_transfer">無數據需要傳輸!</string>
+    <string name="no_data_engrave">無數據需要鐳雕!</string>
 
-    <string name="device_angle">设备水平角度</string>
-    <string name="device_temp">设备温度</string>
+    <string name="device_angle">設備水平角度</string>
+    <string name="device_temp">設備溫度</string>
 
     <string name="unsupported_firmware_tip">不支持的固件版本%1$s, 请先更新固件后使用.</string>
     <string name="limit_engrave_count_tip">雕刻数量已达上限, 最大%1$s个.</string>
@@ -112,18 +112,18 @@
     <string name="open_notify_tip">打开通知,接收雕刻通知进度?</string>
     <string name="open_notify_channel_tip">打开雕刻通道,接收通知进度?</string>
 
-    <string name="material_title_limit">最多输入20个字符</string>
-    <string name="save_material_title">材质名称</string>
+    <string name="material_title_limit">最多輸入20個字符</string>
+    <string name="save_material_title">材質名稱</string>
 
     <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
-    <string name="engrave_skip_current">跳过当前的雕刻</string>
+    <string name="engrave_skip_current">跳過當前的雕刻</string>
 
-    <string name="device_models">机型</string>
-    <string name="show_all_label">详情</string>
+    <string name="device_models">機型</string>
+    <string name="show_all_label">詳情</string>
     <string name="hide_all_label">收起</string>
 
     <string name="not_support_tip">不支持的固件版本</string>
     <string name="engrave_item_params_tip">单元素雕刻参数模式下,需要先在雕刻图层中配置好元素的雕刻参数!</string>
 
-    <string name="device_shutdown_tip">设备已关机</string>
+    <string name="device_shutdown_tip">設備已關機</string>
 </resources>
