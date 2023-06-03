@@ -24,7 +24,7 @@
     <string name="device_setting_act_des_preview_g_code">The cursor will follow the g-code file path</string>
 
     <string name="ui_disclaimer">Disclaimer</string>
-    <string name="ui_disclaimer_content2">Warning: When the "Free Mode" switch is turned on, your device will be allowed to be used under the protection of the protective cover, which may bring you safety risks, so be sure to confirm whether it is necessary to perform the current operation; if You confirm that you need to give up under the protection of the safety protective cover, please make sure your operations meet the safety norms, and agree that the safety and legal risks caused by this operation are completely responsible. Security and legal responsibility.</string>
+    <string name="ui_disclaimer_content2">Warning: When the "Free Mode" switch is turned on, your device will be allowed to operate without the protection cover, which may pose a safety risk. Please confirm whether the current operation is necessary; If you do confirm to proceed this operation without the protection of the protection cover, please make sure that your operation follows the Safety Regulations, and agree that you are solely responsible for any safety and legal risks resulting from this operation and that LaserPecker's manufacturer and distributor shall not be held liable for any safety or legal liabilities.</string>
 
     <string name="device_ex_car_label">Mobile platform</string>
     <string name="device_ex_car_des">--</string>
@@ -45,7 +45,7 @@
     <string name="button_infra_red_title">Red Light Stay</string>
     <string name="button_infra_red_content">Since the device uses invisible light engraving, when it is turned on, infrared instructions will be provided when the device is working.</string>
     <string name="device_setting_txt_5">Batch Engraving Button</string>
-    <string name="device_setting_txt_6">This switch controls the enable and disable status of the outboard accessories \'Batch Engraving Key\'</string>
+    <string name="device_setting_txt_6">This switch controls the enable and disable status of the outboard accessories 'Batch Engraving Key'</string>
     <string name="device_setting_blue_connect_auto">Automatic Bluetooth Connection</string>
 
     <string name="engrave_experimental">Experimental</string>
@@ -62,8 +62,8 @@
     <string name="upgrade_duration">Duration</string>
 
     <string name="data_exception">Data exception!</string>
-    <string name="blue_disconnected">BLE disconnect</string>
     <string name="blue_connected">BLE connected</string>
+    <string name="blue_disconnected">BLE disconnect</string>
 
     <string name="engrave_layer_bitmap">Picture</string>
     <string name="engrave_layer_fill">Fill</string>
@@ -96,7 +96,6 @@
     <string name="canvas_open">Open</string>
     <string name="font_import_fail">Font import failed</string>
     <string name="font_import_success">Font imported successfully</string>
-    <string name="canvas_font_text">LaserPecker</string>
     <string name="canvas_import_font">Import</string>
     <string name="canvas_backups_font">Backups</string>
     <string name="canvas_export_font">Export</string>

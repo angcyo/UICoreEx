@@ -4,8 +4,16 @@
     <string name="canvas_exit_edit">Discard?</string>
     <string name="canvas_title">Creation</string>
 
-    <string name="canvas_image">Image</string>
+    <string name="canvas_width">Width</string>
+    <string name="canvas_height">Height</string>
+    <string name="canvas_axis_x">X-axis</string>
+    <string name="canvas_axis_y">Y-axis</string>
+    <string name="canvas_rotate">Rotate</string>
+
+    <!--libcanvas-->
+    <string name="canvas_image">Picture</string>
     <string name="canvas_text">Text</string>
+    <string name="canvas_input_text">Input text</string>
     <string name="canvas_shapes">Shapes</string>
     <string name="canvas_material">Material</string>
     <string name="canvas_doodle">Graffiti</string>
@@ -16,7 +24,10 @@
     <string name="canvas_undo">Undo</string>
     <string name="canvas_redo">Redo</string>
     <string name="canvas_setting">Settings</string>
-    <string name="canvas_line">Lines</string>
+    <string name="canvas_line">Line</string>
+    <string name="canvas_oval">Oval</string>
+    <string name="canvas_polygon">Polygon</string>
+    <string name="canvas_rectangle">Rect</string>
     <string name="canvas_pentagram">Star</string>
     <string name="canvas_love">Heart</string>
     <string name="canvas_stroke">Stroke</string>
@@ -35,11 +46,12 @@
     <string name="canvas_vertical">Vertical</string>
     <string name="canvas_align_left">Align Left</string>
     <string name="canvas_align_horizontal">Center Horizontally</string>
+    <string name="canvas_align_right">Align Right</string>
     <string name="canvas_align_center">Align Center</string>
+    <string name="canvas_bounds_center">Middle in device</string>
     <string name="canvas_align_top">Align Top</string>
     <string name="canvas_align_vertical">Center Vertical</string>
     <string name="canvas_align_bottom">Align Bottom</string>
-    <string name="canvas_align_right">Align Right</string>
     <string name="canvas_prints">Pencil</string>
     <string name="canvas_gcode">GCode</string>
     <string name="canvas_black_white">B&amp;W</string>
@@ -47,11 +59,6 @@
     <string name="canvas_grey">Grey</string>
     <string name="canvas_seal">Stamp</string>
 
-    <string name="canvas_width">Width</string>
-    <string name="canvas_height">Height</string>
-    <string name="canvas_axis_x">X-axis</string>
-    <string name="canvas_axis_y">Y-axis</string>
-    <string name="canvas_rotate">Rotate</string>
     <string name="canvas_invert">Invert</string>
     <string name="canvas_threshold">Threshold</string>
     <string name="canvas_contrast">Contrast</string>
@@ -73,23 +80,14 @@
     <string name="canvas_backward">Backward</string>
     <string name="canvas_front">Top</string>
     <string name="canvas_back">Bottom</string>
-
-    <string name="canvas_invalid_font">Invalid font</string>
-    <string name="canvas_cannot_import">Unable to import</string>
-    <string name="canvas_font_exist">Font already exist</string>
-
-    <string name="canvas_photo">Album</string>
-    <string name="canvas_delete_font">Delete the font</string>
-
-    <!---->
-
-    <string name="canvas_input_text">Input text</string>
-    <string name="canvas_oval">Oval</string>
-    <string name="canvas_polygon">Polygon</string>
-    <string name="canvas_rectangle">Rect</string>
-    <string name="canvas_bounds_center">Middle in device</string>
     <string name="canvas_sort">Arrange</string>
 
+    <string name="canvas_invalid_font">Invalid font</string>
+    <string name="canvas_font_exist">Font already exist</string>
+    <string name="canvas_cannot_import">Unable to import</string>
+    <string name="canvas_delete_font">Delete the font</string>
+
+    <string name="canvas_photo">Album</string>
     <string name="out_of_limit">Out of limit</string>
     <string name="out_of_bounds">Out of bounds</string>
     <string name="canvas_crop">Crop</string>
@@ -114,11 +112,11 @@
     <string name="canvas_line_spacing">Line space</string>
     <string name="canvas_curve">Curve</string>
     <string name="canvas_rasterize">Rasterize</string>
-    <string name="canvas_union">Union</string>
-    <string name="canvas_op_union">Merge graphs</string>
-    <string name="canvas_op_difference">Exclude the top level</string>
-    <string name="canvas_op_intersect">Graphs intersect</string>
-    <string name="canvas_op_xor">Intersection is excluded</string>
+    <string name="canvas_union">Merge</string>
+    <string name="canvas_op_union">Union</string>
+    <string name="canvas_op_difference">Substract</string>
+    <string name="canvas_op_intersect">Intersect</string>
+    <string name="canvas_op_xor">Difference</string>
 
     <string name="canvas_side_count">Edges</string>
     <string name="canvas_angle_count">Corners</string>
