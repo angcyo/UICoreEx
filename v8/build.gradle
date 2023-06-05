@@ -1,0 +1,10 @@
+apply from: allGradle.libBase
+
+dependencies {
+    implementation project(allModule.library)
+
+    // https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8
+    api 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
+    // https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_android
+    //api 'com.eclipsesource.j2v8:j2v8_android:3.0.5@aar'
+}

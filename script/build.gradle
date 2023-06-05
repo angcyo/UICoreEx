@@ -15,7 +15,7 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8
-    api 'com.eclipsesource.j2v8:j2v8:6.2.1'
+    api 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
 
     // https://mvnrepository.com/artifact/app.cash.zipline/zipline
     // Unsupported OS: windows 10
