@@ -121,9 +121,8 @@ class MagicWandDialogConfig(context: Context? = null) : DslDialogConfig(context)
         resultBitmap = bitmap
         viewHolder.v<TouchImageView>(R.id.lib_image_view)?.apply {
             setImageBitmap(bitmap)
-            onTouchPointAction = { point ->
+            onTouchPointImageAction = { point ->
                 bitmap?.let {
-
                     //魔棒处理
                     val newBitmap = RustBitmapHandle.bitmapMagicWand(
                         it,
