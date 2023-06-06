@@ -5,9 +5,11 @@ import android.os.Build
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.component.DslLayout
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.renderLayout
+import com.angcyo.core.vmApp
 import com.angcyo.glide.loadImage
 import com.angcyo.http.rx.runRx
 import com.angcyo.laserpacker.LPDataConstant
@@ -66,10 +68,16 @@ object DeviceHelper {
             logList.addAll(tempEngraveLogPathList)
 
             tempEngraveLogPathList.clear()
+            val version = vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion ?: -1
+            val versionStr = if (version != -1) "_$version" else ""
             logList.zip(libCacheFile(buildString {
-                append("LP-log-")
+                append("LP")
+                append("_${getAppVersionCode()}")
+                append(versionStr)
+                append("_${Build.MODEL}")
+                append("_")
                 append(nowTimeString("yyyy-MM-dd_HH-mm-ss"))
-                append("_${getAppVersionCode()}_${Build.MODEL}.zip")
+                append(".zip")
             }).absolutePath)?.shareFile()
         })
     }
