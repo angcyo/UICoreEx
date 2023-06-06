@@ -21,13 +21,15 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/file_name_view"
                 style="@style/LibTitleTextStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/lib_hdpi"
                 android:paddingVertical="@dimen/lib_hdpi"
                 app:layout_constraintBaseline_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/show_all_view"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="单索引文本显示" />
+                tools:text="单索引文本显示单索引文本显示单索引文本显示单索引文本显示单索引文本显示" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/show_all_view"
@@ -41,7 +43,8 @@
                 android:textColor="#0a84ff"
                 app:layout_constraintBaseline_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone" />
 
             <com.angcyo.widget.layout.DslFlowLayout
                 android:id="@+id/image_flow_layout"
