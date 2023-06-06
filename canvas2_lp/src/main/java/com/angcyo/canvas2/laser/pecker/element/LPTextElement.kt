@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -109,6 +110,15 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
                 )
             }
         }
+    }
+
+    override fun updateCurvature(
+        curvature: Float,
+        renderer: BaseRenderer?,
+        delegate: CanvasRenderDelegate?
+    ) {
+        super.updateCurvature(curvature, renderer, delegate)
+        elementBean.curvature = curvature
     }
 
     override fun parseElementBean() {
