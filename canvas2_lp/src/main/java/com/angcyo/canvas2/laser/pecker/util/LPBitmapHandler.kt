@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.Path
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
@@ -37,11 +37,13 @@ import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempMatrix
 import com.angcyo.library.component.pool.acquireTempPointF
+import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.mapPoint
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
@@ -831,10 +833,9 @@ object LPBitmapHandler {
         //保存状态
         val undoState = element.createStateStack()
         undoState.saveState(renderer, delegate)
-        val originBounds = element.renderProperty.getRenderBounds(RectF())
 
         context.canvasRegulateWindow(anchor) {
-            val curvature = bean.curvature
+            var curvature = bean.curvature
             addRegulate(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
             addRegulate(CanvasRegulatePopupConfig.KEY_SUBMIT)
             firstApply = curvature != 0f
@@ -856,12 +857,37 @@ object LPBitmapHandler {
                     }
 
                     APPLY_TYPE_CHANGE -> {
-                        val curvature =
+                        curvature =
                             getFloatOrDef(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
                         element.updateCurvature(curvature, renderer, delegate)
                         val path = element.curveTextDrawInfo?.run {
-                            getTextDrawInnerCirclePath().apply {
-                                val renderBounds = element.renderProperty.getRenderBounds()
+                            val rect = acquireTempRectF()
+                            element.renderProperty.getRenderRect(rect)
+                            val centerX = rect.centerX()
+                            val centerY = if (curvature > 0) {
+                                rect.top + textHeight + innerRadius
+                            } else {
+                                rect.bottom - textHeight - innerRadius
+                            }
+                            val point = acquireTempPointF()
+                            point.set(centerX, centerY)
+                            val matrix = acquireTempMatrix()
+                            matrix.setRotate(
+                                element.renderProperty.angle,
+                                rect.centerX(),
+                                rect.centerY()
+                            )
+                            matrix.mapPoint(point)
+                            rect.release()
+                            matrix.release()
+                            Path().apply {
+                                addCircle(point.x, point.y, innerRadius, Path.Direction.CW)
+                            }
+
+                            /*getTextDrawInnerCirclePath().apply {
+                                val afterBounds =
+                                    element.renderProperty.getRenderBounds(afterRotate = true)
+                                val renderBounds = originBounds
                                 val matrix = acquireTempMatrix()
                                 val y = if (curvature > 0) {
                                     renderBounds.top + textHeight
@@ -870,19 +896,27 @@ object LPBitmapHandler {
                                 }
                                 val point = acquireTempPointF()
                                 point.set(renderBounds.centerX(), y)
-                                /*matrix.setRotate( element.renderProperty.angle, renderBounds.centerX(), renderBounds.centerY())
-                                matrix.mapPoint(point)//目标点也要旋转
-                                matrix.reset()*/
-                                getTranslateMatrix(point.x, point.y, matrix)
-                                point.release()
-                                matrix.postRotate(
+                                *//*matrix.setRotate(
                                     element.renderProperty.angle,
                                     renderBounds.centerX(),
                                     renderBounds.centerY()
                                 )
+                                matrix.mapPoint(point)//目标点也要旋转
+                                matrix.reset()*//*
+                                getTranslateMatrix(point.x, point.y, matrix)
+                                point.release()
+                                matrix.postRotate(
+                                    element.renderProperty.angle,
+                                    originBounds.centerX(),
+                                    originBounds.centerY()
+                                )
+                                matrix.postTranslate(
+                                    afterBounds.centerX() - originBounds.centerX(),
+                                    afterBounds.centerY() - originBounds.centerY()
+                                )
                                 transform(matrix)
                                 matrix.release()
-                            }
+                            }*/
                         }
                         val scale = delegate?.renderViewBox?.getScale() ?: 1f
                         tipRenderer.pathPaint.strokeWidth = dp / scale
