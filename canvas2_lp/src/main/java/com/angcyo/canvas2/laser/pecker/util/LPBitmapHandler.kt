@@ -37,6 +37,7 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempMatrix
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.addBgColor
+import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.toSizeString
@@ -709,7 +710,7 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
-        val operateBitmap = element.getDrawBitmap() ?: return
+        val operateBitmap = element.getEngraveBitmapData() ?: return
         val context = anchor.context
         var outlineSpan = 2f
         var keepHole = true
@@ -757,7 +758,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val svgPath = RustBitmapHandle.bitmapOutline(
                                 bitmap,
-                                outlineSpan.toPixel().toInt(),
+                                outlineSpan.toInt(),
                                 keepHole
                             )
                             "图片[${
@@ -777,10 +778,22 @@ object LPBitmapHandler {
                                 svgRenderer?.lpPathElement()
                                     ?.updateElementPathData(svgPath, svgRenderer)
                             }
+                            //需要移动到的目标中心
                             val rendererBounds = renderer.getRendererBounds()
+                            var targetCenterX = 0f
+                            var targetCenterY = 0f
+
+                            svgRenderer?.lpPathElement()?.pathList?.computePathBounds()?.let {
+                                targetCenterX = rendererBounds?.left ?: 0f
+                                targetCenterY = rendererBounds?.top ?: 0f
+
+                                targetCenterX += it.centerX() - outlineSpan * 2
+                                targetCenterY += it.centerY() - outlineSpan * 2
+                            }
+
                             svgRenderer?.translateCenterTo(
-                                rendererBounds?.centerX() ?: 0f,
-                                rendererBounds?.centerY() ?: 0f,
+                                targetCenterX,
+                                targetCenterY,
                                 Reason.code,
                                 Strategy.preview,
                                 null
