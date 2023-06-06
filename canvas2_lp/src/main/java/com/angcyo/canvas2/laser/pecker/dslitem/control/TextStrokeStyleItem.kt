@@ -47,6 +47,7 @@ class TextStrokeStyleItem : BaseTextControlItem() {
         payloads: List<Any>
     ) {
         itemIsSelected = itemRenderer?.textElement?.paint?.style == itemStyle
+        itemHolder.tv(R.id.lib_text_view)?.paint?.style = itemStyle
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 

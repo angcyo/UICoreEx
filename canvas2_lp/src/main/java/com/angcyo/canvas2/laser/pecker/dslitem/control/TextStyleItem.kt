@@ -50,6 +50,9 @@ class TextStyleItem : CanvasIconItem() {
         payloads: List<Any>
     ) {
         itemIsSelected = itemRenderer?.textElement?.haveTextStyle(itemStyle) == true
+        itemHolder.tv(R.id.lib_text_view)?.paint?.apply {
+            TextElement.updatePaintStyle(this, itemStyle)
+        }
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 }
