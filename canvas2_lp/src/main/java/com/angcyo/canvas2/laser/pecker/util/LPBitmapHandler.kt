@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
@@ -35,6 +36,7 @@ import com.angcyo.library.LTime
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempMatrix
+import com.angcyo.library.component.pool.acquireTempPointF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
@@ -829,6 +831,7 @@ object LPBitmapHandler {
         //保存状态
         val undoState = element.createStateStack()
         undoState.saveState(renderer, delegate)
+        val originBounds = element.renderProperty.getRenderBounds(RectF())
 
         context.canvasRegulateWindow(anchor) {
             val curvature = bean.curvature
@@ -865,7 +868,18 @@ object LPBitmapHandler {
                                 } else {
                                     renderBounds.bottom
                                 }
-                                getTranslateMatrix(renderBounds.centerX(), y, matrix)
+                                val point = acquireTempPointF()
+                                point.set(renderBounds.centerX(), y)
+                                /*matrix.setRotate( element.renderProperty.angle, renderBounds.centerX(), renderBounds.centerY())
+                                matrix.mapPoint(point)//目标点也要旋转
+                                matrix.reset()*/
+                                getTranslateMatrix(point.x, point.y, matrix)
+                                point.release()
+                                matrix.postRotate(
+                                    element.renderProperty.angle,
+                                    renderBounds.centerX(),
+                                    renderBounds.centerY()
+                                )
                                 transform(matrix)
                                 matrix.release()
                             }

@@ -51,6 +51,7 @@ class LPTextStateStack : TextStateStack() {
             element.elementBean.coding = coding
             element.elementBean.eclevel = eclevel
             element.codeBitmap = codeBitmap
+            element.elementBean.curvature = textProperty?.curvature ?: element.elementBean.curvature
         }
         super.restoreState(renderer, reason, strategy, delegate)
     }
