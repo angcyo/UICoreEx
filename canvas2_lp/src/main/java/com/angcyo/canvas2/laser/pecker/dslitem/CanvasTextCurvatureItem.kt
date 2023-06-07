@@ -48,6 +48,14 @@ open class CanvasTextCurvatureItem : DslSeekBarInfoItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
+        itemHolder.click(R.id.left_image_view) {
+            updateValue(itemValue - 1)
+        }
+
+        itemHolder.click(R.id.right_image_view) {
+            updateValue(itemValue + 1)
+        }
+
         itemHolder.v<DslSeekBar>(R.id.lib_seek_view)?.apply {
             val color = _color(R.color.canvas_primary)
             setBgGradientColors("${_color(R.color.canvas_line)}")
