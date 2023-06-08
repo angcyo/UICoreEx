@@ -571,6 +571,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
                 ViewCompat.SCROLL_AXIS_VERTICAL,
                 ViewCompat.TYPE_TOUCH
             )
+
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                 parent?.requestDisallowInterceptTouchEvent(false)
                 stopNestedScroll(ViewCompat.TYPE_TOUCH)
