@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
+import com.angcyo.library.model.WebConfig
 import com.angcyo.tbs.DslTbs
 
 /**
@@ -39,10 +40,10 @@ open class TbsWebActivity : BaseAppCompatActivity() {
         }
 
         val data = searchUri ?: intent.data
-        val config: TbsWebConfig? = intent.getParcelableExtra(TbsWebFragment.KEY_CONFIG)
+        val config: WebConfig? = intent.getParcelableExtra(WebConfig.KEY_CONFIG)
 
         //参数传递
-        val webConfig = config ?: TbsWebConfig(data)
+        val webConfig = config ?: WebConfig(data)
         if (webConfig.uri == null) {
             webConfig.uri = data
         }
@@ -53,7 +54,7 @@ open class TbsWebActivity : BaseAppCompatActivity() {
                 arg.putAll(this)
             }
         }
-        arg.putParcelable(TbsWebFragment.KEY_CONFIG, webConfig)
+        arg.putParcelable(WebConfig.KEY_CONFIG, webConfig)
 
         dslFHelper {
             show(config?.targetClass ?: DslTbs.DEF_TBS_FRAGMENT ?: TbsWebFragment::class.java)

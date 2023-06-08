@@ -10,11 +10,18 @@ import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.model.WebConfig
 import com.angcyo.tbs.core.TbsWebActivity
-import com.angcyo.tbs.core.TbsWebConfig
 import com.angcyo.tbs.core.TbsWebFragment
 import com.tencent.smtt.export.external.TbsCoreSettings
-import com.tencent.smtt.sdk.*
+import com.tencent.smtt.sdk.CookieManager
+import com.tencent.smtt.sdk.CookieSyncManager
+import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.TbsListener
+import com.tencent.smtt.sdk.TbsLogReport
+import com.tencent.smtt.sdk.TbsReaderView
+import com.tencent.smtt.sdk.TbsVideo
+import com.tencent.smtt.sdk.WebView
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -226,10 +233,10 @@ class DslTbs {
 fun DslAHelper.open(
     url: String? = null,
     cls: Class<out TbsWebActivity> = DslTbs.DEF_TBS_ACTIVITY ?: TbsWebActivity::class.java,
-    config: TbsWebConfig.() -> Unit = {}
+    config: WebConfig.() -> Unit = {}
 ) {
     start(Intent(context, cls).apply {
-        putExtra(TbsWebFragment.KEY_CONFIG, TbsWebConfig().apply {
+        putExtra(WebConfig.KEY_CONFIG, WebConfig().apply {
             try {
                 if (!url.isNullOrEmpty()) {
                     uri = if (url.isFileExist()) {
@@ -250,7 +257,7 @@ fun dslTbsOpen(
     context: Context = app(),
     url: String? = null,
     cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
-    config: TbsWebConfig.() -> Unit = {}
+    config: WebConfig.() -> Unit = {}
 ) {
     DslAHelper(context).apply {
         open(url, cls, config)

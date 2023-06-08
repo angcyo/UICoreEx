@@ -20,6 +20,7 @@ import com.angcyo.library.ex.encode
 import com.angcyo.library.ex.fileSizeString
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.model.AppBean
+import com.angcyo.library.model.FileChooserParam
 import com.angcyo.library.utils.*
 import com.hjhrq1991.library.tbs.TbsBridgeWebView
 import com.tencent.smtt.export.external.extension.proxy.ProxyWebViewClientExtension

@@ -12,7 +12,7 @@ object BridgeConfig {
     /**
      * 默认桥名
      */
-    const val defaultJs = "WebViewJavascriptBridge"
+    const val defaultJs = "TbsWebViewJavascriptBridge"
 
     /**
      * 自定义桥名, 代码中使用此对象调用

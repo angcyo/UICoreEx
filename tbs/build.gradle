@@ -18,6 +18,7 @@ dependencies {
     implementation project(allModule.image)
     implementation project(allModule.http)
     implementation project(allModule.picker)
+    implementation project(allModule.web)
 
     //https://x5.tencent.com/tbs/index.html
     //https://jcenter.bintray.com/com/tencent/tbs/tbssdk/sdk/
