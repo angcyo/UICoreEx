@@ -257,7 +257,7 @@ object HawkEngraveKeys {
     var enableMobileNetworkSync: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**导入外部文件格式时, 是否要使用分组*/
-    var enableImportGroup: Boolean by HawkPropertyValue<Any, Boolean>(true)
+    var enableImportGroup: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)
