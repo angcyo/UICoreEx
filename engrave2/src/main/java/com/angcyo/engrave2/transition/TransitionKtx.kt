@@ -633,7 +633,7 @@ fun Bitmap.toGCode(
         }
         gCodeWriteHandler.clearLastPoint()
         if (isFinish) {
-            gCodeWriteHandler.onPathEnd()
+            gCodeWriteHandler.onPathEnd(true)
         }
     }
     return outputFile
