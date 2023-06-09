@@ -141,7 +141,7 @@ object HawkEngraveKeys {
     }
 
     /**是否激活栅格化功能*/
-    var enableRasterize: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+    var enableRasterize: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**是否激活路径填充功能*/
     var enablePathFill: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
