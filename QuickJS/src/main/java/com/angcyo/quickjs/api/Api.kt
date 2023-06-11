@@ -2,6 +2,7 @@ package com.angcyo.quickjs.api
 
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.quickjs.api.core.AppJsApi
+import com.angcyo.quickjs.api.core.HttpJsApi
 import com.angcyo.quickjs.api.core.ReflectJsApi
 import com.angcyo.quickjs.api.core.TJsApi
 import com.quickjs.JSContext
@@ -19,8 +20,11 @@ object Api {
         val appJsApi = AppJsApi()
         val appJs = context.injectInterface(appJsApi)
         appJsApi.init(appJs)//注入默认的属性
+
+        //core 核心api
         appJs.injectInterface(TJsApi())
         appJs.injectInterface(ReflectJsApi())
+        appJs.injectInterface(HttpJsApi())
     }
 
     /**注入对象*/
