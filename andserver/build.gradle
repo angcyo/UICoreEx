@@ -7,5 +7,7 @@ dependencies {
 
     implementation project(allModule.fragment)
     implementation project(allModule.core)
+
     compileOnly project(allModule.dslitem) //DebugFragment
+    compileOnly project(allModule.QuickJS) //2023-06-10 executeScript
 }
