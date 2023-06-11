@@ -16,9 +16,11 @@ object Api {
     /**注入对象api到[com.quickjs.JSContext]*/
     @CallPoint
     fun inject(context: JSContext) {
-        val appJsApi = context.injectInterface(AppJsApi())
-        appJsApi.injectInterface(TJsApi())
-        appJsApi.injectInterface(ReflectJsApi())
+        val appJsApi = AppJsApi()
+        val appJs = context.injectInterface(appJsApi)
+        appJsApi.init(appJs)//注入默认的属性
+        appJs.injectInterface(TJsApi())
+        appJs.injectInterface(ReflectJsApi())
     }
 
     /**注入对象*/
