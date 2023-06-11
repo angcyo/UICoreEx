@@ -1,12 +1,8 @@
 package com.angcyo.quickjs
 
-import android.webkit.JavascriptInterface
-import com.angcyo.library.L
-import com.angcyo.library.annotation.TestPoint
-import com.angcyo.library.component.lastContext
-import com.angcyo.library.ex.readAssets
-import com.quickjs.JSFunction
-import com.quickjs.JSObject
+import com.angcyo.http.rx.doBack
+import com.angcyo.library.annotation.ThreadDes
+import com.angcyo.quickjs.api.Api
 import com.quickjs.QuickJS
 
 
@@ -16,10 +12,23 @@ import com.quickjs.QuickJS
  */
 object QuickJSEngine {
 
+    /*@JvmStatic
+    var testStringValue: String = "测试值"
+
+    @JvmStatic
+    var testIntValue: Int = 0
+
+    @JvmStatic
+    var testDoubleValue: Float = 0f
+
+    @JvmStatic
+    var testBooleanValue: Boolean = true
+
     @TestPoint
     fun test() {
         val quickJS = QuickJS.createRuntime()
         val context = quickJS.createContext()
+        Api.inject(context)//注入api
         context.addJavascriptInterface(object {
             @JavascriptInterface
             fun showQQ(msg: String) {
@@ -43,10 +52,30 @@ object QuickJSEngine {
             }
             L.i(result)
         }
-        /*val result = context.executeIntegerScript("var a = 2+10;\n a;", null)
-        L.i(result)*/
+        *//*val result = context.executeIntegerScript("var a = 2+10;\n a;", null)
+        L.i(result)*//*
         context.close()
         quickJS.close()
+    }*/
+
+    /**执行脚本*/
+    @ThreadDes("子线程处理")
+    fun executeScript(source: String, resultAction: (result: Any?, error: Throwable?) -> Unit) {
+        doBack {
+            val quickJS = QuickJS.createRuntime()
+            val context = quickJS.createContext()
+            Api.inject(context)//注入api
+            try {
+                val result = context.executeScript(source, null)
+                resultAction(result, null)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                resultAction(null, e)
+            } finally {
+                context.close()
+                quickJS.close()
+            }
+        }
     }
 
 }
