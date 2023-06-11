@@ -4,6 +4,7 @@ import com.angcyo.coroutine.CoroutineErrorHandler
 import com.angcyo.coroutine.launchSafe
 import com.angcyo.coroutine.onBack
 import com.angcyo.library.L
+import com.angcyo.library.annotation.DSL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -42,6 +43,7 @@ class DslJsoup : CoroutineScope {
     /**协程域*/
     var scope: CoroutineScope = GlobalScope
 
+    /**连接配置*/
     var onConfigConnection: (Connection) -> Unit = {}
 
     /**文档准备完成, 协程线程回调*/
@@ -134,6 +136,7 @@ fun String.toAbsUrl(baseUrl: String): String? {
     }
 }
 
+@DSL
 fun dslJsoup(action: DslJsoup.() -> Unit): DslJsoup {
     return DslJsoup().apply {
         action()
@@ -141,7 +144,9 @@ fun dslJsoup(action: DslJsoup.() -> Unit): DslJsoup {
     }
 }
 
-fun dslJsoup(url: String?, onReady: suspend (Document) -> Unit): DslJsoup {
+/**[com.angcyo.jsoup.html.HtmlParse]*/
+@DSL
+fun dslJsoup(url: String?, onReady: suspend Document.() -> Unit): DslJsoup {
     return dslJsoup {
         this.url = url
         onDocumentReady = onReady
