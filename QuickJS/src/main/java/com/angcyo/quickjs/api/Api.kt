@@ -3,6 +3,7 @@ package com.angcyo.quickjs.api
 import com.angcyo.http.base.jsonObject
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.quickjs.api.core.AppJsApi
+import com.angcyo.quickjs.api.core.DialogJsApi
 import com.angcyo.quickjs.api.core.HttpJsApi
 import com.angcyo.quickjs.api.core.LJsApi
 import com.angcyo.quickjs.api.core.ReflectJsApi
@@ -33,6 +34,7 @@ object Api {
         appJs.injectInterface(TJsApi())
         appJs.injectInterface(ReflectJsApi())
         appJs.injectInterface(HttpJsApi())
+        appJs.injectInterface(DialogJsApi())
     }
 
     /**注入对象*/
@@ -114,7 +116,11 @@ fun JSObject.toJsonElement(): JsonElement? {
 fun JSObject.toHeaders(): Headers {
     val builder = Headers.Builder()
     for (key in keys) {
-        builder.add(key, getString(key))
+        try {
+            builder.add(key, getString(key))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
     return builder.build()
 }

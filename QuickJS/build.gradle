@@ -3,6 +3,7 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.http) //thread http
+    implementation project(allModule.core)
 
     // https://central.sonatype.com/artifact/io.github.taoweiji.quickjs/quickjs-android/
     api 'io.github.taoweiji.quickjs:quickjs-android:1.4.6'

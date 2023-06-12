@@ -6,6 +6,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.getAppSignatureMD5
+import com.angcyo.library.ex.killCurrentProcess
 import com.angcyo.library.ex.openApp
 import com.angcyo.library.ex.openUrl
 import com.angcyo.library.getAppName
@@ -67,4 +68,17 @@ class AppJsApi : IJSInterface {
      * */
     @JavascriptInterface
     fun openApp(packageName: String?) = lastContext.openApp(packageName)
+
+    /**休眠当前线程*/
+    @JavascriptInterface
+    fun sleep(delay: Int) {
+        com.angcyo.library.ex.sleep(delay.toLong())
+    }
+
+    /**杀掉当前进程*/
+    @JavascriptInterface
+    fun kill() {
+        killCurrentProcess()
+    }
+
 }
