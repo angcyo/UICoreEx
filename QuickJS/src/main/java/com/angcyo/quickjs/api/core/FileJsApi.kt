@@ -33,6 +33,10 @@ class FileJsApi : BaseJSInterface() {
     @JavascriptInterface
     fun getFilePath(name: String?): String = libFile(name ?: "").absolutePath
 
+    /**删除指令路径文件*/
+    @JavascriptInterface
+    fun deleteFile(path: String): Boolean = path.file().delete()
+
     /**读取文件文本
      * ```
      * AppJs.file.readText(path);
