@@ -23,17 +23,17 @@ class TJsApi : IJSInterface {
     override val interfaceName: String = "T"
 
     @JavascriptInterface
-    fun show(msg: String) {
+    fun show(msg: String?) {
         toast(msg)
     }
 
     @JavascriptInterface
-    fun showQQ(msg: String) {
+    fun showQQ(msg: String?) {
         toastQQ(msg)
     }
 
     @JavascriptInterface
-    fun showWX(msg: String) {
+    fun showWX(msg: String?) {
         toastWX(msg)
     }
 
