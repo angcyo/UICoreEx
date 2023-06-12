@@ -57,14 +57,14 @@ object LPEngraveHelper {
         sort: Boolean = false
     ): List<BaseRenderer> {
         val rendererList = delegate.getSelectorOrAllElementRendererList(true, false)
-
+        val haveCutLayer = vmApp<DeviceStateModel>().haveCutLayer()
         val resultList = rendererList.filter { it.isVisible && it.renderElement != null }.filter {
             val elementBean = it.lpElementBean()
             layerInfo == null || /*不指定图层, 则返回所有元素*/
                     elementBean?._layerId == layerInfo.layerId || /*指定图层, 则返回对应的图层元素*/
-                    (layerInfo.layerId == LayerHelper.LAYER_LINE &&
-                            !vmApp<DeviceStateModel>().haveCutLayer() &&
-                            elementBean?._layerId == LayerHelper.LAYER_FILL) /*线条图层, 在不支持切割图层时, 需要返回切割图层元素*/
+                    (layerInfo.layerId == LayerHelper.LAYER_LINE /*查询线条图层*/ &&
+                            !haveCutLayer /*不支持切割图层*/ &&
+                            elementBean?._layerId == LayerHelper.LAYER_CUT /*切割数据*/) /*线条图层, 在不支持切割图层时, 需要返回切割图层元素*/
         }
 
         return if (sort) {
