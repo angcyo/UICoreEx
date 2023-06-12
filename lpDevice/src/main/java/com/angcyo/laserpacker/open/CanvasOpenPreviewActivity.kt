@@ -107,15 +107,16 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             path = svgFile.absolutePath
             Dxf.parse(filePath, path)
         }
+        //是否是工程文件
+        val isProjectFile = path.endsWith(LPDataConstant.PROJECT_EXT, true) ||
+                path.endsWith(LPDataConstant.PROJECT_EXT2, true)
         val file = path.file()
-        if (file.length() > HawkEngraveKeys.openFileDataSize) {
+        if (!isProjectFile && file.length() > HawkEngraveKeys.openFileDataSize) {
             //超过最大的文件大小限制
             throw OutOfSizeException()
         }
         //
-        if (path.endsWith(LPDataConstant.PROJECT_EXT, true) ||
-            path.endsWith(LPDataConstant.PROJECT_EXT2, true)
-        ) {
+        if (isProjectFile) {
             //工程文件
             val projectBean = file.readProjectBean()
 
