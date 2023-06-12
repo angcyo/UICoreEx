@@ -37,6 +37,10 @@ class FileJsApi : BaseJSInterface() {
     @JavascriptInterface
     fun deleteFile(path: String): Boolean = path.file().delete()
 
+    /**指定的文件是否存在*/
+    @JavascriptInterface
+    fun exists(path: String): Boolean = path.file().exists()
+
     /**读取文件文本
      * ```
      * AppJs.file.readText(path);

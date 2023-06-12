@@ -2,6 +2,7 @@ package com.angcyo.quickjs.api.core
 
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
@@ -44,6 +45,14 @@ class AppJsApi : BaseJSInterface() {
         jsObject.set("versionCode", getAppVersionCode().toInt())
         jsObject.set("appSignatureMD5", lastContext.getAppSignatureMD5())
         //jsObject.set("Signature", lastContext.getAppSignatureSHA1())
+
+        val locale = lastContext.resources.configuration.locale
+        jsObject.set("timeZoneId", LanguageModel.timeZoneId)
+        jsObject.set("language", locale.language)//zh
+        jsObject.set("country", locale.country)//CN
+        jsObject.set("displayName", locale.displayName)//中文 (简体中文,中国)
+
+
     }
 
     /**App是否被切到后台
@@ -106,5 +115,9 @@ class AppJsApi : BaseJSInterface() {
             }
         }
     }
+
+    /**uuid*/
+    @JavascriptInterface
+    fun uuid() = com.angcyo.library.ex.uuid()
 
 }

@@ -3,6 +3,7 @@ package com.angcyo.quickjs.api
 import com.angcyo.http.base.jsonObject
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.quickjs.api.core.AppJsApi
+import com.angcyo.quickjs.api.core.DeviceJsApi
 import com.angcyo.quickjs.api.core.DialogJsApi
 import com.angcyo.quickjs.api.core.FileJsApi
 import com.angcyo.quickjs.api.core.HawkJsApi
@@ -34,6 +35,7 @@ object Api {
         //core 核心api
         appJs.injectInterface(LJsApi())
         appJs.injectInterface(TJsApi())
+        appJs.injectInterface(DeviceJsApi())
         appJs.injectInterface(HawkJsApi())
         appJs.injectInterface(FileJsApi())
         appJs.injectInterface(ReflectJsApi())
@@ -43,8 +45,11 @@ object Api {
 
     /**注入对象*/
     fun JSObject.injectInterface(jsInterface: IJSInterface): JSObject {
+        val jsObject = addJavascriptInterface(jsInterface, jsInterface.interfaceName)
         jsInterface.jsContext = context
-        return addJavascriptInterface(jsInterface, jsInterface.interfaceName)
+        jsInterface.jsObject = jsObject
+        jsInterface.onInject(this)
+        return jsObject
     }
 
 }

@@ -1,6 +1,7 @@
 package com.angcyo.quickjs.api
 
 import com.quickjs.JSContext
+import com.quickjs.JSObject
 
 /**
  * Email:angcyo@126.com
@@ -9,4 +10,5 @@ import com.quickjs.JSContext
  */
 abstract class BaseJSInterface : IJSInterface {
     override var jsContext: JSContext? = null
+    override var jsObject: JSObject? = null
 }
