@@ -16,7 +16,7 @@ import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
 import com.angcyo.quickjs.QuickJSEngine
-import com.angcyo.quickjs.api.IJSInterface
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.quickjs.JSArray
 import com.quickjs.JSFunction
 import com.quickjs.JSObject
@@ -26,7 +26,7 @@ import com.quickjs.JSObject
  * @since 2023/06/11
  */
 @Keep
-class AppJsApi : IJSInterface {
+class AppJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "AppJs"
 

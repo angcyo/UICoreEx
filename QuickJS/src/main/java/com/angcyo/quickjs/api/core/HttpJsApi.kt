@@ -8,6 +8,7 @@ import com.angcyo.http.bodyString
 import com.angcyo.http.jsonBody
 import com.angcyo.library.ex.string
 import com.angcyo.library.ex.toStr
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.IJSInterface
 import com.angcyo.quickjs.api.toHeaders
 import com.angcyo.quickjs.api.toJsonElement
@@ -22,7 +23,7 @@ import okhttp3.Request
  * @since 2023/06/11
  */
 @Keep
-class HttpJsApi : IJSInterface {
+class HttpJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "http"
 

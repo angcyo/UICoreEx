@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.library.toastWX
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.IJSInterface
 
 /**
@@ -18,7 +19,7 @@ import com.angcyo.quickjs.api.IJSInterface
  * @since 2023/06/11
  */
 @Keep
-class TJsApi : IJSInterface {
+class TJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "T"
 

@@ -4,6 +4,8 @@ import com.angcyo.http.base.jsonObject
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.quickjs.api.core.AppJsApi
 import com.angcyo.quickjs.api.core.DialogJsApi
+import com.angcyo.quickjs.api.core.FileJsApi
+import com.angcyo.quickjs.api.core.HawkJsApi
 import com.angcyo.quickjs.api.core.HttpJsApi
 import com.angcyo.quickjs.api.core.LJsApi
 import com.angcyo.quickjs.api.core.ReflectJsApi
@@ -32,6 +34,8 @@ object Api {
         //core 核心api
         appJs.injectInterface(LJsApi())
         appJs.injectInterface(TJsApi())
+        appJs.injectInterface(HawkJsApi())
+        appJs.injectInterface(FileJsApi())
         appJs.injectInterface(ReflectJsApi())
         appJs.injectInterface(HttpJsApi())
         appJs.injectInterface(DialogJsApi())
@@ -39,6 +43,7 @@ object Api {
 
     /**注入对象*/
     fun JSObject.injectInterface(jsInterface: IJSInterface): JSObject {
+        jsInterface.jsContext = context
         return addJavascriptInterface(jsInterface, jsInterface.interfaceName)
     }
 
@@ -73,6 +78,14 @@ fun JSArray.toIntegerList(): List<Int> {
     val result = mutableListOf<Int>()
     for (i in 0 until length()) {
         getInteger(i).let { result.add(it) }
+    }
+    return result
+}
+
+fun JSArray.toByteList(): List<Byte> {
+    val result = mutableListOf<Byte>()
+    for (i in 0 until length()) {
+        getInteger(i).let { result.add(it.toByte()) }
     }
     return result
 }

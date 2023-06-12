@@ -3,6 +3,7 @@ package com.angcyo.quickjs.api.core
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
 import com.angcyo.library.L
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.IJSInterface
 import com.angcyo.quickjs.api.toList
 import com.quickjs.JSArray
@@ -12,7 +13,7 @@ import com.quickjs.JSArray
  * @since 2023/06/12
  */
 @Keep
-class LJsApi : IJSInterface {
+class LJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "L"
 

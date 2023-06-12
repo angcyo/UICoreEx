@@ -2,6 +2,7 @@ package com.angcyo.quickjs.api.core
 
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.IJSInterface
 import com.orhanobut.hawk.Hawk
 
@@ -11,7 +12,7 @@ import com.orhanobut.hawk.Hawk
  * @since 2023/06/12
  */
 @Keep
-class HawkJsApi : IJSInterface {
+class HawkJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "hawk"
 

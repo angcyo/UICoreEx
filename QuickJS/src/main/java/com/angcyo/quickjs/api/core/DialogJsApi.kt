@@ -8,6 +8,7 @@ import com.angcyo.dialog.loadLoadingBottomCaller
 import com.angcyo.dialog.messageDialog
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMain
+import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.IJSInterface
 
 /**
@@ -16,7 +17,7 @@ import com.angcyo.quickjs.api.IJSInterface
  * @since 2023/06/12
  */
 @Keep
-class DialogJsApi : IJSInterface {
+class DialogJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "dialog"
 
