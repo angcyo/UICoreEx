@@ -9,11 +9,16 @@ import com.angcyo.library.ex.getAppSignatureMD5
 import com.angcyo.library.ex.killCurrentProcess
 import com.angcyo.library.ex.openApp
 import com.angcyo.library.ex.openUrl
+import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.getAppName
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
+import com.angcyo.quickjs.QuickJSEngine
 import com.angcyo.quickjs.api.IJSInterface
+import com.quickjs.JSArray
+import com.quickjs.JSFunction
 import com.quickjs.JSObject
 
 /**
@@ -79,6 +84,27 @@ class AppJsApi : IJSInterface {
     @JavascriptInterface
     fun kill() {
         killCurrentProcess()
+    }
+
+    /**执行另一段脚本*/
+    @JavascriptInterface
+    fun executeScript(source: String, onEnd: JSFunction?) {
+        syncSingle {
+            var resultString: String? = null
+            var errorString: String? = null
+            QuickJSEngine.executeScript(source) { result, error ->
+                if (error == null) {
+                    resultString = result?.toStr()
+                } else {
+                    errorString = error.message
+                }
+                onEnd?.call(onEnd, JSArray(onEnd.context).apply {
+                    push(resultString)
+                    push(errorString)
+                })
+                it.countDown()
+            }
+        }
     }
 
 }
