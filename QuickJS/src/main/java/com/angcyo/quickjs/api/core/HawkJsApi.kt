@@ -3,7 +3,6 @@ package com.angcyo.quickjs.api.core
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
 import com.angcyo.quickjs.api.BaseJSInterface
-import com.angcyo.quickjs.api.IJSInterface
 import com.orhanobut.hawk.Hawk
 
 /**
@@ -27,6 +26,10 @@ class HawkJsApi : BaseJSInterface() {
 
     //---
 
+    /**默认使用字符串*/
+    @JavascriptInterface
+    fun put(key: String, value: String?) = putString(key, value)
+
     @JavascriptInterface
     fun putBoolean(key: String, value: Boolean?): Boolean = Hawk.put(key, value)
 
@@ -43,6 +46,10 @@ class HawkJsApi : BaseJSInterface() {
     fun putString(key: String, value: String?): Boolean = Hawk.put(key, value)
 
     //---
+
+    /**默认获取字符串*/
+    @JavascriptInterface
+    fun get(key: String) = getString(key, null)
 
     @JavascriptInterface
     fun getBoolean(key: String, def: Boolean?): Boolean? = Hawk.get(key, def)
