@@ -50,7 +50,11 @@ object Api {
 
         //自定义api
         for (action in injectApiAction) {
-            action(context, appJs)
+            try {
+                action(context, appJs)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
