@@ -61,7 +61,7 @@ interface ITransition {
 
     /**将图片[bitmap]转换成的GCode数据
      * [bounds] 用来平移GCode到这个坐标*/
-    fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF): File
+    fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF, params: TransitionParam): File
 
     /**将图片[bitmap]转换成的GCode数据, 用像素的方式转换数据
      * [bounds] 用来平移GCode到这个坐标

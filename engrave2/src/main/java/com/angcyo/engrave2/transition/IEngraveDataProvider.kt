@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 
 /**
@@ -21,6 +22,7 @@ interface IEngraveDataProvider {
     /**获取数据对应的矢量数据, 用来生成雕刻数据
      * 这个矢量应该是相对于0,0位置绘制的, 并且包含了旋转/缩放/倾斜等参数
      * */
+    @Pixel
     fun getEngravePathData(): List<Path>? = null
 
     /**获取转发的原始的数据, 不进行任务处理 */
@@ -46,6 +48,7 @@ interface IEngraveDataProvider {
     fun getEngraveGCode(): String?
 
     /**获取GCode[getEngraveGCode]需要进行的转换矩阵*/
+    @MM
     fun getEngraveGCodeMatrix(): Matrix
 
 }

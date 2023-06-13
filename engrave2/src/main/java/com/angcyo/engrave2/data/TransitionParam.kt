@@ -1,10 +1,13 @@
 package com.angcyo.engrave2.data
 
+import android.graphics.Matrix
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 
 /**转换需要的一些额外参数
@@ -56,4 +59,34 @@ data class TransitionParam(
     /**是否激活压缩输出GCode
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
-)
+
+    /**GCode数据额外需要偏移的距离*/
+    @Pixel
+    val gcodeOffsetLeft: Float = 0f,
+
+    @Pixel
+    val gcodeOffsetTop: Float = 0f,
+) {
+
+    /**需要平移的矩阵信息*/
+    @MM
+    val translateMatrix: Matrix?
+        get() = if (gcodeOffsetLeft != 0f || gcodeOffsetTop != 0f) {
+            Matrix().apply {
+                postTranslate(gcodeOffsetLeft.toMm(), gcodeOffsetTop.toMm())
+            }
+        } else {
+            null
+        }
+
+    /**需要平移的矩阵信息*/
+    @Pixel
+    val translatePixelMatrix: Matrix?
+        get() = if (gcodeOffsetLeft != 0f || gcodeOffsetTop != 0f) {
+            Matrix().apply {
+                postTranslate(gcodeOffsetLeft, gcodeOffsetTop)
+            }
+        } else {
+            null
+        }
+}

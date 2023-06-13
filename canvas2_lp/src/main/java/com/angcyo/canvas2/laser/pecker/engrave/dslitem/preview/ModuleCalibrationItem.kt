@@ -1,7 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.BasePreviewItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.dialog.moduleCalibrationDialog
 import com.angcyo.widget.DslViewHolder
@@ -29,7 +28,7 @@ class ModuleCalibrationItem : BasePreviewItem() {
         itemLayoutId = R.layout.item_module_calibration_layout
 
         itemClick = {
-            showCenterPreview()
+            showCenterPreview()//自动进入中心点预览
             it.context.moduleCalibrationDialog {
                 onModuleCalibrationAction = {
                     lastIsModuleCalibration = it

@@ -168,4 +168,8 @@
     <string name="project_exist_tip">Project already exists, overwrite?</string>
     <string name="project_restore_tip">Whether to restore the previous project?</string>
 
+    <string name="calibration_offset_label">Data offset</string>
+    <string name="calibration_offset_left">Left</string>
+    <string name="calibration_offset_top">Top</string>
+
 </resources>

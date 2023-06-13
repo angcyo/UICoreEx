@@ -51,19 +51,23 @@ object DslAndServer {
         }
 
         //注入api
-        Api.injectApiAction.add { _, appJs ->
-            appJs.registerJavaMethod({ _, _ ->
-                lastContext.startAndServer()
-            }, "startAndServer")
-            appJs.registerJavaMethod({ _, _ ->
-                lastContext.stopAndServer()
-            }, "stopAndServer")
-            appJs.registerJavaMethod({ _, _ ->
-                lastContext.startFileServer()
-            }, "startFileServer")
-            appJs.registerJavaMethod({ _, _ ->
-                lastContext.stopFileServer()
-            }, "stopFileServer")
+        try {
+            Api.injectApiAction.add { _, appJs ->
+                appJs.registerJavaMethod({ _, _ ->
+                    lastContext.startAndServer()
+                }, "startAndServer")
+                appJs.registerJavaMethod({ _, _ ->
+                    lastContext.stopAndServer()
+                }, "stopAndServer")
+                appJs.registerJavaMethod({ _, _ ->
+                    lastContext.startFileServer()
+                }, "startFileServer")
+                appJs.registerJavaMethod({ _, _ ->
+                    lastContext.stopFileServer()
+                }, "stopFileServer")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

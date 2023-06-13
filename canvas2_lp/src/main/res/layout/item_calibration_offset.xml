@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lib_item_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/lib_padding_right"
+    android:paddingVertical="@dimen/lib_hdpi">
+
+    <com.angcyo.widget.text.DslTextView
+        style="@style/LibBodyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/lib_xhdpi"
+        android:text="@string/calibration_offset_label" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/left_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/calibration_offset_left" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/left_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/left_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.angcyo.widget.text.DslTextView
+            android:id="@+id/top_label_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/calibration_offset_top" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/top_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/lib_hdpi"
+            android:layout_weight="1"
+            android:background="@drawable/lib_bottom_line_selector"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/lib_sdpi"
+            android:singleLine="true"
+            tools:text="100100100100100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/top_unit_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="inch" />
+    </LinearLayout>
+
+</LinearLayout>

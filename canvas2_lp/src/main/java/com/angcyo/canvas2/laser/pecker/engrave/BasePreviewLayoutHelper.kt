@@ -3,9 +3,11 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.CalibrationOffsetItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.ModuleCalibrationItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBracketItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
@@ -13,9 +15,11 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewControlIte
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewDiameterItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
+import com.angcyo.dsladapter.findItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
 import com.hingin.umeng.UMEvent
@@ -118,6 +122,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         if (engraveFlow == ENGRAVE_FLOW_PREVIEW) {
             UMEvent.PREVIEW.umengEventValue()
         }
+        val delegate = engraveCanvasFragment?.renderDelegate
 
         val previewConfigEntity = EngraveFlowDataHelper.generatePreviewConfig(flowTaskId)
 
@@ -138,6 +143,8 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {
                     onCalibrationAction = {
+                        findItem(CalibrationOffsetItem::class.java, false)?.itemHidden =
+                            !ModuleCalibrationItem.lastIsModuleCalibration
                         deviceStateModel.pauseLoopCheckState(it == 1, "握笔校准")
                         syncQueryDeviceState { bean, error ->
                             if (error == null) {
@@ -147,6 +154,19 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         }
                     }
                 }
+
+                if (isDebug()) {
+                    //握笔偏移设置
+                    CalibrationOffsetItem()() {
+                        itemHidden = !ModuleCalibrationItem.lastIsModuleCalibration
+
+                        observeItemChange {
+                            clearFlowId("数据偏移改变")
+                            delegate?.dispatchAllRendererDataChange(Reason.user)
+                        }
+                    }
+                }
+
             } else if (!laserPeckerModel.isL3()) { //L3只有白光, 不支持亮度调节
                 PreviewBrightnessItem()() {
                     itemPreviewConfigEntity = previewConfigEntity

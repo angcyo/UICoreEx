@@ -18,6 +18,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.toPaintStyleInt
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -185,6 +186,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         return null
     }
 
+    @MM
     override fun getEngraveGCodeMatrix(): Matrix {
         val renderMatrix = requestElementRenderProperty().getRenderMatrix()
         if (this is BaseElement) {

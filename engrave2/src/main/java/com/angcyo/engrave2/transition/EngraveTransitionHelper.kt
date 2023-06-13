@@ -389,7 +389,7 @@ object EngraveTransitionHelper {
                     renderUnit.convertValueToPixel(transferDataEntity.y.toFloat()).ceilInt()*/
                 val bounds = provider.getEngraveDataBounds(RectF())
                 val gCodeFile = if (params.useOpenCvHandleGCode) {
-                    transition.covertBitmap2GCode(bitmap, bounds)
+                    transition.covertBitmap2GCode(bitmap, bounds, params)
                 } else {
                     transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                 }
