@@ -1,8 +1,14 @@
 package com.angcyo.quickjs
 
+import android.view.MotionEvent
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.ThreadDes
+import com.angcyo.library.component._removeMainRunnable
+import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.lastContext
+import com.angcyo.library.component.onMainOnce
 import com.angcyo.quickjs.api.Api
+import com.angcyo.quickjs.ui.scriptRunTipDialog
 import com.quickjs.QuickJS
 
 
@@ -75,6 +81,34 @@ object QuickJSEngine {
                 context.close()
                 quickJS.close()
             }
+        }
+    }
+
+    //---
+
+    private val scriptRunTipDialogRunnable: Runnable = Runnable {
+        lastContext.scriptRunTipDialog()
+    }
+
+    private var _lastTouchX = 0f
+    private var _lastTouchY = 0f
+
+    /**长按5秒后, 显示对话框*/
+    fun checkTouchScriptRunTip(ev: MotionEvent) {
+        val actionMasked = ev.actionMasked
+        if (actionMasked == MotionEvent.ACTION_DOWN) {
+            _lastTouchX = ev.x
+            _lastTouchY = ev.y
+            onMainOnce(LibHawkKeys.minCheckScriptTime, scriptRunTipDialogRunnable)
+        } else if (actionMasked == MotionEvent.ACTION_MOVE) {
+            val dx = ev.x - _lastTouchX
+            val dy = ev.y - _lastTouchY
+
+            if (dx > 10 || dy > 10) {
+                _removeMainRunnable(scriptRunTipDialogRunnable)
+            }
+        } else if (actionMasked == MotionEvent.ACTION_UP || actionMasked == MotionEvent.ACTION_CANCEL) {
+            _removeMainRunnable(scriptRunTipDialogRunnable)
         }
     }
 
