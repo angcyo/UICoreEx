@@ -19,7 +19,6 @@ import com.angcyo.dsladapter.findItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
 import com.hingin.umeng.UMEvent
@@ -155,8 +154,8 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                     }
                 }
 
-                if (isDebug()) {
-                    //握笔偏移设置
+                //握笔偏移设置
+                if (HawkEngraveKeys.enableCalibrationOffset) {
                     CalibrationOffsetItem()() {
                         itemHidden = !ModuleCalibrationItem.lastIsModuleCalibration
 

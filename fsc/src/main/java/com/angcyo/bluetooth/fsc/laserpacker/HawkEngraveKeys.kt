@@ -276,4 +276,7 @@ object HawkEngraveKeys {
 
     /**是否激活灰度图片*/
     var enableGrey: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**是否激活画笔数据偏移*/
+    var enableCalibrationOffset: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 }
