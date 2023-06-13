@@ -134,6 +134,14 @@ class AppJsApi : BaseJSInterface() {
         ScriptRunTipDialogConfig.hideScriptRunTipDialog()
     }
 
+    /**当前时间*/
+    @JavascriptInterface
+    fun nowTime() = System.currentTimeMillis()
+
+    /**当前的时间*/
+    @JavascriptInterface
+    fun nowTimeString(pattern: String = "yyyy-MM-dd") = com.angcyo.library.ex.nowTimeString(pattern)
+
     //endregion ---core---
 
     //region ---app---
