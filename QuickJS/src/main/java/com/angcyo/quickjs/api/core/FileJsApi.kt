@@ -2,7 +2,9 @@ package com.angcyo.quickjs.api.core
 
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import com.angcyo.library.ex.deleteRecursivelySafe
 import com.angcyo.library.ex.file
+import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.writeText
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.libFile
@@ -33,9 +35,12 @@ class FileJsApi : BaseJSInterface() {
     @JavascriptInterface
     fun getFilePath(name: String?): String = libFile(name ?: "").absolutePath
 
-    /**删除指令路径文件*/
+    /**删除指令路径文件
+     * 支持删除文件
+     * 支持删除文件夹, 支持递归删除
+     * */
     @JavascriptInterface
-    fun deleteFile(path: String): Boolean = path.file().delete()
+    fun deleteFile(path: String): Boolean = path.file().deleteRecursivelySafe()
 
     /**指定的文件是否存在*/
     @JavascriptInterface
@@ -117,4 +122,15 @@ class FileJsApi : BaseJSInterface() {
             false
         }
     }
+
+    //---
+
+    /**分享文件
+     * ```
+     * AppJs.file.shareFile(path);
+     * ```
+     * */
+    @JavascriptInterface
+    fun shareFile(path: String) = path.file().shareFile()
+
 }

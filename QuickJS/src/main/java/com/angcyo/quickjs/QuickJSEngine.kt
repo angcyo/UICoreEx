@@ -1,12 +1,18 @@
 package com.angcyo.quickjs
 
 import android.view.MotionEvent
+import com.angcyo.core.component.model.DataShareModel
+import com.angcyo.core.vmApp
+import com.angcyo.http.gitee.Gitee
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMainOnce
+import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.libCacheFile
+import com.angcyo.library.utils.Device
 import com.angcyo.quickjs.api.Api
 import com.angcyo.quickjs.ui.scriptRunTipDialog
 import com.quickjs.QuickJS
@@ -64,6 +70,36 @@ object QuickJSEngine {
         quickJS.close()
     }*/
 
+    /**初始化并且监听手势事件*/
+    fun initAndListen() {
+        vmApp<DataShareModel>().activityDispatchTouchEventAction.add {
+            checkTouchScriptRunTip(it)
+            false
+        }
+        runDefaultScript()
+    }
+
+    /**运行默认的脚本*/
+    private fun runDefaultScript() {
+        //当前设备每次都会执行的脚本
+        libCacheFile("${Device.androidId}.js").apply {
+            if (exists()) {
+                executeScript(readText()) { _, _ ->
+                    //no op
+                }
+            }
+        }
+
+        //当前设备每天都会执行的脚本
+        libCacheFile("${Device.androidId}_${nowTimeString("yyyy-MM-dd")}.js").apply {
+            if (exists()) {
+                executeScript(readText()) { _, _ ->
+                    //no op
+                }
+            }
+        }
+    }
+
     /**执行脚本*/
     @ThreadDes("子线程处理")
     fun executeScript(source: String, resultAction: (result: Any?, error: Throwable?) -> Unit) {
@@ -88,6 +124,7 @@ object QuickJSEngine {
 
     private val scriptRunTipDialogRunnable: Runnable = Runnable {
         lastContext.scriptRunTipDialog()
+        requestScript()
     }
 
     private var _lastTouchX = 0f
@@ -112,4 +149,19 @@ object QuickJSEngine {
         }
     }
 
+    /**请求默认的脚本并运行*/
+    fun requestScript() {
+        val api = if (BuildConfig.DEBUG) {
+            "script.debug.js"
+        } else {
+            "script.js"
+        }
+        Gitee.getString(api) { data, _ ->
+            if (!data.isNullOrBlank()) {
+                executeScript(data) { _, _ ->
+                    //no op
+                }
+            }
+        }
+    }
 }

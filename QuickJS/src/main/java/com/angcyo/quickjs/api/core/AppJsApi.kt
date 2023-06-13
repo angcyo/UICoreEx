@@ -18,6 +18,7 @@ import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
 import com.angcyo.quickjs.QuickJSEngine
 import com.angcyo.quickjs.api.BaseJSInterface
+import com.angcyo.quickjs.ui.ScriptRunTipDialogConfig
 import com.quickjs.JSArray
 import com.quickjs.JSFunction
 import com.quickjs.JSObject
@@ -119,5 +120,11 @@ class AppJsApi : BaseJSInterface() {
     /**uuid*/
     @JavascriptInterface
     fun uuid() = com.angcyo.library.ex.uuid()
+
+    /**隐藏脚本允运行提示对话框*/
+    @JavascriptInterface
+    fun hideScriptRunTipDialog() {
+        ScriptRunTipDialogConfig.hideScriptRunTipDialog()
+    }
 
 }
