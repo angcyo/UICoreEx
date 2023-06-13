@@ -3,6 +3,7 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core) //model
+    implementation project(allModule.transition) //transition
     api project(allModule.lpDevice)
 
     implementation project(allModule.dslitem)

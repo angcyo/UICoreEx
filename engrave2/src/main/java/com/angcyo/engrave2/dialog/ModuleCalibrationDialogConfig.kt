@@ -2,6 +2,8 @@ package com.angcyo.engrave2.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.ViewGroup
+import com.airbnb.lottie.LottieAnimationView
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.dialog.DslDialogConfig
@@ -9,6 +11,7 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.engrave2.BuildConfig
 import com.angcyo.engrave2.R
 import com.angcyo.library.annotation.DSL
+import com.angcyo.transition.transition
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -53,8 +56,14 @@ class ModuleCalibrationDialogConfig : DslDialogConfig() {
     fun startCalibrationCmd(dialogViewHolder: DslViewHolder) {
         EngravePreviewCmd.startCalibrationCmd().enqueue { bean, error ->
             if (error == null) {
-                dialogViewHolder.invisible(R.id.start_button)
-                dialogViewHolder.visible(R.id.finish_button)
+                dialogViewHolder.v<LottieAnimationView>(R.id.lib_image_view)?.playAnimation()
+
+                (dialogViewHolder.itemView as ViewGroup).transition {
+                    onCaptureEndValues = {
+                        dialogViewHolder.invisible(R.id.start_button)
+                        dialogViewHolder.visible(R.id.finish_button)
+                    }
+                }
                 cancelable = false
             }
         }

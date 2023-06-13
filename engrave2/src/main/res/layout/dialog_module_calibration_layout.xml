@@ -29,7 +29,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dialog_title_view"
-        app:lottie_autoPlay="true"
+        app:lottie_autoPlay="false"
         app:lottie_fileName="lottie/calibration/data.json"
         app:lottie_imageAssetsFolder="lottie/calibration/images"
         app:lottie_renderMode="automatic"
