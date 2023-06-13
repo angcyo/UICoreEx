@@ -3,6 +3,7 @@ package com.angcyo.quickjs.api.core
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
 import com.angcyo.core.component.model.LanguageModel
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
@@ -134,4 +135,22 @@ class AppJsApi : BaseJSInterface() {
     }
 
     //endregion ---core---
+
+    //region ---app---
+
+    //endregion ---app---
+
+    //region ---可选api---
+
+    /**分享雕刻日志*/
+    @JavascriptInterface
+    fun shareEngraveLog() {
+        try {
+            DeviceHelper.shareEngraveLog()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    //endregion ---可选api---
 }
