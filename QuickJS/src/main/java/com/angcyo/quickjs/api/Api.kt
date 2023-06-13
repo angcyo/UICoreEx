@@ -23,7 +23,13 @@ import org.json.JSONObject
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/06/11
  */
+
+typealias InjectAction = (context: JSContext, appJs: JSObject) -> Unit
+
 object Api {
+
+    /**注入行为*/
+    val injectApiAction = mutableListOf<InjectAction>()
 
     /**注入对象api到[com.quickjs.JSContext]*/
     @CallPoint
@@ -41,6 +47,11 @@ object Api {
         appJs.injectInterface(ReflectJsApi())
         appJs.injectInterface(HttpJsApi())
         appJs.injectInterface(DialogJsApi())
+
+        //自定义api
+        for (action in injectApiAction) {
+            action(context, appJs)
+        }
     }
 
     /**注入对象*/

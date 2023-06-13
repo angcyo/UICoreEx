@@ -30,6 +30,8 @@ import com.quickjs.JSObject
 @Keep
 class AppJsApi : BaseJSInterface() {
 
+    //region ---base---
+
     override val interfaceName: String = "AppJs"
 
     /**注入默认的属性, 可以直接访问
@@ -55,6 +57,10 @@ class AppJsApi : BaseJSInterface() {
 
 
     }
+
+    //endregion ---base---
+
+    //region ---core---
 
     /**App是否被切到后台
      * ```
@@ -127,4 +133,5 @@ class AppJsApi : BaseJSInterface() {
         ScriptRunTipDialogConfig.hideScriptRunTipDialog()
     }
 
+    //endregion ---core---
 }

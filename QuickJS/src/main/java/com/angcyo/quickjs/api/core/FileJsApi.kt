@@ -8,6 +8,7 @@ import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.writeText
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.libFile
+import com.angcyo.library.utils.appFolderPath
 import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.api.toByteList
 import com.quickjs.JSArray
@@ -45,6 +46,16 @@ class FileJsApi : BaseJSInterface() {
     /**指定的文件是否存在*/
     @JavascriptInterface
     fun exists(path: String): Boolean = path.file().exists()
+
+    /**获取文件列表*/
+    @JavascriptInterface
+    fun listFiles(path: String?): JSArray {
+        val result = JSArray(jsContext)
+        (path ?: appFolderPath()).file().listFiles()?.forEach {
+            result.push(it.absolutePath)
+        }
+        return result
+    }
 
     /**读取文件文本
      * ```

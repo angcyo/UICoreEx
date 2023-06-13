@@ -5,6 +5,8 @@ import android.content.Intent
 import com.angcyo.core.coreApp
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.component.DslNotify
+import com.angcyo.library.component.lastContext
+import com.angcyo.quickjs.api.Api
 
 /**
  * https://github.com/yanzhenjie/AndServer
@@ -46,6 +48,22 @@ object DslAndServer {
                 coreApp().bindFileServer()
                 //(RBackground.lastActivityRef?.get() as? LifecycleOwner ?: it)
             }
+        }
+
+        //注入api
+        Api.injectApiAction.add { _, appJs ->
+            appJs.registerJavaMethod({ _, _ ->
+                lastContext.startAndServer()
+            }, "startAndServer")
+            appJs.registerJavaMethod({ _, _ ->
+                lastContext.stopAndServer()
+            }, "stopAndServer")
+            appJs.registerJavaMethod({ _, _ ->
+                lastContext.startFileServer()
+            }, "startFileServer")
+            appJs.registerJavaMethod({ _, _ ->
+                lastContext.stopFileServer()
+            }, "stopFileServer")
         }
     }
 
