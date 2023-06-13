@@ -198,6 +198,14 @@ object LaserPeckerHelper {
 
     /**查找[PxInfo]*/
     fun findPxInfo(dpi: Float?, debug: Boolean = false): PxInfo {
+        //1.
+        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.forEach {
+            if (it.dpi == dpi) {
+                return it
+            }
+        }
+
+        //2.
         val configList = LaserPeckerConfigHelper.readDeviceConfig()
         if (!configList.isNullOrEmpty()) {
             for (config in configList) {
@@ -207,6 +215,8 @@ object LaserPeckerHelper {
                 }
             }
         }
+
+        //3.
         val _d = if (debug) "′" else ""
         return when (dpi) {
             DPI_158 -> PxInfo(DPI_158, PX_0_8K, "0.8K$_d")
