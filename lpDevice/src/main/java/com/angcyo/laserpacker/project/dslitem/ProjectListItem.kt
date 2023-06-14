@@ -13,13 +13,14 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.project.LPProjectHelper
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
+import com.angcyo.library.extend.IFilterItem
 import com.angcyo.widget.DslViewHolder
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/12/01
  */
-class ProjectListItem : DslAdapterItem() {
+class ProjectListItem : DslAdapterItem(), IFilterItem {
 
     companion object {
 
@@ -122,4 +123,7 @@ class ProjectListItem : DslAdapterItem() {
             itemHolder.img(R.id.lib_sync_view)?.setImageResource(it ?: 0)
         }
     }
+
+    override fun containsFilterText(text: CharSequence): Boolean =
+        itemProjectBean?._filePath?.contains(text, true) == true
 }

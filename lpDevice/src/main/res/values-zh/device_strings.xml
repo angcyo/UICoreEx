@@ -104,4 +104,6 @@
     <string name="save_project_title">项目名称</string>
     <string name="project_title_limit">最多输入20个字符</string>
     <string name="project_save_success_tip">项目保存成功</string>
+
+    <string name="project_filter_tip">请输入项目名称</string>
 </resources>
