@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
@@ -24,6 +25,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.canvasRegulateWindow
 import com.angcyo.canvas2.laser.pecker.dialog.magicWandDialog
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapStateStack
 import com.angcyo.core.component.file.writePerfLog
+import com.angcyo.core.vmApp
 import com.angcyo.crop.ui.cropDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -774,7 +776,11 @@ object LPBitmapHandler {
                                     mtype = LPDataConstant.DATA_TYPE_SVG
                                     this.data = svgPath
                                     paintStyle = Paint.Style.STROKE.toPaintStyleInt()
-                                    layerId = LayerHelper.LAYER_CUT
+                                    layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
+                                        LayerHelper.LAYER_CUT
+                                    } else {
+                                        LayerHelper.LAYER_LINE
+                                    }
                                 }
                                 svgRenderer =
                                     LPRendererHelper.parseElementRenderer(elementBean, true)
