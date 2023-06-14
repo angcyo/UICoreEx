@@ -125,5 +125,5 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
     }
 
     override fun containsFilterText(text: CharSequence): Boolean =
-        itemProjectBean?._filePath?.contains(text, true) == true
+        itemProjectBean?._filePath?.file()?.name?.noExtName()?.contains(text, true) == true
 }
