@@ -12,6 +12,7 @@ import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
+import com.angcyo.http.rx.doMain
 import com.angcyo.item.component.initSearchAdapterFilter
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
@@ -21,6 +22,7 @@ import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
+import com.angcyo.library.ex.gone
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.isChildClassOf
@@ -65,6 +67,7 @@ class ProjectListFragment : BaseDslFragment() {
 
         //搜索过滤
         rightControl()?.appendIconItem {
+            gone()
             ImageViewCompat.setImageTintList(
                 this,
                 ColorStateList.valueOf(fragmentConfig.titleItemIconColor)
@@ -112,6 +115,11 @@ class ProjectListFragment : BaseDslFragment() {
                         removeThis()
                     }
                 }
+            }
+
+            doMain {
+                //right ico
+                rightControl()?.goneIndex(0, _adapter.itemCount == 0)
             }
         }
     }
