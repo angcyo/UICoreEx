@@ -431,7 +431,7 @@ object LaserPeckerHelper {
             softwareVersion,
             name,
             configBean.laserTypeList ?: emptyList(),
-            configBean.dpiList?.filter { if (it.debug) isDebug() else true } ?: emptyList(),
+            configBean.dpiList?.filterPxList() ?: emptyList(),
             wPhys,
             hPhys,
             bounds,
@@ -601,15 +601,7 @@ object LaserPeckerHelper {
     /**返回设备支持的分辨率列表*/
     fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
-        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.let {
-            it.filterTo(result) {
-                if (it.debug) {
-                    isDebug()
-                } else {
-                    true
-                }
-            }
-        }
+        vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.filterPxList(result)
         return result
     }
 
@@ -624,7 +616,7 @@ object LaserPeckerHelper {
                     for (layerId in layerIdList) {
                         val layerConfig = map[layerId]
                         if (layerConfig?.dpiList != null) {
-                            return layerConfig.dpiList!!
+                            return layerConfig.dpiList!!.filterPxList()
                         }
                     }
                 }
@@ -941,3 +933,13 @@ fun CharSequence.writeBleLog(logLevel: Int = L.DEBUG) = writeToLog(LogFile.ble, 
 
 /**写入雕刻日志, 记录数据传输的索引及信息和雕刻的索引及信息*/
 fun CharSequence.writeEngraveLog(logLevel: Int = L.DEBUG) = writeToLog(LogFile.engrave, logLevel)
+
+/**过滤分辨率列表*/
+fun List<PxInfo>.filterPxList(result: MutableList<PxInfo> = mutableListOf()) =
+    filterTo(result) {
+        if (it.debug) {
+            isDebug()
+        } else {
+            true
+        }
+    }
