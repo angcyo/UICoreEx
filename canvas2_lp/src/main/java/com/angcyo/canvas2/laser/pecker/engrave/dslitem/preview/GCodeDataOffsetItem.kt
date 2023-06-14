@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
@@ -65,6 +66,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
                 onDismiss = this@GCodeDataOffsetItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
+                addKeyboardStyle(NumberKeyboardPopupConfig.STYLE_PLUS_MINUS)
                 onNumberResultAction = { value ->
                     val x = IValueUnit.MM_RENDER_UNIT.convertValueToPixel(value)
                     offsetLeft = x
@@ -80,6 +82,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
                 onDismiss = this@GCodeDataOffsetItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
+                addKeyboardStyle(NumberKeyboardPopupConfig.STYLE_PLUS_MINUS)
                 onNumberResultAction = { value ->
                     val x = IValueUnit.MM_RENDER_UNIT.convertValueToPixel(value)
                     offsetTop = x
