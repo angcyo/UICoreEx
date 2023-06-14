@@ -1,12 +1,14 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import android.widget.TextView
+import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
@@ -16,16 +18,17 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/06/13
  */
-class CalibrationOffsetItem : DslAdapterItem() {
+class GCodeDataOffsetItem : DslAdapterItem() {
 
+    @Keep
     companion object {
 
         /**校准之后, GCode数据, 额外需要偏移的距离*/
         @Pixel
-        var offsetLeft = 0f
+        var offsetLeft: Float by HawkPropertyValue<Any, Float>(0f)
 
         @Pixel
-        var offsetTop = 0f
+        var offsetTop: Float by HawkPropertyValue<Any, Float>(0f)
     }
 
     init {
@@ -59,7 +62,7 @@ class CalibrationOffsetItem : DslAdapterItem() {
     fun bindLeft(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.left_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
-                onDismiss = this@CalibrationOffsetItem::onPopupDismiss
+                onDismiss = this@GCodeDataOffsetItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->
@@ -74,7 +77,7 @@ class CalibrationOffsetItem : DslAdapterItem() {
     fun bindtop(itemHolder: DslViewHolder) {
         itemHolder.click(R.id.top_text_view) {
             itemHolder.context.keyboardNumberWindow(it) {
-                onDismiss = this@CalibrationOffsetItem::onPopupDismiss
+                onDismiss = this@GCodeDataOffsetItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 bindPendingDelay = -1 //关闭限流输入
                 onNumberResultAction = { value ->

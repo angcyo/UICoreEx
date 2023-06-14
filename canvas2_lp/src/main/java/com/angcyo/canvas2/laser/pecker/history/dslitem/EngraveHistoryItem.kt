@@ -17,6 +17,7 @@ import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -34,6 +35,7 @@ import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.flow
 import com.angcyo.widget.span.span
+import kotlin.math.absoluteValue
 import kotlin.math.min
 
 /**
@@ -208,6 +210,31 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                         add(widthHeightLabelDes(previewWidth, previewHeight, false))
                     }
                 }
+
+                //偏移
+                @MM
+                var maxOffsetLeft = 0f
+                var maxOffsetTop = 0f
+
+                var offsetLeft = 0f
+                var offsetTop = 0f
+
+                @MM
+                for (transferData in transferDataEntityList) {
+                    val left = transferData.offsetLeft ?: 0f
+                    val top = transferData.offsetTop ?: 0f
+                    if (left.absoluteValue > maxOffsetLeft.absoluteValue) {
+                        offsetLeft = left
+                        maxOffsetLeft = left
+                    }
+                    if (top.absoluteValue > maxOffsetTop.absoluteValue) {
+                        offsetTop = top
+                        maxOffsetTop = top
+                    }
+                }
+                if (offsetLeft != 0f || offsetTop != 0f) {
+                    add(offsetLabelDes(offsetLeft, offsetTop))
+                }
             }
 
             //时长
@@ -258,6 +285,30 @@ open class EngraveHistoryItem : DslTagGroupItem() {
                 append(" ")
                 append(_string(R.string.height))
                 append(h)
+            }
+        )
+    }
+
+    @MM
+    private fun offsetLabelDes(left: Float, top: Float, isMm: Boolean = true): LabelDesData {
+        val l = valueUnit.formatValue(
+            if (isMm) left else valueUnit.convertPixelToValue(left),
+            true,
+            true
+        )
+        val t = valueUnit.formatValue(
+            if (isMm) top else valueUnit.convertPixelToValue(top),
+            true,
+            true
+        )
+        return formatLabelDes(
+            _string(R.string.calibration_offset_label),
+            buildString {
+                append(_string(R.string.calibration_offset_left))
+                append(l)
+                append(" ")
+                append(_string(R.string.calibration_offset_top))
+                append(t)
             }
         )
     }

@@ -314,7 +314,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "24:908987082844106767",
+      "lastPropertyId": "26:7281112301076844264",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -417,6 +417,16 @@
           "id": "24:908987082844106767",
           "name": "layerId",
           "type": 9
+        },
+        {
+          "id": "25:3451722431762553579",
+          "name": "offsetLeft",
+          "type": 7
+        },
+        {
+          "id": "26:7281112301076844264",
+          "name": "offsetTop",
+          "type": 7
         }
       ],
       "relations": []

@@ -102,6 +102,12 @@ data class TransferDataEntity(
     /**分辨率*/
     var dpi: Float = -1f,
 
+    /**GCode数据偏移*/
+    @MM
+    var offsetLeft: Float? = null,
+    @MM
+    var offsetTop: Float? = null,
+
     //---
 
     /**雕刻数据的索引, 32位, 4个字节

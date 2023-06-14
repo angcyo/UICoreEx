@@ -7,7 +7,7 @@ import com.angcyo.canvas.render.core.Reason
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
-import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.CalibrationOffsetItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.ModuleCalibrationItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBracketItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewBrightnessItem
@@ -142,7 +142,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 //握笔模式, 不支持亮度调节, 握笔校准
                 ModuleCalibrationItem()() {
                     onCalibrationAction = {
-                        findItem(CalibrationOffsetItem::class.java, false)?.itemHidden =
+                        findItem(GCodeDataOffsetItem::class.java, false)?.itemHidden =
                             !ModuleCalibrationItem.lastIsModuleCalibration
                         deviceStateModel.pauseLoopCheckState(it == 1, "握笔校准")
                         syncQueryDeviceState { bean, error ->
@@ -156,11 +156,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
                 //握笔偏移设置
                 if (HawkEngraveKeys.enableCalibrationOffset) {
-                    CalibrationOffsetItem()() {
+                    GCodeDataOffsetItem()() {
                         itemHidden = !ModuleCalibrationItem.lastIsModuleCalibration
 
                         observeItemChange {
-                            clearFlowId("数据偏移改变")
+                            clearFlowId("GCode数据传输偏移改变")
                             delegate?.dispatchAllRendererDataChange(Reason.user)
                         }
                     }

@@ -13,6 +13,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.*
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewExDeviceTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataStopTransferItem
@@ -198,7 +199,17 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     delegate?.dispatchAllRendererDataChange(Reason.user)
                 }
             }
-            if (!isAllGCode) {
+            if (isAllGCode) {
+                //全部是GCode数据, 则支持偏移
+                if (HawkEngraveKeys.enableCalibrationOffset) {
+                    GCodeDataOffsetItem()() {
+                        observeItemChange {
+                            clearFlowId("GCode数据传输偏移改变")
+                            delegate?.dispatchAllRendererDataChange(Reason.user)
+                        }
+                    }
+                }
+            } else {
                 //并非全部是GCode数据
                 TransferDataPxItem()() {
                     itemPxList =

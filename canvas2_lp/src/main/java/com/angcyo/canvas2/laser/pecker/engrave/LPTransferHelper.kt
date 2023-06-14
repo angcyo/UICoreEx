@@ -7,7 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.CalibrationOffsetItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
@@ -184,8 +184,8 @@ object LPTransferHelper {
                             onlyUseBitmapToGCode = bean.isLineShape && bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt(),
                             useOpenCvHandleGCode = false,
                             isSingleLine = bean.isLineShape,
-                            gcodeOffsetLeft = CalibrationOffsetItem.offsetLeft,
-                            gcodeOffsetTop = CalibrationOffsetItem.offsetTop
+                            gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
+                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop
                         )
                     )
                 } else {
@@ -194,8 +194,8 @@ object LPTransferHelper {
                         element,
                         transferConfigEntity,
                         TransitionParam(
-                            gcodeOffsetLeft = CalibrationOffsetItem.offsetLeft,
-                            gcodeOffsetTop = CalibrationOffsetItem.offsetTop
+                            gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
+                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop
                         )
                     )
                 }

@@ -51,6 +51,7 @@ import com.angcyo.library.ex.toDrawable
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.ex.withBitmapPaint
 import com.angcyo.library.unit.IValueUnit
+import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
@@ -360,6 +361,10 @@ object EngraveTransitionHelper {
             transferConfigEntity,
             DataCmd.ENGRAVE_TYPE_GCODE
         )
+        //2023-6-14 GCode偏移量
+        transferDataEntity.offsetLeft = params.gcodeOffsetLeft.toMm()
+        transferDataEntity.offsetTop = params.gcodeOffsetTop.toMm()
+
         val index = transferDataEntity.index
 
         val pathList = provider.getEngravePathData()
