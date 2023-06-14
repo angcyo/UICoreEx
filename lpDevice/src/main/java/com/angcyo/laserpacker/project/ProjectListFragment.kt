@@ -119,7 +119,7 @@ class ProjectListFragment : BaseDslFragment() {
 
             doMain {
                 //right ico
-                rightControl()?.goneIndex(0, _adapter.itemCount == 0)
+                rightControl()?.goneIndex(0, _adapter.isEmpty())
             }
         }
     }
