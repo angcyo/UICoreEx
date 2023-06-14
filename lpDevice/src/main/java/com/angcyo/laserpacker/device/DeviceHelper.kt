@@ -15,6 +15,7 @@ import com.angcyo.http.rx.runRx
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.Library
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.deleteRecursivelySafe
 import com.angcyo.library.ex.eachFile
 import com.angcyo.library.ex.ensureExtName
 import com.angcyo.library.ex.ensureName
@@ -29,6 +30,7 @@ import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.filePath
+import com.angcyo.library.utils.folderPath
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -213,6 +215,11 @@ object DeviceHelper {
         if (ensureExt) name.ensureName(LPDataConstant.PROJECT_EXT2) else name
     ).file()
 
+    /**V2临时存储的文件夹*/
+    fun _defaultProjectOutputV2Folder() = folderPath(
+        LPDataConstant.PROJECT_FILE_FOLDER + "/" + LPDataConstant.PROJECT_V2_TEMP_FOLDER,
+    ).file()
+
     /**删除项目文件*/
     fun deleteProjectFile(name: String = LPDataConstant.PROJECT_V1_TEMP_NAME): Boolean {
         val file = _defaultProjectOutputFile(name, false)
@@ -233,6 +240,19 @@ object DeviceHelper {
     fun haveProjectFileV2(name: String = LPDataConstant.PROJECT_V2_TEMP_NAME): Boolean {
         val file = _defaultProjectOutputFileV2(name, false)
         return file.exists()
+    }
+
+    /**删除项目文件目录, 递归删除*/
+    fun deleteProjectFileV2Folder(): Boolean {
+        return _defaultProjectOutputV2Folder().deleteRecursivelySafe()
+    }
+
+    /**是否有工程文件的临时存放文件夹*/
+    fun haveProjectFileV2Folder(): Boolean {
+        return File(
+            _defaultProjectOutputV2Folder(),
+            LPDataConstant.PROJECT_V2_DEFAULT_NAME
+        ).exists()
     }
 
     //endregion ---文件输出信息---

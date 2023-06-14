@@ -55,6 +55,9 @@ object LPDataConstant {
     const val PROJECT_V1_TEMP_NAME = ".lptemp"
     const val PROJECT_V2_TEMP_NAME = ".lp2temp"
 
+    /**临时存储文件夹*/
+    const val PROJECT_V2_TEMP_FOLDER = "lp2temp"
+
     /**第二版结构中, 工程默认的结构数据放在zip包里面此流中*/
     const val PROJECT_V2_DEFAULT_NAME = ".lpproject"
 

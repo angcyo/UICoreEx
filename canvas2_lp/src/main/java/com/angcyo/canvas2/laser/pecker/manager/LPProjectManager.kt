@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -35,6 +36,8 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.fileType
 import com.angcyo.library.utils.writeTo
+import com.angcyo.library.utils.writeToFile
+import com.angcyo.opencv.OpenCV.toBitmap
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -497,10 +500,15 @@ class LPProjectManager {
         async: Boolean = true,
         result: (zipFilePath: String, error: Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
     ): String {
-        isSaveBoolean.set(true)
         val file = DeviceHelper._defaultProjectOutputFileV2(fileName, false)
         val tempFile = DeviceHelper._defaultProjectOutputFileV2("${fileName}.${nowTime()}", false)
         val zipFilePath = file.absolutePath
+        if (renderList.isNullOrEmpty()) {
+            zipFilePath.file().deleteSafe()
+            result(zipFilePath, EmptyException())
+            return zipFilePath
+        }
+        isSaveBoolean.set(true)
         val save = Runnable {
             try {
                 val saveFile = saveProjectV2To(tempFile, delegate, renderList, overrideSize)
@@ -531,6 +539,179 @@ class LPProjectManager {
     }
 
     //endregion ---保存---
+
+    //region ---temp---
+
+    /**工程临时存储, 速度够快, 可以在主线程雕刻*/
+    fun saveProjectV2Folder(
+        delegate: CanvasRenderDelegate,
+        renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
+        overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
+        onlySaveProperty: Boolean = false /*是否仅保存属性信息*/
+    ): LPProjectBean? {
+        if (!onlySaveProperty) {
+            DeviceHelper.deleteProjectFileV2Folder()
+        }
+        if (renderList.isNullOrEmpty()) {
+            return null
+        }
+        val projectBean = LPProjectBean().apply {
+            val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
+            create_time = nowTime()
+            update_time = nowTime()
+            file_name = projectName
+            version = 2
+            swVersion = productInfo?.softwareVersion ?: swVersion
+            hwVersion = productInfo?.hardwareVersion ?: hwVersion
+
+            //last
+            saveProjectLastParams(this)
+
+            data = jsonArray {
+                renderList?.forEach { renderer ->
+                    val list = renderer.getSingleRendererList(false)
+                    list.forEach { sub ->
+                        try {
+                            sub.lpElement()?.let { element ->
+                                element.updateBeanFromElement(sub)
+                                val elementBean = element.elementBean.copy()
+
+                                //gcode/svg
+                                if (!elementBean.data.isNullOrEmpty()) {
+                                    val uri =
+                                        LPDataConstant.PROJECT_V2_BASE_URI + uuid()
+                                    elementBean.dataUri = uri
+                                    writeV2TempRes(uri, elementBean.data!!)
+                                }
+
+                                //原图
+                                val imageOriginalBitmap = sub.lpBitmapElement()?.originBitmap
+                                    ?: elementBean.imageOriginal?.toBitmapOfBase64()
+                                if (imageOriginalBitmap != null) {
+                                    if (BuildHelper.isCpu64 || imageOriginalBitmap.width * imageOriginalBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                        val uri =
+                                            LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                        elementBean.imageOriginalUri = uri
+                                        writeV2TempRes(uri, imageOriginalBitmap)
+                                    }
+                                }
+
+                                //滤镜后的图
+                                if (HawkEngraveKeys.saveFilterBitmap) {
+                                    val srcBitmap = sub.lpBitmapElement()?.renderBitmap
+                                        ?: elementBean.src?.toBitmapOfBase64()
+                                    if (srcBitmap != null) {
+                                        if (BuildHelper.isCpu64 || srcBitmap.width * srcBitmap.height <= LibHawkKeys.maxBitmapSaveSize) {
+                                            val uri =
+                                                LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+                                            elementBean.srcUri = uri
+                                            writeV2TempRes(uri, srcBitmap)
+                                        }
+                                    }
+                                }
+
+                                //清空数据, 使用uri代替
+                                elementBean.data = null
+                                elementBean.imageOriginal = null
+                                elementBean.src = null
+                                add(elementBean.toJson().json())
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }.toString() //java.lang.OutOfMemoryError
+
+            //last write, 临时存储, 不需要预览图 2023-6-14
+            /*val preview =
+                delegate.preview(overrideSize = overrideSize, rendererList = renderList)
+            //preview_img = preview?.toBase64Data()
+            //previewImgUri = LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
+            writeV2TempRes(LPDataConstant.PROJECT_V2_PREVIEW_NAME, preview)*/
+        }
+        val json = projectBean.toJson()
+        writeV2TempRes(LPDataConstant.PROJECT_V2_DEFAULT_NAME, json)
+        return projectBean
+    }
+
+    /**从文件夹中恢复工程*/
+    fun restoreProjectV2Folder(
+        delegate: CanvasRenderDelegate?,
+        clearOld: Boolean = true
+    ): LPProjectBean? {
+        var projectBean: LPProjectBean? = null
+        val folder = DeviceHelper._defaultProjectOutputV2Folder()
+        if (folder.exists() && folder.isFolder()) {
+            try {
+                projectBean =
+                    File(folder, LPDataConstant.PROJECT_V2_DEFAULT_NAME).readText()?.toProjectBean()
+                openProjectBeanV2Folder(delegate, folder, projectBean, clearOld)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return projectBean
+    }
+
+    /**打开工程文件, 从文件夹中*/
+    fun openProjectBeanV2Folder(
+        delegate: CanvasRenderDelegate?,
+        folder: File,
+        projectBean: LPProjectBean?,
+        clearOld: Boolean = true
+    ): Boolean {
+        projectBean ?: return false
+
+        if (delegate != null) {
+            restoreProjectLastParams(projectBean)
+
+            if (clearOld) {
+                delegate.renderManager.removeAllElementRenderer(Reason.init, Strategy.init)
+                delegate.undoManager.clear()
+            }
+        }
+
+        val result = projectBean.data?.toElementBeanList()?.let { beanList ->
+            beanList.generateName()
+            for (bean in beanList) {
+
+                //gcode/svg
+                if (!bean.dataUri.isNullOrEmpty()) {
+                    bean.data = File(folder, bean.dataUri!!).readText()
+                }
+
+                //原图
+                if (!bean.imageOriginalUri.isNullOrEmpty()) {
+                    bean._imageOriginalBitmap = File(folder, bean.imageOriginalUri!!).toBitmap()
+                    /*bean.imageOriginal =
+                        zipFile.readEntryBitmap(bean.imageOriginalUri!!)?.toBase64Data()*/
+                }
+
+                //滤镜后的图
+                if (!bean.srcUri.isNullOrEmpty()) {
+                    bean._srcBitmap = File(folder, bean.srcUri!!).toBitmap()
+                    /*bean.src = zipFile.readEntryBitmap(bean.srcUri!!)?.toBase64Data()*/
+                }
+            }
+            LPRendererHelper.renderElementList(delegate, beanList, false, Strategy.init)
+        } != null
+        return result
+    }
+
+    fun writeV2TempRes(res: String, text: String?) {
+        val folder = DeviceHelper._defaultProjectOutputV2Folder()
+        val file = File(folder, res)
+        file.writeText(text ?: "", false)
+    }
+
+    fun writeV2TempRes(res: String, bitmap: Bitmap?) {
+        val folder = DeviceHelper._defaultProjectOutputV2Folder()
+        val file = File(folder, res)
+        bitmap?.writeToFile(file)
+    }
+
+    //endregion ---temp---
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV1]*/
@@ -558,16 +739,16 @@ fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV2]*/
 fun CanvasRenderDelegate.restoreProjectStateV2() {
-    try {
-        LPProjectManager().restoreProjectV2(this)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    LPProjectAutoSaveManager.autoRestore(this)
 }
 
 /**[com.angcyo.laserpacker.device.DeviceHelper.deleteProjectFileV2]*/
 fun deleteProjectFileV2() {
     DeviceHelper.deleteProjectFileV2()
+}
+
+fun deleteProjectFileV2Folder() {
+    DeviceHelper.deleteProjectFileV2Folder()
 }
 
 /**处理文件路径对应的数据, 解析成[LPElementBean]*/

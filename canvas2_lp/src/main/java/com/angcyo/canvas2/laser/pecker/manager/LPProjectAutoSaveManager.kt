@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.manager
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component._runMainRunnableDelay
 import java.util.concurrent.atomic.AtomicBoolean
@@ -13,6 +14,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 object LPProjectAutoSaveManager {
 
+    /**是否使用文件夹的方式存储临时工程*/
+    var useFolderSave = true
+
     /**是否正在存储工程
      * [com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV2]*/
     val isSaveBoolean = AtomicBoolean(false)
@@ -20,6 +24,7 @@ object LPProjectAutoSaveManager {
     private var autoSaveRunnable: AutoSaveRunnable? = null
 
     /**自动保存工程*/
+    @CallPoint
     fun autoSave(renderDelegate: CanvasRenderDelegate, async: Boolean) {
         if (!HawkEngraveKeys.enableProjectAutoSave) {
             //未激活自动保存
@@ -29,18 +34,36 @@ object LPProjectAutoSaveManager {
             //正在保存
             return
         }
-        removeAutoSave()
-        autoSaveRunnable = AutoSaveRunnable(renderDelegate, async)
-        if (async) {
-            _runMainRunnableDelay(HawkEngraveKeys.autoSaveProjectDelay, autoSaveRunnable!!)
+        if (useFolderSave) {
+            LPProjectManager().saveProjectV2Folder(renderDelegate)
         } else {
-            //立即保存
-            autoSaveRunnable?.run()
+            removeAutoSave()
+            autoSaveRunnable = AutoSaveRunnable(renderDelegate, async)
+            if (async) {
+                _runMainRunnableDelay(HawkEngraveKeys.autoSaveProjectDelay, autoSaveRunnable!!)
+            } else {
+                //立即保存
+                autoSaveRunnable?.run()
+            }
+        }
+    }
+
+    /**自动恢复*/
+    @CallPoint
+    fun autoRestore(renderDelegate: CanvasRenderDelegate) {
+        try {
+            if (useFolderSave) {
+                LPProjectManager().restoreProjectV2Folder(renderDelegate)
+            } else {
+                LPProjectManager().restoreProjectV2(renderDelegate)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     /**移除自动保存动作*/
-    fun removeAutoSave() {
+    private fun removeAutoSave() {
         autoSaveRunnable?.let {
             _removeMainRunnable(it)
         }
