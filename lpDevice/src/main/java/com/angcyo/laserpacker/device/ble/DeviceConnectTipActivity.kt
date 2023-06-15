@@ -7,12 +7,14 @@ import com.angcyo.activity.BaseDialogActivity
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.L
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.component.pad.isInPadMode
+import com.angcyo.library.ex._color
 import kotlin.math.min
 
 /**
@@ -161,6 +163,9 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
             finish()
         }
 
+        if (vmApp<NightModel>().isDarkMode) {
+            _vh.tv(R.id.setting_button)?.setTextColor(_color(R.color.text_primary_color))
+        }
         _vh.click(R.id.setting_button) {
             finish()
             dslAHelper {

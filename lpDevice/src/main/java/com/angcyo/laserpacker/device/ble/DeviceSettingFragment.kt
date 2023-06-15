@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.device.ble
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.base.dslFHelper
@@ -34,6 +33,7 @@ import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.component.VersionMatcher
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
@@ -72,7 +72,7 @@ class DeviceSettingFragment : BaseDslFragment() {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(Color.WHITE)
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.lib_theme_white_color))
         super.onInitFragment(savedInstanceState)
     }
 

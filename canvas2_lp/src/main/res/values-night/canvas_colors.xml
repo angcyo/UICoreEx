@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="canvas_item_layout">@color/lib_theme_white_color</color>
+    <color name="canvas_control_layout">@color/lib_theme_white_color</color>
+</resources>

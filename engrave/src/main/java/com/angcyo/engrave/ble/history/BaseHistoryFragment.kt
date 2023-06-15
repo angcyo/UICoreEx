@@ -40,7 +40,7 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveCanvasFragment {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(Color.WHITE)
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.theme_white_color))
         super.onInitFragment(savedInstanceState)
     }
 

@@ -7,7 +7,7 @@
     <!--画布item包裹布局颜色-->
     <color name="canvas_item_layout">#f5f5f5</color>
     <!--画布item 控制包裹布局颜色-->
-    <color name="canvas_control_layout">#ffffff</color>
+    <color name="canvas_control_layout">@color/lib_theme_white_color</color>
     <!--提示线颜色-->
     <color name="canvas_assistant">#8200f1</color>
     <!--item图标颜色-->

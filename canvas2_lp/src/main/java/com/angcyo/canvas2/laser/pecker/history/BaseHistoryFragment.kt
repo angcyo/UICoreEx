@@ -1,6 +1,5 @@
 package com.angcyo.canvas2.laser.pecker.history
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.component.batchHandle
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.laser.pecker.lpRemoveAllEntity
@@ -40,7 +40,7 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(Color.WHITE)
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.lib_theme_white_color))
         super.onInitFragment(savedInstanceState)
     }
 

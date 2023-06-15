@@ -1,6 +1,5 @@
 package com.angcyo.laserpacker.device.ble
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -10,6 +9,7 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.DebugWifiConfigItem
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 
 /**
@@ -31,7 +31,7 @@ class EngraveExperimentalFragment : DebugFragment() {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(Color.WHITE)
+        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.lib_theme_white_color))
         super.onInitFragment(savedInstanceState)
     }
 
