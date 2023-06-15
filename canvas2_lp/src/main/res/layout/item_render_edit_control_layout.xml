@@ -76,7 +76,7 @@
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_width"
-        android:textColor="@color/canvas_ico"
+        android:textColor="@color/lib_theme_text_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/item_drawable_line_view"
         app:layout_constraintTop_toBottomOf="@id/item_width_view"
@@ -105,7 +105,7 @@
         app:layout_constraintRight_toRightOf="@id/lock_line_view"
         app:layout_constraintTop_toTopOf="@id/lock_line_view"
         app:srcCompat="@drawable/canvas_lock_selector"
-        app:tint="@color/canvas_ico" />
+        app:tint="@color/lib_theme_text_selector" />
 
     <!--高度-->
 
@@ -137,7 +137,7 @@
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_height"
-        android:textColor="@color/canvas_ico"
+        android:textColor="@color/lib_theme_text_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/lock_line_view"
         app:layout_constraintTop_toBottomOf="@id/item_height_view"
@@ -173,7 +173,7 @@
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_rotate"
-        android:textColor="@color/canvas_ico"
+        android:textColor="@color/lib_theme_text_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/height_label_view"
         app:layout_constraintTop_toBottomOf="@id/item_rotate_view"
@@ -199,7 +199,8 @@
             android:layout_height="26dp"
             android:padding="@dimen/lib_sdpi"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/crop_horizontal_flip_icon" />
+            app:srcCompat="@drawable/crop_horizontal_flip_icon"
+            app:tint="@color/lib_theme_icon_colors" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/flip_horizontal_label_view"
@@ -230,7 +231,8 @@
             android:layout_height="26dp"
             android:padding="@dimen/lib_sdpi"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/crop_vertical_flip_icon" />
+            app:srcCompat="@drawable/crop_vertical_flip_icon"
+            app:tint="@color/lib_theme_icon_colors" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/flip_vertical_label_view"
@@ -284,7 +286,7 @@
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_axis_x"
-        android:textColor="@color/canvas_ico"
+        android:textColor="@color/lib_theme_text_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/rotate_line_view"
         app:layout_constraintTop_toBottomOf="@id/item_axis_x_view"
@@ -320,7 +322,7 @@
         android:gravity="center"
         android:minWidth="@dimen/canvas_edit_min_width"
         android:text="@string/canvas_axis_y"
-        android:textColor="@color/canvas_ico"
+        android:textColor="@color/lib_theme_text_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/axis_x_label_view"
         app:layout_constraintTop_toBottomOf="@id/item_axis_y_view"
@@ -335,7 +337,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/axis_y_label_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/lib_direction_svg" />
+        app:srcCompat="@drawable/lib_direction_svg"
+        app:tint="@color/lib_theme_icon_colors" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_new_view"
