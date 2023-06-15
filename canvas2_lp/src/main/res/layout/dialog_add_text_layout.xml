@@ -17,7 +17,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/dialog_negative_button"
             style="@style/LibTitleIcoStyle"
-            app:srcCompat="@drawable/dialog_back_svg" />
+            app:srcCompat="@drawable/dialog_back_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dialog_title_view"
@@ -34,6 +35,7 @@
             style="@style/LibTitleIcoStyle"
             android:layout_gravity="right|center_vertical"
             app:srcCompat="@drawable/dialog_confirm_svg"
+            app:tint="@color/lib_night_icon_colors_selector"
             tools:text="确定" />
 
     </FrameLayout>
