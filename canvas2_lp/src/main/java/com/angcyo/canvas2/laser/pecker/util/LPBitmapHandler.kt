@@ -999,6 +999,11 @@ object LPBitmapHandler {
                         //魔棒完之后, 默认黑白处理
                         element.updateOriginBitmap(result, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
+                        if (element.elementBean.imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
+                            element.elementBean.imageFilter == LPDataConstant.DATA_MODE_GREY
+                        ) {
+                            element.renderBitmap = result//2023-6-15 透明图片, 障眼法
+                        }
                         result
                     }) {
                         renderer.requestUpdatePropertyFlag(Reason.user.apply {
