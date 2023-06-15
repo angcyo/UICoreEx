@@ -37,7 +37,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/canvas_setting_ico" />
+        app:srcCompat="@drawable/canvas_setting_ico"
+        app:tint="@color/lib_night_icon_colors_selector" />
 
     <com.angcyo.widget.text.BadgeTextView
         android:id="@+id/device_setting_badge_view"

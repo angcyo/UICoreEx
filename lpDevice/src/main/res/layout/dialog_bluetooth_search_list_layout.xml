@@ -19,7 +19,8 @@
             android:id="@+id/dialog_negative_button"
             style="@style/LibDialogIcoItemStyle"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/dialog_back_svg" />
+            app:srcCompat="@drawable/dialog_back_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dialog_title_view"
@@ -35,7 +36,8 @@
             android:id="@+id/lib_loading_view"
             style="@style/LibDialogIcoItemStyle"
             android:layout_gravity="right|center_vertical"
-            app:srcCompat="@drawable/ic_refresh_svg" />
+            app:srcCompat="@drawable/ic_refresh_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
     </FrameLayout>
 
