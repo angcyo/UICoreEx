@@ -35,7 +35,8 @@
         app:layout_constraintBottom_toTopOf="@id/layer_item_lock_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/canvas_visible_selector" />
+        app:srcCompat="@drawable/canvas_visible_selector"
+        app:tint="@color/lib_night_icon_colors_selector" />
 
     <!--图层锁定控制-->
     <androidx.appcompat.widget.AppCompatImageView
@@ -51,7 +52,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layer_item_invisible_view"
         app:srcCompat="@drawable/canvas_lock_selector"
-        app:tint="#333333" />
+        app:tint="@color/lib_night_icon_colors_selector" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/layer_item_drawable_view"
@@ -99,6 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/canvas_layer_sort" />
+        app:srcCompat="@drawable/canvas_layer_sort"
+        app:tint="@color/lib_night_icon_colors_selector" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
