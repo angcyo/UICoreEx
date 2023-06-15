@@ -44,7 +44,8 @@ class ProjectListFragment : BaseDslFragment() {
         fragmentTitle = _string(R.string.project_title)
         fragmentConfig.isLightStyle = true
         fragmentConfig.showTitleLineView = true
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(getColor(R.color.lib_white))
+        fragmentConfig.fragmentBackgroundDrawable =
+            ColorDrawable(getColor(R.color.lib_theme_white_color))
 
         page.firstPageIndex = 0
         enableRefresh = true

@@ -10,7 +10,7 @@
     <com.angcyo.widget.layout.RConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f9f9f9"
+        android:background="@color/lib_theme_white_bg_color"
         android:orientation="vertical"
         app:r_clip_radius="@dimen/lib_hdpi"
         app:r_clip_type="CLIP_TYPE_ROUND">
@@ -45,7 +45,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lib_text_view"
-            app:srcCompat="@drawable/canvas_share_svg" />
+            app:srcCompat="@drawable/canvas_share_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/lib_more_view"
@@ -55,7 +56,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lib_text_view"
-            app:srcCompat="@drawable/canvas_more_svg" />
+            app:srcCompat="@drawable/canvas_more_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/lib_sync_view"
