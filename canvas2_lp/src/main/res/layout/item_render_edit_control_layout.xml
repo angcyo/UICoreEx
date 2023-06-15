@@ -200,7 +200,7 @@
             android:padding="@dimen/lib_sdpi"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/crop_horizontal_flip_icon"
-            app:tint="@color/lib_theme_icon_colors" />
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/flip_horizontal_label_view"
@@ -232,7 +232,7 @@
             android:padding="@dimen/lib_sdpi"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/crop_vertical_flip_icon"
-            app:tint="@color/lib_theme_icon_colors" />
+            app:tint="@color/lib_night_icon_colors_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/flip_vertical_label_view"
@@ -338,7 +338,7 @@
         app:layout_constraintLeft_toRightOf="@id/axis_y_label_view"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/lib_direction_svg"
-        app:tint="@color/lib_theme_icon_colors" />
+        app:tint="@color/lib_night_icon_colors_selector" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_new_view"
