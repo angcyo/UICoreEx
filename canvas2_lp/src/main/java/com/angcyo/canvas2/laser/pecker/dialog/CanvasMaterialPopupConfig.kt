@@ -40,6 +40,7 @@ class CanvasMaterialPopupConfig : ShadowAnchorPopupConfig() {
                     val size = (_screenWidth * 0.75f / 4).toInt()
                     val pair = loadAssetsSvgPath("svg/$it", viewWidth = size, viewHeight = size)
                     itemDrawable = pair?.second
+
                     //itemDrawable = loadAssetsSvg("svg/$it")
 
                     //网格线
