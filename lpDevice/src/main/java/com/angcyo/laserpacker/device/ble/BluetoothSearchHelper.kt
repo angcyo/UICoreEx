@@ -311,7 +311,9 @@ class BluetoothSearchHelper {
                 }
             }
         }
-        if (adapter.adapterItems.size() >= HawkEngraveKeys.showDeviceFilterCount && filterNameList.size() >= 2) {
+        val showFilterLayout =
+            adapter.adapterItems.size() >= HawkEngraveKeys.showDeviceFilterCount && filterNameList.size() >= 2
+        if (showFilterLayout) {
             sortFilter.isEnable = true
             //有2种设备, 并且数量很多
             viewHolder.visible(R.id.device_filter_tab_layout)
