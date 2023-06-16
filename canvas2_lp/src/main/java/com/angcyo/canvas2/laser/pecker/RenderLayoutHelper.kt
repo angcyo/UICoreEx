@@ -40,6 +40,8 @@ import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
+import com.angcyo.core.component.model.NightModel
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.dialog.recyclerPopupWindow
 import com.angcyo.dsladapter.DragCallbackHelper
@@ -59,6 +61,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.isDebug
@@ -90,6 +93,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     @CallPoint
     fun bindRenderLayout(vh: DslViewHolder) {
         _rootViewHolder = vh
+
+        if (vmApp<NightModel>().isDarkMode) {
+            vh.canvasView?.setBackgroundColor(_color(R.color.colorPrimaryDark))
+        }
 
         //恢复设置
         restoreCanvasSetting()
