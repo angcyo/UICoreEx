@@ -458,6 +458,18 @@
     ],
     "dpiList": [
       {
+        "dpi": 127,
+        "px": 4,
+        "des": "0.5K",
+        "debug": true
+      },
+      {
+        "dpi": 203,
+        "px": 4,
+        "des": "0.8K",
+        "debug": true
+      },
+      {
         "dpi": 254,
         "px": 4,
         "des": "1K"
@@ -494,6 +506,18 @@
     "layer": {
       "layerPicture": {
         "dpiList": [
+          {
+            "dpi": 127,
+            "px": 4,
+            "des": "0.5K",
+            "debug": true
+          },
+          {
+            "dpi": 203,
+            "px": 4,
+            "des": "0.8K",
+            "debug": true
+          },
           {
             "dpi": 254,
             "px": 4,
@@ -548,6 +572,18 @@
     ],
     "dpiList": [
       {
+        "dpi": 127,
+        "px": 4,
+        "des": "0.5K",
+        "debug": true
+      },
+      {
+        "dpi": 203,
+        "px": 4,
+        "des": "0.8K",
+        "debug": true
+      },
+      {
         "dpi": 254,
         "px": 4,
         "des": "1K"
@@ -584,6 +620,18 @@
     "layer": {
       "layerPicture": {
         "dpiList": [
+          {
+            "dpi": 127,
+            "px": 4,
+            "des": "0.5K",
+            "debug": true
+          },
+          {
+            "dpi": 203,
+            "px": 4,
+            "des": "0.8K",
+            "debug": true
+          },
           {
             "dpi": 254,
             "px": 4,
