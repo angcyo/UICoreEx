@@ -33,6 +33,9 @@ data class TransitionParam(
     /**亮度 [-1~1]*/
     val brightness: Float = 0f,
 
+    /**是否使用新的抖动算法*/
+    val useNewDithering: Boolean = HawkEngraveKeys.useNewDithering,
+
     //---GCode算法需要的参数---
 
     /**是否仅使用图片转GCode的方式处理, 这样会强制忽略[android.graphics.Path]的转换

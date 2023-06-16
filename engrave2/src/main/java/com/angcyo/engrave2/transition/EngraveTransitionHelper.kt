@@ -30,6 +30,7 @@ import com.angcyo.library.LTime
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.annotation.Private
+import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -55,6 +56,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.opencv.OpenCV
 import com.angcyo.rust.handle.RustBitmapHandle
 import com.angcyo.widget.span.span
 import java.io.File
@@ -260,13 +262,24 @@ object EngraveTransitionHelper {
             val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
             dpiBitmap.recycle()
             bitmapByteCount = dpiBitmap2.byteCount
-            operateBitmap = RustBitmapHandle.bitmapDither(
-                dpiBitmap2,
-                0f,
-                0f,
-                false,
-                LibHawkKeys.alphaThreshold
-            )!! //用灰度图进行抖动处理
+            operateBitmap = if (params.useNewDithering) {
+                RustBitmapHandle.bitmapDither(
+                    dpiBitmap2,
+                    0f,
+                    0f,
+                    false,
+                    LibHawkKeys.alphaThreshold
+                )
+            } else {
+                OpenCV.bitmapToDithering(
+                    app(),
+                    dpiBitmap2,
+                    false,
+                    0.0,
+                    0.0,
+                    LibHawkKeys.alphaThreshold
+                )
+            }!! //用灰度图进行抖动处理
             dpiBitmap2.recycle()
         } else {
             //未反色的图片
@@ -274,12 +287,21 @@ object EngraveTransitionHelper {
             val dpiBitmap2 = dpiBitmap.addBgColor(bgColor)
             dpiBitmap.recycle()
             bitmapByteCount = dpiBitmap2.byteCount
-            operateBitmap = RustBitmapHandle.bitmapDither(
-                dpiBitmap2,
-                params.contrast,
-                params.brightness,
-                params.invert,
-            )!! //用未反色的图进行抖动处理
+            operateBitmap = if (params.useNewDithering) {
+                RustBitmapHandle.bitmapDither(
+                    dpiBitmap2,
+                    params.contrast,
+                    params.brightness,
+                    params.invert,
+                )
+            } else {
+                OpenCV.bitmapToDithering(
+                    app(), dpiBitmap2,
+                    params.invert,
+                    params.contrast.toDouble(),
+                    params.brightness.toDouble(),
+                )
+            }!! //用未反色的图进行抖动处理
             dpiBitmap2.recycle()
         }
 

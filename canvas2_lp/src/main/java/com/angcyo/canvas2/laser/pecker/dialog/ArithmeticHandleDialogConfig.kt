@@ -24,6 +24,7 @@ import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
@@ -149,7 +150,21 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
                     EngraveTransitionHelper.transitionToBitmapDithering(
                         renderElement,
                         transferConfigEntity,
-                        TransitionParam()
+                        TransitionParam(useNewDithering = false)
+                    )
+                }
+            }
+        })
+        itemList.add(CanvasIconItem().apply {
+            itemIco = R.drawable.canvas_bitmap_dithering
+            itemText = "转抖动"
+            itemNewHawkKeyStr = "use_new_dithering"
+            itemClick = {
+                wrapLoading {
+                    EngraveTransitionHelper.transitionToBitmapDithering(
+                        renderElement,
+                        transferConfigEntity,
+                        TransitionParam(useNewDithering = true)
                     )
                 }
             }

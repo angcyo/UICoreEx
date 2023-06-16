@@ -14,6 +14,7 @@ import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -86,6 +87,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
 
     protected val laserPeckerModel = vmApp<LaserPeckerModel>()
     protected val deviceStateModel = vmApp<DeviceStateModel>()
+    protected val nightModel = vmApp<NightModel>()
 
     /**是否要显示切割按钮*/
     val itemShowSlicingView: Boolean
@@ -110,8 +112,12 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         itemHolder.tv(R.id.layer_item_name_view)?.text =
             itemItemName ?: operateElementBean?.mtype?.toTypeNameString()
 
-        itemHolder.img(R.id.layer_item_drawable_view)
-            ?.setImageDrawable(itemItemDrawable /*?: renderer?.preview(itemRenderParams)*/)
+        itemHolder.img(R.id.layer_item_drawable_view)?.apply {
+            setImageDrawable(itemItemDrawable /*?: renderer?.preview(itemRenderParams)*/)
+            if (nightModel.isDarkMode) {
+                setBackgroundColor(_color(R.color.lib_theme_icon_color))
+            }
+        }
 
         //元素参数
         if (itemShowEngraveParams && HawkEngraveKeys.enableItemEngraveParams && renderer is CanvasElementRenderer) {
