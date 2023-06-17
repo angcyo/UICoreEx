@@ -72,7 +72,8 @@ class DeviceSettingFragment : BaseDslFragment() {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.lib_theme_white_color))
+        fragmentConfig.fragmentBackgroundDrawable =
+            ColorDrawable(_color(R.color.lib_theme_white_color))
         super.onInitFragment(savedInstanceState)
     }
 

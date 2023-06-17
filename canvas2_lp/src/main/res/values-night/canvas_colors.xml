@@ -5,4 +5,5 @@
     <color name="canvas_ico">@color/lib_text_color</color>
     <color name="canvas_segment_tab_bg_color">@color/lib_segment_tab_bg_color</color>
     <color name="canvas_line">@color/lib_line</color>
+    <color name="canvas_dark_gray">@color/lib_line_dark</color>
 </resources>
