@@ -263,15 +263,6 @@ fun String?.toSvgElementBean(): LPElementBean? {
     return bean
 }
 
-fun Bitmap?.toBitmapItemData(action: LPElementBean.() -> Unit = {}): LPElementBean? {
-    this ?: return null
-    val bean = LPElementBean()
-    bean.mtype = LPDataConstant.DATA_TYPE_BITMAP
-    bean.imageOriginal = toBase64Data()
-    bean.action()
-    return bean
-}
-
 /**第二版, 直接使用图片对象*/
 fun Bitmap?.toBitmapElementBeanV2(
     bmpThreshold: Int? = null, //不指定阈值时, 自动从图片中获取
@@ -290,14 +281,4 @@ fun Bitmap?.toBitmapElementBeanV2(
     bean._srcBitmap =
         BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
     return bean
-}
-
-/**将[Bitmap]转换成[LPElementBean]数据结构*/
-fun Bitmap?.toBlackWhiteBitmapItemData(): LPElementBean? {
-    val bitmap = this ?: return null
-    return toBitmapItemData {
-        imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE //默认黑白处理
-        blackThreshold = HawkEngraveKeys.lastBWThreshold
-        src = bitmap.toBlackWhiteBitmap(HawkEngraveKeys.lastBWThreshold.toInt())
-    }
 }

@@ -24,7 +24,7 @@ import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.project.readProjectBean
-import com.angcyo.laserpacker.toBlackWhiteBitmapItemData
+import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toElementBeanList
 import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
@@ -763,7 +763,7 @@ fun String?.toElementBeanOfFile(): CanvasOpenDataType? {
         return text.toSvgElementBean()
     } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
-        return bitmap.toBlackWhiteBitmapItemData()
+        return bitmap.toBitmapElementBeanV2()
     } else if (path.endsWith(LPDataConstant.PROJECT_EXT) || path.endsWith(LPDataConstant.PROJECT_EXT2)) {
         return LPProjectManager().openProjectFile(null, file)
     } else {
