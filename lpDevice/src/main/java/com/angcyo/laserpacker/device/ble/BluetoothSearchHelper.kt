@@ -175,6 +175,12 @@ class BluetoothSearchHelper {
                 itemHolder.click(R.id.contact_me_view) {
                     onContactMeAction()
                 }
+                if (state == DslAdapterStatusItem.ADAPTER_STATUS_EMPTY) {
+                    //未搜索到设备
+                    UMEvent.APP_ERROR.umengEventValue {
+                        put(UMEvent.KEY_NO_DEVICE_ERROR, "未搜索到设备")
+                    }
+                }
             }
 
             val list = apiModel.connectDeviceListData.value

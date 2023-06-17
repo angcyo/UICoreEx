@@ -18,6 +18,8 @@ import com.angcyo.library.ex.isDebuggerConnected
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.toStr
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import java.io.ByteArrayOutputStream
 import kotlin.math.roundToLong
 
@@ -76,6 +78,9 @@ class WaitReceivePacket(
     //超时处理
     val _timeOutRunnable = Runnable {
         if (!_isFinish) {
+            UMEvent.APP_ERROR.umengEventValue {
+                put(UMEvent.KEY_COMMAND_ERROR, "指令超时")
+            }
             end()
             listener.onReceive(null, ReceiveTimeOutException())
         }
@@ -267,6 +272,9 @@ class WaitReceivePacket(
                                 //数据校验通过
                                 listener.onReceive(receivePacket, null)
                             } else {
+                                UMEvent.APP_ERROR.umengEventValue {
+                                    put(UMEvent.KEY_COMMAND_ERROR, "数据校验失败")
+                                }
                                 error(
                                     ReceiveVerifyException("数据校验失败: 计算值:$sumString 比较值:$checkString")
                                 )

@@ -52,6 +52,8 @@ import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.saveAllEntity
 import com.angcyo.viewmodel.vmDataOnce
 import com.angcyo.widget.span.span
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import kotlin.math.max
 import kotlin.math.min
 
@@ -286,6 +288,9 @@ class TransferModel : ViewModel() {
         transferState.state = TransferState.TRANSFER_STATE_FINISH
         transferState.error = error
         transferStateOnceData.postValue(transferState)
+        UMEvent.APP_ERROR.umengEventValue {
+            put(UMEvent.KEY_TRANSFER_ERROR, error?.message ?: "传输异常")
+        }
     }
 
     /**传输异常*/

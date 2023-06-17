@@ -129,6 +129,21 @@ object UMEvent {
     const val CANVAS_TEXT_UNDER_LINE = "canvas_text_under_line"
     const val CANVAS_TEXT_DELETE_LINE = "canvas_text_delete_line"
 
+    /**App异常统计*/
+    const val APP_ERROR = "app_error"
+
+    /**验证码错误: value=原因*/
+    const val KEY_CODE_ERROR = "key_code"
+
+    /**未搜索到设备错误: value=未搜索到设备*/
+    const val KEY_NO_DEVICE_ERROR = "key_no_device"
+
+    /**指令错误: value=[指令超时|指令异常|数据校验失败]*/
+    const val KEY_COMMAND_ERROR = "key_command"
+
+    /**数据传输错误: value=原因*/
+    const val KEY_TRANSFER_ERROR = "key_transfer"
+
     //endregion ---origin---
 
     //region ---rn---

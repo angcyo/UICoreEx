@@ -13,6 +13,7 @@ dependencies {
 
     compileOnly project(allModule.objectbox_lp) //数据库
     compileOnly project(allModule.vector)
+    compileOnly project(allModule.umeng_lp) //异常统计
 }
 
 //库中使用, 2022-10-25 3.4.4 废弃
