@@ -34,7 +34,7 @@ class ImageFilterItem : CanvasIconItem() {
         itemCheckColor = if (element is ILaserPeckerElement) {
             val dataBean = element.elementBean
             if (itemImageFilter == dataBean.imageFilter || (itemIsMeshItem && dataBean.isMesh)) {
-                _color(R.color.colorAccent).alphaRatio(0.5f)
+                _color(R.color.colorAccentNight).alphaRatio(0.5f)
             } else {
                 Color.TRANSPARENT
             }

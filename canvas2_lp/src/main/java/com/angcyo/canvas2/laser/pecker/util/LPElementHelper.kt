@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.util
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -115,8 +116,12 @@ object LPElementHelper {
 
     /**栅格化渲染器
      * [renderer] 需要被栅格化的渲染器*/
-    fun rasterizeRenderer(renderer: BaseRenderer?, delegate: CanvasRenderDelegate?) {
-        val bitmap = renderer?.requestRenderBitmap() ?: return
+    fun rasterizeRenderer(
+        renderer: BaseRenderer?,
+        delegate: CanvasRenderDelegate?,
+        backgroundColor: Int = Color.WHITE
+    ) {
+        val bitmap = renderer?.requestRenderBitmap(backgroundColor = backgroundColor) ?: return
         val newRenderer = createBitmapRenderer(bitmap, delegate, false) {
             //保持位置不变
             renderer.renderProperty?.getRenderBounds()?.let { bounds ->
