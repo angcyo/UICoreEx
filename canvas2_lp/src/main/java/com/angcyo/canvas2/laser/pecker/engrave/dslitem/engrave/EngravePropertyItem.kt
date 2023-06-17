@@ -3,6 +3,8 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 import android.graphics.Typeface
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.component.model.NightModel
+import com.angcyo.core.vmApp
 import com.angcyo.dialog2.WheelDialogConfig
 import com.angcyo.dialog2.wheelDialog
 import com.angcyo.dsladapter.DslAdapterItem
@@ -39,6 +41,8 @@ class EngravePropertyItem : DslAdapterItem() {
     /**需要显示的文本标签*/
     var itemLabelText: CharSequence? = null
 
+    private val nightModel = vmApp<NightModel>()
+
     init {
         itemLayoutId = R.layout.item_engrave_property_layout
     }
@@ -60,7 +64,7 @@ class EngravePropertyItem : DslAdapterItem() {
             ?: HawkEngraveKeys.lastPower)
         itemHolder.tv(R.id.power_view)?.text = span {
             if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(_drawable(R.drawable.engrave_config_power_svg))
+                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_power_svg)))
             } else {
                 append(powerLabel)
             }
@@ -68,7 +72,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$power") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccent)
+                foregroundColor = _color(R.color.colorAccentNight)
             }
             append("%")
         }
@@ -77,7 +81,7 @@ class EngravePropertyItem : DslAdapterItem() {
             ?: HawkEngraveKeys.lastDepth)
         itemHolder.tv(R.id.speed_view)?.text = span {
             if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(_drawable(R.drawable.engrave_config_depth_svg))
+                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_depth_svg)))
             } else {
                 append(speedLabel)
             }
@@ -85,7 +89,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$depth") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccent)
+                foregroundColor = _color(R.color.colorAccentNight)
             }
             append("%")
         }
@@ -95,7 +99,7 @@ class EngravePropertyItem : DslAdapterItem() {
         val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
         itemHolder.tv(R.id.times_view)?.text = span {
             if (HawkEngraveKeys.enableConfigIcon) {
-                appendDrawable(_drawable(R.drawable.engrave_config_times_svg))
+                appendDrawable(nightModel.tintDrawableNight(_drawable(R.drawable.engrave_config_times_svg)))
             } else {
                 append(timesLabel)
             }
@@ -103,7 +107,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$time") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccent)
+                foregroundColor = _color(R.color.colorAccentNight)
             }
         }
 

@@ -8,6 +8,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLabelItem
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
+import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
@@ -56,6 +57,8 @@ open class EngraveHistoryItem : DslTagGroupItem() {
 
     /**是否显示了所有*/
     var _isShowDetail = false
+
+    private val nightModel = vmApp<NightModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_history_layout

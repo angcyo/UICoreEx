@@ -4,6 +4,8 @@ import android.text.style.DynamicDrawableSpan
 import androidx.annotation.DrawableRes
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.component.model.NightModel
+import com.angcyo.core.vmApp
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
@@ -109,8 +111,9 @@ fun remainingTimesData(des: CharSequence?) = LabelDesData(
 )
 
 fun DslSpan.appendDrawable(@DrawableRes resId: Int) {
+    val nightModel = vmApp<NightModel>()
     appendDrawable(
-        _drawable(resId)?.setBounds(
+        nightModel.tintDrawableNight(_drawable(resId))?.setBounds(
             EngraveIconConfig.iconSize,
             EngraveIconConfig.iconSize
         ), EngraveIconConfig.iconAlignment

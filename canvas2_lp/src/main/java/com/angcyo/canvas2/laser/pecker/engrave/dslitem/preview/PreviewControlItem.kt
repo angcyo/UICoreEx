@@ -2,6 +2,8 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.core.component.model.NightModel
+import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.library.component.scaleDrawable
@@ -207,6 +209,7 @@ class PreviewControlItem : BasePreviewItem() {
     }
 
     fun resetControlLayout(itemHolder: DslViewHolder) {
+        val nightModel = vmApp<NightModel>()
         itemHolder.flow(R.id.lib_flow_layout)?.apply {
             resetChild(
                 itemList,
@@ -215,7 +218,10 @@ class PreviewControlItem : BasePreviewItem() {
                 itemView.dslViewHolder().apply {
                     tv(R.id.lib_text_view)?.text = span {
                         val size = 20
-                        appendDrawable(_drawable(item.ico).scaleDrawable(size * dpi, size * dpi))
+                        appendDrawable(
+                            nightModel.tintDrawableNight(_drawable(item.ico))
+                                .scaleDrawable(size * dpi, size * dpi)
+                        )
                         append("  ")
                         append(item.label)
                     }

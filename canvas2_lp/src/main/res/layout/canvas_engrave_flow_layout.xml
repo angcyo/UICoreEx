@@ -35,6 +35,7 @@
             android:singleLine="true"
             android:text="@string/ui_quit"
             app:drawableLeftCompat="@drawable/lib_arrow_left_svg"
+            app:drawableTint="@color/lib_theme_icon_color"
             app:layout_constraintBottom_toBottomOf="@id/lib_title_view"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/lib_title_view"
@@ -64,6 +65,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/lib_title_view"
             app:srcCompat="@drawable/canvas_minimum_svg"
+            app:tint="@color/lib_theme_icon_color"
             tools:visibility="visible" />
 
         <!--阴影-->

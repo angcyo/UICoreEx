@@ -50,7 +50,7 @@
         android:background="@drawable/lib_bg2_selector"
         android:padding="@dimen/lib_dpi"
         app:srcCompat="@drawable/canvas_render_control_point_delete"
-        app:tint="#333333" />
+        app:tint="@color/lib_theme_icon_color" />
 
     <!--保存材质-->
     <androidx.appcompat.widget.AppCompatImageView
@@ -60,6 +60,7 @@
         android:layout_marginStart="@dimen/lib_hdpi"
         android:background="@drawable/lib_bg2_selector"
         android:padding="@dimen/lib_dpi"
-        app:srcCompat="@drawable/material_save_svg" />
+        app:srcCompat="@drawable/material_save_svg"
+        app:tint="@color/lib_theme_icon_color" />
 
 </LinearLayout>

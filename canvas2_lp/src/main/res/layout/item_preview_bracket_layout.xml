@@ -60,7 +60,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/bracket_down_view"
         app:layout_constraintTop_toBottomOf="@id/bracket_height_view"
-        app:srcCompat="@drawable/bracket_up_svg" />
+        app:srcCompat="@drawable/bracket_up_svg"
+        app:tint="@color/lib_theme_icon_color" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/bracket_down_view"
@@ -74,7 +75,8 @@
         app:layout_constraintLeft_toRightOf="@id/bracket_up_view"
         app:layout_constraintRight_toLeftOf="@id/bracket_stop_view"
         app:layout_constraintTop_toTopOf="@id/bracket_up_view"
-        app:srcCompat="@drawable/bracket_down_svg" />
+        app:srcCompat="@drawable/bracket_down_svg"
+        app:tint="@color/lib_theme_icon_color" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/bracket_stop_view"
@@ -86,6 +88,7 @@
         app:layout_constraintLeft_toRightOf="@id/bracket_down_view"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bracket_up_view"
-        app:srcCompat="@drawable/bracket_stop_svg" />
+        app:srcCompat="@drawable/bracket_stop_svg"
+        app:tint="@color/lib_theme_icon_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

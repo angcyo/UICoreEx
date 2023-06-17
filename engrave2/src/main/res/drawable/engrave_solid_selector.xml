@@ -9,7 +9,7 @@
     <item>
         <shape>
             <corners android:radius="@dimen/lib_radius_normal" />
-            <solid android:color="@color/bg_primary_color" />
+            <solid android:color="@color/lib_segment_tab_bg_color" />
         </shape>
     </item>
 </selector>
