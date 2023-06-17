@@ -66,5 +66,7 @@ data class DeviceSettingBean(
     /**用来更新Hawk的值, 指令.
      * [@key#int=value|@key#int=value|@key#int=value]*/
     var updateHawkCommand: String? = null,
+    /**新功能提示字符串*/
+    var newHawkKeyStr: String? = null,
     //endregion---Android端设置项---
 )

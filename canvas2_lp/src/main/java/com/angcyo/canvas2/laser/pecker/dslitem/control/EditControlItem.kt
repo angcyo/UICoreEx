@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.view.Gravity
 import android.widget.TextView
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.Reason
@@ -21,6 +22,7 @@ import com.angcyo.item.keyboard.directionAdjustWindow
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.item.style.INewItem
 import com.angcyo.item.style.NewItemConfig
+import com.angcyo.item.style.itemDefaultNew
 import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.library.component.Strategy
@@ -59,6 +61,7 @@ class EditControlItem : DslAdapterItem(), ICanvasRendererItem, INewItem {
     init {
         itemLayoutId = R.layout.item_render_edit_control_layout
         itemNewHawkKeyStr = "direction_edit_rotate"
+        itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
     }
 
     override fun onItemBind(

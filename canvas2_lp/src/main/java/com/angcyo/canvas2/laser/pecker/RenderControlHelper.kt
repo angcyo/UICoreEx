@@ -47,6 +47,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.eachItem
 import com.angcyo.dsladapter.updateAllItemBy
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.item.style.itemDefaultNew
 import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
@@ -344,6 +345,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_magic_wand
                 itemText = _string(R.string.canvas_magic_wand)
                 itemNewHawkKeyStr = "magicWand"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 itemClick = {
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
@@ -367,6 +369,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.crop_auto_side_icon
                 itemText = _string(R.string.canvas_outline)
                 itemNewHawkKeyStr = "outline"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 itemClick = {
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
@@ -460,6 +463,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
                 itemNewHawkKeyStr = "rasterize"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 itemClick = {
                     itemHaveNew = false
                     LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
@@ -476,6 +480,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             itemNewHawkKeyStr = "curve"
             val lpTextElement = renderer.lpTextElement()
             itemEnable = lpTextElement?.isSupportCurve == true
+            itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
             itemClick = {
                 itemEnable = lpTextElement?.isSupportCurve == true
                 if (itemEnable) {
@@ -515,6 +520,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_text_style
                 itemIsSelected =
                     renderer.element<TextElement>()?.textProperty?.isCompactText == true
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 itemClick = {
                     itemHaveNew = false
                     updateItemSelected(!itemIsSelected)
@@ -588,6 +594,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_path_fill_svg
                 itemText = _string(R.string.canvas_path_fill)
                 itemNewHawkKeyStr = "pathFill"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 if (afterItemCount <= 0) {
                     drawCanvasRight()
                 }
@@ -617,6 +624,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
                 itemNewHawkKeyStr = "rasterize"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 if (afterItemCount <= 0) {
                     drawCanvasRight()
                 }
@@ -644,6 +652,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_text_rasterize_ico
                 itemText = _string(R.string.canvas_rasterize)
                 itemNewHawkKeyStr = "rasterize"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 drawCanvasRight()
                 itemClick = {
                     itemHaveNew = false

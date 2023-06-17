@@ -101,6 +101,10 @@ object LaserPeckerConfigHelper {
         return settingBean
     }
 
+    /**是否有新功能提示*/
+    fun haveNew(key: String?): Boolean = key != null &&
+            readDeviceSettingConfig()?.newHawkKeyStr?.contains(key) == true
+
     //endregion---读取配置---
 
 }
