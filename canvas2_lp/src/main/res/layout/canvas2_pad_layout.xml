@@ -294,7 +294,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/lib_white">
+                        android:background="@color/lib_theme_white_color">
 
                         <com.angcyo.tablayout.DslTabLayout
                             android:id="@+id/layer_tab_view"
@@ -351,7 +351,7 @@
                                 android:background="@drawable/lib_bg2_selector"
                                 android:padding="@dimen/lib_sdpi"
                                 app:srcCompat="@drawable/canvas_delete_svg"
-                                app:tint="@color/icon_disable_colors" />
+                                app:tint="@color/lib_night_icon_colors_selector" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/layer_control_visible_view"
@@ -361,7 +361,7 @@
                                 android:background="@drawable/lib_bg2_selector"
                                 android:padding="@dimen/lib_sdpi"
                                 app:srcCompat="@drawable/canvas_visible_svg"
-                                app:tint="@color/icon_disable_colors" />
+                                app:tint="@color/lib_night_icon_colors_selector" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/layer_control_copy_view"
@@ -371,7 +371,7 @@
                                 android:background="@drawable/lib_bg2_selector"
                                 android:padding="@dimen/lib_sdpi"
                                 app:srcCompat="@drawable/canvas_copy_svg"
-                                app:tint="@color/icon_disable_colors" />
+                                app:tint="@color/lib_night_icon_colors_selector" />
 
                         </LinearLayout>
 
@@ -391,7 +391,8 @@
             <FrameLayout
                 android:id="@+id/engrave_flow_wrap_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:layout_height="80dp" />
         </LinearLayout>
     </com.angcyo.widget.layout.DslSoftInputLayout>
 

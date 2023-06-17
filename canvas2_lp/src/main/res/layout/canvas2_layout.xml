@@ -399,10 +399,11 @@
         android:elevation="4dp"
         tools:visibility="gone">
 
+        <!--雕刻参数-->
         <FrameLayout
             android:id="@+id/engrave_flow_wrap_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
     </com.angcyo.widget.layout.DslSoftInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
 import android.content.Context
-import android.graphics.Color
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
@@ -42,6 +41,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.component.pad.isInPadMode
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.hawkGetBoolean
@@ -159,7 +159,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         if (isInPadMode()) {
             viewHolder?.gone(R.id.dialog_title_line_view)
-            viewHolder?.view(R.id.lib_iview_wrap_layout)?.setBackgroundColor(Color.WHITE)
+            viewHolder?.view(R.id.lib_iview_wrap_layout)
+                ?.setBackgroundColor(_color(R.color.lib_theme_white_color))
         }
 
         if (isDebugType()) {
