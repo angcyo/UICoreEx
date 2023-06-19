@@ -6,6 +6,7 @@ import androidx.annotation.Keep
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.vmApp
+import com.angcyo.download.giteeVersionUpdate
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
@@ -222,6 +223,12 @@ class AppJsApi : BaseJSInterface() {
     //endregion ---core---
 
     //region ---app---
+
+    /**检查版本更新*/
+    @JavascriptInterface
+    fun giteeVersionUpdate() {
+        lastContext.giteeVersionUpdate()
+    }
 
     //endregion ---app---
 
