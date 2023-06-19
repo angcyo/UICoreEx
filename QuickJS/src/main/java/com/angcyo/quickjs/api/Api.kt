@@ -65,20 +65,20 @@ object Api {
         }
     }
 
-    /**注入对象*/
-    fun JSObject.injectInterface(jsInterface: IJSInterface): JSObject {
-        val jsObject = addJavascriptInterface(jsInterface, jsInterface.interfaceName)
-        jsInterface.jsContext = context
-        jsInterface.jsObject = jsObject
-        jsInterface.onInject(this)
-        return jsObject
-    }
-
     /**额外注入对象的回调*/
     fun injectApiAction(action: InjectAction) {
         injectApiAction.add(action)
     }
+}
 
+/**注入对象*/
+@CallPoint
+fun JSObject.injectInterface(jsInterface: IJSInterface): JSObject {
+    val jsObject = addJavascriptInterface(jsInterface, jsInterface.interfaceName)
+    jsInterface.jsContext = context
+    jsInterface.jsObject = jsObject
+    jsInterface.onInject(this)
+    return jsObject
 }
 
 /**类型转换*/
