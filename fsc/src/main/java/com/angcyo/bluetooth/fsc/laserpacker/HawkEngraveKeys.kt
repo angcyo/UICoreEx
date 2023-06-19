@@ -256,8 +256,11 @@ object HawkEngraveKeys {
     /**是否激活移动网络同步数据*/
     var enableMobileNetworkSync: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
-    /**导入外部文件格式时, 是否要使用分组*/
+    /**导入外部文件格式时, 是否要使用分组, 分组之后各元素的样式会保留, 否则*/
     var enableImportGroup: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**当SVG文本字符小于此值时自动激活[enableImportGroup]*/
+    var autoEnableImportGroupLength: Long by HawkPropertyValue<Any, Long>(20000)
 
     /**2次间隔同步延迟时长*/
     var syncDelay: Long by HawkPropertyValue<Any, Long>(10 * 60 * 1000)

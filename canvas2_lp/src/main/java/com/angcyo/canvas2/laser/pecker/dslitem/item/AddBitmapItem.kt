@@ -73,7 +73,9 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                 //.svg后缀
                 val text = path.file().readText()
 
-                if (HawkEngraveKeys.enableImportGroup) {
+                if (HawkEngraveKeys.enableImportGroup ||
+                    (text?.length ?: 0) <= HawkEngraveKeys.autoEnableImportGroupLength
+                ) {
                     val elementList = parseSvgElementList(text)
                     if (elementList.isNullOrEmpty()) {
                         //no op
