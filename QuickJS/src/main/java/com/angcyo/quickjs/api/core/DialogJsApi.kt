@@ -3,13 +3,14 @@ package com.angcyo.quickjs.api.core
 import android.webkit.JavascriptInterface
 import androidx.activity.result.ActivityResultCaller
 import androidx.annotation.Keep
+import androidx.core.net.toUri
 import com.angcyo.core.tgStrokeLoading
 import com.angcyo.dialog.loadLoadingBottomCaller
 import com.angcyo.dialog.messageDialog
+import com.angcyo.dialog.other.singleImageDialog
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMain
 import com.angcyo.quickjs.api.BaseJSInterface
-import com.angcyo.quickjs.api.IJSInterface
 
 /**
  * 弹窗api, 对话框
@@ -32,7 +33,7 @@ class DialogJsApi : BaseJSInterface() {
     fun loading() {
         onMain {
             lastContext.tgStrokeLoading(false, false) { isCancel, loadEnd ->
-
+                //no op
             }
         }
     }
@@ -87,5 +88,22 @@ class DialogJsApi : BaseJSInterface() {
     }
 
     //endregion ---message---
+
+    //region ---dialog---
+
+    /**显示一个简单的图片对话框
+     * [url] 图片的地址
+     * [cancel] 是否可以取消*/
+    @JavascriptInterface
+    fun singleImageDialog(url: String?, cancel: Boolean) {
+        url ?: return
+        onMain {
+            lastContext.singleImageDialog(url.toUri()) {
+                cancelable = cancel
+            }
+        }
+    }
+
+    //endregion ---dialog---
 
 }
