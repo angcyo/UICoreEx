@@ -96,7 +96,7 @@ class AppJsApi : BaseJSInterface() {
      * ```
      * */
     @JavascriptInterface
-    fun openApp(packageName: String?) = lastContext.openApp(packageName)
+    fun openApp(packageName: String?) = lastContext.openApp(packageName ?: lastContext.packageName)
 
     /**休眠当前线程*/
     @JavascriptInterface
