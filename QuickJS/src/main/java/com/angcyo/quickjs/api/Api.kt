@@ -24,6 +24,7 @@ import org.json.JSONObject
  * @since 2023/06/11
  */
 
+/**注入对象的回调*/
 typealias InjectAction = (context: JSContext, appJs: JSObject) -> Unit
 
 object Api {
@@ -34,6 +35,10 @@ object Api {
     /**注入对象api到[com.quickjs.JSContext]*/
     @CallPoint
     fun inject(context: JSContext) {
+        //全局变量
+        //context.set()
+
+        //AppJs 接口
         val appJsApi = AppJsApi()
         val appJs = context.injectInterface(appJsApi)
         appJsApi.init(appJs)//注入默认的属性
@@ -65,6 +70,11 @@ object Api {
         jsInterface.jsObject = jsObject
         jsInterface.onInject(this)
         return jsObject
+    }
+
+    /**额外注入对象的回调*/
+    fun injectApiAction(action: InjectAction) {
+        injectApiAction.add(action)
     }
 
 }

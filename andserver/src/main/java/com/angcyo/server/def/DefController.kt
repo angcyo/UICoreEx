@@ -29,7 +29,7 @@ class DefController {
         val resultBuilder = StringBuilder()
         resultBuilder.appendLine(nowTimeString())
         resultBuilder.appendLine("准备执行脚本[${body.size().toSizeString()}]->")
-        if (body.size() <= 1024) {//小于1k, 直接打印内容
+        if (body.size() <= 1024 * 1024) {//小于1mb, 直接打印内容
             resultBuilder.appendLine(body)
         }
         syncSingle {

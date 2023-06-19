@@ -1,8 +1,11 @@
 package com.angcyo.quickjs.api.core
 
+import android.os.Build
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.component.model.LanguageModel
+import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
@@ -42,6 +45,7 @@ class AppJsApi : BaseJSInterface() {
      * */
     @CallPoint
     fun init(jsObject: JSObject) {
+        jsObject.set("sdkInt", Build.VERSION.SDK_INT)
         jsObject.set("androidId", Device.androidId)
         jsObject.set("packageName", lastContext.packageName)
         jsObject.set("appName", getAppName())
@@ -56,7 +60,10 @@ class AppJsApi : BaseJSInterface() {
         jsObject.set("country", locale.country)//CN
         jsObject.set("displayName", locale.displayName)//中文 (简体中文,中国)
 
-
+        //全部使用字符串
+        vmApp<DataShareModel>().shareTextMapData.value?.forEach { entry ->
+            jsObject.set(entry.key, entry.value.toStr())
+        }
     }
 
     //endregion ---base---
@@ -134,7 +141,11 @@ class AppJsApi : BaseJSInterface() {
         ScriptRunTipDialogConfig.hideScriptRunTipDialog()
     }
 
-    /**当前时间*/
+    /**当前时间
+     * ```
+     * AppJs.nowTime().toString();
+     * ```
+     * */
     @JavascriptInterface
     fun nowTime() = System.currentTimeMillis()
 

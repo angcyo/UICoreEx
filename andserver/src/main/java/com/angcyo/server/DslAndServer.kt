@@ -52,7 +52,7 @@ object DslAndServer {
 
         //注入api
         try {
-            Api.injectApiAction.add { _, appJs ->
+            Api.injectApiAction { _, appJs ->
                 appJs.registerJavaMethod({ _, _ ->
                     lastContext.startAndServer()
                 }, "startAndServer")
