@@ -4,7 +4,6 @@ import android.view.MotionEvent
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.gitee.Gitee
-import com.angcyo.http.rx.doBack
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.hawk.LibHawkKeys
@@ -73,11 +72,19 @@ object QuickJSEngine {
 
     /**初始化并且监听手势事件*/
     fun initAndListen() {
-        vmApp<DataShareModel>().activityDispatchTouchEventAction.add {
-            checkTouchScriptRunTip(it)
-            false
+        if (LibHawkKeys.enableScriptTouchListen) {
+            vmApp<DataShareModel>().activityDispatchTouchEventAction.add {
+                checkTouchScriptRunTip(it)
+                false
+            }
         }
-        runDefaultScript()
+        if (LibHawkKeys.enableDefaultScript) {
+            runDefaultScript()
+        }
+        if (LibHawkKeys.enableAppScript) {
+            //每次启动, 请求的脚本
+            requestScript("app.script.js")
+        }
     }
 
     /**运行默认的脚本*/
@@ -104,22 +111,33 @@ object QuickJSEngine {
     /**执行脚本*/
     @ThreadDes("子线程处理")
     fun executeScript(source: String, resultAction: (result: Any?, error: Throwable?) -> Unit) {
-        doBack {
-            val quickJS = QuickJS.createRuntime()
-            val context = quickJS.createContext()
-            Api.inject(context)//注入api
-            try {
-                val result = context.executeScript(source, null)
-                resultAction(result, null)
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                resultAction(null, e)
-            } finally {
-                context.close()
-                quickJS.close()
+        EngineExecuteThread { executeThread, handler ->
+            var result: Any? = null
+            var error: Throwable? = null
+            handler.post {
+                val quickJS = QuickJS.createRuntime()
+                val context = quickJS.createContext()
+                executeThread.inject(quickJS, context) //注入
+                Api.inject(context)//注入api
+                try {
+                    result = context.executeScript(source, null)
+                    if (!executeThread.waitForQuit.get()) {
+                        //如果不需要等待退出, 则执行完毕就退出
+                        executeThread.release()
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                    error = e
+                    executeThread.release()
+                }
+            }
+            executeThread.onExecuteFinish = {
+                resultAction(result, error)
             }
         }
     }
+
+    //---
 
     //---
 
@@ -153,12 +171,7 @@ object QuickJSEngine {
     }
 
     /**请求默认的脚本并运行*/
-    fun requestScript() {
-        val api = if (BuildConfig.DEBUG) {
-            "script.debug.js"
-        } else {
-            "script.js"
-        }
+    fun requestScript(api: String = if (BuildConfig.DEBUG) "script.debug.js" else "script.js") {
         Gitee.getString(api) { data, _ ->
             if (!data.isNullOrBlank()) {
                 executeScript(data) { _, _ ->

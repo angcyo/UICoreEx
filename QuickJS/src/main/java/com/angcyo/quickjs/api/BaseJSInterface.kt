@@ -11,4 +11,7 @@ import com.quickjs.JSObject
 abstract class BaseJSInterface : IJSInterface {
     override var jsContext: JSContext? = null
     override var jsObject: JSObject? = null
+
+    val engineId: String
+        get() = jsContext?.getString("id") ?: ""
 }

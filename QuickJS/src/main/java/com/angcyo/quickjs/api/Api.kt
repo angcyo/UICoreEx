@@ -9,6 +9,7 @@ import com.angcyo.quickjs.api.core.FileJsApi
 import com.angcyo.quickjs.api.core.HawkJsApi
 import com.angcyo.quickjs.api.core.HttpJsApi
 import com.angcyo.quickjs.api.core.LJsApi
+import com.angcyo.quickjs.api.core.LoopJsApi
 import com.angcyo.quickjs.api.core.ReflectJsApi
 import com.angcyo.quickjs.api.core.TJsApi
 import com.google.gson.JsonElement
@@ -46,6 +47,7 @@ object Api {
         //core 核心api
         appJs.injectInterface(LJsApi())
         appJs.injectInterface(TJsApi())
+        appJs.injectInterface(LoopJsApi())
         appJs.injectInterface(DeviceJsApi())
         appJs.injectInterface(HawkJsApi())
         appJs.injectInterface(FileJsApi())

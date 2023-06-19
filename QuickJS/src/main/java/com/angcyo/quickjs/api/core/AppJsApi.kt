@@ -20,6 +20,7 @@ import com.angcyo.library.getAppName
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
+import com.angcyo.quickjs.EngineExecuteThread
 import com.angcyo.quickjs.QuickJSEngine
 import com.angcyo.quickjs.api.BaseJSInterface
 import com.angcyo.quickjs.ui.ScriptRunTipDialogConfig
@@ -28,6 +29,7 @@ import com.quickjs.JSFunction
 import com.quickjs.JSObject
 
 /**
+ * 所有[JSFunction]调用, 必须在
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/06/11
  */
@@ -63,6 +65,59 @@ class AppJsApi : BaseJSInterface() {
         //全部使用字符串
         vmApp<DataShareModel>().shareTextMapData.value?.forEach { entry ->
             jsObject.set(entry.key, entry.value.toStr())
+        }
+    }
+
+    /** 延迟执行
+     * [postDelay]*/
+    @JavascriptInterface
+    fun post(action: JSFunction) {
+        val id = engineId
+        EngineExecuteThread.get(id)?.let { engineThread ->
+            engineThread.executeHandler?.post {
+                try {
+                    action.call(action, JSArray(action.context))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    /**延迟执行
+     * [post]*/
+    @JavascriptInterface
+    fun postDelay(delay: Int, action: JSFunction) {
+        val id = engineId
+        EngineExecuteThread.get(id)?.let { engineThread ->
+            engineThread.executeHandler?.postDelayed({
+                try {
+                    action.call(action, JSArray(action.context))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }, delay.toLong())
+        }
+    }
+
+    /**等待, 直到线程主动退出
+     * ```
+     * AppJs.waitForQuit();
+     * ```
+     * */
+    @JavascriptInterface
+    fun waitForQuit() {
+        EngineExecuteThread.get(engineId)?.let { engineThread ->
+            engineThread.waitForQuit.set(true)
+        }
+    }
+
+    /**主动退出*/
+    @JavascriptInterface
+    fun quit() {
+        EngineExecuteThread.get(engineId)?.let { engineThread ->
+            engineThread.waitForQuit.set(false)
+            engineThread.release()
         }
     }
 
@@ -145,6 +200,17 @@ class AppJsApi : BaseJSInterface() {
      * ```
      * AppJs.nowTime().toString();
      * ```
+     * 也可以使用js内置对象
+     * ```
+     * new Date().toString();
+     * new Date().getTime(); //返回一个时间的格林威治时间数值。
+     * new Date().getMilliseconds(); //返回一个指定的日期对象的毫秒数。
+     *
+     * new Date().getHours();
+     * new Date().getMinutes();
+     * new Date().getSeconds();
+     * ``
+     * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date
      * */
     @JavascriptInterface
     fun nowTime() = System.currentTimeMillis()
