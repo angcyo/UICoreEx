@@ -1,5 +1,6 @@
 package com.angcyo.quickjs.api.core
 
+import android.os.Build
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
 import com.angcyo.core.component.model.LanguageModel
@@ -18,8 +19,16 @@ class DeviceJsApi : BaseJSInterface() {
 
     override val interfaceName: String = "device"
 
+    /**[com.angcyo.library.utils.Device.deviceInfoLess]*/
     override fun onInject(parent: JSObject) {
         jsObject?.set("androidId", Device.androidId)
+        jsObject?.set("deviceName", Device.deviceName)
+        //厂家 Google Pixel
+        jsObject?.set("manufacturer", Build.MANUFACTURER)
+        //型号 6
+        jsObject?.set("model", Build.MODEL)
+        //产品名称 oriole
+        jsObject?.set("product", Build.PRODUCT)
     }
 
     @JavascriptInterface
