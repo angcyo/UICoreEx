@@ -6,6 +6,7 @@ import com.angcyo.library.ex.deleteRecursivelySafe
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.writeText
+import com.angcyo.library.libAppFile
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.libFile
 import com.angcyo.library.utils.appFolderPath
@@ -143,5 +144,53 @@ class FileJsApi : BaseJSInterface() {
      * */
     @JavascriptInterface
     fun shareFile(path: String) = path.file().shareFile()
+
+    //---
+
+    private fun _writeCacheFile(name: String, text: String, append: Boolean): String? {
+        return try {
+            val file = libCacheFile(name)
+            file.writeText(text, append)
+            file.absolutePath
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun _writeAppFile(name: String, text: String, append: Boolean): String? {
+        return try {
+            val file = libAppFile(name)
+            file.writeText(text, append)
+            file.absolutePath
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**写入缓存文件
+     *
+     * @return 承购返回对应文件路径, 否则返回null*/
+    @JavascriptInterface
+    fun writeCacheFile(name: String, text: String): String? {
+        return _writeCacheFile(name, text, false)
+    }
+
+    /**追加写入缓存文件*/
+    @JavascriptInterface
+    fun appendCacheFile(name: String, text: String): String? {
+        return _writeCacheFile(name, text, true)
+    }
+
+    /**写入files文件*/
+    @JavascriptInterface
+    fun writeAppFile(name: String, text: String): String? {
+        return _writeAppFile(name, text, false)
+    }
+
+    /**追加写入files文件*/
+    @JavascriptInterface
+    fun appendAppFile(name: String, text: String): String? {
+        return _writeAppFile(name, text, true)
+    }
 
 }
