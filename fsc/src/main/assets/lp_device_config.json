@@ -486,9 +486,21 @@
         "debug": true
       },
       {
+        "dpi": 711,
+        "px": 1,
+        "des": "2.8k",
+        "debug": true
+      },
+      {
         "dpi": 762,
         "px": 1,
         "des": "3k",
+        "debug": true
+      },
+      {
+        "dpi": 838,
+        "px": 1,
+        "des": "3.3k",
         "debug": true
       },
       {
@@ -536,9 +548,21 @@
             "debug": true
           },
           {
+            "dpi": 711,
+            "px": 1,
+            "des": "2.8k",
+            "debug": true
+          },
+          {
             "dpi": 762,
             "px": 1,
             "des": "3k",
+            "debug": true
+          },
+          {
+            "dpi": 838,
+            "px": 1,
+            "des": "3.3k",
             "debug": true
           },
           {
@@ -612,9 +636,21 @@
         "debug": true
       },
       {
+        "dpi": 711,
+        "px": 1,
+        "des": "2.8k",
+        "debug": true
+      },
+      {
         "dpi": 762,
         "px": 1,
         "des": "3k",
+        "debug": true
+      },
+      {
+        "dpi": 838,
+        "px": 1,
+        "des": "3.3k",
         "debug": true
       },
       {
@@ -662,9 +698,21 @@
             "debug": true
           },
           {
+            "dpi": 711,
+            "px": 1,
+            "des": "2.8k",
+            "debug": true
+          },
+          {
             "dpi": 762,
             "px": 1,
             "des": "3k",
+            "debug": true
+          },
+          {
+            "dpi": 838,
+            "px": 1,
+            "des": "3.3k",
             "debug": true
           },
           {
