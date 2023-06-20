@@ -17,6 +17,7 @@ import com.google.gson.JsonParser
 import com.quickjs.JSArray
 import com.quickjs.JSContext
 import com.quickjs.JSObject
+import com.quickjs.JSValue
 import okhttp3.Headers
 import org.json.JSONObject
 
@@ -169,3 +170,96 @@ fun JSObject.toHeaders(): Headers {
     }
     return builder.build()
 }
+
+//---
+
+fun JSObject.getOrInt(key: String, def: Int = 0): Int {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.INTEGER) {
+            return getInteger(key)
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrLong(key: String, def: Long = 0): Long {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.INTEGER) {
+            return getInteger(key).toLong()
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrDouble(key: String, def: Double = 0.0): Double {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.INTEGER) {
+            return getInteger(key).toDouble()
+        } else if (it == JSValue.TYPE.DOUBLE) {
+            return getDouble(key)
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrBoolean(key: String, def: Boolean = false): Boolean {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.BOOLEAN) {
+            return getBoolean(key)
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrString(key: String, def: String = ""): String {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.STRING) {
+            return getString(key) ?: def
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrObject(key: String, def: JSObject): JSObject {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.JS_OBJECT) {
+            return getObject(key) ?: def
+        }
+    }
+    return def
+}
+
+fun JSObject.getOrArray(key: String, def: JSArray): JSArray {
+    getType(key)?.let {
+        if (it == JSValue.TYPE.JS_ARRAY) {
+            return getArray(key) ?: def
+        }
+    }
+    return def
+}
+
+fun JSObject.executeFunction(name: String, parameters: JSArray): Any? {
+    getType(name)?.let {
+        if (it == JSValue.TYPE.JS_FUNCTION) {
+            return executeFunction(name, parameters)
+        }
+    }
+    return null
+}
+
+fun JSObject.getOrNull(key: String, def: Any?): Any? {
+    getType(key)?.let {
+        return when (it) {
+            JSValue.TYPE.INTEGER -> getInteger(key)
+            JSValue.TYPE.DOUBLE -> getDouble(key)
+            JSValue.TYPE.BOOLEAN -> getBoolean(key)
+            JSValue.TYPE.STRING -> getString(key)
+            JSValue.TYPE.JS_OBJECT -> getObject(key)
+            JSValue.TYPE.JS_ARRAY -> getArray(key)
+            else -> def
+        }
+    }
+    return def
+}
+
+//---

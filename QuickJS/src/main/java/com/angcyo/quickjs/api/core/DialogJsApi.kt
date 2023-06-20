@@ -8,9 +8,16 @@ import com.angcyo.core.tgStrokeLoading
 import com.angcyo.dialog.loadLoadingBottomCaller
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.other.singleImageDialog
+import com.angcyo.download.version.VersionUpdateBean
+import com.angcyo.download.version.versionUpdate
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMain
 import com.angcyo.quickjs.api.BaseJSInterface
+import com.angcyo.quickjs.api.getOrBoolean
+import com.angcyo.quickjs.api.getOrInt
+import com.angcyo.quickjs.api.getOrLong
+import com.angcyo.quickjs.api.getOrString
+import com.quickjs.JSObject
 
 /**
  * 弹窗api, 对话框
@@ -95,12 +102,53 @@ class DialogJsApi : BaseJSInterface() {
      * [url] 图片的地址
      * [cancel] 是否可以取消*/
     @JavascriptInterface
-    fun singleImageDialog(url: String?, cancel: Boolean) {
+    fun singleImageDialog(url: String?, cancel: Boolean, openUrl: String?) {
         url ?: return
         onMain {
             lastContext.singleImageDialog(url.toUri()) {
                 cancelable = cancel
+                this.openUrl = openUrl
             }
+        }
+    }
+
+    /**版本更新对话框*/
+    @JavascriptInterface
+    fun versionUpdateDialog(jsObject: JSObject) {
+        onMain {
+            val bean = VersionUpdateBean()
+            for (key in jsObject.keys) {
+                try {
+                    when (key) {
+                        "versionCode" -> bean.versionCode = jsObject.getOrLong(key)
+                        "versionType" -> bean.versionType = jsObject.getOrInt(key)
+                        "versionName" -> bean.versionName = jsObject.getOrString(key)
+                        "versionDesTip" -> bean.versionDesTip = jsObject.getOrString(key)
+                        "versionDes" -> bean.versionDes = jsObject.getOrString(key)
+                        "versionUrl" -> bean.versionUrl = jsObject.getOrString(key)
+                        "link" -> bean.link = jsObject.getOrBoolean(key)
+                        "toMarketDetails" -> bean.toMarketDetails = jsObject.getOrBoolean(key)
+                        "versionForce" -> bean.versionForce = jsObject.getOrBoolean(key)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            lastContext.versionUpdate(bean)
+        }
+    }
+
+    /**显示一个App被禁用的对话框
+     * [versionRange] 需要禁用的版本范围 [com.angcyo.library.component.VersionMatcher.matches] "*" 表示所有版本
+     * [reason] 原因
+     * */
+    @JavascriptInterface
+    fun forbiddenDialog(versionRange: String, reason: String) {
+        onMain {
+            val bean = VersionUpdateBean()
+            bean.forbiddenVersionRange = versionRange
+            bean.forbiddenReason = reason
+            lastContext.versionUpdate(bean)
         }
     }
 
