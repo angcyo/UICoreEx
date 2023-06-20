@@ -9,6 +9,7 @@ import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMainOnce
+import com.angcyo.library.ex.have
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.utils.Device
@@ -141,7 +142,7 @@ object QuickJSEngine {
     //---
 
     private val scriptRunTipDialogRunnable: Runnable = Runnable {
-        if (lastContext.packageName.contains("com.angcyo.*.demo")) {
+        if (lastContext.packageName.have("com.angcyo.*.demo")) {
             lastContext.scriptRunTipDialog()
         }
         requestScript()
