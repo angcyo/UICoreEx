@@ -263,3 +263,29 @@ fun JSObject.getOrNull(key: String, def: Any?): Any? {
 }
 
 //---
+
+fun JSObject.put(map: Map<String, Any?>): JSObject {
+    map.forEach { (key, value) ->
+        put(key, value)
+    }
+    return this
+}
+
+fun JSObject.put(key: String, value: Any?): JSObject {
+    value ?: return this
+    when (value) {
+        is Int -> set(key, value)
+        is Long -> set(key, value.toInt())
+        is Double -> set(key, value)
+        is Float -> set(key, value.toDouble())
+        is Boolean -> set(key, value)
+        is String -> set(key, value)
+        is JSArray -> set(key, value)
+        is JSObject -> set(key, value)
+        is JSValue -> set(key, value)
+        else -> set(key, value.toString())
+    }
+    return this
+}
+
+//---
