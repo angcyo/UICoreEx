@@ -3,6 +3,7 @@ package com.angcyo.quickjs.api
 import com.angcyo.http.base.jsonObject
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.quickjs.api.core.AppJsApi
+import com.angcyo.quickjs.api.core.ConsoleJsApi
 import com.angcyo.quickjs.api.core.DeviceJsApi
 import com.angcyo.quickjs.api.core.DialogJsApi
 import com.angcyo.quickjs.api.core.FileJsApi
@@ -39,6 +40,7 @@ object Api {
     fun inject(context: JSContext) {
         //全局变量
         //context.set()
+        context.injectInterface(ConsoleJsApi())
 
         //AppJs 接口
         val appJsApi = AppJsApi()
@@ -159,6 +161,7 @@ fun JSObject.toJsonElement(): JsonElement? {
     }
 }
 
+/**[toMap]*/
 fun JSObject.toHeaders(): Headers {
     val builder = Headers.Builder()
     for (key in keys) {
@@ -169,6 +172,19 @@ fun JSObject.toHeaders(): Headers {
         }
     }
     return builder.build()
+}
+
+/**[toHeaders]*/
+fun JSObject.toMap(): Map<String, Any?> {
+    val result = mutableMapOf<String, Any?>()
+    for (key in keys) {
+        try {
+            result[key] = get(key)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    return result
 }
 
 //---
