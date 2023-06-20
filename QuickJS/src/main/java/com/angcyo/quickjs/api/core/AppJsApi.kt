@@ -12,12 +12,16 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.getAppSignatureMD5
+import com.angcyo.library.ex.isAppDebug
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.killCurrentProcess
 import com.angcyo.library.ex.openApp
 import com.angcyo.library.ex.openUrl
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.getAppName
+import com.angcyo.library.getAppString
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.utils.Device
@@ -48,6 +52,14 @@ class AppJsApi : BaseJSInterface() {
      * */
     @CallPoint
     fun init(jsObject: JSObject) {
+        //build 信息
+        jsObject.set("userName", getAppString("user_name"))
+        jsObject.set("osName", getAppString("os_name"))
+        jsObject.set("buildTime", getAppString("build_time"))
+        jsObject.set("isDebug", isDebug())
+        jsObject.set("isDebugType", isDebugType())
+        jsObject.set("isAppDebug", isAppDebug())
+
         jsObject.set("sdkInt", Build.VERSION.SDK_INT)
         jsObject.set("androidId", Device.androidId)
         jsObject.set("packageName", lastContext.packageName)
