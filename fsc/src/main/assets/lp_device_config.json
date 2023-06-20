@@ -481,13 +481,13 @@
       },
       {
         "dpi": 635,
-        "px": 2,
+        "px": 1,
         "des": "2.5k",
         "debug": true
       },
       {
         "dpi": 762,
-        "px": 2,
+        "px": 1,
         "des": "3k",
         "debug": true
       },
@@ -531,13 +531,13 @@
           },
           {
             "dpi": 635,
-            "px": 2,
+            "px": 1,
             "des": "2.5k",
             "debug": true
           },
           {
             "dpi": 762,
-            "px": 2,
+            "px": 1,
             "des": "3k",
             "debug": true
           },
@@ -607,13 +607,13 @@
       },
       {
         "dpi": 635,
-        "px": 2,
+        "px": 1,
         "des": "2.5k",
         "debug": true
       },
       {
         "dpi": 762,
-        "px": 2,
+        "px": 1,
         "des": "3k",
         "debug": true
       },
@@ -657,13 +657,13 @@
           },
           {
             "dpi": 635,
-            "px": 2,
+            "px": 1,
             "des": "2.5k",
             "debug": true
           },
           {
             "dpi": 762,
-            "px": 2,
+            "px": 1,
             "des": "3k",
             "debug": true
           },
