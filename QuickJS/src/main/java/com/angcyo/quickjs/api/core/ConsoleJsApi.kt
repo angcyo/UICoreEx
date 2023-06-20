@@ -24,9 +24,10 @@ class ConsoleJsApi : BaseJSInterface() {
     fun count() = count
 
     @JavascriptInterface
-    fun log(msg: String?) {
+    fun log(msg: String?): String? {
         count++
         L.d(msg)
+        return msg
     }
 
     @JavascriptInterface
@@ -48,9 +49,10 @@ class ConsoleJsApi : BaseJSInterface() {
     //---
 
     @JavascriptInterface
-    fun info(msg: String?) {
+    fun info(msg: String?): String? {
         count++
         L.d(msg)
+        return msg
     }
 
     @JavascriptInterface
@@ -72,9 +74,10 @@ class ConsoleJsApi : BaseJSInterface() {
     //---
 
     @JavascriptInterface
-    fun warn(msg: String?) {
+    fun warn(msg: String?): String? {
         count++
         L.d(msg)
+        return msg
     }
 
     @JavascriptInterface
@@ -96,9 +99,10 @@ class ConsoleJsApi : BaseJSInterface() {
     //---
 
     @JavascriptInterface
-    fun error(msg: String?) {
+    fun error(msg: String?): String? {
         count++
         L.d(msg)
+        return msg
     }
 
     @JavascriptInterface
