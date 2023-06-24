@@ -871,7 +871,7 @@ object LPBitmapHandler {
                             element.renderProperty.getRenderRect(rect)
                             val centerX = rect.centerX()
                             val centerY = if (curvature > 0) {
-                                rect.top + textHeight + innerRadius
+                                rect.top + textHeight + innerRadius + offsetHeight
                             } else {
                                 rect.bottom - textHeight - innerRadius
                             }
