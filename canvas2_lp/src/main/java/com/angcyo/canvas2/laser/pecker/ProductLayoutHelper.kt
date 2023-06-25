@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Path
 import com.angcyo.base.dslAHelper
-import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -327,7 +326,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         viewHolder.throttleClick(R.id.device_setting_view) {
             if (engraveFlowLayoutHelper.isAttach()) {
                 return@throttleClick
-            } else if (vmApp<FscBleApiModel>().haveDeviceConnected()) {
+            } else if (vmApp<DeviceStateModel>().isDeviceConnect()) {
                 fragment.dslAHelper {
                     start(DeviceSettingFragment::class.java)
                 }

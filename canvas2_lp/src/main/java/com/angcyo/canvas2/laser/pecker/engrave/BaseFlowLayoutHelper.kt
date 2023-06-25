@@ -224,7 +224,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     }
 
     override fun hide(end: (() -> Unit)?) {
-        if (cancelable /*可以返回*/ && engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ && engraveBackFlow <= 0 /*回退栈*/ && fscBleApiModel.haveDeviceConnected() /*有设备连接*/) {
+        if (cancelable /*可以返回*/ &&
+            engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ &&
+            engraveBackFlow <= 0 /*回退栈*/ &&
+            vmApp<DeviceStateModel>().isDeviceConnect() /*有设备连接*/) {
             //预览中, 等待机器完全退出之后, 再关闭界面
             engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
                 ExitCmd().enqueue { bean, error ->
@@ -319,7 +322,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     /**检查是否可以开始预览*/
     fun checkCanStartPreview(engraveFragment: IEngraveRenderFragment): Boolean {
         //检查是否有设备连接
-        if (!vmApp<FscBleApiModel>().haveDeviceConnected()) {
+        if (!vmApp<DeviceStateModel>().isDeviceConnect()) {
             BluetoothSearchHelper.checkAndSearchDevice(engraveFragment.fragment)
             return false
         }

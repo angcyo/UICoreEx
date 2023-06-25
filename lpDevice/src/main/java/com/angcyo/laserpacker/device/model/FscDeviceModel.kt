@@ -145,7 +145,7 @@ class FscDeviceModel : LifecycleViewModel() {
                             laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
                                 //等待设备信息读取结束之后才显示
                                 if (it != null) {
-                                    if (bleApiModel.haveDeviceConnected()) {
+                                    if (vmApp<DeviceStateModel>().isDeviceConnect()) {
                                         lastContext.dslAHelper {
                                             start(DeviceConnectTipActivity::class)
                                         }
@@ -254,7 +254,7 @@ class FscDeviceModel : LifecycleViewModel() {
 
     /**检查是否需要自动连接设备*/
     fun checkAutoConnect() {
-        if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !bleApiModel.haveDeviceConnected() /*无设备连接*/) {
+        if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !vmApp<DeviceStateModel>().isDeviceConnect() /*无设备连接*/) {
             //需要自动连接设备
             val nowTime = nowTime()
             //1分钟

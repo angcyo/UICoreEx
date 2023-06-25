@@ -4,8 +4,10 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.R
+import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
@@ -268,6 +270,9 @@ class DeviceStateModel : ViewModel() {
 
     //---
 
+    /**是否有设备连接, 包括ble / wifi 连接*/
+    fun isDeviceConnect() =
+        vmApp<FscBleApiModel>().haveDeviceConnected() || vmApp<WifiApiModel>().isTcpConnected()
 
     /**设备是否处理不安全状态, 此状态下禁止操作预览/打印*/
     fun isUnsafe() = deviceStateData.value?.error == 1

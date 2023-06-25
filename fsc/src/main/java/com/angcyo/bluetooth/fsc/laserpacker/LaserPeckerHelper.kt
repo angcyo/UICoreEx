@@ -748,7 +748,7 @@ object LaserPeckerHelper {
     ): WaitReceivePacket? {
         val apiModel = vmApp<FscBleApiModel>()
         var deviceAddress = address
-        if (deviceAddress.isNullOrEmpty() && !WaitReceivePacket.useWifi()) {
+        if (deviceAddress.isNullOrEmpty() && !WifiApiModel.useWifi()) {
             deviceAddress = apiModel.lastDeviceAddress()
             if (deviceAddress.isNullOrBlank()) {
                 action?.invoke(null, NoDeviceException(_string(R.string.blue_no_device_connected)))

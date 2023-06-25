@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.component.dslPermissions
@@ -124,6 +125,25 @@ class BluetoothSearchHelper {
             }
             fragmentActivity?.dslPermissions(FscBleApiModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
                 permissionsResult(allGranted)
+            }
+        }
+
+        /**保证有设备连接后, 才能进行的操作. 否则显示搜索并连接设备的界面*/
+        fun wrapDeviceAction(
+            fragment: Fragment? = null,
+            fragmentActivity: FragmentActivity? = null,
+            action: Action
+        ) {
+            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+                //已经连接了设备
+                action()
+                return
+            }
+
+            //没有连接设备, 显示搜索界面
+            checkAndSearchDevice(fragment, fragmentActivity) {
+                //连接成功后, 关闭界面
+                connectedDismiss = true
             }
         }
     }

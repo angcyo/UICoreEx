@@ -11,7 +11,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
-import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
@@ -46,13 +45,6 @@ class WaitReceivePacket(
     //调用者线程回调, 通常在子线程
     val listener: IReceiveListener
 ) : IPacketListener {
-
-    companion object {
-        /**是否要使用wifi传输*/
-        fun useWifi(): Boolean {
-            return LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
-        }
-    }
 
     val handle = Handler(Looper.getMainLooper())
 
@@ -126,7 +118,7 @@ class WaitReceivePacket(
     fun start() {
         api.addPacketListener(this)
         if (autoSend) {
-            if (useWifi()) {
+            if (WifiApiModel.useWifi()) {
                 startWithWifi()
             } else {
                 api.send(address, sendPacket)
@@ -159,15 +151,7 @@ class WaitReceivePacket(
 
     /**使用wifi传输并发送数据*/
     private fun startWithWifi() {
-        val wifiAddress = LibLpHawkKeys.wifiAddress
-        val list = wifiAddress?.split(":")
-
-        wifiApi.tcp.address = list?.getOrNull(0)
-        list?.getOrNull(1)?.toIntOrNull()?.let {
-            wifiApi.tcp.port = it
-        }
-        wifiApi.tcp.bufferSize = LibLpHawkKeys.wifiBufferSize
-        wifiApi.tcp.sendDelay = LibLpHawkKeys.wifiSendDelay
+        wifiApi.initTcpConfig()
         wifiApi.tcp.listeners.add(wifiListener)
         wifiApi.tcp.connect()
 

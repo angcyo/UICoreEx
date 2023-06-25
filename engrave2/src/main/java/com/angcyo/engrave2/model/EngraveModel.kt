@@ -496,7 +496,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 "雕刻失败:[${indexList}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
-                    fscBleApiModel.haveDeviceConnected()
+                    vmApp<DeviceStateModel>().isDeviceConnect()
                 ) {
                     if (retryCount < HawkEngraveKeys.engraveRetryCount) {
                         doBack {
@@ -740,7 +740,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 "雕刻失败:[${index}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
-                    fscBleApiModel.haveDeviceConnected()
+                    vmApp<DeviceStateModel>().isDeviceConnect()
                 ) {
                     if (retryCount < HawkEngraveKeys.engraveRetryCount) {
                         doBack {

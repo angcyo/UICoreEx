@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.view.View
 import androidx.core.widget.NestedScrollView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -85,7 +86,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
             initTransitionLayout(dialog, dialogViewHolder)
         }
 
-        if (fscBleApiModel.haveDeviceConnected()) {
+        if (vmApp<DeviceStateModel>().isDeviceConnect()) {
             initTransferLayout(dialog, dialogViewHolder)
         }
 

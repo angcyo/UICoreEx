@@ -7,6 +7,7 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.ReceiveCancelException
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -111,7 +112,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
                 }
             }
 
-            if (apiModel.haveDeviceConnected()) {
+            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
                 peckerModel.deviceVersionData.value?.softwareVersionName?.let {
                     appendln()
                     append("${_string(R.string.device_firmware_version)}:$it")
@@ -131,7 +132,8 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
         }
         itemHolder.visible(R.id.lib_loading_view, itemIsUpdating && !itemIsFinish)
         itemHolder.gone(
-            R.id.device_button, apiModel.haveDeviceConnected() || itemIsFinish || itemIsUpdating
+            R.id.device_button,
+            vmApp<DeviceStateModel>().isDeviceConnect() || itemIsFinish || itemIsUpdating
         )
         itemHolder.gone(
             R.id.start_button, itemIsFinish || itemIsUpdating || itemFirmwareInfo == null
@@ -153,7 +155,7 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
 
         //开始升级
         itemHolder.click(R.id.start_button) {
-            if (apiModel.haveDeviceConnected()) {
+            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
                 //开始升级
                 itemFirmwareInfo?.let { info ->
                     if (peckerModel.deviceVersionData.value?.softwareVersion == info.version) {
@@ -230,15 +232,15 @@ class FirmwareUpdateItem : DslAdapterItem(), IFragmentItem {
             _startTime = nowTime()
             ExitCmd().enqueue()//先进入空闲模式
             FirmwareUpdateCmd.update(info.data.size, info.version).enqueue { bean, error ->
-                    bean?.parse<FirmwareUpdateParser>()?.let {
-                        //进入模式成功, 开始发送数据
-                        DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
-                        listenerFinish()
-                    }.elseNull {
-                        itemIsUpdating = false
-                        toast(_string(R.string.data_exception))
-                    }
+                bean?.parse<FirmwareUpdateParser>()?.let {
+                    //进入模式成功, 开始发送数据
+                    DataCmd.data(info.data).enqueue(CommandQueueHelper.FLAG_NO_RECEIVE)
+                    listenerFinish()
+                }.elseNull {
+                    itemIsUpdating = false
+                    toast(_string(R.string.data_exception))
                 }
+            }
         } else {
             context.messageDialog {
                 dialogTitle = _string(R.string.engrave_warn)
