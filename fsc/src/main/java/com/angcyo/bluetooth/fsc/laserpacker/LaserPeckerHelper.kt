@@ -181,18 +181,18 @@ object LaserPeckerHelper {
         var sum: Long = 0
         val result = ByteArray(length)
 
-        /** 逐Byte添加位数和  */
+        /* 逐Byte添加位数和  */
         for (byteMsg in bytes) {
             val num = if (byteMsg.toLong() >= 0) byteMsg.toLong() else byteMsg.toLong() + 256
             sum += num
         }
-        /** end of for (byte byteMsg : msg)  */
+        /* end of for (byte byteMsg : msg)  */
 
-        /** 位数和转化为Byte数组  */
+        /* 位数和转化为Byte数组  */
         for (count in 0 until length) {
             result[length - count - 1] = (sum shr count * 8 and 0xff).toByte()
         }
-        /** end of for (int liv_Count = 0; liv_Count < length; liv_Count++)  */
+        /* end of for (int liv_Count = 0; liv_Count < length; liv_Count++)  */
         return result
     }
 

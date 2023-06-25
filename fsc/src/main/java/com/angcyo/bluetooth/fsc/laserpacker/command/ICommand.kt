@@ -8,6 +8,9 @@ import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.packetHeadSize
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.sumCheck
+import com.angcyo.library.component.ByteArrayWriter
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.toastQQ
 
@@ -79,4 +82,29 @@ fun ICommand.sendCommand(
     }
 ): WaitReceivePacket? {
     return LaserPeckerHelper.sendCommand(this, address, progress, action)
+}
+
+/**指令字节写入, 自动计算字节长度.
+ *
+ * 只需要写入功能码开始到较验和之前的数据即可
+ *
+ * 返回的数据, 可以直接发送的指令*/
+fun commandByteWriter(action: ByteArrayWriter.() -> Unit): ByteArray {
+    val headBytes = LaserPeckerHelper.PACKET_HEAD.toHexByteArray()
+    val dataBytes = byteWriter {
+        action()
+    }
+    //长度
+    val length = (dataBytes.size + LaserPeckerHelper.CHECK_SIZE).toByte()
+    val result = byteWriter {
+        //头
+        write(headBytes)
+        //长度
+        write(length)
+        //数据
+        write(dataBytes)
+        //较验和
+        write(sumCheck(dataBytes))
+    }
+    return result
 }

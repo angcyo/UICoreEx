@@ -297,6 +297,22 @@ data class EngravePreviewCmd(
             return OverflowInfo(null, result, overflowBounds, overflowLimit)
         }
 
+        /**[adjustPreviewRangeCmd]*/
+        fun adjustPreviewRangeCmd(
+            rect: RectF,
+            pwrProgress: Float,
+            @MM diameter: Int
+        ): EngravePreviewCmd? {
+            return adjustPreviewRangeCmd(
+                rect.left,
+                rect.top,
+                rect.width(),
+                rect.height(),
+                pwrProgress,
+                diameter
+            )
+        }
+
         /**根据[px]和[productInfo]调整预览的范围
          * [pwrProgress] [0~1f] 预览光功率
          * [diameter] 物体直径，保留小数点后两位。D = d*100，d为物体直径，单位mm。（旋转轴打开时有效）
