@@ -3,6 +3,7 @@ package com.angcyo.laserpacker
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
@@ -24,10 +25,15 @@ import com.angcyo.objectbox.queryOrCreateEntity
  */
 object LPTransferData {
 
-    /**创建指定图层的雕刻参数*/
+    /**创建指定图层的雕刻参数
+     *
+     * [LaserPeckerHelper.LASER_TYPE_WHITE]
+     * [LaserPeckerHelper.LASER_TYPE_BLUE]
+     * */
     fun generateEngraveConfig(
         taskId: String?,
         layerId: String?,
+        type: Byte? = null,
         power: Int? = null,
         depth: Int? = null,
         precision: Int? = null,
@@ -58,7 +64,7 @@ object LPTransferData {
             time = 1
 
             //光源
-            this.type = last?.type ?: DeviceHelper.getProductLaserType()
+            this.type = type ?: last?.type ?: DeviceHelper.getProductLaserType()
             this.precision = precision ?: last?.precision ?: HawkEngraveKeys.lastPrecision
 
             //物理尺寸
@@ -92,7 +98,14 @@ object LPTransferData {
             this.index = index
             this.lines = lines
             this.dataPath = file.path
+            this.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
             this.layerId = LayerHelper.LAYER_LINE
+
+            x = 0
+            y = 0
+            width = 1
+            height = 1
+            dpi = LaserPeckerHelper.DPI_254
         }
     }
 
