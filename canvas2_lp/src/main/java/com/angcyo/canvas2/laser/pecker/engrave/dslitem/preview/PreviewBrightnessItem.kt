@@ -2,14 +2,13 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import android.view.MotionEvent
 import android.view.View
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.BasePreviewItem
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.popup.PopupTipConfig
 import com.angcyo.dialog.popup.popupTipWindow
 import com.angcyo.drawable.BubbleDrawable
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library._screenWidth
 import com.angcyo.library.ex.interceptParentTouchEvent
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -65,8 +64,10 @@ class PreviewBrightnessItem : BasePreviewItem() {
 
                     itemChanged = true
                     //通知机器
-                    previewModel.refreshPreview(true) {
-                        updatePwr = true
+                    if (itemPreviewConfigEntity != null) {
+                        previewModel.refreshPreview(true) {
+                            updatePwr = true
+                        }
                     }
                 }
             }
@@ -109,12 +110,14 @@ class PreviewBrightnessItem : BasePreviewItem() {
                     }
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 _popupTipConfig?.apply {
                     touchX = event.x
                     updatePopup()
                 }
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 //window?.dismiss()
                 _popupTipConfig?.hide()

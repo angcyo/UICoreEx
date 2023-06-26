@@ -831,6 +831,16 @@ data class EngravePreviewCmd(
     /**[progress] [0~1f]
      * */
     fun updatePWR(progress: Float) {
-        pwr = (1 + 9 * progress).toInt().toByte()
+        pwr = progress.toLaserPeckerPWR()
     }
+}
+
+/**[0~1]范围为[1 - 10]。*/
+fun Float.toLaserPeckerPWR(): Byte {
+    return (1 + 9 * this).toInt().toByte()
+}
+
+/**[0~1]范围为[0~255]。*/
+fun Float.toLaserPeckerPower(): Byte {
+    return (255 * this).toInt().toByte()
 }
