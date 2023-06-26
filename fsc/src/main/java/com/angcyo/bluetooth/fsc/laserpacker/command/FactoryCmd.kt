@@ -21,7 +21,7 @@ data class FactoryCmd(
     @Pixel
     var adX: Int = 0,
     var adY: Int = 0,
-    var laser: Byte = 0x0, //激光功率
+    var laser: Byte = 0x0, //激光功率 （范围0 - 255）
     /**[com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.type]*/
     var type: Byte = LaserPeckerHelper.LASER_TYPE_BLUE, //激光类型
 
@@ -43,7 +43,10 @@ data class FactoryCmd(
             return FactoryCmd(state = 0x08, index = index)
         }
 
-        /**激光点跳至指定AD值*/
+        /**激光点跳至指定AD值
+         * [laser] 激光功率 （范围0 - 255）
+         * [type] 激光类型
+         * */
         fun jumpToAdCmd(adX: Int, adY: Int, laser: Byte, type: Byte): FactoryCmd {
             return FactoryCmd(state = 0x09, adX = adX, adY = adY, laser = laser, type = type)
         }
@@ -54,7 +57,7 @@ data class FactoryCmd(
         }
 
         /**激光点预览功率设置*/
-        fun jumpToCoordCmd(laser: Byte, type: Byte): FactoryCmd {
+        fun previewPowerSettingCmd(laser: Byte, type: Byte): FactoryCmd {
             return FactoryCmd(state = 0x0B, laser = laser, type = type)
         }
     }
@@ -74,9 +77,9 @@ data class FactoryCmd(
                 0x09.toByte() -> {
                     write(adX, 2)
                     write(adY, 2)
+                    write(custom)
                     write(laser)
                     write(type)
-                    write(custom)
                 }
 
                 0x0A.toByte() -> {
