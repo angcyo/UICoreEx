@@ -579,7 +579,8 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**构建或者获取对应雕刻图层的雕刻配置信息*/
+    /**构建或者获取对应雕刻图层的雕刻配置信息
+     * [com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]*/
     fun generateEngraveConfig(taskId: String?, layerId: String?): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
@@ -598,12 +599,12 @@ object EngraveFlowDataHelper {
 
             //材质
             val customMaterial =
-                MaterialHelper.createCustomMaterial().find { it.layerId == layerId }!!
-            materialCode = customMaterial.code
+                MaterialHelper.createCustomMaterial().find { it.layerId == layerId }
+            materialCode = customMaterial?.code
 
             //功率
-            power = last?.power ?: customMaterial.power
-            depth = last?.depth ?: customMaterial.depth
+            power = last?.power ?: customMaterial?.power ?: HawkEngraveKeys.lastPower
+            depth = last?.depth ?: customMaterial?.depth ?: HawkEngraveKeys.lastDepth
             time = 1
 
             //光源

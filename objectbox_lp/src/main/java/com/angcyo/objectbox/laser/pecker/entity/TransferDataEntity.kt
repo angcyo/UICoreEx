@@ -26,11 +26,12 @@ data class TransferDataEntity(
     var taskId: String? = null,
 
     /**产品名
-     * L2 L3 L4等 */
+     * L2 L3 L4等 历史文档中使用*/
     var productName: String? = null,
 
     /**蓝牙设备地址
-     * DC:0D:30:00:1F:60*/
+     * DC:0D:30:00:1F:60
+     * 历史文档中使用*/
     var deviceAddress: String? = null,
 
     //---
@@ -62,7 +63,8 @@ data class TransferDataEntity(
     var engraveDataType: Int = -1,
 
     /**数据处理之前的坐标
-     * [width] [height]*/
+     * [width] [height]
+     * 恢复预览时使用*/
     @MM
     var originX: Float? = null,
     @MM
@@ -102,7 +104,7 @@ data class TransferDataEntity(
     /**分辨率*/
     var dpi: Float = -1f,
 
-    /**GCode数据偏移*/
+    /**GCode数据偏移, 握笔模块时使用*/
     @MM
     var offsetLeft: Float? = null,
     @MM
@@ -111,7 +113,8 @@ data class TransferDataEntity(
     //---
 
     /**雕刻数据的索引, 32位, 4个字节
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd]*/
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd]
+     * [com.angcyo.laserpacker.device.EngraveHelper.generateEngraveIndex]*/
     var index: Int = -1, //(System.currentTimeMillis() / 1000).toInt()
     /**雕刻显示的文件名, 36个字节*/
     var name: String? = null,
