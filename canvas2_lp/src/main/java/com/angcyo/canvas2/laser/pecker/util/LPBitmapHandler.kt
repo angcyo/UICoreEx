@@ -869,9 +869,9 @@ object LPBitmapHandler {
                         val path = element.curveTextDrawInfo?.run {
                             val rect = acquireTempRectF()
                             element.renderProperty.getRenderRect(rect)
-                            val centerX = rect.centerX()
+                            val centerX = rect.centerX() + offsetX
                             val centerY = if (curvature > 0) {
-                                rect.top + textHeight + innerRadius + offsetHeight
+                                rect.top + textHeight + innerRadius + offsetY
                             } else {
                                 rect.bottom - textHeight - innerRadius
                             }
