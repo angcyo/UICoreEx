@@ -80,6 +80,11 @@ class TransferModel : ViewModel() {
         fun getTransferDataCmd(transferDataEntity: TransferDataEntity): DataCmd? {
             val bytes = transferDataEntity.bytes()
             if (bytes == null || bytes.isEmpty()) {
+                L.w("未指定传输数据!")
+                return null
+            }
+            if (transferDataEntity.engraveDataType < 0) {
+                L.w("未指定传输数据类型!")
                 return null
             }
 
