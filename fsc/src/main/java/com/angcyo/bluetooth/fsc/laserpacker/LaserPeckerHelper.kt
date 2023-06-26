@@ -687,7 +687,7 @@ object LaserPeckerHelper {
 
         val uuid = command.uuid
         val commandLogString = command.toCommandLogString()
-        "发送指令:$address->$uuid $commandLogString".writeBleLog()
+        "发送指令[$address]:${uuid}->$commandLogString".writeBleLog()
 
         val func = command.commandFunc().toInt()
         val state = if (command is QueryCmd) {
