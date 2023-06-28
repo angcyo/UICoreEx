@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.view.Gravity
-import com.angcyo.canvas.render.core.Reason
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem

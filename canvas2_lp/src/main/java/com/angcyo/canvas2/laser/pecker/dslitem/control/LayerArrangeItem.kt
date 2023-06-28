@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import com.angcyo.canvas.render.core.CanvasRenderManager
-import com.angcyo.canvas.render.core.Reason
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dialog.popup.MenuPopupConfig

@@ -3,7 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
-import com.angcyo.canvas.render.core.Reason
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.pathPreviewDialog
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem

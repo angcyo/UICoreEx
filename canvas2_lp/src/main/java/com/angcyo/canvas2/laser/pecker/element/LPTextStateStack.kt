@@ -2,7 +2,7 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas.render.core.Reason
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.TextStateStack
