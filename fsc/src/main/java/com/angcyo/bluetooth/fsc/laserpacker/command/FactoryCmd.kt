@@ -64,35 +64,35 @@ data class FactoryCmd(
 
     override fun toByteArray(): ByteArray {
         return commandByteWriter {
-            write(commandFunc())
-            write(state)
+            writeUByte(commandFunc())
+            writeUByte(state)
 
             when (state) {
                 0x05.toByte() -> write(0, 4)//补齐4个字节
                 0x08.toByte() -> {
                     write(index, 4) //数据索引
-                    write(custom)
+                    writeUByte(custom)
                 }
 
                 0x09.toByte() -> {
                     write(adX, 2)
                     write(adY, 2)
-                    write(custom)
-                    write(laser)
-                    write(type)
+                    writeUByte(custom)
+                    writeUByte(laser)
+                    writeUByte(type)
                 }
 
                 0x0A.toByte() -> {
                     write(x, 2)
                     write(y, 2)
-                    write(custom)
+                    writeUByte(custom)
                 }
 
                 0x0B.toByte() -> {
-                    write(laser)
-                    write(type)
+                    writeUByte(laser)
+                    writeUByte(type)
                     write(0, 2)//补齐2个字节
-                    write(custom)
+                    writeUByte(custom)
                 }
             }
         }
@@ -107,12 +107,13 @@ data class FactoryCmd(
     override fun toCommandLogString(): String {
         return buildString {
             append("出厂设置指令:")
+            val laser = laser.toUByte().toInt()
             when (state) {
                 0x05.toByte() -> append("无较正范围预览")
                 0x08.toByte() -> append("较正数据传输完成[$index]")
-                0x09.toByte() -> append("激光点跳至指定AD值:x:${adX} y:${adY} laser:${laser} type:${type}")
+                0x09.toByte() -> append("激光点跳至指定AD值:x:${adX} y:${adY} laser:$laser type:${type}")
                 0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
-                0x0B.toByte() -> append("激光点预览功率设置:laser:${laser} type:${type}")
+                0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
             }
             append(" custom:${custom}")
         }
