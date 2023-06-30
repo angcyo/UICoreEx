@@ -39,6 +39,7 @@ import com.angcyo.library.L
 import com.angcyo.library.LTime
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.MainExecutor
+import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.nowTime
@@ -161,6 +162,52 @@ class TransferModel : ViewModel() {
                 action(have)
             }
         }
+
+        /**只有索引的文件数据头*/
+        fun indexDataHead(index: Int): ByteArray {
+            return byteWriter {
+                write(0, 5)
+                //索引，占用4个字节
+                write(index, 4)
+                padLength(64) //需要64个字节
+            }
+        }
+
+        /**简单的数据传输
+         * [head] 64个字节的数据头
+         * [data] 数据本身
+         * */
+        fun singleTransferData(head: ByteArray, data: ByteArray, action: (Throwable?) -> Unit) {
+            LTime.tick()
+            val size = data.size
+            val fileModeCmd = FileModeCmd(size)
+            fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
+                if (error == null && bean?.parse<FileTransferParser>()?.isIntoFileMode() == true) {
+                    //成功进入文件传输模式
+                    val dataCmd = DataCmd(head, data, "传输数据")
+                    dataCmd.enqueue { bean, error ->
+                        val result = bean?.parse<FileTransferParser>()
+                        buildString {
+                            append("传输结束[${LTime.time()}]:$result $error ")
+                            append("Success:${result?.isFileTransferSuccess().toDC()}")
+                        }.writeBleLog(L.WARN)
+
+                        if (error == null && result?.isFileTransferSuccess() == true) {
+                            //成功传输数据
+                            "成功传输数据[${size.toSizeString()}]".writeBleLog()
+                            action(null)
+                        } else {
+                            "未成功传输数据[${size.toSizeString()}]".writeErrorLog()
+                            action(error)
+                        }
+                    }
+                } else {
+                    "未成功进入数据传输模式:${error}".writeErrorLog()
+                    action(error)
+                }
+            }
+        }
+
     }
 
     /**雕刻数据转换管理*/
