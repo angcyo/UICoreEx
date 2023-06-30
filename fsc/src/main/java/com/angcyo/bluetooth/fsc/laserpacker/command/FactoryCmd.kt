@@ -130,7 +130,7 @@ data class FactoryCmd(
                 0x09.toByte() -> append("激光点跳至指定AD值:x:${adX} y:${adY} laser:$laser type:${type}")
                 0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
                 0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
-                0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"})}")
+                0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"}")
             }
             append(" custom:${custom}")
         }
