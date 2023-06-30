@@ -29,6 +29,9 @@ data class FactoryCmd(
     var x: Int = 0,
     var y: Int = 0,
 
+    /**data1=0时为计算数据，data1=1时使用校正数据*/
+    var data1: Byte = 0x1,
+
     ) : BaseCommand() {
 
     companion object {
@@ -41,6 +44,12 @@ data class FactoryCmd(
         /**较正数据传输完成*/
         fun finishAdjustDataCmd(index: Int): FactoryCmd {
             return FactoryCmd(state = 0x08, index = index)
+        }
+
+        /**校正数据使能
+         * [boolean] 是否使用矫正数据*/
+        fun useAdjustData(boolean: Boolean = true): FactoryCmd {
+            return FactoryCmd(state = 0x10, data1 = if (boolean) 0x1 else 0x0)
         }
 
         /**激光点跳至指定AD值
@@ -94,6 +103,13 @@ data class FactoryCmd(
                     write(0, 2)//补齐2个字节
                     writeUByte(custom)
                 }
+
+                0x10.toByte() -> {
+                    writeUByte(data1)
+                    writeUByte(0)
+                    writeUByte(custom)
+                    writeUByte(0)
+                }
             }
         }
     }
@@ -114,6 +130,7 @@ data class FactoryCmd(
                 0x09.toByte() -> append("激光点跳至指定AD值:x:${adX} y:${adY} laser:$laser type:${type}")
                 0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
                 0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
+                0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"})}")
             }
             append(" custom:${custom}")
         }
