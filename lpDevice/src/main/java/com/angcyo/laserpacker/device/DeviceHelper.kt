@@ -25,12 +25,15 @@ import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.shareFile
 import com.angcyo.library.ex.zip
 import com.angcyo.library.getAppVersionCode
+import com.angcyo.library.libAppFile
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
+import com.angcyo.library.utils.Constant
 import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.fileNameTime
 import com.angcyo.library.utils.filePath
 import com.angcyo.library.utils.folderPath
+import com.angcyo.library.utils.logFileName
 import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -65,6 +68,17 @@ object DeviceHelper {
         toastQQ(_string(R.string.create_log_tip))
         runRx({
             val logList = mutableListOf(logPath())
+
+            //http log
+            logList.add(libAppFile(logFileName(), Constant.HTTP_FOLDER_NAME).absolutePath)
+            //crash log
+            logList.add(
+                libAppFile(
+                    fileNameTime(suffix = ".log"),
+                    Constant.CRASH_FOLDER_NAME
+                ).absolutePath
+            )
+
             Library.hawkPath?.let { logList.add(it) } //xml
             logList.addAll(getTaskEngraveLogFilePath())
             logList.addAll(tempEngraveLogPathList)
