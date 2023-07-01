@@ -867,7 +867,7 @@ object LaserPeckerHelper {
             laserPeckerModel.initializeData.postValue(it == null)
             laserPeckerModel.initializeOnceData.postValue(it == null)
             if (it == null || it is InterruptedException) {
-                //初始化完成
+                //初始化完成, 或者被中断
                 end(it)
             } else if (count < INIT_RETRY_COUNT) {
                 toastQQ(_string(R.string.device_init_fail_tip))

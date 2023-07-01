@@ -124,7 +124,11 @@ class FscDeviceModel : LifecycleViewModel() {
                         deviceConnectState.device.name,
                         deviceConnectState.device.address,
                         deviceConnectState.isAutoConnect
-                    )
+                    ) {
+                        if (it is InterruptedException) {
+                            disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
+                        }
+                    }
 
                     //入库
                     DeviceConnectEntity::class.saveEntity(LPBox.PACKAGE_NAME) {
