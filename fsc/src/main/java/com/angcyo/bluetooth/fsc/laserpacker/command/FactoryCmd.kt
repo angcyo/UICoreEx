@@ -43,7 +43,9 @@ data class FactoryCmd(
 
         /**较正数据传输完成*/
         fun finishAdjustDataCmd(index: Int): FactoryCmd {
-            return FactoryCmd(state = 0x08, index = index)
+            return FactoryCmd(state = 0x08, index = index).apply {
+                receiveTimeout = 5 * 60 * 1000 //5分钟
+            }
         }
 
         /**校正数据使能
@@ -112,6 +114,13 @@ data class FactoryCmd(
                 }
             }
         }
+    }
+
+    /**超时时长, 毫秒*/
+    var receiveTimeout: Long? = null
+
+    override fun getReceiveTimeout(): Long {
+        return receiveTimeout ?: super.getReceiveTimeout()
     }
 
     override fun commandFunc(): Byte = 0x0f
