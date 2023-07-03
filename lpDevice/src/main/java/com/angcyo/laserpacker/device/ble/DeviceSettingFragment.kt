@@ -107,7 +107,10 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         //强制隐藏批量雕刻按键
         var forceHideKeyPrint = false
-        forceHideKeyPrint = isC1 && (settingParser?.zFlag == 1 || settingParser?.rFlag == 1)
+        forceHideKeyPrint = isC1 && (settingParser?.zFlag == 1 ||
+                settingParser?.rFlag == 1 ||
+                deviceStateModel.isPenMode() ||
+                deviceStateModel.isCarMode())
 
         renderDslAdapter(reset = true) {
             if (VersionMatcher.matches(
