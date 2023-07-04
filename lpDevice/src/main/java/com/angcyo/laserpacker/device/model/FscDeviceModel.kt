@@ -10,6 +10,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
@@ -29,6 +31,7 @@ import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toDC
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.LogFile
 import com.angcyo.library.utils.appFolderPath
@@ -85,12 +88,20 @@ class FscDeviceModel : LifecycleViewModel() {
         //WIFI状态监听
         wifiApiModel.tcpStateData.observe(this, allowBackward = false) {
             it?.let { tcpState ->
-                if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
+                if (tcpState.state == Tcp.CONNECT_STATE_CONNECTING) {
+                    "WIFI准备连接:${it.tcp.address}:${it.tcp.port}".writeBleLog()
+                } else if (tcpState.state == Tcp.CONNECT_STATE_ERROR) {
+                    "WIFI连接失败:${it.tcp.address}:${it.tcp.port}:${it.data}".writeErrorLog()
+                } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECTED) {
+                    "WIFI已连接:${it.tcp.address}:${it.tcp.port}:${it.data}".writeBleLog()
+                } else if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
                     //wifi断开
                     productAssignLocationBounds = null
                     toastQQ(_string(R.string.wifi_disconnected))
 
                     onDeviceDisconnect(it.data == true)
+
+                    "WIFI已断开[${(it.data == true).toDC()}]:${it.tcp.address}:${it.tcp.port}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //WIFI连接成功
                     val isAutoConnect = tcpState.data == true
@@ -100,6 +111,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         isAutoConnect,
                         wifiApiModel.connectStartTime
                     )
+                    "WIFI连接成功[${isAutoConnect.toDC()}]:${it.tcp.address}:${it.tcp.port}".writeBleLog()
                 }
             }
         }
