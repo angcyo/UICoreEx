@@ -30,4 +30,7 @@ data class DeviceConnectEntity(
 
     /**主动断开的时间, 用来判断取消自动连接的时间*/
     var disconnectTime: Long? = null,
+
+    /**是否是wifi连接类型*/
+    var isWifiConnect: Boolean = false,
 )

@@ -250,6 +250,7 @@ class FscDeviceModel : LifecycleViewModel() {
                 if (FscBleApiModel.haveBluetoothPermission()) {
                     lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
                         ?.let {
+                            autoConnect = !it.isWifiConnect
                             val disconnectTime = it.disconnectTime
                             if (disconnectTime != null) {
                                 //主动断开了连接
@@ -298,6 +299,7 @@ class FscDeviceModel : LifecycleViewModel() {
             this.isAutoConnect = isAutoConnect
             this.deviceAddress = address
             this.deviceName = name
+            this.isWifiConnect = WifiApiModel.isUseWifiConnect
         }
 
         if (isAutoConnect) {

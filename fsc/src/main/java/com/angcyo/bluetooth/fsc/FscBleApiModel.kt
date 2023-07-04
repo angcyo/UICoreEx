@@ -962,11 +962,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
     /**通过[address] [name]构建一个[FscDevice]对象*/
     fun generateFscDevice(address: String, name: String? = null): FscDevice? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            val bluetoothManager =
-                app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
-            val device = (bluetoothManager?.adapter
-                ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
-            FscDevice(name, address, device, 0, if (useSppModel) "SPP" else "BLE")
+            try {
+                val bluetoothManager =
+                    app().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+                val device = (bluetoothManager?.adapter
+                    ?: BluetoothAdapter.getDefaultAdapter())?.getRemoteDevice(address)
+                FscDevice(name, address, device, 0, if (useSppModel) "SPP" else "BLE")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         } else {
             null
         }
