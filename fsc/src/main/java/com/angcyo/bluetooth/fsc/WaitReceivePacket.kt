@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpState
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
@@ -86,11 +87,13 @@ class WaitReceivePacket(
 
     private val wifiListener = object : Tcp.TcpListener {
 
-        override fun onConnectStateChanged(tcp: Tcp, state: Int) {
-            if (state == Tcp.CONNECT_STATE_ERROR) {
+        override fun onConnectStateChanged(tcp: Tcp, state: TcpState) {
+            if (state.state == Tcp.CONNECT_STATE_ERROR) {
                 end()
                 error(IllegalArgumentException())
-            } else if (state == Tcp.CONNECT_STATE_CONNECTED || state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+            } else if (state.state == Tcp.CONNECT_STATE_CONNECTED ||
+                state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS
+            ) {
                 wifiApi.tcp.send(sendPacket)//发送数据
             }
         }
@@ -153,7 +156,7 @@ class WaitReceivePacket(
     private fun startWithWifi() {
         wifiApi.initTcpConfig()
         wifiApi.tcp.listeners.add(wifiListener)
-        wifiApi.tcp.connect()
+        wifiApi.tcp.connect(null)
 
         /*TcpSend().apply {
             val wifiAddress = LibLpHawkKeys.wifiAddress

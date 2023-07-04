@@ -61,7 +61,9 @@
 
     <string name="data_exception">数据异常!</string>
     <string name="blue_connected">蓝牙已连接</string>
+    <string name="wifi_connected">设备已连接</string>
     <string name="blue_disconnected">蓝牙已断开</string>
+    <string name="wifi_disconnected">Wifi 已断开</string>
 
     <string name="engrave_layer_bitmap">图片</string>
     <string name="engrave_layer_fill">填充</string>

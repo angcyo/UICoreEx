@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.RectF
 import com.angcyo.base.dslAHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
@@ -12,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
+import com.angcyo.http.tcp.Tcp
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.LPDataConstant
@@ -23,6 +25,7 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
@@ -63,6 +66,7 @@ class FscDeviceModel : LifecycleViewModel() {
     }
 
     val bleApiModel = vmApp<FscBleApiModel>()
+    val wifiApiModel = vmApp<WifiApiModel>()
     val laserPeckerModel = vmApp<LaserPeckerModel>()
     val deviceStateModel = vmApp<DeviceStateModel>()
 
@@ -78,10 +82,31 @@ class FscDeviceModel : LifecycleViewModel() {
      * */
     @CallPoint
     fun initDevice() {
+        //WIFI状态监听
+        wifiApiModel.tcpStateData.observe(this, allowBackward = false) {
+            it?.let { tcpState ->
+                if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
+                    //wifi断开
+                    productAssignLocationBounds = null
+                    toastQQ(_string(R.string.wifi_disconnected))
+
+                    onDeviceDisconnect(it.data == true)
+                } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+                    //WIFI连接成功
+                    val isAutoConnect = tcpState.data == true
+                    onDeviceConnect(
+                        WifiApiModel.wifiAddressInfo.firstOrNull() ?: "Wifi",
+                        LibLpHawkKeys.wifiAddress ?: "",
+                        isAutoConnect,
+                        wifiApiModel.connectStartTime
+                    )
+                }
+            }
+        }
+
         //蓝牙状态监听
         bleApiModel.connectStateData.observe(this, allowBackward = false) {
             it?.let { deviceConnectState ->
-
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_START) {
                     //开始连接
                     UMEvent.CONNECT_DEVICE.umengEventValue {
@@ -89,8 +114,6 @@ class FscDeviceModel : LifecycleViewModel() {
                     }
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_DISCONNECT) {
                     //蓝牙断开
-                    productAssignLocationBounds = null
-
                     if (deviceConnectState.connectTime > 0 &&
                         deviceConnectState.connectedTime > 0 &&
                         !deviceConnectState.isActiveDisConnected
@@ -101,78 +124,15 @@ class FscDeviceModel : LifecycleViewModel() {
                             toastQQ(_string(R.string.blue_disconnected))
                         }
                     }
-
-                    //蓝牙断开后,清空设备状态
-                    laserPeckerModel.apply {
-                        deviceStateModel.deviceStateData.postValue(null)
-                        initializeData.updateValue(false)
-                    }
-
-                    if (deviceConnectState.isActiveDisConnected) {
-                        //主动断开的连接, 1小时之内不自动连接
-                        lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
-                            ?.let {
-                                it.disconnectTime = nowTime()
-                                it.lpSaveEntity()
-                            }
-                    }
+                    onDeviceDisconnect(deviceConnectState.isActiveDisConnected)
                 } else if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_SUCCESS && deviceConnectState.isNormalConnect) {
                     //蓝牙已连接
-
-                    //发送初始化指令
-                    LaserPeckerHelper.sendInitCommand(
+                    onDeviceConnect(
                         deviceConnectState.device.name,
                         deviceConnectState.device.address,
-                        deviceConnectState.isAutoConnect
-                    ) {
-                        if (it is InterruptedException) {
-                            disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
-                        }
-                    }
-
-                    //入库
-                    DeviceConnectEntity::class.saveEntity(LPBox.PACKAGE_NAME) {
-                        isAutoConnect = deviceConnectState.isAutoConnect
-                        deviceAddress = deviceConnectState.device.address
-                        deviceName = deviceConnectState.device.name
-                    }
-
-                    if (deviceConnectState.isAutoConnect) {
-                        //自动连接成功后, 显示连接提示
-                        lastConnectTime = nowTime()
-
-                        if (autoConnectTipData.hasObservers()) {
-                            //如果有观察者, 则说明自动连接提示需要被拦截
-                            autoConnectTipData.postValue(true)
-                        } else {
-                            //否则, 直接下你是自动连接成功提示
-                            laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
-                                //等待设备信息读取结束之后才显示
-                                if (it != null) {
-                                    if (vmApp<DeviceStateModel>().isDeviceConnect()) {
-                                        lastContext.dslAHelper {
-                                            start(DeviceConnectTipActivity::class)
-                                        }
-                                    }
-                                }
-                                it != null
-                            }
-                        }
-                    } else {
-                        toastQQ(_string(R.string.blue_connected))
-                    }
-
-                    //
-                    UMEvent.CONNECT_DEVICE.umengEventValue {
-                        val nowTime = nowTime()
-                        put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
-                        put(
-                            UMEvent.KEY_DURATION,
-                            (nowTime - deviceConnectState.connectTime).toString()
-                        )
-                        put(UMEvent.KEY_DEVICE_NAME, deviceConnectState.device.name)
-                        put(UMEvent.KEY_DEVICE_ADDRESS_NAME, deviceConnectState.device.address)
-                    }
+                        deviceConnectState.isAutoConnect,
+                        deviceConnectState.connectTime
+                    )
                 }
             }
         }
@@ -261,29 +221,42 @@ class FscDeviceModel : LifecycleViewModel() {
         if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !vmApp<DeviceStateModel>().isDeviceConnect() /*无设备连接*/) {
             //需要自动连接设备
             val nowTime = nowTime()
+            var autoConnect = true
             //1分钟
-            if (FscBleApiModel.haveBluetoothPermission()) {
-                var autoConnect = true
-                lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
-                    ?.let {
-                        val disconnectTime = it.disconnectTime
-                        if (disconnectTime != null) {
-                            //主动断开了连接
-                            if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
-                                //不自动连接
-                                autoConnect = false
-                            }
-                        }
-                        if (autoConnect) {
-                            if (nowTime < disableAutoConnectToTime) {
-                                autoConnect = false
-                            }
-                        }
-                        if (autoConnect) {
-                            L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
-                            bleApiModel.connect(it.deviceAddress, it.deviceName, true)
-                        }
+            if (WifiApiModel.isUseWifiConnect) {
+                wifiApiModel.initTcpConfig()
+                if (autoConnect) {
+                    if (nowTime < disableAutoConnectToTime) {
+                        autoConnect = false
                     }
+                }
+                if (autoConnect) {
+                    L.i("准备自动连接设备:${LibLpHawkKeys.wifiAddress}")
+                    wifiApiModel.connect(true)
+                }
+            } else {
+                if (FscBleApiModel.haveBluetoothPermission()) {
+                    lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                        ?.let {
+                            val disconnectTime = it.disconnectTime
+                            if (disconnectTime != null) {
+                                //主动断开了连接
+                                if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
+                                    //不自动连接
+                                    autoConnect = false
+                                }
+                            }
+                            if (autoConnect) {
+                                if (nowTime < disableAutoConnectToTime) {
+                                    autoConnect = false
+                                }
+                            }
+                            if (autoConnect) {
+                                L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
+                                bleApiModel.connect(it.deviceAddress, it.deviceName, true)
+                            }
+                        }
+                }
             }
         }
     }
@@ -295,6 +268,85 @@ class FscDeviceModel : LifecycleViewModel() {
             lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
                 ?.let {
                     bleApiModel.connect(it.deviceAddress, it.deviceName, autoConnect)
+                }
+        }
+    }
+
+    /**设备连接*/
+    fun onDeviceConnect(name: String, address: String, isAutoConnect: Boolean, connectTime: Long) {
+        //发送初始化指令
+        LaserPeckerHelper.sendInitCommand(name, address, isAutoConnect) {
+            if (it is InterruptedException) {
+                disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
+            }
+        }
+
+        //入库
+        DeviceConnectEntity::class.saveEntity(LPBox.PACKAGE_NAME) {
+            this.isAutoConnect = isAutoConnect
+            this.deviceAddress = address
+            this.deviceName = name
+        }
+
+        if (isAutoConnect) {
+            //自动连接成功后, 显示连接提示
+            lastConnectTime = nowTime()
+
+            if (autoConnectTipData.hasObservers()) {
+                //如果有观察者, 则说明自动连接提示需要被拦截
+                autoConnectTipData.postValue(true)
+            } else {
+                //否则, 直接下你是自动连接成功提示
+                laserPeckerModel.productInfoData.observeOnce(allowBackward = false) {
+                    //等待设备信息读取结束之后才显示
+                    if (it != null) {
+                        if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+                            lastContext.dslAHelper {
+                                start(DeviceConnectTipActivity::class)
+                            }
+                        }
+                    }
+                    it != null
+                }
+            }
+        } else {
+            if (WifiApiModel.isUseWifiConnect) {
+                toastQQ(_string(R.string.wifi_connected))
+            } else {
+                toastQQ(_string(R.string.blue_connected))
+            }
+        }
+
+        //
+        UMEvent.CONNECT_DEVICE.umengEventValue {
+            val nowTime = nowTime()
+            put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+            put(
+                UMEvent.KEY_DURATION,
+                (nowTime - connectTime).toString()
+            )
+            put(UMEvent.KEY_DEVICE_NAME, name)
+            put(UMEvent.KEY_DEVICE_ADDRESS_NAME, address)
+        }
+    }
+
+    /**设备断开连接
+     * [isActiveDisConnected] 是否是主动断开*/
+    fun onDeviceDisconnect(isActiveDisConnected: Boolean) {
+        productAssignLocationBounds = null
+
+        //蓝牙断开后,清空设备状态
+        laserPeckerModel.apply {
+            deviceStateModel.deviceStateData.postValue(null)
+            initializeData.updateValue(false)
+        }
+
+        if (isActiveDisConnected) {
+            //主动断开的连接, 1小时之内不自动连接
+            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                ?.let {
+                    it.disconnectTime = nowTime()
+                    it.lpSaveEntity()
                 }
         }
     }

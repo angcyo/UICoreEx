@@ -64,7 +64,9 @@
 
     <string name="data_exception">Data exception!</string>
     <string name="blue_connected">BLE connected</string>
+    <string name="wifi_connected">Device connected</string>
     <string name="blue_disconnected">BLE disconnect</string>
+    <string name="wifi_disconnected">Wifi disconnect</string>
 
     <string name="engrave_layer_bitmap">Picture</string>
     <string name="engrave_layer_fill">Fill</string>
