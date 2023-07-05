@@ -72,7 +72,7 @@
         android:layout_height="50dp"
         android:layout_margin="@dimen/lib_xhdpi"
         android:text="@string/ui_setting"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/device_primary_color"
         app:button_radius="@dimen/lib_radius_common"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/finish_button" />

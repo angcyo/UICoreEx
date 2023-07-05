@@ -4,6 +4,8 @@
     <color name="text_sub_color">#929292</color>
     <color name="bluetooth_bg_color">#F9F9F9</color>
     <color name="device_bg_color">#ECECEC</color>
+    <color name="device_primary_color">@color/lib_theme_black</color>
+    <color name="dialog_accent">@color/device_primary_color</color>
 
     <color name="canvas_ico_dark">#a5a5a5</color>
 

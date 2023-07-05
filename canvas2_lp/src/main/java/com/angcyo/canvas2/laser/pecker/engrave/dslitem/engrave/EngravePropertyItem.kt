@@ -72,7 +72,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$power") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccentNight)
+                foregroundColor = _color(R.color.device_primary_color)
             }
             append("%")
         }
@@ -89,7 +89,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$depth") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccentNight)
+                foregroundColor = _color(R.color.device_primary_color)
             }
             append("%")
         }
@@ -107,7 +107,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("$time") {
                 fontSize = 40 * dpi
                 style = Typeface.BOLD
-                foregroundColor = _color(R.color.colorAccentNight)
+                foregroundColor = _color(R.color.device_primary_color)
             }
         }
 

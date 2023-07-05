@@ -62,7 +62,7 @@
             android:paddingVertical="@dimen/lib_hdpi"
             android:tooltipText="@string/print_times"
             tools:text="次数\n99"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </com.angcyo.widget.layout.DslFlowLayout>
 

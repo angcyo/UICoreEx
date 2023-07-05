@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/start_engrave"
+        android:textColor="@color/device_primary_color"
         app:button_radius="@dimen/lib_radius_normal2" />
 
 </FrameLayout>

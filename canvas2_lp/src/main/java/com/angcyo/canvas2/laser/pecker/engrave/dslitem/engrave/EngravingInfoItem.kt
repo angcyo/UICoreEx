@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -10,8 +11,10 @@ import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.toEngraveTime
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
+import com.angcyo.widget.DslViewHolder
 
 /**
  * 雕刻信息展示的item
@@ -28,6 +31,16 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
     init {
         itemLayoutId = R.layout.item_engrave_info_layout
+    }
+
+    override fun onInitTagItemLayout(
+        viewHolder: DslViewHolder,
+        itemView: View,
+        item: LabelDesData,
+        itemIndex: Int
+    ) {
+        super.onInitTagItemLayout(viewHolder, itemView, item, itemIndex)
+        viewHolder.tv(R.id.lib_des_view)?.setTextColor(_color(R.color.device_primary_color))
     }
 
     override fun initLabelDesList() {
