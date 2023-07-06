@@ -124,7 +124,7 @@ data class QuerySettingParser(
                 safe = readInt(1, safe)
                 custom = readInt(1, custom)
                 zFlag = if (productInfo?.isSupportZ() == true) readInt(1, zFlag) else 0
-                zDir = readInt(1, zDir)
+                zDir = if (productInfo?.isSupportZ() == true) readInt(1, zDir) else 0
                 keyView = readInt(1, keyView)
                 irDst = readInt(1, irDst)
                 keyPrint = readInt(1, keyPrint)
@@ -132,8 +132,8 @@ data class QuerySettingParser(
                 sFlag = if (productInfo?.isSupportS() == true) readInt(1, sFlag) else 0
                 dir = readInt(1, dir)
                 gcodePower = readInt(1, gcodePower)
-                sRep = readInt(1, sRep)
-                carFlag = readInt(1, carFlag)
+                sRep = if (productInfo?.isSupportS() == true) readInt(1, sRep) else 0
+                carFlag = if (productInfo?.isCSeries() == true) readInt(1, carFlag) else 0
                 printDir = readInt(1, printDir)
                 //---最后位
                 state = readInt(1, state)
