@@ -14,7 +14,9 @@
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入对象存储BOS数据-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <!-- 访问网络，网络定位需要上网-->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Android O之后开启前台服务需要申请该权限 -->
