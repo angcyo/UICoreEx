@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.device
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
@@ -54,6 +55,17 @@ object MaterialHelper {
         }
     }
 
+    /**获取产品材质参数配置的名称*/
+    fun getProductMaterialConfigName(product: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value): List<String> {
+        val name = product?.name ?: return emptyList()
+        val result = mutableListOf<String>()
+        product.laserTypeList.forEach {
+            val configName = "${name}_${it.wave}_${it.power.ensureInt()}.json"
+            result.add(configName)
+        }
+        return result
+    }
+
     /**获取连上的设备推荐参数列表*/
     fun getProductMaterialList(product: LaserPeckerProductInfo?): List<MaterialEntity> {
         val name = product?.name ?: return emptyList()
@@ -71,10 +83,12 @@ object MaterialHelper {
 
         //系统的推荐参数
         product.laserTypeList.forEach {
-            val json = "argument/${name}_${it.wave}_${it.power.ensureInt()}.json"
+            val configName = "${name}_${it.wave}_${it.power.ensureInt()}.json"
+            val json = "argument/${configName}"
             L.w("读取材质:${json}")
-            val list = app().readAssets(json)
-                ?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
+            val text =
+                LaserPeckerConfigHelper.readMaterialConfig(configName) ?: app().readAssets(json)
+            val list = text?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
             list?.let {
                 result.addAll(list)
                 for (materialEntity in list) {

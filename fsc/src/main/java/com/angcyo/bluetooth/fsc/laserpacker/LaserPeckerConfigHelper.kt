@@ -9,6 +9,7 @@ import com.angcyo.http.gitee.Gitee
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.HAWK_SPLIT_CHAR
+import com.angcyo.library.ex.ResultThrowable
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.readText
 import com.angcyo.library.libCacheFile
@@ -31,6 +32,10 @@ object LaserPeckerConfigHelper {
     /**[DEVICE_SETTING_CONFIG_FILE_NAME]配置地址*/
     const val DEVICE_SETTING_CONFIG_URL =
         "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_SETTING_CONFIG_FILE_NAME}"
+
+    /**材质*/
+    const val DEVICE_MATERIAL_BASE_URL =
+        "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/"
 
     /**入口*/
     @CallPoint
@@ -66,6 +71,21 @@ object LaserPeckerConfigHelper {
                 }
             }
         }
+    }
+
+    /**从网络上拉取材质配置, 并保存到本地*/
+    fun fetchMaterialConfig(configName: String, action: ResultThrowable? = null) {
+        Gitee.getString("${DEVICE_MATERIAL_BASE_URL}$configName") { data, error ->
+            data?.let {
+                //写入到本地缓存
+                it.writeTo(libCacheFile(configName), false)
+            }
+            action?.invoke(error)
+        }
+    }
+
+    fun readMaterialConfig(configName: String): String? {
+        return libCacheFile(configName).readText()
     }
 
     //endregion---拉取配置---

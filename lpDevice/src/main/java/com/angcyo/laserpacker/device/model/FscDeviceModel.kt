@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
@@ -209,6 +210,16 @@ class FscDeviceModel : LifecycleViewModel() {
                     //固件版本
                     UMEvent.CONNECT_DEVICE.umengEventValue {
                         put(UMEvent.KEY_DEVICE_VERSION, "${it.version}")
+                    }
+
+                    MaterialHelper.getProductMaterialConfigName().forEach { configName ->
+                        //在线材质配置
+                        LaserPeckerConfigHelper.fetchMaterialConfig(configName) {
+                            if (it != null) {
+                                //获取成功后, 更新材质配置
+                                MaterialHelper.initMaterial()
+                            }
+                        }
                     }
                 }
             }
