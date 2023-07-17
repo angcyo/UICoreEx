@@ -30,8 +30,28 @@
     <string name="jewelry">珠宝</string>
     <string name="food">美食</string>
     <string name="iron">铁</string>
-    <string name="aluminum">铝</string>
+    <string name="aluminum">氧化铝</string>
     <string name="titanium">钛</string>
     <string name="magnesium">镁</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">钢</string>
+    <string name="shale_slabs">页岩石板</string>
+    <string name="marble_slabs">大理石板</string>
+    <string name="basswood_planks">椴木板</string>
+    <string name="black_walnut">黑胡桃木</string>
+    <string name="imitation_leather">人造革</string>
+    <string name="vellum">牛皮纸</string>
+    <string name="paper_jam">卡纸</string>
+    <string name="cardboard">硬纸板</string>
+    <string name="acrylic">亚克力</string>
+    <string name="cork_coasters">软木杯垫</string>
+    <string name="mark_draws_paper">马克画纸</string>
+    <string name="poplar_chips">杨木片</string>
+    <string name="bamboo2">楠竹</string>
+    <string name="beechwood">榉木</string>
+    <string name="mdf">密度板</string>
+    <string name="cowhide">牛皮</string>
 </resources>

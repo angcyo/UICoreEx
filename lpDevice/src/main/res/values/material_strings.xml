@@ -34,4 +34,25 @@
     <string name="titanium">Titanium</string>
     <string name="magnesium">Magnesium</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">Steel</string>
+    <string name="shale_slabs">Shale slabs</string>
+    <string name="marble_slabs">Marble slabs</string>
+    <string name="basswood_planks">Basswood planks</string>
+    <string name="black_walnut">Black walnut</string>
+    <string name="imitation_leather">Imitation leather</string>
+    <string name="vellum">Vellum</string>
+    <string name="paper_jam">Paper jam</string>
+    <string name="cardboard">Cardboard</string>
+    <string name="acrylic">Acrylic</string>
+    <string name="cork_coasters">Cork coasters</string>
+    <string name="mark_draws_paper">Mark draws paper</string>
+    <string name="poplar_chips">Poplar chips</string>
+    <string name="bamboo2">Bamboo</string>
+    <string name="beechwood">Beechwood</string>
+    <string name="mdf">MDF</string>
+    <string name="cowhide">Cowhide</string>
+
 </resources>
