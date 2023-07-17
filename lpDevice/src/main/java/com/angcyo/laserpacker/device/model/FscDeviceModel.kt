@@ -215,7 +215,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     MaterialHelper.getProductMaterialConfigName().forEach { configName ->
                         //在线材质配置
                         LaserPeckerConfigHelper.fetchMaterialConfig(configName) {
-                            if (it != null) {
+                            if (it == null) {
                                 //获取成功后, 更新材质配置
                                 MaterialHelper.initMaterial()
                             }
