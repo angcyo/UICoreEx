@@ -6,7 +6,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
@@ -43,6 +42,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.*
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.library.L
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
 import com.angcyo.library.toast
@@ -201,7 +201,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             }
             if (isAllGCode) {
                 //全部是GCode数据, 则支持偏移
-                if (HawkEngraveKeys.enableCalibrationOffset) {
+                if (HawkEngraveKeys.enableCalibrationOffset &&
+                    laserPeckerModel.productInfoData.value?.isCSeries() == true
+                ) {
                     GCodeDataOffsetItem()() {
                         observeItemChange {
                             clearFlowId("GCode数据传输偏移改变")
