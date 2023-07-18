@@ -21,6 +21,8 @@ import com.angcyo.library.ex.gone
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.ex.visible
 import com.angcyo.library.toast
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 历史文档界面
@@ -35,6 +37,8 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
 
         addPage(_string(R.string.app_history_title), EngraveAppHistoryFragment::class.java)
         addPage(_string(R.string.device_history_title), EngraveDeviceHistoryFragment::class.java)
+
+        UMEvent.HISTORY.umengEventValue()
     }
 
     //警示提示动画

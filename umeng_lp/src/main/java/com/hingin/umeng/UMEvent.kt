@@ -56,6 +56,9 @@ object UMEvent {
     /**雕刻事件*/
     const val ENGRAVE = "engrave"
 
+    /**历史记录事件*/
+    const val HISTORY = "history"
+
     /**创作文本*/
     const val CANVAS_TEXT = "canvas_text"
 
