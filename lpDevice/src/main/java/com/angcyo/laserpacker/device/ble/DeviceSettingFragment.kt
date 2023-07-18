@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -583,6 +584,10 @@ class DeviceSettingFragment : BaseDslFragment() {
         }
     ) {
         //sendCommand()
+        if (!deviceStateModel.isIdleMode()) {
+            //如果不是空闲模式, 先退出
+            ExitCmd().enqueue()
+        }
         enqueue(action = action)
         syncQueryDeviceState { bean, error ->
             laserPeckerModel.updateSettingOnceData.postValue(true)
