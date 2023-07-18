@@ -769,7 +769,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             deviceStateModel.deviceStateData.value?.moduleState ?: entity.moduleState
         //固件版本
         entity.softwareVersion =
-            laserPeckerModel.productInfoData.value?.softwareVersion ?: entity.softwareVersion
+            laserPeckerModel.productInfoData.value?.softwareVersion ?: entity.softwareVersion//固件版本
+        entity.hardwareVersion =
+            laserPeckerModel.productInfoData.value?.hardwareVersion ?: entity.hardwareVersion
 
         //
         entity.deviceAddress = LaserPeckerHelper.lastDeviceAddress() ?: entity.deviceAddress

@@ -92,6 +92,9 @@ object MaterialHelper {
             list?.let {
                 result.addAll(list)
                 for (materialEntity in list) {
+                    if (materialEntity.dpi <= 0f) {
+                        materialEntity.dpi = materialEntity.dpiScale * LaserPeckerHelper.DPI_254
+                    }
                     if (materialEntity.layerId == LayerHelper.LAYER_FILL) {
                         //填充图层, 和GCode图层/切割的参数一致
                         materialEntity.copy().apply {
@@ -141,6 +144,7 @@ object MaterialHelper {
         for (layerInfo in LayerHelper.getEngraveLayerList()) {
             MaterialEntity().apply {
                 resId = R.string.custom
+                resIdStr = "custom"
                 key = "custom"
                 type = DeviceHelper.getProductLaserType().toInt()
                 power = HawkEngraveKeys.lastPower

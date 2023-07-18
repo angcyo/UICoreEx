@@ -46,6 +46,19 @@ data class LPProjectBean(
     /**硬件版本号*/
     var hwVersion: Int = 0,
 
+    /**扩展设备*/
+    var exDevice: String? = null,
+
+    /**产品名, 比如L4 C1等
+     * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.productName]*/
+    var productName: String? = null,
+
+    /** [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.moduleState]*/
+    var moduleState: Int = -1,
+
+    /**每个图层对应的雕刻参数*/
+    var laserOptions: List<LPLaserOptionsBean>? = null,
+
     //---
 
     /**工程保存的上一次雕刻参数*/

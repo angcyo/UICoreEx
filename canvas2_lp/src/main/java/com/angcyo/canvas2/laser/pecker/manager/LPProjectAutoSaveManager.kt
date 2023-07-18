@@ -25,7 +25,7 @@ object LPProjectAutoSaveManager {
 
     /**自动保存工程*/
     @CallPoint
-    fun autoSave(renderDelegate: CanvasRenderDelegate, async: Boolean) {
+    fun autoSave(taskId: String?, renderDelegate: CanvasRenderDelegate, async: Boolean) {
         if (!HawkEngraveKeys.enableProjectAutoSave) {
             //未激活自动保存
             return
@@ -35,10 +35,10 @@ object LPProjectAutoSaveManager {
             return
         }
         if (useFolderSave) {
-            LPProjectManager().saveProjectV2Folder(renderDelegate)
+            LPProjectManager().saveProjectV2Folder(taskId, renderDelegate)
         } else {
             removeAutoSave()
-            autoSaveRunnable = AutoSaveRunnable(renderDelegate, async)
+            autoSaveRunnable = AutoSaveRunnable(taskId, renderDelegate, async)
             if (async) {
                 _runMainRunnableDelay(HawkEngraveKeys.autoSaveProjectDelay, autoSaveRunnable!!)
             } else {
@@ -71,11 +71,15 @@ object LPProjectAutoSaveManager {
     }
 
     /**保存行为*/
-    private class AutoSaveRunnable(val renderDelegate: CanvasRenderDelegate, val async: Boolean) :
-        Runnable {
+    private class AutoSaveRunnable(
+        val taskId: String?,
+        val renderDelegate: CanvasRenderDelegate,
+        val async: Boolean
+    ) : Runnable {
         override fun run() {
             try {
                 LPProjectManager().saveProjectV2(
+                    taskId,
                     renderDelegate,
                     async = async
                 ) { zipFilePath, exception ->

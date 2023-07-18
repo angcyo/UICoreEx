@@ -170,4 +170,6 @@
     <string name="calibration_offset_left">左</string>
     <string name="calibration_offset_top">上</string>
 
+    <string name="cannot_share_project">无法分享工程</string>
+
 </resources>

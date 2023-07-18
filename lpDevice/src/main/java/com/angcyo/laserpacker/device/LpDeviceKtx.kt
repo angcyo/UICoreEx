@@ -91,7 +91,6 @@ fun ActivityResultCaller.engraveStrokeLoadingCaller(
     }
 }
 
-
 /**扩展的对象不一样
  * [Context]*/
 fun Context.engraveStrokeLoading(

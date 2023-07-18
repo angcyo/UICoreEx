@@ -19,6 +19,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataStopTransfer
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.DataTransmittingItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataNameItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxItem
+import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.showIn
@@ -45,7 +46,6 @@ import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
-import com.angcyo.library.toast
 import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
@@ -956,7 +956,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             //
             EngraveFinishControlItem()() {
                 itemShareAction = {
-                    toast("功能开发中...")
+                    val delegate = engraveCanvasFragment?.renderDelegate
+                    LPProjectManager().saveProjectV2Share(delegate, taskId)
                 }
                 itemAgainAction = {
                     //再次雕刻, 回退到参数配置页面

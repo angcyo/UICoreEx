@@ -8,7 +8,6 @@ import com.angcyo.canvas.render.core.BaseCanvasRenderListener
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
 import com.angcyo.canvas.render.core.CanvasUndoManager
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.core.component.PointTouchComponent
@@ -58,6 +57,7 @@ import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.component.pool.acquireTempRectF
@@ -470,7 +470,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 if ((reason.reason == Reason.REASON_CODE || reason.reason == Reason.REASON_USER)
                     && !renderDelegate.asyncManager.hasAsyncTask()
                 ) {
-                    renderDelegate.saveProjectStateV2()
+                    renderDelegate.saveProjectStateV2(renderFragment.engraveFlowLayoutHelper.flowTaskId)
                 }
                 renderFragment.engraveFlowLayoutHelper._engraveItemRenderer?.let {
                     //当前正在配置参数的元素被删除时, 隐藏参数配置界面

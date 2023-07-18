@@ -2,16 +2,19 @@ package com.angcyo.canvas2.laser.pecker.manager
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBoolean
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.core.vmApp
+import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.http.base.json
 import com.angcyo.http.base.jsonArray
 import com.angcyo.http.base.toJson
@@ -19,8 +22,11 @@ import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.CanvasOpenDataType
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPLaserOptionsBean
 import com.angcyo.laserpacker.bean.LPProjectBean
+import com.angcyo.laserpacker.bean.toLaserOptionsBean
 import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.generateName
 import com.angcyo.laserpacker.project.readProjectBean
@@ -30,9 +36,13 @@ import com.angcyo.laserpacker.toGCodeElementBean
 import com.angcyo.laserpacker.toProjectBean
 import com.angcyo.laserpacker.toSvgElementBean
 import com.angcyo.library.L
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
+import com.angcyo.library.libCacheFile
+import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.fileType
 import com.angcyo.library.utils.writeTo
@@ -59,6 +69,60 @@ class LPProjectManager {
         fun parseProjectBean(filePath: String?): LPProjectBean? {
             return filePath?.file()?.readProjectBean()
         }
+
+        /**工程分享功能实现*/
+        var onShareProjectAction: (bean: ShareProjectInfo) -> Unit = {
+
+        }
+
+        /**[LPLaserOptionsBean]*/
+        fun getProjectLaserOptions(taskId: String?): List<LPLaserOptionsBean> {
+            val result = mutableListOf<LPLaserOptionsBean>()
+            EngraveFlowDataHelper.getTaskEngraveConfigList(taskId).forEach {
+                result.add(it.toLaserOptionsBean())
+            }
+            return result
+        }
+
+        fun saveProjectLaserOptions(bean: LPProjectBean, taskId: String?) {
+            val list = getProjectLaserOptions(taskId)
+            if (list.isNotEmpty()) {
+                bean.laserOptions = list
+            }
+        }
+
+        /**保存工程对应的默认参数*/
+        fun saveProjectLastParams(projectBean: LPProjectBean?) {
+            projectBean ?: return
+            //last
+            projectBean.lastType = HawkEngraveKeys.lastType
+            projectBean.lastPower = HawkEngraveKeys.lastPower
+            projectBean.lastDepth = HawkEngraveKeys.lastDepth
+            projectBean.lastDpi = HawkEngraveKeys.lastDpi
+        }
+
+        fun configProjectBean(bean: LPProjectBean, taskId: String?) {
+            val laserPeckerModel = vmApp<LaserPeckerModel>()
+            val productInfo = laserPeckerModel.productInfoData.value
+            bean.apply {
+                create_time = nowTime()
+                update_time = nowTime()
+                version = 2
+                swVersion = productInfo?.softwareVersion ?: swVersion
+                hwVersion = productInfo?.hardwareVersion ?: hwVersion
+
+                productName = productInfo?.name
+                exDevice = laserPeckerModel.getExDevice()
+                moduleState =
+                    vmApp<DeviceStateModel>().deviceStateData.value?.moduleState ?: moduleState
+
+                //options
+                saveProjectLaserOptions(this, taskId)
+
+                //last
+                saveProjectLastParams(this)
+            }
+        }
     }
 
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
@@ -80,16 +144,6 @@ class LPProjectManager {
         if (projectBean.lastDpi > 0) {
             HawkEngraveKeys.lastDpi = projectBean.lastDpi
         }
-    }
-
-    /**保存工程对应的默认参数*/
-    fun saveProjectLastParams(projectBean: LPProjectBean?) {
-        projectBean ?: return
-        //last
-        projectBean.lastType = HawkEngraveKeys.lastType
-        projectBean.lastPower = HawkEngraveKeys.lastPower
-        projectBean.lastDepth = HawkEngraveKeys.lastDepth
-        projectBean.lastDpi = HawkEngraveKeys.lastDpi
     }
 
     //region ---打开---
@@ -302,6 +356,7 @@ class LPProjectManager {
      *
      * [java.lang.OutOfMemoryError]*/
     fun getProjectBean(
+        taskId: String?,
         delegate: CanvasRenderDelegate,
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat()
@@ -311,17 +366,9 @@ class LPProjectManager {
         }
         try {
             val result = LPProjectBean().apply {
-                val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
-
-                create_time = nowTime()
-                update_time = nowTime()
-                file_name = projectName
+                configProjectBean(this, taskId)
                 version = 1
-                swVersion = productInfo?.softwareVersion ?: swVersion
-                hwVersion = productInfo?.hardwareVersion ?: hwVersion
-
-                //last
-                saveProjectLastParams(this)
+                file_name = projectName
 
                 val preview =
                     delegate.preview(overrideSize = overrideSize, rendererList = renderList)
@@ -351,8 +398,8 @@ class LPProjectManager {
     }
 
     /**将工程保存到指定文件[file]*/
-    fun saveProjectV1To(file: File, delegate: CanvasRenderDelegate): File? {
-        val bean = getProjectBean(delegate) ?: return null
+    fun saveProjectV1To(taskId: String?, file: File, delegate: CanvasRenderDelegate): File? {
+        val bean = getProjectBean(taskId, delegate) ?: return null
         bean.file_name = bean.file_name ?: file.name
         val json = bean.toJson()
         json.writeTo(file, false)
@@ -361,10 +408,13 @@ class LPProjectManager {
 
     /**[saveProjectV1To]*/
     fun saveProjectV2To(
+        taskId: String?,
         zipFile: File,
         delegate: CanvasRenderDelegate,
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
+        previewFile: File? = null, /*预览图需要额外保存的路径*/
+        resultBean: LPProjectBean = LPProjectBean() /*保存的工程数据*/
     ): File? {
         if (renderList.isNullOrEmpty()) {
             return null
@@ -372,17 +422,10 @@ class LPProjectManager {
         zipFileWrite(zipFile.absolutePath) {
             //开始写入数据流
 
-            val projectBean = LPProjectBean().apply {
-                val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
-                create_time = nowTime()
-                update_time = nowTime()
-                file_name = projectName ?: zipFile.name
+            val projectBean = resultBean.apply {
+                configProjectBean(this, taskId)
                 version = 2
-                swVersion = productInfo?.softwareVersion ?: swVersion
-                hwVersion = productInfo?.hardwareVersion ?: hwVersion
-
-                //last
-                saveProjectLastParams(this)
+                file_name = projectName ?: zipFile.name
 
                 data = jsonArray {
                     renderList.forEach { renderer ->
@@ -447,6 +490,10 @@ class LPProjectManager {
                 //preview_img = preview?.toBase64Data()
                 //previewImgUri = LPDataConstant.PROJECT_V2_BASE_URI + "${uuid()}.png"
                 writeEntry(LPDataConstant.PROJECT_V2_PREVIEW_NAME, preview)
+
+                if (previewFile != null) {
+                    preview?.save(previewFile)
+                }
             }
             val json = projectBean.toJson()
             writeEntry(LPDataConstant.PROJECT_V2_DEFAULT_NAME, json)
@@ -461,6 +508,7 @@ class LPProjectManager {
      * @return 返回保存的文件路径
      * */
     fun saveProjectV1(
+        taskId: String?,
         delegate: CanvasRenderDelegate,
         fileName: String = LPDataConstant.PROJECT_V1_TEMP_NAME,
         async: Boolean = true,
@@ -470,7 +518,7 @@ class LPProjectManager {
         val file = DeviceHelper._defaultProjectOutputFile(fileName, false)
         val save = Runnable {
             try {
-                saveProjectV1To(file, delegate)
+                saveProjectV1To(taskId, file, delegate)
             } catch (e: Exception) {
                 e.printStackTrace()
                 result(file.absolutePath, e)
@@ -490,18 +538,24 @@ class LPProjectManager {
 
     /**第二版, 使用zip格式保存数据
      * [saveProjectV1]
+     * [saveFile] 直接指定需要保存的目标文件全路径, 此时会忽略[fileName]参数
+     * [previewFile] 预览图需要额外保存的路径
      * @return 返回zip保存的文件路径
      * */
     fun saveProjectV2(
+        taskId: String?,
         delegate: CanvasRenderDelegate,
         fileName: String = LPDataConstant.PROJECT_V2_TEMP_NAME,
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
         async: Boolean = true,
+        saveFile: File? = null, /*保存的文件路径*/
+        previewFile: File? = null, /*预览图需要额外保存的路径*/
+        resultBean: LPProjectBean = LPProjectBean(),
         result: (zipFilePath: String, error: Exception?) -> Unit = { _, _ -> } /*成功与失败的回调*/
     ): String {
-        val file = DeviceHelper._defaultProjectOutputFileV2(fileName, false)
-        val tempFile = DeviceHelper._defaultProjectOutputFileV2("${fileName}.${nowTime()}", false)
+        val file = saveFile ?: DeviceHelper._defaultProjectOutputFileV2(fileName, false)
+        val tempFile = libCacheFile("temp_${file.name}")
         val zipFilePath = file.absolutePath
         if (renderList.isNullOrEmpty()) {
             zipFilePath.file().deleteSafe()
@@ -511,8 +565,16 @@ class LPProjectManager {
         isSaveBoolean.set(true)
         val save = Runnable {
             try {
-                val saveFile = saveProjectV2To(tempFile, delegate, renderList, overrideSize)
-                if (saveFile == null) {
+                val resultFile = saveProjectV2To(
+                    taskId,
+                    tempFile,
+                    delegate,
+                    renderList,
+                    overrideSize,
+                    previewFile,
+                    resultBean
+                )
+                if (resultFile == null) {
                     //保存失败
                     result(zipFilePath, EmptyException())
                 } else {
@@ -538,12 +600,54 @@ class LPProjectManager {
         return zipFilePath
     }
 
+    /**保存一个工程结构, 用来分享到社区*/
+    fun saveProjectV2Share(delegate: CanvasRenderDelegate?, taskId: String?) {
+        if (delegate == null || taskId.isNullOrBlank()) {
+            toastQQ(_string(R.string.cannot_share_project))
+            return
+        }
+        val rendererList = LPEngraveHelper.getLayerRendererList(delegate, null)
+        if (rendererList.isEmpty()) {
+            toastQQ(_string(R.string.cannot_share_project))
+            return
+        }
+
+        lastContext.engraveStrokeLoading { isCancel, loadEnd ->
+            doBack {
+                val projectFile = libCacheFile("${taskId}${LPDataConstant.PROJECT_EXT2}")
+                val previewFile = libCacheFile("${taskId}${LPDataConstant.EXT_PREVIEW}")
+                val resultBean = LPProjectBean()
+                saveProjectV2(
+                    taskId,
+                    delegate,
+                    projectFile.name,
+                    rendererList,
+                    async = false,
+                    saveFile = projectFile,
+                    previewFile = previewFile,
+                    resultBean = resultBean
+                ) { zipFilePath, error ->
+                    loadEnd(zipFilePath, error)
+                    if (error == null) {
+                        //保存成功
+                        onShareProjectAction(
+                            ShareProjectInfo(taskId, projectFile, previewFile, resultBean)
+                        )
+                    } else {
+                        toastQQ(error.message)
+                    }
+                }
+            }
+        }
+    }
+
     //endregion ---保存---
 
     //region ---temp---
 
     /**工程临时存储, 速度够快, 可以在主线程雕刻*/
     fun saveProjectV2Folder(
+        taskId: String?,
         delegate: CanvasRenderDelegate,
         renderList: List<BaseRenderer>? = delegate.renderManager.elementRendererList,
         overrideSize: Float? = HawkEngraveKeys.projectOutSize.toFloat(),
@@ -556,19 +660,12 @@ class LPProjectManager {
             return null
         }
         val projectBean = LPProjectBean().apply {
-            val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
-            create_time = nowTime()
-            update_time = nowTime()
+            configProjectBean(this, taskId)
             file_name = projectName
             version = 2
-            swVersion = productInfo?.softwareVersion ?: swVersion
-            hwVersion = productInfo?.hardwareVersion ?: hwVersion
-
-            //last
-            saveProjectLastParams(this)
 
             data = jsonArray {
-                renderList?.forEach { renderer ->
+                renderList.forEach { renderer ->
                     val list = renderer.getSingleRendererList(false)
                     list.forEach { sub ->
                         try {
@@ -716,12 +813,12 @@ class LPProjectManager {
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV1]*/
 @Deprecated("V1格式不支持大数据存储, 请使用V2格式")
-fun CanvasRenderDelegate.saveProjectState(async: Boolean = true) {
+fun CanvasRenderDelegate.saveProjectState(taskId: String?, async: Boolean = true) {
     if (isSaveBoolean.get()) {
         return
     }
     try {
-        LPProjectManager().saveProjectV1(this, async = async)
+        LPProjectManager().saveProjectV1(taskId, this, async = async)
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -733,8 +830,8 @@ fun CanvasRenderDelegate.restoreProjectState() {
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.saveProjectV2]*/
-fun CanvasRenderDelegate.saveProjectStateV2(async: Boolean = true) {
-    LPProjectAutoSaveManager.autoSave(this, async)
+fun CanvasRenderDelegate.saveProjectStateV2(taskId: String?, async: Boolean = true) {
+    LPProjectAutoSaveManager.autoSave(taskId, this, async)
 }
 
 /**[com.angcyo.canvas2.laser.pecker.manager.LPProjectManager.restoreProjectV2]*/

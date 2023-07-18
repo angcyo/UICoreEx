@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.data
 
 import androidx.annotation.Keep
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.library.ex.floor
@@ -133,7 +134,10 @@ data class PxInfo(
 }
 
 /**缩放比*/
-fun Float.toDpiScale() = this / 254
+fun Float.toDpiScale() = this / LaserPeckerHelper.DPI_254
+
+/**1.3 转换成 1.3*/
+fun Float.toDpiFromScale() = this * LaserPeckerHelper.DPI_254
 
 fun Float.toDpiInt() = floor().toInt()
 

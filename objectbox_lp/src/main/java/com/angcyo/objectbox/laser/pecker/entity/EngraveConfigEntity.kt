@@ -61,6 +61,7 @@ data class EngraveConfigEntity(
 
     /**固件版本号, 用来识别雕刻时所用的机器*/
     var softwareVersion: Int = -1,
+    var hardwareVersion: Int = -1,
 
     //---L4专属---
 

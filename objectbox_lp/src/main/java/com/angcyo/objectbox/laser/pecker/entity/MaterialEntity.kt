@@ -39,7 +39,9 @@ data class MaterialEntity(
     var resId: Int = 0,
 
     /**[resId] 资源id在Android上存放的名称, 通过名称可以动态获取[resId]
-     * 然后通过资源id, 获取国际化的本地资源*/
+     * 然后通过资源id, 获取国际化的本地资源
+     * 用来[com.angcyo.library.LibraryKt.getAppString(java.lang.String)]
+     * */
     var resIdStr: String? = null,
 
     /**等同于[resIdStr], 只不过没有国际化, 用户自定义的名称
@@ -65,6 +67,9 @@ data class MaterialEntity(
      * [com.angcyo.laserpacker.device.LayerHelper.getEngraveLayerList]
      * */
     var layerId: String? = null,
+
+    /**dpi 254 512*/
+    var dpi: Float = 0f,
 
     /**dpi 缩放的比例,
      * 1K 1.3K 2K 4K 对应 缩放比例 1 1.3 2 4*/

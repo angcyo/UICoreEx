@@ -15,7 +15,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
@@ -38,6 +37,7 @@ import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
 import com.angcyo.library.component.pad.isInPadMode
@@ -174,7 +174,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             viewHolder?.longClick(R.id.lib_title_view) {
                 engraveCanvasFragment?.renderDelegate?.apply {
                     val file = libCacheFile(fileNameTime("yyyy-MM-dd", LPDataConstant.PROJECT_EXT))
-                    LPProjectManager().saveProjectV1To(file, this)?.shareFile()
+                    LPProjectManager().saveProjectV2To(flowTaskId, file, this)?.shareFile()
                 }
             }
         }

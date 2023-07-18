@@ -537,6 +537,7 @@ object EngraveFlowDataHelper {
                 this.key = key
                 name = materialName
                 layerId = configEntity.layerId
+                dpi = 0f
                 dpiScale = 0f
 
                 type = configEntity.type.toInt()

@@ -63,7 +63,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "22:6395970560635893366",
+      "lastPropertyId": "23:8939534007216110348",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -141,6 +141,11 @@
           "id": "22:6395970560635893366",
           "name": "layerId",
           "type": 9
+        },
+        {
+          "id": "23:8939534007216110348",
+          "name": "dpi",
+          "type": 7
         }
       ],
       "relations": []
@@ -196,7 +201,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "19:6031676992297003662",
+      "lastPropertyId": "20:7096359916927340180",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -284,6 +289,11 @@
           "id": "19:6031676992297003662",
           "name": "layerId",
           "type": 9
+        },
+        {
+          "id": "20:7096359916927340180",
+          "name": "hardwareVersion",
+          "type": 5
         }
       ],
       "relations": []

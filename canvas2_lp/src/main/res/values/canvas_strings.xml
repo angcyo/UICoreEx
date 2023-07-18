@@ -170,4 +170,6 @@
     <string name="calibration_offset_left">Left</string>
     <string name="calibration_offset_top">Top</string>
 
+    <string name="cannot_share_project">Unable to share project</string>
+
 </resources>
