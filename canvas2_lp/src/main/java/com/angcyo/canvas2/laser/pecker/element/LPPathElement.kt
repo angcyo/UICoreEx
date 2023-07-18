@@ -282,7 +282,7 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         gcodeFillStep: Float,
         gcodeFillAngle: Float,
     ) {
-        updateElement(renderer, delegate) {
+        updateElementAction(renderer, delegate) {
             //路径填充, 笔的样式必须要是描边
             elementBean.paintStyle = Paint.Style.STROKE.toPaintStyleInt()
             elementBean.gcodeFillStep = gcodeFillStep

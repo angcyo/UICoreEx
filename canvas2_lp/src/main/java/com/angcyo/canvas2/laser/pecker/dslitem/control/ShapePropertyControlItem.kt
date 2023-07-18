@@ -120,7 +120,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                 onNumberResultAction = { number ->
                     val size = clamp(number.toInt(), SHAPE_MIN_SIDE, SHAPE_MAX_SIDE)
                     itemRenderer?.lpElement()?.apply {
-                        updateElement(itemRenderer, itemRenderDelegate) {
+                        updateElementAction(itemRenderer, itemRenderDelegate) {
                             elementBean.side = size
                             lpElement()?.parseElementBean()
                         }
@@ -140,7 +140,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                 onNumberResultAction = { number ->
                     val size = clamp(number.toInt(), 1, 100)
                     itemRenderer?.lpElement()?.apply {
-                        updateElement(itemRenderer, itemRenderDelegate) {
+                        updateElementAction(itemRenderer, itemRenderDelegate) {
                             elementBean.depth = size
                             lpElement()?.parseElementBean()
                         }
@@ -164,7 +164,7 @@ class ShapePropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                         SHAPE_MAX_CORNER
                     ) //pixel
                     itemRenderer?.lpElement()?.apply {
-                        updateElement(itemRenderer, itemRenderDelegate) {
+                        updateElementAction(itemRenderer, itemRenderDelegate) {
                             elementBean.rx = size.toMm()
                             elementBean.ry = elementBean.rx
                             lpElement()?.parseElementBean()

@@ -23,7 +23,7 @@ class PathStyleItem : CanvasIconItem() {
         itemSingleSelectMutex = true
         itemClick = {
             itemRenderer?.lpElement()?.apply {
-                updateElement(itemRenderer, itemRenderDelegate) {
+                updateElementAction(itemRenderer, itemRenderDelegate) {
                     this@apply.elementBean.paintStyle = itemStyle.toPaintStyleInt()
                 }
             }
