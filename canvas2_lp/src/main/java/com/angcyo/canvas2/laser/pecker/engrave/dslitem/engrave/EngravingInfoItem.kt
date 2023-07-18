@@ -59,7 +59,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
                     //分辨率: 1k
                     val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
                     val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-                    add(resolutionData(findPxInfo.des))
+                    add(resolutionData(findPxInfo.toText()))
                 }
 
                 //雕刻精度

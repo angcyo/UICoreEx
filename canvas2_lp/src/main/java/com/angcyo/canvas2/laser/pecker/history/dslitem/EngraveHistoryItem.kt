@@ -191,7 +191,7 @@ open class EngraveHistoryItem : DslTagGroupItem() {
 
                     //分辨率
                     val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
-                    add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.des))
+                    add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.toText()))
                 }
 
                 //尺寸

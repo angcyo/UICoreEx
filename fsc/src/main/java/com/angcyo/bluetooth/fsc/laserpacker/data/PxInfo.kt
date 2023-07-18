@@ -56,14 +56,17 @@ data class PxInfo(
     val des: String,
 
     /**是否只在调试模式下显示*/
-    val debug: Boolean = false
+    val debug: Boolean = false,
+
+    /**显示的标签*/
+    val label: String? = null,
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/
     val _dpiScale: Float
         get() = dpi.toDpiScale()
 
-    override fun toText(): CharSequence = if (debug) "${des}'" else des
+    override fun toText(): CharSequence = if (debug) "${label ?: des}'" else label ?: des
 
     override fun toValue(): Int = dpi.toDpiInt()
 

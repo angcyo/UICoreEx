@@ -10,7 +10,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.AppointPowerDepthItem
@@ -44,6 +43,7 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._string
@@ -493,7 +493,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 }
                 append(gridLayerId.toLayerInfo()?.label ?: "")
                 append(" ${gridPrintType.toLaserWave()}nm")
-                append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).des}")
+                append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText()}")
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
                 "%1", defaultLabel
