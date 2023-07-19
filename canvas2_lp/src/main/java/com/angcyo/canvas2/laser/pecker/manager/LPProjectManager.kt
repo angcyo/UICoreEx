@@ -848,8 +848,10 @@ fun deleteProjectFileV2Folder() {
     DeviceHelper.deleteProjectFileV2Folder()
 }
 
-/**处理文件路径对应的数据, 解析成[LPElementBean]*/
-fun String?.toElementBeanOfFile(): CanvasOpenDataType? {
+/**处理文件路径对应的数据, 解析成[LPElementBean]
+ * [bmpThreshold] 不指定阈值时, 自动从图片中获取
+ * */
+fun String?.toElementBeanOfFile(bmpThreshold: Int? = null): CanvasOpenDataType? {
     val path = this?.lowercase() ?: return null
     val file = path.file()
     if (path.endsWith(LPDataConstant.GCODE_EXT)) {
@@ -860,7 +862,7 @@ fun String?.toElementBeanOfFile(): CanvasOpenDataType? {
         return text.toSvgElementBean()
     } else if (path.isImageType() || file.fileType().isImageType()) {
         val bitmap = path.toBitmap()
-        return bitmap.toBitmapElementBeanV2()
+        return bitmap.toBitmapElementBeanV2(bmpThreshold)
     } else if (path.endsWith(LPDataConstant.PROJECT_EXT) || path.endsWith(LPDataConstant.PROJECT_EXT2)) {
         return LPProjectManager().openProjectFile(null, file)
     } else {
