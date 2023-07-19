@@ -5,7 +5,6 @@ import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.RenderHelper
@@ -19,10 +18,10 @@ import com.angcyo.dialog.popup.MenuPopupConfig
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.toPaintStyleInt
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
-import com.angcyo.library.ex.deleteSafe
-import com.angcyo.library.libCacheFile
-import com.angcyo.path.toSvgPathContent
+import com.angcyo.library.ex.op
+import com.angcyo.toSVGStrokeContent
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -55,20 +54,12 @@ class PathOpItem : CanvasIconItem() {
                 }
             }
             if (pathList.isNotEmpty()) {
-                val result = Path() //操作后的结果
-
-                //op 操作
-                for (path in pathList) {
-                    if (result.isEmpty) {
-                        result.set(path)
-                    } else {
-                        result.op(path, op)
-                    }
+                val result = pathList.op(op)
+                //val svgContent = result.toSvgPathContent()
+                val svgContent = result.toSVGStrokeContent {
+                    it.isSinglePath = true
+                    it.needClosePath = true
                 }
-
-                val svg = result.toSvgPathContent(libCacheFile("op.svg"))
-                val svgContent = svg.readText()
-                svg.deleteSafe()
 
                 val elementBean = LPElementBean().apply {
                     mtype = LPDataConstant.DATA_TYPE_SVG
