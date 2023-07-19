@@ -5,6 +5,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.RenderHelper
@@ -21,6 +22,7 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex.op
+import com.angcyo.library.ex.toListOf
 import com.angcyo.toSVGStrokeContent
 
 /**
@@ -100,8 +102,13 @@ class PathOpItem : CanvasIconItem() {
 
         itemClick = {
             itemRenderer?.let {
-                if (it is CanvasGroupRenderer) {
-                    opElement(itemOp, it.getRendererBounds(), it.rendererList, itemRenderDelegate)
+                val rendererList = when (it) {
+                    is CanvasSelectorComponent -> it.rendererList
+                    is CanvasGroupRenderer -> it.toListOf()
+                    else -> null
+                }
+                if (!rendererList.isNullOrEmpty()) {
+                    opElement(itemOp, it.getRendererBounds(), rendererList, itemRenderDelegate)
                 }
             }
         }
