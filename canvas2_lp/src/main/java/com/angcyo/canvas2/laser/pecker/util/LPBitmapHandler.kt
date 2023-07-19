@@ -11,7 +11,6 @@ import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
@@ -35,17 +34,16 @@ import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.LTime
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pool.acquireTempMatrix
-import com.angcyo.library.component.pool.acquireTempPointF
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
-import com.angcyo.library.ex.mapPoint
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
@@ -867,62 +865,25 @@ object LPBitmapHandler {
                             getFloatOrDef(CanvasRegulatePopupConfig.KEY_CURVATURE, curvature)
                         element.updateCurvature(curvature, renderer, delegate)
                         val path = element.curveTextDrawInfo?.run {
-                            val rect = acquireTempRectF()
-                            element.renderProperty.getRenderRect(rect)
-                            val centerX = rect.centerX() + offsetX
+                            val baseRect = acquireTempRectF()
+                            element.renderProperty.getBaseRect(baseRect)
+                            val centerX = baseRect.centerX() + offsetX
                             val centerY = if (curvature > 0) {
-                                rect.top + textHeight + innerRadius + offsetY
+                                baseRect.top + textHeight + innerRadius + offsetY
                             } else {
-                                rect.bottom - textHeight - innerRadius
+                                baseRect.bottom - textHeight - innerRadius
                             }
-                            val point = acquireTempPointF()
-                            point.set(centerX, centerY)
-                            val matrix = acquireTempMatrix()
-                            matrix.setRotate(
-                                element.renderProperty.angle,
-                                rect.centerX(),
-                                rect.centerY()
-                            )
-                            matrix.mapPoint(point)
-                            rect.release()
-                            matrix.release()
-                            Path().apply {
-                                addCircle(point.x, point.y, innerRadius, Path.Direction.CW)
-                            }
+                            val resultPath = Path()
+                            resultPath.addCircle(centerX, centerY, innerRadius, Path.Direction.CW)
 
-                            /*getTextDrawInnerCirclePath().apply {
-                                val afterBounds =
-                                    element.renderProperty.getRenderBounds(afterRotate = true)
-                                val renderBounds = originBounds
-                                val matrix = acquireTempMatrix()
-                                val y = if (curvature > 0) {
-                                    renderBounds.top + textHeight
-                                } else {
-                                    renderBounds.bottom
-                                }
-                                val point = acquireTempPointF()
-                                point.set(renderBounds.centerX(), y)
-                                *//*matrix.setRotate(
-                                    element.renderProperty.angle,
-                                    renderBounds.centerX(),
-                                    renderBounds.centerY()
-                                )
-                                matrix.mapPoint(point)//目标点也要旋转
-                                matrix.reset()*//*
-                                getTranslateMatrix(point.x, point.y, matrix)
-                                point.release()
-                                matrix.postRotate(
-                                    element.renderProperty.angle,
-                                    originBounds.centerX(),
-                                    originBounds.centerY()
-                                )
-                                matrix.postTranslate(
-                                    afterBounds.centerX() - originBounds.centerX(),
-                                    afterBounds.centerY() - originBounds.centerY()
-                                )
-                                transform(matrix)
-                                matrix.release()
-                            }*/
+                            val matrix = acquireTempMatrix()
+                            element.renderProperty.getRenderMatrix(matrix)
+                            resultPath.transform(matrix)
+
+                            baseRect.release()
+                            matrix.release()
+
+                            resultPath
                         }
                         val scale = delegate?.renderViewBox?.getScale() ?: 1f
                         tipRenderer.pathPaint.strokeWidth = dp / scale
@@ -934,6 +895,8 @@ object LPBitmapHandler {
     }
 
     //endregion---带参数调整对话框---
+
+    //region---图片其他处理---
 
     /**图片剪裁*/
     fun handleCrop(
@@ -1014,4 +977,6 @@ object LPBitmapHandler {
             }
         }
     }
+
+    //endregion---图片其他处理---
 }
