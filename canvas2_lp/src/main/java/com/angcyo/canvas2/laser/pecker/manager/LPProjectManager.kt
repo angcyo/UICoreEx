@@ -72,7 +72,7 @@ class LPProjectManager {
 
         /**工程分享功能实现*/
         var onShareProjectAction: (bean: ShareProjectInfo) -> Unit = {
-
+            toastQQ("功能开发中...")
         }
 
         /**[LPLaserOptionsBean]*/
