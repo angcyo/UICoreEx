@@ -69,6 +69,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
                 if (settingParser != null) {
                     lastContext.engraveStrokeLoading { isCancel, loadEnd ->
+                        settingParser.functionSetting()
                         settingParser.ignoreTempSensor = if (ignoreTempSensor) 1 else 0
                         ExitCmd().enqueue()
                         settingParser.enqueue { bean, error ->
