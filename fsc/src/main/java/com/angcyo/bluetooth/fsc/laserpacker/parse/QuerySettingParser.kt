@@ -60,6 +60,8 @@ data class QuerySettingParser(
     var carFlag: Int = 0,
     //2023-2-28 L2 雕刻方向设置位，0为默认方向（从机尾向机头雕刻），1则反之。
     var printDir: Int = 0,
+    //2023-7-19 忽略LX1的温度传感器，0为不忽略，1为忽略。 @ignoreTempSensor#b=true
+    var ignoreTempSensor: Int = 0,
 ) : BaseCommand(), IPacketParser<QuerySettingParser> {
 
     companion object {
@@ -117,26 +119,27 @@ data class QuerySettingParser(
                 val laserPeckerModel = vmApp<LaserPeckerModel>()
                 val productInfo = laserPeckerModel.productInfoData.value
 
-                free = readInt(1, free)
-                buzzer = readInt(1, free)
-                view = readInt(1, view)
-                gcodeView = readInt(1, gcodeView)
+                free = readInt(1, 0)
+                buzzer = readInt(1, 0)
+                view = readInt(1, 0)
+                gcodeView = readInt(1, GCODE_PREVIEW)
                 safe = readInt(1, safe)
                 custom = readInt(1, custom)
-                zFlag = if (productInfo?.isSupportZ() == true) readInt(1, zFlag) else 0
-                zDir = if (productInfo?.isSupportZ() == true) readInt(1, zDir) else 0
-                keyView = readInt(1, keyView)
-                irDst = readInt(1, irDst)
-                keyPrint = readInt(1, keyPrint)
-                rFlag = if (productInfo?.isSupportR() == true) readInt(1, rFlag) else 0
-                sFlag = if (productInfo?.isSupportS() == true) readInt(1, sFlag) else 0
-                dir = readInt(1, dir)
-                gcodePower = readInt(1, gcodePower)
-                sRep = if (productInfo?.isSupportS() == true) readInt(1, sRep) else 0
-                carFlag = if (productInfo?.isCSeries() == true) readInt(1, carFlag) else 0
-                printDir = readInt(1, printDir)
+                zFlag = if (productInfo?.isSupportZ() == true) readInt(1, 0) else 0
+                zDir = if (productInfo?.isSupportZ() == true) readInt(1, 0) else 0
+                keyView = readInt(1, 0)
+                irDst = readInt(1, 0)
+                keyPrint = readInt(1, 0)
+                rFlag = if (productInfo?.isSupportR() == true) readInt(1, 0) else 0
+                sFlag = if (productInfo?.isSupportS() == true) readInt(1, 0) else 0
+                dir = readInt(1, 0)
+                gcodePower = readInt(1, 0)
+                sRep = if (productInfo?.isSupportS() == true) readInt(1, 0) else 0
+                carFlag = if (productInfo?.isCSeries() == true) readInt(1, 0) else 0
+                printDir = readInt(1, 0)
+                ignoreTempSensor = readInt(1, 0)
                 //---最后位
-                state = readInt(1, state)
+                state = readInt(1, 0)
             }
             this
         } catch (e: Exception) {
@@ -169,7 +172,7 @@ data class QuerySettingParser(
                 //todo 安全码与用户设置
                 dataLength = 0x27
             } else {
-                dataLength = 0x15 //数据长度
+                dataLength = 0x16 //数据长度
 
                 //1为自由模式，为0时安全模式。
                 append(free.toHexString())
@@ -200,6 +203,9 @@ data class QuerySettingParser(
                 append(carFlag.toHexString())
                 //2023-2-28
                 append(printDir.toHexString())
+                //2023-7-19
+                append(ignoreTempSensor.toHexString())
+                //dataLength 数据长度需要手动+1
             }
         }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
         val check = data.checksum() //“功能码”和“数据内容”在内的校验和

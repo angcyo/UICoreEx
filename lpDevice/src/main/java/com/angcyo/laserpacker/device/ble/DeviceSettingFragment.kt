@@ -33,7 +33,9 @@ import com.angcyo.item.style.itemSwitchChangedAction
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
+import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library.component.VersionMatcher
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
@@ -61,6 +63,29 @@ class DeviceSettingFragment : BaseDslFragment() {
         var createFirmwareUpdateItemAction: ((fragment: DeviceSettingFragment, adapter: DslAdapter) -> DslAdapterItem?)? =
             null
 
+        /**[com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.ignoreTempSensor]*/
+        fun updateIgnoreTempSensor(ignoreTempSensor: Boolean) {
+            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+                val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
+                if (settingParser != null) {
+                    lastContext.engraveStrokeLoading { isCancel, loadEnd ->
+                        settingParser.ignoreTempSensor = if (ignoreTempSensor) 1 else 0
+                        ExitCmd().enqueue()
+                        settingParser.enqueue { bean, error ->
+                            loadEnd(bean, error)
+                            error?.let {
+                                toastQQ(it.message)
+                            }
+                            LaserPeckerHelper.initDeviceSetting()
+                        }
+                    }
+                } else {
+                    toastQQ(_string(R.string.blue_no_device_connected))
+                }
+            } else {
+                toastQQ(_string(R.string.blue_no_device_connected))
+            }
+        }
     }
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()

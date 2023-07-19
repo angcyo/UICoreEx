@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
+import com.angcyo.core.Debug
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
@@ -23,6 +24,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
+import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Pixel
@@ -237,6 +239,18 @@ class FscDeviceModel : LifecycleViewModel() {
 
         //设备主动退出工作模式
         //AA BB 08 FF 00 00 00 00 00 00 FF
+
+        Debug.debugCommandActionList.add {
+            if (it.command.trim() == "@ignoreTempSensor#b=true") {
+                DeviceSettingFragment.updateIgnoreTempSensor(true)
+                true
+            } else if (it.command.trim() == "@ignoreTempSensor#b=false") {
+                DeviceSettingFragment.updateIgnoreTempSensor(false)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     /**检查是否需要自动连接设备*/
