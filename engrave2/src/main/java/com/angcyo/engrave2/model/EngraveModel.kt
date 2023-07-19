@@ -207,6 +207,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             "雕刻任务无数据[${taskId}]".writeEngraveLog()
             errorEngrave(EmptyException())
         } else {
+            "即将开始雕刻[$taskId]:${laserPeckerModel.deviceSettingData.value}".writeEngraveLog()
             _startEngraveTask(task)
         }
         return task
