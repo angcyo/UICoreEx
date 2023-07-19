@@ -11,6 +11,7 @@ import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.renderLayout
 import com.angcyo.core.vmApp
 import com.angcyo.glide.loadImage
+import com.angcyo.http.base.toJson
 import com.angcyo.http.rx.runRx
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.Library
@@ -38,6 +39,7 @@ import com.angcyo.library.utils.logPath
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
+import com.orhanobut.hawk.HawkValueParserHelper
 import java.io.File
 
 /**
@@ -79,7 +81,15 @@ object DeviceHelper {
                 ).absolutePath
             )
 
-            Library.hawkPath?.let { logList.add(it) } //xml
+            Library.hawkPath?.let {
+                val map = HawkValueParserHelper.parseFromXml(it)
+                map.toJson()?.let {
+                    libCacheFile("Hawk2.json").apply {
+                        writeText(it)
+                        logList.add(absolutePath)
+                    }
+                }
+            } //xml
             logList.addAll(getTaskEngraveLogFilePath())
             logList.addAll(tempEngraveLogPathList)
 
