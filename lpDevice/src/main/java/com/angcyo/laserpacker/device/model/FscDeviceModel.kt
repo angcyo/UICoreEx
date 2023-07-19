@@ -251,6 +251,18 @@ class FscDeviceModel : LifecycleViewModel() {
                 false
             }
         }
+
+        Debug.debugCommandActionList.add {
+            if (it.command.trim() == "@enableFactoryPCT#b=true") {
+                DeviceSettingFragment.enableFactoryPCT(true)
+                true
+            } else if (it.command.trim() == "@enableFactoryPCT#b=false") {
+                DeviceSettingFragment.enableFactoryPCT(false)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     /**检查是否需要自动连接设备*/

@@ -2,6 +2,7 @@ package com.angcyo.bluetooth.fsc.laserpacker.command
 
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex.toDC
 
 /**
  * 出厂设置指令
@@ -31,6 +32,9 @@ data class FactoryCmd(
 
     /**data1=0时为计算数据，data1=1时使用校正数据*/
     var data1: Byte = 0x1,
+
+    /**data4*/
+    var data4: Byte = 0x0,
 
     ) : BaseCommand() {
 
@@ -70,6 +74,11 @@ data class FactoryCmd(
         /**激光点预览功率设置*/
         fun previewPowerSettingCmd(laser: Byte, type: Byte): FactoryCmd {
             return FactoryCmd(state = 0x0B, laser = laser, type = type)
+        }
+
+        /**LX1 出厂雕刻设置指令*/
+        fun factoryPCTCmd(enable: Boolean): FactoryCmd {
+            return FactoryCmd(state = 0x21, data4 = if (enable) 0x1 else 0x0)
         }
     }
 
@@ -112,6 +121,13 @@ data class FactoryCmd(
                     writeUByte(custom)
                     writeUByte(0)
                 }
+
+                0x21.toByte() -> {
+                    writeUByte(0)
+                    writeUByte(0)
+                    writeUByte(custom)
+                    writeUByte(data4)
+                }
             }
         }
     }
@@ -140,6 +156,7 @@ data class FactoryCmd(
                 0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
                 0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
                 0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"}")
+                0x21.toByte() -> append("LX1出厂雕刻设置:${(data4 == 0x1.toByte()).toDC()}")
             }
             append(" custom:${custom}")
         }

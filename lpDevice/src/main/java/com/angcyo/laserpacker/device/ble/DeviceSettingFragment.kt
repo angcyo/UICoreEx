@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -65,13 +66,17 @@ class DeviceSettingFragment : BaseDslFragment() {
 
         /**[com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.ignoreTempSensor]*/
         fun updateIgnoreTempSensor(ignoreTempSensor: Boolean) {
-            if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            val deviceStateModel = vmApp<DeviceStateModel>()
+            if (deviceStateModel.isDeviceConnect()) {
                 val settingParser = vmApp<LaserPeckerModel>().deviceSettingData.value
                 if (settingParser != null) {
                     lastContext.engraveStrokeLoading { isCancel, loadEnd ->
                         settingParser.functionSetting()
                         settingParser.ignoreTempSensor = if (ignoreTempSensor) 1 else 0
-                        ExitCmd().enqueue()
+                        if (!deviceStateModel.isIdleMode()) {
+                            //如果不是空闲模式, 先退出
+                            ExitCmd().enqueue()
+                        }
                         settingParser.enqueue { bean, error ->
                             loadEnd(bean, error)
                             error?.let {
@@ -82,6 +87,27 @@ class DeviceSettingFragment : BaseDslFragment() {
                     }
                 } else {
                     toastQQ(_string(R.string.blue_no_device_connected))
+                }
+            } else {
+                toastQQ(_string(R.string.blue_no_device_connected))
+            }
+        }
+
+        /**[com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd]*/
+        fun enableFactoryPCT(enable: Boolean) {
+            val deviceStateModel = vmApp<DeviceStateModel>()
+            if (deviceStateModel.isDeviceConnect()) {
+                lastContext.engraveStrokeLoading { isCancel, loadEnd ->
+                    if (!deviceStateModel.isIdleMode()) {
+                        //如果不是空闲模式, 先退出
+                        ExitCmd().enqueue()
+                    }
+                    FactoryCmd.factoryPCTCmd(enable).enqueue { bean, error ->
+                        loadEnd(bean, error)
+                        error?.let {
+                            toastQQ(it.message)
+                        }
+                    }
                 }
             } else {
                 toastQQ(_string(R.string.blue_no_device_connected))
