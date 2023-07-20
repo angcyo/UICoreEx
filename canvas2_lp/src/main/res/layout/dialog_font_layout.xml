@@ -46,12 +46,12 @@
             android:text="@string/canvas_export_font"
             android:textColor="@color/text_primary_color"
             android:visibility="gone"
-            app:button_gradient_colors="#f6f6f6"
+            app:button_gradient_colors="@color/lib_segment_tab_bg_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/import_view"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/import_view"
@@ -88,7 +88,7 @@
             style="@style/LibBodyTextStyle"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/canvas_font_text" />
+            android:text="@string/laserpecker" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/LibBodyTextStyle"
