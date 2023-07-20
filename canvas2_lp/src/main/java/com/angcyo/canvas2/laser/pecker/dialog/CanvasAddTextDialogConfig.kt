@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.app.Dialog
 import android.content.Context
 import android.text.InputType
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.InputDialogConfig
 import com.angcyo.dialog.configBottomDialog
@@ -20,8 +21,6 @@ import com.angcyo.widget.tab
 class CanvasAddTextDialogConfig : InputDialogConfig() {
 
     companion object {
-        const val MAX_INPUT_LENGTH = 100
-
         const val KEY_ADD_TEXT = "key_canvas_add_text"
     }
 
@@ -44,7 +43,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
 
     init {
         inputViewHeight = 100 * dpi
-        maxInputLength = MAX_INPUT_LENGTH
+        maxInputLength = HawkEngraveKeys.maxInputTextLengthLimit
         inputHistoryHawkKey = KEY_ADD_TEXT
         canInputEmpty = false
         trimInputText = false
@@ -71,6 +70,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                             inputType = InputType.TYPE_CLASS_TEXT
                             digits = null
                         }
+
                         2 -> {
                             //条形码 BarcodeFormat.CODE_128
                             dataType = LPDataConstant.DATA_TYPE_BARCODE
@@ -78,6 +78,7 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                             digits = _string(R.string.lib_barcode_digits)
                         }
+
                         else -> {
                             //文本
                             dataType = LPDataConstant.DATA_TYPE_TEXT
