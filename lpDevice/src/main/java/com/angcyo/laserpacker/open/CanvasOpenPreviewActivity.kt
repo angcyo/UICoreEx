@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.open
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.graphics.drawable.toDrawable
@@ -195,6 +196,36 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                         } else {
                             canvasOpenModel.open(this@CanvasOpenPreviewActivity, beanList)
                         }
+                        finish()
+                    }
+
+                    cancelAction = {
+                        finish()
+                    }
+                }
+            }
+            return true
+        } else if (path.endsWith(LPDataConstant.TXT_EXT, true)) {
+            //文本文件
+            val text = file.readText()
+            checkFileLimit(text)
+            //text
+            adapter?.render {
+                clearAllItems()
+                CanvasOpenPreviewItem()() {
+                    itemFilePath = path
+
+                    val elementBean = LPElementBean().apply {
+                        mtype = LPDataConstant.DATA_TYPE_TEXT
+                        this.text = text
+                        paintStyle = Paint.Style.FILL.toPaintStyleInt()
+                    }
+                    val beanList = mutableListOf(elementBean)
+
+                    itemDrawable = convertElementBeanListToDrawable?.invoke(beanList)
+
+                    openAction = {
+                        canvasOpenModel.open(this@CanvasOpenPreviewActivity, beanList)
                         finish()
                     }
 

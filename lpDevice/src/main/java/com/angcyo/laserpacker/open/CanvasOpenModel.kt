@@ -54,6 +54,7 @@ class CanvasOpenModel : ViewModel() {
     /**需要打开的数据
      * 支持[com.angcyo.laserpacker.bean.LPElementBean]
      * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
+     * 支持[List<LPElementBean>]
      * */
     val openPendingData = vmDataOnce<CanvasOpenDataType?>()
 

@@ -12,6 +12,7 @@ import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
+import kotlin.math.max
 
 /**
  * 添加文本/二维码/条码
@@ -31,6 +32,7 @@ class AddTextItem : CanvasIconItem(), IFragmentItem {
                 dataType = bean.mtype
                 defaultInputString = element.textProperty.text
                 canSwitchType = false
+                maxInputLength = max(maxInputLength, defaultInputString?.length ?: 0)
                 onAddTextAction = { inputText, type ->
                     element.updateTextProperty(renderer, delegate) {
                         text = "$inputText"
