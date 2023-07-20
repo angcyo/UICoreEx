@@ -15,6 +15,7 @@ import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.component._debounce
 import com.angcyo.library.ex.size
+import com.angcyo.library.unit.toMm
 
 /**
  * 业务相关的预览助手工具类
@@ -106,6 +107,10 @@ object LPPreviewHelper {
                 if (it.height() <= 0) {
                     it.bottom = it.top + 1
                 }
+
+                //2023-7-19
+                HawkEngraveKeys.lastPreviewWidth = it.width().toMm()
+                HawkEngraveKeys.lastPreviewHeight = it.height().toMm()
             }
         }
     }

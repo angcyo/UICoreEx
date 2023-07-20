@@ -71,6 +71,9 @@ object HawkEngraveKeys {
     /**持久化当前雕刻的次数, 用来生成文件名*/
     var lastEngraveCount: Int by HawkPropertyValue<Any, Int>(0)
 
+    /**最后一次传输的文件名*/
+    var lastTransferName: String? by HawkPropertyValue<Any, String?>(null)
+
     /**保存工程的次数*/
     var lastProjectCount: Int by HawkPropertyValue<Any, Int>(0)
 
@@ -285,4 +288,11 @@ object HawkEngraveKeys {
 
     /**是否使用新的抖动算法*/
     var useNewDithering: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
+    /**最后一次预览的元素宽度*/
+    @MM
+    var lastPreviewWidth: Float by HawkPropertyValue<Any, Float>(0f)
+
+    @MM
+    var lastPreviewHeight: Float by HawkPropertyValue<Any, Float>(0f)
 }

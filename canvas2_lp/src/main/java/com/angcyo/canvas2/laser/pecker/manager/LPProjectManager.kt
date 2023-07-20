@@ -1,12 +1,14 @@
 package com.angcyo.canvas2.laser.pecker.manager
 
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBoolean
@@ -43,6 +45,7 @@ import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.utils.BuildHelper
 import com.angcyo.library.utils.fileType
 import com.angcyo.library.utils.writeTo
@@ -101,7 +104,11 @@ class LPProjectManager {
             projectBean.lastDpi = HawkEngraveKeys.lastDpi
         }
 
-        fun configProjectBean(bean: LPProjectBean, taskId: String?) {
+        fun configProjectBean(
+            bean: LPProjectBean,
+            taskId: String?,
+            renderList: List<BaseRenderer>?
+        ) {
             val laserPeckerModel = vmApp<LaserPeckerModel>()
             val productInfo = laserPeckerModel.productInfoData.value
             bean.apply {
@@ -110,6 +117,18 @@ class LPProjectManager {
                 version = 2
                 swVersion = productInfo?.softwareVersion ?: swVersion
                 hwVersion = productInfo?.hardwareVersion ?: hwVersion
+
+                //可能不准, 需要覆盖
+                width = HawkEngraveKeys.lastPreviewWidth
+                height = HawkEngraveKeys.lastPreviewHeight
+
+                if (!renderList.isNullOrEmpty()) {
+                    CanvasGroupRenderer.getRendererListRenderProperty(renderList)
+                        .getRenderBounds(RectF()).apply {
+                            width = this.width().toMm()
+                            height = this.height().toMm()
+                        }
+                }
 
                 productName = productInfo?.name
                 exDevice = laserPeckerModel.getExDevice()
@@ -126,7 +145,7 @@ class LPProjectManager {
     }
 
     /**[com.angcyo.laserpacker.bean.LPProjectBean.file_name]*/
-    var projectName: String? = null
+    var projectName: String? = HawkEngraveKeys.lastTransferName
 
     /**恢复工程对应的默认参数*/
     fun restoreProjectLastParams(projectBean: LPProjectBean?) {
@@ -366,7 +385,7 @@ class LPProjectManager {
         }
         try {
             val result = LPProjectBean().apply {
-                configProjectBean(this, taskId)
+                configProjectBean(this, taskId, renderList)
                 version = 1
                 file_name = projectName
 
@@ -423,7 +442,7 @@ class LPProjectManager {
             //开始写入数据流
 
             val projectBean = resultBean.apply {
-                configProjectBean(this, taskId)
+                configProjectBean(this, taskId, renderList)
                 version = 2
                 file_name = projectName ?: zipFile.name
 
@@ -660,7 +679,7 @@ class LPProjectManager {
             return null
         }
         val projectBean = LPProjectBean().apply {
-            configProjectBean(this, taskId)
+            configProjectBean(this, taskId, renderList)
             file_name = projectName
             version = 2
 

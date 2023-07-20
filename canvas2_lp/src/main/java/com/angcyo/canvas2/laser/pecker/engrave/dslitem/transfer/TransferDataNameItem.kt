@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer
 
 import android.graphics.Color
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
@@ -76,6 +77,7 @@ class TransferDataNameItem : DslAdapterItem(), IEditItem {
         }
         //
         itemTransferConfigEntity?.name = text.toString()
+        HawkEngraveKeys.lastTransferName = text.toString()
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

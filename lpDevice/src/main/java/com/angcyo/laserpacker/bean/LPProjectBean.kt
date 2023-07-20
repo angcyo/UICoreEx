@@ -10,11 +10,11 @@ import com.angcyo.library.annotation.MM
  */
 data class LPProjectBean(
 
-    /**画布的宽高*/
+    /**工程元素占用的宽高*/
     @MM
-    var width: Double = 0.0,
+    var width: Float = 0f,
     @MM
-    var height: Double = 0.0,
+    var height: Float = 0f,
 
     /**预览的base64图片
      * (data:image/xxx;base64,xxx) 带协议头
