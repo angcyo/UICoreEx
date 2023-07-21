@@ -61,6 +61,10 @@ data class PxInfo(
 
     /**显示的标签*/
     val label: String? = null,
+
+    /**指定的模块列表, null表示不特殊指定模块
+     * 如果指定了, 则对应的模块才有此dpi*/
+    val moduleList: List<Int>? = null,
 ) : IToText, IToValue {
 
     /**dpi对应的数据需要缩放的比例*/

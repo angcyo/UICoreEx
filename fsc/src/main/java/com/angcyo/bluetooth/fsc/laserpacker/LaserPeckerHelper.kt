@@ -590,15 +590,12 @@ object LaserPeckerHelper {
         if (layerIdList.isEmpty()) {
             //no op
         } else {
-            val configBean = vmApp<LaserPeckerModel>().productInfoData.value?.deviceConfigBean
-            if (configBean != null) {
-                configBean.layer?.let { map ->
-                    for (layerId in layerIdList) {
-                        val layerConfig = map[layerId]
-                        if (layerConfig?.dpiList != null) {
-                            return layerConfig.dpiList!!.filterPxList()
-                        }
-                    }
+            val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
+
+            for (layerId in layerIdList) {
+                val dpiList = productInfo?.findLayerConfig(layerId)?.dpiList
+                if (!dpiList.isNullOrEmpty()) {
+                    return dpiList.filterPxList()
                 }
             }
         }

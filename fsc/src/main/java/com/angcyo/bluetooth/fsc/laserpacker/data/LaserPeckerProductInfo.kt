@@ -4,6 +4,8 @@ import android.graphics.Path
 import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.LayerConfigBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean.filterModuleDpiList
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 
@@ -178,6 +180,15 @@ data class LaserPeckerProductInfo(
     fun isSupportZ() = ex?.split(",")?.contains("z") == true
     fun isSupportS() = ex?.split(",")?.contains("s") == true
     fun isSupportR() = ex?.split(",")?.contains("r") == true
+
+    /**获取指定图层的配置信息
+     * [layerId] 图层id*/
+    fun findLayerConfig(layerId: String): LayerConfigBean {
+        deviceConfigBean?.layer?.get(layerId)?.let {
+            return it.filterDpiList()
+        }
+        return LayerConfigBean(pxList.filterModuleDpiList())
+    }
 }
 
 
