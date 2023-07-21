@@ -35,8 +35,11 @@ data class LPLaserOptionsBean(
     /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.layerId]*/
     var layerId: String? = null,
 
-    /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.code]*/
+    /**PC端*/
     var materialId: String? = null,
+
+    /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.code]*/
+    var materialCode: String? = null,
 
     /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.resIdStr]*/
     var materialKey: String? = null,
@@ -68,7 +71,7 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     val bean = LPLaserOptionsBean()
 
     bean.layerId = layerId
-    bean.materialId = materialCode
+    bean.materialCode = materialCode
     bean.materialKey = materialKey
     MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
         apply(MaterialEntity_.code.equal("$materialCode"))

@@ -3,6 +3,8 @@ package com.angcyo.laserpacker.bean
 import android.graphics.Bitmap
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
+import com.angcyo.http.base.fromJson
+import com.angcyo.http.base.listType
 import com.angcyo.http.base.toJson
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.library.annotation.MM
@@ -65,8 +67,9 @@ data class LPProjectBean(
     /** [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.moduleState]*/
     var moduleState: Int = -1,
 
-    /**每个图层对应的雕刻参数*/
-    var laserOptions: List<LPLaserOptionsBean>? = null,
+    /**每个图层对应的雕刻参数
+     * [List<LPLaserOptionsBean>]*/
+    var laserOptions: String? = null,
 
     //---
 
@@ -89,11 +92,14 @@ data class LPProjectBean(
     var _debug: Boolean? = null
 ) {
 
+    val _laserOptions: List<LPLaserOptionsBean>?
+        get() = laserOptions.fromJson<List<LPLaserOptionsBean>>(listType(LPLaserOptionsBean::class))
+
     /**获取传输图层信息数据
      * [com.angcyo.objectbox.laser.pecker.entity.TransferLayerConfigBean]*/
     fun getTransferLayerJson(): String? {
         val list = mutableListOf<TransferLayerConfigBean>()
-        laserOptions?.forEach {
+        _laserOptions?.forEach {
             if (!it.layerId.isNullOrBlank()) {
                 list.add(TransferLayerConfigBean(it.layerId!!, it.dpi))
             }
@@ -104,24 +110,28 @@ data class LPProjectBean(
     /**更新bean里面的数据*/
     fun updateOptionsFromTransferLayer(list: List<TransferLayerConfigBean>?) {
         list?.forEach { config ->
-            laserOptions?.find { it.layerId == config.layerId }?.apply {
+            val options = _laserOptions
+            options?.find { it.layerId == config.layerId }?.apply {
                 dpi = config.dpi
+            }
+            if (!options.isNullOrEmpty()) {
+                laserOptions = options.toJson()
             }
         }
     }
 
     /**获取工程对应的材质描述信息, 没有入库*/
     fun getProjectMaterialList(): List<MaterialEntity> {
-        val options = laserOptions
+        val options = _laserOptions
         if (options.isNullOrEmpty()) {
             return emptyList()
         }
-        return MaterialHelper.createMaterial { entity ->
+        val result = MaterialHelper.createMaterial { entity ->
             options.find { it.layerId == entity.layerId }?.apply {
                 HawkEngraveKeys.lastDiameterPixel = diameter.toPixel()
                 entity.productName = productName
 
-                entity.code = materialId ?: entity.code
+                entity.code = materialCode ?: entity.code
                 entity.key = materialKey
 
                 val str = getAppString(materialKey ?: "")
@@ -142,16 +152,28 @@ data class LPProjectBean(
                 entity.count = printCount
             }
         }
+
+        if (options.isNotEmpty()) {
+            laserOptions = options.toJson()
+        }
+
+        return result
     }
 
     /**更新bean里面的数据*/
     fun updateOptionsFromEngraveConfig(configEntity: EngraveConfigEntity) {
-        laserOptions?.find { it.layerId == configEntity.layerId }?.apply {
+        val options = _laserOptions
+
+        options?.find { it.layerId == configEntity.layerId }?.apply {
             printPower = configEntity.power
             printDepth = configEntity.depth
             printCount = configEntity.time
             precision = configEntity.precision
             lightSource = configEntity.type.toInt()
+        }
+
+        if (!options.isNullOrEmpty()) {
+            laserOptions = options.toJson()
         }
     }
 

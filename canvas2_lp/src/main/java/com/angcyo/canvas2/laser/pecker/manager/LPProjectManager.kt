@@ -90,7 +90,7 @@ class LPProjectManager {
         fun saveProjectLaserOptions(bean: LPProjectBean, taskId: String?) {
             val list = getProjectLaserOptions(taskId)
             if (list.isNotEmpty()) {
-                bean.laserOptions = list
+                bean.laserOptions = list.toJson()
             }
         }
 
