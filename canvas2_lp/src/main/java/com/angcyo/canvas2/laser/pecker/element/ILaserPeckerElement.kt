@@ -5,7 +5,6 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.core.component.CanvasRenderProperty
 import com.angcyo.canvas.render.element.BaseElement
@@ -20,6 +19,7 @@ import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.ex.computePathBounds
@@ -41,8 +41,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         fun LPElementBean.toRenderProperty(result: CanvasRenderProperty = CanvasRenderProperty()): CanvasRenderProperty {
             result.anchorX = left.toPixel()
             result.anchorY = top.toPixel()
-            result.width = width.toPixel()
-            result.height = height.toPixel()
+
+            updateRenderPropertyWidthHeight(result, this)
 
             result.angle = angle
             result.scaleX = scaleX ?: result.scaleX
@@ -58,8 +58,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         fun CanvasRenderProperty.toElementBean(result: LPElementBean): LPElementBean {
             result.left = anchorX.toMm()
             result.top = anchorY.toMm()
-            result.width = width.toMm()
-            result.height = height.toMm()
+
+            updateElementBeanWidthHeight(result, width, height)
 
             result.angle = angle
             result.scaleX = scaleX
@@ -69,6 +69,28 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
             result.flipX = flipX
             result.flipY = flipY
             return result
+        }
+
+        /**更新元素的宽高*/
+        fun updateElementBeanWidthHeight(
+            bean: LPElementBean,
+            @Pixel width: Float,
+            @Pixel height: Float
+        ) {
+            if (bean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
+                //图片类型, 那么存储宽高就是像素的宽高
+                bean.width = width
+                bean.height = height
+            } else {
+                bean.width = width.toMm()
+                bean.height = height.toMm()
+            }
+        }
+
+        /**更新渲染属性的宽高*/
+        fun updateRenderPropertyWidthHeight(property: CanvasRenderProperty, bean: LPElementBean) {
+            property.width = bean.width.toPixel()
+            property.height = bean.height.toPixel()
         }
     }
 
@@ -88,8 +110,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
 
     /**更新原始数据的宽高*/
     fun updateBeanWidthHeight(@Pixel width: Float, @Pixel height: Float) {
-        elementBean.width = width.toMm()
-        elementBean.height = height.toMm()
+        updateElementBeanWidthHeight(elementBean, width, height)
+
         if (this is BaseElement) {
             renderProperty.width = width
             renderProperty.height = height

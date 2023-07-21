@@ -251,7 +251,7 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
-        val operateBitmap = element.originBitmap ?: return
+        val operateBitmap = element.getRenderOriginBitmap() ?: return
         val bean = element.elementBean
         val context = anchor.context
 

@@ -1,7 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.util
 
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.element.IElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
@@ -16,6 +15,7 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.laserpacker.generateName
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.uuid
