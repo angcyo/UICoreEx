@@ -921,11 +921,13 @@ object LPBitmapHandler {
 
             onCropResultAction = { result ->
                 result?.let {
+                    val bitmap = if (HawkEngraveKeys.enableRemoveBWAlpha) result
+                    else result.addBgColor(if (bean.imageFilter == LPDataConstant.DATA_MODE_SEAL) Color.BLACK else Color.WHITE)
                     owner.engraveLoadingAsync({
                         //剪切完之后, 默认黑白处理
-                        element.updateOriginBitmap(result, false)
+                        element.updateOriginBitmap(bitmap, false)
                         addBitmapStateToStack(delegate, renderer, undoState)
-                        result
+                        bitmap
                     }) {
                         renderer.requestUpdatePropertyFlag(Reason.user.apply {
                             controlType = BaseControlPoint.CONTROL_TYPE_DATA
