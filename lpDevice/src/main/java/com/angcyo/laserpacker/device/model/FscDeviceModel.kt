@@ -206,7 +206,6 @@ class FscDeviceModel : LifecycleViewModel() {
                 DslLastDeviceInfoItem.saveDeviceInfo()
 
                 laserPeckerModel.productInfoData.value?.let {
-                    LaserPeckerHelper.updateProductInfo(it, deviceStateModel.deviceStateData.value)
                     MaterialHelper.initMaterial()
 
                     //固件版本

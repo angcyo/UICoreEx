@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.CommandQueueHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
-import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryLogParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
@@ -21,10 +21,10 @@ import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.onMainOnce
-import com.angcyo.library.ex._string
 import com.angcyo.library.ex.add
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.remove
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.toastQQ
 import com.angcyo.viewmodel.MutableHoldLiveData
 import com.angcyo.viewmodel.updateValue
@@ -245,9 +245,27 @@ class DeviceStateModel : ViewModel() {
         deviceModelData.updateValue(model)
     }
 
+    /**获取当前设备对应的模块信息*/
+    fun getDeviceLaserModule(
+        type: Byte,
+        moduleState: Int? = deviceStateData.value?.moduleState
+    ): LaserTypeInfo? {
+        return laserPeckerModel.productInfoData.value?.laserTypeList?.find {
+            if (it.moduleState == -1) {
+                it.type == type
+            } else {
+                it.moduleState == moduleState
+            }
+        }
+    }
+
     /**获取当前安装的模块, 主要针对C1*/
     fun getDeviceModuleLabel(moduleState: Int? = deviceStateData.value?.moduleState): String {
-        return when (moduleState) {
+        return laserPeckerModel.productInfoData.value?.laserTypeList?.find {
+            it.moduleState == moduleState
+        }?.toLabel()?.toStr() ?: "Unknown$moduleState"
+
+        /*return when (moduleState) {
             //0 5W激光
             0 -> "5W 450nm"
             //1 10W激光
@@ -265,7 +283,7 @@ class DeviceStateModel : ViewModel() {
             //7 CNC模式
             7 -> _string(R.string.engrave_module_cnc)
             else -> "Unknown$moduleState"
-        }
+        }*/
     }
 
     //---

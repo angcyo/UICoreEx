@@ -474,32 +474,6 @@ object LaserPeckerHelper {
         }
     }
 
-    /**动态更新产品信息, 更新C1的工作模块*/
-    fun updateProductInfo(info: LaserPeckerProductInfo?, deviceState: QueryStateParser?) {
-        info ?: return
-        if (info.isCI()) {
-            //com/angcyo/bluetooth/fsc/laserpacker/parse/QueryStateParser.kt:81
-            when (deviceState?.moduleState) {
-                //0 5W激光
-                0 -> info.laserTypeList = listOf(
-                    LaserTypeInfo(LASER_TYPE_BLUE, 450, 5f, _string(R.string.laser_type_blue))
-                )
-                //1 10W激光
-                1 -> info.laserTypeList = listOf(
-                    LaserTypeInfo(LASER_TYPE_BLUE, 450, 10f, _string(R.string.laser_type_blue))
-                )
-                //2 20W激光
-                2 -> info.laserTypeList = listOf(
-                    LaserTypeInfo(LASER_TYPE_BLUE, 450, 20f, _string(R.string.laser_type_blue))
-                )
-                //3 1064激光
-                3 -> info.laserTypeList = listOf(
-                    LaserTypeInfo(LASER_TYPE_WHITE, 1064, 2f, _string(R.string.laser_type_white))
-                )
-            }
-        }
-    }
-
     /**切换设备中心点
      * @return 切换是否成功*/
     fun switchDeviceCenter(): Boolean {
@@ -635,7 +609,9 @@ object LaserPeckerHelper {
     /**返回设备支持的光源列表*/
     fun findProductSupportLaserTypeList(): List<LaserTypeInfo> {
         val result = mutableListOf<LaserTypeInfo>()
-        vmApp<LaserPeckerModel>().productInfoData.value?.laserTypeList?.let {
+        vmApp<LaserPeckerModel>().productInfoData.value?.laserTypeList?.filter {
+            it.type >= 0
+        }?.let {
             result.addAll(it)
         }
         return result

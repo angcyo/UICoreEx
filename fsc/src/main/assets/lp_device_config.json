@@ -450,10 +450,48 @@
     "penMaxHeight": 780,
     "laserTypeList": [
       {
+        "moduleState": 0,
+        "type": 0,
+        "wave": 450,
+        "power": 5,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 1,
         "type": 0,
         "wave": 450,
         "power": 10,
         "label": "蓝光"
+      },
+      {
+        "moduleState": 2,
+        "type": 0,
+        "wave": 450,
+        "power": 20,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 3,
+        "type": 1,
+        "wave": 1064,
+        "power": 2,
+        "label": "白光"
+      },
+      {
+        "moduleState": 4,
+        "labelIdStr": "engrave_module_single_pen"
+      },
+      {
+        "moduleState": 5,
+        "labelIdStr": "engrave_module_color_pen"
+      },
+      {
+        "moduleState": 6,
+        "labelIdStr": "engrave_module_knife_cutting"
+      },
+      {
+        "moduleState": 7,
+        "labelIdStr": "engrave_module_cnc"
       }
     ],
     "dpiList": [
@@ -600,10 +638,48 @@
     "penMaxHeight": 400,
     "laserTypeList": [
       {
+        "moduleState": 0,
+        "type": 0,
+        "wave": 450,
+        "power": 5,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 1,
         "type": 0,
         "wave": 450,
         "power": 10,
         "label": "蓝光"
+      },
+      {
+        "moduleState": 2,
+        "type": 0,
+        "wave": 450,
+        "power": 20,
+        "label": "蓝光"
+      },
+      {
+        "moduleState": 3,
+        "type": 1,
+        "wave": 1064,
+        "power": 2,
+        "label": "白光"
+      },
+      {
+        "moduleState": 4,
+        "labelIdStr": "engrave_module_single_pen"
+      },
+      {
+        "moduleState": 5,
+        "labelIdStr": "engrave_module_color_pen"
+      },
+      {
+        "moduleState": 6,
+        "labelIdStr": "engrave_module_knife_cutting"
+      },
+      {
+        "moduleState": 7,
+        "labelIdStr": "engrave_module_cnc"
       }
     ],
     "dpiList": [

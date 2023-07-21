@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
@@ -47,6 +48,7 @@ import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.appendSpaceIfNotEmpty
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.size
@@ -492,8 +494,11 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     append(" ")
                 }
                 append(gridLayerId.toLayerInfo()?.label ?: "")
-                append(" ${gridPrintType.toLaserWave()}nm")
-                append(" ${LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText()}")
+                val layerInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(gridPrintType)
+                appendSpaceIfNotEmpty()
+                append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
+                appendSpaceIfNotEmpty()
+                append(LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText())
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
                 "%1", defaultLabel
