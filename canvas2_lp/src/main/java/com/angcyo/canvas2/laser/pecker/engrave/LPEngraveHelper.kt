@@ -138,7 +138,7 @@ object LPEngraveHelper {
         taskId: String?,
         delegate: CanvasRenderDelegate?
     ): TransferConfigEntity {
-        delegate ?: return EngraveFlowDataHelper.generateTransferConfig(taskId)
+        delegate ?: return EngraveFlowDataHelper.getOrGenerateTransferConfig(taskId)
         var newFileName = false
         return TransferConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME) {
             if (!taskId.isNullOrBlank()) {

@@ -35,7 +35,9 @@ data class MaterialEntity(
     /**材质的代码, 唯一标识代码*/
     var code: String = uuid(),
 
-    /**材质资源的id, 用来界面显示*/
+    /**材质资源的id, 用来界面显示
+     * 权重没有[resIdStr]高, 因为不同打包出来的资源id会不一致*/
+    @Deprecated("请使用[resIdStr]字段")
     var resId: Int = 0,
 
     /**[resId] 资源id在Android上存放的名称, 通过名称可以动态获取[resId]
@@ -44,7 +46,7 @@ data class MaterialEntity(
      * */
     var resIdStr: String? = null,
 
-    /**等同于[resIdStr], 只不过没有国际化, 用户自定义的名称
+    /**等同于[resIdStr], 只不过不需要国际化, 用户自定义的名称
      * 用来标识同一组材质的关键字段*/
     var key: String? = null,
 
@@ -99,6 +101,9 @@ data class MaterialEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.depth]
      * */
     var depth: Int = 10,
+
+    /**打印次数*/
+    var count: Int = 1,
 
     ) : IToText, IToDrawable, IToRightDrawable {
 

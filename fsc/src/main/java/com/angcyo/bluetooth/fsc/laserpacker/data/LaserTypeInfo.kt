@@ -27,6 +27,10 @@ data class LaserTypeInfo(
     var power: Float,
     /**描述字符*/
     val label: String,
+    /**当前对应的额模块
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.getDeviceModuleLabel]
+     * */
+    val moduleState: Int = 0,
 ) : IToText {
 
     //override fun toText(): CharSequence = "${wave}nm (${label})"  //label

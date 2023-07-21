@@ -15,6 +15,7 @@ import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.unit.toPixel
+import com.angcyo.library.utils.uuid
 
 /**
  * 数据元素存储的结构
@@ -91,7 +92,7 @@ data class LPElementBean(
     var id: Long = -1,
 
     /**数据唯一标识符*/
-    var uuid: String? = null,
+    var uuid: String? = uuid(),
 
     /**图层代表图标, 如果有base64图片*/
     var icon: String? = null,

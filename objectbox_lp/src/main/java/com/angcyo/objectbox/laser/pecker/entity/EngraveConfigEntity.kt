@@ -37,11 +37,11 @@ data class EngraveConfigEntity(
      * */
     var layerId: String? = null,
 
-    /**材质标识
+    /**材质标识, 唯一标识符, 可以用来确定指定dpi光源类型的code
      * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.code]*/
     var materialCode: String? = null,
 
-    /**材质key, 用来国际化*/
+    /**材质key, 用来国际化, 可以用来确定一组材质*/
     var materialKey: String? = null,
 
     /**产品名, 比如L4 C1等*/

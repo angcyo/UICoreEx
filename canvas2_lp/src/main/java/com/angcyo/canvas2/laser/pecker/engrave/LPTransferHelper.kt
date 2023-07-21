@@ -68,7 +68,8 @@ object LPTransferHelper {
                 try {
                     EngraveFlowDataHelper.onStartCreateTransferData(taskId)
                     transferModel.transferStateOnceData.postValue(transferState)
-                    val transferConfigEntity = EngraveFlowDataHelper.generateTransferConfig(taskId)
+                    val transferConfigEntity =
+                        EngraveFlowDataHelper.getOrGenerateTransferConfig(taskId)
                     //数据已入库, 可以直接在数据库中查询
                     val entityList = transitionTransferData(canvasDelegate, transferConfigEntity)
                     val size = entityList.size()

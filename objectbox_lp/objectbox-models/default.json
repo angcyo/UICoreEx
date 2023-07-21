@@ -63,7 +63,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "23:8939534007216110348",
+      "lastPropertyId": "24:6816467698053281357",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -146,13 +146,18 @@
           "id": "23:8939534007216110348",
           "name": "dpi",
           "type": 7
+        },
+        {
+          "id": "24:6816467698053281357",
+          "name": "count",
+          "type": 5
         }
       ],
       "relations": []
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "9:6217806725152144362",
+      "lastPropertyId": "10:1603952902530829330",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -195,6 +200,11 @@
           "id": "9:6217806725152144362",
           "name": "mergeGcodeData",
           "type": 1
+        },
+        {
+          "id": "10:1603952902530829330",
+          "name": "layerJson",
+          "type": 9
         }
       ],
       "relations": []

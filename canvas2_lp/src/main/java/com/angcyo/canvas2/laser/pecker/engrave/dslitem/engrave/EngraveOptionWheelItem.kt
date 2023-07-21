@@ -49,7 +49,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                     }*/
                     itemEngraveConfigEntity?.apply {
                         val materialEntity = itemWheelList?.get(index) as? MaterialEntity
-                        EngraveFlowDataHelper.generateEngraveConfigByMaterial(
+                        EngraveFlowDataHelper.getOrGenerateEngraveConfigByMaterial(
                             taskId,
                             materialEntity?.key,
                             materialEntity

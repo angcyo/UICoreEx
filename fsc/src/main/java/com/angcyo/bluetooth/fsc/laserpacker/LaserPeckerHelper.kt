@@ -605,7 +605,13 @@ object LaserPeckerHelper {
         return result
     }
 
-    /**优先使用图层对应的分辨率列表*/
+    /**[findProductLayerSupportPxList]*/
+    fun findProductLayerSupportPxList(layerId: String): List<PxInfo> {
+        return findProductLayerSupportPxList(listOf(layerId))
+    }
+
+    /**优先使用图层对应的分辨率列表
+     * [layerIdList] 图层集合, 找到后即返回*/
     fun findProductLayerSupportPxList(layerIdList: List<String>): List<PxInfo> {
         if (layerIdList.isEmpty()) {
             //no op

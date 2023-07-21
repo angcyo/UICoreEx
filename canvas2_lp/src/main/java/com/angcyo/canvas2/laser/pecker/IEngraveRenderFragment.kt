@@ -26,5 +26,4 @@ interface IEngraveRenderFragment {
 
     /**警示动画布局的容器*/
     val dangerLayoutContainer: ViewGroup?
-
 }

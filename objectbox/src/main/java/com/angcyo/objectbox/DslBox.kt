@@ -422,7 +422,14 @@ fun <T> Box<T>.findLastList(
     return builder.apply(block).build().find(max(count - limit, 0), limit)
 }
 
-/**查找最后一个元素*/
+/**查找最后一个元素
+ * ```
+ * apply(
+ *          EngraveConfigEntity_.taskId.equal("$taskId")
+ *              .and(EngraveConfigEntity_.layerId.equal(engraveLayerInfo?.layerId ?: ""))
+ *      )
+ * ```
+ * */
 inline fun <reified T : Any> KClass<T>.findLast(
     packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}

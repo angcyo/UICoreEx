@@ -3,6 +3,9 @@ apply from: allGradle.libBase
 dependencies {
     implementation project(allModule.library)
     api project(allModule.objectbox)
+
+    //2023-7-20 json
+    implementation project(allModule.http)
 }
 
 //apply plugin: 'kotlin-kapt'

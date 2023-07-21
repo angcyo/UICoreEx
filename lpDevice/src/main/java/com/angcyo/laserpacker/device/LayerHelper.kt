@@ -1,7 +1,6 @@
 package com.angcyo.laserpacker.device
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
@@ -14,21 +13,21 @@ import com.angcyo.library.ex._string
  */
 object LayerHelper {
 
-    /**填充图层*/
+    /**填充图层id*/
     const val LAYER_FILL = "layerFill"
 
-    /**图片图层*/
+    /**图片图层id*/
     const val LAYER_PICTURE = "layerPicture"
 
-    /**线条图层*/
+    /**线条图层id*/
     const val LAYER_LINE = "layerLine"
 
-    /**切割图层*/
+    /**切割图层id*/
     const val LAYER_CUT = "layerCut"
 
     /**图层, 以及图层顺序
      * 先 填充->抖动->GCode */
-    private val engraveLayerList = listOf(
+    val engraveLayerList = listOf(
         EngraveLayerInfo(LAYER_FILL, _string(R.string.engrave_layer_fill)),
         EngraveLayerInfo(LAYER_PICTURE, _string(R.string.engrave_layer_bitmap)),
         EngraveLayerInfo(LAYER_LINE, _string(R.string.engrave_layer_line)),

@@ -2,8 +2,15 @@ package com.angcyo.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.unit.toMm
+import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity_
 
 /**
  * 图层参数
@@ -22,9 +29,6 @@ data class LPLaserOptionsBean(
     /**旋转轴直径*/
     @MM
     var diameter: Float = HawkEngraveKeys.lastDiameterPixel.toMm(),
-
-    /**雕刻次数*/
-    var printCount: Int = 1,
 
     //---
 
@@ -49,6 +53,10 @@ data class LPLaserOptionsBean(
     /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.depth]*/
     var printDepth: Int = 0,
 
+    /**雕刻次数
+     * [com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.count]*/
+    var printCount: Int = 1,
+
     /**[com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.precision]*/
     var precision: Int = 0,
 
@@ -62,13 +70,24 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     bean.layerId = layerId
     bean.materialId = materialCode
     bean.materialKey = materialKey
+    MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
+        apply(MaterialEntity_.code.equal("$materialCode"))
+    }?.let {
+        bean.materialName = it.toText()?.toStr()
+    }
 
-    bean.printCount = time
     bean.lightSource = type.toInt()
+    bean.printCount = time
     bean.diameter = diameterPixel.toMm()
     bean.precision = precision
     bean.printPower = power
     bean.printDepth = depth
+
+    TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+        apply(TransferConfigEntity_.taskId.equal("$taskId"))
+    }?.apply {
+        bean.dpi = getLayerConfigList(layerId)?.dpi ?: dpi
+    }
 
     return bean
 }

@@ -1,6 +1,8 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
+import com.angcyo.http.base.fromJson
+import com.angcyo.http.base.listType
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -34,6 +36,9 @@ data class TransferConfigEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]*/
     var dpi: Float = -1f,
 
+    /**图层json数据[List<TransferLayerConfigBean>]*/
+    var layerJson: String? = null,
+
     //---
 
     /**是否要合并相同类型的数据, 比如GCode数据, 线段数据等
@@ -52,4 +57,15 @@ data class TransferConfigEntity(
      * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_DITHERING]
      * */
     var dataMode: Int? = null,
-)
+) {
+
+    /**[layerId]图层*/
+    fun getLayerConfigList(layerId: String?): TransferLayerConfigBean? {
+        return getLayerConfigList()?.find { it.layerId == layerId }
+    }
+
+    fun getLayerConfigList(): List<TransferLayerConfigBean>? {
+        return layerJson?.fromJson<List<TransferLayerConfigBean>>(listType(TransferLayerConfigBean::class))
+    }
+
+}

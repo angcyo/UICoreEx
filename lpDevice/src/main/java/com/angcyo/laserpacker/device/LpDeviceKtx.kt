@@ -135,6 +135,7 @@ fun Context.engraveStrokeLoading(
 }
 
 /**激光类型字符串
+ * [includeWave] 是否包含波长
  * [com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo]*/
 fun Byte?.toLaserTypeString(includeWave: Boolean = false) = buildString {
     val laserType = this@toLaserTypeString

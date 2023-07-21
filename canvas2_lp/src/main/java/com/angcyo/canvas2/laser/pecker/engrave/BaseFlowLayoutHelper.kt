@@ -19,6 +19,8 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.engrave.config.EngraveConfigProvider
+import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigProvider
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.core.showIn
@@ -32,6 +34,7 @@ import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -130,6 +133,12 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**雕刻绑定的界面*/
     var engraveCanvasFragment: IEngraveRenderFragment? = null
+
+    /**当前打开的工程数据, 如果有*/
+    var projectBean: LPProjectBean? = null
+
+    /**雕刻配置提供者*/
+    var engraveConfigProvider: IEngraveConfigProvider = EngraveConfigProvider()
 
     //产品模式
     val laserPeckerModel = vmApp<LaserPeckerModel>()

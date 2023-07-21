@@ -138,20 +138,42 @@ object MaterialHelper {
     }
 
     /**创建一个自定义的材质*/
-    fun createCustomMaterial(): List<MaterialEntity> {
-        //自定义, 自动记住了上一次的值
+    fun createCustomMaterial(): List<MaterialEntity> = createMaterial {
+        it.resId = R.string.custom
+        it.resIdStr = "custom"
+        it.key = "custom"
+
+        it.createMaterialCode(it.key!!)
+    }
+
+    /**创建一个材质*/
+    fun createMaterial(config: (entity: MaterialEntity) -> Unit): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
-        for (layerInfo in LayerHelper.getEngraveLayerList()) {
+        //一个材质, 需要包含所有图层的参数
+        for (layerInfo in LayerHelper.engraveLayerList) {
             MaterialEntity().apply {
-                resId = R.string.custom
-                resIdStr = "custom"
-                key = "custom"
+                //1:
+                layerId = layerInfo.layerId
                 type = DeviceHelper.getProductLaserType().toInt()
+
+                //2: 优先使用上一次的参数
                 power = HawkEngraveKeys.lastPower
                 depth = HawkEngraveKeys.lastDepth
                 precision = HawkEngraveKeys.lastPrecision
-                layerId = layerInfo.layerId
-                createMaterialCode(key!!)
+
+                //3: 先用自定义占位
+                resId = R.string.custom
+                resIdStr = "custom"
+                key = "custom"
+
+                //productName //用来区分是否是自定义的材质
+
+                //配置
+                config(this)
+                //生成唯一码
+                if (code.isBlank()) {
+                    createMaterialCode(key!!)
+                }
 
                 result.add(this)
             }
@@ -159,17 +181,28 @@ object MaterialHelper {
         return result
     }
 
-
-    /**获取材质列表
+    /**获取材质列表, 过滤指定的dpi和光源
      * [type] 激光类型/光源 0:蓝光 1:白光, 不指定则都要
      * [LaserPeckerHelper.LASER_TYPE_WHITE] 0x01 白光
      * [LaserPeckerHelper.LASER_TYPE_BLUE] 0x00 蓝光
      * */
-    fun getMaterialList(materialKey: String?, dpiScale: Float, type: Int?): List<MaterialEntity> {
+    fun filterMaterialList(
+        materialKey: String?,
+        dpi: Float,
+        dpiScale: Float,
+        type: Int?
+    ): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         materialList.forEach {
             if (it.key == materialKey) {
-                if (it.dpiScale <= 0 || it.dpiScale == dpiScale) {
+                if (it.dpi > 0) {
+                    //材质指定了dpi, 则必须一致
+                    if (it.dpi == dpi) {
+                        if (type == null || type == it.type) {
+                            result.add(it)
+                        }
+                    }
+                } else if (it.dpiScale <= 0 || it.dpiScale == dpiScale) {
                     //材质未指定dpi时, 可能是用户自定义的材质, 则返回
                     if (type == null || type == it.type) {
                         result.add(it)
@@ -186,7 +219,7 @@ object MaterialHelper {
     }
 
     /**获取材质在对应列表中的索引
-     * [getMaterialList]
+     * [filterMaterialList]
      * */
     fun indexOfMaterial(materialList: List<MaterialEntity>, materialKey: String?, type: Int?): Int {
         val index =
@@ -202,6 +235,8 @@ object MaterialHelper {
             append("${materialName}_")
             append(if (type == LaserPeckerHelper.LASER_TYPE_BLUE.toInt()) "blue_" else "white_")
             append(layerId)
+            //append("_${dpi}_")
+            append("_")
             append(dpiScale.unitDecimal(1))
         }
     }

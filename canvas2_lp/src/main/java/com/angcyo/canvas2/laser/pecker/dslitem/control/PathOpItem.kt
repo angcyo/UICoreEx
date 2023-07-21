@@ -65,7 +65,7 @@ class PathOpItem : CanvasIconItem() {
 
                 val elementBean = LPElementBean().apply {
                     mtype = LPDataConstant.DATA_TYPE_SVG
-                    this.data = svgContent
+                    this.path = svgContent
                     paintStyle = if (HawkEngraveKeys.enableXorFill && op == Path.Op.XOR) {
                         Paint.Style.FILL.toPaintStyleInt()
                     } else {

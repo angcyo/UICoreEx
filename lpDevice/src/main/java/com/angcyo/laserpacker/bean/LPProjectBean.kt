@@ -1,7 +1,16 @@
 package com.angcyo.laserpacker.bean
 
 import android.graphics.Bitmap
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
+import com.angcyo.http.base.toJson
+import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.getAppString
+import com.angcyo.library.unit.toPixel
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferLayerConfigBean
 
 /**
  * LP工程结构, 里面包含很多子元素[com.angcyo.laserpacker.bean.LPElementBean]
@@ -78,4 +87,72 @@ data class LPProjectBean(
 
     /**是否处于调试模式下, 用于debug下方便断点*/
     var _debug: Boolean? = null
-)
+) {
+
+    /**获取传输图层信息数据
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferLayerConfigBean]*/
+    fun getTransferLayerJson(): String? {
+        val list = mutableListOf<TransferLayerConfigBean>()
+        laserOptions?.forEach {
+            if (!it.layerId.isNullOrBlank()) {
+                list.add(TransferLayerConfigBean(it.layerId!!, it.dpi))
+            }
+        }
+        return if (list.isEmpty()) null else list.toJson()
+    }
+
+    /**更新bean里面的数据*/
+    fun updateOptionsFromTransferLayer(list: List<TransferLayerConfigBean>?) {
+        list?.forEach { config ->
+            laserOptions?.find { it.layerId == config.layerId }?.apply {
+                dpi = config.dpi
+            }
+        }
+    }
+
+    /**获取工程对应的材质描述信息, 没有入库*/
+    fun getProjectMaterialList(): List<MaterialEntity> {
+        val options = laserOptions
+        if (options.isNullOrEmpty()) {
+            return emptyList()
+        }
+        return MaterialHelper.createMaterial { entity ->
+            options.find { it.layerId == entity.layerId }?.apply {
+                HawkEngraveKeys.lastDiameterPixel = diameter.toPixel()
+                entity.productName = productName
+
+                entity.code = materialId ?: entity.code
+                entity.key = materialKey
+
+                val str = getAppString(materialKey ?: "")
+                if (str.isNullOrBlank()) {
+                    //非系统配置的材质, 使用材质名
+                    entity.name = materialName
+                } else {
+                    //系统材质
+                    entity.resIdStr = materialKey
+                }
+
+                entity.dpi = dpi
+                entity.dpiScale = dpi.toDpiScale()
+                entity.type = lightSource
+                entity.precision = precision
+                entity.power = printPower
+                entity.depth = printDepth
+                entity.count = printCount
+            }
+        }
+    }
+
+    /**更新bean里面的数据*/
+    fun updateOptionsFromEngraveConfig(configEntity: EngraveConfigEntity) {
+        laserOptions?.find { it.layerId == configEntity.layerId }?.apply {
+            printPower = configEntity.power
+            printDepth = configEntity.depth
+            printCount = configEntity.time
+            precision = configEntity.precision
+            lightSource = configEntity.type.toInt()
+        }
+    }
+
+}
