@@ -496,18 +496,6 @@
     ],
     "dpiList": [
       {
-        "dpi": 127,
-        "px": 4,
-        "des": "0.5K",
-        "debug": true
-      },
-      {
-        "dpi": 203,
-        "px": 4,
-        "des": "0.8K",
-        "debug": true
-      },
-      {
         "dpi": 254,
         "px": 4,
         "des": "1K"
@@ -516,36 +504,6 @@
         "dpi": 508,
         "px": 2,
         "des": "2K"
-      },
-      {
-        "dpi": 635,
-        "px": 1,
-        "des": "2.5k",
-        "debug": true
-      },
-      {
-        "dpi": 711,
-        "px": 1,
-        "des": "2.8k",
-        "debug": true
-      },
-      {
-        "dpi": 762,
-        "px": 1,
-        "des": "3k",
-        "debug": true
-      },
-      {
-        "dpi": 838,
-        "px": 1,
-        "des": "3.3k",
-        "debug": true
-      },
-      {
-        "dpi": 889,
-        "px": 1,
-        "des": "3.5k",
-        "debug": true
       },
       {
         "dpi": 1016,
@@ -557,17 +515,14 @@
       "layerPicture": {
         "dpiList": [
           {
-            "dpi": 127,
+            "dpi": 254,
             "px": 4,
-            "des": "0.5K",
-            "debug": true
-          },
-          {
-            "dpi": 203,
-            "px": 4,
-            "des": "0.8K",
-            "debug": true
-          },
+            "des": "1K"
+          }
+        ]
+      },
+      "layerFill": {
+        "dpiList": [
           {
             "dpi": 254,
             "px": 4,
@@ -577,43 +532,39 @@
             "dpi": 508,
             "px": 2,
             "des": "2K",
-            "debug": true
-          },
-          {
-            "dpi": 635,
-            "px": 1,
-            "des": "2.5k",
-            "debug": true
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
           },
           {
             "dpi": 711,
             "px": 1,
             "des": "2.8k",
-            "debug": true
-          },
-          {
-            "dpi": 762,
-            "px": 1,
-            "des": "3k",
-            "debug": true
-          },
-          {
-            "dpi": 838,
-            "px": 1,
-            "des": "3.3k",
-            "debug": true
+            "label": "2k",
+            "moduleList": [
+              3
+            ]
           },
           {
             "dpi": 889,
             "px": 1,
             "des": "3.5k",
-            "debug": true
+            "label": "4k",
+            "moduleList": [
+              3
+            ]
           },
           {
             "dpi": 1016,
             "px": 1,
             "des": "4K",
-            "debug": true
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
           }
         ]
       }
@@ -684,18 +635,6 @@
     ],
     "dpiList": [
       {
-        "dpi": 127,
-        "px": 4,
-        "des": "0.5K",
-        "debug": true
-      },
-      {
-        "dpi": 203,
-        "px": 4,
-        "des": "0.8K",
-        "debug": true
-      },
-      {
         "dpi": 254,
         "px": 4,
         "des": "1K"
@@ -704,36 +643,6 @@
         "dpi": 508,
         "px": 2,
         "des": "2K"
-      },
-      {
-        "dpi": 635,
-        "px": 1,
-        "des": "2.5k",
-        "debug": true
-      },
-      {
-        "dpi": 711,
-        "px": 1,
-        "des": "2.8k",
-        "debug": true
-      },
-      {
-        "dpi": 762,
-        "px": 1,
-        "des": "3k",
-        "debug": true
-      },
-      {
-        "dpi": 838,
-        "px": 1,
-        "des": "3.3k",
-        "debug": true
-      },
-      {
-        "dpi": 889,
-        "px": 1,
-        "des": "3.5k",
-        "debug": true
       },
       {
         "dpi": 1016,
@@ -745,17 +654,14 @@
       "layerPicture": {
         "dpiList": [
           {
-            "dpi": 127,
+            "dpi": 254,
             "px": 4,
-            "des": "0.5K",
-            "debug": true
-          },
-          {
-            "dpi": 203,
-            "px": 4,
-            "des": "0.8K",
-            "debug": true
-          },
+            "des": "1K"
+          }
+        ]
+      },
+      "layerFill": {
+        "dpiList": [
           {
             "dpi": 254,
             "px": 4,
@@ -765,43 +671,39 @@
             "dpi": 508,
             "px": 2,
             "des": "2K",
-            "debug": true
-          },
-          {
-            "dpi": 635,
-            "px": 1,
-            "des": "2.5k",
-            "debug": true
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
           },
           {
             "dpi": 711,
             "px": 1,
             "des": "2.8k",
-            "debug": true
-          },
-          {
-            "dpi": 762,
-            "px": 1,
-            "des": "3k",
-            "debug": true
-          },
-          {
-            "dpi": 838,
-            "px": 1,
-            "des": "3.3k",
-            "debug": true
+            "label_": "2k",
+            "moduleList": [
+              3
+            ]
           },
           {
             "dpi": 889,
             "px": 1,
             "des": "3.5k",
-            "debug": true
+            "label_": "4k",
+            "moduleList": [
+              3
+            ]
           },
           {
             "dpi": 1016,
             "px": 1,
             "des": "4K",
-            "debug": true
+            "moduleList": [
+              0,
+              1,
+              2
+            ]
           }
         ]
       }
