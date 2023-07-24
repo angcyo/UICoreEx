@@ -13,6 +13,7 @@ import com.angcyo.library.model.Page
 import com.angcyo.objectbox.DslBox.Companion.default_package_name
 import com.angcyo.objectbox.DslBox.Companion.getBox
 import com.angcyo.objectbox.DslBox.Companion.getBoxStore
+import com.angcyo.objectbox.annotation.OperateEntity
 import io.objectbox.*
 import io.objectbox.android.Admin
 import io.objectbox.exception.DbException
@@ -486,33 +487,40 @@ inline fun <reified T : Any> KClass<T>.page(
 //region ---remove---
 
 /**删除所有*/
+@OperateEntity
 fun <T> Box<T>.removeAll(block: QueryBuilder<T>.() -> Unit = {}): List<T> {
     return findAll(block).apply { this@removeAll.remove(this) }
 }
 
+@OperateEntity
 fun <T> Box<T>.removeFirst(block: QueryBuilder<T>.() -> Unit = {}): T? {
     return findFirst(block)?.apply { this@removeFirst.remove(this) }
 }
 
 /**删除一条记录*/
+@OperateEntity
 inline fun <reified T> T.deleteEntity(packageName: String = defaultBoxStore()): Boolean {
     return boxOf(T::class.java, packageName).remove(this)
 }
 
 /**[deleteEntity]*/
+@OperateEntity
 inline fun <reified T> T.removeEntity(packageName: String = defaultBoxStore()) =
     deleteEntity(packageName)
 
 /**删除所有*/
+@OperateEntity
 inline fun <reified T> Collection<T>.deleteAllEntity(packageName: String = defaultBoxStore()) {
     return boxOf(T::class.java, packageName).remove(this)
 }
 
 /**[deleteAllEntity]*/
+@OperateEntity
 inline fun <reified T> Collection<T>.removeAllEntity(packageName: String = defaultBoxStore()) =
     deleteAllEntity(packageName)
 
 /**获取所有记录*/
+@OperateEntity
 inline fun <reified T : Any> KClass<T>.removeAll(
     packageName: String = defaultBoxStore(),
     noinline block: QueryBuilder<T>.() -> Unit = {}
@@ -529,6 +537,7 @@ inline fun <reified T : Any> KClass<T>.removeAll(
 /**保存实体, 保存成功之后, [entityId]会自动赋值
  * id不为0时, 就是更新
  * 返回Entity的id*/
+@OperateEntity
 inline fun <reified T> T.saveEntity(packageName: String = defaultBoxStore()): Long {
     if (this == null) {
         return -1
@@ -538,6 +547,7 @@ inline fun <reified T> T.saveEntity(packageName: String = defaultBoxStore()): Lo
 
 /**保存实例*/
 @DSL
+@OperateEntity
 inline fun <reified T : Any> KClass<T>.saveEntity(
     packageName: String = defaultBoxStore(),
     update: T.() -> Unit
@@ -554,6 +564,7 @@ inline fun <reified T : Any> KClass<T>.saveEntity(
  * [query] 查询条件
  * */
 @DSL
+@OperateEntity
 inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
     packageName: String = defaultBoxStore(),
     init: T.() -> Unit = {},
@@ -573,6 +584,7 @@ inline fun <reified T : Any> KClass<T>.queryOrCreateEntity(
 
 /**保证一定得到一个实体, 并且执行初始化方法*/
 @DSL
+@OperateEntity
 inline fun <reified T : Any> KClass<T>.ensureEntity(
     packageName: String = defaultBoxStore(),
     noinline query: QueryBuilder<T>.() -> Unit,
@@ -595,11 +607,13 @@ inline fun <reified T : Any> KClass<T>.ensureEntity(
 
 /**批量保存或者更新
  * id不为0时, 就是更新*/
+@OperateEntity
 inline fun <reified T> Collection<T>.saveAllEntity(packageName: String = defaultBoxStore()) {
     boxOf(T::class.java, packageName).put(this)
 }
 
 /**先通过查询条件查找满足条件的实体, 如果不存在则创建新的*/
+@OperateEntity
 inline fun <reified T : Any> KClass<T>.updateOrCreateEntity(
     packageName: String = defaultBoxStore(),
     noinline query: QueryBuilder<T>.() -> Unit,
