@@ -10,7 +10,6 @@ import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.ex.ensureInt
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.unit.unitDecimal
@@ -60,7 +59,7 @@ object MaterialHelper {
         val name = product?.name ?: return emptyList()
         val result = mutableListOf<String>()
         product.laserTypeList.forEach {
-            val configName = "${name}_${it.wave}_${it.power.ensureInt()}.json"
+            val configName = it.getConfigFileName(name)
             result.add(configName)
         }
         return result
@@ -83,7 +82,7 @@ object MaterialHelper {
 
         //系统的推荐参数
         product.laserTypeList.forEach {
-            val configName = "${name}_${it.wave}_${it.power.ensureInt()}.json"
+            val configName = it.getConfigFileName(name)
             val json = "argument/${configName}"
             L.w("读取材质:${json}")
             val text =

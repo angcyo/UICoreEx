@@ -48,6 +48,21 @@ data class LaserTypeInfo(
 
     override fun toText(): CharSequence = "${wave}nm"  //label
 
+    /**配置文件的名称
+     * [productName] 产品名称 `LP4/LX1`*/
+    fun getConfigFileName(productName: String): String {
+        if (wave > 0 && power > 0) {
+            return "${productName}_${wave}_${power.ensureInt()}.json"
+        }
+        if (moduleState >= 0) {
+            return "${productName}_module_${moduleState}.json"
+        }
+        if (type >= 0) {
+            return "${productName}_type_${type}.json"
+        }
+        return "${productName}.json"
+    }
+
     fun toLabel(): CharSequence = buildString {
         if (labelIdStr.isNullOrBlank()) {
             if (power > 0) {
