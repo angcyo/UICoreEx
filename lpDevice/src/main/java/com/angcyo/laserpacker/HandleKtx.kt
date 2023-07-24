@@ -31,6 +31,7 @@ import com.angcyo.library.ex.toDegrees
 import com.angcyo.library.ex.toDrawable
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.unit.toMm
+import com.angcyo.library.unit.toPixel
 import com.angcyo.svg.DrawElement
 import com.angcyo.svg.Svg
 import com.angcyo.svg.SvgElementListener
@@ -280,5 +281,7 @@ fun Bitmap?.toBitmapElementBeanV2(
     bean.printsThreshold = bean.blackThreshold
     bean._srcBitmap =
         BitmapHandle.toBlackWhiteHandle(this, HawkEngraveKeys.lastBWThreshold.toInt(), invert)
+    bean.scaleX = 1 / 1f.toPixel()
+    bean.scaleY = bean.scaleX
     return bean
 }

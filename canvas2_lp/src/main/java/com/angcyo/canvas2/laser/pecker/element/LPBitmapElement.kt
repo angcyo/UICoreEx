@@ -25,6 +25,7 @@ import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 
 /**
@@ -198,7 +199,20 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
     }
 
     override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
-        super.updateOriginBitmap(bitmap, keepVisibleSize)
+        this.originBitmap = bitmap
+        if (elementBean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
+            updateOriginWidthHeight(
+                bitmap.width.toPixel(),
+                bitmap.height.toPixel(),
+                keepVisibleSize
+            )
+        } else {
+            updateOriginWidthHeight(
+                bitmap.width.toFloat(),
+                bitmap.height.toFloat(),
+                keepVisibleSize
+            )
+        }
         //更新原图, 默认是黑白画处理
 
         ILaserPeckerElement.updateElementBeanWidthHeight(
