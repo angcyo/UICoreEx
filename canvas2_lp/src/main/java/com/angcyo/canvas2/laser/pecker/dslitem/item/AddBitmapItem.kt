@@ -136,7 +136,8 @@ class AddBitmapItem : CanvasIconItem(), IFragmentItem {
                             null
                         )
                     } else {
-                        return false
+                        //文本内容
+                        LPElementHelper.addTextElement(itemRenderDelegate, text)
                     }
                 } else if (path.isImageType()) {
                     //图片
