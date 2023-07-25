@@ -68,5 +68,9 @@ data class DeviceSettingBean(
     var updateHawkCommand: String? = null,
     /**新功能提示字符串*/
     var newHawkKeyStr: String? = null,
+    /**数据偏移帮助文档地址, 默认跳转*/
+    var dataOffsetHelpUrl: String? = null,
+    /**中文特殊跳转*/
+    var dataOffsetHelpUrlZh: String? = null,
     //endregion---Android端设置项---
 )

@@ -167,8 +167,8 @@
     <string name="project_restore_tip">Whether to restore the previous project?</string>
 
     <string name="calibration_offset_label">Data offset</string>
-    <string name="calibration_offset_left">Left</string>
-    <string name="calibration_offset_top">Top</string>
+    <string name="calibration_offset_left">x</string>
+    <string name="calibration_offset_top">y</string>
 
     <string name="cannot_share_project">Unable to share project</string>
 

@@ -167,8 +167,8 @@
     <string name="project_restore_tip">是否恢复之前的项目?</string>
 
     <string name="calibration_offset_label">数据偏移</string>
-    <string name="calibration_offset_left">左</string>
-    <string name="calibration_offset_top">上</string>
+    <string name="calibration_offset_left">x轴</string>
+    <string name="calibration_offset_top">y轴</string>
 
     <string name="cannot_share_project">无法分享工程</string>
 

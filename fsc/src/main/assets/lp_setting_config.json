@@ -26,5 +26,7 @@
   "closeTextEditItemsFun": null,
   "enableFun": null,
   "maxEngraveItemCount": 30,
-  "updateHawkCommand": ""
+  "updateHawkCommand": "",
+  "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_zh",
+  "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_en"
 }
