@@ -174,17 +174,26 @@ class PreviewControlItem : BasePreviewItem() {
 
         itemList.clear()
         if (laserPeckerModel.haveExDevice()) {
-            itemList.add(pausePreviewItem!!)
-            itemList.add(continuePreviewItem!!)
+            //2023-7-25
+            if (laserPeckerModel.isCSeries()) {
+                if (laserPeckerModel.isZOpen() || laserPeckerModel.isROpen()) {
+                    //Z R只有一个预览开关
+                    continuePreviewItem?.label = _string(R.string.preview)
+                    itemList.add(continuePreviewItem!!)
+                } else {
+                    itemList.add(pausePreviewItem!!)
+                    itemList.add(continuePreviewItem!!)
 
-            if (laserPeckerModel.isCSeries() &&
-                !laserPeckerModel.isZOpen() &&
-                !laserPeckerModel.isROpen()
-            ) {
-                //C1专属 第三轴滚动
-                //2023-4-14 z轴下, 不显示滚动按钮
-                //2023-4-23 r轴下, 不显示滚动按钮
-                itemList.add(scrollPreviewItem!!)
+                    if (!laserPeckerModel.isZOpen() && !laserPeckerModel.isROpen()) {
+                        //C1专属 第三轴滚动
+                        //2023-4-14 z轴下, 不显示滚动按钮
+                        //2023-4-23 r轴下, 不显示滚动按钮
+                        itemList.add(scrollPreviewItem!!)
+                    }
+                }
+            } else {
+                itemList.add(pausePreviewItem!!)
+                itemList.add(continuePreviewItem!!)
             }
         } else {
             itemList.add(rangePreviewItem!!)
@@ -238,7 +247,7 @@ class PreviewControlItem : BasePreviewItem() {
 
     /**数据结构*/
     data class ControlTextItemInfo(
-        val label: String,
+        var label: String,
         val ico: Int = -1,
         var selected: Boolean = false,
         val clickAction: (DslViewHolder, ControlTextItemInfo) -> Unit
