@@ -9,11 +9,16 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.initLayerDpi
 import com.angcyo.library.L
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveAllEntity
+import com.angcyo.objectbox.removeAll
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -40,54 +45,53 @@ class EngraveConfigProvider : IEngraveConfigProvider {
     ) {
         flowLayoutHelper.projectBean?.apply {
             file_name = configEntity.name
-            updateOptionsFromTransferLayer(configEntity.getLayerConfigList())
+            updateOptionsFromTransferLayer(configEntity.layerJson.getLayerConfigList())
         }
     }
 
-    override fun getEngraveMaterial(flowLayoutHelper: BaseFlowLayoutHelper): MaterialEntity {
+    override fun getEngraveMaterialList(flowLayoutHelper: BaseFlowLayoutHelper): List<MaterialEntity> {
         val taskId = flowLayoutHelper.flowTaskId
         //默认选中材质, 获取任务之前已经选中的材质, 如果有
-        var materialEntity = EngraveFlowDataHelper.findTaskMaterial(taskId)
-        if (materialEntity == null) {
+        var materialEntityList = EngraveFlowDataHelper.findTaskMaterialList(taskId)
+        if (materialEntityList.isNullOrEmpty()) {
             val projectBean = flowLayoutHelper.projectBean
             val projectMaterialList = projectBean?.getProjectMaterialList()
             if (projectMaterialList.isNullOrEmpty()) {
                 //未初始化材质信息, 默认使用第一个
-                val lastMaterial = EngraveFlowDataHelper.findLastMaterial()
-                materialEntity =
-                    if (lastMaterial != null && MaterialHelper.materialList.find { it.key == lastMaterial.key } != null) {
-                        //上一次设备推荐的材质, 在列表中
-                        lastMaterial
-                    } else {
-                        //使用列表中第一个
-                        MaterialHelper.materialList.firstOrNull()
-                            ?: MaterialHelper.createCustomMaterial().first()
-                    }
+                MaterialHelper.initMaterial()//初始化材质, 用来更新上一次雕刻使用的自定义材质信息
+                materialEntityList = MaterialHelper.getCustomMaterialList()
             } else {
                 //工程中自带的材质信息
+                MaterialEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+                    apply(MaterialEntity_.taskId.equal("$taskId"))
+                }
                 for (entity in projectMaterialList) {
+                    entity.layerId?.let { entity.initLayerDpi(it, entity.dpi) }
                     entity.taskId = taskId
+                    entity.isCustomMaterial = true
                 }
                 projectMaterialList.lpSaveAllEntity()
                 MaterialHelper.initMaterial()//重新初始化材质
-                materialEntity = projectMaterialList.first()
+                materialEntityList = projectMaterialList
             }
 
-            "任务:${taskId} 默认材质:$materialEntity".writeToLog(logLevel = L.INFO)
+            "任务:${taskId} 默认材质:$materialEntityList".writeToLog(logLevel = L.INFO)
 
-            //雕刻配置信息
-            EngraveFlowDataHelper.getOrGenerateEngraveConfigByMaterial(
-                taskId,
-                materialEntity.key,
-                materialEntity
-            )
+            //创建雕刻配置信息
+            EngraveFlowDataHelper.getOrGenerateEngraveConfigByMaterial(taskId, materialEntityList)
         } else {
             //如果有材质, 则从材质中获取对应图层的配置
         }
-        return materialEntity
+        return materialEntityList
     }
 
-    override fun getEngraveConfig(flowLayoutHelper: BaseFlowLayoutHelper): List<EngraveConfigEntity> {
+    override fun getEngraveMaterial(
+        flowLayoutHelper: BaseFlowLayoutHelper,
+        layerId: String
+    ): MaterialEntity = getEngraveMaterialList(flowLayoutHelper).find { it.layerId == layerId }
+        ?: MaterialHelper.getLayerMaterialList(layerId).last()
+
+    override fun getEngraveConfigList(flowLayoutHelper: BaseFlowLayoutHelper): List<EngraveConfigEntity> {
         val taskId = flowLayoutHelper.flowTaskId
         val list = EngraveFlowDataHelper.getTaskEngraveConfigList(taskId)
         if (list.isNotEmpty()) {

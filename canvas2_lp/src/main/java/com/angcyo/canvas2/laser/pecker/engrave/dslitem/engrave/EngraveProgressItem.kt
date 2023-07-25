@@ -39,11 +39,13 @@ class EngraveProgressItem : DslAdapterItem() {
         } else {
             span {
                 val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
-                engraveLayerList.forEach {
+                val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+                engraveLayerList.forEach { layerInfo ->
                     drawable {
-                        showText = it.toText()
+                        showText = layerInfo.toText()
                         spanWeight = 1f / engraveLayerList.size() - 0.001f
                         textGravity = Gravity.CENTER
+                        textBold = layerInfo.layerId == engraveConfigEntity?.layerId
                     }
                 }
             }

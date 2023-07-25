@@ -15,6 +15,7 @@ import com.angcyo.canvas2.laser.pecker.manager.LPProjectAutoSaveManager.isSaveBo
 import com.angcyo.canvas2.laser.pecker.util.LPRendererHelper
 import com.angcyo.canvas2.laser.pecker.util.lpBitmapElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.http.base.json
@@ -87,10 +88,32 @@ class LPProjectManager {
             return result
         }
 
-        fun saveProjectLaserOptions(bean: LPProjectBean, taskId: String?) {
+        fun saveProjectLaserOptions(
+            bean: LPProjectBean,
+            taskId: String?,
+            renderList: List<BaseRenderer>?
+        ) {
             val list = getProjectLaserOptions(taskId)
             if (list.isNotEmpty()) {
-                bean.laserOptions = list.toJson()
+                if (HawkEngraveKeys.saveAllProjectOptions) {
+                    bean.laserOptions = list.toJson()
+                } else {
+                    //有数据的图层, 才保存
+                    val result = mutableListOf<LPLaserOptionsBean>()
+                    for (options in list) {
+                        val layerId = options.layerId
+                        renderList?.forEach { renderer ->
+                            val element = renderer.lpElementBean()
+                            if (element?._layerId == layerId) {
+                                //有数据的图层, 才保存
+                                result.add(options)
+                            }
+                        }
+                    }
+                    if (result.isNotEmpty()) {
+                        bean.laserOptions = result.toJson()
+                    }
+                }
             }
         }
 
@@ -136,7 +159,7 @@ class LPProjectManager {
                     vmApp<DeviceStateModel>().deviceStateData.value?.moduleState ?: moduleState
 
                 //options
-                saveProjectLaserOptions(this, taskId)
+                saveProjectLaserOptions(this, taskId, renderList)
 
                 //last
                 saveProjectLastParams(this)

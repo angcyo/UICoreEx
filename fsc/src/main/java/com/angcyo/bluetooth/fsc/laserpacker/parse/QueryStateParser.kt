@@ -314,3 +314,11 @@ fun Int.toDeviceStr(): String = when (this) {
     3 -> _string(R.string.device_ex_r_label) //r轴
     else -> ""
 }
+
+fun String.toDeviceStr(): String = when (this) {
+    QuerySettingParser.EX_Z -> _string(R.string.device_ex_z_label) //z轴
+    QuerySettingParser.EX_S -> _string(R.string.device_ex_s_label) //s轴
+    QuerySettingParser.EX_R -> _string(R.string.device_ex_r_label) //r轴
+    QuerySettingParser.EX_CAR -> _string(R.string.engrave_module_car) //car
+    else -> ""
+}

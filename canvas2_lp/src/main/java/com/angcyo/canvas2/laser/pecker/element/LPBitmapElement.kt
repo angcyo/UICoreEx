@@ -20,6 +20,7 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.app
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toBase64Data
@@ -198,21 +199,36 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 
-    override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
-        this.originBitmap = bitmap
+    /**更新原始图片的宽高
+     * [updateOriginWidthHeight]*/
+    @Pixel
+    fun updateOriginBitmapWidthHeight(
+        newWidth: Int,
+        newHeight: Int,
+        keepVisibleSize: Boolean = true
+    ) {
         if (elementBean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
             updateOriginWidthHeight(
-                bitmap.width.toPixel(),
-                bitmap.height.toPixel(),
+                newWidth.toPixel(),
+                newHeight.toPixel(),
                 keepVisibleSize
             )
         } else {
             updateOriginWidthHeight(
-                bitmap.width.toFloat(),
-                bitmap.height.toFloat(),
+                newWidth.toFloat(),
+                newHeight.toFloat(),
                 keepVisibleSize
             )
         }
+    }
+
+    override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
+        this.originBitmap = bitmap
+        updateOriginBitmapWidthHeight(
+            bitmap.width,
+            bitmap.height,
+            keepVisibleSize
+        )
         //更新原图, 默认是黑白画处理
 
         ILaserPeckerElement.updateElementBeanWidthHeight(

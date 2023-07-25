@@ -28,8 +28,12 @@ object LayerHelper {
     /**图层, 以及图层顺序
      * 先 填充->抖动->GCode */
     val engraveLayerList = listOf(
-        EngraveLayerInfo(LAYER_FILL, _string(R.string.engrave_layer_fill)),
-        EngraveLayerInfo(LAYER_PICTURE, _string(R.string.engrave_layer_bitmap)),
+        EngraveLayerInfo(LAYER_FILL, _string(R.string.engrave_layer_fill), showDpiConfig = true),
+        EngraveLayerInfo(
+            LAYER_PICTURE,
+            _string(R.string.engrave_layer_bitmap),
+            showDpiConfig = true
+        ),
         EngraveLayerInfo(LAYER_LINE, _string(R.string.engrave_layer_line)),
         EngraveLayerInfo(LAYER_CUT, _string(R.string.engrave_layer_cut))
     )
@@ -64,7 +68,9 @@ fun MutableList<EngraveLayerInfo>.removeCutLayer(): MutableList<EngraveLayerInfo
     return this
 }
 
-/**将数据模式, 转换成对应的图层id*/
+/**将数据模式, 转换成对应的图层id
+ * [LPDataConstant.DATA_MODE_BLACK_WHITE]
+ * [LPDataConstant.DATA_MODE_GREY]*/
 fun Int?.toLayerId(): String? {
     return when (this) {
         LPDataConstant.DATA_MODE_BLACK_WHITE -> LayerHelper.LAYER_FILL

@@ -7,12 +7,13 @@ import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.http.base.toJson
 import com.angcyo.laserpacker.device.MaterialHelper
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.getAppString
 import com.angcyo.library.unit.toPixel
+import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
-import com.angcyo.objectbox.laser.pecker.entity.TransferLayerConfigBean
 
 /**
  * LP工程结构, 里面包含很多子元素[com.angcyo.laserpacker.bean.LPElementBean]
@@ -100,8 +101,9 @@ data class LPProjectBean(
     fun getTransferLayerJson(): String? {
         val list = mutableListOf<TransferLayerConfigBean>()
         _laserOptions?.forEach {
-            if (!it.layerId.isNullOrBlank()) {
-                list.add(TransferLayerConfigBean(it.layerId!!, it.dpi))
+            val layerId = it.layerId
+            if (!layerId.isNullOrBlank()) {
+                list.add(TransferLayerConfigBean(layerId, layerId.filterLayerDpi(it.dpi)))
             }
         }
         return if (list.isEmpty()) null else list.toJson()

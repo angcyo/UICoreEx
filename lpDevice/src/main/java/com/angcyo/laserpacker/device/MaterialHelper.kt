@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
+import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiScale
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
@@ -16,6 +17,9 @@ import com.angcyo.library.unit.unitDecimal
 import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
 import kotlin.math.max
@@ -43,7 +47,7 @@ object MaterialHelper {
         unionMaterialList.clear()
         materialList.filterTo(unionMaterialList) { entity ->
             unionMaterialList.find {
-                if (it.isCustomMaterial) {
+                if (it._isCustomMaterial) {
                     //用户自定义的材质, 只需要key一样即可, 不根据光源不一样分开存储
                     it.key == entity.key
                 } else {
@@ -52,6 +56,39 @@ object MaterialHelper {
                 }
             } == null
         }
+    }
+
+    /**获取列表中的自定义材质*/
+    fun getCustomMaterialList(): List<MaterialEntity> {
+        val result = mutableListOf<MaterialEntity>()
+        for (layerInfo in LayerHelper.engraveLayerList) {
+            result.add(materialList.find {
+                it.layerId == layerInfo.layerId && it.key == "custom"
+            } ?: getLayerMaterialList(layerInfo.layerId).first())
+        }
+        return result
+    }
+
+    /**获取指定图层下的有效材质列表*/
+    fun getLayerMaterialList(
+        layerId: String,
+        dpi: Float = HawkEngraveKeys.getLastLayerDpi(layerId)
+    ): List<MaterialEntity> {
+        val result = mutableListOf<MaterialEntity>()
+        result.addAll(materialList.filter {
+            it.layerId == layerId && (it.dpi == dpi || it.dpi == 0f)
+        })
+        if (result.isEmpty()) {
+            //如果为空, 则获取一个自定义的材质参数
+            result.addAll(materialList.filter {
+                it.layerId == layerId && it.key == "custom"
+            })
+        }
+        if (result.isEmpty()) {
+            //如果为空, 则创建一个自定义的材质参数
+            result.add(createLayerMaterial(layerId, dpi))
+        }
+        return result
     }
 
     /**获取产品材质参数配置的名称*/
@@ -67,8 +104,10 @@ object MaterialHelper {
 
     /**获取连上的设备推荐参数列表*/
     fun getProductMaterialList(product: LaserPeckerProductInfo?): List<MaterialEntity> {
-        val name = product?.name ?: return emptyList()
+        //必有一个自定义的参数
         val result = mutableListOf<MaterialEntity>()
+        result.addAll(createCustomMaterial())
+        val name = product?.name ?: return result
 
         //用户自定义的参数
         result.addAll(MaterialEntity::class.findAll(LPBox.PACKAGE_NAME) {
@@ -92,7 +131,14 @@ object MaterialHelper {
                 result.addAll(list)
                 for (materialEntity in list) {
                     if (materialEntity.dpi <= 0f) {
-                        materialEntity.dpi = materialEntity.dpiScale * LaserPeckerHelper.DPI_254
+                        val dpi = materialEntity.dpiScale * LaserPeckerHelper.DPI_254
+                        materialEntity.dpi = dpi
+                        materialEntity.layerId?.let {
+                            materialEntity.initLayerDpi(
+                                it,
+                                materialEntity.dpiScale * LaserPeckerHelper.DPI_254
+                            )
+                        }
                     }
                     if (materialEntity.layerId == LayerHelper.LAYER_FILL) {
                         //填充图层, 和GCode图层/切割的参数一致
@@ -113,10 +159,10 @@ object MaterialHelper {
             }
         }
 
-        if (result.isEmpty()) {
+        /*if (result.isEmpty()) {
             //如果为空, 则创建一个自定义的材质参数
             result.addAll(createCustomMaterial())
-        }
+        }*/
         return result
     }
 
@@ -138,44 +184,62 @@ object MaterialHelper {
 
     /**创建一个自定义的材质*/
     fun createCustomMaterial(): List<MaterialEntity> = createMaterial {
-        it.resId = R.string.custom
-        it.resIdStr = "custom"
-        it.key = "custom"
-
+        //default
+        //it.resId = R.string.custom
+        //it.resIdStr = "custom"
+        //it.key = "custom"
         it.createMaterialCode(it.key!!)
     }
 
-    /**创建一个材质*/
-    fun createMaterial(config: (entity: MaterialEntity) -> Unit): List<MaterialEntity> {
+    /**创建一个指定的图层材质参数, 使用上一次的图层参数*/
+    fun createLayerMaterial(
+        layerId: String,
+        dpi: Float,
+        config: (entity: MaterialEntity) -> Unit = {}
+    ): MaterialEntity {
+        return MaterialEntity().apply {
+            //1:
+            initLayerDpi(layerId, dpi)
+
+            //2: 优先使用上一次的参数
+            val lastEngraveConfig = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(EngraveConfigEntity_.layerId.equal(layerId))
+            }
+            power = lastEngraveConfig?.power ?: HawkEngraveKeys.lastPower
+            depth = lastEngraveConfig?.depth ?: HawkEngraveKeys.lastDepth
+            precision = lastEngraveConfig?.precision ?: HawkEngraveKeys.lastPrecision
+            type = (lastEngraveConfig?.type ?: DeviceHelper.getProductLaserType()).toInt()
+            count = 1
+
+            //3: 先用自定义占位
+            resId = R.string.custom
+            resIdStr = "custom"
+            key = "custom"
+
+            //productName //用来区分是否是自定义的材质
+            //isCustomMaterial
+
+            //配置
+            config(this)
+            //生成唯一码
+            if (code.isBlank()) {
+                createMaterialCode(key!!)
+            }
+        }
+    }
+
+    /**创建一个材质, 未入库*/
+    fun createMaterial(config: (entity: MaterialEntity) -> Unit = {}): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         //一个材质, 需要包含所有图层的参数
         for (layerInfo in LayerHelper.engraveLayerList) {
-            MaterialEntity().apply {
-                //1:
-                layerId = layerInfo.layerId
-                type = DeviceHelper.getProductLaserType().toInt()
-
-                //2: 优先使用上一次的参数
-                power = HawkEngraveKeys.lastPower
-                depth = HawkEngraveKeys.lastDepth
-                precision = HawkEngraveKeys.lastPrecision
-
-                //3: 先用自定义占位
-                resId = R.string.custom
-                resIdStr = "custom"
-                key = "custom"
-
-                //productName //用来区分是否是自定义的材质
-
-                //配置
-                config(this)
-                //生成唯一码
-                if (code.isBlank()) {
-                    createMaterialCode(key!!)
-                }
-
-                result.add(this)
-            }
+            val entity = createLayerMaterial(
+                layerInfo.layerId,
+                HawkEngraveKeys.lastDpiLayerJson?.getLayerConfig(layerInfo.layerId)?.dpi
+                    ?: LaserPeckerHelper.DPI_254,
+                config
+            )
+            result.add(entity)
         }
         return result
     }
@@ -239,5 +303,19 @@ object MaterialHelper {
             append(dpiScale.unitDecimal(1))
         }
     }
+}
 
+/**过滤一下图层对应的dpi*/
+fun String.filterLayerDpi(dpi: Float): Float =
+    if (this == LayerHelper.LAYER_LINE || this == LayerHelper.LAYER_CUT) {
+        LaserPeckerHelper.DPI_254
+    } else {
+        dpi
+    }
+
+/**初始化对应的额dpi*/
+fun MaterialEntity.initLayerDpi(layerId: String, dpi: Float) {
+    this.layerId = layerId
+    this.dpi = layerId.filterLayerDpi(dpi)
+    this.dpiScale = this.dpi.toDpiScale()
 }

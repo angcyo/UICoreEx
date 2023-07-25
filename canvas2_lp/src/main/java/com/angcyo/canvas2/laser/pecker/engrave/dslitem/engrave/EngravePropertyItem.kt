@@ -159,9 +159,9 @@ class EngravePropertyItem : DslAdapterItem() {
                     val times = getSelectedInt(index, time)
                     itemEngraveConfigEntity?.time = times
                     itemEngraveItemBean?.printCount = times
-                    //itemChanging = true //雕刻次数改变时, 不通知刷新
-                    itemEngraveConfigEntity?.lpSaveEntity() //所以需要主动保存
-                    updateAdapterItem()
+                    itemChanging = true //雕刻次数改变时, 不通知刷新 //2023-7-25 雕刻次数也纳入材质推荐
+                    //itemEngraveConfigEntity?.lpSaveEntity() //所以需要主动保存
+                    //updateAdapterItem()
                     false
                 }
             }

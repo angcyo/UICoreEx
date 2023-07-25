@@ -245,18 +245,37 @@ class DeviceStateModel : ViewModel() {
         deviceModelData.updateValue(model)
     }
 
-    /**获取当前设备对应的模块信息*/
+    /**获取当前设备对应的模块信息
+     * [type] 激光类型*/
     fun getDeviceLaserModule(
         type: Byte,
         moduleState: Int? = deviceStateData.value?.moduleState
     ): LaserTypeInfo? {
-        return laserPeckerModel.productInfoData.value?.laserTypeList?.find {
+        var result = laserPeckerModel.productInfoData.value?.laserTypeList?.find {
             if (it.moduleState == -1) {
                 it.type == type
             } else {
                 it.moduleState == moduleState
             }
         }
+        if (result == null) {
+            val configList = LaserPeckerConfigHelper.readDeviceConfig()
+            if (!configList.isNullOrEmpty()) {
+                for (config in configList) {
+                    result = config.laserTypeList?.find {
+                        if (it.moduleState == -1) {
+                            it.type == type
+                        } else {
+                            it.moduleState == moduleState
+                        }
+                    }
+                    if (result != null) {
+                        return result
+                    }
+                }
+            }
+        }
+        return result
     }
 
     /**获取当前安装的模块, 主要针对C1*/

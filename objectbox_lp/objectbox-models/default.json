@@ -63,7 +63,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "24:6816467698053281357",
+      "lastPropertyId": "26:2472038649424287464",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -151,13 +151,23 @@
           "id": "24:6816467698053281357",
           "name": "count",
           "type": 5
+        },
+        {
+          "id": "25:8140229489583832019",
+          "name": "isCustomMaterial",
+          "type": 1
+        },
+        {
+          "id": "26:2472038649424287464",
+          "name": "isChanged",
+          "type": 1
         }
       ],
       "relations": []
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "10:1603952902530829330",
+      "lastPropertyId": "12:8005736537806662218",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -205,6 +215,16 @@
           "id": "10:1603952902530829330",
           "name": "layerJson",
           "type": 9
+        },
+        {
+          "id": "11:8956097257802672506",
+          "name": "originWidth",
+          "type": 7
+        },
+        {
+          "id": "12:8005736537806662218",
+          "name": "originHeight",
+          "type": 7
         }
       ],
       "relations": []

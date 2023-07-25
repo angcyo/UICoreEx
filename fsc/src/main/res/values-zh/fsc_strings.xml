@@ -65,4 +65,5 @@
     <string name="engrave_module_color_pen">彩色笔模式</string>
     <string name="engrave_module_knife_cutting">刀切割模式</string>
     <string name="engrave_module_cnc">CNC模式</string>
+    <string name="engrave_module_car">小车模式</string>
 </resources>

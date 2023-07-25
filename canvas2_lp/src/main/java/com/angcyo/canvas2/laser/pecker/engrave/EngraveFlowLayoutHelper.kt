@@ -41,13 +41,18 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemLabelText
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.*
+import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.*
 import com.angcyo.library.toastQQ
+import com.angcyo.objectbox.findAll
+import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.observe
@@ -212,23 +217,31 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 }
             } else {
                 //并非全部是GCode数据
-                TransferDataPxItem()() {
-                    itemPxList =
-                        if (!HawkEngraveKeys.enableZFlagPx && laserPeckerModel.isZOpen()) {
-                            //L3 C1 z轴打开的情况下, 取消4k 2023-1-4 / 2023-3-10
-                            LaserPeckerHelper.findProductSupportPxList()
-                                .filter { it.px > LaserPeckerHelper.PX_4K } //2023-4-6 z轴不支持4K及以上
-                        } else {
-                            LaserPeckerHelper.findProductLayerSupportPxList(
-                                LPEngraveHelper.getSelectElementLayerList(delegate)
-                            )
+                val elementLayerInfoList = LPEngraveHelper.getSelectElementLayerInfoList(delegate)
+                for (layerInfo in elementLayerInfoList) {
+                    if (layerInfo.showDpiConfig) {
+                        TransferDataPxItem()() {
+                            val layerSupportPxList =
+                                LaserPeckerHelper.findProductLayerSupportPxList(layerInfo.layerId)
+                            itemPxList =
+                                if (!HawkEngraveKeys.enableZFlagPx && laserPeckerModel.isZOpen()) {
+                                    //L3 C1 z轴打开的情况下, 取消4k 2023-1-4 / 2023-3-10
+                                    layerSupportPxList
+                                        .filter { it.px > LaserPeckerHelper.PX_4K } //2023-4-6 z轴不支持4K及以上
+                                } else {
+                                    layerSupportPxList
+                                }
+
+                            itemTransferConfigEntity = transferConfigEntity
+                            itemLayerInfo = layerInfo
+
+                            observeItemChange {
+                                clearFlowId("[${layerInfo.layerId}]传输Dpi改变")
+                                delegate?.dispatchAllRendererDataChange(Reason.user) {
+                                    it.lpElementBean()?._layerId == layerInfo.layerId
+                                }
+                            }
                         }
-
-                    itemTransferConfigEntity = transferConfigEntity
-
-                    observeItemChange {
-                        clearFlowId("传输Dpi改变")
-                        delegate?.dispatchAllRendererDataChange(Reason.user)
                     }
                 }
                 EngraveDividerItem()()
@@ -253,6 +266,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                     //每次发送数据之前, 都生成一个新的任务
                                     val flowId = generateFlowId("准备发送文件")
                                     transferConfigEntity.taskId = flowId
+                                    transferConfigEntity.layerJson =
+                                        HawkEngraveKeys.lastDpiLayerJson
                                     transferConfigEntity.lpSaveEntity()
                                     engraveConfigProvider.onSaveTransferConfig(
                                         this@EngraveFlowLayoutHelper,
@@ -272,6 +287,23 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                 toastQQ(error.message)
                             }
                         }
+                    }
+                }
+                if (isDebugType()) {
+                    itemLongClick = {
+                        val list =
+                            engraveConfigProvider.getEngraveMaterialList(this@EngraveFlowLayoutHelper)
+
+                        for (layerInfo in LayerHelper.engraveLayerList) {
+                            val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                                apply(EngraveConfigEntity_.layerId.equal(layerInfo.layerId))
+                            }
+                            val list = EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
+                                apply(EngraveConfigEntity_.layerId.equal(layerInfo.layerId))
+                            }
+                            L.i(last)
+                        }
+                        false
                     }
                 }
             }
@@ -591,6 +623,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
         val taskId = flowTaskId
 
+        //获取任务雕刻数据对应的图层列表
         val layerList = EngraveFlowDataHelper.getEngraveLayerList(taskId)
         val findLayer = layerList.find { it.layerId == selectLayerId }
         if (findLayer == null) {
@@ -598,12 +631,28 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             selectLayerId = layerList.firstOrNull()?.layerId ?: selectLayerId
         }
 
-        val materialEntity = engraveConfigProvider.getEngraveMaterial(this)
-        "任务:${taskId} 已选材质:$materialEntity".writeToLog(logLevel = L.INFO)
+        //图层添加选中后的图标
+        selectLayerList.add(selectLayerId)
+        val layerIconList = layerList.map {
+            EngraveLayerInfo(
+                it.layerId,
+                span {
+                    if (selectLayerList.contains(it.layerId)) {
+                        appendDrawable(R.drawable.canvas_layer_selected)
+                    }
+                    append(it.label)
+                },
+                it.isGroupExtend,
+                it.showDpiConfig
+            )
+        }
+
+        val materialEntity = engraveConfigProvider.getEngraveMaterial(this, selectLayerId)
+        "任务:${taskId} [$selectLayerId]已选材质:$materialEntity".writeToLog(logLevel = L.INFO)
 
         //当前选中图层的雕刻配置
         var engraveConfigEntity: EngraveConfigEntity? =
-            engraveConfigProvider.getEngraveConfig(this).find {
+            engraveConfigProvider.getEngraveConfigList(this).find {
                 it.layerId == selectLayerId
             }
 
@@ -625,7 +674,9 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 renderDeviceInfoIfNeed()
             }
             if (deviceStateModel.needShowExDeviceTipItem()) {
-                PreviewExDeviceTipItem()()
+                PreviewExDeviceTipItem()() {
+                    itemEngraveConfigEntity = engraveConfigEntity
+                }
             }
 
             //雕刻相关的参数
@@ -636,14 +687,37 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     itemTipTextColor = _color(R.color.error)
                 }
             } else {
+                //雕刻图层切换
+                if (layerIconList.isNotEmpty()) {
+                    EngraveLayerConfigItem()() {
+                        itemSegmentList = layerIconList
+                        itemCurrentIndex = max(
+                            0,
+                            layerIconList.indexOf(layerIconList.find { it.layerId == selectLayerId })
+                        )
+                        observeItemChange {
+                            selectLayerId = layerIconList[itemCurrentIndex].layerId
+                            val itemIndexPosition = it.itemIndexPosition()
+                            if (itemIndexPosition != -1) {
+                                //图层改变后, 动画提示参数变化
+                                RecyclerItemFlowAnimator(
+                                    itemIndexPosition + 1,
+                                    -2
+                                ).start(it.itemDslAdapter?._recyclerView)
+                            }
+                            renderFlowItems()
+                        }
+                    }
+                }
+
                 if (!deviceStateModel.isPenMode()) {//握笔模块, 不需要材质
                     //材质选择
                     EngraveMaterialWheelItem()() {
                         itemTag = MaterialEntity::name.name
                         itemLabelText = _string(R.string.custom_material)
-                        itemWheelList = MaterialHelper.unionMaterialList
+                        itemWheelList = MaterialHelper.getLayerMaterialList(selectLayerId)
                         itemSelectedIndex = MaterialHelper.indexOfMaterial(
-                            MaterialHelper.unionMaterialList,
+                            itemWheelList as List<MaterialEntity>,
                             materialEntity
                         )
                         itemEngraveConfigEntity = engraveConfigEntity
@@ -667,29 +741,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                 this@EngraveFlowLayoutHelper,
                                 engraveConfigEntity
                             )
-                            renderFlowItems()
-                        }
-                    }
-                }
-
-                //雕刻图层切换
-                if (layerList.isNotEmpty()) {
-                    EngraveLayerConfigItem()() {
-                        itemSegmentList = layerList
-                        itemCurrentIndex =
-                            max(
-                                0,
-                                layerList.indexOf(layerList.find { it.layerId == selectLayerId })
-                            )
-                        observeItemChange {
-                            selectLayerId = layerList[itemCurrentIndex].layerId
-                            val itemIndexPosition = it.itemIndexPosition()
-                            if (itemIndexPosition != -1) {
-                                RecyclerItemFlowAnimator(
-                                    itemIndexPosition + 1,
-                                    -2
-                                ).start(it.itemDslAdapter?._recyclerView)//图层改变后, 动画提示参数变化
-                            }
                             renderFlowItems()
                         }
                     }
@@ -818,7 +869,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     fun DslAdapterItem.observeMaterialChange() {
         observeItemChange {
             itemDslAdapter?.find<EngraveMaterialWheelItem>()?.let {
-                it.itemShowSaveButton = true
+                it._materialEntity?.isChanged = true
                 it.updateAdapterItem()
             }
         }
@@ -844,6 +895,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             defaultInputString = materialEntity.toText() ?: _string(R.string.custom)
             onInputResult = { dialog, inputText ->
                 EngraveFlowDataHelper.saveEngraveConfigToMaterial(taskId, "$inputText")
+                materialEntity.isChanged = false
                 action.invoke()
                 false
             }
@@ -867,6 +919,8 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //region ---雕刻中---
 
+    private val _titleFontSize = 12
+
     /**渲染雕刻中的界面
      * 通过设备状态改变实时刷新界面
      * [com.angcyo.engrave.model.EngraveModel.engraveStateData]
@@ -876,7 +930,20 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
      * [com.angcyo.engrave.BaseFlowLayoutHelper.bindDeviceState]
      * */
     fun renderEngraving() {
-        updateIViewTitle(_string(R.string.engraving))
+        val taskId = flowTaskId
+        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(taskId)
+        updateIViewTitle(span {
+            if (!transferConfigEntity?.name.isNullOrBlank()) {
+                append(transferConfigEntity?.name)
+                appendLine()
+                append(_string(R.string.engraving)) {
+                    fontSize = _titleFontSize * dpi
+                }
+            } else {
+                append(_string(R.string.engraving))
+            }
+        })
+
         if (HawkEngraveKeys.enableBackEngrave) {
             engraveBackFlow = 0
             if (this is HistoryEngraveFlowLayoutHelper) {
@@ -956,7 +1023,19 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     /**渲染雕刻完成的界面*/
     open fun renderEngraveFinish() {
-        updateIViewTitle(_string(R.string.engrave_finish))
+        val taskId = flowTaskId
+        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(taskId)
+        updateIViewTitle(span {
+            if (!transferConfigEntity?.name.isNullOrBlank()) {
+                append(transferConfigEntity?.name)
+                appendLine()
+                append(_string(R.string.engrave_finish)) {
+                    fontSize = _titleFontSize * dpi
+                }
+            } else {
+                append(_string(R.string.engrave_finish))
+            }
+        })
         engraveBackFlow = 0
         if (isInPadMode()) {
             showCloseView(true, _string(R.string.ui_quit))
@@ -964,7 +1043,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
             showCloseView(true, _string(R.string.back_creation))
         }
 
-        val taskId = flowTaskId
         renderDslAdapter {
             EngraveFinishTopItem()() {
                 itemTaskId = taskId

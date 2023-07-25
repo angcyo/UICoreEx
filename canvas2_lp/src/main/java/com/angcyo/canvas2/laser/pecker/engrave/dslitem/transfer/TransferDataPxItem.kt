@@ -1,14 +1,18 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer
 
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemCurrentIndex
+import com.angcyo.laserpacker.device.data.EngraveLayerInfo
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.size
+import com.angcyo.objectbox.laser.pecker.bean.updateLayerConfig
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
@@ -40,6 +44,16 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
             itemSegmentList = value ?: emptyList()
         }
 
+    /**雕刻图层信息, 每个图层都有自己的分辨率*/
+    var itemLayerInfo: EngraveLayerInfo? = null
+        set(value) {
+            field = value
+            itemText = value?.label ?: itemText
+            HawkEngraveKeys._lastLayerConfigList?.find { it.layerId == value?.layerId }?.apply {
+                selectorCurrentDpi(dpi)
+            }
+        }
+
     init {
         itemText = _string(R.string.resolution_ratio)
     }
@@ -60,6 +74,12 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
         //super.onItemChangeListener(item)
         val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
         itemTransferConfigEntity?.dpi = dpi
+        itemLayerInfo?.let {
+            HawkEngraveKeys.lastDpiLayerJson = HawkEngraveKeys.lastDpiLayerJson.updateLayerConfig(
+                it.layerId,
+                it.layerId.filterLayerDpi(dpi)
+            )
+        }
     }
 
     fun selectorCurrentDpi(dpi: Float?) {

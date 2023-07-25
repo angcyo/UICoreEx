@@ -4,6 +4,7 @@ import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveFinishInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLabelItem
@@ -11,7 +12,6 @@ import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.glide.loadImage
 import com.angcyo.item.DslTagGroupItem
@@ -164,34 +164,23 @@ open class EngraveHistoryItem : DslTagGroupItem() {
         val transferDataEntity = transferDataEntityList?.lastOrNull()
         val engraveConfigEntityList = itemEngraveConfigEntityList
         val engraveConfigEntity = engraveConfigEntityList?.lastOrNull()
-        val isPenMode = vmApp<DeviceStateModel>().isPenMode(engraveConfigEntity?.moduleState)
+        //val isPenMode = vmApp<DeviceStateModel>().isPenMode(engraveConfigEntity?.moduleState)
 
         renderLabelDesList {
 
             if (transferDataEntity != null) {
                 transferDataEntity.productName?.let { name ->
-                    add(
-                        formatLabelDes(
-                            _string(R.string.device_models),
-                            if (HawkEngraveKeys.enableShowHistoryAddress) "${name}/${transferDataEntity.deviceAddress.or()}" else name
-                        )
-                    )
-                }
-
-                if (!isPenMode) {
-                    //材质
-                    engraveConfigEntity?.let {
-                        add(
-                            formatLabelDes(
-                                _string(R.string.custom_material),
-                                EngraveFlowDataHelper.getEngraveMaterNameByKey(it.materialKey)
-                            )
-                        )
+                    val exDevice = engraveConfigEntity?.exDevice?.toDeviceStr()
+                    val des = buildString {
+                        append(name)
+                        if (!exDevice.isNullOrBlank()) {
+                            append("-$exDevice")
+                        }
+                        if (HawkEngraveKeys.enableShowHistoryAddress) {
+                            append("/${transferDataEntity.deviceAddress.or()}")
+                        }
                     }
-
-                    //分辨率
-                    val pxInfo = LaserPeckerHelper.findPxInfo(transferDataEntity.dpi)
-                    add(formatLabelDes(_string(R.string.resolution_ratio), pxInfo.toText()))
+                    add(formatLabelDes(_string(R.string.device_models), des))
                 }
 
                 //尺寸

@@ -29,6 +29,12 @@ data class MaterialEntity(
     /**是否被删除*/
     var isDelete: Boolean = false,
 
+    /**是否是自定义的材质, 自定义的材质才可以删除*/
+    var isCustomMaterial: Boolean = false,
+
+    /**当前的材质是否发生了改变*/
+    var isChanged: Boolean = false,
+
     /**雕刻任务所使用的材质数据*/
     var taskId: String? = null,
 
@@ -133,8 +139,8 @@ data class MaterialEntity(
     }
 
     /**是否是自定义的材质*/
-    val isCustomMaterial: Boolean
-        get() = !productName.isNullOrBlank()
+    val _isCustomMaterial: Boolean
+        get() = isCustomMaterial || !productName.isNullOrBlank()
 
     override fun toText(): CharSequence? {
         val idStr = resIdStr
@@ -142,14 +148,14 @@ data class MaterialEntity(
     }
 
     override fun toDrawable(): Drawable? {
-        return if (isCustomMaterial) {
+        return if (_isCustomMaterial) {
             _drawable(R.drawable.material_edit_ico)
         } else createLaserTypeDrawable(type)
     }
 
     override fun toRightDrawable(): Drawable? {
         val res = getMaterialItemSyncStateRes(this)
-        return if (res == null || !isCustomMaterial) {
+        return if (res == null || !_isCustomMaterial) {
             null
         } else {
             _drawable(res)

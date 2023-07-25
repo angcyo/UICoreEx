@@ -1,10 +1,12 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.ex._string
 
 /**
@@ -24,12 +26,25 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
 
     override fun initLabelDesList() {
         renderLabelDesList {
+            val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
             val engraveConfigEntity =
                 EngraveFlowDataHelper.getEngraveConfig(itemTaskId, itemLayerId)
             val transferDataEntityList =
                 EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerId)
 
             engraveConfigEntity?.let {
+                //材质 分辨率
+                add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)))
+                var dpi = transferConfigEntity?.getLayerConfigDpi(itemLayerId)
+                    ?: transferDataEntityList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
+                itemLayerId?.let {
+                    dpi = it.filterLayerDpi(dpi)
+                }
+                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+                add(resolutionData(findPxInfo.toText()))
+                //雕刻模块
+                add(moduleData(engraveConfigEntity.type))
+
                 if (deviceStateModel.isPenMode(it.moduleState)) {
                     //握笔模块下,只有 加速级别 雕刻速度
                     add(

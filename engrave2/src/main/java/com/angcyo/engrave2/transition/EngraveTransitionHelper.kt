@@ -24,6 +24,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.EngraveHelper.writeTransferDataPath
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.L
 import com.angcyo.library.LTime
@@ -95,7 +96,10 @@ object EngraveTransitionHelper {
         LTime.tick()
         val transferDataEntity =
             createTransferDataEntity(provider, transferConfigEntity, DataCmd.ENGRAVE_TYPE_BITMAP)
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(
+            bitmap,
+            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
+        )
 
         //转换数据
         val index = transferDataEntity.index
@@ -164,7 +168,10 @@ object EngraveTransitionHelper {
         val index = transferDataEntity.index
         //testSaveBitmap(index, bitmap)
 
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(
+            bitmap,
+            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_FILL)
+        )
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
 
@@ -252,7 +259,10 @@ object EngraveTransitionHelper {
         //testSaveBitmap(index, bitmap)
 
         //抖动处理图片
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, transferConfigEntity.dpi)
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(
+            bitmap,
+            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
+        )
         var bitmapByteCount = 0
         val operateBitmap: Bitmap
 

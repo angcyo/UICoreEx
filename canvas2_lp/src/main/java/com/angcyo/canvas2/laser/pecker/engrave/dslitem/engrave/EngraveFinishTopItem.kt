@@ -1,8 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
@@ -52,19 +52,24 @@ class EngraveFinishTopItem : DslTagGroupItem() {
             layerList.firstOrNull()?.layerId
         )
 
-        val transferDataList = EngraveFlowDataHelper.getTransferDataList(itemTaskId)
         val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
 
         renderLabelDesList {
+            engraveConfigEntity?.let {
+                it.productName?.let { productName ->
+                    val exDevice = it.exDevice?.toDeviceStr()
+                    if (exDevice.isNullOrBlank()) {
+                        add(productNameData(productName))
+                    } else {
+                        add(productNameData("${productName}-${exDevice}"))
+                    }
+                }
+            }
 
-            if (deviceStateModel.isPenMode(engraveConfigEntity?.moduleState)) {
-                //C1握笔模块
-            } else {
-                add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity?.materialKey)))
-
-                val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
-                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
-                add(resolutionData(findPxInfo.toText()))
+            transferConfigEntity?.let {
+                if (it.originWidth != null && it.originHeight != null) {
+                    add(widthHeightData(it.originWidth ?: 0f, it.originHeight ?: 0f))
+                }
             }
 
             val startEngraveTime = taskEntity?.startTime ?: 0

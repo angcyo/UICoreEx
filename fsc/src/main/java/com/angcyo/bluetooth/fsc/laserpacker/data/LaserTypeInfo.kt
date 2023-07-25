@@ -65,13 +65,14 @@ data class LaserTypeInfo(
 
     fun toLabel(): CharSequence = buildString {
         if (labelIdStr.isNullOrBlank()) {
-            if (power > 0) {
-                appendSpaceIfNotEmpty()
-                append("${power.ensureInt()}w")
-            }
             if (wave > 0) {
                 appendSpaceIfNotEmpty()
                 append("${wave}nm")
+            }
+
+            if (power > 0) {
+                appendSpaceIfNotEmpty()
+                append("${power.ensureInt()}w")
             }
         } else {
             append(getAppString(labelIdStr))

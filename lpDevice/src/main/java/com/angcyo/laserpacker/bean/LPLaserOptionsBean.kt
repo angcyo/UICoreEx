@@ -6,6 +6,7 @@ import com.angcyo.library.ex.toStr
 import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
@@ -89,7 +90,7 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
         apply(TransferConfigEntity_.taskId.equal("$taskId"))
     }?.apply {
-        bean.dpi = getLayerConfigList(layerId)?.dpi ?: dpi
+        bean.dpi = layerJson?.getLayerConfig(layerId)?.dpi ?: dpi
     }
 
     return bean

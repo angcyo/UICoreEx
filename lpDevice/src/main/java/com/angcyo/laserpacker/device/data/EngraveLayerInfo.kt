@@ -15,7 +15,9 @@ data class EngraveLayerInfo(
     val label: CharSequence,
     /**分组状态保持
      * [com.angcyo.canvas2.laser.pecker.RenderLayoutHelper.renderLayerListLayout]*/
-    var isGroupExtend: Boolean = true
+    var isGroupExtend: Boolean = true,
+    /**当前图层,是否要显示dpi配置选择*/
+    var showDpiConfig: Boolean = false,
 ) : IToText, IToValue {
 
     override fun toText(): CharSequence = label

@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/lib_text_color"
+        android:textStyle="bold"
         tools:text="angcyo" />
 
 </FrameLayout>

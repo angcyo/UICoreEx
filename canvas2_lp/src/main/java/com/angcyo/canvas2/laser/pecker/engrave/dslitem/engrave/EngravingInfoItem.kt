@@ -10,6 +10,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslTagGroupItem
 import com.angcyo.item.data.LabelDesData
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
@@ -57,7 +58,11 @@ open class EngravingInfoItem : DslTagGroupItem() {
                     add(materialData(EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)))
 
                     //分辨率: 1k
-                    val dpi = transferConfigEntity?.dpi ?: transferDataList.firstOrNull()?.dpi
+                    var dpi = transferConfigEntity?.getLayerConfigDpi(it.layerId)
+                        ?: transferDataList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
+                    it.layerId?.let {
+                        dpi = it.filterLayerDpi(dpi)
+                    }
                     val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
                     add(resolutionData(findPxInfo.toText()))
                 }

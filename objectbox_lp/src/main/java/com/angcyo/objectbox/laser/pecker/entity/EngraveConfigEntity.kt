@@ -56,6 +56,8 @@ data class EngraveConfigEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_R]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_S]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_CAR]
+     *
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParserKt.toDeviceStr]
      * */
     var exDevice: String? = null,
 
@@ -86,7 +88,9 @@ data class EngraveConfigEntity(
 
     /**
      * 雕刻模块识别位（C1专用位）
-     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.moduleState]*/
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser.moduleState]
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.getDeviceModuleLabel]
+     * */
     var moduleState: Int = -1,
 
     /**加速级别/雕刻精度[1~5]

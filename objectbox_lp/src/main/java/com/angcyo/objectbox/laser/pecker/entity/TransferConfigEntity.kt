@@ -1,8 +1,9 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
-import com.angcyo.http.base.fromJson
-import com.angcyo.http.base.listType
+import com.angcyo.library.annotation.MM
+import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -34,10 +35,20 @@ data class TransferConfigEntity(
      * 每英寸内像素点的个数
      * 设备基准值: 254, 像素点间距0.1mm 最小能达到:0.0125 8倍
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]*/
+    @Deprecated("请使用[layerJson]")
     var dpi: Float = -1f,
 
     /**图层json数据[List<TransferLayerConfigBean>]*/
     var layerJson: String? = null,
+
+    /**工程总共占用的宽高
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.originWidth]
+     * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.originHeight]
+     * */
+    @MM
+    var originWidth: Float? = null,
+    @MM
+    var originHeight: Float? = null,
 
     //---
 
@@ -59,13 +70,13 @@ data class TransferConfigEntity(
     var dataMode: Int? = null,
 ) {
 
+    /**获取指定图层对应的dpi*/
+    fun getLayerConfigDpi(layerId: String?): Float = getLayerConfig(layerId)?.dpi ?: dpi
+
     /**[layerId]图层*/
-    fun getLayerConfigList(layerId: String?): TransferLayerConfigBean? {
+    fun getLayerConfig(layerId: String?): TransferLayerConfigBean? {
         return getLayerConfigList()?.find { it.layerId == layerId }
     }
 
-    fun getLayerConfigList(): List<TransferLayerConfigBean>? {
-        return layerJson?.fromJson<List<TransferLayerConfigBean>>(listType(TransferLayerConfigBean::class))
-    }
-
+    fun getLayerConfigList(): List<TransferLayerConfigBean>? = layerJson.getLayerConfigList()
 }

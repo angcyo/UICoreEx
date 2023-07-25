@@ -13,14 +13,14 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
 
-    /**是否要限制保存按钮*/
-    var itemShowSaveButton: Boolean = false
-
     /**保存材质的回调*/
     var itemSaveAction: Action? = null
 
     /**删除材质的回调*/
     var itemDeleteAction: ((materialKey: String) -> Unit)? = null
+
+    val _materialEntity: MaterialEntity?
+        get() = itemWheelList?.get(itemSelectedIndex) as? MaterialEntity
 
     init {
         itemLayoutId = R.layout.item_engrave_material_layout
@@ -34,9 +34,9 @@ class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val materialEntity = itemWheelList?.get(itemSelectedIndex) as? MaterialEntity
-        itemHolder.visible(R.id.lib_delete_button, materialEntity?.isCustomMaterial == true)
-        itemHolder.visible(R.id.lib_save_button, itemShowSaveButton)
+        val materialEntity = _materialEntity
+        itemHolder.visible(R.id.lib_delete_button, materialEntity?._isCustomMaterial == true)
+        itemHolder.visible(R.id.lib_save_button, materialEntity?.isChanged == true)
 
         itemHolder.click(R.id.lib_save_button) {
             //保存材质

@@ -1,5 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import android.graphics.RectF
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -7,6 +8,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
@@ -19,6 +21,7 @@ import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
+import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -97,7 +100,7 @@ object LPEngraveHelper {
         }
     }
 
-    /**获取选中元素的图层信息列表*/
+    /**获取选中元素的图层id列表*/
     fun getSelectElementLayerList(delegate: CanvasRenderDelegate?): List<String> {
         val result = mutableListOf<String>()
         delegate ?: return result
@@ -107,6 +110,17 @@ object LPEngraveHelper {
                 if (!result.contains(it)) {
                     result.add(it)
                 }
+            }
+        }
+        return result
+    }
+
+    /**获取选中元素的图层信息列表*/
+    fun getSelectElementLayerInfoList(delegate: CanvasRenderDelegate?): List<EngraveLayerInfo> {
+        val result = mutableListOf<EngraveLayerInfo>()
+        getSelectElementLayerList(delegate).forEach {
+            LayerHelper.getEngraveLayerInfo(it)?.let { layerInfo ->
+                result.add(layerInfo)
             }
         }
         return result
@@ -158,6 +172,11 @@ object LPEngraveHelper {
 
             //数据dpi恢复
             val list = getLayerRendererList(delegate, null)
+            //工程占用的宽高mm单位
+            val originBounds =
+                CanvasGroupRenderer.getRendererListRenderProperty(list).getRenderBounds(RectF())
+            originWidth = originBounds.width().toMm()
+            originHeight = originBounds.height().toMm()
 
             val isAllGCode = isAllSameLayerMode(list, LPDataConstant.DATA_MODE_GCODE)
 

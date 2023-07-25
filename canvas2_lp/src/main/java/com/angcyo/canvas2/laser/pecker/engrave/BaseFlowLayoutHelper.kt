@@ -128,6 +128,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * */
     var flowTaskId: String? = null
 
+    /**选过哪些图层, 用来标识对应的图层配置过参数*/
+    val selectLayerList = mutableListOf<String>()
+
     /**当前[engraveFlow]能够回退到的模式*/
     var engraveBackFlow: Int = 0
 
@@ -304,6 +307,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
     open fun clearFlowId(reason: String) {
         "清空流程id[$flowTaskId]:${reason}".writeEngraveLog()
         flowTaskId = null
+        selectLayerList.clear()
     }
 
     //

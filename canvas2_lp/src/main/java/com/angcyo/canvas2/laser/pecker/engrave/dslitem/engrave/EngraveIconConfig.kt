@@ -2,8 +2,10 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.text.style.DynamicDrawableSpan
 import androidx.annotation.DrawableRes
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.util.LPConstant
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.item.data.LabelDesData
@@ -109,6 +111,64 @@ fun remainingTimesData(des: CharSequence?) = LabelDesData(
         }
     }, des, _string(R.string.remaining_time)
 )
+
+/**[sizeData]*/
+fun widthHeightData(width: Float, height: Float, isMm: Boolean = true): LabelDesData {
+    val valueUnit = LPConstant.renderUnit
+    val w = valueUnit.formatValue(
+        if (isMm) width else valueUnit.convertPixelToValue(width),
+        true,
+        false
+    )
+    val h = valueUnit.formatValue(
+        if (isMm) height else valueUnit.convertPixelToValue(height),
+        true,
+        false
+    )
+    return sizeData(buildString {
+        append(w)
+        append("×")
+        append(h)
+        append(valueUnit.getUnit())
+    })
+}
+
+/**镭雕尺寸*/
+fun sizeData(des: CharSequence?) = LabelDesData(
+    span {
+        if (HawkEngraveKeys.enableConfigIcon) {
+            appendDrawable(R.drawable.engrave_config_size_svg)
+        } else {
+            append(_string(R.string.print_range))
+        }
+    }, des, _string(R.string.print_range)
+)
+
+/**机型*/
+fun productNameData(des: CharSequence?) = LabelDesData(
+    span {
+        if (HawkEngraveKeys.enableConfigIcon) {
+            appendDrawable(R.drawable.engrave_config_product_svg)
+        } else {
+            append(_string(R.string.device_models))
+        }
+    }, des, _string(R.string.device_models)
+)
+
+/**机型*/
+fun moduleData(type: Byte): LabelDesData {
+    val laserInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(type)
+    val label = laserInfo?.toLabel() ?: "$type"
+    return LabelDesData(
+        span {
+            if (HawkEngraveKeys.enableConfigIcon) {
+                appendDrawable(R.drawable.engrave_config_module_svg)
+            } else {
+                append(_string(R.string.laser_type))
+            }
+        }, label, _string(R.string.laser_type)
+    )
+}
 
 fun DslSpan.appendDrawable(@DrawableRes resId: Int) {
     val nightModel = vmApp<NightModel>()

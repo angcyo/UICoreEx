@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import androidx.annotation.Keep
+import com.angcyo.http.base.toJson
 import com.angcyo.library.L
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
@@ -8,6 +9,8 @@ import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.isDebug
+import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 
 /**
  * 数据持久化
@@ -82,6 +85,21 @@ object HawkEngraveKeys {
 
     /**最后一次传输的dpi*/
     var lastDpi: Float by HawkPropertyValue<Any, Float>(LaserPeckerHelper.DPI_254)
+
+    /**每个图层对应的dpi
+     * [lastDpi]
+     * [List<TransferLayerConfigBean>]
+     * */
+    var lastDpiLayerJson: String? by HawkPropertyValue<Any, String?>(null)
+
+    /**[lastDpiLayerJson]*/
+    var _lastLayerConfigList: List<TransferLayerConfigBean>?
+        get() = lastDpiLayerJson?.getLayerConfigList()
+        set(value) = run { lastDpiLayerJson = value?.toJson() }
+
+    /**获取图层最后一次的dpi*/
+    fun getLastLayerDpi(layerId: String) = _lastLayerConfigList?.find { it.layerId == layerId }?.dpi
+        ?: LaserPeckerHelper.DPI_254
 
     /**最大的选择添加图片的数量*/
     var maxSelectorPhotoCount: Int by HawkPropertyValue<Any, Int>(9)
@@ -298,4 +316,7 @@ object HawkEngraveKeys {
 
     @MM
     var lastPreviewHeight: Float by HawkPropertyValue<Any, Float>(0f)
+
+    /**是否要保存所有工程图层的参数, 否则只保存有数据的图层参数*/
+    var saveAllProjectOptions: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }
