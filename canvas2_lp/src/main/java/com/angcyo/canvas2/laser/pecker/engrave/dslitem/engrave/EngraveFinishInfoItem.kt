@@ -4,10 +4,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.filterLayerDpi
-import com.angcyo.library.ex._string
 
 /**
  * 雕刻完成信息item
@@ -47,19 +45,10 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
 
                 if (deviceStateModel.isPenMode(it.moduleState)) {
                     //握笔模块下,只有 加速级别 雕刻速度
-                    add(
-                        LabelDesData(
-                            _string(R.string.engrave_precision),
-                            "${engraveConfigEntity.precision}"
-                        )
-                    )
+                    add(precisionData("${engraveConfigEntity.precision}"))
 
-                    add(
-                        LabelDesData(
-                            _string(R.string.engrave_speed),
-                            "${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"
-                        )
-                    )
+                    //雕刻速度
+                    add(velocityData("${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"))
                 } else {
                     //功率:
                     add(powerData(engraveConfigEntity.power))

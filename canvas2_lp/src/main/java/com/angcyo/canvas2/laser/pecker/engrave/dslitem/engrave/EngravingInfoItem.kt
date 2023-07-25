@@ -13,7 +13,6 @@ import com.angcyo.item.data.LabelDesData
 import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.ex._color
-import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
 import com.angcyo.widget.DslViewHolder
 
@@ -75,16 +74,12 @@ open class EngravingInfoItem : DslTagGroupItem() {
                             "${engraveConfigEntity.toEngravingSpeed()}%"
                         )
                     )*/
+                    //加速级别
                     add(precisionData("${engraveConfigEntity.precision}"))
                 }
                 if (deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
-                    //画笔模式
-                    add(
-                        LabelDesData(
-                            _string(R.string.engrave_speed),
-                            "${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"
-                        )
-                    )
+                    //画笔模式, 雕刻速度
+                    add(velocityData("${EngraveCmd.depthToSpeed(engraveConfigEntity.depth)}%"))
                 } else {
                     //功率:
                     add(powerData(engraveConfigEntity.power))

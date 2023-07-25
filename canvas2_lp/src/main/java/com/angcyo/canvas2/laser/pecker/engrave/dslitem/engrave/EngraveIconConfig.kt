@@ -57,6 +57,15 @@ fun precisionData(des: CharSequence?) = LabelDesData(span {
     }
 }, des, _string(R.string.engrave_precision))
 
+/**雕刻速度*/
+fun velocityData(des: CharSequence?) = LabelDesData(span {
+    if (HawkEngraveKeys.enableConfigIcon) {
+        appendDrawable(R.drawable.engrave_config_velocity_svg)
+    } else {
+        append(_string(R.string.engrave_speed))
+    }
+}, des, _string(R.string.engrave_speed))
+
 /**功率*/
 fun powerData(des: Any?) = LabelDesData(
     span {

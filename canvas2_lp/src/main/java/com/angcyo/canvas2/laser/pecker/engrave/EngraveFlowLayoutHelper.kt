@@ -771,6 +771,10 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
                 if (laserPeckerModel.isCSeries()) {
                     //C1 加速级别选择
+                    if (engraveConfigEntity.precision < 0) {
+                        engraveConfigEntity.precision = 1
+                        engraveConfigEntity.lpSaveEntity()
+                    }
                     EngraveOptionWheelItem()() {
                         itemTag = EngraveConfigEntity::precision.name
                         itemLabelText = _string(R.string.engrave_precision)
