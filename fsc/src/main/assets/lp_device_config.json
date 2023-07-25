@@ -681,7 +681,7 @@
             "dpi": 711,
             "px": 1,
             "des": "2.8k",
-            "label_": "2k",
+            "label": "2k",
             "moduleList": [
               3
             ]
@@ -690,7 +690,7 @@
             "dpi": 889,
             "px": 1,
             "des": "3.5k",
-            "label_": "4k",
+            "label": "4k",
             "moduleList": [
               3
             ]
