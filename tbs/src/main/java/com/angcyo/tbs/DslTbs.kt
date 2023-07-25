@@ -8,6 +8,7 @@ import com.angcyo.DslAHelper
 import com.angcyo.library.L
 import com.angcyo.library.app
 import com.angcyo.library.component.ThreadExecutor
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.model.WebConfig
@@ -257,6 +258,19 @@ fun dslTbsOpen(
     context: Context = app(),
     url: String? = null,
     cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
+    config: WebConfig.() -> Unit = {}
+) {
+    DslAHelper(context).apply {
+        open(url, cls, config)
+        doIt()
+    }
+}
+
+/**使用TBS打开url*/
+fun openUrlWithTbs(
+    url: String?,
+    cls: Class<out TbsWebActivity> = TbsWebActivity::class.java,
+    context: Context = lastContext,
     config: WebConfig.() -> Unit = {}
 ) {
     DslAHelper(context).apply {
