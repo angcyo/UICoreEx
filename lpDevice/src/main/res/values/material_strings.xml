@@ -55,4 +55,18 @@
     <string name="mdf">MDF</string>
     <string name="cowhide">Cowhide</string>
 
+    <string name="basswood_planks_3">3mm Basswood planks</string>
+    <string name="basswood_planks_6">6mm Basswood planks</string>
+    <string name="basswood_planks_12">12mm Basswood planks</string>
+    <string name="cherry_planks_3">3mm Cherry planks</string>
+    <string name="cherry_planks_6">6mm Cherry planks</string>
+    <string name="cherry_planks_12">12mm Cherry planks</string>
+    <string name="pine_planks_3">3mm Pine planks</string>
+    <string name="pine_planks_6">6mm Pine planks</string>
+    <string name="pine_planks_12">12mm Pine planks</string>
+    <string name="walnut_planks_3">3mm Walnut planks</string>
+    <string name="walnut_planks_6">6mm Walnut planks</string>
+    <string name="walnut_planks_12">12mm Walnut planks</string>
+    <string name="bamboo_chips">Bamboo chips</string>
+    <string name="log_chips_3">3mm Log chips</string>
 </resources>

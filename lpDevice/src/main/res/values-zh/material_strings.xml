@@ -54,4 +54,19 @@
     <string name="beechwood">榉木</string>
     <string name="mdf">密度板</string>
     <string name="cowhide">牛皮</string>
+
+    <string name="basswood_planks_3">3mm椴木板</string>
+    <string name="basswood_planks_6">6mm椴木板</string>
+    <string name="basswood_planks_12">12mm椴木板</string>
+    <string name="cherry_planks_3">3mm樱桃木板</string>
+    <string name="cherry_planks_6">6mm樱桃木板</string>
+    <string name="cherry_planks_12">12mm樱桃木板</string>
+    <string name="pine_planks_3">3mm松木板</string>
+    <string name="pine_planks_6">6mm松木板</string>
+    <string name="pine_planks_12">12mm松木板</string>
+    <string name="walnut_planks_3">3mm胡桃木板</string>
+    <string name="walnut_planks_6">6mm胡桃木板</string>
+    <string name="walnut_planks_12">12mm胡桃木板</string>
+    <string name="bamboo_chips">竹片</string>
+    <string name="log_chips_3">3mm原木片</string>
 </resources>

@@ -1,0 +1,134 @@
+[
+  {
+    "dpiScale": 1,
+    "code": "basswood_planks_3_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 20,
+    "_name": "3mm椴木板",
+    "resIdStr": "basswood_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "basswood_planks_3"
+  },
+  {
+    "dpiScale": 1,
+    "code": "basswood_planks_6_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 90,
+    "_name": "6mm椴木板",
+    "resIdStr": "basswood_planks_6",
+    "power": 100,
+    "type": 0,
+    "key": "basswood_planks_6"
+  },
+  {
+    "dpiScale": 1,
+    "code": "basswood_planks_12_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 100,
+    "_name": "12mm椴木板",
+    "resIdStr": "basswood_planks_12",
+    "power": 100,
+    "type": 0,
+    "key": "basswood_planks_12"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cherry_planks_3_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 95,
+    "_name": "3mm樱桃木板",
+    "resIdStr": "cherry_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "cherry_planks_3"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cherry_planks_6_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 95,
+    "_name": "6mm樱桃木板",
+    "resIdStr": "cherry_planks_6",
+    "power": 100,
+    "type": 0,
+    "key": "cherry_planks_6"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cherry_planks_12_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 95,
+    "_name": "12mm樱桃木板",
+    "resIdStr": "cherry_planks_12",
+    "power": 100,
+    "type": 0,
+    "key": "cherry_planks_12"
+  },
+  {
+    "dpiScale": 1,
+    "code": "corrugated_paper_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 80,
+    "_name": "瓦楞纸",
+    "resIdStr": "corrugated_paper",
+    "power": 100,
+    "type": 0,
+    "key": "corrugated_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "bamboo_chips_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 90,
+    "_name": "竹片",
+    "resIdStr": "bamboo_chips",
+    "power": 100,
+    "type": 0,
+    "key": "bamboo_chips"
+  },
+  {
+    "dpiScale": 1,
+    "code": "vellum_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 5,
+    "_name": "牛皮纸",
+    "resIdStr": "vellum",
+    "power": 10,
+    "type": 0,
+    "key": "vellum"
+  },
+  {
+    "dpiScale": 1,
+    "code": "log_chips_3_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 20,
+    "_name": "3mm原木片",
+    "resIdStr": "log_chips_3",
+    "power": 100,
+    "type": 0,
+    "key": "log_chips_3"
+  },
+  {
+    "dpiScale": 1,
+    "code": "acrylic_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 100,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 100,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cardboard_blue_bw_1",
+    "layerId": "layerCut",
+    "depth": 75,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 100,
+    "type": 0,
+    "key": "cardboard"
+  }
+]
