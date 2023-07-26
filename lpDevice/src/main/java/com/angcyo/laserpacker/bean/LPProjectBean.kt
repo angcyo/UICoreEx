@@ -128,7 +128,7 @@ data class LPProjectBean(
         if (options.isNullOrEmpty()) {
             return emptyList()
         }
-        val result = MaterialHelper.createMaterial { entity ->
+        val result = MaterialHelper.createLayerMaterialList { entity ->
             options.find { it.layerId == entity.layerId }?.apply {
                 HawkEngraveKeys.lastDiameterPixel = diameter.toPixel()
                 entity.productName = productName

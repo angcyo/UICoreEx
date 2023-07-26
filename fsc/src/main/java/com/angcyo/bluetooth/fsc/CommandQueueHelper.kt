@@ -74,7 +74,7 @@ object CommandQueueHelper {
 
         //入队
         linkedList.add(info)
-        L.i("加入指令:${info.command.toCommandLogString()} 共:${linkedList.size()}")
+        L.i("加入指令:[${info.command.toCommandLogString()}] 共:${linkedList.size()}")
         start()
     }
 

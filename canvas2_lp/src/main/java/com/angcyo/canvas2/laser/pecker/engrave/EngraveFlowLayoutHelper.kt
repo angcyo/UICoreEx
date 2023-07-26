@@ -499,6 +499,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                 itemSelectedIndex = MaterialHelper.indexOfMaterial(
                     MaterialHelper.unionMaterialList,
                     projectItemBean?.materialKey,
+                    projectItemBean?.materialKey,
                     projectItemBean?.printType,
                 )
                 itemEngraveItemBean = projectItemBean

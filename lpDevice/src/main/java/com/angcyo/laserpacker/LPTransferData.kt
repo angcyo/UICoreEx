@@ -55,7 +55,7 @@ object LPTransferData {
 
             //材质
             val customMaterial =
-                MaterialHelper.createCustomMaterial().find { it.layerId == layerId }!!
+                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }!!
             materialCode = customMaterial.code
 
             //功率

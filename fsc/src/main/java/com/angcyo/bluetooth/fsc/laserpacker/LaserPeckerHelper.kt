@@ -666,7 +666,7 @@ object LaserPeckerHelper {
 
         val uuid = command.uuid
         val commandLogString = command.toCommandLogString()
-        "发送指令[$address]:${uuid}->$commandLogString".writeBleLog()
+        "发送指令[$address]:${uuid}:${command.getReceiveTimeout()}ms->$commandLogString".writeBleLog()
 
         val func = command.commandFunc().toInt()
         val state = if (command is QueryCmd) {
@@ -700,7 +700,15 @@ object LaserPeckerHelper {
 
             val result = bean?.receivePacket?.toHexString(false) ?: ""
             val resultDes = result.parseResultPacketLog(func, state)
-            "指令返回:${uuid}->$result\n$resultDes".writeBleLog()
+            buildString {
+                append("指令返回:${uuid}->")
+                if (error == null) {
+                    append("$result\n")
+                    append(resultDes)
+                } else {
+                    append("\n$error")
+                }
+            }.writeBleLog()
             CommandEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(CommandEntity_.uuid.equal(uuid))
             }?.apply {
@@ -746,8 +754,10 @@ object LaserPeckerHelper {
     /**初始化的蓝牙设备名称*/
     var initDeviceName: String? = null
 
-    /**初始化的蓝牙设备地址
-     * [lastDeviceAddress]*/
+    /**初始化的蓝牙设备地址, 也有可能是wifi地址
+     * [lastDeviceAddress]
+     * [com.angcyo.library.component.hawk.LibLpHawkKeys.wifiAddress]
+     * */
     var initDeviceAddress: String? = null
 
     /**初始化的时候, 设备是否正忙*/

@@ -12,6 +12,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
 import com.angcyo.http.tcp.TcpState
+import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
@@ -75,7 +76,7 @@ class WaitReceivePacket(
                 put(UMEvent.KEY_COMMAND_ERROR, "指令超时")
             }
             end()
-            listener.onReceive(null, ReceiveTimeOutException())
+            error(ReceiveTimeOutException())
         }
     }
 
@@ -143,12 +144,13 @@ class WaitReceivePacket(
         api.removePacketListener(this)
         wifiApi.tcp.listeners.remove(wifiListener)
         if (isCancel) {
-            listener.onReceive(null, ReceiveCancelException())
+            error(ReceiveCancelException())
         }
     }
 
     /**错误返回*/
     fun error(e: Exception) {
+        e.message?.writeBleLog(L.WARN)
         listener.onReceive(null, e)
     }
 
@@ -230,7 +232,7 @@ class WaitReceivePacket(
                 //解析数据长度
                 val dataCount = bytes[headStartIndex + headSize].toHexInt() //包含校验位的长度
                 val dataStartIndex = headStartIndex + headSize + 1
-                val receiveDataCount = bytes.size - dataStartIndex//收到的数据长度
+                val receiveDataCount = bytes.size - dataStartIndex //收到的数据长度
                 if (receiveDataCount >= dataCount) {
                     end()
 
@@ -262,19 +264,23 @@ class WaitReceivePacket(
                                 UMEvent.APP_ERROR.umengEventValue {
                                     put(UMEvent.KEY_COMMAND_ERROR, "数据校验失败")
                                 }
-                                error(
-                                    ReceiveVerifyException("数据校验失败: 计算值:$sumString 比较值:$checkString")
-                                )
+                                error(ReceiveVerifyException("数据校验失败[$sumString:$checkString]"))
                             }
                         }
                     }
                 } else {
-                    _isFinish = false
+                    //_isFinish = false
+                    /*UMEvent.APP_ERROR.umengEventValue {
+                        put(UMEvent.KEY_COMMAND_ERROR, "数据校验失败")
+                    }
+                    error(ReceiveVerifyException("数据长度校验失败[$receiveDataCount:${dataCount}]"))*/
+                    "数据不完整,继续等待...[$receiveDataCount:${dataCount}]".writeBleLog(L.WARN)
                 }
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
+            _isFinish = true
+            error(e)
         }
     }
 

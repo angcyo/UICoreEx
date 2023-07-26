@@ -68,7 +68,7 @@ class EngraveConfigProvider : IEngraveConfigProvider {
                 for (entity in projectMaterialList) {
                     entity.layerId?.let { entity.initLayerDpi(it, entity.dpi) }
                     entity.taskId = taskId
-                    entity.isCustomMaterial = true
+                    entity.materialType = MaterialEntity.MATERIAL_TYPE_CUSTOM
                 }
                 projectMaterialList.lpSaveAllEntity()
                 MaterialHelper.initMaterial()//重新初始化材质
@@ -143,7 +143,7 @@ class EngraveConfigProvider : IEngraveConfigProvider {
             printCount = printCount ?: 1
 
             val itemLayerId = _layerId
-            materialKey = materialKey ?: MaterialHelper.createCustomMaterial()
+            materialKey = materialKey ?: MaterialHelper.createCustomLayerMaterialList()
                 .find { it.layerId == itemLayerId }?.key
         }
         //雕刻配置

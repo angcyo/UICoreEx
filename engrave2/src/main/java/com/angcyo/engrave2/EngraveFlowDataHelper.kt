@@ -533,7 +533,7 @@ object EngraveFlowDataHelper {
 
             //获取对应图层的材质
             materialCode = material.code
-            this.materialKey = material.key
+            materialKey = material.key
             type = material.type.toByte()
 
             //关键雕刻参数
@@ -579,7 +579,8 @@ object EngraveFlowDataHelper {
                 depth = configEntity.depth
                 count = configEntity.time
 
-                isCustomMaterial = true
+                //自定义材质
+                materialType = MaterialEntity.MATERIAL_TYPE_CUSTOM
 
                 //code
                 createMaterialCode("${key}_${nowTime()}")
@@ -638,7 +639,7 @@ object EngraveFlowDataHelper {
 
             //材质
             val customMaterial =
-                MaterialHelper.createCustomMaterial().find { it.layerId == layerId }
+                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }
             materialCode = customMaterial?.code
 
             //功率

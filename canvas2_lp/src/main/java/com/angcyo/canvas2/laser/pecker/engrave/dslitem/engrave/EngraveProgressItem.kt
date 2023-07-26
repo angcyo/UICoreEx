@@ -33,7 +33,7 @@ class EngraveProgressItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.tv(R.id.lib_text_view)?.text = "${_string(R.string.progress)}:"
+        itemHolder.tv(R.id.lib_text_view)?.text = _string(R.string.progress)
         itemHolder.tv(R.id.engrave_layer_view)?.text = if (HawkEngraveKeys.enableItemTopOrder) {
             null
         } else {

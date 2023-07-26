@@ -197,7 +197,7 @@ object DeviceHelper {
     fun getProductLaserType(): Byte {
         return LaserPeckerHelper.findProductSupportLaserTypeList()
             .find { it.type.toInt() == HawkEngraveKeys.lastType }?.type
-            ?: LaserPeckerHelper.LASER_TYPE_BLUE
+            ?: if (vmApp<LaserPeckerModel>().isCSeries()) -1 else LaserPeckerHelper.LASER_TYPE_BLUE
     }
 
     //region ---文件输出信息---
