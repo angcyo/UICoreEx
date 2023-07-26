@@ -19,6 +19,7 @@ import io.objectbox.android.Admin
 import io.objectbox.exception.DbException
 import io.objectbox.kotlin.equal
 import io.objectbox.kotlin.query
+import io.objectbox.query.OrderFlags
 import io.objectbox.query.QueryBuilder
 import io.objectbox.query.QueryCondition
 import java.io.File
@@ -456,11 +457,17 @@ inline fun <reified T : Any> KClass<T>.allEntity(packageName: String = defaultBo
     return boxOf(cls, packageName).all
 }
 
-/**分页查找
+/**分页查找, 排序条件不能共存
+ * ```
  * page(page) {
- *    //降序排列
+ *    //排序sort, 降序排列
  *    orderDesc(EngraveHistoryEntity_.entityId)
+ *    //升序
+ *    order(ProjectSyncEntity_.updateTime)
  * }
+ * ```
+ * [OrderFlags.DESCENDING] 降序:1
+ * [0] 升序:0
  * */
 fun <T> Box<T>.page(
     page: Page,
@@ -473,6 +480,16 @@ fun <T> Box<T>.page(
     return builder.apply(block).build().find(offset.toLong(), limit.toLong())
 }
 
+/**
+ * ```
+ * sortTime?.let {
+ *     order(ProjectSyncEntity_.updateTime, it)
+ * }
+ * sortName?.let {
+ *    order(ProjectSyncEntity_.updateTime, it)
+ * }
+ * ```
+ * */
 inline fun <reified T : Any> KClass<T>.page(
     page: Page,
     packageName: String = defaultBoxStore(),
