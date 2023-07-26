@@ -1,6 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import com.angcyo.library.component.FontManager
+import com.angcyo.library.component.HawkPropertyValue
 import com.angcyo.library.ex.fileMd5
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.model.TypefaceInfo
@@ -29,23 +30,19 @@ object EntitySync {
     const val SYNC_STATE_SUCCESS = SYNC_STATE_ING shl 1
 
     /**当前登录的用户id*/
-    var userId: String? = null
+    var userId: String? by HawkPropertyValue<Any, String?>(null)
 
     /**更新当前用户的id*/
     fun updateUserId(userId: String?) {
-        if (EntitySync.userId == userId) {
-            return
-        }
         EntitySync.userId = userId
-
         //切换对应的字体目录
-        if (userId != null) {
+        if (userId.isNullOrBlank()) {
+            FontManager.defaultCustomFontFolder =
+                folderPath("${FontManager.DEFAULT_FONT_FOLDER_NAME}/custom")
+        } else {
             //登录成功
             FontManager.defaultCustomFontFolder =
                 folderPath("${FontManager.DEFAULT_FONT_FOLDER_NAME}/custom/$userId")
-        } else {
-            FontManager.defaultCustomFontFolder =
-                folderPath("${FontManager.DEFAULT_FONT_FOLDER_NAME}/custom")
         }
         FontManager.reloadCustomFontList()
     }
