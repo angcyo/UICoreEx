@@ -9,6 +9,9 @@ import com.angcyo.library.extend.IToRightDrawable
 import com.angcyo.library.extend.IToText
 import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.R
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.Companion.MATERIAL_TYPE_CUSTOM
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.Companion.MATERIAL_TYPE_SYSTEM
+import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity.Companion.MATERIAL_TYPE_TEMP
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -29,8 +32,12 @@ data class MaterialEntity(
     /**是否被删除*/
     var isDelete: Boolean = false,
 
-    /**是否是自定义的材质, 自定义的材质才可以删除*/
-    var isCustomMaterial: Boolean = false,
+    /**材质类型
+     * [MATERIAL_TYPE_TEMP]
+     * [MATERIAL_TYPE_SYSTEM]
+     * [MATERIAL_TYPE_CUSTOM]
+     * */
+    var materialType: Int = MATERIAL_TYPE_TEMP,
 
     /**当前的材质是否发生了改变*/
     var isChanged: Boolean = false,
@@ -89,7 +96,7 @@ data class MaterialEntity(
      * [LaserPeckerHelper.LASER_TYPE_WHITE] 0x01
      * [LaserPeckerHelper.LASER_TYPE_BLUE] 0x00
      * */
-    var type: Int = 0,
+    var type: Int = -1,
 
     /**加速级别/雕刻精度[1~5]
      * 1: 速度快/精度低
@@ -114,6 +121,15 @@ data class MaterialEntity(
     ) : IToText, IToDrawable, IToRightDrawable {
 
     companion object {
+
+        /**材质类型: 临时*/
+        const val MATERIAL_TYPE_TEMP = 0
+
+        /**材质类型: 系统推荐*/
+        const val MATERIAL_TYPE_SYSTEM = 1
+
+        /**材质类型: 自定义*/
+        const val MATERIAL_TYPE_CUSTOM = 2
 
         /**雕刻速度
          * [com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd.Companion.speedToDepth]
@@ -140,7 +156,7 @@ data class MaterialEntity(
 
     /**是否是自定义的材质*/
     val _isCustomMaterial: Boolean
-        get() = isCustomMaterial || !productName.isNullOrBlank()
+        get() = materialType == MATERIAL_TYPE_CUSTOM || !productName.isNullOrBlank()
 
     override fun toText(): CharSequence? {
         val idStr = resIdStr

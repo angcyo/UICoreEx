@@ -106,7 +106,7 @@ object MaterialHelper {
     fun getProductMaterialList(product: LaserPeckerProductInfo?): List<MaterialEntity> {
         //必有一个自定义的参数
         val result = mutableListOf<MaterialEntity>()
-        result.addAll(createCustomMaterial())
+        result.addAll(createLayerMaterialList())
         val name = product?.name ?: return result
 
         //用户自定义的参数
@@ -117,7 +117,8 @@ object MaterialHelper {
             )
         })
 
-        val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
+        val isLPSeries = vmApp<LaserPeckerModel>().isLPSeries()
+        //val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
 
         //系统的推荐参数
         product.laserTypeList.forEach {
@@ -130,6 +131,7 @@ object MaterialHelper {
             list?.let {
                 result.addAll(list)
                 for (materialEntity in list) {
+                    materialEntity.materialType = MaterialEntity.MATERIAL_TYPE_SYSTEM
                     if (materialEntity.dpi <= 0f) {
                         val dpi = materialEntity.dpiScale * LaserPeckerHelper.DPI_254
                         materialEntity.dpi = dpi
@@ -140,19 +142,11 @@ object MaterialHelper {
                             )
                         }
                     }
-                    if (materialEntity.layerId == LayerHelper.LAYER_FILL) {
+                    if (isLPSeries && materialEntity.layerId == LayerHelper.LAYER_FILL) {
                         //填充图层, 和GCode图层/切割的参数一致
                         materialEntity.copy().apply {
                             layerId = LayerHelper.LAYER_LINE
                             result.add(this)
-
-                            if (isCSeries) {
-                                //切割图层, 也使用GCode图层的参数
-                                materialEntity.copy().apply {
-                                    layerId = LayerHelper.LAYER_CUT
-                                    result.add(this)
-                                }
-                            }
                         }
                     }
                 }
@@ -177,17 +171,20 @@ object MaterialHelper {
 
     /**获取一个材质*/
     fun getMaterialByKey(materialKey: String?): MaterialEntity? {
-        return MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
-            apply(MaterialEntity_.key.equal("$materialKey"))
+        if (materialKey.isNullOrBlank()) {
+            return null
         }
+        return MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(MaterialEntity_.key.equal(materialKey))
+        } ?: materialList.find { it.key == materialKey }
     }
 
     /**创建一个自定义的材质*/
-    fun createCustomMaterial(): List<MaterialEntity> = createMaterial {
+    fun createCustomLayerMaterialList(): List<MaterialEntity> = createLayerMaterialList {
         //default
-        //it.resId = R.string.custom
-        //it.resIdStr = "custom"
-        //it.key = "custom"
+        it.resId = R.string.custom
+        it.resIdStr = "custom"
+        it.key = "custom"
         it.createMaterialCode(it.key!!)
     }
 
@@ -202,22 +199,35 @@ object MaterialHelper {
             initLayerDpi(layerId, dpi)
 
             //2: 优先使用上一次的参数
+            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
             val lastEngraveConfig = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
-                apply(EngraveConfigEntity_.layerId.equal(layerId))
+                if (productName.isNullOrBlank()) {
+                    //使用最后一次图层的参数
+                    apply(EngraveConfigEntity_.layerId.equal(layerId))
+                } else {
+                    //使用最后一次产品图层的参数
+                    apply(
+                        EngraveConfigEntity_.layerId.equal(layerId)
+                            .and(EngraveConfigEntity_.productName.equal(productName))
+                    )
+                }
             }
             power = lastEngraveConfig?.power ?: HawkEngraveKeys.lastPower
             depth = lastEngraveConfig?.depth ?: HawkEngraveKeys.lastDepth
             precision = lastEngraveConfig?.precision ?: HawkEngraveKeys.lastPrecision
             type = (lastEngraveConfig?.type ?: DeviceHelper.getProductLaserType()).toInt()
-            count = 1
+            count = max(1, lastEngraveConfig?.time ?: count)
 
             //3: 先用自定义占位
-            resId = R.string.custom
-            resIdStr = "custom"
-            key = "custom"
+            val materialEntity = getMaterialByKey(lastEngraveConfig?.materialKey)
+            resId = materialEntity?.resId ?: R.string.custom
+            resIdStr = materialEntity?.resIdStr ?: "custom"
+            key = materialEntity?.key ?: "custom"
+            name = materialEntity?.name ?: name
 
             //productName //用来区分是否是自定义的材质
             //isCustomMaterial
+            materialType = MaterialEntity.MATERIAL_TYPE_TEMP
 
             //配置
             config(this)
@@ -229,16 +239,16 @@ object MaterialHelper {
     }
 
     /**创建一个材质, 未入库*/
-    fun createMaterial(config: (entity: MaterialEntity) -> Unit = {}): List<MaterialEntity> {
+    fun createLayerMaterialList(config: (entity: MaterialEntity) -> Unit = {}): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         //一个材质, 需要包含所有图层的参数
         for (layerInfo in LayerHelper.engraveLayerList) {
-            val entity = createLayerMaterial(
-                layerInfo.layerId,
-                HawkEngraveKeys.lastDpiLayerJson?.getLayerConfig(layerInfo.layerId)?.dpi
-                    ?: LaserPeckerHelper.DPI_254,
-                config
+            val layerId = layerInfo.layerId
+            val dpi = layerId.filterLayerDpi(
+                HawkEngraveKeys.lastDpiLayerJson?.getLayerConfig(layerId)?.dpi
+                    ?: LaserPeckerHelper.DPI_254
             )
+            val entity = createLayerMaterial(layerId, dpi, config)
             result.add(entity)
         }
         return result
@@ -278,14 +288,34 @@ object MaterialHelper {
 
     /**获取材质在对应列表中的索引*/
     fun indexOfMaterial(materialList: List<MaterialEntity>, materialEntity: MaterialEntity): Int {
-        return indexOfMaterial(materialList, materialEntity.key, materialEntity.type)
+        return indexOfMaterial(
+            materialList,
+            materialEntity.code,
+            materialEntity.key,
+            materialEntity.type
+        )
     }
 
     /**获取材质在对应列表中的索引
      * [filterMaterialList]
      * */
-    fun indexOfMaterial(materialList: List<MaterialEntity>, materialKey: String?, type: Int?): Int {
-        val index =
+    fun indexOfMaterial(
+        materialList: List<MaterialEntity>,
+        materialCode: String?,
+        materialKey: String?,
+        type: Int?
+    ): Int {
+        var index =
+            materialList.indexOfFirst { it.code == materialCode && (type == null || type == it.type) }
+        if (index != -1) {
+            return index
+        }
+        index =
+            materialList.indexOfFirst { it.code == materialCode }
+        if (index != -1) {
+            return index
+        }
+        index =
             materialList.indexOfFirst { it.key == materialKey && (type == null || type == it.type) }
         return max(0, index)
     }
