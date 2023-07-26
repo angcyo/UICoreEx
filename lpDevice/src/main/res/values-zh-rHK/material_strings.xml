@@ -34,4 +34,39 @@
     <string name="titanium">鈦</string>
     <string name="magnesium">鎂</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">钢</string>
+    <string name="shale_slabs">页岩石板</string>
+    <string name="marble_slabs">大理石</string>
+    <string name="basswood_planks">椴木板</string>
+    <string name="black_walnut">黑胡桃木</string>
+    <string name="imitation_leather">人造革</string>
+    <string name="vellum">牛皮纸</string>
+    <string name="paper_jam">卡纸</string>
+    <string name="cardboard">硬纸板</string>
+    <string name="acrylic">亚克力</string>
+    <string name="cork_coasters">软木杯垫</string>
+    <string name="mark_draws_paper">马克画纸</string>
+    <string name="poplar_chips">杨木片</string>
+    <string name="bamboo2">楠竹</string>
+    <string name="beechwood">榉木</string>
+    <string name="mdf">密度板</string>
+    <string name="cowhide">牛皮</string>
+
+    <string name="basswood_planks_3">3mm椴木板</string>
+    <string name="basswood_planks_6">6mm椴木板</string>
+    <string name="basswood_planks_12">12mm椴木板</string>
+    <string name="cherry_planks_3">3mm樱桃木板</string>
+    <string name="cherry_planks_6">6mm樱桃木板</string>
+    <string name="cherry_planks_12">12mm樱桃木板</string>
+    <string name="pine_planks_3">3mm松木板</string>
+    <string name="pine_planks_6">6mm松木板</string>
+    <string name="pine_planks_12">12mm松木板</string>
+    <string name="walnut_planks_3">3mm胡桃木板</string>
+    <string name="walnut_planks_6">6mm胡桃木板</string>
+    <string name="walnut_planks_12">12mm胡桃木板</string>
+    <string name="bamboo_chips">竹片</string>
+    <string name="log_chips_3">3mm原木片</string>
 </resources>

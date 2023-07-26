@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="recycle_paper">Umweltfreundliches Papier</string>
-    <string name="corrugated_paper">Wellenpapier</string>
+    <string name="recycle_paper">umweltfreundliches Papier</string>
+    <string name="corrugated_paper">Wellpappe</string>
     <string name="leather">Leder</string>
     <string name="bamboo">Bambus</string>
     <string name="wood">Holz</string>
@@ -10,7 +10,7 @@
     <string name="cloth">Stoff</string>
     <string name="felt">Filzstoff</string>
     <string name="opacity_acrylic">Undurchsichtiges Acryl</string>
-    <string name="photosensitive_seal">Lichtempfindlicher Stempel</string>
+    <string name="photosensitive_seal">lichtempfindlicher Stempel</string>
     <string name="fruit_peel">Fruchtschalen</string>
     <string name="custom">Benutzerdefinierte</string>
     <string name="coke_can">Cola-Dosen</string>
@@ -30,8 +30,43 @@
     <string name="jewelry">Schmuck</string>
     <string name="food">Gourmet</string>
     <string name="iron">Eisen</string>
-    <string name="aluminum">Aluminium</string>
+    <string name="aluminum">Aluminiumoxid</string>
     <string name="titanium">Titan</string>
     <string name="magnesium">Magnesium</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">Stahl</string>
+    <string name="shale_slabs">Schiefersteinplatte</string>
+    <string name="marble_slabs">Marmor</string>
+    <string name="basswood_planks">Brett aus Lindenholz</string>
+    <string name="black_walnut">Brett aus schwarzem Walnussholz</string>
+    <string name="imitation_leather">Kunstleder</string>
+    <string name="vellum">Hartpapier</string>
+    <string name="paper_jam">Kartonpapier</string>
+    <string name="cardboard">Pappe</string>
+    <string name="acrylic">Akryl</string>
+    <string name="cork_coasters">Untersetzer aus Kork</string>
+    <string name="mark_draws_paper">Markerpapier</string>
+    <string name="poplar_chips">Scheiben aus Pappelholz</string>
+    <string name="bamboo2">Moso-Bambus</string>
+    <string name="beechwood">Buche</string>
+    <string name="mdf">Dichteplatte</string>
+    <string name="cowhide">Rindsleder</string>
+
+    <string name="basswood_planks_3">3mm Brett aus Lindenholz</string>
+    <string name="basswood_planks_6">6mm Brett aus Lindenholz</string>
+    <string name="basswood_planks_12">12mm Brett aus Lindenholz</string>
+    <string name="cherry_planks_3">3mm Brett aus Kirschholz</string>
+    <string name="cherry_planks_6">6mm Brett aus Kirschholz</string>
+    <string name="cherry_planks_12">12mm Brett aus Kirschholz</string>
+    <string name="pine_planks_3">3mm Brett aus Kiefernholz</string>
+    <string name="pine_planks_6">6mm Brett aus Kiefernholz</string>
+    <string name="pine_planks_12">12mm Brett aus Kiefernholz</string>
+    <string name="walnut_planks_3">3mm Brett aus Walnussolz</string>
+    <string name="walnut_planks_6">6mm Brett aus Walnussolz</string>
+    <string name="walnut_planks_12">12mm Brett aus Walnussolz</string>
+    <string name="bamboo_chips">Bambusstreifen</string>
+    <string name="log_chips_3">3mm Scheiben aus Stammholz</string>
 </resources>

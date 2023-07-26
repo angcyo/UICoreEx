@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="recycle_paper">Papel reciclado</string>
-    <string name="corrugated_paper">Papel ondulado</string>
+    <string name="corrugated_paper">Cartón corrugado</string>
     <string name="leather">Cuero</string>
     <string name="bamboo">Bambú</string>
     <string name="wood">Madera</string>
@@ -30,8 +30,43 @@
     <string name="jewelry">Joya</string>
     <string name="food">Comida</string>
     <string name="iron">Hierro</string>
-    <string name="aluminum">Aluminio</string>
+    <string name="aluminum">Alúmina</string>
     <string name="titanium">Titanio</string>
     <string name="magnesium">Magnesio</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel"> Acero</string>
+    <string name="shale_slabs">Losa de esquisto</string>
+    <string name="marble_slabs">Mármol</string>
+    <string name="basswood_planks">Tabla de corcho</string>
+    <string name="black_walnut">Nogal negro</string>
+    <string name="imitation_leather">Cuero sintético</string>
+    <string name="vellum">papel pergamino</string>
+    <string name="paper_jam">Cartulina</string>
+    <string name="cardboard">Cartón rígido</string>
+    <string name="acrylic">Acrílico</string>
+    <string name="cork_coasters">Posavasos de corcho</string>
+    <string name="mark_draws_paper">Papel para dibujo</string>
+    <string name="poplar_chips">Chapa de álamo</string>
+    <string name="bamboo2">bambú peludo</string>
+    <string name="beechwood">Haya</string>
+    <string name="mdf">Tablero de fibra de densidad media</string>
+    <string name="cowhide">Cuero de vaca</string>
+
+    <string name="basswood_planks_3">3mm Tabla de corcho</string>
+    <string name="basswood_planks_6">6mm Tabla de corcho</string>
+    <string name="basswood_planks_12">12mm Tabla de corcho</string>
+    <string name="cherry_planks_3">3mm Tablero de cerezo</string>
+    <string name="cherry_planks_6">6mm Tablero de cerezo</string>
+    <string name="cherry_planks_12">12mm Tablero de cerezo</string>
+    <string name="pine_planks_3">3mm Tablero de pino</string>
+    <string name="pine_planks_6">6mm Tablero de pino</string>
+    <string name="pine_planks_12">12mm Tablero de pino</string>
+    <string name="walnut_planks_3">3mm Tablero de nogal</string>
+    <string name="walnut_planks_6">6mm Tablero de nogal</string>
+    <string name="walnut_planks_12">12mm Tablero de nogal</string>
+    <string name="bamboo_chips">Bambú laminado</string>
+    <string name="log_chips_3">3mm Piezas de madera</string>
 </resources>

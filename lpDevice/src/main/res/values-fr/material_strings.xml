@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="recycle_paper">Papier recyclé</string>
-    <string name="corrugated_paper">Carton ondulé</string>
+    <string name="corrugated_paper">Papier ondulé</string>
     <string name="leather">Cuir</string>
     <string name="bamboo">Bambou</string>
     <string name="wood">Bois</string>
@@ -10,7 +10,7 @@
     <string name="cloth">Tissus</string>
     <string name="felt">Tissu en feutre</string>
     <string name="opacity_acrylic">Acrylique opaque</string>
-    <string name="photosensitive_seal">Sceau photosensible</string>
+    <string name="photosensitive_seal">Joint photosensibles</string>
     <string name="fruit_peel">Peau de fruit</string>
     <string name="custom">Personnaliser</string>
     <string name="coke_can">Canettes de Coca-Cola</string>
@@ -30,8 +30,43 @@
     <string name="jewelry">Bijoux</string>
     <string name="food">Aliments</string>
     <string name="iron">Fer</string>
-    <string name="aluminum">Aluminium</string>
+    <string name="aluminum">Oxyde d\'aluminium</string>
     <string name="titanium">Titane</string>
     <string name="magnesium">Magnésium</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">Acier</string>
+    <string name="shale_slabs">Dalle de schiste</string>
+    <string name="marble_slabs">Marbre</string>
+    <string name="basswood_planks">Planche de tilleul</string>
+    <string name="black_walnut">Bois de noyer noir </string>
+    <string name="imitation_leather">Similicuir</string>
+    <string name="vellum">papier kraft</string>
+    <string name="paper_jam">Papier carton</string>
+    <string name="cardboard">Papier carton</string>
+    <string name="acrylic">Acrylique</string>
+    <string name="cork_coasters">Dessous de verre en liège</string>
+    <string name="mark_draws_paper">Papier marqueur</string>
+    <string name="poplar_chips">Tranche de peuplier</string>
+    <string name="bamboo2">Phyllostachys pubescens(Bambou)</string>
+    <string name="beechwood">Hêtre</string>
+    <string name="mdf">Panneau de densité</string>
+    <string name="cowhide">Peau de vache</string>
+
+    <string name="basswood_planks_3">3mm Planche de tilleul</string>
+    <string name="basswood_planks_6">6mm Planche de tilleul</string>
+    <string name="basswood_planks_12">12mm Planche de tilleul</string>
+    <string name="cherry_planks_3">3mm Planche de bois de cerisier</string>
+    <string name="cherry_planks_6">6mm Planche de bois de cerisier</string>
+    <string name="cherry_planks_12">12mm Planche de bois de cerisier</string>
+    <string name="pine_planks_3">3mm Planche de pin</string>
+    <string name="pine_planks_6">6mm Planche de pin</string>
+    <string name="pine_planks_12">12mm Planche de pin</string>
+    <string name="walnut_planks_3">3mm Planche de noyer</string>
+    <string name="walnut_planks_6">6mm Planche de noyer</string>
+    <string name="walnut_planks_12">12mm Planche de noyer</string>
+    <string name="bamboo_chips">Bande de bambou</string>
+    <string name="log_chips_3">3mm Tranche de bois naturel</string>
 </resources>

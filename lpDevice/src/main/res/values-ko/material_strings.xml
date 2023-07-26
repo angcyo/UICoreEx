@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="recycle_paper">친환경지</string>
+    <string name="recycle_paper">친환경 용지</string>
     <string name="corrugated_paper">골판지</string>
     <string name="leather">가죽</string>
     <string name="bamboo">대나무</string>
@@ -10,7 +10,7 @@
     <string name="cloth">옷감</string>
     <string name="felt">펠트</string>
     <string name="opacity_acrylic">불투명 아크릴</string>
-    <string name="photosensitive_seal">감광 도장</string>
+    <string name="photosensitive_seal">감광성 도장</string>
     <string name="fruit_peel">과일 껍질</string>
     <string name="custom">사용자 정의</string>
     <string name="coke_can">콜라 캔</string>
@@ -23,15 +23,50 @@
     <string name="painted_paperboard">페인트칠한 판지</string>
     <string name="wire_drawing_stainless_steel">스트레치 스테인리스 스틸</string>
     <string name="pure_copper">구리</string>
-    <string name="aluminium_alloy">알루미늄합금</string>
+    <string name="aluminium_alloy">알루미늄 합금</string>
     <string name="paper">종이</string>
     <string name="metal">금속</string>
     <string name="glasses">유리</string>
     <string name="jewelry">쥬얼리</string>
     <string name="food">음식</string>
     <string name="iron">철</string>
-    <string name="aluminum">알루미늄</string>
+    <string name="aluminum">산화알루미늄</string>
     <string name="titanium">티타늄</string>
     <string name="magnesium">마그네슘</string>
     <string name="abs_pvc">ABS/PVC</string>
+
+    <string name="abs">ABS</string>
+    <string name="pvc">PVC</string>
+    <string name="steel">스틸</string>
+    <string name="shale_slabs">셰일암 석판</string>
+    <string name="marble_slabs">대리석</string>
+    <string name="basswood_planks">피나무 판재</string>
+    <string name="black_walnut">흑호두나무</string>
+    <string name="imitation_leather">인조가죽</string>
+    <string name="vellum">크라프트지</string>
+    <string name="paper_jam">카드스톡</string>
+    <string name="cardboard">카드보드</string>
+    <string name="acrylic">아크릴</string>
+    <string name="cork_coasters">코르크 코스터</string>
+    <string name="mark_draws_paper">마커 용지</string>
+    <string name="poplar_chips">백양나무 슬라이스</string>
+    <string name="bamboo2">남죽(楠竹)</string>
+    <string name="beechwood">느티나무</string>
+    <string name="mdf">중밀도 섬유판</string>
+    <string name="cowhide">소가죽</string>
+
+    <string name="basswood_planks_3">3mm 피나무 판재</string>
+    <string name="basswood_planks_6">6mm 피나무 판재</string>
+    <string name="basswood_planks_12">12mm 피나무 판재</string>
+    <string name="cherry_planks_3">3mm 벚나무 판재</string>
+    <string name="cherry_planks_6">6mm 벚나무 판재</string>
+    <string name="cherry_planks_12">12mm 벚나무 판재</string>
+    <string name="pine_planks_3">3mm 소나무 판재</string>
+    <string name="pine_planks_6">6mm 소나무 판재</string>
+    <string name="pine_planks_12">12mm 소나무 판재</string>
+    <string name="walnut_planks_3">3mm 호두나무 판재</string>
+    <string name="walnut_planks_6">6mm 호두나무 판재</string>
+    <string name="walnut_planks_12">12mm 호두나무 판재</string>
+    <string name="bamboo_chips">죽편 (竹片)</string>
+    <string name="log_chips_3">3mm 원목 슬라이스</string>
 </resources>
