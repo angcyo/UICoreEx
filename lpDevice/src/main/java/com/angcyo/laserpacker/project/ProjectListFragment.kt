@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.core.view.setPadding
 import androidx.core.widget.ImageViewCompat
 import com.angcyo.base.removeThis
 import com.angcyo.core.appendIconItem
@@ -14,21 +13,24 @@ import com.angcyo.core.vmApp
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
 import com.angcyo.item.component.initSearchAdapterFilter
-import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.open.CanvasOpenModel
 import com.angcyo.laserpacker.project.dslitem.ProjectListItem
-import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.getColor
 import com.angcyo.library.ex.gone
-import com.angcyo.library.ex.size
-import com.angcyo.library.utils.appFolderPath
 import com.angcyo.library.utils.isChildClassOf
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.entity.EntitySync
+import com.angcyo.objectbox.laser.pecker.entity.ProjectSyncEntity
+import com.angcyo.objectbox.laser.pecker.entity.ProjectSyncEntity_
+import com.angcyo.objectbox.page
 import com.angcyo.widget.base.clickIt
 import com.angcyo.widget.recycler.resetLayoutManager
-import java.io.File
+import io.objectbox.query.OrderFlags
 
 /**
  * 工程列表
@@ -37,9 +39,6 @@ import java.io.File
  */
 class ProjectListFragment : BaseDslFragment() {
 
-    /**项目文件夹目录*/
-    val projectPathFile: File = File(appFolderPath(LPDataConstant.PROJECT_FILE_FOLDER))
-
     init {
         fragmentTitle = _string(R.string.project_title)
         fragmentConfig.isLightStyle = true
@@ -47,7 +46,6 @@ class ProjectListFragment : BaseDslFragment() {
         fragmentConfig.fragmentBackgroundDrawable =
             ColorDrawable(getColor(R.color.lib_theme_white_color))
 
-        page.firstPageIndex = 0
         enableRefresh = true
 
         titleLayoutId = R.layout.lib_search_title_layout
@@ -67,6 +65,22 @@ class ProjectListFragment : BaseDslFragment() {
         }
 
         //搜索过滤
+        val size = 20 * dpi
+        val padding = 20 * dpi
+        rightControl()?.appendIconItem {
+            gone()
+            ImageViewCompat.setImageTintList(
+                this,
+                ColorStateList.valueOf(fragmentConfig.titleItemIconColor)
+            )
+            setImageResource(R.drawable.sort_name_ascending)
+            //setWidthHeight(size, size)
+            setPadding(padding / 2, padding, padding / 2, padding)
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            clickIt {
+                changeSortName(this)
+            }
+        }
         rightControl()?.appendIconItem {
             gone()
             ImageViewCompat.setImageTintList(
@@ -74,9 +88,11 @@ class ProjectListFragment : BaseDslFragment() {
                 ColorStateList.valueOf(fragmentConfig.titleItemIconColor)
             )
             setImageResource(R.drawable.sort_time_ascending)
-            setPadding(_dimen(R.dimen.lib_xhdpi))
+            //setWidthHeight(size, size)
+            setPadding(padding / 2, padding, padding / 2, padding)
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
             clickIt {
-                changeSort(this)
+                changeSortTime(this)
             }
         }
         initSearchAdapterFilter(_string(R.string.project_filter_tip))
@@ -86,25 +102,25 @@ class ProjectListFragment : BaseDslFragment() {
         super.onLoadData()
 
         doBack {
+            val entityList = ProjectSyncEntity::class.page(page, LPBox.PACKAGE_NAME) {
+                sortTime?.let {
+                    order(ProjectSyncEntity_.updateTime, it)
+                }
+                sortName?.let {
+                    order(ProjectSyncEntity_.updateTime, it)
+                }
+                apply(
+                    ProjectSyncEntity_.userId.equal("${EntitySync.userId}")
+                        .and(ProjectSyncEntity_.isDelete.equal(false))
+                )
+            }
+
             val projectList = mutableListOf<LPProjectBean>()
-            projectPathFile.listFiles()?.filter {
-                it.name.endsWith(LPDataConstant.PROJECT_EXT, true) ||
-                        it.name.endsWith(LPDataConstant.PROJECT_EXT2, true)
-            }?.apply {
-                if (sortTime == 1) {
-                    sortedByDescending { it.lastModified() }
-                } else {
-                    sortedBy { it.lastModified() }
-                }.apply {
-                    val startIndex = page.requestPageIndex * page.requestPageSize
-                    for ((index, file) in this.withIndex()) {
-                        if (index >= startIndex) {
-                            file.readProjectBean()?.let { projectList.add(it) }
-                        }
-                        if (projectList.size() >= page.requestPageSize) {
-                            break
-                        }
-                    }
+            entityList.forEach { entity ->
+                entity.filePath?.file()?.readProjectBean()?.let {
+                    it.file_id = entity.entityId
+                    it.file_name = entity.name//换一下名称
+                    projectList.add(it)
                 }
             }
             loadDataEnd(ProjectListItem::class, projectList) { bean ->
@@ -120,22 +136,59 @@ class ProjectListFragment : BaseDslFragment() {
 
             doMain {
                 //right ico
-                rightControl()?.goneIndex(0, _adapter.isEmpty())
+                rightControl()?.apply {
+                    goneIndex(0, _adapter.isEmpty())
+                    goneIndex(1, _adapter.isEmpty())
+                }
             }
         }
     }
 
-    private var sortTime = 1 //1:降序, -1:升序
+    private var sortTime: Int? = OrderFlags.DESCENDING //1:降序, 0:升序
+    private var sortName: Int? = null //1:降序, 0:升序
 
-    /**改变排序规则*/
-    fun changeSort(imageView: ImageView?) {
-        if (sortTime == 1) {
-            sortTime = -1
-            imageView?.setImageResource(R.drawable.sort_time_descending)
-        } else {
-            sortTime = 1
-            imageView?.setImageResource(R.drawable.sort_time_ascending)
+    /**更新右边的按钮图标*/
+    fun updateRightIco() {
+        rightControl()?.eachChild { index, child ->
+            (child as? ImageView)?.apply {
+                if (index == 0) {
+                    if (sortName == OrderFlags.DESCENDING) {
+                        setImageResource(R.drawable.sort_name_descending)
+                    } else {
+                        setImageResource(R.drawable.sort_name_ascending)
+                    }
+                } else if (index == 1) {
+                    if (sortTime == OrderFlags.DESCENDING) {
+                        setImageResource(R.drawable.sort_time_descending)
+                    } else {
+                        setImageResource(R.drawable.sort_time_ascending)
+                    }
+                }
+            }
         }
+    }
+
+    /**改变时间排序规则*/
+    fun changeSortTime(imageView: ImageView?) {
+        sortTime = if (sortTime == OrderFlags.DESCENDING) {
+            0
+        } else {
+            sortName = null
+            OrderFlags.DESCENDING
+        }
+        updateRightIco()
+        startRefresh() //重新刷新
+    }
+
+    /**改变名称排序规则*/
+    fun changeSortName(imageView: ImageView?) {
+        sortName = if (sortName == OrderFlags.DESCENDING) {
+            0
+        } else {
+            sortTime = null
+            OrderFlags.DESCENDING
+        }
+        updateRightIco()
         startRefresh() //重新刷新
     }
 

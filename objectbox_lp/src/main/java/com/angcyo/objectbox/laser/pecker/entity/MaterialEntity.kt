@@ -32,6 +32,16 @@ data class MaterialEntity(
     /**是否被删除*/
     var isDelete: Boolean = false,
 
+    /**当前的同步状态
+     * [EntitySync.SYNC_STATE_NORMAL]
+     * [EntitySync.SYNC_STATE_ING]
+     * [EntitySync.SYNC_STATE_SUCCESS]
+     * */
+    var syncState: Int = 0,
+
+    /**用户id*/
+    var userId: String? = null,
+
     /**材质类型
      * [MATERIAL_TYPE_TEMP]
      * [MATERIAL_TYPE_SYSTEM]

@@ -63,7 +63,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "27:1930215854816304789",
+      "lastPropertyId": "29:5998210051520696517",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -161,6 +161,16 @@
           "id": "27:1930215854816304789",
           "name": "materialType",
           "type": 5
+        },
+        {
+          "id": "28:7363117635768609812",
+          "name": "syncState",
+          "type": 5
+        },
+        {
+          "id": "29:5998210051520696517",
+          "name": "userId",
+          "type": 9
         }
       ],
       "relations": []
@@ -756,9 +766,117 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "13:7297752372642165021",
+      "lastPropertyId": "9:7042369079878218919",
+      "name": "FontSyncEntity",
+      "properties": [
+        {
+          "id": "1:6972083633644511977",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3578847938549683490",
+          "name": "isDelete",
+          "type": 1
+        },
+        {
+          "id": "3:2142150720768670330",
+          "name": "syncState",
+          "type": 5
+        },
+        {
+          "id": "4:2462406498791919616",
+          "name": "createTime",
+          "type": 6
+        },
+        {
+          "id": "5:8863810543442653165",
+          "name": "updateTime",
+          "type": 6
+        },
+        {
+          "id": "6:5833799052103291629",
+          "name": "userId",
+          "type": 9
+        },
+        {
+          "id": "7:117749298682823443",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "8:2540969168641953277",
+          "name": "filePath",
+          "type": 9
+        },
+        {
+          "id": "9:7042369079878218919",
+          "name": "fileMd5",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "14:6709976646018562294",
+      "lastPropertyId": "9:4350923863812500009",
+      "name": "ProjectSyncEntity",
+      "properties": [
+        {
+          "id": "1:8069990171708051787",
+          "name": "entityId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4732319386539660637",
+          "name": "isDelete",
+          "type": 1
+        },
+        {
+          "id": "3:6071391752330640722",
+          "name": "syncState",
+          "type": 5
+        },
+        {
+          "id": "4:475157547944668255",
+          "name": "createTime",
+          "type": 6
+        },
+        {
+          "id": "5:956514234249235746",
+          "name": "updateTime",
+          "type": 6
+        },
+        {
+          "id": "6:1289918328078852946",
+          "name": "userId",
+          "type": 9
+        },
+        {
+          "id": "7:5938051166664607104",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "8:3345428067530821367",
+          "name": "filePath",
+          "type": 9
+        },
+        {
+          "id": "9:4350923863812500009",
+          "name": "fileMd5",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "12:1283913521419266299",
+  "lastEntityId": "14:6709976646018562294",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

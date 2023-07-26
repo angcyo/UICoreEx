@@ -29,6 +29,7 @@ import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity_
+import com.angcyo.objectbox.laser.pecker.entity.EntitySync
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
 import com.angcyo.objectbox.laser.pecker.entity.PreviewConfigEntity
@@ -555,7 +556,11 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**保存雕刻配置信息到材质数据库*/
+    /**保存雕刻配置信息到材质数据库
+     * [com.angcyo.canvas2.laser.pecker.engrave.config.EngraveConfigProvider.getEngraveMaterialList]
+     *
+     * [com.angcyo.laserpacker.device.MaterialHelper.getProductMaterialList]
+     * */
     fun saveEngraveConfigToMaterial(taskId: String?, materialName: String): List<MaterialEntity> {
         val configList = EngraveConfigEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
@@ -581,6 +586,7 @@ object EngraveFlowDataHelper {
 
                 //自定义材质
                 materialType = MaterialEntity.MATERIAL_TYPE_CUSTOM
+                userId = "${EntitySync.userId}"
 
                 //code
                 createMaterialCode("${key}_${nowTime()}")

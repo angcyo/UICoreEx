@@ -14,6 +14,7 @@ import com.angcyo.library.L
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EntitySync
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -69,6 +70,7 @@ class EngraveConfigProvider : IEngraveConfigProvider {
                     entity.layerId?.let { entity.initLayerDpi(it, entity.dpi) }
                     entity.taskId = taskId
                     entity.materialType = MaterialEntity.MATERIAL_TYPE_CUSTOM
+                    entity.userId = "${EntitySync.userId}"
                 }
                 projectMaterialList.lpSaveAllEntity()
                 MaterialHelper.initMaterial()//重新初始化材质

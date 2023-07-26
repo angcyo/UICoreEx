@@ -20,6 +20,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
+import com.angcyo.objectbox.laser.pecker.entity.EntitySync
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity_
 import kotlin.math.max
@@ -102,7 +103,10 @@ object MaterialHelper {
         return result
     }
 
-    /**获取连上的设备推荐参数列表*/
+    /**获取连上的设备推荐参数列表
+     * [com.angcyo.engrave2.EngraveFlowDataHelper.saveEngraveConfigToMaterial]
+     * [com.angcyo.canvas2.laser.pecker.engrave.config.EngraveConfigProvider.getEngraveMaterialList]
+     * */
     fun getProductMaterialList(product: LaserPeckerProductInfo?): List<MaterialEntity> {
         //必有一个自定义的参数
         val result = mutableListOf<MaterialEntity>()
@@ -113,7 +117,9 @@ object MaterialHelper {
         result.addAll(MaterialEntity::class.findAll(LPBox.PACKAGE_NAME) {
             orderDesc(MaterialEntity_.entityId)//id降序
             apply(
-                MaterialEntity_.productName.equal(name).and(MaterialEntity_.isDelete.equal(false))
+                MaterialEntity_.productName.equal(name)
+                    .and(MaterialEntity_.isDelete.equal(false))
+                    .and(MaterialEntity_.userId.equal("${EntitySync.userId}"))
             )
         })
 

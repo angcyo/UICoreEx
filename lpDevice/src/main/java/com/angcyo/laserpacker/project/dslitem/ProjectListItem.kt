@@ -10,10 +10,10 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.R
-import com.angcyo.laserpacker.project.LPProjectHelper
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.*
 import com.angcyo.library.extend.IFilterItem
+import com.angcyo.objectbox.laser.pecker.entity.EntitySync
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -53,6 +53,9 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
             _bitmap = value?._previewImgBitmap ?: value?.preview_img?.toBitmapOfBase64()
         }
 
+    private val _projectName: CharSequence?
+        get() = itemProjectBean?.file_name ?: itemProjectBean?._filePath?.file()?.name?.noExtName()
+
     private var _bitmap: Bitmap? = null
 
     init {
@@ -68,8 +71,9 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                             dialogMessage = _string(R.string.canvas_delete_project_tip)
                             needPositiveButton { dialog, dialogViewHolder ->
                                 dialog.dismiss()
-                                itemProjectBean?._filePath?.file()?.deleteFlag()
+                                itemProjectBean?._filePath?.file()?.delete()
                                 item.removeAdapterItemJust()
+                                EntitySync.deleteProjectSyncEntity(itemProjectBean?.file_id)
                             }
                         }
                     }
@@ -80,7 +84,11 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                         lastContext.inputProjectNameDialog(
                             itemProjectBean?._filePath?.fileName()?.noExtName()
                         ) {
-                            LPProjectHelper.renameProjectFileName(itemProjectBean, "$it")
+                            val newName = "$it"
+                            itemProjectBean?.file_name = newName
+                            EntitySync.updateProjectSyncEntity(itemProjectBean?.file_id) {
+                                name = newName
+                            }
                             item.updateAdapterItem()
                         }
                     }
@@ -100,7 +108,7 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
 
         val file = itemProjectBean?._filePath?.file()
 
-        itemHolder.tv(R.id.lib_text_view)?.text = file?.name?.noExtName()
+        itemHolder.tv(R.id.lib_text_view)?.text = _projectName
         itemHolder.img(R.id.lib_image_view)?.glide {
             load(_bitmap)
         }
@@ -125,5 +133,5 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
     }
 
     override fun containsFilterText(text: CharSequence): Boolean =
-        itemProjectBean?._filePath?.file()?.name?.noExtName()?.contains(text, true) == true
+        _projectName?.contains(text, true) == true
 }
