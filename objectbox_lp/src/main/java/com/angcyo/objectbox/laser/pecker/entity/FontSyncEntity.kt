@@ -1,6 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import androidx.annotation.Keep
+import com.angcyo.library.component.sync.ISyncEntity
 import com.angcyo.library.ex.nowTime
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -36,12 +37,22 @@ data class FontSyncEntity(
     /**用户id*/
     var userId: String? = null,
 
+    /**云端数据库的id*/
+    var dataId: String? = null,
+
     /**数据显示的名称*/
     var name: String? = null,
 
-    /**数据对应的本地路径*/
+    /**数据对应的本地路径, 用于上传*/
     var filePath: String? = null,
 
     /**数据对应的md5值*/
     var fileMd5: String? = null,
-)
+
+    /**数据远程地址, 用于下载*/
+    var fileUrl: String? = null
+) : ISyncEntity {
+    override fun isSync(): Boolean {
+        return syncState == EntitySync.SYNC_STATE_SUCCESS
+    }
+}

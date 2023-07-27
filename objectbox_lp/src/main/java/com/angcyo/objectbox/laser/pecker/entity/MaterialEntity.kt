@@ -3,6 +3,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
+import com.angcyo.library.component.sync.ISyncEntity
 import com.angcyo.library.ex.*
 import com.angcyo.library.extend.IToDrawable
 import com.angcyo.library.extend.IToRightDrawable
@@ -38,6 +39,9 @@ data class MaterialEntity(
      * [EntitySync.SYNC_STATE_SUCCESS]
      * */
     var syncState: Int = 0,
+
+    /**云端数据库的id*/
+    var dataId: String? = null,
 
     /**用户id*/
     var userId: String? = null,
@@ -128,7 +132,7 @@ data class MaterialEntity(
     /**打印次数*/
     var count: Int = 1,
 
-    ) : IToText, IToDrawable, IToRightDrawable {
+    ) : IToText, IToDrawable, IToRightDrawable, ISyncEntity {
 
     companion object {
 
@@ -186,5 +190,9 @@ data class MaterialEntity(
         } else {
             _drawable(res)
         }
+    }
+
+    override fun isSync(): Boolean {
+        return syncState == EntitySync.SYNC_STATE_SUCCESS
     }
 }
