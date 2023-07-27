@@ -42,12 +42,12 @@ inline fun <reified T> Collection<T>.lpRemoveAllEntity() {
 }
 
 /**快速获取[BoxStore]
- * [com.angcyo.objectbox.DslBoxKt.boxStoreOf]*/
+ * [com.angcyo.objectbox.boxStoreOf]*/
 fun lpBoxStoreOf(action: BoxStore.() -> Unit = {}): BoxStore {
     return boxStoreOf(LPBox.PACKAGE_NAME, action)
 }
 
-/**[com.angcyo.objectbox.DslBoxKt.boxOf]*/
+/**[com.angcyo.objectbox.boxOf]*/
 fun <T> lpBoxOf(entityClass: Class<T>, action: Box<T>.() -> Unit = {}): Box<T> {
     return boxOf(entityClass, LPBox.PACKAGE_NAME, action)
 }

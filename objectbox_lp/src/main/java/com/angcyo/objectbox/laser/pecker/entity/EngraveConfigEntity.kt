@@ -57,7 +57,7 @@ data class EngraveConfigEntity(
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_S]
      * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_CAR]
      *
-     * [com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParserKt.toDeviceStr]
+     * [com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr]
      * */
     var exDevice: String? = null,
 

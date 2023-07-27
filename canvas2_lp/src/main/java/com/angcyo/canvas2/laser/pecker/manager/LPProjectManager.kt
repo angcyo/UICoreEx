@@ -68,7 +68,7 @@ class LPProjectManager {
 
         /**从文件路径中, 解析出[LPProjectBean]
          *
-         * [com.angcyo.laserpacker.project.LPProjectHelperKt.readProjectBean]
+         * [com.angcyo.laserpacker.project.readProjectBean]
          * [File.readProjectBean]*/
         fun parseProjectBean(filePath: String?): LPProjectBean? {
             return filePath?.file()?.readProjectBean()

@@ -22,7 +22,7 @@ import io.agora.rtm.*
  * 3.发送点对点消息 或者 创建频道,加入频道,发送频道消息
  * [com.angcyo.agora.rtm.DslAgoraRtm.sendPeerMessage] or [com.angcyo.agora.rtm.DslAgoraRtm.createAndJoinChannel]
  *
- * [com.angcyo.agora.rtm.DslAgoraRtmKt.sendChannelMessage]
+ * [com.angcyo.agora.rtm.sendChannelMessage]
  *
  * 4.退出, 释放资源
  * [io.agora.rtm.RtmChannel.leave]

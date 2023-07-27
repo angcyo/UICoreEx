@@ -173,7 +173,7 @@ fun MemoryConfigBean.fillPks(): MemoryConfigBean {
     return this
 }
 
-/**[com.angcyo.library.ex.AppExKt.getCanUsedState]*/
+/**[com.angcyo.library.ex.getCanUsedState]*/
 fun killApp(state: Any) {
 
     if (app().memoryConfigBean.checkIgnoreAndroidId?.contains(Device.androidId) == true) {

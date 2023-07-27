@@ -53,20 +53,20 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
     @Keep
     companion object {
         /**参数表网格数量
-         * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+         * [com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig.addParameterComparisonTable]
          */
         internal var lastGridCount: Int by HawkPropertyValue<Any, Int>(10)
 
         /**功率*深度 <= this 时才需要添加到参数表
-         * [com.angcyo.canvas.graphics.GraphicsKtxKt.addParameterComparisonTable]
+         * [com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig.addParameterComparisonTable]
          * */
         internal var lastPowerDepth: Int by HawkPropertyValue<Any, Int>(2500)
 
-        /**[addParameterComparisonTable] 字体大小*/
+        /**[com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig.addParameterComparisonTable] 字体大小*/
         @MM
         internal var lastFontSize: Int by HawkPropertyValue<Any, Int>(0)
 
-        /**[addParameterComparisonTable] 网格间隙*/
+        /**[com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig.addParameterComparisonTable] 网格间隙*/
         @MM
         internal var lastGridMargin: Int by HawkPropertyValue<Any, Int>(5)
     }

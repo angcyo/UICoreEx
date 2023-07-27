@@ -65,7 +65,7 @@ data class MaterialEntity(
 
     /**[resId] 资源id在Android上存放的名称, 通过名称可以动态获取[resId]
      * 然后通过资源id, 获取国际化的本地资源
-     * 用来[com.angcyo.library.LibraryKt.getAppString(java.lang.String)]
+     * 用来[com.angcyo.library.getAppString]
      * */
     var resIdStr: String? = null,
 

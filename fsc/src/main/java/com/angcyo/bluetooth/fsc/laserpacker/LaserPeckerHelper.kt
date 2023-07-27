@@ -725,7 +725,7 @@ object LaserPeckerHelper {
      * [command] 需要发送的指令
      * [address] 设备地址, 如果不传, 则使用最后一台连接的设备
      *
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.ICommandKt.sendCommand]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.sendCommand]
      * */
     fun sendCommand(
         command: ICommand,
