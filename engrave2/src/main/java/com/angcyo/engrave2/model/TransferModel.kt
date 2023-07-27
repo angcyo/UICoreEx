@@ -47,6 +47,7 @@ import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.ex.toStr
+import com.angcyo.library.ex.trimAndPad
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -169,6 +170,22 @@ class TransferModel : ViewModel() {
                 write(0, 5)
                 //索引，占用4个字节
                 write(index, 4)
+                padLength(64) //需要64个字节
+            }
+        }
+
+        /**文件头, 包含索引和文件名*/
+        fun nameDataHead(index: Int, name: String = "$index"): ByteArray {
+            return byteWriter {
+                write(0, 5)
+                //索引，占用4个字节
+                write(index, 4)
+                //塞满34个
+                padLength(DataCmd.DEFAULT_NAME_BYTE_START)
+                //第21个字节开始 共36个字节的文件名
+                val nameBytes = name.toByteArray().trimAndPad(DataCmd.DEFAULT_NAME_BYTE_COUNT)
+                write(nameBytes)
+                write(0x00) //写入文件结束字节
                 padLength(64) //需要64个字节
             }
         }
