@@ -22,7 +22,8 @@ import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
  */
 data class LPProjectBean(
 
-    /**入库记录id*/
+    /**入库记录id
+     * [com.angcyo.objectbox.laser.pecker.entity.ProjectSyncEntity.entityId]*/
     var file_id: Long = -1,
 
     /**工程元素占用的宽高*/

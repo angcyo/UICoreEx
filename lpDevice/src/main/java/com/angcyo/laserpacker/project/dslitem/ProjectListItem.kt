@@ -54,7 +54,8 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
         }
 
     private val _projectName: CharSequence?
-        get() = itemProjectBean?.file_name ?: itemProjectBean?._filePath?.file()?.name?.noExtName()
+        get() = (itemProjectBean?.file_name
+            ?: itemProjectBean?._filePath?.file()?.name)?.noExtName()
 
     private var _bitmap: Bitmap? = null
 

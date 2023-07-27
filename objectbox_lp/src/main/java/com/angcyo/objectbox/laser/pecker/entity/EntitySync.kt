@@ -2,6 +2,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 
 import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileMd5
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.model.TypefaceInfo
@@ -29,6 +30,10 @@ object EntitySync {
     /**同步成功*/
     const val SYNC_STATE_SUCCESS = SYNC_STATE_ING shl 1
 
+    /**同步失败, 则会在下次同步周期时恢复成
+     * [SYNC_STATE_NORMAL]*/
+    const val SYNC_STATE_ERROR = SYNC_STATE_SUCCESS shl 1
+
     /**当前登录的用户id*/
     var userId: String? by HawkPropertyValue<Any, String?>(null)
 
@@ -53,9 +58,10 @@ object EntitySync {
     fun saveFontSyncEntity(typefaceInfo: TypefaceInfo) {
         FontSyncEntity().apply {
             userId = "${EntitySync.userId}"
-            name = typefaceInfo.name
+            name = typefaceInfo.filePath?.file()?.name ?: typefaceInfo.name
             filePath = typefaceInfo.filePath
             fileMd5 = filePath.fileMd5()
+            dataVersion = 1
         }.lpSaveEntity()
     }
 
@@ -70,6 +76,7 @@ object EntitySync {
             forEach {
                 it.syncState = SYNC_STATE_NORMAL
                 it.isDelete = true
+                it.dataVersion++
                 it.updateTime = nowTime()
             }
             lpSaveAllEntity()
@@ -99,6 +106,7 @@ object EntitySync {
             name = projectName
             filePath = projectFilePath
             fileMd5 = filePath.fileMd5()
+            dataVersion = 1
         }.lpSaveEntity()
     }
 
@@ -110,6 +118,7 @@ object EntitySync {
             forEach {
                 it.syncState = SYNC_STATE_NORMAL
                 it.isDelete = true
+                it.dataVersion++
                 it.updateTime = nowTime()
             }
             lpSaveAllEntity()
@@ -131,6 +140,7 @@ object EntitySync {
             syncState = SYNC_STATE_NORMAL
             isDelete = false
             updateTime = nowTime()
+            dataVersion++
         }.lpSaveEntity()
     }
 
