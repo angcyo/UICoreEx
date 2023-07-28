@@ -795,8 +795,15 @@ object LPBitmapHandler {
                                 targetCenterX = rendererBounds?.left ?: 0f
                                 targetCenterY = rendererBounds?.top ?: 0f
 
-                                targetCenterX += it.centerX() - outlineSpan * 2
-                                targetCenterY += it.centerY() - outlineSpan * 2
+                                if (outlineSpan > 0) {
+                                    targetCenterX += it.centerX() - outlineSpan * 2
+                                    targetCenterY += it.centerY() - outlineSpan * 2
+                                } else {
+                                    //targetCenterX += it.centerX() + outlineSpan
+                                    //targetCenterY += it.centerY() + outlineSpan
+                                    targetCenterX = rendererBounds?.centerX() ?: 0f
+                                    targetCenterY = rendererBounds?.centerY() ?: 0f
+                                }
                             }
 
                             svgRenderer?.translateCenterTo(
