@@ -40,10 +40,16 @@ data class FontSyncEntity(
     /**云端数据库的id*/
     var dataId: String? = null,
 
-    /**当前数据的版本,每次更新后,版本数据要+1
+    /**服务器数据的版本
      * 版本更高的数据会覆盖低版本的数据,
-     * 暂时不做冲突解决*/
+     * 暂时不做冲突解决
+     * */
     var dataVersion: Long = 0,
+
+    /**本地数据版本
+     * 每次更新后,版本数据要+1
+     * */
+    var localDataVersion: Long = 0,
 
     /**数据显示的名称*/
     var name: String? = null,

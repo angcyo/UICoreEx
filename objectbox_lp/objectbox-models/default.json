@@ -63,7 +63,7 @@
     },
     {
       "id": "4:3649377060527503412",
-      "lastPropertyId": "31:6586147795026538948",
+      "lastPropertyId": "32:4916825263226491239",
       "name": "MaterialEntity",
       "properties": [
         {
@@ -180,6 +180,11 @@
         {
           "id": "31:6586147795026538948",
           "name": "dataVersion",
+          "type": 6
+        },
+        {
+          "id": "32:4916825263226491239",
+          "name": "localDataVersion",
           "type": 6
         }
       ],
@@ -779,7 +784,7 @@
     },
     {
       "id": "13:7297752372642165021",
-      "lastPropertyId": "12:6283201306845833300",
+      "lastPropertyId": "13:8231752110499209033",
       "name": "FontSyncEntity",
       "properties": [
         {
@@ -842,13 +847,18 @@
           "id": "12:6283201306845833300",
           "name": "dataVersion",
           "type": 6
+        },
+        {
+          "id": "13:8231752110499209033",
+          "name": "localDataVersion",
+          "type": 6
         }
       ],
       "relations": []
     },
     {
       "id": "14:6709976646018562294",
-      "lastPropertyId": "12:8619611401448640563",
+      "lastPropertyId": "13:8990352241025443584",
       "name": "ProjectSyncEntity",
       "properties": [
         {
@@ -910,6 +920,11 @@
         {
           "id": "12:8619611401448640563",
           "name": "dataVersion",
+          "type": 6
+        },
+        {
+          "id": "13:8990352241025443584",
+          "name": "localDataVersion",
           "type": 6
         }
       ],

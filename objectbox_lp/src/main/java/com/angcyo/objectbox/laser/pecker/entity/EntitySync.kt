@@ -61,7 +61,8 @@ object EntitySync {
             name = typefaceInfo.filePath?.file()?.name ?: typefaceInfo.name
             filePath = typefaceInfo.filePath
             fileMd5 = filePath.fileMd5()
-            dataVersion = 1
+            localDataVersion = 1
+            dataVersion = localDataVersion
         }.lpSaveEntity()
     }
 
@@ -76,7 +77,7 @@ object EntitySync {
             forEach {
                 it.syncState = SYNC_STATE_NORMAL
                 it.isDelete = true
-                it.dataVersion++
+                it.localDataVersion++
                 it.updateTime = nowTime()
             }
             lpSaveAllEntity()
@@ -106,7 +107,8 @@ object EntitySync {
             name = projectName
             filePath = projectFilePath
             fileMd5 = filePath.fileMd5()
-            dataVersion = 1
+            localDataVersion = 1
+            dataVersion = localDataVersion
         }.lpSaveEntity()
     }
 
@@ -118,7 +120,7 @@ object EntitySync {
             forEach {
                 it.syncState = SYNC_STATE_NORMAL
                 it.isDelete = true
-                it.dataVersion++
+                it.localDataVersion++
                 it.updateTime = nowTime()
             }
             lpSaveAllEntity()
@@ -140,7 +142,7 @@ object EntitySync {
             syncState = SYNC_STATE_NORMAL
             isDelete = false
             updateTime = nowTime()
-            dataVersion++
+            localDataVersion++
         }.lpSaveEntity()
     }
 
