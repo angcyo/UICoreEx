@@ -87,9 +87,7 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                 addDialogItem {
                     itemText = _string(R.string.canvas_rename)
                     itemClick = {
-                        lastContext.inputProjectNameDialog(
-                            itemProjectBean?._filePath?.fileName()?.noExtName()
-                        ) {
+                        lastContext.inputProjectNameDialog(_projectName) {
                             val newName = "$it"
                             itemProjectBean?.file_name = newName
                             EntitySync.updateProjectSyncEntity(itemProjectBean?.file_id) {
