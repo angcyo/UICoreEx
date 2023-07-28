@@ -88,18 +88,22 @@
             style="@style/LibBodyTextStyle"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/laserpecker" />
+            android:paddingHorizontal="@dimen/lib_hdpi"
+            android:text="@string/laserpecker"
+            tools:text="angcyoangcyoangcyoangcyoangcyoangcyo" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/LibBodyTextStyle"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:paddingHorizontal="@dimen/lib_hdpi"
             android:text="@string/canvas_system" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/LibBodyTextStyle"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:paddingHorizontal="@dimen/lib_hdpi"
             android:text="@string/canvas_custom" />
 
     </com.angcyo.tablayout.DslTabLayout>
