@@ -27,6 +27,11 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
         /**获取工程状态同步资源*/
         var getProjectListSyncStateRes: (item: ProjectListItem) -> Int? = { null }
 
+        /**工程分享功能实现*/
+        var onShareProjectAction: (bean: LPProjectBean) -> Unit = {
+            it._filePath?.file()?.shareFile()
+        }
+
         /**输入工程名的对话框*/
         fun Context.inputProjectNameDialog(
             fileName: CharSequence?,
@@ -107,8 +112,6 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        val file = itemProjectBean?._filePath?.file()
-
         itemHolder.tv(R.id.lib_text_view)?.text = _projectName
         itemHolder.img(R.id.lib_image_view)?.glide {
             load(_bitmap)
@@ -116,14 +119,10 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
         itemHolder.click(R.id.lib_more_view) {
             itemLongClick?.invoke(it)
         }
-
-        if (isDebug()) {
-            itemHolder.click(R.id.lib_share_view) {
-                //share
-                file?.shareFile()
+        itemHolder.click(R.id.lib_share_view) {
+            itemProjectBean?.let {
+                onShareProjectAction(it)
             }
-        } else {
-            itemHolder.gone(R.id.lib_share_view)
         }
 
         //同步状态
