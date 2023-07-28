@@ -1,7 +1,7 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
 import com.angcyo.library.component.FontManager
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.fileMd5
 import com.angcyo.library.ex.nowTime

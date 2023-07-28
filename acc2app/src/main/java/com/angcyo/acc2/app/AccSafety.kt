@@ -1,6 +1,6 @@
 package com.angcyo.acc2.app
 
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.fromBase64
 import com.angcyo.library.ex.nowTime

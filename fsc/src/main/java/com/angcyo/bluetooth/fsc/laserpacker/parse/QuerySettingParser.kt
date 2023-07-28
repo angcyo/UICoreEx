@@ -7,7 +7,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.BaseCommand
 import com.angcyo.bluetooth.fsc.laserpacker.command.IPacketParser
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.core.vmApp
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.reader
 import com.angcyo.library.ex.padHexString
 import com.angcyo.library.ex.removeAll

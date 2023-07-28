@@ -1,6 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.util
 
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.unit.IRenderUnit
 import com.angcyo.library.unit.InchRenderUnit
 import com.angcyo.library.unit.MmRenderUnit

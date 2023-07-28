@@ -45,7 +45,7 @@ import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.canvas.core.Reason
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.appendSpaceIfNotEmpty

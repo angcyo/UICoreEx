@@ -11,7 +11,7 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.keyboard.NumberKeyboardPopupConfig
 import com.angcyo.item.keyboard.keyboardNumberWindow
 import com.angcyo.library.annotation.Pixel
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder

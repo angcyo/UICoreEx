@@ -6,7 +6,7 @@ import com.angcyo.library.L
 import com.angcyo.library.annotation.FunctionConfig
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
-import com.angcyo.library.component.HawkPropertyValue
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.isDebug
 import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
