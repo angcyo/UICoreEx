@@ -978,7 +978,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     @Synchronized
-    override fun release() {
+    override fun release(data: Any?) {
         fscApi.stopScan()
         fscApi.stopSend()
         fscApi.disconnect()

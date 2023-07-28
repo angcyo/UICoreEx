@@ -76,4 +76,9 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcp.connect(data)
     }
 
+    /**断开连接*/
+    fun disconnect(data: Any?) {
+        tcp.cancel(data)
+    }
+
 }

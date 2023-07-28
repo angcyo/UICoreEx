@@ -320,7 +320,7 @@ class BluetoothModel : LifecycleViewModel() {
         )
     }
 
-    override fun release() {
+    override fun release(data: Any?) {
         BleManager.getInstance().disconnectAllDevice()
         BleManager.getInstance().destroy()
         bluetoothDeviceListData.postValue(emptyList())
