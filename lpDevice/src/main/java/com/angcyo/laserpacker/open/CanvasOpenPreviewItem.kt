@@ -3,6 +3,7 @@ package com.angcyo.laserpacker.open
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.core.view.isVisible
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
@@ -67,6 +68,7 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
         //
         itemTypeface?.let {
             itemHolder.tv(R.id.typeface_text_view)?.apply {
+                text = HawkEngraveKeys.typefacePreviewText ?: _string(R.string.canvas_font_text)
                 isVisible = true
                 this.typeface = it
             }

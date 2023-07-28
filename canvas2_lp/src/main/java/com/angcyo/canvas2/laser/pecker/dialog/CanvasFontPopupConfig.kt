@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.element.TextElement
@@ -228,7 +229,7 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
         TypefaceItem()(index) {
             itemData = info
             displayName = name
-            previewText = _string(R.string.canvas_font_text)
+            previewText = HawkEngraveKeys.typefacePreviewText ?: _string(R.string.canvas_font_text)
             typeface = type
             itemIsSelected = if (element is TextElement) {
                 element.paint.typeface == type

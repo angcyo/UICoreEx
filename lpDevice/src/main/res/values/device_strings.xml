@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="laserpecker">LaserPecker</string>
-    <string name="canvas_font_text">Laser啄木鸟</string>
+    <string name="canvas_font_text">LaserPecker</string>
     <string name="canvas_open_label">@string/app_name</string>
 
     <string name="engrave_warn">Warning</string>

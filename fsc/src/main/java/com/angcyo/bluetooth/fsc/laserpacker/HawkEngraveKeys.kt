@@ -319,4 +319,7 @@ object HawkEngraveKeys {
 
     /**是否要保存所有工程图层的参数, 否则只保存有数据的图层参数*/
     var saveAllProjectOptions: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**字体需要预览的文本*/
+    var typefacePreviewText: String? by HawkPropertyValue<Any, String?>(null)
 }
