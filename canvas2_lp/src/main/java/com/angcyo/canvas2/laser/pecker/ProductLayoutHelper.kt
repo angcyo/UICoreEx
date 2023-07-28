@@ -9,7 +9,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
@@ -25,6 +24,7 @@ import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.StateLayoutInfo
 import com.angcyo.library.component.StateLayoutManager
 import com.angcyo.library.ex._color
@@ -96,7 +96,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
 
-        //监听设备状态, Z/R/S连接状态
+        //监听设备状态, Z/R/S连接状态 提示
         deviceStateModel.deviceStateData.observe(fragment) {
             //设备模式提示
             val stateString = it?.toDeviceStateString()
@@ -115,6 +115,10 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             if (it?.isModeEngravePreview() != true) {
                 //停止预览后, 清除状态
                 laserPeckerModel.overflowInfoData.postValue(null)
+            }
+            if (it?.isModeShutdown() == true) {
+                //关机后, 断开设备
+                deviceStateModel.disconnectDevice("设备状态:关机")
             }
 
             it?.let {

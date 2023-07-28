@@ -311,6 +311,12 @@ class DeviceStateModel : ViewModel() {
     fun isDeviceConnect() =
         vmApp<FscBleApiModel>().haveDeviceConnected() || vmApp<WifiApiModel>().isTcpConnected()
 
+    /**断开设备连接*/
+    fun disconnectDevice(data: Any?) {
+        vmApp<FscBleApiModel>().disconnectAll()
+        vmApp<WifiApiModel>().disconnect(data)
+    }
+
     /**设备是否处理不安全状态, 此状态下禁止操作预览/打印*/
     fun isUnsafe() = deviceStateData.value?.error == 1
 

@@ -215,6 +215,10 @@ data class QueryStateParser(
     /**雕刻预览模式*/
     fun isModeEngravePreview() = mode == WORK_MODE_ENGRAVE_PREVIEW
 
+    /**雕刻预览模式
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isShutdownMode]*/
+    fun isModeShutdown() = mode == WORK_MODE_SHUTDOWN
+
     //endregion
 }
 
