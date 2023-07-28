@@ -611,7 +611,10 @@ object EngraveFlowDataHelper {
         val all = MaterialEntity::class.findAll(LPBox.PACKAGE_NAME) {
             apply(MaterialEntity_.key.equal(materialKey))
         }
-        all.forEach { it.isDelete = true }
+        all.forEach {
+            it.isDelete = true
+            it.localDataVersion++
+        }
         all.lpSaveAllEntity()
         //重新初始化材质列表
         MaterialHelper.initMaterial()
