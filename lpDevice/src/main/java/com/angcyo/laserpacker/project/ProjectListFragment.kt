@@ -66,7 +66,8 @@ class ProjectListFragment : BaseDslFragment() {
 
         //搜索过滤
         val size = 20 * dpi
-        val padding = 20 * dpi
+        val vertical = 18 * dpi
+        val horizontal = vertical / 4
         rightControl()?.appendIconItem {
             gone()
             ImageViewCompat.setImageTintList(
@@ -75,7 +76,7 @@ class ProjectListFragment : BaseDslFragment() {
             )
             setImageResource(R.drawable.sort_name_ascending)
             //setWidthHeight(size, size)
-            setPadding(padding / 2, padding, padding / 2, padding)
+            setPadding(horizontal, vertical, horizontal, vertical)
             scaleType = ImageView.ScaleType.CENTER_INSIDE
             clickIt {
                 changeSortName(this)
@@ -89,7 +90,7 @@ class ProjectListFragment : BaseDslFragment() {
             )
             setImageResource(R.drawable.sort_time_ascending)
             //setWidthHeight(size, size)
-            setPadding(padding / 2, padding, padding / 2, padding)
+            setPadding(horizontal, vertical, horizontal, vertical)
             scaleType = ImageView.ScaleType.CENTER_INSIDE
             clickIt {
                 changeSortTime(this)
