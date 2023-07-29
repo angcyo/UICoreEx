@@ -186,6 +186,11 @@ class FscDeviceModel : LifecycleViewModel() {
                 DslLastDeviceInfoItem.additionalInfoAction = {
                     buildString {
                         appendLine()
+
+                        appendLine()
+                        appendLine("图层分辨率↓")
+                        appendLine(HawkEngraveKeys.lastDpiLayerJson)
+
                         appendLine()
                         appendLine("设备版本↓")
                         appendLine("${laserPeckerModel.deviceVersionData.value}")
