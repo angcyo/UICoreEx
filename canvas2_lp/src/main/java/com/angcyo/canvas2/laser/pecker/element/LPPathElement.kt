@@ -20,6 +20,7 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.scaleToSize
 import com.angcyo.library.ex.toRadians
+import com.angcyo.library.ex.updateFillType
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.isSvgContent
@@ -249,6 +250,8 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
             createPath(elementBean)?.let { pathList = listOf(it) }
             updateOriginPathList(pathList)
         }
+        //this
+        pathList?.updateFillType()
 
         //路径填充
         if (isPathFill(elementBean)) {
