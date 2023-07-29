@@ -18,7 +18,6 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
-import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -41,8 +40,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         fun LPElementBean.toRenderProperty(result: CanvasRenderProperty = CanvasRenderProperty()): CanvasRenderProperty {
             result.anchorX = left.toPixel()
             result.anchorY = top.toPixel()
-
-            updateRenderPropertyWidthHeight(result, this)
+            result.width = width.toPixel()
+            result.height = height.toPixel()
 
             result.angle = angle
             result.scaleX = scaleX ?: result.scaleX
@@ -58,8 +57,8 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
         fun CanvasRenderProperty.toElementBean(result: LPElementBean): LPElementBean {
             result.left = anchorX.toMm()
             result.top = anchorY.toMm()
-
-            updateElementBeanWidthHeight(result, width, height)
+            result.width = width.toMm()
+            result.height = height.toMm()
 
             result.angle = angle
             result.scaleX = scaleX
@@ -69,28 +68,6 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
             result.flipX = flipX
             result.flipY = flipY
             return result
-        }
-
-        /**更新元素的宽高*/
-        fun updateElementBeanWidthHeight(
-            bean: LPElementBean,
-            @Pixel width: Float,
-            @Pixel height: Float
-        ) {
-            if (bean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
-                //图片类型, 那么存储宽高就是像素的宽高
-                bean.width = width
-                bean.height = height
-            } else {
-                bean.width = width.toMm()
-                bean.height = height.toMm()
-            }
-        }
-
-        /**更新渲染属性的宽高*/
-        fun updateRenderPropertyWidthHeight(property: CanvasRenderProperty, bean: LPElementBean) {
-            property.width = bean.width.toPixel()
-            property.height = bean.height.toPixel()
         }
     }
 
@@ -106,16 +83,6 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
             }
         }
         return super.isElementSupportControlPoint(type)
-    }
-
-    /**更新原始数据的宽高*/
-    fun updateBeanWidthHeight(@Pixel width: Float, @Pixel height: Float) {
-        updateElementBeanWidthHeight(elementBean, width, height)
-
-        if (this is BaseElement) {
-            renderProperty.width = width
-            renderProperty.height = height
-        }
     }
 
     //---

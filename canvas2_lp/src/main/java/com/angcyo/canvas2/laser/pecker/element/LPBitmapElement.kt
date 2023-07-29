@@ -20,12 +20,12 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.library.LTime
-import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.app
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.toBase64Data
 import com.angcyo.library.ex.toBitmapOfBase64
 import com.angcyo.library.ex.toSizeString
+import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
 
@@ -55,8 +55,8 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         return if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             null
         } else {
-            val sx = elementBean._width / bitmap.width.toFloat()
-            val sy = elementBean._height / bitmap.height.toFloat()
+            val sx = elementBean._width.toPixel() / bitmap.width.toFloat()
+            val sy = elementBean._height.toPixel() / bitmap.height.toFloat()
             if (sx != 0f && sy != 0f) {
                 bitmapMatrix.setScale(sx, sy)
             } else {
@@ -71,6 +71,21 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         val bitmap = originBitmap ?: return null
         val matrix = getRenderBitmapMatrix(bitmap) ?: return bitmap
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    /**原始图片改变后, 更新bean的宽高*/
+    fun updateBeanWidthHeightFromBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
+        val bean = elementBean
+        if (bean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
+            //图片类型, 那么存储宽高就是像素的宽高
+            bean.width = bitmap.width.toFloat()
+            bean.height = bitmap.height.toFloat()
+        } else {
+            bean.width = bitmap.width.toMm()
+            bean.height = bitmap.height.toMm()
+        }
+        //渲染的宽高也要更新
+        updateRenderWidthHeight(bean.width.toPixel(), bean.height.toPixel(), keepVisibleSize)
     }
 
     override fun requestElementDrawable(
@@ -102,10 +117,9 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
 
     override fun parseElementBean() {
         if (originBitmap == null) {
-            originBitmap =
-                elementBean.imageOriginal?.toBitmapOfBase64()?.apply {
-                    updateBeanWidthHeight(width.toFloat(), height.toFloat())
-                }
+            originBitmap = elementBean.imageOriginal?.toBitmapOfBase64()?.apply {
+                updateBeanWidthHeightFromBitmap(this, false)
+            }
         }
         if (renderBitmap == null) {
             if (elementBean.imageFilter != LPDataConstant.DATA_MODE_GCODE) {
@@ -196,46 +210,13 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         elementBean.data = gcode
         this.pathList = pathList
         val bounds = RenderHelper.computePathBounds(pathList)
-        updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
-    }
-
-    /**更新原始图片的宽高
-     * [updateOriginWidthHeight]*/
-    @Pixel
-    fun updateOriginBitmapWidthHeight(
-        newWidth: Int,
-        newHeight: Int,
-        keepVisibleSize: Boolean = true
-    ) {
-        if (elementBean.mtype == LPDataConstant.DATA_TYPE_BITMAP) {
-            updateOriginWidthHeight(
-                newWidth.toPixel(),
-                newHeight.toPixel(),
-                keepVisibleSize
-            )
-        } else {
-            updateOriginWidthHeight(
-                newWidth.toFloat(),
-                newHeight.toFloat(),
-                keepVisibleSize
-            )
-        }
+        updateRenderWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 
     override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
         this.originBitmap = bitmap
-        updateOriginBitmapWidthHeight(
-            bitmap.width,
-            bitmap.height,
-            keepVisibleSize
-        )
         //更新原图, 默认是黑白画处理
-
-        ILaserPeckerElement.updateElementBeanWidthHeight(
-            elementBean,
-            bitmap.width.toFloat(),
-            bitmap.height.toFloat()
-        )
+        updateBeanWidthHeightFromBitmap(bitmap, keepVisibleSize)
 
         //2023-5-8 移除默认处理
         elementBean.src = null
@@ -247,7 +228,7 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         parseElementBean()
         if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
             val bounds = RenderHelper.computePathBounds(pathList)
-            updateOriginWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
+            updateRenderWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
         }
     }
 

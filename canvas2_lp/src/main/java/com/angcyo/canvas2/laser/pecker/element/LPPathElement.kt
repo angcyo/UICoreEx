@@ -299,12 +299,12 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         }
     }
 
-    override fun updateOriginWidthHeight(
+    override fun updateRenderWidthHeight(
         newWidth: Float,
         newHeight: Float,
         keepVisibleSize: Boolean
     ) {
-        super.updateOriginWidthHeight(newWidth, newHeight, keepVisibleSize)
+        super.updateRenderWidthHeight(newWidth, newHeight, keepVisibleSize)
         elementBean.width = renderProperty.width.toMm()
         elementBean.height = renderProperty.height.toMm()
     }

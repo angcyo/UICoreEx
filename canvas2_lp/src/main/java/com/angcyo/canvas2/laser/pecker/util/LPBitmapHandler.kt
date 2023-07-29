@@ -223,11 +223,7 @@ object LPBitmapHandler {
                             bean.imageFilter = LPDataConstant.DATA_MODE_PRINT
                             LTime.tick()
                             val result = toPrint(context, bitmap, bean.printsThreshold)
-                            element.updateOriginBitmapWidthHeight(
-                                bitmap.width,
-                                bitmap.height,
-                                false
-                            )
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
                             "图片[${bitmap.byteCount.toSizeString()}]转版画耗时:${LTime.time()}".writePerfLog()
                             result
                         }
@@ -375,11 +371,7 @@ object LPBitmapHandler {
                             bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                             LTime.tick()
                             val result = toBlackWhiteHandle(bitmap, bean)
-                            element.updateOriginBitmapWidthHeight(
-                                bitmap.width,
-                                bitmap.height,
-                                false
-                            )
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
                             "图片[${bitmap.byteCount.toSizeString()}]转黑白耗时:${LTime.time()}".writePerfLog()
                             result
                         }
@@ -442,11 +434,7 @@ object LPBitmapHandler {
                             bean.imageFilter = LPDataConstant.DATA_MODE_DITHERING
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
-                            element.updateOriginBitmapWidthHeight(
-                                bitmap.width,
-                                bitmap.height,
-                                false
-                            )
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
                             "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
                             result
                         }
@@ -506,11 +494,7 @@ object LPBitmapHandler {
                             bean.imageFilter = LPDataConstant.DATA_MODE_GREY
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
-                            element.updateOriginBitmapWidthHeight(
-                                bitmap.width,
-                                bitmap.height,
-                                false
-                            )
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
                             "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
                             result
                         }
@@ -564,11 +548,7 @@ object LPBitmapHandler {
                             bean.imageFilter = LPDataConstant.DATA_MODE_SEAL
                             LTime.tick()
                             val result = toSealHandle(bitmap, bean.sealThreshold)
-                            element.updateOriginBitmapWidthHeight(
-                                bitmap.width,
-                                bitmap.height,
-                                false
-                            )
+                            element.updateBeanWidthHeightFromBitmap(bitmap, false)
                             "图片[${bitmap.byteCount.toSizeString()}]转印章耗时:${LTime.time()}".writePerfLog()
                             result
                         }

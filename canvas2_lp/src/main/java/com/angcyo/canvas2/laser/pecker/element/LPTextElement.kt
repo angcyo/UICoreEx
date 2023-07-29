@@ -103,7 +103,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
             parseElementBean()
 
             codeBitmap?.let {
-                updateOriginWidthHeight(
+                updateRenderWidthHeight(
                     it.width.toFloat(),
                     it.height.toFloat(),
                     keepVisibleSize
@@ -140,12 +140,12 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         elementBean.height = bitmap.height.toMm()
     }
 
-    override fun updateOriginWidthHeight(
+    override fun updateRenderWidthHeight(
         newWidth: Float,
         newHeight: Float,
         keepVisibleSize: Boolean
     ) {
-        super.updateOriginWidthHeight(newWidth, newHeight, keepVisibleSize)
+        super.updateRenderWidthHeight(newWidth, newHeight, keepVisibleSize)
         elementBean.width = renderProperty.width.toMm()
         elementBean.height = renderProperty.height.toMm()
     }
