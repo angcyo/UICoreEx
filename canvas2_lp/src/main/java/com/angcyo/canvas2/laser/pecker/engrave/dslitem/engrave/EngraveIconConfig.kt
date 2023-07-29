@@ -153,7 +153,7 @@ fun sizeData(des: CharSequence?) = LabelDesData(
     }, des, _string(R.string.print_range)
 )
 
-/**机型*/
+/**机型-产品*/
 fun productNameData(des: CharSequence?) = LabelDesData(
     span {
         if (HawkEngraveKeys.enableConfigIcon) {
@@ -164,7 +164,7 @@ fun productNameData(des: CharSequence?) = LabelDesData(
     }, des, _string(R.string.device_models)
 )
 
-/**机型*/
+/**机型-雕刻模块*/
 fun moduleData(type: Byte): LabelDesData {
     val laserInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(type)
     val label = laserInfo?.toLabel() ?: "$type"
