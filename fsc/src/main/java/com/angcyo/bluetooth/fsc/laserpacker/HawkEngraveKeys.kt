@@ -112,6 +112,13 @@ object HawkEngraveKeys {
         lastDpiLayerJson = lastDpiLayerJson.updateLayerConfig(layerId, dpi)
     }
 
+    /**[TransferLayerConfigBean.getAndUpdateLayerConfigJson]*/
+    fun getLayerConfigJson(
+        layerId: String?,
+        dpi: Float,
+        from: String? = lastDpiLayerJson
+    ): String? = TransferLayerConfigBean.getAndUpdateLayerConfigJson(layerId, dpi, from)
+
     /**最大的选择添加图片的数量*/
     var maxSelectorPhotoCount: Int by HawkPropertyValue<Any, Int>(9)
 

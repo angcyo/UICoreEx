@@ -52,12 +52,16 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
         renderLabelDesList {
             engraveConfigEntity?.let {
+                //雕刻模式
+                add(moduleData(engraveConfigEntity.type))
+
                 if (!deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
                     //材质:
                     add(materialData(EngraveFlowDataHelper.getCurrentEngraveMaterName(itemTaskId)))
 
                     //分辨率: 1k
-                    var dpi = transferConfigEntity?.getLayerConfigDpi(it.layerId)
+                    var dpi = engraveConfigEntity.dpi
+                        ?: transferConfigEntity?.getLayerConfigDpi(it.layerId)
                         ?: transferDataList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
                     it.layerId?.let {
                         dpi = it.filterLayerDpi(dpi)

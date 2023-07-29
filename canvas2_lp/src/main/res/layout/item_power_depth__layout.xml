@@ -20,6 +20,7 @@
         android:inputType="textWebEmailAddress"
         android:maxLines="1"
         android:singleLine="true"
+        android:tooltipText="指定每一行每一列的功率和深度"
         app:r_draw_left="指定(P/D): "
         app:r_draw_left_color="@color/text_general_color"
         app:r_focus_drawable="@drawable/lib_bottom_focus_shape"

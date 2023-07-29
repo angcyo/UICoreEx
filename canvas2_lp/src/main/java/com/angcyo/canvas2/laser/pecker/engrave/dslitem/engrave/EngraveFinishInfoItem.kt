@@ -33,7 +33,8 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
             engraveConfigEntity?.let {
                 //材质 分辨率
                 add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)))
-                var dpi = transferConfigEntity?.getLayerConfigDpi(itemLayerId)
+                var dpi = engraveConfigEntity.dpi
+                    ?: transferConfigEntity?.getLayerConfigDpi(itemLayerId)
                     ?: transferDataEntityList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254
                 itemLayerId?.let {
                     dpi = it.filterLayerDpi(dpi)

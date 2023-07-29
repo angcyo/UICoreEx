@@ -140,8 +140,17 @@ object LPTransferHelper {
             LTime.tick()
             val elementBean = renderer.lpElementBean()
             val elementLayerId = layerId ?: elementBean?._layerId
+            val old = transferConfigEntity.layerJson
+            if (HawkEngraveKeys.enableItemEngraveParams) {
+                transferConfigEntity.layerJson = HawkEngraveKeys.getLayerConfigJson(
+                    elementLayerId,
+                    elementBean?.dpi ?: transferConfigEntity.dpi,
+                    transferConfigEntity.layerJson
+                )
+            }
             "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $elementLayerId".writePerfLog()
             val transferDataEntity = transitionRenderer(renderer, transferConfigEntity)
+            transferConfigEntity.layerJson = old //恢复
             if (transferDataEntity == null) {
                 "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
             } else {

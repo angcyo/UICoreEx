@@ -20,6 +20,7 @@
         android:inputType="textWebEmailAddress"
         android:maxLines="1"
         android:singleLine="true"
+        android:tooltipText="指定格子的雕刻次数"
         app:r_draw_left="指定次数: "
         app:r_draw_left_color="@color/text_general_color"
         app:r_focus_drawable="@drawable/lib_bottom_focus_shape"

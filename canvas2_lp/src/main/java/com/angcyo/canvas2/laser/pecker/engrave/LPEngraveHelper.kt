@@ -205,12 +205,12 @@ object LPEngraveHelper {
     ): EngraveConfigEntity {
         val layerId = bean._layerId
         return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId).apply {
+            type = bean.printType?.toByte() ?: DeviceHelper.getProductLaserType()
+            precision = bean.printPrecision ?: HawkEngraveKeys.lastPrecision
             power = bean.printPower ?: HawkEngraveKeys.lastPower
             depth = bean.printDepth ?: HawkEngraveKeys.lastDepth
             time = bean.printCount ?: 1
-
-            type = bean.printType?.toByte() ?: DeviceHelper.getProductLaserType()
-            precision = bean.printPrecision ?: HawkEngraveKeys.lastPrecision
+            dpi = bean.dpi //2023-7-29
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
             productName = vmApp<LaserPeckerModel>().productInfoData.value?.name

@@ -113,6 +113,10 @@ data class EngraveConfigEntity(
     /**打印次数, 最大255*/
     var time: Int = 1,
 
+    /**数据对应的dpi, 这里的dpi只做展示使用,
+     * 不进行数据创建时的逻辑*/
+    var dpi: Float? = null,
+
     /**创建时间*/
     var createTime: Long = nowTime()
 ) {

@@ -39,6 +39,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.laserpacker.device.toDataMode
 import com.angcyo.laserpacker.device.toLaserWave
 import com.angcyo.laserpacker.device.toLayerInfo
@@ -135,6 +136,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         internal const val HIDE_DEPTH = HIDE_POWER shl 1 //2: 隐藏左边深度
         internal const val HIDE_GRID = HIDE_DEPTH shl 1 //4: 隐藏网格
         internal const val HIDE_LABEL = HIDE_GRID shl 1 //8: 隐藏左上角标签
+        internal const val HIDE_POWER_LABEL = HIDE_LABEL shl 1 //16: 隐藏功率数字
+        internal const val HIDE_DEPTH_LABEL = HIDE_POWER_LABEL shl 1 //32: 隐藏深度数字
 
         internal var hideFunInt: Int by HawkPropertyValue<Any, Int>(0)
 
@@ -544,9 +547,13 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         val powerTextHeight = if (hideFunInt.have(HIDE_POWER)) 0f else powerTextItem.getTextHeight()
         val depthTextWidth = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextWidth()
         val depthTextHeight = if (hideFunInt.have(HIDE_DEPTH)) 0f else depthTextItem.getTextHeight()
-        val leftTextWidth = depthTextHeight + numberTextItem.getTextWidth() + elementMargin
-        val topTextHeight =
-            offsetTop + powerTextHeight + numberTextItem.getTextHeight() + elementMargin
+        val topPowderHeight =
+            if (hideFunInt.have(HIDE_POWER_LABEL)) 0f else numberTextItem.getTextHeight()
+        val leftDepthWith =
+            if (hideFunInt.have(HIDE_DEPTH_LABEL)) 0f else numberTextItem.getTextWidth()
+
+        val leftTextWidth = depthTextHeight + leftDepthWith + elementMargin
+        val topTextHeight = offsetTop + powerTextHeight + topPowderHeight + elementMargin
 
         //格子开始的地方
         val gridLeft = elementMargin + leftTextWidth
@@ -677,6 +684,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
                         printPower = powerValue
                         printDepth = depthValue
+                        printType = gridPrintType.toInt()
+                        dpi =
+                            gridLayerId.filterLayerDpi(HawkEngraveKeys.getLastLayerDpi(gridLayerId))
                     })
                 }
             }
@@ -746,8 +756,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         //归一
         beanList.addAll(labelBeanList)
-        beanList.addAll(powerBeanList)
-        beanList.addAll(depthBeanList)
+        if (!hideFunInt.have(HIDE_POWER_LABEL)) {
+            beanList.addAll(powerBeanList)
+        }
+        if (!hideFunInt.have(HIDE_DEPTH_LABEL)) {
+            beanList.addAll(depthBeanList)
+        }
         beanList.addAll(gridBeanList)
 
         //组合在一起
