@@ -8,6 +8,7 @@ import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
@@ -243,6 +244,39 @@ class DeviceStateModel : ViewModel() {
     @AnyThread
     fun updateDeviceModel(model: Int) {
         deviceModelData.updateValue(model)
+    }
+
+    /**获取当前设备对应的设备配置信息
+     * [type] 激光类型*/
+    fun getDeviceConfig(
+        type: Byte,
+        moduleState: Int? = deviceStateData.value?.moduleState
+    ): DeviceConfigBean? {
+        var result = laserPeckerModel.productInfoData.value?.laserTypeList?.find {
+            if (it.moduleState == -1) {
+                it.type == type
+            } else {
+                it.moduleState == moduleState
+            }
+        }
+        if (result == null) {
+            val configList = LaserPeckerConfigHelper.readDeviceConfig()
+            if (!configList.isNullOrEmpty()) {
+                for (config in configList) {
+                    result = config.laserTypeList?.find {
+                        if (it.moduleState == -1) {
+                            it.type == type
+                        } else {
+                            it.moduleState == moduleState
+                        }
+                    }
+                    if (result != null) {
+                        return config
+                    }
+                }
+            }
+        }
+        return laserPeckerModel.productInfoData.value?.deviceConfigBean
     }
 
     /**获取当前设备对应的模块信息

@@ -121,7 +121,7 @@ interface ILaserPeckerElement : IElement, IEngraveDataProvider {
     //---
 
     /**当[elementBean]属性改变后, 请调用此方法更新*/
-    fun updateElementBean(renderer: BaseRenderer?) {
+    override fun updateElementFromBean(renderer: BaseRenderer?) {
         parseElementBean()
         updateBeanToElement(renderer)
         renderer?.updateRenderProperty()
