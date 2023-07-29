@@ -573,14 +573,14 @@ object LaserPeckerHelper {
     }
 
     /**返回设备支持的分辨率列表*/
-    fun findProductSupportPxList(): List<PxInfo> {
+    private fun findProductSupportPxList(): List<PxInfo> {
         val result = mutableListOf<PxInfo>()
         vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.filterPxList(result)
         return result
     }
 
     /**[findProductLayerSupportPxList]*/
-    fun findProductLayerSupportPxList(layerId: String): List<PxInfo> {
+    fun findProductLayerSupportPxList(layerId: String = HawkEngraveKeys.lastLayerId): List<PxInfo> {
         return findProductLayerSupportPxList(listOf(layerId))
     }
 

@@ -12,7 +12,6 @@ import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.size
-import com.angcyo.objectbox.laser.pecker.bean.updateLayerConfig
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
@@ -34,7 +33,7 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     var itemTransferConfigEntity: TransferConfigEntity? = null
         set(value) {
             field = value
-            selectorCurrentDpi(value?.dpi)
+            selectorCurrentDpi(value?.getLayerConfigDpi(HawkEngraveKeys.lastLayerId))
         }
 
     /**分辨率列表*/
@@ -74,12 +73,11 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
         //super.onItemChangeListener(item)
         val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
         itemTransferConfigEntity?.dpi = dpi
-        itemLayerInfo?.let {
-            HawkEngraveKeys.lastDpiLayerJson = HawkEngraveKeys.lastDpiLayerJson.updateLayerConfig(
-                it.layerId,
-                it.layerId.filterLayerDpi(dpi)
-            )
-        }
+
+        val layerId = (itemLayerInfo?.layerId ?: HawkEngraveKeys.lastLayerId)
+        HawkEngraveKeys.updateLayerDpi(layerId, layerId.filterLayerDpi(dpi))
+
+        itemTransferConfigEntity?.layerJson = HawkEngraveKeys.lastDpiLayerJson
     }
 
     fun selectorCurrentDpi(dpi: Float?) {

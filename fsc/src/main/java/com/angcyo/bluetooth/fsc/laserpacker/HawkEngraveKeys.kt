@@ -11,6 +11,7 @@ import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.isDebug
 import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
 import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
+import com.angcyo.objectbox.laser.pecker.bean.updateLayerConfig
 
 /**
  * 数据持久化
@@ -86,6 +87,9 @@ object HawkEngraveKeys {
     /**最后一次传输的dpi*/
     var lastDpi: Float by HawkPropertyValue<Any, Float>(LaserPeckerHelper.DPI_254)
 
+    /**最后一次的图层id*/
+    var lastLayerId: String by HawkPropertyValue<Any, String>("layerFill")
+
     /**每个图层对应的dpi
      * [lastDpi]
      * [List<TransferLayerConfigBean>]
@@ -100,6 +104,13 @@ object HawkEngraveKeys {
     /**获取图层最后一次的dpi*/
     fun getLastLayerDpi(layerId: String) = _lastLayerConfigList?.find { it.layerId == layerId }?.dpi
         ?: LaserPeckerHelper.DPI_254
+
+    /**获取图层最后一次的dpi
+     * [dpi] 需要[com.angcyo.laserpacker.device.filterLayerDpi]*/
+    fun updateLayerDpi(layerId: String, dpi: Float) {
+        lastLayerId = layerId
+        lastDpiLayerJson = lastDpiLayerJson.updateLayerConfig(layerId, dpi)
+    }
 
     /**最大的选择添加图片的数量*/
     var maxSelectorPhotoCount: Int by HawkPropertyValue<Any, Int>(9)

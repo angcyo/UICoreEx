@@ -1,6 +1,8 @@
 package com.angcyo.laserpacker.device
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
@@ -59,6 +61,24 @@ object LayerHelper {
             _resultLayerList.removeCutLayer()
         }
         return _resultLayerList
+    }
+
+    /**获取图层最后一次的dpi*/
+    fun updateAllLayerDpi(dpi: Float) {
+        for (layer in engraveLayerList) {
+            HawkEngraveKeys.updateLayerDpi(layer.layerId, layer.layerId.filterLayerDpi(dpi))
+        }
+    }
+
+    /**当前图层, 是否要显示dpi分辨率配置*/
+    fun showDpiConfig(layerId: String?): Boolean {
+        val laserInfo =
+            vmApp<DeviceStateModel>().getDeviceLaserModule(LaserPeckerHelper.LASER_TYPE_BLUE)
+        if (laserInfo?.isNotLaserModule() == true) {
+            //不是激光模块
+            return false
+        }
+        return getEngraveLayerInfo(layerId)?.showDpiConfig ?: false
     }
 }
 

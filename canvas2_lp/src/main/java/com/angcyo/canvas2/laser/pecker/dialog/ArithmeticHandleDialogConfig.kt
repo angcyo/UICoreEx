@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.widget.NestedScrollView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -111,13 +112,14 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         }
 
         dialogViewHolder.group(R.id.dpi_wrap_layout)?.resetDslItem(TransferDataPxItem().apply {
-            itemPxList = LaserPeckerHelper.findProductSupportPxList()
-            selectorCurrentDpi(transferConfigEntity.dpi)
+            itemPxList = LaserPeckerHelper.findProductLayerSupportPxList()
+            selectorCurrentDpi(transferConfigEntity.getLayerConfigDpi(HawkEngraveKeys.lastLayerId))
             itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
             observeItemChange {
                 //保存最后一次选择的dpi
                 val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
                 transferConfigEntity.dpi = dpi
+                transferConfigEntity.layerJson = HawkEngraveKeys.lastDpiLayerJson
             }
         })
 

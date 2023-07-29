@@ -28,6 +28,7 @@ fun String?.getLayerConfig(layerId: String?): TransferLayerConfigBean? {
     return getLayerConfigList()?.find { it.layerId == layerId }
 }
 
+/**[com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys.updateLayerDpi]*/
 fun String?.updateLayerConfig(layerId: String, dpi: Float): String? {
     val result = mutableListOf<TransferLayerConfigBean>()
     getLayerConfigList()?.let {

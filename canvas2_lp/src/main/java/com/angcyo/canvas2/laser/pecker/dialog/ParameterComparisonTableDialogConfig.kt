@@ -381,7 +381,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     .indexOfFirst { it.layerId == gridLayerId }
                 observeItemChange {
                     gridLayerId = currentLayerInfo().layerId
-                    updateTablePreview()
+                    //updateTablePreview()
+                    refreshDslAdapter()
                 }
             }
 
@@ -400,19 +401,17 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
 
             //分辨率dpi
-            val layerInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(gridPrintType)
-            if (layerInfo?.isNotLaserModule() == true) {
-
-            } else {
+            if (LayerHelper.showDpiConfig(gridLayerId)) {
                 TransferDataPxItem()() {
-                    itemPxList = LaserPeckerHelper.findProductSupportPxList()
-                    selectorCurrentDpi(HawkEngraveKeys.lastDpi)
+                    itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(gridLayerId)
+                    selectorCurrentDpi(HawkEngraveKeys.getLastLayerDpi(gridLayerId))
                     itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
                     observeItemChange {
                         //保存最后一次选择的dpi
                         val dpi =
                             itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
                         HawkEngraveKeys.lastDpi = dpi
+                        HawkEngraveKeys.updateLayerDpi(gridLayerId, dpi)
 
                         updateTablePreview()
                     }
@@ -508,9 +507,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 val layerInfo = deviceStateModel.getDeviceLaserModule(gridPrintType)
                 appendSpaceIfNotEmpty()
                 append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
-                if (layerInfo?.isNotLaserModule() == true) {
-                    //没有功率, 隐藏dpi
-                } else {
+                if (LayerHelper.showDpiConfig(gridLayerId)) {
                     appendSpaceIfNotEmpty()
                     append(LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText())
                 }
