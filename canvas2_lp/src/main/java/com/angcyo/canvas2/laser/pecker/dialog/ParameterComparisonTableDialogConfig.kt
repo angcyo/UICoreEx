@@ -45,8 +45,8 @@ import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.canvas.core.Reason
-import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.Strategy
+import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.appendSpaceIfNotEmpty
 import com.angcyo.library.ex.dpi
@@ -80,6 +80,10 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         /**功率深度阈值, 小于值才需要绘制格子*/
         internal var powerDepthThreshold: Float by HawkPropertyValue<Any, Float>(2400f)
+
+        /**网格格子的大小*/
+        @MM
+        internal var gridItemSize: Float by HawkPropertyValue<Any, Float>(14f)
 
         /**竖向网格的数量, 有多少行*/
         internal var verticalGridCount: Int by HawkPropertyValue<Any, Int>(10)
@@ -446,9 +450,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //存放网格item
         val gridBeanList = mutableListOf<LPElementBean>()
 
-        //
-        @Pixel val bounds = tableBounds
-
         val elementMargin = elementMargin.toPixel()
         val gridMargin = gridItemMargin.toPixel()
 
@@ -489,7 +490,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = titleTextFontSize
             val defaultLabel = buildString {
-                laserPeckerModel.productInfoData.value?.name?.let {
+                vmApp<DeviceStateModel>().getDeviceConfig(gridPrintType)?.name?.let {
                     append(it)
                     append(" ")
                 }
@@ -537,16 +538,21 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             offsetTop + powerTextHeight + numberTextItem.getTextHeight() + elementMargin
 
         //格子开始的地方
-        val gridLeft = bounds.left + elementMargin + leftTextWidth
-        val gridTop = bounds.top + elementMargin + topTextHeight
-
-        //格子总共占用的宽高
-        val gridWidthSum = bounds.right - gridLeft
-        val gridHeightSum = bounds.bottom - gridTop
+        val gridLeft = elementMargin + leftTextWidth
+        val gridTop = elementMargin + topTextHeight
 
         //每个格子的宽高, 不包含margin
-        val gridWidth = gridWidthSum / horizontalGridCount
-        val gridHeight = gridHeightSum / verticalGridCount
+        val gridWidth = gridItemSize.toPixel()
+        val gridHeight = gridItemSize.toPixel()
+
+        //格子总共占用的宽高
+        val gridWidthSum = gridWidth * horizontalGridCount
+        val gridHeightSum = gridHeight * verticalGridCount
+
+        //表格总宽度
+        val pctWidth = leftTextWidth + elementMargin + gridWidthSum
+        //表格总高度
+        val pctHeight = topTextHeight + elementMargin + gridHeightSum
 
         //横竖线
         @Pixel val powerList = mutableListOf<Float>() //功率分割线, 竖线
@@ -606,8 +612,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             })
             powerNumberItem.elementBean.left =
                 (x + gridWidth / 2 - powerNumberItem.getTextWidth() / 2).toMm()
-            powerNumberItem.elementBean.top =
-                (bounds.top + offsetTop + powerTextHeight + elementMargin).toMm()
+            powerNumberItem.elementBean.top = (offsetTop + powerTextHeight + elementMargin).toMm()
             powerBeanList.add(powerNumberItem.elementBean)
 
             if (powerIndex == 0 && depthValueList.isEmpty()) {
@@ -706,9 +711,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         }
 
         //Label
-        labelTextItem.elementBean.left =
-            (bounds.centerX() - labelTextItem.getTextWidth() / 2).toMm()
-        labelTextItem.elementBean.top = bounds.top.toMm()
+        labelTextItem.elementBean.left = (pctWidth / 2 - labelTextItem.getTextWidth() / 2).toMm()
+        labelTextItem.elementBean.top = 0f
         if (!hideFunInt.have(HIDE_LABEL)) {
             labelBeanList.add(labelTextItem.elementBean)
         }
@@ -716,7 +720,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         //---文本
         powerTextItem.elementBean.left =
             (gridLeft + gridWidthSum / 2 - powerTextItem.getTextWidth() / 2).toMm()
-        powerTextItem.elementBean.top = (bounds.top + offsetTop).toMm()
+        powerTextItem.elementBean.top = offsetTop.toMm()
         if (!hideFunInt.have(HIDE_POWER)) {
             labelBeanList.add(powerTextItem.elementBean)
         }
