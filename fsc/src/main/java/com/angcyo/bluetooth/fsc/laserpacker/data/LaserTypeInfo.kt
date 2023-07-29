@@ -94,4 +94,7 @@ data class LaserTypeInfo(
             append("${wave}nm")
         }
     }
+
+    /**非光源模块, 比如单色笔等*/
+    fun isNotLaserModule(): Boolean = wave <= 0
 }
