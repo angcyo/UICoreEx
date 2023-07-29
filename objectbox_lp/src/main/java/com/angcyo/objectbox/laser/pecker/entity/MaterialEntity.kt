@@ -3,6 +3,7 @@ package com.angcyo.objectbox.laser.pecker.entity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
+import com.angcyo.drawable.base.CombineDrawable
 import com.angcyo.library.component.sync.ISyncEntity
 import com.angcyo.library.ex.*
 import com.angcyo.library.extend.IToDrawable
@@ -189,9 +190,15 @@ data class MaterialEntity(
     }
 
     override fun toDrawable(): Drawable? {
-        return if (_isCustomMaterial) {
-            _drawable(R.drawable.material_edit_ico)
-        } else createLaserTypeDrawable(type)
+        return CombineDrawable().apply {
+            when (materialType) {
+                MATERIAL_TYPE_CUSTOM -> addDrawable(_drawable(R.drawable.material_edit_ico))
+                MATERIAL_TYPE_TEMP -> addDrawable(_drawable(R.drawable.material_temp_ico))
+                MATERIAL_TYPE_SYSTEM -> addDrawable(_drawable(R.drawable.material_system_ico))
+                else -> Unit
+            }
+            addDrawable(createLaserTypeDrawable(type))
+        }
     }
 
     override fun toRightDrawable(): Drawable? {

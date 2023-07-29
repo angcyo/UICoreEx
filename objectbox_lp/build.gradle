@@ -6,6 +6,8 @@ dependencies {
 
     //2023-7-20 json
     implementation project(allModule.http)
+    //2023-7-29 Drawable
+    implementation project(allModule.drawable)
 }
 
 //apply plugin: 'kotlin-kapt'
