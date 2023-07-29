@@ -431,6 +431,56 @@
     ]
   },
   {
+    "name": "LP5",
+    "softwareVersionRange": "800~899 8000~8499",
+    "hardwareVersionRange": "",
+    "supportDitheringRange": "",
+    "ex": "z,s,r",
+    "zDirList": "flat,cylinder",
+    "focalDistance": 150,
+    "widthPhys": 160,
+    "heightPhys": 160,
+    "bestWidthPhys": 120,
+    "bestHeightPhys": 160,
+    "validWidthRatio": 0.6,
+    "validHeightRatio": 0.6,
+    "zMaxWidth": 2000,
+    "rMaxWidth": 628,
+    "sMaxWidth": 300,
+    "carMaxWidth": 2000,
+    "laserTypeList": [
+      {
+        "type": 1,
+        "wave": 1064,
+        "power": 20,
+        "label": "白光"
+      },
+      {
+        "type": 0,
+        "wave": 450,
+        "power": 10,
+        "label": "蓝光"
+      }
+    ],
+    "dpiList": [
+      {
+        "dpi": 254,
+        "px": 4,
+        "des": "1K"
+      },
+      {
+        "dpi": 508,
+        "px": 2,
+        "des": "2K"
+      },
+      {
+        "dpi": 846.66666,
+        "px": 1,
+        "des": "4K"
+      }
+    ]
+  },
+  {
     "name": "LX1",
     "des": "LX1-加长版",
     "softwareVersionRange": "700~749 7000~7099",
