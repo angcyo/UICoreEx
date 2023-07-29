@@ -1,6 +1,5 @@
 package com.angcyo.canvas2.laser.pecker.history.dslitem
 
-import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -22,7 +21,6 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.or
 import com.angcyo.library.ex.setBounds
 import com.angcyo.library.ex.size
@@ -315,14 +313,11 @@ open class EngraveHistoryItem : DslTagGroupItem() {
     ) {
         list.add(EngraveLabelItem().apply {
             val label = LayerHelper.getEngraveLayerInfo(engraveConfigEntity.layerId)?.label.or()
-            if (isDebug()) {
+            if (HawkEngraveKeys.enableConfigIcon) {
                 itemText = span {
                     append(label)
                     append(" ")
-                    MaterialEntity.createLaserTypeDrawable(
-                        engraveConfigEntity.type.toInt(),
-                        Color.WHITE
-                    )?.let {
+                    MaterialEntity.createLaserTypeDrawable(engraveConfigEntity.type.toInt())?.let {
                         val size = 20 * dpi
                         appendDrawable(it.setBounds(size, size))
                     }

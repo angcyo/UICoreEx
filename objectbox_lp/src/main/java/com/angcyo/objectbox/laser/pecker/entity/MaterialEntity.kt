@@ -1,6 +1,5 @@
 package com.angcyo.objectbox.laser.pecker.entity
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 import com.angcyo.drawable.base.CombineDrawable
@@ -164,13 +163,16 @@ data class MaterialEntity(
         const val SPEED = "speed"
 
         /**根据激光类型, 创建对应的[Drawable]
-         * [whiteColor] 白光的颜色*/
+         * [blueColor] 蓝光的颜色
+         * [whiteColor] 白光的颜色
+         * */
         fun createLaserTypeDrawable(
             type: Int?,
-            whiteColor: Int = "#efefef".toColorInt()
+            whiteColor: Int = "#7E7E7E".toColorInt(),
+            blueColor: Int = "#0066FF".toColorInt(),
         ): Drawable? = when (type) {
             //蓝光
-            0x00 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(Color.BLUE)
+            0x00 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(blueColor)
             //白光
             0x01 -> _drawable(R.drawable.material_laser_type_ico).tintDrawable(whiteColor)
             else -> null
@@ -194,7 +196,7 @@ data class MaterialEntity(
             when (materialType) {
                 MATERIAL_TYPE_CUSTOM -> addDrawable(_drawable(R.drawable.material_edit_ico))
                 MATERIAL_TYPE_TEMP -> addDrawable(_drawable(R.drawable.material_temp_ico))
-                MATERIAL_TYPE_SYSTEM -> addDrawable(_drawable(R.drawable.material_system_ico))
+                //MATERIAL_TYPE_SYSTEM -> addDrawable(_drawable(R.drawable.material_system_ico))
                 else -> Unit
             }
             addDrawable(createLaserTypeDrawable(type))
