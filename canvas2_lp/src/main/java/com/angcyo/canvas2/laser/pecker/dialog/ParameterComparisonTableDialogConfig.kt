@@ -11,7 +11,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.element.limitElementMaxSizeMatrix
 import com.angcyo.canvas.render.renderer.BaseRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.AppointPowerDepthItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.GridCountItem
@@ -59,6 +61,7 @@ import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.BuildHelper
 import java.io.StringWriter
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -397,16 +400,22 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
 
             //分辨率dpi
-            TransferDataPxItem()() {
-                itemPxList = LaserPeckerHelper.findProductSupportPxList()
-                selectorCurrentDpi(HawkEngraveKeys.lastDpi)
-                itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
-                observeItemChange {
-                    //保存最后一次选择的dpi
-                    val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-                    HawkEngraveKeys.lastDpi = dpi
+            val layerInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(gridPrintType)
+            if (layerInfo?.isNotLaserModule() == true) {
 
-                    updateTablePreview()
+            } else {
+                TransferDataPxItem()() {
+                    itemPxList = LaserPeckerHelper.findProductSupportPxList()
+                    selectorCurrentDpi(HawkEngraveKeys.lastDpi)
+                    itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
+                    observeItemChange {
+                        //保存最后一次选择的dpi
+                        val dpi =
+                            itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
+                        HawkEngraveKeys.lastDpi = dpi
+
+                        updateTablePreview()
+                    }
                 }
             }
 
@@ -490,16 +499,21 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             mtype = LPDataConstant.DATA_TYPE_TEXT
             fontSize = titleTextFontSize
             val defaultLabel = buildString {
-                vmApp<DeviceStateModel>().getDeviceConfig(gridPrintType)?.name?.let {
+                val deviceStateModel = vmApp<DeviceStateModel>()
+                deviceStateModel.getDeviceConfig(gridPrintType)?.name?.let {
                     append(it)
                     append(" ")
                 }
                 append(gridLayerId.toLayerInfo()?.label ?: "")
-                val layerInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(gridPrintType)
+                val layerInfo = deviceStateModel.getDeviceLaserModule(gridPrintType)
                 appendSpaceIfNotEmpty()
                 append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
-                appendSpaceIfNotEmpty()
-                append(LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText())
+                if (layerInfo?.isNotLaserModule() == true) {
+                    //没有功率, 隐藏dpi
+                } else {
+                    appendSpaceIfNotEmpty()
+                    append(LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText())
+                }
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
                 "%1", defaultLabel
@@ -763,9 +777,28 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         HawkEngraveKeys.enableTransferIndexCheck = false //可选, 关闭索引检查, 每次都重新传输
         HawkEngraveKeys.enableItemEngraveParams = true //必须
         HawkEngraveKeys.enableSingleItemTransfer = true //必须
-        delegate.renderManager.addElementRenderer(
-            parseParameterComparisonTable(), true, Reason.user, Strategy.normal
-        )
+
+        val result = parseParameterComparisonTable()
+        if (result.size() == 1) {
+            result.first().apply {
+                if (this is CanvasGroupRenderer) {
+                    var groupRenderProperty = getGroupRenderProperty()
+                    var bounds = groupRenderProperty.getRenderBounds()
+                    val matrix =
+                        bounds.limitElementMaxSizeMatrix(tableBounds.width(), tableBounds.height())
+                    applyScaleMatrix(matrix, Reason.code, null)
+                    groupRenderProperty = getGroupRenderProperty()
+                    bounds = groupRenderProperty.getRenderBounds()
+                    val cx = min(tableBounds.centerX(), tableBounds.centerY())
+                    val cy = cx
+                    matrix.setTranslate(cx - bounds.centerX(), cy - bounds.centerY())
+                    applyTranslateMatrix(matrix, Reason.code, null)
+                }
+            }
+        }
+
+        //添加到渲染器
+        delegate.renderManager.addElementRenderer(result, true, Reason.user, Strategy.normal)
     }
 }
 
