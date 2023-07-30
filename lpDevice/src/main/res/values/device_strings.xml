@@ -113,6 +113,12 @@
 
     <string name="project_filter_tip">Please enter a project name</string>
 
+    <string name="add_wifi_device_scan_tip">Scanning nearby devices that can be added...</string>
     <string name="add_wifi_device_tip">Keep your phone as close as possible to the device you need to add</string>
     <string name="add_wifi_device_not_found_tip">If no device is found, you can click the refresh button to search again</string>
+    <string name="add_wifi_device_name_tip">This device only supports 2.4GHz Wi-Fi connections\nWi-Fi names only support English characters and numbers</string>
+    <string name="add_wifi_device_password_tip">Wi-Fi password input errors are one of the most common reasons for failure, please double-check the Wi-Fi password</string>
+    <string name="add_wifi_device_name_hint">Please enter a Wi-Fi name</string>
+    <string name="add_wifi_device_password_hint">Please enter a Wi-Fi passwrod</string>
+    <string name="add_wifi_device_select_wifi">Select Wi-Fi</string>
 </resources>
