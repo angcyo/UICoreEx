@@ -44,6 +44,8 @@ import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.getScaleX
+import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
@@ -247,7 +249,8 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
-        val operateBitmap = element.getRenderOriginBitmap() ?: return
+        val operateBitmap = element.originBitmap ?: return
+        val renderMatrix = element.getRenderBitmapMatrix(operateBitmap)
         val bean = element.elementBean
         val context = anchor.context
 
@@ -311,6 +314,9 @@ object LPBitmapHandler {
                                 result.first,
                                 false
                             )
+                            element.renderProperty.scaleX *= renderMatrix?.getScaleX() ?: 1f
+                            element.renderProperty.scaleY *= renderMatrix?.getScaleY() ?: 1f
+
                             //stack
                             addBitmapStateToStack(delegate, renderer, undoState)
 
