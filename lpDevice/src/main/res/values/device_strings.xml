@@ -112,4 +112,7 @@
     <string name="project_save_success_tip">Project saved successfully</string>
 
     <string name="project_filter_tip">Please enter a project name</string>
+
+    <string name="add_wifi_device_tip">Keep your phone as close as possible to the device you need to add</string>
+    <string name="add_wifi_device_not_found_tip">If no device is found, you can click the refresh button to search again</string>
 </resources>
