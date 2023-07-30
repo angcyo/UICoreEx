@@ -108,7 +108,7 @@ class ProjectListFragment : BaseDslFragment() {
                     order(ProjectSyncEntity_.updateTime, it)
                 }
                 sortName?.let {
-                    order(ProjectSyncEntity_.updateTime, it)
+                    order(ProjectSyncEntity_.name, it)
                 }
                 apply(
                     ProjectSyncEntity_.userId.equal("${EntitySync.userId}")
