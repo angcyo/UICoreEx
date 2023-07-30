@@ -46,10 +46,6 @@ class AddWifiDeviceFragment : BaseDslFragment() {
 
         _vh.postDelay(2_000) {
             renderDslAdapter(true) {
-                DslLabelTextItem()() {
-                    itemLabelText = "正在扫描附近可添加的设备..."
-                    paddingVertical(_dimen(R.dimen.lib_hdpi))
-                }
                 AddWifiEmptyItem()()
             }
         }
