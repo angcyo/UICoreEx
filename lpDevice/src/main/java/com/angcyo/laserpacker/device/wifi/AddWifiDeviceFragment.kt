@@ -30,6 +30,7 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         fragmentConfig.fragmentBackgroundDrawable =
             ColorDrawable(_color(R.color.lib_theme_white_bg_color))
         bigTitleLayout()
+        enableSoftInput = true
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {
