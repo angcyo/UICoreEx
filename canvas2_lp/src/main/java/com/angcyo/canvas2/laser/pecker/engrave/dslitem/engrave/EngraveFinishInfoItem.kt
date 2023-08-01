@@ -4,7 +4,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.filterLayerDpi
 
 /**
@@ -15,7 +14,7 @@ import com.angcyo.laserpacker.device.filterLayerDpi
 class EngraveFinishInfoItem : EngravingInfoItem() {
 
     /**雕刻图层id*/
-    var itemLayerId: String? = LayerHelper.LAYER_FILL
+    var itemLayerId: String? = LaserPeckerHelper.LAYER_FILL
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_info_layout
@@ -39,7 +38,8 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                 itemLayerId?.let {
                     dpi = it.filterLayerDpi(dpi)
                 }
-                val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+                val findPxInfo =
+                    LaserPeckerHelper.findPxInfo(itemLayerId ?: LaserPeckerHelper.LAYER_LINE, dpi)
                 add(resolutionData(findPxInfo.toText()))
                 //雕刻模块
                 add(moduleData(engraveConfigEntity.type))

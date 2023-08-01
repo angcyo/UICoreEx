@@ -17,11 +17,14 @@ data class DeviceConfigBean(
     var softwareVersionRange: String? = null,
     var hardwareVersionRange: String? = null,
 
-    var dpiList: List<PxInfo>? = null,
+    /**当前设备支持的激光模块类型信息*/
     var laserTypeList: List<LaserTypeInfo>? = null,
     var focalDistance: Int? = 0,
     var name: String? = null,
     var des: String? = null,
+
+    /**是否支持切割图层*/
+    var supportCut: Boolean = false,
 
     /**支持的外设*/
     var ex: String? = null,
@@ -48,16 +51,24 @@ data class DeviceConfigBean(
     var validWidthRatio: Float = 0f,
     var validHeightRatio: Float = 0f,
     @MM
+    var zMaxWidth: Int = 0,
     var zMaxHeight: Int = 0,
+    var rMaxWidth: Int = 0,
     var rMaxHeight: Int = 0,
+    var sMaxWidth: Int = 0,
     var sMaxHeight: Int = 0,
     var carMaxWidth: Int = 0,
     var carMaxHeight: Int = 0,
     var penMaxHeight: Int = 0,
 
+    /**未指定配置dpi时. 默认的dpi分辨率列表*/
+    var dpiList: List<PxInfo>? = null,
+
     //2023-5-19 图层信息
 
-    /**[key] 图层id
+    /**每个图层单独对应的[dpiList]
+     *
+     * [key] 图层id
      * [value] [LayerConfigBean]
      *
      * [com.angcyo.laserpacker.device.LayerHelper.LAYER_FILL]
@@ -77,4 +88,14 @@ data class DeviceConfigBean(
     fun haveLayerConfig(layerId: String): Boolean {
         return layer?.get(layerId) != null
     }
+
+    /**获取指定图层的配置信息
+     * [layerId] 图层id*/
+    fun getLayerConfig(layerId: String): LayerConfigBean {
+        layer?.get(layerId)?.let {
+            return it.filterDpiList()
+        }
+        return LayerConfigBean(layerId, dpiList?.filterModuleDpiList())
+    }
+
 }

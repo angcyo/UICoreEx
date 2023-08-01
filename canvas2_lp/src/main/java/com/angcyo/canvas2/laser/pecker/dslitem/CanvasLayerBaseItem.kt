@@ -22,7 +22,6 @@ import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._color
@@ -170,7 +169,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         //转换切割图层
         itemHolder.invisible(R.id.layer_slicing_view, !itemShowSlicingView)
         itemHolder.img(R.id.layer_slicing_view)?.imageTintList = ColorStateList.valueOf(
-            if (operateElementBean?._layerId == LayerHelper.LAYER_CUT) {
+            if (operateElementBean?._layerId == LaserPeckerHelper.LAYER_CUT) {
                 _color(R.color.colorAccent)
             } else {
                 _color(R.color.lib_text_color)
@@ -178,12 +177,12 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         )
 
         itemHolder.click(R.id.layer_slicing_view) {
-            if (operateElementBean?._layerId == LayerHelper.LAYER_CUT) {
+            if (operateElementBean?._layerId == LaserPeckerHelper.LAYER_CUT) {
                 operateElementBean?.layerId = null
                 operateElementBean?.isCut = false
             } else {
                 operateElementBean?.isCut = true
-                operateElementBean?.layerId = LayerHelper.LAYER_CUT
+                operateElementBean?.layerId = LaserPeckerHelper.LAYER_CUT
             }
             operateElementBean?.index = null // 重置索引
             onItemCutTypeChangeAction?.invoke()

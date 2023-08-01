@@ -154,6 +154,9 @@ data class LaserPeckerProductInfo(
      * */
     fun isLIV(): Boolean = isLIIIMax()
 
+    /**LP5*/
+    fun isLV(): Boolean = name == LaserPeckerHelper.LV
+
     /**CI
      * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.CI]
      * */
@@ -184,11 +187,9 @@ data class LaserPeckerProductInfo(
     /**获取指定图层的配置信息
      * [layerId] 图层id*/
     fun findLayerConfig(layerId: String): LayerConfigBean {
-        deviceConfigBean?.layer?.get(layerId)?.let {
-            return it.filterDpiList()
-        }
-        return LayerConfigBean(pxList.filterModuleDpiList())
+        return deviceConfigBean?.getLayerConfig(layerId) ?: LayerConfigBean(
+            layerId,
+            pxList.filterModuleDpiList()
+        )
     }
 }
-
-

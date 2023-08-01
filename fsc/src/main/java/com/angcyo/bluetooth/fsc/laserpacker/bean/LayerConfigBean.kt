@@ -10,13 +10,14 @@ import com.angcyo.core.vmApp
  * @since 2023/05/19
  */
 data class LayerConfigBean(
+    val layerId: String? = null,
     /**当前图层, 单独支持的分辨率*/
     var dpiList: List<PxInfo>? = null
 ) {
     fun filterDpiList(
         moduleState: Int = vmApp<DeviceStateModel>().deviceStateData.value?.moduleState ?: 0
     ): LayerConfigBean {
-        return LayerConfigBean(dpiList?.filterModuleDpiList(moduleState))
+        return LayerConfigBean(layerId, dpiList?.filterModuleDpiList(moduleState))
     }
 }
 

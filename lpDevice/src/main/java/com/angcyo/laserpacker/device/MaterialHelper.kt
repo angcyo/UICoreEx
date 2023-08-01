@@ -148,10 +148,10 @@ object MaterialHelper {
                             )
                         }
                     }
-                    if (isLPSeries && materialEntity.layerId == LayerHelper.LAYER_FILL) {
+                    if (isLPSeries && materialEntity.layerId == LaserPeckerHelper.LAYER_FILL) {
                         //填充图层, 和GCode图层/切割的参数一致
                         materialEntity.copy().apply {
-                            layerId = LayerHelper.LAYER_LINE
+                            layerId = LaserPeckerHelper.LAYER_LINE
                             result.add(this)
                         }
                     }
@@ -343,7 +343,7 @@ object MaterialHelper {
 
 /**过滤一下图层对应的dpi*/
 fun String.filterLayerDpi(dpi: Float): Float =
-    if (this == LayerHelper.LAYER_LINE || this == LayerHelper.LAYER_CUT) {
+    if (this == LaserPeckerHelper.LAYER_LINE || this == LaserPeckerHelper.LAYER_CUT) {
         LaserPeckerHelper.DPI_254
     } else {
         dpi

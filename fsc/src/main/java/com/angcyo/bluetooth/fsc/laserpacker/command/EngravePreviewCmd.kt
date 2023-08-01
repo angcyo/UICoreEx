@@ -167,6 +167,7 @@ data class EngravePreviewCmd(
         /**[adjustRectRange]*/
         fun adjustRectRange(
             rect: RectF?,
+            layerId: String = LaserPeckerHelper.LAYER_LINE,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): OverflowInfo {
@@ -176,6 +177,7 @@ data class EngravePreviewCmd(
                 rect.top,
                 rect.width(),
                 rect.height(),
+                layerId,
                 dpi,
                 productInfo
             )
@@ -188,6 +190,7 @@ data class EngravePreviewCmd(
          * */
         fun adjustRectRange(
             @Px x: Float, @Px y: Float, @Px width: Float, @Px height: Float,
+            layerId: String = LaserPeckerHelper.LAYER_LINE,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? =
                 vmApp<LaserPeckerModel>().productInfoData.value
@@ -217,7 +220,7 @@ data class EngravePreviewCmd(
             var previewWidth = width
             var previewHeight = height
 
-            val pxInfo = LaserPeckerHelper.findPxInfo(dpi)
+            val pxInfo = LaserPeckerHelper.findPxInfo(layerId, dpi)
             if (overflowBounds) {
                 //预览超出了设备物理范围, 缩成设备物理中心点
 
@@ -252,6 +255,7 @@ data class EngravePreviewCmd(
         /**调整4点坐标, 并标识是否溢出*/
         fun adjustFourPoint(
             rectPoint: RectPointF,
+            layerId: String,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): OverflowInfo {
@@ -283,7 +287,7 @@ data class EngravePreviewCmd(
             val result = RectPointF(originRotate = rectPoint.originRotate)
             result.originRectF.set(rectPoint.originRectF)
 
-            val pxInfo = LaserPeckerHelper.findPxInfo(dpi)
+            val pxInfo = LaserPeckerHelper.findPxInfo(layerId, dpi)
             result.leftTop.x = pxInfo.transformX(rectPoint.leftTop.x)
             result.leftBottom.x = pxInfo.transformX(rectPoint.leftBottom.x)
             result.rightTop.x = pxInfo.transformX(rectPoint.rightTop.x)
@@ -322,10 +326,11 @@ data class EngravePreviewCmd(
             pwrProgress: Float,
             @MM
             diameter: Int,
+            layerId: String = LaserPeckerHelper.LAYER_LINE,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
-            val overflowInfo = adjustRectRange(x, y, width, height, dpi, productInfo)
+            val overflowInfo = adjustRectRange(x, y, width, height, layerId, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
             if (overflowInfo.isOverflowBounds || (HawkEngraveKeys.enableDataBoundsStrict && overflowInfo.isOverflowLimit)) {
                 //超出物理范围, 不发送指令
@@ -383,10 +388,11 @@ data class EngravePreviewCmd(
         fun adjustPreviewFourPointCmd(
             rectPoint: RectPointF,
             pwrProgress: Float,
+            layerId: String = LaserPeckerHelper.LAYER_LINE,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
-            val overflowInfo = adjustFourPoint(rectPoint, dpi, productInfo)
+            val overflowInfo = adjustFourPoint(rectPoint, layerId, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
 
             if (overflowInfo.isOverflowBounds) {
@@ -492,6 +498,7 @@ data class EngravePreviewCmd(
                 bounds.top,
                 bounds.width(),
                 bounds.height(),
+                LaserPeckerHelper.LAYER_LINE,
                 LaserPeckerHelper.DPI_254,
                 vmApp<LaserPeckerModel>().productInfoData.value
             )
@@ -531,10 +538,11 @@ data class EngravePreviewCmd(
             pwrProgress: Float,
             @MM
             diameter: Int,
+            layerId: String = LaserPeckerHelper.LAYER_LINE,
             dpi: Float = LaserPeckerHelper.DPI_254,
             productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
         ): EngravePreviewCmd? {
-            val overflowInfo = adjustRectRange(x, y, width, height, dpi, productInfo)
+            val overflowInfo = adjustRectRange(x, y, width, height, layerId, dpi, productInfo)
             vmApp<LaserPeckerModel>().overflowInfoData.postValue(overflowInfo)
             if (overflowInfo.isOverflowBounds) {
                 //超出物理范围, 不发送指令

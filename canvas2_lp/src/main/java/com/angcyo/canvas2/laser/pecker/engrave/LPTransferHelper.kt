@@ -4,6 +4,7 @@ import android.graphics.Paint
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -154,8 +155,8 @@ object LPTransferHelper {
             if (transferDataEntity == null) {
                 "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
             } else {
-                if (!isCSeries && elementLayerId == LayerHelper.LAYER_CUT) {
-                    transferDataEntity.layerId = LayerHelper.LAYER_LINE
+                if (!isCSeries && elementLayerId == LaserPeckerHelper.LAYER_CUT) {
+                    transferDataEntity.layerId = LaserPeckerHelper.LAYER_LINE
                 } else {
                     transferDataEntity.layerId = elementLayerId
                 }

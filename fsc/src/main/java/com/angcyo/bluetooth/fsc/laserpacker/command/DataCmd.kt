@@ -104,6 +104,7 @@ data class DataCmd(
             minY: Int = 0,
             bitmapWidth: Int,
             bitmapHeight: Int,
+            layerId: String,
             dpi: Float,
             name: String?,
             bitmapData: ByteArray?,
@@ -127,7 +128,7 @@ data class DataCmd(
                 //图片索引，占用4个字节
                 write(index, 4)
 
-                write(LaserPeckerHelper.findPxInfo(dpi).px)
+                write(LaserPeckerHelper.findPxInfo(layerId, dpi).px)
                 write(minX, 2) //d3
                 write(minY, 2) //d4
 
@@ -278,6 +279,7 @@ data class DataCmd(
             name: String?,
             lines: Int,
             bytes: ByteArray?,
+            layerId: String,
             dpi: Float,
         ): DataCmd {
             val logBuilder = StringBuilder()
@@ -297,7 +299,7 @@ data class DataCmd(
                 //线段数
                 write(lines, 4)
 
-                write(LaserPeckerHelper.findPxInfo(dpi).px)
+                write(LaserPeckerHelper.findPxInfo(layerId, dpi).px)
                 write(x, 2)
                 write(y, 2)
 
@@ -363,6 +365,7 @@ data class DataCmd(
             height: Int,
             name: String?,
             bytes: ByteArray?,
+            layerId: String,
             dpi: Float,
         ): DataCmd {
             val logBuilder = StringBuilder()
@@ -379,7 +382,7 @@ data class DataCmd(
                 //数据索引，占用4个字节
                 write(index, 4)
 
-                write(LaserPeckerHelper.findPxInfo(dpi).px)
+                write(LaserPeckerHelper.findPxInfo(layerId, dpi).px)
                 write(x, 2)
                 write(y, 2)
 

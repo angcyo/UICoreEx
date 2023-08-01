@@ -4,10 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.toLayerId
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
@@ -478,7 +478,7 @@ data class LPElementBean(
 
     /**图层id*/
     val _layerId: String?
-        get() = layerId ?: if (isCut) LayerHelper.LAYER_CUT else _layerMode?.toLayerId()
+        get() = layerId ?: if (isCut) LaserPeckerHelper.LAYER_CUT else _layerMode?.toLayerId()
 
     /**[com.angcyo.canvas2.laser.pecker.element.LPPathElement]*/
     val isPathElement: Boolean

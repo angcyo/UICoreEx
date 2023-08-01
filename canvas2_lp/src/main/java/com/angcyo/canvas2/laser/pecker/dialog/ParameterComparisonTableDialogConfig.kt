@@ -114,7 +114,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         internal var ptcCharSpace: Float by HawkPropertyValue<Any, Float>(0.5f)
 
         /**强行指定格子的数据类型, 图层id*/
-        internal var gridLayerId: String by HawkPropertyValue<Any, String>(LayerHelper.LAYER_FILL)
+        internal var gridLayerId: String by HawkPropertyValue<Any, String>(LaserPeckerHelper.LAYER_FILL)
 
         /**额外追加的行列范围
          * [行:列 行:列 行:列] */
@@ -512,7 +512,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 if (LayerHelper.showDpiConfig(gridLayerId)) {
                     val layerDpi = HawkEngraveKeys.getLastLayerDpi(gridLayerId)
                     appendSpaceIfNotEmpty()
-                    append(LaserPeckerHelper.findPxInfo(layerDpi).toText())
+                    append(LaserPeckerHelper.findPxInfo(gridLayerId, layerDpi).toText())
                 }
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
@@ -669,7 +669,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     gridBeanList.add(LPElementBean().apply {
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle =
-                            if (gridLayerId == LayerHelper.LAYER_CUT) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
+                            if (gridLayerId == LaserPeckerHelper.LAYER_CUT) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
                         width = max(2f, (gridWidth - gridMargin * 2)).toMm()
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
@@ -678,7 +678,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
                         //参数
                         dataMode =
-                            if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LayerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
+                            if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LaserPeckerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
                             else gridLayerId.toDataMode()
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)

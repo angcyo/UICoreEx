@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -29,7 +30,6 @@ import com.angcyo.crop.ui.cropDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.laserpacker.toGCodePath
 import com.angcyo.laserpacker.toPaintStyleInt
@@ -761,9 +761,9 @@ object LPBitmapHandler {
                                     this.data = svgPath
                                     paintStyle = Paint.Style.STROKE.toPaintStyleInt()
                                     layerId = if (vmApp<DeviceStateModel>().haveCutLayer()) {
-                                        LayerHelper.LAYER_CUT
+                                        LaserPeckerHelper.LAYER_CUT
                                     } else {
-                                        LayerHelper.LAYER_LINE
+                                        LaserPeckerHelper.LAYER_LINE
                                     }
                                 }
                                 svgRenderer =

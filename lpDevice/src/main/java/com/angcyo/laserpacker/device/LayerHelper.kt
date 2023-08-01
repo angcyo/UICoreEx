@@ -3,10 +3,16 @@ package com.angcyo.laserpacker.device
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_CUT
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_FILL
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_LINE
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_PICTURE
 import com.angcyo.core.vmApp
+import com.angcyo.http.base.toJson
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.ex._string
+import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
 
 /**
  * 图层助手
@@ -14,18 +20,6 @@ import com.angcyo.library.ex._string
  * @since 2023/04/19
  */
 object LayerHelper {
-
-    /**填充图层id*/
-    const val LAYER_FILL = "layerFill"
-
-    /**图片图层id*/
-    const val LAYER_PICTURE = "layerPicture"
-
-    /**线条图层id*/
-    const val LAYER_LINE = "layerLine"
-
-    /**切割图层id*/
-    const val LAYER_CUT = "layerCut"
 
     /**图层, 以及图层顺序
      * 先 填充->抖动->GCode */
@@ -80,11 +74,35 @@ object LayerHelper {
         }
         return getEngraveLayerInfo(layerId)?.showDpiConfig ?: false
     }
+
+    /**根据最后一次的dpi, 过滤一下产品支持的dpi配置*/
+    fun getProductLayerSupportPxJson(): String {
+        val list = mutableListOf<TransferLayerConfigBean>()
+        for (layer in engraveLayerList) {
+            val layerId = layer.layerId
+            val lastDpi = HawkEngraveKeys.getLastLayerDpi(layerId)
+            val pxList = LaserPeckerHelper.findProductLayerSupportPxList(layerId)
+            val find = pxList.find { it.dpi == lastDpi }
+            if (find == null) {
+                //最后一次的dpi, 不被支持
+                list.add(
+                    TransferLayerConfigBean(
+                        layerId,
+                        layerId.filterLayerDpi(LaserPeckerHelper.DPI_254)
+                    )
+                )
+            } else {
+                //最后一次的dpi, 支持
+                list.add(TransferLayerConfigBean(layerId, layerId.filterLayerDpi(lastDpi)))
+            }
+        }
+        return list.toJson()!!
+    }
 }
 
 /**移除切割图层*/
 fun MutableList<EngraveLayerInfo>.removeCutLayer(): MutableList<EngraveLayerInfo> {
-    removeAll { it.layerId == LayerHelper.LAYER_CUT }
+    removeAll { it.layerId == LAYER_CUT }
     return this
 }
 
@@ -93,9 +111,9 @@ fun MutableList<EngraveLayerInfo>.removeCutLayer(): MutableList<EngraveLayerInfo
  * [LPDataConstant.DATA_MODE_GREY]*/
 fun Int?.toLayerId(): String? {
     return when (this) {
-        LPDataConstant.DATA_MODE_BLACK_WHITE -> LayerHelper.LAYER_FILL
-        LPDataConstant.DATA_MODE_GREY, LPDataConstant.DATA_MODE_DITHERING -> LayerHelper.LAYER_PICTURE
-        LPDataConstant.DATA_MODE_GCODE -> LayerHelper.LAYER_LINE
+        LPDataConstant.DATA_MODE_BLACK_WHITE -> LAYER_FILL
+        LPDataConstant.DATA_MODE_GREY, LPDataConstant.DATA_MODE_DITHERING -> LAYER_PICTURE
+        LPDataConstant.DATA_MODE_GCODE -> LAYER_LINE
         else -> null
     }
 }
@@ -106,8 +124,8 @@ fun String?.toLayerInfo() = LayerHelper.getEngraveLayerInfo(layerId = this)
 /**将图层id转换成对应的数据模式*/
 fun String?.toDataMode(): Int {
     return when (this) {
-        LayerHelper.LAYER_PICTURE -> LPDataConstant.DATA_MODE_DITHERING
-        LayerHelper.LAYER_LINE, LayerHelper.LAYER_CUT -> LPDataConstant.DATA_MODE_GCODE
+        LAYER_PICTURE -> LPDataConstant.DATA_MODE_DITHERING
+        LAYER_LINE, LAYER_CUT -> LPDataConstant.DATA_MODE_GCODE
         //LayerHelper.LAYER_FILL
         else -> LPDataConstant.DATA_MODE_BLACK_WHITE
     }

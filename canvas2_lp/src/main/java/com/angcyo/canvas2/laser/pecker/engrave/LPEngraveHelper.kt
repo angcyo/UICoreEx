@@ -64,9 +64,9 @@ object LPEngraveHelper {
             val elementBean = it.lpElementBean()
             layerInfo == null || /*不指定图层, 则返回所有元素*/
                     elementBean?._layerId == layerInfo.layerId || /*指定图层, 则返回对应的图层元素*/
-                    (layerInfo.layerId == LayerHelper.LAYER_LINE /*查询线条图层*/ &&
+                    (layerInfo.layerId == LaserPeckerHelper.LAYER_LINE /*查询线条图层*/ &&
                             !haveCutLayer /*不支持切割图层*/ &&
-                            elementBean?._layerId == LayerHelper.LAYER_CUT /*切割数据*/) /*线条图层, 在不支持切割图层时, 需要返回切割图层元素*/
+                            elementBean?._layerId == LaserPeckerHelper.LAYER_CUT /*切割数据*/) /*线条图层, 在不支持切割图层时, 需要返回切割图层元素*/
         }
 
         return if (sort) {
@@ -173,7 +173,7 @@ object LPEngraveHelper {
                 CanvasGroupRenderer.getRendererListRenderProperty(list).getRenderBounds(RectF())
             originWidth = originBounds.width().toMm()
             originHeight = originBounds.height().toMm()
-            
+
             if (name.isEmpty() || newFileName) {
                 name = EngraveHelper.generateEngraveName()
             }

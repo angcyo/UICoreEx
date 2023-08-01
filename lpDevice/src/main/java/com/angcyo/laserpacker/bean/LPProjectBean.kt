@@ -82,7 +82,7 @@ data class LPProjectBean(
     var lastPower: Int = -1,
     var lastDepth: Int = -1,
     var lastType: Int = -1,
-    var lastDpi: Float = -1f,
+    var lastLayerDpi: String? = null,
 
     //---
 

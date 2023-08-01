@@ -66,7 +66,10 @@ open class EngravingInfoItem : DslTagGroupItem() {
                     it.layerId?.let {
                         dpi = it.filterLayerDpi(dpi)
                     }
-                    val findPxInfo = LaserPeckerHelper.findPxInfo(dpi)
+                    val findPxInfo = LaserPeckerHelper.findPxInfo(
+                        it.layerId ?: LaserPeckerHelper.LAYER_LINE,
+                        dpi
+                    )
                     add(resolutionData(findPxInfo.toText()))
                 }
 

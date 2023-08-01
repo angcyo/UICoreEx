@@ -7,7 +7,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.libCacheFile
@@ -99,7 +98,7 @@ object LPTransferData {
             this.lines = lines
             this.dataPath = file.path
             this.engraveDataType = DataCmd.ENGRAVE_TYPE_GCODE
-            this.layerId = LayerHelper.LAYER_LINE
+            this.layerId = LaserPeckerHelper.LAYER_LINE
 
             x = 0
             y = 0

@@ -1,6 +1,7 @@
 package com.angcyo.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.unit.toMm
@@ -90,7 +91,7 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
         apply(TransferConfigEntity_.taskId.equal("$taskId"))
     }?.apply {
-        bean.dpi = layerJson?.getLayerConfig(layerId)?.dpi ?: dpi
+        bean.dpi = layerJson?.getLayerConfig(layerId)?.dpi ?: LaserPeckerHelper.DPI_254
     }
 
     return bean

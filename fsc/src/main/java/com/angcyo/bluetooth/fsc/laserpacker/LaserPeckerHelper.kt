@@ -18,6 +18,7 @@ import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.http.rx.doBack
 import com.angcyo.library.L
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.flow
@@ -47,9 +48,24 @@ object LaserPeckerHelper {
     /**初始化指令, 失败后重试的次数*/
     var INIT_RETRY_COUNT = 3
 
+    /**填充图层id*/
+    const val LAYER_FILL = "layerFill"
+
+    /**图片图层id*/
+    const val LAYER_PICTURE = "layerPicture"
+
+    /**线条图层id*/
+    const val LAYER_LINE = "layerLine"
+
+    /**切割图层id*/
+    const val LAYER_CUT = "layerCut"
+
     //region ---产品名称---
 
     //1为450nm激光, 波长
+
+    //罗马数字
+    //https://w3.iams.sinica.edu.tw/lab/wbtzeng/labtech/roman_number.htm
 
     //---焦距 200mm
     const val LI = "LP1"               //"LI"
@@ -70,6 +86,7 @@ object LaserPeckerHelper {
     //0为1064nm激光, LIII_MAX 改名 LIV
     const val LIII_MAX = "LP4"      //"LIV"   //spp 160mm*160mm 160*120mm 椭圆
     const val LIV = LIII_MAX
+    const val LV = "LP5" //2023-7-31 120*160mm 椭圆
 
     //---焦距 40mm
     //2023-2-17  C系列改名为LX  C1重命名为LX1
@@ -197,7 +214,14 @@ object LaserPeckerHelper {
     }
 
     /**查找[PxInfo]*/
-    fun findPxInfo(dpi: Float?, debug: Boolean = false): PxInfo {
+    fun findPxInfo(layerId: String, dpi: Float?, debug: Boolean = false): PxInfo {
+        //0: 每个图层对应的dpi信息不一样, 所以
+        val list = findProductLayerSupportPxList(layerId)
+        val find = list.find { it.dpi == dpi }
+        if (find != null) {
+            return find
+        }
+
         //1.
         vmApp<LaserPeckerModel>().productInfoData.value?.pxList?.forEach {
             if (it.dpi == dpi) {
@@ -205,11 +229,12 @@ object LaserPeckerHelper {
             }
         }
 
+
         //2.
         val configList = LaserPeckerConfigHelper.readDeviceConfig()
         if (!configList.isNullOrEmpty()) {
             for (config in configList) {
-                val pxInfo = config.dpiList?.find { it.dpi == dpi }
+                val pxInfo = config.getLayerConfig(layerId).dpiList?.find { it.dpi == dpi }
                 if (pxInfo != null) {
                     return pxInfo
                 }
@@ -239,6 +264,7 @@ object LaserPeckerHelper {
     /**缩放图片到[px]指定的宽高*/
     fun bitmapScale(
         bitmap: Bitmap,
+        layerId: String,
         dpi: Float,
         productInfo: LaserPeckerProductInfo? = vmApp<LaserPeckerModel>().productInfoData.value
     ): Bitmap {
@@ -256,7 +282,7 @@ object LaserPeckerHelper {
         var newWidth = bitmapWidth
         var newHeight = bitmapHeight
 
-        val pxInfo = findPxInfo(dpi)
+        val pxInfo = findPxInfo(layerId, dpi)
         if (bitmapWidth > 1) {
             val scaleWidth = bitmapWidth * 1f / productWidth
             val width = pxInfo.devicePxWidth(productInfo)
@@ -317,25 +343,29 @@ object LaserPeckerHelper {
         val sLimitPath = Path()
         val carLimitPath = Path()
 
-        val zMax = mmValueUnit.convertValueToPixel(
-            (LibLpHawkKeys.zMaxY ?: configBean.zMaxHeight).toFloat()
-        ).ceil()
-        val rMax = mmValueUnit.convertValueToPixel(
-            (LibLpHawkKeys.rMaxY ?: configBean.rMaxHeight).toFloat()
-        ).ceil()
-        val sMax = mmValueUnit.convertValueToPixel(
-            (LibLpHawkKeys.sMaxY ?: configBean.sMaxHeight).toFloat()
-        ).ceil()
-        val carMax = mmValueUnit.convertValueToPixel(
-            (LibLpHawkKeys.carMaxY ?: configBean.carMaxHeight).toFloat()
-        ).ceil()
+        fun maxValueOf(value: Int, def: Int): Float {
+            val v = if (value <= 0) {
+                def
+            } else {
+                value
+            }
+            return mmValueUnit.convertValueToPixel(v.toFloat()).ceil()
+        }
 
         //物理尺寸宽高mm单位
         @MM
         var wPhys = configBean.widthPhys
-
-        @MM
         var hPhys = configBean.heightPhys
+
+        @Pixel
+        val zMaxWidth = maxValueOf(configBean.zMaxWidth, wPhys)
+        val rMaxWidth = maxValueOf(configBean.rMaxWidth, wPhys)
+        val sMaxWidth = maxValueOf(configBean.sMaxWidth, wPhys)
+        val carMaxWidth = maxValueOf(configBean.carMaxWidth, wPhys)
+        val zMaxHeight = maxValueOf(configBean.zMaxHeight, hPhys)
+        val rMaxHeight = maxValueOf(configBean.rMaxHeight, hPhys)
+        val sMaxHeight = maxValueOf(configBean.sMaxHeight, hPhys)
+        val carMaxHeight = maxValueOf(configBean.carMaxHeight, hPhys)
 
         val focalDistance = configBean.focalDistance
 
@@ -379,14 +409,12 @@ object LaserPeckerHelper {
         previewBounds.set(left, top, right, bottom)
 
         limitPath.addRect(bounds, Path.Direction.CW)
-        zLimitPath.addRect(left, top, right, zMax, Path.Direction.CW)
-        rLimitPath.addRect(left, top, right, rMax, Path.Direction.CW)
-        sLimitPath.addRect(left, top, right, sMax, Path.Direction.CW)
+        zLimitPath.addRect(left, top, zMaxWidth, zMaxHeight, Path.Direction.CW)
+        rLimitPath.addRect(left, top, rMaxWidth, rMaxHeight, Path.Direction.CW)
+        sLimitPath.addRect(left, top, sMaxWidth, sMaxHeight, Path.Direction.CW)
         //C1移动平台模式限制宽度大小
-        val carWPhys = configBean.carMaxWidth
-        val carRight = mmValueUnit.convertValueToPixel(carWPhys.toFloat())
-        carLimitPath.addRect(left, top, carRight, carMax, Path.Direction.CW)
-        carPreviewBounds.set(left, top, carRight, bottom)
+        carLimitPath.addRect(left, top, carMaxWidth, carMaxHeight, Path.Direction.CW)
+        carPreviewBounds.set(left, top, carMaxWidth, bottom)
         //C1画笔模式限制高度大小
         val penHPhys = configBean.penMaxHeight
         val penBottom = mmValueUnit.convertValueToPixel(penHPhys.toFloat())

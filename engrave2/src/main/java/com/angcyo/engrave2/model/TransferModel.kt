@@ -30,7 +30,6 @@ import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.http.rx.doMain
-import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.exception.EmptyException
 import com.angcyo.laserpacker.device.exception.OutOfSizeException
 import com.angcyo.laserpacker.device.exception.TransferException
@@ -109,6 +108,7 @@ class TransferModel : ViewModel() {
                     y,
                     width,
                     height,
+                    transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_PICTURE,
                     dpi,
                     name,
                     bytes
@@ -124,7 +124,7 @@ class TransferModel : ViewModel() {
                     lines,
                     bytes,
                     dpi,
-                    transferDataEntity.layerId == LayerHelper.LAYER_CUT
+                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(
@@ -136,6 +136,7 @@ class TransferModel : ViewModel() {
                     name,
                     lines,
                     bytes,
+                    transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_FILL,
                     dpi,
                 )
                 //0x60 抖动数据, 二进制位
@@ -148,6 +149,7 @@ class TransferModel : ViewModel() {
                     height,
                     name,
                     bytes,
+                    transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_PICTURE,
                     dpi,
                 )
             }

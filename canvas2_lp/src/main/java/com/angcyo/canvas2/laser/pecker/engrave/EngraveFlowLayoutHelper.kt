@@ -94,7 +94,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                     //默认选中第1个雕刻图层
                     selectLayerId =
                         EngraveFlowDataHelper.getEngraveLayerList(taskId).firstOrNull()?.layerId
-                            ?: LayerHelper.LAYER_FILL
+                            ?: LaserPeckerHelper.LAYER_FILL
                 }
                 if (engraveFlow == ENGRAVE_FLOW_TRANSMITTING) {
                     //在[renderTransmitting] 中 engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
@@ -142,7 +142,7 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     /**当前选中的图层id
      * [EngraveLayerConfigItem]*/
     var selectLayerId: String =
-        LayerHelper.getEngraveLayerList().firstOrNull()?.layerId ?: LayerHelper.LAYER_FILL
+        LayerHelper.getEngraveLayerList().firstOrNull()?.layerId ?: LaserPeckerHelper.LAYER_FILL
 
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
