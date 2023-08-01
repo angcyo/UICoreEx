@@ -94,12 +94,14 @@ object EngraveTransitionHelper {
     ): TransferDataEntity? {
         val bitmap = provider?.getEngraveBitmapData() ?: return null
         LTime.tick()
-        val transferDataEntity =
-            createTransferDataEntity(provider, transferConfigEntity, DataCmd.ENGRAVE_TYPE_BITMAP)
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(
-            bitmap,
-            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
+        val transferDataEntity = createTransferDataEntity(
+            provider,
+            transferConfigEntity,
+            DataCmd.ENGRAVE_TYPE_BITMAP,
+            LayerHelper.LAYER_PICTURE
         )
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, layerDpi)
 
         //转换数据
         val index = transferDataEntity.index
@@ -117,7 +119,7 @@ object EngraveTransitionHelper {
             }
             append("[$index]->")
             append(transferConfigEntity.name)
-            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${layerDpi}") {
                 foregroundColor = accentColor
             }
             append(" ${dpiBitmap.byteCount.toSizeString()}->${transferDataEntity.dataPath.fileSizeString()}")
@@ -163,15 +165,14 @@ object EngraveTransitionHelper {
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
-            DataCmd.ENGRAVE_TYPE_BITMAP_PATH
+            DataCmd.ENGRAVE_TYPE_BITMAP_PATH,
+            LayerHelper.LAYER_FILL
         )
         val index = transferDataEntity.index
         //testSaveBitmap(index, bitmap)
 
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(
-            bitmap,
-            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_FILL)
-        )
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_FILL)
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, layerDpi)
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
 
@@ -228,7 +229,7 @@ object EngraveTransitionHelper {
             append("[$index]->")
             append(transferConfigEntity.name)
             append(" ${transferDataEntity.lines}行 ")
-            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+            append(" [${dpiBitmap.width} x ${dpiBitmap.height}] dpi:${layerDpi}") {
                 foregroundColor = accentColor
             }
             append(" ${dpiBitmap.byteCount.toSizeString()}->${dataPath.fileSizeString()}")
@@ -252,17 +253,16 @@ object EngraveTransitionHelper {
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
-            DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING
+            DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING,
+            LayerHelper.LAYER_PICTURE
         )
         val index = transferDataEntity.index
 
         //testSaveBitmap(index, bitmap)
 
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
         //抖动处理图片
-        val dpiBitmap = LaserPeckerHelper.bitmapScale(
-            bitmap,
-            transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_PICTURE)
-        )
+        val dpiBitmap = LaserPeckerHelper.bitmapScale(bitmap, layerDpi)
         var bitmapByteCount = 0
         val operateBitmap: Bitmap
 
@@ -342,7 +342,7 @@ object EngraveTransitionHelper {
             }
             append("[$index]->")
             append(transferConfigEntity.name)
-            append(" [${operateBitmap.width} x ${operateBitmap.height}] dpi:${transferConfigEntity.dpi}") {
+            append(" [${operateBitmap.width} x ${operateBitmap.height}] dpi:${layerDpi}") {
                 foregroundColor = accentColor
             }
             append(" ${bitmapByteCount.toSizeString()}->${dataPath.fileSizeString()}")
@@ -391,13 +391,15 @@ object EngraveTransitionHelper {
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
-            DataCmd.ENGRAVE_TYPE_GCODE
+            DataCmd.ENGRAVE_TYPE_GCODE,
+            LayerHelper.LAYER_LINE
         )
         //2023-6-14 GCode偏移量
         transferDataEntity.offsetLeft = params.gcodeOffsetLeft.toMm()
         transferDataEntity.offsetTop = params.gcodeOffsetTop.toMm()
 
         val index = transferDataEntity.index
+        val layerDpi = transferConfigEntity.getLayerConfigDpi(LayerHelper.LAYER_LINE)
 
         val pathList = provider.getEngravePathData()
         val bitmap = provider.getEngraveBitmapData()
@@ -440,7 +442,7 @@ object EngraveTransitionHelper {
                     append("[$index]->")
                     append(transferConfigEntity.name)
                     append(" ${transferDataEntity.lines}行 ")
-                    append(" [${bitmap.width} x ${bitmap.height}] dpi:${transferConfigEntity.dpi}") {
+                    append(" [${bitmap.width} x ${bitmap.height}] dpi:${layerDpi}") {
                         foregroundColor = accentColor
                     }
                     append(" opencv:${params.useOpenCvHandleGCode.toDC()}")
@@ -472,7 +474,7 @@ object EngraveTransitionHelper {
                 append("[$index]->")
                 append(transferConfigEntity.name)
                 append(" ${transferDataEntity.lines}行 ")
-                append(" dpi:${transferConfigEntity.dpi}")
+                append(" dpi:${layerDpi}")
                 append(" [path]->${fileSize.toSizeString()}")
                 append(" 耗时:${LTime.time()}") {
                     foregroundColor = accentColor
@@ -495,7 +497,8 @@ object EngraveTransitionHelper {
         val transferDataEntity = createTransferDataEntity(
             provider,
             transferConfigEntity,
-            engraveDataType
+            engraveDataType,
+            LayerHelper.LAYER_LINE
         )
 
         //写入数据到路径, 用于发送到数据
@@ -507,7 +510,7 @@ object EngraveTransitionHelper {
             }
             append("[${transferDataEntity.index}]->")
             append(transferConfigEntity.name)
-            append(" dpi:${transferConfigEntity.dpi}")
+            append(" dpi:${transferConfigEntity.layerJson}")
             append(" ${data.size().toSizeString()}")
             append(" 耗时:${LTime.time()}")
         }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }.writePerfLog()
@@ -533,10 +536,11 @@ object EngraveTransitionHelper {
     private fun createTransferDataEntity(
         provider: IEngraveDataProvider,
         transferConfigEntity: TransferConfigEntity,
-        engraveDataType: Int
+        engraveDataType: Int,
+        layerId: String
     ) = TransferDataEntity().apply {
         this.engraveDataType = engraveDataType
-        initTransferDataIndex(this, provider, transferConfigEntity)
+        initTransferDataIndex(this, provider, transferConfigEntity, layerId)
     }
 
     /**初始化传输数据的索引, 在构建[TransferDataEntity]之后, 尽快调用 */
@@ -545,9 +549,11 @@ object EngraveTransitionHelper {
         transferDataEntity: TransferDataEntity,
         provider: IEngraveDataProvider,
         configEntity: TransferConfigEntity,
+        layerId: String
     ) {
+        val layerDpi = configEntity.getLayerConfigDpi(layerId)
         transferDataEntity.taskId = configEntity.taskId
-        transferDataEntity.dpi = configEntity.dpi
+        transferDataEntity.dpi = layerDpi
         transferDataEntity.name = configEntity.name
         transferDataEntity.index = provider.getEngraveDataIndex()
 
@@ -590,10 +596,7 @@ object EngraveTransitionHelper {
             transferDataEntity.height = (originHeight * 10).ceil().toInt()
         } else {
             //px单位
-            val rect = EngravePreviewCmd.adjustRectRange(
-                bounds,
-                configEntity.dpi
-            ).resultRect!!
+            val rect = EngravePreviewCmd.adjustRectRange(bounds, layerDpi).resultRect!!
             transferDataEntity.x = rect.left
             transferDataEntity.y = rect.top
 
@@ -607,10 +610,10 @@ object EngraveTransitionHelper {
             append("坐标[${provider.getEngraveDataName()}]:")
             append(" x:${transferDataEntity.x} y:${transferDataEntity.y}")
             append(" w:${transferDataEntity.width} h:${transferDataEntity.height}")
-            if (engraveDataType != DataCmd.ENGRAVE_TYPE_GCODE) {
+            /*if (engraveDataType != DataCmd.ENGRAVE_TYPE_GCODE) {
                 //GCode只有1k, 所以不需要日志
-                append(" ${transferDataEntity.dpi}")
-            }
+            }*/
+            append(" dpi:${transferDataEntity.dpi}")
             append(" :${bounds}")
         }.writeToLog()
 

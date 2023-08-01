@@ -144,7 +144,7 @@ object LPTransferHelper {
             if (HawkEngraveKeys.enableItemEngraveParams) {
                 transferConfigEntity.layerJson = HawkEngraveKeys.getLayerConfigJson(
                     elementLayerId,
-                    elementBean?.dpi ?: transferConfigEntity.dpi,
+                    elementBean?.dpi ?: transferConfigEntity.getLayerConfigDpi(elementLayerId),
                     transferConfigEntity.layerJson
                 )
             }

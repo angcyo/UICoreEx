@@ -29,6 +29,7 @@ import com.angcyo.item.style.itemCurrentIndex
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex.MB
@@ -108,18 +109,19 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         val transferConfigEntity = TransferConfigEntity().apply {
             taskId = "ArithmeticHandle-${nowTimeString()}"
             name = EngraveHelper.generateEngraveName()
-            dpi = LaserPeckerHelper.DPI_254
+            layerJson = LayerHelper.getProductLayerSupportPxJson()
         }
 
         dialogViewHolder.group(R.id.dpi_wrap_layout)?.resetDslItem(TransferDataPxItem().apply {
-            itemPxList = LaserPeckerHelper.findProductLayerSupportPxList()
+            itemPxList =
+                LaserPeckerHelper.findProductLayerSupportPxList(HawkEngraveKeys.lastLayerId)
             selectorCurrentDpi(transferConfigEntity.getLayerConfigDpi(HawkEngraveKeys.lastLayerId))
             itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
             observeItemChange {
                 //保存最后一次选择的dpi
                 val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-                transferConfigEntity.dpi = dpi
-                transferConfigEntity.layerJson = HawkEngraveKeys.lastDpiLayerJson
+                transferConfigEntity.layerJson =
+                    HawkEngraveKeys.getLayerConfigJson(HawkEngraveKeys.lastLayerId, dpi)
             }
         })
 

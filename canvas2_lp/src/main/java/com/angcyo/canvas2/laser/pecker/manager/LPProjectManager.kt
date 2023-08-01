@@ -124,7 +124,7 @@ class LPProjectManager {
             projectBean.lastType = HawkEngraveKeys.lastType
             projectBean.lastPower = HawkEngraveKeys.lastPower
             projectBean.lastDepth = HawkEngraveKeys.lastDepth
-            projectBean.lastDpi = HawkEngraveKeys.lastDpi
+            projectBean.lastLayerDpi = HawkEngraveKeys.lastDpiLayerJson
         }
 
         fun configProjectBean(
@@ -183,8 +183,8 @@ class LPProjectManager {
         if (projectBean.lastDepth > 0) {
             HawkEngraveKeys.lastDepth = projectBean.lastDepth
         }
-        if (projectBean.lastDpi > 0) {
-            HawkEngraveKeys.lastDpi = projectBean.lastDpi
+        if (!projectBean.lastLayerDpi.isNullOrEmpty()) {
+            HawkEngraveKeys.lastDpiLayerJson = projectBean.lastLayerDpi
         }
     }
 

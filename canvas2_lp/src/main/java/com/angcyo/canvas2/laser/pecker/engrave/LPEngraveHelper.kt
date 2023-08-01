@@ -13,7 +13,6 @@ import com.angcyo.canvas.render.util.renderElement
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.vmApp
 import com.angcyo.engrave2.EngraveFlowDataHelper
-import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
@@ -163,11 +162,7 @@ object LPEngraveHelper {
         }.apply {
             //参数设置
             this.taskId = taskId
-            val supportPxList = LaserPeckerHelper.findProductLayerSupportPxList()
-            val find = supportPxList.find { it.dpi == HawkEngraveKeys.lastDpi }
-            //优先使用存在的最后一次使用的dpi, 否则默认使用第一个dpi
-            dpi = find?.dpi ?: (supportPxList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254)
-            layerJson = HawkEngraveKeys.lastDpiLayerJson
+            layerJson = LayerHelper.getProductLayerSupportPxJson()
             mergeData = false
             dataMode = null
 
@@ -178,20 +173,7 @@ object LPEngraveHelper {
                 CanvasGroupRenderer.getRendererListRenderProperty(list).getRenderBounds(RectF())
             originWidth = originBounds.width().toMm()
             originHeight = originBounds.height().toMm()
-
-            val isAllGCode = isAllSameLayerMode(list, LPDataConstant.DATA_MODE_GCODE)
-
-            if (isAllGCode) {
-                //全部是GCode则只能是1k
-                dpi = LaserPeckerHelper.DPI_254
-            } else {
-                list.find {
-                    (it.lpElementBean()?.dpi ?: 0f) > 0f
-                }?.let { renderer ->
-                    dpi = renderer.lpElementBean()?.dpi ?: dpi
-                }
-            }
-
+            
             if (name.isEmpty() || newFileName) {
                 name = EngraveHelper.generateEngraveName()
             }

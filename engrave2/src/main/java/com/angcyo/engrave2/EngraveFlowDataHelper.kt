@@ -230,11 +230,7 @@ object EngraveFlowDataHelper {
         }.apply {
             //参数设置
             this.taskId = taskId
-            val supportPxList = LaserPeckerHelper.findProductLayerSupportPxList()
-            val find = supportPxList.find { it.dpi == HawkEngraveKeys.lastDpi }
-            //优先使用存在的最后一次使用的dpi, 否则默认使用第一个dpi
-            dpi = find?.dpi ?: (supportPxList.firstOrNull()?.dpi ?: LaserPeckerHelper.DPI_254)
-            layerJson = HawkEngraveKeys.lastDpiLayerJson
+            layerJson = LayerHelper.getProductLayerSupportPxJson()
             mergeData = false
             dataMode = null
 

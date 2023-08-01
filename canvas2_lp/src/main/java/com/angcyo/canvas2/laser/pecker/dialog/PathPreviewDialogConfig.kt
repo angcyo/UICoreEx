@@ -6,7 +6,6 @@ import androidx.lifecycle.Lifecycle
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -27,6 +26,7 @@ import com.angcyo.engrave2.data.PreviewInfo
 import com.angcyo.engrave2.data.TransferState
 import com.angcyo.engrave2.model.PreviewModel
 import com.angcyo.engrave2.model.TransferModel
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveStrokeLoading
 import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
@@ -148,7 +148,7 @@ class PathPreviewDialogConfig : DslDialogConfig() {
 
                 val transferConfigEntity = TransferConfigEntity().apply {
                     name = "PathPreview"
-                    dpi = LaserPeckerHelper.DPI_254
+                    layerJson = LayerHelper.getProductLayerSupportPxJson()
                 }
 
                 LPTransferHelper.transitionRenderer(renderer, transferConfigEntity)

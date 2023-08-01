@@ -262,12 +262,12 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                     //不是画布上的数据, 可能是恢复的数据
                                 } else {
                                     engraveModel.clearEngrave()
-                                    HawkEngraveKeys.lastDpi = transferConfigEntity.dpi
                                     //每次发送数据之前, 都生成一个新的任务
                                     val flowId = generateFlowId("准备发送文件")
                                     transferConfigEntity.taskId = flowId
-                                    transferConfigEntity.layerJson =
-                                        HawkEngraveKeys.lastDpiLayerJson
+                                    HawkEngraveKeys.lastDpiLayerJson =
+                                        transferConfigEntity.layerJson
+                                            ?: HawkEngraveKeys.lastDpiLayerJson
                                     transferConfigEntity.lpSaveEntity()
                                     engraveConfigProvider.onSaveTransferConfig(
                                         this@EngraveFlowLayoutHelper,

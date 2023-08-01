@@ -413,7 +413,6 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         //保存最后一次选择的dpi
                         val dpi =
                             itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-                        HawkEngraveKeys.lastDpi = dpi
                         HawkEngraveKeys.updateLayerDpi(gridLayerId, dpi)
 
                         updateTablePreview()
@@ -511,8 +510,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 appendSpaceIfNotEmpty()
                 append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
                 if (LayerHelper.showDpiConfig(gridLayerId)) {
+                    val layerDpi = HawkEngraveKeys.getLastLayerDpi(gridLayerId)
                     appendSpaceIfNotEmpty()
-                    append(LaserPeckerHelper.findPxInfo(HawkEngraveKeys.lastDpi).toText())
+                    append(LaserPeckerHelper.findPxInfo(layerDpi).toText())
                 }
             }
             text = if (labelText.isNullOrBlank()) defaultLabel else labelText!!.replace(
