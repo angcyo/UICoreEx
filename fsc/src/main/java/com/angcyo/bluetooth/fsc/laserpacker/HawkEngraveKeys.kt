@@ -84,9 +84,6 @@ object HawkEngraveKeys {
     /**雕刻失败后的重试次数*/
     var engraveRetryCount: Int by HawkPropertyValue<Any, Int>(3)
 
-    /**最后一次传输的dpi*/
-    var lastDpi: Float by HawkPropertyValue<Any, Float>(LaserPeckerHelper.DPI_254)
-
     /**最后一次的图层id*/
     var lastLayerId: String by HawkPropertyValue<Any, String>("layerFill")
 
@@ -106,7 +103,9 @@ object HawkEngraveKeys {
         ?: LaserPeckerHelper.DPI_254
 
     /**获取图层最后一次的dpi
-     * [dpi] 需要[com.angcyo.laserpacker.device.filterLayerDpi]*/
+     * [dpi] 需要[com.angcyo.laserpacker.device.filterLayerDpi]
+     * [getLayerConfigJson]
+     * */
     fun updateLayerDpi(layerId: String, dpi: Float) {
         lastLayerId = layerId
         lastDpiLayerJson = lastDpiLayerJson.updateLayerConfig(layerId, dpi)
@@ -340,4 +339,7 @@ object HawkEngraveKeys {
 
     /**字体需要预览的文本*/
     var typefacePreviewText: String? by HawkPropertyValue<Any, String?>(null)
+
+    /**是否关闭在线配置的读取*/
+    var closeOnlineConfig: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }

@@ -96,6 +96,10 @@ object LaserPeckerConfigHelper {
 
     /**从本地缓存中读取[DEVICE_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
     fun readDeviceConfig(): List<DeviceConfigBean>? {
+        if (HawkEngraveKeys.closeOnlineConfig) {
+            val json = lastContext.readAssets(DEVICE_CONFIG_FILE_NAME)
+            return json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class))
+        }
         if (_deviceConfigList != null) {
             return _deviceConfigList
         }
@@ -111,6 +115,10 @@ object LaserPeckerConfigHelper {
 
     /**从本地缓存中读取[DEVICE_SETTING_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
     fun readDeviceSettingConfig(): DeviceSettingBean? {
+        if (HawkEngraveKeys.closeOnlineConfig) {
+            val json = lastContext.readAssets(DEVICE_SETTING_CONFIG_FILE_NAME)
+            return json.fromJson<DeviceSettingBean>()
+        }
         if (_deviceSettingBean != null) {
             return _deviceSettingBean
         }
