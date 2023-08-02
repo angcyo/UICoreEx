@@ -23,10 +23,19 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     companion object {
 
+        /**是否强制使用配置的wifi连接*/
+        val forceUseWifiConnect: Boolean
+            get() = LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
+
+        /**配置的wifi地址信息*/
+        val wifiAddressInfo: List<String>
+            get() = LibLpHawkKeys.wifiAddress?.split(":") ?: emptyList()
+
         /**是否要使用wifi传输*/
         fun useWifi(): Boolean {
-            //return LibLpHawkKeys.enableWifiConfig && LibLpHawkKeys.wifiAddress?.contains(".") == true
-            //return vmApp<WifiApiModel>().isTcpConnected()
+            if (forceUseWifiConnect) {
+                return true
+            }
             return lpBoxOf(DeviceConnectEntity::class).findLastList()
                 .lastOrNull()?.isWifiConnect == true
         }

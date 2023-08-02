@@ -272,7 +272,20 @@ class FscDeviceModel : LifecycleViewModel() {
 
     /**检查是否需要自动连接设备*/
     fun checkAutoConnect() {
-        if (HawkEngraveKeys.AUTO_CONNECT_DEVICE && !vmApp<DeviceStateModel>().isDeviceConnect() /*无设备连接*/) {
+        if (vmApp<DeviceStateModel>().isDeviceConnect()) {
+            return
+        }
+        if (WifiApiModel.forceUseWifiConnect) {
+            //强制使用wifi连接
+            val list = WifiApiModel.wifiAddressInfo
+            val name = "wifi"
+            val address = list[0]
+            val port = list[1].toInt()
+            "准备自动连接设备[null]:${address}:${port}".writeBleLog()
+            wifiApiModel.connect(TcpDevice(address, port, name), true)
+            return
+        }
+        if (HawkEngraveKeys.AUTO_CONNECT_DEVICE   /*无设备连接*/) {
             //需要自动连接设备
             val nowTime = nowTime()
             var autoConnect = true
