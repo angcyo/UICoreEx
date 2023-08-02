@@ -148,6 +148,8 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     fun isL4() = productInfoData.value?.isLIV() == true
 
+    fun isL5() = productInfoData.value?.isLV() == true
+
     fun isC1() = productInfoData.value?.isCI() == true
 
     /**是否是C系列*/

@@ -31,14 +31,15 @@ data class TransferConfigEntity(
      * */
     var name: String = "",
 
-    /**
+    /**图层json数据, 对应每个图层的dpi
+     *
      * 每英寸内像素点的个数
      * 设备基准值: 254, 像素点间距0.1mm 最小能达到:0.0125 8倍
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]*/
-    @Deprecated("请使用[layerJson]")
-    var dpi: Float = -1f,
-
-    /**图层json数据[List<TransferLayerConfigBean>]*/
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.DPI_254]
+     *
+     * [List<TransferLayerConfigBean>]
+     * [com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean]
+     * */
     var layerJson: String? = null,
 
     /**工程总共占用的宽高
@@ -71,7 +72,7 @@ data class TransferConfigEntity(
 ) {
 
     /**获取指定图层对应的dpi*/
-    fun getLayerConfigDpi(layerId: String?): Float = getLayerConfig(layerId)?.dpi ?: dpi
+    fun getLayerConfigDpi(layerId: String?): Float = getLayerConfig(layerId)?.dpi ?: 254f
 
     /**[layerId]图层*/
     fun getLayerConfig(layerId: String?): TransferLayerConfigBean? {

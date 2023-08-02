@@ -20,16 +20,26 @@ import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_FAIL
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
 import com.angcyo.core.lifecycle.LifecycleViewModel
+import com.angcyo.http.rx.doMain
+import com.angcyo.library.L
+import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component._removeMainRunnable
+import com.angcyo.library.component.onMainDelay
 import com.angcyo.library.ex.isDebug
 import com.angcyo.viewmodel.MutableOnceLiveData
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataOnce
 import com.clj.fastble.BleManager
 import com.clj.fastble.callback.BleGattCallback
+import com.clj.fastble.callback.BleNotifyCallback
+import com.clj.fastble.callback.BleReadCallback
 import com.clj.fastble.callback.BleScanCallback
+import com.clj.fastble.callback.BleWriteCallback
 import com.clj.fastble.data.BleDevice
 import com.clj.fastble.exception.BleException
 import com.clj.fastble.scan.BleScanRuleConfig
+import java.nio.charset.Charset
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * 蓝牙模型
@@ -41,27 +51,37 @@ class BluetoothModel : LifecycleViewModel() {
 
     companion object {
 
-        /**蓝牙的状态*/
+        /**蓝牙状态:蓝牙的状态*/
         const val BLUETOOTH_STATE_NORMAL = 0
 
-        /**扫描中*/
+        /**蓝牙状态:扫描中*/
         const val BLUETOOTH_STATE_SCANNING = 1
 
-        /**蓝牙不可用*/
+        /**蓝牙状态:蓝牙不可用*/
         const val BLUETOOTH_STATE_UNAVAILABLE = 2
 
+        /**蓝牙状态:扫描完成*/
+        const val BLUETOOTH_STATE_FINISH = 3
+
+        /**权限请求码*/
         const val REQUEST_CODE_PERMISSION_LOCATION = 0x9902
 
-        /**初始化方法*/
-        fun init(application: Application, debug: Boolean = isDebug()) {
-            BleManager.getInstance().init(application)
+        /**[BleManager]*/
+        val bleManager = BleManager.getInstance()
 
-            BleManager.getInstance()
-                .enableLog(debug) //重连次数, 重连间隔时间
-                .setReConnectCount(1, 5000) //分包写入数量
+        /**扫描时长*/
+        var scanTimeout = 5_000L
+
+        /**初始化方法*/
+        @CallPoint
+        fun init(application: Application, debug: Boolean = isDebug()) {
+            bleManager.init(application)
+
+            bleManager.enableLog(debug) //重连次数, 重连间隔时间
+                .setReConnectCount(1, scanTimeout) //分包写入数量
                 .setSplitWriteNum(20) //连接过渡时间
                 .setConnectOverTime(10000)
-                .setOperateTimeout(5000)
+                .setOperateTimeout(scanTimeout.toInt())
 
             val scanRuleConfig = BleScanRuleConfig.Builder() // 只扫描指定的服务的设备，可选
                 //.setServiceUuids(serviceUuids)
@@ -71,16 +91,16 @@ class BluetoothModel : LifecycleViewModel() {
                 // 连接时的autoConnect参数，可选，默认false
                 //.setAutoConnect(isAutoConnect)
                 // 扫描超时时间，可选，默认10秒
-                .setScanTimeOut(10000)
+                .setScanTimeOut(scanTimeout)
                 .build()
-            BleManager.getInstance().initScanRule(scanRuleConfig)
+            bleManager.initScanRule(scanRuleConfig)
         }
 
         /**手机是否有蓝牙设备*/
-        fun isSupportBle() = BleManager.getInstance().isSupportBle
+        fun isSupportBle() = bleManager.isSupportBle
 
         /**是否开启了蓝牙*/
-        fun isBlueEnable() = BleManager.getInstance().isBlueEnable
+        fun isBlueEnable() = bleManager.isBlueEnable
 
         /**GPS是否已打开*/
         fun checkGPSIsOpen(context: Context): Boolean {
@@ -92,7 +112,24 @@ class BluetoothModel : LifecycleViewModel() {
 
         /**设备是否已连接*/
         fun isConnected(bleDevice: BleDevice?): Boolean {
-            return BleManager.getInstance().isConnected(bleDevice)
+            return bleManager.isConnected(bleDevice)
+        }
+
+        /**蓝牙需要的权限列表
+         * https://developer.android.google.cn/guide/topics/connectivity/bluetooth?hl=zh_cn*/
+        fun bluetoothPermissionList(): List<String> {
+            val result = mutableListOf<String>()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                //位置权限是必须的
+                result.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                result.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                result.add(Manifest.permission.BLUETOOTH_SCAN)
+                result.add(Manifest.permission.BLUETOOTH_ADVERTISE)
+                result.add(Manifest.permission.BLUETOOTH_CONNECT)
+            }
+            return result
         }
     }
 
@@ -115,7 +152,7 @@ class BluetoothModel : LifecycleViewModel() {
 
         override fun onScanFinished(scanResultList: List<BleDevice>) {
             bluetoothDeviceListData.postValue(scanResultList)
-            bluetoothStateData.postValue(BLUETOOTH_STATE_NORMAL)
+            bluetoothStateData.postValue(BLUETOOTH_STATE_FINISH)
         }
     }
 
@@ -137,17 +174,20 @@ class BluetoothModel : LifecycleViewModel() {
     /**设备连接状态列表,包括已连接的设备*/
     val connectDeviceList = mutableListOf<DeviceConnectState>()
 
+    /**处理超时的时长*/
+    val handleTimeout: Long = scanTimeout
+
     //<editor-fold desc="操作方法">
 
     /**开始扫描蓝牙设备
      * [context] 使用 Activity 才会申请对应的权限*/
-    fun startScan(context: Context = BleManager.getInstance().context) {
+    fun startScan(context: Context = bleManager.context) {
         if (bluetoothStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
             return
         }
 
-        val instance = BleManager.getInstance()
+        val instance = bleManager
 
         if (!instance.isSupportBle) {
             //不支持蓝牙的设备
@@ -184,7 +224,7 @@ class BluetoothModel : LifecycleViewModel() {
         if (bluetoothStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
             bluetoothStateData.postValue(BLUETOOTH_STATE_NORMAL)
-            BleManager.getInstance().cancelScan()
+            bleManager.cancelScan()
             return
         }
     }
@@ -197,15 +237,7 @@ class BluetoothModel : LifecycleViewModel() {
         if (!bluetoothAdapter.isEnabled) {
             return false
         }
-        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_SCAN
-            )
-        } else {
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+        val permissions = bluetoothPermissionList()
         val permissionDeniedList: MutableList<String> = ArrayList()
         for (permission in permissions) {
             val permissionCheck = ContextCompat.checkSelfPermission(context, permission)
@@ -247,17 +279,37 @@ class BluetoothModel : LifecycleViewModel() {
         return find.state
     }
 
+    /**通过[address]获取[BleDevice]*/
+    fun getBleDevice(address: String): BleDevice? {
+        return bleManager.allConnectedDevice.find { it.device.address == address }
+            ?: connectDeviceList.find { it.device.device.address == address }?.device
+    }
+
+    /**连接回调*/
+    private val connectListenerList = CopyOnWriteArraySet<BleGattCallback>()
+
+    fun addConnectListener(listener: BleGattCallback) {
+        connectListenerList.add(listener)
+    }
+
+    fun removeConnectListener(listener: BleGattCallback) {
+        connectListenerList.remove(listener)
+    }
+
     /**连接设备*/
     fun connect(bleDevice: BleDevice) {
         if (isConnected(bleDevice)) {
             return
         }
-        BleManager.getInstance().connect(bleDevice, object : BleGattCallback() {
+        bleManager.connect(bleDevice, object : BleGattCallback() {
             override fun onStartConnect() {
                 wrapStateDevice(bleDevice) {
                     state = CONNECT_STATE_START
                 }
                 connectStateData.postValue(DeviceConnectState(bleDevice, CONNECT_STATE_START))
+                connectListenerList.forEach {
+                    it.onStartConnect()
+                }
             }
 
             override fun onConnectFail(bleDevice: BleDevice, exception: BleException) {
@@ -272,6 +324,9 @@ class BluetoothModel : LifecycleViewModel() {
                         exception = exception
                     )
                 )
+                connectListenerList.forEach {
+                    it.onConnectFail(bleDevice, exception)
+                }
             }
 
             override fun onConnectSuccess(bleDevice: BleDevice, gatt: BluetoothGatt, status: Int) {
@@ -286,6 +341,9 @@ class BluetoothModel : LifecycleViewModel() {
                         gatt
                     )
                 )
+                connectListenerList.forEach {
+                    it.onConnectSuccess(bleDevice, gatt, status)
+                }
             }
 
             override fun onDisConnected(
@@ -303,13 +361,71 @@ class BluetoothModel : LifecycleViewModel() {
                         isActiveDisConnected = isActiveDisConnected
                     )
                 )
+                connectListenerList.forEach {
+                    it.onDisConnected(isActiveDisConnected, bleDevice, gatt, status)
+                }
             }
         })
     }
 
+    /**连接设备, 并直接回调*/
+    fun connect(
+        bleDevice: BleDevice,
+        timeout: Long = handleTimeout,
+        action: (connected: Boolean) -> Unit
+    ): BleGattCallback? {
+        return if (bleManager.isConnected(bleDevice)) {
+            action(true)
+            null
+        } else {
+            var isTimeOut = false
+            var timeoutRunnable: Runnable? = null
+            val listener = object : BleGattCallback() {
+                override fun onStartConnect() {
+                    L.d("...")
+                }
+
+                override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
+                    L.d("$bleDevice $exception")
+                }
+
+                override fun onDisConnected(
+                    isActiveDisConnected: Boolean,
+                    device: BleDevice?,
+                    gatt: BluetoothGatt?,
+                    status: Int
+                ) {
+                    L.d("$device $isActiveDisConnected $status")
+                }
+
+                override fun onConnectSuccess(
+                    bleDevice: BleDevice?,
+                    gatt: BluetoothGatt?,
+                    status: Int
+                ) {
+                    removeConnectListener(this)
+                    _removeMainRunnable(timeoutRunnable)
+                    if (!isTimeOut) {
+                        action(true)
+                    }
+                }
+            }
+            timeoutRunnable = Runnable {
+                isTimeOut = true
+                removeConnectListener(listener)
+                action(bleManager.isConnected(bleDevice))
+            }
+            if (timeout > 0) {
+                onMainDelay(timeout, timeoutRunnable)
+            }
+            addConnectListener(listener)
+            connect(bleDevice)
+            return listener
+        }
+    }
+
     /**断开连接*/
     fun disconnect(bleDevice: BleDevice) {
-        BleManager.getInstance().disconnect(bleDevice)
         connectStateData.postValue(
             DeviceConnectState(
                 bleDevice,
@@ -318,15 +434,153 @@ class BluetoothModel : LifecycleViewModel() {
                 isActiveDisConnected = true
             )
         )
+        bleManager.disconnect(bleDevice)
+    }
+
+    /**断开所有设备*/
+    fun disconnectAllDevice() {
+        bleManager.disconnectAllDevice()
     }
 
     override fun release(data: Any?) {
-        BleManager.getInstance().disconnectAllDevice()
-        BleManager.getInstance().destroy()
+        bleManager.disconnectAllDevice()
+        bleManager.destroy()
         bluetoothDeviceListData.postValue(emptyList())
     }
 
     //</editor-fold desc="操作方法">
+
+    //<editor-fold desc="数据相关">
+
+    /**notify回调*/
+    private val notifyListenerList = CopyOnWriteArraySet<INotifyAction>()
+
+    fun addNotifyListener(listener: INotifyAction) {
+        notifyListenerList.add(listener)
+    }
+
+    fun removeNotifyListener(listener: INotifyAction) {
+        notifyListenerList.remove(listener)
+    }
+
+    /**开始监听指定特性的数据通知
+     * [notifyUuid] 同一特征, 只能设置一个监听*/
+    fun listenerNotify(
+        bleDevice: BleDevice,
+        serviceUuid: String,
+        notifyUuid: String,
+        listener: INotifyAction  /*监听是否成功设置*/
+    ): INotifyAction {
+        addNotifyListener(listener)
+        notify(bleDevice, serviceUuid, notifyUuid, object : BleNotifyCallback() {
+            override fun onNotifySuccess() {
+                notifyListenerList.forEach {
+                    it(null, null)
+                }
+            }
+
+            override fun onNotifyFailure(exception: BleException?) {
+                notifyListenerList.forEach {
+                    it(null, exception)
+                }
+            }
+
+            override fun onCharacteristicChanged(data: ByteArray?) {
+                notifyListenerList.forEach {
+                    it(data, null)
+                }
+            }
+        })
+        //removeNotifyListener(listener)
+        return listener
+    }
+
+    /**监听数据
+     * https://github.com/Jasonchenlijian/FastBle/wiki/FastBle%E6%93%8D%E4%BD%9C%E8%AF%B4%E6%98%8E#%E8%AE%A2%E9%98%85%E9%80%9A%E7%9F%A5notify
+     * */
+    fun notify(
+        bleDevice: BleDevice,
+        serviceUuid: String,
+        notifyUuid: String,
+        callback: BleNotifyCallback
+    ): BleNotifyCallback {
+        bleManager.notify(bleDevice, serviceUuid, notifyUuid, callback)
+        return callback
+    }
+
+    /**https://github.com/Jasonchenlijian/FastBle/wiki/FastBle%E6%93%8D%E4%BD%9C%E8%AF%B4%E6%98%8E#%E5%8F%96%E6%B6%88%E8%AE%A2%E9%98%85%E9%80%9A%E7%9F%A5notify%E5%B9%B6%E7%A7%BB%E9%99%A4%E6%95%B0%E6%8D%AE%E6%8E%A5%E6%94%B6%E7%9A%84%E5%9B%9E%E8%B0%83%E7%9B%91%E5%90%AC*/
+    fun stopNotify(bleDevice: BleDevice, serviceUuid: String, notifyUuid: String) {
+        bleManager.stopNotify(bleDevice, serviceUuid, notifyUuid)
+    }
+
+    /**写入数据, 并监听返回值*/
+    fun writeAndListener(
+        bleDevice: BleDevice,
+        serviceUuid: String,
+        writeUuid: String,
+        notifyUuid: String,
+        bytes: ByteArray,
+        action: INotifyAction
+    ) {
+        listenerNotify(bleDevice, serviceUuid, notifyUuid) { data, exception ->
+            if (data == null && exception == null) {
+                //订阅通知成功, 开始写入
+                write(bleDevice, serviceUuid, writeUuid, bytes, object : BleWriteCallback() {
+                    override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                        L.i("蓝牙写入数据[${current}/${total}]:${justWrite?.toString(Charset.defaultCharset())}")
+                    }
+
+                    override fun onWriteFailure(exception: BleException?) {
+                        L.e(exception)
+                        doMain {
+                            action(null, exception)
+                        }
+                    }
+                })
+            } else if (exception != null) {
+                L.e(exception)
+                action(null, exception)
+            } else {
+                //收到了数据
+                stopNotify(bleDevice, serviceUuid, notifyUuid)//自动停止监听
+                action(data, null)
+            }
+        }
+    }
+
+    /**写入数据
+     * https://github.com/Jasonchenlijian/FastBle/wiki/FastBle%E6%93%8D%E4%BD%9C%E8%AF%B4%E6%98%8E#%E5%86%99
+     * ```
+     * BleException { code=102, description='exception occur while writing: gatt writeCharacteristic fail'}
+     * BleException { code=102, description='exception occur while writing: this characteristic not support write!'}
+     * ```
+     * */
+    fun write(
+        bleDevice: BleDevice,
+        serviceUuid: String,
+        writeUuid: String,
+        bytes: ByteArray,
+        callback: BleWriteCallback
+    ): BleWriteCallback {
+        bleManager.write(bleDevice, serviceUuid, writeUuid, bytes, callback)
+        return callback
+    }
+
+    /**监听数据
+     * https://github.com/Jasonchenlijian/FastBle/wiki/FastBle%E6%93%8D%E4%BD%9C%E8%AF%B4%E6%98%8E#%E8%AF%BB
+     */
+    fun read(
+        bleDevice: BleDevice,
+        serviceUuid: String,
+        readUuid: String,
+        callback: BleReadCallback
+    ): BleReadCallback {
+        bleManager.read(bleDevice, serviceUuid, readUuid, callback)
+        return callback
+    }
+
+    //</editor-fold desc="数据相关">
+
 }
 
 /**连接状态*/

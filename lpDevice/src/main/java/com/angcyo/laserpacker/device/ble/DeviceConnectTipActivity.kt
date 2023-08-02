@@ -37,6 +37,10 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
                         name?.startsWith(LaserPeckerHelper.CI) == true ||
                         name?.startsWith(LaserPeckerHelper.CI_OLD) == true -> LaserPeckerHelper.CI
 
+                name == LaserPeckerHelper.LV ||
+                        name?.startsWith("$prefix-V") == true ||
+                        name?.startsWith(LaserPeckerHelper.LV) == true -> LaserPeckerHelper.LV
+
                 name == LaserPeckerHelper.LIV ||
                         name?.startsWith("$prefix-IV") == true ||
                         name?.startsWith(LaserPeckerHelper.LIV) == true -> LaserPeckerHelper.LIV
@@ -65,6 +69,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         fun getDeviceImageRes(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): Int =
             when (getDeviceType(name)) {
                 LaserPeckerHelper.CI -> R.mipmap.device_c1
+                LaserPeckerHelper.LV -> R.mipmap.device_l5
                 LaserPeckerHelper.LIV -> R.mipmap.device_l4
                 LaserPeckerHelper.LIII -> R.mipmap.device_l3
                 LaserPeckerHelper.LII -> R.mipmap.device_l2
@@ -75,39 +80,46 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         /**格式化蓝牙名称*/
         fun formatDeviceName(name: String? = vmApp<LaserPeckerModel>().productInfoData.value?.deviceName): String? {
             val prefix = LaserPeckerHelper.PRODUCT_PREFIX
+            val c1 = "$prefix-CI"
+            val c1_2 = "$prefix-${LaserPeckerHelper.CI}"
+            val lp5 = "$prefix-V"
+            val lp4 = "$prefix-IV"
+            val lp3 = "$prefix-III"
+            val lp2 = "$prefix-II"
+            val lp1 = "$prefix-I"
             return when {
-                name?.startsWith("$prefix-CI") == true -> name.replace(
-                    "$prefix-CI",
-                    "${LaserPeckerHelper.CI}-"
-                )
-
-                name?.startsWith("$prefix-${LaserPeckerHelper.CI}") == true -> name.replace(
-                    "$prefix-${LaserPeckerHelper.CI}",
-                    "${LaserPeckerHelper.CI}-"
-                )
-
-                name?.startsWith("$prefix-IV") == true -> name.replace(
-                    "$prefix-IV",
-                    "${LaserPeckerHelper.LIV}-"
-                )
-
-                name?.startsWith("$prefix-III") == true -> name.replace(
-                    "$prefix-III",
-                    "${LaserPeckerHelper.LIII}-"
-                )
-
-                name?.startsWith("$prefix-II") == true -> name.replace(
-                    "$prefix-II",
-                    "${LaserPeckerHelper.LII}-"
-                )
-
-                name?.startsWith("$prefix-I") == true -> name.replace(
-                    "$prefix-I",
-                    "${LaserPeckerHelper.LI}-"
-                )
-
+                name?.startsWith(c1) == true -> name.replace(c1, "${LaserPeckerHelper.CI}-")
+                name?.startsWith(c1_2) == true -> name.replace(c1_2, "${LaserPeckerHelper.CI}-")
+                name?.startsWith(lp5) == true -> name.replace(lp5, "${LaserPeckerHelper.LV}-")
+                name?.startsWith(lp4) == true -> name.replace(lp4, "${LaserPeckerHelper.LIV}-")
+                name?.startsWith(lp3) == true -> name.replace(lp3, "${LaserPeckerHelper.LIII}-")
+                name?.startsWith(lp2) == true -> name.replace(lp2, "${LaserPeckerHelper.LII}-")
+                name?.startsWith(lp1) == true -> name.replace(lp1, "${LaserPeckerHelper.LI}-")
                 else -> name
             }
+        }
+
+        /**指定的蓝牙设备名, 是否是wifi设备*/
+        fun isWifiDevice(deviceName: String?): Boolean {
+            val name = formatDeviceName(deviceName)
+            //LP5 LX2 才有WIFI模块
+            if (name?.startsWith(LaserPeckerHelper.LV) == true ||
+                name?.startsWith(LaserPeckerHelper.CII) == true
+            ) {
+                //添加新的item
+                return true
+            }
+            return false
+        }
+
+        fun isLp5Device(deviceName: String?): Boolean {
+            val name = formatDeviceName(deviceName)
+            return name?.startsWith(LaserPeckerHelper.LV) == true
+        }
+
+        fun isLx2Device(deviceName: String?): Boolean {
+            val name = formatDeviceName(deviceName)
+            return name?.startsWith(LaserPeckerHelper.CII) == true
         }
     }
 

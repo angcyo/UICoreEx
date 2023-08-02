@@ -73,4 +73,12 @@ data class DeviceSettingBean(
     /**中文特殊跳转*/
     var dataOffsetHelpUrlZh: String? = null,
     //endregion---Android端设置项---
+
+    //region---Ble UUID---
+
+    var lp5BleServiceUuid: String = "0000abf0-0000-1000-8000-00805f9b34fb",
+    var lp5BleNotifyUuid: String = "0000abf4-0000-1000-8000-00805f9b34fb",
+    var lp5BleWriteUuid: String = "0000abf3-0000-1000-8000-00805f9b34fb",
+
+    //endregion---Ble UUID---
 )

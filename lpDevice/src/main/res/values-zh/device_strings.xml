@@ -109,12 +109,25 @@
 
     <string name="project_filter_tip">请输入项目名称</string>
 
+    <string name="selected">已选择</string>
+    <string name="unselected">未选择</string>
+    <string name="select_wifi_title">选择Wi-Fi</string>
+    <string name="add_wifi_device_title">添加设备</string>
     <string name="add_wifi_device_scan_tip">正在扫描附近可添加的设备...</string>
     <string name="add_wifi_device_tip">请将手机尽量靠近需要添加的设备</string>
     <string name="add_wifi_device_not_found_tip">未发现设备，可点击刷新按钮重新搜寻</string>
-    <string name="add_wifi_device_name_tip">此设备只支持使用2.4GHz  Wi-Fi连接使用\nWi-Fi名称仅支持英文字符及数字</string>
+    <string name="add_wifi_device_name_tip">此设备只支持使用2.4GHz  Wi-Fi连接使用</string>
     <string name="add_wifi_device_password_tip">Wi-Fi密码输入错误是最常见的失败原因之一，请仔细检查Wi-Fi密码</string>
     <string name="add_wifi_device_name_hint">请输入Wi-Fi名称</string>
     <string name="add_wifi_device_password_hint">请输入Wi-Fi密码</string>
     <string name="add_wifi_device_select_wifi">选择Wi-Fi</string>
+    <string name="add_wifi_device_no_wifi_tip">无法获取当前Wi-Fi，请检查Wi-Fi是否连接.</string>
+    <string name="bind_wifi_text">去绑定设备Wi-Fi</string>
+    <string name="connect_device">连接设备</string>
+    <string name="wifi_configuring">WiFi配网中 %1$s</string>
+    <string name="wifi_connect_success">连接成功</string>
+    <string name="wifi_connect_success_tip">设备连接网络成功</string>
+    <string name="wifi_connect_error">连接失败</string>
+    <string name="wifi_connect_error_tip">1、请确保设备已开启\n2、设备需要与手机在同一网络\n3、完成1、2步后点击刷新按钮</string>
+    <string name="wifi_reconfigure">重新配网</string>
 </resources>

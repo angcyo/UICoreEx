@@ -6,7 +6,15 @@ import com.angcyo.tim.bean.MessageInfoBean
 import com.angcyo.tim.helper.toMessageInfoBean
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
-import com.tencent.imsdk.v2.*
+import com.tencent.imsdk.v2.V2TIMAdvancedMsgListener
+import com.tencent.imsdk.v2.V2TIMFriendInfo
+import com.tencent.imsdk.v2.V2TIMFriendshipListener
+import com.tencent.imsdk.v2.V2TIMGroupListener
+import com.tencent.imsdk.v2.V2TIMManager
+import com.tencent.imsdk.v2.V2TIMMessage
+import com.tencent.imsdk.v2.V2TIMMessageReceipt
+import com.tencent.imsdk.v2.V2TIMSDKListener
+import com.tencent.imsdk.v2.V2TIMUserFullInfo
 
 /**
  * 聊天数据共享model
@@ -20,10 +28,10 @@ class ChatModel : LifecycleViewModel() {
     //<editor-fold desc="数据监听">
 
     /**自己的头像全路径url*/
-    val selfFaceUrlData = vmDataNull<String>()
+    val selfFaceUrlData = vmDataNull<String?>()
 
     /**无头像时, 需要绘制的昵称文本*/
-    val selfShowNameData = vmDataNull<String>()
+    val selfShowNameData = vmDataNull<String?>()
 
     /**新消息通知, 不会保存新消息*/
     val newMessageData = vmDataOnce<V2TIMMessage>()
@@ -160,11 +168,11 @@ class ChatModel : LifecycleViewModel() {
         super.reset()
     }
 
-    override fun cancel() {
-        super.cancel()
+    override fun cancel(data: Any?) {
+        super.cancel(data)
     }
 
-    override fun release() {
+    override fun release(data: Any?) {
         selfFaceUrlData.postValue(null)
         selfShowNameData.postValue(null)
 

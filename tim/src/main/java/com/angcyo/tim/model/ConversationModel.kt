@@ -36,7 +36,7 @@ class ConversationModel : LifecycleViewModel() {
     val conversationCountData = vmData<Long>(0)
 
     /**会话列表, 排好序了*/
-    val conversationListData = vmDataNull<List<ConversationInfoBean>>()
+    val conversationListData = vmDataNull<List<ConversationInfoBean>?>()
 
     /**新的会话消息通知, 不保存会话*/
     val newConversationMessageData = vmDataOnce<ConversationInfoBean>()
@@ -178,7 +178,7 @@ class ConversationModel : LifecycleViewModel() {
 
     //</editor-fold desc="监听">
 
-    override fun release() {
+    override fun release(data: Any?) {
         conversationCountData.postValue(0)
         conversationListData.postValue(null)
         _lastConversationMessageTimestamp = 0

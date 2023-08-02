@@ -37,6 +37,8 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.app
+import com.angcyo.library.component._removeMainRunnable
+import com.angcyo.library.component.onMainDelay
 import com.angcyo.library.ex.*
 import com.angcyo.viewmodel.*
 import com.feasycom.ble.controler.FscBleCentralApi
@@ -45,10 +47,17 @@ import com.feasycom.ble.controler.FscBleCentralCallbacksImp
 import com.feasycom.common.bean.ConnectType
 import com.feasycom.common.bean.FscDevice
 import com.feasycom.common.controler.FscApi
+import com.feasycom.common.utils.Constant.CHARACTERISTIC_WRITE
+import com.feasycom.common.utils.Constant.CHARACTERISTIC_WRITE_NO_RESPONSE
+import com.feasycom.common.utils.Constant.DISABLE_CHARACTERISTIC_INDICATE
+import com.feasycom.common.utils.Constant.DISABLE_CHARACTERISTIC_NOTIFICATION
+import com.feasycom.common.utils.Constant.ENABLE_CHARACTERISTIC_INDICATE
+import com.feasycom.common.utils.Constant.ENABLE_CHARACTERISTIC_NOTIFICATION
 import com.feasycom.spp.controler.FscSppCentralApi
 import com.feasycom.spp.controler.FscSppCentralApiImp
 import com.feasycom.spp.controler.FscSppCentralCallbacksImp
 import java.io.InputStream
+import java.util.UUID
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -81,7 +90,41 @@ class FscBleApiModel : ViewModel(), IViewModel {
         /**不支持ble*/
         var NO_BLE = true
 
-        /**默认情况下, 34748 bytes/s */
+        /**默认情况下, 34748 bytes/s
+         *
+         * ```
+         * /**
+         *  * 获取指定设备的服务
+         *  * @param address   设备地址
+         *  */
+         * List<BluetoothGattService> getBluetoothGattServices(String address);
+         *
+         * /**
+         *  * 设置最后连接的特征数据
+         *  * @param ch            特征值
+         *  * @param properties    属性
+         *  * @return
+         *  */
+         * boolean setCharacteristic(BluetoothGattCharacteristic ch, int properties);
+         *
+         * /**
+         *  * 设置指定设备的特征数据
+         *  * @param address       设备地址
+         *  * @param ch            特征值
+         *  * @param properties    属性
+         *  * @return
+         *  */
+         * boolean setCharacteristic(String address, BluetoothGattCharacteristic ch, int properties);
+         *
+         * /**
+         *  * 读取指定特征值的信息
+         *  * @param address   设备地址
+         *  * @param ch        特征值
+         *  * @return
+         *  */
+         * boolean read(String address, BluetoothGattCharacteristic ch);
+         * ```
+         * */
         val bleApi: FscBleCentralApi?
             get() = try {
                 if (NO_BLE) {
@@ -215,16 +258,20 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
 
         override fun servicesFound(
-            gatt: BluetoothGatt,
+            gatt: BluetoothGatt?,
             address: String,
             services: List<BluetoothGattService>
         ) {
             super.servicesFound(gatt, address, services)
         }
 
+        override fun bleMtuChanged(mtu: Int, status: Int) {
+            super.bleMtuChanged(mtu, status)
+        }
+
         // 连接成功
         override fun blePeripheralConnected(
-            gatt: BluetoothGatt,
+            gatt: BluetoothGatt?,
             address: String,
             type: ConnectType
         ) {
@@ -234,7 +281,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
         // 断开连接
         @WorkerThread
-        override fun blePeripheralDisconnected(gatt: BluetoothGatt, address: String, p2: Int) {
+        override fun blePeripheralDisconnected(gatt: BluetoothGatt?, address: String, p2: Int) {
             super.blePeripheralDisconnected(gatt, address, p2)
             doMain(true) {
                 _peripheralDisconnected(address, gatt)
@@ -460,6 +507,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
             super.startATCommand()
             L.v("AT...startATCommand")
         }
+    }
+
+    val callbackListenerList = CopyOnWriteArraySet<ICallbackListener>()
+
+    fun addCallbackListener(listener: ICallbackListener) {
+        callbackListenerList.add(listener)
+    }
+
+    fun removeCallbackListener(listener: ICallbackListener) {
+        callbackListenerList.remove(listener)
     }
 
     //</editor-fold desc="Callbacks">
@@ -833,6 +890,46 @@ class FscBleApiModel : ViewModel(), IViewModel {
         }
     }
 
+    /**直连设备并回调*/
+    fun connectDevice(
+        address: String?,
+        timeout: Long = scanTimeout,
+        action: (connected: Boolean) -> Unit
+    ): ICallbackListener? {
+        return if (fscApi.isConnected(address)) {
+            action(true)
+            null
+        } else {
+            var isTimeOut = false
+            var timeoutRunnable: Runnable? = null
+            val listener = object : ICallbackListener {
+                override fun onPeripheralConnected(
+                    address: String,
+                    gatt: BluetoothGatt?,
+                    type: ConnectType
+                ) {
+                    removeCallbackListener(this)
+                    _removeMainRunnable(timeoutRunnable)
+                    if (!isTimeOut) {
+                        action(true)
+                    }
+                }
+            }
+            timeoutRunnable = Runnable {
+                isTimeOut = true
+                removeCallbackListener(listener)
+                action(fscApi.isConnected(address))
+            }
+            if (timeout > 0) {
+                onMainDelay(timeout, timeoutRunnable)
+            }
+            addCallbackListener(listener)
+            fscApi.connect(address)
+
+            return listener
+        }
+    }
+
     /**蓝牙模块空中升级
      * https://document.feasycom.com/web/#/16/451
      * [status] status=10086升级成功 status=120升级失败 121升级中
@@ -887,6 +984,15 @@ class FscBleApiModel : ViewModel(), IViewModel {
                     }
                 }
             }
+        }
+    }
+
+    /**直接断开指定的设备连接*/
+    fun disconnect(address: String?) {
+        address ?: return
+        if (fscApi.isConnected(address)) {
+            fscApi.clearDevice(address)
+            fscApi.disconnect(address)
         }
     }
 
@@ -1038,6 +1144,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //2:最后通知设备状态
             connectStateData.updateValue(connectState)
         }
+        callbackListenerList.forEach {
+            it.onPeripheralConnected(address, gatt, type)
+        }
     }
 
     @UiThread
@@ -1053,6 +1162,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //connectDeviceList.remove(deviceState)//断开成功不移除状态
             connectStateData.value = wrapStateDevice
             _notifyConnectDeviceChanged()
+        }
+        callbackListenerList.forEach {
+            it.onPeripheralDisconnected(address, gatt)
         }
     }
 
@@ -1169,17 +1281,46 @@ class FscBleApiModel : ViewModel(), IViewModel {
 
     /**发送一个AT指令
      * [command] AT+VER*/
-    fun sendAtCommand(command: String, callback: (bean: AtCommandBean) -> Unit) {
-        val address = lastDeviceAddress() ?: return
+    fun sendAtCommand(
+        command: String,
+        address: String? = null,
+        timeout: Long = scanTimeout,
+        callback: (bean: AtCommandBean?, error: Throwable?) -> Unit
+    ): IPacketListener? {
+        val deviceAddress = address ?: lastDeviceAddress() ?: return null
+        if (!fscApi.isConnected(address)) {
+            callback(null, IllegalStateException(_string(R.string.blue_no_device_connected)))
+            return null
+        }
+
+        var isTimeOut = false
+        var timeoutRunnable: Runnable? = null
+
+        "发送AT指令[$address]:$command".writeBleLog()
         val listener = object : IPacketListener {
             override fun onAtCommandCallBack(bean: AtCommandBean) {
                 super.onAtCommandCallBack(bean)
                 removePacketListener(this)
-                callback(bean)
+                _removeMainRunnable(timeoutRunnable)
+                if (!isTimeOut) {
+                    "AT指令返回:$bean".writeBleLog()
+                    callback(bean, null)
+                }
             }
         }
+
+        timeoutRunnable = Runnable {
+            isTimeOut = true
+            removePacketListener(listener)
+            callback(null, ReceiveTimeOutException())
+        }
+        if (timeout > 0) {
+            onMainDelay(timeout, timeoutRunnable)
+        }
+
         addPacketListener(listener)
-        fscApi.sendATCommand(address, setOf(command))
+        fscApi.sendATCommand(deviceAddress, setOf(command))
+        return listener
     }
 
     /**数据发送状态,进度监听*/
@@ -1372,4 +1513,146 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     //</editor-fold desc="send and received">
+
+    //<editor-fold desc="Ble Characteristic 特征">
+
+    /**获取ble特征服务, 只有ble支持. spp不支持
+     * [android.bluetooth.BluetoothGattService.getCharacteristics] 服务的所有特征
+     * [bleApi]*/
+    fun getBluetoothGattServices(address: String): List<BluetoothGattService>? {
+        val api = fscApi
+        if (api == bleApi) {
+            return bleApi?.getBluetoothGattServices(address)
+        }
+        return null
+    }
+
+    /**
+     * 设置最后连接的特征数据
+     * @param characteristic   特征值
+     * @param properties      属性
+     * @return
+     *
+     * [DISABLE_CHARACTERISTIC_INDICATE]
+     * [ENABLE_CHARACTERISTIC_INDICATE]
+     * [DISABLE_CHARACTERISTIC_NOTIFICATION]
+     * [ENABLE_CHARACTERISTIC_NOTIFICATION]
+     *
+     * [CHARACTERISTIC_WRITE_NO_RESPONSE]
+     * [CHARACTERISTIC_WRITE]
+     *
+     */
+    fun setCharacteristic(
+        address: String,
+        characteristic: BluetoothGattCharacteristic,
+        properties: Int
+    ): Boolean {
+        val api = fscApi
+        if (api == bleApi) {
+            //bleApi?.read()//读取指定特征值的信息
+            return bleApi?.setCharacteristic(address, characteristic, properties) == true
+        }
+        return false
+    }
+
+    /**控制特性
+     * [setCharacteristic]*/
+    fun setCharacteristic(
+        address: String,
+        serviceUuid: String,
+        characteristicUuid: String,
+        properties: Int
+    ): Boolean {
+        val api = fscApi
+        if (api == bleApi) {
+            val findService =
+                getBluetoothGattServices(address)?.find { it.uuid == UUID.fromString(serviceUuid) }
+            val bluetoothGattCharacteristic =
+                findService?.getCharacteristic(UUID.fromString(characteristicUuid)) ?: return false
+            return setCharacteristic(address, bluetoothGattCharacteristic, properties)
+        }
+        return false
+    }
+
+    /**日志
+     * ```
+     * 0:0000abf0-0000-1000-8000-00805f9b34fb
+     *   0:0000abf1-0000-1000-8000-00805f9b34fb Read WriteNoResponse WRITE_TYP
+     *   1:0000abf2-0000-1000-8000-00805f9b34fb Notify Read WRITE_TYPE_DEFAULT
+     *     0:00002902-0000-1000-8000-00805f9b34fb notify:✔︎ indicate:✘
+     *   2:0000abf3-0000-1000-8000-00805f9b34fb Read WriteNoResponse WRITE_TYP
+     *   3:0000abf4-0000-1000-8000-00805f9b34fb Notify Read WRITE_TYPE_DEFAULT
+     *     0:00002902-0000-1000-8000-00805f9b34fb
+     * ```
+     * */
+    fun logBluetoothGattService(list: List<BluetoothGattService>?) {
+        L.i(buildString {
+            list?.forEachIndexed { sIndex, bluetoothGattService ->
+                append("\n$sIndex:")
+                appendLine(bluetoothGattService.uuid)
+                bluetoothGattService.characteristics.forEachIndexed { cIndex, bluetoothGattCharacteristic ->
+                    append("  $cIndex:")
+                    append(bluetoothGattCharacteristic.uuid)
+                    //--属性
+                    val properties = bluetoothGattCharacteristic.properties
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_BROADCAST)) {
+                        append(" Broadcast")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_EXTENDED_PROPS)) {
+                        append(" ExProps")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_INDICATE)) {
+                        append(" Indicate")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_NOTIFY)) {
+                        append(" Notify")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_READ)) {
+                        append(" Read")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_SIGNED_WRITE)) {
+                        append(" SignedWrite")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_WRITE)) {
+                        append(" Write")
+                    }
+                    if (properties.have(BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) {
+                        append(" WriteNoResponse")
+                    }
+                    //--类型
+                    val writeType = bluetoothGattCharacteristic.writeType
+                    if (writeType.have(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)) {
+                        append(" WRITE_TYPE_DEFAULT")
+                    }
+                    if (writeType.have(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE)) {
+                        append(" WRITE_TYPE_NO_RESPONSE")
+                    }
+                    if (writeType.have(BluetoothGattCharacteristic.WRITE_TYPE_SIGNED)) {
+                        append(" WRITE_TYPE_SIGNED")
+                    }
+                    appendLine()
+                    //--descriptors
+                    bluetoothGattCharacteristic.descriptors.forEachIndexed { dIndex, bluetoothGattDescriptor ->
+                        append("    $dIndex:")
+                        append(bluetoothGattDescriptor.uuid)
+                        val value = bluetoothGattDescriptor.value
+                        if (BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE.contentEquals(value)) {
+                            append(" notify:${true.toDC()} indicate:${false.toDC()}")
+                        } else if (BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                                .contentEquals(value)
+                        ) {
+                            append(" notify:${false.toDC()} indicate:${true.toDC()}")
+                        } else if (BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                                .contentEquals(value)
+                        ) {
+                            append(" notify:${false.toDC()} indicate:${false.toDC()}")
+                        }
+                        appendLine()
+                    }
+                }
+            }
+        })
+    }
+
+    //</editor-fold desc="Ble Characteristic 特征">
 }

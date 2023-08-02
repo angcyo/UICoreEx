@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.angcyo.widget.recycler.RecyclerBottomLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.angcyo.widget.loading.RadarScanLoadingView
+            android:id="@+id/radar_scan_loading_view"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/lib_xxhdpi"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/state_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/wifi_config_state_error"
+            android:padding="80dp"
+            app:layout_constraintBottom_toBottomOf="@id/radar_scan_loading_view"
+            app:layout_constraintLeft_toLeftOf="@id/radar_scan_loading_view"
+            app:layout_constraintRight_toRightOf="@id/radar_scan_loading_view"
+            app:layout_constraintTop_toTopOf="@id/radar_scan_loading_view"
+            app:srcCompat="@drawable/lib_close"
+            app:tint="@color/lib_theme_icon_color" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_des_view"
+            style="@style/LibMainTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:padding="@dimen/lib_xhdpi"
+            android:text="@string/wifi_configuring"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radar_scan_loading_view" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_tip_view"
+            style="@style/LibDesTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/lib_xhdpi"
+            android:text="@string/add_wifi_device_tip"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lib_des_view" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/wifi_reconfigure_button"
+            style="@style/LibButtonThemeSolidStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/lib_xxhdpi"
+            android:layout_marginTop="@dimen/lib_xxhdpi"
+            android:text="@string/wifi_reconfigure"
+            android:textColor="@color/device_primary_color"
+            android:visibility="gone"
+            app:button_radius="@dimen/lib_radius_normal2"
+            app:layout_constraintTop_toBottomOf="@id/lib_tip_view"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/contact_me_view"
+        style="@style/LibDesTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:text="@string/contact_me"
+        android:textColor="@color/lib_main_to_theme_colors" />
+
+</com.angcyo.widget.recycler.RecyclerBottomLayout>

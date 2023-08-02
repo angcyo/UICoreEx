@@ -377,7 +377,7 @@ class DeviceStateModel : ViewModel() {
     fun haveCutLayer(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
         return HawkEngraveKeys.enableForceCut ||
                 (laserPeckerModel.isCSeries() && isCutModule(moduleState)) ||
-                (HawkEngraveKeys.enableLp4Cut && laserPeckerModel.isL4())
+                (laserPeckerModel.productInfoData.value?.deviceConfigBean?.supportCut == true)
     }
 
     /**是否是C1的小车模式

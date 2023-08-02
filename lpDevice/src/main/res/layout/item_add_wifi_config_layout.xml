@@ -18,13 +18,14 @@
 
         <com.angcyo.widget.edit.DslEditText
             android:id="@+id/wifi_name_edit_text"
-            style="@style/LibBodyTextStyle"
+            style="@style/LibSingleEditStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"
             android:hint="@string/add_wifi_device_name_hint"
-            android:paddingHorizontal="@dimen/lib_xhdpi" />
+            android:paddingHorizontal="@dimen/lib_xhdpi"
+            android:singleLine="true" />
 
         <com.angcyo.widget.DslButton
             android:id="@+id/select_wifi_button"
@@ -51,7 +52,7 @@
 
         <com.angcyo.widget.edit.DslEditText
             android:id="@+id/wifi_password_edit_text"
-            style="@style/LibBodyTextStyle"
+            style="@style/LibSingleEditStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

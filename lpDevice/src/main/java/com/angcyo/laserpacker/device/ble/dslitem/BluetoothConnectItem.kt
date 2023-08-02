@@ -1,18 +1,14 @@
 package com.angcyo.laserpacker.device.ble.dslitem
 
-import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
-import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.R
-import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
-import com.angcyo.library.ex.*
-import com.angcyo.library.extend.IToText
+import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.visible
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.image.ImageLoadingView
-import com.angcyo.widget.span.span
-import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -21,21 +17,9 @@ import com.hingin.umeng.umengEventValue
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/05/27
  */
-class BluetoothConnectItem : DslAdapterItem(), IToText {
-
-    /**设备*/
-    var itemFscDevice: FscDevice? = null
-
-    /**是否显示信号强度*/
-    var itemShowRssi: Boolean = false
-
-    val fscApi = vmApp<FscBleApiModel>()
+class BluetoothConnectItem : BluetoothDeviceItem() {
 
     init {
-        itemLayoutId = R.layout.item_bluetooth_connect_layout
-        itemSingleSelectMutex = true
-        itemFirstPaddingTop = _dimen(R.dimen.lib_xhdpi)
-
         itemClick = {
             if (fscApi.isConnectState(itemFscDevice)) {
                 fscApi.disconnect(itemFscDevice)
@@ -75,25 +59,6 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
         itemIsSelected = connectState == DeviceConnectState.CONNECT_STATE_SUCCESS
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
-        itemHolder.selected(itemIsSelected)
-
-        //device
-        val deviceName = DeviceConnectTipActivity.formatDeviceName(itemFscDevice?.name)
-        itemHolder.tv(R.id.device_name_view)?.text = span {
-            append(deviceName)
-            //append(itemFscDevice?.address)
-
-            val rssi = itemFscDevice?.rssi ?: 0
-            if (itemShowRssi && rssi != 0) {
-                append(" $rssi") {
-                    foregroundColor = _color(R.color.text_sub_color)
-                }
-            }
-        }
-        //image
-        itemHolder.img(R.id.device_image_view)
-            ?.setImageResource(DeviceConnectTipActivity.getDeviceImageRes(deviceName))
-
         when (connectState) {
             DeviceConnectState.CONNECT_STATE_SUCCESS -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
@@ -104,6 +69,7 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.device_connected)
             }
+
             DeviceConnectState.CONNECT_STATE_START -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
@@ -112,6 +78,7 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
                 itemHolder.tv(R.id.device_flag_view)?.text =
                     _string(R.string.blue_connecting)
             }
+
             DeviceConnectState.CONNECT_STATE_DISCONNECT_START -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
@@ -133,6 +100,4 @@ class BluetoothConnectItem : DslAdapterItem(), IToText {
         }
     }
 
-    override fun toText(): CharSequence? =
-        DeviceConnectTipActivity.formatDeviceName(itemFscDevice?.name)
 }

@@ -91,7 +91,10 @@ class BluetoothSearchHelper {
         }
 
         /**检查蓝牙权限, 并显示搜索对话框
-         * [fragment] [fragmentActivity] 二选一*/
+         * [fragment] [fragmentActivity] 二选一
+         *
+         * [com.angcyo.laserpacker.device.wifi.AddWifiDeviceFragment.onFragmentFirstShow]
+         * */
         fun checkAndSearchDevice(
             fragment: Fragment? = null,
             fragmentActivity: FragmentActivity? = null,
@@ -226,7 +229,9 @@ class BluetoothSearchHelper {
 
                             //过滤
                             if (find == null) {
-                                if (isLpBluetoothDevice(device.name)) {
+                                if (isLpBluetoothDevice(device.name) &&
+                                    !DeviceConnectTipActivity.isWifiDevice(device.name)
+                                ) {
                                     //添加新的item
                                     renderBluetoothConnectItem(device)
 
@@ -264,10 +269,10 @@ class BluetoothSearchHelper {
         }
 
         //蓝牙状态监听
-        apiModel.bleStateData.observe(lifecycleOwner, allowBackward = false) {
+        apiModel.bleStateData.observe(lifecycleOwner, allowBackward = false) { state ->
             //loading
             viewHolder.view(R.id.lib_loading_view)?.apply {
-                if (it == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
+                if (state == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
                     //animate().rotationBy(360f).setDuration(240).start()
                     rotateAnimation(duration = 1000, config = {
                         infinite()
@@ -279,14 +284,14 @@ class BluetoothSearchHelper {
 
             //radar
             viewHolder.v<RadarScanLoadingView>(R.id.radar_scan_loading_view)
-                ?.loading(it == FscBleApiModel.BLUETOOTH_STATE_SCANNING)
+                ?.loading(state == FscBleApiModel.BLUETOOTH_STATE_SCANNING)
             viewHolder.visible(
                 R.id.radar_scan_loading_view,
-                it == FscBleApiModel.BLUETOOTH_STATE_SCANNING
+                state == FscBleApiModel.BLUETOOTH_STATE_SCANNING
             )
 
             //state
-            if (it == FscBleApiModel.BLUETOOTH_STATE_STOP) {
+            if (state == FscBleApiModel.BLUETOOTH_STATE_STOP) {
                 viewHolder.rv(R.id.lib_recycler_view)?._dslAdapter?.updateAdapterState()
             }
         }

@@ -5,9 +5,16 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.lifecycle.Observer
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
-import com.angcyo.library.component.*
+import com.angcyo.library.component.DslNotify
+import com.angcyo.library.component.dslNotify
+import com.angcyo.library.component.high
+import com.angcyo.library.component.single
 import com.angcyo.library.ex.str
-import com.angcyo.tim.bean.*
+import com.angcyo.tim.bean.ChatInfoBean
+import com.angcyo.tim.bean.MessageInfoBean
+import com.angcyo.tim.bean.chatId
+import com.angcyo.tim.bean.showUserName
+import com.angcyo.tim.bean.toChatInfoBean
 import com.angcyo.tim.helper.ConversationHelper
 import com.angcyo.tim.util.handlerEmojiText
 
@@ -113,8 +120,8 @@ class MessageNotifyModel : LifecycleViewModel() {
         vmApp<ChatModel>().newMessageInfoData.observeForever(newMessageObserver)
     }
 
-    override fun release() {
-        super.release()
+    override fun release(data: Any?) {
+        super.release(data)
         vmApp<ChatModel>().newMessageInfoData.removeObserver(newMessageObserver)
         DslNotify.cancelNotifyList(_notifyIdMap.values)
         _notifyIdMap.clear()
