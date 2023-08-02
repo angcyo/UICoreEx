@@ -7,6 +7,7 @@ dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core)
     implementation project(allModule.coroutine)
+    api project(allModule.bluetooth) //2023-8-1 lp5 ble
 
     //def coroutine_version = "1.5.0"
     //implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"

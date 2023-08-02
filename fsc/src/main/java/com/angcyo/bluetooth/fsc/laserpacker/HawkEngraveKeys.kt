@@ -342,4 +342,17 @@ object HawkEngraveKeys {
 
     /**是否关闭在线配置的读取*/
     var closeOnlineConfig: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    //2023-8-2
+
+    /**最后一次配置的wifi设备ip
+     * 用来用来确定是否配置过wifi设备*/
+    var lastWifiIp: String? by HawkPropertyValue<Any, String?>(null)
+
+    /**是否配置过wifi*/
+    val isConfigWifi: Boolean
+        get() = !lastWifiIp.isNullOrEmpty()
+
+    /**默认的wifi端口*/
+    var wifiPort: Int by HawkPropertyValue<Any, Int>(8080)//1111
 }

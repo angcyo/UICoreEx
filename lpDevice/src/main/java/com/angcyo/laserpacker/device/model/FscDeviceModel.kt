@@ -18,6 +18,7 @@ import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.LPDataConstant
@@ -25,12 +26,10 @@ import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
-import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.OnBackgroundObserver
 import com.angcyo.library.component.RBackground
-import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
@@ -91,30 +90,31 @@ class FscDeviceModel : LifecycleViewModel() {
         //WIFI状态监听
         wifiApiModel.tcpStateData.observe(this, allowBackward = false) {
             it?.let { tcpState ->
+                val tcpDevice = tcpState.tcpDevice
+                val log = "[${tcpDevice.deviceName}]:${tcpDevice.address}:${tcpDevice.port}"
                 if (tcpState.state == Tcp.CONNECT_STATE_CONNECTING) {
-                    "WIFI准备连接:${it.tcp.address}:${it.tcp.port}".writeBleLog()
+                    "WIFI准备连接${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_ERROR) {
-                    "WIFI连接失败:${it.tcp.address}:${it.tcp.port}:${it.data}".writeErrorLog()
+                    "WIFI连接失败${log}:${it.data}".writeErrorLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECTED) {
-                    "WIFI已连接:${it.tcp.address}:${it.tcp.port}:${it.data}".writeBleLog()
+                    "WIFI已连接${log}:${it.data}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
                     //wifi断开
                     productAssignLocationBounds = null
                     toastQQ(_string(R.string.wifi_disconnected))
-
                     onDeviceDisconnect(it.data == true)
-
-                    "WIFI已断开[${(it.data == true).toDC()}]:${it.tcp.address}:${it.tcp.port}".writeBleLog()
+                    "WIFI已断开[${(it.data == true).toDC()}]:${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //WIFI连接成功
                     val isAutoConnect = tcpState.data == true
                     onDeviceConnect(
-                        WifiApiModel.wifiAddressInfo.firstOrNull() ?: "Wifi",
-                        LibLpHawkKeys.wifiAddress ?: "",
+                        tcpDevice.deviceName ?: "",
+                        tcpDevice.address,
+                        tcpDevice.port,
                         isAutoConnect,
                         wifiApiModel.connectStartTime
                     )
-                    "WIFI连接成功[${isAutoConnect.toDC()}]:${it.tcp.address}:${it.tcp.port}".writeBleLog()
+                    "WIFI连接成功[${isAutoConnect.toDC()}]:${log}".writeBleLog()
                 }
             }
         }
@@ -145,6 +145,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     onDeviceConnect(
                         deviceConnectState.device.name,
                         deviceConnectState.device.address,
+                        0,
                         deviceConnectState.isAutoConnect,
                         deviceConnectState.connectTime
                     )
@@ -275,59 +276,50 @@ class FscDeviceModel : LifecycleViewModel() {
             //需要自动连接设备
             val nowTime = nowTime()
             var autoConnect = true
-            //1分钟
-            if (WifiApiModel.isUseWifiConnect) {
-                wifiApiModel.initTcpConfig()
-                if (autoConnect) {
-                    if (nowTime < disableAutoConnectToTime) {
-                        autoConnect = false
+            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
+                ?.let {
+                    val disconnectTime = it.disconnectTime
+                    if (disconnectTime != null) {
+                        //主动断开了连接
+                        if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
+                            //不自动连接
+                            autoConnect = false
+                        }
                     }
-                }
-                if (autoConnect) {
-                    L.i("准备自动连接设备:${LibLpHawkKeys.wifiAddress}")
-                    wifiApiModel.connect(true)
-                }
-            } else {
-                if (FscBleApiModel.haveBluetoothPermission()) {
-                    lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
-                        ?.let {
-                            autoConnect = !it.isWifiConnect
-                            val disconnectTime = it.disconnectTime
-                            if (disconnectTime != null) {
-                                //主动断开了连接
-                                if (nowTime - disconnectTime < AUTO_CONNECT_DISCONNECTED_THRESHOLD) {
-                                    //不自动连接
-                                    autoConnect = false
-                                }
-                            }
-                            if (autoConnect) {
-                                if (nowTime < disableAutoConnectToTime) {
-                                    autoConnect = false
-                                }
-                            }
-                            if (autoConnect) {
-                                L.i("准备自动连接设备:${it.deviceName} ${it.deviceAddress}")
+                    if (autoConnect) {
+                        if (nowTime < disableAutoConnectToTime) {
+                            autoConnect = false
+                        }
+                    }
+
+                    if (autoConnect) {
+                        if (it.isWifiConnect) {
+                            //wifi连接的设备
+                            "准备自动连接设备[${it.deviceName}]:${it.deviceAddress}:${it.wifiPort}".writeBleLog()
+                            wifiApiModel.connect(
+                                TcpDevice(it.deviceAddress ?: "", it.wifiPort, it.deviceName),
+                                true
+                            )
+                        } else {
+                            //蓝牙连接的设备
+                            if (FscBleApiModel.haveBluetoothPermission()) {
+                                "准备自动连接设备[${it.deviceName}]:${it.deviceAddress}".writeBleLog()
                                 bleApiModel.connect(it.deviceAddress, it.deviceName, true)
                             }
                         }
-                }
-            }
-        }
-    }
-
-    /**自动连接最后一次的设备, 如果有*/
-    fun autoConnectLastDevice(autoConnect: Boolean = true) {
-        if (FscBleApiModel.haveBluetoothPermission()) {
-            //有权限
-            lpBoxOf(DeviceConnectEntity::class).findLastList().lastOrNull()
-                ?.let {
-                    bleApiModel.connect(it.deviceAddress, it.deviceName, autoConnect)
+                    }
                 }
         }
     }
 
     /**设备连接*/
-    fun onDeviceConnect(name: String, address: String, isAutoConnect: Boolean, connectTime: Long) {
+    fun onDeviceConnect(
+        name: String,
+        address: String,
+        port: Int,
+        isAutoConnect: Boolean,
+        connectTime: Long
+    ) {
         //发送初始化指令
         LaserPeckerHelper.sendInitCommand(name, address, isAutoConnect) {
             if (it is InterruptedException) {
@@ -340,7 +332,8 @@ class FscDeviceModel : LifecycleViewModel() {
             this.isAutoConnect = isAutoConnect
             this.deviceAddress = address
             this.deviceName = name
-            this.isWifiConnect = WifiApiModel.isUseWifiConnect
+            this.wifiPort = port
+            this.isWifiConnect = port > 0
         }
 
         if (isAutoConnect) {
@@ -365,7 +358,7 @@ class FscDeviceModel : LifecycleViewModel() {
                 }
             }
         } else {
-            if (WifiApiModel.isUseWifiConnect) {
+            if (port > 0) {
                 toastQQ(_string(R.string.wifi_connected))
             } else {
                 toastQQ(_string(R.string.blue_connected))

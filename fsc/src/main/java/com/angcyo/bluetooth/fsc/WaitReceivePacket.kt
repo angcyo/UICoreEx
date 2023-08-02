@@ -156,7 +156,6 @@ class WaitReceivePacket(
 
     /**使用wifi传输并发送数据*/
     private fun startWithWifi() {
-        wifiApi.initTcpConfig()
         wifiApi.tcp.listeners.add(wifiListener)
         wifiApi.tcp.connect(null)
 
@@ -335,7 +334,7 @@ class WaitReceivePacket(
     private fun onSendPacket(sendBytesSize: Long) {
         if (receivePacket == null) {
             receivePacket = ReceivePacket().apply {
-                this.address = address
+                this.address = this@WaitReceivePacket.address
                 this.sendPacket = this@WaitReceivePacket.sendPacket
                 this.sendStartTime = System.currentTimeMillis()
             }

@@ -60,7 +60,11 @@ class AddWifiConfigFragment : BaseDslFragment() {
                 show(AddWifiStateFragment::class) {
                     _adapter.get<AddWifiConfigItem>().firstOrNull()?.let {
                         putDataParcelable(
-                            WifiConfigBean(bleDevice!!, it.itemWifiName!!, it.itemWifiPassword!!)
+                            WifiConfigBean(
+                                bleDevice!!,
+                                it.itemWifiName ?: "",
+                                it.itemWifiPassword ?: ""
+                            )
                         )
                     }
                 }

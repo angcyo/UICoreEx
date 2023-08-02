@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class WifiConfigBean(
     val device: BleDevice,
+    //wifi 信息: ssid 和 密码
     val name: String,
     val password: String
 ) : Parcelable

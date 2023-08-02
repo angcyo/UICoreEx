@@ -6,12 +6,15 @@ import android.os.Bundle
 import com.angcyo.base.dslFHelper
 import com.angcyo.base.removeThis
 import com.angcyo.bluetooth.BluetoothModel
+import com.angcyo.bluetooth.fsc.WifiApiModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.updateItemWith
 import com.angcyo.getDataParcelable
+import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.wifi.dslitem.AddWifiStateItem
@@ -130,6 +133,7 @@ class AddWifiStateFragment : BaseDslFragment() {
     }
 
     private fun sendConfig(configBean: WifiConfigBean) {
+        val bleName = DeviceConnectTipActivity.formatDeviceName(configBean.device.name)
         if (DeviceConnectTipActivity.isLp5Device(configBean.device.name)) {
             val deviceConfig = LaserPeckerConfigHelper.readDeviceSettingConfig()!!
             bleModel.writeAndListener(
@@ -146,14 +150,20 @@ class AddWifiStateFragment : BaseDslFragment() {
                         toConfigState(AddWifiStateItem.STATE_ERROR)
                     } else {
                         val ip = text.substring(5, text.length)
-                        toConfigState(AddWifiStateItem.STATE_SUCCESS)
-                        toastQQ(ip)
+                        connectWifiDevice(TcpDevice(ip, HawkEngraveKeys.wifiPort, bleName))
                     }
                 } else {
                     toConfigState(AddWifiStateItem.STATE_ERROR)
                 }
             }
         }
+    }
+
+    /**连接到wifi设备*/
+    private fun connectWifiDevice(tcpDevice: TcpDevice) {
+        HawkEngraveKeys.lastWifiIp = tcpDevice.address
+        vmApp<WifiApiModel>().connect(tcpDevice, false)
+        toConfigState(AddWifiStateItem.STATE_SUCCESS)
     }
 
     private var _progress: Int = 0

@@ -218,7 +218,7 @@ class AddWifiDeviceFragment : BaseDslFragment() {
                 _adapter.render {
                     //移除旧的item
                     val find =
-                        findItem(false) { it is BluetoothDeviceItem && it.itemBleDevice == device }
+                        findItem(false) { it is BluetoothDeviceItem && it.itemBleDevice?.device?.address == device.device.address }
 
                     val isWifiDevice = DeviceConnectTipActivity.isWifiDevice(device.name)
                     if (isWifiDevice) {

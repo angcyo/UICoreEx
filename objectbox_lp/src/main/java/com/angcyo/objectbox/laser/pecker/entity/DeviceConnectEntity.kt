@@ -22,7 +22,11 @@ data class DeviceConnectEntity(
     /**设备连接的时间, 毫秒*/
     var connectTime: Long = nowTime(),
 
-    /**设备的地址*/
+    /**当时连接设备时的端口*/
+    var wifiPort: Int = 0,
+
+    /**设备的地址,
+     * wifi连接,此地址就是ip地址*/
     var deviceAddress: String? = null,
 
     /**设备的蓝牙名称*/
