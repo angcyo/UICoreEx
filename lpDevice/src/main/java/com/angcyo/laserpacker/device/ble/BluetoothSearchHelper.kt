@@ -413,7 +413,11 @@ class BluetoothSearchHelper {
     }
 
     /**渲染wifi列表布局*/
-    private fun renderWifiLayout(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
+    private fun renderWifiLayout(
+        lifecycleOwner: LifecycleOwner,
+        viewHolder: DslViewHolder,
+        rescan: Boolean = false
+    ) {
         viewHolder.rv(R.id.lib_recycler_view)?.adapter = wifiAdapter
         deviceFilter.init(wifiAdapter)
         sortFilter.install(wifiAdapter)
@@ -436,11 +440,20 @@ class BluetoothSearchHelper {
                 //开始扫描的时间
                 onStartScan()
             }
+        } else if (rescan) {
+            if (wifiModel.startScan(lifecycleOwner)) {
+                //开始扫描的时间
+                onStartScan()
+            }
         }
     }
 
     /**渲染ble列表布局*/
-    private fun renderBleLayout(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
+    private fun renderBleLayout(
+        lifecycleOwner: LifecycleOwner,
+        viewHolder: DslViewHolder,
+        rescan: Boolean = false
+    ) {
         viewHolder.rv(R.id.lib_recycler_view)?.adapter = bleAdapter
         deviceFilter.init(bleAdapter)
         sortFilter.install(bleAdapter)
@@ -459,6 +472,11 @@ class BluetoothSearchHelper {
                 }
             }
 
+            if (bleModel.startScan()) {
+                //开始扫描的时间
+                onStartScan()
+            }
+        } else if (rescan) {
             if (bleModel.startScan()) {
                 //开始扫描的时间
                 onStartScan()
@@ -567,13 +585,13 @@ class BluetoothSearchHelper {
             if (wifiModel.scanState == WifiDeviceScan.STATE_SCAN_START) {
                 wifiModel.stopScan()
             } else {
-                renderWifiLayout(lifecycleOwner, viewHolder)
+                renderWifiLayout(lifecycleOwner, viewHolder, true)
             }
         } else {
             if (bleModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
                 bleModel.stopScan()
             } else {
-                renderBleLayout(lifecycleOwner, viewHolder)
+                renderBleLayout(lifecycleOwner, viewHolder, true)
             }
         }
     }
