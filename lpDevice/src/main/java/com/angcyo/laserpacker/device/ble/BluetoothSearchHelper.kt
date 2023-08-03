@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
@@ -31,7 +32,9 @@ import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.item.component.SearchAdapterFilter
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
+import com.angcyo.laserpacker.device.wifi.AddWifiDeviceFragment
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.cancelAnimator
@@ -169,6 +172,9 @@ class BluetoothSearchHelper {
         ON_CONTACT_ME_ACTION?.invoke()
     }
 
+    /**目标界面*/
+    var targetWindow: TargetWindow? = null
+
     /**设备过滤器*/
     val deviceFilter = SearchAdapterFilter()
 
@@ -184,6 +190,18 @@ class BluetoothSearchHelper {
 
     private val wifiAdapter: DslAdapter = DslAdapter().apply {
         renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
+            itemHolder.tv(R.id.lib_des_view)?.text = _string(R.string.wifi_connect_error_tip)
+            itemHolder.visible(R.id.add_device_button)
+            itemHolder.click(R.id.add_device_button) {
+                //添加设备
+                targetWindow?.dismissWindow()
+                val context = lastContext
+                if (context is FragmentActivity) {
+                    context.dslFHelper {
+                        show(AddWifiDeviceFragment::class)
+                    }
+                }
+            }
             itemHolder.click(R.id.contact_me_view) {
                 onContactMeAction()
             }
@@ -217,6 +235,8 @@ class BluetoothSearchHelper {
         viewHolder: DslViewHolder,
         targetWindow: TargetWindow?
     ) {
+        this.targetWindow = targetWindow
+
         viewHolder.click(R.id.lib_loading_view) {
             toggleScan()
         }
@@ -243,9 +263,9 @@ class BluetoothSearchHelper {
             observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (fromUser || fromIndex == -1) {
                     if (scanTypeList[toIndex].type == ScanType.TYPE_WIFI) {
-                        renderWifiLayout(lifecycleOwner, viewHolder, targetWindow)
+                        renderWifiLayout(lifecycleOwner, viewHolder)
                     } else {
-                        renderBleLayout(lifecycleOwner, viewHolder, targetWindow)
+                        renderBleLayout(lifecycleOwner, viewHolder)
                     }
                 }
             }
@@ -380,11 +400,8 @@ class BluetoothSearchHelper {
         }
     }
 
-    private fun renderWifiLayout(
-        lifecycleOwner: LifecycleOwner,
-        viewHolder: DslViewHolder,
-        targetWindow: TargetWindow?
-    ) {
+    /**渲染wifi列表布局*/
+    private fun renderWifiLayout(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
         viewHolder.rv(R.id.lib_recycler_view)?.adapter = wifiAdapter
         deviceFilter.init(wifiAdapter)
         sortFilter.install(wifiAdapter)
@@ -409,11 +426,8 @@ class BluetoothSearchHelper {
         }
     }
 
-    private fun renderBleLayout(
-        lifecycleOwner: LifecycleOwner,
-        viewHolder: DslViewHolder,
-        targetWindow: TargetWindow?
-    ) {
+    /**渲染ble列表布局*/
+    private fun renderBleLayout(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
         viewHolder.rv(R.id.lib_recycler_view)?.adapter = bleAdapter
         deviceFilter.init(bleAdapter)
         sortFilter.install(bleAdapter)

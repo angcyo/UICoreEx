@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -51,12 +52,29 @@
         style="@style/LibDesTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_hdpi"
         android:text="@string/contact_me"
         android:textColor="@color/lib_main_to_theme_colors"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/lib_image_view"
         app:layout_constraintRight_toRightOf="@id/lib_image_view"
         app:layout_constraintTop_toBottomOf="@id/wrap_layout" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/add_device_button"
+        style="@style/LibButtonThemeSolidStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/lib_xhdpi"
+        android:enabled="true"
+        android:text="@string/add_wifi_device_title"
+        android:textColor="@color/device_primary_color"
+        android:visibility="gone"
+        app:button_radius="@dimen/lib_radius_normal2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wrap_layout"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
