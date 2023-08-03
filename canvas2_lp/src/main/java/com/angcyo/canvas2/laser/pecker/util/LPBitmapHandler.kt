@@ -46,6 +46,7 @@ import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.getScaleX
 import com.angcyo.library.ex.getScaleY
+import com.angcyo.library.ex.toHexColorString
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.writeToFile
@@ -721,11 +722,13 @@ object LPBitmapHandler {
                     }
                 } else if (submit) {
                     svgRenderer?.let { svgRenderer ->
+                        val elementBean = svgRenderer.lpElementBean()
                         delegate?.renderManager?.removeAfterRendererList(svgRenderer)
-                        if (svgRenderer.lpElementBean()?.data.isNullOrBlank()) {
+                        if (elementBean?.data.isNullOrBlank()) {
                             //空数据
                         } else {
                             //有效数据
+                            elementBean?.stroke = null // 清空颜色
                             delegate?.renderManager?.addElementRenderer(
                                 svgRenderer,
                                 false,
@@ -765,9 +768,10 @@ object LPBitmapHandler {
                                     } else {
                                         LaserPeckerHelper.LAYER_LINE
                                     }
+                                    stroke = Color.MAGENTA.toHexColorString()
                                 }
                                 svgRenderer =
-                                    LPRendererHelper.parseElementRenderer(elementBean, true)
+                                    LPRendererHelper.parseElementRenderer(elementBean, false)
                             } else {
                                 svgRenderer?.lpPathElement()
                                     ?.updateElementPathData(svgPath, svgRenderer)
@@ -785,10 +789,10 @@ object LPBitmapHandler {
                                     targetCenterX += it.centerX() - outlineSpan * 2
                                     targetCenterY += it.centerY() - outlineSpan * 2
                                 } else {
-                                    //targetCenterX += it.centerX() + outlineSpan
-                                    //targetCenterY += it.centerY() + outlineSpan
-                                    targetCenterX = rendererBounds?.centerX() ?: 0f
-                                    targetCenterY = rendererBounds?.centerY() ?: 0f
+                                    targetCenterX += it.centerX() + outlineSpan
+                                    targetCenterY += it.centerY() + outlineSpan
+                                    //targetCenterX = rendererBounds?.centerX() ?: 0f
+                                    //targetCenterY = rendererBounds?.centerY() ?: 0f
                                 }
                             }
 
