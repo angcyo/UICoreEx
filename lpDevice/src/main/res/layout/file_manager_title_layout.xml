@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/lib_title_layout" />
+
+    <include layout="@layout/lib_search_layout" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_item_min_height">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibMainTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/lib_xhdpi"
+            tools:text="U盘" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/filter_button"
+            android:layout_width="@dimen/lib_item_min_height"
+            android:layout_height="@dimen/lib_item_min_height"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/lib_bg2_selector"
+            android:paddingHorizontal="@dimen/lib_xhdpi"
+            app:srcCompat="@drawable/ic_filter_svg" />
+
+    </FrameLayout>
+
+</LinearLayout>

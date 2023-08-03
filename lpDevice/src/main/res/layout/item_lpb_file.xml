@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/lib_xhdpi"
+    android:paddingVertical="@dimen/lib_hdpi"
+    tools:background="@color/transparent20">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bluetooth_connect_bg_selector"
+        android:padding="@dimen/lib_xhdpi">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lib_image_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/file_ico_lpb" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_text_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="@dimen/lib_hdpi"
+            android:text="Bread display h....lpb"
+            app:layout_constraintBottom_toBottomOf="@id/lib_image_view"
+            app:layout_constraintLeft_toRightOf="@id/lib_image_view"
+            app:layout_constraintRight_toLeftOf="@id/preview_view"
+            app:layout_constraintTop_toTopOf="@id/lib_image_view"
+            app:srcCompat="@drawable/file_ico_lpb" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/preview_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/lib_bg2_selector"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintBottom_toBottomOf="@id/lib_image_view"
+            app:layout_constraintLeft_toRightOf="@id/lib_text_view"
+            app:layout_constraintRight_toLeftOf="@id/engrave_view"
+            app:layout_constraintTop_toTopOf="@id/lib_image_view"
+            app:srcCompat="@drawable/ic_preview_svg" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/engrave_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/lib_bg2_selector"
+            android:padding="@dimen/lib_hdpi"
+            app:layout_constraintBottom_toBottomOf="@id/lib_image_view"
+            app:layout_constraintLeft_toRightOf="@id/preview_view"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/lib_image_view"
+            app:srcCompat="@drawable/ic_engrave_svg" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

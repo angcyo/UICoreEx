@@ -112,6 +112,13 @@
             android:text="配网" />
 
         <com.angcyo.widget.DslButton
+            android:id="@+id/file_manager_button"
+            style="@style/DefaultButtonStyleNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="U盘" />
+
+        <com.angcyo.widget.DslButton
             android:id="@+id/arithmetic_button"
             style="@style/DefaultButtonStyleNormal"
             android:layout_width="wrap_content"

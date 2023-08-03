@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.R
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.checksum
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.QUERY_FILE_NAME_LIST
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.library.component.byteWriter
 import com.angcyo.library.ex._string
@@ -31,7 +32,7 @@ import com.angcyo.library.ex.toHexString
 data class EngraveCmd(
     val index: Int = -1,//为将打印文件的索引。 文件编号 4字节
     val power: Byte = 0x64,//为当前打印激光强度.1 - 100，分100个等级。
-    val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(101-)
+    val depth: Byte = 0x03, //深度, 机器需要的是速度, 需要转换一下(101-), 传给机器时转换
     //val speed: Byte = 0x03,//0x0A,//0x32,//为当前打印速度。1 - 100，分100个等级。
     val state: Byte = 0x01,//0x01 从头开始打印文件，0x02继续打印文件，0x03结束打印，0x04暂停打印
     val x: Int = 0x0,//图片起始坐标。 2字节。 占位数据
@@ -52,6 +53,16 @@ data class EngraveCmd(
     val depthList: List<Byte> = emptyList(),//深度列表
     val timeList: List<Byte> = emptyList(),//次数列表
     val typeList: List<Byte> = emptyList(),//激光类型列表
+
+    //---文件名雕刻---2023-8-3
+    /**
+     * 当mount=0时查询U盘列表。
+     * 当mount=1时查询SD卡文件列表
+     *
+     * [QUERY_FILE_NAME_LIST]
+     * */
+    val mount: Byte = 1,
+    val filename: String? = null,//文件名
 ) : BaseCommand() {
 
     companion object {
@@ -106,6 +117,33 @@ data class EngraveCmd(
                 typeList = typeList,
             )
         }
+
+        /**
+         * LP5新增, 文件名雕刻
+         * */
+        fun filenameEngrave(
+            mount: Byte,
+            filename: String?,
+            power: Byte,
+            depth: Byte,
+            time: Byte,
+            type: Byte,
+            precision: Int,
+            diameter: Int,
+        ): EngraveCmd {
+            return EngraveCmd(
+                state = 0x06,
+                custom = 0x06,
+                mount = mount,
+                filename = filename,
+                power = power,
+                depth = depth,
+                time = time,
+                type = type,
+                precision = precision,
+                diameter = diameter,
+            )
+        }
     }
 
     //功能码
@@ -121,7 +159,28 @@ data class EngraveCmd(
         val cmd: String
         val data: String
         val dataLength: Int
-        if (indexNum > 0) {
+        if (state.toInt() == 0x06) {
+            cmd = commandByteWriter {
+                write(commandFunc())
+                write(state)
+                write(custom)
+                write(mount)
+                write(0)//占位
+
+                write(power)
+                write(depthToSpeed(depth.toInt()))
+                write(time)
+                write(0)//占位
+
+                write(type)
+                write(precision)
+                write(diameter, 2)
+                filename?.let {
+                    write(it)
+                    write(0)//结束字符
+                }
+            }.toHexString()!!
+        } else if (indexNum > 0) {
             //批量雕刻
             val bytes = byteWriter {
                 write(commandFunc())
@@ -154,6 +213,7 @@ data class EngraveCmd(
                 throw CommandException(_string(R.string.command_too_long_tip))
             }
             check = bytes.checksum()
+            cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         } else {
             dataLength = 0x14 //18 //数据长度
             data = buildString {
@@ -172,8 +232,8 @@ data class EngraveCmd(
                 append(precision.toHexString())
             }.padHexString(dataLength - LaserPeckerHelper.CHECK_SIZE)
             check = data.checksum() //“功能码”和“数据内容”在内的校验和
+            cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         }
-        cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         return cmd
     }
 
@@ -199,6 +259,8 @@ data class EngraveCmd(
                 append(" 索引:$indexList 功率:$powerList 深度:$depthList type:$typeList times:$timeList")
                 append(" 直径:${diameter} 加速级别:${precision}")
             }
+
+            0x06.toByte() -> append(" 文件名雕刻[$filename]!")
         }
     }
 }
