@@ -18,6 +18,8 @@ import com.angcyo.library.ex.getWifiIP
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * wifi设备扫描
@@ -76,11 +78,20 @@ class WifiDeviceScan {
             _state = STATE_SCAN_START
             scanStateAction(_state)
             val queue = ConcurrentLinkedQueue<ScanTask>()
-            val startIp = clamp(HawkEngraveKeys.scanStartIp, 1, 254)
-            for (i in startIp..254) {
+
+            val rangeList = HawkEngraveKeys.scanIpRange?.split("~")
+            val _min = 1
+            val _max = 254
+            val v1 = rangeList?.get(0)?.toIntOrNull() ?: _min
+            val v2 = rangeList?.get(1)?.toIntOrNull() ?: _max
+            val min = min(v1, v2)
+            val max = max(v1, v2)
+
+            val startIp = clamp(HawkEngraveKeys.scanStartIp, min, max)
+            for (i in startIp..max) {
                 queue.add(ScanTask("$forepartIp.$i", port))
             }
-            for (i in (startIp - 1) downTo 1) {
+            for (i in (startIp - 1) downTo min) {
                 queue.add(ScanTask("$forepartIp.$i", port))
             }
             scanTask = RConcurrentTask(queue, onFinish = {

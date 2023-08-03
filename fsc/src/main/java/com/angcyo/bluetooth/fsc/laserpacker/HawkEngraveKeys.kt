@@ -359,6 +359,13 @@ object HawkEngraveKeys {
     /**默认的wifi端口*/
     var wifiPort: Int by HawkPropertyValue<Any, Int>(8080)//1111
 
+    /**扫描ip的范围
+     * ```
+     * 1~254
+     * ```
+     * */
+    var scanIpRange: String? by HawkPropertyValue<Any, String?>("10~12") //1~254
+
     /**扫描开始的ip地址*/
     var scanStartIp: Int by HawkPropertyValue<Any, Int>(100)
 
