@@ -97,6 +97,12 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                         }
                     }
                 }
+                addDialogItem {
+                    itemText = _string(R.string.external_sharing)
+                    itemClick = {
+                        itemProjectBean?._filePath?.file()?.shareFile()
+                    }
+                }
             }
             true
         }

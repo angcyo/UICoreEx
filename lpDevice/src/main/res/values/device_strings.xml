@@ -83,6 +83,7 @@
     <string name="ui_quit">Quit</string>
     <string name="ui_finish">Finish</string>
     <string name="ui_setting">Settings</string>
+    <string name="ui_search">Search</string>
 
     <string name="device_not_found">Device not Found</string>
     <string name="device_not_found_des">Please make sure your machine is in the waiting state</string>
@@ -139,5 +140,9 @@
     <string name="type_wifi">Wi-Fi</string>
     <string name="not_connected">Not connected</string>
     <string name="connecting">Connecting...</string>
+    <string name="file_manager_title">File management</string>
+    <string name="sd_card_file_title">SD card</string>
+    <string name="usb_file_title">Flash drive</string>
+    <string name="external_sharing">External sharing</string>
 
 </resources>

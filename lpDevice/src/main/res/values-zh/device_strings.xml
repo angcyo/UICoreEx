@@ -79,6 +79,7 @@
     <string name="ui_quit">退出</string>
     <string name="ui_finish">完成</string>
     <string name="ui_setting">设置</string>
+    <string name="ui_search">搜索</string>
 
     <string name="device_not_found">找不到你的设备</string>
     <string name="device_not_found_des">请确保你的机器在待连接状态</string>
@@ -135,4 +136,8 @@
     <string name="type_wifi">Wi-Fi</string>
     <string name="not_connected">未连接</string>
     <string name="connecting">连接中...</string>
+    <string name="file_manager_title">文件管理</string>
+    <string name="sd_card_file_title">SD卡</string>
+    <string name="usb_file_title">U盘</string>
+    <string name="external_sharing">外部分享</string>
 </resources>
