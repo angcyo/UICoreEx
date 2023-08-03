@@ -15,7 +15,7 @@
         android:layout_height="@dimen/lib_item_min_height">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/lib_text_view"
+            android:id="@+id/filter_text_view"
             style="@style/LibMainTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

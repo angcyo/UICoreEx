@@ -77,7 +77,7 @@ class FileManagerFragment : BaseDslFragment() {
 
     /**渲染sd卡文件列表*/
     private fun renderSdListLayout() {
-        _vh.tv(R.id.lib_text_view)?.text = _string(R.string.sd_card_file_title)
+        _vh.tv(R.id.filter_text_view)?.text = _string(R.string.sd_card_file_title)
         renderDslAdapter(true) {
             for (i in 0..10) {
                 LpbFileItem()() {
@@ -89,7 +89,7 @@ class FileManagerFragment : BaseDslFragment() {
 
     /**渲染U盘文件列表*/
     private fun renderUsbListLayout() {
-        _vh.tv(R.id.lib_text_view)?.text = _string(R.string.usb_file_title)
+        _vh.tv(R.id.filter_text_view)?.text = _string(R.string.usb_file_title)
         renderDslAdapter(true) {
             for (i in 0..10) {
                 LpbFileItem()() {

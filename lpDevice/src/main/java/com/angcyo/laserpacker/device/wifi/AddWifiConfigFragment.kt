@@ -38,6 +38,7 @@ class AddWifiConfigFragment : BaseDslFragment() {
 
     init {
         fragmentTitle = _string(R.string.select_wifi_title)
+        fragmentConfig.isLightStyle = true
         fragmentConfig.fragmentBackgroundDrawable =
             ColorDrawable(_color(R.color.lib_theme_white_bg_color))
         bigTitleLayout()
