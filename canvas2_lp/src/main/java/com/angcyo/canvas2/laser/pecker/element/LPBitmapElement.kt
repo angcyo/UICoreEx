@@ -200,13 +200,41 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         }
     }
 
+    /**更新图片滤镜算法*/
+    fun updateImageFilter(imageFilter: Int) {
+        if (elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE) {
+            if (imageFilter != LPDataConstant.DATA_MODE_GCODE) {
+                //之前是GCode数据, 则此时需要缩放比例, 以达到显示效果
+                originBitmap?.let {
+                    val sx = elementBean._width.toPixel() / it.width.toFloat()
+                    val sy = elementBean._height.toPixel() / it.height.toFloat()
+
+                    renderProperty.scaleX /= sx
+                    renderProperty.scaleY /= sy
+                }
+            }
+        } else {
+            if (imageFilter == LPDataConstant.DATA_MODE_GCODE) {
+                //之前不是GCode数据, 则此时需要缩放比例, 以达到显示效果
+                originBitmap?.let {
+                    val sx = elementBean._width.toPixel() / it.width.toFloat()
+                    val sy = elementBean._height.toPixel() / it.height.toFloat()
+
+                    renderProperty.scaleX *= sx
+                    renderProperty.scaleY *= sy
+                }
+            }
+        }
+        elementBean.imageFilter = imageFilter
+    }
+
     /**更新GCode数据*/
     fun updateOriginBitmapGCode(
         pathList: List<Path>?,
         gcode: String?,
         keepVisibleSize: Boolean = true
     ) {
-        elementBean.imageFilter = LPDataConstant.DATA_MODE_GCODE
+        updateImageFilter(LPDataConstant.DATA_MODE_GCODE)
         elementBean.data = gcode
         this.pathList = pathList
         val bounds = RenderHelper.computePathBounds(pathList)

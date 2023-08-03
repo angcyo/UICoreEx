@@ -44,8 +44,6 @@ import com.angcyo.library.ex.addBgColor
 import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.dp
-import com.angcyo.library.ex.getScaleX
-import com.angcyo.library.ex.getScaleY
 import com.angcyo.library.ex.toHexColorString
 import com.angcyo.library.ex.toSizeString
 import com.angcyo.library.unit.toPixel
@@ -223,7 +221,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_PRINT_THRESHOLD,
                                 bean.printsThreshold.toInt()
                             ).toFloat()
-                            bean.imageFilter = LPDataConstant.DATA_MODE_PRINT
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_PRINT)
                             LTime.tick()
                             val result = toPrint(context, bitmap, bean.printsThreshold)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
@@ -251,7 +249,6 @@ object LPBitmapHandler {
     ) {
         val element = renderer.lpBitmapElement() ?: return
         val operateBitmap = element.originBitmap ?: return
-        val renderMatrix = element.getRenderBitmapMatrix(operateBitmap)
         val bean = element.elementBean
         val context = anchor.context
 
@@ -315,8 +312,6 @@ object LPBitmapHandler {
                                 result.first,
                                 false
                             )
-                            element.renderProperty.scaleX *= renderMatrix?.getScaleX() ?: 1f
-                            element.renderProperty.scaleY *= renderMatrix?.getScaleY() ?: 1f
 
                             //stack
                             addBitmapStateToStack(delegate, renderer, undoState)
@@ -375,7 +370,7 @@ object LPBitmapHandler {
                             bean.inverse = getBooleanOrDef(
                                 CanvasRegulatePopupConfig.KEY_BW_INVERT, bean.inverse
                             )
-                            bean.imageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_BLACK_WHITE)
                             LTime.tick()
                             val result = toBlackWhiteHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
@@ -438,7 +433,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
                             )
-                            bean.imageFilter = LPDataConstant.DATA_MODE_DITHERING
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_DITHERING)
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
@@ -498,7 +493,7 @@ object LPBitmapHandler {
                                 CanvasRegulatePopupConfig.KEY_BRIGHTNESS,
                                 bean.brightness
                             )
-                            bean.imageFilter = LPDataConstant.DATA_MODE_GREY
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_GREY)
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
@@ -552,7 +547,7 @@ object LPBitmapHandler {
                         )
                         bean.sealThreshold = threshold.toFloat()
                         operateBitmap.let { bitmap ->
-                            bean.imageFilter = LPDataConstant.DATA_MODE_SEAL
+                            element.updateImageFilter(LPDataConstant.DATA_MODE_SEAL)
                             LTime.tick()
                             val result = toSealHandle(bitmap, bean.sealThreshold)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
