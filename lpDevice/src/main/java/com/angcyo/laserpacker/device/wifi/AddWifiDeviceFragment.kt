@@ -96,6 +96,7 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         super.onFragmentFirstShow(bundle)
         dslPermissions(BluetoothModel.bluetoothPermissionList()) { allGranted, foreverDenied ->
             if (allGranted) {
+                observeState()
                 renderScanLayout()
             } else {
                 //权限被禁用, 显示权限跳转提示框
@@ -117,6 +118,7 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         super.onFragmentNotFirstShow(bundle)
         if (fContext().havePermission(BluetoothModel.bluetoothPermissionList())) {
             if (_adapter.isEmpty()) {
+                observeState()
                 renderScanLayout()
             }
         }
@@ -153,6 +155,16 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         if (bleModel.bluetoothStateData.value == BluetoothModel.BLUETOOTH_STATE_SCANNING) {
             bleModel.stopScan()
         } else {
+            requestScan()
+        }
+    }
+
+    /**请求扫描*/
+    fun requestScan() {
+        if (_adapter.get<BluetoothDeviceItem>().isEmpty()) {
+            //没有设备, 显示扫描中的界面
+            renderScanLayout()
+        } else {
             bleModel.startScan()
         }
     }
@@ -168,19 +180,8 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         rightControl()?.goneIndex(0, !show)
     }
 
-    /**渲染扫描中的界面, 权限已给*/
-    fun renderScanLayout() {
-        fragmentTitle = _string(R.string.add_wifi_device_title)
-        showRefreshView()
-        renderDslAdapter {
-            DslLabelTextItem()() {
-                itemBackgroundDrawable = fragmentConfig.fragmentBackgroundDrawable?.copyDrawable()
-                itemText = _string(R.string.add_wifi_device_scan_tip)
-                paddingVertical(_dimen(R.dimen.lib_hdpi))
-            }
-            renderEmptyItem(_dimen(R.dimen.lib_xhdpi))
-            AddWifiRadarScanItem()()
-        }
+    /**状态监听*/
+    fun observeState() {
         //蓝牙状态监听
         bleModel.bluetoothStateData.observe(this, allowBackward = false) { state ->
             //loading
@@ -202,9 +203,11 @@ class AddWifiDeviceFragment : BaseDslFragment() {
                     val list = _adapter.findAllItem<BluetoothDeviceItem>()
                     if (list.isNullOrEmpty()) {
                         _adapter.render {
+                            removeItem { it is AddWifiRadarScanItem }
+                            removeItem { it is AddWifiEmptyItem }
                             AddWifiEmptyItem()() {
                                 itemRefreshActon = {
-                                    bleModel.startScan()
+                                    requestScan()
                                 }
                             }
                         }
@@ -243,7 +246,21 @@ class AddWifiDeviceFragment : BaseDslFragment() {
                 }
             }
         }
+    }
 
+    /**渲染扫描中的界面, 权限已给*/
+    fun renderScanLayout() {
+        fragmentTitle = _string(R.string.add_wifi_device_title)
+        showRefreshView()
+        renderDslAdapter(true) {
+            DslLabelTextItem()() {
+                itemBackgroundDrawable = fragmentConfig.fragmentBackgroundDrawable?.copyDrawable()
+                itemText = _string(R.string.add_wifi_device_scan_tip)
+                paddingVertical(_dimen(R.dimen.lib_hdpi))
+            }
+            renderEmptyItem(_dimen(R.dimen.lib_xhdpi))
+            AddWifiRadarScanItem()()
+        }
         bleModel.startScan()
     }
 
