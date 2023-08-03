@@ -114,10 +114,18 @@ data class LPElementBean(
     /**[groupId]*/
     var groupName: String? = null,
 
-    /**填充颜色, 形状的颜色*/
+    /**填充颜色, 形状的颜色
+     * ```
+     * #ff00ff
+     * ```
+     * */
     var fill: String? = null,
 
-    /**描边颜色*/
+    /**描边颜色, 如果有
+     * ```
+     * #ff00ff
+     * ```
+     * */
     var stroke: String? = null,
 
     /**

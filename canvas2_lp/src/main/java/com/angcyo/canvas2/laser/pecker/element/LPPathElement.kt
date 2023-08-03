@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
@@ -19,6 +20,7 @@ import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.ex.scaleToSize
+import com.angcyo.library.ex.toColorInt
 import com.angcyo.library.ex.toRadians
 import com.angcyo.library.ex.updateFillType
 import com.angcyo.library.unit.toMm
@@ -196,6 +198,15 @@ class LPPathElement(override val elementBean: LPElementBean) : PathElement(), IL
         }
         paint.style = elementBean.paintStyle.toPaintStyle()
         paint.strokeWidth = 1f
+
+        //颜色
+        if (paint.style == Paint.Style.STROKE) {
+            paint.color = elementBean.stroke?.toColorInt() ?: Color.BLACK
+        } else {
+            paint.color = elementBean.fill?.toColorInt() ?: Color.BLACK
+        }
+
+        //线型
         params.updateDrawPathPaintStrokeWidth(paint)
         renderPath(canvas, paint, elementBean.isLineShape, getDrawPathList(), params._renderMatrix)
     }
