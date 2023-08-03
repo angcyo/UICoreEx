@@ -6,13 +6,14 @@ import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.parser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryDeviceNameParser
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.http.tcp.tcpSend
-import com.angcyo.library.L
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.RConcurrentTask
-import com.angcyo.library.component.toHexString
 import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.getWifiIP
 import com.angcyo.library.ex.size
@@ -122,13 +123,15 @@ class WifiDeviceScan {
         override fun run() {
             syncSingle {
                 //L.w("开始扫描:$ip:$port")
-                QueryCmd.deviceName//应该使用此方法
-                tcpSend(ip, port, QueryCmd.version.toByteArray()) { receiveBytes, error ->
+                tcpSend(ip, port, QueryCmd.deviceName.toByteArray()) { receiveBytes, error ->
                     val bytes = WaitReceivePacket.checkReceiveFinish(receiveBytes)
                     bytes?.let {
+                        //L.w("扫描结果[${it.size()}]:$ip:$port ${it.toHexString()}")
                         if (scanTask?.isCancel?.get() == false) {
-                            L.w("扫描结果[${it.size()}]:$ip:$port ${bytes.toHexString()}")
-                            scanDeviceAction(TcpDevice(ip, port, "LP5-$ip"))
+                            val parser = it.parser<QueryDeviceNameParser>()
+                            val deviceName = parser?.deviceName ?: "LP5-$ip"
+                            "扫描结果[${it.size()}]:$ip:$port $deviceName".writeBleLog()
+                            scanDeviceAction(TcpDevice(ip, port, deviceName))
                         }
                     }
                     it.countDown()

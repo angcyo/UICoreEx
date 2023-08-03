@@ -1,6 +1,12 @@
 package com.angcyo.bluetooth.fsc.laserpacker.command
 
-import com.angcyo.bluetooth.fsc.laserpacker.parse.*
+import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryEngraveFileParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryLogParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySafeCodeParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryVersionParser
 import com.angcyo.library.ex.toHexByteArray
 
 /**
@@ -12,6 +18,13 @@ interface IPacketParser<T> {
 
     /**解析指令返回的字节数组[ByteArray]*/
     fun parse(packet: ByteArray): T?
+}
+
+/**解析返回的数据*/
+inline fun <reified T : IPacketParser<T>> ByteArray.parser(): T? {
+    val parser = T::class.java.newInstance()
+    parser.parse(this)
+    return parser
 }
 
 /**将指令的返回值hex字符串解析成对应的结构
@@ -30,6 +43,7 @@ fun ByteArray.parseResultPacketLog(func: Int?, state: Int?): IPacketParser<*>? {
                 else -> MiniReceiveParser().parse(bytes)
             }
         }
+
         else -> MiniReceiveParser().parse(bytes)
     }
 }

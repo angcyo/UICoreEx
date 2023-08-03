@@ -237,6 +237,8 @@ class BluetoothSearchHelper {
         }
     }
 
+    var scanType = ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble))
+
     /**初始化布局*/
     @CallPoint
     fun initLayout(
@@ -247,7 +249,7 @@ class BluetoothSearchHelper {
         this.targetWindow = targetWindow
 
         viewHolder.click(R.id.lib_loading_view) {
-            toggleScan()
+            toggleScan(lifecycleOwner, viewHolder)
         }
 
         //扫描类型
@@ -271,7 +273,8 @@ class BluetoothSearchHelper {
             }
             observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
                 if (fromUser || fromIndex == -1) {
-                    if (scanTypeList[toIndex].type == ScanType.TYPE_WIFI) {
+                    scanType = scanTypeList[toIndex]
+                    if (scanType.type == ScanType.TYPE_WIFI) {
                         renderWifiLayout(lifecycleOwner, viewHolder)
                     } else {
                         renderBleLayout(lifecycleOwner, viewHolder)
@@ -418,12 +421,13 @@ class BluetoothSearchHelper {
         if (wifiAdapter.get<BluetoothConnectItem>().isEmpty()) {
 
             val list = wifiModel.tcpConnectDeviceListData.value
-            if (list.isNullOrEmpty()) {
-                wifiAdapter.setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
-            } else {
-                wifiAdapter.render {
+            wifiAdapter.render(false) {
+                clearAllItems()
+                if (list.isNullOrEmpty()) {
+                    setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
+                } else {
                     list.forEach {
-                        wifiAdapter.renderBluetoothConnectItem(null, it)
+                        renderBluetoothConnectItem(null, it)
                     }
                 }
             }
@@ -444,10 +448,11 @@ class BluetoothSearchHelper {
         if (bleAdapter.get<BluetoothConnectItem>().isEmpty()) {
 
             val list = bleModel.connectDeviceListData.value
-            if (list.isNullOrEmpty()) {
-                bleAdapter.setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
-            } else {
-                bleAdapter.render {
+            bleAdapter.render(false) {
+                clearAllItems()
+                if (list.isNullOrEmpty()) {
+                    bleAdapter.setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
+                } else {
                     list.forEach {
                         bleAdapter.renderBluetoothConnectItem(it.device, null)
                     }
@@ -557,17 +562,26 @@ class BluetoothSearchHelper {
     }
 
     /**切换扫描状态*/
-    fun toggleScan() {
-        if (bleModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
-            bleModel.stopScan()
+    fun toggleScan(lifecycleOwner: LifecycleOwner, viewHolder: DslViewHolder) {
+        if (scanType.type == ScanType.TYPE_WIFI) {
+            if (wifiModel.scanState == WifiDeviceScan.STATE_SCAN_START) {
+                wifiModel.stopScan()
+            } else {
+                renderWifiLayout(lifecycleOwner, viewHolder)
+            }
         } else {
-            bleModel.startScan()
+            if (bleModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
+                bleModel.stopScan()
+            } else {
+                renderBleLayout(lifecycleOwner, viewHolder)
+            }
         }
     }
 
     /**停止扫描*/
     fun stopScan() {
         bleModel.stopScan()
+        wifiModel.stopScan()
     }
 
 }
