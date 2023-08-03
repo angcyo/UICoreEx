@@ -24,7 +24,9 @@ data class LPProjectBean(
 
     /**入库记录id
      * [com.angcyo.objectbox.laser.pecker.entity.ProjectSyncEntity.entityId]*/
-    var file_id: Long = -1,
+    var entityId: Long = -1,
+
+    var file_id: String? = null,
 
     /**工程元素占用的宽高*/
     @MM

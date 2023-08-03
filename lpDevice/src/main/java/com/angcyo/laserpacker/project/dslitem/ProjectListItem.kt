@@ -79,7 +79,7 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                                 dialog.dismiss()
                                 itemProjectBean?._filePath?.file()?.delete()
                                 item.removeAdapterItemJust()
-                                EntitySync.deleteProjectSyncEntity(itemProjectBean?.file_id)
+                                EntitySync.deleteProjectSyncEntity(itemProjectBean?.entityId)
                             }
                         }
                     }
@@ -90,7 +90,7 @@ class ProjectListItem : DslAdapterItem(), IFilterItem {
                         lastContext.inputProjectNameDialog(_projectName) {
                             val newName = "$it"
                             itemProjectBean?.file_name = newName
-                            EntitySync.updateProjectSyncEntity(itemProjectBean?.file_id) {
+                            EntitySync.updateProjectSyncEntity(itemProjectBean?.entityId) {
                                 name = newName
                             }
                             item.updateAdapterItem()

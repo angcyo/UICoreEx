@@ -119,7 +119,7 @@ class ProjectListFragment : BaseDslFragment() {
             val projectList = mutableListOf<LPProjectBean>()
             entityList.forEach { entity ->
                 entity.filePath?.file()?.readProjectBean()?.let {
-                    it.file_id = entity.entityId
+                    it.entityId = entity.entityId
                     it.file_name = entity.name//换一下名称
                     projectList.add(it)
                 }
