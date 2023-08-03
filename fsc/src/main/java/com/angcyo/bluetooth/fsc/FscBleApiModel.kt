@@ -31,6 +31,7 @@ import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_PR
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_RECEIVED
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_START
 import com.angcyo.bluetooth.fsc.core.DevicePacketState.Companion.PACKET_STATE_STOP
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.bean.AtCommandBean
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
@@ -530,16 +531,16 @@ class FscBleApiModel : ViewModel(), IViewModel {
     val bleStateData: MutableLiveData<Int> = vmData(BLUETOOTH_STATE_NORMAL)
 
     /**扫描到的蓝牙设备, 不重复的设备*/
-    val bleDeviceData: MutableOnceLiveData<FscDevice?> = vmDataOnce(null)
+    val bleDeviceOnceData: MutableOnceLiveData<FscDevice?> = vmDataOnce(null)
 
     /**扫到了设备变化, 会出现重复的数据*/
-    val bleScanDeviceData: MutableOnceLiveData<FscDevice?> = vmDataOnce(null)
+    val bleScanDeviceOnceData: MutableOnceLiveData<FscDevice?> = vmDataOnce(null)
 
     /**扫描到的所有蓝牙设备, 在停止扫描之后才会有值*/
     val bleDeviceListData: MutableLiveData<List<FscDevice>> = vmData(emptyList())
 
     /**连接状态监听, 不存储数据*/
-    val connectStateData: MutableOnceLiveData<DeviceConnectState?> = vmDataOnce(null)
+    val connectStateOnceData: MutableOnceLiveData<DeviceConnectState?> = vmDataOnce(null)
 
     /**已经连接成功的设备缓存和动态监听*/
     val connectDeviceListData: MutableLiveData<List<DeviceConnectState>> = vmData(emptyList())
@@ -656,7 +657,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         val cacheDevice = connectDeviceList.find { it.device == device }
         return if (cacheDevice?.state != CONNECT_STATE_DISCONNECT && fscApi.isConnected(address)) {
             if (resetConnectState && cacheDevice == null) {
-                connectStateData.value = wrapStateDevice(device) {
+                connectStateOnceData.value = wrapStateDevice(device) {
                     this.state = CONNECT_STATE_SUCCESS
                     this.connectedTime = nowTime()
                 }
@@ -677,17 +678,17 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     /**开始扫描蓝牙设备
-     * [bleDeviceData] 监听设备发现
+     * [bleDeviceOnceData] 监听设备发现
      * [bleDeviceListData] 监听所有的设备
      *
      * [delayStop] 多少毫秒后, 自动关闭扫描
      * [context] 使用 Activity 才会申请对应的权限*/
-    fun startScan(context: Context = app(), delayStop: Long = scanTimeout) {
+    fun startScan(context: Context = app(), delayStop: Long = scanTimeout): Boolean {
         _checkDisconnectTimeout()
 
         if (bleStateData.value == BLUETOOTH_STATE_SCANNING) {
             //已经在扫描
-            return
+            return false
         }
 
         val api = fscApi
@@ -695,7 +696,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (!isSupportBle()) {
             //不支持蓝牙的设备
             updateBleState(BLUETOOTH_STATE_UNAVAILABLE)
-            return
+            return false
         } else {
             if (!checkGPSIsOpen(context)) {
                 enableGpsSetting(context)
@@ -711,7 +712,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                         startScan(context, delayStop)
                     }
                 }, 5000L)
-                return
+                return false
             }
         }
 
@@ -728,6 +729,8 @@ class FscBleApiModel : ViewModel(), IViewModel {
         if (delayStop > 0) {
             handle.postDelayed(_delayStopRunnable, delayStop)
         }
+
+        return true
     }
 
     /**停止扫描
@@ -838,7 +841,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
     }
 
     /**连接设备
-     * [connectStateData] 监听设备的连接状态
+     * [connectStateOnceData] 监听设备的连接状态
      * [disconnectOther] 是否断开其他设备
      * [stopScan] 是否停止扫描
      * [isAutoConnect] 是否是自动连接
@@ -851,6 +854,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         stopScan: Boolean = true,
         connectToModify: Boolean = false,
     ) {
+        HawkEngraveKeys.lastWifiConnect = false
         _checkDisconnectTimeout()
         if (stopScan) {
             stopScan()
@@ -873,7 +877,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             disconnectAll()
         }
         connectDeviceList.removeAll { it.device == device }//移除缓存
-        connectStateData.value = wrapStateDevice(device) {
+        connectStateOnceData.value = wrapStateDevice(device) {
             state = CONNECT_STATE_START
             connectTime = nowTime()
             connectedTime = 0L
@@ -1007,7 +1011,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
         pendingDisconnectList.add(address)
         _checkDisconnectTimeout()
         if (isConnectState(bleDevice)) {
-            connectStateData.value = wrapStateDevice(bleDevice) {
+            connectStateOnceData.value = wrapStateDevice(bleDevice) {
                 initDisconnectStart()
                 this.isActiveDisConnected = isActiveDisConnected
             }
@@ -1019,7 +1023,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             cacheDeviceState?.let {
                 if (it.state == CONNECT_STATE_DISCONNECT_START) {
                     //强制断开连接
-                    connectStateData.value = wrapStateDevice(bleDevice) {
+                    connectStateOnceData.value = wrapStateDevice(bleDevice) {
                         initDisconnected()
                         this.isActiveDisConnected = isActiveDisConnected
                     }
@@ -1056,7 +1060,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 //断开超时
                 //connectDeviceList.remove(deviceState)//断开成功不移除状态
                 pendingDisconnectList.remove(deviceState.device.address)
-                connectStateData.value = wrapStateDevice(deviceState.device) {
+                connectStateOnceData.value = wrapStateDevice(deviceState.device) {
                     initDisconnected()
                     this.isActiveDisConnected = isActiveDisConnected
                 }
@@ -1122,9 +1126,9 @@ class FscBleApiModel : ViewModel(), IViewModel {
                 }
             }
         }
-        bleScanDeviceData.updateValue(device)
+        bleScanDeviceOnceData.updateValue(device)
         if (!cacheScanDeviceList.contains(device)) {
-            bleDeviceData.updateValue(device)
+            bleDeviceOnceData.updateValue(device)
             cacheScanDeviceList.add(device)
         }
     }
@@ -1142,7 +1146,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             //1:通知连接的蓝牙设备改变
             _notifyConnectDeviceChanged()
             //2:最后通知设备状态
-            connectStateData.updateValue(connectState)
+            connectStateOnceData.updateValue(connectState)
         }
         callbackListenerList.forEach {
             it.onPeripheralConnected(address, gatt, type)
@@ -1160,7 +1164,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             pendingDisconnectList.remove(deviceState.device.address)
             //connectDeviceList.remove(deviceState)//断开成功不移除状态
-            connectStateData.value = wrapStateDevice
+            connectStateOnceData.value = wrapStateDevice
             _notifyConnectDeviceChanged()
         }
         callbackListenerList.forEach {

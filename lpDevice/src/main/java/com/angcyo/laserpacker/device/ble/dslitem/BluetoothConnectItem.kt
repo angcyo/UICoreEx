@@ -2,6 +2,7 @@ package com.angcyo.laserpacker.device.ble.dslitem
 
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.http.tcp.Tcp
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.library.ex._string
@@ -21,21 +22,40 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
 
     init {
         itemClick = {
-            if (fscApi.isConnectState(itemFscDevice)) {
-                fscApi.disconnect(itemFscDevice)
+            if (_isWifiDevice) {
+                //wifi设备
+                if (wifiApi.connectState(itemTcpDevice) == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+                    //已经连接
+                    wifiApi.disconnect(true)
+                } else {
+                    //未连接
+                    wifiApi.stopScan()
+                    fscApi.disconnectAll(true) //断开所有蓝牙连接
+                    wifiApi.connect(itemTcpDevice!!, false)
+                    onSearchFinish()
+                }
             } else {
-                fscApi.connect(itemFscDevice, false, true)
-
-                //连接后, 搜索结束
-                UMEvent.SEARCH_DEVICE.umengEventValue {
-                    val nowTime = nowTime()
-                    put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
-                    put(
-                        UMEvent.KEY_DURATION,
-                        (nowTime - BluetoothSearchHelper.last_search_time).toString()
-                    )
+                //蓝牙设备
+                if (fscApi.isConnectState(itemFscDevice)) {
+                    fscApi.disconnect(itemFscDevice)
+                } else {
+                    wifiApi.disconnectAll(true) //断开所有Wifi连接
+                    fscApi.connect(itemFscDevice, false, true)
+                    onSearchFinish()
                 }
             }
+        }
+    }
+
+    private fun onSearchFinish() {
+        //连接后, 搜索结束
+        UMEvent.SEARCH_DEVICE.umengEventValue {
+            val nowTime = nowTime()
+            put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
+            put(
+                UMEvent.KEY_DURATION,
+                (nowTime - BluetoothSearchHelper.last_search_time).toString()
+            )
         }
     }
 
@@ -44,9 +64,34 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
         if (!select) {
             if (itemSelectMutexFromItem != this) {
                 fscApi.disconnect(itemFscDevice)
+                //wifiApi.disconnect(itemTcpDevice, false)
             }
         }
     }
+
+    /**是否连接成功*/
+    private val isConnectSuccess: Boolean
+        get() = if (_isWifiDevice) {
+            wifiApi.connectState(itemTcpDevice) == Tcp.CONNECT_STATE_CONNECT_SUCCESS
+        } else {
+            fscApi.connectState(itemFscDevice) == DeviceConnectState.CONNECT_STATE_SUCCESS
+        }
+
+    /**是否连接开始了*/
+    private val isConnectStart: Boolean
+        get() = if (_isWifiDevice) {
+            wifiApi.connectState(itemTcpDevice) == Tcp.CONNECT_STATE_CONNECTING
+        } else {
+            fscApi.connectState(itemFscDevice) == DeviceConnectState.CONNECT_STATE_START
+        }
+
+    /**是否断开开始了*/
+    private val isDisconnectStart: Boolean
+        get() = if (_isWifiDevice) {
+            wifiApi.connectState(itemTcpDevice) == Tcp.CONNECT_STATE_DISCONNECTING
+        } else {
+            fscApi.connectState(itemFscDevice) == DeviceConnectState.CONNECT_STATE_DISCONNECT_START
+        }
 
     override fun onItemBind(
         itemHolder: DslViewHolder,
@@ -54,38 +99,35 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        val connectState = fscApi.connectState(itemFscDevice)
-        //L.e("connectState:$connectState")
-        itemIsSelected = connectState == DeviceConnectState.CONNECT_STATE_SUCCESS
+        itemIsSelected = isConnectSuccess
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+        updateDeviceState(itemHolder, false)
 
-        when (connectState) {
-            DeviceConnectState.CONNECT_STATE_SUCCESS -> {
+        when {
+            isConnectSuccess -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
                     _rotateDegrees = 0f
                     setLoadingRes(R.drawable.dialog_confirm_svg, false)
                 }
-                itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.device_connected)
+                itemHolder.tv(R.id.device_flag_view)?.text = _string(R.string.device_connected)
+                updateDeviceState(itemHolder, true)
             }
 
-            DeviceConnectState.CONNECT_STATE_START -> {
+            isConnectStart -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
                     setLoadingRes(R.drawable.ble_loading_svg, true)
                 }
-                itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.blue_connecting)
+                itemHolder.tv(R.id.device_flag_view)?.text = _string(R.string.connecting)
             }
 
-            DeviceConnectState.CONNECT_STATE_DISCONNECT_START -> {
+            isDisconnectStart -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.apply {
                     visible(true)
                     setLoadingRes(R.drawable.ble_loading_svg, true)
                 }
-                itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.blue_disconnecting)
+                itemHolder.tv(R.id.device_flag_view)?.text = _string(R.string.blue_disconnecting)
             }
             /*DeviceConnectState.CONNECT_STATE_DISCONNECT -> {
                 itemHolder.v<TGStrokeLoadingView>(R.id.lib_loading_view)?.visible(false)
@@ -94,8 +136,7 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
             }*/
             else -> {
                 itemHolder.v<ImageLoadingView>(R.id.lib_loading_view)?.visible(false)
-                itemHolder.tv(R.id.device_flag_view)?.text =
-                    _string(R.string.blue_no_device_connected)
+                itemHolder.tv(R.id.device_flag_view)?.text = _string(R.string.not_connected)
             }
         }
     }

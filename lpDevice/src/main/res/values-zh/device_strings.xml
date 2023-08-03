@@ -109,6 +109,7 @@
 
     <string name="project_filter_tip">请输入项目名称</string>
 
+    <string name="discover_devices">发现设备</string>
     <string name="selected">已选择</string>
     <string name="unselected">未选择</string>
     <string name="select_wifi_title">选择Wi-Fi</string>
@@ -130,4 +131,8 @@
     <string name="wifi_connect_error">连接失败</string>
     <string name="wifi_connect_error_tip">1、请确保设备已开启\n2、设备需要与手机在同一网络\n3、完成1、2步后点击刷新按钮</string>
     <string name="wifi_reconfigure">重新配网</string>
+    <string name="type_ble">蓝牙</string>
+    <string name="type_wifi">Wi-Fi</string>
+    <string name="not_connected">未连接</string>
+    <string name="connecting">连接中...</string>
 </resources>

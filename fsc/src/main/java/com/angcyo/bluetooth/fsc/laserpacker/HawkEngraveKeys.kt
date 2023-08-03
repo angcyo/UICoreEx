@@ -345,6 +345,9 @@ object HawkEngraveKeys {
 
     //2023-8-2
 
+    /**最后一次是否是使用wifi连接的*/
+    var lastWifiConnect: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
     /**最后一次配置的wifi设备ip
      * 用来用来确定是否配置过wifi设备*/
     var lastWifiIp: String? by HawkPropertyValue<Any, String?>(null)
@@ -355,4 +358,10 @@ object HawkEngraveKeys {
 
     /**默认的wifi端口*/
     var wifiPort: Int by HawkPropertyValue<Any, Int>(8080)//1111
+
+    /**扫描开始的ip地址*/
+    var scanStartIp: Int by HawkPropertyValue<Any, Int>(100)
+
+    /**扫描端口超时时间, 1s*/
+    var scanPortTimeout: Int by HawkPropertyValue<Any, Int>(1000)
 }

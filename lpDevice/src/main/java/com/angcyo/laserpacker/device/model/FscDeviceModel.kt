@@ -96,8 +96,6 @@ class FscDeviceModel : LifecycleViewModel() {
                     "WIFI准备连接${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_ERROR) {
                     "WIFI连接失败${log}:${it.data}".writeErrorLog()
-                } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECTED) {
-                    "WIFI已连接${log}:${it.data}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
                     //wifi断开
                     productAssignLocationBounds = null
@@ -120,7 +118,7 @@ class FscDeviceModel : LifecycleViewModel() {
         }
 
         //蓝牙状态监听
-        bleApiModel.connectStateData.observe(this, allowBackward = false) {
+        bleApiModel.connectStateOnceData.observe(this, allowBackward = false) {
             it?.let { deviceConnectState ->
                 if (deviceConnectState.state == DeviceConnectState.CONNECT_STATE_START) {
                     //开始连接

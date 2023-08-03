@@ -23,6 +23,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/device_l1" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/device_state_view"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/device_image_view"
+            app:layout_constraintRight_toRightOf="@id/device_image_view"
+            app:srcCompat="@drawable/wifi_connected_svg"
+            tools:visibility="visible" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/device_name_view"
             style="@style/LibTitleTextStyle"

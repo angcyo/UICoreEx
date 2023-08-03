@@ -84,7 +84,7 @@ fun ICommand.sendCommand(
     return LaserPeckerHelper.sendCommand(this, address, progress, action)
 }
 
-/**指令字节写入, 自动计算字节长度.
+/**指令字节写入, 自动计算字节长度. 动态指令长度
  *
  * 只需要写入功能码开始到较验和之前的数据即可
  *

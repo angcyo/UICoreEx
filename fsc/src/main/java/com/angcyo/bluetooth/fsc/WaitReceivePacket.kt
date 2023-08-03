@@ -16,6 +16,7 @@ import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
+import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.toStr
@@ -47,6 +48,72 @@ class WaitReceivePacket(
     //调用者线程回调, 通常在子线程
     val listener: IReceiveListener
 ) : IPacketListener {
+
+    companion object {
+
+        /**检查机器返回的数据是否有效
+         * [bytes] 收到的数据
+         * [dataHead] 返回的数据头
+         * @return 校验通过返回对应的数据, 否则返回null
+         * */
+        fun checkReceiveFinish(
+            bytes: ByteArray?,
+            dataHead: String = LaserPeckerHelper.PACKET_HEAD
+        ): ByteArray? {
+            bytes ?: return null
+            //数据头的位置 [AABB] 开始的位置
+            var headStartIndex = -1
+
+            val headSize = dataHead.toHexByteArray().size
+            val headByteArray = ByteArray(headSize)
+            try {
+                var index = 0
+
+                //查找数据头
+                for (byte in bytes) {
+                    if (index + headSize >= bytes.size) {
+                        break
+                    }
+                    bytes.copyTo(headByteArray, index, 0, headSize)
+                    if (headByteArray.toHexString(false) == dataHead) {
+                        //数据头
+                        headStartIndex = index
+                    }
+                    index++
+                }
+
+                if (headStartIndex >= 0) {
+                    //解析数据长度
+                    val dataCount = bytes[headStartIndex + headSize].toHexInt() //包含校验位的长度
+                    val dataStartIndex = headStartIndex + headSize + 1
+                    val receiveDataCount = bytes.size - dataStartIndex //收到的数据长度
+                    if (receiveDataCount >= dataCount) {
+                        //数据接收完成
+                        val sumByteArray =
+                            ByteArray(dataCount - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
+                        bytes.copyTo(sumByteArray, dataStartIndex)
+                        val checkByteArray = ByteArray(LaserPeckerHelper.CHECK_SIZE) //校验位
+                        val checkStartIndex =
+                            dataStartIndex + dataCount - LaserPeckerHelper.CHECK_SIZE
+                        bytes.copyTo(checkByteArray, checkStartIndex)
+
+                        val sumString = sumByteArray.checksum(hasSpace = false)
+                        val checkString = checkByteArray.toHexString(false)
+
+                        if (sumString == checkString) {
+                            //数据校验通过
+                            return ByteArray(headSize + 1 + dataCount).apply {
+                                bytes.copyTo(this, headStartIndex)
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return null
+        }
+    }
 
     val handle = Handler(Looper.getMainLooper())
 
@@ -92,10 +159,6 @@ class WaitReceivePacket(
             if (state.state == Tcp.CONNECT_STATE_ERROR) {
                 end()
                 error(IllegalArgumentException())
-            } else if (state.state == Tcp.CONNECT_STATE_CONNECTED ||
-                state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS
-            ) {
-                wifiApi.tcp.send(sendPacket)//发送数据
             }
         }
 
@@ -120,11 +183,12 @@ class WaitReceivePacket(
 
     /**开始数据发送, 并等待*/
     fun start() {
-        api.addPacketListener(this)
         if (autoSend) {
             if (WifiApiModel.useWifi()) {
-                startWithWifi()
+                wifiApi.tcp.listeners.add(wifiListener)
+                wifiApi.tcp.send(sendPacket)
             } else {
+                api.addPacketListener(this)
                 api.send(address, sendPacket)
             }
         }
@@ -152,42 +216,6 @@ class WaitReceivePacket(
     fun error(e: Exception) {
         e.message?.writeBleLog(L.WARN)
         listener.onReceive(null, e)
-    }
-
-    /**使用wifi传输并发送数据*/
-    private fun startWithWifi() {
-        wifiApi.tcp.listeners.add(wifiListener)
-        wifiApi.tcp.connect(null)
-
-        /*TcpSend().apply {
-            val wifiAddress = LibLpHawkKeys.wifiAddress
-            val list = wifiAddress?.split(":")
-            sendBufferSize = LibLpHawkKeys.wifiBufferSize
-            sendDelay = LibLpHawkKeys.wifiSendDelay
-            address = list?.getOrNull(0)
-            list?.getOrNull(1)?.toIntOrNull()?.let {
-                port = it
-            }
-            onSendProgressAction = { progress ->
-                onReceiveProgress(progress)
-            }
-            onSendAction = { receiveBytes, error ->
-                if (error != null) {
-                    end()
-                    error(error)
-                } else {
-                    if (receiveBytes != null) {
-                        onReceive(receiveBytes)
-                    } else {
-                        end()
-                        error(ReceiveVerifyException("no receive!"))
-                    }
-                }
-            }
-            sendBytes = sendPacket
-            onReceiveStart(sendPacket.size().toLong())
-            startSend()
-        }*/
     }
 
     @WorkerThread

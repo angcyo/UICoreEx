@@ -1,18 +1,22 @@
 package com.angcyo.bluetooth.fsc
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import com.angcyo.bluetooth.fsc.core.WifiDeviceScan
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.http.tcp.Tcp
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.http.tcp.TcpState
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex.nowTime
-import com.angcyo.objectbox.findLastList
-import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
-import com.angcyo.objectbox.laser.pecker.lpBoxOf
 import com.angcyo.viewmodel.IViewModel
+import com.angcyo.viewmodel.MutableOnceLiveData
+import com.angcyo.viewmodel.updateThis
 import com.angcyo.viewmodel.updateValue
+import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
+import com.angcyo.viewmodel.vmDataOnce
 
 /**
  * WIFI收发指令
@@ -36,23 +40,71 @@ class WifiApiModel : ViewModel(), IViewModel {
             if (forceUseWifiConnect) {
                 return true
             }
-            return lpBoxOf(DeviceConnectEntity::class).findLastList()
-                .lastOrNull()?.isWifiConnect == true
+            /*return lpBoxOf(DeviceConnectEntity::class).findLastList()
+                .lastOrNull()?.isWifiConnect == true*/
+            return HawkEngraveKeys.lastWifiConnect
         }
     }
 
     /**TCP连接状态监听*/
     val tcpStateData = vmDataNull<TcpState>(null)
 
+    /**TCP设备连接状态的通知*/
+    val tcpConnectDeviceOnceData = vmDataOnce<TcpDevice>(null)
+
+    /**连接上的tcp设备缓存*/
+    val tcpConnectDeviceListData = vmData(mutableListOf<TcpDevice>())
+
+    /**TCP状态监听*/
     val tcpListener = object : Tcp.TcpListener {
         override fun onConnectStateChanged(tcp: Tcp, state: TcpState) {
             super.onConnectStateChanged(tcp, state)
             tcpStateData.updateValue(state)
+            tcpConnectDeviceOnceData.updateValue(state.tcpDevice)
+            if (state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+                //连接成功
+                if (!tcpConnectDeviceListData.value!!.contains(state.tcpDevice)) {
+                    tcpConnectDeviceListData.value!!.add(state.tcpDevice)
+                    tcpConnectDeviceListData.updateThis()
+                }
+            } else if (state.state == Tcp.CONNECT_STATE_DISCONNECT) {
+                //连接断开
+                tcpConnectDeviceListData.value!!.remove(state.tcpDevice)
+                tcpConnectDeviceListData.updateThis()
+            }
         }
     }
 
     /**tcp核心操作*/
     var tcp = createTcp()
+
+    /**扫描状态回调*/
+    val scanStateOnceData = vmDataOnce<Int>()
+
+    /**扫描到的tcp设备, 不重复的设备*/
+    val tcpDeviceOnceData: MutableOnceLiveData<TcpDevice?> = vmDataOnce(null)
+
+    /**扫描到的tcp设备列表, 不重复的设备*/
+    val tcpScanDeviceList = mutableListOf<TcpDevice>()
+
+    /**局域网端口扫描*/
+    val wifiDeviceScan = WifiDeviceScan().apply {
+        scanStateAction = {
+            //状态
+            scanStateOnceData.updateValue(it)
+        }
+        scanDeviceAction = {
+            //扫描到的设备
+            if (!tcpScanDeviceList.contains(it)) {
+                tcpScanDeviceList.add(it)
+                tcpDeviceOnceData.updateValue(it)
+            }
+        }
+    }
+
+    /**当前的扫描状态*/
+    val scanState: Int
+        get() = wifiDeviceScan._state
 
     private fun createTcp(): Tcp {
         return Tcp().apply {
@@ -85,18 +137,25 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     /**连接设备*/
     fun connect(data: Any?) {
+        HawkEngraveKeys.lastWifiConnect = true
         connectStartTime = nowTime()
         tcp.connect(data)
+    }
+
+    /**设备的连接状态*/
+    fun connectState(device: TcpDevice?): Int {
+        return device?.connectState ?: Tcp.CONNECT_STATE_DISCONNECT
     }
 
     /**连接设备
      * [data] true 表示自动连接, false 表示手动连接
      * */
     fun connect(device: TcpDevice, data: Any?) {
+        HawkEngraveKeys.lastWifiConnect = true
         if (tcp.tcpDevice == null || tcp.tcpDevice == device) {
             tcp.tcpDevice = device
         } else {
-            tcp.cancel()
+            tcp.cancel(data == false /*手动连接, 则表示自动断开其他设备*/)
             tcp.listeners.remove(tcpListener)
 
             //重新建立连接
@@ -107,9 +166,49 @@ class WifiApiModel : ViewModel(), IViewModel {
         tcp.connect(data)
     }
 
-    /**断开连接*/
+    /**断开连接
+     * [data] 是否是主动断开*/
     fun disconnect(data: Any?) {
-        tcp.cancel(data)
+        tcp.tcpDevice?.let {
+            disconnect(it, data)
+        }
+    }
+
+    /**断开所有设备*/
+    fun disconnectAll(data: Any?) {
+        tcp.tcpDevice?.let {
+            disconnect(it, data)
+        }
+        tcpConnectDeviceListData.value!!.forEach {
+            disconnect(it, data)
+        }
+    }
+
+    /**断开设备, 但是之后通知
+     * [data] 是否是主动断开
+     * */
+    fun disconnect(device: TcpDevice?, data: Any?) {
+        device ?: return
+        tcp.cancel(data) //取消连接, 这里应该要支持多设备连接
+    }
+
+    //---
+
+    /**端口扫描*/
+    fun startScan(lifecycleOwner: LifecycleOwner): Boolean {
+        if (scanState == WifiDeviceScan.STATE_SCAN_START) {
+            return false
+        }
+        tcpScanDeviceList.clear()
+        wifiDeviceScan.lifecycleOwner = lifecycleOwner
+        return wifiDeviceScan.startScan(HawkEngraveKeys.wifiPort)
+    }
+
+    /**停止端口扫描*/
+    fun stopScan() {
+        if (scanState == WifiDeviceScan.STATE_SCAN_START) {
+            wifiDeviceScan.cancel()
+        }
     }
 
 }

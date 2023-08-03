@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.FscBleApiModel
+import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
+import com.angcyo.bluetooth.fsc.core.WifiDeviceScan
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -17,13 +19,15 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.normalDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
-import com.angcyo.dsladapter._dslAdapter
+import com.angcyo.dsladapter.annotation.UpdateFlag
 import com.angcyo.dsladapter.filter.SortAfterFilterInterceptor
 import com.angcyo.dsladapter.findItem
 import com.angcyo.dsladapter.itemIndexPosition
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.dsladapter.updateAdapterState
 import com.angcyo.dsladapter.updateItem
+import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.item.component.SearchAdapterFilter
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
@@ -43,7 +47,6 @@ import com.angcyo.viewmodel.observe
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.loading.RadarScanLoadingView
-import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.tab
 import com.feasycom.common.bean.FscDevice
 import com.hingin.umeng.UMEvent
@@ -157,7 +160,8 @@ class BluetoothSearchHelper {
     /**是否显示rssi信号强度*/
     var showRssi: Boolean = SHOW_RSSI
 
-    val apiModel = vmApp<FscBleApiModel>()
+    val bleModel = vmApp<FscBleApiModel>()
+    val wifiModel = vmApp<WifiApiModel>()
 
     /**联系客服*/
     var onContactMeAction = {
@@ -178,6 +182,34 @@ class BluetoothSearchHelper {
         }
     }
 
+    private val wifiAdapter: DslAdapter = DslAdapter().apply {
+        renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
+            itemHolder.click(R.id.contact_me_view) {
+                onContactMeAction()
+            }
+            if (state == DslAdapterStatusItem.ADAPTER_STATUS_EMPTY) {
+                //未搜索到设备
+                UMEvent.APP_ERROR.umengEventValue {
+                    put(UMEvent.KEY_NO_DEVICE_ERROR, "未搜索到设备")
+                }
+            }
+        }
+    }
+
+    private val bleAdapter: DslAdapter = DslAdapter().apply {
+        renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
+            itemHolder.click(R.id.contact_me_view) {
+                onContactMeAction()
+            }
+            if (state == DslAdapterStatusItem.ADAPTER_STATUS_EMPTY) {
+                //未搜索到设备
+                UMEvent.APP_ERROR.umengEventValue {
+                    put(UMEvent.KEY_NO_DEVICE_ERROR, "未搜索到设备")
+                }
+            }
+        }
+    }
+
     /**初始化布局*/
     @CallPoint
     fun initLayout(
@@ -189,122 +221,89 @@ class BluetoothSearchHelper {
             toggleScan()
         }
 
-        //扫描
-        viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
-            deviceFilter.init(this)
-            sortFilter.install(this)
-
-            renderAdapterEmptyStatus(R.layout.bluetooth_empty_layout) { itemHolder, state ->
-                itemHolder.click(R.id.contact_me_view) {
-                    onContactMeAction()
-                }
-                if (state == DslAdapterStatusItem.ADAPTER_STATUS_EMPTY) {
-                    //未搜索到设备
-                    UMEvent.APP_ERROR.umengEventValue {
-                        put(UMEvent.KEY_NO_DEVICE_ERROR, "未搜索到设备")
+        //扫描类型
+        val scanTypeList = if (HawkEngraveKeys.isConfigWifi) {
+            listOf(
+                ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi)),
+                ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble))
+            )
+        } else {
+            listOf(
+                ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble)),
+                ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi))
+            )
+        }
+        viewHolder.tab(R.id.scan_type_tab_layout)?.apply {
+            resetChild(
+                scanTypeList,
+                R.layout.lib_segment_layout
+            ) { itemView, item, itemIndex ->
+                itemView.find<TextView>(R.id.lib_text_view)?.text = item.text
+            }
+            observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
+                if (fromUser || fromIndex == -1) {
+                    if (scanTypeList[toIndex].type == ScanType.TYPE_WIFI) {
+                        renderWifiLayout(lifecycleOwner, viewHolder, targetWindow)
+                    } else {
+                        renderBleLayout(lifecycleOwner, viewHolder, targetWindow)
                     }
                 }
             }
+        }
 
-            val list = apiModel.connectDeviceListData.value
-            if (list.isNullOrEmpty()) {
-                setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
-            } else {
-                list.forEach {
-                    renderBluetoothConnectItem(it.device)
-                }
-            }
+        //监听蓝牙设备发现
+        bleModel.useSppModel = true
+        bleModel.bleDeviceOnceData.observe(lifecycleOwner) { device ->
+            device?.let {
+                bleAdapter.render(false) {
 
-            apiModel.apply {
-                useSppModel = true
+                    //移除旧的item
+                    val find =
+                        findItem(false) { it is BluetoothConnectItem && it.itemFscDevice == device }
 
-                //监听蓝牙设备发现
-                bleDeviceData.observe(lifecycleOwner) { device ->
-                    device?.let {
-                        render(false) {
+                    //过滤
+                    if (find == null) {
+                        if (isLpBluetoothDevice(device.name) &&
+                            !DeviceConnectTipActivity.isWifiDevice(device.name)
+                        ) {
+                            //添加新的item
+                            renderBluetoothConnectItem(device, null)
 
-                            //移除旧的item
-                            val find =
-                                findItem(false) { it is BluetoothConnectItem && it.itemFscDevice == device }
-
-                            //过滤
-                            if (find == null) {
-                                if (isLpBluetoothDevice(device.name) &&
-                                    !DeviceConnectTipActivity.isWifiDevice(device.name)
-                                ) {
-                                    //添加新的item
-                                    renderBluetoothConnectItem(device)
-
-                                    autoAdapterStatus()
-                                }
-                            } else {
-                                (find as BluetoothConnectItem).apply {
-                                    itemData = device
-                                    itemFscDevice = device
-                                    itemUpdateFlag = true
-                                }
-                            }
-
-                            //filter
-                            checkAndShowFilterLayout(viewHolder, this)
+                            autoAdapterStatus()
+                        }
+                    } else {
+                        (find as BluetoothConnectItem).apply {
+                            itemData = device
+                            itemFscDevice = device
+                            itemUpdateFlag = true
                         }
                     }
-                }
-                startScan()
 
-                //开始扫描的时间
-                UMEvent.SEARCH_DEVICE.umengEventValue {
-                    last_search_time = nowTime()
-                    put(UMEvent.KEY_START_TIME, last_search_time.toString())
-                    put(UMEvent.KEY_TIME_ZONE, LanguageModel.timeZoneId)
-                    put(UMEvent.KEY_PHONE_API, "${Device.api}")
-                    put(UMEvent.KEY_PHONE_DEVICE, Device.deviceName)
-                    put(UMEvent.KEY_PHONE_LANGUAGE, LanguageModel.getCurrentLanguageTag())
-                    put(
-                        UMEvent.KEY_PHONE_NAME,
-                        "${Device.deviceName} ${Device.api} ${LanguageModel.getCurrentLanguageTag()} ${LanguageModel.timeZoneId}"
-                    )
+                    //filter
+                    checkAndShowFilterLayout(viewHolder, this)
                 }
             }
         }
 
         //蓝牙状态监听
-        apiModel.bleStateData.observe(lifecycleOwner, allowBackward = false) { state ->
-            //loading
-            viewHolder.view(R.id.lib_loading_view)?.apply {
-                if (state == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
-                    //animate().rotationBy(360f).setDuration(240).start()
-                    rotateAnimation(duration = 1000, config = {
-                        infinite()
-                    })
-                } else {
-                    cancelAnimator()
-                }
-            }
-
-            //radar
-            viewHolder.v<RadarScanLoadingView>(R.id.radar_scan_loading_view)
-                ?.loading(state == FscBleApiModel.BLUETOOTH_STATE_SCANNING)
-            viewHolder.visible(
-                R.id.radar_scan_loading_view,
-                state == FscBleApiModel.BLUETOOTH_STATE_SCANNING
-            )
+        bleModel.bleStateData.observe(lifecycleOwner, allowBackward = false) { state ->
+            updateScanStateLayout(viewHolder)
 
             //state
             if (state == FscBleApiModel.BLUETOOTH_STATE_STOP) {
-                viewHolder.rv(R.id.lib_recycler_view)?._dslAdapter?.updateAdapterState()
+                bleAdapter.updateAdapterState()
             }
         }
 
         //连接设备变化监听
-        apiModel.connectDeviceListData.observe(lifecycleOwner) {
-            viewHolder.rv(R.id.lib_recycler_view)?._dslAdapter?.updateAllItem()
+        bleModel.connectDeviceListData.observe(lifecycleOwner) {
+            bleAdapter.updateAllItem()
         }
 
         //连接状态变化监听
-        apiModel.connectStateData.observe(lifecycleOwner) { state ->
+        bleModel.connectStateOnceData.observe(lifecycleOwner) { state ->
             if (state != null) {
-                viewHolder.rv(R.id.lib_recycler_view)?._dslAdapter?.updateItem {
+                bleAdapter.updateItem {
                     it is BluetoothConnectItem && it.itemFscDevice == state.device
                 }
                 if (state.state == DeviceConnectState.CONNECT_STATE_SUCCESS) {
@@ -315,15 +314,176 @@ class BluetoothSearchHelper {
                 }
             }
         }
+
+        //-------------------wifi--------------
+
+        //Wifi状态监听
+        wifiModel.scanStateOnceData.observe(lifecycleOwner, allowBackward = false) { state ->
+            updateScanStateLayout(viewHolder)
+
+            //state
+            if ((state ?: 0) > WifiDeviceScan.STATE_SCAN_START) {
+                wifiAdapter.updateAdapterState()
+            }
+        }
+
+        //连接设备变化监听
+        wifiModel.tcpConnectDeviceListData.observe(lifecycleOwner) {
+            wifiAdapter.updateAllItem()
+        }
+
+        //连接状态变化监听
+        wifiModel.tcpStateData.observe(lifecycleOwner, allowBackward = false) { state ->
+            if (state != null) {
+                wifiAdapter.updateItem {
+                    it is BluetoothConnectItem && it.itemTcpDevice == state.tcpDevice
+                }
+                if (state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
+                    if (connectedDismiss) {
+                        targetWindow?.dismissWindow()
+                    }
+                }
+            }
+        }
+
+        //监听wifi设备发现
+        wifiModel.tcpDeviceOnceData.observe(lifecycleOwner) { device ->
+            device?.let {
+                wifiAdapter.render(false) {
+
+                    //移除旧的item
+                    val find =
+                        findItem(false) { it is BluetoothConnectItem && it.itemTcpDevice == device }
+
+                    //过滤
+                    if (find == null) {
+                        if (isLpBluetoothDevice(device.deviceName) &&
+                            DeviceConnectTipActivity.isWifiDevice(device.deviceName)
+                        ) {
+                            //添加新的item
+                            renderBluetoothConnectItem(null, device)
+
+                            autoAdapterStatus()
+                        }
+                    } else {
+                        (find as BluetoothConnectItem).apply {
+                            itemData = device
+                            itemTcpDevice = device
+                            itemUpdateFlag = true
+                        }
+                    }
+
+                    //filter
+                    checkAndShowFilterLayout(viewHolder, this)
+                }
+            }
+        }
     }
 
-    fun DslAdapter.renderBluetoothConnectItem(device: FscDevice) {
+    private fun renderWifiLayout(
+        lifecycleOwner: LifecycleOwner,
+        viewHolder: DslViewHolder,
+        targetWindow: TargetWindow?
+    ) {
+        viewHolder.rv(R.id.lib_recycler_view)?.adapter = wifiAdapter
+        deviceFilter.init(wifiAdapter)
+        sortFilter.install(wifiAdapter)
+
+        if (wifiAdapter.get<BluetoothConnectItem>().isEmpty()) {
+
+            val list = wifiModel.tcpConnectDeviceListData.value
+            if (list.isNullOrEmpty()) {
+                wifiAdapter.setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
+            } else {
+                wifiAdapter.render {
+                    list.forEach {
+                        wifiAdapter.renderBluetoothConnectItem(null, it)
+                    }
+                }
+            }
+
+            if (wifiModel.startScan(lifecycleOwner)) {
+                //开始扫描的时间
+                onStartScan()
+            }
+        }
+    }
+
+    private fun renderBleLayout(
+        lifecycleOwner: LifecycleOwner,
+        viewHolder: DslViewHolder,
+        targetWindow: TargetWindow?
+    ) {
+        viewHolder.rv(R.id.lib_recycler_view)?.adapter = bleAdapter
+        deviceFilter.init(bleAdapter)
+        sortFilter.install(bleAdapter)
+
+        if (bleAdapter.get<BluetoothConnectItem>().isEmpty()) {
+
+            val list = bleModel.connectDeviceListData.value
+            if (list.isNullOrEmpty()) {
+                bleAdapter.setAdapterStatus(DslAdapterStatusItem.ADAPTER_STATUS_LOADING)
+            } else {
+                bleAdapter.render {
+                    list.forEach {
+                        bleAdapter.renderBluetoothConnectItem(it.device, null)
+                    }
+                }
+            }
+
+            if (bleModel.startScan()) {
+                //开始扫描的时间
+                onStartScan()
+            }
+        }
+    }
+
+    private fun onStartScan() {
+        UMEvent.SEARCH_DEVICE.umengEventValue {
+            last_search_time = nowTime()
+            put(UMEvent.KEY_START_TIME, last_search_time.toString())
+            put(UMEvent.KEY_TIME_ZONE, LanguageModel.timeZoneId)
+            put(UMEvent.KEY_PHONE_API, "${Device.api}")
+            put(UMEvent.KEY_PHONE_DEVICE, Device.deviceName)
+            put(UMEvent.KEY_PHONE_LANGUAGE, LanguageModel.getCurrentLanguageTag())
+            put(
+                UMEvent.KEY_PHONE_NAME,
+                "${Device.deviceName} ${Device.api} ${LanguageModel.getCurrentLanguageTag()} ${LanguageModel.timeZoneId}"
+            )
+        }
+    }
+
+    @UpdateFlag
+    fun DslAdapter.renderBluetoothConnectItem(fscDevice: FscDevice?, tcpDevice: TcpDevice?) {
         BluetoothConnectItem()() {
             itemAnimateRes = R.anim.item_translate_to_left_animation
-            itemData = device
-            itemFscDevice = device
+            itemData = fscDevice ?: tcpDevice
+            itemFscDevice = fscDevice
+            itemTcpDevice = tcpDevice
             itemShowRssi = showRssi
         }
+    }
+
+    /**更新扫描状态布局*/
+    private fun updateScanStateLayout(viewHolder: DslViewHolder) {
+        val scan = bleModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING ||
+                wifiModel.scanState == WifiDeviceScan.STATE_SCAN_START
+
+        //loading
+        viewHolder.view(R.id.lib_loading_view)?.apply {
+            if (scan) {
+                //animate().rotationBy(360f).setDuration(240).start()
+                rotateAnimation(duration = 1000, config = {
+                    infinite()
+                })
+            } else {
+                cancelAnimator()
+            }
+        }
+
+        //radar
+        viewHolder.v<RadarScanLoadingView>(R.id.radar_scan_loading_view)?.loading(scan)
+        viewHolder.visible(R.id.radar_scan_loading_view, scan)
     }
 
     /**当前需要过滤的固件名*/
@@ -375,17 +535,16 @@ class BluetoothSearchHelper {
 
     /**切换扫描状态*/
     fun toggleScan() {
-        if (apiModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
-            apiModel.stopScan()
+        if (bleModel.bleStateData.value == FscBleApiModel.BLUETOOTH_STATE_SCANNING) {
+            bleModel.stopScan()
         } else {
-            apiModel.startScan()
+            bleModel.startScan()
         }
     }
 
     /**停止扫描*/
     fun stopScan() {
-        apiModel.stopScan()
+        bleModel.stopScan()
     }
-
 
 }

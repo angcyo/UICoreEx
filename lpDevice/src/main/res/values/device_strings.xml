@@ -113,6 +113,7 @@
 
     <string name="project_filter_tip">Please enter a project name</string>
 
+    <string name="discover_devices">Discover devices</string>
     <string name="selected">Selected</string>
     <string name="unselected">NotSelected</string>
     <string name="select_wifi_title">Select Wi-Fi</string>
@@ -134,5 +135,9 @@
     <string name="wifi_connect_error">Connection failed</string>
     <string name="wifi_connect_error_tip">1. Please make sure the device is turned on\n 2. The device needs to be on the same network as the mobile phone\n 3. After completing steps 1 and 2, click the refresh button</string>
     <string name="wifi_reconfigure">Reconfigure the network</string>
+    <string name="type_ble">Ble</string>
+    <string name="type_wifi">Wi-Fi</string>
+    <string name="not_connected">Not connected</string>
+    <string name="connecting">Connecting...</string>
 
 </resources>

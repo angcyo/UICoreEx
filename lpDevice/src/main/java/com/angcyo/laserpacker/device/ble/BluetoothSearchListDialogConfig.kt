@@ -28,7 +28,7 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
     init {
         dialogLayoutId = R.layout.dialog_bluetooth_search_list_layout
-        dialogTitle = _string(R.string.blue_connect)
+        dialogTitle = _string(R.string.discover_devices)
     }
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {

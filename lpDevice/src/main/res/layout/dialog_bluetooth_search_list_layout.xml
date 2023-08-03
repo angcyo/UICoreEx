@@ -57,12 +57,24 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/lib_recycler_view"
+            app:layout_constraintBottom_toTopOf="@id/scan_type_tab_layout"
             app:layout_constraintTop_toTopOf="parent"
             app:tab_item_equ_width_count_range="~6"
             app:tab_preview_item_count="6"
             app:tab_preview_item_layout_id="@layout/lib_segment_layout"
             tools:visibility="visible" />
+
+        <com.angcyo.tablayout.DslTabLayout
+            android:id="@+id/scan_type_tab_layout"
+            style="@style/LibTabLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="@id/lib_recycler_view"
+            app:layout_constraintTop_toBottomOf="@id/device_filter_tab_layout"
+            app:tab_indicator_width="40dp"
+            app:tab_item_is_equ_width="true"
+            app:tab_preview_item_count="2"
+            app:tab_preview_item_layout_id="@layout/lib_segment_layout" />
 
         <com.angcyo.widget.recycler.DslRecyclerView
             android:id="@+id/lib_recycler_view"
@@ -70,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/device_filter_tab_layout" />
+            app:layout_constraintTop_toBottomOf="@id/scan_type_tab_layout" />
 
         <View
             android:id="@+id/dialog_title_line_view"
