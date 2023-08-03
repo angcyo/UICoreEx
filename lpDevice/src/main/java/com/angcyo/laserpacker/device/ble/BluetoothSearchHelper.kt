@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import com.angcyo.base.dslAHelper
 import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.WifiApiModel
@@ -33,6 +34,7 @@ import com.angcyo.item.component.SearchAdapterFilter
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
 import com.angcyo.laserpacker.device.wifi.AddWifiDeviceFragment
+import com.angcyo.library.Library
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.Action
@@ -195,10 +197,17 @@ class BluetoothSearchHelper {
             itemHolder.click(R.id.add_device_button) {
                 //添加设备
                 targetWindow?.dismissWindow()
+
                 val context = lastContext
-                if (context is FragmentActivity) {
-                    context.dslFHelper {
-                        show(AddWifiDeviceFragment::class)
+                if (Library.isLaserPeckerApp()) {
+                    context.dslAHelper {
+                        start(AddWifiDeviceFragment::class)
+                    }
+                } else {
+                    if (context is FragmentActivity) {
+                        context.dslFHelper {
+                            show(AddWifiDeviceFragment::class)
+                        }
                     }
                 }
             }
