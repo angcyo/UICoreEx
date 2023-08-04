@@ -225,7 +225,7 @@ class TransferModel : ViewModel() {
                     }
                 } else {
                     "未成功进入数据传输模式:${error}".writeErrorLog()
-                    action(error)
+                    action(error ?: IllegalStateException("未成功进入数据传输模式"))
                 }
             }
         }
