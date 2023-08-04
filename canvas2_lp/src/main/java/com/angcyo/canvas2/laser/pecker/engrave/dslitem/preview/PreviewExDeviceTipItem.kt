@@ -1,6 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -9,6 +10,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.size
 import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
@@ -85,9 +87,18 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
 
     /**光源*/
     fun DslSpan.appendEngraveConfig() {
-        val moduleState = deviceStateModel.deviceStateData.value?.moduleState
-        append(" ")
-        append(deviceStateModel.getDeviceModuleLabel(moduleState))
+        val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+        val laserType = if (laserTypeList.size() == 1) {
+            //只有一种光,则直接显示
+            laserTypeList.first().type
+        } else {
+            (itemEngraveConfigEntity?.type ?: HawkEngraveKeys.lastType.toByte())
+        }
+        deviceStateModel.getDeviceLaserModule(laserType)?.toLabel()?.let {
+            append(" ")
+            append(it)
+        }
+
         appendFocalDistance()
         appendSupportTip()
     }
