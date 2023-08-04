@@ -19,6 +19,7 @@ import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.vmApp
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.library.L
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.onMainOnce
@@ -346,9 +347,9 @@ class DeviceStateModel : ViewModel() {
         vmApp<FscBleApiModel>().haveDeviceConnected() || vmApp<WifiApiModel>().isTcpConnected()
 
     /**断开设备连接*/
-    fun disconnectDevice(data: Any?) {
+    fun disconnectDevice(info: TcpConnectInfo?) {
         vmApp<FscBleApiModel>().disconnectAll()
-        vmApp<WifiApiModel>().disconnect(data)
+        vmApp<WifiApiModel>().disconnect(info)
     }
 
     /**设备是否处理不安全状态, 此状态下禁止操作预览/打印*/

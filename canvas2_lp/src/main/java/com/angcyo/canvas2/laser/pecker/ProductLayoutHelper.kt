@@ -18,6 +18,7 @@ import com.angcyo.dialog.messageDialog
 import com.angcyo.drawable.StateBarDrawable
 import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.model.PreviewModel
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -118,7 +119,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
             if (it?.isModeShutdown() == true) {
                 //关机后, 断开设备
-                deviceStateModel.disconnectDevice("设备状态:关机")
+                deviceStateModel.disconnectDevice(TcpConnectInfo(data = "设备状态:关机"))
             }
 
             it?.let {

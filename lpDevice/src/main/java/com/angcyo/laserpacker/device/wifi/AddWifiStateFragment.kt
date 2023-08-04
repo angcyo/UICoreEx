@@ -163,7 +163,7 @@ class AddWifiStateFragment : BaseDslFragment() {
     /**连接到wifi设备*/
     private fun connectWifiDevice(tcpDevice: TcpDevice) {
         HawkEngraveKeys.lastWifiIp = tcpDevice.address
-        vmApp<WifiApiModel>().connect(tcpDevice, false)
+        vmApp<WifiApiModel>().connect(tcpDevice, null)
         toConfigState(AddWifiStateItem.STATE_SUCCESS)
     }
 

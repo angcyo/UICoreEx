@@ -18,6 +18,10 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.ex.getWifiIP
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
+import com.angcyo.objectbox.findAll
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity
+import com.angcyo.objectbox.laser.pecker.entity.DeviceConnectEntity_
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.max
 import kotlin.math.min
@@ -89,12 +93,36 @@ class WifiDeviceScan {
             val max = max(v1, v2)
 
             val startIp = clamp(HawkEngraveKeys.scanStartIp, min, max)
+            val ipList = mutableSetOf<String>()
+            HawkEngraveKeys.lastWifiIp?.let {
+                //上次扫描的ip
+                ipList.add(it)
+            }
+
+            //上次连接过的设备
+            val list = DeviceConnectEntity::class.findAll(LPBox.PACKAGE_NAME) {
+                orderDesc(DeviceConnectEntity_.entityId)
+                apply(
+                    DeviceConnectEntity_.isWifiConnect.equal(true)
+                        .and(DeviceConnectEntity_.deviceAddress.notNull())
+                )
+            }
+            list.forEach {
+                val deviceAddress = it.deviceAddress
+                if (!deviceAddress.isNullOrBlank()) {
+                    ipList.add(deviceAddress)
+                }
+            }
             for (i in startIp..max) {
-                queue.add(ScanTask("$forepartIp.$i", port))
+                ipList.add("$forepartIp.$i")
             }
             for (i in (startIp - 1) downTo min) {
-                queue.add(ScanTask("$forepartIp.$i", port))
+                ipList.add("$forepartIp.$i")
             }
+            ipList.forEach { ip ->
+                queue.add(ScanTask(ip, port))
+            }
+            
             scanTask = RConcurrentTask(queue, onFinish = {
                 doMain {
                     lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)

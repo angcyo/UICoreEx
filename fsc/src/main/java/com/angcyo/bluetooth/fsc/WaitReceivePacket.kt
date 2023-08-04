@@ -11,6 +11,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryStateParser
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpState
 import com.angcyo.library.L
 import com.angcyo.library.ex._string
@@ -155,7 +156,7 @@ class WaitReceivePacket(
 
     private val wifiListener = object : Tcp.TcpListener {
 
-        override fun onConnectStateChanged(tcp: Tcp, state: TcpState) {
+        override fun onConnectStateChanged(tcp: Tcp, state: TcpState, info: TcpConnectInfo?) {
             if (state.state == Tcp.CONNECT_STATE_ERROR) {
                 end()
                 error(IllegalArgumentException())

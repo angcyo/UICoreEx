@@ -100,17 +100,8 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
         }
 
         /**指定的蓝牙设备名, 是否是wifi设备*/
-        fun isWifiDevice(deviceName: String?): Boolean {
-            val name = formatDeviceName(deviceName)
-            //LP5 LX2 才有WIFI模块
-            if (name?.startsWith(LaserPeckerHelper.LV) == true ||
-                name?.startsWith(LaserPeckerHelper.CII) == true
-            ) {
-                //添加新的item
-                return true
-            }
-            return false
-        }
+        fun isWifiDevice(deviceName: String?): Boolean =
+            LaserPeckerHelper.isWifiDevice(formatDeviceName(deviceName))
 
         fun isLp5Device(deviceName: String?): Boolean {
             val name = formatDeviceName(deviceName)

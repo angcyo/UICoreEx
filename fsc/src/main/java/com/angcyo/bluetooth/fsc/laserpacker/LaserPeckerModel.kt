@@ -190,6 +190,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
 
     fun isSupportDithering() = productInfoData.value?.supportDithering == true
 
+    /**具有wifi功能的产品*/
+    fun isWifiProduct() = LaserPeckerHelper.isWifiDevice(productInfoData.value?.deviceName)
+
     //<editor-fold desc="Command">
 
     /**发送更新预览范围指令, 支持Z轴判断

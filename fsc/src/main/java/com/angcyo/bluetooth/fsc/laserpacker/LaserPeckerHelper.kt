@@ -259,6 +259,19 @@ object LaserPeckerHelper {
             else -> PxInfo(DPI_254, PX_1K, "1K$_d")
         }
     }
+
+    /**指定的蓝牙设备名, 是否是wifi设备*/
+    fun isWifiDevice(deviceName: String?): Boolean {
+        //LP5 LX2 才有WIFI模块
+        if (deviceName?.startsWith(LV) == true ||
+            deviceName?.startsWith(CII) == true
+        ) {
+            //添加新的item
+            return true
+        }
+        return false
+    }
+
     //PxInfo(dpi ?: DPI_254, vmApp<LaserPeckerModel>().productInfoData.value ?.widthPhys ?: 100)
 
     /**缩放图片到[px]指定的宽高*/

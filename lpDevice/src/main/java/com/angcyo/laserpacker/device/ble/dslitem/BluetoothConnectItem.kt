@@ -3,6 +3,7 @@ package com.angcyo.laserpacker.device.ble.dslitem
 import com.angcyo.bluetooth.fsc.core.DeviceConnectState
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.library.ex._string
@@ -26,12 +27,12 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
                 //wifi设备
                 if (wifiApi.connectState(itemTcpDevice) == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //已经连接
-                    wifiApi.disconnect(true)
+                    wifiApi.disconnect(TcpConnectInfo(isActiveDisConnected = true))
                 } else {
                     //未连接
                     wifiApi.stopScan()
                     fscApi.disconnectAll(true) //断开所有蓝牙连接
-                    wifiApi.connect(itemTcpDevice!!, false)
+                    wifiApi.connect(itemTcpDevice!!, null)
                     onSearchFinish()
                 }
             } else {
@@ -39,7 +40,7 @@ class BluetoothConnectItem : BluetoothDeviceItem() {
                 if (fscApi.isConnectState(itemFscDevice)) {
                     fscApi.disconnect(itemFscDevice)
                 } else {
-                    wifiApi.disconnectAll(true) //断开所有Wifi连接
+                    wifiApi.disconnectAll(null) //断开所有Wifi连接
                     fscApi.connect(itemFscDevice, false, true)
                     onSearchFinish()
                 }

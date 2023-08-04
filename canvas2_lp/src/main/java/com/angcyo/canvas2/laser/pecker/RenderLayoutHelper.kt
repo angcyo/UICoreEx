@@ -160,6 +160,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     }
                 }
             }
+            /*if (isDebug()) {
+                ControlOperateItem()() {
+                    initItem()
+                }
+            }*/
             if (!closeCanvasItemsFun.have("_setting_")) {
                 ControlSettingItem()() {
                     initItem()

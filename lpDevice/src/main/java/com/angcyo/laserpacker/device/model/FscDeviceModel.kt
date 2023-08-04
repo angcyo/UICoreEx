@@ -18,6 +18,7 @@ import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
@@ -95,22 +96,23 @@ class FscDeviceModel : LifecycleViewModel() {
                 if (tcpState.state == Tcp.CONNECT_STATE_CONNECTING) {
                     "WIFI准备连接${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_ERROR) {
-                    "WIFI连接失败${log}:${it.data}".writeErrorLog()
+                    "WIFI连接失败${log}:${it.connectInfo}".writeErrorLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_DISCONNECT) {
                     //wifi断开
                     productAssignLocationBounds = null
                     toastQQ(_string(R.string.wifi_disconnected))
-                    onDeviceDisconnect(it.data == true)
-                    "WIFI已断开[${(it.data == true).toDC()}]:${log}".writeBleLog()
+                    onDeviceDisconnect(it.connectInfo?.isActiveDisConnected == true)
+                    "WIFI已断开[${(it.connectInfo?.isActiveDisConnected == true).toDC()}]:${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //WIFI连接成功
-                    val isAutoConnect = tcpState.data == true
+                    val isAutoConnect = tcpState.connectInfo?.isAutoConnect == true
                     onDeviceConnect(
                         tcpDevice.deviceName ?: "",
                         tcpDevice.address,
                         tcpDevice.port,
                         isAutoConnect,
-                        wifiApiModel.connectStartTime
+                        wifiApiModel.connectStartTime,
+                        tcpState.connectInfo?.isReConnect == false
                     )
                     "WIFI连接成功[${isAutoConnect.toDC()}]:${log}".writeBleLog()
                 }
@@ -145,7 +147,8 @@ class FscDeviceModel : LifecycleViewModel() {
                         deviceConnectState.device.address,
                         0,
                         deviceConnectState.isAutoConnect,
-                        deviceConnectState.connectTime
+                        deviceConnectState.connectTime,
+                        true
                     )
                 }
             }
@@ -280,7 +283,10 @@ class FscDeviceModel : LifecycleViewModel() {
             val address = list[0]
             val port = list[1].toInt()
             "准备自动连接设备[null]:${address}:${port}".writeBleLog()
-            wifiApiModel.connect(TcpDevice(address, port, name), true)
+            wifiApiModel.connect(
+                TcpDevice(address, port, name),
+                TcpConnectInfo(isAutoConnect = true)
+            )
             return
         }
         if (HawkEngraveKeys.AUTO_CONNECT_DEVICE   /*无设备连接*/) {
@@ -309,7 +315,7 @@ class FscDeviceModel : LifecycleViewModel() {
                             "准备自动连接设备[${it.deviceName}]:${it.deviceAddress}:${it.wifiPort}".writeBleLog()
                             wifiApiModel.connect(
                                 TcpDevice(it.deviceAddress ?: "", it.wifiPort, it.deviceName),
-                                true
+                                TcpConnectInfo(isAutoConnect = true)
                             )
                         } else {
                             //蓝牙连接的设备
@@ -329,7 +335,8 @@ class FscDeviceModel : LifecycleViewModel() {
         address: String,
         port: Int,
         isAutoConnect: Boolean,
-        connectTime: Long
+        connectTime: Long,
+        toast: Boolean
     ) {
         //发送初始化指令
         LaserPeckerHelper.sendInitCommand(name, address, isAutoConnect) {
@@ -368,7 +375,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     it != null
                 }
             }
-        } else {
+        } else if (toast) {
             if (port > 0) {
                 toastQQ(_string(R.string.wifi_connected))
             } else {

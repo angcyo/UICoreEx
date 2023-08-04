@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.angcyo.bluetooth.fsc.core.WifiDeviceScan
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.http.tcp.Tcp
+import com.angcyo.http.tcp.TcpConnectInfo
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.http.tcp.TcpState
 import com.angcyo.library.annotation.CallPoint
@@ -58,8 +59,8 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     /**TCP状态监听*/
     val tcpListener = object : Tcp.TcpListener {
-        override fun onConnectStateChanged(tcp: Tcp, state: TcpState) {
-            super.onConnectStateChanged(tcp, state)
+        override fun onConnectStateChanged(tcp: Tcp, state: TcpState, info: TcpConnectInfo?) {
+            super.onConnectStateChanged(tcp, state, info)
             tcpStateData.updateValue(state)
             tcpConnectDeviceOnceData.updateValue(state.tcpDevice)
             if (state.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
@@ -137,27 +138,21 @@ class WifiApiModel : ViewModel(), IViewModel {
     /**连接开始的时间*/
     var connectStartTime: Long = 0L
 
-    /**连接设备*/
-    fun connect(data: Any?) {
-        HawkEngraveKeys.lastWifiConnect = true
-        connectStartTime = nowTime()
-        tcp.connect(data)
-    }
-
     /**设备的连接状态*/
     fun connectState(device: TcpDevice?): Int {
         return device?.connectState ?: Tcp.CONNECT_STATE_DISCONNECT
     }
 
     /**连接设备
-     * [data] true 表示自动连接, false 表示手动连接
+     * [info] true 表示自动连接, false 表示手动连接
      * */
-    fun connect(device: TcpDevice, data: Any?) {
+    fun connect(device: TcpDevice, info: TcpConnectInfo?) {
         HawkEngraveKeys.lastWifiConnect = true
+        HawkEngraveKeys.lastWifiIp = device.address
         if (tcp.tcpDevice == null || tcp.tcpDevice == device) {
             tcp.tcpDevice = device
         } else {
-            tcp.cancel(data == false /*手动连接, 则表示自动断开其他设备*/)
+            tcp.cancel(TcpConnectInfo())
             tcp.listeners.remove(tcpListener)
 
             //重新建立连接
@@ -165,33 +160,33 @@ class WifiApiModel : ViewModel(), IViewModel {
             tcp.tcpDevice = device
         }
         connectStartTime = nowTime()
-        tcp.connect(data)
+        tcp.connect(info)
     }
 
     /**断开连接
      * [data] 是否是主动断开*/
-    fun disconnect(data: Any?) {
+    fun disconnect(info: TcpConnectInfo?) {
         tcp.tcpDevice?.let {
-            disconnect(it, data)
+            disconnect(it, info)
         }
     }
 
     /**断开所有设备*/
-    fun disconnectAll(data: Any?) {
+    fun disconnectAll(info: TcpConnectInfo?) {
         tcp.tcpDevice?.let {
-            disconnect(it, data)
+            disconnect(it, info)
         }
         tcpConnectDeviceListData.value!!.forEach {
-            disconnect(it, data)
+            disconnect(it, info)
         }
     }
 
     /**断开设备, 但是之后通知
-     * [data] 是否是主动断开
+     * [info] 是否是主动断开
      * */
-    fun disconnect(device: TcpDevice?, data: Any?) {
+    fun disconnect(device: TcpDevice?, info: TcpConnectInfo?) {
         device ?: return
-        tcp.cancel(data) //取消连接, 这里应该要支持多设备连接
+        tcp.cancel(info) //取消连接, 这里应该要支持多设备连接
     }
 
     //---
