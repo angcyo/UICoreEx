@@ -142,7 +142,6 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
             //动画资源
             _vh.v<LottieAnimationView>(R.id.device_image_view)?.apply {
                 when (getDeviceType(deviceName)) {
-                    LaserPeckerHelper.CI -> setImageResource(getDeviceImageRes(name))
                     LaserPeckerHelper.LIV -> {
                         imageAssetsFolder = "lottie/L4/images"
                         setAnimation("lottie/L4/data.json")
@@ -163,10 +162,7 @@ class DeviceConnectTipActivity : BaseDialogActivity() {
                         setAnimation("lottie/L1/data.json")
                     }
 
-                    else -> {
-                        imageAssetsFolder = "lottie/L1/images"
-                        setAnimation("lottie/L1/data.json")
-                    }
+                    else -> setImageResource(getDeviceImageRes(name))
                 }
             }
         }
