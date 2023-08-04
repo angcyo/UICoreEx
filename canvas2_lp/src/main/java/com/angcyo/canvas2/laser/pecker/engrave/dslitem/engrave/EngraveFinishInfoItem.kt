@@ -30,6 +30,9 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                 EngraveFlowDataHelper.getLayerTransferData(itemTaskId, itemLayerId)
 
             engraveConfigEntity?.let {
+                //雕刻模块
+                add(moduleData(engraveConfigEntity.type))
+
                 //材质 分辨率
                 add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)))
                 var dpi = engraveConfigEntity.dpi
@@ -41,8 +44,6 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
                 val findPxInfo =
                     LaserPeckerHelper.findPxInfo(itemLayerId ?: LaserPeckerHelper.LAYER_LINE, dpi)
                 add(resolutionData(findPxInfo.toText()))
-                //雕刻模块
-                add(moduleData(engraveConfigEntity.type))
 
                 if (deviceStateModel.isPenMode(it.moduleState)) {
                     //握笔模块下,只有 加速级别 雕刻速度
