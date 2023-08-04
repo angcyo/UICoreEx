@@ -27,6 +27,6 @@
   "enableFun": null,
   "maxEngraveItemCount": 30,
   "updateHawkCommand": "",
-  "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_zh",
-  "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_en"
+  "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_en",
+  "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh"
 }
