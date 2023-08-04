@@ -136,8 +136,6 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
-
                 write(dataDir) //2023-8-4
 
                 //塞满34个
@@ -230,8 +228,6 @@ data class DataCmd(
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
 
-                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
-
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
                 //第21个字节开始 共36个字节的文件名
@@ -309,8 +305,6 @@ data class DataCmd(
 
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
-
-                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 write(dataDir) //2023-8-4
 
@@ -395,8 +389,6 @@ data class DataCmd(
 
                 //dpi,占用2个字节
                 write(dpi.toDpiInt(), 2) //d5
-
-                write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
 
                 write(dataDir) //2023-8-4
 
