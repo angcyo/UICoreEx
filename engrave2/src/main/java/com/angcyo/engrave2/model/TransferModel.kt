@@ -225,11 +225,11 @@ class TransferModel : ViewModel() {
                     }
                 } else {
                     "未成功进入数据传输模式:${error}".writeErrorLog()
+                    error?.printStackTrace()
                     action(error ?: IllegalStateException("未成功进入数据传输模式"))
                 }
             }
         }
-
     }
 
     /**雕刻数据转换管理*/
