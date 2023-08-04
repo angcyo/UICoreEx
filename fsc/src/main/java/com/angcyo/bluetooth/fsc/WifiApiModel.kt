@@ -17,6 +17,7 @@ import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmData
 import com.angcyo.viewmodel.vmDataNull
 import com.angcyo.viewmodel.vmDataOnce
+import java.net.Proxy
 
 /**
  * WIFI收发指令
@@ -108,6 +109,7 @@ class WifiApiModel : ViewModel(), IViewModel {
 
     private fun createTcp(): Tcp {
         return Tcp().apply {
+            proxy = Proxy.NO_PROXY
             listeners.add(tcpListener)
             initTcpConfig(this)
         }
