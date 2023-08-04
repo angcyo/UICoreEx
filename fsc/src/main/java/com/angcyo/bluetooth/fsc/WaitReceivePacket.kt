@@ -187,7 +187,7 @@ class WaitReceivePacket(
         if (autoSend) {
             if (WifiApiModel.useWifi()) {
                 wifiApi.tcp.listeners.add(wifiListener)
-                wifiApi.tcp.send(sendPacket)
+                wifiApi.tcp.send(sendPacket, receiveTimeout)
             } else {
                 api.addPacketListener(this)
                 api.send(address, sendPacket)
