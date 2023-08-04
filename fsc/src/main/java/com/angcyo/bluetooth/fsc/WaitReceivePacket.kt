@@ -157,13 +157,13 @@ class WaitReceivePacket(
     private val wifiListener = object : Tcp.TcpListener {
 
         override fun onConnectStateChanged(tcp: Tcp, state: TcpState, info: TcpConnectInfo?) {
-            if (state.state == Tcp.CONNECT_STATE_ERROR) {
+            if (state.state == Tcp.CONNECT_STATE_ERROR || state.state == Tcp.CONNECT_STATE_DISCONNECT) {
                 end()
                 error(IllegalArgumentException())
             }
         }
 
-        override fun onSendStateChanged(tcp: Tcp, state: Int, allSize: Int, error: Exception?) {
+        override fun onSendStateChanged(tcp: Tcp, state: Int, sendAllSize: Int, error: Exception?) {
             if (state == Tcp.SEND_STATE_ERROR) {
                 end()
                 error(error ?: IllegalArgumentException())
