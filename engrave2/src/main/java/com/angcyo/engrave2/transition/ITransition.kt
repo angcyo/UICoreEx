@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
-import com.angcyo.engrave2.data.BitmapPath
 import com.angcyo.engrave2.data.TransitionParam
 import java.io.File
 
@@ -15,19 +14,10 @@ import java.io.File
  */
 interface ITransition {
 
-    /**将图片[bitmap]转换成机器雕刻的字节数据,
-     * 通常取图片的[Color.RED]通道颜色即可*/
-    @Deprecated("请使用性能更好的[covertBitmap2BytesJni]方法")
-    fun covertBitmap2Bytes(bitmap: Bitmap): ByteArray
-
     /**
      * [outputFilePath] 数据写入到此文件
      * [covertBitmap2Bytes]*/
-    fun covertBitmap2BytesJni(bitmap: Bitmap, outputFilePath: String?): Boolean
-
-    /**将图片[bitmap]转换成的路径数据*/
-    @Deprecated("请使用性能更好的[covertBitmap2BytesJni]方法")
-    fun covertBitmap2BP(bitmap: Bitmap): List<BitmapPath>
+    fun covertBitmap2BytesJni(bitmap: Bitmap, outputFilePath: String?, orientation: Int): Boolean
 
     /**[covertBitmap2BP]
      * 返回的是数据的段数*/
@@ -36,13 +26,9 @@ interface ITransition {
         outputFilePath: String?, //数据写入到此文件
         logFilePath: String?,  //日志写入到此文件
         grayThreshold: Int,
-        alphaThreshold: Int
+        alphaThreshold: Int,
+        orientation: Int
     ): Long
-
-    /**将图片[bitmap]转换成的抖动数据
-     * [compress] 是否要压缩数据, 将8个像素合并成1位, 否则1个像素1字节*/
-    @Deprecated("请使用性能更好的[covertBitmap2DitheringJni]方法")
-    fun covertBitmap2Dithering(bitmap: Bitmap, compress: Boolean): Pair<List<String>, ByteArray>
 
     /**[outputFilePath] 抖动后的数据输出路径
      * [logFilePath] 010101日志输出路径
@@ -56,7 +42,8 @@ interface ITransition {
         logFilePath: String?,  //日志写入到此文件
         grayThreshold: Int,
         alphaThreshold: Int,
-        compress: Boolean
+        compress: Boolean,
+        orientation: Int
     ): Boolean
 
     /**将图片[bitmap]转换成的GCode数据

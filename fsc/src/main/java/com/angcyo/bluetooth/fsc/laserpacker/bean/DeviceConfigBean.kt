@@ -29,6 +29,10 @@ data class DeviceConfigBean(
     /**支持的外设*/
     var ex: String? = null,
 
+    /**需要旋转的数据外设, 当这些外设的使能开关打开时, 需要旋转数据
+     * [ex]*/
+    var dataRotateEx: String? = null,
+
     /**第三轴的模式*/
     var zDirList: String? = null,
 
@@ -97,5 +101,4 @@ data class DeviceConfigBean(
         }
         return LayerConfigBean(layerId, dpiList?.filterModuleDpiList())
     }
-
 }

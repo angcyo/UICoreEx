@@ -119,6 +119,9 @@ data class TransferDataEntity(
     /**雕刻显示的文件名, 36个字节*/
     var name: String? = null,
 
+    /**[com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity.dataDir]*/
+    var dataDir: Int = 0,
+
     //---
 
     /**

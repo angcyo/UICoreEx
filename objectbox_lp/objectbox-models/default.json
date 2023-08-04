@@ -197,7 +197,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "12:8005736537806662218",
+      "lastPropertyId": "13:8248562746091545178",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -250,6 +250,11 @@
           "id": "12:8005736537806662218",
           "name": "originHeight",
           "type": 7
+        },
+        {
+          "id": "13:8248562746091545178",
+          "name": "dataDir",
+          "type": 5
         }
       ],
       "relations": []
@@ -389,7 +394,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "26:7281112301076844264",
+      "lastPropertyId": "27:8921018387420599454",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -502,6 +507,11 @@
           "id": "26:7281112301076844264",
           "name": "offsetTop",
           "type": 7
+        },
+        {
+          "id": "27:8921018387420599454",
+          "name": "dataDir",
+          "type": 5
         }
       ],
       "relations": []

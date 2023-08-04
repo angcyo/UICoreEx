@@ -40,8 +40,12 @@ fun Bitmap.engraveColorBytes(channelType: Int = Color.RED): ByteArray {
     }
 }
 
-fun Bitmap.toColorBytes(outputFilePath: String?, channelType: Int = Color.GRAY): Boolean {
-    return BitmapHandle.toColorBytes(this, channelType, outputFilePath)
+fun Bitmap.toColorBytes(
+    outputFilePath: String?,
+    channelType: Int = Color.GRAY,
+    orientation: Int = LinearLayout.HORIZONTAL
+): Boolean {
+    return BitmapHandle.toColorBytes(this, channelType, outputFilePath, orientation)
 }
 
 /**机器雕刻的色彩数据可视化*/
@@ -76,12 +80,14 @@ fun Bitmap.toBitmapPathJni(
     logFilePath: String?,
     grayThreshold: Int,
     alphaThreshold: Int,
+    orientation: Int
 ): Long = BitmapHandle.toBitmapPath(
     this,
     grayThreshold,
     alphaThreshold,
     outputFilePath,
-    logFilePath
+    logFilePath,
+    0, 0, orientation
 )
 
 /**[bitmap] 图片转路径数据
@@ -270,18 +276,24 @@ fun Bitmap.toBitmapByteJni(
     logFilePath: String? = null,  //日志写入到此文件
     grayThreshold: Int = LibHawkKeys.grayThreshold,
     alphaThreshold: Int = LibHawkKeys.alphaThreshold,
-    compress: Boolean = true
+    compress: Boolean = true,
+    orientation: Int = LinearLayout.HORIZONTAL
 ) = BitmapHandle.toPixelBytes(
     this,
     grayThreshold,
     alphaThreshold,
     compress,
     outputFilePath,
-    logFilePath
+    logFilePath,
+    orientation
 )
 
 /**将[logFilePath]文件转换成图片*/
-fun String?.toEngraveDitheringBitmapJni(width: Int, height: Int): Bitmap? {
+fun String?.toEngraveDitheringBitmapJni(
+    width: Int,
+    height: Int,
+    orientation: Int = LinearLayout.HORIZONTAL
+): Bitmap? {
     this ?: return null
     val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(result)
@@ -291,7 +303,7 @@ fun String?.toEngraveDitheringBitmapJni(width: Int, height: Int): Bitmap? {
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
     }
-    BitmapHandle.parsePixelLogToBitmap(this, canvas, paint)
+    BitmapHandle.parsePixelLogToBitmap(this, canvas, paint, orientation)
     return result
 }
 

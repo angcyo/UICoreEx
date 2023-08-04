@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.LayerConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.filterModuleDpiList
+import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 
@@ -110,8 +111,6 @@ data class LaserPeckerProductInfo(
      * 如果支持:则抖动算法的图片发送0x60的数据, 否则发送0x10的数据*/
     var supportDithering: Boolean = true,
 
-    /**支持的外设*/
-    var ex: String? = null,
 
     /**第三轴的模式列表*/
     var zModeList: List<ZModel>? = null,
@@ -162,27 +161,27 @@ data class LaserPeckerProductInfo(
      * */
     fun isCI(): Boolean = name == LaserPeckerHelper.CI
 
+    fun isCII(): Boolean = name == LaserPeckerHelper.CII
+
     //---
 
     fun isL1() = isLI()
-
     fun isL2() = isLII()
-
     fun isL3() = isLIII()
-
     fun isL4() = isLIV()
-
+    fun isL5() = isLV()
     fun isC1() = isCI()
+    fun isC2() = isCII()
 
     /**是否是C系列*/
-    fun isCSeries() = isC1()
+    fun isCSeries() = isC1() || isC2()
 
     /**是否是lp系列*/
-    fun isLPSeries() = isL1() || isL2() || isL3() || isL4()
+    fun isLPSeries() = isL1() || isL2() || isL3() || isL4() || isL5()
 
-    fun isSupportZ() = ex?.split(",")?.contains("z") == true
-    fun isSupportS() = ex?.split(",")?.contains("s") == true
-    fun isSupportR() = ex?.split(",")?.contains("r") == true
+    fun isSupportZ() = deviceConfigBean?.ex?.haveExStr(QuerySettingParser.EX_Z) == true
+    fun isSupportS() = deviceConfigBean?.ex?.haveExStr(QuerySettingParser.EX_S) == true
+    fun isSupportR() = deviceConfigBean?.ex?.haveExStr(QuerySettingParser.EX_R) == true
 
     /**获取指定图层的配置信息
      * [layerId] 图层id*/
@@ -192,4 +191,17 @@ data class LaserPeckerProductInfo(
             pxList.filterModuleDpiList()
         )
     }
+}
+
+/**
+ * ```
+ * "z,s,r" 中是否包含指定的字符串
+ * ```
+ * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_Z]
+ * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_R]
+ * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_S]
+ * [com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser.EX_CAR]
+ * */
+fun String.haveExStr(ex: String?): Boolean {
+    return split(",").contains(ex)
 }

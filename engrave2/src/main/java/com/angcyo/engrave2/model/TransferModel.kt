@@ -111,7 +111,8 @@ class TransferModel : ViewModel() {
                     transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_PICTURE,
                     dpi,
                     name,
-                    bytes
+                    bytes,
+                    transferDataEntity.dataDir
                 )
                 //0x20 GCode数据
                 DataCmd.ENGRAVE_TYPE_GCODE -> DataCmd.gcodeData(
@@ -138,6 +139,7 @@ class TransferModel : ViewModel() {
                     bytes,
                     transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_FILL,
                     dpi,
+                    transferDataEntity.dataDir
                 )
                 //0x60 抖动数据, 二进制位
                 //DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING ->
@@ -151,6 +153,7 @@ class TransferModel : ViewModel() {
                     bytes,
                     transferDataEntity.layerId ?: LaserPeckerHelper.LAYER_PICTURE,
                     dpi,
+                    transferDataEntity.dataDir
                 )
             }
             return dataCmd

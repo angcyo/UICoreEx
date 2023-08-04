@@ -483,7 +483,6 @@ object LaserPeckerHelper {
             this.softwareVersion = softwareVersion
             this.hardwareVersion = hardwareVersion
 
-            this.ex = configBean.ex
             val modeList = mutableListOf<ZModel>()
 
             configBean.zDirList?.lowercase()?.split(",")?.let {

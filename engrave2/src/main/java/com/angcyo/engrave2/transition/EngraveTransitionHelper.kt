@@ -107,7 +107,11 @@ object EngraveTransitionHelper {
         val index = transferDataEntity.index
         val dataPath = EngraveHelper.getTransferDataPath("$index")
         transferDataEntity.dataPath = dataPath
-        transition.covertBitmap2BytesJni(dpiBitmap, transferDataEntity.dataPath)
+        transition.covertBitmap2BytesJni(
+            dpiBitmap,
+            transferDataEntity.dataPath,
+            transferConfigEntity.dataDir
+        )
 
         //灰度图, 需要严格使用图片的宽高否则雕刻出来的数据会异常
         transferDataEntity.width = dpiBitmap.width
@@ -138,7 +142,14 @@ object EngraveTransitionHelper {
             if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN && !ignoreBitmapLog(dpiBitmap)) {
                 //3:数据的预览图片
                 val previewBitmap = withBitmapPaint(dpiBitmap) {
-                    BitmapHandle.parseColorBytesToBitmap(dataPath, this, it, dpiBitmap.width)
+                    BitmapHandle.parseColorBytesToBitmap(
+                        dataPath,
+                        this,
+                        it,
+                        dpiBitmap.width,
+                        dpiBitmap.height,
+                        transferConfigEntity.dataDir
+                    )
                 }
                 EngraveHelper.saveEngraveData(
                     index,
@@ -188,7 +199,8 @@ object EngraveTransitionHelper {
                 dataPath,
                 logPath,
                 LibHawkKeys.grayThreshold,
-                LibHawkKeys.alphaThreshold
+                LibHawkKeys.alphaThreshold,
+                transferConfigEntity.dataDir
             ).toInt()
 
         if (dataPath.file().length() <= 0 && retryCount <= HawkEngraveKeys.engraveRetryCount) {
@@ -210,7 +222,12 @@ object EngraveTransitionHelper {
             //3:保存一份数据的预览图
             if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN && !ignoreBitmapLog(dpiBitmap)) {
                 val previewBitmap = withBitmapPaint(dpiBitmap) {
-                    BitmapHandle.parseBitmapPathToBitmap(logPath, this, it)
+                    BitmapHandle.parseBitmapPathToBitmap(
+                        logPath,
+                        this,
+                        it,
+                        transferConfigEntity.dataDir
+                    )
                 }
                 EngraveHelper.saveEngraveData(
                     index,
@@ -331,7 +348,8 @@ object EngraveTransitionHelper {
             logPath,//日志输出
             LibHawkKeys.grayThreshold,
             LibHawkKeys.alphaThreshold,
-            true
+            true,
+            transferConfigEntity.dataDir
         )
 
         //抖动图, 需要严格使用图片的宽高否则雕刻出来的数据会异常
@@ -365,8 +383,11 @@ object EngraveTransitionHelper {
 
             //3:保存一份数据的预览图
             if (HawkEngraveKeys.engraveDataLogLevel >= L.WARN && !ignoreBitmapLog(operateBitmap)) {
-                val previewBitmap =
-                    logPath.toEngraveDitheringBitmapJni(operateBitmap.width, operateBitmap.height)
+                val previewBitmap = logPath.toEngraveDitheringBitmapJni(
+                    operateBitmap.width,
+                    operateBitmap.height,
+                    transferConfigEntity.dataDir
+                )
                 EngraveHelper.saveEngraveData(
                     index,
                     previewBitmap,
@@ -555,8 +576,10 @@ object EngraveTransitionHelper {
     ) {
         val layerDpi = configEntity.getLayerConfigDpi(layerId)
         transferDataEntity.taskId = configEntity.taskId
-        transferDataEntity.dpi = layerDpi
         transferDataEntity.name = configEntity.name
+        transferDataEntity.dataDir = configEntity.dataDir
+
+        transferDataEntity.dpi = layerDpi
         transferDataEntity.index = provider.getEngraveDataIndex()
 
         @Pixel

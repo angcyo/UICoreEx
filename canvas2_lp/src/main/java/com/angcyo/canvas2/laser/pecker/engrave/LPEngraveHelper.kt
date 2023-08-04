@@ -165,6 +165,7 @@ object LPEngraveHelper {
             layerJson = LayerHelper.getProductLayerSupportPxJson()
             mergeData = false
             dataMode = null
+            dataDir = vmApp<LaserPeckerModel>().dataDir() //在发送数据时, 再设置一次
 
             //数据dpi恢复
             val list = getLayerRendererList(delegate, null)

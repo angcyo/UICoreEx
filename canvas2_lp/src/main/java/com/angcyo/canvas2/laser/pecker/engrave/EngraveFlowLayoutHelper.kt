@@ -265,10 +265,14 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
                                     //每次发送数据之前, 都生成一个新的任务
                                     val flowId = generateFlowId("准备发送文件")
                                     transferConfigEntity.taskId = flowId
+
+                                    //数据雕刻方向
+                                    transferConfigEntity.dataDir = laserPeckerModel.dataDir()
                                     HawkEngraveKeys.lastDpiLayerJson =
                                         transferConfigEntity.layerJson
                                             ?: HawkEngraveKeys.lastDpiLayerJson
                                     transferConfigEntity.lpSaveEntity()
+
                                     engraveConfigProvider.onSaveTransferConfig(
                                         this@EngraveFlowLayoutHelper,
                                         transferConfigEntity

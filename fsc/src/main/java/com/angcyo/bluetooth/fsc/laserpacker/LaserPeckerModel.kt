@@ -138,25 +138,55 @@ class LaserPeckerModel : ViewModel(), IViewModel {
         return deviceSettingData.value?.sRep == 1
     }
 
+    /**LP5数据需要旋转, Y轴扫描
+     * 0：从左到右，从上到下，X轴扫描；
+     * 1：从上到下，从左到右，Y轴扫描。（2023/7/25）
+     * */
+    fun dataDir(): Int {
+        when (val dataRotateEx = productInfoData.value?.deviceConfigBean?.dataRotateEx) {
+            null -> return 0
+            "*" -> return 1
+            else -> {
+                dataRotateEx.split(",").forEach {
+                    if (it == QuerySettingParser.EX_Z && isZOpen()) {
+                        return 1
+                    }
+                    if (it == QuerySettingParser.EX_R && isROpen()) {
+                        return 1
+                    }
+                    if (it == QuerySettingParser.EX_S && isSOpen()) {
+                        return 1
+                    }
+                    if (it == QuerySettingParser.EX_CAR && isCarConnect()) {
+                        return 1
+                    }
+                }
+            }
+        }
+        return 0
+    }
+
     //---
 
-    fun isL1() = productInfoData.value?.isLI() == true
+    fun isL1() = productInfoData.value?.isL1() == true
 
-    fun isL2() = productInfoData.value?.isLII() == true
+    fun isL2() = productInfoData.value?.isL2() == true
 
-    fun isL3() = productInfoData.value?.isLIII() == true
+    fun isL3() = productInfoData.value?.isL3() == true
 
-    fun isL4() = productInfoData.value?.isLIV() == true
+    fun isL4() = productInfoData.value?.isL4() == true
 
-    fun isL5() = productInfoData.value?.isLV() == true
+    fun isL5() = productInfoData.value?.isL5() == true
 
-    fun isC1() = productInfoData.value?.isCI() == true
+    fun isC1() = productInfoData.value?.isC1() == true
+
+    fun isC2() = productInfoData.value?.isC2() == true
 
     /**是否是C系列*/
-    fun isCSeries() = productInfoData.value?.isCI() == true
+    fun isCSeries() = productInfoData.value?.isCSeries() == true
 
     /**是否是lp系列*/
-    fun isLPSeries() = isL1() || isL2() || isL3() || isL4()
+    fun isLPSeries() = productInfoData.value?.isLPSeries() == true
 
     fun isSupportDithering() = productInfoData.value?.supportDithering == true
 

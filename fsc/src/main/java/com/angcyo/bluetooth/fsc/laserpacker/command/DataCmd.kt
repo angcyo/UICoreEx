@@ -95,7 +95,7 @@ data class DataCmd(
          *
          * [minX] 图片的x,y坐标. px修正过后的数据
          * [name] 下位机用来显示的文件名, 真正的文件名. 最大36个字节, 再补充一个1字节0的数据
-         *
+         * [dataDir] 雕刻方向状态。0：从左到右，从上到下，X轴扫描；1：从上到下，从左到右，Y轴扫描。（2023/7/25）
          * 0x10时图片数据
          * */
         fun bitmapData(
@@ -108,6 +108,7 @@ data class DataCmd(
             dpi: Float,
             name: String?,
             bitmapData: ByteArray?,
+            dataDir: Int
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -136,6 +137,8 @@ data class DataCmd(
                 write(dpi.toDpiInt(), 2) //d5
 
                 write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+
+                write(dataDir) //2023-8-4
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)
@@ -281,6 +284,7 @@ data class DataCmd(
             bytes: ByteArray?,
             layerId: String,
             dpi: Float,
+            dataDir: Int
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -307,6 +311,8 @@ data class DataCmd(
                 write(dpi.toDpiInt(), 2) //d5
 
                 write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+
+                write(dataDir) //2023-8-4
 
                 /*以下是0x30数据
                 //线段数 低16位
@@ -367,6 +373,7 @@ data class DataCmd(
             bytes: ByteArray?,
             layerId: String,
             dpi: Float,
+            dataDir: Int
         ): DataCmd {
             val logBuilder = StringBuilder()
             //数据头
@@ -390,6 +397,8 @@ data class DataCmd(
                 write(dpi.toDpiInt(), 2) //d5
 
                 write((LibLpHawkKeys.lastSlipSpace * 10).toInt(), 2) //d6
+
+                write(dataDir) //2023-8-4
 
                 //塞满34个
                 padLength(DEFAULT_NAME_BYTE_START)

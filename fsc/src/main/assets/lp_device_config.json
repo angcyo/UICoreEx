@@ -438,6 +438,7 @@
     "supportDitheringRange": "",
     "supportCut": true,
     "ex": "z,s,r",
+    "dataRotateEx": "s,r",
     "zDirList": "flat,cylinder",
     "focalDistance": 150,
     "widthPhys": 160,

@@ -51,6 +51,15 @@ data class TransferConfigEntity(
     @MM
     var originHeight: Float? = null,
 
+    /**
+     * 0：从左到右，从上到下，X轴扫描；
+     * 1：从上到下，从左到右，Y轴扫描。（2023/7/25）
+     *
+     * [android.widget.LinearLayout.HORIZONTAL] :0
+     * [android.widget.LinearLayout.VERTICAL]   :1
+     * */
+    var dataDir: Int = 0,
+
     //---
 
     /**是否要合并相同类型的数据, 比如GCode数据, 线段数据等
@@ -64,9 +73,10 @@ data class TransferConfigEntity(
     var mergeGcodeData: Boolean = false,
 
     /**是否要强制指定数据处理的模式
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_GCODE]
-     * [com.angcyo.engrave2.EngraveConstant.DATA_MODE_DITHERING]
+     *
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_GCODE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_DITHERING]
      * */
     var dataMode: Int? = null,
 ) {

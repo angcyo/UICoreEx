@@ -1,5 +1,6 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
+import android.graphics.Color
 import androidx.annotation.Keep
 import com.angcyo.http.base.toJson
 import com.angcyo.library.L
@@ -371,4 +372,7 @@ object HawkEngraveKeys {
 
     /**扫描端口超时时间, 1s*/
     var scanPortTimeout: Int by HawkPropertyValue<Any, Int>(1000)
+
+    /**灰度数据处理时, 需要使用的颜色通道*/
+    var grayChannelType: Int by HawkPropertyValue<Any, Int>(Color.GRAY)
 }

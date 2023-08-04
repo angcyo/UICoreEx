@@ -6,7 +6,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.bitmap.handle.BitmapHandle
-import com.angcyo.engrave2.data.BitmapPath
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
@@ -31,32 +31,26 @@ import java.io.FileOutputStream
  */
 class SimpleTransition : ITransition {
 
-    override fun covertBitmap2Bytes(bitmap: Bitmap) = bitmap.engraveColorBytes()
-
-    override fun covertBitmap2BytesJni(bitmap: Bitmap, outputFilePath: String?): Boolean =
-        bitmap.toColorBytes(outputFilePath)
-
-    override fun covertBitmap2BP(bitmap: Bitmap): List<BitmapPath> =
-        bitmap.toBitmapPath(LibHawkKeys.grayThreshold)
+    override fun covertBitmap2BytesJni(
+        bitmap: Bitmap,
+        outputFilePath: String?,
+        orientation: Int
+    ): Boolean = bitmap.toColorBytes(outputFilePath, HawkEngraveKeys.grayChannelType, orientation)
 
     override fun covertBitmap2BPJni(
         bitmap: Bitmap,
         outputFilePath: String?,
         logFilePath: String?,
         grayThreshold: Int,
-        alphaThreshold: Int
-    ): Long = bitmap.toBitmapPathJni(outputFilePath, logFilePath, grayThreshold, alphaThreshold)
-
-    override fun covertBitmap2Dithering(
-        bitmap: Bitmap,
-        compress: Boolean
-    ): Pair<List<String>, ByteArray> {
-        return if (compress) {
-            bitmap.toBitmapByte(LibHawkKeys.grayThreshold)
-        } else {
-            bitmap.toBitmapByteUncompress(LibHawkKeys.grayThreshold)
-        }
-    }
+        alphaThreshold: Int,
+        orientation: Int
+    ): Long = bitmap.toBitmapPathJni(
+        outputFilePath,
+        logFilePath,
+        grayThreshold,
+        alphaThreshold,
+        orientation
+    )
 
     override fun covertBitmap2DitheringJni(
         bitmap: Bitmap,
@@ -64,9 +58,16 @@ class SimpleTransition : ITransition {
         logFilePath: String?,
         grayThreshold: Int,
         alphaThreshold: Int,
-        compress: Boolean
-    ): Boolean =
-        bitmap.toBitmapByteJni(outputFilePath, logFilePath, grayThreshold, alphaThreshold, compress)
+        compress: Boolean,
+        orientation: Int
+    ): Boolean = bitmap.toBitmapByteJni(
+        outputFilePath,
+        logFilePath,
+        grayThreshold,
+        alphaThreshold,
+        compress,
+        orientation
+    )
 
     override fun covertBitmap2GCode(bitmap: Bitmap, bounds: RectF, params: TransitionParam): File {
         val file = OpenCV.bitmapToGCode(
