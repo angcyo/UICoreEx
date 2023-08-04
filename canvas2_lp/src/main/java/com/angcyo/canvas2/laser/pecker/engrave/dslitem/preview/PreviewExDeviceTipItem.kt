@@ -1,7 +1,6 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
-import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
@@ -10,8 +9,6 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
-import com.angcyo.library.ex.ensureInt
-import com.angcyo.library.ex.size
 import com.angcyo.library.getAppString
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.widget.DslViewHolder
@@ -77,21 +74,6 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
                 append(_string(R.string.device_s_batch_engrave_label))
                 appendEngraveConfig()
             }
-            //C1握笔模块
-            laserPeckerModel.isCSeries() -> {
-                val moduleState = deviceStateModel.deviceStateData.value?.moduleState
-                if (moduleState == null) {
-                    null
-                } else {
-                    span {
-                        append(_string(R.string.device_ex_engrave_module))
-                        append(":")
-                        append(deviceStateModel.getDeviceModuleLabel(moduleState))
-                        appendFocalDistance()
-                        appendSupportTip()
-                    }
-                }
-            }
 
             else -> span {
                 appendEngraveConfig()
@@ -103,21 +85,9 @@ class PreviewExDeviceTipItem : PreviewTipItem() {
 
     /**光源*/
     fun DslSpan.appendEngraveConfig() {
-        val laserTypeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-        if (laserTypeList.size() == 1) {
-            //只有一种光,则直接显示
-            laserTypeList.first().let {
-                append(" ${it.wave}nm ${it.power.ensureInt()}w")
-            }
-        } else {
-            (itemEngraveConfigEntity?.type ?: HawkEngraveKeys.lastType.toByte()).also { type ->
-                //多种光,则显示当前选择的光
-                val laser = laserTypeList.find { it.type == type }
-                laser?.let {
-                    append(" ${it.wave}nm ${it.power.ensureInt()}w")
-                }
-            }
-        }
+        val moduleState = deviceStateModel.deviceStateData.value?.moduleState
+        append(" ")
+        append(deviceStateModel.getDeviceModuleLabel(moduleState))
         appendFocalDistance()
         appendSupportTip()
     }

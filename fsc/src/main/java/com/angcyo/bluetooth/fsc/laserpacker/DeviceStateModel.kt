@@ -317,7 +317,7 @@ class DeviceStateModel : ViewModel() {
     fun getDeviceModuleLabel(moduleState: Int? = deviceStateData.value?.moduleState): String {
         return laserPeckerModel.productInfoData.value?.laserTypeList?.find {
             it.moduleState == moduleState
-        }?.toLabel()?.toStr() ?: "Unknown$moduleState"
+        }?.toLabel()?.toStr() ?: "Unknown${moduleState ?: -1}"
 
         /*return when (moduleState) {
             //0 5W激光
