@@ -146,21 +146,21 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
     /**开始预览*/
     open fun toPreview(item: EngraveHistoryItem) {
         initEngraveHistoryFlowLayout(item)
-        engraveFlowLayoutHelper.startPreview(this)
+        flowLayoutHelper.startPreview(this)
     }
 
     /**开始雕刻*/
     open fun toEngrave(item: EngraveHistoryItem) {
-        if (engraveFlowLayoutHelper.checkCanStartPreview(this)) {
+        if (flowLayoutHelper.checkCanStartPreview(this)) {
             initEngraveHistoryFlowLayout(item)
-            engraveFlowLayoutHelper.engraveFlow = if (item is EngraveIndexHistoryItem) {
+            flowLayoutHelper.engraveFlow = if (item is EngraveIndexHistoryItem) {
                 //机器数据, 数据一定存在
                 BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
             } else {
                 //app的历史记录, 有可能没有传输数据
                 BaseFlowLayoutHelper.ENGRAVE_FLOW_AUTO_TRANSFER
             }
-            engraveFlowLayoutHelper.showIn(this)
+            flowLayoutHelper.showIn(this)
         }
     }
 
@@ -176,7 +176,7 @@ abstract class BaseHistoryFragment : BaseDslFragment(), IEngraveRenderFragment {
     override val renderDelegate: CanvasRenderDelegate?
         get() = null
 
-    override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
+    override val flowLayoutHelper: EngraveFlowLayoutHelper
         get() = _engraveFlowLayoutHelper.apply {
             engraveCanvasFragment = this@BaseHistoryFragment
         }

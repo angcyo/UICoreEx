@@ -1,10 +1,10 @@
-package com.angcyo.laserpacker.project.dslitem
+package com.angcyo.canvas2.laser.pecker.manager.dslitem
 
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.device.R
+import com.angcyo.library.ex.StringAction
 import com.angcyo.library.ex.have
 import com.angcyo.library.extend.IFilterItem
-import com.angcyo.library.toastQQ
 import com.angcyo.widget.DslViewHolder
 
 /**
@@ -14,7 +14,13 @@ import com.angcyo.widget.DslViewHolder
 class LpbFileItem : DslAdapterItem(), IFilterItem {
 
     /**文件名*/
-    var itemFileName: CharSequence? = null
+    var itemFileName: String? = null
+
+    /**开始预览*/
+    var itemPreviewAction: StringAction? = null
+
+    /**开始雕刻*/
+    var itemEngraveAction: StringAction? = null
 
     init {
         itemLayoutId = R.layout.item_lpb_file
@@ -31,11 +37,11 @@ class LpbFileItem : DslAdapterItem(), IFilterItem {
         itemHolder.tv(R.id.lib_text_view)?.text = itemFileName
 
         itemHolder.click(R.id.preview_view) {
-            toastQQ("功能开发中")
+            itemPreviewAction?.invoke(itemFileName)
         }
 
         itemHolder.click(R.id.engrave_view) {
-            toastQQ("功能开发中")
+            itemEngraveAction?.invoke(itemFileName)
         }
     }
 

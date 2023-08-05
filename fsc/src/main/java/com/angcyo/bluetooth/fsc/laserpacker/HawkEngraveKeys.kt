@@ -86,7 +86,7 @@ object HawkEngraveKeys {
     var engraveRetryCount: Int by HawkPropertyValue<Any, Int>(3)
 
     /**最后一次的图层id*/
-    var lastLayerId: String by HawkPropertyValue<Any, String>("layerFill")
+    var lastLayerId: String by HawkPropertyValue<Any, String>(LaserPeckerHelper.LAYER_FILL)
 
     /**每个图层对应的dpi
      * [lastDpi]

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
 import com.angcyo.base.removeThis
+import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.core.appendIconItem
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.fragment.BaseDslFragment
@@ -16,7 +17,6 @@ import com.angcyo.item.component.initSearchAdapterFilter
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.open.CanvasOpenModel
-import com.angcyo.laserpacker.project.dslitem.ProjectListItem
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.file

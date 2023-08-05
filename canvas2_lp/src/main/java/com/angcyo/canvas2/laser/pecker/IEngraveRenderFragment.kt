@@ -2,7 +2,7 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.view.ViewGroup
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.canvas2.laser.pecker.engrave.EngraveFlowLayoutHelper
+import com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper
 import com.angcyo.fragment.AbsLifecycleFragment
 
 /**
@@ -19,7 +19,7 @@ interface IEngraveRenderFragment {
     val renderDelegate: CanvasRenderDelegate?
 
     /**雕刻流程布局*/
-    val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
+    val flowLayoutHelper: BaseFlowLayoutHelper
 
     /**流程布局的容器*/
     val flowLayoutContainer: ViewGroup?

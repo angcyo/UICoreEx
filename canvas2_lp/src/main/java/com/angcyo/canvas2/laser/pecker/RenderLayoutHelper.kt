@@ -362,7 +362,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderLayerListLayout()
 
                 //更新预览的范围
-                val deviceStateModel = renderFragment.engraveFlowLayoutHelper.deviceStateModel
+                val deviceStateModel = renderFragment.flowLayoutHelper.deviceStateModel
                 if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
                     //设备正在预览模式, 更新预览
                     LPPreviewHelper.updatePreviewByRenderer(renderFragment, to)
@@ -394,7 +394,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     needUpdateControlLayout = true
 
                     //更新预览的范围
-                    val deviceStateModel = renderFragment.engraveFlowLayoutHelper.deviceStateModel
+                    val deviceStateModel = renderFragment.flowLayoutHelper.deviceStateModel
                     if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true &&
                         delegate?.isRendererSelector(renderer) == true
                     ) {
@@ -475,12 +475,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 if ((reason.reason == Reason.REASON_CODE || reason.reason == Reason.REASON_USER)
                     && !renderDelegate.asyncManager.hasAsyncTask()
                 ) {
-                    renderDelegate.saveProjectStateV2(renderFragment.engraveFlowLayoutHelper.flowTaskId)
+                    renderDelegate.saveProjectStateV2(renderFragment.flowLayoutHelper.flowTaskId)
                 }
-                renderFragment.engraveFlowLayoutHelper._engraveItemRenderer?.let {
+                renderFragment.flowLayoutHelper._engraveItemRenderer?.let {
                     //当前正在配置参数的元素被删除时, 隐藏参数配置界面
                     if (!renderDelegate.getSingleElementRendererListIn(to).contains(it)) {
-                        renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+                        renderFragment.flowLayoutHelper.hideIfInEngraveItemParamsConfig()
                     }
                 }
                 renderLayerListLayout()
@@ -672,7 +672,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         _rootViewHolder?.visible(R.id.canvas_layer_layout, visible)
         if (!visible) {
             if (!isInPadMode()) {
-                renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+                renderFragment.flowLayoutHelper.hideIfInEngraveItemParamsConfig()
             }
             findTagItem(ControlLayerItem.TAG_LAYER_ITEM)?.updateItemSelected(false)
         }
@@ -693,7 +693,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 val toIndex = selectIndexList.firstOrNull() ?: 0
                 if (toIndex != 1) {
                     if (!isInPadMode()) {
-                        renderFragment.engraveFlowLayoutHelper.hideIfInEngraveItemParamsConfig()
+                        renderFragment.flowLayoutHelper.hideIfInEngraveItemParamsConfig()
                     }
                 }
                 vh.post {
@@ -777,7 +777,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                             showItemRendererBounds()
                                             if (HawkEngraveKeys.enableItemEngraveParams) {
                                                 //显示单元素雕刻参数
-                                                renderFragment.engraveFlowLayoutHelper.startEngraveItemConfig(
+                                                renderFragment.flowLayoutHelper.startEngraveItemConfig(
                                                     renderFragment,
                                                     renderer
                                                 )

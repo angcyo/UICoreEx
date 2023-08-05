@@ -82,7 +82,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     //region ---预览界面/支架控制---
 
     /**渲染预览前配置界面*/
-    fun renderPreviewBeforeItems() {
+    open fun renderPreviewBeforeItems() {
         renderDslAdapter {
             if (deviceStateModel.needShowExDeviceTipItem()) {
                 PreviewExDeviceTipItem()()
@@ -113,7 +113,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     }
 
     /**渲染预览界面*/
-    fun renderPreviewItems() {
+    open fun renderPreviewItems() {
         updateIViewTitle(_string(R.string.preview))
         engraveBackFlow = 0
         //close按钮

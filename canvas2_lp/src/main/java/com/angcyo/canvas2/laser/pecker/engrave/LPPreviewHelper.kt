@@ -42,14 +42,14 @@ object LPPreviewHelper {
         renderFragment: IEngraveRenderFragment,
         rendererList: List<BaseRenderer>?,
     ) {
-        val flowLayoutHelper = renderFragment.engraveFlowLayoutHelper
+        val flowLayoutHelper = renderFragment.flowLayoutHelper
         if (!flowLayoutHelper.isInitialize) {
             return
         }
         if (rendererList.isNullOrEmpty()) {
             return
         }
-        if (renderFragment.engraveFlowLayoutHelper.isMinimumPreview) {
+        if (renderFragment.flowLayoutHelper.isMinimumPreview) {
             //最小化了
         } else if (!flowLayoutHelper.isAttach()) {
             //未附着

@@ -319,7 +319,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
         //显示蓝牙界面
         viewHolder.throttleClick(R.id.device_tip_wrap_layout) {
-            if (laserPeckerModel.initializeData.value == true && engraveFlowLayoutHelper.isAttach()) {
+            if (laserPeckerModel.initializeData.value == true && flowLayoutHelper.isAttach()) {
                 //界面已经显示, 并且有设备连接, 则不允许切换蓝牙设备
                 return@throttleClick
             } else {
@@ -329,7 +329,7 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
         //显示设备设置界面
         viewHolder.throttleClick(R.id.device_setting_view) {
-            if (engraveFlowLayoutHelper.isAttach()) {
+            if (flowLayoutHelper.isAttach()) {
                 return@throttleClick
             } else if (vmApp<DeviceStateModel>().isDeviceConnect()) {
                 fragment.dslAHelper {

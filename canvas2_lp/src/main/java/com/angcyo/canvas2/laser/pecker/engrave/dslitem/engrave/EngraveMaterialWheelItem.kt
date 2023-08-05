@@ -35,8 +35,14 @@ class EngraveMaterialWheelItem : EngraveOptionWheelItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         val materialEntity = _materialEntity
-        itemHolder.visible(R.id.lib_delete_button, materialEntity?._isCustomMaterial == true)
-        itemHolder.visible(R.id.lib_save_button, materialEntity?.isChanged == true)
+        itemHolder.visible(
+            R.id.lib_delete_button,
+            materialEntity?._isCustomMaterial == true && itemDeleteAction != null
+        )
+        itemHolder.visible(
+            R.id.lib_save_button,
+            materialEntity?.isChanged == true && itemSaveAction != null
+        )
 
         itemHolder.click(R.id.lib_save_button) {
             //保存材质

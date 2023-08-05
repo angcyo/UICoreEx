@@ -6,8 +6,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
-import com.angcyo.canvas.render.renderer.BaseRenderer
-import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
@@ -22,7 +20,6 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer.TransferDataPxIt
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.core.showIn
 import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
@@ -139,11 +136,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     //
 
-    /**当前选中的图层id
-     * [EngraveLayerConfigItem]*/
-    var selectLayerId: String =
-        LayerHelper.getEngraveLayerList().firstOrNull()?.layerId ?: LaserPeckerHelper.LAYER_FILL
-
     override fun onEngraveFlowChanged(from: Int, to: Int) {
         super.onEngraveFlowChanged(from, to)
         if (to == ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG) {
@@ -155,14 +147,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
         } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
-    }
-
-    /**回调*/
-    var onStartEngraveAction: (taskId: String?) -> Unit = {}
-
-    /**开始雕刻前回调*/
-    open fun onStartEngrave(taskId: String?) {
-        onStartEngraveAction(taskId)
     }
 
     /**回调*/
@@ -448,37 +432,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     //endregion ---数据传输中---
 
     //region ---雕刻参数配置---
-
-    /**开始单个元素雕刻参数配置*/
-    fun startEngraveItemConfig(
-        engraveFragment: IEngraveRenderFragment,
-        itemRenderer: BaseRenderer?
-    ) {
-        if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
-            //已经在显示其他流程
-            return
-        }
-        if (deviceStateModel.deviceStateData.value?.isModeIdle() != true) {
-            //设备非空闲
-            return
-        }
-        if (itemRenderer == null) {
-            //选中空item
-            hide()
-            return
-        }
-        //
-        _engraveItemRenderer = itemRenderer
-        engraveFlow = ENGRAVE_FLOW_ITEM_CONFIG
-        showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
-    }
-
-    /**如果是在单元素参数配置界面, 则隐藏界面*/
-    fun hideIfInEngraveItemParamsConfig() {
-        _engraveItemRenderer?.let {
-            hide()
-        }
-    }
 
     /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
     fun renderEngraveItemParamsConfig() {
@@ -927,8 +880,6 @@ open class EngraveFlowLayoutHelper : BasePreviewLayoutHelper() {
     //endregion ---雕刻参数配置---
 
     //region ---雕刻中---
-
-    private val _titleFontSize = 12
 
     /**渲染雕刻中的界面
      * 通过设备状态改变实时刷新界面

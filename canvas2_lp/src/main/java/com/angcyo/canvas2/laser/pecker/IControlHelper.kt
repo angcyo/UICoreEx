@@ -2,7 +2,7 @@ package com.angcyo.canvas2.laser.pecker
 
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
-import com.angcyo.canvas2.laser.pecker.engrave.EngraveFlowLayoutHelper
+import com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.widget.DslViewHolder
 
@@ -23,8 +23,8 @@ interface IControlHelper {
     val fragment: AbsLifecycleFragment
         get() = renderLayoutHelper.renderFragment.fragment
 
-    val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
-        get() = renderLayoutHelper.renderFragment.engraveFlowLayoutHelper
+    val flowLayoutHelper: BaseFlowLayoutHelper
+        get() = renderLayoutHelper.renderFragment.flowLayoutHelper
 
     val _rootViewHolder: DslViewHolder?
         get() = renderLayoutHelper._rootViewHolder

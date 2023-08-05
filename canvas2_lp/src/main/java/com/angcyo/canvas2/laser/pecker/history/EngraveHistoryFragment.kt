@@ -113,7 +113,7 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
         get() = this
     override val renderDelegate: CanvasRenderDelegate?
         get() = null
-    override val engraveFlowLayoutHelper: EngraveFlowLayoutHelper
+    override val flowLayoutHelper: EngraveFlowLayoutHelper
         get() = EngraveFlowLayoutHelper()
     override val flowLayoutContainer: ViewGroup?
         get() = null

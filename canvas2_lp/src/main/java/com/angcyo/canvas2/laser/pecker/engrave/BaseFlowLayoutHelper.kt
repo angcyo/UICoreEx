@@ -21,6 +21,7 @@ import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.config.EngraveConfigProvider
 import com.angcyo.canvas2.laser.pecker.engrave.config.IEngraveConfigProvider
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveLayerConfigItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.DeviceInfoTipItem
 import com.angcyo.canvas2.laser.pecker.manager.LPProjectManager
 import com.angcyo.core.showIn
@@ -36,10 +37,12 @@ import com.angcyo.iview.BaseRecyclerIView
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPProjectBean
 import com.angcyo.laserpacker.device.EngraveNotifyHelper
+import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.annotation.CoreMethod
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.isNotificationsEnabled
 import com.angcyo.library.component.openNotificationSetting
@@ -128,8 +131,15 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * */
     var flowTaskId: String? = null
 
+    protected val _titleFontSize = 12
+
     /**选过哪些图层, 用来标识对应的图层配置过参数*/
     val selectLayerList = mutableListOf<String>()
+
+    /**当前选中的图层id
+     * [EngraveLayerConfigItem]*/
+    var selectLayerId: String =
+        LayerHelper.getEngraveLayerList().firstOrNull()?.layerId ?: HawkEngraveKeys.lastLayerId
 
     /**当前[engraveFlow]能够回退到的模式*/
     var engraveBackFlow: Int = 0
@@ -169,7 +179,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         super.onIViewCreate()
         bindDeviceState()
 
-        if (isInPadMode()) {
+        if (this is HistoryEngraveFlowLayoutHelper || this is SingleFlowLayoutHelper) {
+        } else if (isInPadMode()) {
             viewHolder?.gone(R.id.dialog_title_line_view)
             viewHolder?.view(R.id.lib_iview_wrap_layout)
                 ?.setBackgroundColor(_color(R.color.lib_theme_white_color))
@@ -196,13 +207,6 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         super.onIViewShow()
         renderFlowItems()
     }
-
-    /**
-     * 单元素雕刻参数设置
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.onEngraveFlowChanged]
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.onIViewRemove]
-     * */
-    var _engraveItemRenderer: BaseRenderer? = null
 
     override fun onIViewRemove() {
         super.onIViewRemove()
@@ -358,19 +362,19 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
 
         //是否需要恢复之前的雕刻状态
-        if (engraveFragment.engraveFlowLayoutHelper.checkRestoreEngrave(engraveFragment)) {
+        if (engraveFragment.flowLayoutHelper.checkRestoreEngrave(engraveFragment)) {
             return false
         }
 
         //是否可以开始预览
-        if (!engraveFragment.engraveFlowLayoutHelper.checkStartPreview()) {
+        if (!engraveFragment.flowLayoutHelper.checkStartPreview()) {
             return false
         }
 
         return true
     }
 
-    /**开始预览*/
+    /**开始预览, 检查对应的状态*/
     @CallPoint
     fun startPreview(engraveFragment: IEngraveRenderFragment) {
         if (!checkCanStartPreview(engraveFragment)) {
@@ -378,13 +382,13 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
 
         //安全提示弹窗
-        engraveFragment.engraveFlowLayoutHelper.showSafetyTips(engraveFragment.fragment.fContext()) {
+        engraveFragment.flowLayoutHelper.showSafetyTips(engraveFragment.fragment.fContext()) {
             //如果有第三轴, 还需要检查对应的配置
             _startPreview(engraveFragment)
         }
     }
 
-    //开始预览
+    /**真正开始预览*/
     fun _startPreview(engraveFragment: IEngraveRenderFragment) {
         //未选中元素的情况下, 自动选中有效的所有元素
         val renderDelegate = engraveFragment.renderDelegate
@@ -419,7 +423,10 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         renderFlowItems()//重新渲染界面
     }
 
-    /**根据不同的流程, 渲染不同的界面*/
+    /**核心界面渲染方法
+     * 根据不同的流程, 渲染不同的界面
+     * */
+    @CoreMethod
     open fun renderFlowItems() {
         //no op
         if (isAttach()) {
@@ -792,6 +799,60 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             }
         })
     }
+
+    //region ---雕刻流程相关---
+
+    /**回调*/
+    var onStartEngraveAction: (taskId: String?) -> Unit = {}
+
+    /**开始雕刻前回调*/
+    open fun onStartEngrave(taskId: String?) {
+        onStartEngraveAction(taskId)
+    }
+
+    //endregion ---雕刻流程相关---
+
+    //region--单元素雕刻相关---
+
+    /**
+     * 单元素雕刻参数设置
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.onEngraveFlowChanged]
+     * [com.angcyo.engrave.BaseFlowLayoutHelper.onIViewRemove]
+     * */
+    var _engraveItemRenderer: BaseRenderer? = null
+
+    /**如果是在单元素参数配置界面, 则隐藏界面*/
+    fun hideIfInEngraveItemParamsConfig() {
+        _engraveItemRenderer?.let {
+            hide()
+        }
+    }
+
+    /**开始单个元素雕刻参数配置*/
+    fun startEngraveItemConfig(
+        engraveFragment: IEngraveRenderFragment,
+        itemRenderer: BaseRenderer?
+    ) {
+        if (isAttach() && engraveFlow > ENGRAVE_FLOW_ITEM_CONFIG) {
+            //已经在显示其他流程
+            return
+        }
+        if (deviceStateModel.deviceStateData.value?.isModeIdle() != true) {
+            //设备非空闲
+            return
+        }
+        if (itemRenderer == null) {
+            //选中空item
+            hide()
+            return
+        }
+        //
+        _engraveItemRenderer = itemRenderer
+        engraveFlow = ENGRAVE_FLOW_ITEM_CONFIG
+        showIn(engraveFragment.fragment, engraveFragment.flowLayoutContainer)
+    }
+
+    //endregion--单元素雕刻相关---
 }
 
 /**是否进入了雕刻流程, 这种状态下禁止画板手势操作.
