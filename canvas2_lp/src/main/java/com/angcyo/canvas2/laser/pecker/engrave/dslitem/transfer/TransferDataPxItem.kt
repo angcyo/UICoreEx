@@ -72,9 +72,11 @@ class TransferDataPxItem : EngraveSegmentScrollItem() {
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
         val dpi = itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
-        val layerId = (itemLayerInfo?.layerId ?: HawkEngraveKeys.lastLayerId)
 
-        HawkEngraveKeys.updateLayerDpi(layerId, layerId.filterLayerDpi(dpi))
+        itemLayerInfo?.let {
+            val layerId = it.layerId
+            HawkEngraveKeys.updateLayerDpi(layerId, layerId.filterLayerDpi(dpi))
+        }
         itemTransferConfigEntity?.layerJson = HawkEngraveKeys.lastDpiLayerJson
     }
 
