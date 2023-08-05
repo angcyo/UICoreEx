@@ -241,6 +241,13 @@ class LPBitmapElement(override val elementBean: LPElementBean) : BitmapElement()
         updateRenderWidthHeight(bounds.width(), bounds.height(), keepVisibleSize)
     }
 
+    override fun restoreOriginBitmap(bitmap: Bitmap?) {
+        super.restoreOriginBitmap(bitmap)
+        bitmap?.let {
+            updateBeanWidthHeightFromBitmap(bitmap, false)
+        }
+    }
+
     override fun updateOriginBitmap(bitmap: Bitmap, keepVisibleSize: Boolean) {
         this.originBitmap = bitmap
         //更新原图, 默认是黑白画处理
