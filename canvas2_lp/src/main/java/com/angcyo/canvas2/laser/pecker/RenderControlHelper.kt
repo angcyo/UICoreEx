@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -52,6 +51,7 @@ import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
@@ -666,6 +666,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         if (PathUnionMenuItem.isAllShape(renderer)) {
             PathUnionMenuItem()() {
                 initItem(renderer)
+                itemEnable = !PathUnionMenuItem.disablePathUnion(renderer)
             }
         }
 

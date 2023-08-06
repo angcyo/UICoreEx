@@ -5,6 +5,7 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
+import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.util.lpElement
 import com.angcyo.item.style.itemHaveNew
 import com.angcyo.item.style.itemNewHawkKeyStr
@@ -39,6 +40,27 @@ class PathUnionMenuItem : CanvasIconItem() {
                 }
             }
             return isAllShape
+        }
+
+        /**是否要禁用路径op的操作
+         * 有路径填充的元素, 不允许op*/
+        fun disablePathUnion(renderer: BaseRenderer): Boolean {
+            val elementList = renderer.getSingleElementList()
+            var disable = false
+            for (element in elementList) {
+                val elementBean = element.lpElement()?.elementBean
+                val mtype = elementBean?.mtype
+                if (elementBean?.isPathElement == true ||
+                    (mtype == LPDataConstant.DATA_TYPE_BITMAP &&
+                            elementBean.imageFilter == LPDataConstant.DATA_MODE_GCODE)
+                ) {
+                    if (LPPathElement.isPathFill(elementBean)) {
+                        disable = true
+                        break
+                    }
+                }
+            }
+            return disable
         }
     }
 
