@@ -42,6 +42,15 @@ data class QueryCmd(
         const val QUERY_FILE_NAME_LIST: Byte = 0x07
         const val QUERY_DEVICE_NAME: Byte = 0x08
 
+        /**
+         * ```
+         * 当mount=0时查询U盘列表。
+         * 当mount=1时查询SD卡文件列表
+         * ```
+         * */
+        const val TYPE_USB = 0
+        const val TYPE_SD = 1
+
         /**查询工作状态*/
         val workState: QueryCmd
             get() = QueryCmd("查询工作状态", QUERY_WORK)
@@ -70,12 +79,12 @@ data class QueryCmd(
         /**查询U盘文件名列表：(L5支持)
          * 2023年6月17日*/
         val fileUsbNameList: QueryCmd
-            get() = QueryCmd("查询U盘文件名列表", QUERY_FILE_NAME_LIST, mount = 0)
+            get() = QueryCmd("查询U盘文件名列表", QUERY_FILE_NAME_LIST, mount = TYPE_USB.toByte())
 
         /**查询Sd卡文件名列表：(L5支持)
          * 2023年6月17日*/
         val fileSdNameList: QueryCmd
-            get() = QueryCmd("查询Sd卡文件名列表", QUERY_FILE_NAME_LIST, mount = 1)
+            get() = QueryCmd("查询Sd卡文件名列表", QUERY_FILE_NAME_LIST, mount = TYPE_SD.toByte())
 
         /**查询设备蓝牙名称查询：(L5支持) //2023年8月2日*/
         val deviceName: QueryCmd

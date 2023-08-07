@@ -3,6 +3,8 @@ package com.angcyo.bluetooth.fsc
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.core.DevicePacketProgress
 import com.angcyo.bluetooth.fsc.core.IPacketListener
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -17,10 +19,10 @@ import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.copyTo
 import com.angcyo.library.ex.isDebuggerConnected
-import com.angcyo.library.ex.toHexByteArray
 import com.angcyo.library.ex.toHexInt
 import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.toStr
+import com.angcyo.lifecycle.isDestroy
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 import java.io.ByteArrayOutputStream
@@ -57,45 +59,51 @@ class WaitReceivePacket(
          * [dataHead] 返回的数据头
          * @return 校验通过返回对应的数据, 否则返回null
          * */
-        fun checkReceiveFinish(
-            bytes: ByteArray?,
-            dataHead: String = LaserPeckerHelper.PACKET_HEAD
-        ): ByteArray? {
+        fun checkReceiveFinish(bytes: ByteArray?, dataHead: String): ByteArray? {
             bytes ?: return null
             //数据头的位置 [AABB] 开始的位置
             var headStartIndex = -1
+            var headHexString = ""
 
-            val headSize = dataHead.toHexByteArray().size
-            val headByteArray = ByteArray(headSize)
+            val headDataSize = dataHead.length / 2
+            val headByteArray = ByteArray(headDataSize)
             try {
                 var index = 0
 
                 //查找数据头
                 for (byte in bytes) {
-                    if (index + headSize >= bytes.size) {
+                    if (index + headDataSize >= bytes.size) {
                         break
                     }
-                    bytes.copyTo(headByteArray, index, 0, headSize)
-                    if (headByteArray.toHexString(false) == dataHead) {
-                        //数据头
+                    bytes.copyTo(headByteArray, index, 0, headDataSize)
+                    val hexString = headByteArray.toHexString(false)
+                    if (hexString == dataHead) { //数据头
+                        headHexString = hexString
                         headStartIndex = index
+                        break
                     }
                     index++
                 }
 
+                //数据位, 占用的长度
+                val dataBitLength = if (headHexString == LaserPeckerHelper.PACKET_HEAD_BIG) 4 else 1
+
                 if (headStartIndex >= 0) {
                     //解析数据长度
-                    val dataCount = bytes[headStartIndex + headSize].toHexInt() //包含校验位的长度
-                    val dataStartIndex = headStartIndex + headSize + 1
+                    val dataLengthArray = ByteArray(dataBitLength)
+                    bytes.copyTo(dataLengthArray, headStartIndex + headDataSize)
+                    val dataLength = dataLengthArray.toHexInt() //包含校验位的长度
+                    val dataStartIndex = headStartIndex + headDataSize + dataBitLength
                     val receiveDataCount = bytes.size - dataStartIndex //收到的数据长度
-                    if (receiveDataCount >= dataCount) {
+
+                    if (receiveDataCount >= dataLength) {
                         //数据接收完成
                         val sumByteArray =
-                            ByteArray(dataCount - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
+                            ByteArray(dataLength - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
                         bytes.copyTo(sumByteArray, dataStartIndex)
                         val checkByteArray = ByteArray(LaserPeckerHelper.CHECK_SIZE) //校验位
                         val checkStartIndex =
-                            dataStartIndex + dataCount - LaserPeckerHelper.CHECK_SIZE
+                            dataStartIndex + dataLength - LaserPeckerHelper.CHECK_SIZE
                         bytes.copyTo(checkByteArray, checkStartIndex)
 
                         val sumString = sumByteArray.checksum(hasSpace = false)
@@ -103,7 +111,7 @@ class WaitReceivePacket(
 
                         if (sumString == checkString) {
                             //数据校验通过
-                            return ByteArray(headSize + 1 + dataCount).apply {
+                            return ByteArray(headDataSize + 1 + dataLength).apply {
                                 bytes.copyTo(this, headStartIndex)
                             }
                         }
@@ -116,14 +124,22 @@ class WaitReceivePacket(
         }
     }
 
+    /**是否要一直监听数据*/
+    var waitForever: Boolean = false
+
     val handle = Handler(Looper.getMainLooper())
+
+    /**数据头*/
+    var dataHead: String = LaserPeckerHelper.PACKET_HEAD
 
     /**是否被取消*/
     @Volatile
     var isCancel: Boolean = false
         set(value) {
             field = value
-            end()
+            if (!_isFinish) {
+                end()
+            }
         }
 
     //数据是否发送
@@ -135,7 +151,8 @@ class WaitReceivePacket(
     var _isFinish: Boolean = false
 
     //头部字节大小
-    val headSize = LaserPeckerHelper.packetHeadSize
+    val headSize: Int
+        get() = dataHead.length / 2
 
     //超时处理
     val _timeOutRunnable = Runnable {
@@ -184,12 +201,17 @@ class WaitReceivePacket(
 
     /**开始数据发送, 并等待*/
     fun start() {
+        //监听数据, 可以用来单独监听回调
+        if (WifiApiModel.useWifi()) {
+            wifiApi.tcp.listeners.add(wifiListener)
+        } else {
+            api.addPacketListener(this)
+        }
+        //自动发送数据
         if (autoSend) {
             if (WifiApiModel.useWifi()) {
-                wifiApi.tcp.listeners.add(wifiListener)
                 wifiApi.tcp.send(sendPacket, receiveTimeout)
             } else {
-                api.addPacketListener(this)
                 api.send(address, sendPacket)
             }
         }
@@ -200,6 +222,14 @@ class WaitReceivePacket(
             }
         }
         _isSend = true
+    }
+
+    /**取消监听*/
+    fun cancel() {
+        if (isCancel) {
+            return
+        }
+        isCancel = true
     }
 
     /**结束数据接收监听*/
@@ -225,30 +255,34 @@ class WaitReceivePacket(
 
         //数据头的位置 [AABB] 开始的位置
         var headStartIndex = -1
+        var headHexString = ""
 
-        val headByteArray = ByteArray(headSize)
+        val headDataSize = headSize
+        val headByteArray = ByteArray(headDataSize)
         try {
             var index = 0
 
             //查找数据头
             for (byte in bytes) {
-                if (index + headSize >= bytes.size) {
+                if (index + headDataSize >= bytes.size) {
                     break
                 }
-                bytes.copyTo(headByteArray, index, 0, headSize)
-                if (headByteArray.toHexString(false) == LaserPeckerHelper.PACKET_HEAD) {
+                bytes.copyTo(headByteArray, index, 0, headDataSize)
+                val hexString = headByteArray.toHexString(false)
+                if (hexString == dataHead) {
                     //数据头
-
                     if (checkFunc) {
                         //对比func功能码, 确保收到的指令数据和返回的数据是统一类型
-                        val commandFunc = func ?: sendPacket[headSize + 1]//命令的功能码
-                        val receiveFunc = bytes[index + headSize + 1]//接收到的数据功能码
+                        val commandFunc = func ?: sendPacket[headDataSize + 1]//命令的功能码
+                        val receiveFunc = bytes[index + headDataSize + 1]//接收到的数据功能码
 
                         if (commandFunc == receiveFunc) {
+                            headHexString = hexString
                             headStartIndex = index
                             break
                         }
                     } else {
+                        headHexString = hexString
                         headStartIndex = index
                         break
                     }
@@ -256,29 +290,37 @@ class WaitReceivePacket(
                 index++
             }
 
+            //数据位, 占用的长度
+            val dataBitLength = if (headHexString == LaserPeckerHelper.PACKET_HEAD_BIG) 4 else 1
+
             if (headStartIndex >= 0) {
                 //解析数据长度
-                val dataCount = bytes[headStartIndex + headSize].toHexInt() //包含校验位的长度
-                val dataStartIndex = headStartIndex + headSize + 1
+                val dataLengthArray = ByteArray(dataBitLength)
+                bytes.copyTo(dataLengthArray, headStartIndex + headDataSize)
+                val dataLength = dataLengthArray.toHexInt() //包含校验位的长度
+                val dataStartIndex = headStartIndex + headDataSize + dataBitLength
                 val receiveDataCount = bytes.size - dataStartIndex //收到的数据长度
-                if (receiveDataCount >= dataCount) {
-                    end()
+                if (receiveDataCount >= dataLength) {
+                    if (!waitForever) {
+                        end()
+                    }
 
                     //数据接收完成
                     val sumByteArray =
-                        ByteArray(dataCount - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
+                        ByteArray(dataLength - LaserPeckerHelper.CHECK_SIZE) //去掉校验位后的数据
                     bytes.copyTo(sumByteArray, dataStartIndex)
                     val checkByteArray = ByteArray(LaserPeckerHelper.CHECK_SIZE) //校验位
-                    val checkStartIndex = dataStartIndex + dataCount - LaserPeckerHelper.CHECK_SIZE
+                    val checkStartIndex =
+                        dataStartIndex + dataLength - LaserPeckerHelper.CHECK_SIZE
                     bytes.copyTo(checkByteArray, checkStartIndex)
 
                     val sumString = sumByteArray.checksum(hasSpace = false)
                     val checkString = checkByteArray.toHexString(false)
 
                     receivePacket?.apply {
-                        receiveDataLength = dataCount
+                        receiveDataLength = dataLength
                         receiveFinishTime = System.currentTimeMillis()
-                        receivePacket = ByteArray(headSize + 1 + dataCount).apply {
+                        receivePacket = ByteArray(headDataSize + 1 + dataLength).apply {
                             bytes.copyTo(this, headStartIndex)
                         }
                     }
@@ -292,7 +334,8 @@ class WaitReceivePacket(
                                 UMEvent.APP_ERROR.umengEventValue {
                                     put(UMEvent.KEY_COMMAND_ERROR, "数据校验失败")
                                 }
-                                error(ReceiveVerifyException("数据校验失败[$sumString:$checkString]"))
+                                val hex = receivePacket?.receivePacket?.toHexString()
+                                error(ReceiveVerifyException("数据校验失败[$sumString:$checkString]:\n$hex"))
                             }
                         }
                     }
@@ -302,7 +345,7 @@ class WaitReceivePacket(
                         put(UMEvent.KEY_COMMAND_ERROR, "数据校验失败")
                     }
                     error(ReceiveVerifyException("数据长度校验失败[$receiveDataCount:${dataCount}]"))*/
-                    "数据不完整,继续等待...[$receiveDataCount:${dataCount}]".writeBleLog(L.WARN)
+                    "数据不完整,继续等待...[$receiveDataCount:${dataLength}]".writeBleLog(L.WARN)
                 }
             }
         } catch (e: Exception) {
@@ -457,10 +500,21 @@ interface IReceiveListener {
  * */
 fun listenerReceivePacket(
     receiveTimeout: Long = 10 * 60 * 1_000,
+    lifecycleOwner: LifecycleOwner? = null,
     progress: ISendProgressAction = {},
     action: (receivePacket: WaitReceivePacket, bean: ReceivePacket?, error: Exception?) -> Unit
 ): WaitReceivePacket {
     var waitReceivePacket: WaitReceivePacket? = null
+    var receiveCallback: WaitReceivePacket? = null
+
+    lifecycleOwner?.let {
+        it.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                receiveCallback?.isCancel = true
+            }
+        })
+    }
+
     waitReceivePacket = WaitReceivePacket(
         vmApp(),
         "",
@@ -476,20 +530,25 @@ fun listenerReceivePacket(
 
             override fun onReceive(bean: ReceivePacket?, error: Exception?) {
                 //回调
-                action(waitReceivePacket!!, bean, error)
+                if (lifecycleOwner == null || !lifecycleOwner.lifecycle.isDestroy()) {
+                    action(waitReceivePacket!!, bean, error)
+                }
+                receiveCallback = null
             }
         }).apply {
         start()
     }
+    receiveCallback = waitReceivePacket
     return waitReceivePacket
 }
 
 /**监听设备进入空闲状态, 需要主动查询设备状态*/
 fun listenerIdleMode(
     receiveTimeout: Long = 10 * 60 * 1_000,
+    lifecycleOwner: LifecycleOwner? = null,
     action: (idle: Boolean, error: Exception?) -> Unit
 ): WaitReceivePacket {
-    return listenerReceivePacket(receiveTimeout) { receivePacket, bean, error ->
+    return listenerReceivePacket(receiveTimeout, lifecycleOwner) { receivePacket, bean, error ->
         try {
             val isIdle = bean?.parse<QueryStateParser>()?.mode == QueryStateParser.WORK_MODE_IDLE
             if (isIdle || (error != null && error !is ReceiveCancelException)) {

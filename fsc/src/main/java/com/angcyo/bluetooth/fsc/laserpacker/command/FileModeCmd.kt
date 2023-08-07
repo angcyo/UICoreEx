@@ -28,17 +28,28 @@ data class FileModeCmd(
     //State = 0x02时为传输结束。当文件传输完成时下位自动回复指令。
     //State = 0x04时为擦除所有文件。
     //State = 0x06时为擦除单个文件, data为指定文件索引。
+    //State = 0x07时为擦除单个文件, fileName为指定文件名。
     val state: Byte = 0x1,
-    val custom: Byte = 0 //自定义的数据
+    val custom: Byte = 0, //自定义的数据
+    //--2023-8-7
+    val mount: Byte = 0,
+    /**使用文件名, 删除sd/usb中的文件*/
+    val fileName: String? = null,
 ) : BaseCommand() {
 
     companion object {
 
         /**删除所有历史文件*/
-        fun deleteAllHistory(): FileModeCmd = FileModeCmd(0, 0x04)
+        fun deleteAllHistory(mount: Byte = QueryCmd.TYPE_SD.toByte()): FileModeCmd =
+            FileModeCmd(0, 0x04, mount = mount)
 
         /**删除指定历史文件*/
-        fun deleteHistory(index: Int): FileModeCmd = FileModeCmd(index, 0x06)
+        fun deleteHistory(index: Int, mount: Byte = QueryCmd.TYPE_SD.toByte()): FileModeCmd =
+            FileModeCmd(index, 0x06, mount = mount)
+
+        /**删除文件使用文件名[name]*/
+        fun deleteHistory(name: String, mount: Byte = QueryCmd.TYPE_SD.toByte()): FileModeCmd =
+            FileModeCmd(0, 0x07, mount = mount, fileName = name)
     }
 
     //功能码
@@ -49,6 +60,20 @@ data class FileModeCmd(
         10 * 60_000
     } else {
         super.getReceiveTimeout()
+    }
+
+    override fun toByteArray(): ByteArray = commandByteWriter {
+        writeUByte(commandFunc())
+        writeUByte(state)
+        when (state) {
+            0x01.toByte() -> write(dataSize + PACKET_FILE_HEAD_SIZE, 4)
+            0x02.toByte(), 0x04.toByte(), 0x06.toByte(), 0x07.toByte() -> write(dataSize, 4)
+        }
+        writeUByte(custom)
+        writeUByte(mount)
+        if (state == 0x07.toByte()) {
+            write(fileName ?: "", 4)
+        }
     }
 
     /**返回:
@@ -63,7 +88,6 @@ data class FileModeCmd(
         val data = buildString {
             append(commandFunc().toHexString())
             append(state.toHexString())
-
             when (state) {
                 0x01.toByte() -> append((dataSize + PACKET_FILE_HEAD_SIZE).toHexString(8))
                 0x06.toByte() -> append(dataSize.toByteArray(4).toHexString(false))

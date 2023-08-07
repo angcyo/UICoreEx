@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.bluetooth.fsc.WaitReceivePacket
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.parser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QueryDeviceNameParser
@@ -122,7 +123,7 @@ class WifiDeviceScan {
             ipList.forEach { ip ->
                 queue.add(ScanTask(ip, port))
             }
-            
+
             scanTask = RConcurrentTask(queue, onFinish = {
                 doMain {
                     lifecycleOwner?.lifecycle?.removeObserver(lifecycleObserver)
@@ -152,7 +153,10 @@ class WifiDeviceScan {
             syncSingle {
                 //L.w("开始扫描:$ip:$port")
                 tcpSend(ip, port, QueryCmd.deviceName.toByteArray()) { receiveBytes, error ->
-                    val bytes = WaitReceivePacket.checkReceiveFinish(receiveBytes)
+                    val bytes = WaitReceivePacket.checkReceiveFinish(
+                        receiveBytes,
+                        LaserPeckerHelper.PACKET_HEAD
+                    )
                     bytes?.let {
                         //L.w("扫描结果[${it.size()}]:$ip:$port ${it.toHexString()}")
                         if (scanTask?.isCancel?.get() == false) {

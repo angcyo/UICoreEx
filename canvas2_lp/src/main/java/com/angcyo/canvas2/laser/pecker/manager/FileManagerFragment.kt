@@ -3,6 +3,15 @@ package com.angcyo.canvas2.laser.pecker.manager
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
+import com.angcyo.bluetooth.fsc.WaitReceivePacket
+import com.angcyo.bluetooth.fsc.enqueue
+import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.TYPE_SD
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd.Companion.TYPE_USB
+import com.angcyo.bluetooth.fsc.laserpacker.parse.FileTransferParser
+import com.angcyo.bluetooth.fsc.laserpacker.parse.listenerFileList
+import com.angcyo.bluetooth.fsc.parse
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
@@ -13,11 +22,20 @@ import com.angcyo.canvas2.laser.pecker.manager.dslitem.LpbFileItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.showIn
 import com.angcyo.dialog.itemsDialog
+import com.angcyo.dialog.normalDialog
+import com.angcyo.dsladapter.toEmpty
+import com.angcyo.dsladapter.toError
 import com.angcyo.fragment.AbsLifecycleFragment
 import com.angcyo.item.component.initSearchAdapterFilter
+import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
+import com.angcyo.library.ex.BooleanAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.getColor
+import com.angcyo.library.ex.gone
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.size
+import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.toast
 
 /**
  * 文件管理
@@ -27,18 +45,6 @@ import com.angcyo.library.ex.isDebugType
 class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
 
     var currentFileType: Int = TYPE_SD
-
-    companion object {
-
-        /**
-         * ```
-         * 当mount=0时查询U盘列表。
-         * 当mount=1时查询SD卡文件列表
-         * ```
-         * */
-        const val TYPE_USB = 0
-        const val TYPE_SD = 1
-    }
 
     init {
         fragmentTitle = _string(R.string.file_manager_title)
@@ -63,7 +69,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                     itemClick = {
                         if (currentFileType != TYPE_SD) {
                             currentFileType = TYPE_SD
-                            renderSdListLayout()
+                            loadSdFileList()
                         }
                     }
                 }
@@ -72,55 +78,192 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                     itemClick = {
                         if (currentFileType != TYPE_USB) {
                             currentFileType = TYPE_USB
-                            renderUsbListLayout()
+                            loadUsbFileList()
                         }
                     }
                 }
             }
         }
+
+        //
+        appendRightItem(ico = R.drawable.canvas_delete_ico, action = {
+            gone()
+        }) {
+            fContext().normalDialog {
+                dialogTitle = _string(R.string.engrave_warn)
+                dialogMessage = _string(R.string.canvas_delete_project_tip)
+                positiveButton { dialog, dialogViewHolder ->
+                    dialog.dismiss()
+                    deleteAllHistory()
+                }
+            }
+        }
+    }
+
+    /**是否显示右边删除按钮*/
+    fun showRightDeleteIcoView(visible: Boolean = true) {
+        rightControl()?.goneIndex(0, !visible)
+    }
+
+    /**删除设备所有记录*/
+    private fun deleteAllHistory() {
+        engraveLoadingAsyncTimeout({
+            syncSingle { countDownLatch ->
+                FileModeCmd.deleteAllHistory(currentFileType.toByte()).enqueue { bean, error ->
+                    countDownLatch.countDown()
+                    if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
+                        toast(_string(R.string.delete_history_succeed))
+                        showRightDeleteIcoView(false)
+                        startRefresh()
+                    }
+                    error?.let { toast(it.message) }
+                }
+            }
+        })
+    }
+
+    /**删除设备所有记录*/
+    private fun deleteHistory(name: String, action: BooleanAction) {
+        engraveLoadingAsyncTimeout({
+            syncSingle { countDownLatch ->
+                FileModeCmd.deleteHistory(name, currentFileType.toByte())
+                    .enqueue { bean, error ->
+                        countDownLatch.countDown()
+                        if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
+                            toast(_string(R.string.delete_history_succeed))
+                            if (currentFileType == TYPE_SD) {
+                                sdNameList?.remove(name)
+                                if (sdNameList.isNullOrEmpty()) {
+                                    showRightDeleteIcoView(false)
+                                    _adapter.toEmpty()
+                                }
+                            } else {
+                                usbNameList?.remove(name)
+                                if (usbNameList.isNullOrEmpty()) {
+                                    showRightDeleteIcoView(false)
+                                    _adapter.toEmpty()
+                                }
+                            }
+                            action(true)
+                        } else {
+                            action(false)
+                        }
+                        error?.let { toast(it.message) }
+                    }
+            }
+        })
     }
 
     override fun onLoadData() {
         super.onLoadData()
         if (currentFileType == TYPE_SD) {
-            renderSdListLayout()
+            loadSdFileList()
         } else if (currentFileType == TYPE_USB) {
-            renderUsbListLayout()
+            loadUsbFileList()
+        }
+    }
+
+    private var sdReceive: WaitReceivePacket? = null
+    private var usbReceive: WaitReceivePacket? = null
+
+    private var sdNameList: MutableList<String>? = null
+    private var usbNameList: MutableList<String>? = null
+
+    private fun loadSdFileList() {
+        if (sdNameList != null) {
+            renderFileListLayout(TYPE_SD, sdNameList)
+            return
+        }
+        sdReceive?.cancel()
+        usbReceive?.cancel()
+        sdReceive = listenerFileList(this) { parser, error ->
+            sdNameList = parser?.nameList?.toMutableList()
+            if (currentFileType == TYPE_SD) {
+                if (error != null) {
+                    _adapter.toError(error)
+                } else {
+                    renderFileListLayout(TYPE_SD, parser?.nameList)
+                }
+            }
+        }
+        QueryCmd.fileSdNameList.enqueue { bean, error ->
+            if (error != null) {
+                _adapter.toError(error)
+            }
+        }
+    }
+
+    private fun loadUsbFileList() {
+        if (usbNameList != null) {
+            renderFileListLayout(TYPE_USB, usbNameList)
+            return
+        }
+        sdReceive?.cancel()
+        usbReceive?.cancel()
+        usbReceive = listenerFileList(this) { parser, error ->
+            usbNameList = parser?.nameList?.toMutableList()
+            if (currentFileType == TYPE_USB) {
+                if (error != null) {
+                    _adapter.toError(error)
+                } else {
+                    renderFileListLayout(TYPE_USB, parser?.nameList)
+                }
+            }
+        }
+        QueryCmd.fileUsbNameList.enqueue { bean, error ->
+            if (error != null) {
+                _adapter.toError(error)
+            }
         }
     }
 
     //---
 
     /**渲染sd卡文件列表*/
-    private fun renderSdListLayout() {
-        _vh.tv(R.id.filter_text_view)?.text = _string(R.string.sd_card_file_title)
-        renderDslAdapter(true) {
-            for (i in 0..10) {
-                LpbFileItem()() {
-                    itemFileName = "SD文件名$i"
-                    itemPreviewAction = {
-                        startPreview(itemFileName, TYPE_SD)
-                    }
-                    itemEngraveAction = {
-                        startEngrave(itemFileName, TYPE_SD)
-                    }
-                }
-            }
-        }
-    }
-
-    /**渲染U盘文件列表*/
-    private fun renderUsbListLayout() {
-        _vh.tv(R.id.filter_text_view)?.text = _string(R.string.usb_file_title)
-        renderDslAdapter(true) {
-            for (i in 0..10) {
-                LpbFileItem()() {
-                    itemFileName = "Usb文件名$i"
-                    itemPreviewAction = {
-                        startPreview(itemFileName, TYPE_USB)
-                    }
-                    itemEngraveAction = {
-                        startEngrave(itemFileName, TYPE_USB)
+    private fun renderFileListLayout(mount: Int, nameList: List<String>?) {
+        showRightDeleteIcoView(!nameList.isNullOrEmpty())
+        val label =
+            if (mount == TYPE_SD) _string(R.string.sd_card_file_title) else _string(R.string.usb_file_title)
+        if (nameList.isNullOrEmpty()) {
+            _adapter.toEmpty()
+            _vh.tv(R.id.filter_text_view)?.text = label
+        } else {
+            _vh.tv(R.id.filter_text_view)?.text = "${label}(${nameList.size()})"
+            renderDslAdapter(true) {
+                nameList.forEach { name ->
+                    LpbFileItem()() {
+                        itemFileName = name
+                        itemPreviewAction = {
+                            startPreview(itemFileName, mount)
+                        }
+                        itemEngraveAction = {
+                            startEngrave(itemFileName, mount)
+                        }
+                        itemLongClick = {
+                            it.context.itemsDialog {
+                                addDialogItem {
+                                    itemText = _string(R.string.delete_history)
+                                    itemClick = {
+                                        fContext().normalDialog {
+                                            dialogTitle = _string(R.string.engrave_warn)
+                                            dialogMessage =
+                                                _string(R.string.canvas_delete_project_tip)
+                                            positiveButton { dialog, dialogViewHolder ->
+                                                dialog.dismiss()
+                                                deleteHistory(name) {
+                                                    if (it) {
+                                                        render {
+                                                            removeAdapterItem()
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            true
+                        }
                     }
                 }
             }

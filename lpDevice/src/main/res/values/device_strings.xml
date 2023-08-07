@@ -107,6 +107,7 @@
     <string name="canvas_rename">Rename</string>
     <string name="project_title">My creation</string>
     <string name="canvas_delete_project">Delete</string>
+    <string name="canvas_delete">Delete</string>
     <string name="canvas_delete_project_tip">Unrecoverable after deletion, continue?</string>
     <string name="save_project_title">Project name</string>
     <string name="project_title_limit">Enter a maximum of 20 characters</string>

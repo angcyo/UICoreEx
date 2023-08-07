@@ -92,7 +92,6 @@ class EngraveHistoryFragment : BasePagerFragment(), IEngraveRenderFragment {
             syncSingle { countDownLatch ->
                 FileModeCmd.deleteAllHistory().enqueue { bean, error ->
                     countDownLatch.countDown()
-
                     if (bean?.parse<FileTransferParser>()?.isFileDeleteSuccess() == true) {
                         toast(_string(R.string.delete_history_succeed))
                         showRightDeleteIcoView(false)

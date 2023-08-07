@@ -100,8 +100,11 @@ object LaserPeckerHelper {
     /**蓝牙名称前缀, 只显示指定前缀的蓝牙设备*/
     const val PRODUCT_PREFIX = "LaserPecker"
 
-    //固定数据头
+    /**固定数据头, 数据长度用1个字节表示*/
     const val PACKET_HEAD = "AABB"
+
+    /**大数据的数据头, 数据长度用4个字节表示*/
+    const val PACKET_HEAD_BIG = "AACC"
 
     //固定文件头的字节数量
     const val PACKET_FILE_HEAD_SIZE = 64
