@@ -1,6 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.engrave
 
+import com.angcyo.bluetooth.fsc.CommandQueueHelper
+import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.canvas2.laser.pecker.R
@@ -17,6 +21,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewTipItem
 import com.angcyo.dsladapter.findItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
@@ -30,6 +35,18 @@ import com.hingin.umeng.umengEventValue
  * @since 2022/09/26
  */
 abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
+
+    /**简单的流程信息
+     * 设置此属性后, 会进入简单的流程控制, 只有预览/和雕刻
+     * */
+    var singleFlowInfo: SingleFlowInfo? = null
+        set(value) {
+            field = value
+            flowTaskId = value?.flowId
+        }
+
+    val _isSingleFlow: Boolean
+        get() = singleFlowInfo != null
 
     override fun renderFlowItems() {
         if (isAttach()) {
@@ -127,7 +144,9 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
         renderDslAdapter {
             //
-            if (this@BasePreviewLayoutHelper is HistoryEngraveFlowLayoutHelper) {
+            if (this@BasePreviewLayoutHelper is HistoryEngraveFlowLayoutHelper ||
+                _isSingleFlow
+            ) {
                 //历史界面, 不显示拖拽元素提示
             } else {
                 PreviewTipItem()()
@@ -169,6 +188,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             } else if (!laserPeckerModel.isL3()) { //L3只有白光, 不支持亮度调节
                 PreviewBrightnessItem()() {
                     itemPreviewConfigEntity = previewConfigEntity
+                    observeItemChange {
+                        if (_isSingleFlow) {
+                            startFileNamePreview()
+                        }
+                    }
                 }
             }
             if (laserPeckerModel.isCSeries()) {
@@ -183,18 +207,22 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 }*/
             }
             EngraveDividerItem()()
-            //预览控制, 范围/中心点预览
-            PreviewControlItem()() {
-                itemPathPreviewClick = {
-                    startPathPreview("$it")
+            if (_isSingleFlow) {
+                //简单流程信息
+                startFileNamePreview()
+            } else {
+                //预览控制, 范围/中心点预览
+                PreviewControlItem()() {
+                    itemPathPreviewClick = {
+                        startPathPreview("$it")
+                    }
                 }
             }
             DslBlackButtonItem()() {
                 itemButtonText = _string(R.string.ui_next)
                 itemClick = {
                     //下一步, 数据配置界面
-
-                    if (!checkCanNext()) {
+                    if (singleFlowInfo != null && !checkCanNext()) {
                         //不允许雕刻
                     } else {
                         //让设备进入空闲模式
@@ -202,7 +230,11 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         asyncTimeoutExitCmd { bean, error ->
                             if (error == null) {
                                 syncQueryDeviceState()
-                                engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                engraveFlow = if (_isSingleFlow) {
+                                    ENGRAVE_FLOW_BEFORE_CONFIG
+                                } else {
+                                    ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                }
                                 engraveBackFlow = 0
                                 renderFlowItems()
                             } else {
@@ -234,6 +266,18 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                 deviceStateModel.pauseLoopCheckState(false, "结束路径预览")
             }
         }
+    }
+
+    /**开始文件名预览*/
+    fun startFileNamePreview(
+        fileName: String = singleFlowInfo?.fileName ?: "",
+        mount: Int = singleFlowInfo?.mount ?: QueryCmd.TYPE_SD,
+        async: Boolean = true
+    ) {
+        val flag =
+            if (async) CommandQueueHelper.FLAG_ASYNC else CommandQueueHelper.FLAG_NORMAL
+        EngravePreviewCmd.fileNamePreviewCmd(fileName, mount.toByte(), EngraveHelper.getDiameter())
+            .enqueue(flag)
     }
 
     //endregion ---预览界面/支架控制---

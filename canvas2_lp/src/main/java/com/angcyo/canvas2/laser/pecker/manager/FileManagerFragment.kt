@@ -17,6 +17,7 @@ import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.IEngraveRenderFragment
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper
+import com.angcyo.canvas2.laser.pecker.engrave.SingleFlowInfo
 import com.angcyo.canvas2.laser.pecker.engrave.SingleFlowLayoutHelper
 import com.angcyo.canvas2.laser.pecker.manager.dslitem.LpbFileItem
 import com.angcyo.core.fragment.BaseDslFragment
@@ -234,10 +235,13 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
                     LpbFileItem()() {
                         itemFileName = name
                         itemPreviewAction = {
-                            startPreview(itemFileName, mount)
+                            startPreview(name, mount)
                         }
                         itemEngraveAction = {
-                            startEngrave(itemFileName, mount)
+                            startEngrave(name, mount)
+                        }
+                        itemClick = {
+                            startPreview(name, mount)
                         }
                         itemLongClick = {
                             it.context.itemsDialog {
@@ -272,6 +276,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
 
     private fun startPreview(fileName: String?, mount: Int) {
         fileName ?: return
+        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-$fileName", fileName, mount)
         if (BuildConfig.BUILD_TYPE.isDebugType()) {
             flowLayoutHelper._startPreview(this)
         } else {

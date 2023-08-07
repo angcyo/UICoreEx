@@ -28,7 +28,6 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
-import com.angcyo.library.utils.uuid
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -43,7 +42,6 @@ import com.angcyo.widget.span.span
 class SingleFlowLayoutHelper : BasePreviewLayoutHelper() {
 
     init {
-        flowTaskId = uuid()
         engraveFlow
         selectLayerId = HawkEngraveKeys.lastLayerId
     }

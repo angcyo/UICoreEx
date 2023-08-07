@@ -73,6 +73,8 @@ data class EngravePreviewCmd(
     //Data12-13为第四个角点坐标
     var d12: Int = 0, // 2字节
     var d13: Int = 0, // 2字节
+    //0x0B 文件名预览
+    var fileName: String? = null,
 ) : BaseCommand() {
 
     companion object {
@@ -613,10 +615,46 @@ data class EngravePreviewCmd(
                 d1 = 0x02
             }
         }
+
+        /**文件名预览指令
+         * [pwrProgress] [0~1f] 预览光功率
+         * */
+        fun fileNamePreviewCmd(
+            fileName: String,
+            mount: Byte,
+            @MM
+            diameter: Int,
+            pwrProgress: Float = HawkEngraveKeys.lastPwrProgress
+        ): EngravePreviewCmd = EngravePreviewCmd(0x0B).apply {
+            d1 = mount
+            this.fileName = fileName
+            this.diameter = diameter
+            updatePWR(pwrProgress)
+        }
     }
 
     //功能码
     override fun commandFunc(): Byte = ENGRAVE_PREVIEW_FUNC
+
+    override fun toByteArray(): ByteArray {
+        if (state == 0x0B.toByte()) {
+            return commandByteWriter {
+                write(commandFunc())
+                write(state)
+                write(d1)
+                fillLength(7)//填充7个字节
+                write(custom)
+                write(px)
+                write(pwr)
+                write(diameter, 2)
+                fileName?.let {
+                    write(it)
+                    write(0)//结束字符
+                }
+            }
+        }
+        return super.toByteArray()
+    }
 
     override fun toHexCommandString(): String {
         val dataLength = 0x17 //数据长度
@@ -708,7 +746,11 @@ data class EngravePreviewCmd(
     }
 
     override fun toCommandLogString(): String = buildString {
-        append(toHexCommandString().removeAll())
+        if (state == 0x0B.toByte()) {
+            append(toByteArray().toHexString())
+        } else {
+            append(toHexCommandString().removeAll())
+        }
         append(" 打印预览:")
         when (state) {
             0x01.toByte() -> {
@@ -779,6 +821,8 @@ data class EngravePreviewCmd(
                 0x02.toByte() -> append("完成对笔")
                 else -> append("对笔控制")
             }
+
+            0x0B.toByte() -> append("文件名预览:[${if (d1 == QueryCmd.TYPE_SD.toByte()) "SD" else "USB"}] $fileName")
 
             else -> append("Unknown")
         }
