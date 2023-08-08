@@ -36,6 +36,7 @@ import com.angcyo.laserpacker.device.ble.dslitem.BluetoothConnectItem
 import com.angcyo.laserpacker.device.wifi.AddWifiDeviceFragment
 import com.angcyo.library.Library
 import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
@@ -253,34 +254,39 @@ class BluetoothSearchHelper {
         }
 
         //扫描类型
-        val scanTypeList = if (HawkEngraveKeys.isConfigWifi) {
-            listOf(
-                ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi)),
-                ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble))
-            )
-        } else {
-            listOf(
-                ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble)),
-                ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi))
-            )
-        }
-        viewHolder.tab(R.id.scan_type_tab_layout)?.apply {
-            resetChild(
-                scanTypeList,
-                R.layout.lib_segment_layout
-            ) { itemView, item, itemIndex ->
-                itemView.find<TextView>(R.id.lib_text_view)?.text = item.text
+        if (LibLpHawkKeys.enableWifiConfig) {
+            val scanTypeList = if (HawkEngraveKeys.isConfigWifi) {
+                listOf(
+                    ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi)),
+                    ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble))
+                )
+            } else {
+                listOf(
+                    ScanType(ScanType.TYPE_BLE, _string(R.string.type_ble)),
+                    ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi))
+                )
             }
-            observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
-                if (fromUser || fromIndex == -1) {
-                    scanType = scanTypeList[toIndex]
-                    if (scanType.type == ScanType.TYPE_WIFI) {
-                        renderWifiLayout(lifecycleOwner, viewHolder)
-                    } else {
-                        renderBleLayout(lifecycleOwner, viewHolder)
+            viewHolder.tab(R.id.scan_type_tab_layout)?.apply {
+                resetChild(
+                    scanTypeList,
+                    R.layout.lib_segment_layout
+                ) { itemView, item, itemIndex ->
+                    itemView.find<TextView>(R.id.lib_text_view)?.text = item.text
+                }
+                observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
+                    if (fromUser || fromIndex == -1) {
+                        scanType = scanTypeList[toIndex]
+                        if (scanType.type == ScanType.TYPE_WIFI) {
+                            renderWifiLayout(lifecycleOwner, viewHolder)
+                        } else {
+                            renderBleLayout(lifecycleOwner, viewHolder)
+                        }
                     }
                 }
             }
+        } else {
+            viewHolder.gone(R.id.scan_type_tab_layout)
+            renderBleLayout(lifecycleOwner, viewHolder)
         }
 
         //监听蓝牙设备发现
