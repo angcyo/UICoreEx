@@ -140,6 +140,12 @@ data class TransferDataEntity(
      * */
     var layerId: String? = null,
 
+    /**SD/USB文件名雕刻, 如果有*/
+    var fileName: String? = null,
+
+    /**SD/USB*/
+    var mount: Int = 0,
+
     //---
 
     /**是否传输完成了*/

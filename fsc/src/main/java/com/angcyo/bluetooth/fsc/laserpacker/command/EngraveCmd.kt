@@ -170,7 +170,7 @@ data class EngraveCmd(
                 write(power)
                 write(depthToSpeed(depth.toInt()))
                 write(time)
-                write(0)//占位
+                fillLength(4)//占位
 
                 write(type)
                 write(precision)
@@ -260,7 +260,7 @@ data class EngraveCmd(
                 append(" 直径:${diameter} 加速级别:${precision}")
             }
 
-            0x06.toByte() -> append(" 文件名雕刻[$filename]!")
+            0x06.toByte() -> append(" 文件名雕刻[$filename]")
         }
     }
 }

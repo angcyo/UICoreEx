@@ -141,7 +141,7 @@ object DeviceHelper {
                 //鸟瞰图
                 result.add(path)
             }
-            dataIndexList?.forEach {
+            dataList?.forEach {
                 result.addAll(getIndexLogFilePath(it))
             }
         }

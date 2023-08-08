@@ -45,8 +45,17 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
             flowTaskId = value?.flowId
         }
 
+    /**是否是简单的数据雕刻流程
+     * [singleFlowInfo]
+     * [com.angcyo.canvas2.laser.pecker.engrave.SingleFlowLayoutHelper]
+     * */
     val _isSingleFlow: Boolean
         get() = singleFlowInfo != null
+
+    /**是否是来自历史的雕刻流程
+     * [com.angcyo.canvas2.laser.pecker.engrave.HistoryEngraveFlowLayoutHelper]*/
+    val _isHistoryFlow: Boolean
+        get() = this is HistoryEngraveFlowLayoutHelper
 
     override fun renderFlowItems() {
         if (isAttach()) {
@@ -144,9 +153,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
         renderDslAdapter {
             //
-            if (this@BasePreviewLayoutHelper is HistoryEngraveFlowLayoutHelper ||
-                _isSingleFlow
-            ) {
+            if (_isHistoryFlow || _isSingleFlow) {
                 //历史界面, 不显示拖拽元素提示
             } else {
                 PreviewTipItem()()

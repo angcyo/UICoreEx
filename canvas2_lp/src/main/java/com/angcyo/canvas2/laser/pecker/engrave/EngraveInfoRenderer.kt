@@ -82,7 +82,7 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
         }
         val taskId = engraveTaskId ?: return
         val engraveTask = EngraveFlowDataHelper.getEngraveTask(taskId) ?: return
-        val indexList = engraveTask.dataIndexList
+        val indexList = engraveTask.dataList
         if (indexList.size() <= 0) {
             return
         }
@@ -167,7 +167,7 @@ class EngraveInfoRenderer(val delegate: CanvasRenderDelegate?) : BaseRenderer() 
             delegate?.refresh()
         } else {
             //已完成的索引使用实线, 未完成的使用虚线.
-            val isBefore = engraveTask.dataIndexList?.isElementBeforeWith(
+            val isBefore = engraveTask.dataList?.isElementBeforeWith(
                 "$dataItemIndex",
                 "${engraveTask.currentIndex}",
                 false

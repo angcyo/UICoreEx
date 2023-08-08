@@ -11,6 +11,9 @@ import com.angcyo.widget.DslViewHolder
  */
 class EngraveFinishControlItem : DslAdapterItem() {
 
+    /**是否要显示分享按钮*/
+    var itemShowShareButton = true
+
     var itemShareAction: () -> Unit = {}
 
     var itemAgainAction: () -> Unit = {}
@@ -26,6 +29,8 @@ class EngraveFinishControlItem : DslAdapterItem() {
         payloads: List<Any>
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
+
+        itemHolder.visible(R.id.share_button, itemShowShareButton)
 
         itemHolder.click(R.id.share_button) {
             itemShareAction()

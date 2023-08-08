@@ -394,7 +394,7 @@
     },
     {
       "id": "8:692696925785217455",
-      "lastPropertyId": "27:8921018387420599454",
+      "lastPropertyId": "29:3491439493132867254",
       "name": "TransferDataEntity",
       "properties": [
         {
@@ -512,13 +512,23 @@
           "id": "27:8921018387420599454",
           "name": "dataDir",
           "type": 5
+        },
+        {
+          "id": "28:6316825861632909322",
+          "name": "fileName",
+          "type": 9
+        },
+        {
+          "id": "29:3491439493132867254",
+          "name": "mount",
+          "type": 5
         }
       ],
       "relations": []
     },
     {
       "id": "9:7843989811447012242",
-      "lastPropertyId": "10:8309465506906862481",
+      "lastPropertyId": "11:2727744647249417652",
       "name": "EngraveDataEntity",
       "properties": [
         {
@@ -571,13 +581,18 @@
           "id": "10:8309465506906862481",
           "name": "finishReason",
           "type": 5
+        },
+        {
+          "id": "11:2727744647249417652",
+          "name": "fileName",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "10:6125483051008058143",
-      "lastPropertyId": "17:2460197047175850066",
+      "lastPropertyId": "20:5506299935095810195",
       "name": "EngraveTaskEntity",
       "properties": [
         {
@@ -590,11 +605,6 @@
           "id": "2:1096573852844681434",
           "name": "taskId",
           "type": 9
-        },
-        {
-          "id": "3:8543660245400551323",
-          "name": "dataIndexList",
-          "type": 30
         },
         {
           "id": "4:4955597375662468243",
@@ -665,6 +675,21 @@
           "id": "17:2460197047175850066",
           "name": "enableItemEngraveParams",
           "type": 1
+        },
+        {
+          "id": "18:5915583753190871877",
+          "name": "isFileNameEngrave",
+          "type": 1
+        },
+        {
+          "id": "19:2658060082623752400",
+          "name": "currentFileName",
+          "type": 9
+        },
+        {
+          "id": "20:5506299935095810195",
+          "name": "dataList",
+          "type": 30
         }
       ],
       "relations": []
@@ -999,7 +1024,8 @@
     3953808129668500876,
     8431154067225773957,
     8140229489583832019,
-    3009380007793216686
+    3009380007793216686,
+    8543660245400551323
   ],
   "retiredRelationUids": [],
   "version": 1

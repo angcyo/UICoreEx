@@ -32,18 +32,24 @@ data class EngraveTaskEntity(
     /**当前正在雕刻的数据索引*/
     var currentIndex: Int = -1,
 
+    /**当前雕刻的文件名*/
+    var currentFileName: String? = null,
+
     /**当前雕刻索引的进度*/
     var currentProgress: Int = 0,
 
-    /**任务需要雕刻的索引集合,
+    /**任务需要雕刻的索引集合, 同时也是需要雕刻的文件名集合
      * 数据库只支持[List<String>]类型, 不支持[List<Int>]类型
      * */
-    var dataIndexList: List<String>? = null,
+    var dataList: List<String>? = null,
 
     /**是否激活了[com.angcyo.engrave.data.HawkEngraveKeys.enableItemEngraveParams]
      * 决定了雕刻参数的获取方式
      * [com.angcyo.engrave.EngraveFlowDataHelper.getEngraveConfig(java.lang.Integer)]*/
     var enableItemEngraveParams: Boolean = false,
+
+    /**是否是文件名雕刻任务*/
+    var isFileNameEngrave: Boolean = false,
 
     //---
 

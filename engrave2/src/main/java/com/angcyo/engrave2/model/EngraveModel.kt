@@ -9,8 +9,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
-import com.angcyo.bluetooth.fsc.laserpacker.command.toSdOrUsb
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
@@ -34,11 +34,15 @@ import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.ex.toMsTime
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
+import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity_
 import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.objectbox.removeAll
 import com.angcyo.viewmodel.IViewModel
 import com.angcyo.viewmodel.vmDataOnce
 import com.hingin.umeng.UMEvent
@@ -80,6 +84,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         /**多文件雕刻指令, 上一次雕刻的索引*/
         var _lastEngraveIndex: Int = -1
+
+        var _lastEngraveFileName: String? = null
     }
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
@@ -115,9 +121,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         if (_engraveTaskEntity?.state != ENGRAVE_STATE_FINISH) {
                             //机器空闲了, 可能一个数据雕刻结束了
                             if (_lastEngraveIndex > 0) {
-                                EngraveFlowDataHelper.finishIndexEngrave(
+                                EngraveFlowDataHelper.finishDataEngrave(
                                     _engraveTaskId,
                                     _lastEngraveIndex,
+                                    _lastEngraveFileName,
                                     EngraveDataEntity.FINISH_REASON_IDLE
                                 )
                             }
@@ -126,6 +133,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                                     if (queryState.printTimes <= 0) null else queryState.printTimes
                                 _checkEngraveNextOnIdle(
                                     queryState.index,
+                                    _lastEngraveFileName,
                                     printTimes,
                                     100,
                                     EngraveDataEntity.FINISH_REASON_IDLE
@@ -134,24 +142,31 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
                     } else if (queryState.isEngraving()) {
                         //雕刻中, 更新对应的雕刻进度
-                        if (_lastEngraveIndex != queryState.index) {
-                            _startEngraveIndex(queryState.index)
-                            if (_lastEngraveIndex != -1) {
-                                //单元素雕刻, 一定要等待机器进入空闲才算完成雕刻
-                                EngraveFlowDataHelper.finishIndexEngrave(
-                                    _engraveTaskId,
-                                    _lastEngraveIndex,
-                                    EngraveDataEntity.FINISH_REASON_INDEX
-                                )
+                        //  _startEngraveFileName(_lastEngraveFileName)
+                        if (queryState.isFileNameEngrave()) {
+                            //文件名雕刻
+                        } else {
+                            if (_lastEngraveIndex != queryState.index) {
+                                _startEngraveIndex(queryState.index)
+                                if (_lastEngraveIndex != -1) {
+                                    //单元素雕刻, 一定要等待机器进入空闲才算完成雕刻
+                                    EngraveFlowDataHelper.finishDataEngrave(
+                                        _engraveTaskId,
+                                        _lastEngraveIndex,
+                                        _lastEngraveFileName,
+                                        EngraveDataEntity.FINISH_REASON_INDEX
+                                    )
+                                }
                             }
-                        }
 
-                        //多文件雕刻的小索引
-                        _lastEngraveIndex = queryState.index
+                            //多文件雕刻的小索引
+                            _lastEngraveIndex = queryState.index
+                        }
 
                         if (_lastEngraveTimes != queryState.printTimes) {
                             _logEngraveDuration(
                                 queryState.index,
+                                _lastEngraveFileName,
                                 _lastEngraveTimes,
                                 "雕刻次数不一致:${_lastEngraveTimes}/${queryState.printTimes}"
                             )
@@ -163,6 +178,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         }
                         updateEngraveProgress(
                             queryState.index,
+                            _lastEngraveFileName,
                             queryState.printTimes,
                             queryState.rate
                         )
@@ -171,8 +187,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     } else if (queryState.error != 0) {
                         //有异常, 暂停雕刻
                         val pause = !HawkEngraveKeys.ignoreEngraveError
-                        "雕刻中出现异常码[${queryState.error}],暂停雕刻[${pause.toDC()}]${_engraveTaskId}".writeEngraveLog()
-                            .writeErrorLog()
+                        buildString {
+                            append("雕刻中出现异常码[${queryState.error}],")
+                            append("暂停雕刻[${pause.toDC()}]${_engraveTaskId}")
+                        }.writeEngraveLog().writeErrorLog()
                         if (pause) {
                             isSendEngraveCmd = false
                             pauseEngrave()
@@ -187,12 +205,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**打印一下*/
-    fun _logEngraveDuration(index: Int, printTimes: Int, reason: String?) {
+    fun _logEngraveDuration(index: Int, fileName: String?, printTimes: Int, reason: String?) {
         val nowTime = nowTime()
         val duration = nowTime - (_engraveTaskEntity?.indexPrintStartTime ?: 0)
         buildString {
             append("雕刻完成[${_engraveTaskId}]")
-            append(":${index} ")
+            append(":[${index}] [$fileName]")
             append("第${printTimes}次 ")
             append("耗时:${duration.toMsTime()} ")
             append(reason ?: "")
@@ -201,9 +219,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**开始雕刻*/
     @CallPoint
-    fun startEngrave(taskId: String?): EngraveTaskEntity {
-        val task = EngraveFlowDataHelper.generateEngraveTask(taskId)
-        if (task.dataIndexList.isNullOrEmpty()) {
+    fun startEngrave(taskId: String?, isFileNameEngrave: Boolean = false): EngraveTaskEntity {
+        val task = EngraveFlowDataHelper.generateEngraveTask(taskId, isFileNameEngrave)
+        if (task.dataList.isNullOrEmpty()) {
             //无数据需要雕刻
             "雕刻任务无数据[${taskId}]".writeEngraveLog()
             errorEngrave(EmptyException())
@@ -214,45 +232,32 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         return task
     }
 
-    /**开始雕刻*/
+    /**开始文件名雕刻任务*/
     @CallPoint
     fun startEngrave(
         taskId: String,
         layerId: String,
         fileName: String,
-        mount: Byte
-    ) {
-        val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId)
-        val diameter =
-            (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
-        EngraveCmd.filenameEngrave(
-            fileName, mount,
-            engraveConfigEntity.power.toByte(),
-            engraveConfigEntity.depth.toByte(),
-            max(1, engraveConfigEntity.time).toByte(),
-            engraveConfigEntity.type,
-            diameter,
-            engraveConfigEntity.precision
-        ).enqueue { bean, error ->
-            "文件名雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
-            _lastEngraveCmdError = error
-            if (error == null) {
-                //雕刻指令发送成功, 机器开始雕刻
-                isSendEngraveCmd = true
-                UMEvent.ENGRAVE.umengEventValue {
-                    put(UMEvent.KEY_START_TIME, nowTime().toString())
-                }
-                deviceStateModel.startLoopCheckState(reason = "批量雕刻指令")
-            } else if (error is CommandException) {
-                //指令异常
-                "雕刻失败[${mount.toSdOrUsb()}]:[${fileName}] $error".writeErrorLog()
-                errorEngrave(error)
-            } else {
-                //雕刻失败, 重试
-                "雕刻失败[${mount.toSdOrUsb()}]:[${fileName}] $error".writeErrorLog()
-                errorEngrave(error)
-            }
+        mount: Int
+    ): EngraveTaskEntity {
+        //清除之前的雕刻数据
+        EngraveDataEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveDataEntity_.taskId.equal(taskId))
         }
+        //创建传输数据
+        TransferDataEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(TransferDataEntity_.taskId.equal(taskId))
+        }
+        TransferDataEntity().apply {
+            this.taskId = taskId
+            this.fileName = fileName
+            this.layerId = layerId
+            this.mount = mount
+            this.isTransfer = true
+            lpSaveEntity()
+        }
+        //创建雕刻任务
+        return startEngrave(taskId, true)
     }
 
     /**开始雕刻下一个索引*/
@@ -262,6 +267,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         _engraveTaskEntity?.apply {
             currentIndex = -1
+            currentFileName = null
             state = ENGRAVE_STATE_START
             lpSaveEntity()
         }
@@ -269,7 +275,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         buildString {
             append("开始雕刻下一个:[${taskId}]")
         }.writeEngraveLog()
-        engraveNext()
+        engraveNextData()
     }
 
     /**完成当前索引的雕刻任务*/
@@ -277,23 +283,33 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         isSendEngraveCmd = false
         val task = _engraveTaskEntity ?: return
         val index = task.currentIndex
+        val fileName = task.currentFileName
         buildString {
             append("直接完成雕刻:${_engraveTaskId} ")
-            append("索引:${index} ")
+            append("索引:[${index}][${fileName}]")
         }.writeEngraveLog(L.INFO)
 
         //更新雕刻进度
-        _checkEngraveNextOnIdle(index, null, 100, EngraveDataEntity.FINISH_REASON_SKIP)
+        _checkEngraveNextOnIdle(index, fileName, null, 100, EngraveDataEntity.FINISH_REASON_SKIP)
     }
 
     /**所有的索引, 是否都雕刻完成了*/
     fun isAllEngraveFinish(taskId: String?): Boolean {
-        val nextIndex = EngraveFlowDataHelper.getNextEngraveIndex(taskId)
-        return nextIndex == null
+        return if (_engraveTaskEntity?.isFileNameEngrave == true) {
+            EngraveFlowDataHelper.getNextEngraveFileName(taskId) == null
+        } else {
+            EngraveFlowDataHelper.getNextEngraveIndex(taskId) == null
+        }
     }
 
     /**雕刻完成后, 触发下一个雕刻*/
-    fun _checkEngraveNextOnIdle(index: Int, printTimes: Int?, progress: Int, reason: Int) {
+    fun _checkEngraveNextOnIdle(
+        index: Int,
+        fileName: String?,
+        printTimes: Int?,
+        progress: Int,
+        reason: Int
+    ) {
         deviceStateModel.pauseLoopCheckState(true, "雕刻完成,暂停检查状态")
         val nowTime = nowTime()
         UMEvent.ENGRAVE.umengEventValue {
@@ -301,14 +317,15 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             put(UMEvent.KEY_FINISH_TIME, nowTime.toString())
             put(UMEvent.KEY_DURATION, duration.toString())
         }
-        _logEngraveDuration(index, _lastEngraveTimes, "机器空闲状态")
+        _logEngraveDuration(index, fileName, _lastEngraveTimes, "机器空闲状态")
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
+        _lastEngraveFileName = null
         //强制更新进度到100
-        updateEngraveProgress(index, printTimes, progress)
+        updateEngraveProgress(index, fileName, printTimes, progress)
 
         //完成指定索引的雕刻
-        EngraveFlowDataHelper.finishIndexEngrave(_engraveTaskId, index, reason)
+        EngraveFlowDataHelper.finishDataEngrave(_engraveTaskId, index, fileName, reason)
 
         if (isBatchEngraveSupport()) {
             finishEngrave("批量雕刻指令完成")
@@ -317,9 +334,9 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 !isAllEngraveFinish(_engraveTaskId)
             ) {
                 //激活了单文件雕刻, 并且未完成雕刻
-                finishIndexEngrave()
+                finishDataEngrave()
             } else {
-                engraveNext()
+                engraveNextData()
             }
         }
     }
@@ -336,7 +353,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     @Private
-    fun _startEngraveTask(task: EngraveTaskEntity) {
+    fun _startEngraveTask(
+        task: EngraveTaskEntity,
+        itemEngraveParams: Boolean = HawkEngraveKeys.enableItemEngraveParams
+    ) {
         task.apply {
             startTime = nowTime()
             finishTime = -1
@@ -344,7 +364,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             state = ENGRAVE_STATE_START
 
             //雕刻参数获取方式
-            enableItemEngraveParams = HawkEngraveKeys.enableItemEngraveParams
+            enableItemEngraveParams = itemEngraveParams
             lpSaveEntity()
 
             _engraveTaskId = task.taskId
@@ -356,13 +376,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             engraveStateData.postValue(this)
 
             //
-            if (isBatchEngraveSupport()) {
+            if (isBatchEngraveSupport(this)) {
                 batchEngrave()
             } else {
                 buildString {
-                    append("开始雕刻任务:[${taskId}][${task.dataIndexList}] $task")
+                    append("开始雕刻任务:[${taskId}][${task.dataList}] $task")
                 }.writeEngraveLog()
-                engraveNext()
+                engraveNextData()
             }
         }
     }
@@ -378,15 +398,30 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
-    /**雕刻下一个*/
+    /**雕刻下一个文件索引或文件
+     * [engraveNextFileName]
+     * [engraveNextDataIndex]*/
     @CallPoint
-    fun engraveNext() {
+    fun engraveNextData() {
+        val task = _engraveTaskEntity ?: return
+        if (task.isFileNameEngrave) {
+            //文件名雕刻
+            engraveNextFileName()
+        } else {
+            //索引雕刻
+            engraveNextDataIndex()
+        }
+    }
+
+    /**雕刻下一个文件索引*/
+    @CallPoint
+    private fun engraveNextDataIndex() {
         val task = _engraveTaskEntity ?: return
         val taskId = task.taskId
 
         if (task.currentIndex > 0) {
             //之前的雕刻索引
-            EngraveFlowDataHelper.finishIndexEngrave(taskId, task.currentIndex, null)
+            EngraveFlowDataHelper.finishDataEngrave(taskId, task.currentIndex, null, null)
         }
 
         //查找下一个未完成雕刻的索引
@@ -409,7 +444,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     //需要雕刻的数据不存在,则直接完成
                     engraveDataEntity.progress = 100
                     engraveDataEntity.lpSaveEntity()
-                    engraveNext()
+                    engraveNextDataIndex()
                     return
                 }
             }
@@ -430,6 +465,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 //
                 _startEngraveCmd(
                     engraveDataEntity.index,
+                    null,
                     transferDataEntity,
                     engraveConfigEntity
                 )
@@ -449,7 +485,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             task.lpSaveEntity()
         }
 
-        val indexList = task.dataIndexList?.mapTo(mutableListOf()) {
+        val indexList = task.dataList?.mapTo(mutableListOf()) {
             it.toIntOrNull() ?: -1
         } ?: emptyList()
 
@@ -554,9 +590,76 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
     }
 
+    /**雕刻下一个文件名*/
+    @CallPoint
+    private fun engraveNextFileName() {
+        val task = _engraveTaskEntity ?: return
+        val taskId = task.taskId
+
+        if (task.currentFileName != null) {
+            //之前的雕刻索引
+            EngraveFlowDataHelper.finishFileNameEngrave(taskId, task.currentFileName!!, null)
+        }
+
+        //查找下一个未完成雕刻的文件名
+        val nextFileName = EngraveFlowDataHelper.getNextEngraveFileName(taskId)
+
+        if (nextFileName == null) {
+            //雕刻完成
+            finishEngrave("无下一个数据")
+        } else {
+            //开始雕刻
+            val engraveDataEntity = _generateEngraveData(taskId, nextFileName)
+
+            val transferDataEntity = EngraveFlowDataHelper.getTransferData(taskId, nextFileName)
+
+            if (transferDataEntity == null) {
+                if (engraveDataEntity.isFromDeviceHistory) {
+
+                } else {
+                    //
+                    //需要雕刻的数据不存在,则直接完成
+                    engraveDataEntity.progress = 100
+                    engraveDataEntity.lpSaveEntity()
+                    engraveNextFileName()
+                    return
+                }
+            }
+
+            //雕刻配置数据
+            val engraveConfigEntity = if (task.enableItemEngraveParams) {
+                EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
+                    ?: EngraveFlowDataHelper.generateEngraveConfig(
+                        taskId,
+                        transferDataEntity?.layerId
+                    )
+            } else {
+                EngraveFlowDataHelper.generateEngraveConfig(taskId, transferDataEntity?.layerId)
+            }
+            doMain {
+                _startEngraveFileName(nextFileName)
+
+                //
+                _startEngraveCmd(
+                    engraveDataEntity.index,
+                    engraveDataEntity.fileName,
+                    transferDataEntity,
+                    engraveConfigEntity
+                )
+            }
+        }
+    }
+
     /**生成任务需要的雕刻数据*/
     fun _generateEngraveData(taskId: String?, index: Int): EngraveDataEntity {
         val engraveDataEntity = EngraveFlowDataHelper.generateEngraveData(taskId, index)
+        engraveDataEntity.startTime = nowTime()
+        engraveDataEntity.lpSaveEntity()
+        return engraveDataEntity
+    }
+
+    fun _generateEngraveData(taskId: String?, fileName: String): EngraveDataEntity {
+        val engraveDataEntity = EngraveFlowDataHelper.generateEngraveData(taskId, fileName)
         engraveDataEntity.startTime = nowTime()
         engraveDataEntity.lpSaveEntity()
         return engraveDataEntity
@@ -566,6 +669,17 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     fun _startEngraveIndex(index: Int) {
         val task = _engraveTaskEntity ?: return
         if (index != -1) task.currentIndex = index
+        task.state = ENGRAVE_STATE_START //雕刻已开始
+        task.indexStartTime = nowTime()
+        task.indexPrintStartTime = task.indexStartTime
+        engraveStateData.value = task
+        task.lpSaveEntity()
+    }
+
+    /**开始雕刻指定的索引*/
+    fun _startEngraveFileName(fileName: String?) {
+        val task = _engraveTaskEntity ?: return
+        if (fileName != null) task.currentFileName = fileName
         task.state = ENGRAVE_STATE_START //雕刻已开始
         task.indexStartTime = nowTime()
         task.indexPrintStartTime = task.indexStartTime
@@ -602,6 +716,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         _lastEngraveTimes = 1
         _lastEngraveIndex = -1
+        _lastEngraveFileName = null
 
         EngraveNotifyHelper.hideEngraveNotify()//隐藏通知
 
@@ -610,6 +725,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         //clear
         _engraveTaskId = null
         engraveTaskEntity.currentIndex = -1
+        engraveTaskEntity.currentFileName = null
         engraveTaskEntity.finishTime = nowTime()
         engraveTaskEntity.state = ENGRAVE_STATE_FINISH
         engraveTaskEntity.lpSaveEntity()
@@ -618,7 +734,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**完成了一个索引的雕刻, 需要传输下一个索引, 并且雕刻下一个*/
-    fun finishIndexEngrave() {
+    fun finishDataEngrave() {
         isSendEngraveCmd = false
         val engraveTaskEntity = _engraveTaskEntity ?: return
         engraveTaskEntity.state = ENGRAVE_STATE_INDEX_FINISH
@@ -708,11 +824,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**开始雕刻, 发送雕刻指令
      * [index] 需要雕刻的索引
+     * [fileName] 需要雕刻的文件名, 优先判断
      * [transferDataEntity] 需要雕刻的数据实体
      * [engraveConfigEntity] 雕刻的参数实体
      * */
     fun _startEngraveCmd(
         index: Int,
+        fileName: String?,
         transferDataEntity: TransferDataEntity?,
         engraveConfigEntity: EngraveConfigEntity,
         retryCount: Int = 0
@@ -722,7 +840,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
         val engraveLayer = LayerHelper.getEngraveLayerInfo(engraveConfigEntity.layerId)
         buildString {
-            append("开始雕刻指令:[单参${_engraveTaskEntity?.enableItemEngraveParams.toDC()}]:[${transferDataEntity?.taskId}][$index]")
+            append("开始雕刻指令:[单参${_engraveTaskEntity?.enableItemEngraveParams.toDC()}]:")
+            append("[${transferDataEntity?.taskId}][$index][$fileName]")
 
             //雕刻数据类型
             transferDataEntity?.engraveDataType?.let {
@@ -751,7 +870,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             it.lpSaveEntity()
         }
         isSendEngraveCmd = false
-        EngraveCmd(
+
+        val engraveCmd = if (fileName == null) EngraveCmd(
             index,
             engraveConfigEntity.power.toByte(),
             engraveConfigEntity.depth.toByte(),
@@ -763,12 +883,24 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             0x09,
             diameter,
             engraveConfigEntity.precision
-        ).enqueue { bean, error ->
+        ) else EngraveCmd.filenameEngrave(
+            fileName, (transferDataEntity?.mount ?: QueryCmd.TYPE_SD).toByte(),
+            engraveConfigEntity.power.toByte(),
+            engraveConfigEntity.depth.toByte(),
+            max(1, engraveConfigEntity.time).toByte(),
+            engraveConfigEntity.type,
+            diameter,
+            engraveConfigEntity.precision
+        )
+
+        engraveCmd.enqueue { bean, error ->
             "雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error
             if (error == null) {
                 isSendEngraveCmd = true
-                _lastEngraveIndex = index //赋值, 如果机器雕刻过快, 可以不会进入progress状态
+                //赋值, 如果机器雕刻过快, 可以不会进入progress状态
+                _lastEngraveIndex = index
+                _lastEngraveFileName = fileName
                 //雕刻指令发送成功, 机器开始雕刻
                 UMEvent.ENGRAVE.umengEventValue {
                     put(UMEvent.KEY_START_TIME, nowTime().toString())
@@ -780,7 +912,10 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                 errorEngrave(error)
             } else {
                 //如果索引雕刻异常, 则不能跳过索引雕刻
-                "雕刻失败:[${index}] $error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity".writeErrorLog()
+                buildString {
+                    append("雕刻失败:[${index}][$fileName] ")
+                    append("$error, 即将重试[${retryCount}/${HawkEngraveKeys.engraveRetryCount}]...$taskEntity")
+                }.writeErrorLog()
 
                 if (taskEntity?.state == ENGRAVE_STATE_START &&
                     vmApp<DeviceStateModel>().isDeviceConnect()
@@ -789,6 +924,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         doBack {
                             _startEngraveCmd(
                                 index,
+                                fileName,
                                 transferDataEntity,
                                 engraveConfigEntity,
                                 retryCount + 1
@@ -823,11 +959,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
     /**更新雕刻进度和次数
      * [progress] 当前索引的雕刻进度*/
-    fun updateEngraveProgress(index: Int, printTimes: Int?, progress: Int) {
+    fun updateEngraveProgress(index: Int, fileName: String?, printTimes: Int?, progress: Int) {
         val currentProgress = clamp(progress, 0, 100)
         EngraveFlowDataHelper.updateEngraveProgress(
             _engraveTaskEntity?.taskId,
             index,
+            fileName,
             printTimes,
             currentProgress
         )
@@ -841,7 +978,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
 
-            "雕刻进度[${it.taskId}]:${index} ${currentProgress}%/${it.progress}% ${printTimes ?: ""}".writeEngraveLog()
+            "雕刻进度[${it.taskId}]:[${index}][$fileName] ${currentProgress}%/${it.progress}% ${printTimes ?: ""}".writeEngraveLog()
         }
     }
 
@@ -849,7 +986,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
      *
      * 打开滑台，打开滑台多文件雕刻开关之后， 走多文件雕刻指令。
      * */
-    fun isBatchEngraveSupport(): Boolean {
+    fun isBatchEngraveSupport(task: EngraveTaskEntity? = _engraveTaskEntity): Boolean {
+        if (task != null) {
+            if (task.isFileNameEngrave) {
+                return false
+            }
+        }
         /*val setting = laserPeckerModel.deviceSettingData.value ?: return false
         if (setting.sRep == 1) {
             return true

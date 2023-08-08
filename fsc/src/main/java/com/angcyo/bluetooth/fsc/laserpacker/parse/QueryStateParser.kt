@@ -189,12 +189,15 @@ data class QueryStateParser(
 
     //region ------Engrave------
 
+    /**是否是文件名雕刻*/
+    fun isFileNameEngrave(): Boolean = mode == WORK_MODE_ENGRAVE && _workState == 0x06
+
     /**打印模式下, 打印是否暂停了*/
     fun isEngravePause(): Boolean = mode == WORK_MODE_ENGRAVE && _workState == 0x04
 
     /**打印模式下, 打印是否正在打印*/
     fun isEngraving(): Boolean =
-        mode == WORK_MODE_ENGRAVE && (_workState == 0x01 || _workState == 0x02 || _workState == 0x05)
+        mode == WORK_MODE_ENGRAVE && (_workState == 0x01 || _workState == 0x02 || _workState == 0x05 || _workState == 0x06)
 
     /**打印模式下, 打印是否正在停止,或者停止了*/
     fun isEngraveStop(): Boolean = mode == WORK_MODE_ENGRAVE && _workState == 0x03

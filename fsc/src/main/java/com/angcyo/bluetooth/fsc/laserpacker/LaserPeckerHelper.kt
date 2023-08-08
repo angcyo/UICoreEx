@@ -786,7 +786,7 @@ object LaserPeckerHelper {
             }
         }
         return sendCommand(
-            deviceAddress ?: LibLpHawkKeys.wifiAddress ?: "localhost",
+            deviceAddress ?: HawkEngraveKeys.lastWifiIp ?: LibLpHawkKeys.wifiAddress ?: "localhost",
             command,
             apiModel,
             progress,

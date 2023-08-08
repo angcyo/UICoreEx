@@ -311,6 +311,15 @@ object EngraveFlowDataHelper {
         }
     }
 
+    fun getTransferData(taskId: String?, fileName: String): TransferDataEntity? {
+        return TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+            apply(
+                TransferDataEntity_.taskId.equal("$taskId")
+                    .and(TransferDataEntity_.fileName.equal(fileName))
+            )
+        }
+    }
+
     /**通过指定的文件索引[index], 查询对应的传输数据, 反向获取对应的任务id,
      * 用来恢复雕刻任务
      * [taskId] 可以指定任务id, 也可以不指定. 不指定则从最后一个获取
@@ -371,11 +380,20 @@ object EngraveFlowDataHelper {
     /**获取当前雕刻的图层*/
     fun getCurrentEngraveLayer(taskId: String?): EngraveLayerInfo? {
         val taskEntity = getEngraveTask(taskId) ?: return null
-        val transferData = TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-            apply(
-                TransferDataEntity_.taskId.equal("$taskId")
-                    .and(TransferDataEntity_.index.equal(taskEntity.currentIndex))
-            )
+        val transferData = if (taskEntity.isFileNameEngrave) {
+            TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                apply(
+                    TransferDataEntity_.taskId.equal("$taskId")
+                        .and(TransferDataEntity_.fileName.equal(taskEntity.currentFileName ?: ""))
+                )
+            }
+        } else {
+            TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                apply(
+                    TransferDataEntity_.taskId.equal("$taskId")
+                        .and(TransferDataEntity_.index.equal(taskEntity.currentIndex))
+                )
+            }
         }
         LayerHelper.getEngraveLayerList(true).forEach {
             if (transferData?.layerId == it.layerId) {
@@ -387,12 +405,12 @@ object EngraveFlowDataHelper {
 
     /**获取当前雕刻的配置信息*/
     fun getCurrentEngraveConfig(taskId: String?): EngraveConfigEntity? {
-        if (HawkEngraveKeys.enableItemEngraveParams) {
-            val taskEntity = getEngraveTask(taskId) ?: return null
+        val taskEntity = getEngraveTask(taskId) ?: return null
+        return if (HawkEngraveKeys.enableItemEngraveParams) {
             val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(EngraveConfigEntity_.taskId.equal("${taskEntity.currentIndex}"))
             }
-            return engraveConfigEntity
+            engraveConfigEntity
         } else {
             val engraveLayerInfo = getCurrentEngraveLayer(taskId)
             val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
@@ -401,7 +419,7 @@ object EngraveFlowDataHelper {
                         .and(EngraveConfigEntity_.layerId.equal(engraveLayerInfo?.layerId ?: ""))
                 )
             }
-            return engraveConfigEntity
+            engraveConfigEntity
         }
     }
 
@@ -693,20 +711,35 @@ object EngraveFlowDataHelper {
     }
 
     /**构建或者获取一个雕刻任务实体*/
-    fun generateEngraveTask(taskId: String?): EngraveTaskEntity {
+    fun generateEngraveTask(taskId: String?, isFileNameEngrave: Boolean): EngraveTaskEntity {
         return EngraveTaskEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
             apply(EngraveTaskEntity_.taskId.equal("$taskId"))
         }) {
             this.taskId = taskId
+            this.isFileNameEngrave = isFileNameEngrave
 
-            val indexList = getTransferDataList(taskId).mapTo(mutableListOf()) { "${it.index}" }
-            if (indexList.isEmpty()) {
-                //没有传输的数据, 则有可能是需要直接雕刻索引的任务
-                getEngraveDataEntity(taskId)?.let {
-                    indexList.add("${it.index}")
+            val dataList: MutableList<String>
+            val transferDataList = getTransferDataList(taskId)
+            if (isFileNameEngrave) {
+                dataList = transferDataList.filter { it.fileName != null }
+                    .mapTo(mutableListOf()) { "${it.fileName}" }
+                if (dataList.isEmpty()) {
+                    //没有传输的数据, 则有可能是需要直接雕刻索引的任务
+                    getEngraveDataEntity(taskId)?.let {
+                        dataList.add("${it.fileName}")
+                    }
+                }
+            } else {
+                dataList = transferDataList.filter { it.index > 0 }
+                    .mapTo(mutableListOf()) { "${it.index}" }
+                if (dataList.isEmpty()) {
+                    //没有传输的数据, 则有可能是需要直接雕刻索引的任务
+                    getEngraveDataEntity(taskId)?.let {
+                        dataList.add("${it.index}")
+                    }
                 }
             }
-            dataIndexList = indexList
+            this.dataList = dataList
 
             //任务所属的设备地址
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
@@ -731,7 +764,7 @@ object EngraveFlowDataHelper {
         taskEntity.lpSaveEntity()
 
         //
-        for (indexStr in taskEntity.dataIndexList ?: emptyList()) {
+        for (indexStr in taskEntity.dataList ?: emptyList()) {
             val index = indexStr.toIntOrNull() ?: 0
             val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(
@@ -750,7 +783,7 @@ object EngraveFlowDataHelper {
     fun getNextEngraveIndex(taskId: String?): Int? {
         val taskEntity = getEngraveTask(taskId) ?: return null
 
-        for (indexStr in taskEntity.dataIndexList ?: emptyList()) {
+        for (indexStr in taskEntity.dataList ?: emptyList()) {
             val index = indexStr.toIntOrNull() ?: 0
             val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
                 apply(
@@ -762,6 +795,29 @@ object EngraveFlowDataHelper {
                 //如果当前索引对应的数据没有雕刻, 或者雕刻进度未完成
                 //则表示当前的索引需要雕刻
                 return index
+            }
+        }
+        return null
+    }
+
+    /**获取任务中, 下一个需要雕刻的数据文件名, 如果有*/
+    fun getNextEngraveFileName(taskId: String?): String? {
+        val taskEntity = getEngraveTask(taskId) ?: return null
+        if (!taskEntity.isFileNameEngrave) {
+            return null
+        }
+
+        for (data in taskEntity.dataList ?: emptyList()) {
+            val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveDataEntity_.taskId.equal("$taskId")
+                        .and(EngraveDataEntity_.fileName.equal(data))
+                )
+            }
+            if (engraveData == null || engraveData.progress != 100) {
+                //如果当前索引对应的数据没有雕刻, 或者雕刻进度未完成
+                //则表示当前的索引需要雕刻
+                return data
             }
         }
         return null
@@ -782,13 +838,53 @@ object EngraveFlowDataHelper {
         }
     }
 
+    /**[generateEngraveData]*/
+    fun generateEngraveData(taskId: String?, fileName: String): EngraveDataEntity {
+        return EngraveDataEntity::class.ensureEntity(LPBox.PACKAGE_NAME, {
+            apply(
+                EngraveDataEntity_.taskId.equal("$taskId")
+                    .and(EngraveDataEntity_.fileName.equal(fileName))
+            )
+        }) {
+            this.taskId = taskId
+            this.fileName = fileName
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+            clearEngraveData()
+        }
+    }
+
     /**完成指定索引的雕刻
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveDataEntity.FINISH_REASON_IDLE]*/
-    fun finishIndexEngrave(taskId: String?, index: Int, finishReason: Int?) {
+    fun finishDataEngrave(taskId: String?, index: Int, fileName: String?, finishReason: Int?) {
+        if (fileName == null) {
+            EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveDataEntity_.taskId.equal("$taskId")
+                        .and(EngraveDataEntity_.index.equal(index))
+                )
+            }
+        } else {
+            EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveDataEntity_.taskId.equal("$taskId")
+                        .and(EngraveDataEntity_.fileName.equal(fileName))
+                )
+            }
+        }?.apply {
+            this.progress = 100
+            finishReason?.let {
+                this.finishReason = it
+            }
+            this.finishTime = nowTime()
+            lpSaveEntity()
+        }
+    }
+
+    fun finishFileNameEngrave(taskId: String?, fileName: String, finishReason: Int?) {
         EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveDataEntity_.taskId.equal("$taskId")
-                    .and(EngraveDataEntity_.index.equal(index))
+                    .and(EngraveDataEntity_.fileName.equal(fileName))
             )
         }?.apply {
             this.progress = 100
@@ -806,25 +902,44 @@ object EngraveFlowDataHelper {
      * [printTimes] 当前的打印次数,从1开始, null 不指定
      * [progress] 当前的进度
      * */
-    fun updateEngraveProgress(taskId: String?, index: Int, printTimes: Int?, progress: Int) {
+    fun updateEngraveProgress(
+        taskId: String?,
+        index: Int,
+        fileName: String?,
+        printTimes: Int?,
+        progress: Int
+    ) {
         getEngraveTask(taskId)?.let {
-            it.dataIndexList?.let { list ->
-                for (beforeIndex in list) {
-                    if (beforeIndex == "$index") {
-                        break
-                    }
-                    getEngraveDataEntity(taskId, index)?.apply {
-                        //自动完成之前的所有索引, 比如雕刻到第8个文件再连接上蓝牙, 此时的雕刻进度~
-                        if (progress != 100) {
-                            this.progress = 100
-                            lpSaveEntity()
+            it.dataList?.let { list ->
+                for (data in list) {
+                    if (fileName == null) {
+                        if (data == "$index") {
+                            break
+                        }
+                        getEngraveDataEntity(taskId, index)?.apply {
+                            //自动完成之前的所有索引, 比如雕刻到第8个文件再连接上蓝牙, 此时的雕刻进度~
+                            if (progress != 100) {
+                                this.progress = 100
+                                lpSaveEntity()
+                            }
+                        }
+                    } else {
+                        if (data == fileName) {
+                            break
+                        }
+                        getEngraveDataEntity(taskId, fileName)?.apply {
+                            //自动完成之前的所有索引, 比如雕刻到第8个文件再连接上蓝牙, 此时的雕刻进度~
+                            if (progress != 100) {
+                                this.progress = 100
+                                lpSaveEntity()
+                            }
                         }
                     }
                 }
             }
         }
         //
-        getEngraveDataEntity(taskId, index)?.apply {
+        getEngraveDataEntity(taskId, index, fileName)?.apply {
             this.printTimes = printTimes ?: this.printTimes
             this.progress = progress
             lpSaveEntity()
@@ -844,6 +959,11 @@ object EngraveFlowDataHelper {
         }
     }
 
+    fun getEngraveDataEntity(taskId: String?, index: Int, fileName: String?): EngraveDataEntity? {
+        return if (fileName == null) getEngraveDataEntity(taskId, index) else
+            getEngraveDataEntity(taskId, fileName)
+    }
+
     /**获取指定索引对应的雕刻信息实体*/
     fun getEngraveDataEntity(taskId: String?, index: Int): EngraveDataEntity? {
         return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
@@ -853,6 +973,19 @@ object EngraveFlowDataHelper {
                 apply(
                     EngraveDataEntity_.taskId.equal("$taskId")
                         .and(EngraveDataEntity_.index.equal(index))
+                )
+            }
+        }
+    }
+
+    fun getEngraveDataEntity(taskId: String?, fileName: String): EngraveDataEntity? {
+        return EngraveDataEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            if (taskId == null) {
+                apply(EngraveDataEntity_.fileName.equal(fileName))
+            } else {
+                apply(
+                    EngraveDataEntity_.taskId.equal("$taskId")
+                        .and(EngraveDataEntity_.fileName.equal(fileName))
                 )
             }
         }
@@ -891,31 +1024,59 @@ object EngraveFlowDataHelper {
         //当前进度
         var current = 0
 
-        for (indexStr in taskEntity.dataIndexList ?: emptyList()) {
-            val index = indexStr.toIntOrNull() ?: 0
+        for (data in taskEntity.dataList ?: emptyList()) {
+            if (taskEntity.isFileNameEngrave) {
+                val fileName = data
 
-            //传输的数据, 用来计算总进度
-            val transferData = TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-                apply(
-                    TransferDataEntity_.taskId.equal("$taskId")
-                        .and(TransferDataEntity_.index.equal(index))
-                )
-            }
-            transferData?.let {
-                getEngraveConfig(taskId, it.layerId)?.let { engraveConfigEntity ->
-                    sum += engraveConfigEntity.time * 100
+                //传输的数据, 用来计算总进度
+                val transferData = TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                    apply(
+                        TransferDataEntity_.taskId.equal("$taskId")
+                            .and(TransferDataEntity_.fileName.equal(fileName))
+                    )
                 }
-            }
+                transferData?.let {
+                    getEngraveConfig(taskId, it.layerId)?.let { engraveConfigEntity ->
+                        sum += engraveConfigEntity.time * 100
+                    }
+                }
 
-            //雕刻数据, 用来计算已经行走的进度
-            val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-                apply(
-                    EngraveDataEntity_.taskId.equal("$taskId")
-                        .and(EngraveDataEntity_.index.equal(index))
-                )
-            }
-            engraveData?.let {
-                current += (it.printTimes - 1) * 100 + it.progress
+                //雕刻数据, 用来计算已经行走的进度
+                val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                    apply(
+                        EngraveDataEntity_.taskId.equal("$taskId")
+                            .and(EngraveDataEntity_.fileName.equal(fileName))
+                    )
+                }
+                engraveData?.let {
+                    current += (it.printTimes - 1) * 100 + it.progress
+                }
+            } else {
+                val index = data.toIntOrNull() ?: 0
+
+                //传输的数据, 用来计算总进度
+                val transferData = TransferDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                    apply(
+                        TransferDataEntity_.taskId.equal("$taskId")
+                            .and(TransferDataEntity_.index.equal(index))
+                    )
+                }
+                transferData?.let {
+                    getEngraveConfig(taskId, it.layerId)?.let { engraveConfigEntity ->
+                        sum += engraveConfigEntity.time * 100
+                    }
+                }
+
+                //雕刻数据, 用来计算已经行走的进度
+                val engraveData = EngraveDataEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+                    apply(
+                        EngraveDataEntity_.taskId.equal("$taskId")
+                            .and(EngraveDataEntity_.index.equal(index))
+                    )
+                }
+                engraveData?.let {
+                    current += (it.printTimes - 1) * 100 + it.progress
+                }
             }
         }
         val progress = clamp((current * 1f / sum * 100).toInt(), 0, 100)

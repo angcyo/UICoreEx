@@ -33,6 +33,9 @@ data class EngraveDataEntity(
      * [com.angcyo.objectbox.laser.pecker.entity.TransferDataEntity.index]*/
     var index: Int = -1,
 
+    /**雕刻数据的文件名*/
+    var fileName: String? = null,
+
     /**当前雕刻的次数, 从1开始
      * [com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity.time] 总次数*/
     var printTimes: Int = 1,

@@ -33,23 +33,27 @@ class EngraveProgressItem : DslAdapterItem() {
     ) {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
+        val engraveTask = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
+
         itemHolder.tv(R.id.lib_text_view)?.text = _string(R.string.progress)
-        itemHolder.tv(R.id.engrave_layer_view)?.text = if (HawkEngraveKeys.enableItemTopOrder) {
-            null
-        } else {
-            span {
-                val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
-                val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
-                engraveLayerList.forEach { layerInfo ->
-                    drawable {
-                        showText = layerInfo.toText()
-                        spanWeight = 1f / engraveLayerList.size() - 0.001f
-                        textGravity = Gravity.CENTER
-                        textBold = layerInfo.layerId == engraveConfigEntity?.layerId
+        itemHolder.tv(R.id.engrave_layer_view)?.text =
+            if (HawkEngraveKeys.enableItemTopOrder || engraveTask?.isFileNameEngrave == true) {
+                null
+            } else {
+                span {
+                    val engraveLayerList = EngraveFlowDataHelper.getEngraveLayerList(itemTaskId)
+                    val engraveConfigEntity =
+                        EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+                    engraveLayerList.forEach { layerInfo ->
+                        drawable {
+                            showText = layerInfo.toText()
+                            spanWeight = 1f / engraveLayerList.size() - 0.001f
+                            textGravity = Gravity.CENTER
+                            textBold = layerInfo.layerId == engraveConfigEntity?.layerId
+                        }
                     }
                 }
             }
-        }
 
         /*val engraveLayerInfo = EngraveFlowDataHelper.getCurrentEngraveLayer(itemTaskId)
         itemHolder.tv(R.id.engrave_layer_view)?.text = engraveLayerInfo?.toText()*/
