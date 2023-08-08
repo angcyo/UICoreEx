@@ -10,4 +10,6 @@
     <integer name="canvas_edit_length">8</integer>
 
     <string name="number_range_digits">: .1234567890</string>
+
+    <dimen name="engrave_property_label_width">70dp</dimen>
 </resources>
