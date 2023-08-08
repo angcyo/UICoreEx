@@ -771,6 +771,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
             //一致打印参数
             bean.printType = gridPrintType.toInt()
+            bean.dpi =
+                HawkEngraveKeys.getLastLayerDpi(bean._layerId ?: LaserPeckerHelper.LAYER_FILL)
             if (bean.dataMode == null) {
                 bean.printPower = HawkEngraveKeys.lastPower
                 bean.printDepth = HawkEngraveKeys.lastDepth
