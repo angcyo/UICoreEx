@@ -10,6 +10,7 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.reverseCharSequenceIfRtl
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 import kotlin.math.max
@@ -35,7 +36,7 @@ class AddTextItem : CanvasIconItem(), IFragmentItem {
                 maxInputLength = max(maxInputLength, defaultInputString?.length ?: 0)
                 onAddTextAction = { inputText, type ->
                     element.updateTextProperty(renderer, delegate) {
-                        text = "$inputText"
+                        text = "${inputText.reverseCharSequenceIfRtl()}"
                         bean.mtype = type
                     }
                 }
@@ -52,7 +53,11 @@ class AddTextItem : CanvasIconItem(), IFragmentItem {
         itemClick = {
             itemFragment?.context?.addTextDialog {
                 onAddTextAction = { inputText, type ->
-                    LPElementHelper.addTextElement(itemRenderDelegate, inputText, type)
+                    LPElementHelper.addTextElement(
+                        itemRenderDelegate,
+                        inputText.reverseCharSequenceIfRtl(),
+                        type
+                    )
                     UMEvent.CANVAS_TEXT.umengEventValue()
                 }
             }
