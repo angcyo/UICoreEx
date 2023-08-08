@@ -171,7 +171,8 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     private var usbNameList: MutableList<String>? = null
 
     private fun loadSdFileList() {
-        if (sdNameList != null) {
+        if (!sdNameList.isNullOrEmpty()) {
+            finishRefresh()
             renderFileListLayout(TYPE_SD, sdNameList)
             return
         }
@@ -196,7 +197,8 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
     }
 
     private fun loadUsbFileList() {
-        if (usbNameList != null) {
+        if (!usbNameList.isNullOrEmpty()) {
+            finishRefresh()
             renderFileListLayout(TYPE_USB, usbNameList)
             return
         }

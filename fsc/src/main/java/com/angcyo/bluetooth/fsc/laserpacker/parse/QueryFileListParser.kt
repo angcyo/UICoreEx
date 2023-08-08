@@ -19,12 +19,13 @@ import com.angcyo.library.ex.toHexString
  * @since 2023/08/03
  */
 data class QueryFileListParser(
-    var custom: Int = -1,
+    var state: Byte = -1,
+    var custom: Byte = -1,
     /**
      * 当mount=0时查询U盘列表。
      * 当mount=1时查询SD卡文件列表。
      * */
-    var mount: Int = -1,
+    var mount: Byte = -1,
     /**名称列表*/
     var nameList: List<String>? = null
 ) : IPacketParser<QueryFileListParser> {
@@ -44,8 +45,9 @@ data class QueryFileListParser(
                 }
 
                 val func = readByte()  //偏移功能码
-                val state = readByte() //状态位
-                val custom = readByte() //状态位
+                state = readByte() //状态位
+                custom = readByte()
+                mount = readByte()
 
                 if (func != QueryCmd.workState.commandFunc()) {
                     throw IllegalStateException("非查询指令!")
