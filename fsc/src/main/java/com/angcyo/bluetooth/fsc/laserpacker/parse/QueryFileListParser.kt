@@ -70,7 +70,9 @@ fun listenerFileList(
 ): WaitReceivePacket {
     return listenerReceivePacket(receiveTimeout, lifecycleOwner) { receivePacket, bean, error ->
         try {
-            receivePacket.end()
+            if (!receivePacket._isFinish) {
+                receivePacket.end()
+            }
             val parser = bean?.parse<QueryFileListParser>()
             action(parser, error)
         } catch (e: Exception) {

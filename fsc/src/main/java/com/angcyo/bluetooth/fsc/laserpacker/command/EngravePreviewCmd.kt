@@ -822,7 +822,7 @@ data class EngravePreviewCmd(
                 else -> append("对笔控制")
             }
 
-            0x0B.toByte() -> append("文件名预览:[${if (d1 == QueryCmd.TYPE_SD.toByte()) "SD" else "USB"}] $fileName")
+            0x0B.toByte() -> append("文件名预览:[${d1.toSdOrUsb()}] $fileName")
 
             else -> append("Unknown")
         }

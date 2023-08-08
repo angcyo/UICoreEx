@@ -120,3 +120,11 @@ data class QueryCmd(
         append(" 查询指令:$log")
     }
 }
+
+fun Byte.toSdOrUsb() = toInt().toSdOrUsb()
+
+fun Int.toSdOrUsb(): String = when (this) {
+    QueryCmd.TYPE_USB -> "U盘"
+    QueryCmd.TYPE_SD -> "SD卡"
+    else -> "未知"
+}

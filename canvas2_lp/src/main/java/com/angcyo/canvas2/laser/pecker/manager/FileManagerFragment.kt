@@ -180,6 +180,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
         sdReceive = listenerFileList(this) { parser, error ->
             sdNameList = parser?.nameList?.toMutableList()
             if (currentFileType == TYPE_SD) {
+                finishRefresh()
                 if (error != null) {
                     _adapter.toError(error)
                 } else {
@@ -204,6 +205,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
         usbReceive = listenerFileList(this) { parser, error ->
             usbNameList = parser?.nameList?.toMutableList()
             if (currentFileType == TYPE_USB) {
+                finishRefresh()
                 if (error != null) {
                     _adapter.toError(error)
                 } else {
@@ -286,6 +288,7 @@ class FileManagerFragment : BaseDslFragment(), IEngraveRenderFragment {
 
     private fun startEngrave(fileName: String?, mount: Int) {
         fileName ?: return
+        flowLayoutHelper.singleFlowInfo = SingleFlowInfo("flowId-$fileName", fileName, mount)
         flowLayoutHelper.engraveFlow = BaseFlowLayoutHelper.ENGRAVE_FLOW_BEFORE_CONFIG
         flowLayoutHelper.showIn(this, flowLayoutContainer)
     }

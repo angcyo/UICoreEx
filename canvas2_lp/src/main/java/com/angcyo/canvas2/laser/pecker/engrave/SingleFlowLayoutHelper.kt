@@ -175,14 +175,11 @@ class SingleFlowLayoutHelper : BasePreviewLayoutHelper() {
                                         if (error == null) {
                                             //开始雕刻
                                             onStartEngrave(taskId)
-                                            /*engraveConfigProvider.onStartEngrave(this@EngraveFlowLayoutHelper)
-                                            val taskEntity = engraveModel.startEngrave(taskId)
-                                            if (taskEntity.dataIndexList.isNullOrEmpty()) {
-                                                toastQQ(_string(R.string.no_data_engrave))
-                                            } else {
-                                                engraveFlow = ENGRAVE_FLOW_ENGRAVING
-                                                renderFlowItems()
-                                            }*/
+                                            engraveConfigProvider.onStartEngrave(this@SingleFlowLayoutHelper)
+                                            val configEntity = engraveConfigEntity
+                                            //engraveModel.startEngrave(taskId)
+                                            engraveFlow = ENGRAVE_FLOW_ENGRAVING
+                                            renderFlowItems()
                                         } else {
                                             toastQQ(error.message)
                                         }

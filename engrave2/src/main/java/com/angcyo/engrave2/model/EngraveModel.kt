@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
+import com.angcyo.bluetooth.fsc.laserpacker.command.toSdOrUsb
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
@@ -211,6 +212,47 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             _startEngraveTask(task)
         }
         return task
+    }
+
+    /**开始雕刻*/
+    @CallPoint
+    fun startEngrave(
+        taskId: String,
+        layerId: String,
+        fileName: String,
+        mount: Byte
+    ) {
+        val engraveConfigEntity = EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId)
+        val diameter =
+            (MM_UNIT.convertPixelToValue(engraveConfigEntity.diameterPixel) * 100).roundToInt()
+        EngraveCmd.filenameEngrave(
+            fileName, mount,
+            engraveConfigEntity.power.toByte(),
+            engraveConfigEntity.depth.toByte(),
+            max(1, engraveConfigEntity.time).toByte(),
+            engraveConfigEntity.type,
+            diameter,
+            engraveConfigEntity.precision
+        ).enqueue { bean, error ->
+            "文件名雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
+            _lastEngraveCmdError = error
+            if (error == null) {
+                //雕刻指令发送成功, 机器开始雕刻
+                isSendEngraveCmd = true
+                UMEvent.ENGRAVE.umengEventValue {
+                    put(UMEvent.KEY_START_TIME, nowTime().toString())
+                }
+                deviceStateModel.startLoopCheckState(reason = "批量雕刻指令")
+            } else if (error is CommandException) {
+                //指令异常
+                "雕刻失败[${mount.toSdOrUsb()}]:[${fileName}] $error".writeErrorLog()
+                errorEngrave(error)
+            } else {
+                //雕刻失败, 重试
+                "雕刻失败[${mount.toSdOrUsb()}]:[${fileName}] $error".writeErrorLog()
+                errorEngrave(error)
+            }
+        }
     }
 
     /**开始雕刻下一个索引*/
