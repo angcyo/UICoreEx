@@ -72,7 +72,10 @@ data class FileModeCmd(
         writeUByte(custom)
         writeUByte(mount)
         if (state == 0x07.toByte()) {
-            write(fileName ?: "", 4)
+            fileName?.let {
+                write(it)
+                write(0)//结束字符
+            }
         }
     }
 
