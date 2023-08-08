@@ -155,6 +155,39 @@
   },
   {
     "dpiScale": 1,
+    "code": "stainless_steel_blue_bw_1",
+    "layerId": "layerFill",
+    "depth": 40,
+    "_name": "不锈钢",
+    "resIdStr": "stainless_steel",
+    "power": 100,
+    "type": 0,
+    "key": "stainless_steel"
+  },
+  {
+    "dpiScale": 1,
+    "code": "stainless_steel_blue_bw_1",
+    "layerId": "layerLine",
+    "depth": 40,
+    "_name": "不锈钢",
+    "resIdStr": "stainless_steel",
+    "power": 100,
+    "type": 0,
+    "key": "stainless_steel"
+  },
+  {
+    "dpiScale": 2,
+    "code": "stainless_steel_blue_bw_2",
+    "layerId": "layerFill",
+    "depth": 20,
+    "_name": "不锈钢",
+    "resIdStr": "stainless_steel",
+    "power": 30,
+    "type": 0,
+    "key": "stainless_steel"
+  },
+  {
+    "dpiScale": 1,
     "code": "steel_blue_bw_1",
     "layerId": "layerFill",
     "depth": 30,
@@ -911,6 +944,17 @@
     "power": 5,
     "type": 0,
     "key": "corrugated_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "pvc_blue_bw_1",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "PVC",
+    "resIdStr": "pvc",
+    "power": 50,
+    "type": 0,
+    "key": "pvc"
   },
   {
     "dpiScale": 1,

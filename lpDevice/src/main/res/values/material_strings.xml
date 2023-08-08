@@ -69,4 +69,7 @@
     <string name="walnut_planks_12">12mm Walnut plank</string>
     <string name="bamboo_chips">Bamboo strip</string>
     <string name="log_chips_3">3mm Natural wood slice</string>
+
+    <string name="archive_bag">Archive bag</string>
+
 </resources>
