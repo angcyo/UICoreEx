@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="canvas_min_diameter">Small D</string>
-    <string name="canvas_max_diameter">Large D</string>
-    <string name="canvas_rotation_axis">Rotation axis</string>
-    <string name="canvas_sync_font">Backing up / synchronizing fonts</string>
-</resources>

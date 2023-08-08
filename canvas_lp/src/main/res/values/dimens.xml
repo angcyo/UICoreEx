@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="invert_shape_size">20dp</dimen>
-    <dimen name="invert_shape_padding">4dp</dimen>
-    <dimen name="invert_shape_round">8dp</dimen>
-</resources>

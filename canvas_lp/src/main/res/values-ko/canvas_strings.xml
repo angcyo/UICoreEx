@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="canvas_min_diameter">소구경</string>
-    <string name="canvas_max_diameter">대구경</string>
-    <string name="canvas_rotation_axis">회전축</string>
-    <string name="canvas_sync_font">글꼴 백업/ 동기화</string>
-</resources>

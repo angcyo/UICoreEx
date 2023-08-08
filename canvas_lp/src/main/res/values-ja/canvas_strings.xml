@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="canvas_min_diameter">小口径</string>
-    <string name="canvas_max_diameter">大口径</string>
-    <string name="canvas_rotation_axis">回転軸</string>
-
-    <string name="canvas_sync_font">フォントのバックアップ/同期</string>
-</resources>
