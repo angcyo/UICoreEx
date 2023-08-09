@@ -16,6 +16,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:maxWidth="@dimen/engrave_property_label_width"
+        android:paddingHorizontal="@dimen/lib_sdpi"
         android:paddingVertical="@dimen/lib_padding_right"
         tools:text="其他数据参数" />
 
