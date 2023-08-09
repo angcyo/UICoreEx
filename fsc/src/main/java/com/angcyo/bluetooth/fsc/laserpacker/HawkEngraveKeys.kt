@@ -323,7 +323,7 @@ object HawkEngraveKeys {
     var enableGrey: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
     /**是否激活画笔数据偏移*/
-    var enableCalibrationOffset: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+    var enableCalibrationOffset: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**是否使用新的抖动算法*/
     var useNewDithering: Boolean by HawkPropertyValue<Any, Boolean>(true)
