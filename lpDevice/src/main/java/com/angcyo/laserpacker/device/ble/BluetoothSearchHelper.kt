@@ -267,6 +267,9 @@ class BluetoothSearchHelper {
                 )
             }
             viewHolder.tab(R.id.scan_type_tab_layout)?.apply {
+                tabDefaultIndex =
+                    if (HawkEngraveKeys.lastWifiConnect) scanTypeList.indexOfFirst { it.type == ScanType.TYPE_WIFI }
+                    else scanTypeList.indexOfFirst { it.type == ScanType.TYPE_BLE }
                 resetChild(
                     scanTypeList,
                     R.layout.lib_segment_layout
