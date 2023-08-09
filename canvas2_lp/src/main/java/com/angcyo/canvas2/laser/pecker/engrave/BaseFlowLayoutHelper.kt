@@ -126,8 +126,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         get() = engraveFlow != -1
 
     /**流程任务id, 建议每次显示页面时都创建一个新的任务id
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.generateFlowId]
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.clearFlowId]
+     * [com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper.generateFlowId]
+     * [com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper.clearFlowId]
      * */
     var flowTaskId: String? = null
 
@@ -816,8 +816,8 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
     /**
      * 单元素雕刻参数设置
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.onEngraveFlowChanged]
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.onIViewRemove]
+     * [com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper.onEngraveFlowChanged]
+     * [com.angcyo.iview.IView.onIViewRemove]
      * */
     var _engraveItemRenderer: BaseRenderer? = null
 
