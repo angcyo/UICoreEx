@@ -181,7 +181,10 @@ object LPEngraveHelper {
         }
     }
 
-    /**构建一个雕刻参数信息从[LPElementBean]*/
+    /**构建一个雕刻参数信息从[LPElementBean]
+     *
+     * [com.angcyo.engrave2.EngraveFlowDataHelper.generateEngraveConfig]
+     * */
     fun generateEngraveConfig(
         taskId: String?,
         bean: LPElementBean
@@ -197,6 +200,11 @@ object LPEngraveHelper {
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
             productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+
+            materialCode = bean.materialCode
+            materialKey = bean.materialKey
+            materialName = bean.materialName
+
             lpSaveEntity()
         }
     }

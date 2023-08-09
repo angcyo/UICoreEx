@@ -44,6 +44,9 @@ data class EngraveConfigEntity(
     /**材质key, 用来国际化, 可以用来确定一组材质*/
     var materialKey: String? = null,
 
+    /**材质的名称, 备用*/
+    var materialName: String? = null,
+
     /**产品名, 比如L4 C1等*/
     var productName: String? = null,
 

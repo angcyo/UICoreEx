@@ -530,6 +530,8 @@ object EngraveFlowDataHelper {
 
     /**只更新指定图层的雕刻参数, 雕刻配置不存在会创建
      * [material] 材质, 用来确定指定图层
+     *
+     * [com.angcyo.engrave2.EngraveFlowDataHelper.generateEngraveConfig]
      * */
     @OperateEntity
     fun updateOrGenerateEngraveConfigByMaterial(
@@ -545,28 +547,7 @@ object EngraveFlowDataHelper {
         }
         return EngraveConfigEntity().apply {
             this.taskId = taskId
-            layerId = material.layerId
-
-            //获取对应图层的材质
-            materialCode = material.code
-            materialKey = material.key
-            type = material.type.toByte()
-
-            //关键雕刻参数
-            precision = material.precision
-            power = material.power
-            depth = material.depth
-            time = max(1, material.count)
-
-            //物理尺寸
-            val previewConfigEntity = generatePreviewConfig(taskId)
-            diameterPixel = previewConfigEntity.diameterPixel
-
-            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
-            this.productName = productName
-            //设备地址
-            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
-
+            initEngraveConfigWithMaterial(this, material)
             lpSaveEntity()
         }
     }
@@ -644,13 +625,20 @@ object EngraveFlowDataHelper {
     }
 
     /**构建或者获取对应雕刻图层的雕刻配置信息
-     * [com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]*/
+     * [com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]
+     * [com.angcyo.engrave2.EngraveFlowDataHelper.updateOrGenerateEngraveConfigByMaterial]
+     *
+     * */
     fun generateEngraveConfig(taskId: String?, layerId: String?): EngraveConfigEntity {
         return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
-            this.layerId = layerId
 
-            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+            //材质
+            val customMaterial =
+                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }
+            initEngraveConfigWithMaterial(this, customMaterial)
+
+            this.layerId = layerId
 
             //获取最后一次相同图层的雕刻参数
             val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
@@ -661,11 +649,6 @@ object EngraveFlowDataHelper {
                 )
             }
 
-            //材质
-            val customMaterial =
-                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }
-            materialCode = customMaterial?.code
-
             //功率
             power = last?.power ?: customMaterial?.power ?: HawkEngraveKeys.lastPower
             depth = last?.depth ?: customMaterial?.depth ?: HawkEngraveKeys.lastDepth
@@ -675,14 +658,45 @@ object EngraveFlowDataHelper {
             type = last?.type ?: DeviceHelper.getProductLaserType()
             precision = last?.precision ?: HawkEngraveKeys.lastPrecision
 
-            //物理尺寸
-            val previewConfigEntity = generatePreviewConfig(taskId)
-            diameterPixel = previewConfigEntity.diameterPixel
         }) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
                     .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
             )
+        }
+    }
+
+    /**初始化*/
+    fun initEngraveConfigWithMaterial(
+        engraveConfigEntity: EngraveConfigEntity,
+        materialEntity: MaterialEntity?
+    ) {
+        engraveConfigEntity.apply {
+            //设备地址
+            deviceAddress = LaserPeckerHelper.lastDeviceAddress()
+
+            //物理尺寸
+            val previewConfigEntity = generatePreviewConfig(taskId)
+            diameterPixel = previewConfigEntity.diameterPixel
+
+            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            this.productName = productName
+
+            //---
+
+            layerId = materialEntity?.layerId
+
+            //获取对应图层的材质
+            materialCode = materialEntity?.code
+            materialKey = materialEntity?.key
+            materialName = materialEntity?.name
+            type = materialEntity?.type?.toByte() ?: DeviceHelper.getProductLaserType()
+
+            //关键雕刻参数
+            precision = materialEntity?.precision ?: HawkEngraveKeys.lastPrecision
+            power = materialEntity?.power ?: HawkEngraveKeys.lastPower
+            depth = materialEntity?.depth ?: HawkEngraveKeys.lastDepth
+            time = max(1, materialEntity?.count ?: 1)
         }
     }
 

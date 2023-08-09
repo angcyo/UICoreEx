@@ -61,7 +61,9 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                         printPower = materialEntity?.power ?: printPower
                         printDepth = materialEntity?.depth ?: printDepth
                         printPrecision = materialEntity?.precision ?: printPrecision
+                        materialCode = materialEntity?.code
                         materialKey = materialEntity?.key
+                        materialName = materialEntity?.name
                     }
                 }
 

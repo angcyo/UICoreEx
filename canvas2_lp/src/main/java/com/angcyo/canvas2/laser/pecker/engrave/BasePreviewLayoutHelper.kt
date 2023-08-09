@@ -23,6 +23,7 @@ import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.item.DslBlackButtonItem
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.ex.ViewAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.toastQQ
@@ -102,6 +103,18 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
         viewHolder?.click(R.id.right_image_view) {
             isMinimumPreview = true
             removeInner()
+        }
+    }
+
+    /**显示右边最小化按钮*/
+    open fun showRightView(
+        clickAction: ViewAction? = {
+            removeInner()
+        }
+    ) {
+        viewHolder?.visible(R.id.right_image_view, true)
+        viewHolder?.click(R.id.right_image_view) {
+            clickAction?.invoke(it)
         }
     }
 

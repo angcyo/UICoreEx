@@ -271,9 +271,11 @@ open class EngraveHistoryItem : DslTagGroupItem() {
             _string(R.string.print_range),
             buildString {
                 append(_string(R.string.width))
+                append(":")
                 append(w)
                 append(" ")
                 append(_string(R.string.height))
+                append(":")
                 append(h)
             }
         )

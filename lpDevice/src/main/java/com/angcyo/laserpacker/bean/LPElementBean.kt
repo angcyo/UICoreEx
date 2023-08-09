@@ -374,9 +374,15 @@ data class LPElementBean(
 
     /**[com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity]*/
 
-    /**[com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]*/
+    /**[com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]
+     * [com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper.generateEngraveConfig]
+     * */
+    //材质唯一码
+    var materialCode: String? = null,
     //材质key
     var materialKey: String? = null,
+    //材质名
+    var materialName: String? = null,
     //激光类型
     var printType: Int? = null,
     //加速级别

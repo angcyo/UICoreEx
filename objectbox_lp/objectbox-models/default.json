@@ -261,7 +261,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "21:4747672111604038754",
+      "lastPropertyId": "22:8428400476778050840",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -359,6 +359,11 @@
           "id": "21:4747672111604038754",
           "name": "dpi",
           "type": 7
+        },
+        {
+          "id": "22:8428400476778050840",
+          "name": "materialName",
+          "type": 9
         }
       ],
       "relations": []

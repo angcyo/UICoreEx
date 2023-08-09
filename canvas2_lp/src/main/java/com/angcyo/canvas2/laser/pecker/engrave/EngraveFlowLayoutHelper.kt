@@ -7,6 +7,10 @@ package com.angcyo.canvas2.laser.pecker.engrave
  */
 open class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
 
+    override fun renderPreviewItems() {
+        super.renderPreviewItems()
+    }
+
     override fun renderEngraveConfig() {
         super.renderEngraveConfig()
     }

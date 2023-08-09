@@ -458,13 +458,28 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
     /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
     fun renderEngraveItemParamsConfig() {
-        updateIViewTitle(_string(R.string.print_setting))
+        val elementItemBean = _engraveItemRenderer?.lpElementBean()
+        val fileName = elementItemBean?.name
+        updateIViewTitle(span {
+            if (!fileName.isNullOrBlank()) {
+                append(fileName)
+                appendLine()
+                append(_string(R.string.print_setting)) {
+                    fontSize = _titleFontSize * dpi
+                }
+            } else {
+                append(_string(R.string.print_setting))
+            }
+        })
+
         showCloseView(false)
         cancelable = true
+        viewHolder?.post {
+            showRightView()
+        }
 
         var engraveConfigEntity: EngraveConfigEntity? = null
-        val projectItemBean = _engraveItemRenderer?.lpElementBean()
-        projectItemBean?.apply {
+        elementItemBean?.apply {
             //雕刻配置
             engraveConfigEntity =
                 engraveConfigProvider.getEngraveElementConfig(this@BaseEngraveLayoutHelper, this)
@@ -478,11 +493,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 itemWheelList = MaterialHelper.unionMaterialList
                 itemSelectedIndex = MaterialHelper.indexOfMaterial(
                     MaterialHelper.unionMaterialList,
-                    projectItemBean?.materialKey,
-                    projectItemBean?.materialKey,
-                    projectItemBean?.printType,
+                    elementItemBean?.materialCode,
+                    elementItemBean?.materialKey,
+                    elementItemBean?.printType,
                 )
-                itemEngraveItemBean = projectItemBean
+                itemEngraveItemBean = elementItemBean
                 itemEngraveConfigEntity = engraveConfigEntity
 
                 itemDeleteAction = { key ->
@@ -495,7 +510,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 observeItemChange {
                     engraveConfigProvider.onSaveEngraveElementConfig(
                         this@BaseEngraveLayoutHelper,
-                        projectItemBean,
+                        elementItemBean,
                         engraveConfigEntity
                     )
                     renderFlowItems()
@@ -509,14 +524,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 EngraveLaserSegmentItem()() {
                     observeItemChange {
                         val type = currentLaserTypeInfo().type
-                        projectItemBean?.printType = type.toInt()
+                        elementItemBean?.printType = type.toInt()
                         HawkEngraveKeys.lastType = type.toInt()
                         engraveConfigEntity?.type = type
                         engraveConfigEntity.lpSaveEntity()
 
                         engraveConfigProvider.onSaveEngraveElementConfig(
                             this@BaseEngraveLayoutHelper,
-                            projectItemBean,
+                            elementItemBean,
                             engraveConfigEntity
                         )
                         renderFlowItems()
@@ -533,15 +548,15 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemWheelList = EngraveHelper.percentList(5)
                     itemSelectedIndex = EngraveHelper.findOptionIndex(
                         itemWheelList,
-                        projectItemBean?.printPrecision
+                        elementItemBean?.printPrecision
                     )
                     itemEngraveConfigEntity = engraveConfigEntity
-                    itemEngraveItemBean = projectItemBean
+                    itemEngraveItemBean = elementItemBean
 
                     observeItemChange {
                         engraveConfigProvider.onSaveEngraveElementConfig(
                             this@BaseEngraveLayoutHelper,
-                            projectItemBean,
+                            elementItemBean,
                             engraveConfigEntity
                         )
                     }
@@ -557,19 +572,19 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemTag = MaterialEntity.SPEED
                     itemLabelText = _string(R.string.engrave_speed)
                     itemWheelList = EngraveHelper.percentList()
-                    itemEngraveItemBean = projectItemBean
+                    itemEngraveItemBean = elementItemBean
                     itemEngraveConfigEntity = engraveConfigEntity
                     itemSelectedIndex = EngraveHelper.findOptionIndex(
                         itemWheelList,
                         EngraveCmd.depthToSpeed(
-                            projectItemBean?.printDepth ?: HawkEngraveKeys.lastDepth
+                            elementItemBean?.printDepth ?: HawkEngraveKeys.lastDepth
                         )
                     )
 
                     observeItemChange {
                         engraveConfigProvider.onSaveEngraveElementConfig(
                             this@BaseEngraveLayoutHelper,
-                            projectItemBean,
+                            elementItemBean,
                             engraveConfigEntity
                         )
                     }
@@ -579,13 +594,13 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             } else {
                 //功率/深度/次数
                 EngravePropertyItem()() {
-                    itemEngraveItemBean = projectItemBean
+                    itemEngraveItemBean = elementItemBean
                     itemEngraveConfigEntity = engraveConfigEntity
 
                     observeItemChange {
                         engraveConfigProvider.onSaveEngraveElementConfig(
                             this@BaseEngraveLayoutHelper,
-                            projectItemBean,
+                            elementItemBean,
                             engraveConfigEntity
                         )
                     }
