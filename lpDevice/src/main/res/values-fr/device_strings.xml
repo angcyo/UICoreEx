@@ -82,7 +82,7 @@
     <string name="device_not_found_des">Veuillez vous assurer que votre appareil est dans l\'état "To Be Connected".</string>
     <string name="contact_me">Contacter le service clientèle.</string>
 
-    <string name="device_setting_tips_fourteen_11">Mode de gravure :</string>
+    <string name="device_setting_tips_fourteen_11">Mode de gravure</string>
 
     <string name="select_device">Sélectionner un appareil</string>
     <string name="start_upgrade">Démarrer la mise à jour</string>

@@ -89,7 +89,7 @@
     <string name="device_not_found_des">Please make sure your machine is in the waiting state</string>
     <string name="contact_me">Contact customer</string>
 
-    <string name="device_setting_tips_fourteen_11">Engraving Mode:</string>
+    <string name="device_setting_tips_fourteen_11">Engraving Mode</string>
 
     <string name="select_device">Select Device</string>
     <string name="start_upgrade">Start Update</string>

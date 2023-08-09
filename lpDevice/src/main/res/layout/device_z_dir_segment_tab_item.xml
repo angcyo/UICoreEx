@@ -13,7 +13,7 @@
         style="@style/LibDesTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/lib_xhdpi"
+        android:layout_marginEnd="@dimen/lib_xhdpi"
         android:text="@string/device_setting_tips_fourteen_11" />
 
     <com.angcyo.tablayout.DslTabLayout

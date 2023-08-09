@@ -111,7 +111,6 @@ data class LaserPeckerProductInfo(
      * 如果支持:则抖动算法的图片发送0x60的数据, 否则发送0x10的数据*/
     var supportDithering: Boolean = true,
 
-
     /**第三轴的模式列表*/
     var zModeList: List<ZModel>? = null,
 
