@@ -354,7 +354,7 @@ data class LPElementBean(
 
     /**发给机器的数据索引
      * 当数据没有改变时, 相同的索引不必重复发送数据给机器
-     * [com.angcyo.engrave.transition.IEngraveTransition.initTransferDataIndex]
+     * [com.angcyo.engrave2.transition.EngraveTransitionHelper.initTransferDataIndex]
      * */
     var index: Int? = null,
 
@@ -374,7 +374,7 @@ data class LPElementBean(
 
     /**[com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity]*/
 
-    /**[com.angcyo.engrave.EngraveFlowDataHelper.generateEngraveConfig]*/
+    /**[com.angcyo.laserpacker.LPTransferData.generateEngraveConfig]*/
     //材质key
     var materialKey: String? = null,
     //激光类型
@@ -411,11 +411,9 @@ data class LPElementBean(
 
     /**旧的兼容数据
      * 数据处理的模式, 处理成机器需要的数据. 通常情况下和雕刻图层一致
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_BLACK_WHITE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_GCODE]
-     * [com.angcyo.canvas.utils.CanvasConstant.DATA_MODE_DITHERING]
-     *
-     * [com.angcyo.canvas.graphics.IGraphicsParser.initDataModeWithPaintStyle]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_BLACK_WHITE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_GCODE]
+     * [com.angcyo.laserpacker.LPDataConstant.DATA_MODE_DITHERING]
      *
      * [com.angcyo.laserpacker.device.data.EngraveLayerInfo]
      * */
