@@ -685,6 +685,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         printPower = powerValue
                         printDepth = depthValue
                         printType = gridPrintType.toInt()
+                        printPrecision = HawkEngraveKeys.lastPrecision
                         dpi =
                             gridLayerId.filterLayerDpi(HawkEngraveKeys.getLastLayerDpi(gridLayerId))
                     })
@@ -776,6 +777,8 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             if (bean.dataMode == null) {
                 bean.printPower = HawkEngraveKeys.lastPower
                 bean.printDepth = HawkEngraveKeys.lastDepth
+                bean.printPrecision = HawkEngraveKeys.lastPrecision
+                bean.printCount = 1
             }
         }
         return LPRendererHelper.renderElementList(

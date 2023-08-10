@@ -116,7 +116,7 @@
     <string name="save_material_title">材質名稱</string>
 
     <string name="delete_material_tip">删除后,不可恢复,是否继续?</string>
-    <string name="engrave_skip_current">跳過當前的雕刻</string>
+    <string name="engrave_skip_current">跳過</string>
 
     <string name="device_models">機型</string>
     <string name="show_all_label">詳情</string>

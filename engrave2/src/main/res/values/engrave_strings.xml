@@ -116,7 +116,7 @@
     <string name="save_material_title">Material name</string>
 
     <string name="delete_material_tip">After deletion, it is not recoverable, do you want to continue?</string>
-    <string name="engrave_skip_current">Skip the current engraving</string>
+    <string name="engrave_skip_current">Skip</string>
 
     <string name="device_models">Models</string>
     <string name="show_all_label">Detail</string>

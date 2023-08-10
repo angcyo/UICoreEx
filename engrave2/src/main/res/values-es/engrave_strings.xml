@@ -116,7 +116,7 @@
     <string name="save_material_title">Nombre del material</string>
 
     <string name="delete_material_tip">Después de la eliminación, no es recuperable, ¿desea continuar?</string>
-    <string name="engrave_skip_current">Omita el grabado actual</string>
+    <string name="engrave_skip_current">Omita</string>
 
     <string name="device_models">Modelo de equipo</string>
     <string name="show_all_label">Detalles</string>

@@ -116,7 +116,7 @@
     <string name="save_material_title">재질 명칭</string>
 
     <string name="delete_material_tip">삭제 후 복구할 수 없는데 계속하시겠습니까?</string>
-    <string name="engrave_skip_current">현재 각인 건너뛰기</string>
+    <string name="engrave_skip_current">건너뛰기</string>
 
     <string name="device_models">기기 모델</string>
     <string name="show_all_label">상세정보</string>

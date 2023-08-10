@@ -116,7 +116,7 @@
     <string name="save_material_title">Nom du matériau</string>
 
     <string name="delete_material_tip">Après la suppression, il n’est pas récupérable, voulez-vous continuer?</string>
-    <string name="engrave_skip_current">Sauter la gravure actuelle</string>
+    <string name="engrave_skip_current">Sauter</string>
 
     <string name="device_models">Modèle LP</string>
     <string name="show_all_label">Détail</string>

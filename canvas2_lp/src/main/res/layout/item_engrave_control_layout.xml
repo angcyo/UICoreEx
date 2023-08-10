@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -25,5 +26,16 @@
         android:text="@string/engrave_stop"
         android:textColor="@color/text_general_color"
         app:button_gradient_colors="@color/bg_primary_color" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/skip_button"
+        style="@style/LibButtonBlackSolidStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_weight="1"
+        android:text="@string/engrave_skip_current"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>

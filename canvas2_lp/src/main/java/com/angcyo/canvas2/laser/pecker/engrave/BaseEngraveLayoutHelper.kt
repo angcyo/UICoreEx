@@ -1040,25 +1040,6 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             EngravingInfoItem()() {
                 itemTaskId = flowTaskId
             }
-            if (HawkEngraveKeys.enableSingleItemTransfer) {
-                //激活单文件雕刻的情况下, 允许跳过当前雕刻的索引
-                DslBlackButtonItem()() {
-                    itemButtonText = _string(R.string.engrave_skip_current)
-                    itemClick = {
-                        //强制退出
-                        engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
-                            ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
-                                loadEnd(bean, error)
-                                if (error != null) {
-                                    toastQQ(error.message)
-                                } else {
-                                    engraveModel.finishCurrentIndexEngrave()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             //---雕刻控制-暂停-结束
             EngravingControlItem()() {
                 itemTaskId = flowTaskId
@@ -1078,6 +1059,20 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             engraveModel.stopEngrave("来自点击按钮", countDownLatch)
                         }
                     })
+                }
+                itemShowSkipButton = HawkEngraveKeys.enableSingleItemTransfer
+                itemSkipAction = {
+                    //强制退出
+                    engraveCanvasFragment?.fragment?.tgStrokeLoadingCaller { isCancel, loadEnd ->
+                        ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
+                            loadEnd(bean, error)
+                            if (error != null) {
+                                toastQQ(error.message)
+                            } else {
+                                engraveModel.finishCurrentIndexEngrave()
+                            }
+                        }
+                    }
                 }
             }
         }

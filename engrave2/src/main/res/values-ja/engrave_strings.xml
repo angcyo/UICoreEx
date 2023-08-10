@@ -116,7 +116,7 @@
     <string name="save_material_title">材料名</string>
 
     <string name="delete_material_tip">削除すると、復元出来ません。続行しますか？</string>
-    <string name="engrave_skip_current">現在の彫刻をスキップする</string>
+    <string name="engrave_skip_current">スキップ</string>
 
     <string name="device_models">型番</string>
     <string name="show_all_label">詳細</string>

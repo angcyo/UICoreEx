@@ -6,6 +6,7 @@ import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.model.EngraveModel
+import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
@@ -22,6 +23,12 @@ class EngravingControlItem : DslAdapterItem() {
     var itemPauseAction: (isPause: Boolean) -> Unit = {}
 
     var itemStopAction: () -> Unit = {}
+
+    /**是否要显示跳过按钮*/
+    var itemShowSkipButton: Boolean = false
+
+    /**跳过当前的雕刻*/
+    var itemSkipAction: Action? = null
 
     var deviceStateModel = vmApp<DeviceStateModel>()
 
@@ -53,6 +60,12 @@ class EngravingControlItem : DslAdapterItem() {
 
         itemHolder.click(R.id.stop_button) {
             itemStopAction()
+        }
+
+        //
+        itemHolder.visible(R.id.skip_button, itemShowSkipButton)
+        itemHolder.click(R.id.skip_button) {
+            itemSkipAction?.invoke()
         }
     }
 
