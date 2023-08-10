@@ -132,14 +132,14 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
         internal var labelText: String? by HawkPropertyValue<Any, String?>("%1")
 
         /**需要隐藏的元素*/
-        internal const val HIDE_POWER = 0b1 //1: 隐藏顶部功率
-        internal const val HIDE_DEPTH = HIDE_POWER shl 1 //2: 隐藏左边深度
-        internal const val HIDE_GRID = HIDE_DEPTH shl 1 //4: 隐藏网格
-        internal const val HIDE_LABEL = HIDE_GRID shl 1 //8: 隐藏左上角标签
-        internal const val HIDE_POWER_LABEL = HIDE_LABEL shl 1 //16: 隐藏功率数字
-        internal const val HIDE_DEPTH_LABEL = HIDE_POWER_LABEL shl 1 //32: 隐藏深度数字
+        const val HIDE_POWER = 0b1 //1: 隐藏顶部功率
+        const val HIDE_DEPTH = HIDE_POWER shl 1 //2: 隐藏左边深度
+        const val HIDE_GRID = HIDE_DEPTH shl 1 //4: 隐藏网格
+        const val HIDE_LABEL = HIDE_GRID shl 1 //8: 隐藏左上角标签
+        const val HIDE_POWER_LABEL = HIDE_LABEL shl 1 //16: 隐藏功率数字
+        const val HIDE_DEPTH_LABEL = HIDE_POWER_LABEL shl 1 //32: 隐藏深度数字
 
-        internal var hideFunInt: Int by HawkPropertyValue<Any, Int>(0)
+        var hideFunInt: Int by HawkPropertyValue<Any, Int>(0)
 
         /**按键大小*/
         internal var keyboardNumSize = 45 * dpi
@@ -748,7 +748,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
 
         //左边的深度文本, 旋转了-90度, 所以需要特殊处理
         depthTextItem.elementBean.left =
-            (gridLeft - numberTextItem.getTextWidth() - elementMargin * 2 - depthTextHeight).toMm()
+            (gridLeft - leftDepthWith - elementMargin * 2 - depthTextHeight).toMm()
         depthTextItem.elementBean.top = (gridTop + gridHeightSum / 2 + depthTextWidth / 2).toMm()
         if (!hideFunInt.have(HIDE_DEPTH)) {
             labelBeanList.add(depthTextItem.elementBean)

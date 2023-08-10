@@ -676,8 +676,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task.state = ENGRAVE_STATE_START //雕刻已开始
         task.indexStartTime = nowTime()
         task.indexPrintStartTime = task.indexStartTime
-        engraveStateData.value = task
         task.lpSaveEntity()
+        engraveStateData.value = task
     }
 
     /**开始雕刻指定的索引*/
@@ -687,8 +687,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         task.state = ENGRAVE_STATE_START //雕刻已开始
         task.indexStartTime = nowTime()
         task.indexPrintStartTime = task.indexStartTime
-        engraveStateData.value = task
         task.lpSaveEntity()
+        engraveStateData.value = task
     }
 
     /**完成雕刻*/

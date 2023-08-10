@@ -408,7 +408,15 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     itemRemainingTime = if (remainingDuration.isNullOrEmpty()) {
                         null
                     } else {
-                        "${_string(R.string.remaining_time)}:${remainingDuration}"
+                        span {
+                            if (HawkEngraveKeys.enableConfigIcon) {
+                                appendDrawable(R.drawable.engrave_config_remaining_time_svg)
+                            } else {
+                                append(_string(R.string.remaining_time))
+                                append(":")
+                            }
+                            append(remainingDuration)
+                        }
                     }
                 }
                 if (isDebug()) {
@@ -980,11 +988,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
     /**渲染雕刻中的界面
      * 通过设备状态改变实时刷新界面
-     * [com.angcyo.engrave.model.EngraveModel.engraveStateData]
+     * [com.angcyo.engrave2.model.EngraveModel.engraveStateData]
      *
-     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel.deviceStateData]
+     * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.deviceStateData]
      *
-     * [com.angcyo.engrave.BaseFlowLayoutHelper.bindDeviceState]
+     * [com.angcyo.canvas2.laser.pecker.engrave.BaseFlowLayoutHelper.bindDeviceState]
      * */
     open fun renderEngraving() {
         val taskId = flowTaskId

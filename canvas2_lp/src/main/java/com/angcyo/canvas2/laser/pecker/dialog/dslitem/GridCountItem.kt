@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.ParameterComparisonTableDialogConfig
+import com.angcyo.canvas2.laser.pecker.dialog.hidePctFuncPopupConfig
 import com.angcyo.canvas2.laser.pecker.dialog.updateTablePreview
 import com.angcyo.dialog.TargetWindow
 import com.angcyo.dsladapter.DslAdapterItem
@@ -99,15 +100,10 @@ class GridCountItem : DslAdapterItem() {
 
         //需要隐藏的功能
         itemHolder.click(R.id.hide_fun_view) {
-            lastContext.keyboardNumberWindow(it) {
-                numberItemSize = ParameterComparisonTableDialogConfig.keyboardNumSize
+            lastContext.hidePctFuncPopupConfig(it) {
                 onDismiss = this@GridCountItem::onPopupDismiss
-                keyboardBindTextView = it as? TextView
-                bindPendingDelay = -1 //关闭限流输入
-                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_DECIMAL)
-                removeKeyboardStyle(NumberKeyboardPopupConfig.STYLE_INCREMENT)
-                onNumberResultAction = { value ->
-                    ParameterComparisonTableDialogConfig.hideFunInt = value.toInt()
+                onHidePctFuncChangeAction = {
+                    itemDslAdapter.updateTablePreview()
                     onItemChangeAction()
                 }
             }

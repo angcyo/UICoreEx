@@ -268,6 +268,16 @@ object EngraveFlowDataHelper {
      * [TransferConfigEntity] 包含传输的文件名, dpi等信息
      * */
     fun getTransferConfig(taskId: String?): TransferConfigEntity? {
+        val engraveTask = getEngraveTask(taskId)
+        if (engraveTask?.enableItemEngraveParams == true) {
+            return TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(
+                    TransferConfigEntity_.taskId.equal("$taskId")
+                        .and(TransferConfigEntity_.index.equal("${engraveTask.currentIndex}"))
+                )
+            }
+        }
+
         return TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(TransferConfigEntity_.taskId.equal("$taskId"))
         }
@@ -406,7 +416,7 @@ object EngraveFlowDataHelper {
     /**获取当前雕刻的配置信息*/
     fun getCurrentEngraveConfig(taskId: String?): EngraveConfigEntity? {
         val taskEntity = getEngraveTask(taskId) ?: return null
-        return if (HawkEngraveKeys.enableItemEngraveParams) {
+        return if (taskEntity.enableItemEngraveParams) {
             val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
                 apply(
                     EngraveConfigEntity_.taskId.equal("$taskId")
@@ -444,17 +454,6 @@ object EngraveFlowDataHelper {
             apply(EngraveConfigEntity_.taskId.equal("$taskId"))
         }
         return engraveConfigEntity
-    }
-
-    /**雕刻任务, 所有图层的雕刻参数初始化*/
-    fun generateEngraveConfig(taskId: String?): List<EngraveConfigEntity> {
-        val result = mutableListOf<EngraveConfigEntity>()
-        getTransferDataList(taskId).let {
-            for (data in it) {
-                result.add(generateEngraveConfig(taskId, data.layerId))
-            }
-        }
-        return result
     }
 
     /**查找任务配置的材质信息*/
@@ -625,6 +624,17 @@ object EngraveFlowDataHelper {
                 }//移除被删除的材质配置信息
             }
         }
+    }
+
+    /**雕刻任务, 所有图层的雕刻参数初始化*/
+    fun generateEngraveConfig(taskId: String?): List<EngraveConfigEntity> {
+        val result = mutableListOf<EngraveConfigEntity>()
+        getTransferDataList(taskId).let {
+            for (data in it) {
+                result.add(generateEngraveConfig(taskId, data.layerId))
+            }
+        }
+        return result
     }
 
     /**构建或者获取对应雕刻图层的雕刻配置信息

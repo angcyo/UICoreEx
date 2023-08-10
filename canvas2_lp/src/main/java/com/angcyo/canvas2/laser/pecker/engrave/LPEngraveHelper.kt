@@ -17,6 +17,7 @@ import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.laserpacker.device.updateAllLayerConfig
 import com.angcyo.library.component.pool.acquireTempRectF
@@ -25,6 +26,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
@@ -261,31 +263,56 @@ object LPEngraveHelper {
     /**构建一个雕刻参数信息从[LPElementBean]
      *
      * [com.angcyo.engrave2.EngraveFlowDataHelper.generateEngraveConfig]
+     *
+     * [com.angcyo.engrave2.EngraveFlowDataHelper.generateEngraveConfig(java.lang.String, java.lang.String)]
      * */
     fun generateEngraveConfig(
         taskId: String?,
         bean: LPElementBean
     ): EngraveConfigEntity {
         val layerId = bean._layerId
-        return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId).apply {
+
+        return EngraveConfigEntity::class.queryOrCreateEntity(LPBox.PACKAGE_NAME, {
             this.taskId = taskId
             index = "${bean.index}"
 
-            type = bean.printType?.toByte() ?: DeviceHelper.getProductLaserType()
-            precision = bean.printPrecision ?: HawkEngraveKeys.lastPrecision
-            power = bean.printPower ?: HawkEngraveKeys.lastPower
-            depth = bean.printDepth ?: HawkEngraveKeys.lastDepth
+            //材质
+            val customMaterial =
+                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }
+            EngraveFlowDataHelper.initEngraveConfigWithMaterial(this, customMaterial)
+
+            this.layerId = layerId
+
+            //获取最后一次相同图层的雕刻参数
+            val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveConfigEntity_.productName.equal("$productName")
+                        .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
+                )
+            }
+
+            type = bean.printType?.toByte() ?: last?.type ?: DeviceHelper.getProductLaserType()
+            precision = bean.printPrecision ?: last?.precision ?: HawkEngraveKeys.lastPrecision
+            power = bean.printPower ?: last?.power ?: HawkEngraveKeys.lastPower
+            depth = bean.printDepth ?: last?.depth ?: HawkEngraveKeys.lastDepth
             time = bean.printCount ?: 1
             dpi = bean.dpi //2023-7-29
 
             deviceAddress = LaserPeckerHelper.lastDeviceAddress()
-            productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+            this.productName = productName
 
             materialCode = bean.materialCode
             materialKey = bean.materialKey
             materialName = bean.materialName
 
             lpSaveEntity()
+
+        }) {
+            apply(
+                EngraveConfigEntity_.taskId.equal("$taskId")
+                    .and(EngraveConfigEntity_.index.equal("${bean.index}"))
+            )
         }
     }
 
