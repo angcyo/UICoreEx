@@ -531,6 +531,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             //更新材质列表
                             renderFlowItems()
                         }
+                        observeEngraveParamsChange()
                     }
                 } else {
                     val list = LaserPeckerHelper.findProductLayerSupportPxList(layerId)
@@ -543,6 +544,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         elementItemBean?.clearIndex("DPI不一致", true)
                         elementItemBean?.dpi = dpi
                         elementItemBean?.initEngraveParamsIfNeed()
+                        onEngraveParamsChangeAction()//单文件雕刻参数改变
                     }
                 }
             }
@@ -942,7 +944,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
         }
     }
 
-    /**回调*/
+    /**单文件雕刻参数改变回调*/
     var onEngraveParamsChangeAction: () -> Unit = {}
 
     /**监听改变之后, 单文件雕刻参数*/
