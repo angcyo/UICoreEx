@@ -199,13 +199,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         )
 
         itemHolder.click(R.id.layer_slicing_view) {
-            if (operateElementBean?._layerId == LaserPeckerHelper.LAYER_CUT) {
-                operateElementBean?.layerId = null
-                operateElementBean?.isCut = false
-            } else {
-                operateElementBean?.isCut = true
-                operateElementBean?.layerId = LaserPeckerHelper.LAYER_CUT
-            }
+            operateElementBean?.isCut = operateElementBean?._layerId != LaserPeckerHelper.LAYER_CUT
             operateElementBean?.clearIndex("切割类型改变", true)
             onItemCutTypeChangeAction?.invoke()
         }

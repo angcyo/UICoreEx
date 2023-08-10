@@ -503,7 +503,15 @@ data class LPElementBean(
 
     /**图层id*/
     val _layerId: String?
-        get() = layerId ?: if (isCut) LaserPeckerHelper.LAYER_CUT else _layerMode?.toLayerId()
+        get() {
+            val result = layerId ?: _layerMode?.toLayerId()
+            return if (result == LaserPeckerHelper.LAYER_LINE && isCut) {
+                LaserPeckerHelper.LAYER_CUT
+            } else {
+                isCut = false
+                result
+            }
+        }
 
     /**是否配置了雕刻参数*/
     val _isConfigEngraveParams: Boolean
