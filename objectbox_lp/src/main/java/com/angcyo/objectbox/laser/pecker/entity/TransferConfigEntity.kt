@@ -22,6 +22,9 @@ data class TransferConfigEntity(
     /**当前雕刻任务的id*/
     var taskId: String? = null,
 
+    /**单元素雕刻传输配置的数据索引*/
+    var index: String? = null,
+
     //---
 
     /**

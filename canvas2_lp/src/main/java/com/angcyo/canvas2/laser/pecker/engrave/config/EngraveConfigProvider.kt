@@ -40,13 +40,22 @@ class EngraveConfigProvider : IEngraveConfigProvider {
         return entity
     }
 
+    /**开始传输数据
+     * [onStartEngrave]*/
     override fun onSaveTransferConfig(
         flowLayoutHelper: BaseFlowLayoutHelper,
         configEntity: TransferConfigEntity
     ) {
-        flowLayoutHelper.projectBean?.apply {
-            file_name = configEntity.name
-            updateOptionsFromTransferLayer(configEntity.layerJson.getLayerConfigList())
+        if (flowLayoutHelper._isSingleItemFlow) {
+            LPEngraveHelper.generateTransferConfig(
+                flowLayoutHelper.engraveCanvasFragment?.renderDelegate,
+                flowLayoutHelper.flowTaskId
+            )
+        } else {
+            flowLayoutHelper.projectBean?.apply {
+                file_name = configEntity.name
+                updateOptionsFromTransferLayer(configEntity.layerJson.getLayerConfigList())
+            }
         }
     }
 
@@ -125,10 +134,13 @@ class EngraveConfigProvider : IEngraveConfigProvider {
         }
     }
 
+    /**开始雕刻
+     * [onSaveTransferConfig]*/
     override fun onStartEngrave(flowLayoutHelper: BaseFlowLayoutHelper) {
-        if (HawkEngraveKeys.enableItemEngraveParams) {
+        if (flowLayoutHelper._isSingleItemFlow) {
             LPEngraveHelper.generateEngraveConfig(
-                flowLayoutHelper.engraveCanvasFragment?.renderDelegate
+                flowLayoutHelper.engraveCanvasFragment?.renderDelegate,
+                flowLayoutHelper.flowTaskId
             )
         }
     }
@@ -145,8 +157,11 @@ class EngraveConfigProvider : IEngraveConfigProvider {
             printCount = printCount ?: 1
 
             val itemLayerId = _layerId
-            materialKey = materialKey ?: MaterialHelper.createCustomLayerMaterialList()
-                .find { it.layerId == itemLayerId }?.key
+            val materialEntity =
+                MaterialHelper.createCustomLayerMaterialList().find { it.layerId == itemLayerId }
+            materialKey = materialKey ?: materialEntity?.key
+            materialName = materialName ?: materialEntity?.name
+            materialCode = materialCode ?: materialEntity?.code
         }
         //雕刻配置
         return LPEngraveHelper.generateEngraveConfig("${element.index}", element)

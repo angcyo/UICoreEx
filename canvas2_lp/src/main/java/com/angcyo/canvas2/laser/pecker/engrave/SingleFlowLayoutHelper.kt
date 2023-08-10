@@ -18,6 +18,10 @@ class SingleFlowLayoutHelper : BaseEngraveLayoutHelper() {
         singleFlowInfo //必须赋值
     }
 
+    override fun renderPreviewItems() {
+        super.renderPreviewItems()
+    }
+
     override fun renderEngraveConfig() {
         super.renderEngraveConfig()
         engraveBackFlow = 0

@@ -56,6 +56,7 @@ import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.laserpacker.device.engraveLoadingAsyncTimeout
 import com.angcyo.laserpacker.device.exception.TransferException
+import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.pad.isInPadMode
@@ -66,6 +67,7 @@ import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.findAll
@@ -74,6 +76,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.span.span
@@ -183,7 +186,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     //region ---数据配置---
 
     /**渲染传输数据配置界面*/
-    fun renderTransferConfig() {
+    open fun renderTransferConfig() {
         deviceStateModel.pauseLoopCheckState(true, "传输配置界面")
 
         updateIViewTitle(_string(R.string.file_setting))
@@ -262,38 +265,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         //退出打印模式, 进入空闲模式
                         asyncTimeoutExitCmd { bean, error ->
                             if (error == null) {
-                                engraveBackFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                                engraveFlow = ENGRAVE_FLOW_TRANSMITTING
-
-                                if (delegate == null) {
-                                    //不是画布上的数据, 可能是恢复的数据
-                                } else {
-                                    engraveModel.clearEngrave()
-                                    //每次发送数据之前, 都生成一个新的任务
-                                    val flowId = generateFlowId("准备发送文件")
-                                    transferConfigEntity.taskId = flowId
-
-                                    //数据雕刻方向
-                                    transferConfigEntity.dataDir = laserPeckerModel.dataDir()
-                                    HawkEngraveKeys.lastDpiLayerJson =
-                                        transferConfigEntity.layerJson
-                                            ?: HawkEngraveKeys.lastDpiLayerJson
-                                    transferConfigEntity.lpSaveEntity()
-
-                                    engraveConfigProvider.onSaveTransferConfig(
-                                        this@BaseEngraveLayoutHelper,
-                                        transferConfigEntity
-                                    )
-                                    onStartEngraveTransferData(flowId)
-                                    LPTransferHelper.startCreateTransferData(
-                                        transferModel,
-                                        flowId,
-                                        delegate
-                                    )
-                                }
-
-                                //last
-                                renderFlowItems()
+                                changeToTransmitting(transferConfigEntity)
                             } else {
                                 toastQQ(error.message)
                             }
@@ -319,6 +291,48 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
         }
+    }
+
+    /**改变界面到传输中*/
+    open fun changeToTransmitting(transferConfigEntity: TransferConfigEntity) {
+        val delegate = engraveCanvasFragment?.renderDelegate
+
+        engraveBackFlow = if (_isSingleItemFlow) {
+            ENGRAVE_FLOW_PREVIEW
+        } else {
+            ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+        }
+        engraveFlow = ENGRAVE_FLOW_TRANSMITTING
+
+        if (delegate == null) {
+            //不是画布上的数据, 可能是恢复的数据
+        } else {
+            engraveModel.clearEngrave()
+            //每次发送数据之前, 都生成一个新的任务
+            val flowId = generateFlowId("准备发送文件")
+            transferConfigEntity.taskId = flowId
+
+            //数据雕刻方向
+            transferConfigEntity.dataDir = laserPeckerModel.dataDir()
+            HawkEngraveKeys.lastDpiLayerJson =
+                transferConfigEntity.layerJson
+                    ?: HawkEngraveKeys.lastDpiLayerJson
+            transferConfigEntity.lpSaveEntity()
+
+            engraveConfigProvider.onSaveTransferConfig(
+                this@BaseEngraveLayoutHelper,
+                transferConfigEntity
+            )
+            onStartEngraveTransferData(flowId)
+            LPTransferHelper.startCreateTransferData(
+                transferModel,
+                flowId,
+                delegate
+            )
+        }
+
+        //last
+        renderFlowItems()
     }
 
     //endregion ---数据配置---
@@ -372,7 +386,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
      * [com.angcyo.engrave.model.TransferModel.transferStateOnceData]
      * [com.angcyo.engrave.EngraveFlowLayoutHelper.bindDeviceState]
      * */
-    fun renderTransmitting() {
+    open fun renderTransmitting() {
         updateIViewTitle(_string(R.string.transmitting))
         showCloseView(false)
 
@@ -441,7 +455,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                 if (error != null) {
                                     toastQQ(error.message)
                                 } else {
-                                    engraveFlow = ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                    engraveFlow = if (_isSingleItemFlow) {
+                                        ENGRAVE_FLOW_PREVIEW
+                                    } else {
+                                        ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+                                    }
                                     renderFlowItems()
                                 }
                             }
@@ -457,7 +475,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
     //region ---雕刻参数配置---
 
     /**单元素雕刻参数配置界面, 只能配置参数, 无法next*/
-    fun renderEngraveItemParamsConfig() {
+    open fun renderEngraveItemParamsConfig() {
         val elementItemBean = _engraveItemRenderer?.lpElementBean()
         val fileName = elementItemBean?.name
         updateIViewTitle(span {
@@ -478,33 +496,62 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             showRightView()
         }
 
-        var engraveConfigEntity: EngraveConfigEntity? = null
-        elementItemBean?.apply {
-            //雕刻配置
-            engraveConfigEntity =
-                engraveConfigProvider.getEngraveElementConfig(this@BaseEngraveLayoutHelper, this)
-        }
+        val engraveConfigEntity: EngraveConfigEntity? = null
+
+        //图层id
+        val layerId = elementItemBean?._layerId ?: LaserPeckerHelper.LAYER_LINE
+
+        elementItemBean?.initEngraveParamsIfNeed()
+        var dpi = elementItemBean?.dpi ?: LaserPeckerHelper.DPI_254
 
         renderDslAdapter {
+            //单元素雕刻分辨率
+            if (_isSingleItemFlow) {
+                if (LayerHelper.getEngraveLayerInfo(layerId)?.showDpiConfig == true) {
+                    TransferDataPxItem()() {
+                        itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(layerId)
+                        selectorCurrentDpi(dpi)
+                        itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
+                        observeItemChange {
+                            //保存最后一次选择的dpi
+                            elementItemBean?.clearIndex("数据dpi改变", true)  //清空数据索引
+                            dpi =
+                                itemPxList?.get(itemCurrentIndex)?.dpi ?: LaserPeckerHelper.DPI_254
+                            elementItemBean?.dpi = dpi
+                            HawkEngraveKeys.updateLayerDpi(layerId, dpi)
+
+                            //更新材质列表
+                            renderFlowItems()
+                        }
+                    }
+                } else {
+                    val list = LaserPeckerHelper.findProductLayerSupportPxList(layerId)
+                    dpi = if (list.size() >= 1) {
+                        layerId.filterLayerDpi(list.first().dpi)
+                    } else {
+                        layerId.filterLayerDpi(LaserPeckerHelper.DPI_254)
+                    }
+                    if (elementItemBean?.dpi != dpi) {
+                        elementItemBean?.clearIndex("DPI不一致", true)
+                        elementItemBean?.dpi = dpi
+                        elementItemBean?.initEngraveParamsIfNeed()
+                    }
+                }
+            }
+
             //材质选择
             EngraveMaterialWheelItem()() {
                 itemTag = MaterialEntity::name.name
                 itemLabelText = _string(R.string.custom_material)
-                itemWheelList = MaterialHelper.unionMaterialList
+                itemWheelList = MaterialHelper.getLayerMaterialList(layerId, dpi)
                 itemSelectedIndex = MaterialHelper.indexOfMaterial(
-                    MaterialHelper.unionMaterialList,
+                    itemWheelList as List<MaterialEntity>,
                     elementItemBean?.materialCode,
                     elementItemBean?.materialKey,
                     elementItemBean?.printType,
                 )
                 itemEngraveItemBean = elementItemBean
                 itemEngraveConfigEntity = engraveConfigEntity
-
-                itemDeleteAction = { key ->
-                    showDeleteMaterialDialog(flowTaskId, key) {
-                        renderFlowItems()
-                    }
-                }
 
                 //刷新界面
                 observeItemChange {
@@ -522,6 +569,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
             if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
                 EngraveLaserSegmentItem()() {
+                    itemCurrentIndex =
+                        typeList.indexOfFirst { it.type == elementItemBean?.printType?.toByte() }
                     observeItemChange {
                         val type = currentLaserTypeInfo().type
                         elementItemBean?.printType = type.toInt()
@@ -676,7 +725,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             }
 
             //雕刻相关的参数
-            if (HawkEngraveKeys.enableItemEngraveParams) {
+            if (_isSingleItemFlow) {
                 //参数配置提示
                 PreviewTipItem()() {
                     itemTip = _string(R.string.engrave_item_params_tip)
@@ -1058,16 +1107,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 itemTaskId = taskId
             }
             //
-            if (!HawkEngraveKeys.enableItemEngraveParams) {
-                EngraveFlowDataHelper.getEngraveLayerList(taskId).forEach { engraveLayerInfo ->
-                    EngraveLabelItem()() {
-                        itemText = engraveLayerInfo.label
-                    }
+            EngraveFlowDataHelper.getEngraveLayerList(taskId).forEach { engraveLayerInfo ->
+                EngraveLabelItem()() {
+                    itemText = engraveLayerInfo.label
+                }
 
-                    EngraveFinishInfoItem()() {
-                        itemTaskId = taskId
-                        itemLayerId = engraveLayerInfo.layerId
-                    }
+                EngraveFinishInfoItem()() {
+                    itemTaskId = taskId
+                    itemLayerId = engraveLayerInfo.layerId
                 }
             }
             //

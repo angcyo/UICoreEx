@@ -100,8 +100,9 @@ object HawkEngraveKeys {
         set(value) = run { lastDpiLayerJson = value?.toJson() }
 
     /**获取图层最后一次的dpi*/
-    fun getLastLayerDpi(layerId: String) = _lastLayerConfigList?.find { it.layerId == layerId }?.dpi
-        ?: LaserPeckerHelper.DPI_254
+    fun getLastLayerDpi(layerId: String?) =
+        _lastLayerConfigList?.find { it.layerId == (layerId ?: LaserPeckerHelper.LAYER_FILL) }?.dpi
+            ?: LaserPeckerHelper.DPI_254
 
     /**获取图层最后一次的dpi
      * [dpi] 需要[com.angcyo.laserpacker.device.filterLayerDpi]

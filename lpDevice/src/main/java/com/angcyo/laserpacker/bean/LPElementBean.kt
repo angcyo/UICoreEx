@@ -8,14 +8,25 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.core.vmApp
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.DeviceHelper
+import com.angcyo.laserpacker.device.LayerHelper
+import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.toLayerId
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
+import com.angcyo.library.L
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex.toDC
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.uuid
+import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.laser.pecker.LPBox
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
+import kotlin.math.max
 
 /**
  * 数据元素存储的结构
@@ -352,6 +363,19 @@ data class LPElementBean(
 
     //region ---雕刻参数---
 
+    /**
+     * [LPDataConstant.DATA_TYPE_RAW] 真实数据的雕刻类型, 发给机器的数据类型
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
+     * */
+    @Implementation
+    var engraveType: Int = 0x10,
+
+    /**GCode/黑白数据的行数*/
+    @Implementation
+    var lines: Int = -1,
+
     /**发给机器的数据索引
      * 当数据没有改变时, 相同的索引不必重复发送数据给机器
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.initTransferDataIndex]
@@ -360,17 +384,6 @@ data class LPElementBean(
 
     /**数据对应的dpi*/
     var dpi: Float? = null,
-
-    /**
-     * [LPDataConstant.DATA_TYPE_RAW] 真实数据的雕刻类型, 发给机器的数据类型
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_PATH]
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_GCODE]
-     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.ENGRAVE_TYPE_BITMAP_DITHERING]
-     * */
-    var engraveType: Int = 0x10,
-
-    /**GCode/黑白数据的行数*/
-    var lines: Int = -1,
 
     /**[com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity]*/
 
@@ -492,6 +505,15 @@ data class LPElementBean(
     val _layerId: String?
         get() = layerId ?: if (isCut) LaserPeckerHelper.LAYER_CUT else _layerMode?.toLayerId()
 
+    /**是否配置了雕刻参数*/
+    val _isConfigEngraveParams: Boolean
+        get() = printType != null &&
+                printPrecision != null &&
+                printPower != null &&
+                printDepth != null &&
+                printCount != null &&
+                dpi != null
+
     /**[com.angcyo.canvas2.laser.pecker.element.LPPathElement]*/
     val isPathElement: Boolean
         get() = mtype == LPDataConstant.DATA_TYPE_PATH ||
@@ -582,5 +604,67 @@ data class LPElementBean(
             //重名了
             generateName(list, baseName, if (index == null) 2 else index + 1)
         }
+    }
+
+    /**清空数据索引, 并且清除雕刻参数*/
+    fun clearIndex(reason: String, clearEngraveParams: Boolean) {
+        L.i("清空索引[$reason]:${index} 清除参数[${clearEngraveParams.toDC()}]")
+        index = null
+        if (clearEngraveParams) {
+            dpi = null
+            materialCode = null
+            materialKey = null
+            materialName = null
+            printType = null
+            printPrecision = null
+            printPower = null
+            printDepth = null
+            printCount = null
+        }
+    }
+
+    fun initEngraveParamsIfNeed() {
+        if (!_isConfigEngraveParams) {
+            initEngraveParams()
+        }
+    }
+
+    /**初始化雕刻参数*/
+    fun initEngraveParams() {
+        val layerId = _layerId
+        val layerConfig = LayerHelper.getProductLayerSupportPxJson().getLayerConfig(layerId)
+        dpi = layerConfig?.dpi ?: dpi ?: LaserPeckerHelper.DPI_254
+
+        //材质
+        val materialList =
+            MaterialHelper.getLayerMaterialList(layerId ?: LaserPeckerHelper.LAYER_LINE, dpi!!)
+        val material = materialList.firstOrNull()
+        val customMaterial =
+            MaterialHelper.createCustomLayerMaterialList().find { it.layerId == layerId }
+        materialCode = material?.code ?: customMaterial?.code
+        materialKey = material?.key ?: customMaterial?.key
+        materialName = material?.name ?: customMaterial?.name
+
+        //获取最后一次相同图层的雕刻参数
+        val productName = vmApp<LaserPeckerModel>().productInfoData.value?.name
+        val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.productName.equal("$productName")
+                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
+            )
+        }
+
+        //功率
+        printPower =
+            material?.power ?: last?.power ?: customMaterial?.power ?: HawkEngraveKeys.lastPower
+        printDepth =
+            material?.depth ?: last?.depth ?: customMaterial?.depth ?: HawkEngraveKeys.lastDepth
+        printCount = max(1, material?.count ?: customMaterial?.count ?: 1)
+
+        //光源
+        printType = (material?.type ?: last?.type ?: customMaterial?.type
+        ?: DeviceHelper.getProductLaserType()).toInt()
+        printPrecision = material?.precision ?: last?.precision ?: customMaterial?.precision
+                ?: HawkEngraveKeys.lastPrecision
     }
 }

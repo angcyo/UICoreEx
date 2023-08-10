@@ -61,7 +61,7 @@ data class EngraveCmd(
      *
      * [QUERY_FILE_NAME_LIST]
      * */
-    val mount: Byte = 1,
+    val mount: Byte = QueryCmd.TYPE_SD.toByte(),
     val filename: String? = null,//文件名
 ) : BaseCommand() {
 

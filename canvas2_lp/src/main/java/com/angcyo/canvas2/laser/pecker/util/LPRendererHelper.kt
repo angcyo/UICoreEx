@@ -212,7 +212,7 @@ object LPRendererHelper {
                 if (offset) {
                     newBean.left += POSITION_STEP
                     newBean.top += POSITION_STEP
-                    newBean.index = null//清空索引
+                    newBean.clearIndex("复制渲染器", false) //清空索引
                 }
                 elementBeanList.add(newBean)
             }

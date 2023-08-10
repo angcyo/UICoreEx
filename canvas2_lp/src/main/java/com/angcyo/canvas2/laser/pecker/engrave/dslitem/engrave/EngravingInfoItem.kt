@@ -14,10 +14,13 @@ import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.laserpacker.device.toEngraveTime
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex.nowTime
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveTaskEntity
+import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.widget.DslViewHolder
 
 /**
- * 雕刻信息展示的item
+ * 雕刻信息展示的item, 雕刻中的信息展示
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2022/06/20
  */
@@ -28,6 +31,18 @@ open class EngravingInfoItem : DslTagGroupItem() {
 
     val laserPeckerModel = vmApp<LaserPeckerModel>()
     val deviceStateModel = vmApp<DeviceStateModel>()
+
+    /**当前的雕刻任务*/
+    val _engraveTaskEntity: EngraveTaskEntity?
+        get() = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
+
+    /**当前任务正在雕刻的雕刻配置*/
+    val _currentEngraveConfigEntity: EngraveConfigEntity?
+        get() = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
+
+    /**当前任务的传输配置*/
+    val _transferConfigEntity: TransferConfigEntity?
+        get() = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
 
     init {
         itemLayoutId = R.layout.item_engrave_info_layout
@@ -44,9 +59,9 @@ open class EngravingInfoItem : DslTagGroupItem() {
     }
 
     override fun initLabelDesList() {
-        val engraveTaskEntity = EngraveFlowDataHelper.getEngraveTask(itemTaskId)
-        val engraveConfigEntity = EngraveFlowDataHelper.getCurrentEngraveConfig(itemTaskId)
-        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
+        val engraveTaskEntity = _engraveTaskEntity
+        val engraveConfigEntity = _currentEngraveConfigEntity
+        val transferConfigEntity = _transferConfigEntity
         val engraveDataEntity = EngraveFlowDataHelper.getCurrentEngraveDataEntity(itemTaskId)
         val transferDataList = EngraveFlowDataHelper.getTransferDataList(itemTaskId)
 

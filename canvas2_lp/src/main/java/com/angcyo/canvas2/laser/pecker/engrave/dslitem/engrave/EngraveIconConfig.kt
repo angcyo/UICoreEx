@@ -179,12 +179,10 @@ fun moduleData(type: Byte): LabelDesData {
     )
 }
 
-fun DslSpan.appendDrawable(@DrawableRes resId: Int) {
+fun DslSpan.appendDrawable(@DrawableRes resId: Int, size: Int = EngraveIconConfig.iconSize) {
     val nightModel = vmApp<NightModel>()
     appendDrawable(
-        nightModel.tintDrawableNight(_drawable(resId))?.setBounds(
-            EngraveIconConfig.iconSize,
-            EngraveIconConfig.iconSize
-        ), EngraveIconConfig.iconAlignment
+        nightModel.tintDrawableNight(_drawable(resId))?.setBounds(size, size),
+        EngraveIconConfig.iconAlignment
     )
 }

@@ -55,7 +55,6 @@ import com.angcyo.http.rx.doMain
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.generateGroupName
-import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
@@ -387,8 +386,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
                     val index = renderer.lpElementBean()?.index
                     if (index != null) {
-                        L.i("数据改变,清空索引:${index} $reason")
-                        renderer.lpElementBean()?.index = null //清空数据索引
+                        renderer.lpElementBean()?.clearIndex("数据改变", true) //清空数据索引
                     }
 
                     needUpdateControlLayout = true
@@ -769,6 +767,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                 .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
                                     CanvasLayerBaseItem().apply {//元素
                                         initItem(renderer)
+                                        itemShowEngraveParams = true
                                         onItemCutTypeChangeAction = {
                                             //切换类型
                                             renderLayerListLayout()

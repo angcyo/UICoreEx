@@ -13,11 +13,13 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.appendDrawable
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -27,8 +29,10 @@ import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.span.span
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -119,29 +123,47 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         }
 
         //元素参数
-        if (itemShowEngraveParams && HawkEngraveKeys.enableItemEngraveParams && renderer is CanvasElementRenderer) {
+        if (itemShowEngraveParams && renderer is CanvasElementRenderer) {
             itemHolder.visible(R.id.layer_item_params_view)
-            itemHolder.tv(R.id.layer_item_params_view)?.text = buildString {
+            itemHolder.tv(R.id.layer_item_params_view)?.text = span {
                 renderer.lpElementBean()?.let { bean ->
-                    if (vmApp<LaserPeckerModel>().isCSeries()) {
-                        append(_string(R.string.engrave_precision));append(":")
-                        append(bean.printPrecision ?: HawkEngraveKeys.lastPrecision);append(" ")
-                    } else {
-                        LaserPeckerHelper.findProductSupportLaserTypeList()
-                            .find {
-                                it.type == (bean.printType
-                                    ?: DeviceHelper.getProductLaserType()).toByte()
-                            }
-                            ?.let { append(it.toText());append(" ") }
+                    bean.initEngraveParamsIfNeed()
+                    val drawableSize = 18 * dpi
+
+                    //雕刻模块
+                    val type = (bean.printType ?: DeviceHelper.getProductLaserType()).toByte()
+                    val laserInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(type)
+                    val label = laserInfo?.toLabel() ?: "$type"
+                    appendDrawable(R.drawable.engrave_config_module_svg, drawableSize)
+                    append(label); append(" ")
+
+                    //材质名
+                    EngraveFlowDataHelper.getEngraveMaterNameByKey(bean.materialKey).let {
+                        appendDrawable(R.drawable.engrave_config_material_svg, drawableSize)
+                        append(it); append(" ")
                     }
 
-                    append(_string(R.string.custom_power));append(":")
+                    bean.dpi?.let {
+                        val findPxInfo = LaserPeckerHelper.findPxInfo(
+                            bean._layerId ?: LaserPeckerHelper.LAYER_LINE, it
+                        )
+                        appendDrawable(R.drawable.engrave_config_dpi_svg, drawableSize)
+                        append(findPxInfo.toText()); append(" ")
+                    }
+
+                    if (vmApp<LaserPeckerModel>().isCSeries()) {
+                        appendDrawable(R.drawable.engrave_config_precision_svg, drawableSize)
+                        append(bean.printPrecision ?: HawkEngraveKeys.lastPrecision); append(" ")
+                    }
+
+                    appendLine()
+                    appendDrawable(R.drawable.engrave_config_power_svg, drawableSize)
                     append(bean.printPower ?: HawkEngraveKeys.lastPower);append("% ")
 
-                    append(_string(R.string.custom_speed));append(":")
+                    appendDrawable(R.drawable.engrave_config_depth_svg, drawableSize)
                     append(bean.printDepth ?: HawkEngraveKeys.lastDepth);append("% ")
 
-                    append(_string(R.string.print_times));append(":")
+                    appendDrawable(R.drawable.engrave_config_times_svg, drawableSize)
                     append(bean.printCount ?: 1);append(" ")
 
                     if (isDebug()) {
@@ -184,7 +206,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
                 operateElementBean?.isCut = true
                 operateElementBean?.layerId = LaserPeckerHelper.LAYER_CUT
             }
-            operateElementBean?.index = null // 重置索引
+            operateElementBean?.clearIndex("切割类型改变", true)
             onItemCutTypeChangeAction?.invoke()
         }
     }

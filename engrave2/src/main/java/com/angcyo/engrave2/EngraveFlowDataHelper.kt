@@ -408,7 +408,10 @@ object EngraveFlowDataHelper {
         val taskEntity = getEngraveTask(taskId) ?: return null
         return if (HawkEngraveKeys.enableItemEngraveParams) {
             val engraveConfigEntity = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
-                apply(EngraveConfigEntity_.taskId.equal("${taskEntity.currentIndex}"))
+                apply(
+                    EngraveConfigEntity_.taskId.equal("$taskId")
+                        .and(EngraveConfigEntity_.index.equal("${taskEntity.currentIndex}"))
+                )
             }
             engraveConfigEntity
         } else {
@@ -700,16 +703,22 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**根据数据索引, 获取对应点额雕刻配置信息*/
-    fun getEngraveConfig(index: Int?): EngraveConfigEntity? {
-        return EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
-            apply(EngraveConfigEntity_.taskId.equal("$index"))
+    /**单元素雕刻参数的的配置
+     *
+     * [com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper.generateEngraveConfig]
+     * */
+    fun getEngraveIndexConfig(taskId: String?, index: String): EngraveConfigEntity? {
+        return EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.taskId.equal("$taskId")
+                    .and(EngraveConfigEntity_.index.equal(index))
+            )
         }
     }
 
     /**获取图层的雕刻配置*/
     fun getEngraveConfig(taskId: String?, layerId: String?): EngraveConfigEntity? {
-        return EngraveConfigEntity::class.findFirst(LPBox.PACKAGE_NAME) {
+        return EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
             apply(
                 EngraveConfigEntity_.taskId.equal("$taskId")
                     .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))

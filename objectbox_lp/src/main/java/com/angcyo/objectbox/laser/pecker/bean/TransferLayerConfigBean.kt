@@ -23,7 +23,8 @@ data class TransferLayerConfigBean(
 
     companion object {
 
-        /**获取或者更新一个图层配置json数据*/
+        /**获取或者更新一个图层配置json数据
+         * [com.angcyo.laserpacker.device.filterLayerDpi]*/
         fun getAndUpdateLayerConfigJson(
             layerId: String?,
             dpi: Float,

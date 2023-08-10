@@ -118,8 +118,8 @@ data class MaterialEntity(
     //---核心配置参数---
 
     /**对应的激光类型, 蓝光/白光
-     * [LaserPeckerHelper.LASER_TYPE_WHITE] 0x01
-     * [LaserPeckerHelper.LASER_TYPE_BLUE] 0x00
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_WHITE] 0x01
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LASER_TYPE_BLUE] 0x00
      * */
     var type: Int = -1,
 

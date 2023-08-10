@@ -53,11 +53,6 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
     val _isSingleFlow: Boolean
         get() = singleFlowInfo != null
 
-    /**是否是来自历史的雕刻流程
-     * [com.angcyo.canvas2.laser.pecker.engrave.HistoryEngraveFlowLayoutHelper]*/
-    val _isHistoryFlow: Boolean
-        get() = this is HistoryEngraveFlowLayoutHelper
-
     override fun renderFlowItems() {
         if (isAttach()) {
             when (engraveFlow) {
@@ -249,14 +244,7 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
                         deviceStateModel.pauseLoopCheckState(true, "预览界面下一步")
                         asyncTimeoutExitCmd { bean, error ->
                             if (error == null) {
-                                syncQueryDeviceState()
-                                engraveFlow = if (_isSingleFlow) {
-                                    ENGRAVE_FLOW_BEFORE_CONFIG
-                                } else {
-                                    ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
-                                }
-                                engraveBackFlow = 0
-                                renderFlowItems()
+                                changeToTransferConfig()
                             } else {
                                 toastQQ(error.message)
                             }
@@ -268,6 +256,18 @@ abstract class BasePreviewLayoutHelper : BaseFlowLayoutHelper() {
 
         //轮询查询状态
         deviceStateModel.startLoopCheckState(reason = "预览界面")
+    }
+
+    /**改变状态到传输配置*/
+    open fun changeToTransferConfig() {
+        syncQueryDeviceState()
+        engraveFlow = if (_isSingleFlow) {
+            ENGRAVE_FLOW_BEFORE_CONFIG
+        } else {
+            ENGRAVE_FLOW_TRANSFER_BEFORE_CONFIG
+        }
+        engraveBackFlow = 0
+        renderFlowItems()
     }
 
     /**开始路径预览流程*/

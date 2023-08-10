@@ -171,5 +171,5 @@
     <string name="calibration_offset_top">y</string>
 
     <string name="cannot_share_project">Unable to share project</string>
-
+    <string name="no_config_params_tip">Element %1$s parameter is not configured</string>
 </resources>

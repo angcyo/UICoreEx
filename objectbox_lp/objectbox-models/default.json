@@ -197,7 +197,7 @@
     },
     {
       "id": "5:8576643246115528772",
-      "lastPropertyId": "13:8248562746091545178",
+      "lastPropertyId": "14:9126991989353531874",
       "name": "TransferConfigEntity",
       "properties": [
         {
@@ -255,13 +255,18 @@
           "id": "13:8248562746091545178",
           "name": "dataDir",
           "type": 5
+        },
+        {
+          "id": "14:9126991989353531874",
+          "name": "index",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "22:8428400476778050840",
+      "lastPropertyId": "23:8520133024351725165",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -363,6 +368,11 @@
         {
           "id": "22:8428400476778050840",
           "name": "materialName",
+          "type": 9
+        },
+        {
+          "id": "23:8520133024351725165",
+          "name": "index",
           "type": 9
         }
       ],

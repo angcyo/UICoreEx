@@ -13,6 +13,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 
 /**
  * 图层助手
@@ -58,10 +59,11 @@ object LayerHelper {
     }
 
     /**获取图层最后一次的dpi*/
-    fun updateAllLayerDpi(dpi: Float) {
+    fun updateAllLayerDpi(dpi: Float): String? {
         for (layer in engraveLayerList) {
             HawkEngraveKeys.updateLayerDpi(layer.layerId, layer.layerId.filterLayerDpi(dpi))
         }
+        return HawkEngraveKeys.lastDpiLayerJson
     }
 
     /**当前图层, 是否要显示dpi分辨率配置*/
@@ -129,4 +131,18 @@ fun String?.toDataMode(): Int {
         //LayerHelper.LAYER_FILL
         else -> LPDataConstant.DATA_MODE_BLACK_WHITE
     }
+}
+
+/**更新所有图层的dpi
+ * [com.angcyo.laserpacker.device.filterLayerDpi]*/
+fun String?.updateAllLayerConfig(dpi: Float): String? {
+    val result = mutableListOf<TransferLayerConfigBean>()
+    val list = this?.getLayerConfigList()
+    if (list != null) {
+        result.addAll(list)
+    }
+    for (bean in result) {
+        bean.dpi = bean.layerId.filterLayerDpi(dpi)
+    }
+    return result.toJson()
 }

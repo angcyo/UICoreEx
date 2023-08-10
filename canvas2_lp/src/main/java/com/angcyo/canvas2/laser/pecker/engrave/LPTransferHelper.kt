@@ -4,8 +4,6 @@ import android.graphics.Paint
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
@@ -14,7 +12,6 @@ import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.core.component.file.writePerfLog
 import com.angcyo.core.component.file.writeToLog
-import com.angcyo.core.vmApp
 import com.angcyo.coroutine.sleep
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.engrave2.data.TransferState
@@ -23,6 +20,7 @@ import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
 import com.angcyo.http.rx.doBack
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.toEngraveDataTypeStr
@@ -82,6 +80,7 @@ object LPTransferHelper {
                     EngraveFlowDataHelper.onFinishCreateTransferData(taskId)
                     transferModel.startTransferData(transferState.taskId)
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     "$e".writeErrorLog()
                     transferModel.errorTransfer(transferState, TransferException())
                 }
@@ -103,19 +102,25 @@ object LPTransferHelper {
         if (HawkEngraveKeys.enableItemTopOrder) {
             //从上往下的雕刻顺序
             val rendererList = LPEngraveHelper.getLayerRendererList(delegate, null, true)
-            resultDataList.addAll(transitionTransferData(rendererList, transferConfigEntity, null))
+            if (rendererList.isNotEmpty()) {
+                resultDataList.addAll(
+                    transitionTransferData(rendererList, transferConfigEntity, null)
+                )
+            }
         } else {
             //规定的图层雕刻顺序
             for (engraveLayerInfo in LayerHelper.getEngraveLayerList()) {
                 val rendererList =
                     LPEngraveHelper.getLayerRendererList(delegate, engraveLayerInfo, false)
-                resultDataList.addAll(
-                    transitionTransferData(
-                        rendererList,
-                        transferConfigEntity,
-                        engraveLayerInfo.layerId
+                if (rendererList.isNotEmpty()) {
+                    resultDataList.addAll(
+                        transitionTransferData(
+                            rendererList,
+                            transferConfigEntity,
+                            engraveLayerInfo.layerId
+                        )
                     )
-                )
+                }
             }
         }
         //入库, 然后就可以通过, 通过任务id获取任务需要传输的数据列表了
@@ -134,39 +139,35 @@ object LPTransferHelper {
         layerId: String?
     ): List<TransferDataEntity> {
         val resultDataList = mutableListOf<TransferDataEntity>()
-        val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
+        val taskId = transferConfigEntity.taskId
         for (renderer in rendererList) {
             //开始将[renderer]转换成数据
             sleep(HawkEngraveKeys.transferIndexSleep)
             LTime.tick()
             val elementBean = renderer.lpElementBean()
             val elementLayerId = layerId ?: elementBean?._layerId
-            val old = transferConfigEntity.layerJson
-            if (HawkEngraveKeys.enableItemEngraveParams) {
-                transferConfigEntity.layerJson = HawkEngraveKeys.getLayerConfigJson(
-                    elementLayerId,
-                    elementBean?.dpi ?: transferConfigEntity.getLayerConfigDpi(elementLayerId),
-                    transferConfigEntity.layerJson
-                )
-            }
-            "开始转换数据->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name} $elementLayerId".writePerfLog()
-            val transferDataEntity = transitionRenderer(renderer, transferConfigEntity)
-            transferConfigEntity.layerJson = old //恢复
-            if (transferDataEntity == null) {
-                "转换传输数据失败->${transferConfigEntity.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
+
+            val transferConfig = if (HawkEngraveKeys.enableItemEngraveParams) {
+                //单元素雕刻参数, 使用元素自己的参数
+                val index = elementBean?.index ?: EngraveHelper.generateEngraveIndex()
+                elementBean?.index = index
+                LPEngraveHelper.getTransferConfig(taskId, "$index")!! // ?: transferConfigEntity
             } else {
-                if (!isCSeries && elementLayerId == LaserPeckerHelper.LAYER_CUT) {
-                    transferDataEntity.layerId = LaserPeckerHelper.LAYER_LINE
-                } else {
-                    transferDataEntity.layerId = elementLayerId
-                }
+                transferConfigEntity
+            }
+
+            "开始转换数据->${transferConfig.name} ${elementBean?.index} 元素名:${elementBean?.name} $elementLayerId".writePerfLog()
+            val transferDataEntity = transitionRenderer(renderer, transferConfig)
+            if (transferDataEntity == null) {
+                "转换传输数据失败->${transferConfig.name} ${elementBean?.index} 元素名:${elementBean?.name}".writeErrorLog()
+            } else {
+                transferDataEntity.layerId = elementLayerId
                 resultDataList.add(transferDataEntity)
                 "转换传输数据耗时[${transferDataEntity.index}]->${LTime.time()} ${transferDataEntity.name} ${transferDataEntity.engraveDataType.toEngraveDataTypeStr()}".writePerfLog()
             }
         }
         if (resultDataList.size() > 1 && HawkEngraveKeys.engraveDataLogLevel >= L.INFO) {
             //数据个数大于1, 生成坐标的鸟瞰图
-            val taskId = transferConfigEntity.taskId
             EngraveTransitionHelper.saveTaskAerialView(taskId, resultDataList)
         }
         return resultDataList

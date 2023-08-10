@@ -23,7 +23,7 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
 
     override fun initLabelDesList() {
         renderLabelDesList {
-            val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(itemTaskId)
+            val transferConfigEntity = _transferConfigEntity
             val engraveConfigEntity =
                 EngraveFlowDataHelper.getEngraveConfig(itemTaskId, itemLayerId)
             val transferDataEntityList =

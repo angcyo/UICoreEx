@@ -131,6 +131,15 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * */
     var flowTaskId: String? = null
 
+    /**是否是来自历史的雕刻流程
+     * [com.angcyo.canvas2.laser.pecker.engrave.HistoryEngraveFlowLayoutHelper]*/
+    val _isHistoryFlow: Boolean
+        get() = this is HistoryEngraveFlowLayoutHelper
+
+    /**是否是单元素雕刻流程*/
+    val _isSingleItemFlow: Boolean
+        get() = HawkEngraveKeys.enableItemEngraveParams
+
     protected val _titleFontSize = 12
 
     /**选过哪些图层, 用来标识对应的图层配置过参数*/

@@ -18,15 +18,18 @@ import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
+import com.angcyo.laserpacker.device.updateAllLayerConfig
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
 import com.angcyo.library.unit.toMm
+import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.objectbox.queryOrCreateEntity
+import com.angcyo.objectbox.removeAll
 
 /**
  * 业务相关的雕刻助手工具类
@@ -145,6 +148,36 @@ object LPEngraveHelper {
         return true
     }
 
+    /**所有元素都配置了雕刻参数*/
+    fun isAllConfigEngraveParams(delegate: CanvasRenderDelegate?): Boolean {
+        delegate ?: return false
+        val list = getLayerRendererList(delegate, null)
+        for (renderer in list) {
+            if (renderer.lpElementBean()?._isConfigEngraveParams == true) {
+                //same
+            } else {
+                //未配置参数
+                return false
+            }
+        }
+        return true
+    }
+
+    /**获取未配置参数的渲染器*/
+    fun getNoConfigEngraveParamsRenderer(delegate: CanvasRenderDelegate?): BaseRenderer? {
+        delegate ?: return null
+        val list = getLayerRendererList(delegate, null)
+        for (renderer in list) {
+            if (renderer.lpElementBean()?._isConfigEngraveParams == true) {
+                //same
+            } else {
+                //未配置参数
+                return renderer
+            }
+        }
+        return null
+    }
+
     /**构建或者获取生成数据需要的配置信息
      * [taskId] 可以为空*/
     fun generateTransferConfig(
@@ -181,6 +214,50 @@ object LPEngraveHelper {
         }
     }
 
+    /**构建一个传输信息从[LPElementBean]
+
+     * [generateEngraveConfig]
+     * */
+    fun generateTransferConfig(
+        taskId: String?,
+        renderer: BaseRenderer,
+        bean: LPElementBean
+    ): TransferConfigEntity {
+        val index = bean.index ?: EngraveHelper.generateEngraveIndex()
+        bean.index = index
+        TransferConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(
+                TransferConfigEntity_.taskId.equal("$taskId")
+                    .and(TransferConfigEntity_.index.equal("$index"))
+            )
+        }
+
+        return TransferConfigEntity().apply {
+            this.taskId = taskId
+            this.index = "$index"
+            name = bean.name ?: EngraveHelper.generateEngraveName()
+            layerJson = LayerHelper.getProductLayerSupportPxJson()
+                .updateAllLayerConfig(bean.dpi ?: HawkEngraveKeys.getLastLayerDpi(bean.layerId))
+            dataDir = vmApp<LaserPeckerModel>().dataDir()
+
+            val originBounds = renderer.getRendererBounds()
+            originWidth = originBounds?.width().toMm()
+            originHeight = originBounds?.height().toMm()
+
+            lpSaveEntity()
+        }
+    }
+
+    /**单元素数据传输的配置*/
+    fun getTransferConfig(taskId: String?, index: String): TransferConfigEntity? {
+        return TransferConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                TransferConfigEntity_.taskId.equal("$taskId")
+                    .and(TransferConfigEntity_.index.equal(index))
+            )
+        }
+    }
+
     /**构建一个雕刻参数信息从[LPElementBean]
      *
      * [com.angcyo.engrave2.EngraveFlowDataHelper.generateEngraveConfig]
@@ -191,6 +268,9 @@ object LPEngraveHelper {
     ): EngraveConfigEntity {
         val layerId = bean._layerId
         return EngraveFlowDataHelper.generateEngraveConfig(taskId, layerId).apply {
+            this.taskId = taskId
+            index = "${bean.index}"
+
             type = bean.printType?.toByte() ?: DeviceHelper.getProductLaserType()
             precision = bean.printPrecision ?: HawkEngraveKeys.lastPrecision
             power = bean.printPower ?: HawkEngraveKeys.lastPower
@@ -209,14 +289,31 @@ object LPEngraveHelper {
         }
     }
 
-    /**创建单文件雕刻参数*/
-    fun generateEngraveConfig(delegate: CanvasRenderDelegate?) {
+
+    /**创建单文件雕刻参数
+     * [generateTransferConfig]
+     * */
+    fun generateEngraveConfig(delegate: CanvasRenderDelegate?, taskId: String?) {
         delegate?.let {
             val rendererList = getLayerRendererList(delegate, null)
             rendererList.forEach { renderer ->
                 renderer.lpElementBean()?.let { bean ->
                     //为每个元素创建对应的雕刻参数
-                    generateEngraveConfig("${bean.index}", bean)
+                    generateEngraveConfig(taskId, bean)
+                }
+            }
+        }
+    }
+
+    /**创建单文件传输参数
+     * [generateEngraveConfig]*/
+    fun generateTransferConfig(delegate: CanvasRenderDelegate?, taskId: String?) {
+        delegate?.let {
+            val rendererList = getLayerRendererList(delegate, null)
+            rendererList.forEach { renderer ->
+                renderer.lpElementBean()?.let { bean ->
+                    //为每个元素创建对应的雕刻参数
+                    generateTransferConfig(taskId, renderer, bean)
                 }
             }
         }
@@ -236,7 +333,6 @@ object LPEngraveHelper {
         }
         return result
     }
-
 }
 
 /**排序规则从上到下, 从左到右

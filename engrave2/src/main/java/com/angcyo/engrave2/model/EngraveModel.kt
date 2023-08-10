@@ -451,11 +451,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             //雕刻配置数据
             val engraveConfigEntity = if (task.enableItemEngraveParams) {
-                EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
-                    ?: EngraveFlowDataHelper.generateEngraveConfig(
-                        taskId,
-                        transferDataEntity?.layerId
-                    )
+                EngraveFlowDataHelper.getEngraveIndexConfig(
+                    engraveDataEntity.taskId,
+                    "${engraveDataEntity.index}"
+                ) ?: EngraveFlowDataHelper.generateEngraveConfig(
+                    taskId,
+                    transferDataEntity?.layerId
+                )
             } else {
                 EngraveFlowDataHelper.generateEngraveConfig(taskId, transferDataEntity?.layerId)
             }
@@ -501,7 +503,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
                 //雕刻参数
                 val engraveConfigEntity = if (task.enableItemEngraveParams)
-                    EngraveFlowDataHelper.getEngraveConfig(it.index)
+                    EngraveFlowDataHelper.getEngraveIndexConfig(it.taskId, "${it.index}")
                 else
                     EngraveFlowDataHelper.getEngraveConfig(taskId, it.layerId)
 
@@ -628,11 +630,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             //雕刻配置数据
             val engraveConfigEntity = if (task.enableItemEngraveParams) {
-                EngraveFlowDataHelper.getEngraveConfig(engraveDataEntity.index)
-                    ?: EngraveFlowDataHelper.generateEngraveConfig(
-                        taskId,
-                        transferDataEntity?.layerId
-                    )
+                EngraveFlowDataHelper.getEngraveIndexConfig(
+                    engraveDataEntity.taskId,
+                    "${engraveDataEntity.index}"
+                ) ?: EngraveFlowDataHelper.generateEngraveConfig(
+                    taskId,
+                    transferDataEntity?.layerId
+                )
             } else {
                 EngraveFlowDataHelper.generateEngraveConfig(taskId, transferDataEntity?.layerId)
             }
@@ -809,7 +813,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
     }
 
     /**雕刻失败, 错误信息在
-     * [com.angcyo.engrave.model.EngraveModel._lastEngraveCmdError]*/
+     * [com.angcyo.engrave2.model.EngraveModel._lastEngraveCmdError]*/
     fun errorEngrave(error: Exception?) {
         isSendEngraveCmd = false
         _lastEngraveCmdError = error

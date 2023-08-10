@@ -75,6 +75,7 @@ fun EngraveConfigEntity.toLaserOptionsBean(): LPLaserOptionsBean {
     bean.layerId = layerId
     bean.materialCode = materialCode
     bean.materialKey = materialKey
+    bean.materialName = materialName
     MaterialEntity::class.findLast(LPBox.PACKAGE_NAME) {
         apply(MaterialEntity_.code.equal("$materialCode"))
     }?.let {

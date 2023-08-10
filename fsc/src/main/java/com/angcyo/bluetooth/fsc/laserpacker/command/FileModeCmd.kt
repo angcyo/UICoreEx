@@ -32,7 +32,7 @@ data class FileModeCmd(
     val state: Byte = 0x1,
     val custom: Byte = 0, //自定义的数据
     //--2023-8-7
-    val mount: Byte = 0,
+    val mount: Byte = QueryCmd.TYPE_SD.toByte(),
     /**使用文件名, 删除sd/usb中的文件*/
     val fileName: String? = null,
 ) : BaseCommand() {

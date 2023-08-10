@@ -48,7 +48,7 @@
         tools:text="绘制项目绘制项目绘制项目绘制项目绘制项目" />
 
     <!--元素参数-->
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.angcyo.widget.text.DslTextView
         android:id="@+id/layer_item_params_view"
         style="@style/LibPlaceTextStyle"
         android:layout_width="0dp"
