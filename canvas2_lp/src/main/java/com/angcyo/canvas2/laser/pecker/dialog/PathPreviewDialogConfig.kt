@@ -165,7 +165,8 @@ class PathPreviewDialogConfig : DslDialogConfig() {
                                 } else {
                                     _transferDataEntity = transferDataEntity
                                     sendPreviewFlashBitmapCmd(
-                                        dialogViewHolder, transferDataEntity.index
+                                        dialogViewHolder,
+                                        transferDataEntity.index
                                     )
                                 }
                             }
