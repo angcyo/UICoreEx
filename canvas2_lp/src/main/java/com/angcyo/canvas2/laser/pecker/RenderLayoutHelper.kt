@@ -767,7 +767,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                 .mapTo(mutableListOf<DslAdapterItem>()) { renderer ->
                                     CanvasLayerBaseItem().apply {//元素
                                         initItem(renderer)
-                                        itemShowEngraveParams = true
+                                        itemShowEngraveParams =
+                                            HawkEngraveKeys.enableItemEngraveParams
                                         onItemCutTypeChangeAction = {
                                             //切换类型
                                             renderLayerListLayout()

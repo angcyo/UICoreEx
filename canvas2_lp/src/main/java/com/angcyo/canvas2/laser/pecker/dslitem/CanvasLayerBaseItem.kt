@@ -49,7 +49,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
     val itemRenderParams = RenderParams(overrideSize = 30 * dp)
 
     /**是否需要显示雕刻参数参数*/
-    var itemShowEngraveParams = true
+    var itemShowEngraveParams = false
 
     /**切割类型改变的回调*/
     var onItemCutTypeChangeAction: Action? = null
