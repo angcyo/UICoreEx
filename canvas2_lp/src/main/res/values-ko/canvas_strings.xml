@@ -115,7 +115,7 @@
     <string name="canvas_union">병합</string>
     <string name="canvas_op_union">도형 병합</string>
     <string name="canvas_op_difference">첫 레이어 제외</string>
-    <string name="canvas_op_intersect">도형 레이어</string>
+    <string name="canvas_op_intersect">도형 레이어</string>
     <string name="canvas_op_xor">레이어 삭제</string>
 
     <string name="canvas_side_count">가장자리</string>

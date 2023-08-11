@@ -98,7 +98,7 @@
     <string name="canvas_backups_font">백업</string>
     <string name="canvas_export_font">내보내기</string>
     <string name="canvas_rename">이름 변경</string>
-    <string name="project_title">나의 창작</string>
+    <string name="project_title">나의 창작</string>
     <string name="canvas_delete_project">항목 삭제</string>
     <string name="canvas_delete_project_tip">삭제 후 복구할 수 없는데 계속하시겠습니까?</string>
     <string name="save_project_title">프로젝트 이름</string>

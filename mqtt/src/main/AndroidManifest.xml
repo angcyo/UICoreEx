@@ -12,9 +12,15 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--Android 14前台服务权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+
     <application>
 
         <!-- Mqtt Service -->
-        <service android:name="org.eclipse.paho.android.service.MqttService"></service>
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            android:exported="false"
+            android:foregroundServiceType="remoteMessaging" />
     </application>
 </manifest>

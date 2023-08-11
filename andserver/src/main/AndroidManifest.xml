@@ -12,14 +12,19 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+    <!--Android 14前台服务权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+
     <application>
         <service
             android:name=".def.AndServerService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="remoteMessaging" />
         <service
             android:name=".file.FileServerService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="remoteMessaging" />
     </application>
 </manifest>

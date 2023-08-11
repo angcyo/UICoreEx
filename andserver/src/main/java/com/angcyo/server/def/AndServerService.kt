@@ -7,8 +7,22 @@ import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.library.L
 import com.angcyo.library.app
-import com.angcyo.library.component.*
-import com.angcyo.library.ex.*
+import com.angcyo.library.component.DslNotify
+import com.angcyo.library.component.NetStateChangeObserver
+import com.angcyo.library.component.NetUtils
+import com.angcyo.library.component.NetworkType
+import com.angcyo.library.component.RNetwork
+import com.angcyo.library.component.clickActivity
+import com.angcyo.library.component.dslBuildNotify
+import com.angcyo.library.component.isChannelEnable
+import com.angcyo.library.component.isNotificationsEnabled
+import com.angcyo.library.component.low
+import com.angcyo.library.component.single
+import com.angcyo.library.ex.classHash
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.nowTimeString
+import com.angcyo.library.ex.simpleHash
+import com.angcyo.library.ex.urlIntent
 import com.angcyo.library.getAppName
 import com.angcyo.library.toastQQ
 import com.angcyo.server.DslAndServer.DEFAULT_CHANNEL_NAME
@@ -183,6 +197,8 @@ open class AndServerService : Service(), ServerListener, NetStateChangeObserver 
             L.i("${simpleHash()} 服务地址:$address")
 
             //foreground
+            //android.app.MissingForegroundServiceTypeException: Starting FGS without a type
+            // callerApp=ProcessRecord{8e40147 9116:com.angcyo.uicore.demo/u0a183} targetSDK=34
             startForeground(_notifyId, dslBuildNotify {
                 notifySmallIcon = notifyIcon
                 channelName = notifyChannelName
