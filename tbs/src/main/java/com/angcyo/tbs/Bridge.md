@@ -7,7 +7,7 @@ https://github.com/hjhrq1991/JsBridge
 ## Android 注入
 
 ```kotlin
-fun register(fragment: TbsWebFragment, webView: TbsWebView) {
+fun register(fragment: Fragment, webView: TbsWebView) {
     webView.registerHandler(PAGER_HANDLER_NAME) { data, function ->
         val bean = data?.fromJson<ImagePickerBean>()
         if (bean == null || bean.images.isNullOrEmpty()) {

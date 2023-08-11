@@ -12,6 +12,7 @@ import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.model.WebConfig
+import com.angcyo.tbs.core.TbsSingleWebFragment
 import com.angcyo.tbs.core.TbsWebActivity
 import com.angcyo.tbs.core.TbsWebFragment
 import com.tencent.smtt.export.external.TbsCoreSettings
@@ -238,6 +239,30 @@ fun DslAHelper.open(
 ) {
     start(Intent(context, cls).apply {
         putExtra(WebConfig.KEY_CONFIG, WebConfig().apply {
+            try {
+                if (!url.isNullOrEmpty()) {
+                    uri = if (url.isFileExist()) {
+                        Uri.fromFile(url.file())
+                    } else {
+                        Uri.parse(url)
+                    }
+                }
+            } catch (e: Exception) {
+                L.w(e)
+            }
+            config()
+        })
+    })
+}
+
+fun DslAHelper.openSingle(
+    url: String? = null,
+    cls: Class<out TbsWebActivity> = DslTbs.DEF_TBS_ACTIVITY ?: TbsWebActivity::class.java,
+    config: WebConfig.() -> Unit = {}
+) {
+    start(Intent(context, cls).apply {
+        putExtra(WebConfig.KEY_CONFIG, WebConfig().apply {
+            targetClass = TbsSingleWebFragment::class.java
             try {
                 if (!url.isNullOrEmpty()) {
                     uri = if (url.isFileExist()) {

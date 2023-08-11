@@ -10,8 +10,9 @@ import com.angcyo.library.ex.*
 import com.angcyo.library.model.WebConfig
 import com.angcyo.tbs.DslTbs
 import com.angcyo.tbs.R
-import com.angcyo.tbs.TbsImagePager
+import com.angcyo.tbs.handler.TbsImagePager
 import com.angcyo.tbs.core.inner.TbsWebView
+import com.angcyo.tbs.handler.TbsHandler
 import com.angcyo.web.core.BaseWebFragment
 import com.angcyo.web.core.DslBaseWebMenuItem
 import com.angcyo.widget.span.span
@@ -86,7 +87,7 @@ open class TbsWebFragment : BaseWebFragment() {
             }
 
             //注入图片预览回调
-            TbsImagePager.register(this@TbsWebFragment, this)
+            TbsHandler.inject(this@TbsWebFragment, this)
 
             //加载url
             if (data.isNullOrEmpty()) {

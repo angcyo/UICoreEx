@@ -1,11 +1,11 @@
-package com.angcyo.tbs
+package com.angcyo.tbs.handler
 
+import androidx.fragment.app.Fragment
 import com.angcyo.http.base.fromJson
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toUri
 import com.angcyo.library.model.LoaderMedia
 import com.angcyo.pager.dslPager
-import com.angcyo.tbs.core.TbsWebFragment
 import com.angcyo.tbs.core.inner.TbsWebView
 import kotlin.math.max
 import kotlin.math.min
@@ -24,18 +24,20 @@ object TbsImagePager {
     /**图片预览方法注入
      * js调用方式
      *
+     * ```
      * androidJs.showImagePager(
-     * {
-     *   "index": 0,
-     *   "images": [
-     *     "url1",
-     *     "url2"
-     *   ]
-     * }
+     *   {
+     *     "index": 0,
+     *     "images": [
+     *       "url1",
+     *       "url2"
+     *     ]
+     *   }
      * )
+     * ```
      *
      * */
-    fun register(fragment: TbsWebFragment, webView: TbsWebView) {
+    fun register(fragment: Fragment, webView: TbsWebView) {
         webView.registerHandler(PAGER_HANDLER_NAME) { data, function ->
             val bean = data?.fromJson<ImagePickerBean>()
             if (bean == null || bean.images.isNullOrEmpty()) {

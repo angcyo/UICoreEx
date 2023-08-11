@@ -2,6 +2,7 @@ package com.angcyo.tbs.core
 
 import android.os.Bundle
 import com.angcyo.base.dslAHelper
+import com.angcyo.library.annotation.Implementation
 import com.tencent.smtt.sdk.VideoActivity
 
 /**
@@ -10,6 +11,7 @@ import com.tencent.smtt.sdk.VideoActivity
  * @author angcyo
  * @date 2020/03/08
  */
+@Implementation
 class TbsVideoActivity : VideoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
