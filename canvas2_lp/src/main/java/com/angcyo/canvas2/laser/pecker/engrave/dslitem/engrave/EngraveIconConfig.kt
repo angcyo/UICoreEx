@@ -165,8 +165,8 @@ fun productNameData(des: CharSequence?) = LabelDesData(
 )
 
 /**机型-雕刻模块*/
-fun moduleData(type: Byte): LabelDesData {
-    val laserInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(type)
+fun moduleData(type: Byte, moduleState: Int?): LabelDesData {
+    val laserInfo = vmApp<DeviceStateModel>().getDeviceLaserModule(type, moduleState)
     val label = laserInfo?.toLabel() ?: "$type"
     return LabelDesData(
         span {

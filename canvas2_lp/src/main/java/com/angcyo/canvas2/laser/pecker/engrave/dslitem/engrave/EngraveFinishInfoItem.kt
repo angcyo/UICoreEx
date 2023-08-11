@@ -31,7 +31,7 @@ class EngraveFinishInfoItem : EngravingInfoItem() {
 
             engraveConfigEntity?.let {
                 //雕刻模块
-                add(moduleData(engraveConfigEntity.type))
+                add(moduleData(engraveConfigEntity.type, engraveConfigEntity.moduleState))
 
                 //材质 分辨率
                 add(materialData(EngraveFlowDataHelper.getEngraveMaterNameByKey(engraveConfigEntity.materialKey)))

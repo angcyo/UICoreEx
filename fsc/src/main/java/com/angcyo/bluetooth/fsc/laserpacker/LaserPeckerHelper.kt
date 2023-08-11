@@ -34,6 +34,7 @@ import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
+import com.angcyo.viewmodel.updateValue
 import com.pixplicity.sharp.Sharp
 import kotlin.math.max
 
@@ -811,6 +812,8 @@ object LaserPeckerHelper {
      * [address] 蓝牙设备的地址
      * [isAutoConnect] 是否是自动连接触发的初始化
      * [count] 重试的次数
+     *
+     * [com.angcyo.laserpacker.device.MaterialHelper.getProductMaterialList]
      * */
     fun sendInitCommand(
         name: String,
@@ -849,6 +852,12 @@ object LaserPeckerHelper {
                                 chain(InterruptedException())//被中断
                             } else {
                                 queryStateParser = it//保存数据, 但是不通知观察者
+
+                                //2023-8-11 单模块设备需要提前知道设备模块信息
+                                queryStateParser?.let {
+                                    deviceStateModel.deviceStateData.updateValue(queryStateParser)
+                                }
+
                                 chain(error)
                             }
                         }.elseNull {

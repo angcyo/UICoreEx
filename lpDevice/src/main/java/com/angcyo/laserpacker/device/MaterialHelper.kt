@@ -1,5 +1,6 @@
 package com.angcyo.laserpacker.device
 
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
@@ -11,6 +12,7 @@ import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.library.L
 import com.angcyo.library.app
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.unit.unitDecimal
@@ -127,12 +129,23 @@ object MaterialHelper {
         //val isCSeries = vmApp<LaserPeckerModel>().isCSeries()
 
         //系统的推荐参数
-        product.laserTypeList.forEach {
+        val laserList = if (product.isSingleModule()) {
+            //
+            val moduleState = vmApp<DeviceStateModel>().deviceStateData.value?.moduleState
+            product.laserTypeList.filter { it.moduleState == moduleState }
+        } else {
+            product.laserTypeList
+        }
+
+        laserList.forEach {
             val configName = it.getConfigFileName(name)
             val json = "argument/${configName}"
             L.w("读取材质:${json}")
-            val text =
+            val text = if (BuildConfig.BUILD_TYPE.isDebugType()) {
+                app().readAssets(json)
+            } else {
                 LaserPeckerConfigHelper.readMaterialConfig(configName) ?: app().readAssets(json)
+            }
             val list = text?.fromJson<List<MaterialEntity>>(listType(MaterialEntity::class))
             list?.let {
                 result.addAll(list)

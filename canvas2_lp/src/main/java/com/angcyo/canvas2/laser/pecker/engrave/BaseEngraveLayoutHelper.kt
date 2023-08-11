@@ -577,7 +577,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
             // 激光光源选择
             val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-            if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
+            if (laserPeckerModel.productInfoData.value?.isCSeries() != true && typeList.isNotEmpty()) {
                 EngraveLaserSegmentItem()() {
                     itemCurrentIndex =
                         typeList.indexOfFirst { it.type == elementItemBean?.printType?.toByte() }
@@ -805,7 +805,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
                 // 激光光源选择
                 val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
-                if (laserPeckerModel.productInfoData.value?.isCI() != true && typeList.isNotEmpty()) {
+                if (laserPeckerModel.productInfoData.value?.isCSeries() != true && typeList.isNotEmpty()) {
                     EngraveSegmentScrollItem()() {
                         itemText = _string(R.string.laser_type)
                         itemSegmentList = typeList

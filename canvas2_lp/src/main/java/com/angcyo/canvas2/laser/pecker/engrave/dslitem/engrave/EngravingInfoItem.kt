@@ -68,7 +68,7 @@ open class EngravingInfoItem : DslTagGroupItem() {
         renderLabelDesList {
             engraveConfigEntity?.let {
                 //雕刻模式
-                add(moduleData(engraveConfigEntity.type))
+                add(moduleData(engraveConfigEntity.type, engraveConfigEntity.moduleState))
 
                 if (!deviceStateModel.isPenMode(engraveConfigEntity.moduleState)) {
                     //材质:

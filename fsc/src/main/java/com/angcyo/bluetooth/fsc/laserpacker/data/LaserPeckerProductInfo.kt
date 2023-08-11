@@ -182,6 +182,9 @@ data class LaserPeckerProductInfo(
     fun isSupportS() = deviceConfigBean?.ex?.haveExStr(QuerySettingParser.EX_S) == true
     fun isSupportR() = deviceConfigBean?.ex?.haveExStr(QuerySettingParser.EX_R) == true
 
+    /**[com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean.isSingleModule]*/
+    fun isSingleModule() = deviceConfigBean?.isSingleModule == true
+
     /**获取指定图层的配置信息
      * [layerId] 图层id*/
     fun findLayerConfig(layerId: String): LayerConfigBean {

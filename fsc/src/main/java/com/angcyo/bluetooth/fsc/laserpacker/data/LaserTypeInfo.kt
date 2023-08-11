@@ -67,7 +67,8 @@ data class LaserTypeInfo(
         if (labelIdStr.isNullOrBlank()) {
             if (wave > 0) {
                 appendSpaceIfNotEmpty()
-                append("${wave}nm")
+                //append("${wave}nm")
+                append("$wave")
             }
 
             if (power > 0) {

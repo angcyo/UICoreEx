@@ -68,6 +68,11 @@ data class DeviceConfigBean(
     /**未指定配置dpi时. 默认的dpi分辨率列表*/
     var dpiList: List<PxInfo>? = null,
 
+    /**2023-8-11
+     * 是否是单模块设备, 单模块设备, 不需要切换模块, 无光源切换, 且材质推荐只有对应模块的残值
+     * */
+    var isSingleModule: Boolean = false,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]
