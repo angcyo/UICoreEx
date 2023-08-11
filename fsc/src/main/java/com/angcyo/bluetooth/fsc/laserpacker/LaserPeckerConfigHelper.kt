@@ -23,15 +23,21 @@ import com.angcyo.library.utils.writeTo
 object LaserPeckerConfigHelper {
 
     const val DEVICE_CONFIG_FILE_NAME = "lp_device_config.json"
+    const val DEVICE_CONFIG_FILE_NAME_DEBUG = "lp_device_config_debug.json"
     const val DEVICE_SETTING_CONFIG_FILE_NAME = "lp_setting_config.json"
+    const val DEVICE_SETTING_CONFIG_FILE_NAME_DEBUG = "lp_setting_config_debug.json"
 
     /**[DEVICE_CONFIG_FILE_NAME]配置地址*/
     const val DEVICE_CONFIG_URL =
         "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_CONFIG_FILE_NAME}"
+    const val DEVICE_CONFIG_URL_DEBUG =
+        "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_CONFIG_FILE_NAME_DEBUG}"
 
     /**[DEVICE_SETTING_CONFIG_FILE_NAME]配置地址*/
     const val DEVICE_SETTING_CONFIG_URL =
         "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_SETTING_CONFIG_FILE_NAME}"
+    const val DEVICE_SETTING_CONFIG_URL_DEBUG =
+        "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/${DEVICE_SETTING_CONFIG_FILE_NAME_DEBUG}"
 
     /**材质*/
     const val DEVICE_MATERIAL_BASE_URL =
@@ -40,30 +46,33 @@ object LaserPeckerConfigHelper {
     /**入口*/
     @CallPoint
     fun init() {
-        fetchDeviceConfig()
-        fetchDeviceSettingConfig()
+        fetchDeviceConfig(DEVICE_CONFIG_URL, DEVICE_CONFIG_FILE_NAME)
+        fetchDeviceConfig(DEVICE_CONFIG_URL_DEBUG, DEVICE_CONFIG_FILE_NAME_DEBUG)
+        fetchDeviceSettingConfig(DEVICE_SETTING_CONFIG_URL, DEVICE_SETTING_CONFIG_FILE_NAME)
+        fetchDeviceSettingConfig(
+            DEVICE_SETTING_CONFIG_URL_DEBUG,
+            DEVICE_SETTING_CONFIG_FILE_NAME_DEBUG
+        )
     }
 
     //region---拉取配置---
 
     /**从网络中获取[DEVICE_CONFIG_FILE_NAME]配置, 并且存储到本地*/
-    fun fetchDeviceConfig() {
-        Gitee.getString(DEVICE_CONFIG_URL) { data, error ->
+    fun fetchDeviceConfig(url: String, name: String) {
+        Gitee.getString(url) { data, error ->
             data?.let {
                 //写入到本地缓存
-                _deviceConfigList = null
-                it.writeTo(libCacheFile(DEVICE_CONFIG_FILE_NAME), false)
+                it.writeTo(libCacheFile(name), false)
             }
         }
     }
 
     /**从网络中获取[DEVICE_SETTING_CONFIG_FILE_NAME]配置, 并且存储到本地*/
-    fun fetchDeviceSettingConfig() {
-        Gitee.getString(DEVICE_SETTING_CONFIG_URL) { data, error ->
+    fun fetchDeviceSettingConfig(url: String, name: String) {
+        Gitee.getString(url) { data, error ->
             data?.let {
                 //写入到本地缓存
-                _deviceSettingBean = null
-                it.writeTo(libCacheFile(DEVICE_SETTING_CONFIG_FILE_NAME), false)
+                it.writeTo(libCacheFile(name), false)
                 readDeviceSettingConfig()?.let {
                     if (!it.updateHawkCommand.isNullOrBlank()) {
                         Debug.parseHawkKeys(it.updateHawkCommand?.split(HAWK_SPLIT_CHAR))
@@ -75,7 +84,8 @@ object LaserPeckerConfigHelper {
 
     /**从网络上拉取材质配置, 并保存到本地*/
     fun fetchMaterialConfig(configName: String, action: ResultThrowable? = null) {
-        Gitee.getString("${DEVICE_MATERIAL_BASE_URL}$configName") { data, error ->
+        val api = "${DEVICE_MATERIAL_BASE_URL}$configName"
+        Gitee.getString(api) { data, error ->
             data?.let {
                 //写入到本地缓存
                 it.writeTo(libCacheFile(configName), false)
@@ -92,41 +102,57 @@ object LaserPeckerConfigHelper {
 
     //region---读取配置---
 
-    private var _deviceConfigList: List<DeviceConfigBean>? = null
-
     /**从本地缓存中读取[DEVICE_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
-    fun readDeviceConfig(): List<DeviceConfigBean>? {
-        if (HawkEngraveKeys.closeOnlineConfig) {
-            val json = lastContext.readAssets(DEVICE_CONFIG_FILE_NAME)
-            return json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class))
+    fun readDeviceConfig(debugConfig: Boolean = HawkEngraveKeys.useDebugConfig): List<DeviceConfigBean>? {
+        val name = if (debugConfig) {
+            DEVICE_CONFIG_FILE_NAME_DEBUG
+        } else {
+            DEVICE_CONFIG_FILE_NAME
         }
-        if (_deviceConfigList != null) {
-            return _deviceConfigList
+
+        val result: List<DeviceConfigBean>? = if (HawkEngraveKeys.closeOnlineConfig) {
+            val json = lastContext.readAssets(name)
+            json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class))
+        } else {
+            val json = libCacheFile(name).readText() ?: lastContext.readAssets(name)
+            json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class))
         }
-        val json = libCacheFile(DEVICE_CONFIG_FILE_NAME).readText()
-            ?: lastContext.readAssets(DEVICE_CONFIG_FILE_NAME) ?: return null
-        val configList =
-            json.fromJson<List<DeviceConfigBean>>(listType(DeviceConfigBean::class)) ?: return null
-        _deviceConfigList = configList
-        return configList
+
+        if (result.isNullOrEmpty()) {
+            if (debugConfig) {
+                //自动使用正式配置
+                return readDeviceConfig(false)
+            }
+        }
+
+        return result
     }
 
-    private var _deviceSettingBean: DeviceSettingBean? = null
-
     /**从本地缓存中读取[DEVICE_SETTING_CONFIG_FILE_NAME]配置, 缓存没有, 则从[assets]中读取*/
-    fun readDeviceSettingConfig(): DeviceSettingBean? {
-        if (HawkEngraveKeys.closeOnlineConfig) {
-            val json = lastContext.readAssets(DEVICE_SETTING_CONFIG_FILE_NAME)
-            return json.fromJson<DeviceSettingBean>()
+    fun readDeviceSettingConfig(debugConfig: Boolean = HawkEngraveKeys.useDebugConfig): DeviceSettingBean? {
+        val name = if (debugConfig) {
+            DEVICE_SETTING_CONFIG_FILE_NAME_DEBUG
+        } else {
+            DEVICE_SETTING_CONFIG_FILE_NAME
         }
-        if (_deviceSettingBean != null) {
-            return _deviceSettingBean
+
+        val result: DeviceSettingBean? = if (HawkEngraveKeys.closeOnlineConfig) {
+            val json = lastContext.readAssets(name)
+            json.fromJson<DeviceSettingBean>()
+        } else {
+            val json = libCacheFile(name).readText() ?: lastContext.readAssets(name)
+            json.fromJson<DeviceSettingBean>()
         }
-        val json = libCacheFile(DEVICE_SETTING_CONFIG_FILE_NAME).readText()
-            ?: lastContext.readAssets(DEVICE_SETTING_CONFIG_FILE_NAME) ?: return null
-        val settingBean = json.fromJson<DeviceSettingBean>() ?: return null
-        _deviceSettingBean = settingBean
-        return settingBean
+
+        if (result == null) {
+            if (debugConfig) {
+                //自动使用正式配置
+                return readDeviceSettingConfig(false)
+            }
+        }
+
+        return result
+
     }
 
     /**是否有新功能提示*/

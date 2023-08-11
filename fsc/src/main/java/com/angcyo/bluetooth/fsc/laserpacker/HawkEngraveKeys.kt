@@ -376,4 +376,7 @@ object HawkEngraveKeys {
 
     /**灰度数据处理时, 需要使用的颜色通道*/
     var grayChannelType: Int by HawkPropertyValue<Any, Int>(Color.GRAY)
+
+    /**是否使用调试的配置信息*/
+    var useDebugConfig: Boolean by HawkPropertyValue<Any, Boolean>(false)
 }
