@@ -76,7 +76,13 @@ const androidJsBridge = {
             if (typeof bridge === "undefined") {
                 return
             }
+            //直接调用
             bridge.callHandler(methodName, JSON.stringify(data))
+            
+            //回传结果
+            bridge.callHandler(methodName, JSON.stringify(data), function(res){
+                console.log("回传结果：" + res.responseData)
+            })
         })
     }
 }
