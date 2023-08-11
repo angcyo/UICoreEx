@@ -80,8 +80,7 @@ object BridgeUtil {
     }
 
     fun webViewLoadLocalJs(view: WebView, path: String?) {
-        val jsContent =
-            assetFile2Str(view.context, path)
+        val jsContent = assetFile2Str(view.context, path)
         view.loadUrl("javascript:$jsContent")
     }
 

@@ -2,6 +2,7 @@ package com.angcyo.tbs.handler
 
 import androidx.fragment.app.Fragment
 import com.angcyo.base.back
+import com.angcyo.base.dslAHelper
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.library.L
 import com.angcyo.library._statusBarHeight
@@ -9,6 +10,7 @@ import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
 import com.angcyo.tbs.core.inner.TbsWebView
+import com.angcyo.tbs.openSingle
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -45,6 +47,12 @@ class CoreInject : IWebInject {
         }
         webView.registerHandler("finish") { data, function ->
             fragment.activity?.finish()
+            function?.onCallBack("true")
+        }
+        webView.registerHandler("open") { data, function ->
+            fragment.dslAHelper {
+                openSingle(data)
+            }
             function?.onCallBack("true")
         }
     }

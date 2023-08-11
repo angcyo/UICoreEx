@@ -24,8 +24,6 @@ import com.tencent.smtt.sdk.TbsLogReport
 import com.tencent.smtt.sdk.TbsReaderView
 import com.tencent.smtt.sdk.TbsVideo
 import com.tencent.smtt.sdk.WebView
-import org.json.JSONException
-import org.json.JSONObject
 
 
 /**
@@ -64,7 +62,7 @@ class DslTbs {
                 QbSdk.initTbsSettings(map)
 
                 QbSdk.initBuglyAsync(true)
-                QbSdk.setDownloadWithoutWifi(true)
+                QbSdk.setDownloadWithoutWifi(true)//允许移动网络下载内核（大小 40-50 MB）
                 QbSdk.setNeedInitX5FirstTime(true)
                 //QbSdk.setTbsLogClient()
 
@@ -142,8 +140,10 @@ class DslTbs {
             return WebView.getCrashExtraMessage(context.applicationContext)
         }
 
-        /**弹出打开文件的Intent选择对话框(包含广告 QQ浏览器)*/
-        fun openFileReader(
+        /**弹出打开文件的Intent选择对话框(包含广告 QQ浏览器)
+         * 新版tbs移除了文件处理能力
+         * */
+        /*fun openFileReader(
             context: Context,
             pathName: String?,
             callback: (String?) -> Unit = {}
@@ -162,7 +162,7 @@ class DslTbs {
             return QbSdk.openFileReader(
                 context, pathName, params
             ) { value -> callback.invoke(value) }
-        }
+        }*/
 
         /**是否支持打开文件QB, 多数为视频格式*/
         fun canOpenFileQb(

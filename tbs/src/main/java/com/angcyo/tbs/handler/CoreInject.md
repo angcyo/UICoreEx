@@ -57,3 +57,11 @@ androidJs.back()
 ```js
 androidJs.finish()
 ```
+
+## open
+
+打开一个新的页面
+
+```js
+androidJs.open('http://www.angcyo.com')
+```

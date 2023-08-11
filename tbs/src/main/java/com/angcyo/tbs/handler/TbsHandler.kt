@@ -22,6 +22,7 @@ object TbsHandler {
     /**注入入口
      *
      * [com.hjhrq1991.library.tbs.BridgeConfig.customJs]
+     * [com.hjhrq1991.library.tbs.BridgeUtil.webViewLoadLocalJs]
      * */
     @CallPoint
     fun inject(fragment: Fragment, webView: TbsWebView) {

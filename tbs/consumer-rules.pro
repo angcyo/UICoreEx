@@ -11,6 +11,10 @@
     *;
 }
 
+-dontwarn com.tencent.tbs.reader.**
+-keep class com.tencent.tbs.reader.** {
+    *;
+}
 
 # --------------
 
