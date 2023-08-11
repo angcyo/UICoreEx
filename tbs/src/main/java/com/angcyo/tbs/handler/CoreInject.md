@@ -65,3 +65,22 @@ androidJs.finish()
 ```js
 androidJs.open('http://www.angcyo.com')
 ```
+
+## getValue
+
+获取一个`key`对应的`value`
+
+```js
+androidJs.getValue('key') //String
+```
+
+## setValue
+
+设置一个`key`对应的`value`
+
+```js
+androidJs.setValue({
+  key: xxx,
+  value: xxx
+}) //Json String
+```

@@ -4,8 +4,12 @@ import androidx.fragment.app.Fragment
 import com.angcyo.base.back
 import com.angcyo.base.dslAHelper
 import com.angcyo.core.component.file.writeToLog
+import com.angcyo.http.base.getString
+import com.angcyo.http.base.toJsonElement
 import com.angcyo.library.L
 import com.angcyo.library._statusBarHeight
+import com.angcyo.library.ex.hawkGetString
+import com.angcyo.library.ex.hawkPut
 import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
@@ -27,6 +31,15 @@ class CoreInject : IWebInject {
         webView.registerHandler("log") { data, function ->
             data?.writeToLog(logLevel = L.DEBUG)
             function?.onCallBack("true")
+        }
+        webView.registerHandler("getValue") { data, function ->
+            function?.onCallBack(data?.hawkGetString())
+        }
+        webView.registerHandler("setValue") { data, function ->
+            val json = data?.toJsonElement()
+            val key = json?.getString("key")
+            val value = json?.getString("value")
+            function?.onCallBack("${key?.hawkPut(value) ?: false}")
         }
 
         //
