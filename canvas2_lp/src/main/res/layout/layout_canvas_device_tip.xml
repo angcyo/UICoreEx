@@ -30,8 +30,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/device_setting_view"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/lib_min_item_height"
+        android:layout_height="@dimen/lib_min_item_height"
         android:background="@drawable/lib_bg2_selector"
         android:padding="@dimen/lib_sdpi"
         app:layout_constraintBottom_toBottomOf="parent"
