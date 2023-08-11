@@ -73,6 +73,11 @@ data class DeviceConfigBean(
      * */
     var isSingleModule: Boolean = false,
 
+    /**
+     * [com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys.enablePreviewDebounce]
+     * */
+    var enablePreviewDebounce: Boolean = false,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]

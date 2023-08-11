@@ -55,8 +55,9 @@ object LPPreviewHelper {
             //未附着
         }
         //flowLayoutHelper.startPreview(renderFragment)
-
-        if (HawkEngraveKeys.enablePreviewDebounce) {
+        val enablePreviewDebounce =
+            vmApp<LaserPeckerModel>().productInfoData.value?.deviceConfigBean?.enablePreviewDebounce == true
+        if (HawkEngraveKeys.enablePreviewDebounce && enablePreviewDebounce) {
             updatePreview(rendererList, sendCmd = false)
             _debounce {
                 updatePreview(rendererList)
