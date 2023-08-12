@@ -59,8 +59,19 @@ data class DeviceSettingBean(
     var closeImageEditItemsFun: String? = null,
     /**需要关闭的文本功能*/
     var closeTextEditItemsFun: String? = null,
-    /**需要激活的功能项*/
+    /**需要激活的功能项,
+     * ```
+     * _MultiplicationTable__PixelUnit_
+     * ```
+     * */
     var enableFun: String? = null,
+    /**
+     * 需要开放的功能项,
+     * ```
+     * xxx,xxx,xxx,
+     * ```
+     * */
+    var openFun: String? = null,
     /**[com.angcyo.laserpacker.device.HawkEngraveKeys.maxEngraveItemCountLimit]*/
     var maxEngraveItemCount: Int? = null,
     /**用来更新Hawk的值, 指令.

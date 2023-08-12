@@ -7,6 +7,9 @@ import com.angcyo.core.component.file.writeToLog
 import com.angcyo.http.base.getString
 import com.angcyo.http.base.toJsonElement
 import com.angcyo.library.L
+import com.angcyo.library._navBarHeight
+import com.angcyo.library._screenHeight
+import com.angcyo.library._screenWidth
 import com.angcyo.library._statusBarHeight
 import com.angcyo.library.ex.hawkGetString
 import com.angcyo.library.ex.hawkPut
@@ -51,6 +54,15 @@ class CoreInject : IWebInject {
         }
         webView.registerHandler("getStatusBarHeight") { data, function ->
             function?.onCallBack("$_statusBarHeight")
+        }
+        webView.registerHandler("getNavBarHeight") { data, function ->
+            function?.onCallBack("$_navBarHeight")
+        }
+        webView.registerHandler("getScreenWidth") { data, function ->
+            function?.onCallBack("$_screenWidth")
+        }
+        webView.registerHandler("getScreenHeight") { data, function ->
+            function?.onCallBack("$_screenHeight")
         }
 
         //

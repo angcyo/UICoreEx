@@ -159,6 +159,19 @@ object LaserPeckerConfigHelper {
     fun haveNew(key: String?): Boolean = key != null &&
             readDeviceSettingConfig()?.newHawkKeyStr?.contains(key) == true
 
+    /**是否要开放指定的功能, 会自动拼上,号`.`防止子包含*/
+    fun isOpenFun(key: String?): Boolean {
+        if (key.isNullOrEmpty()) {
+            return false
+        }
+        val openFun = readDeviceSettingConfig()?.openFun ?: return false
+        if (openFun.isBlank()) {
+            //空字符串, 表示开放所有功能
+            return true
+        }
+        return openFun.contains("${key},")
+    }
+
     //endregion---读取配置---
 
 }

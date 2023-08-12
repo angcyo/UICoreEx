@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="experimental_func_des">Experimental features may be unstable, so if something goes wrong, turn off the corresponding feature</string>
+    <string name="transfer_index_check_label">Activate index checking when transferring data</string>
+    <string name="transfer_index_check_des">Once activated, the data is not retransmitted if it already exists on the device.</string>
+    <string name="gcode_transform_label">Activate GCode full data conversion</string>
+    <string name="gcode_transform_des">Once activated, GCode data will be regenerated instead of being modified on the original GCode data.</string>
+    <string name="vector_arc_label">Activate GCode G2/G3 command output</string>
+    <string name="vector_arc_des">When activated, when the vector graphics to GCode algorithm is converted, G2/G3 instructions will be output, otherwise only G0/G1 instructions will be used.</string>
+    <string name="item_top_order_label">Activate elements to be sculpted sequentially from top to bottom</string>
+    <string name="item_top_order_des">When activated, the elements are engraved in order from top to bottom according to the coordinates, otherwise they are engraved in the prescribed layer order.</string>
+    <string name="render_engrave_info_label">Information rendering when sculpting is activated</string>
+    <string name="render_engrave_info_des">When activated, the engraving number, progress, and corresponding border of the corresponding element will be rendered during engraving.</string>
+    <string name="item_engrave_params_label">Activate the Single Element Engraving parameter</string>
+    <string name="item_engrave_params_des">Once activated, engraving parameters can be set individually for each element.</string>
+    <string name="single_item_transfer_label">Activate single-element transfer engraving</string>
+    <string name="single_item_transfer_des">After activation, element by element is transmitted and engraved.</string>
+</resources>

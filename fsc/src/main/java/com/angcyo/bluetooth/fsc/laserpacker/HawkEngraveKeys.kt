@@ -187,7 +187,7 @@ object HawkEngraveKeys {
     var enableRasterize: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**是否激活路径填充功能*/
-    var enablePathFill: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
+    var enablePathFill: Boolean by HawkPropertyValue<Any, Boolean>(true)
 
     /**是否像素单位*/
     var enablePixelUnit: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
@@ -218,6 +218,9 @@ object HawkEngraveKeys {
 
     /**是否激活云端存储功能*/
     var enableCloudStorage: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**是否激活wifi实验性功能配置*/
+    var enableWifiFunConfig: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 
     //
 

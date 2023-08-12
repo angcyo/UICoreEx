@@ -548,7 +548,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                     config?.showExperimentalRange,
                     false,
                     true
-                )
+                ) || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableExperimental.name)
             ) {
                 DslTextInfoItem()() {
                     itemInfoText = _string(R.string.engrave_experimental)

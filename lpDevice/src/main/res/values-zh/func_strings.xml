@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="experimental_func_des">实验性的功能可能不稳定,如果出现问题,请主动关闭对应的功能</string>
+    <string name="transfer_index_check_label">激活传输数据时的索引检查</string>
+    <string name="transfer_index_check_des">激活后,如果设备上已存在数据,则不重新传输.</string>
+    <string name="gcode_transform_label">激活GCode数据全转换</string>
+    <string name="gcode_transform_des">激活后,将会重新生成GCode数据,而不是在原始GCode数据上修改.</string>
+    <string name="vector_arc_label">激活GCode G2/G3指令输出</string>
+    <string name="vector_arc_des">激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令.</string>
+    <string name="item_top_order_label">激活元素从上往下顺序雕刻</string>
+    <string name="item_top_order_des">激活后,元素的雕刻顺序按照坐标从上往下,否则按照规定的图层顺序雕刻.</string>
+    <string name="render_engrave_info_label">激活雕刻时的信息渲染</string>
+    <string name="render_engrave_info_des">激活后,将在雕刻时渲染对应元素的雕刻序号,进度,以及对应边框.</string>
+    <string name="item_engrave_params_label">激活单元素雕刻参数</string>
+    <string name="item_engrave_params_des">激活后,每个元素都可以单独设置雕刻参数.</string>
+    <string name="single_item_transfer_label">激活单元素传输雕刻</string>
+    <string name="single_item_transfer_des">激活后,一个元素一个元素传输并雕刻.</string>
+</resources>

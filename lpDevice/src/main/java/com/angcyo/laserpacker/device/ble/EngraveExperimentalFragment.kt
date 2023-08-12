@@ -1,16 +1,23 @@
 package com.angcyo.laserpacker.device.ble
 
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
+import com.angcyo.drawable.base.dslGradientDrawable
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.dslitem.DebugWifiConfigItem
+import com.angcyo.laserpacker.device.ble.dslitem.ExperimentalTopItem
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.hawk.LibLpHawkKeys
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.isDebug
+import com.angcyo.library.ex.toColor
 
 /**
  * 实验性功能
@@ -31,77 +38,106 @@ class EngraveExperimentalFragment : DebugFragment() {
     }
 
     override fun onInitFragment(savedInstanceState: Bundle?) {
-        fragmentConfig.fragmentBackgroundDrawable = ColorDrawable(_color(R.color.lib_theme_white_color))
+        fragmentConfig.fragmentBackgroundDrawable =
+            ColorDrawable(_color(R.color.lib_theme_white_color))
         super.onInitFragment(savedInstanceState)
+        rootControl().view(R.id.lib_content_wrap_layout)?.background = dslGradientDrawable {
+            gradientColors = intArrayOf(
+                "#2d8dfb".toColor(),
+                "#8ae7f6".toColor(),
+                "#208ae7f6".toColor(),
+                Color.WHITE,
+                Color.WHITE,
+                Color.WHITE,
+            )
+            gradientOrientation = GradientDrawable.Orientation.TOP_BOTTOM
+        }
     }
 
     override fun renderActions() {
         renderDslAdapter {
+            ExperimentalTopItem()()
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活传输数据时的索引检查"
-                des = "激活后,如果设备上已存在数据,则不重新传输."
-                key = HawkEngraveKeys::enableTransferIndexCheck.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableTransferIndexCheck
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableTransferIndexCheck.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.transfer_index_check_label)
+                    des = _string(R.string.transfer_index_check_des)
+                    key = HawkEngraveKeys::enableTransferIndexCheck.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableTransferIndexCheck
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活第三方GCode数据全转换"
-                des = "激活后,将会重新生成第三方GCode数据,而不是在原始数据基础上修改."
-                key = HawkEngraveKeys::enableGCodeTransform.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableGCodeTransform
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableGCodeTransform.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.gcode_transform_label)
+                    des = _string(R.string.gcode_transform_des)
+                    key = HawkEngraveKeys::enableGCodeTransform.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableGCodeTransform
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活GCode G2/G3指令输出"
-                des = "激活后,矢量图形转GCode算法时,将输出G2/G3指令,否则仅使用G0/G1指令."
-                key = LibLpHawkKeys::enableVectorArc.name
-                type = Boolean::class.java
-                defValue = LibLpHawkKeys.enableVectorArc
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(LibLpHawkKeys::enableVectorArc.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.vector_arc_label)
+                    des = _string(R.string.vector_arc_des)
+                    key = LibLpHawkKeys::enableVectorArc.name
+                    type = Boolean::class.java
+                    defValue = LibLpHawkKeys.enableVectorArc
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活从上往下雕刻"
-                des = "激活后,元素的雕刻顺序按照坐标从上往下,否则按照规定的图层顺序雕刻."
-                key = HawkEngraveKeys::enableItemTopOrder.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableItemTopOrder
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableItemTopOrder.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.item_top_order_label)
+                    des = _string(R.string.item_top_order_des)
+                    key = HawkEngraveKeys::enableItemTopOrder.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableItemTopOrder
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活雕刻时的信息渲染"
-                des = "激活后,将在雕刻时渲染对应元素的雕刻序号,进度,以及对应边框."
-                key = HawkEngraveKeys::enableRenderEngraveInfo.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableRenderEngraveInfo
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableRenderEngraveInfo.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.render_engrave_info_label)
+                    des = _string(R.string.render_engrave_info_des)
+                    key = HawkEngraveKeys::enableRenderEngraveInfo.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableRenderEngraveInfo
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活单元素雕刻参数"
-                des = "激活后,每个元素都可以单独设置雕刻参数."
-                key = HawkEngraveKeys::enableItemEngraveParams.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableItemEngraveParams
-            })
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableItemEngraveParams.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.item_engrave_params_label)
+                    des = _string(R.string.item_engrave_params_des)
+                    key = HawkEngraveKeys::enableItemEngraveParams.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableItemEngraveParams
+                })
+            }
 
-            renderDebugAction(DebugAction().apply {
-                label = "激活单元素传输雕刻"
-                des = "激活后,一个元素一个元素传输和雕刻."
-                key = HawkEngraveKeys::enableSingleItemTransfer.name
-                type = Boolean::class.java
-                defValue = HawkEngraveKeys.enableSingleItemTransfer
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableSingleItemTransfer.name)) {
+                renderDebugAction(DebugAction().apply {
+                    label = _string(R.string.single_item_transfer_label)
+                    des = _string(R.string.single_item_transfer_des)
+                    key = HawkEngraveKeys::enableSingleItemTransfer.name
+                    type = Boolean::class.java
+                    defValue = HawkEngraveKeys.enableSingleItemTransfer
 
-                action = { _, value ->
-                    if (value is Boolean) {
-                        LibHawkKeys.enableCanvasRenderLimit = !value
+                    action = { _, value ->
+                        if (value is Boolean) {
+                            LibHawkKeys.enableCanvasRenderLimit = !value
+                        }
                     }
-                }
-            })
+                })
+            }
 
-            DebugWifiConfigItem()() {
-                initItem()
+            if (isDebug() || LaserPeckerConfigHelper.isOpenFun(HawkEngraveKeys::enableWifiFunConfig.name)) {
+                DebugWifiConfigItem()() {
+                    initItem()
+                }
             }
         }
     }

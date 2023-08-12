@@ -36,10 +36,34 @@ androidJs.getAppVersionCode() //5339
 
 ## getStatusBarHeight
 
-获取状态栏的高度`Int`
+获取状态栏的高度`Int`px
 
 ```js
-androidJs.getStatusBarHeight() //48
+androidJs.getStatusBarHeight() //48px
+```
+
+## getNavBarHeight
+
+获取导航栏的高度`Int`px
+
+```js
+androidJs.getNavBarHeight() //48px
+```
+
+## getScreenWidth
+
+获取屏幕的宽度`Int`px
+
+```js
+androidJs.getScreenWidth() //1080px
+```
+
+## getScreenHeight
+
+获取屏幕的高度`Int`px
+
+```js
+androidJs.getScreenHeight() //1920px
 ```
 
 ## back
