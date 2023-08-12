@@ -4,18 +4,20 @@ import android.view.MotionEvent
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.gitee.Gitee
+import com.angcyo.library.Library
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component._removeMainRunnable
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.onMainOnce
-import com.angcyo.library.ex.have
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.utils.Device
 import com.angcyo.quickjs.api.Api
 import com.angcyo.quickjs.ui.scriptRunTipDialog
 import com.quickjs.QuickJS
+import kotlin.math.absoluteValue
 
 
 /**
@@ -142,7 +144,7 @@ object QuickJSEngine {
     //---
 
     private val scriptRunTipDialogRunnable: Runnable = Runnable {
-        if (lastContext.packageName.have("com.angcyo.*.demo")) {
+        if (!Library.isLaserPeckerApp()) {
             lastContext.scriptRunTipDialog()
         }
         requestScript()
@@ -162,7 +164,8 @@ object QuickJSEngine {
             val dx = ev.x - _lastTouchX
             val dy = ev.y - _lastTouchY
 
-            if (dx > 10 || dy > 10) {
+            val threshold = 10 * dpi
+            if (dx.absoluteValue > threshold || dy.absoluteValue > threshold) {
                 _removeMainRunnable(scriptRunTipDialogRunnable)
             }
         } else if (actionMasked == MotionEvent.ACTION_UP || actionMasked == MotionEvent.ACTION_CANCEL) {
