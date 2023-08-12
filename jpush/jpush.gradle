@@ -11,9 +11,15 @@ childProjects.each {
     def isLib = projectObj.plugins.hasPlugin(library)
 
     if (isApp) {
-        def applicationPlugin = projectObj.plugins.findPlugin(application)
         //自动获取 主工程的 sdk配置信息
-        applicationId = applicationPlugin.extension.defaultConfig.applicationId
+        def defaultConfig
+        if (gradle.gradleVersion.charAt(0) >= '8') {
+            defaultConfig = projectObj.android.defaultConfig
+        } else {
+            def applicationPlugin = projectObj.plugins.findPlugin(application)
+            defaultConfig = applicationPlugin.extension.defaultConfig
+        }
+        applicationId = defaultConfig.applicationId
     }
 }
 

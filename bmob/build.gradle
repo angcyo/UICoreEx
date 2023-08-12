@@ -3,6 +3,8 @@ apply from: allGradle.libBase
 android {
     //useLibrary 'org.apache.http.legacy'
     //implementation 'org.apache.httpcomponents:httpclient:4.5.11'
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.bmob'
 }
 
 dependencies {

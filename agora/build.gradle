@@ -7,6 +7,8 @@ android {
         //声网SDK要求
         minSdkVersion 16
     }
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.agora'
 }
 
 dependencies {

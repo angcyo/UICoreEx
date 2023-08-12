@@ -25,6 +25,11 @@ apply from: allGradle.libBase
 //SecretId: AKIDWVomMV0edaGbFT5dSowGvGpmjC49pBCb
 //SecretKey: 0WbCzyN1ICYiFkSZ9Kv890GY1BPqUbsV
 
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.speech'
+}
+
 dependencies {
     //依赖aar
     //implementation(name: 'libqcloudtts_1.3.1_release', ext: 'aar')

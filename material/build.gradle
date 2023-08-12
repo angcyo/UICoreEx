@@ -1,10 +1,13 @@
 apply from: allGradle.libBase
-
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.material'
+}
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.dslitem)
 
     //https://github.com/material-components/material-components-android
     //https://mvnrepository.com/artifact/com.google.android.material/material
-    api 'com.google.android.material:material:1.6.1'
+    api 'com.google.android.material:material:1.9.0'
 }

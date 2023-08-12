@@ -2,7 +2,10 @@ ext {
     M_SDK_LIB = 18
 }
 apply from: allGradle.libBase
-
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.bluetooth.fsc'
+}
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.core)

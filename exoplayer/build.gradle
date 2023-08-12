@@ -1,6 +1,9 @@
 apply from: allGradle.libBase
 apply plugin: 'org.jetbrains.kotlin.android'
-
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.exoplayer'
+}
 dependencies {
     implementation project(allModule.library)
     implementation project(allModule.fragment)
