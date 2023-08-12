@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.AttributeSet
+import android.view.ContextMenu
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.NestedScrollingChild3
@@ -847,4 +848,43 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     }
 
     //</editor-fold desc="WebViewCallbackClient">
+
+    //<editor-fold desc="menu">
+
+    override fun showContextMenu(): Boolean {
+        return super.showContextMenu()
+    }
+
+    override fun showContextMenu(x: Float, y: Float): Boolean {
+        return super.showContextMenu(x, y)
+    }
+
+    override fun setOnCreateContextMenuListener(l: OnCreateContextMenuListener?) {
+        super.setOnCreateContextMenuListener(l)
+    }
+
+    override fun showContextMenuForChild(originalView: View?, x: Float, y: Float): Boolean {
+        return super.showContextMenuForChild(originalView, x, y)
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?) {
+        super.onCreateContextMenu(menu)
+    }
+
+    /**1*/
+    override fun showContextMenuForChild(originalView: View?): Boolean {
+        return super.showContextMenuForChild(originalView)
+    }
+
+    /**2*/
+    override fun createContextMenu(menu: ContextMenu?) {
+        super.createContextMenu(menu)
+    }
+
+    /**3*/
+    override fun getContextMenuInfo(): ContextMenu.ContextMenuInfo {
+        return super.getContextMenuInfo()
+    }
+
+    //</editor-fold desc="menu">
 }
