@@ -4,6 +4,7 @@ import android.graphics.RectF
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_CONTINUE
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_PAUSE
 import com.angcyo.engrave2.data.PreviewInfo.Companion.Z_STATE_SCROLL
+import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.Pixel
 
 /**
@@ -12,6 +13,7 @@ import com.angcyo.library.annotation.Pixel
  * @since 2022/09/24
  */
 data class PreviewInfo(
+
     /**未旋转时的矩形*/
     @Pixel
     var originBounds: RectF? = null,
@@ -42,7 +44,16 @@ data class PreviewInfo(
      * [com.angcyo.engrave.dslitem.preview.PreviewControlItem]
      * [com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.PreviewControlItem]
      * */
-    var rendererUuid: String? = null
+    var rendererUuid: String? = null,
+
+    //---
+
+    /**预览时, 单元素的图层id, 用来实现GCode数据偏移预览
+     * [com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem.offsetTop]
+     * [com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem.offsetLeft]
+     * */
+    @Implementation
+    var elementLayerId: String? = null
 ) {
     companion object {
         /**第三轴状态:暂停滚动*/
