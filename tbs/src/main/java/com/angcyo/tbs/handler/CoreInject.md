@@ -88,6 +88,11 @@ androidJs.finish()
 
 ```js
 androidJs.open('http://www.angcyo.com')
+
+androidJs.open({
+    target: '_self', //打开方式, _self:在当前窗口打开 _blank:在新窗口中打开被链接文档。
+    url: 'http://www.angcyo.com'
+}) //JsonString
 ```
 
 ## getValue

@@ -17,6 +17,7 @@ import com.angcyo.library.getAppVersionCode
 import com.angcyo.library.getAppVersionName
 import com.angcyo.library.toastQQ
 import com.angcyo.tbs.core.inner.TbsWebView
+import com.angcyo.tbs.open
 import com.angcyo.tbs.openSingle
 
 /**
@@ -75,10 +76,24 @@ class CoreInject : IWebInject {
             function?.onCallBack("true")
         }
         webView.registerHandler("open") { data, function ->
-            fragment.dslAHelper {
-                openSingle(data)
+            if (data.isNullOrBlank()) {
+                function?.onCallBack("false")
+            } else {
+                val json = data.toJsonElement()
+                val target = json?.getString("target") ?: "_self"
+                val url = json?.getString("url") ?: data
+                fragment.dslAHelper {
+                    if (target == "_blank") {
+                        open(url) {
+                            showRightMenu = false
+                            enableTitleBarHideBehavior = false
+                        }
+                    } else {
+                        openSingle(url)
+                    }
+                }
+                function?.onCallBack("true")
             }
-            function?.onCallBack("true")
         }
     }
 }

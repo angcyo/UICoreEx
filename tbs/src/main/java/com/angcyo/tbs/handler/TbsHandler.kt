@@ -3,6 +3,7 @@ package com.angcyo.tbs.handler
 import androidx.fragment.app.Fragment
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.tbs.core.inner.TbsWebView
+import com.angcyo.web.api.WebApi
 
 /**
  * 注入到TBS内核中的方法
@@ -23,10 +24,21 @@ object TbsHandler {
      *
      * [com.hjhrq1991.library.tbs.BridgeConfig.customJs]
      * [com.hjhrq1991.library.tbs.BridgeUtil.webViewLoadLocalJs]
+     *
+     * [com.angcyo.web.api.WebApi.initJavascriptInterface]
      * */
     @CallPoint
     fun inject(fragment: Fragment, webView: TbsWebView) {
         TbsImagePager.register(fragment, webView)
+
+        //api
+        WebApi.javascriptInterfaceList.forEach {
+            try {
+                webView.addJavascriptInterface(it, it.objName)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         //注入器
         injectList.forEach {
