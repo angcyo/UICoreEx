@@ -882,7 +882,7 @@ open class TbsWebView(context: Context, attributeSet: AttributeSet? = null) :
     }
 
     /**3*/
-    override fun getContextMenuInfo(): ContextMenu.ContextMenuInfo {
+    override fun getContextMenuInfo(): ContextMenu.ContextMenuInfo? {
         return super.getContextMenuInfo()
     }
 
