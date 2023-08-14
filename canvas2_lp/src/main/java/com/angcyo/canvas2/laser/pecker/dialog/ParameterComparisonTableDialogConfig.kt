@@ -60,6 +60,7 @@ import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.BuildHelper
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
@@ -510,7 +511,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 appendSpaceIfNotEmpty()
                 append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
                 if (LayerHelper.showDpiConfig(gridLayerId)) {
-                    val layerDpi = HawkEngraveKeys.getLastLayerDpi(gridLayerId)
+                    val layerDpi =
+                        LayerHelper.getProductLayerSupportPxJson().getLayerConfig(gridLayerId)?.dpi
+                            ?: LaserPeckerHelper.DPI_254
                     appendSpaceIfNotEmpty()
                     append(LaserPeckerHelper.findPxInfo(gridLayerId, layerDpi).toText())
                 }
