@@ -60,7 +60,6 @@ import com.angcyo.library.unit.IValueUnit
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.BuildHelper
-import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
@@ -408,7 +407,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             if (LayerHelper.showDpiConfig(gridLayerId)) {
                 TransferDataPxItem()() {
                     itemPxList = LaserPeckerHelper.findProductLayerSupportPxList(gridLayerId)
-                    selectorCurrentDpi(HawkEngraveKeys.getLastLayerDpi(gridLayerId))
+                    selectorCurrentDpi(LayerHelper.getProductLastLayerDpi(gridLayerId))
                     itemHidden = itemPxList.isNullOrEmpty() //自动隐藏
                     observeItemChange {
                         //保存最后一次选择的dpi
@@ -511,9 +510,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 appendSpaceIfNotEmpty()
                 append(layerInfo?.toLabel() ?: "${gridPrintType.toLaserWave()}nm")
                 if (LayerHelper.showDpiConfig(gridLayerId)) {
-                    val layerDpi =
-                        LayerHelper.getProductLayerSupportPxJson().getLayerConfig(gridLayerId)?.dpi
-                            ?: LaserPeckerHelper.DPI_254
+                    val layerDpi = LayerHelper.getProductLastLayerDpi(gridLayerId)
                     appendSpaceIfNotEmpty()
                     append(LaserPeckerHelper.findPxInfo(gridLayerId, layerDpi).toText())
                 }
@@ -689,8 +686,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         printDepth = depthValue
                         printType = gridPrintType.toInt()
                         printPrecision = HawkEngraveKeys.lastPrecision
-                        dpi =
-                            gridLayerId.filterLayerDpi(HawkEngraveKeys.getLastLayerDpi(gridLayerId))
+                        dpi = gridLayerId.filterLayerDpi(
+                            LayerHelper.getProductLastLayerDpi(gridLayerId)
+                        )
                     })
                 }
             }
@@ -776,7 +774,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             //一致打印参数
             bean.printType = gridPrintType.toInt()
             bean.dpi =
-                HawkEngraveKeys.getLastLayerDpi(bean._layerId ?: LaserPeckerHelper.LAYER_FILL)
+                LayerHelper.getProductLastLayerDpi(bean._layerId ?: LaserPeckerHelper.LAYER_LINE)
             if (bean.dataMode == null) {
                 bean.printPower = HawkEngraveKeys.lastPower
                 bean.printDepth = HawkEngraveKeys.lastDepth

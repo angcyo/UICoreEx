@@ -13,6 +13,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.library.ex._string
 import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
+import com.angcyo.objectbox.laser.pecker.bean.getLayerConfig
 import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
 
 /**
@@ -99,6 +100,12 @@ object LayerHelper {
             }
         }
         return list.toJson()!!
+    }
+
+    /**获取产品支持的最后一次的图层dpi*/
+    fun getProductLastLayerDpi(layerId: String?): Float {
+        return getProductLayerSupportPxJson().getLayerConfig(layerId)?.dpi
+            ?: LaserPeckerHelper.DPI_254
     }
 }
 

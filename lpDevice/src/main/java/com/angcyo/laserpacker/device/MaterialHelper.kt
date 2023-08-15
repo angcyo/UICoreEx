@@ -75,7 +75,7 @@ object MaterialHelper {
     /**获取指定图层下的有效材质列表*/
     fun getLayerMaterialList(
         layerId: String,
-        dpi: Float = HawkEngraveKeys.getLastLayerDpi(layerId)
+        dpi: Float = LayerHelper.getProductLastLayerDpi(layerId)
     ): List<MaterialEntity> {
         val result = mutableListOf<MaterialEntity>()
         result.addAll(materialList.filter {

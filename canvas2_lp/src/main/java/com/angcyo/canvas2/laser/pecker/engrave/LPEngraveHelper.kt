@@ -239,7 +239,7 @@ object LPEngraveHelper {
             this.index = "$index"
             name = bean.name ?: EngraveHelper.generateEngraveName()
             layerJson = LayerHelper.getProductLayerSupportPxJson()
-                .updateAllLayerConfig(bean.dpi ?: HawkEngraveKeys.getLastLayerDpi(bean.layerId))
+                .updateAllLayerConfig(bean.dpi ?: LayerHelper.getProductLastLayerDpi(bean.layerId))
             dataDir = vmApp<LaserPeckerModel>().dataDir()
 
             val originBounds = renderer.getRendererBounds()
