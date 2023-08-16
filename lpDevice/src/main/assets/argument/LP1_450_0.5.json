@@ -11,7 +11,7 @@
     "key": "recycle_paper"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 30,
     "code": "recycle_paper_white_bw_1.3",
@@ -44,7 +44,7 @@
     "key": "recycle_paper"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 65,
     "code": "recycle_paper_white_bw_1.3",
@@ -77,7 +77,7 @@
     "key": "corrugated_paper"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 30,
     "code": "corrugated_paper_white_bw_1.3",
@@ -110,7 +110,7 @@
     "key": "corrugated_paper"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 75,
     "code": "corrugated_paper_white_bw_1.3",
@@ -143,7 +143,7 @@
     "key": "leather"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 50,
     "code": "leather_white_bw_1.3",
@@ -176,7 +176,7 @@
     "key": "leather"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 60,
     "code": "leather_white_bw_1.3",
@@ -209,7 +209,7 @@
     "key": "bamboo"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 60,
     "code": "bamboo_white_bw_1.3",
@@ -242,7 +242,7 @@
     "key": "bamboo"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 50,
     "code": "bamboo_white_bw_1.3",
@@ -275,7 +275,7 @@
     "key": "wood"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 60,
     "code": "wood_white_bw_1.3",
@@ -308,7 +308,7 @@
     "key": "wood"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 60,
     "code": "wood_white_bw_1.3",
@@ -341,7 +341,7 @@
     "key": "cork"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 30,
     "code": "cork_white_bw_1.3",
@@ -374,7 +374,7 @@
     "key": "cork"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 20,
     "code": "cork_white_bw_1.3",
@@ -407,7 +407,7 @@
     "key": "plastic"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 50,
     "code": "plastic_white_bw_1.3",
@@ -440,7 +440,7 @@
     "key": "plastic"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 50,
     "code": "plastic_white_bw_1.3",
@@ -473,7 +473,7 @@
     "key": "cloth"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 50,
     "code": "cloth_white_bw_1.3",
@@ -506,7 +506,7 @@
     "key": "cloth"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 100,
     "code": "cloth_white_bw_1.3",
@@ -539,7 +539,7 @@
     "key": "felt"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 15,
     "code": "felt_white_bw_1.3",
@@ -572,7 +572,7 @@
     "key": "felt"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 35,
     "code": "felt_white_bw_1.3",
@@ -605,7 +605,7 @@
     "key": "opacity_acrylic"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 50,
     "code": "opacity_acrylic_white_bw_1.3",
@@ -638,7 +638,7 @@
     "key": "opacity_acrylic"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 90,
     "code": "opacity_acrylic_white_bw_1.3",
@@ -671,7 +671,7 @@
     "key": "photosensitive_seal"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 5,
     "code": "photosensitive_seal_white_bw_1.3",
@@ -704,7 +704,7 @@
     "key": "photosensitive_seal"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 15,
     "code": "photosensitive_seal_white_bw_1.3",
@@ -737,7 +737,7 @@
     "key": "fruit_peel"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerFill",
     "depth": 80,
     "code": "fruit_peel_white_bw_1.3",
@@ -770,7 +770,7 @@
     "key": "fruit_peel"
   },
   {
-    "dpiScale": 1.3,
+    "dpi": 338.66666,
     "layerId": "layerPicture",
     "depth": 90,
     "code": "fruit_peel_white_bw_1.3",
