@@ -88,6 +88,9 @@ data class LPProjectBean(
 
     //---
 
+    /**平台*/
+    var platform: String? = null,
+
     /**预览图
      * [preview_img]*/
     @Transient var _previewImgBitmap: Bitmap? = null,

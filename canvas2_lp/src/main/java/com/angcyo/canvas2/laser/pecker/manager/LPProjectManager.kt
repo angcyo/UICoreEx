@@ -127,6 +127,7 @@ class LPProjectManager {
             projectBean.lastLayerDpi = HawkEngraveKeys.lastDpiLayerJson
         }
 
+        /**基础配置项目结构信息*/
         fun configProjectBean(
             bean: LPProjectBean,
             taskId: String?,
@@ -138,6 +139,7 @@ class LPProjectManager {
                 create_time = nowTime()
                 update_time = nowTime()
                 version = 2
+                platform = "Android"
                 swVersion = productInfo?.softwareVersion ?: swVersion
                 hwVersion = productInfo?.hardwareVersion ?: hwVersion
 
