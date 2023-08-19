@@ -859,12 +859,14 @@ object LPBitmapHandler {
                         val path = element.curveTextDrawInfo?.run {
                             val baseRect = acquireTempRectF()
                             element.renderProperty.getBaseRect(baseRect)
-                            val centerX = baseRect.centerX()
+                            /*val centerX = baseRect.centerX()
                             val centerY = if (curvature > 0) {
                                 baseRect.top + textHeight + innerRadius + drawOffsetY
                             } else {
                                 baseRect.top - innerRadius + drawOffsetY
-                            }
+                            }*/
+                            val centerX = curveCx
+                            val centerY = curveCy
                             val resultPath = Path()
                             resultPath.addCircle(centerX, centerY, innerRadius, Path.Direction.CW)
 

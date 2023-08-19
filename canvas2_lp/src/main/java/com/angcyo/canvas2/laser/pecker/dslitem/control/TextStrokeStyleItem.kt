@@ -37,7 +37,7 @@ class TextStrokeStyleItem : BaseTextControlItem() {
         }
 
         //点击后自动关闭pop
-        itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+        //itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
     }
 
     override fun onItemBind(
