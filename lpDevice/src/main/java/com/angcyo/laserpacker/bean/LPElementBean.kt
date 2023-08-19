@@ -12,6 +12,7 @@ import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.toLayerId
+import com.angcyo.laserpacker.toAlignString
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.L
@@ -183,7 +184,7 @@ data class LPElementBean(
     /**文本的对齐方式
      * [Paint.Align.toAlignString]
      * */
-    var textAlign: String? = null,
+    var textAlign: String? = Paint.Align.LEFT.toAlignString(),
 
     /**字体大小*/
     @MM

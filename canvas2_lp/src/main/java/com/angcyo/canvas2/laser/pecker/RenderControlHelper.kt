@@ -506,7 +506,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 itemIco = R.drawable.canvas_text_vertical_ico
                 itemText = _string(R.string.canvas_vertical)
                 itemOrientation = LinearLayout.VERTICAL
-                itemEnable = renderer.lpTextElement()?.isCurveText != true
+                //itemEnable = renderer.lpTextElement()?.isCurveText != true
                 drawCanvasRight()
             }
         }

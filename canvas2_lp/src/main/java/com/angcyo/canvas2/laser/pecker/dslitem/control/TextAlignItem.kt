@@ -34,8 +34,10 @@ class TextAlignItem : BaseTextControlItem() {
         adapterItem: DslAdapterItem,
         payloads: List<Any>
     ) {
-        itemIsSelected =
-            itemRenderer?.element<TextElement>()?.textProperty?.textAlign == itemAlign.toAlignString()
+        val textProperty = itemRenderer?.element<TextElement>()?.textProperty
+        val textAlign = textProperty?.textAlign ?: Paint.Align.LEFT.toAlignString()
+        textProperty?.textAlign = textAlign
+        itemIsSelected = textAlign == itemAlign.toAlignString()
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 

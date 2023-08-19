@@ -16,7 +16,6 @@ import com.angcyo.library.ex.clamp
 import com.angcyo.library.unit.PointValueUnit
 import com.angcyo.library.unit.convertPixelToValueUnit
 import com.angcyo.widget.DslViewHolder
-import kotlin.math.min
 
 /**
  * 文本属性控制输入item
@@ -104,8 +103,9 @@ class TextPropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(
+                    val size = clamp(
                         renderUnit.convertValueToPixel(number),
+                        -HawkEngraveKeys.maxTextSize,
                         HawkEngraveKeys.maxTextSize
                     )
                     itemRenderer?.textElement?.updateTextProperty(renderer, itemRenderDelegate) {
@@ -124,8 +124,9 @@ class TextPropertyControlItem : DslAdapterItem(), ICanvasRendererItem {
                 onDismiss = this@TextPropertyControlItem::onPopupDismiss
                 keyboardBindTextView = it as? TextView
                 onNumberResultAction = { number ->
-                    val size = min(
+                    val size = clamp(
                         renderUnit.convertValueToPixel(number),
+                        -HawkEngraveKeys.maxTextSize,
                         HawkEngraveKeys.maxTextSize
                     )
                     itemRenderer?.textElement?.updateTextProperty(renderer, itemRenderDelegate) {
