@@ -614,16 +614,11 @@ object EngraveFlowDataHelper {
             it.localDataVersion++
         }
         all.lpSaveAllEntity()
+        EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
+            apply(EngraveConfigEntity_.taskId.equal("$taskId"))
+        }//移除被删除的材质配置信息
         //重新初始化材质列表
         MaterialHelper.initMaterial()
-        val materialEntityList = findTaskMaterialList(taskId)
-        for (materialEntity in materialEntityList ?: emptyList()) {
-            if (materialEntity.key == materialKey) {
-                EngraveConfigEntity::class.removeAll(LPBox.PACKAGE_NAME) {
-                    apply(EngraveConfigEntity_.taskId.equal("$taskId"))
-                }//移除被删除的材质配置信息
-            }
-        }
     }
 
     /**雕刻任务, 所有图层的雕刻参数初始化*/
