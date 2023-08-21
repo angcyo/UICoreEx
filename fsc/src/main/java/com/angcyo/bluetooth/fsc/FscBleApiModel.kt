@@ -1017,7 +1017,7 @@ class FscBleApiModel : ViewModel(), IViewModel {
             }
             stopSend(address)
             fscApi.disconnect(address)
-            "断开蓝牙[主动${isActiveDisConnected.toDC()}]:$address".writeBleLog()
+            "断开蓝牙[主动:${isActiveDisConnected.toDC()}]:$address".writeBleLog()
         } else {
             val cacheDeviceState = connectDeviceList.find { it.device.address == address }
             cacheDeviceState?.let {

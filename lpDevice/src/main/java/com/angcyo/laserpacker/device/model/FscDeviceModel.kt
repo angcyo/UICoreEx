@@ -102,7 +102,7 @@ class FscDeviceModel : LifecycleViewModel() {
                     productAssignLocationBounds = null
                     toastQQ(_string(R.string.wifi_disconnected))
                     onDeviceDisconnect(it.connectInfo?.isActiveDisConnected == true)
-                    "WIFI已断开[${(it.connectInfo?.isActiveDisConnected == true).toDC()}]:${log}".writeBleLog()
+                    "WIFI已断开[主动:${(it.connectInfo?.isActiveDisConnected == true).toDC()}]:${log}".writeBleLog()
                 } else if (tcpState.state == Tcp.CONNECT_STATE_CONNECT_SUCCESS) {
                     //WIFI连接成功
                     val isAutoConnect = tcpState.connectInfo?.isAutoConnect == true
@@ -114,7 +114,7 @@ class FscDeviceModel : LifecycleViewModel() {
                         wifiApiModel.connectStartTime,
                         tcpState.connectInfo?.isReConnect == false
                     )
-                    "WIFI连接成功[${isAutoConnect.toDC()}]:${log}".writeBleLog()
+                    "WIFI连接成功[auto:${isAutoConnect.toDC()}]:${log}".writeBleLog()
                 }
             }
         }
