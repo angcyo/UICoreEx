@@ -25,6 +25,7 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.ble.dslitem.BluetoothDeviceItem
+import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.device.wifi.dslitem.AddWifiEmptyItem
 import com.angcyo.laserpacker.device.wifi.dslitem.AddWifiRadarScanItem
 import com.angcyo.library.app
@@ -69,6 +70,9 @@ class AddWifiDeviceFragment : BaseDslFragment() {
         //2023-8-1 lp5 ble
         vmApp<FscBleApiModel>().disconnectAll()
         BluetoothModel.init(app() as Application)
+
+        //2023-8-21 禁用自动连接
+        FscDeviceModel.disableAutoConnect()
     }
 
     override fun initBaseView(savedInstanceState: Bundle?) {

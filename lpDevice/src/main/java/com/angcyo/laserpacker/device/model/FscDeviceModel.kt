@@ -69,6 +69,15 @@ class FscDeviceModel : LifecycleViewModel() {
         /**如果配置了此属性, 则分配位置的时候, 会在此矩形的中心*/
         @Pixel
         var productAssignLocationBounds: RectF? = null
+
+        /**短暂禁止自动连接*/
+        fun disableAutoConnect(disable: Boolean = true) {
+            if (disable) {
+                disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
+            } else {
+                disableAutoConnectToTime = 0L
+            }
+        }
     }
 
     val bleApiModel = vmApp<FscBleApiModel>()
@@ -341,7 +350,7 @@ class FscDeviceModel : LifecycleViewModel() {
         //发送初始化指令
         LaserPeckerHelper.sendInitCommand(name, address, isAutoConnect) {
             if (it is InterruptedException) {
-                disableAutoConnectToTime = nowTime() + 1 * 60 * 1000 //临时禁用自动连接1分钟
+                disableAutoConnect()
             }
         }
 

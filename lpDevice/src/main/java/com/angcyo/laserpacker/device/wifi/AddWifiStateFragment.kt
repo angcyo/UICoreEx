@@ -19,6 +19,7 @@ import com.angcyo.getDataParcelable
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
+import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.device.wifi.dslitem.AddWifiStateItem
 import com.angcyo.library.L
 import com.angcyo.library.component.startCountDown
@@ -171,6 +172,7 @@ class AddWifiStateFragment : BaseDslFragment() {
         HawkEngraveKeys.lastWifiIp = tcpDevice.address
         vmApp<WifiApiModel>().connect(tcpDevice, null)
         toConfigState(AddWifiStateItem.STATE_SUCCESS)
+        FscDeviceModel.disableAutoConnect(false)
     }
 
     private var _progress: Int = 0
