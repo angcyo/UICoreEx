@@ -17,7 +17,7 @@
   "showExperimentalRange": "",
   "showUploadLogRange": "",
   "showFirmwareUpdateRange": "",
-  "cutLayerModule": "0,1,2",
+  "cutLayerModule": "0,1,2,3",
   "lpSupportFirmware": "",
   "lpSupportFirmwareDebug": "",
   "lpBatchEngraveFirmware": null,
