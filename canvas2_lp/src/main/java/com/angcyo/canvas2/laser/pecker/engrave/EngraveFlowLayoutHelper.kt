@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.dialog.toastQQOrMessage
 import com.angcyo.library.ex._string
 import com.angcyo.library.toastQQ
 
@@ -60,7 +61,8 @@ open class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
             if (noConfigEngraveParamsRenderer != null) {
                 //有元素没有配置参数
                 val label = noConfigEngraveParamsRenderer.lpElementBean()?.name ?: "Element"
-                toastQQ(_string(R.string.no_config_params_tip, label))
+                val message = _string(R.string.no_config_params_tip, label)
+                toastQQOrMessage(message)
             } else {
                 super.changeToTransferConfig()
             }

@@ -171,6 +171,6 @@
     <string name="calibration_offset_top">y轴</string>
 
     <string name="cannot_share_project">无法分享工程</string>
-    <string name="no_config_params_tip">元素 %1$s 未配置参数</string>
+    <string name="no_config_params_tip">元素 %1$s 未配置参数,请在图层中配置.</string>
 
 </resources>
