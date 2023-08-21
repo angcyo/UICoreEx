@@ -1,7 +1,7 @@
 [
   {
     "dpiScale": 1,
-    "code": "basswood_planks_3_blue_bw_1",
+    "code": "basswood_planks_3_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "3mm椴木板",
@@ -12,7 +12,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_3_blue_bw_1",
+    "code": "basswood_planks_3_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 80,
     "_name": "3mm椴木板",
@@ -23,7 +23,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_3_blue_bw_1",
+    "code": "basswood_planks_3_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 60,
     "_name": "3mm椴木板",
@@ -33,8 +33,19 @@
     "key": "basswood_planks_3"
   },
   {
+    "dpiScale": 1,
+    "code": "basswood_planks_3_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 70,
+    "_name": "3mm椴木板",
+    "resIdStr": "basswood_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "basswood_planks_3"
+  },
+  {
     "dpiScale": 2,
-    "code": "basswood_planks_3_blue_bw_2",
+    "code": "basswood_planks_3_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "3mm椴木板",
@@ -45,7 +56,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "basswood_planks_3_blue_bw_4",
+    "code": "basswood_planks_3_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "3mm椴木板",
@@ -56,7 +67,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_6_blue_bw_1",
+    "code": "basswood_planks_6_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "6mm椴木板",
@@ -67,7 +78,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_6_blue_bw_1",
+    "code": "basswood_planks_6_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 80,
     "_name": "6mm椴木板",
@@ -78,7 +89,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_6_blue_bw_1",
+    "code": "basswood_planks_6_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 60,
     "_name": "6mm椴木板",
@@ -89,7 +100,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "basswood_planks_6_blue_bw_2",
+    "code": "basswood_planks_6_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "6mm椴木板",
@@ -100,7 +111,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "basswood_planks_6_blue_bw_4",
+    "code": "basswood_planks_6_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "6mm椴木板",
@@ -111,7 +122,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_12_blue_bw_1",
+    "code": "basswood_planks_12_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "12mm椴木板",
@@ -122,7 +133,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_12_blue_bw_1",
+    "code": "basswood_planks_12_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 80,
     "_name": "12mm椴木板",
@@ -133,7 +144,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "basswood_planks_12_blue_bw_1",
+    "code": "basswood_planks_12_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 60,
     "_name": "12mm椴木板",
@@ -144,7 +155,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "basswood_planks_12_blue_bw_2",
+    "code": "basswood_planks_12_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "12mm椴木板",
@@ -155,7 +166,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "basswood_planks_12_blue_bw_4",
+    "code": "basswood_planks_12_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "12mm椴木板",
@@ -166,7 +177,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_3_blue_bw_1",
+    "code": "cherry_planks_3_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "3mm樱桃木板",
@@ -177,7 +188,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_3_blue_bw_1",
+    "code": "cherry_planks_3_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 85,
     "_name": "3mm樱桃木板",
@@ -188,7 +199,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_3_blue_bw_1",
+    "code": "cherry_planks_3_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "3mm樱桃木板",
@@ -198,8 +209,19 @@
     "key": "cherry_planks_3"
   },
   {
+    "dpiScale": 1,
+    "code": "cherry_planks_3_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 85,
+    "_name": "3mm樱桃木板",
+    "resIdStr": "cherry_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "cherry_planks_3"
+  },
+  {
     "dpiScale": 2,
-    "code": "cherry_planks_3_blue_bw_2",
+    "code": "cherry_planks_3_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "3mm樱桃木板",
@@ -210,7 +232,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "cherry_planks_3_blue_bw_4",
+    "code": "cherry_planks_3_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "3mm樱桃木板",
@@ -221,7 +243,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_6_blue_bw_1",
+    "code": "cherry_planks_6_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "6mm樱桃木板",
@@ -232,7 +254,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_6_blue_bw_1",
+    "code": "cherry_planks_6_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 85,
     "_name": "6mm樱桃木板",
@@ -243,7 +265,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_6_blue_bw_1",
+    "code": "cherry_planks_6_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "6mm樱桃木板",
@@ -253,8 +275,19 @@
     "key": "cherry_planks_6"
   },
   {
+    "dpiScale": 1,
+    "code": "cherry_planks_6_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 90,
+    "_name": "6mm樱桃木板",
+    "resIdStr": "cherry_planks_6",
+    "power": 100,
+    "type": 0,
+    "key": "cherry_planks_6"
+  },
+  {
     "dpiScale": 2,
-    "code": "cherry_planks_6_blue_bw_2",
+    "code": "cherry_planks_6_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "6mm樱桃木板",
@@ -265,7 +298,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "cherry_planks_6_blue_bw_4",
+    "code": "cherry_planks_6_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "6mm樱桃木板",
@@ -276,7 +309,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_12_blue_bw_1",
+    "code": "cherry_planks_12_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 70,
     "_name": "12mm樱桃木板",
@@ -287,7 +320,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_12_blue_bw_1",
+    "code": "cherry_planks_12_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 85,
     "_name": "12mm樱桃木板",
@@ -298,7 +331,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "cherry_planks_12_blue_bw_1",
+    "code": "cherry_planks_12_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "12mm樱桃木板",
@@ -309,7 +342,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "cherry_planks_12_blue_bw_2",
+    "code": "cherry_planks_12_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 50,
     "_name": "12mm樱桃木板",
@@ -320,7 +353,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "cherry_planks_12_blue_bw_4",
+    "code": "cherry_planks_12_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "12mm樱桃木板",
@@ -331,7 +364,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "corrugated_paper_blue_bw_1",
+    "code": "corrugated_paper_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 60,
     "_name": "瓦楞纸",
@@ -342,7 +375,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "corrugated_paper_blue_bw_1",
+    "code": "corrugated_paper_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 70,
     "_name": "瓦楞纸",
@@ -353,7 +386,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "corrugated_paper_blue_bw_1",
+    "code": "corrugated_paper_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 50,
     "_name": "瓦楞纸",
@@ -363,8 +396,19 @@
     "key": "corrugated_paper"
   },
   {
+    "dpiScale": 1,
+    "code": "corrugated_paper_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 70,
+    "_name": "瓦楞纸",
+    "resIdStr": "corrugated_paper",
+    "power": 100,
+    "type": 0,
+    "key": "corrugated_paper"
+  },
+  {
     "dpiScale": 2,
-    "code": "corrugated_paper_blue_bw_2",
+    "code": "corrugated_paper_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 35,
     "_name": "瓦楞纸",
@@ -375,7 +419,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "corrugated_paper_blue_bw_4",
+    "code": "corrugated_paper_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 25,
     "_name": "瓦楞纸",
@@ -386,7 +430,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_3_blue_bw_1",
+    "code": "pine_planks_3_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 80,
     "_name": "3mm松木板",
@@ -397,7 +441,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_3_blue_bw_1",
+    "code": "pine_planks_3_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 90,
     "_name": "3mm松木板",
@@ -408,7 +452,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_3_blue_bw_1",
+    "code": "pine_planks_3_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "3mm松木板",
@@ -418,8 +462,19 @@
     "key": "pine_planks_3"
   },
   {
+    "dpiScale": 1,
+    "code": "pine_planks_3_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 75,
+    "_name": "3mm松木板",
+    "resIdStr": "pine_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "pine_planks_3"
+  },
+  {
     "dpiScale": 2,
-    "code": "pine_planks_3_blue_bw_2",
+    "code": "pine_planks_3_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "3mm松木板",
@@ -430,7 +485,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "pine_planks_3_blue_bw_4",
+    "code": "pine_planks_3_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "3mm松木板",
@@ -441,7 +496,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_6_blue_bw_1",
+    "code": "pine_planks_6_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 80,
     "_name": "6mm松木板",
@@ -452,7 +507,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_6_blue_bw_1",
+    "code": "pine_planks_6_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 90,
     "_name": "6mm松木板",
@@ -463,7 +518,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_6_blue_bw_1",
+    "code": "pine_planks_6_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "6mm松木板",
@@ -474,7 +529,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "pine_planks_6_blue_bw_2",
+    "code": "pine_planks_6_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "6mm松木板",
@@ -485,7 +540,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "pine_planks_6_blue_bw_4",
+    "code": "pine_planks_6_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "6mm松木板",
@@ -496,7 +551,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_12_blue_bw_1",
+    "code": "pine_planks_12_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 80,
     "_name": "12mm松木板",
@@ -507,7 +562,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_12_blue_bw_1",
+    "code": "pine_planks_12_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 90,
     "_name": "12mm松木板",
@@ -518,7 +573,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "pine_planks_12_blue_bw_1",
+    "code": "pine_planks_12_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 70,
     "_name": "12mm松木板",
@@ -529,7 +584,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "pine_planks_12_blue_bw_2",
+    "code": "pine_planks_12_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "12mm松木板",
@@ -540,7 +595,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "pine_planks_12_blue_bw_4",
+    "code": "pine_planks_12_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "12mm松木板",
@@ -551,7 +606,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_3_blue_bw_1",
+    "code": "walnut_planks_3_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "3mm胡桃木板",
@@ -562,7 +617,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_3_blue_bw_1",
+    "code": "walnut_planks_3_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 70,
     "_name": "3mm胡桃木板",
@@ -573,7 +628,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_3_blue_bw_1",
+    "code": "walnut_planks_3_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 55,
     "_name": "3mm胡桃木板",
@@ -583,8 +638,19 @@
     "key": "walnut_planks_3"
   },
   {
+    "dpiScale": 1,
+    "code": "walnut_planks_3_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 75,
+    "_name": "3mm胡桃木板",
+    "resIdStr": "walnut_planks_3",
+    "power": 100,
+    "type": 0,
+    "key": "walnut_planks_3"
+  },
+  {
     "dpiScale": 2,
-    "code": "walnut_planks_3_blue_bw_2",
+    "code": "walnut_planks_3_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "3mm胡桃木板",
@@ -595,7 +661,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "walnut_planks_3_blue_bw_4",
+    "code": "walnut_planks_3_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 20,
     "_name": "3mm胡桃木板",
@@ -606,7 +672,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_6_blue_bw_1",
+    "code": "walnut_planks_6_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "6mm胡桃木板",
@@ -617,7 +683,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_6_blue_bw_1",
+    "code": "walnut_planks_6_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 70,
     "_name": "6mm胡桃木板",
@@ -628,7 +694,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_6_blue_bw_1",
+    "code": "walnut_planks_6_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 55,
     "_name": "6mm胡桃木板",
@@ -639,7 +705,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "walnut_planks_6_blue_bw_2",
+    "code": "walnut_planks_6_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "6mm胡桃木板",
@@ -650,7 +716,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "walnut_planks_6_blue_bw_4",
+    "code": "walnut_planks_6_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 20,
     "_name": "6mm胡桃木板",
@@ -661,7 +727,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_12_blue_bw_1",
+    "code": "walnut_planks_12_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 55,
     "_name": "12mm胡桃木板",
@@ -672,7 +738,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_12_blue_bw_1",
+    "code": "walnut_planks_12_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 70,
     "_name": "12mm胡桃木板",
@@ -683,7 +749,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "walnut_planks_12_blue_bw_1",
+    "code": "walnut_planks_12_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 55,
     "_name": "12mm胡桃木板",
@@ -694,7 +760,7 @@
   },
   {
     "dpiScale": 2,
-    "code": "walnut_planks_12_blue_bw_2",
+    "code": "walnut_planks_12_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "12mm胡桃木板",
@@ -705,7 +771,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "walnut_planks_12_blue_bw_4",
+    "code": "walnut_planks_12_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 20,
     "_name": "12mm胡桃木板",
@@ -716,7 +782,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "bamboo_chips_blue_bw_1",
+    "code": "bamboo_chips_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 60,
     "_name": "竹片",
@@ -727,7 +793,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "bamboo_chips_blue_bw_1",
+    "code": "bamboo_chips_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 90,
     "_name": "竹片",
@@ -738,7 +804,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "bamboo_chips_blue_bw_1",
+    "code": "bamboo_chips_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 50,
     "_name": "竹片",
@@ -748,8 +814,19 @@
     "key": "bamboo_chips"
   },
   {
+    "dpiScale": 1,
+    "code": "bamboo_chips_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 70,
+    "_name": "竹片",
+    "resIdStr": "bamboo_chips",
+    "power": 100,
+    "type": 0,
+    "key": "bamboo_chips"
+  },
+  {
     "dpiScale": 2,
-    "code": "bamboo_chips_blue_bw_2",
+    "code": "bamboo_chips_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 40,
     "_name": "竹片",
@@ -760,7 +837,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "bamboo_chips_blue_bw_4",
+    "code": "bamboo_chips_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 20,
     "_name": "竹片",
@@ -771,7 +848,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "vellum_blue_bw_1",
+    "code": "vellum_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 15,
     "_name": "牛皮纸",
@@ -782,7 +859,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "vellum_blue_bw_1",
+    "code": "vellum_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 55,
     "_name": "牛皮纸",
@@ -793,7 +870,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "vellum_blue_bw_1",
+    "code": "vellum_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 10,
     "_name": "牛皮纸",
@@ -803,8 +880,19 @@
     "key": "vellum"
   },
   {
+    "dpiScale": 1,
+    "code": "vellum_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 10,
+    "_name": "牛皮纸",
+    "resIdStr": "vellum",
+    "power": 100,
+    "type": 0,
+    "key": "vellum"
+  },
+  {
     "dpiScale": 2,
-    "code": "vellum_blue_bw_2",
+    "code": "vellum_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 8,
     "_name": "牛皮纸",
@@ -815,7 +903,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "vellum_blue_bw_4",
+    "code": "vellum_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 3,
     "_name": "牛皮纸",
@@ -826,7 +914,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "log_chips_3_blue_bw_1",
+    "code": "log_chips_3_blue_layerFill_1",
     "layerId": "layerFill",
     "depth": 45,
     "_name": "3mm原木片",
@@ -837,7 +925,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "log_chips_3_blue_bw_1",
+    "code": "log_chips_3_blue_layerPicture_1",
     "layerId": "layerPicture",
     "depth": 90,
     "_name": "3mm原木片",
@@ -848,7 +936,7 @@
   },
   {
     "dpiScale": 1,
-    "code": "log_chips_3_blue_bw_1",
+    "code": "log_chips_3_blue_layerLine_1",
     "layerId": "layerLine",
     "depth": 50,
     "_name": "3mm原木片",
@@ -858,8 +946,19 @@
     "key": "log_chips_3"
   },
   {
+    "dpiScale": 1,
+    "code": "log_chips_3_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 60,
+    "_name": "3mm原木片",
+    "resIdStr": "log_chips_3",
+    "power": 100,
+    "type": 0,
+    "key": "log_chips_3"
+  },
+  {
     "dpiScale": 2,
-    "code": "log_chips_3_blue_bw_2",
+    "code": "log_chips_3_blue_layerFill_2",
     "layerId": "layerFill",
     "depth": 30,
     "_name": "3mm原木片",
@@ -870,7 +969,7 @@
   },
   {
     "dpiScale": 4,
-    "code": "log_chips_3_blue_bw_4",
+    "code": "log_chips_3_blue_layerFill_4",
     "layerId": "layerFill",
     "depth": 15,
     "_name": "3mm原木片",
@@ -878,5 +977,445 @@
     "power": 100,
     "type": 0,
     "key": "log_chips_3"
+  },
+  {
+    "dpiScale": 1,
+    "code": "abs_pvc_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 40,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 50,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 1,
+    "code": "abs_pvc_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 40,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 100,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 1,
+    "code": "abs_pvc_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 10,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 20,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 1,
+    "code": "abs_pvc_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 70,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 100,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 2,
+    "code": "abs_pvc_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 20,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 40,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 4,
+    "code": "abs_pvc_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "ABS/PVC",
+    "resIdStr": "abs_pvc",
+    "power": 20,
+    "type": 0,
+    "key": "abs_pvc"
+  },
+  {
+    "dpiScale": 1,
+    "code": "acrylic_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 30,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 30,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 1,
+    "code": "acrylic_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 50,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 90,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 1,
+    "code": "acrylic_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 10,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 30,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 1,
+    "code": "acrylic_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 95,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 100,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 2,
+    "code": "acrylic_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 20,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 4,
+    "code": "acrylic_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 5,
+    "_name": "亚克力",
+    "resIdStr": "acrylic",
+    "power": 15,
+    "type": 0,
+    "key": "acrylic"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cardboard_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 30,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 60,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cardboard_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 40,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 100,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cardboard_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 20,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 70,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 1,
+    "code": "cardboard_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 60,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 100,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 2,
+    "code": "cardboard_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 40,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 4,
+    "code": "cardboard_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 8,
+    "_name": "硬纸板",
+    "resIdStr": "cardboard",
+    "power": 25,
+    "type": 0,
+    "key": "cardboard"
+  },
+  {
+    "dpiScale": 1,
+    "code": "shale_slabs_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "页岩石板",
+    "resIdStr": "shale_slabs",
+    "power": 90,
+    "type": 0,
+    "key": "shale_slabs"
+  },
+  {
+    "dpiScale": 1,
+    "code": "shale_slabs_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 20,
+    "_name": "页岩石板",
+    "resIdStr": "shale_slabs",
+    "power": 70,
+    "type": 0,
+    "key": "shale_slabs"
+  },
+  {
+    "dpiScale": 1,
+    "code": "shale_slabs_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 10,
+    "_name": "页岩石板",
+    "resIdStr": "shale_slabs",
+    "power": 70,
+    "type": 0,
+    "key": "shale_slabs"
+  },
+  {
+    "dpiScale": 2,
+    "code": "shale_slabs_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "页岩石板",
+    "resIdStr": "shale_slabs",
+    "power": 60,
+    "type": 0,
+    "key": "shale_slabs"
+  },
+  {
+    "dpiScale": 4,
+    "code": "shale_slabs_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 5,
+    "_name": "页岩石板",
+    "resIdStr": "shale_slabs",
+    "power": 50,
+    "type": 0,
+    "key": "shale_slabs"
+  },
+  {
+    "dpiScale": 1,
+    "code": "recycle_paper_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 75,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "recycle_paper_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 40,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 90,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "recycle_paper_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 10,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 70,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "recycle_paper_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 10,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 100,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 2,
+    "code": "recycle_paper_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 8,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 30,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 4,
+    "code": "recycle_paper_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 6,
+    "_name": "环保纸",
+    "resIdStr": "recycle_paper",
+    "power": 22,
+    "type": 0,
+    "key": "recycle_paper"
+  },
+  {
+    "dpiScale": 1,
+    "code": "aluminum_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 20,
+    "_name": "氧化铝",
+    "resIdStr": "aluminum",
+    "power": 100,
+    "type": 0,
+    "key": "aluminum"
+  },
+  {
+    "dpiScale": 1,
+    "code": "aluminum_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 50,
+    "_name": "氧化铝",
+    "resIdStr": "aluminum",
+    "power": 70,
+    "type": 0,
+    "key": "aluminum"
+  },
+  {
+    "dpiScale": 1,
+    "code": "aluminum_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 20,
+    "_name": "氧化铝",
+    "resIdStr": "aluminum",
+    "power": 70,
+    "type": 0,
+    "key": "aluminum"
+  },
+  {
+    "dpiScale": 2,
+    "code": "aluminum_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "氧化铝",
+    "resIdStr": "aluminum",
+    "power": 70,
+    "type": 0,
+    "key": "aluminum"
+  },
+  {
+    "dpiScale": 4,
+    "code": "aluminum_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "氧化铝",
+    "resIdStr": "aluminum",
+    "power": 50,
+    "type": 0,
+    "key": "aluminum"
+  },
+  {
+    "dpiScale": 1,
+    "code": "archive_bag_blue_layerFill_1",
+    "layerId": "layerFill",
+    "depth": 20,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 80,
+    "type": 0,
+    "key": "archive_bag"
+  },
+  {
+    "dpiScale": 1,
+    "code": "archive_bag_blue_layerPicture_1",
+    "layerId": "layerPicture",
+    "depth": 50,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 100,
+    "type": 0,
+    "key": "archive_bag"
+  },
+  {
+    "dpiScale": 1,
+    "code": "archive_bag_blue_layerLine_1",
+    "layerId": "layerLine",
+    "depth": 20,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 100,
+    "type": 0,
+    "key": "archive_bag"
+  },
+  {
+    "dpiScale": 1,
+    "code": "archive_bag_blue_layerCut_1",
+    "layerId": "layerCut",
+    "depth": 20,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 100,
+    "type": 0,
+    "key": "archive_bag"
+  },
+  {
+    "dpiScale": 2,
+    "code": "archive_bag_blue_layerFill_2",
+    "layerId": "layerFill",
+    "depth": 10,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 50,
+    "type": 0,
+    "key": "archive_bag"
+  },
+  {
+    "dpiScale": 4,
+    "code": "archive_bag_blue_layerFill_4",
+    "layerId": "layerFill",
+    "depth": 8,
+    "_name": "档案袋",
+    "resIdStr": "archive_bag",
+    "power": 30,
+    "type": 0,
+    "key": "archive_bag"
   }
 ]
