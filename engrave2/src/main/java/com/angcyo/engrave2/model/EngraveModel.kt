@@ -210,7 +210,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val duration = nowTime - (_engraveTaskEntity?.indexPrintStartTime ?: 0)
         buildString {
             append("雕刻完成[${_engraveTaskId}]")
-            append(":[${index}] [$fileName]")
+            append(":[${index}][$fileName]")
             append("第${printTimes}次 ")
             append("耗时:${duration.toMsTime()} ")
             append(reason ?: "")
@@ -982,7 +982,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
 
             EngraveNotifyHelper.showEngraveNotify(engraveProgress)//显示通知
 
-            "雕刻进度[${it.taskId}]:[${index}][$fileName] ${currentProgress}%/${it.progress}% ${printTimes ?: ""}".writeEngraveLog()
+            "雕刻进度[${it.taskId}]:[${index}][$fileName] ${currentProgress}%/${it.progress}%/${printTimes ?: ""}".writeEngraveLog()
         }
     }
 
