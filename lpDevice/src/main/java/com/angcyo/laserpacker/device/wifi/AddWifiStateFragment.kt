@@ -9,6 +9,7 @@ import com.angcyo.bluetooth.BluetoothModel
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
+import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
 import com.angcyo.core.vmApp
@@ -121,8 +122,10 @@ class AddWifiStateFragment : BaseDslFragment() {
         //默认状态
         toConfigState(AddWifiStateItem.STATE_NORMAL)
 
+        "开始配置wifi:$deviceConfig".writeBleLog()
         deviceConfig?.let { configBean ->
             bleModel.connect(configBean.device) { connected ->
+                "Ble连接设备:$connected".writeBleLog()
                 if (connected) {
                     sendConfig(configBean)
                 } else {

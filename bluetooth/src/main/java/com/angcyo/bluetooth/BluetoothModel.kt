@@ -19,6 +19,7 @@ import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_DISCONNEC
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_FAIL
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_START
 import com.angcyo.bluetooth.DeviceConnectState.Companion.CONNECT_STATE_SUCCESS
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.lifecycle.LifecycleViewModel
 import com.angcyo.http.rx.doMain
 import com.angcyo.library.L
@@ -382,11 +383,11 @@ class BluetoothModel : LifecycleViewModel() {
             var timeoutRunnable: Runnable? = null
             val listener = object : BleGattCallback() {
                 override fun onStartConnect() {
-                    L.d("...")
+                    "bleStartConnect...".writeToLog(logLevel = L.DEBUG)
                 }
 
                 override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
-                    L.d("$bleDevice $exception")
+                    "bleConnectFail:$bleDevice $exception".writeToLog(logLevel = L.DEBUG)
                 }
 
                 override fun onDisConnected(
@@ -395,7 +396,7 @@ class BluetoothModel : LifecycleViewModel() {
                     gatt: BluetoothGatt?,
                     status: Int
                 ) {
-                    L.d("$device $isActiveDisConnected $status")
+                    "bleDisConnected[$status]:$device $isActiveDisConnected ".writeToLog(logLevel = L.DEBUG)
                 }
 
                 override fun onConnectSuccess(
@@ -403,6 +404,7 @@ class BluetoothModel : LifecycleViewModel() {
                     gatt: BluetoothGatt?,
                     status: Int
                 ) {
+                    "bleConnectSuccess[$status]:${bleDevice}".writeToLog(logLevel = L.DEBUG)
                     removeConnectListener(this)
                     _removeMainRunnable(timeoutRunnable)
                     if (!isTimeOut) {
