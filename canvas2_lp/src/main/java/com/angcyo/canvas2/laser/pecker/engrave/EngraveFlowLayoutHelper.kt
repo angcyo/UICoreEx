@@ -4,7 +4,6 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.dialog.toastQQOrMessage
 import com.angcyo.library.ex._string
-import com.angcyo.library.toastQQ
 
 /**
  * 雕刻布局相关操作
@@ -45,7 +44,7 @@ open class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
                         //last
                         renderFlowItems()
                     } else {
-                        toastQQ(error.message)
+                        toastQQOrMessage(error.message)
                     }
                 }
             }

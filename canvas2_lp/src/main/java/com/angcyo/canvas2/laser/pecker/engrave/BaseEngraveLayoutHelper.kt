@@ -37,6 +37,7 @@ import com.angcyo.core.tgStrokeLoadingCaller
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
+import com.angcyo.dialog.toastQQOrMessage
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.RecyclerItemFlowAnimator
 import com.angcyo.dsladapter.find
@@ -69,7 +70,6 @@ import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
-import com.angcyo.library.toastQQ
 import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -132,7 +132,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 if (taskId == flowTaskId) {
                     val engraveCmdError = engraveModel._lastEngraveCmdError
                     if (it.state == EngraveModel.ENGRAVE_STATE_ERROR && engraveCmdError != null) {
-                        toastQQ(engraveCmdError.message)
+                        toastQQOrMessage(engraveCmdError.message)
                         engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
                         renderFlowItems()
                     } else if (engraveFlow == ENGRAVE_FLOW_ENGRAVING) {
@@ -267,7 +267,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             if (error == null) {
                                 changeToTransmitting(transferConfigEntity)
                             } else {
-                                toastQQ(error.message)
+                                toastQQOrMessage(error.message)
                             }
                         }
                     }
@@ -353,7 +353,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
         deviceStateModel.pauseLoopCheckState(true, "雕刻下一个文件")
         ExitCmd().enqueue { bean, error ->
             if (error != null) {
-                toastQQ(error.message)
+                toastQQOrMessage(error.message)
                 transferModel.errorTransfer(TransferException(error))
             } else {
                 //
@@ -371,7 +371,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
         renderFlowItems()
         ExitCmd().enqueue { bean, error ->
             if (error != null) {
-                toastQQ(error.message)
+                toastQQOrMessage(error.message)
                 transferModel.errorTransfer(TransferException(error))
             } else {
                 val flowId = flowTaskId
@@ -461,7 +461,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                             ExitCmd().enqueue { bean, error ->
                                 loadEnd(bean, error)
                                 if (error != null) {
-                                    toastQQ(error.message)
+                                    toastQQOrMessage(error.message)
                                 } else {
                                     engraveFlow = if (_isSingleItemFlow) {
                                         ENGRAVE_FLOW_PREVIEW
@@ -914,13 +914,13 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                                                     singleFlowInfo!!.mount
                                                 ) else engraveModel.startEngrave(taskId)
                                             if (taskEntity.dataList.isNullOrEmpty()) {
-                                                toastQQ(_string(R.string.no_data_engrave))
+                                                toastQQOrMessage(_string(R.string.no_data_engrave))
                                             } else {
                                                 engraveFlow = ENGRAVE_FLOW_ENGRAVING
                                                 renderFlowItems()
                                             }
                                         } else {
-                                            toastQQ(error.message)
+                                            toastQQOrMessage(error.message)
                                         }
                                     }
                                 }
@@ -1069,7 +1069,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         ExitCmd(timeout = HawkEngraveKeys.receiveTimeoutMax).enqueue { bean, error ->
                             loadEnd(bean, error)
                             if (error != null) {
-                                toastQQ(error.message)
+                                toastQQOrMessage(error.message)
                             } else {
                                 engraveModel.finishCurrentIndexEngrave()
                             }
