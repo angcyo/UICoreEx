@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.angcyo.base.dslFHelper
 import com.angcyo.base.hideSoftInput
 import com.angcyo.base.removeThis
+import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.core.component.dslPermissions
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
@@ -60,6 +61,7 @@ class AddWifiConfigFragment : BaseDslFragment() {
                 hideSoftInput()
                 show(AddWifiStateFragment::class) {
                     _adapter.get<AddWifiConfigItem>().firstOrNull()?.let {
+                        HawkEngraveKeys.lastWifiPassword = it.itemWifiPassword
                         putDataParcelable(
                             WifiConfigBean(
                                 bleDevice!!,

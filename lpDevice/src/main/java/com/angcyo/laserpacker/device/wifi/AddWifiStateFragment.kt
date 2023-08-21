@@ -10,6 +10,7 @@ import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
+import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.fragment.bigTitleLayout
 import com.angcyo.core.vmApp
@@ -149,7 +150,9 @@ class AddWifiStateFragment : BaseDslFragment() {
             ) { data, exception ->
                 if (exception == null && data != null) {
                     val text = data.toText()
-                    L.i(text)
+                    "蓝牙配网成功[${configBean.device.device}]:${configBean}:$text".writeToLog(
+                        logLevel = L.INFO
+                    )
                     if (text.isBlank() || text == "B1.1") {
                         toConfigState(AddWifiStateItem.STATE_ERROR)
                     } else {

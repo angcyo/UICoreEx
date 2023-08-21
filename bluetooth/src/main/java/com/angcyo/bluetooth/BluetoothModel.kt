@@ -387,16 +387,18 @@ class BluetoothModel : LifecycleViewModel() {
                 }
 
                 override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
-                    "bleConnectFail:$bleDevice $exception".writeToLog(logLevel = L.DEBUG)
+                    "bleConnectFail:${bleDevice?.device} $exception".writeToLog(logLevel = L.DEBUG)
                 }
 
                 override fun onDisConnected(
                     isActiveDisConnected: Boolean,
-                    device: BleDevice?,
+                    bleDevice: BleDevice?,
                     gatt: BluetoothGatt?,
                     status: Int
                 ) {
-                    "bleDisConnected[$status]:$device $isActiveDisConnected ".writeToLog(logLevel = L.DEBUG)
+                    "bleDisConnected[$status]:${bleDevice?.device} $isActiveDisConnected".writeToLog(
+                        logLevel = L.DEBUG
+                    )
                 }
 
                 override fun onConnectSuccess(
@@ -404,7 +406,7 @@ class BluetoothModel : LifecycleViewModel() {
                     gatt: BluetoothGatt?,
                     status: Int
                 ) {
-                    "bleConnectSuccess[$status]:${bleDevice}".writeToLog(logLevel = L.DEBUG)
+                    "bleConnectSuccess[$status]:${bleDevice?.device}".writeToLog(logLevel = L.DEBUG)
                     removeConnectListener(this)
                     _removeMainRunnable(timeoutRunnable)
                     if (!isTimeOut) {
@@ -529,18 +531,24 @@ class BluetoothModel : LifecycleViewModel() {
                 //订阅通知成功, 开始写入
                 write(bleDevice, serviceUuid, writeUuid, bytes, object : BleWriteCallback() {
                     override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
-                        L.i("蓝牙写入数据[${current}/${total}]:${justWrite?.toString(Charset.defaultCharset())}")
+                        "蓝牙写入数据[${bleDevice.device}][${current}/${total}]:${
+                            justWrite?.toString(
+                                Charset.defaultCharset()
+                            )
+                        }".writeToLog(
+                            logLevel = L.INFO
+                        )
                     }
 
                     override fun onWriteFailure(exception: BleException?) {
-                        L.e(exception)
+                        "蓝牙写入数据失败[${bleDevice.device}]:$exception".writeToLog(logLevel = L.ERROR)
                         doMain {
                             action(null, exception)
                         }
                     }
                 })
             } else if (exception != null) {
-                L.e(exception)
+                "蓝牙写入数据失败[${bleDevice.device}]:$exception".writeToLog(logLevel = L.ERROR)
                 action(null, exception)
             } else {
                 //收到了数据

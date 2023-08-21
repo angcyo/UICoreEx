@@ -357,6 +357,9 @@ object HawkEngraveKeys {
      * 用来用来确定是否配置过wifi设备*/
     var lastWifiIp: String? by HawkPropertyValue<Any, String?>(null)
 
+    /**最后一次配置的wifi密码*/
+    var lastWifiPassword: String? by HawkPropertyValue<Any, String?>(null)
+
     /**是否配置过wifi*/
     val isConfigWifi: Boolean
         get() = !lastWifiIp.isNullOrEmpty()
