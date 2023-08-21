@@ -667,9 +667,12 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                     RowsColumnsRangeItem.isRowColumnInRange(depthIndex + 1, powerIndex + 1)
                 ) {
                     gridBeanList.add(LPElementBean().apply {
+                        val isCut = gridLayerId == LaserPeckerHelper.LAYER_CUT
+                        this.isCut = isCut
+                        //_layerId
                         mtype = LPDataConstant.DATA_TYPE_RECT
                         paintStyle =
-                            if (gridLayerId == LaserPeckerHelper.LAYER_CUT) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
+                            if (isCut) Paint.Style.STROKE.toPaintStyleInt() else Paint.Style.FILL.toPaintStyleInt()
                         width = max(2f, (gridWidth - gridMargin * 2)).toMm()
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
@@ -680,6 +683,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         dataMode =
                             if (HawkEngraveKeys.checkCpu32 && !BuildHelper.isCpu64 && gridLayerId == LaserPeckerHelper.LAYER_PICTURE) LPDataConstant.DATA_MODE_GREY /*32位手机 图片图层使用灰度雕刻*/
                             else gridLayerId.toDataMode()
+
                         printPrecision = numberTextItem.elementBean.printPrecision
                         printCount = PrintCountItem.getPrintCount(depthIndex + 1, powerIndex + 1)
                         printPower = powerValue
