@@ -273,7 +273,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         }
 
         buildString {
-            append("开始雕刻下一个:[${taskId}]")
+            append("开始雕刻下一个:[${taskId}]:${_engraveTaskEntity}")
         }.writeEngraveLog()
         engraveNextData()
     }
