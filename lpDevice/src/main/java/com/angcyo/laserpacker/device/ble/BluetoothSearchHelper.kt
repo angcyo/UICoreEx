@@ -254,7 +254,7 @@ class BluetoothSearchHelper {
         }
 
         //扫描类型
-        if (LibLpHawkKeys.enableWifiConfig) {
+        if (LibLpHawkKeys.enableWifiConfig || WifiApiModel.useWifi()) {
             val scanTypeList = if (HawkEngraveKeys.isConfigWifi) {
                 listOf(
                     ScanType(ScanType.TYPE_WIFI, _string(R.string.type_wifi)),
