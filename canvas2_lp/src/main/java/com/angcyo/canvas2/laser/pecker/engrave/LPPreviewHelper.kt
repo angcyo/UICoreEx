@@ -55,9 +55,12 @@ object LPPreviewHelper {
             //未附着
         }
         //flowLayoutHelper.startPreview(renderFragment)
+        val laserPeckerModel = flowLayoutHelper.laserPeckerModel
         val enablePreviewDebounce =
-            vmApp<LaserPeckerModel>().productInfoData.value?.deviceConfigBean?.enablePreviewDebounce == true
-        if (HawkEngraveKeys.enablePreviewDebounce && enablePreviewDebounce) {
+            laserPeckerModel.productInfoData.value?.deviceConfigBean?.enablePreviewDebounce == true
+        //是否要抖动发送预览指令
+        val debounce = HawkEngraveKeys.enablePreviewDebounce && enablePreviewDebounce
+        if (debounce || laserPeckerModel.haveExDevice()) { //有外设的情况下, 需要抖动发送预览指令
             updatePreview(rendererList, sendCmd = false)
             _debounce {
                 updatePreview(rendererList)
