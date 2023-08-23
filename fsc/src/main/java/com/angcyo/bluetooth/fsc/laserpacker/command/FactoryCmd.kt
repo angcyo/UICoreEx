@@ -80,6 +80,11 @@ data class FactoryCmd(
         fun factoryPCTCmd(enable: Boolean): FactoryCmd {
             return FactoryCmd(state = 0x21, data4 = if (enable) 0x1 else 0x0)
         }
+
+        /**保存对焦光标坐标值（L5有用）*/
+        fun saveFocusCmd(): FactoryCmd {
+            return FactoryCmd(state = 0x11)
+        }
     }
 
     override fun toByteArray(): ByteArray {
@@ -139,6 +144,7 @@ data class FactoryCmd(
         return receiveTimeout ?: super.getReceiveTimeout()
     }
 
+    /**出厂设置：功能码为0x0f*/
     override fun commandFunc(): Byte = 0x0f
 
     override fun toHexCommandString(): String {
@@ -156,6 +162,7 @@ data class FactoryCmd(
                 0x0A.toByte() -> append("激光点跳到指定坐标:x:${x} y:${y}")
                 0x0B.toByte() -> append("激光点预览功率设置:laser:$laser type:${type}")
                 0x10.toByte() -> append("校正数据使能:${if (data1 == 0x1.toByte()) "校正数据" else "计算数据"}")
+                0x11.toByte() -> append("保存对焦光标坐标值")
                 0x21.toByte() -> append("LX1出厂雕刻设置:${(data4 == 0x1.toByte()).toDC()}")
             }
             append(" custom:${custom}")
