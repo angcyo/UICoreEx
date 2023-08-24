@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.QueryCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.toEngraveTypeStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.MiniReceiveParser
 import com.angcyo.bluetooth.fsc.laserpacker.parse.NoDeviceException
+import com.angcyo.bluetooth.fsc.laserpacker.parse.toErrorStateString
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.bluetooth.fsc.parse
@@ -188,8 +189,8 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                         //有异常, 暂停雕刻
                         val pause = !HawkEngraveKeys.ignoreEngraveError
                         buildString {
-                            append("雕刻中出现异常码[${queryState.error}],")
-                            append("暂停雕刻[${pause.toDC()}]${_engraveTaskId}")
+                            append("雕刻中出现异常码[${queryState.error}:${queryState.error.toErrorStateString()}],")
+                            append("暂停雕刻[${pause.toDC()}]:${_engraveTaskId}")
                         }.writeEngraveLog().writeErrorLog()
                         if (pause) {
                             isSendEngraveCmd = false

@@ -216,7 +216,7 @@ class DeviceStateModel : ViewModel() {
         queryStateParser.error.toErrorStateString()?.let {
             //查询到设备异常
             if (lastState?.error != queryStateParser.error) {
-                "机器错误码[${queryStateParser.error}]:$it".writeErrorLog()
+                "机器错误码[${queryStateParser.error}:${queryStateParser.error.toErrorStateString()}]:$it".writeErrorLog()
 
                 //错误码不一样, 才提示
                 if (queryStateParser.error != 1) {
