@@ -11,9 +11,10 @@ import com.angcyo.dialog.TargetWindow
 import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
+import com.angcyo.dsladapter.fullWidthItem
 import com.angcyo.dsladapter.item.itemHaveNewFlag
 import com.angcyo.dsladapter.item.itemNewFlagHawkKeyStr
-import com.angcyo.item.DslBlackButtonItem
+import com.angcyo.item.DslGridItem
 import com.angcyo.item.DslSwitchInfoItem
 import com.angcyo.item.style.itemInfoText
 import com.angcyo.item.style.itemSwitchChangedAction
@@ -58,8 +59,11 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
 
             val enableFun = LaserPeckerConfigHelper.readDeviceSettingConfig()?.enableFun
             if (HawkEngraveKeys.enableParameterComparisonTable || enableFun.have("_ParameterComparisonTable_")) {
-                DslBlackButtonItem()() {
-                    itemButtonText = _string(R.string.add_parameter_comparison_table)
+                DslGridItem()() {
+                    itemText = "PCT"
+                    itemIcon = R.drawable.ic_parameter_comparison_table
+                    itemTooltipText = _string(R.string.add_parameter_comparison_table)
+                    itemImagePadding = 0
                     itemClick = {
                         window.dismissWindow()
                         it.context.addParameterComparisonTableDialog {
@@ -67,27 +71,58 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         }
                     }
                 }
+                /*DslBlackButtonItem()() {
+                    itemButtonText = _string(R.string.add_parameter_comparison_table)
+                    itemClick = {
+                        window.dismissWindow()
+                        it.context.addParameterComparisonTableDialog {
+                            renderDelegate = delegate
+                        }
+                    }
+                }*/
             }
             if (HawkEngraveKeys.enableMultiplicationTable || enableFun.have("_MultiplicationTable_")) {
-                DslBlackButtonItem()() {
-                    itemButtonText = _string(R.string.add_multiplication_table)
+                DslGridItem()() {
+                    itemText = "MT"
+                    itemIcon = R.drawable.ic_parameter_comparison_table
+                    itemTooltipText = _string(R.string.add_multiplication_table)
+                    itemImagePadding = 0
                     itemClick = {
                         window.dismissWindow()
                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
                         ParameterComparisonTableDialogConfig.addMultiplicationTable(delegate)
                     }
                 }
+                /*DslBlackButtonItem()() {
+                    itemButtonText = _string(R.string.add_multiplication_table)
+                    itemClick = {
+                        window.dismissWindow()
+                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                        ParameterComparisonTableDialogConfig.addMultiplicationTable(delegate)
+                    }
+                }*/
             }
 
             if (HawkEngraveKeys.enableVisualChartTable || enableFun.have("_VisualChartTable_")) {
-                DslBlackButtonItem()() {
-                    itemButtonText = _string(R.string.add_visual_chart)
+                DslGridItem()() {
+                    itemText = "VA"
+                    itemIcon = R.drawable.ic_parameter_comparison_table
+                    itemTooltipText = _string(R.string.add_visual_chart)
+                    itemImagePadding = 0
                     itemClick = {
                         window.dismissWindow()
                         HawkEngraveKeys.enableSingleItemTransfer = true //必须
                         ParameterComparisonTableDialogConfig.addVisualChart(delegate)
                     }
                 }
+                /*DslBlackButtonItem()() {
+                    itemButtonText = _string(R.string.add_visual_chart)
+                    itemClick = {
+                        window.dismissWindow()
+                        HawkEngraveKeys.enableSingleItemTransfer = true //必须
+                        ParameterComparisonTableDialogConfig.addVisualChart(delegate)
+                    }
+                }*/
             }
             DslSwitchInfoItem()() {
                 itemInfoText = _string(R.string.canvas_cloud_storage)
@@ -99,6 +134,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     HawkEngraveKeys.enableCloudStorage = it
                     itemHaveNewFlag = false
                 }
+                fullWidthItem()
             }
             if (HawkEngraveKeys.enablePixelUnit || enableFun.have("_PixelUnit_")) {
                 DslSwitchInfoItem()() {
@@ -122,6 +158,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                             }
                         )
                     }
+                    fullWidthItem()
                 }
             }
             DslSwitchInfoItem()() {
@@ -152,6 +189,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         UMEvent.MM_UNIT.umengEventValue()
                     }
                 }
+                fullWidthItem()
             }
             DslSwitchInfoItem()() {
                 itemInfoText = _string(R.string.canvas_grid)
@@ -169,6 +207,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                     }
                     delegate?.refresh()
                 }
+                fullWidthItem()
             }
             DslSwitchInfoItem()() {
                 val smartAssistant = delegate?.controlManager?.smartAssistantComponent
@@ -182,6 +221,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                         UMEvent.SMART_ASSISTANT.umengEventValue()
                     }
                 }
+                fullWidthItem()
             }
         }
     }
