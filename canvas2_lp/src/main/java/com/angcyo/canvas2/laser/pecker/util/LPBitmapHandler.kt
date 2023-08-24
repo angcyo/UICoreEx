@@ -248,7 +248,9 @@ object LPBitmapHandler {
         onDismissAction: () -> Unit = {}
     ) {
         val element = renderer.lpBitmapElement() ?: return
-        val operateBitmap = element.originBitmap ?: return
+        val operateBitmap =
+            if (HawkEngraveKeys.enableBitmapFlowHandle) element.getDrawBitmap() else element.originBitmap
+        operateBitmap ?: return
         val bean = element.elementBean
         val context = anchor.context
 
