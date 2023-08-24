@@ -1,0 +1,13 @@
+apply from: allGradle.libBase
+
+android {
+    //AGP 8.x 必须指定命名空间
+    namespace 'com.angcyo.jxl'
+}
+
+dependencies {
+    implementation project(allModule.library)
+
+    //https://mvnrepository.com/artifact/net.sourceforge.jexcelapi/jxl
+    api "net.sourceforge.jexcelapi:jxl:2.6.12"
+}
