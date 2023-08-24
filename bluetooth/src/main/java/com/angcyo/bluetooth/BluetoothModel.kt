@@ -548,7 +548,7 @@ class BluetoothModel : LifecycleViewModel() {
                     }
                 })
             } else if (exception != null) {
-                "蓝牙写入数据失败[${bleDevice.device}]:$exception".writeToLog(logLevel = L.ERROR)
+                "蓝牙写入数据监听失败[${bleDevice.device}]:$exception".writeToLog(logLevel = L.ERROR)
                 action(null, exception)
             } else {
                 //收到了数据
