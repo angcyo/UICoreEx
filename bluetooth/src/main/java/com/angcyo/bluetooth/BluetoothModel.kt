@@ -459,11 +459,13 @@ class BluetoothModel : LifecycleViewModel() {
     /**notify回调*/
     private val notifyListenerList = CopyOnWriteArraySet<INotifyAction>()
 
-    fun addNotifyListener(listener: INotifyAction) {
+    fun addNotifyListener(listener: INotifyAction?) {
+        listener ?: return
         notifyListenerList.add(listener)
     }
 
-    fun removeNotifyListener(listener: INotifyAction) {
+    fun removeNotifyListener(listener: INotifyAction?) {
+        listener ?: return
         notifyListenerList.remove(listener)
     }
 
@@ -479,23 +481,27 @@ class BluetoothModel : LifecycleViewModel() {
         notify(bleDevice, serviceUuid, notifyUuid, object : BleNotifyCallback() {
             override fun onNotifySuccess() {
                 notifyListenerList.forEach {
-                    it(null, null)
+                    it(null, null) //监听数据成功
                 }
             }
 
             override fun onNotifyFailure(exception: BleException?) {
                 notifyListenerList.forEach {
-                    it(null, exception)
+                    it(null, exception) //监听数据失败
                 }
             }
 
             override fun onCharacteristicChanged(data: ByteArray?) {
+                "蓝牙收到Notify数据[${bleDevice.device}]:${data?.toString(Charset.defaultCharset())}".writeToLog(
+                    logLevel = L.INFO
+                )
                 notifyListenerList.forEach {
-                    it(data, null)
+                    it(data, null) //收到数据
                 }
             }
         })
-        //removeNotifyListener(listener)
+        //removeNotifyListener(listener) //请手动移除监听
+        //stopNotify(bleDevice, serviceUuid, notifyUuid) //请手动停止监听
         return listener
     }
 
@@ -526,18 +532,24 @@ class BluetoothModel : LifecycleViewModel() {
         bytes: ByteArray,
         action: INotifyAction
     ) {
-        listenerNotify(bleDevice, serviceUuid, notifyUuid) { data, exception ->
+        var listener: INotifyAction? = null
+
+        //停止监听
+        fun stopListener() {
+            removeNotifyListener(listener)
+            stopNotify(bleDevice, serviceUuid, notifyUuid) //自动停止监听
+        }
+
+        listener = listenerNotify(bleDevice, serviceUuid, notifyUuid) { data, exception ->
             if (data == null && exception == null) {
-                //订阅通知成功, 开始写入
+                //订阅通知成功之后, 开始写入数据
                 write(bleDevice, serviceUuid, writeUuid, bytes, object : BleWriteCallback() {
                     override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
                         "蓝牙写入数据[${bleDevice.device}][${current}/${total}]:${
-                            justWrite?.toString(
-                                Charset.defaultCharset()
-                            )
-                        }".writeToLog(
-                            logLevel = L.INFO
-                        )
+                            justWrite?.toString(Charset.defaultCharset())
+                        }".writeToLog(logLevel = L.INFO)
+
+                        //写入数据成功之后, 等待数据返回
                     }
 
                     override fun onWriteFailure(exception: BleException?) {
@@ -545,14 +557,16 @@ class BluetoothModel : LifecycleViewModel() {
                         doMain {
                             action(null, exception)
                         }
+                        stopListener()
                     }
                 })
             } else if (exception != null) {
                 "蓝牙写入数据监听失败[${bleDevice.device}]:$exception".writeToLog(logLevel = L.ERROR)
+                stopListener()
                 action(null, exception)
             } else {
                 //收到了数据
-                stopNotify(bleDevice, serviceUuid, notifyUuid)//自动停止监听
+                stopListener()
                 action(data, null)
             }
         }
