@@ -9,6 +9,8 @@ import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.component.hawk.HawkPropertyValue
 import com.angcyo.library.component.hawk.LibHawkKeys
+import com.angcyo.library.ex.hawkGetList
+import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.isDebug
 import com.angcyo.objectbox.laser.pecker.bean.TransferLayerConfigBean
 import com.angcyo.objectbox.laser.pecker.bean.getLayerConfigList
@@ -373,6 +375,17 @@ object HawkEngraveKeys {
      * ```
      * */
     var scanIpRange: String? by HawkPropertyValue<Any, String?>("1~254") //1~254
+
+    /**扫描成功的ip缓存, 方便下一次快速扫描*/
+    private var _scanIpCache: String? by HawkPropertyValue<Any, String?>(null)
+
+    val scanIpCacheList: List<String>
+        get() = HawkEngraveKeys::scanIpCache.name.hawkGetList()
+
+    var scanIpCache: String = ""
+        set(value) {
+            HawkEngraveKeys::scanIpCache.name.hawkPutList(value)
+        }
 
     /**扫描开始的ip地址*/
     var scanStartIp: Int by HawkPropertyValue<Any, Int>(100)

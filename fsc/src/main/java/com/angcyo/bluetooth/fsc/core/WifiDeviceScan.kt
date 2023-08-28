@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.http.rx.doMain
 import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.http.tcp.tcpSend
+import com.angcyo.library.L
 import com.angcyo.library.annotation.ThreadDes
 import com.angcyo.library.component.RConcurrentTask
 import com.angcyo.library.ex.clamp
@@ -114,6 +115,12 @@ class WifiDeviceScan {
                     ipList.add(deviceAddress)
                 }
             }
+            //上一次扫描成功的设备
+            HawkEngraveKeys.scanIpCacheList.forEach {
+                ipList.add(it)
+            }
+
+            //默认的扫描范围
             for (i in startIp..max) {
                 ipList.add("$forepartIp.$i")
             }
@@ -121,7 +128,9 @@ class WifiDeviceScan {
                 ipList.add("$forepartIp.$i")
             }
             ipList.forEach { ip ->
-                queue.add(ScanTask(ip, port))
+                if (ip.startsWith(forepartIp)) {
+                    queue.add(ScanTask(ip, port))
+                }
             }
 
             scanTask = RConcurrentTask(queue, onFinish = {
@@ -151,7 +160,7 @@ class WifiDeviceScan {
     inner class ScanTask(val ip: String, val port: Int) : Runnable {
         override fun run() {
             syncSingle {
-                //L.w("开始扫描:$ip:$port")
+                L.d("开始扫描:$ip:$port")
                 tcpSend(ip, port, QueryCmd.deviceName.toByteArray()) { receiveBytes, error ->
                     val bytes = WaitReceivePacket.checkReceiveFinish(
                         receiveBytes,
@@ -163,6 +172,7 @@ class WifiDeviceScan {
                             val parser = it.parser<QueryDeviceNameParser>()
                             val deviceName = parser?.deviceName ?: "LP5-$ip"
                             "扫描结果[${it.size()}]:$ip:$port $deviceName".writeBleLog()
+                            HawkEngraveKeys.scanIpCache = ip
                             scanDeviceAction(TcpDevice(ip, port, deviceName))
                         }
                     }
