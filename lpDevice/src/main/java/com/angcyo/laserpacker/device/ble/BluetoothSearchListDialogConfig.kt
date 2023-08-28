@@ -9,6 +9,7 @@ import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.getWifiIP
+import com.angcyo.library.ex.getWifiSSID
 import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.span.span
@@ -35,10 +36,15 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
         dialogTitle = if (isDebug()) {
             span {
                 append(_string(R.string.discover_devices))
+                val ssid = getWifiSSID()
                 getWifiIP()?.let {
                     appendLine()
-                    append(it) {
-                        fontSize = 12 * dpi
+                    if (ssid.isNullOrEmpty()) {
+                        append(it)
+                    } else {
+                        append("$ssid/$it") {
+                            fontSize = 12 * dpi
+                        }
                     }
                 }
             }
