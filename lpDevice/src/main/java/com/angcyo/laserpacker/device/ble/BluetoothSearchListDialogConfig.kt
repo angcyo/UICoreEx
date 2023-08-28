@@ -7,7 +7,11 @@ import com.angcyo.dialog.configBottomDialog
 import com.angcyo.laserpacker.device.R
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.getWifiIP
+import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.span.span
 
 /**
  * SPP模式蓝牙搜索列表界面
@@ -28,7 +32,19 @@ class BluetoothSearchListDialogConfig(context: Context? = null) : BaseDialogConf
 
     init {
         dialogLayoutId = R.layout.dialog_bluetooth_search_list_layout
-        dialogTitle = _string(R.string.discover_devices)
+        dialogTitle = if (isDebug()) {
+            span {
+                append(_string(R.string.discover_devices))
+                getWifiIP()?.let {
+                    appendLine()
+                    append(it) {
+                        fontSize = 12 * dpi
+                    }
+                }
+            }
+        } else {
+            _string(R.string.discover_devices)
+        }
     }
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
