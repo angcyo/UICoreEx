@@ -647,7 +647,7 @@ class TransferModel : ViewModel() {
                 foregroundColor = EngraveTransitionHelper.accentColor
             }
         }.apply { vmApp<DataShareModel>().shareTextOnceData.postValue(this) }
-        val fileModeCmd = FileModeCmd(sizeInt)
+        val fileModeCmd = FileModeCmd(sizeInt - LaserPeckerHelper.PACKET_FILE_HEAD_SIZE)
         fileModeCmd.enqueue(FLAG_NORMAL or FLAG_CLEAR_BEFORE) { bean, error ->
             span {
                 append("进入大数据[$sizeString]模式[${(error == null).toDC()}],")

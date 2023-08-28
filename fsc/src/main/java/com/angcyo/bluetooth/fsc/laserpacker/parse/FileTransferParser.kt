@@ -19,6 +19,7 @@ data class FileTransferParser(
     override fun parse(packet: ByteArray): FileTransferParser? {
         return try {
             packet.reader {
+                //AABB 08 05 01 00 0000000006
                 offset(LaserPeckerHelper.packetHeadSize)//偏移头部
                 offset(1)//偏移长度
                 func = readByte()
