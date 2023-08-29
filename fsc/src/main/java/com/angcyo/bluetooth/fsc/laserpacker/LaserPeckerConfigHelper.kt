@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceSettingBean
 import com.angcyo.core.Debug
+import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
 import com.angcyo.http.gitee.Gitee
@@ -176,5 +177,9 @@ object LaserPeckerConfigHelper {
 }
 
 /**设备配置, App配置信息*/
+val _deviceConfigBean: DeviceConfigBean?
+    get() = vmApp<LaserPeckerModel>().productInfoData.value?.deviceConfigBean
+
+/**设备设置配置, App配置信息*/
 val _deviceSettingBean: DeviceSettingBean?
     get() = LaserPeckerConfigHelper.readDeviceSettingConfig()

@@ -21,6 +21,7 @@ import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog.numberInputDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.dsladapter.paddingHorizontal
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.engrave2.model.TransferModel
 import com.angcyo.engrave2.transition.EngraveTransitionHelper
@@ -33,6 +34,7 @@ import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.device.engraveLoadingAsync
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex.MB
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
@@ -125,10 +127,12 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
             }
         })
 
+        val padding = 2 * dpi
         val itemList = mutableListOf<DslAdapterItem>()
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_grey
             itemText = "转普通"
+            paddingHorizontal(padding)
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmap(renderElement, transferConfigEntity)
@@ -138,6 +142,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_black_white
             itemText = "转线段"
+            paddingHorizontal(padding)
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmapPath(
@@ -150,6 +155,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_dithering
             itemText = "转抖动"
+            paddingHorizontal(padding)
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToBitmapDithering(
@@ -163,6 +169,7 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_dithering
             itemText = "转抖动"
+            paddingHorizontal(padding)
             itemNewHawkKeyStr = "use_new_dithering"
             itemClick = {
                 wrapLoading {
@@ -177,12 +184,28 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
         itemList.add(CanvasIconItem().apply {
             itemIco = R.drawable.canvas_bitmap_gcode
             itemText = "转GCode"
+            paddingHorizontal(padding)
             itemClick = {
                 wrapLoading {
                     EngraveTransitionHelper.transitionToGCode(
                         renderElement,
                         transferConfigEntity,
                         TransitionParam()
+                    )
+                }
+            }
+        })
+        itemList.add(CanvasIconItem().apply {
+            itemIco = R.drawable.canvas_bitmap_gcode
+            itemText = "转GCode切割"
+            paddingHorizontal(padding)
+            itemNewHawkKeyStr = "use_gcode_cut_data"
+            itemClick = {
+                wrapLoading {
+                    EngraveTransitionHelper.transitionToGCode(
+                        renderElement,
+                        transferConfigEntity,
+                        TransitionParam(enableGCodeCutData = true)
                     )
                 }
             }

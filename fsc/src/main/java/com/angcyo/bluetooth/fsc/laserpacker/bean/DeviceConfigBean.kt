@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import androidx.annotation.Keep
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserTypeInfo
 import com.angcyo.bluetooth.fsc.laserpacker.data.PxInfo
 import com.angcyo.library.annotation.MM
@@ -78,6 +79,14 @@ data class DeviceConfigBean(
      * */
     var enablePreviewDebounce: Boolean = false,
 
+    /**是否要使用GCode切割指令
+     * [com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd.Companion.gcodeData]*/
+    var useCutCmd: Boolean = false,
+
+    /**是否要使用GCode切割数据
+     * [com.angcyo.gcode.GCodeWriteHandler.enableGCodeCut]*/
+    var useCutData: Boolean = false,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]
@@ -112,3 +121,9 @@ data class DeviceConfigBean(
         return LayerConfigBean(layerId, dpiList?.filterModuleDpiList())
     }
 }
+
+val _useCutData: Boolean
+    get() = _deviceConfigBean?.useCutData == true
+
+val _useCutCmd: Boolean
+    get() = _deviceConfigBean?.useCutCmd == true

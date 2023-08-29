@@ -63,6 +63,9 @@ data class TransitionParam(
      * [com.angcyo.engrave2.transition.EngraveTransitionHelper.transitionToGCode]*/
     val enableGCodeShrink: Boolean = HawkEngraveKeys.enableGCodeShrink,
 
+    /**是否使用GCode切割数据*/
+    val enableGCodeCutData: Boolean = false,
+
     /**GCode数据额外需要偏移的距离*/
     @Pixel
     val gcodeOffsetLeft: Float = 0f,

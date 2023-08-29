@@ -4,6 +4,8 @@ import android.graphics.Paint
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker.bean._useCutData
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview.GCodeDataOffsetItem
@@ -207,7 +209,8 @@ object LPTransferHelper {
                         transferConfigEntity,
                         TransitionParam(
                             gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
-                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop
+                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
+                            enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData
                         )
                     )
                 }

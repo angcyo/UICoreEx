@@ -11,7 +11,7 @@ import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean._useCutCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FileModeCmd
@@ -126,8 +126,7 @@ class TransferModel : ViewModel() {
                     lines,
                     bytes,
                     dpi,
-                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT &&
-                            vmApp<LaserPeckerModel>().isCSeries() /*C系列才有专属切割数据*/
+                    transferDataEntity.layerId == LaserPeckerHelper.LAYER_CUT && _useCutCmd /*C系列才有专属切割数据*/
                 )
                 //0x40 黑白画, 线段数据
                 DataCmd.ENGRAVE_TYPE_BITMAP_PATH -> DataCmd.bitmapPathData(

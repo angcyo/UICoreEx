@@ -126,6 +126,7 @@ class SimpleTransition : ITransition {
         FileOutputStream(outputFile, false).writer().use { writer ->
             gCodeHandler.writer = writer
             gCodeHandler.enableGCodeShrink = params.enableGCodeShrink
+            gCodeHandler.enableGCodeCut = params.enableGCodeCutData
             gCodeHandler.pathStrokeToVector(
                 targetPathList,
                 true,
