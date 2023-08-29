@@ -176,5 +176,5 @@ object LaserPeckerConfigHelper {
 }
 
 /**设备配置, App配置信息*/
-val deviceSettingBean: DeviceSettingBean?
+val _deviceSettingBean: DeviceSettingBean?
     get() = LaserPeckerConfigHelper.readDeviceSettingConfig()

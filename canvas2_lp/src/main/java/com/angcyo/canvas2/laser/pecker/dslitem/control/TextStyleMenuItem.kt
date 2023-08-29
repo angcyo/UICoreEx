@@ -1,7 +1,7 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.graphics.Paint
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.canvasMenuPopupWindow
@@ -29,7 +29,7 @@ class TextStyleMenuItem : BaseTextControlItem() {
 
                 anchor.context.canvasMenuPopupWindow(anchor) {
                     renderAdapterAction = {
-                        val closeTextEditItemsFun = deviceSettingBean?.closeTextEditItemsFun
+                        val closeTextEditItemsFun = _deviceSettingBean?.closeTextEditItemsFun
                         //
                         if (!closeTextEditItemsFun.have("_solid_")) {
                             TextStrokeStyleItem()() {

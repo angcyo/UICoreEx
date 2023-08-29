@@ -3,7 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.content.Context
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.LPConstant
@@ -57,7 +57,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
         super.initContentLayout(window, viewHolder)
         viewHolder.rv(R.id.lib_recycler_view)?.renderDslAdapter {
 
-            val enableFun = deviceSettingBean?.enableFun
+            val enableFun = _deviceSettingBean?.enableFun
             if (HawkEngraveKeys.enableParameterComparisonTable || enableFun.have("_ParameterComparisonTable_")) {
                 DslGridItem()() {
                     itemText = "PCT"

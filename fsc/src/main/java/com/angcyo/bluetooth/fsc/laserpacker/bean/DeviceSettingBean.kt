@@ -1,5 +1,8 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.library.component.pad.isInPadMode
+
 /**
  * 设备设置界面相关的一些设置配置信息
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -100,3 +103,6 @@ data class DeviceSettingBean(
 
     //endregion---功能开关---
 )
+
+val _enableQuickOperation: Boolean
+    get() = _deviceSettingBean?.enableQuickOperation == true && !isInPadMode()

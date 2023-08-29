@@ -5,7 +5,7 @@ import android.os.Build
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.core.component.DslLayout
 import com.angcyo.core.component.file.appFilePath
 import com.angcyo.core.component.renderLayout
@@ -58,7 +58,7 @@ object DeviceHelper {
 
     /**批量雕刻指令支持的固件范围*/
     val batchEngraveSupportFirmware = HawkEngraveKeys.batchEngraveSupportFirmware
-        ?: deviceSettingBean?.lpBatchEngraveFirmware
+        ?: _deviceSettingBean?.lpBatchEngraveFirmware
 
     //endregion---常量属性---
 

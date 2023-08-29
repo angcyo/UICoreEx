@@ -8,7 +8,7 @@ import com.angcyo.base.removeThis
 import com.angcyo.bluetooth.BluetoothModel
 import com.angcyo.bluetooth.fsc.WifiApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.core.component.file.writeToLog
 import com.angcyo.core.fragment.BaseDslFragment
@@ -141,7 +141,7 @@ class AddWifiStateFragment : BaseDslFragment() {
     private fun sendConfig(configBean: WifiConfigBean) {
         val bleName = DeviceConnectTipActivity.formatDeviceName(configBean.device.name)
         if (DeviceConnectTipActivity.isLp5Device(configBean.device.name)) {
-            val deviceConfig = deviceSettingBean!!
+            val deviceConfig = _deviceSettingBean!!
             bleModel.writeAndListener(
                 configBean.device,
                 deviceConfig.lp5BleServiceUuid,

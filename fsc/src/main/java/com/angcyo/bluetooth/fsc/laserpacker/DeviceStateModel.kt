@@ -369,7 +369,7 @@ class DeviceStateModel : ViewModel() {
 
     /**是否是切割模块*/
     fun isCutModule(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
-        val cut = deviceSettingBean?.cutLayerModule?.split(",")
+        val cut = _deviceSettingBean?.cutLayerModule?.split(",")
             ?.contains("$moduleState") == true
         return cut
     }

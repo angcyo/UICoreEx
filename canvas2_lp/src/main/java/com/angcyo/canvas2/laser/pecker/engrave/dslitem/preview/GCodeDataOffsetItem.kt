@@ -3,7 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 import android.widget.TextView
 import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.dialog.TargetWindow
@@ -65,7 +65,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
 
         //
         itemHolder.click(R.id.lib_label_view) { view ->
-            val config = deviceSettingBean
+            val config = _deviceSettingBean
             val isZh = LanguageModel.getCurrentLanguage().lowercase().startsWith("zh")
             val url = if (isZh) {
                 config?.dataOffsetHelpUrlZh ?: config?.dataOffsetHelpUrl

@@ -941,9 +941,9 @@ object LaserPeckerHelper {
     /**支持的固件版本范围*/
     fun supportFirmwareRange(): String? {
         return LibLpHawkKeys.lpSupportFirmware ?: if (isDebug()) {
-            deviceSettingBean?.lpSupportFirmwareDebug
+            _deviceSettingBean?.lpSupportFirmwareDebug
         } else {
-            deviceSettingBean?.lpSupportFirmware
+            _deviceSettingBean?.lpSupportFirmware
         }
     }
 
