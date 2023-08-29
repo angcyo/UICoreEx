@@ -615,6 +615,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**撤销item*/
     private var _undoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_undo_ico
+        itemTooltipText = _string(R.string.canvas_undo)
         itemEnable = false
 
         _undoCanvasItem = this
@@ -626,6 +627,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**重做item*/
     private var _redoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_redo_ico
+        itemTooltipText = _string(R.string.canvas_redo)
         itemEnable = false
 
         _redoCanvasItem = this
@@ -637,6 +639,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**复制item*/
     private var _copyItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_copy_svg
+        itemTooltipText = _string(R.string.canvas_copy)
         itemClick = {
             copyRenderer()
         }
@@ -645,6 +648,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**可见性item*/
     private var _visibleItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_visible_svg
+        itemTooltipText = _string(R.string.canvas_gone)
         itemClick = {
             visibleRenderer()
         }

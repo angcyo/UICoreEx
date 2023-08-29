@@ -23,6 +23,8 @@
     <string name="canvas_layer">Layers</string>
     <string name="canvas_undo">Undo</string>
     <string name="canvas_redo">Redo</string>
+    <string name="canvas_copy">Copy</string>
+    <string name="canvas_gone">Gone</string>
     <string name="canvas_setting">Settings</string>
     <string name="canvas_line">Line</string>
     <string name="canvas_oval">Oval</string>

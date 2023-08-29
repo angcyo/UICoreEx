@@ -23,6 +23,8 @@
     <string name="canvas_layer">图层</string>
     <string name="canvas_undo">撤销</string>
     <string name="canvas_redo">重做</string>
+    <string name="canvas_copy">复制</string>
+    <string name="canvas_gone">隐藏</string>
     <string name="canvas_setting">设置</string>
     <string name="canvas_line">线条</string>
     <string name="canvas_oval">椭圆</string>
