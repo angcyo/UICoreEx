@@ -272,14 +272,20 @@ class WaitReceivePacket(
                 if (hexString == dataHead) {
                     //数据头
                     if (checkFunc) {
-                        //对比func功能码, 确保收到的指令数据和返回的数据是统一类型
-                        val commandFunc = func ?: sendPacket[headDataSize + 1]//命令的功能码
-                        val receiveFunc = bytes[index + headDataSize + 1]//接收到的数据功能码
+                        //AABB Len Fun
+                        val funcIndex = index + headDataSize + 1 //功能码的数据索引
+                        if (bytes.size > funcIndex) {
+                            //对比func功能码, 确保收到的指令数据和返回的数据是统一类型
+                            val commandFunc = func ?: sendPacket[headDataSize + 1]//命令的功能码
+                            val receiveFunc = bytes[funcIndex]//接收到的数据功能码
 
-                        if (commandFunc == receiveFunc) {
-                            headHexString = hexString
-                            headStartIndex = index
-                            break
+                            if (commandFunc == receiveFunc) {
+                                headHexString = hexString
+                                headStartIndex = index
+                                break
+                            }
+                        } else {
+                            //功能码数据还未接收到, 数据不完整,继续等待...
                         }
                     } else {
                         headHexString = hexString
