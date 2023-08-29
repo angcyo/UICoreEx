@@ -780,9 +780,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             bean.dpi =
                 LayerHelper.getProductLastLayerDpi(bean._layerId ?: LaserPeckerHelper.LAYER_LINE)
             if (bean.dataMode == null) {
+                bean.printPrecision = HawkEngraveKeys.lastPrecision
                 bean.printPower = HawkEngraveKeys.lastPower
                 bean.printDepth = HawkEngraveKeys.lastDepth
-                bean.printPrecision = HawkEngraveKeys.lastPrecision
                 bean.printCount = 1
             }
         }
