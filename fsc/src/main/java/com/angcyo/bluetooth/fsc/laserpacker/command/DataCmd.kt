@@ -4,7 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.data.toDpiInt
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.component.byteWriter
-import com.angcyo.library.component.hawk.LibLpHawkKeys
+import com.angcyo.library.ex.toHexString
 import com.angcyo.library.ex.trimAndPad
 
 /**
@@ -429,6 +429,35 @@ data class DataCmd(
                 padLength(64) //需要64个字节
             }*/
             return DataCmd(byteArrayOf(), data)
+        }
+
+        //---
+
+        /**生成指定个字节数的测试数据指令
+         * [size] 字节数量*/
+        fun testDataCmd(size: Int): DataCmd {
+            //[00000000][00000001]
+            val data = ByteArray(size)
+            var count = 0
+            var num = 0
+            while (count < size) {
+                val before = '['
+                data[count++] = before.code.toByte()
+                if (count >= size) {
+                    break
+                }
+                val numHexString = num.toHexString(8)
+                for (element in numHexString) {
+                    data[count++] = element.code.toByte()
+                    if (count >= size) {
+                        break
+                    }
+                }
+                num++
+                val after = ']'
+                data[count++] = after.code.toByte()
+            }
+            return data(data)
         }
     }
 

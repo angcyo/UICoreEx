@@ -658,7 +658,8 @@ class TransferModel : ViewModel() {
                     if (it.isIntoFileMode()) {
                         //成功进入大数据模式, 开始发送数据
                         LTime.tick()
-                        val dataCmd = DataCmd(ByteArray(0), ByteArray(sizeInt))
+                        //DataCmd(ByteArray(0), ByteArray(sizeInt))
+                        val dataCmd = DataCmd.testDataCmd(sizeInt)
                         var minSpeed: Float? = null
                         var maxSpeed: Float? = null
                         val speedList = mutableListOf<Float>()
