@@ -57,6 +57,7 @@ class AddWifiConfigFragment : BaseDslFragment() {
         super.initBaseView(savedInstanceState)
 
         _vh.click(R.id.next_button) {
+            _vh.focused(it)
             dslFHelper {
                 hideSoftInput()
                 show(AddWifiStateFragment::class) {
