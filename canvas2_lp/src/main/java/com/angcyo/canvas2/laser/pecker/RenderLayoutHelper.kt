@@ -3,7 +3,8 @@ package com.angcyo.canvas2.laser.pecker
 import android.graphics.Matrix
 import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.bean._enableQuickOperation
 import com.angcyo.canvas.render.core.BaseCanvasRenderListener
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
@@ -105,7 +106,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             hookUpdateDepend(this)
 
             //需要关闭的功能
-            val closeCanvasItemsFun = deviceSettingBean?.closeCanvasItemsFun
+            val closeCanvasItemsFun = _deviceSettingBean?.closeCanvasItemsFun
 
             if (!closeCanvasItemsFun.have("_image_")) {
                 AddBitmapItem()() {
@@ -359,6 +360,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderControlHelper.bindControlLayout()
                 renderLayerListLayout()
 
+                if (_enableQuickOperation) {
+                    _updateUndoLayout()
+                }
+
                 //更新预览的范围
                 val deviceStateModel = renderFragment.flowLayoutHelper.deviceStateModel
                 if (deviceStateModel.deviceStateData.value?.isModeEngravePreview() == true) {
@@ -610,7 +615,6 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**撤销item*/
     private var _undoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_undo_ico
-        itemText = _string(R.string.canvas_undo)
         itemEnable = false
 
         _undoCanvasItem = this
@@ -622,12 +626,27 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**重做item*/
     private var _redoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_redo_ico
-        itemText = _string(R.string.canvas_redo)
         itemEnable = false
 
         _redoCanvasItem = this
         itemClick = {
             undoManager?.redo()
+        }
+    }
+
+    /**复制item*/
+    private var _copyItem: CanvasIconItem = CanvasIconItem().apply {
+        itemIco = R.drawable.canvas_copy_svg
+        itemClick = {
+            copyRenderer()
+        }
+    }
+
+    /**可见性item*/
+    private var _visibleItem: CanvasIconItem = CanvasIconItem().apply {
+        itemIco = R.drawable.canvas_visible_svg
+        itemClick = {
+            visibleRenderer()
         }
     }
 
@@ -652,8 +671,23 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     /**undo redo*/
     private fun _updateUndoLayout() {
         doMain {
+            val list = mutableListOf(_undoCanvasItem, _redoCanvasItem)
+
+            if (_enableQuickOperation) {
+                _undoCanvasItem.itemText = null
+                _redoCanvasItem.itemText = null
+
+                if (haveControlRenderer()) {
+                    list.add(_copyItem)
+                    list.add(_visibleItem)
+                }
+            } else {
+                _undoCanvasItem.itemText = _string(R.string.canvas_undo)
+                _redoCanvasItem.itemText = _string(R.string.canvas_redo)
+            }
+
             _rootViewHolder?.group(R.id.undo_wrap_layout)
-                ?.resetDslItem(listOf(_undoCanvasItem, _redoCanvasItem))
+                ?.resetDslItem(list)
         }
     }
 
@@ -820,12 +854,44 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 delegate.renderManager.removeElementRenderer(list, Reason.user, Strategy.normal)
             }
             vh.click(R.id.layer_control_visible_view) {
-                delegate.renderManager.updateRendererVisible(list, false, Reason.user, delegate)
+                delegate.renderManager.updateRendererVisible(
+                    list,
+                    false,
+                    Reason.user,
+                    Strategy.normal,
+                    delegate
+                )
             }
             vh.click(R.id.layer_control_copy_view) {
                 LPRendererHelper.copyRenderer(delegate, list, true)
             }
         }
+    }
+
+    /**是否有控制的渲染器*/
+    private fun haveControlRenderer(): Boolean {
+        val delegate = delegate ?: return false
+        val list = delegate.selectorManager.getSelectorRendererList(false)
+        return list.isNotEmpty()
+    }
+
+    /**复制渲染器*/
+    private fun copyRenderer() {
+        val delegate = delegate ?: return
+        val list = delegate.selectorManager.getSelectorRendererList(false)
+        LPRendererHelper.copyRenderer(delegate, list, true)
+    }
+
+    private fun visibleRenderer() {
+        val delegate = delegate ?: return
+        val list = delegate.selectorManager.getSelectorRendererList(false)
+        delegate.renderManager.updateRendererVisible(
+            list,
+            false,
+            Reason.user,
+            Strategy.normal,
+            delegate
+        )
     }
 
     //endregion---Layer---
