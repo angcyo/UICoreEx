@@ -480,7 +480,7 @@ object EngraveTransitionHelper {
             val gcodeText = provider.getEngraveGCode()
             val adjust = !HawkEngraveKeys.enableGCodeTransform && !gcodeText.isNullOrBlank()
 
-            val gCodeFile = if (adjust) {
+            val gCodeFile = if (adjust && !params.enableGCodeCutData) {
                 //使用GCode原始数据调整
                 transition.adjustGCode(gcodeText!!, provider.getEngraveGCodeMatrix(), params)
             } else {
