@@ -3,7 +3,7 @@ package com.angcyo.canvas2.laser.pecker
 import android.graphics.Matrix
 import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
+import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
 import com.angcyo.canvas.render.core.BaseCanvasRenderListener
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
@@ -105,8 +105,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             hookUpdateDepend(this)
 
             //需要关闭的功能
-            val closeCanvasItemsFun =
-                LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeCanvasItemsFun
+            val closeCanvasItemsFun = deviceSettingBean?.closeCanvasItemsFun
 
             if (!closeCanvasItemsFun.have("_image_")) {
                 AddBitmapItem()() {

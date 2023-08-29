@@ -92,4 +92,11 @@ data class DeviceSettingBean(
     var lp5BleWriteUuid: String = "0000abf3-0000-1000-8000-00805f9b34fb",
 
     //endregion---Ble UUID---
+
+    //region---功能开关---
+
+    /**是否激活元素的快捷操作*/
+    var enableQuickOperation: Boolean = true
+
+    //endregion---功能开关---
 )

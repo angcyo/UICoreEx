@@ -6,10 +6,10 @@ import com.angcyo.bluetooth.fsc.IReceiveBeanAction
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
-import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
+import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
@@ -717,7 +717,7 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
             val maxEngraveItemCountLimit = if ("maxEngraveItemCountLimit".hawkHave()) {
                 HawkEngraveKeys.maxEngraveItemCountLimit
             } else {
-                LaserPeckerConfigHelper.readDeviceSettingConfig()?.maxEngraveItemCount
+                deviceSettingBean?.maxEngraveItemCount
                     ?: HawkEngraveKeys.maxEngraveItemCountLimit
             }
 

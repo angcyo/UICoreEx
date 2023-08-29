@@ -13,6 +13,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
+import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
@@ -148,7 +149,7 @@ class DeviceSettingFragment : BaseDslFragment() {
         settingParser?.functionSetting()
         val productInfo = laserPeckerModel.productInfoData.value
         val zModelList = productInfo?.zModeList
-        val config = LaserPeckerConfigHelper.readDeviceSettingConfig()
+        val config = deviceSettingBean
 
         val isC1 = productInfo?.isCI() == true
         val isCSeries = productInfo?.isCSeries() == true

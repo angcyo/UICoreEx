@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.deviceSettingBean
 import com.angcyo.canvas.render.core.component.CanvasSelectorComponent
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -193,8 +194,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     /**渲染图片编辑控制items*/
     private fun DslAdapter.renderBitmapEditItems(renderer: BaseRenderer) {
-        val closeImageEditItemsFun =
-            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeImageEditItemsFun
+        val closeImageEditItemsFun = deviceSettingBean?.closeImageEditItemsFun
 
         //隐藏某些功能, 在32位的设备上
         val hideIn32 = HawkEngraveKeys.checkCpu32 && !isCpu64
@@ -412,8 +412,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     /**渲染文本编辑控制items*/
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
-        val closeTextEditItemsFun =
-            LaserPeckerConfigHelper.readDeviceSettingConfig()?.closeTextEditItemsFun
+        val closeTextEditItemsFun = deviceSettingBean?.closeTextEditItemsFun
         val isText = renderer.lpElementBean()?.mtype == LPDataConstant.DATA_TYPE_TEXT
         if (!isText) {
             //非文本类型, 不显示文本相关属性

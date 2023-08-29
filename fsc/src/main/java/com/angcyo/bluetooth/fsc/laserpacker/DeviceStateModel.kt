@@ -369,7 +369,7 @@ class DeviceStateModel : ViewModel() {
 
     /**是否是切割模块*/
     fun isCutModule(moduleState: Int? = deviceStateData.value?.moduleState): Boolean {
-        val cut = LaserPeckerConfigHelper.readDeviceSettingConfig()?.cutLayerModule?.split(",")
+        val cut = deviceSettingBean?.cutLayerModule?.split(",")
             ?.contains("$moduleState") == true
         return cut
     }
