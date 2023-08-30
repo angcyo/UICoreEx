@@ -101,6 +101,9 @@
     <string name="canvas_flat">Average</string>
     <string name="canvas_flat_horizontal">Horizontal Average</string>
     <string name="canvas_flat_vertical">Vertical Average</string>
+    <string name="canvas_size_width">Constant width</string>
+    <string name="canvas_size_height">Constant height</string>
+    <string name="canvas_size_width_height">Constant size</string>
     <string name="canvas_group_dissolve">Unpack</string>
     <string name="canvas_group_group">Group</string>
     <string name="canvas_outline">Outline</string>

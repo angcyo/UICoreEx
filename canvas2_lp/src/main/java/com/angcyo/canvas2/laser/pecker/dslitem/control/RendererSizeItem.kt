@@ -7,14 +7,14 @@ import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 
 /**
- * Canvas图层分布
+ * Canvas元素大小分布
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
- * @since 2022/10/27
+ * @since 2023/08/30
  */
-class RendererFlatItem : CanvasIconItem() {
+class RendererSizeItem : CanvasIconItem() {
 
-    /**水平分布*/
-    var itemFlatType: Int = CanvasGroupRenderer.FLAT_TYPE_HORIZONTAL
+    /**大小分布*/
+    var itemSizeType: Int = CanvasGroupRenderer.SIZE_TYPE_WIDTH_HEIGHT
 
     init {
         itemLayoutId = R.layout.item_canvas_icon_horizontal_layout
@@ -22,8 +22,8 @@ class RendererFlatItem : CanvasIconItem() {
         itemClick = {
             itemRenderer?.let {
                 if (it is CanvasGroupRenderer) {
-                    it.updateRendererFlat(
-                        itemFlatType,
+                    it.updateRendererSize(
+                        itemSizeType,
                         Reason.user,
                         Strategy.normal,
                         itemRenderDelegate

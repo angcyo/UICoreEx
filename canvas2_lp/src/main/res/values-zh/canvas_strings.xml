@@ -101,6 +101,9 @@
     <string name="canvas_flat">均分</string>
     <string name="canvas_flat_horizontal">水平均分</string>
     <string name="canvas_flat_vertical">垂直均分</string>
+    <string name="canvas_size_width">等宽</string>
+    <string name="canvas_size_height">等高</string>
+    <string name="canvas_size_width_height">等大小</string>
     <string name="canvas_group_dissolve">解组</string>
     <string name="canvas_group_group">编组</string>
     <string name="canvas_outline">轮廓</string>

@@ -404,4 +404,7 @@ object HawkEngraveKeys {
 
     /**是否激活图片流转处理, 也就是每次图片的输出结果, 当做下一次输入的入参. 否则则使用默认的原图*/
     var enableBitmapFlowHandle: Boolean by HawkPropertyValue<Any, Boolean>(false)
+
+    /**是否激活渲染器大小分布*/
+    var enableRendererSizeFlat: Boolean by HawkPropertyValue<Any, Boolean>(isDebug())
 }

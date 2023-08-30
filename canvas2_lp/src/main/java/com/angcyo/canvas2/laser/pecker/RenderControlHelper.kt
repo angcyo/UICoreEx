@@ -679,8 +679,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         //分布
         RendererFlatMenuItem()() {
             initItem(renderer)
-            itemEnable = renderer.isSelectorGroupRenderer() &&
-                    renderer.rendererList.size() >= 3//3个以上的元素才支持分布
+            itemEnable = renderer.isSelectorGroupRenderer() && renderer.rendererList.size() >= 2
             drawCanvasRight()
         }
 
