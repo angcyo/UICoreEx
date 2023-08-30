@@ -1014,4 +1014,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         val version = laserPeckerModel.productInfoData.value?.softwareVersion ?: return false
         return VersionMatcher.matches(version, DeviceHelper.batchEngraveSupportFirmware, false)
     }
+
+    /**获取当前任务下, 指定索引文件的雕刻进度*/
+    fun getEngraveIndexProgress(index: Int?): Int? {
+        index ?: return null
+        val engraveTask = _engraveTaskEntity ?: return null
+        return EngraveFlowDataHelper.getEngraveDataEntity(engraveTask.taskId, index)?.progress
+    }
 }

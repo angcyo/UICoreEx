@@ -177,6 +177,9 @@ object HawkEngraveKeys {
     /**激活雕刻时的信息渲染*/
     var enableRenderEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(false)
 
+    /**激活雕刻时雕刻图层的信息渲染*/
+    var enableLayerEngraveInfo: Boolean by HawkPropertyValue<Any, Boolean>(true)
+
     /**激活单元素自带的雕刻参数*/
     var enableItemEngraveParams: Boolean by HawkPropertyValue<Any, Boolean>(false)
 

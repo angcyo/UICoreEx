@@ -806,6 +806,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                         initItem(renderer)
                                         itemShowEngraveParams =
                                             HawkEngraveKeys.enableItemEngraveParams
+                                        itemInEngraveLayerTab = true
                                         onItemCutTypeChangeAction = {
                                             //切换类型
                                             renderLayerListLayout()
@@ -837,6 +838,14 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         if (vh.isVisible(R.id.canvas_layer_layout)) {
             vh.canvasLayerAdapter?.updateAllItem()
             updateLayerControlLayout()
+        }
+    }
+
+    /**仅更新雕刻图层布局*/
+    fun updateEngraveLayerListLayout() {
+        val vh = _rootViewHolder ?: return
+        if (vh.isVisible(R.id.canvas_layer_layout) && _layerTabLayout?.currentItemIndex == 1) {
+            vh.canvasLayerAdapter?.updateAllItem()
         }
     }
 

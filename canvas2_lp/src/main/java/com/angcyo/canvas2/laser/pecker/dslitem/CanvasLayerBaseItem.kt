@@ -20,18 +20,21 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
+import com.angcyo.engrave2.model.EngraveModel
 import com.angcyo.engrave2.transition.overflowBoundsMessage
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.toTypeNameString
 import com.angcyo.library.ex.Action
+import com.angcyo.library.ex.Anim
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dp
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.progress.DslProgressBar
 import com.angcyo.widget.span.span
 
 /**
@@ -50,6 +53,9 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
 
     /**是否需要显示雕刻参数参数*/
     var itemShowEngraveParams = false
+
+    /**item是否在雕刻图层tab页中*/
+    var itemInEngraveLayerTab: Boolean = false
 
     /**切割类型改变的回调*/
     var onItemCutTypeChangeAction: Action? = null
@@ -91,6 +97,7 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
     protected val laserPeckerModel = vmApp<LaserPeckerModel>()
     protected val deviceStateModel = vmApp<DeviceStateModel>()
     protected val nightModel = vmApp<NightModel>()
+    protected val engraveModel = vmApp<EngraveModel>()
 
     /**是否要显示切割按钮*/
     val itemShowSlicingView: Boolean
@@ -111,6 +118,22 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
         val renderer = itemRenderer
 
+        //进度通知
+        itemHolder.visible(
+            R.id.layer_item_progress_view,
+            itemInEngraveLayerTab && HawkEngraveKeys.enableLayerEngraveInfo
+        )
+        if (itemInEngraveLayerTab && HawkEngraveKeys.enableLayerEngraveInfo) {
+            val progress = engraveModel.getEngraveIndexProgress(operateElementBean?.index) ?: -1
+            itemHolder.v<DslProgressBar>(R.id.layer_item_progress_view)?.apply {
+                enableProgressFlowMode = progress in 0..99
+                setProgress(
+                    progress,
+                    animDuration = if (enableProgressFlowMode) Anim.ANIM_DURATION else 0L
+                )
+            }
+        }
+
         //item 名称
         itemHolder.tv(R.id.layer_item_name_view)?.text =
             itemItemName ?: operateElementBean?.mtype?.toTypeNameString()
@@ -129,6 +152,13 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
                 renderer.lpElementBean()?.let { bean ->
                     bean.initEngraveParamsIfNeed()
                     val drawableSize = 18 * dpi
+
+                    if (isDebug()) {
+                        //显示数据索引, 方便调试
+                        bean.index?.let {
+                            append("$it"); append(" ")
+                        }
+                    }
 
                     //雕刻模块
                     val type = (bean.printType ?: DeviceHelper.getProductLaserType()).toByte()
@@ -165,14 +195,6 @@ open class CanvasLayerBaseItem : DslAdapterItem(), ICanvasRendererItem {
 
                     appendDrawable(R.drawable.engrave_config_times_svg, drawableSize)
                     append(bean.printCount ?: 1);append(" ")
-
-                    if (isDebug()) {
-                        //显示数据索引, 方便调试
-                        bean.index?.let {
-                            appendLine()
-                            append("$it")
-                        }
-                    }
                 }
             }
         } else {

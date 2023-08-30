@@ -185,8 +185,14 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     } else {
                         taskRenderer.engraveTaskId = null
                     }
+                    //雕刻任务的进度监听渲染
                     if (HawkEngraveKeys.enableRenderEngraveInfo) {
                         renderDelegate?.refresh()
+                    }
+
+                    //雕刻图层的进度监听
+                    if (HawkEngraveKeys.enableLayerEngraveInfo) {
+                        renderLayoutHelper.updateEngraveLayerListLayout()
                     }
                 }
             }
