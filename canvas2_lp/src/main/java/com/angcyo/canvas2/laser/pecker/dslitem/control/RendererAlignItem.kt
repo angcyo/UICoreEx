@@ -1,11 +1,10 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.control
 
 import android.view.Gravity
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.dialog.popup.MenuPopupConfig
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 
 /**
@@ -35,7 +34,7 @@ class RendererAlignItem : CanvasIconItem() {
         }
 
         //点击后自动关闭pop
-        itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
+        //itemFlag = MenuPopupConfig.FLAG_ITEM_DISMISS
     }
 
 }
