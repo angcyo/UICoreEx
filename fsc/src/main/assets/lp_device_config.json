@@ -581,6 +581,12 @@
       "layerFill": {
         "dpiList": [
           {
+            "dpi": 127,
+            "px": 4,
+            "des": "0.5K",
+            "debug": true
+          },
+          {
             "dpi": 254,
             "px": 4,
             "des": "1K"
@@ -722,6 +728,12 @@
       },
       "layerFill": {
         "dpiList": [
+          {
+            "dpi": 127,
+            "px": 4,
+            "des": "0.5K",
+            "debug": true
+          },
           {
             "dpi": 254,
             "px": 4,
