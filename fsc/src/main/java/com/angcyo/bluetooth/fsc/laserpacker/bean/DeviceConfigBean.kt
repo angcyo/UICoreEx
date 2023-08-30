@@ -87,6 +87,9 @@ data class DeviceConfigBean(
      * [com.angcyo.gcode.GCodeWriteHandler.enableGCodeCut]*/
     var useCutData: Boolean = false,
 
+    /**切割数据循环次数*/
+    var cutLoopCount: Int = 1,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]
@@ -122,8 +125,11 @@ data class DeviceConfigBean(
     }
 }
 
+val _useCutCmd: Boolean
+    get() = _deviceConfigBean?.useCutCmd == true
+
 val _useCutData: Boolean
     get() = _deviceConfigBean?.useCutData == true
 
-val _useCutCmd: Boolean
-    get() = _deviceConfigBean?.useCutCmd == true
+val _cutLoopCount: Int
+    get() = _deviceConfigBean?.cutLoopCount ?: 1

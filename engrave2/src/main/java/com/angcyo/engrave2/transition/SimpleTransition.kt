@@ -127,6 +127,7 @@ class SimpleTransition : ITransition {
             gCodeHandler.writer = writer
             gCodeHandler.enableGCodeShrink = params.enableGCodeShrink
             gCodeHandler.enableGCodeCut = params.enableGCodeCutData
+            gCodeHandler.cutLoopCount = params.cutLoopCount
             gCodeHandler.pathStrokeToVector(
                 targetPathList,
                 true,
