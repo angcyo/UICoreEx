@@ -28,11 +28,15 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.AddDoodleItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.AddMaterialItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.AddShapesItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.AddTextItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableBarCodeItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableQrCodeItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.AddVariableTextItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlLayerItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlOperateItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlSettingItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ShapesItem
+import com.angcyo.canvas2.laser.pecker.dslitem.item.VariableTextItem
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
 import com.angcyo.canvas2.laser.pecker.manager.saveProjectStateV2
@@ -116,6 +120,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             if (!closeCanvasItemsFun.have("_text_")) {
                 AddTextItem()() {
                     initItem()
+                }
+            }
+            if (!closeCanvasItemsFun.have("_variableText_")) {
+                VariableTextItem()() {
+                    initItem()
+                    itemRenderLayoutHelper = this@RenderLayoutHelper
                 }
             }
             //素材
@@ -269,6 +279,34 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     itemIco = R.drawable.canvas_shape_love_ico
                     itemText = _string(R.string.canvas_love)
                     itemShapeType = LPDataConstant.DATA_TYPE_LOVE
+                }
+            }
+        } else {
+            renderControlHelper.bindControlLayout()
+        }
+    }
+
+    /**渲染变量模版列表*/
+    fun renderVariableTextItems(item: DslAdapterItem, visible: Boolean) {
+        if (visible) {
+            changeSelectItem(item)
+            renderControlHelper.showControlLayout(item)
+            _rootViewHolder?.canvasControlRv?.renderDslAdapter {
+                hookUpdateDepend(this)
+                AddVariableTextItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_text_ico
+                    itemText = _string(R.string.canvas_text)
+                }
+                AddVariableQrCodeItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_qrcode_ico
+                    itemText = _string(R.string.canvas_qrcode)
+                }
+                AddVariableBarCodeItem()() {
+                    initItem()
+                    itemIco = R.drawable.canvas_barcode_ico
+                    itemText = _string(R.string.canvas_barcode)
                 }
             }
         } else {

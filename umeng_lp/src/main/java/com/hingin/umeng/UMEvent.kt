@@ -132,6 +132,11 @@ object UMEvent {
     const val CANVAS_TEXT_UNDER_LINE = "canvas_text_under_line"
     const val CANVAS_TEXT_DELETE_LINE = "canvas_text_delete_line"
 
+    /**变量模板*/
+    const val CANVAS_VARIABLE_TEXT = "canvas_variable_text"
+    const val CANVAS_VARIABLE_QRCODE = "canvas_variable_qrcode"
+    const val CANVAS_VARIABLE_BARCODE = "canvas_variable_barcode"
+
     /**App异常统计*/
     const val APP_ERROR = "app_error"
 
