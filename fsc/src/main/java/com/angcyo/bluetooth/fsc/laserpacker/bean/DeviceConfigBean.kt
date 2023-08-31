@@ -27,7 +27,7 @@ data class DeviceConfigBean(
     /**是否支持切割图层*/
     var supportCut: Boolean = false,
 
-    /**支持的外设*/
+    /**支持的外设, 决定默认的设置开关flag默认值*/
     var ex: String? = null,
 
     /**需要旋转的数据外设, 当这些外设的使能开关打开时, 需要旋转数据
@@ -76,6 +76,7 @@ data class DeviceConfigBean(
 
     /**
      * [com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys.enablePreviewDebounce]
+     * [com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper.updatePreviewByRenderer]
      * */
     var enablePreviewDebounce: Boolean = false,
 
