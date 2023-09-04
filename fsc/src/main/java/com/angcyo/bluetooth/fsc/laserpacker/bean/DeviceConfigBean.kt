@@ -91,6 +91,9 @@ data class DeviceConfigBean(
     /**切割数据循环次数*/
     var cutLoopCount: Int = 1,
 
+    /**是否使用批量雕刻属性*/
+    var useBatchEngraveCmd: Boolean? = null,
+
     //2023-5-19 图层信息
 
     /**每个图层单独对应的[dpiList]

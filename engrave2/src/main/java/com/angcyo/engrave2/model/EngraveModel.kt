@@ -6,6 +6,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.CommandException
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -1004,6 +1005,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         if (HawkEngraveKeys.enableSingleItemTransfer) {
             //单文件传输模式下, 不支持批量文件雕刻
             return false
+        }
+
+        //config
+        _deviceConfigBean?.useBatchEngraveCmd?.let {
+            return it
         }
 
         if (laserPeckerModel.isL4() || laserPeckerModel.isCSeries()) {
