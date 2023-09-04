@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.view.Gravity
 import com.angcyo.bitmap.handle.BitmapHandle
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.engrave2.data.TransitionParam
 import com.angcyo.gcode.GCodeWriteHandler
 import com.angcyo.laserpacker.device.DeviceHelper._defaultGCodeOutputFile
@@ -15,6 +16,7 @@ import com.angcyo.library.annotation.Pixel
 import com.angcyo.library.app
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.ex.bounds
+import com.angcyo.library.ex.computePathBounds
 import com.angcyo.library.ex.deleteSafe
 import com.angcyo.library.ex.rotate
 import com.angcyo.library.ex.transform
@@ -127,7 +129,10 @@ class SimpleTransition : ITransition {
             gCodeHandler.writer = writer
             gCodeHandler.enableGCodeShrink = params.enableGCodeShrink
             gCodeHandler.enableGCodeCut = params.enableGCodeCutData
-            gCodeHandler.cutLoopCount = params.cutLoopCount
+            gCodeHandler.cutLoopCount = params.cutLoopCount ?: gCodeHandler.cutLoopCount
+            gCodeHandler.cutGCodeWidth = params.cutGCodeWidth ?: gCodeHandler.cutGCodeWidth
+            gCodeHandler.cutGCodeHeight = params.cutGCodeHeight ?: gCodeHandler.cutGCodeHeight
+            gCodeHandler.cutLimitRect = EngravePreviewCmd.getBoundsPath()?.computePathBounds()
             gCodeHandler.pathStrokeToVector(
                 targetPathList,
                 true,

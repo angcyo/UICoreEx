@@ -89,7 +89,13 @@ data class DeviceConfigBean(
     var useCutData: Boolean = false,
 
     /**切割数据循环次数*/
-    var cutLoopCount: Int = 1,
+    var cutLoopCount: Int? = null,
+
+    /**切割数据的宽度*/
+    var cutGCodeWidth: Float? = null,
+
+    /**切割数据的高度*/
+    var cutGCodeHeight: Float? = null,
 
     /**是否使用批量雕刻属性*/
     var useBatchEngraveCmd: Boolean? = null,
@@ -135,5 +141,11 @@ val _useCutCmd: Boolean
 val _useCutData: Boolean
     get() = _deviceConfigBean?.useCutData == true
 
-val _cutLoopCount: Int
-    get() = _deviceConfigBean?.cutLoopCount ?: 1
+val _cutLoopCount: Int?
+    get() = _deviceConfigBean?.cutLoopCount
+
+val _cutGCodeWidth: Float?
+    get() = _deviceConfigBean?.cutGCodeWidth
+
+val _cutGCodeHeight: Float?
+    get() = _deviceConfigBean?.cutGCodeHeight

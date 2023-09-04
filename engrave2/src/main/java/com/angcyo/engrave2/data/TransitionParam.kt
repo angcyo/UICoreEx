@@ -3,6 +3,8 @@ package com.angcyo.engrave2.data
 import android.graphics.Matrix
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeHeight
+import com.angcyo.bluetooth.fsc.laserpacker.bean._cutGCodeWidth
 import com.angcyo.bluetooth.fsc.laserpacker.bean._cutLoopCount
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.MM
@@ -67,7 +69,14 @@ data class TransitionParam(
     /**是否使用GCode切割数据*/
     val enableGCodeCutData: Boolean = false,
 
-    val cutLoopCount: Int = _cutLoopCount,
+    /**切割数据循环次数*/
+    val cutLoopCount: Int? = _cutLoopCount,
+
+    /**切割数据的宽度*/
+    val cutGCodeWidth: Float? = _cutGCodeWidth,
+
+    /**切割数据的高度*/
+    val cutGCodeHeight: Float? = _cutGCodeHeight,
 
     /**GCode数据额外需要偏移的距离*/
     @Pixel
