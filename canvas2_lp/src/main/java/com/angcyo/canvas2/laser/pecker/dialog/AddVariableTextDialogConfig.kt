@@ -201,6 +201,13 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemEditText = bean.format
             itemEditDigits = "#,0./'`-"
             itemEditHint = LPVariableBean.DEFAULT_NUMBER_FORMAT
+            itemData = itemEditDigits
+            labelItemConfig.itemLabelTextStyle.apply {
+                rightDrawable = null
+                paddingRight = 0
+                paddingTop = _dimen(R.dimen.lib_xhdpi)
+                paddingBottom = paddingTop
+            }
             observeItemChange {
                 bean.format = itemEditText.toString()
                 updateTextPreviewItem()
