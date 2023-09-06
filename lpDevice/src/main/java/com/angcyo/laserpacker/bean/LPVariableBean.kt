@@ -25,7 +25,7 @@ data class LPVariableBean(
     //---FIXED
     /**变量类型*/
     var type: String = TYPE_FIXED,
-    var content: String = "", // string 内容
+    var content: String? = null, // string 内容
     //---NUMBER
     var min: Long = 0, // 开始序号
     var max: Long = 9999, // 最大序号
@@ -43,12 +43,12 @@ data class LPVariableBean(
      * [TYPE_TIME] "HH:mm:ss"
      * */
     var format: String? = null, // 位数仅有0 几个0代表几个长度 0001
-    var formatType: String = NUMBER_TYPE_DEC, // 字符格式化 dec十进制 HEX大写十六进制 hex小写十六进制
+    var formatType: String? = NUMBER_TYPE_DEC, // 字符格式化 dec十进制 HEX大写十六进制 hex小写十六进制
     //---DATE TIME
     /**时间增量单位
      * [value] 递增量
      * */
-    var stepType: String = "D", // 递增方式: `D`:天  `M`:月 `Y`:年
+    var stepType: String? = DATE_STEP_TYPE_DAY, // 递增方式: `D`:天  `M`:月 `Y`:年
     /**自动时间
      * 手动时间: [content] 13位时间戳*/
     var auto: Boolean = true, // 自动时间
@@ -60,7 +60,7 @@ data class LPVariableBean(
     /**是否自动从头开始*/
     var reset: Boolean = false, // boolean 自动复位
     /**文本分割类型*/
-    var splitType: String = "LINE", // 分割方式 1.0.0 只有行分割
+    var splitType: String? = SPLIT_TYPE_LINE, // 分割方式 1.0.0 只有行分割
     //---EXCEL
     var sheet: String? = null, // 工作表
     var column: String? = null, // 表格列
@@ -151,7 +151,7 @@ data class LPVariableBean(
                 TYPE_NUMBER -> numberFormatText
                 TYPE_DATE -> dateFormatText
                 TYPE_TIME -> timeFormatText
-                else -> content
+                else -> content ?: ""
             }
         }
 
@@ -176,7 +176,7 @@ data class LPVariableBean(
             timeInMillis = if (auto) {
                 nowTime()
             } else {
-                content.toLongOrNull() ?: nowTime()
+                content?.toLongOrNull() ?: nowTime()
             }
             if (type == TYPE_DATE) {
                 when (stepType) {
