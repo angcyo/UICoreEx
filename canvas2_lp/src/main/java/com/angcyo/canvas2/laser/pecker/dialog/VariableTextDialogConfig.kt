@@ -10,6 +10,7 @@ import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configFullScreenDialog
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
+import com.angcyo.library.L
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
@@ -56,7 +57,9 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             VariableTextAddItem()() {
                 itemClick = {
                     it.context.addVariableTextDialog {
-
+                        onApplyVariableAction = { bean ->
+                            L.w(bean)
+                        }
                     }
                 }
             }

@@ -86,6 +86,10 @@ data class DeviceSettingBean(
     var dataOffsetHelpUrl: String? = null,
     /**中文特殊跳转*/
     var dataOffsetHelpUrlZh: String? = null,
+    /**日期推荐格式列表*/
+    var dateFormatList: List<String>?,
+    /**时间推荐格式列表*/
+    var timeFormatList: List<String>?,
     //endregion---Android端设置项---
 
     //region---Ble UUID---

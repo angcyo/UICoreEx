@@ -199,4 +199,23 @@
     <string name="variable_model_hex_upper">HEX hexadecimal</string>
     <string name="variable_model_hex_lower">hex hexadecimal lowercase</string>
     <string name="variable_reset">AutomaticReset</string>
+    <string name="variable_date_format">DateFormat</string>
+    <string name="variable_date_format_system">SystemFormat</string>
+    <string name="variable_date_format_custom">SpecifiedFormat</string>
+    <string name="variable_date_type">DateType</string>
+    <string name="variable_date_type_system">SystemDate</string>
+    <string name="variable_date_type_custom">SpecifiedDate</string>
+    <string name="variable_date_select">SelectDate</string>
+    <string name="variable_date_offset">DateOffset</string>
+    <string name="variable_date_offset_day">ByDay</string>
+    <string name="variable_date_offset_month">ByMonth</string>
+    <string name="variable_date_offset_yaer">ByYear</string>
+    <string name="variable_time_format">TimeFormat</string>
+    <string name="variable_time_format_system">SystemFormat</string>
+    <string name="variable_time_format_custom">SpecifiedFormat</string>
+    <string name="variable_time_type">TimeType</string>
+    <string name="variable_time_type_system">SystemTime</string>
+    <string name="variable_time_type_custom">SpecifiedTime</string>
+    <string name="variable_time_select">SelectionPeriod</string>
+    <string name="variable_time_offset">MinuteOffset</string>
 </resources>
