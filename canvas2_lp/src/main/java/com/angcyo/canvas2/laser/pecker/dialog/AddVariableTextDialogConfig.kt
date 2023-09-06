@@ -203,7 +203,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemEditHint = LPVariableBean.DEFAULT_NUMBER_FORMAT
             observeItemChange {
                 bean.format = itemEditText.toString()
-                updateTextPreviewItem(bean.numberFormatText)
+                updateTextPreviewItem()
             }
         }
         DslIncrementItem()() {
@@ -223,7 +223,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             observeItemChange {
                 bean.current = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
                 bean.reset()
-                updateTextPreviewItem(bean.numberFormatText)
+                updateTextPreviewItem()
             }
         }
         DslIncrementItem()() {
@@ -272,7 +272,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             observeItemChange {
                 bean.formatType = itemWheelBean<NumberFormatTypeBean>()?.formatType
                     ?: LPVariableBean.NUMBER_TYPE_DEC
-                updateTextPreviewItem(bean.numberFormatText)
+                updateTextPreviewItem()
             }
         }
         DslPropertySwitchItem()() {
@@ -314,6 +314,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 }
                 hideItemBy(index != 0) { it is VarDateFormatWheelItem }
                 hideItemBy(index != 1) { it is VarDateFormatInputItem }
+                updateTextPreviewItem()
             }
         }
         VarDateFormatWheelItem()() {
@@ -322,7 +323,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             updateWheelSelectedIndex(bean.format)
             observeItemChange {
                 bean.format = itemWheelText()?.toStr()
-                updateTextPreviewItem(bean.dateFormatText)
+                updateTextPreviewItem()
             }
         }
         VarDateFormatInputItem()() {
@@ -331,7 +332,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemHidden = bean._systemDateFormat
             observeItemChange {
                 bean.format = itemEditText?.toStr()
-                updateTextPreviewItem(bean.dateFormatText)
+                updateTextPreviewItem()
             }
         }
 
@@ -348,6 +349,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 val index = _itemCheckedIndexList.firstOrNull() ?: 0
                 bean.auto = index == 0
                 hideItemBy(index != 1) { it is VarDateSelectWheelItem }
+                updateTextPreviewItem()
             }
         }
 
@@ -356,14 +358,14 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemText = bean.content
             observeItemChange {
                 bean.content = itemDateSelectedTime.toStr()
-                updateTextPreviewItem(bean.dateFormatText)
+                updateTextPreviewItem()
             }
         }
 
         VarDateOffsetItem()() {
             itemVariableBean = bean
             observeItemChange {
-                updateTextPreviewItem(bean.dateFormatText)
+                updateTextPreviewItem()
             }
         }
         enablePositiveButton()
@@ -391,12 +393,13 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             observeItemChange {
                 val index = _itemCheckedIndexList.firstOrNull() ?: 0
                 bean._systemTimeFormat = index == 0
-                find<VarDateFormatInputItem>()?.apply {
+                find<VarTimeFormatInputItem>()?.apply {
                     itemEditText = bean.format
                     itemEditHint = bean.format
                 }
-                hideItemBy(index != 0) { it is VarDateFormatWheelItem }
-                hideItemBy(index != 1) { it is VarDateFormatInputItem }
+                hideItemBy(index != 0) { it is VarTimeFormatWheelItem }
+                hideItemBy(index != 1) { it is VarTimeFormatInputItem }
+                updateTextPreviewItem()
             }
         }
         VarTimeFormatWheelItem()() {
@@ -405,7 +408,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             updateWheelSelectedIndex(bean.format)
             observeItemChange {
                 bean.format = itemWheelText()?.toStr()
-                updateTextPreviewItem(bean.timeFormatText)
+                updateTextPreviewItem()
             }
         }
         VarTimeFormatInputItem()() {
@@ -414,7 +417,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemHidden = bean._systemTimeFormat
             observeItemChange {
                 bean.format = itemEditText?.toStr()
-                updateTextPreviewItem(bean.timeFormatText)
+                updateTextPreviewItem()
             }
         }
 
@@ -430,7 +433,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             observeItemChange {
                 val index = _itemCheckedIndexList.firstOrNull() ?: 0
                 bean.auto = index == 0
-                hideItemBy(index != 1) { it is VarDateSelectWheelItem }
+                hideItemBy(index != 1) { it is VarTimeSelectWheelItem }
+                updateTextPreviewItem()
             }
         }
 
@@ -439,23 +443,23 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemText = bean.content
             observeItemChange {
                 bean.content = itemDateSelectedTime.toStr()
-                updateTextPreviewItem(bean.timeFormatText)
+                updateTextPreviewItem()
             }
         }
 
         VarTimeOffsetItem()() {
             itemVariableBean = bean
             observeItemChange {
-                updateTextPreviewItem(bean.timeFormatText)
+                updateTextPreviewItem()
             }
         }
         enablePositiveButton()
     }
 
     /**更新需要预览的item*/
-    private fun updateTextPreviewItem(text: CharSequence?) {
+    private fun updateTextPreviewItem() {
         _currentVariableBean?.let { bean ->
-            _adapter?.find<DslTextPreviewItem>()?.itemText = text
+            _adapter?.find<DslTextPreviewItem>()?.itemText = bean.variableText
         }
     }
 

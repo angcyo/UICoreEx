@@ -144,6 +144,17 @@ data class LPVariableBean(
         printCount = 0
     }
 
+    /**对应的变量文本内容*/
+    val variableText: String
+        get() {
+            return when (type) {
+                TYPE_NUMBER -> numberFormatText
+                TYPE_DATE -> dateFormatText
+                TYPE_TIME -> timeFormatText
+                else -> content
+            }
+        }
+
     /**[TYPE_NUMBER]*/
     val numberFormatText: String
         get() {

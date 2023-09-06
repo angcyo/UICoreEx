@@ -25,7 +25,6 @@ class VarTimeOffsetItem : DslIncrementItem() {
         }
 
     init {
-        itemLayoutId = R.layout.date_offset_item
         itemLabel = _string(R.string.variable_time_offset)
         itemIncrementMinValue = 0
     }
