@@ -226,6 +226,9 @@ data class LPElementBean(
      * 曲线文本曲率[-360~360], 0表示正常文本*/
     var curvature: Float = 0f,
 
+    /**变量模板类型*/
+    var variables: List<LPVariableBean>? = null,
+
     //endregion ---文本类型---
 
     //region ---形状---

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_white_top_round_big_bg_shape"
+    android:orientation="vertical"
+    tools:layout_gravity="bottom">
+
+    <!--标题栏-->
+    <FrameLayout
+        android:id="@+id/lib_title_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dialog_item_height">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dialog_negative_button"
+            style="@style/LibTitleIcoStyle"
+            android:contentDescription="@string/ui_back"
+            app:srcCompat="@drawable/dialog_back_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dialog_title_view"
+            style="@style/LibBodyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/dialog_item_height"
+            android:text="@string/canvas_input_text"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dialog_positive_button"
+            style="@style/LibTitleIcoStyle"
+            android:layout_gravity="right|center_vertical"
+            android:contentDescription="@string/ui_confirm"
+            app:srcCompat="@drawable/dialog_confirm_svg"
+            app:tint="@color/lib_night_icon_colors_selector" />
+
+    </FrameLayout>
+
+    <!--阴影-->
+    <View
+        android:id="@+id/dialog_title_line_view"
+        style="@style/LibDialogTitleShadowStyle" />
+
+    <com.angcyo.tablayout.DslTabLayout
+        android:id="@+id/lib_tab_layout"
+        style="@style/LibTabSegmentSolidStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/lib_hdpi"
+        android:minHeight="35dp"
+        app:tab_border_item_background_solid_disable_color="@color/canvas_ico_disable"
+        app:tab_item_equ_width_count="-1"
+        app:tab_preview_item_count="10"
+        app:tab_preview_item_layout_id="@layout/single_tab_item" />
+
+    <!--内容-->
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

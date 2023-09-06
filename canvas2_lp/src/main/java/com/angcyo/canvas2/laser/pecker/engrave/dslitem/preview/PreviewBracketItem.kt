@@ -22,6 +22,7 @@ import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.unit.unitDecimal
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.LongTouchListener
 
 /**
  * 支架控制item
@@ -85,15 +86,15 @@ class PreviewBracketItem : DslAdapterItem() {
         //支架上升
         itemHolder.longTouch(R.id.bracket_up_view) { view, event, eventType ->
             when (eventType) {
-                DslViewHolder.EVENT_TYPE_CLICK -> {
+                LongTouchListener.EVENT_TYPE_CLICK -> {
                     bracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
 
-                DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
+                LongTouchListener.EVENT_TYPE_LONG_PRESS -> {
                     bracketUpCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && eventType != DslViewHolder.EVENT_TYPE_CLICK) {
+            if (event.isTouchFinish() && eventType != LongTouchListener.EVENT_TYPE_CLICK) {
                 bracketStopCmd()
             }
             true
@@ -101,15 +102,15 @@ class PreviewBracketItem : DslAdapterItem() {
         //支架下降
         itemHolder.longTouch(R.id.bracket_down_view) { view, event, eventType ->
             when (eventType) {
-                DslViewHolder.EVENT_TYPE_CLICK -> {
+                LongTouchListener.EVENT_TYPE_CLICK -> {
                     bracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
                 }
 
-                DslViewHolder.EVENT_TYPE_LONG_PRESS -> {
+                LongTouchListener.EVENT_TYPE_LONG_PRESS -> {
                     bracketDownCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && eventType != DslViewHolder.EVENT_TYPE_CLICK) {
+            if (event.isTouchFinish() && eventType != LongTouchListener.EVENT_TYPE_CLICK) {
                 bracketStopCmd()
             }
             true

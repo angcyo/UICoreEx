@@ -15,7 +15,10 @@
     <string name="canvas_text">Text</string>
     <string name="canvas_input_text">Input text</string>
     <string name="canvas_shapes">Shapes</string>
-    <string name="canvas_variable_text">Variable template</string>
+    <string name="canvas_variable_template">Variable template</string>
+    <string name="canvas_variable_text">Variable text</string>
+    <string name="canvas_add_variable_text">Add variable text</string>
+    <string name="canvas_variable_text_empty_tip">There is no data yet, please add it quickly</string>
     <string name="canvas_material">Material</string>
     <string name="canvas_doodle">Graffiti</string>
     <string name="canvas_barcode">Barcode</string>
@@ -178,4 +181,22 @@
 
     <string name="cannot_share_project">Unable to share project</string>
     <string name="no_config_params_tip">Element %1$s parameter is not configured,please configure in layer.</string>
+
+    <string name="variable_fixed_text">Fixed text</string>
+    <string name="variable_serial_number">Serial number</string>
+    <string name="variable_date">Date</string>
+    <string name="variable_time">Time</string>
+    <string name="variable_file">File</string>
+
+    <string name="variable_format">Format</string>
+    <string name="variable_start_number">StartNumber</string>
+    <string name="variable_current_number">CurrentNumber</string>
+    <string name="variable_max_number">MaximumNumber</string>
+    <string name="variable_number_step">NumberIncrement</string>
+    <string name="variable_number_step_threshold">NumberOfTicks</string>
+    <string name="variable_model">Model</string>
+    <string name="variable_model_dec">Decimal</string>
+    <string name="variable_model_hex_upper">HEX hexadecimal</string>
+    <string name="variable_model_hex_lower">hex hexadecimal lowercase</string>
+    <string name="variable_reset">AutomaticReset</string>
 </resources>

@@ -1,8 +1,9 @@
 package com.angcyo.canvas2.laser.pecker.dslitem.item
 
+import com.angcyo.canvas2.laser.pecker.dialog.variableTextDialog
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
-import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
-import com.angcyo.laserpacker.LPDataConstant
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 
 /**
  * 添加变量文本item
@@ -13,7 +14,10 @@ class AddVariableTextItem : CanvasIconItem() {
 
     init {
         itemClick = {
+            UMEvent.CANVAS_VARIABLE_TEXT.umengEventValue()
+            it.context.variableTextDialog {
 
+            }
         }
     }
 

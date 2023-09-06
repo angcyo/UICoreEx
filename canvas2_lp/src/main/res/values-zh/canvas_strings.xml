@@ -15,7 +15,10 @@
     <string name="canvas_text">文本</string>
     <string name="canvas_input_text">输入文本</string>
     <string name="canvas_shapes">形状</string>
-    <string name="canvas_variable_text">变量模板</string>
+    <string name="canvas_variable_template">变量模板</string>
+    <string name="canvas_variable_text">变量文本</string>
+    <string name="canvas_add_variable_text">添加变量文本</string>
+    <string name="canvas_variable_text_empty_tip">暂无数据,快去添加吧</string>
     <string name="canvas_material">素材</string>
     <string name="canvas_doodle">涂鸦</string>
     <string name="canvas_barcode">条形码</string>
@@ -178,5 +181,24 @@
 
     <string name="cannot_share_project">无法分享工程</string>
     <string name="no_config_params_tip">元素 %1$s 未配置参数,请在图层中配置.</string>
+
+    <string name="variable_fixed_text">固定文本</string>
+    <string name="variable_serial_number">序列号</string>
+    <string name="variable_date">日期</string>
+    <string name="variable_time">时间</string>
+    <string name="variable_file">文件</string>
+
+    <string name="variable_format">格式</string>
+    <string name="variable_start_number">开始序号</string>
+    <string name="variable_current_number">当前序号</string>
+    <string name="variable_max_number">最大序号</string>
+    <string name="variable_number_step">序号增量</string>
+    <string name="variable_number_step_threshold">每个标刻数</string>
+    <string name="variable_model">模式</string>
+    <string name="variable_model_dec">Dec十进制</string>
+    <string name="variable_model_hex_upper">HEX十六进制</string>
+    <string name="variable_model_hex_lower">hex十六进制小写</string>
+    <string name="variable_reset">自动复位</string>
+
 
 </resources>

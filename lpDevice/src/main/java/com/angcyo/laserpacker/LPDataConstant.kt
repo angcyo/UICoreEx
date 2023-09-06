@@ -134,6 +134,15 @@ object LPDataConstant {
     /**数据类型, 一组数据*/
     const val DATA_TYPE_GROUP = 10
 
+    /**数据类型, 变量文本*/
+    const val DATA_TYPE_VARIABLE_TEXT = 10030
+
+    /**数据类型, 变量二维码*/
+    const val DATA_TYPE_VARIABLE_QRCODE = 10031
+
+    /**数据类型, 变量条形码*/
+    const val DATA_TYPE_VARIABLE_BARCODE = 10032
+
     //endregion ---数据类型---
 
     //region ---数据处理模式---

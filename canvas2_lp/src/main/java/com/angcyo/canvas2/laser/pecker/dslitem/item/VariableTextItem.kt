@@ -18,7 +18,7 @@ class VariableTextItem : CanvasIconItem() {
 
     init {
         itemIco = R.drawable.canvas_variable_text_ico
-        itemText = _string(R.string.canvas_variable_text)
+        itemText = _string(R.string.canvas_variable_template)
         itemClick = {
             updateItemSelected(!itemIsSelected)
             itemRenderLayoutHelper?.renderVariableTextItems(this, itemIsSelected)

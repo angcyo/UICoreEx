@@ -1,6 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.dialog2.dslitem.itemSelectedIndex
+import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.library.ex.Action
 import com.angcyo.objectbox.laser.pecker.entity.MaterialEntity

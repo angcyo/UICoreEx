@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_white_top_round_common_bg_shape"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/dialog_title_layout"
+        layout="@layout/lib_dialog_base_ico_layout" />
+
+    <View
+        android:id="@+id/dialog_title_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line_px"
+        android:background="@color/dialog_line" />
+
+    <FrameLayout
+        android:id="@+id/variable_text_preview_wrap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/lib_recycler_view"
+        style="@style/LibRecyclerViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!--控制层-->
+    <com.angcyo.widget.recycler.DslRecyclerView
+        android:id="@+id/variable_text_item_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/doodle_item_layout"
+        android:padding="@dimen/lib_hdpi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:r_layout_manager="h"
+        tools:layout_height="54dp" />
+</LinearLayout>

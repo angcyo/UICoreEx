@@ -57,11 +57,11 @@ class TransferDataNameItem : DslAdapterItem(), IEditItem {
         payloads: List<Any>
     ) {
         super.initItemConfig(itemHolder, itemPosition, adapterItem, payloads)
-        onItemEditTextChange(itemHolder, itemEditText ?: "")
+        onSelfItemEditTextChange(itemHolder, itemEditText ?: "")
     }
 
-    override fun onItemEditTextChange(itemHolder: DslViewHolder, text: CharSequence) {
-        super.onItemEditTextChange(itemHolder, text)
+    override fun onSelfItemEditTextChange(itemHolder: DslViewHolder, text: CharSequence) {
+        super.onSelfItemEditTextChange(itemHolder, text)
         itemHolder.tv(R.id.lib_bytes_view)?.text = span {
             val bytes = text.toString().byteSize()
             append("$bytes") {

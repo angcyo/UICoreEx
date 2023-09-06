@@ -5,6 +5,9 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
+import com.angcyo.dialog2.dslitem.itemWheelList
+import com.angcyo.dialog2.dslitem.itemWheelSelectorAction
+import com.angcyo.dialog2.dslitem.itemWheelUnit
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.engrave2.EngraveFlowDataHelper
 import com.angcyo.laserpacker.bean.LPElementBean
@@ -33,7 +36,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
     init {
         itemLayoutId = R.layout.item_engrave_option_layout
 
-        itemWheelSelector = { dialog, index, item ->
+        itemWheelSelectorAction = { dialog, index, item ->
             //赋值操作
             when (itemTag) {
                 MaterialEntity::name.name -> {

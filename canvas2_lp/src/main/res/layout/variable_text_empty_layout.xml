@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lib_image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/circle_bg_shape"
+        android:padding="30dp"
+        app:layout_constraintBottom_toTopOf="@id/lib_text_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_question_svg" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibDesTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_xxxhdpi"
+        android:gravity="center"
+        android:text="@string/canvas_variable_text_empty_tip"
+        android:textColor="@color/lib_main_to_theme_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/lib_image_view"
+        app:layout_constraintRight_toRightOf="@id/lib_image_view"
+        app:layout_constraintTop_toBottomOf="@id/lib_image_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
