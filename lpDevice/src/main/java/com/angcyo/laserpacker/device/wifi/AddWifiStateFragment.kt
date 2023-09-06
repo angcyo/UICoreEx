@@ -127,7 +127,7 @@ class AddWifiStateFragment : BaseDslFragment() {
         "开始配置wifi:$deviceConfig".writeBleLog()
         deviceConfig?.let { configBean ->
             bleModel.connect(configBean.device) { connected ->
-                "Ble连接设备:$connected".writeBleLog()
+                "Ble连接设备[${configBean.device.name}]:$connected".writeBleLog()
                 if (connected) {
                     sendConfig(configBean)
                 } else {
@@ -140,7 +140,7 @@ class AddWifiStateFragment : BaseDslFragment() {
 
     private fun sendConfig(configBean: WifiConfigBean) {
         val bleName = DeviceConnectTipActivity.formatDeviceName(configBean.device.name)
-        if (DeviceConnectTipActivity.isLp5Device(configBean.device.name)) {
+        if (DeviceConnectTipActivity.isWifiDevice(configBean.device.name)) {
             val deviceConfig = _deviceSettingBean!!
             bleModel.writeAndListener(
                 configBean.device,
@@ -164,6 +164,9 @@ class AddWifiStateFragment : BaseDslFragment() {
                     toConfigState(AddWifiStateItem.STATE_ERROR)
                 }
             }
+        } else {
+            "非wifi设备[${configBean.device.name}]".writeBleLog()
+            toConfigState(AddWifiStateItem.STATE_ERROR)
         }
     }
 
