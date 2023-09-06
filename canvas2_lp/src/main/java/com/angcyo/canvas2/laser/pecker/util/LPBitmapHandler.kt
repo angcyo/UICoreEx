@@ -225,7 +225,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = toPrint(context, bitmap, bean.printsThreshold)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
-                            "图片[${bitmap.byteCount.toSizeString()}]转版画耗时:${LTime.time()}".writePerfLog()
+                            "图片[${bitmap.byteCount.toSizeString()}]转版画耗时:${LTime.time()}\n${bean}".writePerfLog()
                             result
                         }
                     }) { result ->
@@ -298,7 +298,7 @@ object LPBitmapHandler {
                             val gcodeFile = toGCode(context, bitmap, bean)
                             "图片[${
                                 bitmap.byteCount.toSizeString()
-                            }]转GCode耗时:${LTime.time()}".writePerfLog()
+                            }]转GCode耗时:${LTime.time()}\n${bean}".writePerfLog()
                             val gCodeText = gcodeFile.readText()
                             gcodeFile.deleteSafe()
                             LTime.tick()
@@ -376,7 +376,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = toBlackWhiteHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
-                            "图片[${bitmap.byteCount.toSizeString()}]转黑白耗时:${LTime.time()}".writePerfLog()
+                            "图片[${bitmap.byteCount.toSizeString()}]转黑白耗时:${LTime.time()}\n${bean}".writePerfLog()
                             result
                         }
                     }) { result ->
@@ -439,7 +439,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
-                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
+                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}\n${bean}".writePerfLog()
                             result
                         }
                     }) { result ->
@@ -499,7 +499,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = toGrayHandle(bitmap, bean)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
-                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}".writePerfLog()
+                            "图片[${bitmap.byteCount.toSizeString()}]转灰度耗时:${LTime.time()}\n${bean}".writePerfLog()
                             result
                         }
                     }) { result ->
@@ -553,7 +553,7 @@ object LPBitmapHandler {
                             LTime.tick()
                             val result = toSealHandle(bitmap, bean.sealThreshold)
                             element.updateBeanWidthHeightFromBitmap(bitmap, false)
-                            "图片[${bitmap.byteCount.toSizeString()}]转印章耗时:${LTime.time()}".writePerfLog()
+                            "图片[${bitmap.byteCount.toSizeString()}]转印章耗时:${LTime.time()}\n${bean}".writePerfLog()
                             result
                         }
                     }) { result ->
@@ -628,7 +628,7 @@ object LPBitmapHandler {
                             maxDiameter,
                             meshShape
                         )
-                        "图片[${operateBitmap.byteCount.toSizeString()}]扭曲耗时:${LTime.time()}".writePerfLog()
+                        "图片[${operateBitmap.byteCount.toSizeString()}]扭曲耗时:${LTime.time()}\n${bean}".writePerfLog()
 
                         result?.let {
                             element.updateOriginBitmap(result, false)
