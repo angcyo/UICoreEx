@@ -480,19 +480,21 @@ class BluetoothModel : LifecycleViewModel() {
         addNotifyListener(listener)
         notify(bleDevice, serviceUuid, notifyUuid, object : BleNotifyCallback() {
             override fun onNotifySuccess() {
+                "蓝牙监听数据成功[${bleDevice.name}]".writeToLog()
                 notifyListenerList.forEach {
                     it(null, null) //监听数据成功
                 }
             }
 
             override fun onNotifyFailure(exception: BleException?) {
+                "蓝牙监听数据失败[${bleDevice.name}]:$exception".writeToLog(logLevel = L.ERROR)
                 notifyListenerList.forEach {
                     it(null, exception) //监听数据失败
                 }
             }
 
             override fun onCharacteristicChanged(data: ByteArray?) {
-                "蓝牙收到Notify数据[${bleDevice.device}]:${data?.toString(Charset.defaultCharset())}".writeToLog(
+                "蓝牙收到Notify数据[${bleDevice.name}]:${data?.toString(Charset.defaultCharset())}".writeToLog(
                     logLevel = L.INFO
                 )
                 notifyListenerList.forEach {
