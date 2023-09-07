@@ -66,7 +66,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
         //
         itemHolder.click(R.id.lib_label_view) { view ->
             val config = _deviceSettingBean
-            val isZh = LanguageModel.getCurrentLanguage().lowercase().startsWith("zh")
+            val isZh = LanguageModel.isChinese()
             val url = if (isZh) {
                 config?.dataOffsetHelpUrlZh ?: config?.dataOffsetHelpUrl
             } else {

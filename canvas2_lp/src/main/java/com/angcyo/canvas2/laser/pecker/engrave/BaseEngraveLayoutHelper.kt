@@ -38,6 +38,8 @@ import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dialog.messageDialog
 import com.angcyo.dialog.toastQQOrMessage
+import com.angcyo.dialog2.dslitem.itemSelectedIndex
+import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.dsladapter.RecyclerItemFlowAnimator
 import com.angcyo.dsladapter.find
@@ -170,7 +172,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 //再次传输不一样的数据时, 重新创建任务id
                 flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
             }*/
-        } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
+        } else  if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
     }
