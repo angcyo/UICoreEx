@@ -218,4 +218,12 @@
     <string name="variable_time_type_custom">指定时间</string>
     <string name="variable_time_select">选择时间</string>
     <string name="variable_time_offset">分钟偏移</string>
+    <string name="variable_file_type">类型</string>
+    <string name="variable_file_txt">Txt</string>
+    <string name="variable_file_excel">Excel</string>
+    <string name="variable_file_label">文件</string>
+    <string name="variable_file_line">行号</string>
+    <string name="variable_file_increment">增量</string>
+    <string name="variable_file_sheet">启用子表</string>
+    <string name="variable_file_column">启用列</string>
 </resources>

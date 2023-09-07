@@ -10,6 +10,9 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatWheelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateOffsetItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateSelectWheelItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarExcelColumnChooseItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarExcelSheetChooseItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileChooseItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarNumberValueItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTextFixedItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeFormatInputItem
@@ -77,6 +80,12 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
     private var _adapter: DslAdapter? = null
 
+    private val _fileBean = LPVariableBean(LPVariableBean._TYPE_FILE).apply {
+        _fileType = LPVariableBean.TYPE_TXT
+    }
+    private val _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT)
+    private val _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL)
+
     private val variableBeanList = mutableListOf<LPVariableBean>().apply {
         add(LPVariableBean(LPVariableBean.TYPE_FIXED))
         add(LPVariableBean(LPVariableBean.TYPE_NUMBER).apply {
@@ -87,12 +96,14 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             formatType = LPVariableBean.NUMBER_TYPE_HEX
         })
         add(LPVariableBean(LPVariableBean.TYPE_DATE).apply {
+            format = LPVariableBean.DEFAULT_DATE_FORMAT
             value = 0
         })
         add(LPVariableBean(LPVariableBean.TYPE_TIME).apply {
+            format = LPVariableBean.DEFAULT_TIME_FORMAT
             value = 0
         })
-        add(LPVariableBean(LPVariableBean.TYPE_TXT))
+        add(_fileBean)
     }
 
     /**应用回调*/
@@ -137,7 +148,15 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
                     val bean = variableBeanList.getOrNull(toIndex)
                     if (bean != null) {
-                        renderVariableTextItem(bean)
+                        if (bean.type == LPVariableBean._TYPE_FILE) {
+                            if (bean._fileType == LPVariableBean.TYPE_EXCEL) {
+                                renderVariableTextItem(_excelBean)
+                            } else {
+                                renderVariableTextItem(_txtBean)
+                            }
+                        } else {
+                            renderVariableTextItem(bean)
+                        }
                     }
                 }
             }
@@ -166,7 +185,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             when (bean.type) {
                 LPVariableBean.TYPE_FIXED -> {
                     VarTextFixedItem()() {
-                        itemVariableBean = bean
+                        itemData = bean
                         observeItemChange {
                             enablePositiveButton()
                         }
@@ -176,14 +195,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 LPVariableBean.TYPE_NUMBER -> renderNumberType(bean)
                 LPVariableBean.TYPE_DATE -> renderDateType(bean)
                 LPVariableBean.TYPE_TIME -> renderTimeType(bean)
-
-                /*LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> {
-                        VariableTextTxtItem()() {
-                            itemClick = {
-
-                            }
-                        }
-                    }*/
+                LPVariableBean.TYPE_TXT -> renderTxtType(bean)
+                LPVariableBean.TYPE_EXCEL -> renderExcelType(bean)
             }
         }
     }
@@ -191,10 +204,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     /**序列号*/
     private fun DslAdapter.renderNumberType(bean: LPVariableBean) {
         DslTextPreviewItem()() {
-            if (bean.format == null) {
-                bean.format = LPVariableBean.DEFAULT_NUMBER_FORMAT
-            }
-            itemText = bean.numberFormatText
+            itemText = bean.variableText
         }
         DslSingleInputItem()() {
             itemLabel = _string(R.string.variable_format)
@@ -297,10 +307,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     private fun DslAdapter.renderDateType(bean: LPVariableBean) {
 
         DslTextPreviewItem()() {
-            if (bean.format == null) {
-                bean.format = LPVariableBean.DEFAULT_DATE_FORMAT
-            }
-            itemText = bean.dateFormatText
+            itemText = bean.variableText
         }
 
         DslRadioGroupItem()() {
@@ -382,10 +389,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     private fun DslAdapter.renderTimeType(bean: LPVariableBean) {
 
         DslTextPreviewItem()() {
-            if (bean.format == null) {
-                bean.format = LPVariableBean.DEFAULT_TIME_FORMAT
-            }
-            itemText = bean.timeFormatText
+            itemText = bean.variableText
         }
 
         DslRadioGroupItem()() {
@@ -463,6 +467,118 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         enablePositiveButton()
     }
 
+    /**文本文件*/
+    private fun DslAdapter.renderTxtType(bean: LPVariableBean) {
+        DslTextPreviewItem()() {
+            itemText = bean.variableText
+        }
+        DslRadioGroupItem()() {
+            itemLabel = _string(R.string.variable_file_type)
+            itemCheckItems = listOf(
+                _string(R.string.variable_file_txt),
+                _string(R.string.variable_file_excel)
+            )
+            itemCheckedItems = mutableListOf(_string(R.string.variable_file_txt))
+            observeItemChange {
+                val index = _itemCheckedIndexList.firstOrNull() ?: 0
+                if (index == 0) {
+                    _fileBean._fileType = LPVariableBean.TYPE_TXT
+                } else {
+                    _fileBean._fileType = LPVariableBean.TYPE_EXCEL
+                    renderVariableTextItem(_excelBean)
+                }
+            }
+        }
+        VarFileChooseItem()() {
+            itemData = bean
+        }
+        DslIncrementItem()() {
+            itemLabel = _string(R.string.variable_file_line)
+            itemIncrementValue = bean.current.toString()
+            observeItemChange {
+                bean.current = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
+                bean.reset()
+                updateTextPreviewItem()
+            }
+        }
+        DslIncrementItem()() {
+            itemLabel = _string(R.string.variable_file_increment)
+            itemIncrementValue = bean.stepVal.toString()
+            observeItemChange {
+                bean.stepVal = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
+                bean.reset()
+                updateTextPreviewItem()
+            }
+        }
+        DslPropertySwitchItem()() {
+            itemLabel = _string(R.string.variable_reset)
+            itemSwitchChecked = bean.reset
+            itemLabelTextSize = _dimen(R.dimen.text_body_size).toFloat()
+            observeItemChange {
+                bean.reset = itemSwitchChecked
+            }
+        }
+    }
+
+    /**xls Excel文件*/
+    private fun DslAdapter.renderExcelType(bean: LPVariableBean) {
+        DslTextPreviewItem()() {
+            itemText = bean.variableText
+        }
+        DslRadioGroupItem()() {
+            itemLabel = _string(R.string.variable_file_type)
+            itemCheckItems = listOf(
+                _string(R.string.variable_file_txt),
+                _string(R.string.variable_file_excel)
+            )
+            itemCheckedItems = mutableListOf(_string(R.string.variable_file_excel))
+            observeItemChange {
+                val index = _itemCheckedIndexList.firstOrNull() ?: 0
+                if (index == 0) {
+                    _fileBean._fileType = LPVariableBean.TYPE_TXT
+                    renderVariableTextItem(_txtBean)
+                } else {
+                    _fileBean._fileType = LPVariableBean.TYPE_EXCEL
+                }
+            }
+        }
+        VarFileChooseItem()() {
+            itemData = bean
+        }
+        VarExcelSheetChooseItem()() {
+            itemData = bean
+        }
+        VarExcelColumnChooseItem()() {
+            itemData = bean
+        }
+        DslIncrementItem()() {
+            itemLabel = _string(R.string.variable_file_line)
+            itemIncrementValue = bean.current.toString()
+            observeItemChange {
+                bean.current = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
+                bean.reset()
+                updateTextPreviewItem()
+            }
+        }
+        DslIncrementItem()() {
+            itemLabel = _string(R.string.variable_file_increment)
+            itemIncrementValue = bean.stepVal.toString()
+            observeItemChange {
+                bean.stepVal = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
+                bean.reset()
+                updateTextPreviewItem()
+            }
+        }
+        DslPropertySwitchItem()() {
+            itemLabel = _string(R.string.variable_reset)
+            itemSwitchChecked = bean.reset
+            itemLabelTextSize = _dimen(R.dimen.text_body_size).toFloat()
+            observeItemChange {
+                bean.reset = itemSwitchChecked
+            }
+        }
+    }
+
     /**更新需要预览的item*/
     private fun updateTextPreviewItem() {
         _currentVariableBean?.let { bean ->
@@ -510,7 +626,7 @@ fun String.variableTypeToStr(): String = when (this) {
     LPVariableBean.TYPE_NUMBER -> _string(R.string.variable_serial_number)
     LPVariableBean.TYPE_DATE -> _string(R.string.variable_date)
     LPVariableBean.TYPE_TIME -> _string(R.string.variable_time)
-    LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> _string(R.string.variable_file)
+    LPVariableBean._TYPE_FILE, LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> _string(R.string.variable_file)
     else -> this
 }
 
@@ -520,6 +636,6 @@ fun String.variableTypeToIco(): Drawable? = when (this) {
     LPVariableBean.TYPE_NUMBER -> _drawable(R.drawable.variable_serial_number_svg)
     LPVariableBean.TYPE_DATE -> _drawable(R.drawable.variable_date_svg)
     LPVariableBean.TYPE_TIME -> _drawable(R.drawable.variable_time_svg)
-    LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> _drawable(R.drawable.variable_file_svg)
+    LPVariableBean._TYPE_FILE, LPVariableBean.TYPE_TXT, LPVariableBean.TYPE_EXCEL -> _drawable(R.drawable.variable_file_svg)
     else -> null
 }

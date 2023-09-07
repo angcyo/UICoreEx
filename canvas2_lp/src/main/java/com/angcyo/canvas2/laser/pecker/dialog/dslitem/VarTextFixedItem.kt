@@ -34,6 +34,6 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
-        itemVariableBean?.content = itemEditText?.toString() ?: ""
+        _itemVariableBean?.content = itemEditText?.toString() ?: ""
     }
 }

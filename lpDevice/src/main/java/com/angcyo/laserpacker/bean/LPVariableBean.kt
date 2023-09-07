@@ -3,6 +3,7 @@ package com.angcyo.laserpacker.bean
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_DATE
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_NUMBER
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_TIME
+import com.angcyo.laserpacker.bean.LPVariableBean.Companion._TYPE_FILE
 import com.angcyo.library.component.parser.parseDateTemplate
 import com.angcyo.library.component.parser.parseNumberTemplate
 import com.angcyo.library.ex.addDay
@@ -53,7 +54,9 @@ data class LPVariableBean(
      * 手动时间: [content] 13位时间戳*/
     var auto: Boolean = true, // 自动时间
     //---TXT
-    /**行号的增量*/
+    /**行号的增量
+     * 行号:[current]
+     * */
     var stepVal: Long = 1, // 递增量
     var fileName: String? = null, // 文件名
     var fileUri: String? = null, // 文件路径
@@ -70,6 +73,8 @@ data class LPVariableBean(
     var _systemDateFormat: Boolean = true,
     /**是否是系统时间格式*/
     var _systemTimeFormat: Boolean = true,
+    /**[_TYPE_FILE] tab 下的属性*/
+    var _fileType: String? = TYPE_EXCEL,
     //---
     /**唯一标识符*/
     val key: String = uuid(),
@@ -95,6 +100,12 @@ data class LPVariableBean(
 
         /**变量类型: 表格文件, 仅支持97~03 xls文档*/
         const val TYPE_EXCEL = "EXCEL"
+
+        /**
+         * [TYPE_TXT]
+         * [TYPE_EXCEL]
+         * */
+        const val _TYPE_FILE = "FILE"
 
         //---
 

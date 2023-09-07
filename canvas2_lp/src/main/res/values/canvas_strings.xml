@@ -218,4 +218,12 @@
     <string name="variable_time_type_custom">SpecifiedTime</string>
     <string name="variable_time_select">SelectionPeriod</string>
     <string name="variable_time_offset">MinuteOffset</string>
+    <string name="variable_file_type">Type</string>
+    <string name="variable_file_txt">Txt</string>
+    <string name="variable_file_excel">Excel</string>
+    <string name="variable_file_label">File</string>
+    <string name="variable_file_line">LineNumber</string>
+    <string name="variable_file_increment">Increment</string>
+    <string name="variable_file_sheet">EnableChildTable</string>
+    <string name="variable_file_column">EnableColumns</string>
 </resources>

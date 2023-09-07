@@ -25,7 +25,21 @@ object Jxl {
 
     //region ---读---
 
-    /**读取Excel文件*/
+    /**读取Excel文件
+     * 返回结构: Sheet 对应的 行 列集合 数据
+     * ```
+     * sheet1: xxx
+     *         xxx
+     *         xxx
+     * sheet2: xxx
+     *         xxx
+     *         xxx
+     * sheet3: xxx
+     *         xxx
+     *         xxx
+     * ```
+     *
+     * */
     fun readExcel(
         file: File?,
         ws: WorkbookSettings = WorkbookSettings().apply {
