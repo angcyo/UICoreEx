@@ -8,6 +8,8 @@ import androidx.core.graphics.drawable.toDrawable
 import com.angcyo.activity.BaseAppCompatActivity
 import com.angcyo.base.dslFHelper
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.core.component.manage.InnerFileManageModel
+import com.angcyo.core.dslitem.DslFileSelectorItem
 import com.angcyo.core.vmApp
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterStatusItem
@@ -101,6 +103,8 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     @Throws(OutOfSizeException::class)
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
+        val innerFileManageModel = vmApp<InnerFileManageModel>()
+
         var path = filePath
         if (path.endsWith(LPDataConstant.DXF_EXT, true)) {
             //dxf文件, 将dxf转成svg文件
@@ -116,7 +120,7 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
             //超过最大的文件大小限制
             throw OutOfSizeException()
         }
-        //
+        //处理文件类型
         if (isProjectFile) {
             //工程文件
             val projectBean = file.readProjectBean()
@@ -347,6 +351,19 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                         }
                     }
 
+                    cancelAction = {
+                        finish()
+                    }
+                }
+            }
+            return true
+        } else if (innerFileManageModel.isSupportImportFile(file)) {
+            //支持导入的文件
+            adapter?.render {
+                clearAllItems()
+                CanvasOpenPreviewItem()() {
+                    itemFilePath = path
+                    itemDrawable = _drawable(DslFileSelectorItem.getFileIconRes(path))
                     cancelAction = {
                         finish()
                     }

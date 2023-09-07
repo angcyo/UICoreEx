@@ -70,11 +70,11 @@ data class LPVariableBean(
     //---cache
     var printCount: Long = 0, // 当前雕刻次数 `每当用户手动变更参数时都会置为0 重新计数`
     /**是否是系统日期格式*/
-    var _systemDateFormat: Boolean = true,
+    @Transient var _systemDateFormat: Boolean = true,
     /**是否是系统时间格式*/
-    var _systemTimeFormat: Boolean = true,
+    @Transient var _systemTimeFormat: Boolean = true,
     /**[_TYPE_FILE] tab 下的属性*/
-    var _fileType: String? = TYPE_EXCEL,
+    @Transient var _fileType: String? = TYPE_EXCEL,
     //---
     /**唯一标识符*/
     val key: String = uuid(),

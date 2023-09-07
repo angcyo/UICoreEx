@@ -217,7 +217,7 @@
     <string name="variable_time_type_system">系统时间</string>
     <string name="variable_time_type_custom">指定时间</string>
     <string name="variable_time_select">选择时间</string>
-    <string name="variable_time_offset">分钟偏移</string>
+    <string name="variable_time_offset">增减偏移</string>
     <string name="variable_file_type">类型</string>
     <string name="variable_file_txt">Txt</string>
     <string name="variable_file_excel">Excel</string>

@@ -4,6 +4,8 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.core.view.isVisible
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.core.component.manage.InnerFileManageModel
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.glide.glide
@@ -11,8 +13,10 @@ import com.angcyo.laserpacker.device.R
 import com.angcyo.library.ex.ClickAction
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.extName
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.lastName
 import com.angcyo.library.ex.noExtName
+import com.angcyo.library.toastQQ
 import com.angcyo.widget.DslViewHolder
 import java.io.File
 
@@ -46,9 +50,15 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
     var itemDrawable: Drawable? = null
 
     /**点击回调, 如果是字体, 则应该是回调*/
-    var openAction: ClickAction = {}
+    var openAction: ClickAction? = null
 
     var cancelAction: ClickAction = {}
+
+    /**对应的目标文件*/
+    val itemFile: File?
+        get() = itemFilePath?.file()
+
+    val innerFileManageModel = vmApp<InnerFileManageModel>()
 
     init {
         itemLayoutId = R.layout.item_canvas_open_preview_layout
@@ -87,6 +97,7 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
         }
 
         //
+        itemHolder.visible(R.id.open_button, openAction != null)
         itemHolder.click(R.id.open_button, openAction)
         itemHolder.click(R.id.cancel_button, cancelAction)
 
@@ -109,6 +120,16 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
             }
         }
 
+        //导入文件按钮
+        itemHolder.visible(R.id.import_button, innerFileManageModel.isSupportImportFile(itemFile))
+        itemHolder.click(R.id.import_button) {
+            if (innerFileManageModel.importFile(itemFile)) {
+                cancelAction(it)
+                toastQQ(_string(R.string.core_import_success))
+            } else {
+                toastQQ(_string(R.string.core_import_fail))
+            }
+        }
     }
 
 }
