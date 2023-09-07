@@ -59,6 +59,7 @@ import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.find
 import com.angcyo.library.ex.getChildOrNull
+import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.hideSoftInput
 import com.angcyo.library.ex.paddingHorizontal
 import com.angcyo.library.ex.setHeight
@@ -77,6 +78,12 @@ import com.angcyo.widget.tab
  * @since 2023/08/30
  */
 class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(context) {
+
+    /**需要编辑的结构*/
+    var editVariableBean: LPVariableBean? = null
+
+    private val isEditModel: Boolean
+        get() = editVariableBean != null
 
     private var _adapter: DslAdapter? = null
 
@@ -109,12 +116,12 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     /**应用回调*/
     var onApplyVariableAction: (LPVariableBean) -> Unit = {}
 
+    private var _currentVariableBean: LPVariableBean? = null
+
     init {
         dialogLayoutId = R.layout.dialog_add_variable_text_layout
         canceledOnTouchOutside = false
     }
-
-    private var _currentVariableBean: LPVariableBean? = null
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
@@ -124,7 +131,15 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
         //确定
         dialogViewHolder.click(R.id.dialog_positive_button) {
-            _currentVariableBean?.let(onApplyVariableAction)
+            _currentVariableBean?.apply {
+                if (!isEditModel) {
+                    if (type == LPVariableBean.TYPE_FIXED) {
+                        //保存历史
+                        VarTextFixedItem.VAR_KEY_ADD_TEXT.hawkPutList(content)
+                    }
+                }
+                let(onApplyVariableAction)
+            }
             dialog.dismiss()
         }
 
@@ -134,28 +149,37 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
 
         //tab
-        dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
-            resetChild(variableBeanList, R.layout.lib_segment_layout) { itemView, item, itemIndex ->
-                itemView.find<TextView>(R.id.lib_text_view)?.apply {
-                    text = item.type.variableTypeToStr()
-                    paddingHorizontal(12 * dpi)
+        if (isEditModel) {
+            dialogViewHolder.gone(R.id.lib_tab_layout)
+            renderVariableTextItem(editVariableBean!!)
+            enablePositiveButton()
+        } else {
+            dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
+                resetChild(
+                    variableBeanList,
+                    R.layout.lib_segment_layout
+                ) { itemView, item, itemIndex ->
+                    itemView.find<TextView>(R.id.lib_text_view)?.apply {
+                        text = item.type.variableTypeToStr()
+                        paddingHorizontal(12 * dpi)
+                    }
                 }
-            }
-            observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
-                if (fromUser || fromIndex == -1) {
-                    updateVariableTextItemView(getChildOrNull(fromIndex), fromIndex, false)
-                    updateVariableTextItemView(getChildOrNull(toIndex), toIndex, true)
+                observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
+                    if (fromUser || fromIndex == -1) {
+                        updateVariableTextItemView(getChildOrNull(fromIndex), fromIndex, false)
+                        updateVariableTextItemView(getChildOrNull(toIndex), toIndex, true)
 
-                    val bean = variableBeanList.getOrNull(toIndex)
-                    if (bean != null) {
-                        if (bean.type == LPVariableBean._TYPE_FILE) {
-                            if (bean._fileType == LPVariableBean.TYPE_EXCEL) {
-                                renderVariableTextItem(_excelBean)
+                        val bean = variableBeanList.getOrNull(toIndex)
+                        if (bean != null) {
+                            if (bean.type == LPVariableBean._TYPE_FILE) {
+                                if (bean._fileType == LPVariableBean.TYPE_EXCEL) {
+                                    renderVariableTextItem(_excelBean)
+                                } else {
+                                    renderVariableTextItem(_txtBean)
+                                }
                             } else {
-                                renderVariableTextItem(_txtBean)
+                                renderVariableTextItem(bean)
                             }
-                        } else {
-                            renderVariableTextItem(bean)
                         }
                     }
                 }
@@ -183,20 +207,22 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         _adapter?.render {
             clearAllItems()
             when (bean.type) {
-                LPVariableBean.TYPE_FIXED -> {
-                    VarTextFixedItem()() {
-                        itemData = bean
-                        observeItemChange {
-                            enablePositiveButton()
-                        }
-                    }
-                }
-
+                LPVariableBean.TYPE_FIXED -> renderFixedType(bean)
                 LPVariableBean.TYPE_NUMBER -> renderNumberType(bean)
                 LPVariableBean.TYPE_DATE -> renderDateType(bean)
                 LPVariableBean.TYPE_TIME -> renderTimeType(bean)
                 LPVariableBean.TYPE_TXT -> renderTxtType(bean)
                 LPVariableBean.TYPE_EXCEL -> renderExcelType(bean)
+            }
+        }
+    }
+
+    /**固定文本*/
+    private fun DslAdapter.renderFixedType(bean: LPVariableBean) {
+        VarTextFixedItem()() {
+            itemData = bean
+            observeItemChange {
+                enablePositiveButton(!bean.content.isNullOrEmpty())
             }
         }
     }

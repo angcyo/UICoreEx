@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -8,10 +9,45 @@
         android:id="@+id/lib_edit_view"
         style="@style/ItemEditStyle"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:background="@drawable/lib_bottom_line_selector"
         android:gravity="top"
         android:hint="@string/lib_input_hint"
+        android:maxHeight="200dp"
         tools:text="angcyo" />
 
-</FrameLayout>
+    <!--输入历史-->
+    <com.angcyo.widget.layout.DslFlowLayout
+        android:id="@+id/lib_flow_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:paddingHorizontal="@dimen/lib_hdpi"
+        android:paddingVertical="@dimen/lib_hdpi"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/single_text_indicator_view"
+        app:layout_constraintTop_toTopOf="@id/single_text_indicator_view"
+        app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
+        app:r_flow_item_vertical_space="@dimen/lib_hdpi"
+        app:r_flow_preview_item_layout_id="@layout/lib_input_history_layout"
+        tools:layoutDirection="rtl">
+
+    </com.angcyo.widget.layout.DslFlowLayout>
+
+    <com.angcyo.widget.pager.TextIndicator
+        android:id="@+id/single_text_indicator_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/lib_hdpi"
+        android:minHeight="40dp"
+        android:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@id/lib_flow_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lib_edit_view"
+        tools:text="100/100"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
