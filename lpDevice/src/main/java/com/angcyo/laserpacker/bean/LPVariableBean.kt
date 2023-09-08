@@ -18,6 +18,7 @@ import com.angcyo.library.ex.file
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.ex.uuid
+import com.angcyo.library.extend.IToText
 import java.util.Calendar
 
 /**
@@ -88,7 +89,7 @@ data class LPVariableBean(
     //---
     /**唯一标识符*/
     val key: String = uuid(),
-) {
+) : IToText {
     companion object {
 
         //---
@@ -178,6 +179,8 @@ data class LPVariableBean(
             _txtLinesList = file?.readLines()
         }
     }
+
+    override fun toText(): CharSequence? = variableText
 
     /**对应的变量文本内容*/
     val variableText: String?
