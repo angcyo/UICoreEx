@@ -43,7 +43,32 @@ import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.lastContext
-import com.angcyo.library.ex.*
+import com.angcyo.library.ex._string
+import com.angcyo.library.ex.deleteSafe
+import com.angcyo.library.ex.file
+import com.angcyo.library.ex.getShowName
+import com.angcyo.library.ex.isFileExist
+import com.angcyo.library.ex.isFileExists
+import com.angcyo.library.ex.isFolder
+import com.angcyo.library.ex.isImageType
+import com.angcyo.library.ex.md5
+import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.readEntry
+import com.angcyo.library.ex.readEntryBitmap
+import com.angcyo.library.ex.readEntryString
+import com.angcyo.library.ex.readString
+import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.save
+import com.angcyo.library.ex.saveTo
+import com.angcyo.library.ex.shareFile
+import com.angcyo.library.ex.toBase64Data
+import com.angcyo.library.ex.toBitmap
+import com.angcyo.library.ex.toBitmapOfBase64
+import com.angcyo.library.ex.uuid
+import com.angcyo.library.ex.writeEntry
+import com.angcyo.library.ex.writeText
+import com.angcyo.library.ex.zipFileRead
+import com.angcyo.library.ex.zipFileWrite
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.toMm
@@ -309,6 +334,19 @@ class LPProjectManager {
                     bean._srcBitmap = zipFile.readEntryBitmap(bean.srcUri!!)
                     /*bean.src = zipFile.readEntryBitmap(bean.srcUri!!)?.toBase64Data()*/
                 }
+
+                //释放变量文件数据
+                for (variable in bean.variables ?: emptyList()) {
+                    val uri = variable.fileUri
+                    if (!uri.isNullOrEmpty()) {
+                        zipFile.readEntry(uri)?.let {
+                            //获取/后面的字符串
+                            val fileName = uri.substringAfterLast("/")
+                            variable.fileUri = it.writeToFile(libCacheFile(fileName))
+                            variable.initFileCache()
+                        }
+                    }
+                }
             }
             LPRendererHelper.renderElementList(delegate, beanList, false, Strategy.init)
         } != null
@@ -518,6 +556,18 @@ class LPProjectManager {
                                     elementBean.data = null
                                     elementBean.imageOriginal = null
                                     elementBean.src = null
+
+                                    //变量文本文件数据
+                                    for (variable in elementBean.variables ?: emptyList()) {
+                                        val file = variable.fileUri?.file()
+                                        if (file.isFileExists()) {
+                                            val data = file!!.readBytes()
+                                            val uri =
+                                                LPDataConstant.PROJECT_V2_BASE_URI + file.md5()
+                                            variable.fileUri = uri
+                                            writeEntry(uri, data)
+                                        }
+                                    }
                                     add(elementBean.toJson().json())
                                 }
                             } catch (e: Exception) {
@@ -755,6 +805,9 @@ class LPProjectManager {
                                 elementBean.data = null
                                 elementBean.imageOriginal = null
                                 elementBean.src = null
+
+                                //变量文本文件数据, 在这里不需要处理
+
                                 add(elementBean.toJson().json())
                             }
                         } catch (e: Exception) {
@@ -834,6 +887,19 @@ class LPProjectManager {
                     bean._srcBitmap = File(folder, bean.srcUri!!).toBitmap()
                     /*bean.src = zipFile.readEntryBitmap(bean.srcUri!!)?.toBase64Data()*/
                 }
+
+                //读取变量文件数据
+                for (variable in bean.variables ?: emptyList()) {
+                    val uri = variable.fileUri
+                    if (!uri.isNullOrEmpty()) {
+                        if (uri.isFileExist()) {
+                            //已经是文件路径
+                        } else {
+                            variable.fileUri = File(folder, uri).absolutePath
+                        }
+                        variable.initFileCache()
+                    }
+                }
             }
             LPRendererHelper.renderElementList(delegate, beanList, false, Strategy.init)
         } != null
@@ -850,6 +916,13 @@ class LPProjectManager {
         val folder = DeviceHelper._defaultProjectOutputV2Folder()
         val file = File(folder, res)
         bitmap?.writeToFile(file)
+    }
+
+    fun writeV2TempData(res: String, data: ByteArray?): File {
+        val folder = DeviceHelper._defaultProjectOutputV2Folder()
+        val file = File(folder, res)
+        data?.writeToFile(file)
+        return file
     }
 
     //endregion ---temp---
