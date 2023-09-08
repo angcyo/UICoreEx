@@ -1,7 +1,8 @@
 package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.dialog.variableTypeToIco
+import com.angcyo.canvas2.laser.pecker.dialog.addVariableTextDialog
+import com.angcyo.canvas2.laser.pecker.dialog.toVariableTypeIco
 import com.angcyo.dsladapter.DragCallbackHelper
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.laserpacker.bean.LPVariableBean
@@ -22,6 +23,9 @@ class VariableTextListItem : DslAdapterItem() {
     /**拖拽助手*/
     var itemDragHelper: DragCallbackHelper? = null
 
+    /**编辑保存后的回调*/
+    var itemEditChangedAction: (newBean: LPVariableBean) -> Unit = {}
+
     init {
         itemLayoutId = R.layout.item_var_text_list_layout
     }
@@ -36,7 +40,7 @@ class VariableTextListItem : DslAdapterItem() {
 
         val variableBean = _itemVariableBean
         itemHolder.img(R.id.lib_image_view)
-            ?.setImageDrawable(variableBean?.type?.variableTypeToIco(true, variableBean))
+            ?.setImageDrawable(variableBean?.type?.toVariableTypeIco(true, variableBean))
         itemHolder.tv(R.id.lib_text_view)?.text =
             if (variableBean?.type == LPVariableBean.TYPE_FIXED && (variableBean._isEnter || variableBean._isSpace)) {
                 span {
@@ -53,11 +57,23 @@ class VariableTextListItem : DslAdapterItem() {
         itemHolder.img(R.id.lib_right_ico_view)
             ?.setImageResource(if (itemEditMode) R.drawable.core_sort_svg else R.drawable.lib_next_small)
         if (itemEditMode) {
+            //item 进入编辑模式
             itemHolder.longClick(R.id.lib_right_ico_view) {
                 itemDragHelper?.startDrag(itemHolder, this)
             }
+            itemHolder.clickItem()
         } else {
             itemHolder.longClick(R.id.lib_right_ico_view)
+
+            //点击编辑
+            itemHolder.clickItem {
+                it.context.addVariableTextDialog {
+                    editVariableBean = variableBean?.copy()
+                    onApplyVariableAction = { bean ->
+                        itemEditChangedAction(bean)
+                    }
+                }
+            }
         }
     }
 

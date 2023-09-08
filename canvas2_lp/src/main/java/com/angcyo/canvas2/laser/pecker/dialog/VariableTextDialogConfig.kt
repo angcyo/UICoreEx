@@ -31,6 +31,7 @@ import com.angcyo.library.ex.isScreenTouchIn
 import com.angcyo.library.ex.isTouchFinish
 import com.angcyo.library.ex.isTouchMove
 import com.angcyo.library.ex.postDelay
+import com.angcyo.library.ex.replace
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.ex.setSize
 import com.angcyo.library.ex.tintDrawable
@@ -143,11 +144,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                                 //添加
                                 variableTextBeanList.add(bean)
                                 _listAdapter?.render {
-                                    VariableTextListItem()() {
-                                        itemData = bean
-                                        itemEditMode = isVariableTextEditMode
-                                        itemDragHelper = _dragCallbackHelper
-                                    }
+                                    renderVariableTextListItem(bean)
                                 }
                             }
                         }
@@ -167,6 +164,21 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                     }
                     _listAdapter?.updateAllItem()
                 }
+            }
+        }
+    }
+
+    private fun DslAdapter.renderVariableTextListItem(bean: LPVariableBean) {
+        VariableTextListItem()() {
+            itemData = bean
+            itemEditMode = isVariableTextEditMode
+            itemDragHelper = _dragCallbackHelper
+
+            itemEditChangedAction = { newBean ->
+                variableTextBeanList.replace(_itemVariableBean!!, newBean)
+                itemData = newBean
+                updateAdapterItem()
+                updatePreviewLayout()
             }
         }
     }

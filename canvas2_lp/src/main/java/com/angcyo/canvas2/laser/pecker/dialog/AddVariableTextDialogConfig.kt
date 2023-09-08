@@ -136,7 +136,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
         dialogViewHolder.tv(R.id.dialog_title_view)?.text =
-            _string(R.string.canvas_add_variable_text)
+            if (isVariableEditModel) editVariableBean?.type?.toVariableTypeStr() else _string(R.string.canvas_add_variable_text)
+
         dialogViewHolder.enable(R.id.dialog_positive_button, false)
 
         //确定
@@ -161,7 +162,6 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         //tab
         if (isVariableEditModel) {
             dialogViewHolder.gone(R.id.lib_tab_layout)
-            renderVariableTextItem(editVariableBean!!)
             enablePositiveButton()
         } else {
             dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
@@ -170,7 +170,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                     R.layout.lib_segment_layout
                 ) { itemView, item, itemIndex ->
                     itemView.find<TextView>(R.id.lib_text_view)?.apply {
-                        text = item.type.variableTypeToStr()
+                        text = item.type.toVariableTypeStr()
                         paddingHorizontal(12 * dpi)
                     }
                 }
@@ -202,6 +202,10 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             renderDslAdapter {
                 _adapter = this
                 renderAdapterEmptyStatus(R.layout.variable_text_empty_layout)
+
+                editVariableBean?.let {
+                    renderVariableTextItem(it)
+                }
             }
         }
 
@@ -655,10 +659,10 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         val bean = variableBeanList.getOrNull(index) ?: return
         view.find<TextView>(R.id.lib_text_view)?.text = span {
             if (selected) {
-                appendDrawable(bean.type.variableTypeToIco()?.setSize(18 * dpi))
+                appendDrawable(bean.type.toVariableTypeIco()?.setSize(18 * dpi))
                 appendSpace(2 * dpi)
             }
-            append(bean.type.variableTypeToStr())
+            append(bean.type.toVariableTypeStr())
         }
     }
 }
@@ -673,7 +677,7 @@ fun Context.addVariableTextDialog(config: AddVariableTextDialogConfig.() -> Unit
 }
 
 /**变量文本类型转字符串*/
-fun String.variableTypeToStr(): String = when (this) {
+fun String.toVariableTypeStr(): String = when (this) {
     LPVariableBean.TYPE_FIXED -> _string(R.string.variable_fixed_text)
     LPVariableBean.TYPE_NUMBER -> _string(R.string.variable_serial_number)
     LPVariableBean.TYPE_DATE -> _string(R.string.variable_date)
@@ -683,7 +687,7 @@ fun String.variableTypeToStr(): String = when (this) {
 }
 
 /**变量文本类型转ico*/
-fun String.variableTypeToIco(
+fun String.toVariableTypeIco(
     checkEnterText: Boolean = false,
     bean: LPVariableBean? = null
 ): Drawable? = when (this) {
