@@ -12,6 +12,7 @@ import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.device.model.FscDeviceModel
 import com.angcyo.laserpacker.toBitmapElementBeanV2
 import com.angcyo.laserpacker.toPaintStyleInt
@@ -180,16 +181,33 @@ object LPElementHelper {
         delegate: CanvasRenderDelegate?,
         text: CharSequence?,
         type: Int = LPDataConstant.DATA_TYPE_TEXT
-    ) {
-        delegate ?: return
+    ): CanvasElementRenderer? {
         val elementBean = LPElementBean().apply {
             mtype = type
             this.text = "$text"
             paintStyle = Paint.Style.FILL.toPaintStyleInt()
         }
-        val renderer = LPRendererHelper.parseElementRenderer(elementBean, true)!!
-        delegate.renderManager.addElementRenderer(renderer, true, Reason.user, Strategy.normal)
-        LPRendererHelper.generateName(delegate)
+        return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {
+            delegate?.renderManager?.addElementRenderer(this, true, Reason.user, Strategy.normal)
+            LPRendererHelper.generateName(delegate)
+        }
+    }
+
+    /**添加一个变量文本元素*/
+    fun addVariableTextElement(
+        delegate: CanvasRenderDelegate?,
+        variables: List<LPVariableBean>?,
+        type: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+    ): CanvasElementRenderer? {
+        val elementBean = LPElementBean().apply {
+            mtype = type
+            this.variables = variables
+            paintStyle = Paint.Style.FILL.toPaintStyleInt()
+        }
+        return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {
+            delegate?.renderManager?.addElementRenderer(this, true, Reason.user, Strategy.normal)
+            LPRendererHelper.generateName(delegate)
+        }
     }
 
     /**添加一个路径元素到画板

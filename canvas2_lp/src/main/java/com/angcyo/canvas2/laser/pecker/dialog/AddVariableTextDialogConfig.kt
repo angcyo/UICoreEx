@@ -87,7 +87,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     /**需要编辑的结构*/
     var editVariableBean: LPVariableBean? = null
 
-    private val isEditModel: Boolean
+    /**是否是编辑模式 */
+    val isVariableEditModel: Boolean
         get() = editVariableBean != null
 
     private var _adapter: DslAdapter? = null
@@ -96,10 +97,10 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         _fileType = LPVariableBean.TYPE_TXT
     }
     private val _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT).apply {
-        current = 1
+        current = LPVariableBean.DATA_START_INDEX
     }
     private val _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL).apply {
-        current = 1
+        current = LPVariableBean.DATA_START_INDEX
     }
 
     private val variableBeanList = mutableListOf<LPVariableBean>().apply {
@@ -141,7 +142,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         //确定
         dialogViewHolder.click(R.id.dialog_positive_button) {
             _currentVariableBean?.apply {
-                if (!isEditModel) {
+                if (!isVariableEditModel) {
                     if (type == LPVariableBean.TYPE_FIXED) {
                         //保存历史
                         VarTextFixedItem.VAR_KEY_ADD_TEXT.hawkPutList(content)
@@ -158,7 +159,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
 
         //tab
-        if (isEditModel) {
+        if (isVariableEditModel) {
             dialogViewHolder.gone(R.id.lib_tab_layout)
             renderVariableTextItem(editVariableBean!!)
             enablePositiveButton()
@@ -682,8 +683,14 @@ fun String.variableTypeToStr(): String = when (this) {
 }
 
 /**变量文本类型转ico*/
-fun String.variableTypeToIco(): Drawable? = when (this) {
-    LPVariableBean.TYPE_FIXED -> _drawable(R.drawable.variable_fixed_text_svg)
+fun String.variableTypeToIco(
+    checkEnterText: Boolean = false,
+    bean: LPVariableBean? = null
+): Drawable? = when (this) {
+    LPVariableBean.TYPE_FIXED -> if (checkEnterText && bean?.content?.contains("\n") == true) {
+        _drawable(R.drawable.variable_fixed_text_enter_svg)
+    } else _drawable(R.drawable.variable_fixed_text_svg)
+
     LPVariableBean.TYPE_NUMBER -> _drawable(R.drawable.variable_serial_number_svg)
     LPVariableBean.TYPE_DATE -> _drawable(R.drawable.variable_date_svg)
     LPVariableBean.TYPE_TIME -> _drawable(R.drawable.variable_time_svg)

@@ -9,9 +9,11 @@ import com.angcyo.bluetooth.fsc.laserpacker.command.EngravePreviewCmd
 import com.angcyo.bluetooth.fsc.laserpacker.data.LaserPeckerProductInfo
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStateString
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
+import com.angcyo.bluetooth.fsc.laserpacker.writeEngraveLog
 import com.angcyo.canvas.render.data.LimitInfo
 import com.angcyo.canvas2.laser.pecker.engrave.EngraveInfoRenderer
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.core.component.model.DataShareModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.messageDialog
@@ -24,6 +26,7 @@ import com.angcyo.laserpacker.device.ble.BluetoothSearchHelper
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
 import com.angcyo.laserpacker.device.ble.DeviceSettingFragment
 import com.angcyo.laserpacker.device.model.FscDeviceModel
+import com.angcyo.library.L
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.StateLayoutInfo
@@ -193,6 +196,14 @@ class ProductLayoutHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                     //雕刻图层的进度监听
                     if (HawkEngraveKeys.enableLayerEngraveInfo) {
                         renderLayoutHelper.updateEngraveLayerListLayout()
+                    }
+
+                    //雕刻任务完成后, 更新变量文本
+                    if (it.state == EngraveModel.ENGRAVE_STATE_FINISH) {
+                        "雕刻完成, 更新变量文本".writeEngraveLog(L.INFO)
+                        renderDelegate?.getAllSingleElementRendererList()?.forEach {
+                            it.lpTextElement()?.updateElementAfterEngrave(it, renderDelegate)
+                        }
                     }
                 }
             }

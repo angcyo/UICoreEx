@@ -16,6 +16,7 @@ import com.angcyo.library.ex.addMonth
 import com.angcyo.library.ex.addYear
 import com.angcyo.library.ex.file
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toStr
 import com.angcyo.library.ex.uuid
 import com.angcyo.library.extend.IToText
@@ -33,6 +34,7 @@ data class LPVariableBean(
     //---FIXED
     /**变量类型*/
     var type: String = TYPE_FIXED,
+    /**固定文本内容*/
     var content: String? = null, // string 内容
     //---NUMBER
     var min: Long = 0, // 开始序号
@@ -91,6 +93,9 @@ data class LPVariableBean(
     val key: String = uuid(),
 ) : IToText {
     companion object {
+
+        /**数据开始的索引, 从1开始*/
+        const val DATA_START_INDEX = 1L
 
         //---
 
@@ -159,6 +164,10 @@ data class LPVariableBean(
     /**是否是回车*/
     val _isEnter: Boolean
         get() = type == TYPE_FIXED && content == "\n"
+
+    /**是否是空格*/
+    val _isSpace: Boolean
+        get() = type == TYPE_FIXED && content == " "
 
     /**重置缓存数据*/
     @CallPoint
@@ -249,12 +258,12 @@ data class LPVariableBean(
         }
 
     /**从1开始的索引*/
-    val currentIndex: Int
-        get() = maxOf(1, current.toInt()) - 1
+    val currentDataIndex: Int
+        get() = maxOf(DATA_START_INDEX.toInt(), current.toInt()) - DATA_START_INDEX.toInt()
 
     /**[TYPE_TXT]*/
     val txtFormatText: String?
-        get() = _txtLinesList?.getOrNull(currentIndex)
+        get() = _txtLinesList?.getOrNull(currentDataIndex)
 
     /**工作表的集合*/
     val sheetList: List<String>
@@ -266,8 +275,16 @@ data class LPVariableBean(
 
     /**[TYPE_EXCEL]*/
     val excelFormatText: String?
-        get() = _excelMap?.get(sheet ?: "")?.getOrNull(currentIndex + 1) //跳过表头
+        get() = _excelMap?.get(sheet ?: "")?.getOrNull(currentDataIndex + 1) //跳过表头
             ?.getOrNull(maxOf(0, columnList.indexOf(column)))?.toStr()
+
+    /**文本内容的行数, 表格的行数*/
+    val maxDataLineCount: Int
+        get() = if (type == TYPE_EXCEL) {
+            getColumnDataList().size()
+        } else {
+            _txtLinesList.size()
+        }
 
     /**获取指定列, 去除表头后的数据集合*/
     fun getColumnDataList(columnIndex: Int = maxOf(0, columnList.indexOf(column))): List<String> {
@@ -280,5 +297,51 @@ data class LPVariableBean(
             }
         }
         return result
+    }
+
+    /**雕刻完成之后, 更新数据*/
+    fun updateAfterEngrave() {
+        printCount++
+        if (type == TYPE_NUMBER) {
+            if (printCount >= step) {
+                //需要递增
+                if (current >= max) {
+                    if (reset) {
+                        //重置
+                        current = min
+                    } else {
+                        //不重置, 保持最大值
+                    }
+                } else {
+                    current += value
+                    if (current > max) {
+                        current = max
+                    }
+                }
+                printCount = 0
+            }
+        } else if (type == TYPE_DATE || type == TYPE_TIME) {
+            if (auto) {
+                current = nowTime()
+            }
+        } else if (type == TYPE_TXT || type == TYPE_EXCEL) {
+            if (printCount >= step) {
+                //需要递增
+                if (currentDataIndex + DATA_START_INDEX.toInt() >= maxDataLineCount) {
+                    if (reset) {
+                        //重置
+                        current = DATA_START_INDEX
+                    } else {
+                        //不重置, 保持最大值
+                    }
+                } else {
+                    current += stepVal
+                    if (currentDataIndex + DATA_START_INDEX.toInt() > maxDataLineCount) {
+                        current = maxDataLineCount.toLong()
+                    }
+                }
+                printCount = 0
+            }
+        }
     }
 }

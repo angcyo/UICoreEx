@@ -7,9 +7,12 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.EditItemConfig
 import com.angcyo.item.style.IEditItem
 import com.angcyo.item.style.itemEditText
+import com.angcyo.item.style.itemMaxEditLines
 import com.angcyo.item.style.itemMaxInputLength
 import com.angcyo.library.ex.hawkGetList
 import com.angcyo.library.ex.hawkPutList
+import com.angcyo.library.ex.reverseCharSequenceIfRtl
+import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.dslViewHolder
 import com.angcyo.widget.base.resetChild
@@ -47,7 +50,7 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
     init {
         itemLayoutId = R.layout.item_var_text_fixed_layout
         itemMaxInputLength = HawkEngraveKeys.maxInputTextLengthLimit
-        itemMaxInputLength
+        itemMaxEditLines = Int.MAX_VALUE
 
         inputHistoryHawkKey = VAR_KEY_ADD_TEXT
     }
@@ -99,6 +102,6 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
 
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
-        _itemVariableBean?.content = itemEditText?.toString() ?: ""
+        _itemVariableBean?.content = itemEditText?.reverseCharSequenceIfRtl()?.toStr()
     }
 }

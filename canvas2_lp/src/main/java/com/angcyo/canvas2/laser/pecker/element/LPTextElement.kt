@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.element
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
+import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -13,6 +14,8 @@ import com.angcyo.laserpacker.isBold
 import com.angcyo.laserpacker.isItalic
 import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
+import com.angcyo.library.annotation.CallPoint
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.qrcode.createBarCode
@@ -35,7 +38,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     override fun createStateStack(): IStateStack = LPTextStateStack()
 
     override fun onRenderInside(renderer: BaseRenderer?, canvas: Canvas, params: RenderParams) {
-        if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
+        if (elementBean.isRenderTextElement) {
             super.onRenderInside(renderer, canvas, params)
         } else {
             if (codeBitmap == null) {
@@ -54,6 +57,9 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
 
     override fun updateBeanToElement(renderer: BaseRenderer?) {
         super.updateBeanToElement(renderer)
+        if (elementBean.isVariableElement) {
+            elementBean.updateVariableText()
+        }
         textProperty.text = elementBean.text
         textProperty.fontFamily = elementBean.fontFamily
         textProperty.orientation = elementBean.orientation
@@ -96,7 +102,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     }
 
     override fun updateOriginText(text: String?, keepVisibleSize: Boolean) {
-        if (elementBean.mtype == LPDataConstant.DATA_TYPE_TEXT) {
+        if (elementBean.isRenderTextElement) {
             super.updateOriginText(text, keepVisibleSize)
         } else {
             textProperty.text = text
@@ -148,5 +154,23 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         super.updateRenderWidthHeight(newWidth, newHeight, keepVisibleSize)
         elementBean.width = renderProperty.width.toMm()
         elementBean.height = renderProperty.height.toMm()
+    }
+
+    /**雕刻完成之后, 更新元素内容*/
+    @CallPoint
+    fun updateElementAfterEngrave(
+        renderer: BaseRenderer? = null,
+        delegate: CanvasRenderDelegate? = null,
+        reason: Reason = Reason.user.apply {
+            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+        }
+    ) {
+        if (elementBean.isVariableElement) {
+            elementBean.updateVariableTextAfterEngrave()
+            updateOriginText(elementBean.text)
+
+            //更新属性
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        }
     }
 }

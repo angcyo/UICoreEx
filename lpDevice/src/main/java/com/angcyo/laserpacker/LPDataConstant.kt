@@ -249,9 +249,12 @@ fun String.toElementBeanList() =
 
 fun Int.toDataTypeStr() = when (this) {
     LPDataConstant.DATA_TYPE_BITMAP -> "Bitmap"
+    LPDataConstant.DATA_TYPE_TEXT -> "Text"
     LPDataConstant.DATA_TYPE_QRCODE -> "QrCode"
     LPDataConstant.DATA_TYPE_BARCODE -> "BarCode"
-    LPDataConstant.DATA_TYPE_TEXT -> "Text"
+    LPDataConstant.DATA_TYPE_VARIABLE_TEXT -> "VarText"
+    LPDataConstant.DATA_TYPE_VARIABLE_QRCODE -> "VarQRCode"
+    LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> "VarBarCode"
     LPDataConstant.DATA_TYPE_SVG -> "Svg"
     LPDataConstant.DATA_TYPE_GCODE -> "GCode"
     LPDataConstant.DATA_TYPE_PATH -> "Path"
@@ -309,6 +312,9 @@ fun Int.toTypeNameString() = when (this) {
     LPDataConstant.DATA_TYPE_TEXT -> "Text"
     LPDataConstant.DATA_TYPE_QRCODE -> "QRCode"
     LPDataConstant.DATA_TYPE_BARCODE -> "BarCode"
+    LPDataConstant.DATA_TYPE_VARIABLE_TEXT -> "VarText"
+    LPDataConstant.DATA_TYPE_VARIABLE_QRCODE -> "VarQRCode"
+    LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> "VarBarCode"
     LPDataConstant.DATA_TYPE_RECT -> "Rect"
     LPDataConstant.DATA_TYPE_OVAL -> "Oval"
     LPDataConstant.DATA_TYPE_LINE -> "Line"

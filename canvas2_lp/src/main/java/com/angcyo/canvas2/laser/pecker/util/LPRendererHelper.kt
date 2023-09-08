@@ -14,6 +14,7 @@ import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.laserpacker.generateName
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
@@ -31,6 +32,7 @@ object LPRendererHelper {
     const val POSITION_STEP = 5f
 
     /**解析对应的数据结构, 返回可以被渲染的元素*/
+    @CallPoint
     fun parseElementBean(bean: LPElementBean): ILaserPeckerElement? = when (bean.mtype) {
         LPDataConstant.DATA_TYPE_BITMAP -> LPBitmapElement(bean).apply {
             if (bean._srcBitmap != null) {
@@ -49,7 +51,10 @@ object LPRendererHelper {
 
         LPDataConstant.DATA_TYPE_TEXT,
         LPDataConstant.DATA_TYPE_QRCODE,
-        LPDataConstant.DATA_TYPE_BARCODE -> LPTextElement(bean)
+        LPDataConstant.DATA_TYPE_BARCODE,
+        LPDataConstant.DATA_TYPE_VARIABLE_TEXT,
+        LPDataConstant.DATA_TYPE_VARIABLE_QRCODE,
+        LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> LPTextElement(bean)
 
         LPDataConstant.DATA_TYPE_LINE,
         LPDataConstant.DATA_TYPE_RECT,
@@ -221,7 +226,8 @@ object LPRendererHelper {
     }
 
     /**分配一个元素名称*/
-    fun generateName(delegate: CanvasRenderDelegate) {
+    fun generateName(delegate: CanvasRenderDelegate?) {
+        delegate ?: return
         //分配名称
         val allElementBeanList = mutableListOf<LPElementBean>()
         for (element in delegate.renderManager.getAllSingleElementList()) {

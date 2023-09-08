@@ -6,7 +6,6 @@ import com.angcyo.dsladapter.eachItem
 import com.angcyo.item.style.itemIncrementMaxValue
 import com.angcyo.item.style.itemIncrementValue
 import com.angcyo.laserpacker.bean.LPVariableBean
-import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toStr
 
 /**
@@ -21,23 +20,11 @@ interface IVarFileItem {
     fun updateVarFileItemFromBean(bean: LPVariableBean?) {
         if (this is VarFileLineIncrementItem) {
             itemIncrementValue = bean?.stepVal?.toStr()
-            bean?.let {
-                if (it.type == LPVariableBean.TYPE_EXCEL) {
-                    itemIncrementMaxValue = it.getColumnDataList().size()
-                } else {
-                    itemIncrementMaxValue = it._txtLinesList.size()
-                }
-            }
+            itemIncrementMaxValue = bean?.maxDataLineCount
         }
         if (this is VarFileLineNumberItem) {
-            itemIncrementValue = bean?.current?.toStr()
-            bean?.let {
-                if (it.type == LPVariableBean.TYPE_EXCEL) {
-                    itemIncrementMaxValue = it.getColumnDataList().size()
-                } else {
-                    itemIncrementMaxValue = it._txtLinesList.size()
-                }
-            }
+            itemIncrementValue = bean?.stepVal?.toStr()
+            itemIncrementMaxValue = bean?.maxDataLineCount
         }
     }
 }

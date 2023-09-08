@@ -413,7 +413,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**渲染文本编辑控制items*/
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
         val closeTextEditItemsFun = _deviceSettingBean?.closeTextEditItemsFun
-        val isText = renderer.lpElementBean()?.mtype == LPDataConstant.DATA_TYPE_TEXT
+        val isText = renderer.lpElementBean()?.isRenderTextElement == true
         if (!isText) {
             //非文本类型, 不显示文本相关属性
             return

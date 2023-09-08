@@ -19,6 +19,7 @@ import com.angcyo.library.L
 import com.angcyo.library.annotation.Implementation
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.annotation.Pixel
+import com.angcyo.library.ex.connect
 import com.angcyo.library.ex.toDC
 import com.angcyo.library.unit.toPixel
 import com.angcyo.library.utils.uuid
@@ -167,7 +168,7 @@ data class LPElementBean(
 
     //region ---文本类型---
 
-    /**文本的内容
+    /**文本的内容, 变量文本的内容
      * [LPDataConstant.DATA_TYPE_QRCODE]
      * [LPDataConstant.DATA_TYPE_BARCODE]
      * */
@@ -481,7 +482,7 @@ data class LPElementBean(
                     else -> imageFilter
                 }
 
-                mtype == LPDataConstant.DATA_TYPE_TEXT -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
+                isRenderTextElement -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
                     //描边文本, 走GCode
                     LPDataConstant.DATA_MODE_GCODE
                 } else {
@@ -490,7 +491,9 @@ data class LPElementBean(
                 }
 
                 mtype == LPDataConstant.DATA_TYPE_QRCODE ||
-                        mtype == LPDataConstant.DATA_TYPE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+                        mtype == LPDataConstant.DATA_TYPE_BARCODE ||
+                        mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE ||
+                        mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
                 //填充线/描边线, 都是GCode
                 isLineShape -> LPDataConstant.DATA_MODE_GCODE
                 isPathElement -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
@@ -538,6 +541,17 @@ data class LPElementBean(
                 mtype == LPDataConstant.DATA_TYPE_POLYGON ||
                 mtype == LPDataConstant.DATA_TYPE_PENTAGRAM ||
                 mtype == LPDataConstant.DATA_TYPE_PEN
+
+    /**是否是渲染文本的元素*/
+    val isRenderTextElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_TEXT ||
+                mtype == LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+
+    /**是否是变量元素*/
+    val isVariableElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_VARIABLE_TEXT ||
+                mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE ||
+                mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE
 
     /**原始的宽高, 毫米*/
     @MM
@@ -679,4 +693,26 @@ data class LPElementBean(
         printPrecision = material?.precision ?: last?.precision ?: customMaterial?.precision
                 ?: HawkEngraveKeys.lastPrecision
     }
+
+    //region ---variable----
+
+    /**获取变量所对应的文本*/
+    fun getVariableText(): String? {
+        return variables?.connect("")
+    }
+
+    /**更新变量所对应的文本*/
+    fun updateVariableText() {
+        text = getVariableText()
+    }
+
+    /**雕刻完成之后, 更新变量文本*/
+    fun updateVariableTextAfterEngrave() {
+        for (bean in variables ?: emptyList()) {
+            bean.updateAfterEngrave()
+        }
+        text = getVariableText()
+    }
+
+    //endregion ---variable----
 }

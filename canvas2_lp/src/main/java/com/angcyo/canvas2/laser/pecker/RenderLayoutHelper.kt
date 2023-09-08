@@ -784,7 +784,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     _layerDragHelper =
                         DragCallbackHelper.install(this, DragCallbackHelper.FLAG_VERTICAL).apply {
                             enableLongPressDrag = false//长按拖拽关闭
-                            onClearView = { recyclerView, viewHolder ->
+                            onClearViewAction = { recyclerView, viewHolder ->
                                 if (_dragHappened) {
                                     //发生过拖拽
                                     val list = mutableListOf<BaseRenderer>()
