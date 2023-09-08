@@ -20,8 +20,8 @@ class VarExcelColumnChooseItem : LPLabelWheelItem() {
         itemLabel = _string(R.string.variable_file_column)
     }
 
-    override fun onSetItemData(data: Any?) {
-        super.onSetItemData(data)
+    override fun onSelfSetItemData(data: Any?) {
+        super.onSelfSetItemData(data)
         _itemVariableBean?.let { bean ->
             itemWheelList = bean.columnList
             if (bean.column.isNullOrEmpty()) {

@@ -21,8 +21,8 @@ class VarFileLineIncrementItem : DslIncrementItem(), IVarFileItem {
         itemIncrementMinValue = 1
     }
 
-    override fun onSetItemData(data: Any?) {
-        super.onSetItemData(data)
+    override fun onSelfSetItemData(data: Any?) {
+        super.onSelfSetItemData(data)
         itemIncrementValue = _itemVariableBean?.stepVal?.toStr()
     }
 
