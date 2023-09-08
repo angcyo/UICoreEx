@@ -20,6 +20,17 @@ class VarExcelColumnChooseItem : LPLabelWheelItem() {
         itemLabel = _string(R.string.variable_file_column)
     }
 
+    override fun onSetItemData(data: Any?) {
+        super.onSetItemData(data)
+        _itemVariableBean?.let { bean ->
+            itemWheelList = bean.columnList
+            if (bean.column.isNullOrEmpty()) {
+                bean.column = bean.columnList.firstOrNull()
+            }
+            updateWheelSelectedIndex(bean.column)
+        }
+    }
+
     @CallPoint
     fun updateFileChoose(bean: LPVariableBean) {
         itemWheelList = bean.columnList

@@ -100,6 +100,11 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
         }
     }
 
+    override fun onSetItemData(data: Any?) {
+        super.onSetItemData(data)
+        itemEditText = _itemVariableBean?.content
+    }
+
     override fun onItemChangeListener(item: DslAdapterItem) {
         //super.onItemChangeListener(item)
         _itemVariableBean?.content = itemEditText?.reverseCharSequenceIfRtl()?.toStr()

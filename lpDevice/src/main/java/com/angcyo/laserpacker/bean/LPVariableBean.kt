@@ -198,7 +198,7 @@ data class LPVariableBean(
             //Excel
             _excelMap = Jxl.readExcel(file)
         } else {
-            //文件夹
+            //文本文件
             _txtLinesList = file?.readLines()
         }
     }
@@ -355,6 +355,23 @@ data class LPVariableBean(
                     }
                 }
                 printCount = 0
+            }
+        }
+    }
+}
+
+/**[com.angcyo.laserpacker.bean.LPVariableBean.initFileCache]*/
+fun List<LPVariableBean>.initFileCacheIfNeed() {
+    forEach {
+        if (it.type == TYPE_EXCEL) {
+            //Excel
+            if (it._excelMap == null) {
+                it.initFileCache()
+            }
+        } else if (it.type == TYPE_TXT) {
+            //文本文件
+            if (it._txtLinesList == null) {
+                it.initFileCache()
             }
         }
     }

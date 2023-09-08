@@ -16,7 +16,6 @@ import com.angcyo.dialog.configFullScreenDialog
 import com.angcyo.dsladapter.DragCallbackHelper
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.dsladapter.DslAdapterStatusItem
 import com.angcyo.dsladapter.eachItem
 import com.angcyo.dsladapter.find
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
@@ -55,13 +54,16 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
     private var _dragCallbackHelper: DragCallbackHelper? = null
 
     /**变量文件数据结构集合*/
-    private var variableTextBeanList = mutableListOf<LPVariableBean>()
+    var variableTextBeanList = mutableListOf<LPVariableBean>()
 
     /**编辑模式*/
-    private var isVariableTextEditMode = false
+    private var isVarItemEditMode = false
 
     /**应用回调*/
     var onApplyVariableListAction: (List<LPVariableBean>) -> Unit = {}
+
+    private val haveData: Boolean
+        get() = variableTextBeanList.isNotEmpty()
 
     init {
         dialogLayoutId = R.layout.variable_text_dialog_layout
@@ -112,21 +114,16 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                 renderAdapterEmptyStatus(R.layout.variable_text_empty_layout)
 
                 dslAdapterStatusItem.onItemStateChange = { from: Int, to: Int ->
-                    _controlAdapter?.find<VariableTextEditItem>()?.apply {
-                        itemEnable = to != DslAdapterStatusItem.ADAPTER_STATUS_EMPTY
-                        dialogViewHolder.enable(R.id.dialog_positive_button, itemEnable)
-
-                        if (!itemEnable) {
-                            isVariableTextEditMode = false
-                            updateItemSelected(false)
-                        } else {
-                            updateAdapterItem()
-                        }
-                    }
+                    updatePreviewLayout()
                 }
 
                 onDispatchUpdatesAfter {
                     updatePreviewLayout()
+                }
+
+                //初始化数据
+                for (bean in variableTextBeanList) {
+                    renderVariableTextListItem(bean)
                 }
             }
         }
@@ -152,14 +149,14 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                 }
             }
             VariableTextEditItem()() {
-                itemEnable = false
-                itemIsSelected = isVariableTextEditMode
+                itemEnable = haveData
+                itemIsSelected = isVarItemEditMode
                 itemClick = {
-                    isVariableTextEditMode = !isVariableTextEditMode
-                    updateItemSelected(isVariableTextEditMode)
+                    isVarItemEditMode = !isVarItemEditMode
+                    updateItemSelected(isVarItemEditMode)
                     _listAdapter?.eachItem { _, dslAdapterItem ->
                         if (dslAdapterItem is VariableTextListItem) {
-                            dslAdapterItem.itemEditMode = isVariableTextEditMode
+                            dslAdapterItem.itemEditMode = isVarItemEditMode
                         }
                     }
                     _listAdapter?.updateAllItem()
@@ -171,7 +168,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
     private fun DslAdapter.renderVariableTextListItem(bean: LPVariableBean) {
         VariableTextListItem()() {
             itemData = bean
-            itemEditMode = isVariableTextEditMode
+            itemEditMode = isVarItemEditMode
             itemDragHelper = _dragCallbackHelper
 
             itemEditChangedAction = { newBean ->
@@ -231,6 +228,19 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
 
     /**更新预览*/
     private fun updatePreviewLayout() {
+        _dialogViewHolder?.enable(R.id.dialog_positive_button, haveData)
+
+        _controlAdapter?.find<VariableTextEditItem>()?.apply {
+            itemEnable = haveData
+
+            if (!itemEnable) {
+                isVarItemEditMode = false
+                updateItemSelected(false)
+            } else {
+                updateAdapterItem()
+            }
+        }
+
         val renderer = LPElementHelper.addVariableTextElement(
             null,
             variableTextBeanList,

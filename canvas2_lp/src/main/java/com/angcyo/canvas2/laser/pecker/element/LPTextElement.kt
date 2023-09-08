@@ -10,12 +10,16 @@ import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPVariableBean
+import com.angcyo.laserpacker.bean.initFileCacheIfNeed
 import com.angcyo.laserpacker.isBold
 import com.angcyo.laserpacker.isItalic
 import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.component.Strategy
+import com.angcyo.library.component.SupportUndo
 import com.angcyo.library.unit.toMm
 import com.angcyo.library.unit.toPixel
 import com.angcyo.qrcode.createBarCode
@@ -154,6 +158,32 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         super.updateRenderWidthHeight(newWidth, newHeight, keepVisibleSize)
         elementBean.width = renderProperty.width.toMm()
         elementBean.height = renderProperty.height.toMm()
+    }
+
+    /**更新变量模板集合*/
+    @SupportUndo
+    fun updateVariables(
+        list: List<LPVariableBean>?,
+        renderer: BaseRenderer? = null,
+        delegate: CanvasRenderDelegate? = null,
+        reason: Reason = Reason.user.apply {
+            controlType = BaseControlPoint.CONTROL_TYPE_DATA
+        },
+        strategy: Strategy = Strategy.normal
+    ) {
+        val newList = list
+        val oldList = elementBean.variables
+        delegate?.undoManager?.addAndRedo(strategy, true, {
+            elementBean.variables = oldList
+            oldList?.initFileCacheIfNeed()
+            updateBeanToElement(renderer)
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        }, {
+            elementBean.variables = newList
+            newList?.initFileCacheIfNeed()
+            updateBeanToElement(renderer)
+            renderer?.requestUpdatePropertyFlag(reason, delegate)
+        })
     }
 
     /**雕刻完成之后, 更新元素内容*/

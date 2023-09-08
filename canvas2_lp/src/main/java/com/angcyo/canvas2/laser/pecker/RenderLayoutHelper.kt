@@ -473,7 +473,11 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 renderer: BaseRenderer
             ) {
                 renderer.lpTextElement()?.let {
-                    AddTextItem.amendInputText(delegate, renderer)
+                    if (it.elementBean.isVariableElement) {
+                        AddVariableTextItem.amendVariableText(delegate, renderer)
+                    } else {
+                        AddTextItem.amendInputText(delegate, renderer)
+                    }
                 }
             }
 

@@ -7,6 +7,7 @@ import com.angcyo.item.style.itemIncrementMinValue
 import com.angcyo.item.style.itemIncrementValue
 import com.angcyo.item.style.itemLabel
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.toStr
 
 /**
  * 文件行号设置
@@ -22,6 +23,7 @@ class VarFileLineNumberItem : DslIncrementItem(), IVarFileItem {
 
     override fun onSetItemData(data: Any?) {
         super.onSetItemData(data)
+        itemIncrementValue = _itemVariableBean?.current?.toStr()
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

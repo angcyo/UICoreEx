@@ -595,7 +595,6 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarExcelSheetChooseItem()() {
             itemData = bean
-            updateFileChoose(bean)
             observeItemChange {
                 bean.sheet = itemWheelText().toStr()
                 find<VarExcelColumnChooseItem>()?.updateFileChoose(bean)
@@ -605,7 +604,6 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarExcelColumnChooseItem()() {
             itemData = bean
-            updateFileChoose(bean)
             observeItemChange {
                 bean.column = itemWheelText().toStr()
                 updateTextPreviewItem()
