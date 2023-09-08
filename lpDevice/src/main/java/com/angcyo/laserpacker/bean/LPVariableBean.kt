@@ -15,6 +15,7 @@ import com.angcyo.library.ex.addMinute
 import com.angcyo.library.ex.addMonth
 import com.angcyo.library.ex.addYear
 import com.angcyo.library.ex.file
+import com.angcyo.library.ex.isFileExist
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toStr
@@ -168,6 +169,19 @@ data class LPVariableBean(
     /**是否是空格*/
     val _isSpace: Boolean
         get() = type == TYPE_FIXED && content == " "
+
+    /**数据内容是否有效, 数据有效, 则可以保存*/
+    val isVariableValid: Boolean
+        get() {
+            return when (type) {
+                TYPE_FIXED -> !content.isNullOrEmpty()
+                TYPE_NUMBER -> current in min..max && step > 0
+                TYPE_DATE, TYPE_TIME -> !format.isNullOrEmpty()
+                TYPE_TXT -> fileUri.isFileExist()
+                TYPE_EXCEL -> fileUri.isFileExist() && !sheet.isNullOrEmpty() && !column.isNullOrEmpty()
+                else -> false
+            }
+        }
 
     /**重置缓存数据*/
     @CallPoint

@@ -162,7 +162,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         //tab
         if (isVariableEditModel) {
             dialogViewHolder.gone(R.id.lib_tab_layout)
-            enablePositiveButton()
+            enablePositiveButton(editVariableBean?.isVariableValid == true)
         } else {
             dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
                 resetChild(
@@ -219,7 +219,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
     }
 
-    private fun enablePositiveButton(enable: Boolean = true) {
+    private fun enablePositiveButton(enable: Boolean) {
         _dialogViewHolder?.enable(R.id.dialog_positive_button, enable)
     }
 
@@ -245,7 +245,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         VarTextFixedItem()() {
             itemData = bean
             observeItemChange {
-                enablePositiveButton(!bean.content.isNullOrEmpty())
+                enablePositiveButton(bean.isVariableValid)
             }
         }
     }
@@ -349,7 +349,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 bean.reset = itemSwitchChecked
             }
         }
-        enablePositiveButton()
+        enablePositiveButton(bean.isVariableValid)
     }
 
     /**日期*/
@@ -431,7 +431,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 updateTextPreviewItem()
             }
         }
-        enablePositiveButton()
+        enablePositiveButton(bean.isVariableValid)
     }
 
     /**时间*/
@@ -513,7 +513,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 updateTextPreviewItem()
             }
         }
-        enablePositiveButton()
+        enablePositiveButton(bean.isVariableValid)
     }
 
     /**文本文件*/
@@ -564,6 +564,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 bean.reset = itemSwitchChecked
             }
         }
+        enablePositiveButton(bean.isVariableValid)
     }
 
     /**xls Excel文件*/
@@ -633,12 +634,14 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 bean.reset = itemSwitchChecked
             }
         }
+        enablePositiveButton(bean.isVariableValid)
     }
 
     /**更新需要预览的item*/
     private fun updateTextPreviewItem() {
         _currentVariableBean?.let { bean ->
             _adapter?.find<DslTextPreviewItem>()?.itemText = bean.variableText
+            enablePositiveButton(bean.isVariableValid)
         }
     }
 
