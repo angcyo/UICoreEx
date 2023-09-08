@@ -33,4 +33,7 @@ dependencies {
 
     //矢量处理
     api project(allModule.vector) //GCode SVG //dxf
+
+    //excel
+    api project(allModule.jxl) //2023-9-8
 }

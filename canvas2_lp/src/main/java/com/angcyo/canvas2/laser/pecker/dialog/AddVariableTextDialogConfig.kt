@@ -13,12 +13,17 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateSelectWheelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarExcelColumnChooseItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarExcelSheetChooseItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileChooseItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileLineIncrementItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileLineNumberItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarNumberValueItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTextFixedItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeFormatWheelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeOffsetItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeSelectWheelItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.updateVarFileItem
+import com.angcyo.core.component.manage.InnerFileManageModel
+import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
 import com.angcyo.dialog2.dslitem.LPLabelWheelItem
@@ -90,8 +95,12 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     private val _fileBean = LPVariableBean(LPVariableBean._TYPE_FILE).apply {
         _fileType = LPVariableBean.TYPE_TXT
     }
-    private val _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT)
-    private val _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL)
+    private val _txtBean = LPVariableBean(LPVariableBean.TYPE_TXT).apply {
+        current = 1
+    }
+    private val _excelBean = LPVariableBean(LPVariableBean.TYPE_EXCEL).apply {
+        current = 1
+    }
 
     private val variableBeanList = mutableListOf<LPVariableBean>().apply {
         add(LPVariableBean(LPVariableBean.TYPE_FIXED))
@@ -188,10 +197,19 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
         //rv
         dialogViewHolder._rv(R.id.lib_recycler_view)?.apply {
-            setHeight(_screenHeight * 2 / 4)
+            setHeight(_screenHeight * 3 / 5)
             renderDslAdapter {
                 _adapter = this
                 renderAdapterEmptyStatus(R.layout.variable_text_empty_layout)
+            }
+        }
+
+        //观察文件选择
+        vmApp<InnerFileManageModel>().innerSelectedFileOnceData.observe(this) {
+            it?.firstOrNull()?.let {
+                _adapter?.find<VarFileChooseItem>()?.updateChooseFile(it)
+                _adapter?.updateVarFileItem(_currentVariableBean)
+                updateTextPreviewItem()
             }
         }
     }
@@ -517,22 +535,19 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarFileChooseItem()() {
             itemData = bean
+            itemFileType = InnerFileManageModel.EXT_TXT
         }
-        DslIncrementItem()() {
-            itemLabel = _string(R.string.variable_file_line)
-            itemIncrementValue = bean.current.toString()
+        VarFileLineNumberItem()() {
+            itemData = bean
+            updateVarFileItemFromBean(bean)
             observeItemChange {
-                bean.current = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
-                bean.reset()
                 updateTextPreviewItem()
             }
         }
-        DslIncrementItem()() {
-            itemLabel = _string(R.string.variable_file_increment)
-            itemIncrementValue = bean.stepVal.toString()
+        VarFileLineIncrementItem()() {
+            itemData = bean
+            updateVarFileItemFromBean(bean)
             observeItemChange {
-                bean.stepVal = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
-                bean.reset()
                 updateTextPreviewItem()
             }
         }
@@ -570,28 +585,38 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         }
         VarFileChooseItem()() {
             itemData = bean
+            itemFileType = InnerFileManageModel.EXT_EXCEL
         }
         VarExcelSheetChooseItem()() {
             itemData = bean
+            updateFileChoose(bean)
+            observeItemChange {
+                bean.sheet = itemWheelText().toStr()
+                find<VarExcelColumnChooseItem>()?.updateFileChoose(bean)
+                updateTextPreviewItem()
+                updateVarFileItem(bean)
+            }
         }
         VarExcelColumnChooseItem()() {
             itemData = bean
-        }
-        DslIncrementItem()() {
-            itemLabel = _string(R.string.variable_file_line)
-            itemIncrementValue = bean.current.toString()
+            updateFileChoose(bean)
             observeItemChange {
-                bean.current = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
-                bean.reset()
+                bean.column = itemWheelText().toStr()
+                updateTextPreviewItem()
+                updateVarFileItem(bean)
+            }
+        }
+        VarFileLineNumberItem()() {
+            itemData = bean
+            updateVarFileItemFromBean(bean)
+            observeItemChange {
                 updateTextPreviewItem()
             }
         }
-        DslIncrementItem()() {
-            itemLabel = _string(R.string.variable_file_increment)
-            itemIncrementValue = bean.stepVal.toString()
+        VarFileLineIncrementItem()() {
+            itemData = bean
+            updateVarFileItemFromBean(bean)
             observeItemChange {
-                bean.stepVal = itemIncrementValue?.toString()?.toLongOrNull() ?: 0
-                bean.reset()
                 updateTextPreviewItem()
             }
         }

@@ -1,16 +1,22 @@
 package com.angcyo.laserpacker.bean
 
+import com.angcyo.jxl.Jxl
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_DATE
+import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_EXCEL
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_NUMBER
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_TIME
+import com.angcyo.laserpacker.bean.LPVariableBean.Companion.TYPE_TXT
 import com.angcyo.laserpacker.bean.LPVariableBean.Companion._TYPE_FILE
+import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.component.parser.parseDateTemplate
 import com.angcyo.library.component.parser.parseNumberTemplate
 import com.angcyo.library.ex.addDay
 import com.angcyo.library.ex.addMinute
 import com.angcyo.library.ex.addMonth
 import com.angcyo.library.ex.addYear
+import com.angcyo.library.ex.file
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.ex.uuid
 import java.util.Calendar
 
@@ -31,10 +37,10 @@ data class LPVariableBean(
     var min: Long = 0, // 开始序号
     var max: Long = 9999, // 最大序号
     /**递变的增量
-     * 序号, 日期, 时间的增 量
+     * 序号, 日期, 时间的增量
      * */
     var value: Long = 1, // 递变数(正负整数) 序号增量
-    /**当前数字的序号, 或者当前文件的行数, 从0开始*/
+    /**当前数字的序号(从0开始), 或者当前文件的行数(从1开始)*/
     var current: Long = 0, // 当前序号
     /**雕刻多少次之后, 开始递变*/
     var step: Long = 1, // 雕刻几次开始递增
@@ -55,7 +61,7 @@ data class LPVariableBean(
     var auto: Boolean = true, // 自动时间
     //---TXT
     /**行号的增量
-     * 行号:[current]
+     * 行号:[current]从1开始
      * */
     var stepVal: Long = 1, // 递增量
     var fileName: String? = null, // 文件名
@@ -75,6 +81,10 @@ data class LPVariableBean(
     @Transient var _systemTimeFormat: Boolean = true,
     /**[_TYPE_FILE] tab 下的属性*/
     @Transient var _fileType: String? = TYPE_EXCEL,
+    /**[TYPE_TXT]文件内容*/
+    @Transient var _txtLinesList: List<String>? = null,
+    /**[TYPE_EXCEL]文件内容*/
+    @Transient var _excelMap: Map<String, List<List<Any?>>>? = null,
     //---
     /**唯一标识符*/
     val key: String = uuid(),
@@ -150,19 +160,35 @@ data class LPVariableBean(
         get() = type == TYPE_FIXED && content == "\n"
 
     /**重置缓存数据*/
+    @CallPoint
     fun reset() {
         //current = 0
         printCount = 0
     }
 
+    /**初始化文件数据缓存*/
+    @CallPoint
+    fun initFileCache() {
+        val file = fileUri?.file()
+        if (type == TYPE_EXCEL) {
+            //Excel
+            _excelMap = Jxl.readExcel(file)
+        } else {
+            //文件夹
+            _txtLinesList = file?.readLines()
+        }
+    }
+
     /**对应的变量文本内容*/
-    val variableText: String
+    val variableText: String?
         get() {
             return when (type) {
                 TYPE_NUMBER -> numberFormatText
                 TYPE_DATE -> dateFormatText
                 TYPE_TIME -> timeFormatText
-                else -> content ?: ""
+                TYPE_TXT -> txtFormatText
+                TYPE_EXCEL -> excelFormatText
+                else -> content
             }
         }
 
@@ -219,4 +245,37 @@ data class LPVariableBean(
             }
         }
 
+    /**从1开始的索引*/
+    val currentIndex: Int
+        get() = maxOf(1, current.toInt()) - 1
+
+    /**[TYPE_TXT]*/
+    val txtFormatText: String?
+        get() = _txtLinesList?.getOrNull(currentIndex)
+
+    /**工作表的集合*/
+    val sheetList: List<String>
+        get() = _excelMap?.keys?.toList() ?: emptyList()
+
+    /**列的集合, 表头*/
+    val columnList: List<String>
+        get() = _excelMap?.get(sheet ?: "")?.getOrNull(0)?.map { it.toStr() } ?: emptyList()
+
+    /**[TYPE_EXCEL]*/
+    val excelFormatText: String?
+        get() = _excelMap?.get(sheet ?: "")?.getOrNull(currentIndex + 1) //跳过表头
+            ?.getOrNull(maxOf(0, columnList.indexOf(column)))?.toStr()
+
+    /**获取指定列, 去除表头后的数据集合*/
+    fun getColumnDataList(columnIndex: Int = maxOf(0, columnList.indexOf(column))): List<String> {
+        val lineList = _excelMap?.get(sheet ?: "") ?: return emptyList()
+        val result = mutableListOf<String>()
+        for (i in 1 until lineList.size) {
+            val line = lineList[i]
+            if (line.size > columnIndex) {
+                result.add(line[columnIndex].toStr())
+            }
+        }
+        return result
+    }
 }

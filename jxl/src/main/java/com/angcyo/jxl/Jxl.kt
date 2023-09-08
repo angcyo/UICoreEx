@@ -65,7 +65,7 @@ object Jxl {
         }
     ): Map<String, List<List<Any?>>>? {
         input ?: return null
-        var result: HashMap<String, List<List<Any?>>>? = null
+        var result: LinkedHashMap<String, List<List<Any?>>>? = null
         var workbook: Workbook? = null
         try {
             workbook = Workbook.getWorkbook(input, ws)
@@ -89,7 +89,7 @@ object Jxl {
                     }
 
                     if (result == null) {
-                        result = hashMapOf()
+                        result = linkedMapOf()
                     }
                     result!![sheetName] = sheetDataList!!
                 }
