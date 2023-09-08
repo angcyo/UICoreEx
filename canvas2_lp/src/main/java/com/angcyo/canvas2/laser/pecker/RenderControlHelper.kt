@@ -55,15 +55,19 @@ import com.angcyo.library.annotation.CallPoint
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.ex._color
+import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.alphaRatio
+import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.have
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.setSize
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.BuildHelper.isCpu64
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.angcyo.widget.span.span
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -413,7 +417,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**渲染文本编辑控制items*/
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
         val closeTextEditItemsFun = _deviceSettingBean?.closeTextEditItemsFun
-        val isText = renderer.lpElementBean()?.isRenderTextElement == true
+        val lpElementBean = renderer.lpElementBean()
+        val isText = lpElementBean?.isRenderTextElement == true
         if (!isText) {
             //非文本类型, 不显示文本相关属性
             return
@@ -422,6 +427,14 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         if (!closeTextEditItemsFun.have("_typeface_")) {
             TextTypefaceSelectItem()() {
                 initItem(renderer)
+                itemText = span {
+                    if (lpElementBean?.isVariableElement == true) {
+                        appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
+                        append(" ")
+                    }
+                    append(_string(R.string.canvas_font))
+                }
+
                 itemClick = { anchor ->
                     updateItemSelected(!itemIsSelected)
 
