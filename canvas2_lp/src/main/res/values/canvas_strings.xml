@@ -17,6 +17,8 @@
     <string name="canvas_shapes">Shapes</string>
     <string name="canvas_variable_template">Variable template</string>
     <string name="canvas_variable_text">Variable text</string>
+    <string name="canvas_variable_qrcode">VariableQRCode</string>
+    <string name="canvas_variable_barcode">VariableBarcode</string>
     <string name="canvas_add_variable_text">Add variable text</string>
     <string name="canvas_variable_text_empty_tip">There is no data yet, please add it quickly</string>
     <string name="canvas_material">Material</string>

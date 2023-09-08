@@ -17,6 +17,8 @@
     <string name="canvas_shapes">形状</string>
     <string name="canvas_variable_template">变量模板</string>
     <string name="canvas_variable_text">变量文本</string>
+    <string name="canvas_variable_qrcode">变量二维码</string>
+    <string name="canvas_variable_barcode">变量条形码</string>
     <string name="canvas_add_variable_text">添加变量文本</string>
     <string name="canvas_variable_text_empty_tip">暂无数据,快去添加吧</string>
     <string name="canvas_material">素材</string>

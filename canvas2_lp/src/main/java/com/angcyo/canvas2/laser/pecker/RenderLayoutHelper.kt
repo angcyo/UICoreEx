@@ -122,7 +122,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     initItem()
                 }
             }
-            if (!closeCanvasItemsFun.have("_variableText_")) {
+            if (isDebug() && !closeCanvasItemsFun.have("_variableText_")) {
                 VariableTextItem()() {
                     initItem()
                     itemRenderLayoutHelper = this@RenderLayoutHelper
@@ -295,18 +295,18 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 hookUpdateDepend(this)
                 AddVariableTextItem()() {
                     initItem()
-                    itemIco = R.drawable.canvas_text_ico
-                    itemText = _string(R.string.canvas_text)
+                    itemIco = R.drawable.canvas_var_text_ico
+                    itemText = _string(R.string.canvas_variable_text)
                 }
                 AddVariableQrCodeItem()() {
                     initItem()
-                    itemIco = R.drawable.canvas_qrcode_ico
-                    itemText = _string(R.string.canvas_qrcode)
+                    itemIco = R.drawable.canvas_var_qrcode_ico
+                    itemText = _string(R.string.canvas_variable_qrcode)
                 }
                 AddVariableBarCodeItem()() {
                     initItem()
-                    itemIco = R.drawable.canvas_barcode_ico
-                    itemText = _string(R.string.canvas_barcode)
+                    itemIco = R.drawable.canvas_var_barcode_ico
+                    itemText = _string(R.string.canvas_variable_barcode)
                 }
             }
         } else {
