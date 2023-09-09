@@ -3,6 +3,7 @@ package com.angcyo.bluetooth.fsc.laserpacker
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean.DeviceSettingBean
 import com.angcyo.core.Debug
+import com.angcyo.core.component.manage.InnerFileManageModel
 import com.angcyo.core.vmApp
 import com.angcyo.http.base.fromJson
 import com.angcyo.http.base.listType
@@ -152,6 +153,15 @@ object LaserPeckerConfigHelper {
             }
         }
 
+        //初始化内存配置
+        vmApp<InnerFileManageModel>().apply {
+            result?.zhImportFilePackageNameList?.let {
+                zhImportFilePackageNameList = it
+            }
+            result?.importFilePackageNameList?.let {
+                importFilePackageNameList = it
+            }
+        }
         return result
 
     }

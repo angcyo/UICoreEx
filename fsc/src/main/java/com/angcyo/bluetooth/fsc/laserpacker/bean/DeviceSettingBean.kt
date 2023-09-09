@@ -87,9 +87,13 @@ data class DeviceSettingBean(
     /**中文特殊跳转*/
     var dataOffsetHelpUrlZh: String? = null,
     /**日期推荐格式列表*/
-    var dateFormatList: List<String>?,
+    var dateFormatList: List<String>? = null,
     /**时间推荐格式列表*/
-    var timeFormatList: List<String>?,
+    var timeFormatList: List<String>? = null,
+    /**国内环境导入文件支持的软件包名*/
+    var zhImportFilePackageNameList: List<String>? = null,
+    /**国外环境导入文件支持的软件包名*/
+    var importFilePackageNameList: List<String>? = null,
     //endregion---Android端设置项---
 
     //region---Ble UUID---
