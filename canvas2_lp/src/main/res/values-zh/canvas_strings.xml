@@ -228,4 +228,10 @@
     <string name="variable_file_increment">增量</string>
     <string name="variable_file_sheet">启用子表</string>
     <string name="variable_file_column">启用列</string>
+    <string name="variable_barcode_mask">掩码</string>
+    <string name="variable_barcode_error_correction">纠错等级</string>
+    <string name="variable_barcode_show_style">字符</string>
+    <string name="variable_barcode_show_top">字符在上</string>
+    <string name="variable_barcode_show_bottom">字符在下</string>
+    <string name="variable_barcode_show_none">不显示</string>
 </resources>

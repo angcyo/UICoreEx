@@ -36,6 +36,7 @@ class AddVariableTextItem : CanvasIconItem() {
                 return
             }
             delegate.view.context?.variableTextDialog {
+                mtype = bean.mtype
                 variableTextBeanList =
                     bean.variables?.copyByJson(listType(LPVariableBean::class.java))
                         ?.toMutableList()
@@ -52,12 +53,9 @@ class AddVariableTextItem : CanvasIconItem() {
     init {
         itemClick = {
             it.context.variableTextDialog {
+                mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
                 onApplyVariableListAction = {
-                    LPElementHelper.addVariableTextElement(
-                        itemRenderDelegate,
-                        it,
-                        LPDataConstant.DATA_TYPE_VARIABLE_TEXT
-                    )
+                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, mtype)
                     UMEvent.CANVAS_VARIABLE_TEXT.umengEventValue()
                 }
             }

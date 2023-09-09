@@ -157,6 +157,9 @@ class LaserPeckerModel : ViewModel(), IViewModel {
                     if (it == QuerySettingParser.EX_S && isSOpen()) {
                         return 1
                     }
+                    if (it == QuerySettingParser.EX_SREP && isSRepMode()) {
+                        return 1
+                    }
                     if (it == QuerySettingParser.EX_CAR && isCarConnect()) {
                         return 1
                     }

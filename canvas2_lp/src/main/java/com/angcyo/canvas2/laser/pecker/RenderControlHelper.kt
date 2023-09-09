@@ -20,6 +20,10 @@ import com.angcyo.canvas2.laser.pecker.dialog.canvasFontWindow
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.canvas2.laser.pecker.dslitem.ICanvasRendererItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.AlignDeviceItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeErrorLevelSelectItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeMaskSelectItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeShowStyleMenuItem
+import com.angcyo.canvas2.laser.pecker.dslitem.control.BarcodeTypeSelectItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.EditControlItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.ImageFilterItem
 import com.angcyo.canvas2.laser.pecker.dslitem.control.LayerSortMenuItem
@@ -37,6 +41,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlEditItem
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
+import com.angcyo.canvas2.laser.pecker.element.LPTextElement.Companion.toBarcodeFormat
 import com.angcyo.canvas2.laser.pecker.util.LPBitmapHandler
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
@@ -65,9 +70,11 @@ import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.setSize
 import com.angcyo.library.ex.size
 import com.angcyo.library.utils.BuildHelper.isCpu64
+import com.angcyo.qrcode.code.haveErrorCorrection
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.span.span
+import com.google.zxing.BarcodeFormat
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -196,7 +203,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     //region ---Bitmap---
 
-    /**渲染图片编辑控制items*/
+    /**渲染图片编辑控制items
+     * [LPBitmapElement]*/
     private fun DslAdapter.renderBitmapEditItems(renderer: BaseRenderer) {
         val closeImageEditItemsFun = _deviceSettingBean?.closeImageEditItemsFun
 
@@ -414,10 +422,53 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     //region ---文本---
 
-    /**渲染文本编辑控制items*/
+    /**渲染文本编辑控制items
+     * [LPTextElement]*/
     private fun DslAdapter.renderTextEditItems(renderer: BaseRenderer) {
         val closeTextEditItemsFun = _deviceSettingBean?.closeTextEditItemsFun
         val lpElementBean = renderer.lpElementBean()
+        val barcodeFormat = lpElementBean?.toBarcodeFormat()
+
+        //---以下是1D条形码相关属性的控制---
+        if (lpElementBean?.is1DCodeElement == true) {
+            BarcodeTypeSelectItem()() {
+                initItem(renderer)
+            }
+            BarcodeShowStyleMenuItem()() {
+                initItem(renderer)
+                drawCanvasRight()
+            }
+        }
+
+        //---以下是2D条形码相关属性的控制---
+        if (lpElementBean?.is2DCodeElement == true) {
+            val haveErrorCorrection = barcodeFormat?.haveErrorCorrection() == true
+            val haveMask = barcodeFormat == BarcodeFormat.QR_CODE
+
+            BarcodeTypeSelectItem()() {
+                initItem(renderer)
+                if (!haveErrorCorrection && !haveMask) {
+                    drawCanvasRight()
+                }
+            }
+            if (haveErrorCorrection) {
+                BarcodeErrorLevelSelectItem()() {
+                    initItem(renderer)
+                    if (barcodeFormat != BarcodeFormat.QR_CODE) {
+                        drawCanvasRight()
+                    }
+                }
+            }
+            if (haveMask) {
+                BarcodeMaskSelectItem()() {
+                    initItem(renderer)
+                    drawCanvasRight()
+                }
+            }
+        }
+
+        //---以下是纯文本相关属性的控制---
+
         val isText = lpElementBean?.isRenderTextElement == true
         if (!isText) {
             //非文本类型, 不显示文本相关属性
@@ -427,6 +478,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         if (!closeTextEditItemsFun.have("_typeface_")) {
             TextTypefaceSelectItem()() {
                 initItem(renderer)
+
+                //标识变量元素icon
                 itemText = span {
                     if (lpElementBean?.isVariableElement == true) {
                         appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
@@ -550,6 +603,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     //region ---形状/Path---
 
+    /**[LPPathElement]*/
     fun DslAdapter.renderPathEditItems(renderer: BaseRenderer) {
         val elementBean = renderer.lpElementBean()
         val type = elementBean?.mtype

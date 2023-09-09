@@ -15,6 +15,10 @@ import com.angcyo.widget.DslViewHolder
 open class CanvasIconItem : DoodleIconItem(), ICanvasRendererItem {
 
     override var itemRenderer: BaseRenderer? = null
+        set(value) {
+            field = value
+            onSelfSetItemData(itemData)
+        }
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
 

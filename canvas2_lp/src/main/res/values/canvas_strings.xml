@@ -228,4 +228,10 @@
     <string name="variable_file_increment">Increment</string>
     <string name="variable_file_sheet">EnableChildTable</string>
     <string name="variable_file_column">EnableColumns</string>
+    <string name="variable_barcode_mask">Mask</string>
+    <string name="variable_barcode_error_correction">ErrorCorrection</string>
+    <string name="variable_barcode_show_style">Character</string>
+    <string name="variable_barcode_show_top">CharactersOnTop</string>
+    <string name="variable_barcode_show_bottom">CharactersBelow</string>
+    <string name="variable_barcode_show_none">DoNotShow</string>
 </resources>

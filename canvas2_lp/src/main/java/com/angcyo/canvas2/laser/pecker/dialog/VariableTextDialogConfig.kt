@@ -10,6 +10,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextEditItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextListItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem._itemVariableBean
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
+import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configFullScreenDialog
@@ -49,6 +50,14 @@ import com.angcyo.widget.span.span
  */
 class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(context) {
 
+    /**
+     * 变量模板类型
+     * [LPDataConstant.DATA_TYPE_VARIABLE_TEXT]
+     * [LPDataConstant.DATA_TYPE_VARIABLE_QRCODE]
+     * [LPDataConstant.DATA_TYPE_VARIABLE_BARCODE]
+     * */
+    var mtype: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+
     private var _listAdapter: DslAdapter? = null
     private var _controlAdapter: DslAdapter? = null
     private var _dragCallbackHelper: DragCallbackHelper? = null
@@ -73,7 +82,11 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
-        dialogViewHolder.tv(R.id.dialog_title_view)?.text = _string(R.string.canvas_variable_text)
+        dialogViewHolder.tv(R.id.dialog_title_view)?.text = when (mtype) {
+            LPDataConstant.DATA_TYPE_VARIABLE_QRCODE -> _string(R.string.canvas_variable_qrcode)
+            LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> _string(R.string.canvas_variable_barcode)
+            else -> _string(R.string.canvas_variable_text)
+        }
         dialogViewHolder.enable(R.id.dialog_positive_button, false)
 
         //确定
@@ -241,13 +254,11 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             }
         }
 
-        val renderer = LPElementHelper.addVariableTextElement(
-            null,
-            variableTextBeanList,
-            LPDataConstant.DATA_TYPE_VARIABLE_TEXT
-        )
+        val renderer = LPElementHelper.addVariableTextElement(null, variableTextBeanList, mtype)
+        renderer?.lpElementBean()?.textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
         _dialogViewHolder?.img(R.id.lib_preview_view)
             ?.setImageDrawable(renderer?.requestRenderDrawable())
+        
         if (BuildConfig.BUILD_TYPE.isDebugType()) {
             _dialogViewHolder?.click(R.id.lib_preview_view) {
                 renderer?.lpTextElement()?.updateElementAfterEngrave()

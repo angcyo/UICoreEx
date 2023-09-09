@@ -218,6 +218,15 @@ object LPDataConstant {
 
     //endregion ---目录分配---
 
+    //region ---一维码文本显示类型---
+
+    /**[com.angcyo.laserpacker.bean.LPElementBean.textShowStyle]*/
+    const val TEXT_SHOW_STYLE_TOP = "top"
+    const val TEXT_SHOW_STYLE_BOTTOM = "bottom"
+    const val TEXT_SHOW_STYLE_NONE = "none"
+
+    //endregion ---一维码文本显示类型---
+
 }
 
 /**是否是GCode类型*/

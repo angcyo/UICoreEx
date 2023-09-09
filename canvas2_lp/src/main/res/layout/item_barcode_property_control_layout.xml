@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/lib_hdpi"
+    android:paddingVertical="@dimen/lib_ldpi"
+    tools:background="@color/transparent20">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_text_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lib_keyboard_number_increment_selector"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLength="@integer/canvas_edit_length"
+        android:maxLines="1"
+        android:padding="@dimen/lib_sdpi"
+        android:singleLine="true"
+        android:textSize="@dimen/canvas_edit_text_size"
+        app:layout_constraintBottom_toTopOf="@id/lib_label_view"
+        app:layout_constraintLeft_toLeftOf="@id/lib_label_view"
+        app:layout_constraintRight_toRightOf="@id/lib_label_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:drawableRight="@drawable/barcode_property_control_svg"
+        tools:text="0.0123456" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lib_label_view"
+        style="@style/LibPlaceTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/lib_sdpi"
+        android:gravity="center"
+        android:textColor="@color/lib_theme_text_selector"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lib_text_view"
+        tools:text="@string/canvas_width" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

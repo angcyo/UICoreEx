@@ -2,11 +2,11 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.element.TextElement
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.TextStateStack
 import com.angcyo.canvas.render.util.element
+import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 
 /**
@@ -20,6 +20,10 @@ class LPTextStateStack : TextStateStack() {
 
     /**纠错级别*/
     var eclevel: String? = null
+    var textShowStyle: String? = null
+
+    var qrMaskPattern: Int? = -1
+    var errorLevel: Int? = -1
 
     /**数据类型*/
     var type: Int = 0
@@ -36,6 +40,10 @@ class LPTextStateStack : TextStateStack() {
             coding = element.elementBean.coding
             eclevel = element.elementBean.eclevel
             codeBitmap = element.codeBitmap
+
+            textShowStyle = element.elementBean.textShowStyle
+            errorLevel = element.elementBean.errorLevel
+            qrMaskPattern = element.elementBean.qrMaskPattern
         }
     }
 
@@ -52,6 +60,10 @@ class LPTextStateStack : TextStateStack() {
             element.elementBean.eclevel = eclevel
             element.codeBitmap = codeBitmap
             element.elementBean.curvature = textProperty?.curvature ?: element.elementBean.curvature
+
+            element.elementBean.textShowStyle = textShowStyle
+            element.elementBean.errorLevel = errorLevel
+            element.elementBean.qrMaskPattern = qrMaskPattern
         }
         super.restoreState(renderer, reason, strategy, delegate)
     }

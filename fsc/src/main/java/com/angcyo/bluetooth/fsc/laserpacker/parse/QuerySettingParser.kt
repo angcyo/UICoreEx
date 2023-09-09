@@ -93,6 +93,9 @@ data class QuerySettingParser(
         /**扩展设备 滑台*/
         const val EX_S = "s"
 
+        /**扩展设备 滑台多文件*/
+        const val EX_SREP = "sRep"
+
         /**扩展设备 移动平台*/
         const val EX_CAR = "car"
 

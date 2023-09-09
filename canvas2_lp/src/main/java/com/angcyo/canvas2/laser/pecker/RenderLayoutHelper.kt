@@ -37,6 +37,7 @@ import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlOperateItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ControlSettingItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.ShapesItem
 import com.angcyo.canvas2.laser.pecker.dslitem.item.VariableTextItem
+import com.angcyo.canvas2.laser.pecker.element.haveBarcodeElement
 import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.LPPreviewHelper
 import com.angcyo.canvas2.laser.pecker.manager.saveProjectStateV2
@@ -452,6 +453,13 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
                 if (needUpdateControlLayout) {
                     renderControlHelper.updateControlLayout()
+
+                    if (renderDelegate.getSelectorSingleElementRendererList()
+                            .haveBarcodeElement()
+                    ) {
+                        //变量文本元素, 更新控制item
+                        renderControlHelper.renderControlItems()
+                    }
                 }
             }
 

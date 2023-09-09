@@ -137,6 +137,9 @@ object UMEvent {
     const val CANVAS_VARIABLE_QRCODE = "canvas_variable_qrcode"
     const val CANVAS_VARIABLE_BARCODE = "canvas_variable_barcode"
 
+    /**字符样式*/
+    const val CANVAS_VARIABLE_SHOW_STYLE = "canvas_variable_show_style"
+
     /**App异常统计*/
     const val APP_ERROR = "app_error"
 

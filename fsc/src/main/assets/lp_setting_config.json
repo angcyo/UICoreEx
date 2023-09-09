@@ -68,5 +68,28 @@
     "HH({{hour}})",
     "mm({{minute}})",
     "ss({{second}})"
+  ],
+  "barcodeSize": 200,
+  "barcodeWidth": 300,
+  "barcodeHeight": 100,
+  "barcode2DMargin": 0,
+  "barcode1DMargin": 0,
+  "barcodeBackgroundColor": "#00000000",
+  "barcode2DTypeList": [
+    "AZTEC",
+    "DATA_MATRIX",
+    "PDF_417",
+    "QR_CODE"
+  ],
+  "barcode1DTypeList": [
+    "CODABAR",
+    "CODE_39",
+    "CODE_93",
+    "CODE_128",
+    "EAN_8",
+    "EAN_13",
+    "ITF",
+    "UPC_A",
+    "UPC_E"
   ]
 }

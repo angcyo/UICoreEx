@@ -446,7 +446,7 @@
     "useCutData": true,
     "ex": "z,s,r",
     "enablePreviewDebounce": true,
-    "dataRotateEx": "s,r",
+    "dataRotateEx": "s,r,sRep",
     "zDirList": "flat,cylinder",
     "focalDistance": 150,
     "widthPhys": 160,

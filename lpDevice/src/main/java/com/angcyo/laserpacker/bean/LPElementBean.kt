@@ -174,13 +174,31 @@ data class LPElementBean(
      * */
     var text: String? = null,
 
-    /**二维码编码格式, 编码格式（qrcode）, 编码格式（code128）*/
-    @Implementation
+    /**二维码编码格式, 编码格式（qrcode）, 编码格式（code128）
+     * [com.google.zxing.BarcodeFormat.QR_CODE]
+     * [com.google.zxing.BarcodeFormat.CODE_128]
+     * */
     var coding: String? = null,
 
-    /**纠错级别*/
-    @Implementation
-    var eclevel: String? = null,
+    /**QrCode纠错级别
+     * L M Q H*/
+    var eclevel: String? = "H",
+
+    /**QR 码掩码图案 [0~8)
+     * -1:自动
+     * */
+    var qrMaskPattern: Int? = -1,
+
+    /**
+     * PDF_417纠错程度:[0~8]
+     * Aztec纠错:[0~100]
+     * */
+    var errorLevel: Int? = null,
+
+    /**
+     * 字符显示样式: top:显示在条码上 bottom:显示在条码上 none:不显示 `2023-9-9`
+     * */
+    var textShowStyle: String? = LPDataConstant.TEXT_SHOW_STYLE_NONE,
 
     /**文本的对齐方式
      * [Paint.Align.toAlignString]
@@ -490,10 +508,7 @@ data class LPElementBean(
                     LPDataConstant.DATA_MODE_BLACK_WHITE
                 }
 
-                mtype == LPDataConstant.DATA_TYPE_QRCODE ||
-                        mtype == LPDataConstant.DATA_TYPE_BARCODE ||
-                        mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE ||
-                        mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> LPDataConstant.DATA_MODE_BLACK_WHITE
+                is1DCodeElement || is2DCodeElement -> LPDataConstant.DATA_MODE_BLACK_WHITE
                 //填充线/描边线, 都是GCode
                 isLineShape -> LPDataConstant.DATA_MODE_GCODE
                 isPathElement -> if (paintStyle == Paint.Style.STROKE.toPaintStyleInt()) {
@@ -546,6 +561,16 @@ data class LPElementBean(
     val isRenderTextElement: Boolean
         get() = mtype == LPDataConstant.DATA_TYPE_TEXT ||
                 mtype == LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+
+    /**二维码类型元素*/
+    val is2DCodeElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_QRCODE ||
+                mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE
+
+    /**一维码类型元素*/
+    val is1DCodeElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_BARCODE ||
+                mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE
 
     /**是否是变量元素*/
     val isVariableElement: Boolean

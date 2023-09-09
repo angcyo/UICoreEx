@@ -23,7 +23,7 @@ abstract class BaseTextControlItem : CanvasIconItem() {
             itemRenderer,
             itemRenderDelegate,
             keepVisibleSize,
-            block
+            block = block
         )
         updateAdapterItem()
     }

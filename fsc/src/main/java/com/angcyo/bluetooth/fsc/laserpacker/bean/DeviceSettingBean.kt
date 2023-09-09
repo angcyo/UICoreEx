@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.library.annotation.Dp
 import com.angcyo.library.component.pad.isInPadMode
 
 /**
@@ -94,6 +95,29 @@ data class DeviceSettingBean(
     var zhImportFilePackageNameList: List<String>? = null,
     /**国外环境导入文件支持的软件包名*/
     var importFilePackageNameList: List<String>? = null,
+    /**二维码支持的格式集合*/
+    var barcode2DTypeList: List<String>? = null,
+    /**一维码支持的格式集合*/
+    var barcode1DTypeList: List<String>? = null,
+    /**2D条形码默认的生成宽高*/
+    @Dp
+    var barcodeSize: Int? = null,
+    /**1D条形码默认的生成宽高*/
+    @Dp
+    var barcodeWidth: Int? = null,
+    @Dp
+    var barcodeHeight: Int? = null,
+    /**默认的边距*/
+    @Dp
+    var barcode2DMargin: Int? = null,
+    @Dp
+    var barcode1DMargin: Int? = null,
+    /**条形码生成的前后背景色值
+     * ```
+     * #ffffff
+     * ```*/
+    var barcodeBackgroundColor: String? = null,
+    var barcodeForegroundColor: String? = null,
     //endregion---Android端设置项---
 
     //region---Ble UUID---
