@@ -65,7 +65,7 @@ class VarTextFixedItem : BaseVarItem(), IEditItem {
         val editText = itemHolder.ev(editItemConfig.itemEditTextViewId)
 
         //history
-        itemHolder.visible(R.id.lib_flow_layout, !inputHistoryList.isNullOrEmpty())
+        itemHolder.invisible(R.id.lib_flow_layout, inputHistoryList.isNullOrEmpty())
         itemHolder.flow(R.id.lib_flow_layout)?.apply {
             resetChild(
                 inputHistoryList,
