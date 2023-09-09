@@ -10,8 +10,12 @@ import com.angcyo.canvas2.laser.pecker.element.ILaserPeckerElement
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
 import com.angcyo.canvas2.laser.pecker.element.LPTextElement
+import com.angcyo.http.base.copyByJson
+import com.angcyo.http.base.listType
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPElementBean
+import com.angcyo.laserpacker.bean.LPVariableBean
+import com.angcyo.laserpacker.bean.initFileCacheIfNeed
 import com.angcyo.laserpacker.generateGroupName
 import com.angcyo.laserpacker.generateName
 import com.angcyo.library.annotation.CallPoint
@@ -205,6 +209,11 @@ object LPRendererHelper {
             rootRenderer.lpElement()?.apply {
                 updateBeanFromElement(rootRenderer)
                 val newBean = elementBean.copy()
+
+                newBean.variables =
+                    elementBean.variables?.copyByJson(listType(LPVariableBean::class.java))
+                newBean.variables?.initFileCacheIfNeed(true)
+                //复制完元素之后, 是否要清空数据缓存?
 
                 if (this is LPBitmapElement) {
                     newBean._srcBitmap = renderBitmap

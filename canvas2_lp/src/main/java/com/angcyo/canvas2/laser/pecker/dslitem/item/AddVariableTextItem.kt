@@ -41,7 +41,7 @@ class AddVariableTextItem : CanvasIconItem() {
                     bean.variables?.copyByJson(listType(LPVariableBean::class.java))
                         ?.toMutableList()
                         ?: mutableListOf()
-                variableTextBeanList.initFileCacheIfNeed()
+                variableTextBeanList.initFileCacheIfNeed(false)
 
                 onApplyVariableListAction = {
                     element.updateVariables(it, renderer, delegate)

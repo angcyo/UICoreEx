@@ -91,7 +91,7 @@ data class LPVariableBean(
     @Transient var _excelMap: Map<String, List<List<Any?>>>? = null,
     //---
     /**唯一标识符*/
-    val key: String = uuid(),
+    var key: String = uuid(),
 ) : IToText {
     companion object {
 
@@ -361,8 +361,11 @@ data class LPVariableBean(
 }
 
 /**[com.angcyo.laserpacker.bean.LPVariableBean.initFileCache]*/
-fun List<LPVariableBean>.initFileCacheIfNeed() {
+fun List<LPVariableBean>.initFileCacheIfNeed(newKey: Boolean = false) {
     forEach {
+        if (newKey) {
+            it.key = uuid()
+        }
         if (it.type == TYPE_EXCEL) {
             //Excel
             if (it._excelMap == null) {

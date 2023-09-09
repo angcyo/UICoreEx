@@ -322,12 +322,12 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         val oldList = elementBean.variables
         delegate?.undoManager?.addAndRedo(strategy, true, {
             elementBean.variables = oldList
-            oldList?.initFileCacheIfNeed()
+            oldList?.initFileCacheIfNeed(false)
             updateBeanToElement(renderer)
             renderer?.requestUpdatePropertyFlag(reason, delegate)
         }, {
             elementBean.variables = newList
-            newList?.initFileCacheIfNeed()
+            newList?.initFileCacheIfNeed(false)
             updateBeanToElement(renderer)
             renderer?.requestUpdatePropertyFlag(reason, delegate)
         })
