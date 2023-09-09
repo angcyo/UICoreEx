@@ -139,11 +139,17 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
                     //条形码
                     if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
                         lastContext.saveView(R.layout.layout_text_show_style_top) {
+                            _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
+                                it.setBackgroundColor(color)
+                            }
                             it.find<ImageView>(R.id.lib_image_view)?.setImageBitmap(this)
                             it.find<TextView>(R.id.lib_text_view)?.text = content
                         }
                     } else if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_BOTTOM) {
                         lastContext.saveView(R.layout.layout_text_show_style_bottom) {
+                            _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
+                                it.setBackgroundColor(color)
+                            }
                             it.find<ImageView>(R.id.lib_image_view)?.setImageBitmap(this)
                             it.find<TextView>(R.id.lib_text_view)?.text = content
                         }
