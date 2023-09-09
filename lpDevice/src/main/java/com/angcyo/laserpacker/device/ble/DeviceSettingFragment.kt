@@ -566,7 +566,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            //上传日志
+            //上传日志item
             if (VersionMatcher.matches(
                     productInfo?.version,
                     config?.showUploadLogRange,
@@ -580,7 +580,7 @@ class DeviceSettingFragment : BaseDslFragment() {
                 }
             }
 
-            //固件升级
+            //固件升级item
             if (VersionMatcher.matches(
                     productInfo?.version,
                     config?.showFirmwareUpdateRange,
