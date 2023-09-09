@@ -10,7 +10,6 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextEditItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextListItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem._itemVariableBean
 import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
-import com.angcyo.canvas2.laser.pecker.util.lpElementBean
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configFullScreenDialog
@@ -257,16 +256,27 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         }
 
         val renderer =
-            LPElementHelper.addVariableTextElement(null, variableTextBeanList, varElementType)
-        renderer?.lpElementBean()?.textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
-        _dialogViewHolder?.img(R.id.lib_preview_view)
-            ?.setImageDrawable(renderer?.requestRenderDrawable())
+            LPElementHelper.addVariableTextElement(null, variableTextBeanList, varElementType) {
+                textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+            }
+        val renderDrawable = renderer?.requestRenderDrawable()
+        _dialogViewHolder?.img(R.id.lib_preview_view)?.setImageDrawable(renderDrawable)
+
+        val lpTextElement = renderer?.lpTextElement()
+        val visibleError = variableTextBeanList.isNotEmpty() &&
+                (lpTextElement?.elementBean?.is1DCodeElement == true || lpTextElement?.elementBean?.is2DCodeElement == true) &&
+                lpTextElement.codeBitmap == null
+        _dialogViewHolder?.visible(R.id.lib_preview_tip_view, visibleError)
+
+        if (visibleError) {
+            _dialogViewHolder?.enable(R.id.dialog_positive_button, false)
+        }
 
         if (BuildConfig.BUILD_TYPE.isDebugType()) {
             _dialogViewHolder?.click(R.id.lib_preview_view) {
-                renderer?.lpTextElement()?.updateElementAfterEngrave()
+                lpTextElement?.updateElementAfterEngrave()
                 _dialogViewHolder?.img(R.id.lib_preview_view)
-                    ?.setImageDrawable(renderer?.requestRenderDrawable())
+                    ?.setImageDrawable(renderDrawable)
             }
         }
     }

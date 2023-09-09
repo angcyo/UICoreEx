@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.view.View
 import android.widget.TextView
+import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatWheelItem
@@ -69,6 +70,7 @@ import com.angcyo.library.ex.find
 import com.angcyo.library.ex.getChildOrNull
 import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.hideSoftInput
+import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.paddingHorizontal
 import com.angcyo.library.ex.setHeight
 import com.angcyo.library.ex.setSize
@@ -260,7 +262,9 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             if (addVarElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
                 itemEditInputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                itemEditDigits = _string(R.string.lib_barcode_digits)
+                if (!BuildConfig.BUILD_TYPE.isDebugType()) {
+                    itemEditDigits = _string(R.string.lib_barcode_digits)
+                }
             }
             observeItemChange {
                 enablePositiveButton(bean.isVariableValid)

@@ -29,6 +29,17 @@
             android:scaleType="centerInside"
             tools:srcCompat="@drawable/core_file_icon_video" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/lib_preview_tip_view"
+            style="@style/LibMainTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/not_support"
+            android:textColor="@color/error"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </FrameLayout>
 
     <View

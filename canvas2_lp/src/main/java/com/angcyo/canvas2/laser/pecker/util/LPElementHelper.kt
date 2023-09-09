@@ -197,12 +197,14 @@ object LPElementHelper {
     fun addVariableTextElement(
         delegate: CanvasRenderDelegate?,
         variables: List<LPVariableBean>?,
-        type: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+        type: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT,
+        config: LPElementBean.() -> Unit = {}
     ): CanvasElementRenderer? {
         val elementBean = LPElementBean().apply {
             mtype = type
             this.variables = variables
             paintStyle = Paint.Style.FILL.toPaintStyleInt()
+            config()
         }
         return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {
             delegate?.renderManager?.addElementRenderer(this, true, Reason.user, Strategy.normal)
