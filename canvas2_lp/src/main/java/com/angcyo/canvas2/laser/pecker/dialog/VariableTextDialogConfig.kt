@@ -147,7 +147,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             VariableTextAddItem()() {
                 itemClick = {
                     it.context.addVariableTextDialog {
-                        addVarElementTypetype = varElementType
+                        addVarElementType = varElementType
                         onApplyVariableAction = { bean ->
                             if (isVariableEditModel) {
                                 _listAdapter?.updateAllItem()

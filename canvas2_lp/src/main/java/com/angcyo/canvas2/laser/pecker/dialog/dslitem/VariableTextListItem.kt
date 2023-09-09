@@ -72,7 +72,7 @@ class VariableTextListItem : DslAdapterItem() {
             //点击编辑
             itemHolder.clickItem {
                 it.context.addVariableTextDialog {
-                    addVarElementTypetype = itemVarElementType
+                    addVarElementType = itemVarElementType
                     editVariableBean = variableBean?.copy()
                     onApplyVariableAction = { bean ->
                         itemEditChangedAction(bean)

@@ -88,7 +88,7 @@ import com.angcyo.widget.tab
 class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(context) {
 
     /**元素数据类型*/
-    var addVarElementTypetype: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+    var addVarElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
 
     /**需要编辑的结构*/
     var editVariableBean: LPVariableBean? = null
@@ -163,6 +163,13 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         //back
         dialogViewHolder.click(R.id.dialog_negative_button) {
             dialog.dismiss()
+        }
+
+        //filter
+        if (addVarElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+            variableBeanList.removeAll {
+                it.type == LPVariableBean.TYPE_DATE || it.type == LPVariableBean.TYPE_TIME
+            }
         }
 
         //tab
@@ -250,7 +257,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     private fun DslAdapter.renderFixedType(bean: LPVariableBean) {
         VarTextFixedItem()() {
             itemData = bean
-            if (addVarElementTypetype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+            if (addVarElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
                 itemEditInputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 itemEditDigits = _string(R.string.lib_barcode_digits)
