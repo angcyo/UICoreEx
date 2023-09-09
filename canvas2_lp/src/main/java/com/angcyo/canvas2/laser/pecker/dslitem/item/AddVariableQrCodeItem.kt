@@ -17,9 +17,9 @@ class AddVariableQrCodeItem : CanvasIconItem() {
     init {
         itemClick = {
             it.context.variableTextDialog {
-                mtype = LPDataConstant.DATA_TYPE_VARIABLE_QRCODE
+                varElementType = LPDataConstant.DATA_TYPE_VARIABLE_QRCODE
                 onApplyVariableListAction = {
-                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, mtype)
+                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType)
                     UMEvent.CANVAS_VARIABLE_QRCODE.umengEventValue()
                 }
             }

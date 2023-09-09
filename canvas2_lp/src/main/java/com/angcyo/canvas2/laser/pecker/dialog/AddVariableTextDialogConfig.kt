@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.text.InputType
 import android.view.View
 import android.widget.TextView
 import com.angcyo.canvas2.laser.pecker.R
@@ -47,6 +48,7 @@ import com.angcyo.item.style.itemCheckItems
 import com.angcyo.item.style.itemCheckedItems
 import com.angcyo.item.style.itemEditDigits
 import com.angcyo.item.style.itemEditHint
+import com.angcyo.item.style.itemEditInputType
 import com.angcyo.item.style.itemEditText
 import com.angcyo.item.style.itemIncrementMaxValue
 import com.angcyo.item.style.itemIncrementMinValue
@@ -55,6 +57,7 @@ import com.angcyo.item.style.itemLabel
 import com.angcyo.item.style.itemLabelTextSize
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.item.style.itemText
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.bean.NumberFormatTypeBean
 import com.angcyo.library._screenHeight
@@ -83,6 +86,9 @@ import com.angcyo.widget.tab
  * @since 2023/08/30
  */
 class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(context) {
+
+    /**元素数据类型*/
+    var addVarElementTypetype: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
 
     /**需要编辑的结构*/
     var editVariableBean: LPVariableBean? = null
@@ -244,6 +250,11 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
     private fun DslAdapter.renderFixedType(bean: LPVariableBean) {
         VarTextFixedItem()() {
             itemData = bean
+            if (addVarElementTypetype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+                itemEditInputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                itemEditDigits = _string(R.string.lib_barcode_digits)
+            }
             observeItemChange {
                 enablePositiveButton(bean.isVariableValid)
             }

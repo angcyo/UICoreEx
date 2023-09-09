@@ -56,7 +56,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
      * [LPDataConstant.DATA_TYPE_VARIABLE_QRCODE]
      * [LPDataConstant.DATA_TYPE_VARIABLE_BARCODE]
      * */
-    var mtype: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+    var varElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
 
     private var _listAdapter: DslAdapter? = null
     private var _controlAdapter: DslAdapter? = null
@@ -82,7 +82,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
-        dialogViewHolder.tv(R.id.dialog_title_view)?.text = when (mtype) {
+        dialogViewHolder.tv(R.id.dialog_title_view)?.text = when (varElementType) {
             LPDataConstant.DATA_TYPE_VARIABLE_QRCODE -> _string(R.string.canvas_variable_qrcode)
             LPDataConstant.DATA_TYPE_VARIABLE_BARCODE -> _string(R.string.canvas_variable_barcode)
             else -> _string(R.string.canvas_variable_text)
@@ -147,6 +147,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             VariableTextAddItem()() {
                 itemClick = {
                     it.context.addVariableTextDialog {
+                        addVarElementTypetype = varElementType
                         onApplyVariableAction = { bean ->
                             if (isVariableEditModel) {
                                 _listAdapter?.updateAllItem()
@@ -183,6 +184,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             itemData = bean
             itemEditMode = isVarItemEditMode
             itemDragHelper = _dragCallbackHelper
+            itemVarElementType = varElementType
 
             itemEditChangedAction = { newBean ->
                 variableTextBeanList.replace(_itemVariableBean!!, newBean)
@@ -254,11 +256,12 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             }
         }
 
-        val renderer = LPElementHelper.addVariableTextElement(null, variableTextBeanList, mtype)
+        val renderer =
+            LPElementHelper.addVariableTextElement(null, variableTextBeanList, varElementType)
         renderer?.lpElementBean()?.textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
         _dialogViewHolder?.img(R.id.lib_preview_view)
             ?.setImageDrawable(renderer?.requestRenderDrawable())
-        
+
         if (BuildConfig.BUILD_TYPE.isDebugType()) {
             _dialogViewHolder?.click(R.id.lib_preview_view) {
                 renderer?.lpTextElement()?.updateElementAfterEngrave()

@@ -5,6 +5,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.addVariableTextDialog
 import com.angcyo.canvas2.laser.pecker.dialog.toVariableTypeIco
 import com.angcyo.dsladapter.DragCallbackHelper
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.library.ex._drawable
 import com.angcyo.widget.DslViewHolder
@@ -16,6 +17,9 @@ import com.angcyo.widget.span.span
  * @since 2023/09/08
  */
 class VariableTextListItem : DslAdapterItem() {
+
+    /**整个元素的类型*/
+    var itemVarElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
 
     /**是否是编辑模式*/
     var itemEditMode: Boolean = false
@@ -68,6 +72,7 @@ class VariableTextListItem : DslAdapterItem() {
             //点击编辑
             itemHolder.clickItem {
                 it.context.addVariableTextDialog {
+                    addVarElementTypetype = itemVarElementType
                     editVariableBean = variableBean?.copy()
                     onApplyVariableAction = { bean ->
                         itemEditChangedAction(bean)
