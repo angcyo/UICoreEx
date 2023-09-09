@@ -23,6 +23,7 @@ import com.angcyo.http.tcp.TcpDevice
 import com.angcyo.item.component.DebugAction
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.device.DeviceHelper
 import com.angcyo.laserpacker.device.MaterialHelper
 import com.angcyo.laserpacker.device.R
 import com.angcyo.laserpacker.device.ble.DeviceConnectTipActivity
@@ -34,7 +35,9 @@ import com.angcyo.library.component.RBackground
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.nowTime
+import com.angcyo.library.ex.save
 import com.angcyo.library.ex.toDC
+import com.angcyo.library.libCacheFile
 import com.angcyo.library.toastQQ
 import com.angcyo.library.utils.LogFile
 import com.angcyo.library.utils.appFolderPath
@@ -49,6 +52,7 @@ import com.angcyo.viewmodel.observe
 import com.angcyo.viewmodel.observeOnce
 import com.angcyo.viewmodel.updateValue
 import com.angcyo.viewmodel.vmDataOnce
+import com.angcyo.widget.base.saveView
 import com.hingin.umeng.UMEvent
 import com.hingin.umeng.umengEventValue
 
@@ -273,6 +277,24 @@ class FscDeviceModel : LifecycleViewModel() {
                 true
             } else if (it.command.trim() == "@enableFactoryPCT#b=false") {
                 DeviceSettingFragment.enableFactoryPCT(false)
+                true
+            } else {
+                false
+            }
+        }
+
+        Debug.debugCommandActionList.add {
+            if (it.command.trim() == "@shareLog#b=true") {
+                //截屏分享日志
+                lastContext.apply {
+                    if (this is Activity) {
+                        this.window.decorView.saveView()
+                            ?.save(libCacheFile("save_decor_view_log.png"))?.let {
+                                DeviceHelper.tempEngraveLogPathList.add(it.absolutePath)
+                            }
+                    }
+                }
+                DeviceHelper.shareEngraveLog()
                 true
             } else {
                 false
