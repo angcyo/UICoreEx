@@ -86,7 +86,7 @@ class DoController {
         if (handleResult.isSuccessResult()) {
             return Task.control.accPrint.memoryLogCache?.joinToString("\n") ?: "处理成功"
         }
-        return "处理失败"
+        return "处理失败:${handleResult.reason}"
     }
 
     @GetMapping("/test")
