@@ -7,8 +7,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.angcyo.library.L
-import com.angcyo.server.def.AndServerService
 import com.angcyo.server.DslAndServer
+import com.angcyo.server.def.AndServerService
 
 /**
  *
@@ -18,6 +18,11 @@ import com.angcyo.server.DslAndServer
  * Copyright (c) 2020 ShenZhen Wayto Ltd. All rights reserved.
  */
 class AccServerService : AndServerService() {
+
+    companion object {
+        /**服务的ip地址*/
+        var accServerServiceAddress: String? = null
+    }
 
     init {
         notifyName = "AccServer"
@@ -30,6 +35,7 @@ class AccServerService : AndServerService() {
 
     override fun updateNotify() {
         super.updateNotify()
+        accServerServiceAddress = address()
     }
 }
 
