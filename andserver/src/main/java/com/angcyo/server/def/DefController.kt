@@ -1,12 +1,9 @@
 package com.angcyo.server.def
 
 import com.angcyo.library.LTime
-import com.angcyo.library.ex.className
 import com.angcyo.library.ex.nowTimeString
 import com.angcyo.library.ex.size
-import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.ex.toSizeString
-import com.angcyo.quickjs.QuickJSEngine
 import com.yanzhenjie.andserver.annotation.CrossOrigin
 import com.yanzhenjie.andserver.annotation.PostMapping
 import com.yanzhenjie.andserver.annotation.RequestBody
@@ -32,7 +29,8 @@ class DefController {
         if (body.size() <= 1024 * 1024) {//小于1mb, 直接打印内容
             resultBuilder.appendLine(body)
         }
-        syncSingle {
+        resultBuilder.appendLine("2023-09-10:QuickJSEngine脚本引擎已移除,请手动依赖!")
+        /*syncSingle {
             QuickJSEngine.executeScript(body) { result, error ->
                 if (error == null) {
                     resultBuilder.appendLine("执行结果[${result?.className() ?: ""}]:$result")
@@ -42,7 +40,7 @@ class DefController {
                 resultBuilder.append("耗时:${LTime.time()}")
                 it.countDown()
             }
-        }
+        }*/
         return resultBuilder.toString()
     }
 

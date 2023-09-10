@@ -5,8 +5,6 @@ import android.content.Intent
 import com.angcyo.core.coreApp
 import com.angcyo.item.component.DebugFragment
 import com.angcyo.library.component.DslNotify
-import com.angcyo.library.component.lastContext
-import com.angcyo.quickjs.api.Api
 
 /**
  * https://github.com/yanzhenjie/AndServer
@@ -50,8 +48,8 @@ object DslAndServer {
             }
         }
 
-        //注入api
-        try {
+        //注入api 2023-09-10 减少依赖, 请手动注入
+        /*try {
             Api.injectApiAction { _, appJs ->
                 appJs.registerJavaMethod({ _, _ ->
                     lastContext.startAndServer()
@@ -68,7 +66,7 @@ object DslAndServer {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
+        }*/
     }
 
     //app is in background uid UidRecord{d5b2549 u0a216 TPSL idle procs:1 seq(0,0,0)}
