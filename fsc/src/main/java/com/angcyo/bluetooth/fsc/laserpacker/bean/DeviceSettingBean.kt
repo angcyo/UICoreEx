@@ -1,7 +1,10 @@
 package com.angcyo.bluetooth.fsc.laserpacker.bean
 
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.Dp
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.pad.isInPadMode
 
 /**
@@ -43,6 +46,7 @@ data class DeviceSettingBean(
     var cutLayerModule: String? = null,
 
     //region---Android端设置项---
+
     /**设置项[自动连接蓝牙]*/
     var showAutoConnectRange: String? = null,
     /**设置项[实验性]*/
@@ -118,6 +122,10 @@ data class DeviceSettingBean(
      * ```*/
     var barcodeBackgroundColor: String? = null,
     var barcodeForegroundColor: String? = null,
+    /**是否要显示工程分享按钮*/
+    var showProjectShare: Boolean = false,
+    /**显示变量模板功能的固件范围*/
+    var showVariableTextRange: String? = null,
     //endregion---Android端设置项---
 
     //region---Ble UUID---
@@ -135,6 +143,12 @@ data class DeviceSettingBean(
 
     //endregion---功能开关---
 )
+
+/**当前的字符串范围string, 是否批量当前的固件版本*/
+fun String?.matchesProductVersion(defOrNull: Boolean = false, defOrEmpty: Boolean = true): Boolean {
+    val productInfo = vmApp<LaserPeckerModel>().productInfoData.value
+    return VersionMatcher.matches(productInfo?.version, this, defOrNull, defOrEmpty)
+}
 
 val _enableQuickOperation: Boolean
     get() = _deviceSettingBean?.enableQuickOperation == true && !isInPadMode()

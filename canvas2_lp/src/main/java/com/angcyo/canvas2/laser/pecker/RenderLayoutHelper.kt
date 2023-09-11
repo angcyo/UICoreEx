@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._enableQuickOperation
+import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
 import com.angcyo.canvas.render.core.BaseCanvasRenderListener
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.CanvasSelectorManager
@@ -123,7 +124,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                     initItem()
                 }
             }
-            if (isDebug() && !closeCanvasItemsFun.have("_variableText_")) {
+
+            if ((isDebug() || _deviceSettingBean?.showVariableTextRange.matchesProductVersion()) &&
+                !closeCanvasItemsFun.have("_variableText_")
+            ) {
                 VariableTextItem()() {
                     initItem()
                     itemRenderLayoutHelper = this@RenderLayoutHelper
