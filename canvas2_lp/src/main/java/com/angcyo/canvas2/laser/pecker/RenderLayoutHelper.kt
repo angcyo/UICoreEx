@@ -2,7 +2,9 @@ package com.angcyo.canvas2.laser.pecker
 
 import android.graphics.Matrix
 import android.view.MotionEvent
+import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._enableQuickOperation
 import com.angcyo.bluetooth.fsc.laserpacker.bean.matchesProductVersion
@@ -83,6 +85,7 @@ import com.angcyo.tablayout.DslTabLayout
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.base.resetDslItem
 import com.angcyo.widget.base.showPopupMenu
+import com.angcyo.widget.base.updateInViewGroup
 import com.angcyo.widget.recycler.renderDslAdapter
 import kotlin.collections.set
 
@@ -661,12 +664,12 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
 
     //endregion ---init---
 
-    //region---Undo---
+    //region---Undo/快捷操作---
 
     val undoManager: CanvasUndoManager?
         get() = _rootViewHolder?.renderDelegate?.undoManager
 
-    /**撤销item*/
+    /**快捷操作: 撤销item*/
     private var _undoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_undo_ico
         itemTooltipText = _string(R.string.canvas_undo)
@@ -678,7 +681,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         }
     }
 
-    /**重做item*/
+    /**快捷操作: 重做item*/
     private var _redoCanvasItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_redo_ico
         itemTooltipText = _string(R.string.canvas_redo)
@@ -690,7 +693,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         }
     }
 
-    /**复制item*/
+    /**快捷操作: 复制item*/
     private var _copyItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_copy_svg
         itemTooltipText = _string(R.string.canvas_copy)
@@ -699,12 +702,21 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         }
     }
 
-    /**可见性item*/
+    /**快捷操作: 可见性item*/
     private var _visibleItem: CanvasIconItem = CanvasIconItem().apply {
         itemIco = R.drawable.canvas_visible_svg
         itemTooltipText = _string(R.string.canvas_gone)
         itemClick = {
             visibleRenderer()
+        }
+    }
+
+    /**快捷操作: 切割item*/
+    private var _cutItem: CanvasIconItem = CanvasIconItem().apply {
+        itemIco = R.drawable.canvas_slicing_ico
+        itemTooltipText = _string(R.string.engrave_layer_cut)
+        itemClick = {
+            cutRenderer(!itemIsSelected)
         }
     }
 
@@ -738,6 +750,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 if (haveControlRenderer()) {
                     list.add(_copyItem)
                     list.add(_visibleItem)
+                }
+                if (vmApp<DeviceStateModel>().haveCutLayer() && isAllGCodeRenderer()) {
+                    _cutItem.itemIsSelected = isAllCutRenderer()
+                    list.add(_cutItem)
                 }
             } else {
                 _undoCanvasItem.itemText = _string(R.string.canvas_undo)
@@ -949,6 +965,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
         LPRendererHelper.copyRenderer(delegate, list, true)
     }
 
+    /**切换选中渲染器的可见性*/
     private fun visibleRenderer() {
         val delegate = delegate ?: return
         val list = delegate.selectorManager.getSelectorRendererList(false)
@@ -959,6 +976,53 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
             Strategy.normal,
             delegate
         )
+    }
+
+    /**是否全部是GCode类型的渲染器, 用来显示切割快捷操作*/
+    private fun isAllGCodeRenderer(): Boolean {
+        val delegate = delegate ?: return false
+        val list = delegate.selectorManager.getSelectorRendererList(true)
+        return list.isNotEmpty() &&
+                LPEngraveHelper.isAllSameLayerMode(list, LPDataConstant.DATA_MODE_GCODE)
+    }
+
+    /**全部是切割数据*/
+    private fun isAllCutRenderer(): Boolean {
+        val delegate = delegate ?: return false
+        val list = delegate.selectorManager.getSelectorRendererList(true)
+        for (renderer in list) {
+            if (renderer.lpElementBean()?._layerId == LaserPeckerHelper.LAYER_CUT) {
+
+            } else {
+                return false
+            }
+        }
+        return list.isNotEmpty()
+    }
+
+    /**切换选中渲染器的切割属性*/
+    private fun cutRenderer(cut: Boolean) {
+        val delegate = delegate ?: return
+        val list = delegate.selectorManager.getSelectorRendererList(true)
+        var isChanged = false
+        for (renderer in list) {
+            renderer.lpElementBean()?.apply {
+                if (_layerId == LaserPeckerHelper.LAYER_CUT && cut) {
+                    //已经是切割
+                } else if (_layerId != LaserPeckerHelper.LAYER_CUT && !cut) {
+                    //已经不是切割
+                } else {
+                    isChanged = true
+                    isCut = cut
+                    clearIndex("快捷操作切割类型改变", true)
+                }
+            }
+        }
+        if (isChanged) {
+            _cutItem.itemIsSelected = cut
+            _cutItem.updateInViewGroup()
+            renderLayerListLayout()
+        }
     }
 
     //endregion---Layer---
