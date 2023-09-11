@@ -126,6 +126,8 @@ data class DeviceSettingBean(
     var showProjectShare: Boolean = false,
     /**显示变量模板功能的固件范围*/
     var showVariableTextRange: String? = null,
+    /**快捷输入指令列表*/
+    var quickTextInputAction: List<QuickActionBean>? = null,
     //endregion---Android端设置项---
 
     //region---Ble UUID---

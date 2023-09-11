@@ -4,14 +4,18 @@ import android.app.Dialog
 import android.content.Context
 import android.text.InputType
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog.InputDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog.itemsDialog
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.isDebug
 import com.angcyo.widget.DslViewHolder
+import com.angcyo.widget.base.setInputText
 import com.angcyo.widget.tab
 
 /**添加文本/二维码/条形码
@@ -96,6 +100,27 @@ class CanvasAddTextDialogConfig : InputDialogConfig() {
                     else -> 0
                 }
             )
+        }
+
+        //快捷文本输入
+        val quickTextList = _deviceSettingBean?.quickTextInputAction ?: emptyList()
+        dialogViewHolder.visible(
+            R.id.text_quick_action_view,
+            isDebug() && quickTextList.isNotEmpty()
+        )
+        dialogViewHolder.click(R.id.text_quick_action_view) {
+            it.context.itemsDialog {
+                dialogTitle = "快捷指令"
+                for (quickActionBean in quickTextList) {
+                    addDialogItem {
+                        itemText = quickActionBean.label
+                        itemClick = {
+                            dialogViewHolder.ev(R.id.edit_text_view)
+                                ?.setInputText(quickActionBean.value, false)
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -91,5 +91,15 @@
     "ITF",
     "UPC_A",
     "UPC_E"
+  ],
+  "quickTextInputAction": [
+    {
+      "label": "分享日志",
+      "value": "@shareLog#b=true"
+    },
+    {
+      "label": "上传日志",
+      "value": "@uploadLog#b=true"
+    }
   ]
 }
