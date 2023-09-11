@@ -1134,11 +1134,11 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 itemShowShareButton =
                     !_isSingleFlow && !_isHistoryFlow && _deviceSettingBean?.showProjectShare == true
                 //雕刻完成之后, 如果有变量文本, 则显示继续雕刻按钮
-                itemShowContinueButton =
-                    engraveCanvasFragment?.renderDelegate?.getSelectorSingleElementRendererList(
-                        true,
-                        false
-                    ).haveVariableElement() == true
+                itemShowContinueButton = !HawkEngraveKeys.enableItemEngraveParams &&
+                        engraveCanvasFragment?.renderDelegate?.getSelectorSingleElementRendererList(
+                            true,
+                            false
+                        ).haveVariableElement() == true
                 itemShareAction = {
                     val delegate = engraveCanvasFragment?.renderDelegate
                     LPProjectManager().saveProjectV2Share(delegate, taskId)
