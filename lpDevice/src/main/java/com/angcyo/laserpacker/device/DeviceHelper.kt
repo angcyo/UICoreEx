@@ -65,33 +65,40 @@ object DeviceHelper {
     /**临时的雕刻日志文件路径集合, 在分享之后清空*/
     val tempEngraveLogPathList = mutableListOf<String>()
 
+    /**获取所有日志路径*/
+    fun getEngraveLogPathList() = mutableListOf<String>().apply {
+        add(logPath())
+
+        //http log
+        add(libAppFile(logFileName(), Constant.HTTP_FOLDER_NAME).absolutePath)
+        //crash log
+        add(
+            libAppFile(
+                fileNameTime(suffix = ".log"),
+                Constant.CRASH_FOLDER_NAME
+            ).absolutePath
+        )
+
+        Library.hawkPath?.let {
+            val map = HawkValueParserHelper.parseFromXml(it)
+            map.toJson()?.let {
+                libCacheFile("Hawk2.json").apply {
+                    writeText(it)
+                    add(absolutePath)
+                }
+            }
+        }
+
+        //xml
+        addAll(getTaskEngraveLogFilePath())
+        addAll(tempEngraveLogPathList)
+    }
+
     /**分享最近的雕刻日志*/
     fun shareEngraveLog() {
         toastQQ(_string(R.string.create_log_tip))
         runRx({
-            val logList = mutableListOf(logPath())
-
-            //http log
-            logList.add(libAppFile(logFileName(), Constant.HTTP_FOLDER_NAME).absolutePath)
-            //crash log
-            logList.add(
-                libAppFile(
-                    fileNameTime(suffix = ".log"),
-                    Constant.CRASH_FOLDER_NAME
-                ).absolutePath
-            )
-
-            Library.hawkPath?.let {
-                val map = HawkValueParserHelper.parseFromXml(it)
-                map.toJson()?.let {
-                    libCacheFile("Hawk2.json").apply {
-                        writeText(it)
-                        logList.add(absolutePath)
-                    }
-                }
-            } //xml
-            logList.addAll(getTaskEngraveLogFilePath())
-            logList.addAll(tempEngraveLogPathList)
+            val logList = getEngraveLogPathList()
 
             tempEngraveLogPathList.clear()
             val version = vmApp<LaserPeckerModel>().productInfoData.value?.softwareVersion ?: -1
