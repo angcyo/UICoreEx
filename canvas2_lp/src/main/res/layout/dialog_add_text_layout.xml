@@ -114,14 +114,15 @@
             android:paddingHorizontal="@dimen/lib_hdpi"
             android:paddingVertical="@dimen/lib_hdpi"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/single_text_indicator_view"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/single_text_indicator_view"
-            app:layout_constraintTop_toTopOf="@id/single_text_indicator_view"
+            app:layout_constraintTop_toBottomOf="@id/line_view"
             app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
             app:r_flow_item_vertical_space="@dimen/lib_hdpi"
+            app:r_flow_preview_item_count="10"
             app:r_flow_preview_item_layout_id="@layout/lib_input_history_layout"
-            tools:layoutDirection="rtl">
+            tools:layoutDirection="rtl"
+            tools:visibility="invisible">
 
         </com.angcyo.widget.layout.DslFlowLayout>
 
@@ -133,7 +134,6 @@
             android:layout_marginHorizontal="@dimen/lib_hdpi"
             android:minHeight="40dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/lib_flow_layout"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line_view"
