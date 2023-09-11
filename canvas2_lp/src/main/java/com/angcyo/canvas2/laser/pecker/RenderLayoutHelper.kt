@@ -739,7 +739,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
     }
 
     /**undo redo*/
-    private fun _updateUndoLayout() {
+    fun _updateUndoLayout() {
         doMain {
             val list = mutableListOf(_undoCanvasItem, _redoCanvasItem)
 
@@ -848,6 +848,10 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                             itemSortAction = {
                                 _layerDragHelper?.startDrag(it)
                             }
+
+                            itemVisibleChangeAction = {
+                                _updateUndoLayout()
+                            }
                         }
                     }
                     if (allElementRendererList.isEmpty()) {
@@ -879,6 +883,7 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                                         itemInEngraveLayerTab = true
                                         onItemCutTypeChangeAction = {
                                             //切换类型
+                                            _updateUndoLayout()
                                             renderLayerListLayout()
                                         }
                                         itemClick = {

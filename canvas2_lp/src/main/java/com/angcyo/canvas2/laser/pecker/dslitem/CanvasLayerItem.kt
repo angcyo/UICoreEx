@@ -1,12 +1,13 @@
 package com.angcyo.canvas2.laser.pecker.dslitem
 
-import com.angcyo.library.canvas.core.Reason
 import com.angcyo.canvas.render.renderer.CanvasGroupRenderer
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.getAllElementBean
 import com.angcyo.canvas2.laser.pecker.updateGroupName
 import com.angcyo.dialog.inputDialog
 import com.angcyo.dsladapter.DslAdapterItem
+import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.ex.ViewAction
 import com.angcyo.library.ex._string
 import com.angcyo.widget.DslViewHolder
 
@@ -21,6 +22,9 @@ class CanvasLayerItem : CanvasLayerBaseItem() {
 
     /**排序事件*/
     var itemSortAction: ((DslViewHolder) -> Unit)? = null
+
+    /**可见性改变的回调*/
+    var itemVisibleChangeAction: ViewAction? = null
 
     /**是否要显示可见性view, 在touch多选item时, 不需要显示*/
     var itemShowSeeView = true
@@ -96,6 +100,7 @@ class CanvasLayerItem : CanvasLayerBaseItem() {
         itemHolder.click(R.id.layer_item_invisible_view) {
             //可见
             itemRenderer?.updateVisible(!it.isSelected, Reason.user, itemRenderDelegate)
+            itemVisibleChangeAction?.invoke(it)
             updateAdapterItem()
         }
         itemHolder.click(R.id.layer_item_lock_view) {
