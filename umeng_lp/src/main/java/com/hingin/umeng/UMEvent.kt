@@ -140,6 +140,9 @@ object UMEvent {
     /**字符样式*/
     const val CANVAS_VARIABLE_SHOW_STYLE = "canvas_variable_show_style"
 
+    /**变量文本, 后继续雕刻*/
+    const val CONTINUE_ENGRAVE = "continue_engrave"
+
     /**App异常统计*/
     const val APP_ERROR = "app_error"
 
