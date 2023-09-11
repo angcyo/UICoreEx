@@ -23,7 +23,7 @@ interface IVarFileItem {
             itemIncrementMaxValue = bean?.maxDataLineCount
         }
         if (this is VarFileLineNumberItem) {
-            itemIncrementValue = bean?.stepVal?.toStr()
+            itemIncrementValue = bean?.current?.toStr()
             itemIncrementMaxValue = bean?.maxDataLineCount
         }
     }
