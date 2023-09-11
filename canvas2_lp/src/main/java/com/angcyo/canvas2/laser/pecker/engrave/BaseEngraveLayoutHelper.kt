@@ -3,10 +3,12 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.writeBleLog
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.element.haveVariableElement
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveDividerItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveConfirmItem
@@ -72,6 +74,7 @@ import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.nowTime
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
+import com.angcyo.library.ex.uuid
 import com.angcyo.objectbox.findAll
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -82,6 +85,8 @@ import com.angcyo.objectbox.laser.pecker.entity.TransferConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.observe
 import com.angcyo.widget.span.span
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import kotlin.math.max
 
 /**
@@ -172,7 +177,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 //再次传输不一样的数据时, 重新创建任务id
                 flowTaskId = EngraveFlowDataHelper.generateTaskId(flowTaskId)
             }*/
-        } else  if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
+        } else if (to == ENGRAVE_FLOW_BEFORE_CONFIG) {
             //no op
         }
     }
@@ -1126,7 +1131,14 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
             }
             //
             EngraveFinishControlItem()() {
-                itemShowShareButton = !_isSingleFlow && !_isHistoryFlow
+                itemShowShareButton =
+                    !_isSingleFlow && !_isHistoryFlow && _deviceSettingBean?.showProjectShare == true
+                //雕刻完成之后, 如果有变量文本, 则显示继续雕刻按钮
+                itemShowContinueButton =
+                    engraveCanvasFragment?.renderDelegate?.getSelectorSingleElementRendererList(
+                        true,
+                        false
+                    ).haveVariableElement() == true
                 itemShareAction = {
                     val delegate = engraveCanvasFragment?.renderDelegate
                     LPProjectManager().saveProjectV2Share(delegate, taskId)
@@ -1137,6 +1149,40 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     engraveFlow = ENGRAVE_FLOW_BEFORE_CONFIG
                     renderFlowItems()
                 }
+                itemContinueAction = {
+                    //继续雕刻, 重新传输数据, 并且自动发送数据
+                    UMEvent.CONTINUE_ENGRAVE.umengEventValue()
+                    continueTransferEngrave()
+                }
+            }
+        }
+    }
+
+    /**重建任务,使用上一次的传输配置,进行二次传输并雕刻
+     * [changeToTransmitting]*/
+    open fun continueTransferEngrave() {
+        val oldTaskId = flowTaskId
+        val transferConfigEntity = EngraveFlowDataHelper.getTransferConfig(oldTaskId)
+
+        //获取旧的任务传输配置
+        if (transferConfigEntity == null) {
+            toastQQOrMessage(_string(R.string.not_support))
+            return
+        }
+        if (transferConfigEntity.taskId == oldTaskId) {
+            val newTaskId = uuid()
+            transferConfigEntity.entityId = 0
+            transferConfigEntity.taskId = newTaskId
+            transferConfigEntity.lpSaveEntity()
+        }
+
+        //退出打印模式, 进入空闲模式
+        asyncTimeoutExitCmd { bean, error ->
+            if (error == null) {
+                flowTaskId = transferConfigEntity.taskId
+                changeToTransmitting(transferConfigEntity)
+            } else {
+                toastQQOrMessage(error.message)
             }
         }
     }

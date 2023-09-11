@@ -13,6 +13,7 @@
         style="@style/LibButtonThemeSolidStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/lib_xhdpi"
         android:layout_weight="1"
         android:text="@string/share_community"
         android:textColor="@color/device_primary_color"
@@ -23,10 +24,22 @@
         style="@style/LibButtonBlackSolidStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/lib_xhdpi"
         android:layout_weight="1"
         android:text="@string/engrave_again"
         android:textColor="@color/text_general_color"
         app:button_gradient_colors="@color/bg_primary_color" />
+
+    <com.angcyo.widget.DslButton
+        android:id="@+id/continue_button"
+        style="@style/LibButtonBlackSolidStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/lib_xhdpi"
+        android:layout_weight="1"
+        android:text="@string/engrave_variable_continue"
+        android:textColor="@color/text_general_color"
+        android:visibility="gone"
+        app:button_gradient_colors="@color/bg_primary_color"
+        tools:visibility="visible" />
 
 </LinearLayout>

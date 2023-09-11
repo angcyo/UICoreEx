@@ -14,9 +14,17 @@ class EngraveFinishControlItem : DslAdapterItem() {
     /**是否要显示分享按钮*/
     var itemShowShareButton = true
 
+    /**是否要显示继续雕刻按钮*/
+    var itemShowContinueButton = false
+
+    /**工程分享回调*/
     var itemShareAction: () -> Unit = {}
 
+    /**再雕一次回调*/
     var itemAgainAction: () -> Unit = {}
+
+    /**继续雕刻回调*/
+    var itemContinueAction: () -> Unit = {}
 
     init {
         itemLayoutId = R.layout.item_engrave_finish_control_layout
@@ -31,13 +39,16 @@ class EngraveFinishControlItem : DslAdapterItem() {
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
 
         itemHolder.visible(R.id.share_button, itemShowShareButton)
+        itemHolder.visible(R.id.continue_button, itemShowContinueButton)
 
         itemHolder.click(R.id.share_button) {
             itemShareAction()
         }
-
         itemHolder.click(R.id.again_button) {
             itemAgainAction()
+        }
+        itemHolder.click(R.id.continue_button) {
+            itemContinueAction()
         }
     }
 

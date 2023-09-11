@@ -8,8 +8,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toDeviceStr
 import com.angcyo.bluetooth.fsc.laserpacker.parse.toLaserPeckerVersionName
@@ -102,6 +102,17 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
 
         /**雕刻流程: 雕刻完成.*/
         const val ENGRAVE_FLOW_FINISH = ENGRAVE_FLOW_ENGRAVING shl 1
+
+        //---
+
+        /**雕刻流程掩码*/
+        const val ENGRAVE_FLOW_MASK = 0b11111111_11111111_11111111
+
+        /**雕刻流程flag掩码*/
+        const val ENGRAVE_FLOW_FLAG_MASK = 0b11111111 shl 24
+
+        /**雕刻flag,自动处理*/
+        const val ENGRAVE_FLAG_AUTO = 0b1 shl 24
 
         /**安全提示, 是否不再提示, 每个版本提示一次*/
         const val KEY_SAFETY_TIPS = "SAFETY_TIPS_NOT_PROMPT"
@@ -248,6 +259,19 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
         }
     }
 
+    fun Int.flow() = this and ENGRAVE_FLOW_MASK
+
+    fun Int.flowFlag() = this and ENGRAVE_FLOW_FLAG_MASK
+
+    /**改变流程, 并且保持之前的flag*/
+    fun Int.changeFlow(to: Int, keepFlag: Boolean = true): Int {
+        return if (keepFlag) {
+            to or flowFlag()
+        } else {
+            to
+        }
+    }
+
     override fun hide(end: (() -> Unit)?) {
         if (cancelable /*可以返回*/ &&
             engraveFlow == ENGRAVE_FLOW_PREVIEW /*预览中*/ &&
@@ -307,9 +331,9 @@ abstract class BaseFlowLayoutHelper : BaseRecyclerIView() {
      * 每次发送数据之前, 都生成一个新的任务.
      * 在任务完成后清空id
      * */
-    open fun generateFlowId(reason: String): String {
+    open fun generateFlowId(reason: String, new: Boolean = false): String {
         val old = flowTaskId
-        if (old == null) {
+        if (old == null || new) {
             flowTaskId = uuid()
         }
         "生成流程id[$old]->[$flowTaskId]:${reason}".writeEngraveLog()

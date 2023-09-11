@@ -37,6 +37,7 @@
     <string name="tips_fourteen_12">Time</string>
     <string name="work_time">Duration</string>
     <string name="engrave_again">Repeat</string>
+    <string name="engrave_variable_continue">VariableContinue</string>
     <string name="print_v2_package_Laser_home">Back Home</string>
     <string name="preview_scroll_continue">Scroll Preview</string>
     <string name="preview_scroll_pause">Pause Scroll</string>

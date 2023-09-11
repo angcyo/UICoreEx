@@ -37,6 +37,7 @@
     <string name="tips_fourteen_12">时间</string>
     <string name="work_time">加工时间</string>
     <string name="engrave_again">再雕一次</string>
+    <string name="engrave_variable_continue">持续雕刻</string>
     <string name="print_v2_package_Laser_home">返回首页</string>
     <string name="preview_scroll_continue">滚动预览</string>
     <string name="preview_scroll_pause">暂停滚动</string>
