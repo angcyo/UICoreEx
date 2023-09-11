@@ -20,23 +20,45 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
  */
 class BarcodeErrorLevelSelectItem : BaseBarcodePropertyControlItem() {
 
+    private val L = ErrorCorrectionLevel.L.toStr()
+    private val M = ErrorCorrectionLevel.M.toStr()
+    private val Q = ErrorCorrectionLevel.Q.toStr()
+    private val H = ErrorCorrectionLevel.H.toStr()
+
+
+    /**条码格式*/
+    val barcodeFormat: BarcodeFormat?
+        get() = elementBean?.toBarcodeFormat()
+
     init {
         itemClick = {
             showItemWheelDialog(it.context)
         }
+        /*itemWheelToTextAction = {
+            if (barcodeFormat == BarcodeFormat.QR_CODE) {
+                if (it == L) {
+                    "$L ~7%"
+                } else if (it == M) {
+                    "$M ~15%"
+                } else if (it == Q) {
+                    "$Q ~25%"
+                } else if (it == H) {
+                    "$H ~30%"
+                } else {
+                    it.toStr()
+                }
+            } else {
+                it.toStr()
+            }
+        }*/
     }
 
     override fun onSelfSetItemData(data: Any?) {
         super.onSelfSetItemData(data)
 
-        val barcodeFormat = elementBean?.toBarcodeFormat()
+        val barcodeFormat = barcodeFormat
         if (barcodeFormat == BarcodeFormat.QR_CODE) {
-            itemWheelList = listOf(
-                ErrorCorrectionLevel.L.toStr(),
-                ErrorCorrectionLevel.M.toStr(),
-                ErrorCorrectionLevel.Q.toStr(),
-                ErrorCorrectionLevel.H.toStr()
-            )
+            itemWheelList = listOf(L, M, Q, H)
             updateWheelSelectedIndex(elementBean?.eclevel)
         } else if (barcodeFormat == BarcodeFormat.PDF_417) {
             itemWheelList = (0..7).toList()

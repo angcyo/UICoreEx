@@ -43,7 +43,10 @@ import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.span.span
 
 /**
- * 变量模板界面弹窗
+ * 变量模板选中后的list界面弹窗, 支持变量元素的预览
+ *
+ * [com.angcyo.canvas2.laser.pecker.dialog.AddVariableTextDialogConfig]
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/08/30
  */

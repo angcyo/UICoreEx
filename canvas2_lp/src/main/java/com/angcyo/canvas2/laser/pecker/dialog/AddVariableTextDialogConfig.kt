@@ -83,7 +83,10 @@ import com.angcyo.widget.span.span
 import com.angcyo.widget.tab
 
 /**
- * 变量模板界面弹窗
+ * 变量模板具体item选择界面弹窗
+ *
+ * [com.angcyo.canvas2.laser.pecker.dialog.VariableTextDialogConfig] 变量类型list
+ *
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/08/30
  */
