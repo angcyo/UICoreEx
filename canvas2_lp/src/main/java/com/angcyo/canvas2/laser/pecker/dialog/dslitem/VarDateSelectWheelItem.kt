@@ -12,7 +12,7 @@ import com.angcyo.library.ex._string
  */
 class VarDateSelectWheelItem : LPDateWheelItem() {
     init {
-        itemLayoutId = R.layout.lp_label_wheel_item
+        itemLayoutId = R.layout.lp_date_wheel_item
         itemLabel = _string(R.string.variable_date_select)
     }
 }

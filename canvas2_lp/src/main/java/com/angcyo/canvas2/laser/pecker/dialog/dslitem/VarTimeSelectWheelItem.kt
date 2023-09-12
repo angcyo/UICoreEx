@@ -12,7 +12,7 @@ import com.angcyo.library.ex._string
  */
 class VarTimeSelectWheelItem : LPTimeWheelItem() {
     init {
-        itemLayoutId = R.layout.lp_label_wheel_item
+        itemLayoutId = R.layout.lp_time_wheel_item
         itemLabel = _string(R.string.variable_time_select)
     }
 }

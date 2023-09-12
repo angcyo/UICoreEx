@@ -41,8 +41,8 @@ class VarFileChooseItem : LPLabelWheelItem() {
 
         val fileName = _itemVariableBean?.fileName
         itemHolder.tv(R.id.lib_text_view)?.apply {
-            text =
-                if (fileName.isNullOrEmpty()) _string(R.string.ui_choose) else fileName
+            text = fileName
+            //if (fileName.isNullOrEmpty()) _string(R.string.ui_choose) else fileName
 
             val fileUri = _itemVariableBean?.fileUri
             _textColor = if (fileUri.isNullOrBlank() || fileUri.file().isFileExists()) {
