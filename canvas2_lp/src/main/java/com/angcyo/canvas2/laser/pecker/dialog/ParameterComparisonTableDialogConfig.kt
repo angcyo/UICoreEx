@@ -390,8 +390,9 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
             }
 
             //激光类型选择
-            if (laserPeckerModel.isL4()) {
-                //只有L4才有激光类型
+            val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+            if (typeList.size() > 1) {
+                //激光类型
                 EngraveLaserSegmentItem()() {
                     observeItemChange {
                         val type = currentLaserTypeInfo().type

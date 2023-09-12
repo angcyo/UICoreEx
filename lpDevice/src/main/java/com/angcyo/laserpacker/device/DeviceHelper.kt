@@ -202,9 +202,18 @@ object DeviceHelper {
 
     /**获取推荐的激光类型*/
     fun getProductLaserType(): Byte {
-        return LaserPeckerHelper.findProductSupportLaserTypeList()
-            .find { it.type.toInt() == HawkEngraveKeys.lastType }?.type
-            ?: if (vmApp<LaserPeckerModel>().isCSeries()) -1 else LaserPeckerHelper.LASER_TYPE_BLUE
+        val typeList = LaserPeckerHelper.findProductSupportLaserTypeList()
+
+        //1:如果找到了上一次使用的激光类型, 则使用上一次的激光类型
+        typeList.find { it.type.toInt() == HawkEngraveKeys.lastType }?.type?.let {
+            return it
+        }
+
+        if (vmApp<LaserPeckerModel>().isCSeries()) return -1 else {
+            //默认使用第一个激光类型
+            val firstType = typeList.firstOrNull()?.type ?: -1
+            return if (firstType.toInt() != -1) firstType else LaserPeckerHelper.LASER_TYPE_BLUE
+        }
     }
 
     //region ---文件输出信息---
