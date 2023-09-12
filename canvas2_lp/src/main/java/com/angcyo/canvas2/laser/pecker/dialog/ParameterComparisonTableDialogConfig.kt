@@ -787,9 +787,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                 bean.printCount = 1
             }
         }
-        return LPRendererHelper.renderElementList(
-            null, beanList, true, Strategy.normal
-        )
+        return LPRendererHelper.renderElementList(null, beanList, true, Strategy.normal)
     }
 
     /**添加 功率 深度, 雕刻参数对照表. 耗时操作, 建议在子线程中执行*/

@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.util.lpElementBean
+import com.angcyo.core.component.file.writeErrorLog
 import com.angcyo.dialog.toastQQOrMessage
 import com.angcyo.library.ex._string
 
@@ -59,9 +60,11 @@ open class EngraveFlowLayoutHelper : BaseEngraveLayoutHelper() {
                 LPEngraveHelper.getNoConfigEngraveParamsRenderer(engraveCanvasFragment?.renderDelegate)
             if (noConfigEngraveParamsRenderer != null) {
                 //有元素没有配置参数
-                val label = noConfigEngraveParamsRenderer.lpElementBean()?.name ?: "Element"
+                val elementBean = noConfigEngraveParamsRenderer.lpElementBean()
+                val label = elementBean?.name ?: "Element"
                 val message = _string(R.string.no_config_params_tip, label)
                 toastQQOrMessage(message)
+                "有元素没有配置参数:[$elementBean]".writeErrorLog()
             } else {
                 super.changeToTransferConfig()
             }
