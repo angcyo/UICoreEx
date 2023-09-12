@@ -197,7 +197,7 @@
     <string name="variable_number_step">NumberIncrement</string>
     <string name="variable_number_step_threshold">NumberOfTicks</string>
     <string name="variable_model">Model</string>
-    <string name="variable_model_dec">Decimal</string>
+    <string name="variable_model_dec">decimal</string>
     <string name="variable_model_hex_upper">HEX hexadecimal</string>
     <string name="variable_model_hex_lower">hex hexadecimal lowercase</string>
     <string name="variable_reset">AutomaticReset</string>

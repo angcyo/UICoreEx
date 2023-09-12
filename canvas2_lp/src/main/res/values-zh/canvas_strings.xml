@@ -197,7 +197,7 @@
     <string name="variable_number_step">序号增量</string>
     <string name="variable_number_step_threshold">每个标刻数</string>
     <string name="variable_model">模式</string>
-    <string name="variable_model_dec">Dec十进制</string>
+    <string name="variable_model_dec">dec十进制</string>
     <string name="variable_model_hex_upper">HEX十六进制</string>
     <string name="variable_model_hex_lower">hex十六进制小写</string>
     <string name="variable_reset">自动复位</string>
