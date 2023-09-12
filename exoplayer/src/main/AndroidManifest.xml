@@ -48,7 +48,7 @@
         <service
             android:name="androidx.media3.exoplayer.scheduler.PlatformScheduler$PlatformSchedulerService"
             android:exported="true"
-            android:foregroundServiceType="mediaPlayback"
+
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

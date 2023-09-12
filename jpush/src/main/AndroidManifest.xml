@@ -75,7 +75,7 @@
             android:name=".core.JPushCommonService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="remoteMessaging"
+
             android:process=":jpush">
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />

@@ -43,7 +43,7 @@
         <service
             android:name="com.baidu.trace.LBSTraceService"
             android:enabled="true"
-            android:foregroundServiceType="location"
+
             android:process=":bdtrace" />
     </application>
 

@@ -16,6 +16,6 @@
         <service
             android:name=".WifiP2pService"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            />
     </application>
 </manifest>

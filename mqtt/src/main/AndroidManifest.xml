@@ -21,6 +21,6 @@
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             android:exported="false"
-            android:foregroundServiceType="remoteMessaging" />
+            />
     </application>
 </manifest>

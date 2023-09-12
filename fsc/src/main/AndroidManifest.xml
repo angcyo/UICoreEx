@@ -21,13 +21,13 @@
             android:name="com.feasycom.ble.service.OTAService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            />
 
         <service
             android:name="com.feasycom.spp.service.OTAService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            />
     </application>
 
 </manifest>

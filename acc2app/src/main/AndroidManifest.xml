@@ -50,7 +50,7 @@
         <service
             android:name=".server.AccServerService"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            />
     </application>
 
 </manifest>

@@ -42,7 +42,7 @@
         <service
             android:name="com.amap.api.location.APSService"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            />
 
         <!--https://lbs.amap.com/api/android-sdk/guide/create-map/offline-map-->
         <activity

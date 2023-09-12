@@ -20,11 +20,11 @@
             android:name=".def.AndServerService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="remoteMessaging" />
+            />
         <service
             android:name=".file.FileServerService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="remoteMessaging" />
+            />
     </application>
 </manifest>
