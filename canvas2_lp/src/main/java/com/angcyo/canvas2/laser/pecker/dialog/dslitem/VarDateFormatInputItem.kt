@@ -2,7 +2,6 @@ package com.angcyo.canvas2.laser.pecker.dialog.dslitem
 
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
-import com.angcyo.item.DslSingleInputItem
 import com.angcyo.item.style.itemLabel
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._drawable
@@ -18,7 +17,7 @@ import com.angcyo.widget.DslViewHolder
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
  * @since 2023/09/06
  */
-class VarDateFormatInputItem : DslSingleInputItem() {
+class VarDateFormatInputItem : LPSingleInputItem() {
 
     init {
         itemLabel = ""

@@ -5,9 +5,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.InputType
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.LPSingleInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateFormatWheelItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarDateOffsetItem
@@ -42,7 +45,6 @@ import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.item.DslIncrementItem
 import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslRadioGroupItem
-import com.angcyo.item.DslSingleInputItem
 import com.angcyo.item.DslTextPreviewItem
 import com.angcyo.item.style._itemCheckedIndexList
 import com.angcyo.item.style.itemCheckItems
@@ -71,15 +73,13 @@ import com.angcyo.library.ex.getChildOrNull
 import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.hideSoftInput
 import com.angcyo.library.ex.isDebugType
-import com.angcyo.library.ex.paddingHorizontal
 import com.angcyo.library.ex.setHeight
-import com.angcyo.library.ex.setSize
+import com.angcyo.library.ex.setWidthHeight
 import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
 import com.angcyo.widget.base.resetChild
 import com.angcyo.widget.recycler.renderDslAdapter
-import com.angcyo.widget.span.span
 import com.angcyo.widget.tab
 
 /**
@@ -121,7 +121,6 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             min = 1
             current = min
             formatType = LPVariableBean.NUMBER_TYPE_DEC
-            formatType = LPVariableBean.NUMBER_TYPE_HEX
         })
         add(LPVariableBean(LPVariableBean.TYPE_DATE).apply {
             format = LPVariableBean.DEFAULT_DATE_FORMAT
@@ -185,11 +184,15 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             dialogViewHolder.tab(R.id.lib_tab_layout)?.apply {
                 resetChild(
                     variableBeanList,
-                    R.layout.lib_segment_layout
+                    R.layout.lib_ico_segment_layout
                 ) { itemView, item, itemIndex ->
                     itemView.find<TextView>(R.id.lib_text_view)?.apply {
                         text = item.type.toVariableTypeStr()
-                        paddingHorizontal(12 * dpi)
+                    }
+                    itemView.find<ImageView>(R.id.lib_image_view)?.apply {
+                        setWidthHeight(18 * dpi)
+                        setImageDrawable(item.type.toVariableTypeIco())
+                        isVisible = false
                     }
                 }
                 observeIndexChange { fromIndex, toIndex, reselect, fromUser ->
@@ -280,7 +283,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
         DslTextPreviewItem()() {
             itemText = bean.variableText
         }
-        DslSingleInputItem()() {
+        LPSingleInputItem()() {
             itemLabel = _string(R.string.variable_format)
             itemEditText = bean.format
             itemEditDigits = "#,0./'`-"
@@ -682,14 +685,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
     private fun updateVariableTextItemView(view: View?, index: Int, selected: Boolean) {
         view ?: return
-        val bean = variableBeanList.getOrNull(index) ?: return
-        view.find<TextView>(R.id.lib_text_view)?.text = span {
-            if (selected) {
-                appendDrawable(bean.type.toVariableTypeIco()?.setSize(18 * dpi))
-                appendSpace(2 * dpi)
-            }
-            append(bean.type.toVariableTypeStr())
-        }
+        view.find<ImageView>(R.id.lib_image_view)?.isVisible = selected
     }
 }
 

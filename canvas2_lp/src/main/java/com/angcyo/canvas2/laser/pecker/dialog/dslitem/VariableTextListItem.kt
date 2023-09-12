@@ -59,7 +59,7 @@ class VariableTextListItem : DslAdapterItem() {
             }
         //长按拖拽
         itemHolder.img(R.id.lib_right_ico_view)
-            ?.setImageResource(if (itemEditMode) R.drawable.core_sort_svg else R.drawable.lib_next_small)
+            ?.setImageResource(if (itemEditMode) R.drawable.core_sort_svg else R.drawable.var_text_next_svg)
         if (itemEditMode) {
             //item 进入编辑模式
             itemHolder.longClick(R.id.lib_right_ico_view) {

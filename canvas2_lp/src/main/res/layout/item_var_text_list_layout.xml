@@ -31,12 +31,12 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lib_right_ico_view"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="@dimen/lib_ldpi"
         android:padding="@dimen/lib_ldpi"
         app:tint="@color/lib_theme_icon_color"
-        tools:srcCompat="@drawable/lib_next_small" />
+        tools:srcCompat="@drawable/var_text_next_svg" />
 
 </LinearLayout>
