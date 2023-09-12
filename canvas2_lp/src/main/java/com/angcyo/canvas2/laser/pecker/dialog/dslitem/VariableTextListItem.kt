@@ -65,9 +65,13 @@ class VariableTextListItem : DslAdapterItem() {
             itemHolder.longClick(R.id.lib_right_ico_view) {
                 itemDragHelper?.startDrag(itemHolder, this)
             }
+            itemHolder.longClickItem {
+                itemDragHelper?.startDrag(itemHolder, this)
+            }
             itemHolder.clickItem()
         } else {
             itemHolder.longClick(R.id.lib_right_ico_view)
+            itemHolder.longClickItem()
 
             //点击编辑
             itemHolder.clickItem {
