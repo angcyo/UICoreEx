@@ -115,7 +115,7 @@ object EngraveHelper {
             LPDataConstant.ENGRAVE_FILE_FOLDER,
             "${index}${suffix.ensureExtName()}",
             false,
-            recycle
+            recycle = recycle
         )
     }
 
