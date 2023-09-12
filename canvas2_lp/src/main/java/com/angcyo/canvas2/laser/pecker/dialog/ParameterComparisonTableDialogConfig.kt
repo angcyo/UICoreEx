@@ -677,7 +677,7 @@ class ParameterComparisonTableDialogConfig : BaseRecyclerDialogConfig() {
                         height = max(2f, (gridHeight - gridMargin * 2)).toMm()
                         left = (x + gridMargin).toMm()
                         top = (y + gridMargin).toMm()
-                        name = "grid[${powerValue}:${depthValue}]"
+                        name = "grid[${powerValue},${depthValue}]"
 
                         //参数
                         dataMode =

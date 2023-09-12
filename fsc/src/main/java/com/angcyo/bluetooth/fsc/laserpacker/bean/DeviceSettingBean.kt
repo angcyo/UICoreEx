@@ -128,6 +128,8 @@ data class DeviceSettingBean(
     var showVariableTextRange: String? = null,
     /**快捷输入指令列表*/
     var quickTextInputAction: List<QuickActionBean>? = null,
+    /**文件名需要移除的字符*/
+    var fileNameRegex: String? = "[\\/:*?\"<>|]",
     //endregion---Android端设置项---
 
     //region---Ble UUID---

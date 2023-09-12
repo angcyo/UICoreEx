@@ -5,6 +5,8 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
+import com.angcyo.bluetooth.fsc.laserpacker.filterFileName
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
@@ -22,6 +24,7 @@ import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.laserpacker.device.updateAllLayerConfig
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
+import com.angcyo.library.ex.replace
 import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -237,7 +240,7 @@ object LPEngraveHelper {
         return TransferConfigEntity().apply {
             this.taskId = taskId
             this.index = "$index"
-            name = bean.name ?: EngraveHelper.generateEngraveName()
+            name = (bean.name ?: EngraveHelper.generateEngraveName()).filterFileName()
             layerJson = LayerHelper.getProductLayerSupportPxJson()
                 .updateAllLayerConfig(bean.dpi ?: LayerHelper.getProductLastLayerDpi(bean.layerId))
             dataDir = vmApp<LaserPeckerModel>().dataDir()

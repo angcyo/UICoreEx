@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.transfer
 import android.graphics.Color
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.DataCmd
+import com.angcyo.bluetooth.fsc.laserpacker.filterFileName
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.EditItemConfig
@@ -62,22 +63,23 @@ class TransferDataNameItem : DslAdapterItem(), IEditItem {
 
     override fun onSelfItemEditTextChange(itemHolder: DslViewHolder, text: CharSequence) {
         super.onSelfItemEditTextChange(itemHolder, text)
+        val fileName = text.toString().filterFileName()
         itemHolder.tv(R.id.lib_bytes_view)?.text = span {
-            val bytes = text.toString().byteSize()
+            val bytes = fileName.byteSize()
             append("$bytes") {
                 if (bytes > DataCmd.DEFAULT_NAME_BYTE_COUNT) {
                     itemThrowable = IllegalArgumentException("Text out of limit!")
                     foregroundColor = Color.RED
                 } else {
                     itemThrowable = null
-                    itemTransferConfigEntity?.name = text.toString()
+                    itemTransferConfigEntity?.name = fileName
                 }
             }
             append("/${DataCmd.DEFAULT_NAME_BYTE_COUNT} bytes")
         }
         //
-        itemTransferConfigEntity?.name = text.toString()
-        HawkEngraveKeys.lastTransferName = text.toString()
+        itemTransferConfigEntity?.name = fileName
+        HawkEngraveKeys.lastTransferName = fileName
     }
 
     override fun onItemChangeListener(item: DslAdapterItem) {

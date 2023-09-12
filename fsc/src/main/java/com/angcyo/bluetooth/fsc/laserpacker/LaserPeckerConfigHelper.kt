@@ -14,6 +14,7 @@ import com.angcyo.library.ex.HAWK_SPLIT_CHAR
 import com.angcyo.library.ex.ResultThrowable
 import com.angcyo.library.ex.readAssets
 import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.replace
 import com.angcyo.library.libCacheFile
 import com.angcyo.library.utils.writeTo
 
@@ -193,3 +194,6 @@ val _deviceConfigBean: DeviceConfigBean?
 /**设备设置配置, App配置信息*/
 val _deviceSettingBean: DeviceSettingBean?
     get() = LaserPeckerConfigHelper.readDeviceSettingConfig()
+
+/**过滤文件名*/
+fun String.filterFileName() = replace(_deviceSettingBean?.fileNameRegex, "")
