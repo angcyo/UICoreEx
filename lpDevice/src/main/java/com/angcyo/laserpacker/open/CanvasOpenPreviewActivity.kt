@@ -31,6 +31,7 @@ import com.angcyo.library.component.FontManager
 import com.angcyo.library.component.FontManager.toTypeface
 import com.angcyo.library.component._delay
 import com.angcyo.library.component.isFontListType
+import com.angcyo.library.component.pdf.Pdf
 import com.angcyo.library.ex.*
 import com.angcyo.library.getAppIcon
 import com.angcyo.library.libCacheFile
@@ -345,6 +346,31 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
                     openAction = {
                         this@CanvasOpenPreviewActivity.engraveLoadingAsync({
                             bitmap.toBitmapElementBeanV2()
+                        }) {
+                            canvasOpenModel.open(this@CanvasOpenPreviewActivity, it)
+                            finish()
+                        }
+                    }
+
+                    cancelAction = {
+                        finish()
+                    }
+                }
+            }
+            return true
+        } else if (path.endsWith(LPDataConstant.PDF_EXT, true)) {
+            //pdf文件
+            adapter?.render {
+                clearAllItems()
+                CanvasOpenPreviewItem()() {
+                    val bitmapList = Pdf.readPdfToBitmap(file)
+                    val bitmap = bitmapList?.firstOrNull()
+                    itemFilePath = path
+                    itemDrawable = bitmap?.toDrawable(resources)
+
+                    openAction = {
+                        this@CanvasOpenPreviewActivity.engraveLoadingAsync({
+                            bitmapList.toBitmapElementBeanListV2()
                         }) {
                             canvasOpenModel.open(this@CanvasOpenPreviewActivity, it)
                             finish()

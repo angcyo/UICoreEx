@@ -46,10 +46,13 @@ data class LPElementBean(
     @MM
     var top: Float = 0f,
 
-    /**数据原始的宽高, 线条的长度*/
+    /**数据原始的宽高, 线条的长度
+     * 如果是图片元素, 则存储的就是图片宽高
+     * */
     @MM
     var width: Float? = null,
 
+    /**[width]*/
     @MM
     var height: Float? = null,
 

@@ -42,6 +42,9 @@ object LPDataConstant {
      * */
     const val TXT_EXT = ".txt"
 
+    /**pdf文件*/
+    const val PDF_EXT = ".pdf"
+
     /**工程文件后缀
      * [String.toProjectBean]
      * [com.angcyo.laserpacker.bean.LPProjectBean]
@@ -240,7 +243,7 @@ fun String?.isGCodeType(): Boolean {
 /**
  * 支持[com.angcyo.laserpacker.bean.LPElementBean]
  * 支持[com.angcyo.laserpacker.bean.LPProjectBean]
- * 支持[List<LPElementBean>]
+ * 支持[List<com.angcyo.laserpacker.bean.LPElementBean>]
  * */
 typealias CanvasOpenDataType = Any
 

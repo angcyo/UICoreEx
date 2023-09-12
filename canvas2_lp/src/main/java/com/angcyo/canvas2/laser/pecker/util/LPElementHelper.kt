@@ -7,6 +7,7 @@ import android.graphics.Path
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
+import com.angcyo.canvas.render.renderer.CanvasGroupRenderer.Companion.getRendererGroupBounds
 import com.angcyo.canvas.render.util.element
 import com.angcyo.canvas2.laser.pecker.element.LPBitmapElement
 import com.angcyo.canvas2.laser.pecker.element.LPPathElement
@@ -89,22 +90,22 @@ object LPElementHelper {
 
     /**分配位置*/
     fun assignLocation(rendererList: List<BaseRenderer>) {
-        for (renderer in rendererList) {
-            renderer.getRendererBounds()?.let { renderBounds ->
-                initLocation()
+        val groupBounds = rendererList.getRendererGroupBounds() ?: return
+        initLocation()
 
-                val bounds = FscDeviceModel.productAssignLocationBounds
-                var tx = 0f
-                var ty = 0f
-                if (bounds == null) {
-                    tx = _minLeft + _lastLeft - renderBounds.left
-                    ty = _minTop + _lastTop - renderBounds.top
-                } else {
-                    tx = bounds.centerX() - renderBounds.width() / 2
-                    ty = bounds.centerY() - renderBounds.height() / 2
-                }
-                renderer.translate(tx, ty, Reason.code, Strategy.preview, null)
-            }
+        val bounds = FscDeviceModel.productAssignLocationBounds
+        var tx = 0f
+        var ty = 0f
+        if (bounds == null) {
+            tx = _minLeft + _lastLeft - groupBounds.left
+            ty = _minTop + _lastTop - groupBounds.top
+        } else {
+            tx = bounds.centerX() - groupBounds.width() / 2
+            ty = bounds.centerY() - groupBounds.height() / 2
+        }
+
+        for (renderer in rendererList) {
+            renderer.translate(tx, ty, Reason.code, Strategy.preview, null)
         }
     }
 

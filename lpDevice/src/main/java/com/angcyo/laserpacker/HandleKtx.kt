@@ -14,6 +14,7 @@ import com.angcyo.gcode.GCodeDrawable
 import com.angcyo.gcode.GCodeHelper
 import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.L
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
@@ -284,4 +285,26 @@ fun Bitmap?.toBitmapElementBeanV2(
     bean.scaleX = 1 / 1f.toPixel()
     bean.scaleY = bean.scaleX
     return bean
+}
+
+/**第二版, 直接使用图片对象*/
+fun List<Bitmap>?.toBitmapElementBeanListV2(
+    bmpThreshold: Int? = null, //不指定阈值时, 自动从图片中获取
+    invert: Boolean = false
+): List<LPElementBean>? {
+    this ?: return null
+    val result = mutableListOf<LPElementBean>()
+
+    @MM
+    var top = 0f
+    forEach {
+        it.toBitmapElementBeanV2(bmpThreshold, invert)?.let { bean ->
+            bean.width = it.width.toFloat()
+            bean.height = it.height.toFloat()
+            bean.top = top
+            top += it.height.toMm()
+            result.add(bean)
+        }
+    }
+    return result
 }
