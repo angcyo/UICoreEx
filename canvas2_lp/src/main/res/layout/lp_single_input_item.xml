@@ -19,6 +19,7 @@
         android:layout_marginRight="@dimen/lib_padding_left"
         android:background="@drawable/lib_increment_bg_selector"
         android:gravity="left|center_vertical"
+        android:hint="@string/lib_input_hint"
         android:inputType="text"
         android:maxLines="1"
         android:minHeight="@dimen/lib_min_item_height"
@@ -27,7 +28,6 @@
         android:singleLine="true"
         android:textColor="@color/lib_step_adjust_text_color_selector"
         app:r_hide_soft_input_on_lost_focus="true"
-        tools:hint="@string/lib_input_hint"
         tools:text="文本文本文本文本" />
 
 </FrameLayout>
