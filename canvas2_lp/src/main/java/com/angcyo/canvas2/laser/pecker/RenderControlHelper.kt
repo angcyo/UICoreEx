@@ -481,7 +481,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
                 //标识变量元素icon
                 itemText = span {
-                    if (lpElementBean?.isVariableElement == true) {
+                    if (lpElementBean?.isVariableElement == true && _deviceSettingBean?.showVariableElementIco == true) {
                         appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
                         append(" ")
                     }

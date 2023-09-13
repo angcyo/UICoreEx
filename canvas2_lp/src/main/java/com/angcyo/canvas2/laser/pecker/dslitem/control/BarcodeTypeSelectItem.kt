@@ -53,12 +53,14 @@ class BarcodeTypeSelectItem : BaseBarcodePropertyControlItem() {
 
         //标识变量元素icon
         itemLabel = span {
-            if (elementBean?.is1DCodeElement == true) {
-                appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
-                append(" ")
-            } else if (elementBean?.is2DCodeElement == true) {
-                appendDrawable(_drawable(R.drawable.canvas_var_qrcode_ico)?.setSize(14 * dpi))
-                append(" ")
+            if (_deviceSettingBean?.showVariableElementIco == true) {
+                if (elementBean?.is1DCodeElement == true) {
+                    appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
+                    append(" ")
+                } else if (elementBean?.is2DCodeElement == true) {
+                    appendDrawable(_drawable(R.drawable.canvas_var_qrcode_ico)?.setSize(14 * dpi))
+                    append(" ")
+                }
             }
             append(_string(R.string.variable_file_type))
         }

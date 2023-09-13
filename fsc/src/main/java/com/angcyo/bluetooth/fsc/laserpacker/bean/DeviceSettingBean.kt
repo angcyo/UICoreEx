@@ -130,6 +130,8 @@ data class DeviceSettingBean(
     var quickTextInputAction: List<QuickActionBean>? = null,
     /**文件名需要移除的字符*/
     var fileNameRegex: String? = "[\\/:*?\"<>|]",
+    /**是否显示变量元素ico提示*/
+    var showVariableElementIco: Boolean = true,
     //endregion---Android端设置项---
 
     //region---Ble UUID---
