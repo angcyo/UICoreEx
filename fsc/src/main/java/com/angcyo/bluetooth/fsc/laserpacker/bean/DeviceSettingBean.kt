@@ -116,6 +116,9 @@ data class DeviceSettingBean(
     var barcode2DMargin: Int? = null,
     @Dp
     var barcode1DMargin: Int? = null,
+    /**二维码和一维码默认的预览内容*/
+    var barcode2DPreviewContent: String? = "123456",
+    var barcode1DPreviewContent: String? = "123456",
     /**条形码生成的前后背景色值
      * ```
      * #ffffff

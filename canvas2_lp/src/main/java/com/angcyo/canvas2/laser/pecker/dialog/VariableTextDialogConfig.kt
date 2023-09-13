@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.BuildConfig
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VariableTextAddItem
@@ -36,6 +37,7 @@ import com.angcyo.library.ex.replace
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.ex.setSize
 import com.angcyo.library.ex.tintDrawable
+import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
 import com.angcyo.widget.base._textColor
@@ -43,6 +45,7 @@ import com.angcyo.widget.layout.onDispatchTouchEventAction
 import com.angcyo.widget.recycler.DslRecyclerView
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.span.span
+import com.google.zxing.BarcodeFormat
 
 /**
  * 变量模板选中后的list界面弹窗, 支持变量元素的预览
@@ -267,10 +270,31 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             }
         }
 
-        val renderer =
-            LPElementHelper.addVariableTextElement(null, variableTextBeanList, varElementType) {
-                textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+        var beanList = variableTextBeanList
+        if (variableTextBeanList.isEmpty()) {
+            //默认预览条形码的内容
+            if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE || varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+                beanList = mutableListOf(LPVariableBean().apply {
+                    if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
+                        content = _deviceSettingBean?.barcode2DPreviewContent
+                    } else {
+                        content = _deviceSettingBean?.barcode1DPreviewContent
+                    }
+                })
             }
+        }
+
+        //获取对应的渲染器
+        val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType) {
+            textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+            if (coding.isNullOrBlank()) {
+                if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
+                    coding = BarcodeFormat.QR_CODE.toStr()
+                } else if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+                    coding = BarcodeFormat.CODE_128.toStr()
+                }
+            }
+        }
         val renderDrawable = renderer?.requestRenderDrawable()
         _dialogViewHolder?.img(R.id.lib_preview_view)?.setImageDrawable(renderDrawable)
 
