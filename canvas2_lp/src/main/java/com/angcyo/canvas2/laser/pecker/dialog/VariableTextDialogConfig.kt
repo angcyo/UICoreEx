@@ -30,6 +30,7 @@ import com.angcyo.library.ex.isDebugType
 import com.angcyo.library.ex.isScreenTouchIn
 import com.angcyo.library.ex.isTouchFinish
 import com.angcyo.library.ex.isTouchMove
+import com.angcyo.library.ex.longFeedback
 import com.angcyo.library.ex.postDelay
 import com.angcyo.library.ex.replace
 import com.angcyo.library.ex.resetAll
@@ -198,7 +199,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         }
     }
 
-    private var _isTouchMoveInTrash = false
+    private var _isTouchMoveInTrash: Boolean? = null
 
     /**观察拖拽, 用来实现移动到此删除元素*/
     private fun DslRecyclerView.observeDrag() {
@@ -207,30 +208,34 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                 _dialogViewHolder?.visible(R.id.lib_trash_view)
                 val textView = _dialogViewHolder?.tv(R.id.lib_trash_view)
                 if (it.isTouchMove()) {
-                    _isTouchMoveInTrash = it.isScreenTouchIn(textView)
-                    val size = 24 * dpi
-                    if (_isTouchMoveInTrash) {
-                        textView?.setBackgroundColor(_color(R.color.error_light))
-                        textView?.text = span {
-                            appendDrawable(
-                                _drawable(R.drawable.core_trash_open_svg)
-                                    .tintDrawable(textView!!._textColor)?.setSize(size)
-                            )
-                            append(_string(R.string.core_trash_delete_tip))
-                        }
-                    } else {
-                        textView?.setBackgroundColor(_color(R.color.error))
-                        textView?.text = span {
-                            appendDrawable(
-                                _drawable(R.drawable.core_trash_svg)
-                                    .tintDrawable(textView!!._textColor)?.setSize(size)
-                            )
-                            append(_string(R.string.core_trash_delete))
+                    val isTouchIn = it.isScreenTouchIn(textView)
+                    if (isTouchIn != _isTouchMoveInTrash) {
+                        _isTouchMoveInTrash = isTouchIn
+                        val size = 24 * dpi
+                        if (_isTouchMoveInTrash == true) {
+                            textView?.setBackgroundColor(_color(R.color.error_light))
+                            textView?.text = span {
+                                appendDrawable(
+                                    _drawable(R.drawable.core_trash_open_svg)
+                                        .tintDrawable(textView!!._textColor)?.setSize(size)
+                                )
+                                append(_string(R.string.core_trash_delete_tip))
+                            }
+                            textView?.longFeedback()
+                        } else {
+                            textView?.setBackgroundColor(_color(R.color.error))
+                            textView?.text = span {
+                                appendDrawable(
+                                    _drawable(R.drawable.core_trash_svg)
+                                        .tintDrawable(textView!!._textColor)?.setSize(size)
+                                )
+                                append(_string(R.string.core_trash_delete))
+                            }
                         }
                     }
                 } else if (it.isTouchFinish()) {
                     _dialogViewHolder?.gone(R.id.lib_trash_view)
-                    if (_isTouchMoveInTrash) {
+                    if (_isTouchMoveInTrash == true) {
                         (_dragCallbackHelper?.dragTagData as? DslAdapterItem)?.apply {
                             //延迟删除, 避免界面bug
                             postDelay(300) {
@@ -241,6 +246,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                             }
                         }
                     }
+                    _isTouchMoveInTrash = null
                 }
             }
         }
