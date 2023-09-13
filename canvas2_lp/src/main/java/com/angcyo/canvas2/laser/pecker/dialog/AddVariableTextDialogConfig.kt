@@ -61,7 +61,6 @@ import com.angcyo.item.style.itemIncrementValue
 import com.angcyo.item.style.itemLabel
 import com.angcyo.item.style.itemLabelTextSize
 import com.angcyo.item.style.itemSwitchChecked
-import com.angcyo.item.style.itemText
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.bean.NumberFormatTypeBean
@@ -480,7 +479,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
         VarDateSelectWheelItem()() {
             itemHidden = bean.auto
-            itemText = bean.content
+            updateSelectWheelDate(bean.content)
             observeItemChange {
                 bean.content = itemDateSelectedTime.toStr()
                 updateTextPreviewItem()
@@ -562,7 +561,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
         VarTimeSelectWheelItem()() {
             itemHidden = bean.auto
-            itemText = bean.content
+            updateSelectWheelDate(bean.content)
             observeItemChange {
                 bean.content = itemDateSelectedTime.toStr()
                 updateTextPreviewItem()
