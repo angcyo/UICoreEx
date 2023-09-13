@@ -528,7 +528,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             drawCanvasRight()
         }
         //栅格化
-        if (HawkEngraveKeys.enableRasterize) {
+        if (HawkEngraveKeys.enableRasterize && !closeTextEditItemsFun.have("_rasterize_")) {
             CanvasIconItem()() {
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_rasterize_ico
@@ -543,29 +543,32 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             }
         }
         //曲线
-        CanvasIconItem()() {
-            initItem(renderer)
-            itemIco = R.drawable.canvas_text_curve_ico
-            itemText = _string(R.string.canvas_curve)
-            itemTag = TAG_CURVE_ITEM
-            itemNewHawkKeyStr = "curve"
-            val lpTextElement = renderer.lpTextElement()
-            itemEnable = lpTextElement?.isSupportCurve == true
-            itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-            itemClick = {
+        if (isText && !closeTextEditItemsFun.have("_curve_")) {
+            CanvasIconItem()() {
+                initItem(renderer)
+                itemIco = R.drawable.canvas_text_curve_ico
+                itemText = _string(R.string.canvas_curve)
+                itemTag = TAG_CURVE_ITEM
+                itemNewHawkKeyStr = "curve"
+                val lpTextElement = renderer.lpTextElement()
                 itemEnable = lpTextElement?.isSupportCurve == true
-                if (itemEnable) {
-                    itemHaveNew = false
-                    LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
-                        itemIsSelected = false
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                itemClick = {
+                    itemEnable = lpTextElement?.isSupportCurve == true
+                    if (itemEnable) {
+                        itemHaveNew = false
+                        LPBitmapHandler.handleCurveText(renderDelegate, it, fragment, renderer) {
+                            itemIsSelected = false
+                        }
+                        UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
+                    } else {
+                        updateAdapterItem()
                     }
-                    UMEvent.CANVAS_TEXT_CURVE.umengEventValue()
-                } else {
-                    updateAdapterItem()
                 }
             }
         }
-        if (!closeTextEditItemsFun.have("_orientation_")) {
+        //水平/垂直
+        if (isText && !closeTextEditItemsFun.have("_orientation_")) {
             TextOrientationItem()() {
                 initItem(renderer)
                 itemIco = R.drawable.canvas_text_standard_ico
