@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.KeyEvent
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.BuildConfig
@@ -14,6 +15,7 @@ import com.angcyo.canvas2.laser.pecker.util.LPElementHelper
 import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configFullScreenDialog
+import com.angcyo.dialog.normalIosDialog
 import com.angcyo.dsladapter.DragCallbackHelper
 import com.angcyo.dsladapter.DslAdapter
 import com.angcyo.dsladapter.DslAdapterItem
@@ -28,6 +30,7 @@ import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.isKeyUp
 import com.angcyo.library.ex.isScreenTouchIn
 import com.angcyo.library.ex.isTouchFinish
 import com.angcyo.library.ex.isTouchMove
@@ -102,7 +105,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
 
         //back
         dialogViewHolder.click(R.id.dialog_negative_button) {
-            dialog.dismiss()
+            showBackTipDialog(dialog)
         }
 
         //rv
@@ -181,6 +184,37 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                     _listAdapter?.updateAllItem()
                 }
             }
+        }
+    }
+
+    override fun onDialogKey(
+        dialog: Dialog,
+        dialogViewHolder: DslViewHolder,
+        keyCode: Int,
+        event: KeyEvent
+    ): Boolean {
+        if (event.isKeyUp() && showBackTipDialog(dialog)) {
+            //返回键
+            return true
+        }
+        return super.onDialogKey(dialog, dialogViewHolder, keyCode, event)
+    }
+
+    /**是否要显示退出确定对话框*/
+    private fun showBackTipDialog(dialog: Dialog): Boolean {
+        return if (variableTextBeanList.isNotEmpty()) {
+            dialog.context.normalIosDialog {
+                dialogTitle = _string(R.string.ui_warn)
+                dialogMessage = _string(R.string.variable_back_tip)
+                positiveButton { dialog2, dialogViewHolder ->
+                    dialog2.dismiss()
+                    dialog.dismiss()
+                }
+            }
+            true
+        } else {
+            dialog.dismiss()
+            false
         }
     }
 

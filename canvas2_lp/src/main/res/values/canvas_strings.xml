@@ -234,4 +234,5 @@
     <string name="variable_barcode_show_top">CharactersOnTop</string>
     <string name="variable_barcode_show_bottom">CharactersBelow</string>
     <string name="variable_barcode_show_none">DoNotShow</string>
+    <string name="variable_back_tip">The current data will not be saved after exiting\nConfirm to exit?</string>
 </resources>

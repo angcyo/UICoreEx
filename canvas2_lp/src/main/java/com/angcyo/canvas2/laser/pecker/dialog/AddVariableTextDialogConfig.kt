@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.InputType
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,6 +32,7 @@ import com.angcyo.core.component.manage.InnerFileManageModel
 import com.angcyo.core.vmApp
 import com.angcyo.dialog.DslDialogConfig
 import com.angcyo.dialog.configBottomDialog
+import com.angcyo.dialog.normalIosDialog
 import com.angcyo.dialog2.dslitem.LPLabelWheelItem
 import com.angcyo.dialog2.dslitem.itemSelectedIndex
 import com.angcyo.dialog2.dslitem.itemWheelBean
@@ -73,6 +75,7 @@ import com.angcyo.library.ex.getChildOrNull
 import com.angcyo.library.ex.hawkPutList
 import com.angcyo.library.ex.hideSoftInput
 import com.angcyo.library.ex.isDebugType
+import com.angcyo.library.ex.isKeyUp
 import com.angcyo.library.ex.setHeight
 import com.angcyo.library.ex.setWidthHeight
 import com.angcyo.library.ex.toStr
@@ -166,7 +169,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
 
         //back
         dialogViewHolder.click(R.id.dialog_negative_button) {
-            dialog.dismiss()
+            showBackTipDialog(dialog)
         }
 
         //filter
@@ -237,6 +240,37 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 _adapter?.updateVarFileItem(_currentVariableBean)
                 updateTextPreviewItem()
             }
+        }
+    }
+
+    override fun onDialogKey(
+        dialog: Dialog,
+        dialogViewHolder: DslViewHolder,
+        keyCode: Int,
+        event: KeyEvent
+    ): Boolean {
+        if (event.isKeyUp() && showBackTipDialog(dialog)) {
+            //返回键
+            return true
+        }
+        return super.onDialogKey(dialog, dialogViewHolder, keyCode, event)
+    }
+
+    /**是否要显示退出确定对话框*/
+    private fun showBackTipDialog(dialog: Dialog): Boolean {
+        return if (_dialogViewHolder?.isEnabled(R.id.dialog_positive_button) == true) {
+            dialog.context.normalIosDialog {
+                dialogTitle = _string(R.string.ui_warn)
+                dialogMessage = _string(R.string.variable_back_tip)
+                positiveButton { dialog2, dialogViewHolder ->
+                    dialog2.dismiss()
+                    dialog.dismiss()
+                }
+            }
+            true
+        } else {
+            dialog.dismiss()
+            false
         }
     }
 

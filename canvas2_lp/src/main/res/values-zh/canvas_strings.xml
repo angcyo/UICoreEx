@@ -234,4 +234,5 @@
     <string name="variable_barcode_show_top">字符在上</string>
     <string name="variable_barcode_show_bottom">字符在下</string>
     <string name="variable_barcode_show_none">不显示</string>
+    <string name="variable_back_tip">退出后不会保存当前数据\n确认退出？</string>
 </resources>
