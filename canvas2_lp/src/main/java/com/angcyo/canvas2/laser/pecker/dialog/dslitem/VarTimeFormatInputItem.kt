@@ -5,8 +5,6 @@ import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.style.itemLabel
 import com.angcyo.library.ex._dimen
 import com.angcyo.library.ex._drawable
-import com.angcyo.library.ex.dpi
-import com.angcyo.library.ex.setSize
 import com.angcyo.library.toastQQ
 import com.angcyo.widget.DslViewHolder
 
@@ -25,8 +23,7 @@ class VarTimeFormatInputItem : LPSingleInputItem() {
             paddingRight = _dimen(R.dimen.lib_xxhdpi)
             paddingTop = _dimen(R.dimen.lib_hdpi)
             paddingBottom = paddingTop
-            rightDrawable =
-                _drawable(R.drawable.canvas_invert_help_svg)?.setSize(36 * dpi)
+            rightDrawable = _drawable(R.drawable.canvas_invert_help_svg)
         }
     }
 
