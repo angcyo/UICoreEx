@@ -37,7 +37,6 @@ import com.angcyo.library.ex.replace
 import com.angcyo.library.ex.resetAll
 import com.angcyo.library.ex.setSize
 import com.angcyo.library.ex.tintDrawable
-import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget._rv
 import com.angcyo.widget.base._textColor
@@ -45,7 +44,6 @@ import com.angcyo.widget.layout.onDispatchTouchEventAction
 import com.angcyo.widget.recycler.DslRecyclerView
 import com.angcyo.widget.recycler.renderDslAdapter
 import com.angcyo.widget.span.span
-import com.google.zxing.BarcodeFormat
 
 /**
  * 变量模板选中后的list界面弹窗, 支持变量元素的预览
@@ -285,16 +283,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         }
 
         //获取对应的渲染器
-        val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType) {
-            textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
-            if (coding.isNullOrBlank()) {
-                if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
-                    coding = BarcodeFormat.QR_CODE.toStr()
-                } else if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
-                    coding = BarcodeFormat.CODE_128.toStr()
-                }
-            }
-        }
+        val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType)
         val renderDrawable = renderer?.requestRenderDrawable()
         _dialogViewHolder?.img(R.id.lib_preview_view)?.setImageDrawable(renderDrawable)
 

@@ -2,13 +2,17 @@ package com.angcyo.canvas2.laser.pecker.element
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
+import android.view.Gravity
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.LinearLayout.LayoutParams
+import androidx.core.view.updateLayoutParams
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.core.component.BaseControlPoint
 import com.angcyo.canvas.render.data.RenderParams
 import com.angcyo.canvas.render.element.TextElement
+import com.angcyo.canvas.render.element.rendererToBitmap
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.state.IStateStack
 import com.angcyo.canvas2.laser.pecker.R
@@ -19,6 +23,7 @@ import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.bean.initFileCacheIfNeed
 import com.angcyo.laserpacker.isBold
 import com.angcyo.laserpacker.isItalic
+import com.angcyo.laserpacker.toPaintAlign
 import com.angcyo.laserpacker.toPaintStyle
 import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.CallPoint
@@ -26,6 +31,7 @@ import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
 import com.angcyo.library.component.SupportUndo
 import com.angcyo.library.component.lastContext
+import com.angcyo.library.ex._dpi
 import com.angcyo.library.ex.find
 import com.angcyo.library.ex.toColor
 import com.angcyo.library.ex.toDpi
@@ -49,6 +55,7 @@ import com.angcyo.qrcode.code.UPCEConfig
 import com.angcyo.qrcode.code.is1DCodeType
 import com.angcyo.widget.base.saveView
 import com.google.zxing.BarcodeFormat
+import kotlin.math.roundToInt
 
 /**
  * @author <a href="mailto:angcyo@126.com">angcyo</a>
@@ -133,28 +140,62 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
 
         /**创建条形码/二维码图片*/
         fun LPElementBean.createBarcodeBitmap(content: String? = text): Bitmap? = try {
-            val format = toBarcodeFormat()
-            toBarcodeConfig()?.encode(content)?.run {
-                if (format?.is1DCodeType() == true) {
+            val format = toBarcodeFormat()!! //直接报错返回
+            val barcodeConfig = toBarcodeConfig()!! //直接报错返回
+
+            var _1dCodeTextBitmap: Bitmap? = null
+            if (format.is1DCodeType()) {
+                //条形码宽度优化
+                _1dCodeTextBitmap = copyTextProperty().renderTextBitmap()
+                if (_1dCodeTextBitmap != null) {
+                    val textWidth = _1dCodeTextBitmap.width + 4 * 24 * _dpi
+                    barcodeConfig.width = maxOf(barcodeConfig.width, textWidth)
+                }
+            }
+            barcodeConfig.encode(content)?.run {
+                if (format.is1DCodeType() &&
+                    !textShowStyle.isNullOrBlank() &&
+                    textShowStyle != LPDataConstant.TEXT_SHOW_STYLE_NONE
+                ) {
                     //条形码
-                    if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
-                        lastContext.saveView(R.layout.layout_text_show_style_top) {
-                            _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
-                                it.setBackgroundColor(color)
-                            }
-                            it.find<ImageView>(R.id.lib_image_view)?.setImageBitmap(this)
-                            it.find<TextView>(R.id.lib_text_view)?.text = content
+                    lastContext.saveView(R.layout.layout_text_show_style) {
+                        _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
+                            it.setBackgroundColor(color)
                         }
-                    } else if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_BOTTOM) {
-                        lastContext.saveView(R.layout.layout_text_show_style_bottom) {
-                            _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
-                                it.setBackgroundColor(color)
+                        val textImageView: ImageView? =
+                            if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
+                                it.find(R.id.image1_view)
+                            } else {
+                                it.find(R.id.image2_view)
                             }
-                            it.find<ImageView>(R.id.lib_image_view)?.setImageBitmap(this)
-                            it.find<TextView>(R.id.lib_text_view)?.text = content
+                        val codeImageView: ImageView? =
+                            if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
+                                it.find(R.id.image2_view)
+                            } else {
+                                it.find(R.id.image1_view)
+                            }
+                        textImageView?.setImageBitmap(_1dCodeTextBitmap)
+                        codeImageView?.setImageBitmap(this)
+
+                        textImageView?.updateLayoutParams {
+                            val layoutParams = this as? LayoutParams
+
+                            //对齐样式
+                            when (textAlign.toPaintAlign()) {
+                                Paint.Align.RIGHT -> layoutParams?.gravity = Gravity.RIGHT
+                                Paint.Align.CENTER -> layoutParams?.gravity = Gravity.CENTER
+                                else -> layoutParams?.gravity = Gravity.LEFT
+                            }
+
+                            //间隙调整
+                            val margin =
+                                _deviceSettingBean?.barcode1DTextMargin?.toPixel()?.roundToInt()
+                            if (textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP) {
+                                layoutParams?.bottomMargin = margin ?: 0
+                            } else {
+                                layoutParams?.topMargin = margin ?: 0
+                            }
                         }
-                    } else {
-                        this
                     }
                 } else {
                     this
@@ -309,7 +350,10 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
     ) {
         updateElementAction(renderer, delegate, reason) {
             this@LPTextElement.block()//do
-            updateBeanToElement(renderer)
+            if (elementBean.isVariableElement) {
+                elementBean.updateVariableText()
+            }
+            updateOriginText(elementBean.text)
         }
     }
 
@@ -357,6 +401,10 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         }
     }
 }
+
+/**将[LPElementBean]描述的元素, 使用[LPTextElement]渲染成[Bitmap]
+ * 支持文本所有属性以及样式*/
+fun LPElementBean.renderTextBitmap(): Bitmap? = LPTextElement(this).rendererToBitmap()
 
 /**是否是条形码文本元素*/
 fun List<BaseRenderer>?.haveBarcodeElement(): Boolean {

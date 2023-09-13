@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas.render.renderer.BaseRenderer
 import com.angcyo.canvas.render.renderer.CanvasElementRenderer
@@ -20,7 +21,9 @@ import com.angcyo.laserpacker.toPaintStyleInt
 import com.angcyo.library.annotation.MM
 import com.angcyo.library.canvas.core.Reason
 import com.angcyo.library.component.Strategy
+import com.angcyo.library.ex.toStr
 import com.angcyo.library.unit.toMm
+import com.google.zxing.BarcodeFormat
 
 /**
  * 元素助手
@@ -205,6 +208,25 @@ object LPElementHelper {
             mtype = type
             this.variables = variables
             paintStyle = Paint.Style.FILL.toPaintStyleInt()
+
+            if (type == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+                textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+                fontSize = _deviceSettingBean?.barcode1DTextSize ?: fontSize
+                textAlign = _deviceSettingBean?.barcode1DTextAlign
+            }
+
+            if (type == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE ||
+                type == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE
+            ) {
+                if (coding.isNullOrBlank()) {
+                    if (type == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
+                        coding = BarcodeFormat.QR_CODE.toStr()
+                    } else {
+                        coding = BarcodeFormat.CODE_128.toStr()
+                    }
+                }
+            }
+
             config()
         }
         return LPRendererHelper.parseElementRenderer(elementBean, true)?.apply {

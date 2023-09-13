@@ -4,6 +4,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.core.vmApp
 import com.angcyo.library.annotation.Dp
+import com.angcyo.library.annotation.MM
 import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.pad.isInPadMode
 
@@ -111,11 +112,19 @@ data class DeviceSettingBean(
     var barcodeWidth: Int? = null,
     @Dp
     var barcodeHeight: Int? = null,
-    /**默认的边距*/
+    /**条形码内容默认的边距*/
     @Dp
     var barcode2DMargin: Int? = null,
     @Dp
     var barcode1DMargin: Int? = null,
+    /**条形码文本与内容的距离*/
+    @MM
+    var barcode1DTextMargin: Float = 1f,
+    /**条形码文本默认字体大小*/
+    @MM
+    var barcode1DTextSize: Float = 4f,
+    /**条形码文本默认对齐方式*/
+    var barcode1DTextAlign: String? = "center",
     /**二维码和一维码默认的预览内容*/
     var barcode2DPreviewContent: String? = "123456",
     var barcode1DPreviewContent: String? = "123456",
@@ -135,6 +144,7 @@ data class DeviceSettingBean(
     var fileNameRegex: String? = "[\\/:*?\"<>|]",
     /**是否显示变量元素ico提示*/
     var showVariableElementIco: Boolean = true,
+
     //endregion---Android端设置项---
 
     //region---Ble UUID---

@@ -5,20 +5,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/lib_text_view"
-        style="@style/LibBodyTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="@dimen/lib_dpi"
-        tools:text="angcyo" />
-
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/lib_image_view"
+        android:id="@+id/image1_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:srcCompat="@drawable/permission_video" />
-    
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image2_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_gravity="right"
+        tools:srcCompat="@drawable/ic_clear_cache" />
+
 </LinearLayout>

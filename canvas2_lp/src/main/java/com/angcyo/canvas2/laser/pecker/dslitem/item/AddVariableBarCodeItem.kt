@@ -19,9 +19,7 @@ class AddVariableBarCodeItem : CanvasIconItem() {
             it.context.variableTextDialog {
                 varElementType = LPDataConstant.DATA_TYPE_VARIABLE_BARCODE
                 onApplyVariableListAction = {
-                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType) {
-                        textShowStyle = LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
-                    }
+                    LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType)
                     UMEvent.CANVAS_VARIABLE_BARCODE.umengEventValue()
                 }
             }

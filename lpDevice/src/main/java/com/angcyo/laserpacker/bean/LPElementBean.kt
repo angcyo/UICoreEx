@@ -730,8 +730,9 @@ data class LPElementBean(
     }
 
     /**更新变量所对应的文本*/
-    fun updateVariableText() {
+    fun updateVariableText(): String? {
         text = getVariableText()
+        return text
     }
 
     /**雕刻完成之后, 更新变量文本*/
@@ -740,6 +741,27 @@ data class LPElementBean(
             bean.updateAfterEngrave()
         }
         text = getVariableText()
+    }
+
+    /**复制当前bean的文本属性到另一个bean*/
+    fun copyTextProperty(to: LPElementBean = LPElementBean(mtype = LPDataConstant.DATA_TYPE_TEXT)): LPElementBean {
+        to.text = text
+        to.fontFamily = fontFamily
+        to.orientation = orientation
+        to.charSpacing = charSpacing
+        to.lineSpacing = lineSpacing
+        to.fontSize = fontSize
+        to.isCompactText = isCompactText
+        to.textAlign = textAlign
+        to.textColor = textColor
+        to.curvature = curvature
+
+        to.underline = underline
+        to.linethrough = linethrough
+        to.fontWeight = fontWeight
+        to.fontStyle = fontStyle
+        to.paintStyle = paintStyle
+        return to
     }
 
     //endregion ---variable----
