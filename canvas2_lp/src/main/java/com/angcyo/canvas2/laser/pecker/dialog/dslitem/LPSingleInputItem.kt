@@ -13,6 +13,8 @@ open class LPSingleInputItem : DslSingleInputItem() {
     companion object {
         /**允许默认输入的字符长度*/
         var LP_DEFAULT_MAX_INPUT_LENGTH = 20
+
+        val helpIcoPaddingRight = 0//_dimen(R.dimen.lib_xxhdpi)
     }
 
     init {

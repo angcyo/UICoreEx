@@ -20,7 +20,7 @@ class VarTimeFormatInputItem : LPSingleInputItem() {
     init {
         itemLabel = ""
         labelItemConfig.itemLabelTextStyle.apply {
-            paddingRight = _dimen(R.dimen.lib_xxhdpi)
+            paddingRight = helpIcoPaddingRight
             paddingTop = _dimen(R.dimen.lib_hdpi)
             paddingBottom = paddingTop
             rightDrawable = _drawable(R.drawable.canvas_invert_help_svg)
