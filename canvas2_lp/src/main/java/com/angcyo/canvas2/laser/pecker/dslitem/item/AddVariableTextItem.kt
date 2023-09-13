@@ -9,6 +9,7 @@ import com.angcyo.canvas2.laser.pecker.util.lpTextElement
 import com.angcyo.http.base.copyByJson
 import com.angcyo.http.base.listType
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.laserpacker.bean.initFileCacheIfNeed
 import com.hingin.umeng.UMEvent
@@ -36,7 +37,7 @@ class AddVariableTextItem : CanvasIconItem() {
                 return
             }
             delegate.view.context?.variableTextDialog {
-                varElementType = bean.mtype
+                varElementBean = bean
                 variableTextBeanList =
                     bean.variables?.copyByJson(listType(LPVariableBean::class.java))
                         ?.toMutableList()
@@ -53,7 +54,7 @@ class AddVariableTextItem : CanvasIconItem() {
     init {
         itemClick = {
             it.context.variableTextDialog {
-                varElementType = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+                varElementBean = LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT)
                 onApplyVariableListAction = {
                     LPElementHelper.addVariableTextElement(itemRenderDelegate, it, varElementType)
                     UMEvent.CANVAS_VARIABLE_TEXT.umengEventValue()

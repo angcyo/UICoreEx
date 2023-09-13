@@ -24,6 +24,7 @@ import com.angcyo.dsladapter.find
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.laserpacker.LPDataConstant
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.laserpacker.bean.LPVariableBean
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
@@ -64,7 +65,11 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
      * [LPDataConstant.DATA_TYPE_VARIABLE_QRCODE]
      * [LPDataConstant.DATA_TYPE_VARIABLE_BARCODE]
      * */
-    var varElementType: Int = LPDataConstant.DATA_TYPE_VARIABLE_TEXT
+    var varElementBean: LPElementBean =
+        LPElementBean(mtype = LPDataConstant.DATA_TYPE_VARIABLE_TEXT)
+
+    val varElementType: Int
+        get() = varElementBean.mtype
 
     private var _listAdapter: DslAdapter? = null
     private var _controlAdapter: DslAdapter? = null
@@ -317,7 +322,12 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         }
 
         //获取对应的渲染器
-        val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType)
+        val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType) {
+            coding = varElementBean.coding ?: coding
+            errorLevel = varElementBean.errorLevel ?: errorLevel
+            qrMaskPattern = varElementBean.qrMaskPattern ?: qrMaskPattern
+            eclevel = varElementBean.eclevel ?: eclevel
+        }
         val renderDrawable = renderer?.requestRenderDrawable()
         _dialogViewHolder?.img(R.id.lib_preview_view)?.setImageDrawable(renderDrawable)
 
