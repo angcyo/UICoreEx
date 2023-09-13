@@ -581,6 +581,10 @@ data class LPElementBean(
                 mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE ||
                 mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE
 
+    /**是否要显示条码字符*/
+    val isShowBarcodeText: Boolean
+        get() = textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_TOP || textShowStyle == LPDataConstant.TEXT_SHOW_STYLE_BOTTOM
+
     /**原始的宽高, 毫米*/
     @MM
     val _width: Float

@@ -470,7 +470,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         //---以下是纯文本相关属性的控制---
 
         val isText = lpElementBean?.isRenderTextElement == true
-        if (!isText) {
+        val isShowBarcodeText =
+            lpElementBean?.is1DCodeElement == true && lpElementBean.isShowBarcodeText
+        if (!isText && !isShowBarcodeText) {
             //非文本类型, 不显示文本相关属性
             return
         }
@@ -482,7 +484,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 //标识变量元素icon
                 itemText = span {
                     if (lpElementBean?.isVariableElement == true && _deviceSettingBean?.showVariableElementIco == true) {
-                        appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
+                        if (lpElementBean.is1DCodeElement) {
+                            appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
+                        } else {
+                            appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
+                        }
                         append(" ")
                     }
                     append(_string(R.string.canvas_font))
