@@ -29,6 +29,8 @@
   "updateHawkCommand": "",
   "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_en",
   "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh",
+  "rotateFlagHelpUrl": null,
+  "rotateFlagHelpUrlZh": null,
   "dateFormatList": [
     "YYYY-MM-DD",
     "MM-DD-YYYY",
