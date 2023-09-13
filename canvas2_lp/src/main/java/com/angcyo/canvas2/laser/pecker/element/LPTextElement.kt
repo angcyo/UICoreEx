@@ -153,10 +153,7 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
                 }
             }
             barcodeConfig.encode(content)?.run {
-                if (format.is1DCodeType() &&
-                    !textShowStyle.isNullOrBlank() &&
-                    textShowStyle != LPDataConstant.TEXT_SHOW_STYLE_NONE
-                ) {
+                if (format.is1DCodeType() && isShowBarcodeText) {
                     //条形码
                     lastContext.saveView(R.layout.layout_text_show_style) {
                         _deviceSettingBean?.barcodeBackgroundColor?.toColor()?.let { color ->
@@ -277,6 +274,13 @@ class LPTextElement(override val elementBean: LPElementBean) : TextElement(), IL
         elementBean.fontWeight = if (textProperty.isFakeBoldText) "bold" else null
         elementBean.fontStyle = if (textProperty.isItalic) "italic" else null
         elementBean.paintStyle = textProperty.paintStyle.toPaintStyleInt()
+    }
+
+    override fun onUpdateTextPropertyAfter(renderer: BaseRenderer?) {
+        super.onUpdateTextPropertyAfter(renderer)
+        if (elementBean.isVariableElement) {
+            updateBeanFromElement(renderer)
+        }
     }
 
     override fun updateOriginText(text: String?, keepVisibleSize: Boolean) {
