@@ -77,10 +77,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/lib_trash_view"
-            style="@style/LibBodyTextStyle"
+            style="@style/LibMainTextStyle"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/error"
+            android:background="@color/error_light"
             android:gravity="center"
             android:textColor="@color/lib_white"
             android:visibility="gone"
@@ -90,7 +90,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:drawableLeft="@drawable/core_trash_svg"
             tools:text="@string/core_trash_delete"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -22,6 +22,7 @@ import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPVariableBean
+import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
@@ -207,8 +208,9 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                 val textView = _dialogViewHolder?.tv(R.id.lib_trash_view)
                 if (it.isTouchMove()) {
                     _isTouchMoveInTrash = it.isScreenTouchIn(textView)
-                    val size = 20 * dpi
+                    val size = 24 * dpi
                     if (_isTouchMoveInTrash) {
+                        textView?.setBackgroundColor(_color(R.color.error_light))
                         textView?.text = span {
                             appendDrawable(
                                 _drawable(R.drawable.core_trash_open_svg)
@@ -217,6 +219,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                             append(_string(R.string.core_trash_delete_tip))
                         }
                     } else {
+                        textView?.setBackgroundColor(_color(R.color.error))
                         textView?.text = span {
                             appendDrawable(
                                 _drawable(R.drawable.core_trash_svg)
