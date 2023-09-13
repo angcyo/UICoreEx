@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.preview
 import android.widget.TextView
 import androidx.annotation.Keep
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.component.model.LanguageModel
@@ -32,9 +33,6 @@ class GCodeDataOffsetItem : DslAdapterItem() {
 
         @Pixel
         var offsetTop: Float by HawkPropertyValue<Any, Float>(0f)
-
-        /**打开url*/
-        var onOpenUrlAction: ((url: String) -> Unit)? = null
     }
 
     init {
@@ -74,7 +72,7 @@ class GCodeDataOffsetItem : DslAdapterItem() {
             }
             url?.let {
                 if (it.isNotEmpty()) {
-                    onOpenUrlAction?.invoke(it)
+                    LaserPeckerConfigHelper.onOpenUrlAction?.invoke(it)
                 }
             }
         }

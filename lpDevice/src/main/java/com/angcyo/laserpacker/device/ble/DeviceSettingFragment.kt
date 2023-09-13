@@ -11,11 +11,12 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
+import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.FactoryCmd
-import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.parse.QuerySettingParser
 import com.angcyo.bluetooth.fsc.laserpacker.syncQueryDeviceState
+import com.angcyo.core.component.model.LanguageModel
 import com.angcyo.core.dslitem.DslLastDeviceInfoItem
 import com.angcyo.core.fragment.BaseDslFragment
 import com.angcyo.core.vmApp
@@ -40,11 +41,13 @@ import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.lastContext
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._dimen
+import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.syncSingle
 import com.angcyo.library.toastQQ
+import com.angcyo.widget.span.span
 import kotlin.math.max
 
 
@@ -355,7 +358,31 @@ class DeviceSettingFragment : BaseDslFragment() {
                 )
             ) {
                 DslPropertySwitchItem()() {
-                    itemLabel = _string(R.string.device_ex_r_label)
+
+                    val setting = _deviceSettingBean
+                    val isZh = LanguageModel.isChinese()
+                    val url = if (isZh) {
+                        setting?.rotateFlagHelpUrlZh ?: setting?.rotateFlagHelpUrl
+                    } else {
+                        setting?.rotateFlagHelpUrl
+                    }
+
+                    if (url.isNullOrBlank()) {
+                        itemLabel = _string(R.string.device_ex_r_label)
+                    } else {
+                        itemLabel = span {
+                            append(_string(R.string.device_ex_r_label))
+                            append(" ")
+                            appendDrawable(_drawable(R.drawable.rotate_flag_help_svg))
+                        }
+
+                        itemBindOverride = { itemHolder, itemPosition, adapterItem, payloads ->
+                            itemHolder.click(labelItemConfig.itemLabelViewId) {
+                                LaserPeckerConfigHelper.onOpenUrlAction?.invoke(url)
+                            }
+                        }
+                    }
+
                     itemDes = _string(R.string.device_ex_r_des)
                     initItem()
 

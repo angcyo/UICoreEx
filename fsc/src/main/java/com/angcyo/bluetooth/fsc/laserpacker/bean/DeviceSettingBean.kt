@@ -92,6 +92,10 @@ data class DeviceSettingBean(
     var dataOffsetHelpUrl: String? = null,
     /**中文特殊跳转*/
     var dataOffsetHelpUrlZh: String? = null,
+    /**旋转轴帮助文档地址, 默认跳转*/
+    var rotateFlagHelpUrl: String? = null,
+    /**中文特殊跳转*/
+    var rotateFlagHelpUrlZh: String? = null,
     /**日期推荐格式列表*/
     var dateFormatList: List<String>? = null,
     /**时间推荐格式列表*/

@@ -46,6 +46,9 @@ object LaserPeckerConfigHelper {
     const val DEVICE_MATERIAL_BASE_URL =
         "https://laserpecker-prod.oss-cn-hongkong.aliyuncs.com/config/"
 
+    /**打开url*/
+    var onOpenUrlAction: ((url: String) -> Unit)? = null
+
     /**入口*/
     @CallPoint
     fun init() {
