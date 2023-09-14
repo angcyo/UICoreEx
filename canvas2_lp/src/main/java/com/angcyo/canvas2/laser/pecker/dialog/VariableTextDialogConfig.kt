@@ -113,6 +113,20 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
             showBackTipDialog(dialog)
         }
 
+        //default
+        if (variableTextBeanList.isEmpty()) {
+            //默认预览条形码的内容
+            if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE || varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
+                variableTextBeanList.add(LPVariableBean().apply {
+                    if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE) {
+                        content = _deviceSettingBean?.barcode2DPreviewContent
+                    } else {
+                        content = _deviceSettingBean?.barcode1DPreviewContent
+                    }
+                })
+            }
+        }
+
         //rv
         dialogViewHolder._rv(R.id.lib_recycler_view)?.apply {
             _dragCallbackHelper = DragCallbackHelper.install(this, DragCallbackHelper.FLAG_VERTICAL)
@@ -311,7 +325,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         }
 
         var beanList = variableTextBeanList
-        if (variableTextBeanList.isEmpty()) {
+        /*if (variableTextBeanList.isEmpty()) {
             //默认预览条形码的内容
             if (varElementType == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE || varElementType == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE) {
                 beanList = mutableListOf(LPVariableBean().apply {
@@ -322,7 +336,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
                     }
                 })
             }
-        }
+        }*/
 
         //获取对应的渲染器
         val renderer = LPElementHelper.addVariableTextElement(null, beanList, varElementType) {
