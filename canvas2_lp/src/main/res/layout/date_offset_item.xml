@@ -51,7 +51,7 @@
                     android:background="@null"
                     android:padding="0dp"
                     android:visibility="visible"
-                    app:srcCompat="@drawable/lib_next" />
+                    app:srcCompat="@drawable/lib_wheel_next" />
             </LinearLayout>
 
             <!--自增/自减布局-->
