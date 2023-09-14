@@ -484,8 +484,8 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 //标识变量元素icon
                 itemText = span {
                     if (lpElementBean?.isVariableElement == true && _deviceSettingBean?.showVariableElementIco == true) {
-                        if (lpElementBean.is1DCodeElement) {
-                            appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
+                        if (lpElementBean.is1DCodeElement || lpElementBean.is2DCodeElement) {
+                            //appendDrawable(_drawable(R.drawable.canvas_var_barcode_ico)?.setSize(14 * dpi))
                         } else {
                             appendDrawable(_drawable(R.drawable.canvas_var_text_ico)?.setSize(14 * dpi))
                         }

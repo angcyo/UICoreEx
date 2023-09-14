@@ -212,7 +212,7 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
     private fun showBackTipDialog(dialog: Dialog): Boolean {
         return if (variableTextBeanList.isNotEmpty()) {
             dialog.context.normalIosDialog {
-                dialogTitle = _string(R.string.ui_warn)
+                dialogTitle = _string(R.string.variable_back_title)
                 dialogMessage = _string(R.string.variable_back_tip)
                 positiveButton { dialog2, dialogViewHolder ->
                     dialog2.dismiss()
