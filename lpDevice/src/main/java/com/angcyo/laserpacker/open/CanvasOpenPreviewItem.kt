@@ -124,10 +124,10 @@ class CanvasOpenPreviewItem : DslAdapterItem() {
         itemHolder.visible(R.id.import_button, innerFileManageModel.isSupportImportFile(itemFile))
         itemHolder.click(R.id.import_button) {
             if (innerFileManageModel.importFile(itemFile)) {
+                toastQQ(_string(R.string.core_add_file_success))
                 cancelAction(it)
-                toastQQ(_string(R.string.core_import_success))
             } else {
-                toastQQ(_string(R.string.core_import_fail))
+                toastQQ(_string(R.string.core_add_file_fail))
             }
         }
     }
