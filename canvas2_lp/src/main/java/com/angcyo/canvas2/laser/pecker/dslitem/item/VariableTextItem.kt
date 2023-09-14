@@ -4,6 +4,7 @@ import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.canvas2.laser.pecker.RenderLayoutHelper
 import com.angcyo.canvas2.laser.pecker.dslitem.CanvasIconItem
 import com.angcyo.dsladapter.updateItemSelected
+import com.angcyo.item.style.itemHaveNew
 import com.angcyo.library.ex._string
 
 /**
@@ -20,6 +21,7 @@ class VariableTextItem : CanvasIconItem() {
         itemIco = R.drawable.canvas_variable_text_ico
         itemText = _string(R.string.canvas_variable_template)
         itemClick = {
+            itemHaveNew = false
             updateItemSelected(!itemIsSelected)
             itemRenderLayoutHelper?.renderVariableTextItems(this, itemIsSelected)
         }

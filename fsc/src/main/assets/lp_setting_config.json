@@ -27,6 +27,7 @@
   "enableFun": null,
   "maxEngraveItemCount": 30,
   "updateHawkCommand": "",
+  "newHawkKeyStr": "_variableText_",
   "dataOffsetHelpUrl": "https://faq.hingin.com/docs/data_offset_en",
   "dataOffsetHelpUrlZh": "https://faq.hingin.com/docs/data_offset_zh",
   "rotateFlagHelpUrl": "https://faq.hingin.com/docs/RFlag_Tutorial_EN",

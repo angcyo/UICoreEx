@@ -4,6 +4,7 @@ import android.graphics.Matrix
 import android.view.MotionEvent
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.bean._enableQuickOperation
@@ -61,6 +62,8 @@ import com.angcyo.dsladapter.findItemByTag
 import com.angcyo.dsladapter.item.IFragmentItem
 import com.angcyo.dsladapter.updateItemSelected
 import com.angcyo.http.rx.doMain
+import com.angcyo.item.style.itemDefaultNew
+import com.angcyo.item.style.itemNewHawkKeyStr
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.device.LayerHelper
 import com.angcyo.laserpacker.generateGroupName
@@ -134,6 +137,8 @@ class RenderLayoutHelper(val renderFragment: IEngraveRenderFragment) {
                 VariableTextItem()() {
                     initItem()
                     itemRenderLayoutHelper = this@RenderLayoutHelper
+                    itemNewHawkKeyStr = "variableText"
+                    itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
                 }
             }
             //素材

@@ -170,9 +170,15 @@ object LaserPeckerConfigHelper {
 
     }
 
-    /**是否有新功能提示*/
+    /**是否有新功能提示
+     * 配置的时候使用
+     * ```
+     * _xxx_
+     * ```
+     * [key] 参数的时候,不需要_
+     * */
     fun haveNew(key: String?): Boolean = key != null &&
-            readDeviceSettingConfig()?.newHawkKeyStr?.contains(key) == true
+            readDeviceSettingConfig()?.newHawkKeyStr?.contains("_${key}_") == true
 
     /**是否要开放指定的功能, 会自动拼上,号`.`防止子包含*/
     fun isOpenFun(key: String?): Boolean {
