@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.content.Context
 import android.view.View
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerConfigHelper
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
 import com.angcyo.canvas2.laser.pecker.R
@@ -12,6 +13,7 @@ import com.angcyo.dialog.dismissWindow
 import com.angcyo.dialog.popup.ShadowAnchorPopupConfig
 import com.angcyo.dsladapter.drawBottom
 import com.angcyo.dsladapter.fullWidthItem
+import com.angcyo.dsladapter.item.itemDefaultNewFlag
 import com.angcyo.dsladapter.item.itemHaveNewFlag
 import com.angcyo.dsladapter.item.itemNewFlagHawkKeyStr
 import com.angcyo.item.DslGridItem
@@ -130,6 +132,7 @@ class CanvasSettingPopupConfig : ShadowAnchorPopupConfig() {
                 drawBottom(_dimen(R.dimen.lib_line_px), 0, 0)
                 itemExtendLayoutId = R.layout.canvas_extent_switch_item
                 itemNewFlagHawkKeyStr = "CloudStorage"
+                itemDefaultNewFlag = LaserPeckerConfigHelper.haveNew(itemNewFlagHawkKeyStr)
                 itemSwitchChangedAction = {
                     HawkEngraveKeys.enableCloudStorage = it
                     itemHaveNewFlag = false
