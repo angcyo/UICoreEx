@@ -39,6 +39,8 @@ import com.angcyo.library.utils.isGCodeContent
 import com.angcyo.library.utils.isSvgContent
 import com.angcyo.putData
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.hingin.umeng.UMEvent
+import com.hingin.umeng.umengEventValue
 import java.io.File
 
 /**
@@ -96,8 +98,9 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**处理文件路径
+    /**处理文件路径,
      *
+     * 相册内选择文件
      * [com.angcyo.canvas2.laser.pecker.dslitem.item.AddBitmapItem.addUri]
      * */
     @ThreadDes("耗时方法, 请在子线程中调用")
@@ -105,8 +108,14 @@ class CanvasOpenPreviewActivity : BaseAppCompatActivity() {
     fun handleFilePath(adapter: DslAdapter?, filePath: String): Boolean {
         val canvasOpenModel = vmApp<CanvasOpenModel>()
         val innerFileManageModel = vmApp<InnerFileManageModel>()
-
         var path = filePath
+        val extName = path.extName()
+        if (extName.isNotEmpty()) {
+            UMEvent.OPEN_FILE.umengEventValue {
+                put(UMEvent.KEY_FILE_EXT, extName)
+            }
+        }
+
         if (path.endsWith(LPDataConstant.DXF_EXT, true)) {
             //dxf文件, 将dxf转成svg文件
             val svgFile = libCacheFile("${filePath.lastName().noExtName()}.svg")

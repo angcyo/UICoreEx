@@ -143,6 +143,12 @@ object UMEvent {
     /**变量文本, 后继续雕刻*/
     const val CONTINUE_ENGRAVE = "continue_engrave"
 
+    /**统计用户打开的文件类型*/
+    const val OPEN_FILE = "open_file"
+
+    /**文件扩展名*/
+    const val KEY_FILE_EXT = "key_file_ext"
+
     /**App异常统计*/
     const val APP_ERROR = "app_error"
 
