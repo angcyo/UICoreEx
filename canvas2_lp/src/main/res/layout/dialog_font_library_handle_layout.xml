@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_white_top_round_bg_shape"
+    android:orientation="vertical"
+    tools:layout_gravity="bottom">
+
+    <include
+        android:id="@+id/dialog_title_layout"
+        layout="@layout/lib_dialog_base_title_layout" />
+
+    <View
+        android:id="@+id/dialog_title_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_line_px"
+        android:background="@color/lib_line" />
+
+    <com.angcyo.widget.edit.DslEditText
+        android:id="@+id/lib_content_edit_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/lib_bottom_line_selector"
+        android:gravity="top"
+        android:hint="字库字符内容"
+        android:padding="@dimen/lib_xhdpi"
+        android:text="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+
+    <com.angcyo.widget.edit.DslEditText
+        android:id="@+id/lib_edit_view"
+        style="@style/LibBodyTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lib_item_min_height"
+        android:background="@drawable/lib_bottom_line_selector"
+        android:hint="字体大小"
+        android:maxLines="1"
+        android:padding="@dimen/lib_hdpi"
+        android:singleLine="true"
+        android:text="12"
+        app:r_draw_left=" 字体大小(dp单位) " />
+
+    <com.angcyo.widget.layout.DslFlowLayout
+        android:id="@+id/lib_button_flow_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/lib_hdpi"
+        android:paddingVertical="@dimen/lib_xhdpi"
+        android:visibility="visible"
+        app:r_flow_item_horizontal_space="@dimen/lib_hdpi"
+        app:r_flow_item_vertical_space="@dimen/lib_hdpi"
+        tools:visibility="visible">
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/typeface_button"
+            style="@style/DefaultButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="字体选择" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/create_data_button"
+            style="@style/DefaultButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生成数据" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/share_data_button"
+            style="@style/DefaultButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分享数据" />
+
+        <com.angcyo.widget.DslButton
+            android:id="@+id/preview_button"
+            style="@style/DefaultButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="预览字符图片" />
+
+    </com.angcyo.widget.layout.DslFlowLayout>
+
+    <com.angcyo.widget.layout.DslFlowLayout
+        android:id="@+id/lib_preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/lib_hdpi"
+        android:paddingVertical="@dimen/lib_xhdpi"
+        android:visibility="visible"
+        app:r_flow_item_horizontal_space="@dimen/lib_sdpi"
+        app:r_flow_item_vertical_space="@dimen/lib_sdpi"
+        app:r_flow_preview_item_count="10"
+        app:r_flow_preview_item_layout_id="@layout/dsl_single_only_image_item">
+
+    </com.angcyo.widget.layout.DslFlowLayout>
+
+</LinearLayout>

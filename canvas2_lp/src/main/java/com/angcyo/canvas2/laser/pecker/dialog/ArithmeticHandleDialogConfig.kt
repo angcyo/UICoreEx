@@ -3,7 +3,6 @@ package com.angcyo.canvas2.laser.pecker.dialog
 import android.app.Dialog
 import android.content.Context
 import android.text.SpannableStringBuilder
-import android.view.View
 import androidx.core.widget.NestedScrollView
 import com.angcyo.bluetooth.fsc.FscBleApiModel
 import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
@@ -66,12 +65,6 @@ class ArithmeticHandleDialogConfig(context: Context? = null) : DslDialogConfig(c
 
     override fun initDialogView(dialog: Dialog, dialogViewHolder: DslViewHolder) {
         super.initDialogView(dialog, dialogViewHolder)
-
-        //标题
-        dialogViewHolder.tv(R.id.dialog_title_view)?.apply {
-            visibility = if (dialogTitle == null) View.GONE else View.VISIBLE
-            text = dialogTitle
-        }
 
         //接收返回消息
         val messageBuilder = SpannableStringBuilder()

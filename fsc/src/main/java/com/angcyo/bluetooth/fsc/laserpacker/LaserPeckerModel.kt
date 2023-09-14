@@ -1,6 +1,7 @@
 package com.angcyo.bluetooth.fsc.laserpacker
 
 import android.graphics.RectF
+import android.widget.LinearLayout
 import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -144,29 +145,29 @@ class LaserPeckerModel : ViewModel(), IViewModel {
      * */
     fun dataDir(): Int {
         when (val dataRotateEx = productInfoData.value?.deviceConfigBean?.dataRotateEx) {
-            null -> return 0
-            "*" -> return 1
+            null -> return LinearLayout.HORIZONTAL
+            "*" -> return LinearLayout.VERTICAL
             else -> {
                 dataRotateEx.split(",").forEach {
                     if (it == QuerySettingParser.EX_Z && isZOpen()) {
-                        return 1
+                        return LinearLayout.VERTICAL
                     }
                     if (it == QuerySettingParser.EX_R && isROpen()) {
-                        return 1
+                        return LinearLayout.VERTICAL
                     }
                     if (it == QuerySettingParser.EX_S && isSOpen()) {
-                        return 1
+                        return LinearLayout.VERTICAL
                     }
                     if (it == QuerySettingParser.EX_SREP && isSRepMode()) {
-                        return 1
+                        return LinearLayout.VERTICAL
                     }
                     if (it == QuerySettingParser.EX_CAR && isCarConnect()) {
-                        return 1
+                        return LinearLayout.VERTICAL
                     }
                 }
             }
         }
-        return 0
+        return LinearLayout.HORIZONTAL
     }
 
     //---

@@ -102,6 +102,10 @@
     {
       "label": "上传日志",
       "value": "@uploadLog#b=true"
+    },
+    {
+      "label": "使用旧的抖动算法",
+      "value": "@useNewDithering#b=false"
     }
   ]
 }

@@ -198,7 +198,10 @@ class VariableTextDialogConfig(context: Context? = null) : DslDialogConfig(conte
         keyCode: Int,
         event: KeyEvent
     ): Boolean {
-        if (event.isKeyUp() && showBackTipDialog(dialog)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK &&
+            event.isKeyUp() &&
+            showBackTipDialog(dialog)
+        ) {
             //返回键
             return true
         }

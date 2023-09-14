@@ -68,6 +68,9 @@ import kotlin.math.max
  */
 class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
 
+    /**选中字体的回调*/
+    var onSelectedTypefaceAction: (Typeface?) -> Unit = {}
+
     override var itemRenderer: BaseRenderer? = null
 
     override var itemRenderDelegate: CanvasRenderDelegate? = null
@@ -245,6 +248,8 @@ class CanvasFontPopupConfig : MenuPopupConfig(), ICanvasRendererItem {
                     itemIsSelected = true
                     updatePaintTypeface(typeface)
                     updateAdapterItem()
+                    //action
+                    onSelectedTypefaceAction(typeface)
                 }
             }
             if (info.isCustom) {
