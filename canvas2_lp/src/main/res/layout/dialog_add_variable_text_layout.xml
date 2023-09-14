@@ -56,7 +56,8 @@
         android:minHeight="35dp"
         app:tab_border_item_background_solid_disable_color="@color/canvas_ico_disable"
         app:tab_item_equ_width_count="-1"
-        app:tab_preview_item_count="10"
+        app:tab_item_equ_width_count_range="~3"
+        app:tab_preview_item_count="4"
         app:tab_preview_item_layout_id="@layout/single_tab_item" />
 
     <!--内容-->
