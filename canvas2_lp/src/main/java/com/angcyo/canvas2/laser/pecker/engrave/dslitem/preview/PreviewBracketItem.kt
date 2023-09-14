@@ -84,7 +84,7 @@ class PreviewBracketItem : DslAdapterItem() {
             }
         }
         //支架上升
-        itemHolder.longTouch(R.id.bracket_up_view) { view, event, eventType ->
+        itemHolder.longTouch(R.id.bracket_up_view) { view, event, eventType, longPressHappened ->
             when (eventType) {
                 LongTouchListener.EVENT_TYPE_CLICK -> {
                     bracketUpCmd(HawkEngraveKeys.lastBracketHeight.toInt())
@@ -94,13 +94,13 @@ class PreviewBracketItem : DslAdapterItem() {
                     bracketUpCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && eventType != LongTouchListener.EVENT_TYPE_CLICK) {
+            if (event.isTouchFinish() && longPressHappened) {
                 bracketStopCmd()
             }
             true
         }
         //支架下降
-        itemHolder.longTouch(R.id.bracket_down_view) { view, event, eventType ->
+        itemHolder.longTouch(R.id.bracket_down_view) { view, event, eventType, longPressHappened ->
             when (eventType) {
                 LongTouchListener.EVENT_TYPE_CLICK -> {
                     bracketDownCmd(HawkEngraveKeys.lastBracketHeight.toInt())
@@ -110,7 +110,7 @@ class PreviewBracketItem : DslAdapterItem() {
                     bracketDownCmd(EngravePreviewCmd.BRACKET_MAX_STEP)
                 }
             }
-            if (event.isTouchFinish() && eventType != LongTouchListener.EVENT_TYPE_CLICK) {
+            if (event.isTouchFinish() && longPressHappened) {
                 bracketStopCmd()
             }
             true
@@ -125,7 +125,8 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架上升*/
     fun bracketUpCmd(
-        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP, action: IReceiveBeanAction? = null
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
+        action: IReceiveBeanAction? = null
     ) {
         val cmd = EngravePreviewCmd.previewBracketUpCmd(step)
         cmd.enqueue { bean, error ->
@@ -138,7 +139,8 @@ class PreviewBracketItem : DslAdapterItem() {
 
     /**支架下降*/
     fun bracketDownCmd(
-        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP, action: IReceiveBeanAction? = null
+        @MM step: Int = EngravePreviewCmd.BRACKET_MAX_STEP,
+        action: IReceiveBeanAction? = null
     ) {
         val cmd = EngravePreviewCmd.previewBracketDownCmd(step)
         cmd.enqueue { bean, error ->
