@@ -22,6 +22,7 @@ import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileChooseItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileLineIncrementItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarFileLineNumberItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarNumberValueItem
+import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarPropertySwitchItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTextFixedItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeFormatInputItem
 import com.angcyo.canvas2.laser.pecker.dialog.dslitem.VarTimeFormatWheelItem
@@ -45,7 +46,6 @@ import com.angcyo.dsladapter.find
 import com.angcyo.dsladapter.hideItemBy
 import com.angcyo.dsladapter.renderAdapterEmptyStatus
 import com.angcyo.item.DslIncrementItem
-import com.angcyo.item.DslPropertySwitchItem
 import com.angcyo.item.DslRadioGroupItem
 import com.angcyo.item.DslTextPreviewItem
 import com.angcyo.item.style._itemCheckedIndexList
@@ -59,7 +59,6 @@ import com.angcyo.item.style.itemIncrementMaxValue
 import com.angcyo.item.style.itemIncrementMinValue
 import com.angcyo.item.style.itemIncrementValue
 import com.angcyo.item.style.itemLabel
-import com.angcyo.item.style.itemLabelTextSize
 import com.angcyo.item.style.itemSwitchChecked
 import com.angcyo.laserpacker.LPDataConstant
 import com.angcyo.laserpacker.bean.LPVariableBean
@@ -405,10 +404,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 updateTextPreviewItem()
             }
         }
-        DslPropertySwitchItem()() {
-            itemLabel = _string(R.string.variable_reset)
+        VarPropertySwitchItem()() {
             itemSwitchChecked = bean.reset
-            itemLabelTextSize = _dimen(R.dimen.text_body_size).toFloat()
             observeItemChange {
                 bean.reset = itemSwitchChecked
             }
@@ -620,10 +617,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 updateTextPreviewItem()
             }
         }
-        DslPropertySwitchItem()() {
-            itemLabel = _string(R.string.variable_reset)
+        VarPropertySwitchItem()() {
             itemSwitchChecked = bean.reset
-            itemLabelTextSize = _dimen(R.dimen.text_body_size).toFloat()
             observeItemChange {
                 bean.reset = itemSwitchChecked
             }
@@ -688,10 +683,8 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
                 updateTextPreviewItem()
             }
         }
-        DslPropertySwitchItem()() {
-            itemLabel = _string(R.string.variable_reset)
+        VarPropertySwitchItem()() {
             itemSwitchChecked = bean.reset
-            itemLabelTextSize = _dimen(R.dimen.text_body_size).toFloat()
             observeItemChange {
                 bean.reset = itemSwitchChecked
             }
