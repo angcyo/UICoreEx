@@ -446,7 +446,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemHidden = !bean._systemDateFormat
             updateWheelSelectedIndex(bean.format)
             observeItemChange {
-                bean.format = itemWheelText()?.toStr()
+                bean.format = itemWheelBean()
                 updateTextPreviewItem()
             }
         }
@@ -528,7 +528,7 @@ class AddVariableTextDialogConfig(context: Context? = null) : DslDialogConfig(co
             itemHidden = !bean._systemTimeFormat
             updateWheelSelectedIndex(bean.format)
             observeItemChange {
-                bean.format = itemWheelText()?.toStr()
+                bean.format = itemWheelBean()
                 updateTextPreviewItem()
             }
         }
