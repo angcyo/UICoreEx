@@ -675,7 +675,9 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**初始化雕刻参数, 使用材质*/
+    /**初始化雕刻参数, 使用材质
+     * [updateOrGenerateEngraveConfigByMaterial]
+     * */
     fun initEngraveConfigWithMaterial(
         engraveConfigEntity: EngraveConfigEntity,
         materialEntity: MaterialEntity?
