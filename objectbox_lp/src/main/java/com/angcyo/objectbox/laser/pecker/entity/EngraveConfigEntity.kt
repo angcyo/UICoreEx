@@ -3,6 +3,8 @@ package com.angcyo.objectbox.laser.pecker.entity
 import androidx.annotation.Keep
 import androidx.annotation.Px
 import com.angcyo.library.ex.nowTime
+import com.angcyo.objectbox.findLast
+import com.angcyo.objectbox.laser.pecker.LPBox
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
@@ -105,6 +107,10 @@ data class EngraveConfigEntity(
      * */
     var precision: Int = -1,
 
+    /**气泵等级/风速等级, Fan_speed_fill * 168 + 25000
+     * [0~255]*/
+    var pump: Int = -1,
+
     //---公共参数---
 
     /**功率 100% [0~100]*/
@@ -132,5 +138,18 @@ data class EngraveConfigEntity(
         val max = 5
         val current = precision
         return ((max - current + 1) * 1f / max * 100).toInt()
+    }
+
+    /**初始化气泵参数*/
+    fun initLastPumpIfNeed(productName: String?) {
+        if (pump < 0) {
+            val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+                apply(
+                    EngraveConfigEntity_.productName.equal("$productName")
+                        .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
+                )
+            }
+            pump = maxOf(last?.pump ?: 0, 0)
+        }
     }
 }

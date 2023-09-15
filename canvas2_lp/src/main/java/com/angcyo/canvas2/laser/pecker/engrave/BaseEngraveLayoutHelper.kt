@@ -3,6 +3,7 @@ package com.angcyo.canvas2.laser.pecker.engrave
 import com.angcyo.bluetooth.fsc.enqueue
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
+import com.angcyo.bluetooth.fsc.laserpacker._deviceConfigBean
 import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.bluetooth.fsc.laserpacker.command.ExitCmd
@@ -22,6 +23,7 @@ import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveMaterialWh
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveOptionWheelItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngraveProgressItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePropertyItem
+import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravePumpItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravingControlItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.EngravingInfoItem
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave.appendDrawable
@@ -64,6 +66,7 @@ import com.angcyo.laserpacker.device.exception.TransferException
 import com.angcyo.laserpacker.device.filterLayerDpi
 import com.angcyo.library.L
 import com.angcyo.library.canvas.core.Reason
+import com.angcyo.library.component.VersionMatcher
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex.Action
 import com.angcyo.library.ex._color
@@ -834,7 +837,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
 
                 if (laserPeckerModel.isCSeries()) {
-                    //C1 加速级别选择
+                    //C1 加速级别选择 加速级别
                     if (engraveConfigEntity.precision < 0) {
                         engraveConfigEntity.precision = 1
                         engraveConfigEntity.lpSaveEntity()
@@ -860,6 +863,28 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     }
                 }
 
+                //风速等级
+                if (VersionMatcher.matches(
+                        laserPeckerModel.productInfoData.value?.version,
+                        _deviceSettingBean?.showPumpRange,
+                        false,
+                        true
+                    )
+                ) {
+                    val pumpList = _deviceConfigBean?.pumpMap?.get(engraveConfigEntity.layerId)
+                    if (!pumpList.isNullOrEmpty()) {
+                        EngravePumpItem()() {
+                            engraveConfigEntity.initLastPumpIfNeed(laserPeckerModel.productInfoData.value?.name)
+                            itemEngraveConfigEntity = engraveConfigEntity
+                            itemSegmentList = pumpList
+                            itemCurrentIndex = max(
+                                0,
+                                pumpList.indexOf(pumpList.find { it.value == engraveConfigEntity.pump })
+                            )
+                        }
+                    }
+                }
+
                 //雕刻参数
                 if (deviceStateModel.isPenMode()) {
                     //握笔模块, 雕刻速度, 非雕刻深度
@@ -869,6 +894,7 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                         this@BaseEngraveLayoutHelper,
                         engraveConfigEntity
                     )
+                    //雕刻速度
                     EngraveOptionWheelItem()() {
                         itemTag = MaterialEntity.SPEED
                         itemLabelText = _string(R.string.engrave_speed)

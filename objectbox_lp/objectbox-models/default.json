@@ -266,7 +266,7 @@
     },
     {
       "id": "6:8152904460033212959",
-      "lastPropertyId": "23:8520133024351725165",
+      "lastPropertyId": "24:1129924034729661515",
       "name": "EngraveConfigEntity",
       "properties": [
         {
@@ -374,6 +374,11 @@
           "id": "23:8520133024351725165",
           "name": "index",
           "type": 9
+        },
+        {
+          "id": "24:1129924034729661515",
+          "name": "pump",
+          "type": 5
         }
       ],
       "relations": []

@@ -45,7 +45,8 @@ data class DeviceSettingBean(
     /**LX1支持切割图层的模块,号分割多个
      * [com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel.isCutModule]*/
     var cutLayerModule: String? = null,
-
+    /**显示风速设置的固件范围*/
+    var showPumpRange: String? = null,
     //region---Android端设置项---
 
     /**设置项[自动连接蓝牙]*/

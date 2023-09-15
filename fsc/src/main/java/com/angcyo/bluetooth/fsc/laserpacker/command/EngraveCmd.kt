@@ -54,6 +54,12 @@ data class EngraveCmd(
     val timeList: List<Byte> = emptyList(),//次数列表
     val typeList: List<Byte> = emptyList(),//激光类型列表
 
+    //2023-9-15 风速级别, [0~255] Fan_speed_fill * 168 + 25000
+    var pumpFill: Int = 0,
+    var pumpPicture: Int = 0,
+    var pumpLine: Int = 0,
+    var pumpCut: Int = 0,
+
     //---文件名雕刻---2023-8-3
     /**
      * 当mount=0时查询U盘列表。
@@ -102,6 +108,10 @@ data class EngraveCmd(
             typeList: List<Byte>,
             precision: Int,
             diameter: Int,
+            pumpFill: Int,
+            pumpPicture: Int,
+            pumpLine: Int,
+            pumpCut: Int
         ): EngraveCmd {
             return EngraveCmd(
                 state = 0x05,
@@ -115,6 +125,10 @@ data class EngraveCmd(
                 depthList = depthList,
                 timeList = timeList,
                 typeList = typeList,
+                pumpFill = pumpFill,
+                pumpPicture = pumpPicture,
+                pumpLine = pumpLine,
+                pumpCut = pumpCut
             )
         }
 
@@ -160,6 +174,7 @@ data class EngraveCmd(
         val data: String
         val dataLength: Int
         if (state.toInt() == 0x06) {
+            //文件名雕刻
             cmd = commandByteWriter {
                 write(commandFunc())
                 write(state)
@@ -205,6 +220,11 @@ data class EngraveCmd(
                 }
                 write(precision)
                 write(diameter, 2)
+                //2023-9-15 风速级别
+                write(pumpFill)
+                write(pumpPicture)
+                write(pumpLine)
+                write(pumpCut)
             }
             val size = bytes.size()
             data = bytes.toHexString(false)
@@ -215,6 +235,7 @@ data class EngraveCmd(
             check = bytes.checksum()
             cmd = "${LaserPeckerHelper.PACKET_HEAD} ${dataLength.toHexString()} $data $check"
         } else {
+            //正常雕刻指令
             dataLength = 0x14 //18 //数据长度
             data = buildString {
                 append(commandFunc().toHexString())

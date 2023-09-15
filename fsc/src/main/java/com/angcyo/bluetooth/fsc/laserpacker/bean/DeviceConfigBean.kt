@@ -107,12 +107,18 @@ data class DeviceConfigBean(
      * [key] 图层id
      * [value] [LayerConfigBean]
      *
-     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_FILL]
-     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_PICTURE]
-     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_LINE]
-     * [com.angcyo.laserpacker.device.LayerHelper.LAYER_CUT]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_FILL]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_PICTURE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_LINE]
+     * [com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper.LAYER_CUT]
      * */
-    var layer: HashMap<String, LayerConfigBean>? = null
+    var layer: HashMap<String, LayerConfigBean>? = null,
+
+    /**
+     * 风速级别配置
+     * [key] 图层id
+     * */
+    var pumpMap: HashMap<String, List<PumpConfigBean>>? = null,
 ) {
 
     /**是否有特殊图层配置*/

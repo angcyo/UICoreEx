@@ -501,6 +501,12 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
         var precision = 0
         var diameter = 0
 
+        //风速等级
+        var pumpFill = 0
+        var pumpPicture = 0
+        var pumpLine = 0
+        var pumpCut = 0
+
         for (index in indexList) {
             EngraveFlowDataHelper.getTransferData(taskId, index)?.let {
                 //雕刻参数
@@ -523,6 +529,13 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
                     //保存外接设备名
                     initDefaultEngraveConfigInfo(engraveConfigEntity)
                     engraveConfigEntity.lpSaveEntity()
+
+                    when (engraveConfigEntity.layerId) {
+                        LaserPeckerHelper.LAYER_FILL -> pumpFill = engraveConfigEntity.pump
+                        LaserPeckerHelper.LAYER_PICTURE -> pumpPicture = engraveConfigEntity.pump
+                        LaserPeckerHelper.LAYER_LINE -> pumpLine = engraveConfigEntity.pump
+                        LaserPeckerHelper.LAYER_CUT -> pumpCut = engraveConfigEntity.pump
+                    }
                 }
 
                 //任务雕刻的数据入库
@@ -538,6 +551,7 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             append(" type:${typeList}")
             append(" 加速级别:${precision}")
             append(" 直径:${diameter}")
+            append(" pump:${pumpFill},${pumpPicture},${pumpLine},${pumpCut}")
         }.writeEngraveLog()
 
         //task
@@ -557,7 +571,11 @@ class EngraveModel : LifecycleViewModel(), IViewModel {
             timeList,
             typeList,
             precision,
-            diameter
+            diameter,
+            pumpFill,
+            pumpPicture,
+            pumpLine,
+            pumpCut
         ).enqueue { bean, error ->
             "批量雕刻指令返回:${bean?.parse<MiniReceiveParser>()}".writeEngraveLog(L.WARN)
             _lastEngraveCmdError = error

@@ -5,6 +5,7 @@ import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.command.EngraveCmd
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.dialog2.dslitem.DslLabelWheelItem
+import com.angcyo.dialog2.dslitem.getSelectedWheelIntData
 import com.angcyo.dialog2.dslitem.itemWheelList
 import com.angcyo.dialog2.dslitem.itemWheelSelectorAction
 import com.angcyo.dialog2.dslitem.itemWheelUnit
@@ -72,28 +73,28 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
 
                 MaterialEntity::power.name -> {
                     itemEngraveConfigEntity?.apply {
-                        power = getSelectedInt(index, power)
+                        power = getSelectedWheelIntData(index, power)
                         HawkEngraveKeys.lastPower = power
                         lpSaveEntity()
                     }
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
                         HawkEngraveKeys.lastPower =
-                            getSelectedInt(index, printPower ?: HawkEngraveKeys.lastPower)
+                            getSelectedWheelIntData(index, printPower ?: HawkEngraveKeys.lastPower)
                         printPower = HawkEngraveKeys.lastPower
                     }
                 }
 
                 MaterialEntity::depth.name -> {
                     itemEngraveConfigEntity?.apply {
-                        depth = getSelectedInt(index, depth)
+                        depth = getSelectedWheelIntData(index, depth)
                         HawkEngraveKeys.lastDepth = depth
                         lpSaveEntity()
                     }
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
                         HawkEngraveKeys.lastDepth =
-                            getSelectedInt(index, printDepth ?: HawkEngraveKeys.lastDepth)
+                            getSelectedWheelIntData(index, printDepth ?: HawkEngraveKeys.lastDepth)
                         printDepth = HawkEngraveKeys.lastDepth
                     }
                 }
@@ -101,7 +102,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                 MaterialEntity.SPEED -> {
                     itemEngraveConfigEntity?.apply {
                         depth = EngraveCmd.speedToDepth(
-                            getSelectedInt(index, EngraveCmd.depthToSpeed(depth))
+                            getSelectedWheelIntData(index, EngraveCmd.depthToSpeed(depth))
                         )
                         HawkEngraveKeys.lastDepth = depth
                         lpSaveEntity()
@@ -109,7 +110,7 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
                         HawkEngraveKeys.lastDepth = EngraveCmd.speedToDepth(
-                            getSelectedInt(
+                            getSelectedWheelIntData(
                                 index,
                                 EngraveCmd.depthToSpeed(printDepth ?: HawkEngraveKeys.lastDepth)
                             )
@@ -120,25 +121,28 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
 
                 EngraveConfigEntity::time.name -> {
                     itemEngraveConfigEntity?.apply {
-                        time = getSelectedInt(index, time)
+                        time = getSelectedWheelIntData(index, time)
                         lpSaveEntity()
                     }
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
-                        printCount = getSelectedInt(index, printCount ?: 1)
+                        printCount = getSelectedWheelIntData(index, printCount ?: 1)
                     }
                 }
 
                 EngraveConfigEntity::precision.name -> {
                     itemEngraveConfigEntity?.apply {
-                        precision = getSelectedInt(index, precision)
+                        precision = getSelectedWheelIntData(index, precision)
                         HawkEngraveKeys.lastPrecision = precision
                         lpSaveEntity()
                     }
                     //单文件雕刻参数
                     itemEngraveItemBean?.apply {
                         HawkEngraveKeys.lastPrecision =
-                            getSelectedInt(index, printPrecision ?: HawkEngraveKeys.lastPrecision)
+                            getSelectedWheelIntData(
+                                index,
+                                printPrecision ?: HawkEngraveKeys.lastPrecision
+                            )
                         printPrecision = HawkEngraveKeys.lastPrecision
                     }
                 }
@@ -163,8 +167,4 @@ open class EngraveOptionWheelItem : DslLabelWheelItem() {
     override fun showWheelDialog(context: Context) {
         super.showWheelDialog(context)
     }
-
-    /**获取选中的byte数据*/
-    fun getSelectedInt(index: Int, def: Int): Int =
-        itemWheelList?.get(index)?.toString()?.toIntOrNull() ?: def
 }

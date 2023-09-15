@@ -684,6 +684,52 @@
           }
         ]
       }
+    },
+    "pumpMap": {
+      "layerFill": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerPicture": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerLine": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerCut": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ]
     }
   },
   {
@@ -832,6 +878,52 @@
           }
         ]
       }
+    },
+    "pumpMap": {
+      "layerFill": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerPicture": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerLine": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ],
+      "layerCut": [
+        {
+          "value": 0
+        },
+        {
+          "value": 127
+        },
+        {
+          "value": 255
+        }
+      ]
     }
   }
 ]
