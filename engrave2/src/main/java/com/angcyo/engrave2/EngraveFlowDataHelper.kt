@@ -662,9 +662,10 @@ object EngraveFlowDataHelper {
             depth = last?.depth ?: customMaterial?.depth ?: HawkEngraveKeys.lastDepth
             time = 1
 
-            //光源
+            //光源, 此处配置有多个地方, 使用find查找
             type = last?.type ?: DeviceHelper.getProductLaserType()
             precision = last?.precision ?: HawkEngraveKeys.lastPrecision
+            pump = last?.pump ?: pump
 
         }) {
             apply(

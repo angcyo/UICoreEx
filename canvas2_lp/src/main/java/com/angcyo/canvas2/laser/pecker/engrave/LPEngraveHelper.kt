@@ -295,8 +295,10 @@ object LPEngraveHelper {
                 )
             }
 
+            //光源, 此处配置有多个地方, 使用find查找
             type = bean.printType?.toByte() ?: last?.type ?: DeviceHelper.getProductLaserType()
             precision = bean.printPrecision ?: last?.precision ?: HawkEngraveKeys.lastPrecision
+            pump = bean.pump ?: last?.pump ?: pump
             power = bean.printPower ?: last?.power ?: HawkEngraveKeys.lastPower
             depth = bean.printDepth ?: last?.depth ?: HawkEngraveKeys.lastDepth
             time = bean.printCount ?: 1

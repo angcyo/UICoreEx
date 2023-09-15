@@ -429,6 +429,8 @@ data class LPElementBean(
     var printPower: Int? = null,
     var printDepth: Int? = null,
     var printCount: Int? = null,
+    //风速级别
+    var pump: Int? = null,
 
     /**是否是切割*/
     var isCut: Boolean = false,

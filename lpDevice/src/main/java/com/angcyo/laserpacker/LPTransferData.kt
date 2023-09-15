@@ -62,9 +62,10 @@ object LPTransferData {
             this.depth = depth ?: last?.depth ?: customMaterial.depth
             time = 1
 
-            //光源
+            //光源, 此处配置有多个地方, 使用find查找
             this.type = type ?: last?.type ?: DeviceHelper.getProductLaserType()
             this.precision = precision ?: last?.precision ?: HawkEngraveKeys.lastPrecision
+            this.pump = last?.pump ?: pump
 
             //物理尺寸
             diameterPixel = HawkEngraveKeys.lastDiameterPixel
