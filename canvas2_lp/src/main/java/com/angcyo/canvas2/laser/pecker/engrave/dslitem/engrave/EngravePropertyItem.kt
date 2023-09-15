@@ -2,6 +2,7 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.graphics.Typeface
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
 import com.angcyo.canvas2.laser.pecker.R
 import com.angcyo.core.component.model.NightModel
 import com.angcyo.core.vmApp
@@ -13,7 +14,10 @@ import com.angcyo.laserpacker.device.EngraveHelper
 import com.angcyo.library.ex._color
 import com.angcyo.library.ex._drawable
 import com.angcyo.library.ex._string
+import com.angcyo.library.ex.calcIncrementValue
+import com.angcyo.library.ex.decimal
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.toStr
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.widget.DslViewHolder
@@ -41,10 +45,15 @@ class EngravePropertyItem : DslAdapterItem() {
     /**需要显示的文本标签*/
     var itemLabelText: CharSequence? = null
 
+    /**是否要显示速度参考值*/
+    var itemShowRefVelocity: Boolean = false
+
     private val nightModel = vmApp<NightModel>()
 
     init {
         itemLayoutId = R.layout.item_engrave_property_layout
+
+        itemShowRefVelocity = vmApp<LaserPeckerModel>().productInfoData.value?.isCSeries() == true
     }
 
     override fun onItemBind(
@@ -76,6 +85,8 @@ class EngravePropertyItem : DslAdapterItem() {
             }
             append("%")
         }
+
+        //深度
         val speedLabel = _string(R.string.custom_speed)
         val depth = itemEngraveConfigEntity?.depth ?: (itemEngraveItemBean?.printDepth
             ?: HawkEngraveKeys.lastDepth)
@@ -94,6 +105,7 @@ class EngravePropertyItem : DslAdapterItem() {
             append("%")
         }
 
+        //雕刻次数
         itemHolder.visible(R.id.times_view, itemShowTimes)
         val timesLabel = _string(R.string.print_times)
         val time = itemEngraveConfigEntity?.time ?: (itemEngraveItemBean?.printCount ?: 1)
@@ -138,6 +150,12 @@ class EngravePropertyItem : DslAdapterItem() {
                 wheelSelectedIndex = EngraveHelper.findOptionIndex(wheelItems, depth)
                 wheelUnit = "%"
 
+                if (itemShowRefVelocity) {
+                    wheelItemToStringAction = {
+                        it.toStr() + " (${getReferenceVelocity(it.toStr().toIntOrNull() ?: 0)}mm/s)"
+                    }
+                }
+
                 wheelItemSelectorAction = { dialog, index, item ->
                     getSelectedInt(index, depth).let {
                         HawkEngraveKeys.lastDepth = it
@@ -171,6 +189,20 @@ class EngravePropertyItem : DslAdapterItem() {
     override fun onItemChangeListener(item: DslAdapterItem) {
         itemEngraveConfigEntity?.lpSaveEntity()
         super.onItemChangeListener(item)
+    }
+
+    /**获取深度对应的参考速度*/
+    private fun getReferenceVelocity(depth: Int): String? {
+        val digit = 2
+        return (if (depth <= 40) {
+            calcIncrementValue(depth, 1, 80f, -1.5f)
+        } else if (depth <= 60) {
+            calcIncrementValue(depth, 41, 20f, -0.5f)
+        } else if (depth <= 100) {
+            calcIncrementValue(depth, 61, 9.85f, -0.25f)
+        } else {
+            null
+        })?.decimal(digit, false, false)
     }
 
     /**获取选中的byte数据*/
