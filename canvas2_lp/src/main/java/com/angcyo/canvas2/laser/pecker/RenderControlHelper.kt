@@ -73,6 +73,8 @@ import com.angcyo.library.utils.BuildHelper.isCpu64
 import com.angcyo.qrcode.code.haveErrorCorrection
 import com.angcyo.transition.dslTransition
 import com.angcyo.widget.recycler.renderDslAdapter
+import com.angcyo.widget.recycler.restoreScrollPosition
+import com.angcyo.widget.recycler.saveScrollPosition
 import com.angcyo.widget.span.span
 import com.google.zxing.BarcodeFormat
 import com.hingin.umeng.UMEvent
@@ -154,7 +156,9 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     /**追加控制item*/
     fun renderControlItems(renderer: BaseRenderer? = selectorManager?.getTargetSelectorRenderer()) {
         //控制item渲染
-        _rootViewHolder?.canvasControlRv?.renderDslAdapter {
+        val canvasControlRv = _rootViewHolder?.canvasControlRv
+        val scrollPosition = canvasControlRv?.saveScrollPosition()
+        canvasControlRv?.renderDslAdapter {
             renderLayoutHelper.hookUpdateDepend(this)
 
             //渲染不同的控制item
@@ -173,6 +177,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
             //公共编辑
             renderCommonEditItems(renderer)
+
+            onDispatchUpdatesOnce {
+                canvasControlRv.restoreScrollPosition(scrollPosition)
+            }
         }
     }
 
