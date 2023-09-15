@@ -3,9 +3,11 @@ package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 import android.widget.ImageView
 import com.angcyo.bluetooth.fsc.laserpacker.bean.PumpConfigBean
 import com.angcyo.canvas2.laser.pecker.R
+import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.getSelectedSegmentBean
+import com.angcyo.laserpacker.bean.LPElementBean
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.find
 import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
@@ -23,6 +25,9 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
 
     /**参数配置实体*/
     var itemEngraveConfigEntity: EngraveConfigEntity? = null
+
+    /**单元素参数配置*/
+    var itemEngraveItemBean: LPElementBean? = null
 
     init {
         itemText = _string(R.string.engrave_pump_label)
@@ -50,11 +55,30 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
         }
     }
 
+    /**初始化默认的气泵参数*/
+    fun initPumpIfNeed() {
+        itemEngraveConfigEntity?.apply {
+            if (pump < 0) {
+                pump = LPEngraveHelper.getLastPump(layerId)
+                lpSaveEntity()
+            }
+        }
+        itemEngraveItemBean?.apply {
+            if ((pump ?: -1) < 0) {
+                pump = LPEngraveHelper.getLastPump(_layerId)
+            }
+        }
+    }
+
     override fun onItemChangeListener(item: DslAdapterItem) {
         super.onItemChangeListener(item)
+        val value = getSelectedSegmentBean<PumpConfigBean>()?.value
         itemEngraveConfigEntity?.apply {
-            pump = getSelectedSegmentBean<PumpConfigBean>()?.value ?: pump
+            pump = value ?: pump
             lpSaveEntity()
+        }
+        itemEngraveItemBean?.apply {
+            pump = value ?: pump
         }
     }
 

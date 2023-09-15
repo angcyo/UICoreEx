@@ -5,7 +5,6 @@ import com.angcyo.bluetooth.fsc.laserpacker.DeviceStateModel
 import com.angcyo.bluetooth.fsc.laserpacker.HawkEngraveKeys
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerModel
-import com.angcyo.bluetooth.fsc.laserpacker._deviceSettingBean
 import com.angcyo.bluetooth.fsc.laserpacker.filterFileName
 import com.angcyo.bluetooth.fsc.laserpacker.isOverflowProductBounds
 import com.angcyo.canvas.render.core.CanvasRenderDelegate
@@ -24,7 +23,6 @@ import com.angcyo.laserpacker.device.data.EngraveLayerInfo
 import com.angcyo.laserpacker.device.updateAllLayerConfig
 import com.angcyo.library.component.pool.acquireTempRectF
 import com.angcyo.library.component.pool.release
-import com.angcyo.library.ex.replace
 import com.angcyo.library.unit.toMm
 import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
@@ -321,7 +319,6 @@ object LPEngraveHelper {
         }
     }
 
-
     /**创建单文件雕刻参数
      * [generateTransferConfig]
      * */
@@ -364,6 +361,20 @@ object LPEngraveHelper {
                 ?.let { item -> result.add(item) }
         }
         return result
+    }
+
+    /**获取最后一次的气泵参数*/
+    fun getLastPump(
+        layerId: String?,
+        productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
+    ): Int {
+        val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.productName.equal("$productName")
+                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
+            )
+        }
+        return maxOf(last?.pump ?: 0, 0)
     }
 }
 

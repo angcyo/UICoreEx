@@ -634,6 +634,29 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                 }
             }
 
+            //风速等级
+            if (VersionMatcher.matches(
+                    laserPeckerModel.productInfoData.value?.version,
+                    _deviceSettingBean?.showPumpRange,
+                    false,
+                    true
+                )
+            ) {
+                val pumpList = _deviceConfigBean?.pumpMap?.get(elementItemBean?._layerId)
+                if (!pumpList.isNullOrEmpty()) {
+                    EngravePumpItem()() {
+                        itemEngraveConfigEntity = engraveConfigEntity
+                        itemEngraveItemBean = elementItemBean
+                        initPumpIfNeed()
+                        itemSegmentList = pumpList
+                        itemCurrentIndex = max(
+                            0,
+                            pumpList.indexOf(pumpList.find { it.value == elementItemBean?.pump })
+                        )
+                    }
+                }
+            }
+
             //雕刻参数
             if (deviceStateModel.isPenMode()) {
                 //雕刻速度, 非雕刻深度
@@ -874,8 +897,8 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
                     val pumpList = _deviceConfigBean?.pumpMap?.get(engraveConfigEntity.layerId)
                     if (!pumpList.isNullOrEmpty()) {
                         EngravePumpItem()() {
-                            engraveConfigEntity.initLastPumpIfNeed(laserPeckerModel.productInfoData.value?.name)
                             itemEngraveConfigEntity = engraveConfigEntity
+                            initPumpIfNeed()
                             itemSegmentList = pumpList
                             itemCurrentIndex = max(
                                 0,
