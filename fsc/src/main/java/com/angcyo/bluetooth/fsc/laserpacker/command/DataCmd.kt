@@ -156,6 +156,8 @@ data class DataCmd(
                 logBuilder.append(" h:$bitmapHeight")
                 logBuilder.append(" minX:$minX")
                 logBuilder.append(" minY:$minY")
+                logBuilder.append(" dpi:$dpi")
+                logBuilder.append(" dir:$dataDir")
             }
             //数据
             val data = byteWriter {
@@ -252,6 +254,7 @@ data class DataCmd(
                 logBuilder.append(" h:$height")
                 logBuilder.append(" x:$x")
                 logBuilder.append(" y:$y")
+                logBuilder.append(" dpi:$dpi")
             }
             //数据
             val data = byteWriter {
@@ -341,6 +344,8 @@ data class DataCmd(
                 logBuilder.append(" h:$height")
                 logBuilder.append(" x:$x")
                 logBuilder.append(" y:$y")
+                logBuilder.append(" dpi:$dpi")
+                logBuilder.append(" dir:$dataDir")
             }
             //数据
             val data = byteWriter {
@@ -411,6 +416,8 @@ data class DataCmd(
                 logBuilder.append(" h:$height")
                 logBuilder.append(" x:$x")
                 logBuilder.append(" y:$y")
+                logBuilder.append(" dpi:$dpi")
+                logBuilder.append(" dir:$dataDir")
             }
             //数据
             val data = byteWriter {
