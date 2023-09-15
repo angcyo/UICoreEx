@@ -675,7 +675,7 @@ object EngraveFlowDataHelper {
         }
     }
 
-    /**初始化*/
+    /**初始化雕刻参数, 使用材质*/
     fun initEngraveConfigWithMaterial(
         engraveConfigEntity: EngraveConfigEntity,
         materialEntity: MaterialEntity?
@@ -701,8 +701,11 @@ object EngraveFlowDataHelper {
             materialName = materialEntity?.name
             type = materialEntity?.type?.toByte() ?: DeviceHelper.getProductLaserType()
 
-            //关键雕刻参数
+            //关键雕刻参数, 此处配置有多个地方, 使用find查找
             precision = materialEntity?.precision ?: HawkEngraveKeys.lastPrecision
+            if (pump < 0) {
+                pump = LaserPeckerHelper.getLastPump(layerId)
+            }
             power = materialEntity?.power ?: HawkEngraveKeys.lastPower
             depth = materialEntity?.depth ?: HawkEngraveKeys.lastDepth
             time = max(1, materialEntity?.count ?: 1)

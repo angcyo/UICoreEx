@@ -362,20 +362,6 @@ object LPEngraveHelper {
         }
         return result
     }
-
-    /**获取最后一次的气泵参数*/
-    fun getLastPump(
-        layerId: String?,
-        productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
-    ): Int {
-        val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
-            apply(
-                EngraveConfigEntity_.productName.equal("$productName")
-                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
-            )
-        }
-        return maxOf(last?.pump ?: 0, 0)
-    }
 }
 
 /**排序规则从上到下, 从左到右

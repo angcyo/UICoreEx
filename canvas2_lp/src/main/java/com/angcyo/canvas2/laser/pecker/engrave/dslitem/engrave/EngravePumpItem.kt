@@ -1,9 +1,9 @@
 package com.angcyo.canvas2.laser.pecker.engrave.dslitem.engrave
 
 import android.widget.ImageView
+import com.angcyo.bluetooth.fsc.laserpacker.LaserPeckerHelper
 import com.angcyo.bluetooth.fsc.laserpacker.bean.PumpConfigBean
 import com.angcyo.canvas2.laser.pecker.R
-import com.angcyo.canvas2.laser.pecker.engrave.LPEngraveHelper
 import com.angcyo.canvas2.laser.pecker.engrave.dslitem.EngraveSegmentScrollItem
 import com.angcyo.dsladapter.DslAdapterItem
 import com.angcyo.item.getSelectedSegmentBean
@@ -59,13 +59,13 @@ class EngravePumpItem : EngraveSegmentScrollItem() {
     fun initPumpIfNeed() {
         itemEngraveConfigEntity?.apply {
             if (pump < 0) {
-                pump = LPEngraveHelper.getLastPump(layerId)
+                pump = LaserPeckerHelper.getLastPump(layerId)
                 lpSaveEntity()
             }
         }
         itemEngraveItemBean?.apply {
             if ((pump ?: -1) < 0) {
-                pump = LPEngraveHelper.getLastPump(_layerId)
+                pump = LaserPeckerHelper.getLastPump(_layerId)
             }
         }
     }

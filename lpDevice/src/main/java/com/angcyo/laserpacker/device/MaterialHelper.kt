@@ -233,6 +233,7 @@ object MaterialHelper {
             }
             power = lastEngraveConfig?.power ?: HawkEngraveKeys.lastPower
             depth = lastEngraveConfig?.depth ?: HawkEngraveKeys.lastDepth
+            //此处配置有多个地方, 使用find查找
             precision = lastEngraveConfig?.precision ?: HawkEngraveKeys.lastPrecision
             type = (lastEngraveConfig?.type ?: DeviceHelper.getProductLaserType()).toInt()
             count = max(1, lastEngraveConfig?.time ?: count)

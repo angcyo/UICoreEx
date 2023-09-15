@@ -30,9 +30,12 @@ import com.angcyo.library.toastQQ
 import com.angcyo.library.unit.IValueUnit.Companion.MM_UNIT
 import com.angcyo.library.utils.LogFile
 import com.angcyo.objectbox.findFirst
+import com.angcyo.objectbox.findLast
 import com.angcyo.objectbox.laser.pecker.LPBox
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity
 import com.angcyo.objectbox.laser.pecker.entity.CommandEntity_
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity
+import com.angcyo.objectbox.laser.pecker.entity.EngraveConfigEntity_
 import com.angcyo.objectbox.laser.pecker.lpSaveEntity
 import com.angcyo.viewmodel.updateValue
 import com.pixplicity.sharp.Sharp
@@ -957,6 +960,20 @@ object LaserPeckerHelper {
 
     /**设备地址*/
     fun lastDeviceAddress(): String? = initDeviceAddress
+
+    /**获取最后一次的气泵参数*/
+    fun getLastPump(
+        layerId: String?,
+        productName: String? = vmApp<LaserPeckerModel>().productInfoData.value?.name
+    ): Int {
+        val last = EngraveConfigEntity::class.findLast(LPBox.PACKAGE_NAME) {
+            apply(
+                EngraveConfigEntity_.productName.equal("$productName")
+                    .and(EngraveConfigEntity_.layerId.equal(layerId ?: ""))
+            )
+        }
+        return maxOf(last?.pump ?: 0, 0)
+    }
 
     //</editor-fold desc="packet">
 }
