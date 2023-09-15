@@ -324,9 +324,10 @@ abstract class BaseEngraveLayoutHelper : BasePreviewLayoutHelper() {
 
             //数据雕刻方向
             transferConfigEntity.dataDir = laserPeckerModel.dataDir()
-            HawkEngraveKeys.lastDpiLayerJson =
-                transferConfigEntity.layerJson
-                    ?: HawkEngraveKeys.lastDpiLayerJson
+            if (transferConfigEntity.layerJson.isNullOrBlank()) {
+                transferConfigEntity.layerJson = HawkEngraveKeys.lastDpiLayerJson
+            }
+            HawkEngraveKeys.lastDpiLayerJson = transferConfigEntity.layerJson
             transferConfigEntity.lpSaveEntity()
 
             engraveConfigProvider.onSaveTransferConfig(
