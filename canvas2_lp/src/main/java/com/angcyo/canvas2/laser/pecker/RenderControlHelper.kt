@@ -112,7 +112,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             hideControlLayout()
         } else {
             showControlLayout(null)
-            renderControlItems(selectorRenderer)
+            renderControlItems(false, selectorRenderer)
         }
     }
 
@@ -154,7 +154,10 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
     }
 
     /**追加控制item*/
-    fun renderControlItems(renderer: BaseRenderer? = selectorManager?.getTargetSelectorRenderer()) {
+    fun renderControlItems(
+        restoreScrollPosition: Boolean = true,
+        renderer: BaseRenderer? = selectorManager?.getTargetSelectorRenderer(),
+    ) {
         //控制item渲染
         val canvasControlRv = _rootViewHolder?.canvasControlRv
         val scrollPosition = canvasControlRv?.saveScrollPosition()
@@ -178,8 +181,11 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             //公共编辑
             renderCommonEditItems(renderer)
 
-            onDispatchUpdatesOnce {
-                canvasControlRv.restoreScrollPosition(scrollPosition)
+            //是否要恢复滚动的位置
+            if (restoreScrollPosition) {
+                onDispatchUpdatesOnce {
+                    canvasControlRv.restoreScrollPosition(scrollPosition)
+                }
             }
         }
     }
