@@ -47,6 +47,7 @@ import com.angcyo.library.ex.floor
 import com.angcyo.library.ex.isDebug
 import com.angcyo.library.ex.lines
 import com.angcyo.library.ex.readText
+import com.angcyo.library.ex.save
 import com.angcyo.library.ex.size
 import com.angcyo.library.ex.toBitmap
 import com.angcyo.library.ex.toDC
@@ -457,10 +458,15 @@ object EngraveTransitionHelper {
                 sliceGcodeFile.deleteSafe()
 
                 val colors = (params.sliceCount ?: 1).toSliceLevelList()
+
+                DeviceHelper.tempEngraveLogPathList.clear()
                 colors.forEachIndexed { index, threshold ->
                     //单切片, 防止一下子内存占用过高
                     BitmapHandle.toSliceHandle(bitmap, threshold, false)?.let { bitmap ->
-                        //bitmap.save(libCacheFile("${threshold}.png")).absolutePath
+                        val cacheBitmapFile = libCacheFile("slice_${threshold}.png")
+                        bitmap.save(cacheBitmapFile)
+                        DeviceHelper.tempEngraveLogPathList.add(cacheBitmapFile.absolutePath)
+
                         params.bitmapToGCodeType = 1
                         params.bitmapToGCodeIsLast = index == colors.size - 1
                         val bounds = provider.getEngraveDataBounds(RectF())
@@ -470,6 +476,11 @@ object EngraveTransitionHelper {
                             transition.covertBitmapPixel2GCode(bitmap, bounds, params)
                         }
                         gCodeFile.readText()?.let { sliceGcodeFile.appendText(it) }
+
+                        val cacheGCodeFile = libCacheFile("slice_${threshold}.gcode")
+                        if (gCodeFile.renameTo(cacheGCodeFile)) {
+                            DeviceHelper.tempEngraveLogPathList.add(cacheGCodeFile.absolutePath)
+                        }
                         bitmap.recycle()
                     }
                 }

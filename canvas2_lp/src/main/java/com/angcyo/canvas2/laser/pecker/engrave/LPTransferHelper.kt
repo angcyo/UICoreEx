@@ -194,33 +194,34 @@ object LPTransferHelper {
         val result: TransferDataEntity? = when (bean._layerMode) {
             LPDataConstant.DATA_MODE_GCODE -> {
                 //线条图层, 发送GCode数据
+
+                val transitionParam = TransitionParam(
+                    isSingleLine = bean.isLineShape,
+                    useOpenCvHandleGCode = true,
+                    gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
+                    gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
+                    enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData,
+                    enableSlice = bean.isNeedSlice,
+                    sliceCount = bean.sliceCount
+                )
+
                 if (bean.isLineShape || bean.paintStyle != Paint.Style.STROKE.toPaintStyleInt()) {
                     //虚线,实线,或者填充的图片, 都是GCode数据, 使用pixel转GCode
-                    EngraveTransitionHelper.transitionToGCode(
-                        element,
-                        transferConfigEntity,
-                        TransitionParam(
-                            onlyUseBitmapToGCode = bean.isLineShape && bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt(),
-                            useOpenCvHandleGCode = false,
-                            isSingleLine = bean.isLineShape,
-                            gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
-                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop
-                        )
-                    )
+                    if (bean.isNeedSlice) {
+                        //切片的情况下, 使用OpenCV转GCode
+                    } else {
+                        transitionParam.useOpenCvHandleGCode = false
+                    }
+                    transitionParam.onlyUseBitmapToGCode =
+                        bean.isLineShape && bean.paintStyle == Paint.Style.STROKE.toPaintStyleInt()
                 } else {
                     //其他情况下, 转GCode优先使用Path, 再使用OpenCV
-                    EngraveTransitionHelper.transitionToGCode(
-                        element,
-                        transferConfigEntity,
-                        TransitionParam(
-                            gcodeOffsetLeft = GCodeDataOffsetItem.offsetLeft,
-                            gcodeOffsetTop = GCodeDataOffsetItem.offsetTop,
-                            enableGCodeCutData = bean._layerId == LaserPeckerHelper.LAYER_CUT && _useCutData,
-                            enableSlice = bean.isNeedSlice,
-                            sliceCount = bean.sliceCount
-                        )
-                    )
                 }
+                EngraveTransitionHelper.transitionToGCode(
+                    element,
+                    transferConfigEntity,
+                    transitionParam
+                )
             }
 
             LPDataConstant.DATA_MODE_BLACK_WHITE -> {

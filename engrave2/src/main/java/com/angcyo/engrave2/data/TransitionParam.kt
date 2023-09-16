@@ -46,10 +46,10 @@ data class TransitionParam(
     /**是否仅使用图片转GCode的方式处理, 这样会强制忽略[android.graphics.Path]的转换
      * 否则会自动优先先使用[android.graphics.Path]转GCode,
      * 然后在使用[android.graphics.Bitmap]转GCode*/
-    val onlyUseBitmapToGCode: Boolean = false,
+    var onlyUseBitmapToGCode: Boolean = false,
 
     /**在处理图片转GCode时, 是否使用OpenCV的算法 */
-    val useOpenCvHandleGCode: Boolean = true,
+    var useOpenCvHandleGCode: Boolean = true,
 
     /**转GCode时, 是否要自动开关激光*/
     val isAutoCnc: Boolean = vmApp<LaserPeckerModel>().isCSeries(),
