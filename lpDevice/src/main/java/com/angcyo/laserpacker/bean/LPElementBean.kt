@@ -385,6 +385,9 @@ data class LPElementBean(
      * */
     var meshShape: String? = null,
 
+    /**切片的数量*/
+    var sliceCount: Int = 0,
+
     //endregion ---图片数据---
 
     //region ---雕刻参数---
@@ -582,6 +585,12 @@ data class LPElementBean(
         get() = mtype == LPDataConstant.DATA_TYPE_VARIABLE_TEXT ||
                 mtype == LPDataConstant.DATA_TYPE_VARIABLE_QRCODE ||
                 mtype == LPDataConstant.DATA_TYPE_VARIABLE_BARCODE
+
+    /**当前元素结构是否支持切片*/
+    val isSupportSliceElement: Boolean
+        get() = mtype == LPDataConstant.DATA_TYPE_BITMAP &&
+                (imageFilter == LPDataConstant.DATA_MODE_DITHERING ||
+                        imageFilter == LPDataConstant.DATA_MODE_GREY)
 
     /**是否要显示条码字符*/
     val isShowBarcodeText: Boolean

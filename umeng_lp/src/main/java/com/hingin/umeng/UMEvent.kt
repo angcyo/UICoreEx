@@ -101,6 +101,9 @@ object UMEvent {
     /**创作图片-印章*/
     const val CANVAS_IMAGE_SEAL = "canvas_image_seal"
 
+    /**创作扸-浮雕*/
+    const val CANVAS_IMAGE_SLICE = "canvas_image_slice"
+
     /**创作图片-剪裁*/
     const val CANVAS_IMAGE_CROP = "canvas_image_crop"
 

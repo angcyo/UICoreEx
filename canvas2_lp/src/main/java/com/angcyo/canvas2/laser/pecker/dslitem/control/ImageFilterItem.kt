@@ -23,6 +23,9 @@ class ImageFilterItem : CanvasIconItem() {
     /**是否是扭曲的item*/
     var itemIsMeshItem: Boolean = false
 
+    /**是否是浮雕item*/
+    var itemIsReliefItem: Boolean = false
+
     override fun onItemBind(
         itemHolder: DslViewHolder,
         itemPosition: Int,
@@ -41,6 +44,12 @@ class ImageFilterItem : CanvasIconItem() {
         } else {
             Color.TRANSPARENT
         }
+
+        //浮雕item的激活逻辑
+        if (itemIsReliefItem) {
+            itemEnable = elementBean?.isSupportSliceElement == true
+        }
+
         super.onItemBind(itemHolder, itemPosition, adapterItem, payloads)
     }
 }

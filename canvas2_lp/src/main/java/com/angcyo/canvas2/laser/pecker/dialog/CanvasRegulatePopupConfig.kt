@@ -25,9 +25,11 @@ import com.angcyo.library._screenHeight
 import com.angcyo.library._screenWidth
 import com.angcyo.library.annotation.DSL
 import com.angcyo.library.annotation.MM
+import com.angcyo.library.component.hawk.LibHawkKeys
 import com.angcyo.library.component.pad.isInPadMode
 import com.angcyo.library.ex._string
 import com.angcyo.library.ex.dpi
+import com.angcyo.library.ex.toStr
 import com.angcyo.widget.DslViewHolder
 import com.angcyo.widget.recycler.DslRecyclerView
 import com.angcyo.widget.span.span
@@ -63,6 +65,9 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
         /**印章阈值*/
         const val KEY_SEAL_THRESHOLD = "key_seal_threshold"
+
+        /**切片数量*/
+        const val KEY_SLICE = "key_slice"
 
         /**GCode旋转方向*/
         const val KEY_DIRECTION = "key_direction"
@@ -400,6 +405,17 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
                 }
             }
 
+            //切片数量
+            if (regulateList.contains(KEY_SLICE)) {
+                renderSeekBarItem(
+                    KEY_SLICE,
+                    _string(R.string.canvas_slice_count),
+                    getIntOrDef(KEY_SLICE, 0),
+                    0,
+                    LibHawkKeys.grayThreshold
+                )
+            }
+
             //---last---
 
             //确认按钮
@@ -495,7 +511,7 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
         }
     }
 
-    /**渲染滑块*/
+    /**float类型 渲染滑块*/
     fun DslAdapter.renderSeekBarItem(
         key: String,
         label: CharSequence?,
@@ -520,6 +536,37 @@ class CanvasRegulatePopupConfig : MenuPopupConfig() {
 
             itemSeekTouchEnd = { value, fraction ->
                 property[key] = minValue + sum * fraction
+            }
+
+            init()
+        }
+    }
+
+    /**int类型 [renderSeekBarItem]*/
+    fun DslAdapter.renderSeekBarItem(
+        key: String,
+        label: CharSequence?,
+        defValue: Int = 0,
+        minValue: Int = 0,
+        maxValue: Int = 100,
+        init: CanvasSeekBarItem.() -> Unit = {}
+    ) {
+        CanvasSeekBarItem()() { //路径填充的角度
+            itemInfoText = label
+            initItem()
+            val sum = maxValue - minValue
+
+            itemProgressTextFormatAction = {
+                (minValue + sum * it._progressFraction).toInt().toStr()
+            }
+
+            val def = getIntOrDef(key, defValue)
+            val ratio = def * 1f / sum
+            itemSeekProgress = ratio * 100
+            property[key] = def
+
+            itemSeekTouchEnd = { value, fraction ->
+                property[key] = (minValue + sum * fraction).toInt()
             }
 
             init()

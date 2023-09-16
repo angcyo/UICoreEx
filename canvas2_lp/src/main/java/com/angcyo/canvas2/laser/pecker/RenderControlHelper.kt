@@ -229,7 +229,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_black_white
                 itemText = _string(R.string.canvas_black_white)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemImageFilter = LPDataConstant.DATA_MODE_BLACK_WHITE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -252,7 +252,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_dithering
                 itemText = _string(R.string.canvas_dithering)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemImageFilter = LPDataConstant.DATA_MODE_DITHERING
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -275,7 +275,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_gcode
                 itemText = _string(R.string.canvas_gcode)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemImageFilter = LPDataConstant.DATA_MODE_GCODE
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -296,7 +296,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 ImageFilterItem()() {
                     itemIco = R.drawable.canvas_bitmap_grey
                     itemText = _string(R.string.canvas_grey)
-                    itemRenderer = renderer
+                    initItem(renderer)
                     itemImageFilter = LPDataConstant.DATA_MODE_GREY
                     itemClick = {
                         LPBitmapHandler.handleGrey(renderDelegate, it, fragment, renderer) {
@@ -312,7 +312,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_prints
                 itemText = _string(R.string.canvas_prints)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemImageFilter = LPDataConstant.DATA_MODE_PRINT
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -330,7 +330,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_bitmap_seal
                 itemText = _string(R.string.canvas_seal)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemImageFilter = LPDataConstant.DATA_MODE_SEAL
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -349,7 +349,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             ImageFilterItem()() {
                 itemIco = R.drawable.canvas_actions_ico
                 itemText = _string(R.string.canvas_mesh)
-                itemRenderer = renderer
+                initItem(renderer)
                 itemIsMeshItem = true
                 itemClick = {
                     updateItemSelected(!itemIsSelected)
@@ -367,7 +367,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         //魔棒
         if (!closeImageEditItemsFun.have("_magicWand_")) {
             //偏移用的是过滤后的图
-            ImageFilterItem()() {
+            CanvasIconItem()() {
                 itemIco = R.drawable.canvas_magic_wand
                 itemText = _string(R.string.canvas_magic_wand)
                 itemNewHawkKeyStr = "magicWand"
@@ -391,7 +391,7 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         //偏移
         if (!closeImageEditItemsFun.have("_outline_")) {
             //偏移用的是过滤后的图
-            ImageFilterItem()() {
+            CanvasIconItem()() {
                 itemIco = R.drawable.crop_auto_side_icon
                 itemText = _string(R.string.canvas_outline)
                 itemNewHawkKeyStr = "outline"
@@ -412,10 +412,32 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 }
             }
         }
+        //浮雕切片
+        if (isDebug() && !closeImageEditItemsFun.have("_slice_")) {
+            ImageFilterItem()() {
+                itemIco = R.drawable.canvas_slice_ico
+                itemText = _string(R.string.canvas_relief)
+                itemIsReliefItem = true
+                itemNewHawkKeyStr = "slice"
+                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                itemEnable = elementBean?.isSupportSliceElement == true
+                initItem(renderer)
+                itemClick = {
+                    itemHaveNew = false
+                    updateItemSelected(!itemIsSelected)
+                    if (itemIsSelected) {
+                        LPBitmapHandler.handleSlice(renderDelegate, it, fragment, renderer) {
+                            updateItemSelected(false)
+                        }
+                        UMEvent.CANVAS_IMAGE_SLICE.umengEventValue()
+                    }
+                }
+            }
+        }
         //剪裁
         if (!closeImageEditItemsFun.have("_crop_")) {
             //剪裁用的是原图
-            ImageFilterItem()() {
+            CanvasIconItem()() {
                 itemIco = R.drawable.canvas_bitmap_crop
                 itemText = _string(R.string.canvas_crop)
                 itemClick = {
@@ -541,21 +563,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
             initItem(renderer)
             drawCanvasRight()
         }
-        //栅格化
-        if (HawkEngraveKeys.enableRasterize && !closeTextEditItemsFun.have("_rasterize_")) {
-            CanvasIconItem()() {
-                initItem(renderer)
-                itemIco = R.drawable.canvas_text_rasterize_ico
-                itemText = _string(R.string.canvas_rasterize)
-                itemNewHawkKeyStr = "rasterize"
-                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                itemClick = {
-                    itemHaveNew = false
-                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
-                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
-                }
-            }
-        }
         //曲线
         if (isText && !closeTextEditItemsFun.have("_curve_")) {
             CanvasIconItem()() {
@@ -653,9 +660,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
         }
 
         var afterItemCount = 0 //后面item的数量, 用来控制是否需要绘制分割线
-        if (HawkEngraveKeys.enableRasterize) {
-            afterItemCount++
-        }
         val enablePathFill = HawkEngraveKeys.enablePathFill && !isLineShape
         if (enablePathFill) {
             afterItemCount++
@@ -706,25 +710,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
                 afterItemCount--
             }
         }
-        //栅格化
-        if (HawkEngraveKeys.enableRasterize) {
-            CanvasIconItem()() {
-                initItem(renderer)
-                itemIco = R.drawable.canvas_text_rasterize_ico
-                itemText = _string(R.string.canvas_rasterize)
-                itemNewHawkKeyStr = "rasterize"
-                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                if (afterItemCount <= 0) {
-                    drawCanvasRight()
-                }
-                itemClick = {
-                    itemHaveNew = false
-                    LPElementHelper.rasterizeRenderer(renderer, renderDelegate)
-                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
-                }
-                afterItemCount--
-            }
-        }
     }
 
     //endregion ---形状/Path---
@@ -733,23 +718,6 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     /**群组, 多选*/
     fun DslAdapter.renderGroupEditItems(renderer: CanvasGroupRenderer) {
-
-        //群组栅格化
-        if (HawkEngraveKeys.enableRasterize) {
-            CanvasIconItem()() {
-                initItem(renderer)
-                itemIco = R.drawable.canvas_text_rasterize_ico
-                itemText = _string(R.string.canvas_rasterize)
-                itemNewHawkKeyStr = "rasterize"
-                itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
-                drawCanvasRight()
-                itemClick = {
-                    itemHaveNew = false
-                    LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
-                    UMEvent.CANVAS_RASTERIZE.umengEventValue()
-                }
-            }
-        }
 
         //合并
         if (PathUnionMenuItem.isAllShape(renderer)) {
@@ -803,6 +771,23 @@ class RenderControlHelper(override val renderLayoutHelper: RenderLayoutHelper) :
 
     private fun DslAdapter.renderCommonEditItems(renderer: BaseRenderer?) {
         if (renderer != null) {
+
+            //栅格化, 2023-09-16挪到此处
+            if (HawkEngraveKeys.enableRasterize) {
+                CanvasIconItem()() {
+                    initItem(renderer)
+                    itemIco = R.drawable.canvas_text_rasterize_ico
+                    itemText = _string(R.string.canvas_rasterize)
+                    itemNewHawkKeyStr = "rasterize"
+                    itemDefaultNew = LaserPeckerConfigHelper.haveNew(itemNewHawkKeyStr)
+                    itemClick = {
+                        itemHaveNew = false
+                        LPElementHelper.rasterizeRenderer(renderer, itemRenderDelegate)
+                        UMEvent.CANVAS_RASTERIZE.umengEventValue()
+                    }
+                }
+            }
+
             vmApp<LaserPeckerModel>().productInfoData.value?.previewBounds?.let { bounds ->
                 //设备居中
                 AlignDeviceItem()() {

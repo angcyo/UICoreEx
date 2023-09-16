@@ -890,6 +890,36 @@ object LPBitmapHandler {
         }
     }
 
+
+    /**切片, 只调整切片对应的数量, 和渲染效果没有区别, 但是要触发更新index*/
+    fun handleSlice(
+        delegate: CanvasRenderDelegate?,
+        anchor: View,
+        owner: LifecycleOwner,
+        renderer: BaseRenderer,
+        onDismissAction: () -> Unit = {}
+    ) {
+        val bean = renderer.lpElementBean() ?: return
+        val context = anchor.context
+
+        context.canvasRegulateWindow(anchor) {
+            addRegulate(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
+            firstApply = false
+            onApplyAction = { dismiss ->
+                if (dismiss) {
+                    onDismissAction()
+                } else {
+                    val sliceCount =
+                        getIntOrDef(CanvasRegulatePopupConfig.KEY_SLICE, bean.sliceCount)
+                    bean.sliceCount = sliceCount
+                    renderer.requestUpdatePropertyFlag(Reason.user.apply {
+                        controlType = BaseControlPoint.CONTROL_TYPE_DATA
+                    }, delegate)
+                }
+            }
+        }
+    }
+
     //endregion---带参数调整对话框---
 
     //region---图片其他处理---
