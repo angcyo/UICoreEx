@@ -716,7 +716,7 @@
     },
     {
       "id": "11:7833260621013857816",
-      "lastPropertyId": "12:4315274201643703636",
+      "lastPropertyId": "14:5868390523875044681",
       "name": "TransferMonitorEntity",
       "properties": [
         {
@@ -774,6 +774,16 @@
           "id": "12:4315274201643703636",
           "name": "dataAverageTransferSpeed",
           "type": 7
+        },
+        {
+          "id": "13:7966764816147027614",
+          "name": "dataIndex",
+          "type": 5
+        },
+        {
+          "id": "14:5868390523875044681",
+          "name": "dataName",
+          "type": 9
         }
       ],
       "relations": []
